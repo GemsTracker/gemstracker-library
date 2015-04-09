@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_Form_Decorator_Subforms extends Zend_Form_Decorator_Abstract
+class MUtil_Form_Decorator_Subforms extends \Zend_Form_Decorator_Abstract
 {
     /**
      * Render the element
@@ -59,9 +59,9 @@ class MUtil_Form_Decorator_Subforms extends Zend_Form_Decorator_Abstract
             return $content;
         }
 
-        if ($element instanceof MUtil_Form_Element_SubForms) {
+        if ($element instanceof \MUtil_Form_Element_SubForms) {
             $subforms = $element->getSubForms();
-        } elseif ($element instanceof Zend_Form)  {
+        } elseif ($element instanceof \Zend_Form)  {
             $subforms = array($element);
         } else {
             $subforms = array();
@@ -69,14 +69,14 @@ class MUtil_Form_Decorator_Subforms extends Zend_Form_Decorator_Abstract
 
         foreach ($subforms as $subform) {
             foreach ($subform->getElements() as $subelement) {
-                if ($subelement instanceof Zend_Form_Element_Hidden) {
+                if ($subelement instanceof \Zend_Form_Element_Hidden) {
                     $subelement->clearDecorators();
                     $subelement->addDecorator('ViewHelper');
                     $content .= $subelement->render($view) . "\n";
 
-                } elseif (($subelement instanceof Zend_Form_Element) ||
-                        ($subelement instanceof Zend_Form_DisplayGroup) ||
-                        ($subelement instanceof Zend_Form)) {
+                } elseif (($subelement instanceof \Zend_Form_Element) ||
+                        ($subelement instanceof \Zend_Form_DisplayGroup) ||
+                        ($subelement instanceof \Zend_Form)) {
                     $content .= $subelement->render($view) . "\n";
                     
                 }

@@ -51,8 +51,8 @@ class MUtil_Lazy_RepeatableByKeyValue extends \MUtil_Lazy_Repeatable
      */
     public function __construct($data)
     {
-        if (! (is_array($data) || ($data instanceof Traversable))) {
-            throw new \MUtil_Lazy_LazyException('The $data parameter is not an array or a Traversable interface instance ');
+        if (! (is_array($data) || ($data instanceof \Traversable))) {
+            throw new \MUtil_Lazy_LazyException('The $data parameter is not an array or a \Traversable interface instance ');
         }
 
         $result = array();

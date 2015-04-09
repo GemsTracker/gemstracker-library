@@ -43,7 +43,7 @@
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
-class MUtil_Form_Decorator_BootstrapRow extends Zend_Form_Decorator_Abstract
+class MUtil_Form_Decorator_BootstrapRow extends \Zend_Form_Decorator_Abstract
 {
     protected $_format = '
     <div class="form-group">

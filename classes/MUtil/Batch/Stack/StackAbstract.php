@@ -32,11 +32,10 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: SessionStack.php$
+ * @version    $Id: StackAbstract.php 2394 2015-01-15 14:30:10Z matijsdejong $
  */
 
 /**
- *
  *
  * @package    MUtil
  * @subpackage Batch
@@ -44,12 +43,12 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-abstract class MUtil_Batch_Stack_StackAbstract implements MUtil_Batch_Stack_Stackinterface
+abstract class MUtil_Batch_Stack_StackAbstract implements \MUtil_Batch_Stack_Stackinterface
 {
     /**
      * The classes allowed in the stack
      *
-     * @var MUtil_Util_ClassList
+     * @var \MUtil_Util_ClassList
      */
     protected $_allowedClasses;
 
@@ -64,26 +63,26 @@ abstract class MUtil_Batch_Stack_StackAbstract implements MUtil_Batch_Stack_Stac
 
     protected function _checkParams(array $params)
     {
-        $checks = MUtil_Ra::nonScalars($params);
+        $checks = \MUtil_Ra::nonScalars($params);
         if ($this->_allowedClasses) {
-            $checks = MUtil_Ra::nonScalars($params);
+            $checks = \MUtil_Ra::nonScalars($params);
             if (is_array($checks)) {
                 foreach ($checks as $object) {
                     if (! $this->_allowedClasses->get($object)) {
                         $name   = get_class($object);
                         $method = reset($params);
-                        throw new MUtil_Batch_BatchException("Not allowed batch class $name parameter for method: '$method'.");
+                        throw new \MUtil_Batch_BatchException("Not allowed batch class $name parameter for method: '$method'.");
                     }
                 }
             }
 
-        } elseif (! MUtil_Ra::isScalar($params)) {
-            $checks = MUtil_Ra::nonScalars($params);
+        } elseif (! \MUtil_Ra::isScalar($params)) {
+            $checks = \MUtil_Ra::nonScalars($params);
             if (is_array($checks)) {
                 $object = reset($checks);
                 $name   = get_class($object);
                 $method = reset($params);
-                throw new MUtil_Batch_BatchException("Not allowed batch class $name parameter for method: '$method'.");
+                throw new \MUtil_Batch_BatchException("Not allowed batch class $name parameter for method: '$method'.");
             }
         }
     }
@@ -96,7 +95,7 @@ abstract class MUtil_Batch_Stack_StackAbstract implements MUtil_Batch_Stack_Stac
     protected function _ensureAllowedClassList()
     {
         if (! $this->_allowedClasses) {
-            $this->_allowedClasses = new MUtil_Util_ClassList();
+            $this->_allowedClasses = new \MUtil_Util_ClassList();
         }
     }
 
@@ -124,7 +123,7 @@ abstract class MUtil_Batch_Stack_StackAbstract implements MUtil_Batch_Stack_Stac
     /**
      * Run the next command
      *
-     * @param mixed $batch Should be MUtil_Batch_BatchAbstract but could be changed in implementations
+     * @param mixed $batch Should be \MUtil_Batch_BatchAbstract but could be changed in implementations
      * @return void
      */
     // public function gotoNext($batch);

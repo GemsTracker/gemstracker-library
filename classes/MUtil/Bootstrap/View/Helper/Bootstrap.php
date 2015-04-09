@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Bootstrap .php 1748 2014-02-19 18:09:41Z matijsdejong $
+ * @version    $Id: Bootstrap.php 1748 2014-02-19 18:09:41Z matijsdejong $
  */
 
 /**
@@ -43,10 +43,10 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_Bootstrap_View_Helper_Bootstrap extends Zend_View_Helper_Abstract
+class MUtil_Bootstrap_View_Helper_Bootstrap extends \Zend_View_Helper_Abstract
 {
     /**
-     * @var MUtil_Bootstrap_View_Helper_Bootstrapper
+     * @var \MUtil_Bootstrap_View_Helper_Bootstrapper
      */
     private $_bootstrapper;
 
@@ -60,9 +60,9 @@ class MUtil_Bootstrap_View_Helper_Bootstrap extends Zend_View_Helper_Abstract
      */
     public function __construct()
     {
-        $registry = Zend_Registry::getInstance();
+        $registry = \Zend_Registry::getInstance();
         if (!isset($registry[__CLASS__])) {
-            $container = new MUtil_Bootstrap_View_Helper_Bootstrapper();
+            $container = new \MUtil_Bootstrap_View_Helper_Bootstrapper();
             $registry[__CLASS__] = $container;
         }
         $this->_bootstrapper = $registry[__CLASS__];
@@ -76,10 +76,10 @@ class MUtil_Bootstrap_View_Helper_Bootstrap extends Zend_View_Helper_Abstract
     /**
      * Set view to this class and the bootstrapper
      *
-     * @param  Zend_View_Interface $view
+     * @param  \Zend_View_Interface $view
      * @return void
      */
-    public function setView(Zend_View_Interface $view)
+    public function setView(\Zend_View_Interface $view)
     {
         $this->view = $view;
         $this->_bootstrapper->setView($view);

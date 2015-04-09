@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_Lazy_Stack_ArrayStack extends ArrayObject implements MUtil_Lazy_StackInterface
+class MUtil_Lazy_Stack_ArrayStack extends \ArrayObject implements \MUtil_Lazy_StackInterface
 {
     /**
      * Should we throw an exception on a missing value?
@@ -61,15 +61,15 @@ class MUtil_Lazy_Stack_ArrayStack extends ArrayObject implements MUtil_Lazy_Stac
      */
     public function lazyGet($name)
     {
-        // MUtil_Echo::track($name, $this->offsetExists($name), $this->offsetGet($name), $this->getArrayCopy());
+        // \MUtil_Echo::track($name, $this->offsetExists($name), $this->offsetGet($name), $this->getArrayCopy());
         if ($this->offsetExists($name)) {
             return $this->offsetGet($name);
         }
         if ($this->_throwOnMiss) {
-            throw new MUtil_Lazy_LazyException("No lazy stack variable defined for '$name' parameter.");
+            throw new \MUtil_Lazy_LazyException("No lazy stack variable defined for '$name' parameter.");
         }
-        if (MUtil_Lazy::$verbose) {
-            MUtil_Echo::header("No lazy stack variable defined for '$name' parameter.");
+        if (\MUtil_Lazy::$verbose) {
+            \MUtil_Echo::header("No lazy stack variable defined for '$name' parameter.");
         }
 
         return null;

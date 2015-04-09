@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_Html_Code_JavaScript extends MUtil_Html_Code_DynamicAbstract
+class MUtil_Html_Code_JavaScript extends \MUtil_Html_Code_DynamicAbstract
 {
     protected $_inHeader = true;
 
@@ -56,8 +56,8 @@ class MUtil_Html_Code_JavaScript extends MUtil_Html_Code_DynamicAbstract
      */
     public function getInHeader()
     {
-        if ($this->_inHeader instanceof MUtil_Lazy_LazyInterface) {
-            return (boolean) MUtil_Lazy::raise($this->_inHeader);
+        if ($this->_inHeader instanceof \MUtil_Lazy_LazyInterface) {
+            return (boolean) \MUtil_Lazy::raise($this->_inHeader);
         } else {
             return (boolean) $this->_inHeader;
         }
@@ -67,10 +67,10 @@ class MUtil_Html_Code_JavaScript extends MUtil_Html_Code_DynamicAbstract
      *
      * The $view is used to correctly encode and escape the output
      *
-     * @param Zend_View_Abstract $view
+     * @param \Zend_View_Abstract $view
      * @return string Correctly encoded and escaped html output
      */
-    public function render(Zend_View_Abstract $view)
+    public function render(\Zend_View_Abstract $view)
     {
         $content = $this->getContentOutput($view);
 
@@ -92,7 +92,7 @@ class MUtil_Html_Code_JavaScript extends MUtil_Html_Code_DynamicAbstract
      * otherwise in the BODY.
      *
      * @param boolean $value
-     * @return MUtil_Html_Code_JavaScript (continuation pattern)
+     * @return \MUtil_Html_Code_JavaScript (continuation pattern)
      */
     public function setInHeader($value = true)
     {

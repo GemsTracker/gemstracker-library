@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -27,8 +26,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
+ *
  * @package    MUtil
  * @subpackage Form_Element
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @version    $Id$
@@ -44,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class MUtil_Form_Element_Table extends Zend_Form_Element_Xhtml implements MUtil_Form_Element_SubFocusInterface
+class MUtil_Form_Element_Table extends \Zend_Form_Element_Xhtml implements \MUtil_Form_Element_SubFocusInterface
 {
     /**
      * Table is an array of values by default
@@ -56,14 +57,14 @@ class MUtil_Form_Element_Table extends Zend_Form_Element_Xhtml implements MUtil_
     /**
      * The model sub form all others are copied from
      *
-     * @var Zend_Form
+     * @var \Zend_Form
      */
     protected $_subForm;
 
     /**
      * Actual clones of form
      *
-     * @var array of Zend_Form
+     * @var array of \Zend_Form
      */
     protected $_subForms;
 
@@ -73,13 +74,13 @@ class MUtil_Form_Element_Table extends Zend_Form_Element_Xhtml implements MUtil_
      * $spec may be:
      * - string: name of element
      * - array: options with which to configure element
-     * - Zend_Config: Zend_Config with options for configuring element
+     * - \Zend_Config: \Zend_Config with options for configuring element
      *
-     * @param Zend_Form $subForm
-     * @param  string|array|Zend_Config $spec
-     * @throws Zend_Form_Exception if no element name after initialization
+     * @param \Zend_Form $subForm
+     * @param  string|array|\Zend_Config $spec
+     * @throws \Zend_Form_Exception if no element name after initialization
      */
-    public function __construct(Zend_Form $subForm, $spec, $options = null)
+    public function __construct(\Zend_Form $subForm, $spec, $options = null)
     {
         $this->setSubForm($subForm);
 
@@ -103,7 +104,7 @@ class MUtil_Form_Element_Table extends Zend_Form_Element_Xhtml implements MUtil_
 
     /**
      *
-     * @return Zend_Form
+     * @return \Zend_Form
      */
     public function getSubForm()
     {
@@ -112,7 +113,7 @@ class MUtil_Form_Element_Table extends Zend_Form_Element_Xhtml implements MUtil_
 
     /**
      *
-     * @return array of Zend_Form
+     * @return array of \Zend_Form
      */
     public function getSubForms()
     {
@@ -170,10 +171,10 @@ class MUtil_Form_Element_Table extends Zend_Form_Element_Xhtml implements MUtil_
     /**
      * Change  the sub form later
      *
-     * @param Zend_Form $subForm
+     * @param \Zend_Form $subForm
      * @return \MUtil_Form_Element_Table (continuation pattern)
      */
-    public function setSubForm(Zend_Form $subForm)
+    public function setSubForm(\Zend_Form $subForm)
     {
         $this->_subForm = $subForm;
         return $this;

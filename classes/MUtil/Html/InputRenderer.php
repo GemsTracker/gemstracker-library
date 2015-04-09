@@ -38,7 +38,7 @@
 /**
  * This class handles the rendering of input elements.
  *
- * If a Zend_Form object is passed as first parameter, then it is rendered appropriately.
+ * If a \Zend_Form object is passed as first parameter, then it is rendered appropriately.
  * Otherwise the constructor tries to handle it as an attempt to create a raw HtmlElement
  * input element.
  *
@@ -48,7 +48,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class MUtil_Html_InputRenderer implements MUtil_Html_HtmlInterface
+class MUtil_Html_InputRenderer implements \MUtil_Html_HtmlInterface
 {
     const MODE_COMPLETE = 'complete';
     const MODE_DISPLAY_GROUP = 'displayGroup';
@@ -60,7 +60,7 @@ class MUtil_Html_InputRenderer implements MUtil_Html_HtmlInterface
     const MODE_UNTIL = 'until';
     const MODE_UPTO = 'upto';
 
-    const ARGUMENT_ERROR = 'Invalid argument of type %s in %s. Only Zend_Form and Zend_Form_Element objects are allowed and MUtil_Lazy_LazyInterface objects as long as they devolve to Zend_Form or Zend_Form_Element.';
+    const ARGUMENT_ERROR = 'Invalid argument of type %s in %s. Only \Zend_Form and \Zend_Form_Element objects are allowed and \MUtil_Lazy_LazyInterface objects as long as they devolve to \Zend_Form or \Zend_Form_Element.';
 
     private $_decorators;
     private $_element;
@@ -68,15 +68,18 @@ class MUtil_Html_InputRenderer implements MUtil_Html_HtmlInterface
 
     /**
      *
-     * @param Zend_Form|Zend_Form_Element|MUtil_Lazy_LazyInterface $element
+     * @param \Zend_Form|\Zend_Form_Element|\MUtil_Lazy_LazyInterface $element
      * @param $mode One of the class MODE_ constants
-     * @param array of string|array|Zend_Form_Decorator_Interface $decorators Optional An arrya that contains values
+     * @param array of string|array|\Zend_Form_Decorator_Interface $decorators Optional An arrya that contains values
      * that are either a string value that identifies an existing decorator or an array that creates an new decorator
      * or a decorator instance.
      */
     public function __construct($element, $mode = self::MODE_ELEMENT, array $decorators = array())
     {
-        if (($element instanceof Zend_Form_Element) || ($element instanceof Zend_Form_DisplayGroup) || ($element instanceof Zend_Form) || ($element instanceof MUtil_Lazy_LazyInterface)) {
+        if (($element instanceof \Zend_Form_Element) ||
+                ($element instanceof \Zend_Form_DisplayGroup) ||
+                ($element instanceof \Zend_Form) ||
+                ($element instanceof \MUtil_Lazy_LazyInterface)) {
 
             switch ($mode) {
                 case self::MODE_COMPLETE:
@@ -84,7 +87,8 @@ class MUtil_Html_InputRenderer implements MUtil_Html_HtmlInterface
                 case self::MODE_ELEMENT:
                 case self::MODE_FORM:
                     if ($decorators) {
-                        throw new MUtil_Html_HtmlException('Invalid mode for ' . __CLASS__ . ' constructor. With decorators the mode argument ' . $mode . ' is not allowed.');
+                        throw new \MUtil_Html_HtmlException('Invalid mode for ' . __CLASS__ .
+                                ' constructor. With decorators the mode argument ' . $mode . ' is not allowed.');
                     }
                     break;
 
@@ -93,12 +97,15 @@ class MUtil_Html_InputRenderer implements MUtil_Html_HtmlInterface
                 case self::MODE_UNTIL:
                 case self::MODE_UPTO:
                     if (! $decorators) {
-                        throw new MUtil_Html_HtmlException('Invalid mode ' . $mode . ' for ' . __CLASS__ . ' constructor. Without decorators the only allowed mode argument is ' . self::MODE_COMPLETE . '.');
+                        throw new \MUtil_Html_HtmlException('Invalid mode ' . $mode . ' for ' . __CLASS__ .
+                                ' constructor. Without decorators the only allowed mode argument is ' .
+                                self::MODE_COMPLETE . '.');
                     }
                     break;
 
                 default:
-                    throw new MUtil_Html_HtmlException('Unknown mode ' . $mode . ' for ' . __CLASS__ . ' constructor.');
+                    throw new \MUtil_Html_HtmlException('Unknown mode ' . $mode . ' for ' . __CLASS__ .
+                            ' constructor.');
             }
             $this->_element    = $element;
             $this->_decorators = $decorators;
@@ -115,28 +122,33 @@ class MUtil_Html_InputRenderer implements MUtil_Html_HtmlInterface
             }
             if (is_array($args)) {
                 // Treat this as a standard Html Element
-                $this->_element = new MUtil_Html_HtmlElement('input', $args);
+                $this->_element = new \MUtil_Html_HtmlElement('input', $args);
                 $this->_mode = self::MODE_HTML;
 
-                // MUtil_Echo::track($args);
+                // \MUtil_Echo::track($args);
              } else {
-                throw new MUtil_Html_HtmlException(sprintf(self::ARGUMENT_ERROR, (is_object($element) ? get_class($element) : gettype($element)), __CLASS__ . ' constructor'));
+                throw new \MUtil_Html_HtmlException(sprintf(
+                        self::ARGUMENT_ERROR,
+                        (is_object($element) ? get_class($element) : gettype($element)),
+                        __CLASS__ . ' constructor'
+                        ));
             }
         }
     }
 
     private static function _checkElement($element, $function)
     {
-        $element = MUtil_Lazy::rise($element);
+        $element = \MUtil_Lazy::rise($element);
 
-        if (($element instanceof Zend_Form_Element) ||
-            ($element instanceof Zend_Form_DisplayGroup) ||
-            ($element instanceof Zend_Form)) {
+        if (($element instanceof \Zend_Form_Element) ||
+            ($element instanceof \Zend_Form_DisplayGroup) ||
+            ($element instanceof \Zend_Form)) {
 
             return $element;
         }
 
-        throw new MUtil_Html_HtmlException(sprintf(self::ARGUMENT_ERROR, get_class($element), __CLASS__ . '::' . $function . '()'));
+        throw new \MUtil_Html_HtmlException(sprintf(self::ARGUMENT_ERROR, get_class($element), __CLASS__ . '::' .
+                $function . '()'));
     }
 
     private static function _throwStopError($element, $decorators, $function)
@@ -172,18 +184,18 @@ class MUtil_Html_InputRenderer implements MUtil_Html_HtmlInterface
             $element->getName() . '</strong> of type ' . get_class($element) .
             ' in ' . __CLASS__ . '::' . $function . "().<br>\n" . $stoppers . $found;
 
-        // MUtil_Echo::r($message);
-        throw new MUtil_Html_HtmlException($message);
+        // \MUtil_Echo::r($message);
+        throw new \MUtil_Html_HtmlException($message);
 
     }
 
     public static function input($element)
     {
-        if ($element instanceof Zend_Form) {
+        if ($element instanceof \Zend_Form) {
             return self::inputForm($element);
         }
 
-        if ($element instanceof Zend_Form_DisplayGroup) {
+        if ($element instanceof \Zend_Form_DisplayGroup) {
             return self::inputDisplayGroup($element);
         }
 
@@ -240,7 +252,7 @@ class MUtil_Html_InputRenderer implements MUtil_Html_HtmlInterface
     public static function inputLabel($arg_array = array())
     {
         $args = func_get_args();
-        return new MUtil_Html_LabelElement('label', $args);
+        return new \MUtil_Html_LabelElement('label', $args);
     }
 
 
@@ -277,7 +289,7 @@ class MUtil_Html_InputRenderer implements MUtil_Html_HtmlInterface
     }
 
 
-    public function render(Zend_View_Abstract $view)
+    public function render(\Zend_View_Abstract $view)
     {
         switch ($this->_mode) {
             case self::MODE_COMPLETE:
@@ -311,13 +323,13 @@ class MUtil_Html_InputRenderer implements MUtil_Html_HtmlInterface
         }
     }
 
-    public static function renderComplete(Zend_View_Abstract $view, $element)
+    public static function renderComplete(\Zend_View_Abstract $view, $element)
     {
         $element = self::_checkElement($element, __FUNCTION__);
         return $element->render($view);
     }
 
-    public static function renderDisplayGroup(Zend_View_Abstract $view, Zend_Form_DisplayGroup $displayGroup)
+    public static function renderDisplayGroup(\Zend_View_Abstract $view, \Zend_Form_DisplayGroup $displayGroup)
     {
         return self::renderUntil($view, $displayGroup,
             array('Zend_Form_Decorator_Fieldset'));
@@ -325,7 +337,7 @@ class MUtil_Html_InputRenderer implements MUtil_Html_HtmlInterface
             array('Zend_Form_Decorator_FormElements', 'Zend_Form_Decorator_Fieldset'));
     }
 
-    public static function renderElement(Zend_View_Abstract $view, $element)
+    public static function renderElement(\Zend_View_Abstract $view, $element)
     {
         return self::renderUntil($view, $element, array(
             'Zend_Form_Decorator_ViewHelper',
@@ -335,7 +347,7 @@ class MUtil_Html_InputRenderer implements MUtil_Html_HtmlInterface
             ));
     }
 
-    public static function renderExcept(Zend_View_Abstract $view, $element, array $except_decorators)
+    public static function renderExcept(\Zend_View_Abstract $view, $element, array $except_decorators)
     {
         $element = self::_checkElement($element, __FUNCTION__);
         $element->setView($view);
@@ -360,9 +372,9 @@ class MUtil_Html_InputRenderer implements MUtil_Html_HtmlInterface
         return $content;
     }
 
-    public static function renderForm(Zend_View_Abstract $view, Zend_Form $form)
+    public static function renderForm(\Zend_View_Abstract $view, \Zend_Form $form)
     {
-        if ($form instanceof MUtil_Form && $form->isLazy()) {
+        if ($form instanceof \MUtil_Form && $form->isLazy()) {
             return self::renderUntil($view, $form,
                 array('Zend_Form_Decorator_Form', 'Zend_Dojo_Form_Decorator_DijitForm'));
         } else {
@@ -370,7 +382,7 @@ class MUtil_Html_InputRenderer implements MUtil_Html_HtmlInterface
         }
     }
 
-    public static function renderOnly(Zend_View_Abstract $view, $element, array $decorators)
+    public static function renderOnly(\Zend_View_Abstract $view, $element, array $decorators)
     {
         $element = self::_checkElement($element, __FUNCTION__);
         $element->setView($view);
@@ -378,7 +390,7 @@ class MUtil_Html_InputRenderer implements MUtil_Html_HtmlInterface
         $content = '';
         foreach ($decorators as $decoratorinfo) {
 
-            if ($decoratorinfo instanceof Zend_Form_Decorator_Interface) {
+            if ($decoratorinfo instanceof \Zend_Form_Decorator_Interface) {
                 $decorator = $decoratorinfo;
 
             } else {
@@ -407,7 +419,7 @@ class MUtil_Html_InputRenderer implements MUtil_Html_HtmlInterface
         return $content;
     }
 
-    public static function renderUntil(Zend_View_Abstract $view, $element, array $until_decorators)
+    public static function renderUntil(\Zend_View_Abstract $view, $element, array $until_decorators)
     {
         $element = self::_checkElement($element, __FUNCTION__);
         $element->setView($view);
@@ -419,7 +431,7 @@ class MUtil_Html_InputRenderer implements MUtil_Html_HtmlInterface
 
             foreach ($until_decorators as $until_decorator) {
                 if (($until_decorator == $name) || ($decorator instanceof $until_decorator)) {
-                    // MUtil_Echo::r('<strong>' . $element->getName() . ', ' . $until_decorator . '</strong>' . htmlentities($content));
+                    // \MUtil_Echo::r('<strong>' . $element->getName() . ', ' . $until_decorator . '</strong>' . htmlentities($content));
                     return $content;
                 }
             }
@@ -428,7 +440,7 @@ class MUtil_Html_InputRenderer implements MUtil_Html_HtmlInterface
         self::_throwStopError($element, $until_decorators, __FUNCTION__);
     }
 
-    public static function renderUpto(Zend_View_Abstract $view, $element, array $until_decorators)
+    public static function renderUpto(\Zend_View_Abstract $view, $element, array $until_decorators)
     {
         $element = self::_checkElement($element, __FUNCTION__);
         $element->setView($view);

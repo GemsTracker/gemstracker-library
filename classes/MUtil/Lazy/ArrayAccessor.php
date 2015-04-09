@@ -46,7 +46,7 @@
  * @since      Class available since version 1.1
  */
 
-class MUtil_Lazy_ArrayAccessor extends MUtil_Lazy_LazyAbstract
+class MUtil_Lazy_ArrayAccessor extends \MUtil_Lazy_LazyAbstract
 {
     /**
      *
@@ -74,19 +74,19 @@ class MUtil_Lazy_ArrayAccessor extends MUtil_Lazy_LazyAbstract
     /**
      * The functions that returns the value.
      *
-     * Returning an instance of MUtil_Lazy_LazyInterface is allowed.
+     * Returning an instance of \MUtil_Lazy_LazyInterface is allowed.
      *
-     * @param MUtil_Lazy_StackInterface $stack A MUtil_Lazy_StackInterface object providing variable data
+     * @param \MUtil_Lazy_StackInterface $stack A \MUtil_Lazy_StackInterface object providing variable data
      * @return mixed
      */
-    protected function _getLazyValue(MUtil_Lazy_StackInterface $stack)
+    protected function _getLazyValue(\MUtil_Lazy_StackInterface $stack)
     {
-        $array  = MUtil_Lazy::rise($this->_array);
-        $offset = MUtil_Lazy::rise($this->_offset);
+        $array  = \MUtil_Lazy::rise($this->_array);
+        $offset = \MUtil_Lazy::rise($this->_offset);
 
-        if (MUtil_Lazy::$verbose) {
-            MUtil_Echo::header('Lazy offset get for offset: <em>' . $offset . '</em>');
-            MUtil_Echo::classToName($array);
+        if (\MUtil_Lazy::$verbose) {
+            \MUtil_Echo::header('Lazy offset get for offset: <em>' . $offset . '</em>');
+            \MUtil_Echo::classToName($array);
         }
 
         if (null === $offset) {

@@ -184,10 +184,10 @@ class MUtil_Form_Decorator_Table extends \Zend_Form_Decorator_ViewHelper
             }
 
         } elseif ($element instanceof \Zend_Form_DisplayGroup) {
-            throw new Exception('Rendering of \Zend_Form_DisplayGroup in ' . __CLASS__ . ' not yet implemented.');
+            throw new \Exception('Rendering of \Zend_Form_DisplayGroup in ' . __CLASS__ . ' not yet implemented.');
 
         } elseif ($element instanceof \Zend_Form_Element) {
-            throw new Exception('Rendering of \Zend_Form_Element in ' . __CLASS__ . ' not yet implemented.');
+            throw new \Exception('Rendering of \Zend_Form_Element in ' . __CLASS__ . ' not yet implemented.');
             // $table->addColumn($element->renderViewHelper(), $element->renderLabel());
 
         } else {

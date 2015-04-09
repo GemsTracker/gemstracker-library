@@ -45,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class MUtil_Html_AElement extends MUtil_Html_HtmlElement
+class MUtil_Html_AElement extends \MUtil_Html_HtmlElement
 {
     /**
      * Most elements must be rendered even when empty, others should - according to the
@@ -73,14 +73,14 @@ class MUtil_Html_AElement extends MUtil_Html_HtmlElement
      * as special types, if defined as such for this element.
      *
      * @param mixed $href We assume the first element contains the href, unless a later element is explicitly specified as such
-     * @param mixed $arg_array MUtil_Ra::args arguments
+     * @param mixed $arg_array \MUtil_Ra::args arguments
      */
     public function __construct($href, $arg_array = null)
     {
-        $args = MUtil_Ra::args(func_get_args(), array('href' => 'MUtil_Html_HrefArrayAttribute'));
+        $args = \MUtil_Ra::args(func_get_args(), array('href' => 'MUtil_Html_HrefArrayAttribute'));
 
-        if (isset($args['href']) && (! $args['href'] instanceof MUtil_Html_AttributeInterface)) {
-            $args['href'] = new MUtil_Html_HrefArrayAttribute($args['href']);
+        if (isset($args['href']) && (! $args['href'] instanceof \MUtil_Html_AttributeInterface)) {
+            $args['href'] = new \MUtil_Html_HrefArrayAttribute($args['href']);
         }
 
         parent::__construct('a', $args);
@@ -113,11 +113,11 @@ class MUtil_Html_AElement extends MUtil_Html_HtmlElement
      * as special types, if defined as such for this element.
      *
      * @param mixed $href We assume the first element contains the href, unless a later element is explicitly specified as such
-     * @param mixed $arg_array MUtil_Ra::args arguments
+     * @param mixed $arg_array \MUtil_Ra::args arguments
      */
     public static function a($href, $arg_array = null)
     {
-        $args = MUtil_Ra::args(func_get_args(), array('href' => 'MUtil_Html_HrefArrayAttribute'));
+        $args = \MUtil_Ra::args(func_get_args(), array('href' => 'MUtil_Html_HrefArrayAttribute'));
         return new self($args);
     }
 
@@ -130,7 +130,7 @@ class MUtil_Html_AElement extends MUtil_Html_HtmlElement
      */
     public static function email($email, $arg_array = null)
     {
-        $args = MUtil_Ra::args(func_get_args(), 1);
+        $args = \MUtil_Ra::args(func_get_args(), 1);
         if (isset($args['href'])) {
             $href = $args['href'];
             unset($args['href']);
@@ -151,24 +151,24 @@ class MUtil_Html_AElement extends MUtil_Html_HtmlElement
     /**
      * Return a link object when $iff is true
      *
-     * @param MUtil_Lazy $iff The test
+     * @param \MUtil_Lazy $iff The test
      * @param mixed $aArgs Arguments when the test is true
      * @param mixed $spanArgs Arguments when the test is false
      * @return mixed
      */
     public static function iflink($iff, $aArgs, $spanArgs = null)
     {
-        if ($iff instanceof MUtil_Lazy_LazyInterface) {
+        if ($iff instanceof \MUtil_Lazy_LazyInterface) {
             if ($spanArgs) {
-                return MUtil_Lazy::iff($iff, MUtil_Html::create('a', $aArgs), MUtil_Html::create('span', $spanArgs, array('renderWithoutContent' => false)));
+                return \MUtil_Lazy::iff($iff, \MUtil_Html::create('a', $aArgs), \MUtil_Html::create('span', $spanArgs, array('renderWithoutContent' => false)));
             } else {
-                return MUtil_Lazy::iff($iff, MUtil_Html::create('a', $aArgs));
+                return \MUtil_Lazy::iff($iff, \MUtil_Html::create('a', $aArgs));
             }
         }
         if ($iff) {
-            return MUtil_Html::create('a', $aArgs);
+            return \MUtil_Html::create('a', $aArgs);
         } elseif ($spanArgs) {
-            return MUtil_Html::create('span', $spanArgs, array('renderWithoutContent' => false));
+            return \MUtil_Html::create('span', $spanArgs, array('renderWithoutContent' => false));
         }
     }
 
@@ -182,8 +182,8 @@ class MUtil_Html_AElement extends MUtil_Html_HtmlElement
     public static function ifmail($email, $arg_array = null)
     {
         $args = func_get_args();
-        if ($email instanceof MUtil_Lazy_LazyInterface) {
-            return MUtil_Lazy::iff($email, call_user_func_array(array(__CLASS__, 'email'), $args));
+        if ($email instanceof \MUtil_Lazy_LazyInterface) {
+            return \MUtil_Lazy::iff($email, call_user_func_array(array(__CLASS__, 'email'), $args));
         }
         if ($email) {
             return self::email($args);

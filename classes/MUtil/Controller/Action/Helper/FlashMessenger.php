@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2014, Erasmus MC
  * All rights reserved.
@@ -44,7 +45,7 @@
  * @license    New BSD License
  */
 
-class MUtil_Controller_Action_Helper_FlashMessenger extends Zend_Controller_Action_Helper_FlashMessenger
+class MUtil_Controller_Action_Helper_FlashMessenger extends \Zend_Controller_Action_Helper_FlashMessenger
 {
 	/**
 	 * @var string The default status, if no status has been set.
@@ -86,8 +87,8 @@ class MUtil_Controller_Action_Helper_FlashMessenger extends Zend_Controller_Acti
 
 
         if ($messages) {
-            $errorContainer = MUtil_Html::create()->div(array('class' => 'errors'));
-            $errorClose = MUtil_Html::create()->button(array('type' => 'button','class' => 'close', 'data-dismiss' => 'alert'));
+            $errorContainer = \MUtil_Html::create()->div(array('class' => 'errors'));
+            $errorClose = \MUtil_Html::create()->button(array('type' => 'button','class' => 'close', 'data-dismiss' => 'alert'));
             $errorClose->raw('&times;');
 
             foreach ($messages as $message) {
@@ -102,7 +103,7 @@ class MUtil_Controller_Action_Helper_FlashMessenger extends Zend_Controller_Acti
                     if (is_array($message)) {
                         // Use array_values to remove string keys (as those are interpreted
                         // as attributes
-                    	$message = MUtil_Html::create()->ul(array_values($message));
+                    	$message = \MUtil_Html::create()->ul(array_values($message));
                     }
                 }
 

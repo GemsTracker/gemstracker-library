@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2014, Erasmus MC
  * All rights reserved.
@@ -29,9 +28,10 @@
  *
  * @package    MUtil
  * @subpackage Form_Element
+ * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Table.php Jasper van Gestel $
+ * @version    $Id: MultiCheckbox.php Jasper van Gestel $
  */
 
 /**
@@ -44,21 +44,21 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.5
  */
-class MUtil_Bootstrap_Form_Element_MultiCheckbox extends Zend_Form_Element_MultiCheckbox
+class MUtil_Bootstrap_Form_Element_MultiCheckbox extends \Zend_Form_Element_MultiCheckbox
 {
-	
+
     /**
      * Constructor
      *
      * $spec may be:
      * - string: name of element
      * - array: options with which to configure element
-     * - Zend_Config: Zend_Config with options for configuring element
+     * - \Zend_Config: \Zend_Config with options for configuring element
      *
-     * @param  string|array|Zend_Config $spec
-     * @param  array|Zend_Config $options
+     * @param  string|array|\Zend_Config $spec
+     * @param  array|\Zend_Config $options
      * @return void
-     * @throws Zend_Form_Exception if no element name after initialization
+     * @throws \Zend_Form_Exception if no element name after initialization
      */
     public function __construct($spec, $options = null)
     {
@@ -66,11 +66,10 @@ class MUtil_Bootstrap_Form_Element_MultiCheckbox extends Zend_Form_Element_Multi
         $this->setAttrib('label_class', 'checkbox');
     }
 
-
 	/**
      * Load default decorators
      *
-     * @return Zend_Form_Element
+     * @return \Zend_Form_Element
      */
     public function loadDefaultDecorators()
     {

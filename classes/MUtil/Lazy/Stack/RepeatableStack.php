@@ -72,7 +72,7 @@ class RepeatableStack implements \MUtil_Lazy_StackInterface
      */
     public function lazyGet($name)
     {
-        // MUtil_Echo::track($name, isset($this->_object->$name), MUtil_Lazy::rise($this->_object->$name), $this->_object->getLazyValue($name));
+        // \MUtil_Echo::track($name, isset($this->_object->$name), \MUtil_Lazy::rise($this->_object->$name), $this->_object->getLazyValue($name));
         return \MUtil_Lazy::rise($this->_object->__get($name));
     }
 

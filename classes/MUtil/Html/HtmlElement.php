@@ -52,7 +52,7 @@
  * - the content of the element are the array items of the element,
  * - new child elements can be created with their tagName as function name: e.g. $this->br();
  * - the attributes are treated as properties,
- * - certain types are always used in a fixed manner (e.g. Zend_View -> setView()).
+ * - certain types are always used in a fixed manner (e.g. \Zend_View -> setView()).
  *
  * Evil but usefull functionality includes the possibility of changing the $tagName at
  * a later stage.
@@ -65,23 +65,23 @@
  * - attributes are specified in nested array with the attribute name as key,
  * - content is specified either as top-level parameter or in a nested array
  *   with numerical index,
- * - MUtil_Html_AttributeInterface objects will always be added as attributes,
- * - MUtil_Html_ElementInterface objects will always be added as content,
- * - classes like Zend_View and Zend_Paginator get special treatment.
+ * - \MUtil_Html_AttributeInterface objects will always be added as attributes,
+ * - \MUtil_Html_ElementInterface objects will always be added as content,
+ * - classes like \Zend_View and \Zend_Paginator get special treatment.
  *
  *
- * Most of the times element are constructed using the MUtil_Html static helper class.
+ * Most of the times element are constructed using the \MUtil_Html static helper class.
  * These six examples are all equivalent:
  *
  * <code>
- * 1: $div = new MUtil_Html_HtmlElement('div', 'some content', array('class' => 'some class'));
- * 2: $div = new MUtil_Html_HtmlElement('div', array('some content', 'class' => 'some class'));
+ * 1: $div = new \MUtil_Html_HtmlElement('div', 'some content', array('class' => 'some class'));
+ * 2: $div = new \MUtil_Html_HtmlElement('div', array('some content', 'class' => 'some class'));
  *
- * 3: $div = MUtil_Html::create('div', 'some content', array('class' => 'some class'));
- * 4: $div = MUtil_Html::create('div', array('some content', 'class' => 'some class'));
+ * 3: $div = \MUtil_Html::create('div', 'some content', array('class' => 'some class'));
+ * 4: $div = \MUtil_Html::create('div', array('some content', 'class' => 'some class'));
  *
- * 5: $div = MUtil_Html::create()->div('some content', array('class' => 'some class'));
- * 6: $div = MUtil_Html::create()->div(array('some content', 'class' => 'some class'));
+ * 5: $div = \MUtil_Html::create()->div('some content', array('class' => 'some class'));
+ * 6: $div = \MUtil_Html::create()->div(array('some content', 'class' => 'some class'));
  * </code>
  *
  * As a style guide: use option 5 unless there is a reason to use another method.
@@ -101,14 +101,14 @@
  *
  * These eight examples add the same child element to the previous $div:
  * <code>
- * 1: $div[] = new MUtil_Html_HtmlElement('b', 'bold text', array('class' => 'bold'));
- * 2: $div[] = new MUtil_Html_HtmlElement('b', array('bold text', 'class' => 'bold'));
+ * 1: $div[] = new \MUtil_Html_HtmlElement('b', 'bold text', array('class' => 'bold'));
+ * 2: $div[] = new \MUtil_Html_HtmlElement('b', array('bold text', 'class' => 'bold'));
  *
- * 3: $div[] = MUtil_Html::create('b', 'bold text', array('class' => 'bold'));
- * 4: $div[] = MUtil_Html::create('b', array('bold text', 'class' => 'bold'));
+ * 3: $div[] = \MUtil_Html::create('b', 'bold text', array('class' => 'bold'));
+ * 4: $div[] = \MUtil_Html::create('b', array('bold text', 'class' => 'bold'));
  *
- * 5: $div[] = MUtil_Html::create()->b('bold text', array('class' => 'bold'));
- * 6: $div[] = MUtil_Html::create()->b(array('bold text', 'class' => 'bold'));
+ * 5: $div[] = \MUtil_Html::create()->b('bold text', array('class' => 'bold'));
+ * 6: $div[] = \MUtil_Html::create()->b(array('bold text', 'class' => 'bold'));
  *
  * 7: $div->b('bold text', array('class' => 'bold'));
  * 8: $div->b(array('bold text', 'class' => 'bold'));
@@ -149,19 +149,19 @@
  * All string input is escaped using the escape function of the $view passsed
  * to the render() function:
  * <code>
- * $div = MUtil_Html::create()->div('<b>content</b>');
+ * $div = \MUtil_Html::create()->div('<b>content</b>');
  * $div[] = ' <br/> ';
  * $div[] = '<i>content</i>';
  * $div->render($view)
  *  =>
  * <div>&lt;b&gt;content&lt;/b&gt; &lt;br/&gt; &lt;i&gt;content&lt;/i&gt;</div>
  * </code>
- * To prevent output escaping and add raw Html contant use the MUtil_Html_Raw
- * class by creating an instance or invoking MUtil_Html::raw() or $this->raw().
+ * To prevent output escaping and add raw Html contant use the \MUtil_Html_Raw
+ * class by creating an instance or invoking \MUtil_Html::raw() or $this->raw().
  * This example shows all three approaches in the first three lines:
  * <code>
- * $div = MUtil_Html::create()->div(new MUtil_Html_Raw('<b>content</b>'));
- * $div[] = MUtil_Html::raw(' <br/> ');
+ * $div = \MUtil_Html::create()->div(new \MUtil_Html_Raw('<b>content</b>'));
+ * $div[] = \MUtil_Html::raw(' <br/> ');
  * $div-raw('<i>content</i>');
  * $div->render($view)
  *  =>
@@ -172,21 +172,21 @@
  *
  * SPECIAL TYPES
  *
- * Certain types of elements are special for an MUtil_Html_HtmlElement, they have special
+ * Certain types of elements are special for an \MUtil_Html_HtmlElement, they have special
  * set() functions. Examples of this are:
  * <code>
- *   Zend_View => setView
- *   Zend_Paginator => setRepeater
- *   MUtil_Lazy_RepeatableInterface => setRepeater
+ *   \Zend_View => setView
+ *   \Zend_Paginator => setRepeater
+ *   \MUtil_Lazy_RepeatableInterface => setRepeater
 *  </code>
  * and for some elements:
  * <code>
- *   Zend_Form  => setAsFormLayout
+ *   \Zend_Form  => setAsFormLayout
  * </code>
  * The following 4 examples show how you can create a div and set the view.
  * <code>
- * 1: $div = MUtil_Html::create()->div(array('view' => $view));
- * 2: $div = MUtil_Html::create()->div($view);
+ * 1: $div = \MUtil_Html::create()->div(array('view' => $view));
+ * 2: $div = \MUtil_Html::create()->div($view);
  * 3: $div['view'] = $view;
  * 4: $div[] = $view;
  * 5: $div->view = $view;
@@ -195,7 +195,7 @@
  * </code>
  * Use option 7 for readablity, unless there is reason to use another method.
  *
- * Options 2, 4 and 6 will only work when $view really is an instance of Zend_View
+ * Options 2, 4 and 6 will only work when $view really is an instance of \Zend_View
  *
  * Mind you example 5 works for view as it is a public property of a parent class.
  * But even were this not the case this would still work:
@@ -204,8 +204,8 @@
  * 7: $div->setRepeater($repeater);
  * </code>
  * This is good illustration as the repeater is stored in the protected $_repaeter
- * property and $repeat can be an array or Traversable as well as Zend_Paginator or
- * MUtil_Lazy_RepeatableInterface object.
+ * property and $repeat can be an array or \Traversable as well as \Zend_Paginator or
+ * \MUtil_Lazy_RepeatableInterface object.
  *
  * @package    MUtil
  * @subpackage Html
@@ -213,8 +213,8 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
-    implements MUtil_Html_ElementInterface, MUtil_Lazy_Procrastinator
+class MUtil_Html_HtmlElement extends \Zend_View_Helper_HtmlElement
+    implements \MUtil_Html_ElementInterface, \MUtil_Lazy_Procrastinator
 {
     /**
      * For some elements (e.g. table and tbody) the logical thing to do when content
@@ -248,9 +248,9 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      * the $_allowedChildTags.
      *
      * When content is added it is checked against the $_allowedChildTags.
-     *  - for MUtil_Html_ElementInterface items the $tagName is extracted
+     *  - for \MUtil_Html_ElementInterface items the $tagName is extracted
      *    (when that tagname is lazy we assume the programmer knows what he is doing)
-     *  - for MUtil_Html_Raw elements we try to extract the tagname
+     *  - for \MUtil_Html_Raw elements we try to extract the tagname
      *
      * When the tagname of the child is not in the $_allowedChildTags a new
      * $_defaultChildTag element is created, unless $_addtoLastChild is true
@@ -315,14 +315,14 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      * @see $_allowedChildTags
      * @see $_lastChild
      *
-     * @var mixed Often an instance of MUtil_Html_HtmlElement but can contain any content that was recently added.
+     * @var mixed Often an instance of \MUtil_Html_HtmlElement but can contain any content that was recently added.
      */
     protected $_lastChild;
 
     /**
      * Cache for Lazy object version of this element.
      *
-     * @var MUtil_Lazy_ObjectWrap
+     * @var \MUtil_Lazy_ObjectWrap
      */
     protected $_lazy;
 
@@ -333,17 +333,17 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      * no data. But another reason might be that there is simply nothing to display e.g.
      * because of conditional statements.
      * <code>
-     * $div = MUtil_Html::create()->div();
+     * $div = \MUtil_Html::create()->div();
      * if (isset($data['short_description])) {
      *   $div->p($data['short_description]);
      * }
      * if (isset($data['long_description])) {
      *   $div->p($data['long_description]);
      * }
-     * $div->setOnEmpty(MUtil_Html::create()->p('We do not yet have a description for this item.'));
+     * $div->setOnEmpty(\MUtil_Html::create()->p('We do not yet have a description for this item.'));
      * </code>
      *
-     * When asking for the content an empty MUtil_Html_Sequence is returned, so the last line can
+     * When asking for the content an empty \MUtil_Html_Sequence is returned, so the last line can
      * be simplified to:
      * <code>
      * $div->getOnEmpty()->p('We do not yet have a description for this item.');
@@ -369,7 +369,7 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      * The traditional method of outputting repeated data is added the items to the output
      * element in a loop. E.g.:
      * <code>
-     * $ul = new MUtil_Html_ListElement('ul');
+     * $ul = new \MUtil_Html_ListElement('ul');
      * foreach ($data as $row) {
      *   $ul->li($row['title'], array('class' => $row['class']));
      * }
@@ -378,7 +378,7 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      * The MUtil Html sub package allows an alternate method of specifying this, eliminating
      * the loop:
      * <code>
-     * $ul  = new MUtil_Html_ListElement('ul');
+     * $ul  = new \MUtil_Html_ListElement('ul');
      * $ul->setRepeater($data);
      *
      * $rep = $ul->getRepeater();
@@ -392,8 +392,8 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      * example repeats the 'li' items including their tags instead of the contents of the
      * 'ul' element without their tags.
      * <code>
-     * $ul  = new MUtil_Html_ListElement('ul');
-     * $rep = new MUtil_Lazy_Repeatable($data);
+     * $ul  = new \MUtil_Html_ListElement('ul');
+     * $rep = new \MUtil_Lazy_Repeatable($data);
      * $ul->li($rep->title, array('class' => $rep->class, 'repeater' => $repeater, 'repeatTags' => true));
      * </code>
      * As long as the 'ul' element contains only a single 'li' the resulting output is the same.
@@ -402,20 +402,20 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      * an extra if:
      * <code>
      * if ($data) {
-     *   $ul = new MUtil_Html_ListElement('ul');
+     *   $ul = new \MUtil_Html_ListElement('ul');
      *   foreach ($data as $row) {
      *     $ul->li($row['title'], array('class' => $row['class']));
      *   }
      * }
      * </code>
-     * Using a MUtil_Html_ListElement there is no need to do anything, as $renderWithoutContent is set to
+     * Using a \MUtil_Html_ListElement there is no need to do anything, as $renderWithoutContent is set to
      * true in that subclass. The result is that there is no output for the element when there is no content
-     * to output. However the default for MUtil_Html_HtmlElement's is to output the tags even when there is
+     * to output. However the default for \MUtil_Html_HtmlElement's is to output the tags even when there is
      * no content, so when you used the default element you need to set $renderWithoutContent to false to
      * get the correct behaviour.
      * <code>
-     * $ul  = new MUtil_Html_HtmlElement('ul');
-     * $rep = new MUtil_Lazy_Repeatable($data)
+     * $ul  = new \MUtil_Html_HtmlElement('ul');
+     * $rep = new \MUtil_Lazy_Repeatable($data)
      * $ul->setRepeater($rep);
      * $ul->renderWithoutContent = false;
      * $ul->li($rep->title, array('class' => $rep->class));
@@ -423,7 +423,7 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      *
      * When outputting an alternative value when the array is empty like this:
      * <code>
-     * $ul = new MUtil_Html_ListElement('ul');
+     * $ul = new \MUtil_Html_ListElement('ul');
      * if ($data) {
      *   foreach ($data as $row) {
      *     $ul->li($row['title'], array('class' => $row['class']));
@@ -434,8 +434,8 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      * </code>
      * You can use setOnEmpty() to achieve the same.
      * <code>
-     * $ul  = new MUtil_Html_ListElement('ul');
-     * $rep = new MUtil_Lazy_Repeatable($data)
+     * $ul  = new \MUtil_Html_ListElement('ul');
+     * $rep = new \MUtil_Lazy_Repeatable($data)
      * $ul->setRepeater($rep);
      * $ul->setOnEmpty('No data');
      * $ul->li($rep->title, array('class' => $rep->class));
@@ -453,9 +453,9 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      * @see setOnEmpty()
      * @see setRepeater()
      * @see setRepeatTags()
-     * @see MUtil_Lazy_RepeatableInterface
+     * @see \MUtil_Lazy_RepeatableInterface
      *
-     * @var MUtil_Lazy_RepeatableInterface
+     * @var \MUtil_Lazy_RepeatableInterface
      */
     protected $_repeater;
 
@@ -540,15 +540,15 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
     /**
      * Adds an HtmlElement to this element
      *
-     * @see MUtil_Html_Creator
+     * @see \MUtil_Html_Creator
      *
-     * @param string $name Function name becomes tagname (unless specified otherwise in MUtil_Html_Creator)
+     * @param string $name Function name becomes tagname (unless specified otherwise in \MUtil_Html_Creator)
      * @param array $arguments The content and attributes values
-     * @return MUtil_Html_HtmlElement With '$name' tagName
+     * @return \MUtil_Html_HtmlElement With '$name' tagName
      */
     public function __call($name, array $arguments)
     {
-        $elem = MUtil_Html::createArray($name, $arguments);
+        $elem = \MUtil_Html::createArray($name, $arguments);
 
         $this[] = $elem;
 
@@ -562,11 +562,11 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      * as special types, if defined as such for this element.
      *
      * @param string $tagName
-     * @param mixed $arg_array MUtil_Ra::args arguments
+     * @param mixed $arg_array \MUtil_Ra::args arguments
      */
     public function __construct($tagName, $arg_array = null)
     {
-        $args = MUtil_Ra::args(func_get_args(), 1);
+        $args = \MUtil_Ra::args(func_get_args(), 1);
 
         $this->tagName = $tagName;
 
@@ -633,8 +633,7 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
     {
         if ($this->_notSpecialType($value, $name)) {
             if (is_array($value)) {
-                // TODO: Now separator between values is space by default, maybe change that
-                $this->_attribs[$name] = MUtil_Html::createAttribute($name, $value);
+                $this->_attribs[$name] = \MUtil_Html::createAttribute($name, $value);
             } else {
                 $this->_attribs[$name] = $value;
             }
@@ -651,7 +650,7 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      */
     public function __toString()
     {
-        if ($this->view instanceof Zend_View_Abstract) {
+        if ($this->view instanceof \Zend_View_Abstract) {
             return $this->render($this->view);
 
         } else {
@@ -677,14 +676,14 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      *
      * @param mixed $value
      * @param string $offset or null
-     * @return MUtil_Html_HtmlElement
+     * @return \MUtil_Html_HtmlElement
      */
     protected function _createDefaultTag($value, $offset = null)
     {
         if (null === $offset) {
-            return MUtil_Html::create($this->_defaultChildTag, $value);
+            return \MUtil_Html::create($this->_defaultChildTag, $value);
         } else {
-            return MUtil_Html::create($this->_defaultChildTag, array($offset => $value));
+            return \MUtil_Html::create($this->_defaultChildTag, array($offset => $value));
         }
     }
 
@@ -694,7 +693,7 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
     protected function _ensureDefaultTag()
     {
         if ($this->_defaultChildTag && (! $this->_content)) {
-            $value = MUtil_Html::create($this->_defaultChildTag);
+            $value = \MUtil_Html::create($this->_defaultChildTag);
             $this->_lastChild = $value;
             $this->_content[] = $value;
         }
@@ -709,7 +708,7 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
     private function _notAllowedChild($element)
     {
         if ($this->_allowedChildTags) {
-            if ($element instanceof MUtil_Lazy_LazyInterface) {
+            if ($element instanceof \MUtil_Lazy_LazyInterface) {
                 // When a lazy object is passed we assume that the programnmer
                 // had the sense to pass an object that devolves to an element
                 // with allowed child tag.
@@ -778,10 +777,10 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
         foreach ($params as $key => $param) {
             if ($this->_notSpecialType($param, $key)) {
 
-                if ($param instanceof MUtil_Html_ElementInterface) {
+                if ($param instanceof \MUtil_Html_ElementInterface) {
                     $this->offsetSet($key, $param);
 
-                } elseif ($param instanceof MUtil_Html_AttributeInterface) {
+                } elseif ($param instanceof \MUtil_Html_AttributeInterface) {
                     $key = $param->getAttributeName();
                     $this->$key = $param;
 
@@ -798,20 +797,20 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
     /**
      * Render the attribute values
      *
-     * @param Zend_View_Abstract $view
+     * @param \Zend_View_Abstract $view
      * @return array With rendered versions of the attributes
      */
-    private function _renderAttributes(Zend_View_Abstract $view)
+    private function _renderAttributes(\Zend_View_Abstract $view)
     {
         $results = array();
 
-        $renderer = MUtil_Html::getRenderer();
+        $renderer = \MUtil_Html::getRenderer();
         foreach ($this->_attribs as $key => $value) {
             $value = $renderer->renderAny($view, $value);
 
             if (null !== $value) {
                 $results[$key] = $value;
-                // MUtil_Echo::r($key . '=' . $value);
+                // \MUtil_Echo::r($key . '=' . $value);
             }
         }
 
@@ -831,13 +830,13 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      */
     public function addRepeater($repeater, $name = null)
     {
-        if (! $repeater instanceof MUtil_Lazy_RepeatableInterface) {
-             $repeater = new MUtil_Lazy_Repeatable($repeater);
+        if (! $repeater instanceof \MUtil_Lazy_RepeatableInterface) {
+             $repeater = new \MUtil_Lazy_Repeatable($repeater);
         }
 
         if ($name || $this->_repeater) {
-            if (! $this->_repeater instanceof MUtil_Lazy_ParallelRepeater) {
-                $this->_repeater = new MUtil_Lazy_ParallelRepeater($this->_repeater);
+            if (! $this->_repeater instanceof \MUtil_Lazy_ParallelRepeater) {
+                $this->_repeater = new \MUtil_Lazy_ParallelRepeater($this->_repeater);
             }
             $this->_repeater->addRepeater($repeater, $name);
         } else {
@@ -868,7 +867,7 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      * value is appended to the content.
      *
      * @param mixed $value The value to append
-     * @return MUtil_Html_HtmlElement
+     * @return \MUtil_Html_HtmlElement
      */
     public function append($value = null)
     {
@@ -890,19 +889,19 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
     {
         $attrib = $this->$name;
 
-        if ($attrib instanceof MUtil_Lazy_LazyInterface) {
-            $attrib = new MUtil_Html_ArrayAttribute($name, $attrib);
+        if ($attrib instanceof \MUtil_Lazy_LazyInterface) {
+            $attrib = new \MUtil_Html_ArrayAttribute($name, $attrib);
 
-        } elseif ($attrib && ($value instanceof MUtil_Lazy_LazyInterface)) {
-            if (! $attrib instanceof MUtil_Html_AttributeInterface) {
-                $attrib = new MUtil_Html_ArrayAttribute($name, $attrib);
+        } elseif ($attrib && ($value instanceof \MUtil_Lazy_LazyInterface)) {
+            if (! $attrib instanceof \MUtil_Html_AttributeInterface) {
+                $attrib = new \MUtil_Html_ArrayAttribute($name, $attrib);
             }
         }
 
-        if ($attrib instanceof MUtil_Html_AttributeInterface) {
+        if ($attrib instanceof \MUtil_Html_AttributeInterface) {
             $attrib->add($offset, $value);
 
-        } elseif (is_array($attrib) || ($attrib instanceof ArrayAccess)) {
+        } elseif (is_array($attrib) || ($attrib instanceof \ArrayAccess)) {
             if (null !== $offset) {
                 $attrib[$offset] = $value;
 
@@ -934,15 +933,15 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
     }
 
     /**
-     * Returns the tagname from a MUtil_Html_ElementInterface or a string or raw object
+     * Returns the tagname from a \MUtil_Html_ElementInterface or a string or raw object
      * @param mixed $element
      * @param string $defaultName
      * @return string
      */
     public static function extractTagName($element, $defaultName = null)
     {
-        if ($element instanceof MUtil_Html_HtmlInterface) {
-            if ($element instanceof MUtil_Html_ElementInterface) {
+        if ($element instanceof \MUtil_Html_HtmlInterface) {
+            if ($element instanceof \MUtil_Html_ElementInterface) {
                 if ($tagname = $element->getTagName()) {
                     return strtolower($tagname);
                 } else {
@@ -951,7 +950,7 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
             }
 
         } else {
-            if ($element instanceof MUtil_Html_Raw) {
+            if ($element instanceof \MUtil_Html_Raw) {
                 $element = $element->getValue();
             }
             if (is_string($element) && (strlen($element) > 2)) {
@@ -1001,7 +1000,7 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      * Get the first child element.
      *
      * @param boolean $create A default child tag is created if the element does not exist and has a default child tag
-     * @return MUtil_Html_HtmlElement or another MUtil_Html_HtmlInterface element
+     * @return \MUtil_Html_HtmlElement or another \MUtil_Html_HtmlInterface element
      */
     public function getFirst($create = false)
     {
@@ -1027,7 +1026,7 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      * Get the last child element.
      *
      * @param boolean $create A default child tag is created if the element does not exist
-     * @return MUtil_Html_HtmlElement or another MUtil_Html_HtmlInterface element
+     * @return \MUtil_Html_HtmlElement or another \MUtil_Html_HtmlInterface element
      */
     public function getLast($create = false)
     {
@@ -1054,7 +1053,7 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
     {
         if (! $this->_onEmptyContent) {
             // To add to on the usual $x->getOnEmpty()->p('Text') manner
-            $this->setOnEmpty(new MUtil_Html_Sequence());
+            $this->setOnEmpty(new \MUtil_Html_Sequence());
         }
 
         return $this->_onEmptyContent;
@@ -1062,7 +1061,7 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
 
     /**
      *
-     * @return MUtil_Lazy_RepeatableInterface
+     * @return \MUtil_Lazy_RepeatableInterface
      */
     public function getRepeater()
     {
@@ -1177,10 +1176,10 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      *
      * The $view is used to correctly encode and escape the output
      *
-     * @param Zend_View_Abstract $view
+     * @param \Zend_View_Abstract $view
      * @return string Correctly encoded and escaped html output
      */
-    public function render(Zend_View_Abstract $view)
+    public function render(\Zend_View_Abstract $view)
     {
         $this->setView($view);
 
@@ -1205,12 +1204,12 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      *
      * The $view is used to correctly encode and escape the output
      *
-     * @param Zend_View_Abstract $view
+     * @param \Zend_View_Abstract $view
      * @return string Correctly encoded and escaped html output
      */
-    protected function renderContent(Zend_View_Abstract $view)
+    protected function renderContent(\Zend_View_Abstract $view)
     {
-        $renderer = MUtil_Html::getRenderer();
+        $renderer = \MUtil_Html::getRenderer();
         if ($this->_content) {
             if ($this->_repeater && (! $this->_repeatTags)) {
                 if ($this->_repeater->__start()) {
@@ -1244,10 +1243,10 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      *
      * The $view is used to correctly encode and escape the output
      *
-     * @param Zend_View_Abstract $view
+     * @param \Zend_View_Abstract $view
      * @return string Correctly encoded and escaped html output
      */
-    protected function renderElement(Zend_View_Abstract $view)
+    protected function renderElement(\Zend_View_Abstract $view)
     {
         $content     = $this->renderContent($view);
         $has_content = (null !== $content);
@@ -1280,7 +1279,7 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      *
      * @param string $name
      * @param mixed $value
-     * @return MUtil_Html_HtmlElement  (continuation pattern)
+     * @return \MUtil_Html_HtmlElement  (continuation pattern)
      */
     public function setAttrib($name, $value)
     {
@@ -1295,7 +1294,7 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      * @see $_defaultChildTag
      *
      * @param string $tag Tagname
-     * @return MUtil_Html_HtmlElement (continuation pattern)
+     * @return \MUtil_Html_HtmlElement (continuation pattern)
      */
     public function setDefaultChildTag($tag)
     {
@@ -1310,14 +1309,14 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      * no data. But another reason might be that there is simply nothing to display e.g.
      * because of conditional statements.
      * <code>
-     * $div = MUtil_Html::create()->div();
+     * $div = \MUtil_Html::create()->div();
      * if (isset($data['short_description])) {
      *   $div->p($data['short_description]);
      * }
      * if (isset($data['long_description])) {
      *   $div->p($data['long_description]);
      * }
-     * $div->setOnEmpty(MUtil_Html::create()->p('We do not yet have a description for this item.'));
+     * $div->setOnEmpty(\MUtil_Html::create()->p('We do not yet have a description for this item.'));
      * </code>
      *
      * Some subclasses require their content to be a HtmlElement of a certain type. If the content
@@ -1330,12 +1329,12 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      * @see getOnEmpty()
      *
      * @param mixed $content Content that can be rendered.
-     * @return MUtil_Html_HtmlElement (continuation pattern)
+     * @return \MUtil_Html_HtmlElement (continuation pattern)
      */
     public function setOnEmpty($content)
     {
         if ($this->_defaultChildTag && $this->_notAllowedChild($content)) {
-            $content = MUtil_Html::create($this->_defaultChildTag, $content);
+            $content = \MUtil_Html::create($this->_defaultChildTag, $content);
         }
 
         $this->_onEmptyContent = $content;
@@ -1349,17 +1348,17 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      * not the element tags. When repeatTags is true the both the tags and the
      * content are repeated.
      *
-     * @param mixed $repeater MUtil_Lazy_RepeatableInterface or something that can be made into one.
+     * @param mixed $repeater \MUtil_Lazy_RepeatableInterface or something that can be made into one.
      * @param mixed $onEmptyContent Optional. When not null the content to display when the repeater does not result in data is set.
      * @param boolean $repeatTags Optional when not null the repeatTags switch is set.
-     * @return MUtil_Html_HtmlElement (continuation pattern)
+     * @return \MUtil_Html_HtmlElement (continuation pattern)
      */
     public function setRepeater($repeater, $onEmptyContent = null, $repeatTags = null)
     {
-        if ($repeater instanceof MUtil_Lazy_RepeatableInterface) {
+        if ($repeater instanceof \MUtil_Lazy_RepeatableInterface) {
             $this->_repeater = $repeater;
         } else {
-            $this->_repeater = new MUtil_Lazy_Repeatable($repeater);
+            $this->_repeater = new \MUtil_Lazy_Repeatable($repeater);
         }
 
         if (null !== $onEmptyContent) {
@@ -1379,7 +1378,7 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      * content are repeated.
      *
      * @param boolean $repeatTags Set the repeatTags switch.
-     * @return MUtil_Html_HtmlElement (continuation pattern)
+     * @return \MUtil_Html_HtmlElement (continuation pattern)
      */
     public function setRepeatTags($repeatTags)
     {
@@ -1388,14 +1387,14 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
     }
 
     /**
-     * Returns a lazy instance of item. Do NOT use MUtil_Lazy::L() in this function!!!
+     * Returns a lazy instance of item. Do NOT use \MUtil_Lazy::L() in this function!!!
      *
-     * @return MUtil_Lazy_ObjectWrap
+     * @return \MUtil_Lazy_ObjectWrap
      */
     public function toLazy()
     {
         if (! $this->_lazy) {
-            $this->_lazy = new MUtil_Lazy_ObjectWrap($this);
+            $this->_lazy = new \MUtil_Lazy_ObjectWrap($this);
         }
 
         return $this->_lazy;

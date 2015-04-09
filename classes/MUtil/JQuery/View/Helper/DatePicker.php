@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class MUtil_JQuery_View_Helper_DatePicker extends ZendX_JQuery_View_Helper_DatePicker
+class MUtil_JQuery_View_Helper_DatePicker extends \ZendX_JQuery_View_Helper_DatePicker
 {
     /**
      * Create a jQuery UI Widget Date Picker
@@ -68,8 +68,8 @@ class MUtil_JQuery_View_Helper_DatePicker extends ZendX_JQuery_View_Helper_DateP
         $formatDate = isset($params['dateFormat']) && $params['dateFormat'];
         $formatTime = isset($params['timeFormat']) && $params['timeFormat'];
 
-        // MUtil_Echo::track($params['dateFormat'], $params['timeFormat']);
-        if ((!isset($params['dateFormat'])) && (!isset($params['timeFormat'])) && Zend_Registry::isRegistered('Zend_Locale')) {
+        // \MUtil_Echo::track($params['dateFormat'], $params['timeFormat']);
+        if ((!isset($params['dateFormat'])) && (!isset($params['timeFormat'])) && \Zend_Registry::isRegistered('Zend_Locale')) {
             $params['dateFormat'] = self::resolveZendLocaleToDatePickerFormat();
         }
         if ($formatDate) {
@@ -87,16 +87,16 @@ class MUtil_JQuery_View_Helper_DatePicker extends ZendX_JQuery_View_Helper_DateP
         }
 
         $js = sprintf('%s("#%s").%s(%s);',
-                ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(),
+                \ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(),
                 $attribs['id'],
                 $picker,
-                ZendX_JQuery::encodeJson($params)
+                \ZendX_JQuery::encodeJson($params)
         );
 
         if ($formatTime && $sayThisOnlyOnce) {
 
             $files[] = 'jquery-ui-timepicker-addon.js';
-            if ($locale = Zend_Registry::get('Zend_Locale')) {
+            if ($locale = \Zend_Registry::get('Zend_Locale')) {
                 $language = $locale->getLanguage();
                 // We have a language, but only when not english
                 if ($language && $language != 'en') {
@@ -142,7 +142,7 @@ class MUtil_JQuery_View_Helper_DatePicker extends ZendX_JQuery_View_Helper_DateP
      */
     public function onLoadJs($id, $picker, $disabled)
     {
-        $onload = new MUtil_Html_Code_JavaScript(array('ELEM_ID' => $id, 'PICKER' => $picker));
+        $onload = new \MUtil_Html_Code_JavaScript(array('ELEM_ID' => $id, 'PICKER' => $picker));
 
         if ($disabled) {
             $onload->addContent(__DIR__ . '/js/datepicker.disabled.js');
@@ -166,14 +166,14 @@ class MUtil_JQuery_View_Helper_DatePicker extends ZendX_JQuery_View_Helper_DateP
      *  - "yy \"hi': mm\" MM" => array("y 'hi'': mm' mm", false, false)
      *  - "yyyy-MM-dd 'date: yyyy-MM-dd' HH:mm 'time'': hh:mm' HH:mm Q", => array("yy-mm-dd", " 'date: yyyy-MM-dd' ", "HH:mm 'time'': HH:mm' z Q")
      *  - "HH:mm:ss"          => array(false, false, "HH:mm:ss")
-     *  - Zend_Date::ISO_8601 => array("ISO_8601", "T", "HH:mm:ssZ")
+     *  - \Zend_Date::ISO_8601 => array("ISO_8601", "T", "HH:mm:ssZ")
      *
      * @deprecated since version 1.4
-     * @param string $format Or Zend_Locale_Format::getDateFormat($locale)
+     * @param string $format Or \Zend_Locale_Format::getDateFormat($locale)
      * @return array dateFormat, seperator, timeFormat
      */
     public static function splitZendLocaleToDateTimePickerFormat($format=null)
     {
-        return MUtil_Date_Format::splitDateTimeFormat($format);
+        return \MUtil_Date_Format::splitDateTimeFormat($format);
     }
 }

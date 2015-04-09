@@ -45,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.2
  */
-class MUtil_Html_IFrame extends MUtil_Html_HtmlElement
+class MUtil_Html_IFrame extends \MUtil_Html_HtmlElement
 {
     /**
      * Some elements, e.g. iframe elements, must always be rendered with a closing
@@ -67,14 +67,14 @@ class MUtil_Html_IFrame extends MUtil_Html_HtmlElement
      * as special types, if defined as such for this element.
      *
      * @param mixed $src We assume the first element is src, unless a later element is explicitly specified as such
-     * @param mixed $arg_array MUtil_Ra::args arguments
+     * @param mixed $arg_array \MUtil_Ra::args arguments
      */
     public function __construct($src, $arg_array = null)
     {
-        $args = MUtil_Ra::args(func_get_args(), array('src' => 'MUtil_Html_SrcArrayAttribute'));
+        $args = \MUtil_Ra::args(func_get_args(), array('src' => 'MUtil_Html_SrcArrayAttribute'));
 
-        if (isset($args['src']) && (! $args['src'] instanceof MUtil_Html_AttributeInterface)) {
-            $args['src'] = new MUtil_Html_SrcArrayAttribute($args['src']);
+        if (isset($args['src']) && (! $args['src'] instanceof \MUtil_Html_AttributeInterface)) {
+            $args['src'] = new \MUtil_Html_SrcArrayAttribute($args['src']);
         }
 
         parent::__construct('iframe', $args);
@@ -87,11 +87,11 @@ class MUtil_Html_IFrame extends MUtil_Html_HtmlElement
      * as special types, if defined as such for this element.
      *
      * @param mixed $src We assume the first element is src, unless a later element is explicitly specified as such
-     * @param mixed $arg_array MUtil_Ra::args arguments
+     * @param mixed $arg_array \MUtil_Ra::args arguments
      */
     public static function iFrame($src, $arg_array = null)
     {
-        $args = MUtil_Ra::args(func_get_args(), array('src' => 'MUtil_Html_SrcArrayAttribute'));
+        $args = \MUtil_Ra::args(func_get_args(), array('src' => 'MUtil_Html_SrcArrayAttribute'));
         return new self($args);
     }
 }

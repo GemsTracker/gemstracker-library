@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -31,7 +32,7 @@
  * @author     Jasper van Gestel <jappie@dse.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Container.php 1775 2014-02-27 12:53:30Z matijsdejong $
+ * @version    $Id: Container.php 177 2014-02-27 12:53:30 matijsdejong $
  */
 
 /**
@@ -42,8 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.5
  */
-
-class MUtil_JQuery_View_Helper_JQuery_Container extends ZendX_JQuery_View_Helper_JQuery_Container
+class MUtil_JQuery_View_Helper_JQuery_Container extends \ZendX_JQuery_View_Helper_JQuery_Container
 {
     /**
      * Render jQuery stylesheets
@@ -74,7 +74,7 @@ class MUtil_JQuery_View_Helper_JQuery_Container extends ZendX_JQuery_View_Helper
     }
 
     /**
-     * Renders all javascript code related stuff of the jQuery enviroment. 
+     * Renders all javascript code related stuff of the jQuery enviroment.
      *
      * @return string
      */

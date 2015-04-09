@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2014, Erasmus MC
  * All rights reserved.
@@ -29,9 +28,10 @@
  *
  * @package    MUtil
  * @subpackage Form_Element
+ * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Table.php Jasper van Gestel $
+ * @version    $Id: Hidden.php Jasper van Gestel $
  */
 
 /**
@@ -44,12 +44,12 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.5
  */
-class MUtil_Bootstrap_Form_Element_Hidden extends Zend_Form_Element_Hidden
+class MUtil_Bootstrap_Form_Element_Hidden extends \Zend_Form_Element_Hidden
 {
 	/**
      * Load default decorators
      *
-     * @return Zend_Form_Element
+     * @return \Zend_Form_Element
      */
     public function loadDefaultDecorators()
     {

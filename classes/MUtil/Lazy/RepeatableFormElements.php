@@ -53,12 +53,12 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class MUtil_Lazy_RepeatableFormElements extends MUtil_Lazy_Repeatable
+class MUtil_Lazy_RepeatableFormElements extends \MUtil_Lazy_Repeatable
 {
     /**
      * Enable access to the elements in this repeater using $this->element
      *
-     * @var MUtil_Lazy_LazyAbstract
+     * @var \MUtil_Lazy_LazyAbstract
      */
     public $element;
 
@@ -79,7 +79,7 @@ class MUtil_Lazy_RepeatableFormElements extends MUtil_Lazy_Repeatable
     /**
      * Enable access to the elements in this repeater using $this->element
      *
-     * @var MUtil_Lazy_LazyAbstract
+     * @var \MUtil_Lazy_LazyAbstract
      */
     public $label;
 
@@ -93,9 +93,9 @@ class MUtil_Lazy_RepeatableFormElements extends MUtil_Lazy_Repeatable
     /**
      * Construct the element repeater
      *
-     * @param Zend_Form $form
+     * @param \Zend_Form $form
      */
-    public function __construct(Zend_Form $form)
+    public function __construct(\Zend_Form $form)
     {
         parent::__construct($form);
 
@@ -104,7 +104,7 @@ class MUtil_Lazy_RepeatableFormElements extends MUtil_Lazy_Repeatable
         //
         // The other access method is: $this->{name of element renderer}
         $this->element = $this->_currentLazy;
-        $this->label   = MUtil_Html::create('label', $this->_currentLazy);
+        $this->label   = \MUtil_Html::create('label', $this->_currentLazy);
     }
 
     /**
@@ -112,7 +112,7 @@ class MUtil_Lazy_RepeatableFormElements extends MUtil_Lazy_Repeatable
      * output if the decorator does not exist
      *
      * @param string $name
-     * @return MUtil_Lazy_Call
+     * @return \MUtil_Lazy_Call
      */
     public function __get($name)
     {
@@ -120,13 +120,13 @@ class MUtil_Lazy_RepeatableFormElements extends MUtil_Lazy_Repeatable
         // shortcut for a decorator function, however, if the property exists
         // (and no Decorator with the same name exists) the property value will
         // be returned.
-        return MUtil_Lazy::call(array($this, 'getDecorator'), ucfirst($name));
+        return \MUtil_Lazy::call(array($this, 'getDecorator'), ucfirst($name));
     }
 
     /**
      * Return the core data in the Repeatable in one go
      *
-     * @return Iterator|array
+     * @return \Iterator|array
      */
     public function __getRepeatable()
     {
@@ -145,7 +145,7 @@ class MUtil_Lazy_RepeatableFormElements extends MUtil_Lazy_Repeatable
             $this->_hidden_elements = array();
 
             foreach ($elements as $element) {
-                if (($element instanceof Zend_Form_Element_Hidden) || ($element instanceof Zend_Form_Element_Hash)) {
+                if (($element instanceof \Zend_Form_Element_Hidden) || ($element instanceof \Zend_Form_Element_Hash)) {
                     $this->_hidden_elements[] = $element;
                 } else {
                     $filteredElements[] = $element;
@@ -168,10 +168,10 @@ class MUtil_Lazy_RepeatableFormElements extends MUtil_Lazy_Repeatable
      */
     private function _flattenElement($element, array &$newElements)
     {
-        if ($element instanceof Zend_Form) {
+        if ($element instanceof \Zend_Form) {
             $this->_flattenForm($element, $newElements);
 
-        } elseif ($element instanceof MUtil_Form_Element_SubFocusInterface) {
+        } elseif ($element instanceof \MUtil_Form_Element_SubFocusInterface) {
             foreach ($element->getSubFocusElements() as $sub) {
                 $this->_flattenElement($sub, $newElements);
             }
@@ -184,10 +184,10 @@ class MUtil_Lazy_RepeatableFormElements extends MUtil_Lazy_Repeatable
     /**
      * Flatten al elements in the form
      *
-     * @param Zend_Form $form
+     * @param \Zend_Form $form
      * @param array $newElements
      */
-    private function _flattenForm(Zend_Form $form, array &$newElements)
+    private function _flattenForm(\Zend_Form $form, array &$newElements)
     {
         foreach ($form as $id => $element) {
             $this->_flattenElement($element, $newElements);
@@ -205,7 +205,7 @@ class MUtil_Lazy_RepeatableFormElements extends MUtil_Lazy_Repeatable
         if ($current = $this->__current()) {
             if ($decorator = $current->getDecorator($name)) {
                 $decorator->setElement($current);
-                return new MUtil_Html_Raw($decorator->render(''));
+                return new \MUtil_Html_Raw($decorator->render(''));
             }
 
             if (property_exists($current, $name)) {

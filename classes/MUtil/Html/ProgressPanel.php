@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_Html_ProgressPanel extends MUtil_Html_HtmlElement
+class MUtil_Html_ProgressPanel extends \MUtil_Html_HtmlElement
 {
     /**
      * For some elements (e.g. table and tbody) the logical thing to do when content
@@ -113,11 +113,11 @@ class MUtil_Html_ProgressPanel extends MUtil_Html_HtmlElement
     /**
      * Creates a 'div' progress panel
      *
-     * @param mixed $arg_array A MUtil_Ra::args data collection.
+     * @param mixed $arg_array A \MUtil_Ra::args data collection.
      */
     public function __construct($arg_array = null)
     {
-        $args = MUtil_Ra::args(func_get_args());
+        $args = \MUtil_Ra::args(func_get_args());
 
         parent::__construct('div', $args);
     }
@@ -127,7 +127,7 @@ class MUtil_Html_ProgressPanel extends MUtil_Html_HtmlElement
      *
      * Exposed as needed by some classes using this class.
      *
-     * @see MUtil_Batch_BatchAbstract
+     * @see \MUtil_Batch_BatchAbstract
      *
      * @return string
      */
@@ -139,7 +139,7 @@ class MUtil_Html_ProgressPanel extends MUtil_Html_HtmlElement
     /**
      * Creates a 'div' progress panel
      *
-     * @param mixed $arg_array A MUtil_Ra::args data collection.
+     * @param mixed $arg_array A \MUtil_Ra::args data collection.
      * @return self
      */
     public static function progress($arg_array = null)
@@ -155,10 +155,10 @@ class MUtil_Html_ProgressPanel extends MUtil_Html_HtmlElement
      *
      * The $view is used to correctly encode and escape the output
      *
-     * @param Zend_View_Abstract $view
+     * @param \Zend_View_Abstract $view
      * @return string Correctly encoded and escaped html output
      */
-    protected function renderElement(Zend_View_Abstract $view)
+    protected function renderElement(\Zend_View_Abstract $view)
     {
         if ($this->_lastChild) {
             $this->_lastChild->class = $this->progressTextClass;

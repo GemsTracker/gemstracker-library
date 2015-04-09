@@ -1,10 +1,9 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,17 +25,24 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @package    MUtil
+ * @subpackage Html
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package MUtil
+ *
+ * @package    MUtil
  * @subpackage Html
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since MUtil version 1.0
  */
-
-class MUtil_Html_LabelElement extends MUtil_Html_HtmlElement
+class MUtil_Html_LabelElement extends \MUtil_Html_HtmlElement
 {
     /**
      * Declaring $class a public property, ensures the attribute
@@ -97,32 +103,32 @@ class MUtil_Html_LabelElement extends MUtil_Html_HtmlElement
 
     /**
      * Function to allow overloading  of tag rendering only
-     * 
+     *
      * Renders the element tag with it's content into a html string
-     * 
+     *
      * The $view is used to correctly encode and escape the output
      *
-     * @param Zend_View_Abstract $view
+     * @param \Zend_View_Abstract $view
      * @return string Correctly encoded and escaped html output
      */
-    protected function renderElement(Zend_View_Abstract $view)
+    protected function renderElement(\Zend_View_Abstract $view)
     {
         $this->_currentContent = array();
 
         // If the label was assigned an element lazy,
         // now is the time to get it's value.
         foreach ($this as $key => $value) {
-            if ($value instanceof MUtil_Lazy_LazyInterface) {
-                $value = MUtil_Lazy::rise($value);
+            if ($value instanceof \MUtil_Lazy_LazyInterface) {
+                $value = \MUtil_Lazy::rise($value);
             }
-            if ($value instanceof Zend_Form_Element) {
-                if ($value instanceof Zend_Form_Element_Hidden) {
+            if ($value instanceof \Zend_Form_Element) {
+                if ($value instanceof \Zend_Form_Element_Hidden) {
                     return null;
                 }
 
                 // Only a label when a label decorator exists, but we do not use that decorator
                 if ($value->getDecorator('Label')) {
-                    $class = $this->class ? MUtil_Html::renderAny($this->class) . ' ' : '';
+                    $class = $this->class ? \MUtil_Html::renderAny($this->class) . ' ' : '';
                     if ($value->isRequired()) {
                         $class .= $this->getRequiredClass();
                         $this->_currentContent[$key] = array($this->getRequiredPrefix(), $value->getLabel(), $this->getRequiredPostfix());
@@ -138,7 +144,7 @@ class MUtil_Html_LabelElement extends MUtil_Html_HtmlElement
                         parent::__unset('for');
                     }
                 }
-            } elseif ($value instanceof Zend_Form_DisplayGroup) {
+            } elseif ($value instanceof \Zend_Form_DisplayGroup) {
                 return null;
             } else {
                 $this->_currentContent[$key] = $value;
@@ -148,13 +154,13 @@ class MUtil_Html_LabelElement extends MUtil_Html_HtmlElement
         return parent::renderElement($view);
     }
 
-    protected function renderContent(Zend_View_Abstract $view)
+    protected function renderContent(\Zend_View_Abstract $view)
     {
-        if ($content = MUtil_Html::getRenderer()->renderAny($view, $this->_currentContent)) {
+        if ($content = \MUtil_Html::getRenderer()->renderAny($view, $this->_currentContent)) {
             return $content;
 
         } elseif ($this->_onEmptyContent) {
-            return MUtil_Html::getRenderer()->renderAny($view, $this->_onEmptyContent);
+            return \MUtil_Html::getRenderer()->renderAny($view, $this->_onEmptyContent);
 
         } else {
             return '&nbsp;';

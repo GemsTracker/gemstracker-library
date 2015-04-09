@@ -36,18 +36,18 @@
  */
 
 /**
- * This a an example / test implementation of MUtil_Batch_BatchAbstract.
+ * This a an example / test implementation of \MUtil_Batch_BatchAbstract.
  *
  * It does nothing but wait, but allows you to test the workings of the
  * batch processing in general and the use of a progress panel in general.
  *
- * PULL usage example ($this->view must be a Zend_View) with a nice start button:
+ * PULL usage example ($this->view must be a \Zend_View) with a nice start button:
  * <code>
- * $batch = new MUtil_Batch_WaitBatch();
+ * $batch = new \MUtil_Batch_WaitBatch();
  * if ($batch->run($this->getRequest())) {
  *     exit;
  * } else {
- *     $html = new MUtil_Html_Sequence();
+ *     $html = new \MUtil_Html_Sequence();
  *     if ($batch->isFinished()) {
  *         $html->ol($batch->getMessages(true));
  *         $html->a(array($batch->progressParameterName => null), 'Restart');
@@ -70,7 +70,7 @@
  *
  * PUSH usage example that starts automatically:
  * <code>
- * $batch = new MUtil_Batch_WaitBatch();
+ * $batch = new \MUtil_Batch_WaitBatch();
  * $batch->setMethodPush(5);
  * $batch->autoStart = true;
  * $batch->minimalStepDurationMs = 200;
@@ -78,7 +78,7 @@
  * if ($batch->run($this->getRequest())) {
  *     exit;
  * } else {
- *     $html = new MUtil_Html_Sequence();
+ *     $html = new \MUtil_Html_Sequence();
  *     if ($batch->isFinished()) {
  *         $html->ul($batch->getMessages(true));
  *         $html->a(array($batch->progressParameterName => null), 'Restart');
@@ -101,7 +101,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_Batch_WaitBatch extends MUtil_Batch_BatchAbstract
+class MUtil_Batch_WaitBatch extends \MUtil_Batch_BatchAbstract
 {
     /**
      * The minimal time used between send progress reports.
@@ -120,7 +120,7 @@ class MUtil_Batch_WaitBatch extends MUtil_Batch_BatchAbstract
      *
      * @param int $seconds
      * @param text $message Optional, otherwise the message is the time of wait
-     * @return MUtil_Batch_WaitBatch (continuation pattern)
+     * @return \MUtil_Batch_WaitBatch (continuation pattern)
      */
     public function addWait($seconds = 1, $message = null)
     {
@@ -134,7 +134,7 @@ class MUtil_Batch_WaitBatch extends MUtil_Batch_BatchAbstract
      *
      * @param int $microsSeconds
      * @param text $message Optional, otherwise the message is the time of wait
-     * @return MUtil_Batch_WaitBatch (continuation pattern)
+     * @return \MUtil_Batch_WaitBatch (continuation pattern)
      */
     public function addWaitMs($microsSeconds = 100, $message = null)
     {
@@ -149,7 +149,7 @@ class MUtil_Batch_WaitBatch extends MUtil_Batch_BatchAbstract
      * @param int $times
      * @param int $seconds
      * @param text $message Optional, otherwise the message is the time of wait
-     * @return MUtil_Batch_WaitBatch (continuation pattern)
+     * @return \MUtil_Batch_WaitBatch (continuation pattern)
      */
     public function addWaits($times, $seconds = 1, $message = null)
     {
@@ -166,7 +166,7 @@ class MUtil_Batch_WaitBatch extends MUtil_Batch_BatchAbstract
      * @param int $times
      * @param int $microsSeconds
      * @param text $message Optional, otherwise the message is the time of wait
-     * @return MUtil_Batch_WaitBatch (continuation pattern)
+     * @return \MUtil_Batch_WaitBatch (continuation pattern)
      */
     public function addWaitsMs($times, $microsSeconds = 100, $message = null)
     {
@@ -187,7 +187,7 @@ class MUtil_Batch_WaitBatch extends MUtil_Batch_BatchAbstract
      * @param int $times
      * @param int $seconds
      * @param text $message Optional, otherwise the message is the time of wait
-     * @return MUtil_Batch_WaitBatch (continuation pattern)
+     * @return \MUtil_Batch_WaitBatch (continuation pattern)
      */
     public function addWaitsLater($times, $seconds = 1, $message = null)
     {
@@ -206,7 +206,7 @@ class MUtil_Batch_WaitBatch extends MUtil_Batch_BatchAbstract
      * @param int $times
      * @param int $microsSeconds
      * @param text $message Optional, otherwise the message is the time of wait
-     * @return MUtil_Batch_WaitBatch (continuation pattern)
+     * @return \MUtil_Batch_WaitBatch (continuation pattern)
      */
     public function addWaitsMsLater($times, $microsSeconds = 100, $message = null)
     {

@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.5
  */
-class MUtil_Html_HnElement extends MUtil_Html_HtmlElement
+class MUtil_Html_HnElement extends \MUtil_Html_HtmlElement
 {
     /**
      * Most elements must be rendered even when empty, others should - according to the
@@ -58,10 +58,10 @@ class MUtil_Html_HnElement extends MUtil_Html_HtmlElement
     public $renderWithoutContent = false;
 
     /**
-     * Static helper function for creation, used by @see MUtil_Html_Creator.
+     * Static helper function for creation, used by @see \MUtil_Html_Creator.
      *
-     * @param mixed $arg_array Optional MUtil_Ra::args processed settings
-     * @return MUtil_Html_TrElement
+     * @param mixed $arg_array Optional \MUtil_Ra::args processed settings
+     * @return \MUtil_Html_TrElement
      */
     public static function h1($arg_array = null)
     {
@@ -70,10 +70,10 @@ class MUtil_Html_HnElement extends MUtil_Html_HtmlElement
     }
 
     /**
-     * Static helper function for creation, used by @see MUtil_Html_Creator.
+     * Static helper function for creation, used by @see \MUtil_Html_Creator.
      *
-     * @param mixed $arg_array Optional MUtil_Ra::args processed settings
-     * @return MUtil_Html_TrElement
+     * @param mixed $arg_array Optional \MUtil_Ra::args processed settings
+     * @return \MUtil_Html_TrElement
      */
     public static function h2($arg_array = null)
     {
@@ -82,10 +82,10 @@ class MUtil_Html_HnElement extends MUtil_Html_HtmlElement
     }
 
     /**
-     * Static helper function for creation, used by @see MUtil_Html_Creator.
+     * Static helper function for creation, used by @see \MUtil_Html_Creator.
      *
-     * @param mixed $arg_array Optional MUtil_Ra::args processed settings
-     * @return MUtil_Html_TrElement
+     * @param mixed $arg_array Optional \MUtil_Ra::args processed settings
+     * @return \MUtil_Html_TrElement
      */
     public static function h3($arg_array = null)
     {
@@ -94,10 +94,10 @@ class MUtil_Html_HnElement extends MUtil_Html_HtmlElement
     }
 
     /**
-     * Static helper function for creation, used by @see MUtil_Html_Creator.
+     * Static helper function for creation, used by @see \MUtil_Html_Creator.
      *
-     * @param mixed $arg_array Optional MUtil_Ra::args processed settings
-     * @return MUtil_Html_TrElement
+     * @param mixed $arg_array Optional \MUtil_Ra::args processed settings
+     * @return \MUtil_Html_TrElement
      */
     public static function h4($arg_array = null)
     {
@@ -106,10 +106,10 @@ class MUtil_Html_HnElement extends MUtil_Html_HtmlElement
     }
 
     /**
-     * Static helper function for creation, used by @see MUtil_Html_Creator.
+     * Static helper function for creation, used by @see \MUtil_Html_Creator.
      *
-     * @param mixed $arg_array Optional MUtil_Ra::args processed settings
-     * @return MUtil_Html_TrElement
+     * @param mixed $arg_array Optional \MUtil_Ra::args processed settings
+     * @return \MUtil_Html_TrElement
      */
     public static function h5($arg_array = null)
     {
@@ -118,10 +118,10 @@ class MUtil_Html_HnElement extends MUtil_Html_HtmlElement
     }
 
     /**
-     * Static helper function for creation, used by @see MUtil_Html_Creator.
+     * Static helper function for creation, used by @see \MUtil_Html_Creator.
      *
-     * @param mixed $arg_array Optional MUtil_Ra::args processed settings
-     * @return MUtil_Html_TrElement
+     * @param mixed $arg_array Optional \MUtil_Ra::args processed settings
+     * @return \MUtil_Html_TrElement
      */
     public static function h6($arg_array = null)
     {

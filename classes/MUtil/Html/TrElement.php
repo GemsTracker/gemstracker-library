@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class MUtil_Html_TrElement extends MUtil_Html_HtmlElement implements MUtil_Html_ColumnInterface
+class MUtil_Html_TrElement extends \MUtil_Html_HtmlElement implements \MUtil_Html_ColumnInterface
 {
     /**
      * Most elements must be rendered even when empty, others should - according to the
@@ -96,10 +96,10 @@ class MUtil_Html_TrElement extends MUtil_Html_HtmlElement implements MUtil_Html_
 
 
     /**
-     * Returns the cell or a MUtil_MultiWrapper containing cells that occupy the column position, taking colspan and other functions into account.
+     * Returns the cell or a \MUtil_MultiWrapper containing cells that occupy the column position, taking colspan and other functions into account.
      *
      * @param int $col The numeric column position, starting at 0;
-     * @return MUtil_Html_HtmlElement Probably an element of this type, but can also be something else, posing as an element.
+     * @return \MUtil_Html_HtmlElement Probably an element of this type, but can also be something else, posing as an element.
      */
     public function getColumn($col)
     {
@@ -113,7 +113,7 @@ class MUtil_Html_TrElement extends MUtil_Html_HtmlElement implements MUtil_Html_
                 return reset($results);
 
             default:
-                return new MUtil_MultiWrapper($results);
+                return new \MUtil_MultiWrapper($results);
         }
     }
 
@@ -121,7 +121,7 @@ class MUtil_Html_TrElement extends MUtil_Html_HtmlElement implements MUtil_Html_
      * Returns the cells that occupies the column position, taking colspan and other functions into account, in an array.
      *
      * @param int $col The numeric column position, starting at 0;
-     * @return array Of probably one MUtil_Html_HtmlElement
+     * @return array Of probably one \MUtil_Html_HtmlElement
      */
     public function getColumnArray($col)
     {
@@ -147,12 +147,12 @@ class MUtil_Html_TrElement extends MUtil_Html_HtmlElement implements MUtil_Html_
     /**
      * Returns the cell's column width. A utility function.
      *
-     * @param mixed $cell MUtil_Html_ColumnInterface
+     * @param mixed $cell \MUtil_Html_ColumnInterface
      * @return int
      */
     public static function getCellWidth($cell)
     {
-        if ($cell instanceof MUtil_Html_ColumnInterface) {
+        if ($cell instanceof \MUtil_Html_ColumnInterface) {
             return $cell->getColumnCount();
         }
 
@@ -182,10 +182,10 @@ class MUtil_Html_TrElement extends MUtil_Html_HtmlElement implements MUtil_Html_
      *
      * The $view is used to correctly encode and escape the output
      *
-     * @param Zend_View_Abstract $view
+     * @param \Zend_View_Abstract $view
      * @return string Correctly encoded and escaped html output
      */
-    protected function renderElement(Zend_View_Abstract $view)
+    protected function renderElement(\Zend_View_Abstract $view)
     {
         $result = parent::renderElement($view);
 
@@ -205,7 +205,7 @@ class MUtil_Html_TrElement extends MUtil_Html_HtmlElement implements MUtil_Html_
      *
      * @see $_repeater
      *
-     * @return MUtil_Html_HtmlElement (continuation pattern)
+     * @return \MUtil_Html_HtmlElement (continuation pattern)
      */
     public function setOnlyWhenChanged($value)
     {
@@ -214,10 +214,10 @@ class MUtil_Html_TrElement extends MUtil_Html_HtmlElement implements MUtil_Html_
     }
 
     /**
-     * Static helper function for creation, used by @see MUtil_Html_Creator.
+     * Static helper function for creation, used by @see \MUtil_Html_Creator.
      *
-     * @param mixed $arg_array Optional MUtil_Ra::args processed settings
-     * @return MUtil_Html_TrElement
+     * @param mixed $arg_array Optional \MUtil_Ra::args processed settings
+     * @return \MUtil_Html_TrElement
      */
     public static function tr($arg_array = null)
     {

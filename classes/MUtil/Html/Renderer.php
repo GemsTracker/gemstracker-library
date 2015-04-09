@@ -37,7 +37,7 @@
 /**
  * Render output for a view.
  *
- * This object handles MUtil_Html_HtmlInterface and MUtil_Lazy_LazyInterface
+ * This object handles \MUtil_Html_HtmlInterface and \MUtil_Lazy_LazyInterface
  * objects natively, as well as array, scalar values and objects with a
  * __toString function.
  *
@@ -54,14 +54,14 @@ class MUtil_Html_Renderer
 {
     /**
      *
-     * @var MUtil_Util_ClassList
+     * @var \MUtil_Util_ClassList
      */
     protected $_classRenderFunctions;
 
     /**
      * Default array of objects rendering functions.
      *
-     * The MUtil_Html_Renderer::doNotRender function allows items to be passed
+     * The \MUtil_Html_Renderer::doNotRender function allows items to be passed
      * as content without triggering error messages.
      *
      * This is usefull if you want to pass an item to sub objects, but are not
@@ -81,7 +81,7 @@ class MUtil_Html_Renderer
     /**
      * Create the renderer
      *
-     * @param mixed $classRenderFunctions Array of classname => renderFunction or MUtil_Util_ClassList
+     * @param mixed $classRenderFunctions Array of classname => renderFunction or \MUtil_Util_ClassList
      * @param boolean $append Replace when false, append to default definitions otherwise
      */
     public function __construct($classRenderFunctions = null, $append = true)
@@ -98,8 +98,8 @@ class MUtil_Html_Renderer
     public function canRender($value)
     {
         if (is_object($value)) {
-            if (($value instanceof MUtil_Lazy_LazyInterface) ||
-                ($value instanceof MUtil_Html_HtmlInterface) ||
+            if (($value instanceof \MUtil_Lazy_LazyInterface) ||
+                ($value instanceof \MUtil_Html_HtmlInterface) ||
                 method_exists($value, '__toString')) {
                 return true;
             }
@@ -123,16 +123,16 @@ class MUtil_Html_Renderer
      * Static helper function used for object types that should
      * not produce output when (accidently) rendered.
      *
-     * Eg Zend_Translate or Zend_Db_Adapter_Abstract
+     * Eg \Zend_Translate or \Zend_Db_Adapter_Abstract
      *
-     * @param Zend_View_Abstract $view
+     * @param \Zend_View_Abstract $view
      * @param mixed $content
      * @return null
      */
-    public static function doNotRender(Zend_View_Abstract $view, $content)
+    public static function doNotRender(\Zend_View_Abstract $view, $content)
     {
-        if (MUtil_Html::$verbose) {
-            MUtil_Echo::r('Did not render ' . get_class($content) . ' object.');
+        if (\MUtil_Html::$verbose) {
+            \MUtil_Echo::r('Did not render ' . get_class($content) . ' object.');
         }
         return null;
     }
@@ -140,7 +140,7 @@ class MUtil_Html_Renderer
     /**
      * Get the classlist containing render functions for non-builtin objects
      *
-     * @return MUtil_Util_ClassList
+     * @return \MUtil_Util_ClassList
      */
     public function getClassRenderList()
     {
@@ -151,7 +151,7 @@ class MUtil_Html_Renderer
      * Renders the $content so that it can be used as output for the $view,
      * including output escaping and encoding correction.
      *
-     * This functions handles MUtil_Html_HtmlInterface and MUtil_Lazy_LazyInterface
+     * This functions handles \MUtil_Html_HtmlInterface and \MUtil_Lazy_LazyInterface
      * objects natively, as well as array, scalar values and objects with a
      * __toString function.
      *
@@ -159,20 +159,20 @@ class MUtil_Html_Renderer
      *
      * All Lazy variabables are raised.
      *
-     * @param Zend_View_Abstract $view
+     * @param \Zend_View_Abstract $view
      * @param mixed $content Anything HtmlInterface, number, string, array, object with __toString
      *                      or an object that has a defined render function in getClassRenderList().
      * @return string Output to echo to the user
      */
-    public function renderAny(Zend_View_Abstract $view, $content)
+    public function renderAny(\Zend_View_Abstract $view, $content)
     {
         // Resolve first as this function as recursion heavy enough as it is.
-        if ($content instanceof MUtil_Lazy_LazyInterface) {
-            $content = MUtil_Lazy::rise($content);
+        if ($content instanceof \MUtil_Lazy_LazyInterface) {
+            $content = \MUtil_Lazy::rise($content);
         }
 
         if ($content) {
-            if ($content instanceof MUtil_Html_HtmlInterface) {
+            if ($content instanceof \MUtil_Html_HtmlInterface) {
                 $new_content = $content->render($view);
 
             } elseif (is_array($content) && (! is_object($content))) {
@@ -194,11 +194,11 @@ class MUtil_Html_Renderer
                         $new_content = $content->__toString();
                     } else {
                         // $new_content = 'WARNING: Object of type ' . get_class($content) . ' cannot be converted to string.';
-                        throw new MUtil_Html_HtmlException('WARNING: Object of type ' . get_class($content) . ' cannot be converted to string.');
+                        throw new \MUtil_Html_HtmlException('WARNING: Object of type ' . get_class($content) . ' cannot be converted to string.');
                     }
                     
                 } elseif ($content instanceof __PHP_Incomplete_Class) {
-                    MUtil_Echo::r($content, __CLASS__ . '->' .  __FUNCTION__);
+                    \MUtil_Echo::r($content, __CLASS__ . '->' .  __FUNCTION__);
                     return '';
 
                 } else {
@@ -220,16 +220,16 @@ class MUtil_Html_Renderer
     /**
      * Change the list of non-builtin objects that can be rendered by this renderer.
      *
-     * @param mixed $classRenderFunctions Array of classname => renderFunction or MUtil_Util_ClassList
+     * @param mixed $classRenderFunctions Array of classname => renderFunction or \MUtil_Util_ClassList
      * @param boolean $append Replace when false, append otherwise
-     * @return MUtil_Html_Renderer (continuation pattern)
+     * @return \MUtil_Html_Renderer (continuation pattern)
      */
     public function setClassRenderList($classRenderFunctions = null, $append = false)
     {
-        if ($classRenderFunctions instanceof MUtil_Util_ClassList) {
+        if ($classRenderFunctions instanceof \MUtil_Util_ClassList) {
             $this->_classRenderFunctions = $classRenderFunctions;
         } else {
-            $this->_classRenderFunctions = new MUtil_Util_ClassList($this->_initialClassRenderFunctions);
+            $this->_classRenderFunctions = new \MUtil_Util_ClassList($this->_initialClassRenderFunctions);
 
             if ($classRenderFunctions) {
                 if ($append) {

@@ -45,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil 1.2
  */
-class MUtil_Controller_Router_Cli extends Zend_Controller_Router_Abstract
+class MUtil_Controller_Router_Cli extends \Zend_Controller_Router_Abstract
 {
     /**
      *
@@ -87,7 +87,7 @@ name=value (string)  Zero or more name=value parameter pairs, without the
      * @param  mixed $name The name of a Route to use
      * @param  bool $reset Whether to reset to the route defaults ignoring URL params
      * @param  bool $encode Tells to encode URL parts on output
-     * @throws Zend_Controller_Router_Exception
+     * @throws \Zend_Controller_Router_Exception
      * @return string Resulting URL path
      */
     public function assemble($userParams, $name = null, $reset = false, $encode = true)
@@ -103,11 +103,11 @@ name=value (string)  Zero or more name=value parameter pairs, without the
      * Processes a request and sets its controller and action.  If
      * no route was possible, an exception is thrown.
      *
-     * @param  Zend_Controller_Request_Abstract
-     * @throws Zend_Controller_Router_Exception
-     * @return Zend_Controller_Request_Abstract|boolean
+     * @param  \Zend_Controller_Request_Abstract
+     * @throws \Zend_Controller_Router_Exception
+     * @return \Zend_Controller_Request_Abstract|boolean
      */
-    public function route(Zend_Controller_Request_Abstract $request)
+    public function route(\Zend_Controller_Request_Abstract $request)
     {
         $options = array(
             'help|h'   => 'Show this help',
@@ -116,11 +116,11 @@ name=value (string)  Zero or more name=value parameter pairs, without the
             'user|u=s' => 'The user name',
         );
 
-        $getopt = new Zend_Console_Getopt($options);
+        $getopt = new \Zend_Console_Getopt($options);
 
         try {
             $getopt->parse();
-        } catch (Zend_Console_Getopt_Exception $e) {
+        } catch (\Zend_Console_Getopt_Exception $e) {
             echo $this->_expandMessage($e);
             exit;
         }
@@ -131,7 +131,7 @@ name=value (string)  Zero or more name=value parameter pairs, without the
             exit;
         }
 
-        if ($request instanceof MUtil_Controller_Request_Cli) {
+        if ($request instanceof \MUtil_Controller_Request_Cli) {
             $request->setUserLogin(
                     $getopt->getOption('u'),
                     $getopt->getOption('o'),
@@ -157,7 +157,7 @@ name=value (string)  Zero or more name=value parameter pairs, without the
                 $params[$request->getActionKey()]     = $action;
 
                 foreach ($arguments as $arg) {
-                    if (MUtil_String::contains($arg, '=')) {
+                    if (\MUtil_String::contains($arg, '=')) {
                         list($name, $value) = explode('=', $arg, 2);
                     } else {
                         $name  = $arg;

@@ -1,9 +1,9 @@
-<?php 
+<?php
 
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,21 +26,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @version    $Id$
  * @package    MUtil
  * @subpackage Html
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
+ * @version    $Id$
  */
- 
+
 /**
- * @version    $Id$
+ *
  * @package    MUtil
  * @subpackage Html
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
+ * @since      Class available since MUtil version 1.0
  */
-class MUtil_Html_PageRangeRenderer implements MUtil_Html_HtmlInterface, MUtil_Lazy_Procrastinator
+class MUtil_Html_PageRangeRenderer implements \MUtil_Html_HtmlInterface, \MUtil_Lazy_Procrastinator
 {
     protected $_current;
     protected $_element;
@@ -50,15 +51,15 @@ class MUtil_Html_PageRangeRenderer implements MUtil_Html_HtmlInterface, MUtil_La
 
     public $page;
 
-    public function __construct(MUtil_Html_PagePanel $panel, $glue = ' ', $args_array = null)
+    public function __construct(\MUtil_Html_PagePanel $panel, $glue = ' ', $args_array = null)
     {
-        $args = MUtil_Ra::args(func_get_args(), array('panel' => 'MUtil_Html_PagePanel', 'glue'), array('glue' => ' '));
+        $args = \MUtil_Ra::args(func_get_args(), array('panel' => 'MUtil_Html_PagePanel', 'glue'), array('glue' => ' '));
 
         if (isset($args['panel'])) {
             $this->_panel = $args['panel'];
             unset($args['panel']);
         } else {
-            throw new MUtil_Html_HtmlException('Illegal argument: no panel passed to ' . __CLASS__ . ' constructor.');
+            throw new \MUtil_Html_HtmlException('Illegal argument: no panel passed to ' . __CLASS__ . ' constructor.');
         }
 
         if (isset($args['glue'])) {
@@ -83,11 +84,19 @@ class MUtil_Html_PageRangeRenderer implements MUtil_Html_HtmlInterface, MUtil_La
 
     public function notCurrent()
     {
-        // MUtil_Echo::r($this->page, $this->_current);
+        // \MUtil_Echo::r($this->page, $this->_current);
         return $this->page != $this->_current;
     }
 
-    public function render(Zend_View_Abstract $view)
+    /**
+     * Echo the content.
+     *
+     * The $view is not used but required by the interface definition
+     *
+     * @param \Zend_View_Abstract $view
+     * @return string Correctly encoded and escaped html output
+     */
+    public function render(\Zend_View_Abstract $view)
     {
         $html  = '';
         $glue  = $this->getGlue();
@@ -116,7 +125,7 @@ class MUtil_Html_PageRangeRenderer implements MUtil_Html_HtmlInterface, MUtil_La
     public function toLazy()
     {
         if (! $this->_lazy) {
-            $this->_lazy = new MUtil_Lazy_ObjectWrap($this);
+            $this->_lazy = new \MUtil_Lazy_ObjectWrap($this);
         }
 
         return $this->_lazy;

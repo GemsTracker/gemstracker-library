@@ -30,9 +30,9 @@
  * @package    MUtil
  * @subpackage Html
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 201e Erasmus MC
+ * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TdElement.php 203 2012-01-01t 12:51:32Z matijs $
+ * @version    $Id: TdElement.php 203 2012-01-01 12:51:32 matijs $
  */
 
 /**
@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Html_TdElement extends MUtil_Html_HtmlElement
+class MUtil_Html_TdElement extends \MUtil_Html_HtmlElement
 {
     /**
      * When repeating content using $_repeater you may want to output the content only when it has
@@ -78,10 +78,10 @@ class MUtil_Html_TdElement extends MUtil_Html_HtmlElement
     public $renderClosingTag = true;
 
     /**
-     * Static helper function for creation, used by @see MUtil_Html_Creator.
+     * Static helper function for creation, used by @see \MUtil_Html_Creator.
      *
-     * @param mixed $arg_array Optional MUtil_Ra::args processed settings
-     * @return MUtil_Html_TrElement
+     * @param mixed $arg_array Optional \MUtil_Ra::args processed settings
+     * @return \MUtil_Html_TrElement
      */
     public static function createTh($arg_array = null)
     {
@@ -90,10 +90,10 @@ class MUtil_Html_TdElement extends MUtil_Html_HtmlElement
     }
 
     /**
-     * Static helper function for creation, used by @see MUtil_Html_Creator.
+     * Static helper function for creation, used by @see \MUtil_Html_Creator.
      *
-     * @param mixed $arg_array Optional MUtil_Ra::args processed settings
-     * @return MUtil_Html_TrElement
+     * @param mixed $arg_array Optional \MUtil_Ra::args processed settings
+     * @return \MUtil_Html_TrElement
      */
     public static function createTd($arg_array = null)
     {
@@ -117,10 +117,10 @@ class MUtil_Html_TdElement extends MUtil_Html_HtmlElement
      *
      * The $view is used to correctly encode and escape the output
      *
-     * @param Zend_View_Abstract $view
+     * @param \Zend_View_Abstract $view
      * @return string Correctly encoded and escaped html output
      */
-    protected function renderContent(Zend_View_Abstract $view)
+    protected function renderContent(\Zend_View_Abstract $view)
     {
         $result = parent::renderContent($view);
 
@@ -140,7 +140,7 @@ class MUtil_Html_TdElement extends MUtil_Html_HtmlElement
      *
      * @see $_repeater
      *
-     * @return MUtil_Html_HtmlElement (continuation pattern)
+     * @return \MUtil_Html_HtmlElement (continuation pattern)
      */
     public function setOnlyWhenChanged($value)
     {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -29,6 +30,7 @@
  *
  * @package    Gems
  * @subpackage JQuery
+ * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @version    $Id: ToggleCheckboxes.php 228 2011-11-17 11:46:04Z mennodekker $
@@ -45,7 +47,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_Bootstrap_Form_Element_ToggleCheckboxes extends MUtil_Bootstrap_Form_Element_Button
+class MUtil_Bootstrap_Form_Element_ToggleCheckboxes extends \MUtil_Bootstrap_Form_Element_Button
 {
     /**
      * Use toggleCheckboxes view helper by default
@@ -59,7 +61,7 @@ class MUtil_Bootstrap_Form_Element_ToggleCheckboxes extends MUtil_Bootstrap_Form
      * Specify the 'selector' in the options http://api.jquery.com/category/selectors/
      *
      * Usage:
-     * $element = new Gems_JQuery_Form_Element_ToggleCheckboxes('name', array('selector'=>'input[name^=oid]')
+     * $element = new \Gems_JQuery_Form_Element_ToggleCheckboxes('name', array('selector'=>'input[name^=oid]')
      *
      * @param type $spec
      * @param type $options
@@ -72,12 +74,12 @@ class MUtil_Bootstrap_Form_Element_ToggleCheckboxes extends MUtil_Bootstrap_Form
     /**
      * Set the view object
      *
-     * Ensures that the view object has the Gems_jQuery view helper path set.
+     * Ensures that the view object has the \Gems_jQuery view helper path set.
      *
-     * @param  Zend_View_Interface $view
-     * @return Gems_JQuery_Form_Element_ToggleCheckboxes
+     * @param  \Zend_View_Interface $view
+     * @return \Gems_JQuery_Form_Element_ToggleCheckboxes
      */
-    public function setView(Zend_View_Interface $view = null)
+    public function setView(\Zend_View_Interface $view = null)
     {
         $element = parent::setView($view);
         if (null !== $view) {

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -26,9 +25,8 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
+ *
+ *
  * @package    MUtil
  * @subpackage Lazy_Stack
  * @author     Matijs de Jong <mjong@magnafacta.nl>
@@ -48,7 +46,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class MUtil_Lazy_Stack_EmptyStack implements MUtil_Lazy_StackInterface
+class MUtil_Lazy_Stack_EmptyStack implements \MUtil_Lazy_StackInterface
 {
     /**
      * @private A string describing where this object was created.
@@ -76,9 +74,9 @@ class MUtil_Lazy_Stack_EmptyStack implements MUtil_Lazy_StackInterface
     public function lazyGet($name)
     {
         if ($this->_source) {
-            throw new MUtil_Lazy_LazyException("No lazy stack defined when called from '$this->_source', but asked for '$name' parameter.");
+            throw new \MUtil_Lazy_LazyException("No lazy stack defined when called from '$this->_source', but asked for '$name' parameter.");
         } else {
-            throw new MUtil_Lazy_LazyException("No lazy stack defined, but asked for '$name' parameter.");
+            throw new \MUtil_Lazy_LazyException("No lazy stack defined, but asked for '$name' parameter.");
         }
     }
 }

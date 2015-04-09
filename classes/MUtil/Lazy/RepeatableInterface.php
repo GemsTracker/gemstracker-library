@@ -1,10 +1,9 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,35 +25,37 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package MUtil
+ *
+ *
+ * @package    MUtil
  * @subpackage Lazy
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
  * An object implementing the RepeatableInterface can be called
  * repeatedly and sequentially with the content of the properties,
- * function calls and array access methods changing until each 
+ * function calls and array access methods changing until each
  * value of a data list has been returned.
- * 
+ *
  * This interface allows you to specify an action only once instead
  * of repeatedly in a loop.
- * 
- * @author Matijs de Jong
- * @package MUtil
+ *
+ * @package    MUtil
  * @subpackage Lazy
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
  */
-interface MUtil_Lazy_RepeatableInterface extends ArrayAccess
+interface MUtil_Lazy_RepeatableInterface extends \ArrayAccess
 {
     /**
      * Return a lazy version of the call
      *
-     * @return MUtil_Lazy_LazyInterface
+     * @return \MUtil_Lazy_LazyInterface
      */
     public function __call($name, array $arguments);
 
@@ -68,14 +69,14 @@ interface MUtil_Lazy_RepeatableInterface extends ArrayAccess
     /**
      * Return a lazy version of the property retrieval
      *
-     * @return MUtil_Lazy_LazyInterface
+     * @return \MUtil_Lazy_LazyInterface
      */
     public function __get($name);
 
     /**
      * Return the core data in the Repeatable in one go
      *
-     * @return Iterator|array
+     * @return \Iterator|array
      */
     public function __getRepeatable();
 

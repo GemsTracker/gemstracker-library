@@ -1,10 +1,9 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,17 +25,25 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * @package    MUtil
+ * @subpackage Html_Dojo
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package MUtil
+ *
+ * @package    MUtil
  * @subpackage Html_Dojo
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since MUtil version 1.0
  */
-
-abstract class MUtil_Html_Dojo_DojoElementAbstract extends MUtil_Html_HtmlElement
+abstract class MUtil_Html_Dojo_DojoElementAbstract extends \MUtil_Html_HtmlElement
 {
     /**
      * Dijit being used
@@ -45,8 +52,8 @@ abstract class MUtil_Html_Dojo_DojoElementAbstract extends MUtil_Html_HtmlElemen
     public $dijit;
 
     /**
-     * MUtil_Html_Dojo_DataCollector
-     * @var MUtil_Html_Dojo_DataCollector
+     * \MUtil_Html_Dojo_DataCollector
+     * @var \MUtil_Html_Dojo_DataCollector
      */
     public $dojo;
 
@@ -59,11 +66,11 @@ abstract class MUtil_Html_Dojo_DojoElementAbstract extends MUtil_Html_HtmlElemen
 
     public function __construct($tagName, $arg_array = null)
     {
-        $args = MUtil_Ra::args(func_get_args(), 1);
+        $args = \MUtil_Ra::args(func_get_args(), 1);
 
         parent::__construct($tagName, $args);
 
-        $this->dojo = new MUtil_Html_Dojo_DojoData();
+        $this->dojo = new \MUtil_Html_Dojo_DojoData();
     }
 
     /**
@@ -73,7 +80,7 @@ abstract class MUtil_Html_Dojo_DojoElementAbstract extends MUtil_Html_HtmlElemen
      */
     protected function _useDeclarative()
     {
-        return Zend_Dojo_View_Helper_Dojo::useDeclarative();
+        return \Zend_Dojo_View_Helper_Dojo::useDeclarative();
     }
 
     /**
@@ -83,7 +90,7 @@ abstract class MUtil_Html_Dojo_DojoElementAbstract extends MUtil_Html_HtmlElemen
      */
     protected function _useProgrammatic()
     {
-        return Zend_Dojo_View_Helper_Dojo::useProgrammatic();
+        return \Zend_Dojo_View_Helper_Dojo::useProgrammatic();
     }
 
     /**
@@ -93,10 +100,10 @@ abstract class MUtil_Html_Dojo_DojoElementAbstract extends MUtil_Html_HtmlElemen
      */
     protected function _useProgrammaticNoScript()
     {
-        return Zend_Dojo_View_Helper_Dojo::useProgrammaticNoScript();
+        return \Zend_Dojo_View_Helper_Dojo::useProgrammaticNoScript();
     }
 
-    public function render(Zend_View_Abstract $view)
+    public function render(\Zend_View_Abstract $view)
     {
         $this->dojo->processView($view, $this);
 

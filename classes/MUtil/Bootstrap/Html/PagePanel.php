@@ -47,7 +47,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class MUtil_Bootstrap_Html_PagePanel extends MUtil_Html_PagePanel
+class MUtil_Bootstrap_Html_PagePanel extends \MUtil_Html_PagePanel
 {
 
     protected $range = false;
@@ -56,23 +56,23 @@ class MUtil_Bootstrap_Html_PagePanel extends MUtil_Html_PagePanel
      * Returns an element with a conditional tagName: it will become either an A or a SPAN
      * element.
      *
-     * @param MUtil_Lazy $condition Condition for link display
+     * @param \MUtil_Lazy $condition Condition for link display
      * @param int $page    Page number of this link
      * @param array $args  Content of the page
      * @return \MUtil_Html_HtmlElement
      */
     public function createPageLink($condition, $page, array $args)
     {
-        $element = new MUtil_Html_HtmlElement(
-                MUtil_Lazy::iff($condition, 'a', 'span'),
-                array('href' => MUtil_Lazy::iff($condition, $this->_createHref($this->_currentPageParam, $page))),
+        $element = new \MUtil_Html_HtmlElement(
+                \MUtil_Lazy::iff($condition, 'a', 'span'),
+                array('href' => \MUtil_Lazy::iff($condition, $this->_createHref($this->_currentPageParam, $page))),
                 $this->_applyDefaults($condition, $args)
                 );
         $conditionLiClass = 'disabled';
         if ($this->range) {
             $conditionLiClass = 'active';
         }
-        $li = MUtil_Html::create()->li(array('class' => MUtil_Lazy::iff($condition, '', $conditionLiClass)));
+        $li = \MUtil_Html::create()->li(array('class' => \MUtil_Lazy::iff($condition, '', $conditionLiClass)));
         $li[] = $element;
         return $li;
     }
@@ -92,22 +92,22 @@ class MUtil_Bootstrap_Html_PagePanel extends MUtil_Html_PagePanel
      * @param string $next Label for goto next page link
      * @param string $last Label for goto last page link
      * @param string $glue In between links glue
-     * @param mixed $args MUtil_Ra::args extra arguments applied to all links
-     * @return MUtil_Html_Sequence
+     * @param mixed $args \MUtil_Ra::args extra arguments applied to all links
+     * @return \MUtil_Html_Sequence
      */
     public function pageLinks($first = '<<', $previous = '<', $next = '>', $last = '>>', $glue = ' ', $args = null)
     {
         $argDefaults = array('first' => '<<', 'previous' => '<', 'next' => '>', 'last' => '>>', 'glue' => ' ');
         $argNames    = array_keys($argDefaults);
 
-        $args = MUtil_Ra::args(func_get_args(), $argNames, $argDefaults);
+        $args = \MUtil_Ra::args(func_get_args(), $argNames, $argDefaults);
 
         foreach ($argNames as $name) {
             $$name = $args[$name];
             unset($args[$name]);
         }
 
-        $container = MUtil_Html::create()->ul(array('class' => 'pagination pagination-sm pull-left'));
+        $container = \MUtil_Html::create()->ul(array('class' => 'pagination pagination-sm pull-left'));
 
         if ($first) { // Can be null or array()
             $container[] = $this->firstPage((array) $first + $args);
@@ -125,6 +125,6 @@ class MUtil_Bootstrap_Html_PagePanel extends MUtil_Html_PagePanel
             $container[] = $this->lastPage((array) $last + $args);
         }
 
-        return MUtil_Lazy::iff(MUtil_Lazy::comp($this->pages->pageCount, '>', 1), $container);
+        return \MUtil_Lazy::iff(\MUtil_Lazy::comp($this->pages->pageCount, '>', 1), $container);
     }
 }

@@ -45,7 +45,7 @@
  * throw errors if you try to use them in ways that the actual $_content does
  * not allow.
  *
- * @see MUtil_Lazy_Repeatable
+ * @see \MUtil_Lazy_Repeatable
  *
  * @package    MUtil
  * @subpackage Html
@@ -53,7 +53,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class MUtil_Html_RepeatRenderer implements MUtil_Html_ElementInterface
+class MUtil_Html_RepeatRenderer implements \MUtil_Html_ElementInterface
 {
     /**
      * The content to be repeated.
@@ -79,16 +79,16 @@ class MUtil_Html_RepeatRenderer implements MUtil_Html_ElementInterface
     /**
      * The repeater containing a dataset
      *
-     * @var MUtil_Lazy_RepeatableInterface
+     * @var \MUtil_Lazy_RepeatableInterface
      */
     protected $_repeater;
 
     /**
      *
-     * @param MUtil_Lazy_RepeatableInterface $repeater
+     * @param \MUtil_Lazy_RepeatableInterface $repeater
      * @param string $glue Optional, content to display between repeated instances
      */
-    public function __construct(MUtil_Lazy_RepeatableInterface $repeater, $glue = null)
+    public function __construct(\MUtil_Lazy_RepeatableInterface $repeater, $glue = null)
     {
         $this->setRepeater($repeater);
         $this->setGlue($glue);
@@ -123,7 +123,7 @@ class MUtil_Html_RepeatRenderer implements MUtil_Html_ElementInterface
 
     public function getTagName()
     {
-        if ($this->_content instanceof MUtil_Html_ElementInterface) {
+        if ($this->_content instanceof \MUtil_Html_ElementInterface) {
             return $this->_content->getTagName();
         }
         return null;
@@ -164,12 +164,12 @@ class MUtil_Html_RepeatRenderer implements MUtil_Html_ElementInterface
      *
      * The $view is used to correctly encode and escape the output
      *
-     * @param Zend_View_Abstract $view
+     * @param \Zend_View_Abstract $view
      * @return string Correctly encoded and escaped html output
      */
-    public function render(Zend_View_Abstract $view)
+    public function render(\Zend_View_Abstract $view)
     {
-        $renderer = MUtil_Html::getRenderer();
+        $renderer = \MUtil_Html::getRenderer();
         if ($this->hasRepeater() && $this->_content) {
             $data = $this->getRepeater();
             if ($data->__start()) {
@@ -196,7 +196,7 @@ class MUtil_Html_RepeatRenderer implements MUtil_Html_ElementInterface
         return $this;
     }
 
-    private function setRepeater(MUtil_Lazy_RepeatableInterface $data)
+    private function setRepeater(\MUtil_Lazy_RepeatableInterface $data)
     {
         $this->_repeater = $data;
         return $this;

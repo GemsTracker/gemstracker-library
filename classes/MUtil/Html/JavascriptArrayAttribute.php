@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version MUtil 1.2
  */
-class MUtil_Html_JavascriptArrayAttribute extends MUtil_Html_ArrayAttribute
+class MUtil_Html_JavascriptArrayAttribute extends \MUtil_Html_ArrayAttribute
 {
     /**
      * String used to glue items together
@@ -67,11 +67,11 @@ class MUtil_Html_JavascriptArrayAttribute extends MUtil_Html_ArrayAttribute
     /**
      *
      * @param string $type
-     * @param mixed $arg_array MUtil_Ra::args
+     * @param mixed $arg_array \MUtil_Ra::args
      */
     public function __construct($type, $arg_array = null)
     {
-        $args = MUtil_Ra::args(func_get_args(), 1);
+        $args = \MUtil_Ra::args(func_get_args(), 1);
         parent::__construct($type, 'javascript:', $args);
     }
 
@@ -79,7 +79,7 @@ class MUtil_Html_JavascriptArrayAttribute extends MUtil_Html_ArrayAttribute
      * Add a cancel bubble command
      *
      * @param boolean $cancelBubble
-     * @return MUtil_Html_JavascriptArrayAttribute (continuation pattern)
+     * @return \MUtil_Html_JavascriptArrayAttribute (continuation pattern)
      */
     public function addCancelBubble($cancelBubble = true)
     {
@@ -95,13 +95,13 @@ class MUtil_Html_JavascriptArrayAttribute extends MUtil_Html_ArrayAttribute
      * Add a cancel bubble command
      *
      * @param boolean $cancelBubble
-     * @return MUtil_Html_JavascriptArrayAttribute (continuation pattern)
+     * @return \MUtil_Html_JavascriptArrayAttribute (continuation pattern)
      */
     public function addConfirm($question)
     {
         $this->add(array(
             "if (!confirm('",
-            MUtil_Lazy::call('addslashes', $question),
+            \MUtil_Lazy::call('addslashes', $question),
             "')) {event.cancelBubble = true; return false;}"
             ));
         return $this;
@@ -111,11 +111,11 @@ class MUtil_Html_JavascriptArrayAttribute extends MUtil_Html_ArrayAttribute
      * Add single code line
      *
      * @param mixed $line
-     * @return MUtil_Html_JavascriptArrayAttribute (continuation pattern)
+     * @return \MUtil_Html_JavascriptArrayAttribute (continuation pattern)
      */
     public function addLine($line_args)
     {
-        $lines = MUtil_Ra::flatten(func_get_args());
+        $lines = \MUtil_Ra::flatten(func_get_args());
 
         foreach ($lines as $line) {
             $this->add($line);
@@ -130,7 +130,7 @@ class MUtil_Html_JavascriptArrayAttribute extends MUtil_Html_ArrayAttribute
     /**
      * Add a print command
      *
-     * @return MUtil_Html_JavascriptArrayAttribute (continuation pattern)
+     * @return \MUtil_Html_JavascriptArrayAttribute (continuation pattern)
      */
     public function addPrint()
     {
@@ -175,8 +175,8 @@ class MUtil_Html_JavascriptArrayAttribute extends MUtil_Html_ArrayAttribute
     /**
      * Add a url open command by specifying only the link
      *
-     * @param mixed $href Anything, e.g. a MUtil_Html_UrlArrayAttribute that the code will transform to an url
-     * @return MUtil_Html_JavascriptArrayAttribute (continuation pattern)
+     * @param mixed $href Anything, e.g. a \MUtil_Html_UrlArrayAttribute that the code will transform to an url
+     * @return \MUtil_Html_JavascriptArrayAttribute (continuation pattern)
      */
     public function addUrl($href)
     {

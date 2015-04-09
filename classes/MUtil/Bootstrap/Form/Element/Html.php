@@ -40,7 +40,8 @@
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
-class MUtil_Bootstrap_Form_Element_Html extends MUtil_Form_Element_Html implements MUtil_Form_Element_NoFocusInterface
+class MUtil_Bootstrap_Form_Element_Html extends \MUtil_Form_Element_Html
+        implements \MUtil_Form_Element_NoFocusInterface
 {
     protected $_elementClass = 'form-controller';
 
@@ -50,12 +51,12 @@ class MUtil_Bootstrap_Form_Element_Html extends MUtil_Form_Element_Html implemen
      * $spec may be:
      * - string: name of element
      * - array: options with which to configure element
-     * - Zend_Config: Zend_Config with options for configuring element
+     * - \Zend_Config: \Zend_Config with options for configuring element
      *
-     * @param  string|array|Zend_Config $spec
-     * @param  array|Zend_Config $options
+     * @param  string|array|\Zend_Config $spec
+     * @param  array|\Zend_Config $options
      * @return void
-     * @throws Zend_Form_Exception if no element name after initialization
+     * @throws \Zend_Form_Exception if no element name after initialization
      */
     public function __construct($spec, $options = null)
     {
@@ -63,12 +64,13 @@ class MUtil_Bootstrap_Form_Element_Html extends MUtil_Form_Element_Html implemen
         $this->addClass($this->_elementClass);
     }
 
-    /** 
+    /**
      * Add a class to an existing class, taking care of spacing
-     * @param string $targetClass  The existing class 
+     * @param string $targetClass  The existing class
      * @param string $addClass    the Class or classes to add, seperated by spaces
      */
-    protected function addClass($addClass) {
+    protected function addClass($addClass)
+    {
         $targetClass = $this->getAttrib('class');
         if(!empty($targetClass) && (strpos($targetClass, $addClass) === false)) {
             $targetClass .= " {$addClass}";
@@ -79,11 +81,10 @@ class MUtil_Bootstrap_Form_Element_Html extends MUtil_Form_Element_Html implemen
         return $this;
     }
 
-
     /**
      * Load default decorators
      *
-     * @return Zend_Form_Element
+     * @return \Zend_Form_Element
      */
     public function loadDefaultDecorators()
     {

@@ -26,11 +26,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @version    $Id$
+ *
  * @package    MUtil
  * @subpackage Form_Element
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
@@ -45,7 +47,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.6
  */
-class MUtil_Form_Element_FakeSubmit extends Zend_Form_Element_Button
+class MUtil_Form_Element_FakeSubmit extends \Zend_Form_Element_Button
 {
     /**
      * Use fakeSubmit view helper by default

@@ -35,12 +35,14 @@
  */
 
 /**
+ *
  * @package    MUtil
  * @subpackage Form_Element
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
+ * @since      Class available since version 1.1
  */
-class MUtil_Form_Element_Html extends Zend_Form_Element_Xhtml implements MUtil_Form_Element_NoFocusInterface
+class MUtil_Form_Element_Html extends \Zend_Form_Element_Xhtml implements \MUtil_Form_Element_NoFocusInterface
 {
     /**
      * Default view helper to use
@@ -55,8 +57,8 @@ class MUtil_Form_Element_Html extends Zend_Form_Element_Xhtml implements MUtil_F
      *
      * @param  string $method
      * @param  array $args
-     * @return MUtil_Html_HtmlElement or at least something that implements the MUtil_Html_HtmlInterface interface
-     * @throws Zend_Form_Exception for invalid decorator or invalid method call
+     * @return \MUtil_Html_HtmlElement or at least something that implements the \MUtil_Html_HtmlInterface interface
+     * @throws \Zend_Form_Exception for invalid decorator or invalid method call
      */
     public function __call($method, $args)
     {
@@ -64,12 +66,12 @@ class MUtil_Form_Element_Html extends Zend_Form_Element_Xhtml implements MUtil_F
             return parent::__call($method, $args);
         }
 
-        $elem = MUtil_Html::createArray($method, $args);
+        $elem = \MUtil_Html::createArray($method, $args);
 
         $value = $this->getValue();
 
-        if (! $value instanceof MUtil_Html_ElementInterface) {
-            $value = new MUtil_Html_Sequence();
+        if (! $value instanceof \MUtil_Html_ElementInterface) {
+            $value = new \MUtil_Html_Sequence();
         }
         $value->append($elem);
         $this->setValue($value);

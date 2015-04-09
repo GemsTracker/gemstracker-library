@@ -44,7 +44,7 @@
  * @since      Class available since version 1.0
  */
 
-class MUtil_Html_Attribute extends MUtil_Html_AttributeAbstract
+class MUtil_Html_Attribute extends \MUtil_Html_AttributeAbstract
 {
     private $_value;
 
@@ -75,7 +75,7 @@ class MUtil_Html_Attribute extends MUtil_Html_AttributeAbstract
             $this->_value = $value;
 
         } else {
-            throw new MUtil_Html_HtmlException('Invalid argument of type ' . get_class($value) . ' for attribute value. Was expecting a string or number.');
+            throw new \MUtil_Html_HtmlException('Invalid argument of type ' . get_class($value) . ' for attribute value. Was expecting a string or number.');
 
         }
 

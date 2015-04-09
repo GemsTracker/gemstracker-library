@@ -39,7 +39,7 @@
  * Extension of ZendX DatePicker element that add's locale awareness and input and output date
  * parsing to the original element.
  *
- * @see ZendX_JQuery_Form_Element_DatePicker
+ * @see \ZendX_JQuery_Form_Element_DatePicker
  *
  * @package    MUtil
  * @subpackage JQuery
@@ -47,7 +47,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class MUtil_JQuery_Form_Element_DatePicker extends ZendX_JQuery_Form_Element_DatePicker
+class MUtil_JQuery_Form_Element_DatePicker extends \ZendX_JQuery_Form_Element_DatePicker
 {
     /**
      *
@@ -57,7 +57,7 @@ class MUtil_JQuery_Form_Element_DatePicker extends ZendX_JQuery_Form_Element_Dat
 
     /**
      *
-     * @var Zend_Date The underlying value as a date object
+     * @var \Zend_Date The underlying value as a date object
      */
     protected $_dateValue;
 
@@ -75,7 +75,7 @@ class MUtil_JQuery_Form_Element_DatePicker extends ZendX_JQuery_Form_Element_Dat
      */
     protected function _applyDateFormat()
     {
-        if ($this->_dateValue instanceof Zend_Date) {
+        if ($this->_dateValue instanceof \Zend_Date) {
             parent::setValue($this->_dateValue->toString($this->getDateFormat()));
         }
         return $this;
@@ -94,7 +94,7 @@ class MUtil_JQuery_Form_Element_DatePicker extends ZendX_JQuery_Form_Element_Dat
     /**
      * Return the value as a date object
      *
-     * @return Zend_Date
+     * @return \Zend_Date
      */
     public function getDateValue()
     {
@@ -134,7 +134,7 @@ class MUtil_JQuery_Form_Element_DatePicker extends ZendX_JQuery_Form_Element_Dat
 
         if (! $this->getValidator('IsDate')) {
             // Always as first validator
-            $isDate = new MUtil_Validate_Date_IsDate();
+            $isDate = new \MUtil_Validate_Date_IsDate();
             $isDate->setDateFormat($this->_dateFormat);
 
             array_unshift($validators, $isDate);
@@ -144,7 +144,7 @@ class MUtil_JQuery_Form_Element_DatePicker extends ZendX_JQuery_Form_Element_Dat
         if ($format = $this->getDateFormat()) {
             // Set the dataFormat if settable
             foreach ($validators as $validator) {
-                if (($validator instanceof MUtil_Validate_Date_FormatInterface)
+                if (($validator instanceof \MUtil_Validate_Date_FormatInterface)
                     || method_exists($validator, 'setDateFormat')) {
                     $validator->setDateFormat($format);
                 }
@@ -164,7 +164,7 @@ class MUtil_JQuery_Form_Element_DatePicker extends ZendX_JQuery_Form_Element_Dat
     {
         $view = $this->getView();
 
-        list($dateFormat, $separator, $timeFormat) = MUtil_Date_Format::splitDateTimeFormat($format);
+        list($dateFormat, $separator, $timeFormat) = \MUtil_Date_Format::splitDateTimeFormat($format);
 
         if ($dateFormat) {
             $this->setJQueryParam('dateFormat', $dateFormat);
@@ -183,28 +183,28 @@ class MUtil_JQuery_Form_Element_DatePicker extends ZendX_JQuery_Form_Element_Dat
     }
 
     /**
-     * Set the both he _value (as a string) and the _dateValue (as an Zend_Date)
+     * Set the both he _value (as a string) and the _dateValue (as an \Zend_Date)
      *
      * @param string $format
      * @return \MUtil_JQuery_Form_Element_DatePicker (continuation patern)
      */
     public function setDateValue($value)
     {
-        // MUtil_Echo::r('Input: ' . $value);
+        // \MUtil_Echo::r('Input: ' . $value);
         if (null === $value || '' === $value) {
             $this->_dateValue = null;
         } else {
-            if ($value instanceof Zend_Date) {
+            if ($value instanceof \Zend_Date) {
                 $this->_dateValue = $value;
             } else {
                 $format = $this->getDateFormat();
-                if ($format && Zend_Date::isDate($value, $format)) {
-                    $this->_dateValue = new MUtil_Date($value, $format);
+                if ($format && \Zend_Date::isDate($value, $format)) {
+                    $this->_dateValue = new \MUtil_Date($value, $format);
 
                 } else {
                     $storageFormat = $this->getStorageFormat();
-                    if ($storageFormat && Zend_Date::isDate($value, $storageFormat)) {
-                        $this->_dateValue = new MUtil_Date($value, $storageFormat);
+                    if ($storageFormat && \Zend_Date::isDate($value, $storageFormat)) {
+                        $this->_dateValue = new \MUtil_Date($value, $storageFormat);
 
                     } elseif ($format || $storageFormat) {
                         // Invalid dateformat, should be handled by validator, just ignore the datevalue
@@ -212,15 +212,15 @@ class MUtil_JQuery_Form_Element_DatePicker extends ZendX_JQuery_Form_Element_Dat
                         $this->_dateValue = null;
                     } else {
                         try {
-                            $this->_dateValue = new MUtil_Date($value);
-                        } catch (Zend_Date_Exception $zde) {
+                            $this->_dateValue = new \MUtil_Date($value);
+                        } catch (\Zend_Date_Exception $zde) {
                             $this->_dateValue = null;
                         }
                     }
                 }
             }
         }
-        if ($this->_dateValue instanceof Zend_Date) {
+        if ($this->_dateValue instanceof \Zend_Date) {
             $this->_applyDateFormat();
         } else {
             parent::setValue($value);
@@ -245,7 +245,7 @@ class MUtil_JQuery_Form_Element_DatePicker extends ZendX_JQuery_Form_Element_Dat
      * Set element value
      *
      * @param  mixed $value
-     * @return Zend_Form_Element
+     * @return \Zend_Form_Element
      */
     public function setValue($value)
     {
@@ -256,10 +256,10 @@ class MUtil_JQuery_Form_Element_DatePicker extends ZendX_JQuery_Form_Element_Dat
     /**
      * Set view object
      *
-     * @param  Zend_View_Interface $view
-     * @return Zend_Form_Element
+     * @param  \Zend_View_Interface $view
+     * @return \Zend_Form_Element
      */
-    public function setView(Zend_View_Interface $view = null)
+    public function setView(\Zend_View_Interface $view = null)
     {
         $element = parent::setView($view);
 
@@ -269,7 +269,7 @@ class MUtil_JQuery_Form_Element_DatePicker extends ZendX_JQuery_Form_Element_Dat
             }
         }
 
-        if ($locale = Zend_Registry::get('Zend_Locale')) {
+        if ($locale = \Zend_Registry::get('Zend_Locale')) {
             $language = $locale->getLanguage();
             // We have a language, but only when not english
             if ($language && $language != 'en') {
@@ -279,8 +279,8 @@ class MUtil_JQuery_Form_Element_DatePicker extends ZendX_JQuery_Form_Element_Dat
                     $baseUrl = dirname($uiPath);
 
                 } else {
-                    $baseUrl = MUtil_Https::on() ? ZendX_JQuery::CDN_BASE_GOOGLE_SSL : ZendX_JQuery::CDN_BASE_GOOGLE;
-                    $baseUrl .= ZendX_JQuery::CDN_SUBFOLDER_JQUERYUI;
+                    $baseUrl = \MUtil_Https::on() ? \ZendX_JQuery::CDN_BASE_GOOGLE_SSL : \ZendX_JQuery::CDN_BASE_GOOGLE;
+                    $baseUrl .= \ZendX_JQuery::CDN_SUBFOLDER_JQUERYUI;
                     $baseUrl .= $jquery->getUiVersion();
                 }
                 // Option 1: download single language file

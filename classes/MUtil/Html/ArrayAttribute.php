@@ -41,7 +41,7 @@
  * Useable as is, using spaces as value separators by default.
  *
  * Parameter setting checks for the addition of special types,
- * just as MUtil_Html_HtmlElement.
+ * just as \MUtil_Html_HtmlElement.
  *
  * @package    MUtil
  * @subpackage Html
@@ -49,8 +49,8 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class MUtil_Html_ArrayAttribute extends MUtil_Html_AttributeAbstract
-    implements ArrayAccess, Countable, IteratorAggregate
+class MUtil_Html_ArrayAttribute extends \MUtil_Html_AttributeAbstract
+    implements \ArrayAccess, \Countable, \IteratorAggregate
 {
     /**
      * String used to glue array items together
@@ -96,7 +96,7 @@ class MUtil_Html_ArrayAttribute extends MUtil_Html_AttributeAbstract
             $this->_specialTypes = $this->_specialTypesDefault;
         }
 
-        $value = MUtil_Ra::args(func_get_args(), 1);
+        $value = \MUtil_Ra::args(func_get_args(), 1);
 
         parent::__construct($name, $value);
     }
@@ -111,7 +111,7 @@ class MUtil_Html_ArrayAttribute extends MUtil_Html_AttributeAbstract
         $results = array();
 
         $view = $this->getView();
-        $renderer = MUtil_Html::getRenderer();
+        $renderer = \MUtil_Html::getRenderer();
         foreach ($this->getArray() as $key => $value) {
             $results[$key] = $renderer->renderAny($view, $value);
         }
@@ -187,7 +187,7 @@ class MUtil_Html_ArrayAttribute extends MUtil_Html_AttributeAbstract
             $value  = $valueIfKey;
         }
 
-        if (is_array($value) || (($value instanceof Traversable) && (! $value instanceof MUtil_Lazy_LazyInterface))) {
+        if (is_array($value) || (($value instanceof \Traversable) && (! $value instanceof \MUtil_Lazy_LazyInterface))) {
             foreach ($value as $key => $item) {
                 $this->_setItem($key, $item);
             }
@@ -199,7 +199,7 @@ class MUtil_Html_ArrayAttribute extends MUtil_Html_AttributeAbstract
     }
 
     /**
-     * Countable implementation, the number of array items
+     * \Countable implementation, the number of array items
      *
      * @return int
      */
@@ -229,6 +229,26 @@ class MUtil_Html_ArrayAttribute extends MUtil_Html_AttributeAbstract
     }
 
     /**
+     * Returns the base array. Overrule for attribute specific changes
+     *
+     * @return array
+     */
+    protected function getArray()
+    {
+        return (array) $this->_values;
+    }
+
+    /**
+     * \IteratorAggregate implementation
+     *
+     * @return \ArrayIterator
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator($this->_values);
+    }
+
+    /**
      * Function that allows subclasses to define their own
      * mechanism for redering the key/value combination.
      *
@@ -241,26 +261,6 @@ class MUtil_Html_ArrayAttribute extends MUtil_Html_AttributeAbstract
     public function getKeyValue($key, $value)
     {
         return $value;
-    }
-
-    /**
-     * Returns the base array. Overrule for attribute specific changes
-     *
-     * @return array
-     */
-    protected function getArray()
-    {
-        return (array) $this->_values;
-    }
-
-    /**
-     * IteratorAggregate implementation
-     *
-     * @return \ArrayIterator
-     */
-    public function getIterator()
-    {
-        return new ArrayIterator($this->_values);
     }
 
     /**
@@ -314,7 +314,7 @@ class MUtil_Html_ArrayAttribute extends MUtil_Html_AttributeAbstract
 
     /**
      * Remove an item from this object
-     * 
+     *
      * @param scalar $offset
      */
     public function offsetUnset($offset)

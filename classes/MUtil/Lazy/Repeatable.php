@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -27,6 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
+ * 
  * @package    MUtil
  * @subpackage Lazy
  * @author     Matijs de Jong <mjong@magnafacta.nl>
@@ -68,13 +68,13 @@ class MUtil_Lazy_Repeatable implements \MUtil_Lazy_RepeatableInterface
 
     /**
      *
-     * @var mixed The actual array or Iterator or IteratorAggregate or other item to repeat
+     * @var mixed The actual array or \Iterator or \IteratorAggregate or other item to repeat
      */
     protected $_repeatable;
 
     /**
      *
-     * @var mixed The array or Iterator that repeats
+     * @var mixed The array or \Iterator that repeats
      */
     protected $_repeater = null;
 
@@ -90,7 +90,7 @@ class MUtil_Lazy_Repeatable implements \MUtil_Lazy_RepeatableInterface
 
     /**
      *
-     * @param mixed $repeatable The array or Iterator or IteratorAggregate or other item to repeat
+     * @param mixed $repeatable The array or \Iterator or \IteratorAggregate or other item to repeat
      */
     public function __construct($repeatable)
     {
@@ -125,7 +125,7 @@ class MUtil_Lazy_Repeatable implements \MUtil_Lazy_RepeatableInterface
     /**
      * Returns the repeating data set.
      *
-     * return Traversable|array
+     * return \Traversable|array
      */
     public function __getRepeatable()
     {
@@ -202,13 +202,13 @@ class MUtil_Lazy_Repeatable implements \MUtil_Lazy_RepeatableInterface
             $this->_repeater  = $value;
             $this->_arrayMode = true;
 
-        } elseif ($value instanceof Iterator) {
+        } elseif ($value instanceof \Iterator) {
             $this->_repeater  = $value;
             $this->_arrayMode = false;
 
-        } elseif ($value instanceof IteratorAggregate) {
+        } elseif ($value instanceof \IteratorAggregate) {
             $this->_repeater = $value->getIterator();
-            while ($this->_repeater instanceof IteratorAggregate) {
+            while ($this->_repeater instanceof \IteratorAggregate) {
                 // Won't be used often, but hey! better be sure
                 $this->_repeater = $this->_repeater->getIterator();
             }
@@ -221,7 +221,7 @@ class MUtil_Lazy_Repeatable implements \MUtil_Lazy_RepeatableInterface
 
         $this->_currentItem = null;
 
-        if ($this->_arrayMode || $this->_repeater instanceof Countable) {
+        if ($this->_arrayMode || $this->_repeater instanceof \Countable) {
             reset($this->_repeater);
             return (boolean) count($this->_repeater);
 

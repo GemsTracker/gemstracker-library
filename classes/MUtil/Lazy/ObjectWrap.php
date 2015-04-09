@@ -42,12 +42,12 @@
  * evaluated only when forced to a string value or when called using ->__toValue().
  *
  * <code>
- * $arrayObj = new ArrayObject();
- * $arrayObj->setFlags(ArrayObject::ARRAY_AS_PROPS);
+ * $arrayObj = new \ArrayObject();
+ * $arrayObj->setFlags(\ArrayObject::ARRAY_AS_PROPS);
  *
  * $arrayObj['a'] = 'old';
  *
- * $lazy_obj = new MUtil_Lazy_ObjectWrap($arrayObj);
+ * $lazy_obj = new \MUtil_Lazy_ObjectWrap($arrayObj);
  * $output = array($arrayObj->a, $lazy_obj->a, $arrayObj->count(), $lazy_obj->count());
  *
  * echo $output[0] . ' -> ' . $output[1] . ' | ' . $output[2] . ' -> ' . $output[3];
@@ -66,7 +66,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class MUtil_Lazy_ObjectWrap extends MUtil_Lazy_LazyAbstract
+class MUtil_Lazy_ObjectWrap extends \MUtil_Lazy_LazyAbstract
 {
     protected $_object;
 
@@ -78,12 +78,12 @@ class MUtil_Lazy_ObjectWrap extends MUtil_Lazy_LazyAbstract
     /**
      * The functions that returns the value.
      *
-     * Returning an instance of MUtil_Lazy_LazyInterface is allowed.
+     * Returning an instance of \MUtil_Lazy_LazyInterface is allowed.
      *
-     * @param MUtil_Lazy_StackInterface $stack A MUtil_Lazy_StackInterface object providing variable data
+     * @param \MUtil_Lazy_StackInterface $stack A \MUtil_Lazy_StackInterface object providing variable data
      * @return mixed
      */
-    protected function _getLazyValue(MUtil_Lazy_StackInterface $stack)
+    protected function _getLazyValue(\MUtil_Lazy_StackInterface $stack)
     {
         return $this->_object;
     }

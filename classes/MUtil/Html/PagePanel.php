@@ -47,7 +47,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Procrastinator
+class MUtil_Html_PagePanel extends \MUtil_Html_Sequence implements \MUtil_Lazy_Procrastinator
 {
     /**
      * Fixed addition to url's required for links, i.e. htte
@@ -129,7 +129,7 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
     /**
      * Lazy instance of this object
      *
-     * @var MUtil_Lazy_ObjectWrap
+     * @var \MUtil_Lazy_ObjectWrap
      */
     protected $_lazy;
 
@@ -143,13 +143,13 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
     /**
      * The core paginator.
      *
-     * @var Zend_Paginator
+     * @var \Zend_Paginator
      */
     protected $_paginator;
 
     /**
      *
-     * @var Zend_Controller_Request_Abstract
+     * @var \Zend_Controller_Request_Abstract
      */
     protected $_request;
 
@@ -178,14 +178,14 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
     /**
      * Lazy call to the _pages parameter
      *
-     * @var MUtil_Lazy_ObjectWrap
+     * @var \MUtil_Lazy_ObjectWrap
      */
     public $pages;
 
     /**
      * Lazy call to the _paginator parameter.
      *
-     * @var MUtil_Lazy_ObjectWrap
+     * @var \MUtil_Lazy_ObjectWrap
      */
     public $paginator;
 
@@ -196,18 +196,18 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
 
         foreach ($this->_defaultEnabledContent as $key => $content) {
             $other = isset($args[$key]) ? $args[$key] : null;
-            if ($other instanceof MUtil_Html_AttributeInterface) {
-                $other->add(MUtil_Lazy::iff($condition, $content));
+            if ($other instanceof \MUtil_Html_AttributeInterface) {
+                $other->add(\MUtil_Lazy::iff($condition, $content));
             } else {
-                $args[$key] = MUtil_Lazy::iff($condition, $content, $other);
+                $args[$key] = \MUtil_Lazy::iff($condition, $content, $other);
             }
         }
         foreach ($this->_defaultDisabledContent as $key => $content) {
             $other = isset($args[$key]) ? $args[$key] : null;
-            if ($other instanceof MUtil_Html_AttributeInterface) {
-                $other->add(MUtil_Lazy::iff($condition, null, $content));
+            if ($other instanceof \MUtil_Html_AttributeInterface) {
+                $other->add(\MUtil_Lazy::iff($condition, null, $content));
             } else {
-                $args[$key] = MUtil_Lazy::iff($condition, $other, $content);
+                $args[$key] = \MUtil_Lazy::iff($condition, $other, $content);
             }
         }
 
@@ -226,7 +226,7 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
                 }
                 // Recently found trick, can save a complicated database query
                 $adapter = $this->_paginator->getAdapter();
-                if ($adapter instanceof MUtil_Paginator_Adapter_PrefetchInterface) {
+                if ($adapter instanceof \MUtil_Paginator_Adapter_PrefetchInterface) {
                     $offset = ($this->_currentPage -1) * $this->_itemCount; // Calculate correct offset
                     $adapter->getItems($offset, $this->_itemCount);
                 }
@@ -237,18 +237,18 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
 
     protected function _createHref($param, $page)
     {
-        return new MUtil_Html_HrefArrayAttribute(array($param => $page) + $this->_baseUrl);
+        return new \MUtil_Html_HrefArrayAttribute(array($param => $page) + $this->_baseUrl);
     }
 
     public function createCountLink($condition, $count, array $args)
     {
         // Use the condition for the $href
-        $element = MUtil_Html::create()->a(
-            MUtil_Lazy::iff($condition, $this->_createHref($this->_itemCountParam, $count)),
+        $element = \MUtil_Html::create()->a(
+            \MUtil_Lazy::iff($condition, $this->_createHref($this->_itemCountParam, $count)),
             $this->_applyDefaults($condition, $args));
 
         // and make the tagName an if
-        $element->tagName = MUtil_Lazy::iff($condition, 'a', 'span');
+        $element->tagName = \MUtil_Lazy::iff($condition, 'a', 'span');
 
         return $element;
     }
@@ -257,16 +257,16 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
      * Returns an element with a conditional tagName: it will become either an A or a SPAN
      * element.
      *
-     * @param MUtil_Lazy $condition Condition for link display
+     * @param \MUtil_Lazy $condition Condition for link display
      * @param int $page    Page number of this link
      * @param array $args  Content of the page
      * @return \MUtil_Html_HtmlElement
      */
     public function createPageLink($condition, $page, array $args)
     {
-        $element = new MUtil_Html_HtmlElement(
-                MUtil_Lazy::iff($condition, 'a', 'span'),
-                array('href' => MUtil_Lazy::iff($condition, $this->_createHref($this->_currentPageParam, $page))),
+        $element = new \MUtil_Html_HtmlElement(
+                \MUtil_Lazy::iff($condition, 'a', 'span'),
+                array('href' => \MUtil_Lazy::iff($condition, $this->_createHref($this->_currentPageParam, $page))),
                 $this->_applyDefaults($condition, $args)
                 );
 
@@ -275,7 +275,7 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
 
     public function firstPage($label = '<<', $args_array = null)
     {
-        $args = MUtil_Ra::args(func_get_args());
+        $args = \MUtil_Ra::args(func_get_args());
 
         // Apply default
         if (! isset($args[0])) {
@@ -294,7 +294,7 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
     {
         $request = $this->getRequest();
 
-        $front  = Zend_Controller_Front::getInstance();
+        $front  = \Zend_Controller_Front::getInstance();
         $result = $request->getBasePath();
 
         $bname = $request->getModuleKey();
@@ -341,7 +341,7 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
                 } elseif ($currentPage = $request->getParam($param_name)) {
                     $this->_currentPage = $currentPage;
                     // Set cookie
-                } elseif ($request instanceof Zend_Controller_Request_Http) {
+                } elseif ($request instanceof \Zend_Controller_Request_Http) {
                     $this->_currentPage = $request->getCookie($param_name, $this->_currentPage);
                 }
             }
@@ -385,7 +385,7 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
                     // Store the current value
                     setcookie($param_name, $this->_itemCount, time() + (30 * 86400), $this->getCookieLocation());
 
-                } elseif ($request instanceof Zend_Controller_Request_Http) {
+                } elseif ($request instanceof \Zend_Controller_Request_Http) {
                     $this->_itemCount = $request->getCookie($param_name, $this->getItemCountDefault());
                 }
             }
@@ -466,12 +466,12 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
     /**
      * Return the Request object
      *
-     * @return Zend_Controller_Request_Abstract
+     * @return \Zend_Controller_Request_Abstract
      */
     public function getRequest()
     {
         if (! $this->_request) {
-            $front = Zend_Controller_Front::getInstance();
+            $front = \Zend_Controller_Front::getInstance();
             $this->setRequest($front->getRequest());
         }
 
@@ -493,7 +493,7 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
 
     public function lastPage($label = '>>', $args_array = null)
     {
-        $args = MUtil_Ra::args(func_get_args());
+        $args = \MUtil_Ra::args(func_get_args());
 
         // Apply default
         if (! isset($args[0])) {
@@ -505,7 +505,7 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
 
     public function nextPage($label = '>', $args_array = null)
     {
-        $args = MUtil_Ra::args(func_get_args());
+        $args = \MUtil_Ra::args(func_get_args());
 
         // Apply default
         if (! isset($args[0])) {
@@ -529,22 +529,22 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
      * @param string $next Label for goto next page link
      * @param string $last Label for goto last page link
      * @param string $glue In between links glue
-     * @param mixed $args MUtil_Ra::args extra arguments applied to all links
-     * @return MUtil_Html_Sequence
+     * @param mixed $args \MUtil_Ra::args extra arguments applied to all links
+     * @return \MUtil_Html_Sequence
      */
     public function pageLinks($first = '<<', $previous = '<', $next = '>', $last = '>>', $glue = ' ', $args = null)
     {
         $argDefaults = array('first' => '<<', 'previous' => '<', 'next' => '>', 'last' => '>>', 'glue' => ' ');
         $argNames    = array_keys($argDefaults);
 
-        $args = MUtil_Ra::args(func_get_args(), $argNames, $argDefaults);
+        $args = \MUtil_Ra::args(func_get_args(), $argNames, $argDefaults);
 
         foreach ($argNames as $name) {
             $$name = $args[$name];
             unset($args[$name]);
         }
 
-        $div = MUtil_Html::create()->sequence(array('glue' => $glue));
+        $div = \MUtil_Html::create()->sequence(array('glue' => $glue));
 
         if ($first) { // Can be null or array()
             $div[] = $this->firstPage((array) $first + $args);
@@ -560,13 +560,13 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
             $div[] = $this->lastPage((array) $last + $args);
         }
 
-        return MUtil_Lazy::iff(MUtil_Lazy::comp($this->pages->pageCount, '>', 1), $div);
+        return \MUtil_Lazy::iff(\MUtil_Lazy::comp($this->pages->pageCount, '>', 1), $div);
     }
 
     /**
      * Create a page panel
      *
-     * @param mixed $paginator MUtil_Ra::args() for an MUtil_Html_Sequence
+     * @param mixed $paginator \MUtil_Ra::args() for an \MUtil_Html_Sequence
      * @param mixed $request
      * @param mixed $args
      * @return self
@@ -585,7 +585,7 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
 
     public function previousPage($label = '<', $args_array = null)
     {
-        $args = MUtil_Ra::args(func_get_args());
+        $args = \MUtil_Ra::args(func_get_args());
 
         // Apply default
         if (! isset($args[0])) {
@@ -597,9 +597,9 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
 
     public function rangePages($glue = ' ', $args_array = null)
     {
-        $args = MUtil_Ra::args(func_get_args(), array('glue'), array('glue' => ' '));
+        $args = \MUtil_Ra::args(func_get_args(), array('glue'), array('glue' => ' '));
 
-        return new MUtil_Html_PageRangeRenderer($this, $args);
+        return new \MUtil_Html_PageRangeRenderer($this, $args);
     }
 
     public function setBaseUrl(array $baseUrl = null)
@@ -650,10 +650,10 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
 
     /**
      *
-     * @param Zend_Paginator $paginator
+     * @param \Zend_Paginator $paginator
      * @return \MUtil_Html_PagePanel (continuation pattern)
      */
-    public function setPaginator(Zend_Paginator $paginator)
+    public function setPaginator(\Zend_Paginator $paginator)
     {
         $this->_paginator = $paginator;
 
@@ -668,10 +668,10 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
     /**
      * Set the Request object
      *
-     * @param Zend_Controller_Request_Abstract $request
+     * @param \Zend_Controller_Request_Abstract $request
      * @return \MUtil_Html_PagePanel (continuation pattern)
      */
-    public function setRequest(Zend_Controller_Request_Abstract $request)
+    public function setRequest(\Zend_Controller_Request_Abstract $request)
     {
         $this->_request = $request;
         $this->_checkVariables();
@@ -688,10 +688,10 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
     /**
      * Set the View object
      *
-     * @param  Zend_View_Interface $view
+     * @param  \Zend_View_Interface $view
      * @return \MUtil_Html_PagePanel (continuation pattern)
      */
-    public function setView(Zend_View_Interface $view)
+    public function setView(\Zend_View_Interface $view)
     {
         if ($this->_paginator) {
             $this->_paginator->setView($view);
@@ -701,14 +701,14 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
     }
 
     /**
-     * Returns a lazy instance of item. Do NOT use MUtil_Lazy::L() in this function!!!
+     * Returns a lazy instance of item. Do NOT use \MUtil_Lazy::L() in this function!!!
      *
-     * @return MUtil_Lazy_LazyInterface
+     * @return \MUtil_Lazy_LazyInterface
      */
     public function toLazy()
     {
         if (! $this->_lazy) {
-            $this->_lazy = new MUtil_Lazy_ObjectWrap($this);
+            $this->_lazy = new \MUtil_Lazy_ObjectWrap($this);
         }
 
         return $this->_lazy;
@@ -716,7 +716,7 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
 
     public function uptoOff($upto = '-', $off = '/', $glue = ' ')
     {
-        $seq = new MUtil_Html_Sequence();
+        $seq = new \MUtil_Html_Sequence();
         $seq->setGlue($glue);
         $seq->if($this->pages->totalItemCount, $this->pages->firstItemNumber, 0);
         $seq[] = $upto;
@@ -732,14 +732,14 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
         $argDefaults = array('upto' => '~', 'off' => '/', 'less' => '-', 'more' => '+', 'all' => null, 'glue' => ' ');
         $argNames    = array_keys($argDefaults);
 
-        $args = MUtil_Ra::args(func_get_args(), $argNames, $argDefaults);
+        $args = \MUtil_Ra::args(func_get_args(), $argNames, $argDefaults);
 
         foreach ($argNames as $name) {
             $$name = $args[$name];
             unset($args[$name]);
         }
 
-        $seq = new MUtil_Html_Sequence();
+        $seq = new \MUtil_Html_Sequence();
         $seq->setGlue($glue);
         if (null !== $upto) {
             $seq->if($this->pages->totalItemCount, $this->pages->firstItemNumber, 0);

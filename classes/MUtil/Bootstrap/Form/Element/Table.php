@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -27,8 +26,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
+ *
  * @package    MUtil
  * @subpackage Form_Element
+ * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @version    $Id: Table.php 1854 2014-03-25 18:59:39Z matijsdejong $
@@ -42,9 +43,10 @@
  * @subpackage Form_Element
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.0
+ * @since      Class available since version 1.6.5
  */
-class MUtil_Bootstrap_Form_Element_Table extends MUtil_Form_Element_Table implements MUtil_Form_Element_SubFocusInterface
+class MUtil_Bootstrap_Form_Element_Table extends \MUtil_Form_Element_Table
+    implements \MUtil_Form_Element_SubFocusInterface
 {
     protected $_elementClass = 'form-controller';
 
@@ -54,12 +56,12 @@ class MUtil_Bootstrap_Form_Element_Table extends MUtil_Form_Element_Table implem
      * $spec may be:
      * - string: name of element
      * - array: options with which to configure element
-     * - Zend_Config: Zend_Config with options for configuring element
+     * - \Zend_Config: \Zend_Config with options for configuring element
      *
-     * @param  string|array|Zend_Config $spec
-     * @param  array|Zend_Config $options
+     * @param  string|array|\Zend_Config $spec
+     * @param  array|\Zend_Config $options
      * @return void
-     * @throws Zend_Form_Exception if no element name after initialization
+     * @throws \Zend_Form_Exception if no element name after initialization
      */
     public function __construct($spec, $options = null)
     {
@@ -67,12 +69,13 @@ class MUtil_Bootstrap_Form_Element_Table extends MUtil_Form_Element_Table implem
         $this->addClass($this->_elementClass);
     }
 
-    /** 
+    /**
      * Add a class to an existing class, taking care of spacing
-     * @param string $targetClass  The existing class 
+     * @param string $targetClass  The existing class
      * @param string $addClass    the Class or classes to add, seperated by spaces
      */
-    protected function addClass($addClass) {
+    protected function addClass($addClass)
+    {
         $targetClass = $this->getAttrib('class');
         if(!empty($targetClass) && (strpos($targetClass, $addClass) === false)) {
             $targetClass .= " {$addClass}";
@@ -87,7 +90,7 @@ class MUtil_Bootstrap_Form_Element_Table extends MUtil_Form_Element_Table implem
     /**
      * Load default decorators
      *
-     * @return Zend_Form_Element
+     * @return \Zend_Form_Element
      */
     public function loadDefaultDecorators()
     {

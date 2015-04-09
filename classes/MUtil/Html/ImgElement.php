@@ -54,7 +54,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class MUtil_Html_ImgElement extends MUtil_Html_HtmlElement
+class MUtil_Html_ImgElement extends \MUtil_Html_HtmlElement
 {
     /**
      * @var array List of directory names where img looks for images.
@@ -92,7 +92,7 @@ class MUtil_Html_ImgElement extends MUtil_Html_HtmlElement
     protected function _htmlAttribs($attribs)
     {
         if (isset($attribs['src'])) {
-            $filename = MUtil_Lazy::rise($attribs['src']);
+            $filename = \MUtil_Lazy::rise($attribs['src']);
 
             if ($dir = self::getImageDir($filename)) {
                 if (! isset($attribs['width'], $attribs['height'])) {
@@ -105,16 +105,16 @@ class MUtil_Html_ImgElement extends MUtil_Html_HtmlElement
                         if (! isset($attribs['height'])) {
                             $attribs['height'] = $info[1];
                         }
-                    } catch (Exception $e) {
-                        if (MUtil_Html::$verbose) {
-                            MUtil_Echo::r($e, __CLASS__ . '->' .  __FUNCTION__);
+                    } catch (\Exception $e) {
+                        if (\MUtil_Html::$verbose) {
+                            \MUtil_Echo::r($e, __CLASS__ . '->' .  __FUNCTION__);
                         }
                     }
                 }
 
                 $attribs['src'] = $this->view->baseUrl() . $dir . $filename;
             }
-            // MUtil_Echo::r($attribs['src']);
+            // \MUtil_Echo::r($attribs['src']);
         }
 
         return parent::_htmlAttribs($attribs);
@@ -163,8 +163,8 @@ class MUtil_Html_ImgElement extends MUtil_Html_HtmlElement
                     return $dir;
                 }
             }
-            if (MUtil_Html::$verbose) {
-                MUtil_Echo::r("File not found: $filename. \n\nLooked in: \n" . implode(", \n", self::$_imageDirs));
+            if (\MUtil_Html::$verbose) {
+                \MUtil_Echo::r("File not found: $filename. \n\nLooked in: \n" . implode(", \n", self::$_imageDirs));
             }
         }
     }
@@ -194,10 +194,10 @@ class MUtil_Html_ImgElement extends MUtil_Html_HtmlElement
     }
 
     /**
-     * Static helper function for creation, used by @see MUtil_Html_Creator.
+     * Static helper function for creation, used by @see \MUtil_Html_Creator.
      *
-     * @param mixed $arg_array Optional MUtil_Ra::args processed settings
-     * @return MUtil_Html_ImgElement
+     * @param mixed $arg_array Optional \MUtil_Ra::args processed settings
+     * @return \MUtil_Html_ImgElement
      */
     public static function img($arg_array = null)
     {
@@ -206,15 +206,15 @@ class MUtil_Html_ImgElement extends MUtil_Html_HtmlElement
     }
 
     /**
-     * Static helper function for creation, used by @see MUtil_Html_Creator.
+     * Static helper function for creation, used by @see \MUtil_Html_Creator.
      *
      * @param string $src The source
-     * @param mixed $arg_array Optional MUtil_Ra::args processed settings
-     * @return MUtil_Html_ImgElement
+     * @param mixed $arg_array Optional \MUtil_Ra::args processed settings
+     * @return \MUtil_Html_ImgElement
      */
     public static function imgFile($src, $arg_array = null)
     {
-        $args = MUtil_Ra::args(func_get_args(), 1);
+        $args = \MUtil_Ra::args(func_get_args(), 1);
 
         $args['src'] = $src;
         if (! isset($args['alt'])) {
@@ -252,13 +252,13 @@ class MUtil_Html_ImgElement extends MUtil_Html_HtmlElement
      *
      * The $view is used to correctly encode and escape the output
      *
-     * @param Zend_View_Abstract $view
+     * @param \Zend_View_Abstract $view
      * @return string Correctly encoded and escaped html output
      */
-    protected function renderElement(Zend_View_Abstract $view)
+    protected function renderElement(\Zend_View_Abstract $view)
     {
         if (isset($this->_attribs['src'])) {
-            $src = MUtil_Html::getRenderer()->renderAny($view, $this->_attribs['src']);
+            $src = \MUtil_Html::getRenderer()->renderAny($view, $this->_attribs['src']);
         } else {
             $src = false;
         }

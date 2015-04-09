@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: RepeatingTable .php 1748 2014-02-19 18:09:41Z matijsdejong $
+ * @version    $Id: SubForms.php 1748 2014-02-19 18:09:41Z matijsdejong $
  */
 
 /**
@@ -45,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_Form_Element_SubForms extends Zend_Form_Element_Xhtml implements MUtil_Form_Element_SubFocusInterface
+class MUtil_Form_Element_SubForms extends \Zend_Form_Element_Xhtml implements \MUtil_Form_Element_SubFocusInterface
 {
     /**
      * Use no view helper by default
@@ -64,14 +64,14 @@ class MUtil_Form_Element_SubForms extends Zend_Form_Element_Xhtml implements MUt
     /**
      * The model sub form all others are copied from
      *
-     * @var Zend_Form
+     * @var \Zend_Form
      */
     protected $_subForm;
 
     /**
      * Actual clones of form
      *
-     * @var array of Zend_Form
+     * @var array of \Zend_Form
      */
     protected $_subForms;
 
@@ -81,13 +81,13 @@ class MUtil_Form_Element_SubForms extends Zend_Form_Element_Xhtml implements MUt
      * $spec may be:
      * - string: name of element
      * - array: options with which to configure element
-     * - Zend_Config: Zend_Config with options for configuring element
+     * - \Zend_Config: \Zend_Config with options for configuring element
      *
-     * @param  string|array|Zend_Config $spec
+     * @param  string|array|\Zend_Config $spec
      * @return void
-     * @throws Zend_Form_Exception if no element name after initialization
+     * @throws \Zend_Form_Exception if no element name after initialization
      */
-    public function __construct(Zend_Form $subForm, $spec, $options = null)
+    public function __construct(\Zend_Form $subForm, $spec, $options = null)
     {
         $this->setSubForm($subForm);
 
@@ -112,7 +112,7 @@ class MUtil_Form_Element_SubForms extends Zend_Form_Element_Xhtml implements MUt
     /**
      * Get the (base) form cloned for each repetition
      *
-     * @return Zend_Form
+     * @return \Zend_Form
      */
     public function getSubForm()
     {
@@ -122,7 +122,7 @@ class MUtil_Form_Element_SubForms extends Zend_Form_Element_Xhtml implements MUt
     /**
      * Get the (actual) cloned, repeated forms
      *
-     * @return array of Zend_Form
+     * @return array of \Zend_Form
      */
     public function getSubForms()
     {
@@ -177,10 +177,10 @@ class MUtil_Form_Element_SubForms extends Zend_Form_Element_Xhtml implements MUt
     /**
      * Change  the sub form later
      *
-     * @param Zend_Form $subForm
+     * @param \Zend_Form $subForm
      * @return \MUtil_Form_Element_SubForms (continuation pattern)
      */
-    public function setSubForm(Zend_Form $subForm)
+    public function setSubForm(\Zend_Form $subForm)
     {
         $this->_subForm = $subForm;
         return $this;

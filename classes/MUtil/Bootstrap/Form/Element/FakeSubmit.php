@@ -26,11 +26,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @version    $Id: FakeSubmit.php 1280 2013-06-20 16:36:42Z matijsdejong $
  * @package    MUtil
  * @subpackage Form_Element
+ * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
+ * @version    $Id: FakeSubmit.php 1280 2013-06-20 16:36:42Z matijsdejong $
  */
 
 /**
@@ -45,7 +46,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.6
  */
-class MUtil_Bootstrap_Form_Element_FakeSubmit extends MUtil_Bootstrap_Form_Element_Button
+class MUtil_Bootstrap_Form_Element_FakeSubmit extends \MUtil_Bootstrap_Form_Element_Button
 {
     /**
      * Use fakeSubmit view helper by default

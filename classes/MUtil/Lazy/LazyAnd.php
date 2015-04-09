@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_Lazy_LazyAnd extends MUtil_Lazy_LazyAbstract implements Countable
+class MUtil_Lazy_LazyAnd extends \MUtil_Lazy_LazyAbstract implements \Countable
 {
     /**
      * All the values to test
@@ -110,15 +110,15 @@ class MUtil_Lazy_LazyAnd extends MUtil_Lazy_LazyAbstract implements Countable
     /**
      * The functions that returns the value.
      *
-     * Returning an instance of MUtil_Lazy_LazyInterface is allowed.
+     * Returning an instance of \MUtil_Lazy_LazyInterface is allowed.
      *
-     * @param MUtil_Lazy_StackInterface $stack A MUtil_Lazy_StackInterface object providing variable data
+     * @param \MUtil_Lazy_StackInterface $stack A \MUtil_Lazy_StackInterface object providing variable data
      * @return mixed
      */
-    protected function _getLazyValue(MUtil_Lazy_StackInterface $stack)
+    protected function _getLazyValue(\MUtil_Lazy_StackInterface $stack)
     {
         foreach ($this->_values as $value) {
-            if (! MUtil_Lazy::rise($value, $stack)) {
+            if (! \MUtil_Lazy::rise($value, $stack)) {
                 return false;
             }
         }

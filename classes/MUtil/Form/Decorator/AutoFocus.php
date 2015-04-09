@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class MUtil_Form_Decorator_AutoFocus extends Zend_Form_Decorator_Abstract
+class MUtil_Form_Decorator_AutoFocus extends \Zend_Form_Decorator_Abstract
 {
     /**
      * When true the code attempts to select the text
@@ -55,16 +55,16 @@ class MUtil_Form_Decorator_AutoFocus extends Zend_Form_Decorator_Abstract
 
     private function _getFocus($element)
     {
-        // MUtil_Echo::r(get_class($element));
-        if ($element instanceof MUtil_Form_Element_SubFocusInterface) {
+        // \MUtil_Echo::r(get_class($element));
+        if ($element instanceof \MUtil_Form_Element_SubFocusInterface) {
             foreach ($element->getSubFocusElements() as $subelement) {
                 if ($focus = $this->_getFocus($subelement)) {
                     return $focus;
                 }
             }
-        } elseif ($element instanceof Zend_Form_Element) {
-            if (($element instanceof Zend_Form_Element_Hidden) ||
-                ($element instanceof MUtil_Form_Element_NoFocusInterface) ||
+        } elseif ($element instanceof \Zend_Form_Element) {
+            if (($element instanceof \Zend_Form_Element_Hidden) ||
+                ($element instanceof \MUtil_Form_Element_NoFocusInterface) ||
                 ($element->getAttrib('readonly')) ||
                 ($element->helper == 'Button') ||
                 ($element->helper == 'formSubmit') ||
@@ -73,8 +73,8 @@ class MUtil_Form_Decorator_AutoFocus extends Zend_Form_Decorator_Abstract
             }
             return $element->getId();
 
-        } elseif (($element instanceof Zend_Form) ||
-                  ($element instanceof Zend_Form_DisplayGroup)) {
+        } elseif (($element instanceof \Zend_Form) ||
+                  ($element instanceof \Zend_Form_DisplayGroup)) {
             foreach ($element as $subelement) {
                 if ($focus = $this->_getFocus($subelement)) {
                     return $focus;
@@ -132,7 +132,7 @@ class MUtil_Form_Decorator_AutoFocus extends Zend_Form_Decorator_Abstract
      * Set the selectAll value
      *
      * @param type $value
-     * @return MUtil_Form_Decorator_AutoFocus (continuation pattern)
+     * @return \MUtil_Form_Decorator_AutoFocus (continuation pattern)
      */
     public function setSelectAll($value = true)
     {

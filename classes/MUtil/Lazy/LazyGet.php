@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -37,7 +36,7 @@
  */
 
 /**
- * Creates a lazy get to returns a parameter set in the $stack used in MUtil_Lazy::rise().
+ * Creates a lazy get to returns a parameter set in the $stack used in \MUtil_Lazy::rise().
  *
  * @package    MUtil
  * @subpackage Lazy
@@ -45,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class MUtil_Lazy_LazyGet extends MUtil_Lazy_LazyAbstract
+class MUtil_Lazy_LazyGet extends \MUtil_Lazy_LazyAbstract
 {
     /**
      * The name of the stack value to get
@@ -66,12 +65,12 @@ class MUtil_Lazy_LazyGet extends MUtil_Lazy_LazyAbstract
     /**
      * The functions that returns the value.
      *
-     * Returning an instance of MUtil_Lazy_LazyInterface is allowed.
+     * Returning an instance of \MUtil_Lazy_LazyInterface is allowed.
      *
-     * @param MUtil_Lazy_StackInterface $stack A MUtil_Lazy_StackInterface object providing variable data
+     * @param \MUtil_Lazy_StackInterface $stack A \MUtil_Lazy_StackInterface object providing variable data
      * @return mixed
      */
-    protected function _getLazyValue(MUtil_Lazy_StackInterface $stack)
+    protected function _getLazyValue(\MUtil_Lazy_StackInterface $stack)
     {
         return $stack->lazyGet($this->_name);
     }

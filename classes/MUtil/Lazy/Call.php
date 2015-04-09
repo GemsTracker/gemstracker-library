@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class MUtil_Lazy_Call extends MUtil_Lazy_LazyAbstract
+class MUtil_Lazy_Call extends \MUtil_Lazy_LazyAbstract
 {
     private $_callable;
     private $_params;
@@ -58,18 +58,18 @@ class MUtil_Lazy_Call extends MUtil_Lazy_LazyAbstract
     /**
      * The functions that returns the value.
      *
-     * Returning an instance of MUtil_Lazy_LazyInterface is allowed.
+     * Returning an instance of \MUtil_Lazy_LazyInterface is allowed.
      *
-     * @param MUtil_Lazy_StackInterface $stack A MUtil_Lazy_StackInterface object providing variable data
+     * @param \MUtil_Lazy_StackInterface $stack A \MUtil_Lazy_StackInterface object providing variable data
      * @return mixed
      */
-    protected function _getLazyValue(MUtil_Lazy_StackInterface $stack)
+    protected function _getLazyValue(\MUtil_Lazy_StackInterface $stack)
     {
         $params = $this->_params;
 
         if (is_array($this->_callable)) {
             list($object, $method) = $this->_callable;
-            while ($object instanceof MUtil_Lazy_LazyInterface) {
+            while ($object instanceof \MUtil_Lazy_LazyInterface) {
                 $object = $object->__toValue($stack);
             }
             $callable = array($object, $method);
@@ -95,14 +95,14 @@ class MUtil_Lazy_Call extends MUtil_Lazy_LazyAbstract
         }
 
         if (is_callable($callable)) {
-            $params = MUtil_Lazy::rise($params, $stack);
+            $params = \MUtil_Lazy::rise($params, $stack);
             /* if ('_' == $method) {
-                MUtil_Echo::r($params);
+                \MUtil_Echo::r($params);
             } */
 
             return call_user_func_array($callable, $params);
         }
 
-        throw new MUtil_Lazy_LazyException('Lazy execution exception! "' . $method . '" is not a valid callable.');
+        throw new \MUtil_Lazy_LazyException('Lazy execution exception! "' . $method . '" is not a valid callable.');
     }
 }

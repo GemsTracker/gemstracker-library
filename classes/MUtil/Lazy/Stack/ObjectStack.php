@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_Lazy_Stack_ObjectStack implements MUtil_Lazy_StackInterface
+class MUtil_Lazy_Stack_ObjectStack implements \MUtil_Lazy_StackInterface
 {
     /**
      * The oibject to get properties from
@@ -81,11 +81,11 @@ class MUtil_Lazy_Stack_ObjectStack implements MUtil_Lazy_StackInterface
             return $this->_object->$name;
         }
         if ($this->_throwOnMiss) {
-            throw new MUtil_Lazy_LazyException("No lazy stack variable defined for '$name' parameter.");
+            throw new \MUtil_Lazy_LazyException("No lazy stack variable defined for '$name' parameter.");
         }
-        if (MUtil_Lazy::$verbose) {
+        if (\MUtil_Lazy::$verbose) {
             $class = get_class($this->_object);
-            MUtil_Echo::header("No lazy stack variable defined for '$name' parameter using a '$class' object.");
+            \MUtil_Echo::header("No lazy stack variable defined for '$name' parameter using a '$class' object.");
         }
 
         return null;

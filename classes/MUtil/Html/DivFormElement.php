@@ -156,7 +156,9 @@ class MUtil_Html_DivFormElement extends \MUtil_Html_HtmlElement implements \MUti
         $decorator->setHtmlElement($this);
         $decorator->setPrologue($formrep);  // Renders hidden elements before this element
         if ($prependErrors) {
-            $decorator->setPrependErrors(\MUtil_Html_ListElement::ul(array('class' => $errorClass, 'style' => array('margin-left' => $width))));
+            $decorator->setPrependErrors(\MUtil_Html_ListElement::ul(
+                    array('class' => $errorClass, 'style' => array('margin-left' => $width))
+                    ));
         }
         $form->setDecorators(array($decorator, 'AutoFocus', 'Form'));
 
@@ -167,14 +169,20 @@ class MUtil_Html_DivFormElement extends \MUtil_Html_HtmlElement implements \MUti
      * Apply this element to the form as the output decorator with automatically calculated widths.
      *
      * @param \Zend_Form $form
-     * @param float $factor To multiply the widest nummers of letters in the labels with to calculate the width in em at drawing time
+     * @param float $factor To multiply the widest nummers of letters in the labels with to calculate the width in em
+     * at drawing time
      * @param array $order The display order of the elements
      * @return \MUtil_Html_PFormElement
      */
-    public function setAutoWidthFormLayout(\Zend_Form $form, $factor = 1, array $order = array('label', 'element', 'errors', 'description'))
+    public function setAutoWidthFormLayout(\Zend_Form $form, $factor = 1,
+            array $order = array('label', 'element', 'errors', 'description'))
     {
         // Lazy call becase the form might not be completed at this stage.
-        return $this->setAsFormLayout($form, \MUtil_Lazy::call(array('MUtil_Html_DlElement', 'calculateAutoWidthFormLayout'), $form, $factor), $order);
+        return $this->setAsFormLayout(
+                $form,
+                \MUtil_Lazy::call(array('MUtil_Html_DlElement', 'calculateAutoWidthFormLayout'), $form, $factor),
+                $order
+                );
     }
 
     /**

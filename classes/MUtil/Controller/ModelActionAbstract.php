@@ -38,7 +38,7 @@
 /**
  * Extends Action with code for working with models.
  *
- * @see MUtil_Model_ModelAbstract
+ * @see \MUtil_Model_ModelAbstract
  *
  * @package    MUtil
  * @subpackage Controller
@@ -46,7 +46,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-abstract class MUtil_Controller_ModelActionAbstract extends MUtil_Controller_Action
+abstract class MUtil_Controller_ModelActionAbstract extends \MUtil_Controller_Action
 {
     /**
      *
@@ -81,7 +81,7 @@ abstract class MUtil_Controller_ModelActionAbstract extends MUtil_Controller_Act
      *
      * Always retrieve using $this->getModel().
      *
-     * $var MUtil_Model_ModelAbstract $_model The model in use
+     * $var \MUtil_Model_ModelAbstract $_model The model in use
      */
     private $_model;
 
@@ -92,7 +92,7 @@ abstract class MUtil_Controller_ModelActionAbstract extends MUtil_Controller_Act
      */
     protected function _getIdParam()
     {
-        return $this->_getParam(MUtil_Model::REQUEST_ID);
+        return $this->_getParam(\MUtil_Model::REQUEST_ID);
     }
 
     /**
@@ -101,11 +101,11 @@ abstract class MUtil_Controller_ModelActionAbstract extends MUtil_Controller_Act
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_TableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_TableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
         foreach($model->getItemsOrdered() as $name) {
             if ($label = $model->get($name, 'label')) {
@@ -121,13 +121,13 @@ abstract class MUtil_Controller_ModelActionAbstract extends MUtil_Controller_Act
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @param array $data The data that will later be loaded into the form
      * @param optional boolean $new Form should be for a new element
      * @return void|array When an array of new values is return, these are used to update the $data array in the calling function
      */
-    protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
+    protected function addFormElements(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model, array $data, $new = false)
     {
         foreach($model->getItemsOrdered() as $name) {
             if ($model->has($name, 'label') || $model->has($name, 'elementClass')) {
@@ -148,7 +148,7 @@ abstract class MUtil_Controller_ModelActionAbstract extends MUtil_Controller_Act
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     abstract protected function createModel($detailed, $action);
 
@@ -157,22 +157,22 @@ abstract class MUtil_Controller_ModelActionAbstract extends MUtil_Controller_Act
      * Creates an empty form. Allows overruling in sub-classes.
      *
      * @param mixed $options
-     * @return Zend_Form
+     * @return \Zend_Form
      */
     protected function createForm($options = null)
     {
-        $form = new Zend_Form($options);
+        $form = new \Zend_Form($options);
 
         return $form;
     }
 
 
     /**
-     * Creates from the model a MUtil_Html_TableElement that can display multiple items.
+     * Creates from the model a \MUtil_Html_TableElement that can display multiple items.
      *
      * @param array $baseUrl
-     * @param mixed $sort A valid sort for MUtil_Model_ModelAbstract->load()
-     * @return MUtil_Html_TableElement
+     * @param mixed $sort A valid sort for \MUtil_Model_ModelAbstract->load()
+     * @return \MUtil_Html_TableElement
      */
     public function getBrowseTable(array $baseUrl = null, $sort = null, $model = null)
     {
@@ -198,7 +198,7 @@ abstract class MUtil_Controller_ModelActionAbstract extends MUtil_Controller_Act
      * parameter was added, because the most common use of action is a split between detailed
      * and summarized actions.
      *
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function getModel()
     {
@@ -222,12 +222,12 @@ abstract class MUtil_Controller_ModelActionAbstract extends MUtil_Controller_Act
 
 
     /**
-     * Creates from the model a Zend_Form using createForm and adds elements
+     * Creates from the model a \Zend_Form using createForm and adds elements
      * using addFormElements().
      *
      * @param array $data The data that will later be loaded into the form, can be changed
      * @param optional boolean $new Form should be for a new element
-     * @return Zend_Form
+     * @return \Zend_Form
      */
     public function getModelForm(array &$data, $new = false)
     {
@@ -241,12 +241,12 @@ abstract class MUtil_Controller_ModelActionAbstract extends MUtil_Controller_Act
     }
 
     /**
-     * Creates from the model a MUtil_Html_TableElement for display of a single item.
+     * Creates from the model a \MUtil_Html_TableElement for display of a single item.
      *
      * It can and will display multiple items, but that is not what this function is for.
      *
      * @param integer $columns The number of columns to use for presentation
-     * @return MUtil_Html_TableElement
+     * @return \MUtil_Html_TableElement
      */
     public function getShowTable($columns = 1)
     {

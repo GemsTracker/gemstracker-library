@@ -51,13 +51,13 @@ class MUtil_Html_Creator
 {
     /**
      *
-     * @var MUtil_Util_LookupList
+     * @var \MUtil_Util_LookupList
      */
     protected $_attributeFunctionList;
 
     /**
      *
-     * @var MUtil_Util_LookupList
+     * @var \MUtil_Util_LookupList
      */
     protected $_elementFunctionList;
 
@@ -149,14 +149,14 @@ class MUtil_Html_Creator
 
     public function addAttributeFunction($name_1, $function_1, $name_n = null, $function_n = null)
     {
-        $args = MUtil_Ra::pairs(func_get_args());
+        $args = \MUtil_Ra::pairs(func_get_args());
 
         return $this->setAttributeFunctionList($args, true);
     }
 
     public function addElementFunction($name_1, $function_1, $name_n = null, $function_n = null)
     {
-        $args = MUtil_Ra::pairs(func_get_args());
+        $args = \MUtil_Ra::pairs(func_get_args());
 
         $this->setElementFunctionList($args, true);
 
@@ -169,7 +169,7 @@ class MUtil_Html_Creator
             return call_user_func_array($function, $args);
 
         } else {
-            return new MUtil_Html_HtmlElement($tagName, $args);
+            return new \MUtil_Html_HtmlElement($tagName, $args);
         }
     }
 
@@ -179,14 +179,14 @@ class MUtil_Html_Creator
             return call_user_func($function, $args);
 
         } else {
-            return new MUtil_Html_ArrayAttribute($attributeName, $args);
+            return new \MUtil_Html_ArrayAttribute($attributeName, $args);
 
         }
     }
 
     public function createRaw($tagName, array $args = array())
     {
-        return new MUtil_Html_HtmlElement($tagName, $args);
+        return new \MUtil_Html_HtmlElement($tagName, $args);
     }
 
     public function getAttributeFunctionList()
@@ -201,10 +201,10 @@ class MUtil_Html_Creator
 
     public function setAttributeFunctionList($attributeFunctions, $append = false)
     {
-        if ($attributeFunctions instanceof MUtil_Util_LookupList) {
+        if ($attributeFunctions instanceof \MUtil_Util_LookupList) {
             $this->_attributeFunctionList = $attributeFunctions;
         } else {
-            $this->_attributeFunctionList = new MUtil_Util_FunctionList($this->_initialAttributeFunctions);
+            $this->_attributeFunctionList = new \MUtil_Util_FunctionList($this->_initialAttributeFunctions);
 
             if ($attributeFunctions) {
                 if ($append) {
@@ -219,11 +219,11 @@ class MUtil_Html_Creator
 
     public function setElementFunctionList($elementFunctions, $append = false)
     {
-        if ($elementFunctions instanceof MUtil_Util_LookupList) {
+        if ($elementFunctions instanceof \MUtil_Util_LookupList) {
             $this->_elementFunctionList = $elementFunctions;
         } else {
-            if (! $this->_elementFunctionList instanceof MUtil_Util_FunctionList) {
-                $this->_elementFunctionList = new MUtil_Util_FunctionList($this->_initalElementFunctions);
+            if (! $this->_elementFunctionList instanceof \MUtil_Util_FunctionList) {
+                $this->_elementFunctionList = new \MUtil_Util_FunctionList($this->_initalElementFunctions);
             }
 
             if ($elementFunctions) {

@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: SessionStack.php$
+ * @version    $Id: CacheStack.php 2394 2015-01-15 14:30:10Z matijsdejong $
  */
 
 /**
@@ -46,11 +46,11 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Batch_Stack_CacheStack extends MUtil_Batch_Stack_StackAbstract
+class MUtil_Batch_Stack_CacheStack extends \MUtil_Batch_Stack_StackAbstract
 {
     /**
      *
-     * @var Zend_Cache_Core
+     * @var \Zend_Cache_Core
      */
     private $_cache;
 
@@ -70,7 +70,7 @@ class MUtil_Batch_Stack_CacheStack extends MUtil_Batch_Stack_StackAbstract
      *
      * @param string $id A unique name identifying the batch
      */
-    public function __construct($id, Zend_Cache_Core $cache)
+    public function __construct($id, \Zend_Cache_Core $cache)
     {
         $this->_cacheId  = 'batch_' . session_id() . '_' . $id;
         $this->_cache    = $cache;
@@ -86,7 +86,7 @@ class MUtil_Batch_Stack_CacheStack extends MUtil_Batch_Stack_StackAbstract
      */
     public function __destruct()
     {
-        // MUtil_Echo::track(count($this->_commands));
+        // \MUtil_Echo::track(count($this->_commands));
         if ($this->_commands) {
             $this->_cache->save($this->_commands, $this->_cacheId, array('batch', 'sess_' . session_id()));
         } else {

@@ -44,12 +44,12 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-abstract class MUtil_Html_Code_DynamicAbstract implements MUtil_Html_HtmlInterface
+abstract class MUtil_Html_Code_DynamicAbstract implements \MUtil_Html_HtmlInterface
 {
     /**
      * Contains the content to output. Can be a mix of filenames and string content.
      *
-     * @var array Numeric array of strings or MUtil_Html_HtmlInterface elements
+     * @var array Numeric array of strings or \MUtil_Html_HtmlInterface elements
      */
     protected $_content = array();
 
@@ -70,11 +70,11 @@ abstract class MUtil_Html_Code_DynamicAbstract implements MUtil_Html_HtmlInterfa
      * Creates the object storing any values with a name as a field, unless
      * there exists a set{Name} function. Other values are treated as content.
      *
-     * @param mixed $args_array MUtil_Ra::args() parameters
+     * @param mixed $args_array \MUtil_Ra::args() parameters
      */
     public function __construct($args_array = null)
     {
-        $args = MUtil_Ra::args(func_get_args());
+        $args = \MUtil_Ra::args(func_get_args());
 
         foreach ($args as $name => $value) {
             if (is_integer($name))  {
@@ -103,10 +103,10 @@ abstract class MUtil_Html_Code_DynamicAbstract implements MUtil_Html_HtmlInterfa
     /**
      * Renders the content
      *
-     * @param Zend_View_Abstract $view
+     * @param \Zend_View_Abstract $view
      * @return string
      */
-    protected function getContentOutput(Zend_View_Abstract $view)
+    protected function getContentOutput(\Zend_View_Abstract $view)
     {
         if (! $this->_content) {
             return null;
@@ -114,7 +114,7 @@ abstract class MUtil_Html_Code_DynamicAbstract implements MUtil_Html_HtmlInterfa
 
         $output = array();
 
-        $renderer = MUtil_Html::getRenderer();
+        $renderer = \MUtil_Html::getRenderer();
         foreach ($this->_content as $content) {
             if (! is_string($content)) {
                 $content = $renderer->renderAny($view, $content);
@@ -174,7 +174,7 @@ abstract class MUtil_Html_Code_DynamicAbstract implements MUtil_Html_HtmlInterfa
      *
      * @param string $name Full name to replace.
      * @param string $value The value placed.
-     * @return MUtil_Html_Link_LinkAbstract (continuation pattern)
+     * @return \MUtil_Html_Link_LinkAbstract (continuation pattern)
      */
     public function setDefault($name, $value)
     {
@@ -192,7 +192,7 @@ abstract class MUtil_Html_Code_DynamicAbstract implements MUtil_Html_HtmlInterfa
      *
      * @param string $name Full name to replace.
      * @param string $value The value placed.
-     * @return MUtil_Html_Link_LinkAbstract (continuation pattern)
+     * @return \MUtil_Html_Link_LinkAbstract (continuation pattern)
      */
     public function setField($name, $value)
     {
@@ -203,7 +203,7 @@ abstract class MUtil_Html_Code_DynamicAbstract implements MUtil_Html_HtmlInterfa
     /**
      *
      * @param string $seperator
-     * @return MUtil_Html_Link_LinkAbstract (continuation pattern)
+     * @return \MUtil_Html_Link_LinkAbstract (continuation pattern)
      */
     public function setSeperator($seperator)
     {

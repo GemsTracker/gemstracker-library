@@ -51,12 +51,12 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-interface MUtil_Html_AttributeInterface extends MUtil_Html_HtmlInterface
+interface MUtil_Html_AttributeInterface extends \MUtil_Html_HtmlInterface
 {
     /**
      * Returns an unescape string version of the attribute
      *
-     * Output escaping is done elsewhere, e.g. in Zend_View_Helper_HtmlElement->_htmlAttribs()
+     * Output escaping is done elsewhere, e.g. in \Zend_View_Helper_HtmlElement->_htmlAttribs()
      *
      * @return string
      */
@@ -84,7 +84,7 @@ interface MUtil_Html_AttributeInterface extends MUtil_Html_HtmlInterface
      */
     public function getAttributeName();
 
-    // inherited: public function render(Zend_View_Abstract $view);
+    // inherited: public function render(\Zend_View_Abstract $view);
 
     /**
      * Set the value of this attribute.

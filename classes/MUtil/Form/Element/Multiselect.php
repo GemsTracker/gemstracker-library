@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_Form_Element_Multiselect extends Zend_Form_Element_Multiselect
+class MUtil_Form_Element_Multiselect extends \Zend_Form_Element_Multiselect
 {
     /**
      * Use formSelect view helper by default

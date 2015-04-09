@@ -1,10 +1,9 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,58 +25,59 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
- * 
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package MUtil
+ *
+ *
+ * @package    MUtil
  * @subpackage Html
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
  * The ElementInterface defines an Html Element as not just implementing
- * the HtmlInterface but also as an object that can be accessed as array 
- * object through the ArrayAccess, Countable and IteratorAggregate 
+ * the HtmlInterface but also as an object that can be accessed as array
+ * object through the \ArrayAccess, \Countable and \IteratorAggregate
  * interfaces.
- * 
+ *
  * Usually you should just extend the HtmlElement class. This interface
  * is actually only used when you want to "fake" the full element, e.g.
- * by having a Sequence of elements (i.e. a document fragment) or an 
+ * by having a Sequence of elements (i.e. a document fragment) or an
  * object "posing" as a contained element, e.g. the RepeatRenderer class.
- * 
- * @see MUtil_Html_HtmlInterface 
- * @see MUtil_Html_HtmlElement
- * @see MUtil_Html_RepeatRenderer
- * @see MUtil_Html_Sequence
- * 
- * @author Matijs de Jong
- * @package MUtil
+ *
+ * @see \MUtil_Html_HtmlInterface
+ * @see \MUtil_Html_HtmlElement
+ * @see \MUtil_Html_RepeatRenderer
+ * @see \MUtil_Html_Sequence
+ *
+ * @package    MUtil
  * @subpackage Html
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since MUtil version 1.0
  */
-interface MUtil_Html_ElementInterface extends MUtil_Html_HtmlInterface, ArrayAccess, Countable, IteratorAggregate
+interface MUtil_Html_ElementInterface extends \MUtil_Html_HtmlInterface, \ArrayAccess, \Countable, \IteratorAggregate
 {
     /**
-     * Add a value to the element. 
-     * 
+     * Add a value to the element.
+     *
      * Depending on the value type the value may be added as an attribute,
      * set a parameter of the element or just be added to the main content.
-     * 
+     *
      * Adding to the main content should be the default action.
-     * 
+     *
      * @param mixe $value
      */
     public function append($value);
-    
+
     /**
-     * Most Html elements have a tag name, but "document fragments" like 
-     * @see MUtil_Html_Sequence may return null.
-     * 
+     * Most Html elements have a tag name, but "document fragments" like
+     * @see \MUtil_Html_Sequence may return null.
+     *
      * @return string The tag name or null if this element does not have one
      */
     public function getTagName();
-    
-    // inherited: public function render(Zend_View_Abstract $view);
+
+    // inherited: public function render(\Zend_View_Abstract $view);
 }

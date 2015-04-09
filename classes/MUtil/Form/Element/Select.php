@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_Form_Element_Select extends Zend_Form_Element_Select
+class MUtil_Form_Element_Select extends \Zend_Form_Element_Select
 {
     /**
      * Use formSelect view helper by default

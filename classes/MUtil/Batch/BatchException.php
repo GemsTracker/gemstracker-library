@@ -44,5 +44,5 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_Batch_BatchException extends Zend_Exception
+class MUtil_Batch_BatchException extends \Zend_Exception
 { }

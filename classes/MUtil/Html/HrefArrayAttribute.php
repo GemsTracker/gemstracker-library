@@ -40,7 +40,7 @@
  *
  * Behaves as parent class otherwise
  *
- * @see MUtil_Html_UrlArrayAttribute
+ * @see \MUtil_Html_UrlArrayAttribute
  *
  * @package    MUtil
  * @subpackage Html
@@ -48,7 +48,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class MUtil_Html_HrefArrayAttribute extends MUtil_Html_UrlArrayAttribute
+class MUtil_Html_HrefArrayAttribute extends \MUtil_Html_UrlArrayAttribute
 {
     public function __construct($args_array = null)
     {

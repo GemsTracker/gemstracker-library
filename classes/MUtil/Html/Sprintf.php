@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.2
  */
-class MUtil_Html_Sprintf extends ArrayObject implements MUtil_Html_ElementInterface
+class MUtil_Html_Sprintf extends \ArrayObject implements \MUtil_Html_ElementInterface
 {
     /**
      * Object classes that should not be added to the core array, but should be set using
@@ -68,22 +68,22 @@ class MUtil_Html_Sprintf extends ArrayObject implements MUtil_Html_ElementInterf
     /**
      * View object
      *
-     * @var Zend_View_Interface
+     * @var \Zend_View_Interface
      */
     public $view = null;
 
     /**
      * Adds an HtmlElement to this element
      *
-     * @see MUtil_Html_Creator
+     * @see \MUtil_Html_Creator
      *
-     * @param string $name Function name becomes tagname (unless specified otherwise in MUtil_Html_Creator)
+     * @param string $name Function name becomes tagname (unless specified otherwise in \MUtil_Html_Creator)
      * @param array $arguments The content and attributes values
-     * @return MUtil_Html_HtmlElement With '$name' tagName
+     * @return \MUtil_Html_HtmlElement With '$name' tagName
      */
     public function __call($name, array $arguments)
     {
-        $elem = MUtil_Html::createArray($name, $arguments);
+        $elem = \MUtil_Html::createArray($name, $arguments);
 
         $this[] = $elem;
 
@@ -92,13 +92,13 @@ class MUtil_Html_Sprintf extends ArrayObject implements MUtil_Html_ElementInterf
 
     /**
      *
-     * @param mixed $arg_array MUtil_Ra::args parameter passing
+     * @param mixed $arg_array \MUtil_Ra::args parameter passing
      */
     public function __construct($arg_array = null)
     {
         parent::__construct();
 
-        $args = MUtil_Ra::args(func_get_args());
+        $args = \MUtil_Ra::args(func_get_args());
 
         $this->init();
 
@@ -122,7 +122,7 @@ class MUtil_Html_Sprintf extends ArrayObject implements MUtil_Html_ElementInterf
     /**
      * Get the current view
      *
-     * @return Zend_View
+     * @return \Zend_View
      */
     public function getView()
     {
@@ -153,7 +153,7 @@ class MUtil_Html_Sprintf extends ArrayObject implements MUtil_Html_ElementInterf
 
         /*
         if (! $this->_specialTypes) {
-            MUtil_Echo::backtrace();
+            \MUtil_Echo::backtrace();
         } // */
         foreach ($this->_specialTypes as $class => $method) {
             if ($newval instanceof $class) {
@@ -171,10 +171,10 @@ class MUtil_Html_Sprintf extends ArrayObject implements MUtil_Html_ElementInterf
      *
      * The $view is used to correctly encode and escape the output
      *
-     * @param Zend_View_Abstract $view
+     * @param \Zend_View_Abstract $view
      * @return string Correctly encoded and escaped html output
      */
-    public function render(Zend_View_Abstract $view)
+    public function render(\Zend_View_Abstract $view)
     {
         if (null !== $view) {
             $this->setView($view);
@@ -182,7 +182,7 @@ class MUtil_Html_Sprintf extends ArrayObject implements MUtil_Html_ElementInterf
 
         $view = $this->getView();
 
-        $renderer = MUtil_Html::getRenderer();
+        $renderer = \MUtil_Html::getRenderer();
         $params   = array();
         foreach ($this->getIterator() as $item) {
             $params[] = $renderer->renderAny($view, $item);
@@ -198,10 +198,10 @@ class MUtil_Html_Sprintf extends ArrayObject implements MUtil_Html_ElementInterf
     /**
      * Set the View object
      *
-     * @param  Zend_View_Interface $view
-     * @return Zend_View_Helper_Abstract
+     * @param  \Zend_View_Interface $view
+     * @return \Zend_View_Helper_Abstract
      */
-    public function setView(Zend_View_Interface $view)
+    public function setView(\Zend_View_Interface $view)
     {
         $this->view = $view;
         return $this;
@@ -209,11 +209,11 @@ class MUtil_Html_Sprintf extends ArrayObject implements MUtil_Html_ElementInterf
 
     /**
      *
-     * @param mixed $arg_array MUtil_Ra::args parameter passing
+     * @param mixed $arg_array \MUtil_Ra::args parameter passing
      */
     public static function sprintf($arg_array = null)
     {
-        $args = MUtil_Ra::args(func_get_args());
+        $args = \MUtil_Ra::args(func_get_args());
 
         return new self($args);
     }

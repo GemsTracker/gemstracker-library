@@ -16,13 +16,13 @@
 
     <?php
     // Check if jQuery library is needed
-    if (MUtil_JQuery::usesJQuery($this)) {
+    if (\MUtil_JQuery::usesJQuery($this)) {
         $jquery = $this->jQuery();
         $jquery->uiEnable(); // enable user interface
         $jquery->setUiVersion('1.8.9');
         $jquery->addStylesheet($this->baseUrl . '/scripts/jquery-ui-1.7.2.custom.css');
 
-        if (MUtil_Https::on()) {
+        if (\MUtil_Https::on()) {
             $jquery->setCdnSsl(true);
         }
 
@@ -31,10 +31,10 @@
 
     <?php
     // Check if bootstrap is needed
-    if (MUtil_Bootstrap::usesBootstrap($this)) {
+    if (\MUtil_Bootstrap::usesBootstrap($this)) {
         $bootstrap = $this->bootstrap();
 
-        if (MUtil_Https::on()) {
+        if (\MUtil_Https::on()) {
             $bootstrap->setCdnSsl(true);
         }
 

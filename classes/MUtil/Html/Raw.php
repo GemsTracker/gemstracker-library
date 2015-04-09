@@ -47,7 +47,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.0
  */
-class MUtil_Html_Raw implements MUtil_Html_HtmlInterface
+class MUtil_Html_Raw implements \MUtil_Html_HtmlInterface
 {
     /**
      * Whatever should be the output
@@ -85,7 +85,7 @@ class MUtil_Html_Raw implements MUtil_Html_HtmlInterface
      * This is a utility function that simplifies e.g. search and replace
      * without messing up the markup, e.g. in the Marker class
      *
-     * @see MUtil_Html_Marker
+     * @see \MUtil_Html_Marker
      *
      * @return array
      */
@@ -182,14 +182,14 @@ class MUtil_Html_Raw implements MUtil_Html_HtmlInterface
      */
     public function getValue()
     {
-        return MUtil_Lazy::raise($this->_value);
+        return \MUtil_Lazy::raise($this->_value);
     }
 
     /**
-     * Static helper function for creation, used by @see MUtil_Html_Creator.
+     * Static helper function for creation, used by @see \MUtil_Html_Creator.
      *
      * @param string $value
-     * @return MUtil_Html_Raw
+     * @return \MUtil_Html_Raw
      */
     public static function raw($value)
     {
@@ -202,10 +202,10 @@ class MUtil_Html_Raw implements MUtil_Html_HtmlInterface
      *
      * The $view is not used but required by the interface definition
      *
-     * @param Zend_View_Abstract $view
+     * @param \Zend_View_Abstract $view
      * @return string Correctly encoded and escaped html output
      */
-    public function render(Zend_View_Abstract $view)
+    public function render(\Zend_View_Abstract $view)
     {
         return $this->getValue();
     }
@@ -214,7 +214,7 @@ class MUtil_Html_Raw implements MUtil_Html_HtmlInterface
      * Change the content.
      *
      * @param string $value
-     * @return MUtil_Html_Raw
+     * @return \MUtil_Html_Raw
      */
     public function setValue($value)
     {

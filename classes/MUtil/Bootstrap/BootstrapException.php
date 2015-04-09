@@ -36,7 +36,7 @@
  */
 
 /**
- * Exception for bootstrap
+ * \Exception for bootstrap
  * 
  * @package    MUtil
  * @subpackage Bootstrap
@@ -44,4 +44,4 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_Bootstrap_BootstrapException extends Zend_Exception { }
+class MUtil_Bootstrap_BootstrapException extends \Zend_Exception { }

@@ -45,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.2
  */
-class MUtil_Controller_Request_Cli extends Zend_Controller_Request_Abstract
+class MUtil_Controller_Request_Cli extends \Zend_Controller_Request_Abstract
 {
     /**
      * @var string

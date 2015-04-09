@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -27,6 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
+ * 
  * @package    MUtil
  * @subpackage Html
  * @author     Matijs de Jong <mjong@magnafacta.nl>
@@ -140,7 +140,7 @@ class MUtil_Html_Marker
 
     /**
      * Mark the searches in $value
-     * 
+     *
      * @param mixed $value Lazy, Html, Raw or string
      * @return \MUtil_Html_Raw
      */
@@ -163,11 +163,11 @@ class MUtil_Html_Marker
             }
         }
 
-        if ($value instanceof MUtil_Lazy_LazyInterface) {
-            $value = MUtil_Lazy::rise($value);
+        if ($value instanceof \MUtil_Lazy_LazyInterface) {
+            $value = \MUtil_Lazy::rise($value);
         }
 
-        if ($value instanceof MUtil_Html_Raw) {
+        if ($value instanceof \MUtil_Html_Raw) {
             $values = array();
             // Split into HTML Elements
             foreach ($value->getElements() as $element) {
@@ -184,24 +184,24 @@ class MUtil_Html_Marker
                     }
                 }
             }
-            // MUtil_Echo::r($values);
+            // \MUtil_Echo::r($values);
 
             return $value->setValue($this->_fillTags(implode('', $values)));
 
-        } elseif ($value instanceof MUtil_Html_HtmlElement) {
+        } elseif ($value instanceof \MUtil_Html_HtmlElement) {
             foreach ($value as $key => $item) {
-                // MUtil_Echo::r($key);
+                // \MUtil_Echo::r($key);
                 $value[$key] = $this->mark($item);
             }
             return $value;
 
         } elseif ($value || ($value === 0)) {
-            // MUtil_Echo::r($value);
+            // \MUtil_Echo::r($value);
             $valueHtml = $this->escape($value);
 
             $valueTemp = $this->_findTags($valueHtml);
 
-            return new MUtil_Html_Raw($this->_fillTags($valueTemp));
+            return new \MUtil_Html_Raw($this->_fillTags($valueTemp));
         }
     }
 
@@ -211,7 +211,7 @@ class MUtil_Html_Marker
      * @see htmlspecialchars()
      *
      * @param string $encoding Encoding htmlspecialchars
-     * @return MUtil_Html_Marker (continuation pattern)
+     * @return \MUtil_Html_Marker (continuation pattern)
      */
     public function setEncoding($encoding)
     {
@@ -226,7 +226,7 @@ class MUtil_Html_Marker
      * Function to allow later setting of tag name.
      *
      * @param string $tagName Html element tag name
-     * @return MUtil_Html_Marker (continuation pattern)
+     * @return \MUtil_Html_Marker (continuation pattern)
      */
     public function setTagName($tagName)
     {

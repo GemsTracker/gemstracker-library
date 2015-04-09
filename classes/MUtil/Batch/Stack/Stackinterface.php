@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Stackinterface.php$
+ * @version    $Id: Stackinterface.php 2394 2015-01-15 14:30:10Z matijsdejong $
  */
 
 /**

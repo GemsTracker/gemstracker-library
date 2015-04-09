@@ -1,10 +1,9 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,24 +25,32 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * @package    MUtil
+ * @subpackage Lazy
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package MUtil
+ *
+ * @package    MUtil
  * @subpackage Lazy
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
  */
-
-class MUtil_Lazy_ParallelRepeater implements MUtil_Lazy_RepeatableInterface
+class MUtil_Lazy_ParallelRepeater implements \MUtil_Lazy_RepeatableInterface
 {
     protected $repeatables = array();
 
     /**
      * Return a lazy version of the call
      *
-     * @return MUtil_Lazy_LazyInterface
+     * @return \MUtil_Lazy_LazyInterface
      */
     public function __call($name, array $arguments)
     {
@@ -58,7 +65,7 @@ class MUtil_Lazy_ParallelRepeater implements MUtil_Lazy_RepeatableInterface
 
     public function __construct($repeatable_args = null)
     {
-        $args = MUtil_Ra::args(func_get_args());
+        $args = \MUtil_Ra::args(func_get_args());
         foreach ($args as $id => $repeatable) {
             if (null != $repeatable) {
                 $this->addRepeater($repeatable, $id);
@@ -85,7 +92,7 @@ class MUtil_Lazy_ParallelRepeater implements MUtil_Lazy_RepeatableInterface
     /**
      * Return a lazy version of the property retrieval
      *
-     * @return MUtil_Lazy_LazyInterface
+     * @return \MUtil_Lazy_LazyInterface
      */
     public function __get($name)
     {
@@ -101,7 +108,7 @@ class MUtil_Lazy_ParallelRepeater implements MUtil_Lazy_RepeatableInterface
     /**
      * Return the core data in the Repeatable in one go
      *
-     * @return Iterator|array
+     * @return \Iterator|array
      */
     public function __getRepeatable()
     {
@@ -127,18 +134,18 @@ class MUtil_Lazy_ParallelRepeater implements MUtil_Lazy_RepeatableInterface
                 $results[$id] = $result;
             }
         }
-        // MUtil_Echo::r($results, 'Parallel next');
+        // \MUtil_Echo::r($results, 'Parallel next');
         return $results;
     }
 
     /**
      * Return a lazy version of the property retrieval
      *
-     * @return MUtil_Lazy_Property
+     * @return \MUtil_Lazy_Property
      */
     public function __set($name, $value)
     {
-        throw new MUtil_Lazy_LazyException('You cannot set a Lazy object.');
+        throw new \MUtil_Lazy_LazyException('You cannot set a Lazy object.');
     }
 
     /**
@@ -152,15 +159,15 @@ class MUtil_Lazy_ParallelRepeater implements MUtil_Lazy_RepeatableInterface
         foreach ($this->repeatables as $repeater) {
             $result = $repeater->__start() || $result;
         }
-        // MUtil_Echo::r(array_keys($this->repeatables), 'Parallel start');
-        // MUtil_Echo::r($result, 'Parallel start');
+        // \MUtil_Echo::r(array_keys($this->repeatables), 'Parallel start');
+        // \MUtil_Echo::r($result, 'Parallel start');
         return $result;
     }
 
     public function addRepeater($repeater, $id = null)
     {
-        if (! $repeater instanceof MUtil_Lazy_RepeatableInterface) {
-            $repeater = new MUtil_Lazy_Repeatable($repeater);
+        if (! $repeater instanceof \MUtil_Lazy_RepeatableInterface) {
+            $repeater = new \MUtil_Lazy_Repeatable($repeater);
         }
         if (null === $id) {
             $this->repeatables[] = $repeater;
@@ -195,11 +202,11 @@ class MUtil_Lazy_ParallelRepeater implements MUtil_Lazy_RepeatableInterface
 
     public function offsetSet($offset, $value)
     {
-        throw new MUtil_Lazy_LazyException('You cannot set a Lazy object.');
+        throw new \MUtil_Lazy_LazyException('You cannot set a Lazy object.');
     }
 
     public function offsetUnset($offset)
     {
-        throw new MUtil_Lazy_LazyException('You cannot unset a Lazy object.');
+        throw new \MUtil_Lazy_LazyException('You cannot unset a Lazy object.');
     }
 }

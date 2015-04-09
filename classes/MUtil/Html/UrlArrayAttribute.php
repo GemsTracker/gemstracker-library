@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.0
  */
-class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
+class MUtil_Html_UrlArrayAttribute extends \MUtil_Html_ArrayAttribute
 {
     /**
      *
@@ -68,7 +68,7 @@ class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
 
     /**
      *
-     * @var Zend_Controller_Router_Route
+     * @var \Zend_Controller_Router_Route
      */
     public $router;
 
@@ -79,11 +79,11 @@ class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
      * This function ensures that e.g. the current controller is used instead
      * of the default 'index' controller.
      *
-     * @param Zend_Controller_Request_Abstract $request
+     * @param \Zend_Controller_Request_Abstract $request
      * @param string $name
      * @param array $options
      */
-    private static function _rerouteUrlOption(Zend_Controller_Request_Abstract $request, $name, &$options)
+    private static function _rerouteUrlOption(\Zend_Controller_Request_Abstract $request, $name, &$options)
     {
         if (! array_key_exists($name, $options)) {
             if ($value = $request->getParam($name)) {
@@ -108,7 +108,7 @@ class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
                 $url_string .= $value;
             } elseif (strlen($value)) {
                 // Prevent double escaping by using rawurlencode() instead
-                // of urlencode() that is used by Zend_Controller_Router_Route
+                // of urlencode() that is used by \Zend_Controller_Router_Route
                 $url_parameters[$key] = rawurlencode($value);
             }
         }
@@ -136,7 +136,7 @@ class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
         // escaping.
         if (! $this->getRouteReset()) {
 
-            if ($request instanceof Zend_Controller_Request_Http) {
+            if ($request instanceof \Zend_Controller_Request_Http) {
                 // Make sure we don't get any POST's, but we do want the rest of the parameters
                 $old = $request->getParamSources();
                 $request->setParamSources(array('_GET'));
@@ -150,7 +150,7 @@ class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
             $params = array_diff_key($params, $this->getArray());
 
             foreach ($params as $key => $value) {
-                // E.g. Exceptions are stored as parameters
+                // E.g. \Exceptions are stored as parameters
                 // and posted arrays can be a problem as well
                 if (is_scalar($value)) {
                     $url_parameters[$key] = rawurlencode($value);
@@ -182,12 +182,12 @@ class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
 
     /**
      *
-     * @return Zend_Controller_Router_Route
+     * @return \Zend_Controller_Router_Route
      */
     public function getRouter()
     {
         if (! $this->router) {
-            $front = Zend_Controller_Front::getInstance();
+            $front = \Zend_Controller_Front::getInstance();
             $this->router = $front->getRouter();
         }
 
@@ -226,12 +226,12 @@ class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
      * module, controller and action, except when one of these items has already been
      * specified in the array.
      *
-     * @param Zend_Controller_Request_Abstract $request
+     * @param \Zend_Controller_Request_Abstract $request
      * @param array $options An array of parameters (optionally including e.g. controller name) for the new url
      * @param boolean $addRouteReset Deprecated: add the 'RouteReset' parameter that is used by objects of this type to set RouteReset
      * @return array Url array with adapted utl's
      */
-    public static function rerouteUrl(Zend_Controller_Request_Abstract $request, $options, $addRouteReset = false)
+    public static function rerouteUrl(\Zend_Controller_Request_Abstract $request, $options, $addRouteReset = false)
     {
         self::_rerouteUrlOption($request, $request->getModuleKey(),     $options);
         self::_rerouteUrlOption($request, $request->getControllerKey(), $options);
@@ -247,10 +247,10 @@ class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
 
     /**
      *
-     * @param Zend_Controller_Router_Route $router
-     * @return MUtil_Html_UrlArrayAttribute (continuation pattern)
+     * @param \Zend_Controller_Router_Route $router
+     * @return \MUtil_Html_UrlArrayAttribute (continuation pattern)
      */
-    public function setRouter(Zend_Controller_Router_Route $router)
+    public function setRouter(\Zend_Controller_Router_Route $router)
     {
         $this->router = $router;
         return $this;
@@ -260,7 +260,7 @@ class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
      * Whether or not to set route defaults with the paramter values
      *
      * @param boolean $routeReset
-     * @return MUtil_Html_UrlArrayAttribute (continuation pattern)
+     * @return \MUtil_Html_UrlArrayAttribute (continuation pattern)
      */
     public function setRouteReset($routeReset = true)
     {
@@ -271,7 +271,7 @@ class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
     /**
      * @deprecated
      * @param string $label
-     * @return Zend_Navigation_Page_Mvc
+     * @return \Zend_Navigation_Page_Mvc
      */
     public function toPage($label)
     {
@@ -282,13 +282,13 @@ class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
             $options = self::rerouteUrl($this->getRequest(), $options);
             $options['label'] = $label;
 
-            return new Zend_Navigation_Page_Mvc($options);
+            return new \Zend_Navigation_Page_Mvc($options);
 
         } else {
             $options['url'] = $this;
             $options['label'] = $label;
 
-            return new Zend_Navigation_Page_Uri($options);
+            return new \Zend_Navigation_Page_Uri($options);
         }
     }
 
@@ -300,11 +300,12 @@ class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
      * i.e. this helper function is used for generating url's for internal use.
      *
      * @param array $options Array of parameter values
-     * @param Zend_Controller_Request_Abstract $request
-     * @param Zend_Controller_Router_Route $router
+     * @param \Zend_Controller_Request_Abstract $request
+     * @param \Zend_Controller_Router_Route $router
      * @return string
      */
-    public static function toUrlString(array $options, Zend_Controller_Request_Abstract $request = null, Zend_Controller_Router_Route $router = null)
+    public static function toUrlString(array $options, \Zend_Controller_Request_Abstract $request = null,
+            \Zend_Controller_Router_Route $router = null)
     {
         $base    = '';
         $encode  = true;
@@ -325,7 +326,7 @@ class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
         }
 
         if ($nobase || (null === $request) || (null === $router)) {
-            $front = Zend_Controller_Front::getInstance();
+            $front = \Zend_Controller_Front::getInstance();
 
             if ($nobase) {
                 $base = rtrim($front->getBaseUrl(), '/');

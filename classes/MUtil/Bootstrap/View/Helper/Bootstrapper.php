@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Bootstrapper .php 1748 2014-02-19 18:09:41Z matijsdejong $
+ * @version    $Id: Bootstrapper.php 1748 2014-02-19 18:09:41Z matijsdejong $
  */
 
 /**
@@ -63,19 +63,19 @@ class MUtil_Bootstrap_View_Helper_Bootstrapper
      *
      * @var String
      */
-    protected $_version = MUtil_Bootstrap::DEFAULT_BOOTSTRAP_VERSION;
-    protected $_fontawesomeVersion = MUtil_Bootstrap::DEFAULT_FONTAWESOME_VERSION;
+    protected $_version = \MUtil_Bootstrap::DEFAULT_BOOTSTRAP_VERSION;
+    protected $_fontawesomeVersion = \MUtil_Bootstrap::DEFAULT_FONTAWESOME_VERSION;
 
     /**
      * View Instance
      *
-     * @var Zend_View_Interface
+     * @var \Zend_View_Interface
      */
     public $view = null;
 
     protected function _getBootstrapCdnPath()
     {
-        return MUtil_Bootstrap::CDN_BASE;
+        return \MUtil_Bootstrap::CDN_BASE;
     }
 
     /**
@@ -91,7 +91,7 @@ class MUtil_Bootstrap_View_Helper_Bootstrapper
             $baseUri = $this->_getBootstrapCdnPath();
             $source  = $baseUri
                      . $this->getVersion()
-                     . MUtil_Bootstrap::CDN_JS;
+                     . \MUtil_Bootstrap::CDN_JS;
         }
 
         return $source;
@@ -99,7 +99,7 @@ class MUtil_Bootstrap_View_Helper_Bootstrapper
 
     protected function _getFontAwesomeCdnPath()
     {
-        return MUtil_Bootstrap::CDN_FONTAWESOME_BASE;
+        return \MUtil_Bootstrap::CDN_FONTAWESOME_BASE;
     }
 
     /**
@@ -115,7 +115,7 @@ class MUtil_Bootstrap_View_Helper_Bootstrapper
             $baseUri = $this->_getBootstrapCdnPath();
             $source  = $baseUri
                      . $this->getVersion()
-                     . MUtil_Bootstrap::CDN_CSS;
+                     . \MUtil_Bootstrap::CDN_CSS;
         }
 
         return $source;
@@ -129,7 +129,7 @@ class MUtil_Bootstrap_View_Helper_Bootstrapper
             $baseUri = $this->_getFontAwesomeCdnPath();
             $source  = $baseUri
                      . $this->getFontAwesomeVersion()
-                     . MUtil_Bootstrap::CDN_FONTAWESOME_CSS;
+                     . \MUtil_Bootstrap::CDN_FONTAWESOME_CSS;
         }
 
         return $source;
@@ -195,7 +195,7 @@ class MUtil_Bootstrap_View_Helper_Bootstrapper
     {
         $stylesheet = $this->_getStylesheet();
 
-        if ($this->view instanceof Zend_View_Abstract) {
+        if ($this->view instanceof \Zend_View_Abstract) {
             $closingBracket = ($this->view->doctype()->isXhtml()) ? ' />' : '>';
         } else {
             $closingBracket = ' />';
@@ -203,7 +203,7 @@ class MUtil_Bootstrap_View_Helper_Bootstrapper
         // disable the stylesheat loader for bootstrap now that it gets compiled with the style
         $style = ''; //'<link rel="stylesheet" href="'.$stylesheet.'" type="text/css" media="screen"' . $closingBracket . PHP_EOL;
 
-        if (MUtil_Bootstrap::$fontawesome === true) {
+        if (\MUtil_Bootstrap::$fontawesome === true) {
             $fontawesomeStylesheet = $this->_getFontAwesomeStylesheet();
 
             $style .= '<link rel="stylesheet" href="'.$fontawesomeStylesheet.'" type="text/css" media="screen"' . $closingBracket . PHP_EOL;
@@ -218,7 +218,7 @@ class MUtil_Bootstrap_View_Helper_Bootstrapper
      * Set Use SSL on CDN Flag
      *
      * @param bool $flag
-     * @return MUtil_Bootstrap_View_Helper_Bootstrapper (continuation pattern)
+     * @return \MUtil_Bootstrap_View_Helper_Bootstrapper (continuation pattern)
      */
     public function setCdnSsl($flag)
     {
@@ -229,20 +229,20 @@ class MUtil_Bootstrap_View_Helper_Bootstrapper
     /**
      * Set view object
      *
-     * @param  Zend_View_Interface $view
-     * @return MUtil_Bootstrap_View_Helper_Bootstrapper (continuation pattern)
+     * @param  \Zend_View_Interface $view
+     * @return \MUtil_Bootstrap_View_Helper_Bootstrapper (continuation pattern)
      */
-    public function setView(Zend_View_Interface $view)
+    public function setView(\Zend_View_Interface $view)
     {
         $this->view = $view;
         /*$doctype = $this->_view->doctype();
 
-        if ($doctype instanceof Zend_View_Helper_Doctype) {
+        if ($doctype instanceof \Zend_View_Helper_Doctype) {
             if (! $doctype->isHtml5()) {
                 if ($doctype->isXhtml()) {
-                    $doctype->setDoctype(Zend_View_Helper_Doctype::XHTML5);
+                    $doctype->setDoctype(\Zend_View_Helper_Doctype::XHTML5);
                 } else {
-                    $doctype->setDoctype(Zend_View_Helper_Doctype::HTML5);
+                    $doctype->setDoctype(\Zend_View_Helper_Doctype::HTML5);
                 }
             }
         }*/

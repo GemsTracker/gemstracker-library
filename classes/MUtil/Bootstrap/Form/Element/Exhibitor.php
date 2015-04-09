@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,20 +26,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @version    $Id: Exhibitor.php 28 2011-09-16 06:24:15Z mennodekker $
+ *
  * @package    MUtil
  * @subpackage Form_Element
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
+ * @version    $Id: Exhibitor.php 28 2011-09-16 06:24:15Z mennodekker $
  */
 
 /**
+ *
  * @package    MUtil
  * @subpackage Form_Element
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
+ * @since      Class available since version 1.5.6
  */
-class MUtil_Bootstrap_Form_Element_Exhibitor extends MUtil_Form_Element_Exhibitor implements MUtil_Form_Element_NoFocusInterface
+class MUtil_Bootstrap_Form_Element_Exhibitor extends \MUtil_Form_Element_Exhibitor implements \MUtil_Form_Element_NoFocusInterface
 {
     protected $_elementClass = 'form-controller';
 
@@ -49,12 +52,12 @@ class MUtil_Bootstrap_Form_Element_Exhibitor extends MUtil_Form_Element_Exhibito
      * $spec may be:
      * - string: name of element
      * - array: options with which to configure element
-     * - Zend_Config: Zend_Config with options for configuring element
+     * - \Zend_Config: \Zend_Config with options for configuring element
      *
-     * @param  string|array|Zend_Config $spec
-     * @param  array|Zend_Config $options
+     * @param  string|array|\Zend_Config $spec
+     * @param  array|\Zend_Config $options
      * @return void
-     * @throws Zend_Form_Exception if no element name after initialization
+     * @throws \Zend_Form_Exception if no element name after initialization
      */
     public function __construct($spec, $options = null)
     {
@@ -62,12 +65,13 @@ class MUtil_Bootstrap_Form_Element_Exhibitor extends MUtil_Form_Element_Exhibito
         $this->addClass($this->_elementClass);
     }
 
-    /** 
+    /**
      * Add a class to an existing class, taking care of spacing
-     * @param string $targetClass  The existing class 
+     * @param string $targetClass  The existing class
      * @param string $addClass    the Class or classes to add, seperated by spaces
      */
-    protected function addClass($addClass) {
+    protected function addClass($addClass)
+    {
         $targetClass = $this->getAttrib('class');
         if(!empty($targetClass) && (strpos($targetClass, $addClass) === false)) {
             $targetClass .= " {$addClass}";
@@ -78,11 +82,10 @@ class MUtil_Bootstrap_Form_Element_Exhibitor extends MUtil_Form_Element_Exhibito
         return $this;
     }
 
-
     /**
      * Load default decorators
      *
-     * @return Zend_Form_Element
+     * @return \Zend_Form_Element
      */
     public function loadDefaultDecorators()
     {

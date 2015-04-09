@@ -43,22 +43,22 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.5
  */
-class MUtil_Bootstrap_View_Helper_DatePicker extends MUtil_JQuery_View_Helper_DatePicker {
-    
+class MUtil_Bootstrap_View_Helper_DatePicker extends \MUtil_JQuery_View_Helper_DatePicker
+{
     public function datePicker($id, $value = null, array $params = array(), array $attribs = array())
     {
-        if (isset($attribs['class'])) { 
+        if (isset($attribs['class'])) {
             $attribs['class'] .= ' form-control';
         } else {
             $attribs['class'] = ' form-control';
         }
         $datePicker = parent::datePicker($id, $value, $params, $attribs);
-        
+
         $datePicker = '<div class="input-group date">'
-                       . $datePicker 
+                       . $datePicker
                        . '<label for="' . $attribs['id'] . '" class="input-group-addon date"><i class="fa fa-calendar"></i></label>'
                        . '</div>';
-        
+
         return $datePicker;
     }
 }

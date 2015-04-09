@@ -47,22 +47,22 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-abstract class MUtil_Lazy_LazyAbstract implements MUtil_Lazy_LazyInterface
+abstract class MUtil_Lazy_LazyAbstract implements \MUtil_Lazy_LazyInterface
 {
     /**
      * Return a lazy version of the call
      *
-     * @return MUtil_Lazy_Call
+     * @return \MUtil_Lazy_Call
      */
     public function __call($name, array $arguments)
     {
-        return new MUtil_Lazy_Call(array($this, $name), $arguments);
+        return new \MUtil_Lazy_Call(array($this, $name), $arguments);
     }
 
     /**
      * Return a lazy version of the property retrieval
      *
-     * @return MUtil_Lazy_Property
+     * @return \MUtil_Lazy_Property
      */
     public function __get($name)
     {
@@ -74,17 +74,17 @@ abstract class MUtil_Lazy_LazyAbstract implements MUtil_Lazy_LazyInterface
         //
         // All in all I concluded the overhead is probably not worth it, though I
         // did not test this.
-        return new MUtil_Lazy_Property($this, $name);
+        return new \MUtil_Lazy_Property($this, $name);
     }
 
     /**
      * You cannot set a Lazy object.
      *
-     * throws MUtil_Lazy_LazyException
+     * throws \MUtil_Lazy_LazyException
      */
     public function __set($name, $value)
     {
-        throw new MUtil_Lazy_LazyException('You cannot set a Lazy object.');
+        throw new \MUtil_Lazy_LazyException('You cannot set a Lazy object.');
     }
 
     /**
@@ -97,10 +97,10 @@ abstract class MUtil_Lazy_LazyAbstract implements MUtil_Lazy_LazyInterface
     public function __toString()
     {
         try {
-            $stack = new MUtil_Lazy_Stack_EmptyStack(__FUNCTION__);
+            $stack = new \MUtil_Lazy_Stack_EmptyStack(__FUNCTION__);
             $value = $this;
 
-            while ($value instanceof MUtil_Lazy_LazyInterface) {
+            while ($value instanceof \MUtil_Lazy_LazyInterface) {
                 $value = $this->__toValue($stack);
             }
 
@@ -115,7 +115,7 @@ abstract class MUtil_Lazy_LazyAbstract implements MUtil_Lazy_LazyInterface
 
             return (string) $value;
 
-        } catch (exception $e) {
+        } catch (\Exception $e) {
             // Cannot pass exception from __toString().
             //
             // So catch all exceptions and return error message.
@@ -129,10 +129,10 @@ abstract class MUtil_Lazy_LazyAbstract implements MUtil_Lazy_LazyInterface
     *
     * Be warned: this function may return a lazy value.
     *
-    * @param MUtil_Lazy_StackInterface $stack A MUtil_Lazy_StackInterface object providing variable data
+    * @param \MUtil_Lazy_StackInterface $stack A \MUtil_Lazy_StackInterface object providing variable data
     * @return mixed
     */
-    public function __toValue(MUtil_Lazy_StackInterface $stack)
+    public function __toValue(\MUtil_Lazy_StackInterface $stack)
     {
         return $this->_getLazyValue($stack);
     }
@@ -140,12 +140,12 @@ abstract class MUtil_Lazy_LazyAbstract implements MUtil_Lazy_LazyInterface
     /**
      * The functions that returns the value.
      *
-     * Returning an instance of MUtil_Lazy_LazyInterface is allowed.
+     * Returning an instance of \MUtil_Lazy_LazyInterface is allowed.
      *
-     * @param MUtil_Lazy_StackInterface $stack A MUtil_Lazy_StackInterface object providing variable data
+     * @param \MUtil_Lazy_StackInterface $stack A \MUtil_Lazy_StackInterface object providing variable data
      * @return mixed
      */
-    abstract protected function _getLazyValue(MUtil_Lazy_StackInterface $stack);
+    abstract protected function _getLazyValue(\MUtil_Lazy_StackInterface $stack);
 
 
     /**
@@ -177,7 +177,7 @@ abstract class MUtil_Lazy_LazyAbstract implements MUtil_Lazy_LazyInterface
             $callable = array($this, $callable);
         }
 
-        return new MUtil_Lazy_Call($callable, $args);
+        return new \MUtil_Lazy_Call($callable, $args);
     }
 
     public function offsetExists($offset)
@@ -187,16 +187,16 @@ abstract class MUtil_Lazy_LazyAbstract implements MUtil_Lazy_LazyInterface
 
     public function offsetGet($offset)
     {
-        return new MUtil_Lazy_ArrayAccessor($this, $offset);
+        return new \MUtil_Lazy_ArrayAccessor($this, $offset);
     }
 
     public function offsetSet($offset, $value)
     {
-        throw new MUtil_Lazy_LazyException('You cannot set a Lazy object.');
+        throw new \MUtil_Lazy_LazyException('You cannot set a Lazy object.');
     }
 
     public function offsetUnset($offset)
     {
-        throw new MUtil_Lazy_LazyException('You cannot unset a Lazy object.');
+        throw new \MUtil_Lazy_LazyException('You cannot unset a Lazy object.');
     }
 }

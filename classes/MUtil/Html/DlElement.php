@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class MUtil_Html_DlElement extends MUtil_Html_HtmlElement implements MUtil_Html_FormLayout
+class MUtil_Html_DlElement extends \MUtil_Html_HtmlElement implements \MUtil_Html_FormLayout
 {
     /**
      * Only dt and dd elements are allowed as content.
@@ -83,11 +83,11 @@ class MUtil_Html_DlElement extends MUtil_Html_HtmlElement implements MUtil_Html_
      * Any parameters are added as either content, attributes or handled
      * as special types, if defined as such for this element.
      *
-     * @param mixed $arg_array MUtil_Ra::args arguments
+     * @param mixed $arg_array \MUtil_Ra::args arguments
      */
     public function __construct($arg_array = null)
     {
-        $args = MUtil_Ra::args(func_get_args());
+        $args = \MUtil_Ra::args(func_get_args());
 
         parent::__construct('dl', $args);
     }
@@ -100,7 +100,7 @@ class MUtil_Html_DlElement extends MUtil_Html_HtmlElement implements MUtil_Html_
             // Return all objects in a wrapper object
             // that makes sure they are all treated
             // the same way.
-            return new MUtil_MultiWrapper($ds);
+            return new \MUtil_MultiWrapper($ds);
         }
 
         // Return first object only
@@ -134,13 +134,13 @@ class MUtil_Html_DlElement extends MUtil_Html_HtmlElement implements MUtil_Html_
     /**
      * Helper function for creating automatically calculated widths.
      *
-     * @staticvar Zend_Form $last_form Prevent recalculation. This function is called for every label
+     * @staticvar \Zend_Form $last_form Prevent recalculation. This function is called for every label
      * @staticvar string $last_factor Last result
-     * @param Zend_Form $form The form to calculate the widest label for
+     * @param \Zend_Form $form The form to calculate the widest label for
      * @param float $factor The factor to multiple the number of characters with for to get the number of em's
      * @return string E.g.: '10em'
      */
-    public static function calculateAutoWidthFormLayout(Zend_Form $form, $factor = 1)
+    public static function calculateAutoWidthFormLayout(\Zend_Form $form, $factor = 1)
     {
         static $last_form;
         static $last_factor;
@@ -177,10 +177,10 @@ class MUtil_Html_DlElement extends MUtil_Html_HtmlElement implements MUtil_Html_
 
 
     /**
-     * Static helper function for creation, used by @see MUtil_Html_Creator.
+     * Static helper function for creation, used by @see \MUtil_Html_Creator.
      *
-     * @param mixed $arg_array Optional MUtil_Ra::args processed settings
-     * @return MUtil_Html_DlElement
+     * @param mixed $arg_array Optional \MUtil_Ra::args processed settings
+     * @return \MUtil_Html_DlElement
      */
     public static function dl($arg_array = null)
     {
@@ -196,15 +196,16 @@ class MUtil_Html_DlElement extends MUtil_Html_HtmlElement implements MUtil_Html_
     /**
      * Apply this element to the form as the output decorator.
      *
-     * @param Zend_Form $form
+     * @param \Zend_Form $form
      * @param mixed $width The style.width content for the labels
      * @param array $order The display order of the elements
-     * @return MUtil_Html_DlElement
+     * @return \MUtil_Html_DlElement
      */
-    public function setAsFormLayout(Zend_Form $form, $width = null, array $order = array('element', 'errors', 'description'))
+    public function setAsFormLayout(\Zend_Form $form, $width = null,
+            array $order = array('element', 'errors', 'description'))
     {
         // Make a Lazy repeater for the form elements and set it as the element repeater
-        $formrep = new MUtil_Lazy_RepeatableFormElements($form);
+        $formrep = new \MUtil_Lazy_RepeatableFormElements($form);
         $formrep->setSplitHidden(true); // These are treated separately
         $this->setRepeater($formrep);
 
@@ -223,7 +224,7 @@ class MUtil_Html_DlElement extends MUtil_Html_HtmlElement implements MUtil_Html_
         // $this->dd($formrep->element, $formrep->description, $formrep->errors);
 
         // Set this element as the form decorator
-        $decorator = new MUtil_Html_ElementDecorator();
+        $decorator = new \MUtil_Html_ElementDecorator();
         $decorator->setHtmlElement($this);
         $decorator->setPrologue($formrep);  // Renders hidden elements before this element
         $form->setDecorators(array($decorator, 'AutoFocus', 'Form'));
@@ -234,14 +235,20 @@ class MUtil_Html_DlElement extends MUtil_Html_HtmlElement implements MUtil_Html_
     /**
      * Apply this element to the form as the output decorator with automatically calculated widths.
      *
-     * @param Zend_Form $form
-     * @param float $factor To multiply the widest nummers of letters in the labels with to calculate the width in em at drawing time
+     * @param \Zend_Form $form
+     * @param float $factor To multiply the widest nummers of letters in the labels with to calculate the width in
+     * em at drawing time
      * @param array $order The display order of the elements
-     * @return MUtil_Html_DlElement
+     * @return \MUtil_Html_DlElement
      */
-    public function setAutoWidthFormLayout(Zend_Form $form, $factor = 1, array $order = array('element', 'errors', 'description'))
+    public function setAutoWidthFormLayout(\Zend_Form $form, $factor = 1,
+            array $order = array('element', 'errors', 'description'))
     {
         // Lazy call becase the form might not be completed at this stage.
-        return $this->setAsFormLayout($form, MUtil_Lazy::call(array(__CLASS__, 'calculateAutoWidthFormLayout'), $form, $factor), $order);
+        return $this->setAsFormLayout(
+                $form,
+                \MUtil_Lazy::call(array(__CLASS__, 'calculateAutoWidthFormLayout'), $form, $factor),
+                $order
+                );
     }
 }

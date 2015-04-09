@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: SessionStack.php$
+ * @version    $Id: SessionStack.php 2394 2015-01-15 14:30:10Z matijsdejong $
  */
 
 /**
@@ -45,11 +45,11 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Batch_Stack_SessionStack extends MUtil_Batch_Stack_StackAbstract
+class MUtil_Batch_Stack_SessionStack extends \MUtil_Batch_Stack_StackAbstract
 {
     /**
      *
-     * @var Zend_Session_Namespace
+     * @var \Zend_Session_Namespace
      */
     private $_session;
 
@@ -59,7 +59,7 @@ class MUtil_Batch_Stack_SessionStack extends MUtil_Batch_Stack_StackAbstract
      */
     public function __construct($id)
     {
-        $this->_session = new Zend_Session_Namespace(get_class($this) . '_' . $id);
+        $this->_session = new \Zend_Session_Namespace(get_class($this) . '_' . $id);
 
         if (! isset($this->_session->commands)) {
             $this->_session->commands = array();

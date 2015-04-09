@@ -44,11 +44,11 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.0
  */
-class MUtil_Html_OnClickArrayAttribute extends MUtil_Html_JavascriptArrayAttribute
+class MUtil_Html_OnClickArrayAttribute extends \MUtil_Html_JavascriptArrayAttribute
 {
     /**
      *
-     * @param mixed $arg_array MUtil_Ra::args
+     * @param mixed $arg_array \MUtil_Ra::args
      */
     public function __construct($arg_array = null)
     {

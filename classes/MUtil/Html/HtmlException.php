@@ -37,7 +37,6 @@
 
 /**
  *
- * 
  * @package    MUtil
  * @subpackage Html
  * @copyright  Copyright (c) 2011 Erasmus MC
@@ -45,5 +44,5 @@
  * @since      Class available since version 1.0
  */
 
-class MUtil_Html_HtmlException extends Zend_Exception
+class MUtil_Html_HtmlException extends \Zend_Exception
 { }

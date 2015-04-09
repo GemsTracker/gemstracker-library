@@ -45,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-abstract class MUtil_Html_AttributeAbstract implements MUtil_Html_AttributeInterface
+abstract class MUtil_Html_AttributeAbstract implements \MUtil_Html_AttributeInterface
 {
     /**
      *
@@ -55,13 +55,13 @@ abstract class MUtil_Html_AttributeAbstract implements MUtil_Html_AttributeInter
 
     /**
      *
-     * @var Zend_Controller_Request_Abstract
+     * @var \Zend_Controller_Request_Abstract
      */
     public $request;
 
     /**
      *
-     * @var Zend_View_Abstract
+     * @var \Zend_View_Abstract
      */
     public $view;
 
@@ -82,7 +82,7 @@ abstract class MUtil_Html_AttributeAbstract implements MUtil_Html_AttributeInter
     /**
      * Returns an unescape string version of the attribute
      *
-     * Output escaping is done elsewhere, e.g. in Zend_View_Helper_HtmlElement->_htmlAttribs()
+     * Output escaping is done elsewhere, e.g. in \Zend_View_Helper_HtmlElement->_htmlAttribs()
      *
      * If a subclass needs the view for the right output and the view might not be set
      * it must overrule __toString().
@@ -109,12 +109,12 @@ abstract class MUtil_Html_AttributeAbstract implements MUtil_Html_AttributeInter
 
     /**
      *
-     * @return Zend_Controller_Request_Abstract
+     * @return \Zend_Controller_Request_Abstract
      */
     public function getRequest()
     {
         if (! $this->request) {
-            $front = Zend_Controller_Front::getInstance();
+            $front = \Zend_Controller_Front::getInstance();
             $this->request = $front->getRequest();
         }
 
@@ -123,13 +123,13 @@ abstract class MUtil_Html_AttributeAbstract implements MUtil_Html_AttributeInter
 
     /**
      *
-     * @return Zend_View_Abstract
+     * @return \Zend_View_Abstract
      */
     public function getView()
     {
         if (! $this->view) {
             require_once 'Zend/Controller/Action/HelperBroker.php';
-            $viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
+            $viewRenderer = \Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
             $this->setView($viewRenderer->view);
         }
 
@@ -141,14 +141,14 @@ abstract class MUtil_Html_AttributeAbstract implements MUtil_Html_AttributeInter
      *
      * The $view is used to correctly encode and escape the output
      *
-     * @param Zend_View_Abstract $view
+     * @param \Zend_View_Abstract $view
      * @return string Correctly encoded and escaped html output
      */
-    public function render(Zend_View_Abstract $view)
+    public function render(\Zend_View_Abstract $view)
     {
         $this->setView($view);
 
-        // Output escaping is done in Zend_View_Helper_HtmlElement->_htmlAttribs()
+        // Output escaping is done in \Zend_View_Helper_HtmlElement->_htmlAttribs()
         //
         // The reason for using render($view) is only in case the attribute needs the view to get the right data.
         // Those attributes must overrule render().
@@ -159,10 +159,10 @@ abstract class MUtil_Html_AttributeAbstract implements MUtil_Html_AttributeInter
 
     /**
      *
-     * @param Zend_Controller_Request_Abstract $request
-     * @return MUtil_Html_AttributeAbstract  (continuation pattern)
+     * @param \Zend_Controller_Request_Abstract $request
+     * @return \MUtil_Html_AttributeAbstract  (continuation pattern)
      */
-    public function setRequest(Zend_Controller_Request_Abstract $request)
+    public function setRequest(\Zend_Controller_Request_Abstract $request)
     {
         $this->request = $request;
         return $this;
@@ -170,9 +170,9 @@ abstract class MUtil_Html_AttributeAbstract implements MUtil_Html_AttributeInter
 
     /**
      *
-     * @param Zend_View_Abstract $view
+     * @param \Zend_View_Abstract $view
      */
-    public function setView(Zend_View_Abstract $view)
+    public function setView(\Zend_View_Abstract $view)
     {
         $this->view = $view;
     }

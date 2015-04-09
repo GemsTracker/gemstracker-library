@@ -45,11 +45,11 @@
  * occured during a run, e.g. when a job throws an exception during execution.
  *
  * The prefereed method to use this object is to write multiple small jobs using
- * MUtil_Task_TaskInterface and then use MUtil_Task_TaskBatch to execute these
+ * \MUtil_Task_TaskInterface and then use \MUtil_Task_TaskBatch to execute these
  * commands.
  *
  * Global objects in the Task will be loaded automatically when they implement the
- * MUtil_Registry_TargetInterface (the same as happens for with this object). All
+ * \MUtil_Registry_TargetInterface (the same as happens for with this object). All
  * other parameters for the task should be scalar.
  *
  * The other option use this package by creating a sub class of this class and write
@@ -60,18 +60,18 @@
  * Each step in the sequence consists of a method name of the child object
  * and any number of scalar variables and array's containing scalar variables.
  *
- * See MUtil_Batch_WaitBatch for example usage.
+ * See \MUtil_Batch_WaitBatch for example usage.
  *
  * The storage engine used for the commands is separated from this object so we
- * could use e.g. Zend_Queue as an alternative for storing the command stack.
- * Currently MUtil_Batch_Stack_SessionStack is used by default.
- * MUtil_Batch_Stack_CachStack can be used as well and has the advantage of
+ * could use e.g. \Zend_Queue as an alternative for storing the command stack.
+ * Currently \MUtil_Batch_Stack_SessionStack is used by default.
+ * \MUtil_Batch_Stack_CachStack can be used as well and has the advantage of
  * storing all data in a separate file.
  *
- * @see MUtil_Task_TaskBatch
- * @see MUtil_Batch_Stack_StackInterface
- * @see MUtil_Registry_TargetInterface
- * @see MUtil_Batch_WaitBatch
+ * @see \MUtil_Task_TaskBatch
+ * @see \MUtil_Batch_Stack_StackInterface
+ * @see \MUtil_Registry_TargetInterface
+ * @see \MUtil_Batch_WaitBatch
  *
  * @package    MUtil
  * @subpackage Batch
@@ -79,7 +79,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract implements Countable
+abstract class MUtil_Batch_BatchAbstract extends \MUtil_Registry_TargetAbstract implements \Countable
 {
     /**
      * Constant for using console method = run batch in one long run from the console
@@ -142,7 +142,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     /**
      * Session for storage of output results
      *
-     * @var Zend_Session_Namespace
+     * @var \Zend_Session_Namespace
      */
     private $_session;
 
@@ -203,13 +203,13 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
 
     /**
      *
-     * @var Zend_ProgressBar
+     * @var \Zend_ProgressBar
      */
     protected $progressBar;
 
     /**
      *
-     * @var Zend_ProgressBar_Adapter
+     * @var \Zend_ProgressBar_Adapter
      */
     protected $progressBarAdapter;
 
@@ -247,41 +247,41 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     /**
      * The command stack
      *
-     * @var MUtil_Batch_Stack_Stackinterface
+     * @var \MUtil_Batch_Stack_Stackinterface
      */
     protected $stack;
 
     /**
      * The place to store new variables for the source
      *
-     * @var ArrayObject
+     * @var \ArrayObject
      */
     protected $variables;
 
     /**
      *
      * @param string $id A unique name identifying this batch
-     * @param MUtil_Batch_Stack_Stackinterface $stack Optional different stack than session stack
+     * @param \MUtil_Batch_Stack_Stackinterface $stack Optional different stack than session stack
      */
-    public function __construct($id, MUtil_Batch_Stack_Stackinterface $stack = null)
+    public function __construct($id, \MUtil_Batch_Stack_Stackinterface $stack = null)
     {
         $id = preg_replace('/[^a-zA-Z0-9_]/', '', $id);
 
         if (isset(self::$_idStack[$id])) {
-            throw new MUtil_Batch_BatchException("Duplicate batch id created: '$id'");
+            throw new \MUtil_Batch_BatchException("Duplicate batch id created: '$id'");
         }
         self::$_idStack[$id] = $id;
 
         $this->_id = $id;
 
         if (null === $stack) {
-            $stack = new MUtil_Batch_Stack_SessionStack($id);
+            $stack = new \MUtil_Batch_Stack_SessionStack($id);
         }
         $this->stack = $stack;
 
         $this->_initSession($id);
 
-        if (MUtil_Console::isConsole()) {
+        if (\MUtil_Console::isConsole()) {
             $this->method = self::CONS;
         }
     }
@@ -337,7 +337,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      */
     private function _initSession($id)
     {
-        $this->_session = new Zend_Session_Namespace(get_class($this) . '_' . $id);
+        $this->_session = new \Zend_Session_Namespace(get_class($this) . '_' . $id);
 
         if (! isset($this->_session->processed)) {
             $this->reset();
@@ -363,7 +363,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     protected function addStep($method, $param1 = null)
     {
         if (! method_exists($this, $method)) {
-            throw new MUtil_Batch_BatchException("Invalid batch method: '$method'.");
+            throw new \MUtil_Batch_BatchException("Invalid batch method: '$method'.");
         }
 
         $params = array_slice(func_get_args(), 1);
@@ -377,10 +377,10 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
 
     /**
      * Add to exception store
-     * @param Exception $e
-     * @return MUtil_Batch_BatchAbstract (continuation pattern)
+     * @param \Exception $e
+     * @return \MUtil_Batch_BatchAbstract (continuation pattern)
      */
-    public function addException(Exception $e)
+    public function addException(\Exception $e)
     {
         $message = $e->getMessage();
 
@@ -405,7 +405,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      * Add a message to the message stack.
      *
      * @param string $text A message to the user
-     * @return MUtil_Batch_BatchAbstract (continuation pattern)
+     * @return \MUtil_Batch_BatchAbstract (continuation pattern)
      */
     public function addMessage($text)
     {
@@ -461,7 +461,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     /**
      * Return the stored exceptions.
      *
-     * @return array of Exceptions
+     * @return array of \Exceptions
      */
     public function getExceptions()
     {
@@ -556,25 +556,25 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      * Return a progress panel object, set up to be used by
      * this batch.
      *
-     * @param Zend_View_Abstract $view
-     * @param mixed $arg_array MUtil_Ra::args() arguments to populate progress bar with
-     * @return MUtil_Html_ProgressPanel
+     * @param \Zend_View_Abstract $view
+     * @param mixed $arg_array \MUtil_Ra::args() arguments to populate progress bar with
+     * @return \MUtil_Html_ProgressPanel
      */
-    public function getPanel(Zend_View_Abstract $view, $arg_array = null)
+    public function getPanel(\Zend_View_Abstract $view, $arg_array = null)
     {
         $args = func_get_args();
 
-        MUtil_JQuery::enableView($view);
+        \MUtil_JQuery::enableView($view);
         //$jquery = $view->jQuery();
         //$jquery->enable();
 
         $urlFinish = $view->url(array($this->progressParameterName => $this->progressParameterReportValue));
         $urlRun    = $view->url(array($this->progressParameterName => $this->progressParameterRunValue));
 
-        $panel = new MUtil_Html_ProgressPanel($args);
+        $panel = new \MUtil_Html_ProgressPanel($args);
         $panel->id = $this->_id;
 
-        $js = new MUtil_Html_Code_JavaScript(dirname(__FILE__) . '/Batch' . $this->method . '.js');
+        $js = new \MUtil_Html_Code_JavaScript(dirname(__FILE__) . '/Batch' . $this->method . '.js');
         $js->setInHeader(false);
         // Set the fields, in case they where not set earlier
         $js->setDefault('__AUTOSTART__', $this->autoStart ? 'true' : 'false');
@@ -594,13 +594,13 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      * The Zend ProgressBar handles the communication through
      * an adapter interface.
      *
-     * @return Zend_ProgressBar
+     * @return \Zend_ProgressBar
      */
     public function getProgressBar()
     {
-        if (! $this->progressBar instanceof Zend_ProgressBar) {
+        if (! $this->progressBar instanceof \Zend_ProgressBar) {
             $this->setProgressBar(
-                    new Zend_ProgressBar($this->getProgressBarAdapter(), 0, 100, $this->_session->getNamespace() . '_pb')
+                    new \Zend_ProgressBar($this->getProgressBarAdapter(), 0, 100, $this->_session->getNamespace() . '_pb')
                     );
         }
         return $this->progressBar;
@@ -609,32 +609,32 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     /**
      * The communication adapter for the ProgressBar.
      *
-     * @return Zend_ProgressBar_Adapter
+     * @return \Zend_ProgressBar_Adapter
      */
     public function getProgressBarAdapter()
     {
         // Create the current adapter when it does not exist or does not accord with the method.
         switch ($this->method) {
             case self::CONS:
-                if (! $this->progressBarAdapter instanceof Zend_ProgressBar_Adapter_Console) {
-                    $this->setProgressBarAdapter(new Zend_ProgressBar_Adapter_Console());
+                if (! $this->progressBarAdapter instanceof \Zend_ProgressBar_Adapter_Console) {
+                    $this->setProgressBarAdapter(new \Zend_ProgressBar_Adapter_Console());
                 }
                 break;
 
             case self::PULL:
-                if (! $this->progressBarAdapter instanceof Zend_ProgressBar_Adapter_JsPull) {
-                    $this->setProgressBarAdapter(new Zend_ProgressBar_Adapter_JsPull());
+                if (! $this->progressBarAdapter instanceof \Zend_ProgressBar_Adapter_JsPull) {
+                    $this->setProgressBarAdapter(new \Zend_ProgressBar_Adapter_JsPull());
                 }
                 break;
 
             default:
-                if (! $this->progressBarAdapter instanceof Zend_ProgressBar_Adapter_JsPush) {
-                    $this->setProgressBarAdapter(new MUtil_ProgressBar_Adapter_JsPush());
+                if (! $this->progressBarAdapter instanceof \Zend_ProgressBar_Adapter_JsPush) {
+                    $this->setProgressBarAdapter(new \MUtil_ProgressBar_Adapter_JsPush());
                 }
         }
 
         // Check for extra padding
-        if ($this->progressBarAdapter instanceof MUtil_ProgressBar_Adapter_JsPush) {
+        if ($this->progressBarAdapter instanceof \MUtil_ProgressBar_Adapter_JsPush) {
             $this->progressBarAdapter->initialPaddingKb = $this->initialPushPaddingKb;
             $this->progressBarAdapter->extraPaddingKb   = $this->extraPushPaddingKb;
         }
@@ -655,20 +655,20 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     /**
      * Returns a button that can be clicked to restart the progress bar.
      *
-     * @param mixed $arg_array MUtil_Ra::args() arguments to populate link with
-     * @return MUtil_Html_HtmlElement
+     * @param mixed $arg_array \MUtil_Ra::args() arguments to populate link with
+     * @return \MUtil_Html_HtmlElement
      */
     public function getRestartButton($args_array = 'Restart')
     {
-        $args = MUtil_Ra::args(func_get_args());
-        $args['onclick'] = new MUtil_Html_OnClickArrayAttribute(
-            new MUtil_Html_Raw('if (! this.disabled) {location.href = "'),
-            new MUtil_Html_HrefArrayAttribute(
+        $args = \MUtil_Ra::args(func_get_args());
+        $args['onclick'] = new \MUtil_Html_OnClickArrayAttribute(
+            new \MUtil_Html_Raw('if (! this.disabled) {location.href = "'),
+            new \MUtil_Html_HrefArrayAttribute(
                     array($this->progressParameterName => $this->progressParameterRestartValue)
                     ),
-            new MUtil_Html_Raw('";} this.disabled = true; event.cancelBubble=true;'));
+            new \MUtil_Html_Raw('";} this.disabled = true; event.cancelBubble=true;'));
 
-        $button = new MUtil_Html_HtmlElement('button', $args);
+        $button = new \MUtil_Html_HtmlElement('button', $args);
         $button->appendAttrib('class', $this->_buttonClass.' btn-succes');
 
         return $button;
@@ -677,15 +677,15 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     /**
      * Returns a link that can be clicked to restart the progress bar.
      *
-     * @param mixed $arg_array MUtil_Ra::args() arguments to populate link with
-     * @return MUtil_Html_AElement
+     * @param mixed $arg_array \MUtil_Ra::args() arguments to populate link with
+     * @return \MUtil_Html_AElement
      */
     public function getRestartLink($args_array = 'Restart')
     {
-        $args = MUtil_Ra::args(func_get_args());
+        $args = \MUtil_Ra::args(func_get_args());
         $args['href'] = array($this->progressParameterName => $this->progressParameterRestartValue);
 
-        return new MUtil_Html_AElement($args);
+        return new \MUtil_Html_AElement($args);
     }
 
     /**
@@ -705,7 +705,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     /**
      * Return the variables from the session store.
      *
-     * @return ArrayObject or null
+     * @return \ArrayObject or null
      */
     protected function getSessionVariables()
     {
@@ -718,7 +718,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     /**
      * Get the current stack
      *
-     * @return MUtil_Batch_Stack_Stackinterface
+     * @return \MUtil_Batch_Stack_Stackinterface
      */
     public function getStack()
     {
@@ -728,16 +728,16 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     /**
      * Returns a button that can be clicked to start the progress bar.
      *
-     * @param mixed $arg_array MUtil_Ra::args() arguments to populate link with
-     * @return MUtil_Html_HtmlElement
+     * @param mixed $arg_array \MUtil_Ra::args() arguments to populate link with
+     * @return \MUtil_Html_HtmlElement
      */
     public function getStartButton($args_array = 'Start')
     {
-        $args = MUtil_Ra::args(func_get_args());
+        $args = \MUtil_Ra::args(func_get_args());
         $args['onclick'] = 'if (! this.disabled) {' . $this->getFunctionPrefix() .
                 'Start();} this.disabled = true; event.cancelBubble=true;';
 
-        $button = new MUtil_Html_HtmlElement('button', $args);
+        $button = new \MUtil_Html_HtmlElement('button', $args);
         $button->appendAttrib('class', $this->_buttonClass.' btn-succes');
 
         return $button;
@@ -832,7 +832,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     /**
      * Reset and empty the session storage
      *
-     * @return MUtil_Batch_BatchAbstract (continuation pattern)
+     * @return \MUtil_Batch_BatchAbstract (continuation pattern)
      */
     public function reset()
     {
@@ -854,10 +854,10 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      * Returns true if any output was communicated, i.e. the "normal"
      * page should not be displayed.
      *
-     * @param Zend_Controller_Request_Abstract $request
+     * @param \Zend_Controller_Request_Abstract $request
      * @return boolean True when something ran
      */
-    public function run(Zend_Controller_Request_Abstract $request)
+    public function run(\Zend_Controller_Request_Abstract $request)
     {
         // Check for run url
         if ($request->getParam($this->progressParameterName) === $this->progressParameterRunValue) {
@@ -942,7 +942,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      * Set the optional form id, for using extra params from the form during batch execution.
      *
      * @param string $id
-     * @return MUtil_Html_ProgressPanel (continuation pattern)
+     * @return \MUtil_Html_ProgressPanel (continuation pattern)
      */
     public function setFormId($id)
     {
@@ -957,7 +957,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      * in case of name clashes.
      *
      * @param string $prefix
-     * @return MUtil_Html_ProgressPanel (continuation pattern)
+     * @return \MUtil_Html_ProgressPanel (continuation pattern)
      */
     public function setFunctionPrefix($prefix)
     {
@@ -970,7 +970,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      *
      * @param scalar $id
      * @param string $text A message to the user
-     * @return MUtil_Batch_BatchAbstract (continuation pattern)
+     * @return \MUtil_Batch_BatchAbstract (continuation pattern)
      */
     public function setMessage($id, $text)
     {
@@ -984,7 +984,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      * Sets the communication method for progress reporting.
      *
      * @param string $method One of the constants of this object
-     * @return MUtil_Batch_BatchAbstract (continuation pattern)
+     * @return \MUtil_Batch_BatchAbstract (continuation pattern)
      */
     public function setMethod($method)
     {
@@ -995,7 +995,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
                 return $this;
 
             default:
-                throw new MUtil_Batch_BatchException("Invalid batch usage method '$method'.");
+                throw new \MUtil_Batch_BatchException("Invalid batch usage method '$method'.");
         }
     }
 
@@ -1005,7 +1005,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      * This is the most stable method as it works independently of
      * server settings. Therefore it is the default method.
      *
-     * @return MUtil_Batch_BatchAbstract (continuation pattern)
+     * @return \MUtil_Batch_BatchAbstract (continuation pattern)
      */
     public function setMethodPull()
     {
@@ -1040,7 +1040,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      * Just increase it until it works.
      *
      * @param int $extraPaddingKb
-     * @return MUtil_Batch_BatchAbstract (continuation pattern)
+     * @return \MUtil_Batch_BatchAbstract (continuation pattern)
      */
     public function setMethodPush($extraPaddingKb = null)
     {
@@ -1057,10 +1057,10 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      * The Zend ProgressBar handles the communication through
      * an adapter interface.
      *
-     * @param Zend_ProgressBar $progressBar
-     * @return MUtil_Html_ProgressPanel (continuation pattern)
+     * @param \Zend_ProgressBar $progressBar
+     * @return \MUtil_Html_ProgressPanel (continuation pattern)
      */
-    public function setProgressBar(Zend_ProgressBar $progressBar)
+    public function setProgressBar(\Zend_ProgressBar $progressBar)
     {
         $this->progressBar = $progressBar;
         return $this;
@@ -1069,12 +1069,12 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     /**
      * The communication adapter for the ProgressBar.
      *
-     * @param Zend_ProgressBar_Adapter_Interface $adapter
-     * @return MUtil_Html_ProgressPanel (continuation pattern)
+     * @param \Zend_ProgressBar_Adapter_Interface $adapter
+     * @return \MUtil_Html_ProgressPanel (continuation pattern)
      */
-    public function setProgressBarAdapter(Zend_ProgressBar_Adapter $adapter)
+    public function setProgressBarAdapter(\Zend_ProgressBar_Adapter $adapter)
     {
-        if ($adapter instanceof Zend_ProgressBar_Adapter_JsPush) {
+        if ($adapter instanceof \Zend_ProgressBar_Adapter_JsPush) {
             $prefix = $this->getFunctionPrefix();
 
             // Set the fields, in case they where not set earlier
@@ -1096,7 +1096,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     public function setSessionVariable($name, $variable)
     {
         if (! isset($this->_session->source)) {
-            $this->_session->source = new ArrayObject();
+            $this->_session->source = new \ArrayObject();
         }
 
         $this->_session->source[$name] = $variable;
@@ -1109,12 +1109,12 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      * @param string $method Name of a method of this object
      * @param mixed $id A unique id to prevent double adding of something to do
      * @param mixed $param1 Scalar or array with scalars, as many parameters as needed allowed
-     * @return MUtil_Batch_BatchAbstract (continuation pattern)
+     * @return \MUtil_Batch_BatchAbstract (continuation pattern)
      */
     protected function setStep($method, $id, $param1 = null)
     {
         if (! method_exists($this, $method)) {
-            throw new MUtil_Batch_BatchException("Invalid batch method: '$method'.");
+            throw new \MUtil_Batch_BatchException("Invalid batch method: '$method'.");
         }
 
         $params = array_slice(func_get_args(), 2);
@@ -1138,7 +1138,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     public function setVariable($name, $variable)
     {
         if (null === $this->variables) {
-            $this->variables = new ArrayObject();
+            $this->variables = new \ArrayObject();
         }
 
         $this->variables[$name] = $variable;
@@ -1157,12 +1157,12 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
             try {
                 $command = $this->stack->getNext();
                 if (! isset($command[0], $command[1])) {
-                    throw new MUtil_Batch_BatchException("Invalid batch command: '$command'.");
+                    throw new \MUtil_Batch_BatchException("Invalid batch command: '$command'.");
                 }
                 list($method, $params) = $command;
 
                 if (! method_exists($this, $method)) {
-                    throw new MUtil_Batch_BatchException("Invalid batch method: '$method'.");
+                    throw new \MUtil_Batch_BatchException("Invalid batch method: '$method'.");
                 }
 
                 if (call_user_func_array(array($this, $method), $params)) {
@@ -1172,15 +1172,15 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
                 }
                 $this->_session->processed = $this->_session->processed + 1;
 
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->addMessage('ERROR!!!');
                 $this->addMessage(
-                        'While calling:' . $command[0] . '(' . implode(',', MUtil_Ra::flatten($command[1])) . ')'
+                        'While calling:' . $command[0] . '(' . implode(',', \MUtil_Ra::flatten($command[1])) . ')'
                         );
                 $this->addException($e);
                 $this->stopBatch($e->getMessage());
 
-                //MUtil_Echo::track($e);
+                //\MUtil_Echo::track($e);
             }
             return true;
         } else {

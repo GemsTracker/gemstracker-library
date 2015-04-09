@@ -50,8 +50,8 @@ interface MUtil_Html_FormLayout
     /**
      * Apply this element to the form as the output decorator.
      *
-     * @param Zend_Form $form
-     * @return MUtil_Html_FormLayout
+     * @param \Zend_Form $form
+     * @return \MUtil_Html_FormLayout
      */
-    public function setAsFormLayout(Zend_Form $form);
+    public function setAsFormLayout(\Zend_Form $form);
 }

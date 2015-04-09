@@ -45,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.2
  */
-class MUtil_Controller_Response_Cli extends Zend_Controller_Response_Cli
+class MUtil_Controller_Response_Cli extends \Zend_Controller_Response_Cli
 {
     /**
      * Send all headers
@@ -53,7 +53,7 @@ class MUtil_Controller_Response_Cli extends Zend_Controller_Response_Cli
      * Sends any headers specified. If an {@link setHttpResponseCode() HTTP response code}
      * has been specified, it is sent with the first header.
      *
-     * @return Zend_Controller_Response_Abstract
+     * @return \Zend_Controller_Response_Abstract
      */
     public function sendHeaders()
     {

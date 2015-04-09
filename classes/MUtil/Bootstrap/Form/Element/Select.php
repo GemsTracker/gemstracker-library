@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_Bootstrap_Form_Element_Select extends MUtil_Form_Element_Select
+class MUtil_Bootstrap_Form_Element_Select extends \MUtil_Form_Element_Select
 {
     /**
 	 * Bootstrap class for an input tag. Remove if you want the normal layout.
@@ -58,12 +58,12 @@ class MUtil_Bootstrap_Form_Element_Select extends MUtil_Form_Element_Select
      * $spec may be:
      * - string: name of element
      * - array: options with which to configure element
-     * - Zend_Config: Zend_Config with options for configuring element
+     * - \Zend_Config: \Zend_Config with options for configuring element
      *
-     * @param  string|array|Zend_Config $spec
-     * @param  array|Zend_Config $options
+     * @param  string|array|\Zend_Config $spec
+     * @param  array|\Zend_Config $options
      * @return void
-     * @throws Zend_Form_Exception if no element name after initialization
+     * @throws \Zend_Form_Exception if no element name after initialization
      */
     public function __construct($spec, $options = null)
     {
@@ -71,12 +71,13 @@ class MUtil_Bootstrap_Form_Element_Select extends MUtil_Form_Element_Select
 		$this->addClass($this->_elementClass);
 	}
 
-	/** 
+	/**
  	 * Add a class to an existing class, taking care of spacing
- 	 * @param string $targetClass  The existing class 
+ 	 * @param string $targetClass  The existing class
  	 * @param string $addClass    the Class or classes to add, seperated by spaces
  	 */
-    protected function addClass($addClass) {
+    protected function addClass($addClass)
+    {
     	$targetClass = $this->getAttrib('class');
     	if(!empty($targetClass) && (strpos($targetClass, $addClass) === false)) {
     		$targetClass .= " {$addClass}";
@@ -87,11 +88,10 @@ class MUtil_Bootstrap_Form_Element_Select extends MUtil_Form_Element_Select
   		return $this;
     }
 
-
 	/**
      * Load default decorators
      *
-     * @return Zend_Form_Element
+     * @return \Zend_Form_Element
      */
     public function loadDefaultDecorators()
     {
