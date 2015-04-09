@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.2
  */
-class MUtil_Loader_PluginLoader extends Zend_Loader_PluginLoader
+class MUtil_Loader_PluginLoader extends \Zend_Loader_PluginLoader
 {
     /**
      * Normalize plugin name
@@ -61,13 +61,13 @@ class MUtil_Loader_PluginLoader extends Zend_Loader_PluginLoader
      * Add the default autoloader to this plugin loader.
      *
      * @param boolean $prepend Put path at the beginning of the stack, the default is false
-     * @return Zend_Loader_PluginLoader (continuation pattern)
+     * @return \Zend_Loader_PluginLoader (continuation pattern)
      */
     public function addFallBackPath($prepend = false)
     {
         // Add each of the classpath directories to the prefixpaths
         // with an empty prefix.
-        $this->addPrefixPath('', Zend_Loader::explodeIncludePath(), $prepend);
+        $this->addPrefixPath('', \Zend_Loader::explodeIncludePath(), $prepend);
 
         return $this;
     }
@@ -78,12 +78,12 @@ class MUtil_Loader_PluginLoader extends Zend_Loader_PluginLoader
      * @param string $prefix
      * @param mixed $paths String or an array of strings
      * @param boolean $prepend Put path at the beginning of the stack (has no effect when prefix / dir already set)
-     * @return Zend_Loader_PluginLoader (continuation pattern)
+     * @return \Zend_Loader_PluginLoader (continuation pattern)
      */
     public function addPrefixPath($prefix, $paths, $prepend = true)
     {
         if (!is_string($prefix) || !(is_string($paths) || is_array($paths))) {
-            throw new Zend_Loader_PluginLoader_Exception('Zend_Loader_PluginLoader::addPrefixPath() method only takes strings for prefix and path.');
+            throw new \Zend_Loader_PluginLoader_Exception('Zend_Loader_PluginLoader::addPrefixPath() method only takes strings for prefix and path.');
         }
 
         $prefix = $this->_formatPrefix($prefix);
@@ -103,7 +103,7 @@ class MUtil_Loader_PluginLoader extends Zend_Loader_PluginLoader
         foreach ((array) $paths as $path) {
             $path   = rtrim($path, '/\\') . '/';
 
-            // MUtil_Echo::track(self::getAbsolutePaths($path));
+            // \MUtil_Echo::track(self::getAbsolutePaths($path));
             foreach (self::getAbsolutePaths($path) as $sub) {
                 if (! in_array($sub, $newPaths)) {
                     if ($prepend) {
@@ -137,9 +137,9 @@ class MUtil_Loader_PluginLoader extends Zend_Loader_PluginLoader
         }
         /*
         if (isset($this->_prefixToPaths[$prefix])) {
-            // MUtil_Echo::track($prefix, $this->_prefixToPaths);
+            // \MUtil_Echo::track($prefix, $this->_prefixToPaths);
         } else {
-            // MUtil_Echo::track($prefix);
+            // \MUtil_Echo::track($prefix);
         } // */
 
         return $this;
@@ -221,7 +221,7 @@ class MUtil_Loader_PluginLoader extends Zend_Loader_PluginLoader
                     );
 
             default:
-                throw new Zend_Exception(
+                throw new \Zend_Exception(
                         'MUtil Plugin Loader cannot create a class with ' .
                         count($arguments) . ' parameters.'
                         );
@@ -253,7 +253,7 @@ class MUtil_Loader_PluginLoader extends Zend_Loader_PluginLoader
 
         if (! is_array($includePaths)) {
             // Make sure the include path are loaded
-            foreach (Zend_Loader::explodeIncludePath() as $include) {
+            foreach (\Zend_Loader::explodeIncludePath() as $include) {
                 // Current path will be checked, for each file
                 // but check the other paths for exiistence
                 if (('.' != $include) && ($real = realpath($include))) {
@@ -325,7 +325,7 @@ class MUtil_Loader_PluginLoader extends Zend_Loader_PluginLoader
      * class is not resolved
      * @return string|false Class name of loaded class; false if $throwExceptions
      * if false and no class found
-     * @throws Zend_Loader_Exception if class not found
+     * @throws \Zend_Loader_Exception if class not found
      */
     public function load($name, $throwExceptions = true)
     {
@@ -339,7 +339,7 @@ class MUtil_Loader_PluginLoader extends Zend_Loader_PluginLoader
         } else {
             $registry = $this->_prefixToPaths;
         }
-        // MUtil_Echo::track($registry);
+        // \MUtil_Echo::track($registry);
 
         $found     = false;
         $classFile = str_replace('_', DIRECTORY_SEPARATOR, $name) . '.php';
@@ -362,7 +362,7 @@ class MUtil_Loader_PluginLoader extends Zend_Loader_PluginLoader
                 $loadFile = $path . $classFile;
                 // Can use file_exist now, as any paths in the class path that
                 // could be use are already in use.
-                // if (Zend_Loader::isReadable($loadFile)) {
+                // if (\Zend_Loader::isReadable($loadFile)) {
                 if (file_exists($loadFile)) {
                     // include_once $loadFile;
                     include $loadFile; // Is faster
@@ -391,7 +391,7 @@ class MUtil_Loader_PluginLoader extends Zend_Loader_PluginLoader
                 $message .= "\n$prefix: " . implode(PATH_SEPARATOR, $paths);
             }
             require_once 'Zend/Loader/PluginLoader/Exception.php';
-            throw new Zend_Loader_PluginLoader_Exception($message);
+            throw new \Zend_Loader_PluginLoader_Exception($message);
        }
 
         if ($this->_useStaticRegistry) {

@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4.4
  */
-class MUtil_Mail_Transport_EchoLog extends Zend_Mail_Transport_Abstract
+class MUtil_Mail_Transport_EchoLog extends \Zend_Mail_Transport_Abstract
 {
     /**
      * Send an email independent from the used transport
@@ -58,6 +58,9 @@ class MUtil_Mail_Transport_EchoLog extends Zend_Mail_Transport_Abstract
      */
     protected function _sendMail()
     {
-        MUtil_Echo::r(reset($this->_headers['Subject']), reset($this->_headers['From']) . '=>' . reset($this->_headers['To']));
+        \MUtil_Echo::r(
+                reset($this->_headers['Subject']),
+                reset($this->_headers['From']) . '=>' . reset($this->_headers['To'])
+                );
     }
 }

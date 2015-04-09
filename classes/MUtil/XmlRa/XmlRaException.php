@@ -33,7 +33,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 MagnaFacta BV
  * @license    New BSD License
- * @version    $Id: Ra.php 938 2012-09-11 14:00:57Z matijsdejong $
+ * @version    $Id: XmlRaException.php 938 2012-09-11 14:00:57Z matijsdejong $
  */
 
 /**
@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.3
  */
-class MUtil_XmlRa_XmlRaException extends Zend_Exception
+class MUtil_XmlRa_XmlRaException extends \Zend_Exception
 {
     // Interface marking function
 }

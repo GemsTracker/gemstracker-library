@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2014, Erasmus MC
  * All rights reserved.
@@ -31,18 +32,18 @@
  * @author     Jasper van Gestel<jappie@dse.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: FormRadio.php 1748 2014-02-19 18:09:41Z matijsdejong $
+ * @version    $Id: FormErrors.php 1748 2014-02-19 18:09:41Z matijsdejong $
  */
 
 /**
- * QUAD fix for readonly having no effect on radio button
+ * Add bootstrap error classes
  *
  * @package    MUtil
  * @subpackage View
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
  */
-class MUtil_View_Helper_FormErrors extends Zend_View_Helper_FormErrors
+class MUtil_View_Helper_FormErrors extends \Zend_View_Helper_FormErrors
 {
     public function formErrors($errors, array $options = null)
     {

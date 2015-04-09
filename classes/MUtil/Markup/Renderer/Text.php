@@ -46,7 +46,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class MUtil_Markup_Renderer_Text extends Zend_Markup_Renderer_RendererAbstract
+class MUtil_Markup_Renderer_Text extends \Zend_Markup_Renderer_RendererAbstract
 {
     /**
      * Element groups
@@ -72,17 +72,17 @@ class MUtil_Markup_Renderer_Text extends Zend_Markup_Renderer_RendererAbstract
     /**
      * Constructor
      *
-     * @param array|Zend_Config $options
+     * @param array|\Zend_Config $options
      *
      * @return void
      */
     public function __construct($options = array())
     {
-        if ($options instanceof Zend_Config) {
+        if ($options instanceof \Zend_Config) {
             $options = $options->toArray();
         }
 
-        $this->_pluginLoader = new Zend_Loader_PluginLoader(array(
+        $this->_pluginLoader = new \Zend_Loader_PluginLoader(array(
             'MUtil_Markup_Renderer_Text' => 'MUtil/Markup/Renderer/Text/'
         ));
 
@@ -236,7 +236,7 @@ class MUtil_Markup_Renderer_Text extends Zend_Markup_Renderer_RendererAbstract
                 'type'     => 6,
                 'callback' => 'MUtil_Markup_Renderer_Text::url',
                 'group'    => 'list',
-                // 'filter'   => new Zend_Filter_PregReplace('/.*/is', ''),
+                // 'filter'   => new \Zend_Filter_PregReplace('/.*/is', ''),
             ),
             '*' => array(
                 'type'   => 10,
@@ -325,11 +325,11 @@ class MUtil_Markup_Renderer_Text extends Zend_Markup_Renderer_RendererAbstract
     /**
      * Execute a replace token
      *
-     * @param  Zend_Markup_Token $token
+     * @param  \Zend_Markup_Token $token
      * @param  array $markup
      * @return string
      */
-    protected function _executeReplace(Zend_Markup_Token $token, $markup)
+    protected function _executeReplace(\Zend_Markup_Token $token, $markup)
     {
         return $this->_render($token);
         if (isset($markup['tag'])) {
@@ -346,11 +346,11 @@ class MUtil_Markup_Renderer_Text extends Zend_Markup_Renderer_RendererAbstract
     /**
      * Execute a single replace token
      *
-     * @param  Zend_Markup_Token $token
+     * @param  \Zend_Markup_Token $token
      * @param  array $markup
      * @return string
      */
-    protected function _executeSingleReplace(Zend_Markup_Token $token, $markup)
+    protected function _executeSingleReplace(\Zend_Markup_Token $token, $markup)
     {
         return '';
     }
@@ -362,7 +362,7 @@ class MUtil_Markup_Renderer_Text extends Zend_Markup_Renderer_RendererAbstract
      */
     public function addDefaultFilters()
     {
-        $this->_defaultFilter = new Zend_Filter();
+        $this->_defaultFilter = new \Zend_Filter();
     }
 
     public static function url()

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -46,7 +45,7 @@ include_once 'Zend/Exception.php';
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class MUtil_Parser_Sql_WordsParserException extends Zend_Exception
+class MUtil_Parser_Sql_WordsParserException extends \Zend_Exception
 {
     public function __construct($what, $line, $char)
     {

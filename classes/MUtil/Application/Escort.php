@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -27,11 +26,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @version    $Id$
+ *
  * @package    MUtil
  * @subpackage Application
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
@@ -49,7 +50,7 @@
  * Hook 6: routeShutdown()
  * Hook 7: dispatchLoopStartup()
  *
- * dispatchLoop: enters next via {@link Zend_Controller_Request_Abstract::setDispatched() setDispatched(false)}
+ * dispatchLoop: enters next via {@link \Zend_Controller_Request_Abstract::setDispatched() setDispatched(false)}
  *    Hook 8: preDispatch()
  *      $dispatcher->dispatch
  *      $this->controller->__construct()
@@ -77,24 +78,25 @@
  * @subpackage Application
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
+ * @since      Class available since MUtil version 1.0
  */
-abstract class MUtil_Application_Escort extends Zend_Application_Bootstrap_Bootstrap
+abstract class MUtil_Application_Escort extends \Zend_Application_Bootstrap_Bootstrap
 {
     /**
      *
-     * @var Zend_Controller_Action_Interface
+     * @var \Zend_Controller_Action_Interface
      */
     public $controller;
 
     /**
      *
-     * @var Zend_Controller_Request_Abstract
+     * @var \Zend_Controller_Request_Abstract
      */
     public $request;
 
     /**
      *
-     * @var Zend_Controller_Response_Abstract
+     * @var \Zend_Controller_Response_Abstract
      */
     public $response;
 
@@ -104,14 +106,14 @@ abstract class MUtil_Application_Escort extends Zend_Application_Bootstrap_Boots
      */
     protected function _initRouter ()
     {
-        if (MUtil_Console::isConsole())
+        if (\MUtil_Console::isConsole())
         {
             $this->bootstrap('frontController');
             $front = $this->getResource('frontController');
             $front->setParam('disableOutputBuffering', true);
-            $front->setRouter(new MUtil_Controller_Router_Cli());
-            $front->setRequest(new MUtil_Controller_Request_Cli());
-            $front->setResponse(new MUtil_Controller_Response_Cli());
+            $front->setRouter(new \MUtil_Controller_Router_Cli());
+            $front->setRequest(new \MUtil_Controller_Request_Cli());
+            $front->setResponse(new \MUtil_Controller_Response_Cli());
         }
     }
 
@@ -120,8 +122,8 @@ abstract class MUtil_Application_Escort extends Zend_Application_Bootstrap_Boots
      *
      * This->init() has ran and the constructor has finisched so all _init{name} and application.ini
      * resources have been loaded. The code between the constructor and the call to $this->run() has
-     * been executed in $this->run() has hooked $this as both a Zend_Controller_Plugin and a
-     * Zend_Controller_Action_Helper.
+     * been executed in $this->run() has hooked $this as both a \Zend_Controller_Plugin and a
+     * \Zend_Controller_Action_Helper.
      *
      * Not initialized are the $request, $response and $controller objects.
      *
@@ -141,7 +143,7 @@ abstract class MUtil_Application_Escort extends Zend_Application_Bootstrap_Boots
      * methods have been called.
      *
      * Here you can check what was done in the action. All output echoed here is captured
-     * for the output. E.g. Zend_Controller_Action_Helper_ViewRenderer uses this event to
+     * for the output. E.g. \Zend_Controller_Action_Helper_ViewRenderer uses this event to
      * render the view when this has not already been done explicitely. As the ViewRenderer
      * has a higher priority than the Escort this will already have happened, unless
      * $this->run() was called with a stackIndex of -81 or lower.
@@ -153,10 +155,10 @@ abstract class MUtil_Application_Escort extends Zend_Application_Bootstrap_Boots
      * Actions after: ob_get_clean(); $response->appendBody()
      * Next hook: postDispatch()
      *
-     * @param Zend_Controller_Action $actionController
+     * @param \Zend_Controller_Action $actionController
      * @return void
      */
-    public function controllerAfterAction(Zend_Controller_Action $actionController = null)
+    public function controllerAfterAction(\Zend_Controller_Action $actionController = null)
     { }
 
 
@@ -172,10 +174,10 @@ abstract class MUtil_Application_Escort extends Zend_Application_Bootstrap_Boots
      * Actions after: $controller->preDispatch(); $controller->{name}Action(); $controller->postDispatch()
      * Next hook: controllerAfterAction()
      *
-     * @param Zend_Controller_Action $actionController
+     * @param \Zend_Controller_Action $actionController
      * @return void
      */
-    public function controllerBeforeAction(Zend_Controller_Action $actionController = null)
+    public function controllerBeforeAction(\Zend_Controller_Action $actionController = null)
     { }
 
     /**
@@ -190,15 +192,15 @@ abstract class MUtil_Application_Escort extends Zend_Application_Bootstrap_Boots
      * Actions after: $controller->init(); ob_start(); $controller->dispatch()
      * Next hook: controllerBeforeAction()
      *
-     * @param Zend_Controller_Action $actionController
+     * @param \Zend_Controller_Action $actionController
      * @return void
      */
-    public function controllerInit(Zend_Controller_Action $actionController = null)
+    public function controllerInit(\Zend_Controller_Action $actionController = null)
     { }
 
 
     /**
-     * Hook 13: Called before Zend_Controller_Front exits its dispatch loop.
+     * Hook 13: Called before \Zend_Controller_Front exits its dispatch loop.
      *
      * Last change to change anything in the $response.
      *
@@ -214,7 +216,7 @@ abstract class MUtil_Application_Escort extends Zend_Application_Bootstrap_Boots
 
 
     /**
-     * Hook 7: Called before Zend_Controller_Front enters its dispatch loop.
+     * Hook 7: Called before \Zend_Controller_Front enters its dispatch loop.
      *
      * This events enables you to adjust the request after the routing has been done.
      *
@@ -229,10 +231,10 @@ abstract class MUtil_Application_Escort extends Zend_Application_Bootstrap_Boots
      * Actions after: dispatch loop started
      * Next hook: preDispatch()
      *
-     * @param  Zend_Controller_Request_Abstract $request
+     * @param  \Zend_Controller_Request_Abstract $request
      * @return void
      */
-    public function dispatchLoopStartup(Zend_Controller_Request_Abstract $request)
+    public function dispatchLoopStartup(\Zend_Controller_Request_Abstract $request)
     { }
 
 
@@ -258,14 +260,14 @@ abstract class MUtil_Application_Escort extends Zend_Application_Bootstrap_Boots
 
 
     /**
-     * Hook 12: Called after an action is dispatched by Zend_Controller_Dispatcher.
+     * Hook 12: Called after an action is dispatched by \Zend_Controller_Dispatcher.
      *
      * This callback allows for proxy or filter behavior. By altering the
      * request and resetting its dispatched flag (via {@link
-     * Zend_Controller_Request_Abstract::setDispatched() setDispatched(false)}),
+     * \Zend_Controller_Request_Abstract::setDispatched() setDispatched(false)}),
      * a new action may be specified for dispatching.
      *
-     * Zend_Layout_Controller_Plugin_Layout uses this event to change the output
+     * \Zend_Layout_Controller_Plugin_Layout uses this event to change the output
      * of the $response with the rendering of the layout. As the Layout plugin
      * has a priority of 99, this Escort event will take place before the layout
      * is rendered, unless $this->run() was called with a stackIndex lower than zero.
@@ -275,19 +277,19 @@ abstract class MUtil_Application_Escort extends Zend_Application_Bootstrap_Boots
      * Actions after: while (! Request->isDispatched()) or back to Hook 8 preDispatch()
      * Next hook: dispatchLoopShutdown()
      *
-     * @param  Zend_Controller_Request_Abstract $request
+     * @param  \Zend_Controller_Request_Abstract $request
      * @return void
      */
-    public function postDispatch(Zend_Controller_Request_Abstract $request)
+    public function postDispatch(\Zend_Controller_Request_Abstract $request)
     { }
 
 
     /**
      * Hook 8: Start of dispatchLoop. Called before an action is dispatched
-     * by Zend_Controller_Dispatcher.
+     * by \Zend_Controller_Dispatcher.
      *
      * This callback allows for proxy or filter behavior. By altering the request
-     * and resetting its dispatched flag (via {@link Zend_Controller_Request_Abstract::setDispatched()
+     * and resetting its dispatched flag (via {@link \Zend_Controller_Request_Abstract::setDispatched()
      * setDispatched(false)}), the current action may be skipped.
      *
      * Not yet initialized is the $controller object - as the $controller can change during
@@ -298,10 +300,10 @@ abstract class MUtil_Application_Escort extends Zend_Application_Bootstrap_Boots
      * Actions after: $dispatcher->dispatch(); $controller->__construct()
      * Next hook: controllerInit()
      *
-     * @param  Zend_Controller_Request_Abstract $request
+     * @param  \Zend_Controller_Request_Abstract $request
      * @return void
      */
-    public function preDispatch(Zend_Controller_Request_Abstract $request)
+    public function preDispatch(\Zend_Controller_Request_Abstract $request)
     { }
 
 
@@ -319,10 +321,10 @@ abstract class MUtil_Application_Escort extends Zend_Application_Bootstrap_Boots
      * Actions after: $this->response object created
      * Next hook: responseChanged()
      *
-     * @param Zend_Controller_Request_Abstract $request
+     * @param \Zend_Controller_Request_Abstract $request
      * @return void
      */
-    public function requestChanged(Zend_Controller_Request_Abstract $request)
+    public function requestChanged(\Zend_Controller_Request_Abstract $request)
     { }
 
 
@@ -343,10 +345,10 @@ abstract class MUtil_Application_Escort extends Zend_Application_Bootstrap_Boots
      * Actions after: $router & $dispatcher objects created (both not accessible though)
      * Next hook: routeStartup()
      *
-     * @param Zend_Controller_Response_Abstract $response
+     * @param \Zend_Controller_Response_Abstract $response
      * @return void
      */
-    public function responseChanged(Zend_Controller_Response_Abstract $response)
+    public function responseChanged(\Zend_Controller_Response_Abstract $response)
     { }
 
 
@@ -367,7 +369,7 @@ abstract class MUtil_Application_Escort extends Zend_Application_Bootstrap_Boots
 
 
     /**
-     * Hook 6: Called after Zend_Controller_Router has determined the route set by the request.
+     * Hook 6: Called after \Zend_Controller_Router has determined the route set by the request.
      *
      * This events enables you to adjust the route after the routing has run it's course.
      *
@@ -378,15 +380,15 @@ abstract class MUtil_Application_Escort extends Zend_Application_Bootstrap_Boots
      * Actions after: nothing, but the route consisting of controller, action and module should now be fixed
      * Next hook: dispatchLoopStartup()
      *
-     * @param  Zend_Controller_Request_Abstract $request
+     * @param  \Zend_Controller_Request_Abstract $request
      * @return void
      */
-    public function routeShutdown(Zend_Controller_Request_Abstract $request)
+    public function routeShutdown(\Zend_Controller_Request_Abstract $request)
     { }
 
 
     /**
-     * Hook 5: Called before Zend_Controller_Front begins evaluating the
+     * Hook 5: Called before \Zend_Controller_Front begins evaluating the
      * request against its routes.
      *
      * All resources have been loaded and the $request and $response object have been created.
@@ -398,10 +400,10 @@ abstract class MUtil_Application_Escort extends Zend_Application_Bootstrap_Boots
      * Actions after: $router->route()
      * Next hook: routeShutdown()
      *
-     * @param Zend_Controller_Request_Abstract $request
+     * @param \Zend_Controller_Request_Abstract $request
      * @return void
      */
-    public function routeStartup(Zend_Controller_Request_Abstract $request)
+    public function routeStartup(\Zend_Controller_Request_Abstract $request)
     { }
 
 
@@ -420,12 +422,12 @@ abstract class MUtil_Application_Escort extends Zend_Application_Bootstrap_Boots
      *
      * @param  int $stackIndex Optional; stack index for plugins
      * @return void
-     * @throws Zend_Application_Bootstrap_Exception
+     * @throws \Zend_Application_Bootstrap_Exception
      */
     final public function run($stackIndex = null)
     {
-        MUtil_Application_EscortPlugin::register($this, $stackIndex);
-        MUtil_Application_EscortControllerHelper::register($this, $stackIndex);
+        \MUtil_Application_EscortPlugin::register($this, $stackIndex);
+        \MUtil_Application_EscortControllerHelper::register($this, $stackIndex);
 
         $this->beforeRun();
 
@@ -435,14 +437,14 @@ abstract class MUtil_Application_Escort extends Zend_Application_Bootstrap_Boots
     }
 
     /**
-     * No hook. Called by MUtil_Application_EscortControllerHelper->setActionController()
+     * No hook. Called by \MUtil_Application_EscortControllerHelper->setActionController()
      * and sets the controller. No event hooked up as controllerInit() is called straigt
      * after this call.
      *
-     * @param  Zend_Controller_Action $actionController
-     * @return Zend_Controller_ActionHelper_Abstract Provides a fluent interface
+     * @param  \Zend_Controller_Action $actionController
+     * @return \Zend_Controller_ActionHelper_Abstract Provides a fluent interface
      */
-    public final function setActionController(Zend_Controller_Action $actionController = null)
+    public final function setActionController(\Zend_Controller_Action $actionController = null)
     {
         $this->controller = $actionController;
 
@@ -455,10 +457,10 @@ abstract class MUtil_Application_Escort extends Zend_Application_Bootstrap_Boots
      *
      * Final as the workings are central to the Escort class.
      *
-     * @param Zend_Controller_Request_Abstract $request
-     * @return MUtil_Application_Escort
+     * @param \Zend_Controller_Request_Abstract $request
+     * @return \MUtil_Application_Escort
      */
-    public final function setRequest(Zend_Controller_Request_Abstract $request)
+    public final function setRequest(\Zend_Controller_Request_Abstract $request)
     {
         $this->request = $request;
 
@@ -473,10 +475,10 @@ abstract class MUtil_Application_Escort extends Zend_Application_Bootstrap_Boots
      *
      * Final as the workings are central to the Escort class.
      *
-     * @param Zend_Controller_Response_Abstract $response
-     * @return MUtil_Application_Escort
+     * @param \Zend_Controller_Response_Abstract $response
+     * @return \MUtil_Application_Escort
      */
-    public final function setResponse(Zend_Controller_Response_Abstract $response)
+    public final function setResponse(\Zend_Controller_Response_Abstract $response)
     {
         $this->response = $response;
 

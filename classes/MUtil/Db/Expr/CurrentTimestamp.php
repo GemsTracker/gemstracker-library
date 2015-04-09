@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.1.36
  */
-class MUtil_Db_Expr_CurrentTimestamp extends Zend_Db_Expr
+class MUtil_Db_Expr_CurrentTimestamp extends \Zend_Db_Expr
 {
     /**
      * Instantiate teh current timestamp expression.

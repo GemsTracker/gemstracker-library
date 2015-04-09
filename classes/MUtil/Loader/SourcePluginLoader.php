@@ -44,11 +44,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class MUtil_Loader_SourcePluginLoader extends MUtil_Loader_PluginLoader
+class MUtil_Loader_SourcePluginLoader extends \MUtil_Loader_PluginLoader
 {
     /**
      *
-     * @var MUtil_Registry_SourceInterface
+     * @var \MUtil_Registry_SourceInterface
      */
     protected $_source;
 
@@ -63,8 +63,8 @@ class MUtil_Loader_SourcePluginLoader extends MUtil_Loader_PluginLoader
     {
         $object = parent::createClass($className, $arguments);
 
-        if ($object instanceof MUtil_Registry_TargetInterface &&
-                $this->_source instanceof MUtil_Registry_SourceInterface) {
+        if ($object instanceof \MUtil_Registry_TargetInterface &&
+                $this->_source instanceof \MUtil_Registry_SourceInterface) {
 
             $this->_source->applySource($object);
         }
@@ -89,16 +89,16 @@ class MUtil_Loader_SourcePluginLoader extends MUtil_Loader_PluginLoader
      */
     public function hasSource()
     {
-        return $this->_source instanceof MUtil_Registry_SourceInterface;
+        return $this->_source instanceof \MUtil_Registry_SourceInterface;
     }
 
     /**
      * Set the current source for the loader
      *
-     * @param MUtil_Registry_SourceInterface $source
+     * @param \MUtil_Registry_SourceInterface $source
      * @return \MUtil_Loader_SourcePluginLoader (continuation pattern)
      */
-    public function setSource(MUtil_Registry_SourceInterface $source)
+    public function setSource(\MUtil_Registry_SourceInterface $source)
     {
         $this->_source = $source;
         return $this;

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -45,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class MUtil_Util_FunctionList extends MUtil_Util_LookupList
+class MUtil_Util_FunctionList extends \MUtil_Util_LookupList
 {
     /**
      * Item lookup function.

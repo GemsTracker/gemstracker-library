@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Format.php $
+ * @version    $Id: Format.php 1640 2013-11-19 16:21:36Z matijsdejongs $
  */
 
 /**
@@ -48,7 +48,7 @@ class MUtil_Date_Format
 {
     /**
      * Return the time part of a format
-     * 
+     *
      * @param string $format
      * @return string
      */
@@ -74,38 +74,36 @@ class MUtil_Date_Format
      *  - "yy \"hi': mm\" MM" => array("y 'hi'': mm' mm", false, false)
      *  - "yyyy-MM-dd 'date: yyyy-MM-dd' HH:mm 'time'': hh:mm' HH:mm Q", => array("yy-mm-dd", " 'date: yyyy-MM-dd' ", "HH:mm 'time'': HH:mm' z Q")
      *  - "HH:mm:ss"          => array(false, false, "HH:mm:ss")
-     *  - Zend_Date::ISO_8601 => array("ISO_8601", "T", "HH:mm:ssZ")
+     *  - \Zend_Date::ISO_8601 => array("ISO_8601", "T", "HH:mm:ssZ")
      *
-     * @param string $format Or Zend_Locale_Format::getDateFormat($locale)
+     * @param string $format Or \Zend_Locale_Format::getDateFormat($locale)
      * @return array dateFormat, seperator, timeFormat
      */
     public static function splitDateTimeFormat($format=null)
     {
         if($format == null) {
-            $locale = Zend_Registry::get('Zend_Locale');
-            if( !($locale instanceof Zend_Locale) ) {
-                require_once "ZendX/JQuery/Exception.php";
-                throw new ZendX_JQuery_Exception("Cannot resolve Zend Locale format by default, no application wide locale is set.");
+            $locale = \Zend_Registry::get('Zend_Locale');
+            if(! ($locale instanceof \Zend_Locale) ) {
+                throw new \ZendX_JQuery_Exception("Cannot resolve Zend Locale format by default, no application wide locale is set.");
             }
             /**
-             * @see Zend_Locale_Format
+             * @see \Zend_Locale_Format
              */
-            require_once "Zend/Locale/Format.php";
-            $format = Zend_Locale_Format::getDateFormat($locale);
+            $format = \Zend_Locale_Format::getDateFormat($locale);
         }
 
         $fullDates = array(
-            Zend_Date::ATOM     => array('ATOM',     'T', 'HH:mm:ssZ' ), // No timezone +01:00, use +0100
-            Zend_Date::COOKIE   => array('COOKIE',   ' ', 'HH:mm:ss z'),
-            Zend_Date::ISO_8601 => array('ISO_8601', 'T', 'HH:mm:ssZ' ),
-            Zend_Date::RFC_822  => array('RFC_822',  ' ', 'HH:mm:ss Z'), // No timezone +01:00, use +0100
-            Zend_Date::RFC_850  => array('RFC_850',  ' ', 'HH:mm:ss z'),
-            Zend_Date::RFC_1036 => array('RFC_1036', ' ', 'HH:mm:ss Z'),
-            Zend_Date::RFC_1123 => array('RFC_1123', ' ', 'HH:mm:ss z'),
-            Zend_Date::RFC_2822 => array('RFC_2822', ' ', 'HH:mm:ss Z'),
-            Zend_Date::RFC_3339 => array('yy-mm-dd', 'T', 'HH:mm:ssZ' ), // No timezone +01:00, use +0100
-            Zend_Date::RSS      => array('RSS',      ' ', 'HH:mm:ss Z'),
-            Zend_Date::W3C      => array('W3C',      'T', 'HH:mm:ssZ' ), // No timezone +01:00, use +0100
+            \Zend_Date::ATOM     => array('ATOM',     'T', 'HH:mm:ssZ' ), // No timezone +01:00, use +0100
+            \Zend_Date::COOKIE   => array('COOKIE',   ' ', 'HH:mm:ss z'),
+            \Zend_Date::ISO_8601 => array('ISO_8601', 'T', 'HH:mm:ssZ' ),
+            \Zend_Date::RFC_822  => array('RFC_822',  ' ', 'HH:mm:ss Z'), // No timezone +01:00, use +0100
+            \Zend_Date::RFC_850  => array('RFC_850',  ' ', 'HH:mm:ss z'),
+            \Zend_Date::RFC_1036 => array('RFC_1036', ' ', 'HH:mm:ss Z'),
+            \Zend_Date::RFC_1123 => array('RFC_1123', ' ', 'HH:mm:ss z'),
+            \Zend_Date::RFC_2822 => array('RFC_2822', ' ', 'HH:mm:ss Z'),
+            \Zend_Date::RFC_3339 => array('yy-mm-dd', 'T', 'HH:mm:ssZ' ), // No timezone +01:00, use +0100
+            \Zend_Date::RSS      => array('RSS',      ' ', 'HH:mm:ss Z'),
+            \Zend_Date::W3C      => array('W3C',      'T', 'HH:mm:ssZ' ), // No timezone +01:00, use +0100
         );
 
         if (isset($fullDates[$format])) {
@@ -142,7 +140,7 @@ class MUtil_Date_Format
         foreach ($parts as $part) {
             if (isset($dateFormats[$part])) {
                 if (false !== $timeFormat) {
-                    throw new Zend_Form_Element_Exception(sprintf(
+                    throw new \Zend_Form_Element_Exception(sprintf(
                             'Date format specifier %s not allowed after time specifier in %s in format mask %s.',
                             $part,
                             $timeFormat,
@@ -182,7 +180,7 @@ class MUtil_Date_Format
             }
         }
 
-        // MUtil_Echo::track($preg);
+        // \MUtil_Echo::track($preg);
         return array($dateFormat, $separator, $timeFormat);
     }
 }

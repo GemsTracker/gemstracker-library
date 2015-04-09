@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_View_Helper_FormRadio extends Zend_View_Helper_FormRadio
+class MUtil_View_Helper_FormRadio extends \Zend_View_Helper_FormRadio
 {
     /**
      * Generates a set of radio button elements.
@@ -124,7 +124,7 @@ class MUtil_View_Helper_FormRadio extends Zend_View_Helper_FormRadio
         $pattern = @preg_match('/\pL/u', 'a')
             ? '/[^\p{L}\p{N}\-\_]/u'    // Unicode
             : '/[^a-zA-Z0-9\-\_]/';     // No Unicode
-        $filter = new Zend_Filter_PregReplace($pattern, "");
+        $filter = new \Zend_Filter_PregReplace($pattern, "");
 
         // add radio buttons to the list.
         foreach ($options as $opt_value => $opt_label) {

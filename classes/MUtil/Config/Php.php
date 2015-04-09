@@ -26,24 +26,25 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * @package    MUtil
+ * @subpackage Config
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2010 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
+ * Get and parse the phpinf() data for display within the applications own layout
  *
- * @author Matijs de Jong
- * @package    MUtil
- * @subpackage Config
- * @since 1.0
- * @version 1.0
- * @copyright  Copyright (c) 2010 Erasmus MC (www.erasmusmc.nl) & MagnaFacta (www.magnafacta.nl)
- */
-
-/**
  *
- * @author Matijs de Jong
  * @package    MUtil
- * @subpackage Config
- * @copyright  Copyright (c) 2010 Erasmus MC (www.erasmusmc.nl) & MagnaFacta (www.magnafacta.nl)
+ * @subpackage Date
+ * @copyright  Copyright (c) 2010 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since MUtil version 1.0
  */
 class MUtil_Config_Php
 {

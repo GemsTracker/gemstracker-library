@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Namespacer" default="namespace" basedir=".">
+    <target name="namespace">
+        <reflexive>
+            <fileset dir="." id="phpfiles">
+                <include name="**/*.php" />
+                <include name="**/*.phtml" />
+                <exclude name="**/*inc.php" />
+                <exclude name="**/lib/**" />
+            </fileset>
+            <filterchain>
+                <replaceregexp>
+                    <regexp pattern="([^\\'&quot;])(MUtil|Zend|ZendX|Gems|Booth|Desk|Pulse|Depar)_" replace="\1\\\2_" />
+                    <regexp pattern="class \\(MUtil|Zend|ZendX|Gems|Booth|Desk|Pulse|Depar)_" replace="class \1_" />
+                    <regexp pattern="interface \\(MUtil|Zend|ZendX|Gems|Booth|Desk|Pulse|Depar)_" replace="interface \1_" />
+                    <regexp pattern="(\s|\()Countable" replace="\1\\Countable" />
+                    <regexp pattern="(\s|\()ArrayObject" replace="\1\\ArrayObject" />
+                    <regexp pattern="(\s|\()Iterator" replace="\1\\Iterator" />
+                    <regexp pattern="(\s|\()Exception" replace="\1\\Exception" />
+                </replaceregexp>
+            </filterchain>
+        </reflexive>
+    </target>
+</project>

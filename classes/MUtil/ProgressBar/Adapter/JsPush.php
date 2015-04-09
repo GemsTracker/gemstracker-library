@@ -56,7 +56,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_ProgressBar_Adapter_JsPush extends Zend_ProgressBar_Adapter_JsPush
+class MUtil_ProgressBar_Adapter_JsPush extends \Zend_ProgressBar_Adapter_JsPush
 {
     /**
      * When true data has been sent.

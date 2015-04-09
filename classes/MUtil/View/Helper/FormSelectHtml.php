@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_View_Helper_FormSelectHtml extends Zend_View_Helper_FormSelect
+class MUtil_View_Helper_FormSelectHtml extends \Zend_View_Helper_FormSelect
 {
     /**
      * Builds the actual <option> tag
@@ -65,7 +65,7 @@ class MUtil_View_Helper_FormSelectHtml extends Zend_View_Helper_FormSelect
         $opt = '<option'
              . ' value="' . $this->view->escape($value) . '"';
 
-        if ($label instanceof MUtil_Html_HtmlElement) {
+        if ($label instanceof \MUtil_Html_HtmlElement) {
             // Element not allowed, get parts that are allowed
             foreach (array('class', 'dir', 'id', 'label', 'lang', 'style', 'title') as $attr) {
                 if (isset($label->$attr)) {
@@ -74,13 +74,13 @@ class MUtil_View_Helper_FormSelectHtml extends Zend_View_Helper_FormSelect
             }
 
             // Now get the content
-            $renderer = MUtil_Html::getRenderer();
+            $renderer = \MUtil_Html::getRenderer();
             $content  = '';
             foreach ($label->getIterator() as $part) {
                 $content .= $renderer->renderAny($this->view, $part);
             }
 
-        } elseif ($label instanceof MUtil_Html_HtmlInterface) {
+        } elseif ($label instanceof \MUtil_Html_HtmlInterface) {
             $content = $label->render($this->view);
         } else {
             $content = $this->view->escape($label);

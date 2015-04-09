@@ -45,5 +45,5 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-interface MUtil_Paginator_Adapter_PrefetchInterface extends Zend_Paginator_Adapter_Interface
+interface MUtil_Paginator_Adapter_PrefetchInterface extends \Zend_Paginator_Adapter_Interface
 {}

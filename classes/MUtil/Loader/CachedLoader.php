@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.2
  */
-class MUtil_Loader_CachedLoader implements Zend_Loader_Autoloader_Interface
+class MUtil_Loader_CachedLoader implements \Zend_Loader_Autoloader_Interface
 {
     /**
      *
@@ -104,11 +104,11 @@ class MUtil_Loader_CachedLoader implements Zend_Loader_Autoloader_Interface
         $this->_cacheFile = $this->_cacheDir . $this->_cacheFile;
 
         if (! file_exists($this->_cacheDir)) {
-            throw new Zend_Exception(sprintf('Cache directory %s does not exist.', $this->_cacheDir));
+            throw new \Zend_Exception(sprintf('Cache directory %s does not exist.', $this->_cacheDir));
         }
 
         if (! is_writable($this->_cacheDir)) {
-            throw new Zend_Exception(sprintf('Cache directory %s is not writeable.', $this->_cacheFile));
+            throw new \Zend_Exception(sprintf('Cache directory %s is not writeable.', $this->_cacheFile));
         }
 
         if (! file_exists($this->_cacheFile)) {
@@ -118,14 +118,14 @@ class MUtil_Loader_CachedLoader implements Zend_Loader_Autoloader_Interface
             // $this->_saveCache();
         } else {
             if (! is_writable($this->_cacheFile)) {
-                throw new Zend_Exception(sprintf('Cache file %s not writeable.', $this->_cacheFile));
+                throw new \Zend_Exception(sprintf('Cache file %s not writeable.', $this->_cacheFile));
             }
 
             $this->_loadCache();
         }
 
         $this->_loadIncludePath();
-        // MUtil_Echo::track($this->_cacheFile, $this->_cacheDir, file_exists($this->_cacheDir));
+        // \MUtil_Echo::track($this->_cacheFile, $this->_cacheDir, file_exists($this->_cacheDir));
     }
 
     /**
@@ -149,7 +149,7 @@ class MUtil_Loader_CachedLoader implements Zend_Loader_Autoloader_Interface
         if (array_key_exists($file, $this->_cacheFileArray)) {
             return $this->_cacheFileArray[$file];
         }
-        // MUtil_Echo::track($file);
+        // \MUtil_Echo::track($file);
 
         $this->_cacheFileArray[$file] = file_exists($file);
         $this->_cacheChanged          = true;
@@ -185,7 +185,7 @@ class MUtil_Loader_CachedLoader implements Zend_Loader_Autoloader_Interface
      */
     protected function _loadIncludePath()
     {
-        $dirs = Zend_Loader::explodeIncludePath();
+        $dirs = \Zend_Loader::explodeIncludePath();
 
         foreach ($dirs as $dir) {
             if (('.' != $dir) && is_dir($dir)) {
@@ -200,18 +200,18 @@ class MUtil_Loader_CachedLoader implements Zend_Loader_Autoloader_Interface
      */
     protected function _saveCache()
     {
-        // MUtil_Echo::track(filemtime($this->_cacheFile), $this->_cacheLoadTime, $this->_cacheChanged);
+        // \MUtil_Echo::track(filemtime($this->_cacheFile), $this->_cacheLoadTime, $this->_cacheChanged);
         if (file_exists($this->_cacheFile)) {
             if ((! $this->_cacheChanged) && (filemtime($this->_cacheFile) >= $this->_cacheLoadTime)) {
                 return;
             }
         }
         /*
-        MUtil_Echo::r('Saving load cache (from previous call)');
+        \MUtil_Echo::r('Saving load cache (from previous call)');
 
         include $this->_cacheFile;
 
-        MUtil_Echo::r(array_diff(array_keys($this->_cacheClassArray), array_keys($classArray)));
+        \MUtil_Echo::r(array_diff(array_keys($this->_cacheClassArray), array_keys($classArray)));
         // */
 
         $content = "<?php\n";
@@ -352,7 +352,7 @@ class MUtil_Loader_CachedLoader implements Zend_Loader_Autoloader_Interface
                     );
 
             default:
-                throw new Zend_Exception(
+                throw new \Zend_Exception(
                         __CLASS__ . '->' . __FUNCTION__ . ' cannot create class with ' .
                         count($arguments) . ' parameters.'
                         );
@@ -361,9 +361,9 @@ class MUtil_Loader_CachedLoader implements Zend_Loader_Autoloader_Interface
 
     /**
      *
-     * @static MUtil_Loader_CachedLoader $instance
+     * @static \MUtil_Loader_CachedLoader $instance
      * @param stirng $dir
-     * @return MUtil_Loader_CachedLoader
+     * @return \MUtil_Loader_CachedLoader
      */
     public static function getInstance($dir = null)
     {
@@ -373,7 +373,7 @@ class MUtil_Loader_CachedLoader implements Zend_Loader_Autoloader_Interface
             $instance = new self($dir);
 
             if (is_subclass_of('Zend_Loader', 'MUtil_Loader_LoaderMarkerInterface')) {
-                Zend_Loader::setCachedLoader($instance);
+                \Zend_Loader::setCachedLoader($instance);
             }
         }
 
@@ -427,7 +427,7 @@ class MUtil_Loader_CachedLoader implements Zend_Loader_Autoloader_Interface
                 return true;
             }
 
-            throw new Zend_Exception("The file '$file' does not contain the class '$className'.");
+            throw new \Zend_Exception("The file '$file' does not contain the class '$className'.");
         }
 
         if (! isset($this->_cacheClassArray[$className])) {
@@ -456,7 +456,7 @@ class MUtil_Loader_CachedLoader implements Zend_Loader_Autoloader_Interface
      * @param string|array $dirs - OPTIONAL Either a path or an array of paths
      *                             to search.
      * @return void
-     * @throws Zend_Exception
+     * @throws \Zend_Exception
      */
     public function loadClassByPaths($class, $dirs = null)
     {
@@ -466,7 +466,7 @@ class MUtil_Loader_CachedLoader implements Zend_Loader_Autoloader_Interface
 
         if ((null !== $dirs) && !is_string($dirs) && !is_array($dirs)) {
             require_once 'Zend/Exception.php';
-            throw new Zend_Exception('Directory argument must be a string or an array');
+            throw new \Zend_Exception('Directory argument must be a string or an array');
         }
 
         $className = ltrim($class, '\\');
@@ -502,7 +502,7 @@ class MUtil_Loader_CachedLoader implements Zend_Loader_Autoloader_Interface
 
         if (!class_exists($class, false) && !interface_exists($class, false)) {
             require_once 'Zend/Exception.php';
-            throw new Zend_Exception("File \"$file\" does not exist or class \"$class\" was not found in the file");
+            throw new \Zend_Exception("File \"$file\" does not exist or class \"$class\" was not found in the file");
         }
     }
 }

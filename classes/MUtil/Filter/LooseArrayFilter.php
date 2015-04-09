@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Filter_LooseArrayFilter implements Zend_Filter_Interface
+class MUtil_Filter_LooseArrayFilter implements \Zend_Filter_Interface
 {
     /**
      *
@@ -76,7 +76,7 @@ class MUtil_Filter_LooseArrayFilter implements Zend_Filter_Interface
      * Returns the result of filtering $value
      *
      * @param  mixed $value
-     * @throws Zend_Filter_Exception If filtering $value is impossible
+     * @throws \Zend_Filter_Exception If filtering $value is impossible
      * @return mixed
      */
     public function filter($value)

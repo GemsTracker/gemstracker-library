@@ -117,7 +117,7 @@ class MUtil_Parser_Sql_WordsParser
         }
 
         if ($i >= $this->_len) {
-            throw new MUtil_Parser_Sql_WordsParserException('Opening '.$char.' does not close', $start_line, $start_pos);
+            throw new \MUtil_Parser_Sql_WordsParserException('Opening '.$char.' does not close', $start_line, $start_pos);
         }
 
         // Check for character repeat
@@ -145,7 +145,7 @@ class MUtil_Parser_Sql_WordsParser
         }
 
         if ($i >= $this->_len) {
-            throw new MUtil_Parser_Sql_WordsParserException('Opening '.$chars.' does not close', $start_line, $start_pos);
+            throw new \MUtil_Parser_Sql_WordsParserException('Opening '.$chars.' does not close', $start_line, $start_pos);
         }
 
         $this->setLine(++$i);

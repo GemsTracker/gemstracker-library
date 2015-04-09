@@ -36,12 +36,12 @@
  */
 
 /**
- * Standard Source interface for MUtil_Registry_TargetInterface objects.
+ * Standard Source interface for \MUtil_Registry_TargetInterface objects.
  *
- * This allows sources of values, e.g. the Zend_Registry, to be injected
+ * This allows sources of values, e.g. the \Zend_Registry, to be injected
  *  automatically in a Target Object by calling $this->applySource().
  *
- * @see MUtil_Registry_TargetInterface
+ * @see \MUtil_Registry_TargetInterface
  *
  * @package    MUtil
  * @subpackage Registry
@@ -56,23 +56,23 @@ interface MUtil_Registry_SourceInterface
      *
      * @param mixed $container
      * @param string $name An optional name to identify the container
-     * @return MUtil_Registry_Source
+     * @return \MUtil_Registry_Source
      */
     public function addRegistryContainer($container, $name = null);
 
     /**
      * Apply this source to the target.
      *
-     * @param MUtil_Registry_TargetInterface $target
+     * @param \MUtil_Registry_TargetInterface $target
      * @return boolean True if $target is OK with loaded requests
      */
-    public function applySource(MUtil_Registry_TargetInterface $target);
+    public function applySource(\MUtil_Registry_TargetInterface $target);
 
     /**
      * Removes a source container from this object.
      *
      * @param string $name The name to identify the container
-     * @return MUtil_Registry_Source
+     * @return \MUtil_Registry_Source
      */
     public function removeRegistryContainer($name);
 }

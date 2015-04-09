@@ -68,14 +68,14 @@ class RaObject extends \ArrayObject implements \MUtil_Registry_TargetInterface
     protected $translateAdapter;
 
     /**
-     * Copy from Zend_Translate_Adapter
+     * Copy from \Zend_Translate_Adapter
      *
      * Translates the given string
      * returns the translation
      *
      * @param  string             $text   Translation string
-     * @param  string|Zend_Locale $locale (optional) Locale/Language to use, identical with locale
-     *                                    identifier, @see Zend_Locale for more information
+     * @param  string|\Zend_Locale $locale (optional) Locale/Language to use, identical with locale
+     *                                    identifier, @see \Zend_Locale for more information
      * @return string
      */
     public function _($text, $locale = null)
@@ -197,17 +197,17 @@ class RaObject extends \ArrayObject implements \MUtil_Registry_TargetInterface
     }
 
     /**
-     * Copy from Zend_Translate_Adapter
+     * Copy from \Zend_Translate_Adapter
      *
      * Translates the given string using plural notations
      * Returns the translated string
      *
-     * @see Zend_Locale
+     * @see \Zend_Locale
      * @param  string             $singular Singular translation string
      * @param  string             $plural   Plural translation string
      * @param  integer            $number   Number for detecting the correct plural
-     * @param  string|Zend_Locale $locale   (Optional) Locale/Language to use, identical with
-     *                                      locale identifier, @see Zend_Locale for more information
+     * @param  string|\Zend_Locale $locale   (Optional) Locale/Language to use, identical with
+     *                                      locale identifier, @see \Zend_Locale for more information
      * @return string
      */
     public function plural($singular, $plural, $number, $locale = null)

@@ -28,23 +28,23 @@
  *
  *
  * @package    MUtil
- * @subpackage Model
+ * @subpackage Db
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 201e Erasmus MC
+ * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: DbModelIterator.php 203 2012-01-01t 12:51:32Z matijs $
+ * @version    $Id: SelectIterator.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
 /**
  *
  *
  * @package    MUtil
- * @subpackage Model
+ * @subpackage Db
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Db_Iterator_SelectIterator implements Countable, Iterator
+class MUtil_Db_Iterator_SelectIterator implements \Countable, \Iterator
 {
     /**
      * The number of items
@@ -74,22 +74,22 @@ class MUtil_Db_Iterator_SelectIterator implements Countable, Iterator
 
     /**
      *
-     * @var Zend_Db_Statement_Interface
+     * @var \Zend_Db_Statement_Interface
      */
     protected $_statement;
 
     /**
      *
-     * @param Zend_Db_Select $select
+     * @param \Zend_Db_Select $select
      */
-    public function __construct(Zend_Db_Select $select)
+    public function __construct(\Zend_Db_Select $select)
     {
         $this->_select = $select;
     }
 
     protected function _initStatement()
     {
-        // MUtil_Echo::track($this->_select->__toString());
+        // \MUtil_Echo::track($this->_select->__toString());
 
         $this->_i         = 0;
         $this->_statement = $this->_select->query();
@@ -107,7 +107,7 @@ class MUtil_Db_Iterator_SelectIterator implements Countable, Iterator
         }
 
         // Why implement again what has already been done :)
-        $pag = new Zend_Paginator_Adapter_DbSelect($this->_select);
+        $pag = new \Zend_Paginator_Adapter_DbSelect($this->_select);
         $this->_count = $pag->count();
 
         return $this->_count;
@@ -121,7 +121,7 @@ class MUtil_Db_Iterator_SelectIterator implements Countable, Iterator
      */
     public function current()
     {
-        if (! $this->_statement instanceof Zend_Db_Statement_Interface) {
+        if (! $this->_statement instanceof \Zend_Db_Statement_Interface) {
             $this->_initStatement();
         }
         return $this->_row;
@@ -134,7 +134,7 @@ class MUtil_Db_Iterator_SelectIterator implements Countable, Iterator
      */
     public function key()
     {
-        if (! $this->_statement instanceof Zend_Db_Statement_Interface) {
+        if (! $this->_statement instanceof \Zend_Db_Statement_Interface) {
             $this->_initStatement();
         }
         return $this->_i;
@@ -145,7 +145,7 @@ class MUtil_Db_Iterator_SelectIterator implements Countable, Iterator
      */
     public function next()
     {
-        if (! $this->_statement instanceof Zend_Db_Statement_Interface) {
+        if (! $this->_statement instanceof \Zend_Db_Statement_Interface) {
             $this->_initStatement();
         }
         $this->_row = $this->_statement->fetch();
@@ -153,7 +153,7 @@ class MUtil_Db_Iterator_SelectIterator implements Countable, Iterator
     }
 
     /**
-     *  Rewind the Iterator to the first element
+     *  Rewind the \Iterator to the first element
      */
     public function rewind()
     {
@@ -167,7 +167,7 @@ class MUtil_Db_Iterator_SelectIterator implements Countable, Iterator
      */
     public function valid()
     {
-        if (! $this->_statement instanceof Zend_Db_Statement_Interface) {
+        if (! $this->_statement instanceof \Zend_Db_Statement_Interface) {
             $this->_initStatement();
         }
         return (boolean) $this->_row;

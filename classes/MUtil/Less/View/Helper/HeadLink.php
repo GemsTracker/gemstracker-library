@@ -28,7 +28,7 @@
  *
  *
  * @package    MUtil
- * @subpackage View\Helper
+ * @subpackage Less
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
@@ -41,12 +41,12 @@ require_once __DIR__ . '/lessc.inc.php';
  * Make sure each .less css script is compiled to .css
  *
  * @package    MUtil
- * @subpackage View\Helper
+ * @subpackage Less
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_Less_View_Helper_HeadLink extends Zend_View_Helper_HeadLink
+class MUtil_Less_View_Helper_HeadLink extends \Zend_View_Helper_HeadLink
 {
     /**
      * Absolute file path to the webroot
@@ -118,17 +118,17 @@ class MUtil_Less_View_Helper_HeadLink extends Zend_View_Helper_HeadLink
     /**
      * Compile a less file
      *
-     * @param Zend_View $view
+     * @param \Zend_View $view
      * @param string $href The less file
      * @param boolean $always Always compile
      * @return boolean True when changed
      */
-    public function compile(Zend_View $view, $href, $always = false)
+    public function compile(\Zend_View $view, $href, $always = false)
     {
-        if (MUtil_String::startsWith($href, 'http', true)) {
+        if (\MUtil_String::startsWith($href, 'http', true)) {
             // When a local url, strip the serverUrl and basepath
             $base = $view->serverUrl() . $view->baseUrl();
-            if (MUtil_String::startsWith($href, $base, true)) {
+            if (\MUtil_String::startsWith($href, $base, true)) {
                 // Only strip when urls match
                 $href = substr($href, strlen($base));
             }
@@ -140,19 +140,19 @@ class MUtil_Less_View_Helper_HeadLink extends Zend_View_Helper_HeadLink
 
         // Try compiling
         try {
-            // MUtil_Echo::track($inFile, $outFile);
+            // \MUtil_Echo::track($inFile, $outFile);
 
             $lessc = new lessc();
             $lessc->registerFunction('base64encode', array($this, 'base64encode'));
-            if ($always || array_key_exists('compilecss', Zend_Controller_Front::getInstance()->getRequest()->getParams())) {
+            if ($always || array_key_exists('compilecss', \Zend_Controller_Front::getInstance()->getRequest()->getParams())) {
                 $result = (boolean) $lessc->compileFile($inFile, $outFile);
             } else {
                 $result = $lessc->checkedCompile($inFile, $outFile);
             }
-        } catch (Exception $exc) {
+        } catch (\Exception $exc) {
             // If we have an error, present it if not in production
             if ((APPLICATION_ENV !== 'production') || (APPLICATION_ENV !== 'acceptance')) {
-                MUtil_Echo::pre($exc->getMessage());
+                \MUtil_Echo::pre($exc->getMessage());
             }
             $result = null;
         }
@@ -163,7 +163,7 @@ class MUtil_Less_View_Helper_HeadLink extends Zend_View_Helper_HeadLink
     /**
      * Create HTML link element from data item
      *
-     * @param  stdClass $item
+     * @param  \stdClass $item
      * @return string
      */
     public function itemToString(\stdClass $item)
@@ -174,7 +174,7 @@ class MUtil_Less_View_Helper_HeadLink extends Zend_View_Helper_HeadLink
                 (($attributes['type'] == 'text/css') || ($attributes['type'] == 'text/less'))) {
 
             // This is a stylesheet, consider extension and compile .less to .css
-            if (($attributes['type'] == 'text/less') || MUtil_String::endsWith($attributes['href'], '.less', true)) {
+            if (($attributes['type'] == 'text/less') || \MUtil_String::endsWith($attributes['href'], '.less', true)) {
                 $this->compile($this->view, $attributes['href'], false);
 
                 // Modify object, not the derived array

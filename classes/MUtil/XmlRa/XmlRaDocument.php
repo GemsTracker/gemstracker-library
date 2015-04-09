@@ -33,11 +33,11 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 MagnaFacta BV
  * @license    New BSD License
- * @version    $Id: Ra.php 938 2012-09-11 14:00:57Z matijsdejong $
+ * @version    $Id: XmlRaDocument.php 938 2012-09-11 14:00:57Z matijsdejong $
  */
 
 /**
- * DOMDocument extension for easier xpath queries with namespaces
+ * \DOMDocument extension for easier xpath queries with namespaces
  *
  * @package    MUtil
  * @subpackage XmlRa
@@ -45,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.3
  */
-class MUtil_XmlRa_XmlRaDocument extends DOMDocument
+class MUtil_XmlRa_XmlRaDocument extends \DOMDocument
 {
 
     /**
@@ -56,7 +56,7 @@ class MUtil_XmlRa_XmlRaDocument extends DOMDocument
 
     /**
      *
-     * @var DOMXPath
+     * @var \DOMXPath
      */
     private $_xpath = null;
 
@@ -69,7 +69,7 @@ class MUtil_XmlRa_XmlRaDocument extends DOMDocument
     {
         parent::__construct($version, $encoding);
 
-        // The magic, otherwise node->ownerDocument will return a DOMDocument object.
+        // The magic, otherwise node->ownerDocument will return a \DOMDocument object.
         parent::registerNodeClass('DOMDocument', get_class($this));
     }
 
@@ -87,7 +87,7 @@ class MUtil_XmlRa_XmlRaDocument extends DOMDocument
     private function _xpathInitialize()
     {
         if (null === $this->_xpath) {
-            $this->_xpath = new DOMXPath($this);
+            $this->_xpath = new \DOMXPath($this);
 
             if ($this->_namespaces) {
                 foreach ($this->_namespaces as $prefix => $namespaceUri) {
@@ -138,10 +138,10 @@ class MUtil_XmlRa_XmlRaDocument extends DOMDocument
      * Return a single item or null form the xpath expression.
      *
      * @param string $expression XPath query expression
-     * @param DOMNode $contextNode
+     * @param \DOMNode $contextNode
      * @return null|\DOMNode
      */
-    public function xpathEvaluate($expression, DOMNode $contextNode = null)
+    public function xpathEvaluate($expression, \DOMNode $contextNode = null)
     {
 
         $this->_xpathInitialize();
@@ -152,7 +152,7 @@ class MUtil_XmlRa_XmlRaDocument extends DOMDocument
             $result = $this->_xpath->evaluate($expression, $contextNode);
         }
 
-        if ($result instanceof DOMNodeList) {
+        if ($result instanceof \DOMNodeList) {
             if ($result->length) {
                 return $result->item(0);
             } else {
@@ -167,10 +167,10 @@ class MUtil_XmlRa_XmlRaDocument extends DOMDocument
      * Returns a NodeList containging the result of the XPath query
      *
      * @param string $expression XPath query expression
-     * @param DOMNode $contextNode
-     * @return DOMNodeList
+     * @param \DOMNode $contextNode
+     * @return \DOMNodeList
      */
-    public function xpathQuery($expression, DOMNode $contextNode = null)
+    public function xpathQuery($expression, \DOMNode $contextNode = null)
     {
         $this->_xpathInitialize();
 

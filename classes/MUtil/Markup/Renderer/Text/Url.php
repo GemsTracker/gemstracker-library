@@ -45,17 +45,17 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class MUtil_Markup_Renderer_Text_Url implements Zend_Markup_Renderer_TokenConverterInterface
+class MUtil_Markup_Renderer_Text_Url implements \Zend_Markup_Renderer_TokenConverterInterface
 {
     /**
      * Convert the token
      *
-     * @param Zend_Markup_Token $token
+     * @param \Zend_Markup_Token $token
      * @param string $text
      *
      * @return string
      */
-    public function convert(Zend_Markup_Token $token, $text)
+    public function convert(\Zend_Markup_Token $token, $text)
     {
         if ($token->hasAttribute('url')) {
             $uri = $token->getAttribute('url');
@@ -72,14 +72,14 @@ class MUtil_Markup_Renderer_Text_Url implements Zend_Markup_Renderer_TokenConver
         }
 
         // check if the URL is valid
-        if (! Zend_Markup_Renderer_Html::isValidUri($uri)) {
+        if (! \Zend_Markup_Renderer_Html::isValidUri($uri)) {
             return $text;
         }
 
-        // $attributes = Zend_Markup_Renderer_Html::renderAttributes($token);
+        // $attributes = \Zend_Markup_Renderer_Html::renderAttributes($token);
 
         // run the URI through htmlentities
-        // $uri = htmlentities($uri, ENT_QUOTES, Zend_Markup_Renderer_Html::getEncoding());
+        // $uri = htmlentities($uri, ENT_QUOTES, \Zend_Markup_Renderer_Html::getEncoding());
 
         return "$text ($uri)";
     }

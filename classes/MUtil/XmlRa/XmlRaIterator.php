@@ -33,7 +33,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 MagnaFacta BV
  * @license    New BSD License
- * @version    $Id: Ra.php 938 2012-09-11 14:00:57Z matijsdejong $
+ * @version    $Id: XmlRaIterator.php 938 2012-09-11 14:00:57Z matijsdejong $
  */
 
 /**
@@ -45,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.3
  */
-class MUtil_XmlRa_XmlRaIterator implements Iterator
+class MUtil_XmlRa_XmlRaIterator implements \Iterator
 {
     /**
      * The position of the current node
@@ -57,7 +57,7 @@ class MUtil_XmlRa_XmlRaIterator implements Iterator
     /**
      * The current xml item
      *
-     * @var MUtil_XmlRa
+     * @var \MUtil_XmlRa
      */
     private $_currentNode;
 
@@ -65,7 +65,7 @@ class MUtil_XmlRa_XmlRaIterator implements Iterator
      * Function for filtering the output results.
      *
      * Signature must be: function(mixed $value) where $value is
-     * a MUtil_XmlRa::_returnValue output and returns a boolean.
+     * a \MUtil_XmlRa::_returnValue output and returns a boolean.
      *
      * @var callable
      */
@@ -75,7 +75,7 @@ class MUtil_XmlRa_XmlRaIterator implements Iterator
      * Function for transforming the outpur result.
      *
      * Signature must be: function(mixed $value) where $value is
-     * a MUtil_XmlRa::_returnValue output.
+     * a \MUtil_XmlRa::_returnValue output.
      *
      * @var callable
      */
@@ -84,16 +84,16 @@ class MUtil_XmlRa_XmlRaIterator implements Iterator
     /**
      * The start, i.e. parent xml item
      *
-     * @var MUtil_XmlRa
+     * @var \MUtil_XmlRa
      */
     private $_startNode;
 
     /**
      * Initialize the iterator
      *
-     * @param MUtil_XmlRa $xmlra
+     * @param \MUtil_XmlRa $xmlra
      */
-    public function __construct(MUtil_XmlRa $xmlra)
+    public function __construct(\MUtil_XmlRa $xmlra)
     {
         $this->_startNode = $xmlra;
     }
@@ -107,9 +107,9 @@ class MUtil_XmlRa_XmlRaIterator implements Iterator
     }
 
     /**
-     * Iterator implementation for current child item
+     * \Iterator implementation for current child item
      *
-     * @return MUtil_XmlRa
+     * @return \MUtil_XmlRa
      */
     public function current()
     {
@@ -123,7 +123,7 @@ class MUtil_XmlRa_XmlRaIterator implements Iterator
     }
 
     /**
-     * Iterator implementation, returns the index of the current item
+     * \Iterator implementation, returns the index of the current item
      *
      * @return int
      */
@@ -172,7 +172,7 @@ class MUtil_XmlRa_XmlRaIterator implements Iterator
      * Set function for filtering the output results.
      *
      * Signature must be: function(mixed $value) where $value is
-     * a MUtil_XmlRa::_returnValue output and returns a boolean.
+     * a \MUtil_XmlRa::_returnValue output and returns a boolean.
      *
      *
      * @param callable $function function()
@@ -188,7 +188,7 @@ class MUtil_XmlRa_XmlRaIterator implements Iterator
      * Set function for transforming the outpur result.
      *
      * Signature must be: function(mixed $value) where $value is
-     * a MUtil_XmlRa::_returnValue output.
+     * a \MUtil_XmlRa::_returnValue output.
      *
      * @param callable $function function()
      * @return \MUtil_XmlRa_XmlRaIterator (continuation pattern)

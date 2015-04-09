@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class MUtil_View_Helper_Exhibitor extends Zend_View_Helper_FormElement
+class MUtil_View_Helper_Exhibitor extends \Zend_View_Helper_FormElement
 {
     /**
      * Generates a fake element that just displays the item with a hidden extra value field.
@@ -99,9 +99,9 @@ class MUtil_View_Helper_Exhibitor extends Zend_View_Helper_FormElement
             $dateFormat    = $attribs['dateFormat'];
             $storageFormat = isset($attribs['storageFormat']) ? $attribs['storageFormat'] : null;
 
-            $result = MUtil_Date::format($result, $dateFormat, $storageFormat);
+            $result = \MUtil_Date::format($result, $dateFormat, $storageFormat);
 
-            if ($storageFormat && ($value instanceof Zend_Date)) {
+            if ($storageFormat && ($value instanceof \Zend_Date)) {
                 $value = $value->toString($storageFormat);
             }
         }
@@ -114,7 +114,7 @@ class MUtil_View_Helper_Exhibitor extends Zend_View_Helper_FormElement
 
             } elseif (is_object($function)) {
 
-                if (($function instanceof MUtil_Html_ElementInterface)
+                if (($function instanceof \MUtil_Html_ElementInterface)
                     || method_exists($function, 'append')) {
 
                     $object = clone $function;
@@ -125,11 +125,11 @@ class MUtil_View_Helper_Exhibitor extends Zend_View_Helper_FormElement
             } elseif (is_string($function)) {
                 // Assume it is a html tag when a string
 
-                $result = MUtil_Html::create($function, $result);
+                $result = \MUtil_Html::create($function, $result);
             }
         }
 
-        if ($result instanceof MUtil_Html_HtmlInterface) {
+        if ($result instanceof \MUtil_Html_HtmlInterface) {
             $result = $result->render($this->view);
         }
 
@@ -142,8 +142,8 @@ class MUtil_View_Helper_Exhibitor extends Zend_View_Helper_FormElement
         if (isset($attribs['nohidden']) && $attribs['nohidden'] || is_array($value)) {
             return $result;
         } else {
-            if ($value instanceof Zend_Date) {
-                $value = $value->toString(Zend_Date::ISO_8601);
+            if ($value instanceof \Zend_Date) {
+                $value = $value->toString(\Zend_Date::ISO_8601);
             }
             return $this->_hidden($name, $value) . $result;
         }
