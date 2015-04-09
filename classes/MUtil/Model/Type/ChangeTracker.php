@@ -38,7 +38,7 @@
 /**
  * A type that allows you to check after the save() if a field value was changed.
  *
- * After applying this you need to add all fields in $model->getMeta(MUtil_Model_Type_ChangeTracker::HIDDEN_FIELDS)
+ * After applying this you need to add all fields in $model->getMeta(\MUtil_Model_Type_ChangeTracker::HIDDEN_FIELDS)
  * as hidden fields to the form.
  *
  * @package    MUtil
@@ -68,7 +68,7 @@ class MUtil_Model_Type_ChangeTracker
 
     /**
      *
-     * @var MUtil_Model_ModelAbstract
+     * @var \MUtil_Model_ModelAbstract
      */
     private $_model;
 
@@ -81,11 +81,11 @@ class MUtil_Model_Type_ChangeTracker
 
     /**
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      * @param mixed $changedValue The value to store when the tracked field has changed
      * @param mixed $unchangedValue The value to store when the tracked field did not change
      */
-    public function __construct(MUtil_Model_ModelAbstract $model, $changedValue = true, $unchangedValue = false)
+    public function __construct(\MUtil_Model_ModelAbstract $model, $changedValue = true, $unchangedValue = false)
     {
         $this->_model          = $model;
         $this->_changedValue   = $changedValue;
@@ -141,7 +141,7 @@ class MUtil_Model_Type_ChangeTracker
     /**
      * A ModelAbstract->setOnLoad() function that copies the value from the original
      *
-     * @see MUtil_Model_ModelAbstract
+     * @see \MUtil_Model_ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
@@ -162,7 +162,7 @@ class MUtil_Model_Type_ChangeTracker
     /**
      * A ModelAbstract->setOnSave() function that tracks the change
      *
-     * @see MUtil_Model_ModelAbstract
+     * @see \MUtil_Model_ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
@@ -172,7 +172,7 @@ class MUtil_Model_Type_ChangeTracker
      */
     public function saveValue($value, $isNew = false, $name = null, array $context = array())
     {
-        // MUtil_Echo::track($value, $this->_changedValue);
+        // \MUtil_Echo::track($value, $this->_changedValue);
 
         // Once the value is set (and e.g. stored in the database) do not overwrite it
         if ($this->_changedValue == $value) {
@@ -201,30 +201,30 @@ class MUtil_Model_Type_ChangeTracker
             return $context[$trackedField] == $context[$oldValueField] ? $this->_unchangedValue : $this->_changedValue;
         }
 
-        if ($context[$oldValueField] instanceof Zend_Date) {
+        if ($context[$oldValueField] instanceof \Zend_Date) {
             $oldValue = $context[$oldValueField];
         } else {
-            $oldValue = new MUtil_Date($context[$oldValueField], $storageFormat);
+            $oldValue = new \MUtil_Date($context[$oldValueField], $storageFormat);
         }
 
-        if ($context[$trackedField] instanceof Zend_Date) {
+        if ($context[$trackedField] instanceof \Zend_Date) {
             $currentValue = $context[$trackedField];
-        } elseif (Zend_Date::isDate($context[$trackedField], $storageFormat)) {
-            $currentValue = new MUtil_Date($context[$trackedField], $storageFormat);
+        } elseif (\Zend_Date::isDate($context[$trackedField], $storageFormat)) {
+            $currentValue = new \MUtil_Date($context[$trackedField], $storageFormat);
         } else {
             if ($this->_model->has($trackedField, 'dateFormat')) {
                 $secondFormat = $this->_model->get($trackedField, 'dateFormat');
             } else {
-                $secondFormat = MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
+                $secondFormat = \MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
             }
-            if (! Zend_Date::isDate($context[$trackedField], $secondFormat)) {
+            if (! \Zend_Date::isDate($context[$trackedField], $secondFormat)) {
                 // Cannot compare, do nothing
                 return $value;
             }
-            $currentValue  = new MUtil_Date($context[$trackedField], $secondFormat);
+            $currentValue  = new \MUtil_Date($context[$trackedField], $secondFormat);
         }
 
-        // MUtil_Echo::track($context[$trackedField], $context[$oldValueField], $oldValue->getTimestamp() === $currentValue->getTimestamp());
+        // \MUtil_Echo::track($context[$trackedField], $context[$oldValueField], $oldValue->getTimestamp() === $currentValue->getTimestamp());
 
         return $oldValue->getTimestamp() === $currentValue->getTimestamp() ?
                 $this->_unchangedValue :

@@ -966,7 +966,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends \MUtil_Snippets_WizardF
                 $this->importer->setSourceFile($this->_session->localfile, $this->_session->extension);
                 $this->sourceModel = $this->importer->getSourceModel();
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->_errors[] = $e->getMessage();
         }
 
@@ -1007,7 +1007,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends \MUtil_Snippets_WizardF
                 echo sprintf("%d records imported, %d records changed.\n", $batch->getCounter('imported'), $batch->getCounter('changed'));
             }
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $messages[] = "IMPORT ERROR!";
             $messages[] = $e->getMessage();
             $messages[] = null;

@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Model_SessionModel extends MUtil_Model_ArrayModelAbstract
+class MUtil_Model_SessionModel extends \MUtil_Model_ArrayModelAbstract
 {
     /**
      * When set to true in a subclass, then the model should be able to
@@ -57,7 +57,7 @@ class MUtil_Model_SessionModel extends MUtil_Model_ArrayModelAbstract
     /**
      * The namespace where the nested data is stored in array()
      *
-     * @var Zend_Session_Namespace
+     * @var \Zend_Session_Namespace
      */
     protected $_session;
 
@@ -69,7 +69,7 @@ class MUtil_Model_SessionModel extends MUtil_Model_ArrayModelAbstract
     {
         parent::__construct($modelName);
 
-        $this->_session = new Zend_Session_Namespace(__CLASS__ . '::' . $modelName);
+        $this->_session = new \Zend_Session_Namespace(__CLASS__ . '::' . $modelName);
         $this->_session->data = array();
     }
 
@@ -77,7 +77,7 @@ class MUtil_Model_SessionModel extends MUtil_Model_ArrayModelAbstract
      * An ArrayModel assumes that (usually) all data needs to be loaded before any load
      * action, this is done using the iterator returned by this function.
      *
-     * @return Traversable Return an iterator over or an array of all the rows in this object
+     * @return \Traversable Return an iterator over or an array of all the rows in this object
      */
     protected function _loadAllTraversable()
     {

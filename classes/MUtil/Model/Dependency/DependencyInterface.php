@@ -47,7 +47,7 @@ namespace MUtil\Model\Dependency;
  */
 interface DependencyInterface
 {
-    // public function dependencyChanges($sourceName, $targetName, array $context, $isNew, MUtil_Model_ModelAbstract $model);
+    // public function dependencyChanges($sourceName, $targetName, array $context, $isNew, \MUtil_Model_ModelAbstract $model);
 
     /**
      * All string values passed to this function are added as a field the

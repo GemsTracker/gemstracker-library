@@ -45,13 +45,13 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.2
  */
-class MUtil_Model_Transform_JoinTransformer extends MUtil_Model_SubmodelTransformerAbstract
+class MUtil_Model_Transform_JoinTransformer extends \MUtil_Model_SubmodelTransformerAbstract
 {
     /**
      * Function to allow overruling of transform for certain models
      *
-     * @param MUtil_Model_ModelAbstract $model Parent model
-     * @param MUtil_Model_ModelAbstract $sub Sub model
+     * @param \MUtil_Model_ModelAbstract $model Parent model
+     * @param \MUtil_Model_ModelAbstract $sub Sub model
      * @param array $data The nested data rows
      * @param array $join The join array
      * @param string $name Name of sub model
@@ -59,7 +59,7 @@ class MUtil_Model_Transform_JoinTransformer extends MUtil_Model_SubmodelTransfor
      * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
      */
     protected function transformLoadSubModel(
-            MUtil_Model_ModelAbstract $model, MUtil_Model_ModelAbstract $sub, array &$data, array $join,
+            \MUtil_Model_ModelAbstract $model, \MUtil_Model_ModelAbstract $sub, array &$data, array $join,
             $name, $new, $isPostData)
     {
         if (1 === count($join)) {
@@ -67,18 +67,18 @@ class MUtil_Model_Transform_JoinTransformer extends MUtil_Model_SubmodelTransfor
             $mkey = key($join);
             $skey = reset($join);
 
-            $mfor = MUtil_Ra::column($mkey, $data);
+            $mfor = \MUtil_Ra::column($mkey, $data);
 
-            // MUtil_Echo::track($mfor);
+            // \MUtil_Echo::track($mfor);
             if ($new) {
                 $sdata = $sub->loadNew(1);
             } else {
                 $sdata = $sub->load(array($skey => $mfor));
             }
-            // MUtil_Echo::track($sdata);
+            // \MUtil_Echo::track($sdata);
 
             if ($sdata) {
-                $skeys = array_flip(MUtil_Ra::column($skey, $sdata));
+                $skeys = array_flip(\MUtil_Ra::column($skey, $sdata));
                 $empty = array_fill_keys(array_keys(reset($sdata)), null);
 
                 foreach ($data as &$mrow) {
@@ -97,7 +97,7 @@ class MUtil_Model_Transform_JoinTransformer extends MUtil_Model_SubmodelTransfor
                     $mrow += $empty;
                 }
             }
-            // MUtil_Echo::track($mrow);
+            // \MUtil_Echo::track($mrow);
         } else {
             // Multi column implementation
             $empty = array_fill_keys($sub->getItemNames(), null);
@@ -121,7 +121,7 @@ class MUtil_Model_Transform_JoinTransformer extends MUtil_Model_SubmodelTransfor
                     $mrow += $empty;
                 }
 
-                // MUtil_Echo::track($sdata, $mrow);
+                // \MUtil_Echo::track($sdata, $mrow);
             }
         }
     }
@@ -129,14 +129,14 @@ class MUtil_Model_Transform_JoinTransformer extends MUtil_Model_SubmodelTransfor
     /**
      * Function to allow overruling of transform for certain models
      *
-     * @param MUtil_Model_ModelAbstract $model
-     * @param MUtil_Model_ModelAbstract $sub
+     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $sub
      * @param array $data
      * @param array $join
      * @param string $name
      */
     protected function transformSaveSubModel
-            (MUtil_Model_ModelAbstract $model, MUtil_Model_ModelAbstract $sub, array &$row, array $join, $name)
+            (\MUtil_Model_ModelAbstract $model, \MUtil_Model_ModelAbstract $sub, array &$row, array $join, $name)
     {
         $keys = array();
 

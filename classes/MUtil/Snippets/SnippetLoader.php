@@ -45,11 +45,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class MUtil_Snippets_SnippetLoader implements MUtil_Snippets_SnippetLoaderInterface
+class MUtil_Snippets_SnippetLoader implements \MUtil_Snippets_SnippetLoaderInterface
 {
     /**
      *
-     * @var MUtil_Loader_PluginLoader
+     * @var \MUtil_Loader_PluginLoader
      */
     protected $loader;
 
@@ -65,23 +65,23 @@ class MUtil_Snippets_SnippetLoader implements MUtil_Snippets_SnippetLoaderInterf
     /**
      * The information source for snippets.
      *
-     * @var MUtil_Registry_SourceInterface
+     * @var \MUtil_Registry_SourceInterface
      */
     protected $snippetsSource;
 
     /**
      * Sets the source of variables and the first directory for snippets
      *
-     * @param mixed $source Something that is or can be made into MUtil_Registry_SourceInterface, otheriwse Zend_Registry is used.
+     * @param mixed $source Something that is or can be made into \MUtil_Registry_SourceInterface, otheriwse \Zend_Registry is used.
      * @param array $dirs prefix => pathname The inital paths to load from
      */
     public function __construct($source = null, array $dirs = array())
     {
-        if (! $source instanceof MUtil_Registry_Source) {
-            $source = new MUtil_Registry_Source($source);
+        if (! $source instanceof \MUtil_Registry_Source) {
+            $source = new \MUtil_Registry_Source($source);
         }
         $this->setSource($source);
-        $this->loader = new MUtil_Loader_PluginLoader($dirs);
+        $this->loader = new \MUtil_Loader_PluginLoader($dirs);
         $this->loader->addPrefixPath('MUtil_Snippets_Standard', dirname(__FILE__) . '/Standard');
         $this->loader->addPrefixPath('', dirname(__FILE__) . '/Standard');
     }
@@ -91,7 +91,7 @@ class MUtil_Snippets_SnippetLoader implements MUtil_Snippets_SnippetLoaderInterf
      *
      * @param string $prefix
      * @param string $path
-     * @return MUtil_Snippets_SnippetLoaderInterface
+     * @return \MUtil_Snippets_SnippetLoaderInterface
      */
     public function addPrefixPath($prefix, $path, $prepend = true)
     {
@@ -105,7 +105,7 @@ class MUtil_Snippets_SnippetLoader implements MUtil_Snippets_SnippetLoaderInterf
      *
      * @param string $className The name of the snippet
      * @param array $extraSourceParameters name/value pairs to add to the source for this snippet
-     * @return MUtil_Snippets_SnippetInterface The snippet
+     * @return \MUtil_Snippets_SnippetInterface The snippet
      */
     public function getSnippet($className, array $extraSourceParameters = null)
     {
@@ -113,7 +113,7 @@ class MUtil_Snippets_SnippetLoader implements MUtil_Snippets_SnippetLoaderInterf
 
         $snippet = new $className();
 
-        if ($snippet instanceof MUtil_Snippets_SnippetInterface) {
+        if ($snippet instanceof \MUtil_Snippets_SnippetInterface) {
             // Add extra parameters when specified
             if ($extraSourceParameters) {
                 $this->snippetsSource->addRegistryContainer($extraSourceParameters, 'tmpContainer');
@@ -128,17 +128,17 @@ class MUtil_Snippets_SnippetLoader implements MUtil_Snippets_SnippetLoaderInterf
                 return $snippet;
 
             } else {
-                throw new Zend_Exception("Not all parameters set for html snippet: '$className'. \n\nRequested variables were: " . implode(", ", $snippet->getRegistryRequests()));
+                throw new \Zend_Exception("Not all parameters set for html snippet: '$className'. \n\nRequested variables were: " . implode(", ", $snippet->getRegistryRequests()));
             }
         } else {
-            throw new Zend_Exception("The snippet: '$className' does not implement the MUtil_Snippets_SnippetInterface interface.");
+            throw new \Zend_Exception("The snippet: '$className' does not implement the \MUtil_Snippets_SnippetInterface interface.");
         }
     }
 
     /**
      * Returns a source of values for snippets.
      *
-     * @return MUtil_Registry_SourceInterface
+     * @return \MUtil_Registry_SourceInterface
      */
     public function getSource()
     {
@@ -150,7 +150,7 @@ class MUtil_Snippets_SnippetLoader implements MUtil_Snippets_SnippetLoaderInterf
      *
      * @param string $prefix
      * @param string $path OPTIONAL
-     * @return MUtil_Snippets_SnippetLoaderInterface
+     * @return \MUtil_Snippets_SnippetLoaderInterface
      */
     public function removePrefixPath($prefix, $path = null)
     {
@@ -162,10 +162,10 @@ class MUtil_Snippets_SnippetLoader implements MUtil_Snippets_SnippetLoaderInterf
     /**
      * Sets the source of variables for snippets
      *
-     * @param MUtil_Registry_SourceInterface $source
-     * @return MUtil_Snippets_SnippetLoader (continuation pattern)
+     * @param \MUtil_Registry_SourceInterface $source
+     * @return \MUtil_Snippets_SnippetLoader (continuation pattern)
      */
-    public function setSource(MUtil_Registry_SourceInterface $source)
+    public function setSource(\MUtil_Registry_SourceInterface $source)
     {
         $this->snippetsSource = $source;
 

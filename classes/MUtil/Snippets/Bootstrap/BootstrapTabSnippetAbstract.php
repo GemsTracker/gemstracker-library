@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-abstract class MUtil_Snippets_Bootstrap_BootstrapTabSnippetAbstract extends MUtil_Snippets_TabSnippetAbstract
+abstract class MUtil_Snippets_Bootstrap_BootstrapTabSnippetAbstract extends \MUtil_Snippets_TabSnippetAbstract
 {
     /**
      *
@@ -56,10 +56,10 @@ abstract class MUtil_Snippets_Bootstrap_BootstrapTabSnippetAbstract extends MUti
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param Zend_View_Abstract $view Just in case it is needed here
-     * @return MUtil_Html_HtmlInterface Something that can be rendered
+     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @return \MUtil_Html_HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view)
     {
         $tabs = $this->getTabs();
 
@@ -72,7 +72,7 @@ abstract class MUtil_Snippets_Bootstrap_BootstrapTabSnippetAbstract extends MUti
                 $this->href = $this->href + $this->baseUrl;
             }
 
-            $tabRow = MUtil_Html::create()->ul();
+            $tabRow = \MUtil_Html::create()->ul();
             $tabRow->class = $this->tabClass;
 
             foreach ($tabs as $tabId => $content) {

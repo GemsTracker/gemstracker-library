@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Echo.php$
+ * @version    $Id: Echo.php 2483 2015-04-08 14:51:22Z matijsdejong $
  */
 
 /**
@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Task_Echo extends MUtil_Task_TaskAbstract
+class MUtil_Task_Echo extends \MUtil_Task_TaskAbstract
 {
     /**
      * Should handle execution of the task, taking as much (optional) parameters as needed

@@ -48,11 +48,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.3
  */
-abstract class MUtil_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_ModelSnippetAbstract
+abstract class MUtil_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_ModelSnippetAbstract
 {
     /**
      *
-     * @var MUtil_Html_Marker Class for marking text in the output
+     * @var \MUtil_Html_Marker Class for marking text in the output
      */
     protected $_marker;
 
@@ -113,11 +113,11 @@ abstract class MUtil_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_M
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_TableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_TableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
         if ($this->columns) {
             foreach ($this->columns as $column) {
@@ -144,23 +144,23 @@ abstract class MUtil_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_M
      * Only called when $this->browse is true. Overrule this function
      * to define your own method.
      *
-     * @param MUtil_Html_TableElement $table
-     * $param Zend_Paginator $paginator
+     * @param \MUtil_Html_TableElement $table
+     * $param \Zend_Paginator $paginator
      */
-    protected function addPaginator(MUtil_Html_TableElement $table, Zend_Paginator $paginator)
+    protected function addPaginator(\MUtil_Html_TableElement $table, \Zend_Paginator $paginator)
     {
         $table->tfrow()->pagePanel($paginator, $this->request, array('baseUrl' => $this->baseUrl));
     }
 
     /**
-     * Creates from the model a MUtil_Html_TableElement that can display multiple items.
+     * Creates from the model a \MUtil_Html_TableElement that can display multiple items.
      *
      * Allows overruling
      *
-     * @param MUtil_Model_ModelAbstract $model
-     * @return MUtil_Html_TableElement
+     * @param \MUtil_Model_ModelAbstract $model
+     * @return \MUtil_Html_TableElement
      */
-    public function getBrowseTable(MUtil_Model_ModelAbstract $model)
+    public function getBrowseTable(\MUtil_Model_ModelAbstract $model)
     {
         $bridge = $model->getBridgeFor('table');
 
@@ -186,10 +186,10 @@ abstract class MUtil_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_M
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param Zend_View_Abstract $view Just in case it is needed here
-     * @return MUtil_Html_HtmlInterface Something that can be rendered
+     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @return \MUtil_Html_HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view)
     {
         $model = $this->getModel();
 
@@ -212,17 +212,17 @@ abstract class MUtil_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_M
     /**
      * Overrule to implement snippet specific filtering and sorting.
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      */
-    protected function processFilterAndSort(MUtil_Model_ModelAbstract $model)
+    protected function processFilterAndSort(\MUtil_Model_ModelAbstract $model)
     {
         parent::processFilterAndSort($model);
 
         // Add generic text search filter and marker
         $textKey = $model->getTextFilter();
         if ($searchText = $this->request->getParam($textKey)) {
-            // MUtil_Echo::r($textKey . '[' . $searchText . ']');
-            $this->_marker = new MUtil_Html_Marker($model->getTextSearches($searchText), 'strong', 'UTF-8');
+            // \MUtil_Echo::r($textKey . '[' . $searchText . ']');
+            $this->_marker = new \MUtil_Html_Marker($model->getTextSearches($searchText), 'strong', 'UTF-8');
 
             foreach ($model->getItemNames() as $name) {
                 if ($model->get($name, 'label')) {
@@ -237,10 +237,10 @@ abstract class MUtil_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_M
      *
      * You should override either getHtmlOutput() or this function to generate output
      *
-     * @param Zend_View_Abstract $view
+     * @param \Zend_View_Abstract $view
      * @return string Html output
      */
-    public function render(Zend_View_Abstract $view)
+    public function render(\Zend_View_Abstract $view)
     {
         if ($this->_marker) {
             $this->_marker->setEncoding($view->getEncoding());

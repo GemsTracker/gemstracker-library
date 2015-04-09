@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.4 17-okt-2014 15:23:24
  */
-class MUtil_Validate_NotEqualTo extends Zend_Validate_Abstract
+class MUtil_Validate_NotEqualTo extends \Zend_Validate_Abstract
 {
     /**
      * Error codes
@@ -92,7 +92,7 @@ class MUtil_Validate_NotEqualTo extends Zend_Validate_Abstract
     }
 
     /**
-     * Defined by Zend_Validate_Interface
+     * Defined by \Zend_Validate_Interface
      *
      * Returns true if and only if a token has been set and the provided value
      * matches that token.

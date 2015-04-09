@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TaskInterface.php$
+ * @version    $Id: TaskInterface.php 2483 2015-04-08 14:51:22Z matijsdejong $
  */
 
 /**
@@ -66,11 +66,11 @@ interface MUtil_Task_TaskInterface
     /**
      * Sets the batch this task belongs to
      *
-     * This method will be called from the Gems_Task_TaskRunnerBatch upon execution of the
+     * This method will be called from the \Gems_Task_TaskRunnerBatch upon execution of the
      * task. It allows the task to communicate with the batch queue.
      *
-     * @param MUtil_Task_TaskBatch $batch
-     * @return MUtil_Task_TaskInterface (continuation pattern)
+     * @param \MUtil_Task_TaskBatch $batch
+     * @return \MUtil_Task_TaskInterface (continuation pattern)
      */
-    public function setBatch(MUtil_Task_TaskBatch $batch);
+    public function setBatch(\MUtil_Task_TaskBatch $batch);
 }

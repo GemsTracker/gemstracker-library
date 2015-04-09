@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class MUtil_Model_Bridge_TableBridge extends MUtil_Model_Bridge_TableBridgeAbstract
+class MUtil_Model_Bridge_TableBridge extends \MUtil_Model_Bridge_TableBridgeAbstract
 {
     public $paginateClass    = 'centerAlign';
     public $sortAsc          = true;
@@ -82,20 +82,20 @@ class MUtil_Model_Bridge_TableBridge extends MUtil_Model_Bridge_TableBridgeAbstr
 
         if ($this->useRowHref) {
             if ($this->row_href) {
-                if ($link instanceof MUtil_Html_HtmlElement) {
+                if ($link instanceof \MUtil_Html_HtmlElement) {
                     $tds[0]->onclick = array('location.href=\'', $link->href, '\';');
                 } else {
                     $tds[0]->onclick = '// Dummy on click';
                 }
                 $this->has_multi_refs = true;
             } else {
-                if ($link instanceof MUtil_Html_HtmlElement) {
+                if ($link instanceof \MUtil_Html_HtmlElement) {
                     $this->row_href = $link->href;
                 }
             }
         }
 
-        return new MUtil_MultiWrapper($tds);
+        return new \MUtil_MultiWrapper($tds);
     }
 
     public function addMultiSort($arg_array)
@@ -191,7 +191,7 @@ class MUtil_Model_Bridge_TableBridge extends MUtil_Model_Bridge_TableBridgeAbstr
      *
      * @param string $name
      * @param string $label
-     * @return MUtil_Html_AElement
+     * @return \MUtil_Html_AElement
      */
     public function createSortLink($name, $label = null)
     {
@@ -220,7 +220,7 @@ class MUtil_Model_Bridge_TableBridge extends MUtil_Model_Bridge_TableBridgeAbstr
         // $sortUrl['RouteReset'] = false; // Prevents tabs from being communicated
         $sortUrl = $sortUrl + $this->baseUrl;
 
-        return MUtil_Html::create()->a($sortUrl, array('class' => $class, 'title' => $this->model->get($name, 'description')), $label);
+        return \MUtil_Html::create()->a($sortUrl, array('class' => $class, 'title' => $this->model->get($name, 'description')), $label);
     }
 
     /**
@@ -236,7 +236,7 @@ class MUtil_Model_Bridge_TableBridge extends MUtil_Model_Bridge_TableBridgeAbstr
     /**
      * Get the actual table
      *
-     * @return MUtil_Html_TableElement
+     * @return \MUtil_Html_TableElement
      */
     public function getTable()
     {
@@ -244,8 +244,8 @@ class MUtil_Model_Bridge_TableBridge extends MUtil_Model_Bridge_TableBridgeAbstr
             $onclick = array('location.href=\'', $this->row_href, '\';');
 
             if ($this->has_multi_refs) {
-                foreach ($this->table[MUtil_Html_TableElement::TBODY] as $row) {
-                    if ($row instanceof MUtil_Html_TrElement) {
+                foreach ($this->table[\MUtil_Html_TableElement::TBODY] as $row) {
+                    if ($row instanceof \MUtil_Html_TrElement) {
                         $row->onclick = "{// Dummy for CSS\n}";
                     }
                     foreach ($row as $cell) {
@@ -255,8 +255,8 @@ class MUtil_Model_Bridge_TableBridge extends MUtil_Model_Bridge_TableBridgeAbstr
                     }
                 }
             } else {
-                foreach ($this->table[MUtil_Html_TableElement::TBODY] as $row) {
-                    if ($row instanceof MUtil_Html_TrElement) {
+                foreach ($this->table[\MUtil_Html_TableElement::TBODY] as $row) {
+                    if ($row instanceof \MUtil_Html_TrElement) {
                         $row->onclick = $onclick;
                     }
                 }
@@ -280,7 +280,7 @@ class MUtil_Model_Bridge_TableBridge extends MUtil_Model_Bridge_TableBridgeAbstr
             $if = $this->$if;
         }
 
-        return array(MUtil_Lazy::iff($if, $item, $else), $item);
+        return array(\MUtil_Lazy::iff($if, $item, $else), $item);
     }
 
     public function setBaseUrl(array $url)
@@ -301,10 +301,10 @@ class MUtil_Model_Bridge_TableBridge extends MUtil_Model_Bridge_TableBridgeAbstr
      *
      * This method exist to allow overruling in implementation classes
      *
-     * @param MUtil_Model_ModelAbstract $model
-     * @return MUtil_Model_Bridge_TableBridge
+     * @param \MUtil_Model_ModelAbstract $model
+     * @return \MUtil_Model_Bridge_TableBridge
      */
-    public function setModel(MUtil_Model_ModelAbstract $model)
+    public function setModel(\MUtil_Model_ModelAbstract $model)
     {
         $this->sortAscParam  = $model->getSortParamAsc();
         $this->sortDescParam = $model->getSortParamDesc();
@@ -316,7 +316,7 @@ class MUtil_Model_Bridge_TableBridge extends MUtil_Model_Bridge_TableBridgeAbstr
         return parent::setModel($model);
     }
 
-    public function setPage(Zend_Paginator $paginator, Zend_Controller_Request_Abstract $request, Zend_Translate $t, $scrollingStyle = 'Sliding')
+    public function setPage(\Zend_Paginator $paginator, \Zend_Controller_Request_Abstract $request, \Zend_Translate $t, $scrollingStyle = 'Sliding')
     {
         $this->table->tfrow()->pagePanel($paginator, $request, $t, array('baseurl' => $this->baseUrl, 'scrollingStyle' => $scrollingStyle));
     }
@@ -325,7 +325,7 @@ class MUtil_Model_Bridge_TableBridge extends MUtil_Model_Bridge_TableBridgeAbstr
      * Set the sortorder
      *
      * @param string|array              $sort
-     * @return MUtil_Model_Bridge_TableBridge
+     * @return \MUtil_Model_Bridge_TableBridge
      */
     public function setSort($sort)
     {

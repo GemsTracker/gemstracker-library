@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ImportCheckTask.php$
+ * @version    $Id: ImportCheckTask.php 2483 2015-04-08 14:51:22Z matijsdejong $
  */
 
 /**
@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Task_Import_ImportCheckTask extends MUtil_Task_IteratorTaskAbstract
+class MUtil_Task_Import_ImportCheckTask extends \MUtil_Task_IteratorTaskAbstract
 {
     /**
      * When false, the task is not added (for when just checking)
@@ -55,7 +55,7 @@ class MUtil_Task_Import_ImportCheckTask extends MUtil_Task_IteratorTaskAbstract
 
     /**
      *
-     * @var MUtil_Task_TaskBatch
+     * @var \MUtil_Task_TaskBatch
      */
     protected $importBatch;
 
@@ -68,7 +68,7 @@ class MUtil_Task_Import_ImportCheckTask extends MUtil_Task_IteratorTaskAbstract
 
     /**
      *
-     * @var MUtil_Model_ModelTranslatorInterface
+     * @var \MUtil_Model_ModelTranslatorInterface
      */
     protected $modelTranslator;
 
@@ -80,7 +80,7 @@ class MUtil_Task_Import_ImportCheckTask extends MUtil_Task_IteratorTaskAbstract
      */
     public function checkRegistryRequestsAnswers()
     {
-        return ($this->modelTranslator instanceof MUtil_Model_ModelTranslatorInterface) &&
+        return ($this->modelTranslator instanceof \MUtil_Model_ModelTranslatorInterface) &&
             parent::checkRegistryRequestsAnswers();
     }
 
@@ -93,7 +93,7 @@ class MUtil_Task_Import_ImportCheckTask extends MUtil_Task_IteratorTaskAbstract
      */
     public function executeIteration($key, $current, array $params)
     {
-        // MUtil_Echo::track($key, $current);
+        // \MUtil_Echo::track($key, $current);
         // Ignore empty rows.
         if (! $current) {
             return;
@@ -118,7 +118,7 @@ class MUtil_Task_Import_ImportCheckTask extends MUtil_Task_IteratorTaskAbstract
         $checked    = $batch->getCounter('import_checked');
         $checkMsg   = sprintf($this->plural('%d row checked', '%d rows checked', $checked), $checked);
 
-        // MUtil_Echo::track($key, $row, $errors);
+        // \MUtil_Echo::track($key, $row, $errors);
 
         if (0 === $errorCount) {
             // Do not report empty rows
@@ -158,17 +158,17 @@ class MUtil_Task_Import_ImportCheckTask extends MUtil_Task_IteratorTaskAbstract
     /**
      * Sets the batch this task belongs to
      *
-     * This method will be called from the Gems_Task_TaskRunnerBatch upon execution of the
+     * This method will be called from the \Gems_Task_TaskRunnerBatch upon execution of the
      * task. It allows the task to communicate with the batch queue.
      *
-     * @param MUtil_Task_TaskBatch $batch
-     * @return MUtil_Task_TaskInterface (continuation pattern)
+     * @param \MUtil_Task_TaskBatch $batch
+     * @return \MUtil_Task_TaskInterface (continuation pattern)
      */
-    public function setBatch(MUtil_Task_TaskBatch $batch)
+    public function setBatch(\MUtil_Task_TaskBatch $batch)
     {
         parent::setBatch($batch);
 
-        if (! $this->importBatch instanceof MUtil_Task_TaskBatch) {
+        if (! $this->importBatch instanceof \MUtil_Task_TaskBatch) {
             $this->importBatch = $batch;
         }
 

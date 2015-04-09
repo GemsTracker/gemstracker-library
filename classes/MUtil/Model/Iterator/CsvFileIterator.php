@@ -28,27 +28,27 @@
  *
  *
  * @package    MUtil
- * @subpackage Model
+ * @subpackage Model_Iterator
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TextFileIterator.php$
+ * @version    $Id: CsvFileIterator.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
 /**
  * Iterate line by line through a file, with a separate output for the first header line
  *
  * @package    MUtil
- * @subpackage Model
+ * @subpackage Model_Iterator
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Model_Iterator_CsvFileIterator extends MUtil_Model_Iterator_FileIteratorAbstract
+class MUtil_Model_Iterator_CsvFileIterator extends \MUtil_Model_Iterator_FileIteratorAbstract
 {
     /**
-     * SplFileObject::DROP_NEW_LINE | SplFileObject::READ_AHEAD | SplFileObject::SKIP_EMPTY |
-     * SplFileObject::READ_CSV
+     * \SplFileObject::DROP_NEW_LINE | \SplFileObject::READ_AHEAD | \SplFileObject::SKIP_EMPTY |
+     * \SplFileObject::READ_CSV
      *
      * @var int
      */

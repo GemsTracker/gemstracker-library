@@ -35,7 +35,7 @@
  */
 
 /**
- * Marker Exception for models
+ * Marker \Exception for models
  *
  * @package    MUtil
  * @subpackage Model
@@ -43,5 +43,5 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.0
  */
-class MUtil_Model_ModelException extends Zend_Exception
+class MUtil_Model_ModelException extends \Zend_Exception
 { }

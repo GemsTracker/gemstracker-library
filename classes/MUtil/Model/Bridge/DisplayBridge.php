@@ -45,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since 2014 $(date} 22:00:02
  */
-class MUtil_Model_Bridge_DisplayBridge extends MUtil_Model_Bridge_BridgeAbstract
+class MUtil_Model_Bridge_DisplayBridge extends \MUtil_Model_Bridge_BridgeAbstract
 {
     /**
      * Return an array of functions used to process the value
@@ -75,7 +75,7 @@ class MUtil_Model_Bridge_DisplayBridge extends MUtil_Model_Bridge_BridgeAbstract
             } else {
                 $storageFormat = $this->model->get($name, 'storageFormat');
                 $output['dateFormat'] = function ($value) use ($format, $storageFormat) {
-                    return MUtil_Date::format($value, $format, $storageFormat);
+                    return \MUtil_Date::format($value, $format, $storageFormat);
                 };
             }
         } elseif ($this->model->has($name, 'numberFormat')) {
@@ -84,7 +84,7 @@ class MUtil_Model_Bridge_DisplayBridge extends MUtil_Model_Bridge_BridgeAbstract
                 $output['numberFormat'] = $format;
             } else {
                 $output['numberFormat'] = function ($value) use ($format) {
-                    return Zend_Locale_Format::toNumber($value, array('number_format' => $format));
+                    return \Zend_Locale_Format::toNumber($value, array('number_format' => $format));
                 };
             }
         }

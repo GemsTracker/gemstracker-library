@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.2
  */
-class MUtil_Model_Transform_CrossTabTransformer extends MUtil_Model_ModelTransformerAbstract
+class MUtil_Model_Transform_CrossTabTransformer extends \MUtil_Model_ModelTransformerAbstract
 {
     /**
      * The fields to crosstab over
@@ -71,7 +71,7 @@ class MUtil_Model_Transform_CrossTabTransformer extends MUtil_Model_ModelTransfo
      * @param string $valueField The field values to crosstab
      * @param string $prefix     Optional prefix to add before the $idField value as the identifier
      *                           for the output field, otherwise
-     * @return MUtil_Model_Transform_CrossTabTransformer (continuation pattern)
+     * @return \MUtil_Model_Transform_CrossTabTransformer (continuation pattern)
      */
     public function addCrosstabField($idField, $valueField, $prefix = null)
     {
@@ -96,13 +96,13 @@ class MUtil_Model_Transform_CrossTabTransformer extends MUtil_Model_ModelTransfo
      * The transform function performs the actual transformation of the data and is called after
      * the loading of the data in the source model.
      *
-     * @param MUtil_Model_ModelAbstract $model The parent model
+     * @param \MUtil_Model_ModelAbstract $model The parent model
      * @param array $data Nested array
      * @param boolean $new True when loading a new item
      * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
      * @return array Nested array containing (optionally) transformed data
      */
-    public function transformLoad(MUtil_Model_ModelAbstract $model, array $data, $new = false, $isPostData = false)
+    public function transformLoad(\MUtil_Model_ModelAbstract $model, array $data, $new = false, $isPostData = false)
     {
         if (! $data) {
             return $data;
@@ -118,7 +118,7 @@ class MUtil_Model_Transform_CrossTabTransformer extends MUtil_Model_ModelTransfo
         $keys    = array_combine($keys, $keys);
         $default = array_fill_keys(array_keys(array_diff_key($this->_fields, $this->excludes)), null);
         $results = array();
-        // MUtil_Echo::track($default);
+        // \MUtil_Echo::track($default);
 
         foreach ($data as $row) {
             foreach ($this->crossTabs as $crossTab) {
@@ -134,8 +134,8 @@ class MUtil_Model_Transform_CrossTabTransformer extends MUtil_Model_ModelTransfo
             }
         }
 
-        if (MUtil_Model::$verbose) {
-            MUtil_Echo::r($results, 'Transform output');
+        if (\MUtil_Model::$verbose) {
+            \MUtil_Echo::r($results, 'Transform output');
         }
         return $results;
     }

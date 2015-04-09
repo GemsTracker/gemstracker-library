@@ -41,7 +41,7 @@
  *
  * Use this class for a quick implementation when SnippetAbstract feels to heavvy
  *
- * @see MUtil_Snippets_SnippetAbstract
+ * @see \MUtil_Snippets_SnippetAbstract
  *
  * @package    MUtil
  * @subpackage Snippets
@@ -49,7 +49,8 @@
  * @license    New BSD License
  * @since      Class available since version 1.4.2
  */
-abstract class MUtil_Snippets_EmptySnippetAbstract extends MUtil_Registry_TargetAbstract implements MUtil_Snippets_SnippetInterface
+abstract class MUtil_Snippets_EmptySnippetAbstract extends \MUtil_Registry_TargetAbstract
+    implements \MUtil_Snippets_SnippetInterface
 {
     /**
      * When hasHtmlOutput() is false a snippet code user should check
@@ -62,7 +63,7 @@ abstract class MUtil_Snippets_EmptySnippetAbstract extends MUtil_Registry_Target
      * Also when hasHtmlOutput() is true this function should not be
      * called.
      *
-     * @see Zend_Controller_Action_Helper_Redirector
+     * @see \Zend_Controller_Action_Helper_Redirector
      *
      * @return mixed Nothing or either an array or a string that is acceptable for Redector->gotoRoute()
      */
@@ -76,7 +77,7 @@ abstract class MUtil_Snippets_EmptySnippetAbstract extends MUtil_Registry_Target
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see MUtil_Registry_TargetInterface}.
+     * {@see \MUtil_Registry_TargetInterface}.
      *
      * @return boolean
      */
@@ -90,7 +91,7 @@ abstract class MUtil_Snippets_EmptySnippetAbstract extends MUtil_Registry_Target
      *
      * When hasHtmlOutput() is true this functions should not be called.
      *
-     * @see Zend_Controller_Action_Helper_Redirector
+     * @see \Zend_Controller_Action_Helper_Redirector
      */
     public function redirectRoute()
     { }
@@ -100,9 +101,9 @@ abstract class MUtil_Snippets_EmptySnippetAbstract extends MUtil_Registry_Target
      *
      * The $view is used to correctly encode and escape the output
      *
-     * @param Zend_View_Abstract $view
+     * @param \Zend_View_Abstract $view
      * @return string Correctly encoded and escaped html output
      */
-    public function render(Zend_View_Abstract $view)
+    public function render(\Zend_View_Abstract $view)
     { }
 }

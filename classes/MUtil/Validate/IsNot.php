@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.2
  */
-class MUtil_Validate_IsNot extends Zend_Validate_Abstract
+class MUtil_Validate_IsNot extends \Zend_Validate_Abstract
 {
     /**
      * Error codes
@@ -78,7 +78,7 @@ class MUtil_Validate_IsNot extends Zend_Validate_Abstract
     }
 
     /**
-     * Defined by Zend_Validate_Interface
+     * Defined by \Zend_Validate_Interface
      *
      * Returns true if and only if a token has been set and the provided value
      * matches that token.

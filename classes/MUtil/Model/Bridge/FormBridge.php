@@ -39,8 +39,8 @@
  * The FormBridge contains utility classes to enable the quick construction of
  * a form using a model.
  *
- * @see Zend_Form
- * @see MUtil_Model_ModelAbstract
+ * @see \Zend_Form
+ * @see \MUtil_Model_ModelAbstract
  *
  * @package    MUtil
  * @subpackage Model_Bridge
@@ -48,7 +48,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.4 8-mei-2014 11:01:08
  */
-class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInterface
+class MUtil_Model_Bridge_FormBridge implements \MUtil_Model_Bridge_FormBridgeInterface
 {
     const AUTO_OPTIONS       = 'auto';
     const CHECK_OPTIONS      = 'check';
@@ -67,7 +67,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
     const TEXTAREA_OPTIONS   = 'textarea';
 
     /**
-     * The key to use in the Zend_Registry to store global fixed options
+     * The key to use in the \Zend_Registry to store global fixed options
      */
     const REGISTRY_KEY = 'MUtil_Model_Bridge_FormBridge';
 
@@ -107,16 +107,16 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
      * Extra parameters can be added in subclasses, but the first parameter
      * must remain the model.
      *
-     * @param MUtil_Model_ModelAbstract $model
-     * @param Zend_Form $form Rquired
+     * @param \MUtil_Model_ModelAbstract $model
+     * @param \Zend_Form $form Rquired
      */
-    public function __construct(MUtil_Model_ModelAbstract $model, Zend_Form $form = null)
+    public function __construct(\MUtil_Model_ModelAbstract $model, \Zend_Form $form = null)
     {
         $this->model = $model;
         $this->form  = $form;
 
-        if (! $form instanceof Zend_Form) {
-            throw new MUtil_Model_ModelException(
+        if (! $form instanceof \Zend_Form) {
+            throw new \MUtil_Model_ModelException(
                     "No form specified while create a form bridge for model " . $model->getName()
                     );
         }
@@ -130,11 +130,11 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
      * Add the element to the form and apply any filters & validators
      *
      * @param string $name
-     * @param string|Zend_Form_Element $element Element or element class name
+     * @param string|\Zend_Form_Element $element Element or element class name
      * @param array $options Element creation options
      * @param boolean $addFilters When true filters are added
      * @param boolean $addValidators When true validators are added
-     * @return Zend_Form_Element
+     * @return \Zend_Form_Element
      */
     protected function _addToForm($name, $element, $options = null, $addFilters = true, $addValidators = true)
     {
@@ -154,7 +154,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
         if ($addValidators) {
             $this->_applyValidators($name, $element);
         }
-        // MUtil_Echo::r($element->getOrder(), $element->getName());
+        // \MUtil_Echo::r($element->getOrder(), $element->getName());
 
         return $element;
     }
@@ -163,9 +163,9 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
      * Apply the filters for element $name to the element
      *
      * @param string $name
-     * @param Zend_Form_Element $element
+     * @param \Zend_Form_Element $element
      */
-    protected function _applyFilters($name, Zend_Form_Element $element)
+    protected function _applyFilters($name, \Zend_Form_Element $element)
     {
         $filters = $this->model->get($name, 'filters');
 
@@ -192,9 +192,9 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
      * Apply the validators for element $name to the element
      *
      * @param string $name
-     * @param Zend_Form_Element $element
+     * @param \Zend_Form_Element $element
      */
-    protected function _applyValidators($name, Zend_Form_Element $element)
+    protected function _applyValidators($name, \Zend_Form_Element $element)
     {
         $validators = $this->model->get($name, 'validators');
 
@@ -242,7 +242,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
     private function _mergeOptions($name, array $options, $allowedOptionKeys_array)
     {
         $args = func_get_args();
-        $allowedOptionsKeys = MUtil_Ra::args($args, 2);
+        $allowedOptionsKeys = \MUtil_Ra::args($args, 2);
 
         $allowedOptions = array();
         foreach ($allowedOptionsKeys as $allowedOptionsKey) {
@@ -275,10 +275,10 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
             $allowedOptionsFlipped = array_flip($allowedOptions);
 
             // First strip the options that are not allowed
-            if (MUtil_Model::$verbose) {
+            if (\MUtil_Model::$verbose) {
                 $strippedKeys = array_keys(array_diff_key($options, $allowedOptionsFlipped));
                 if (!empty($strippedKeys)) {
-                    MUtil_Echo::r($strippedKeys, 'stripped from options for ' . $name);
+                    \MUtil_Echo::r($strippedKeys, 'stripped from options for ' . $name);
                 }
             }
             $options = array_intersect_key($options, $allowedOptionsFlipped);
@@ -314,7 +314,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
     public function add($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
         $options = func_get_args();
-        $options = MUtil_Ra::pairs($options, 1);
+        $options = \MUtil_Ra::pairs($options, 1);
 
         /**
          * As this method redirects to the correct 'add' method, we preserve the original options
@@ -340,7 +340,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
     public function addColorPicker($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
         $options = func_get_args();
-        $options = MUtil_Ra::pairs($options, 1);
+        $options = \MUtil_Ra::pairs($options, 1);
 
         $options = $this->_mergeOptions($name, $options,
             self::DISPLAY_OPTIONS);
@@ -352,7 +352,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
     public function addCheckbox($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
         $options = func_get_args();
-        $options = MUtil_Ra::pairs($options, 1);
+        $options = \MUtil_Ra::pairs($options, 1);
 
         // Is often set for browse table, but should not be used here,
         // while the default ->add function does add it.
@@ -370,13 +370,13 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
      * Add a ZendX date picker to the form
      *
      * @param string $name Name of element
-     * @param mixed $arrayOrKey1 MUtil_Ra::pairs() name => value array
-     * @return ZendX_JQuery_Form_Element_DatePicker
+     * @param mixed $arrayOrKey1 \MUtil_Ra::pairs() name => value array
+     * @return \ZendX_JQuery_Form_Element_DatePicker
      */
     public function addDate($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
         $options = func_get_args();
-        $options = MUtil_Ra::pairs($options, 1);
+        $options = \MUtil_Ra::pairs($options, 1);
 
         $options = $this->_mergeOptions($name, $options,
             self::DATE_OPTIONS, self::DISPLAY_OPTIONS, self::JQUERY_OPTIONS, self::TEXT_OPTIONS);
@@ -384,7 +384,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
         // Allow centrally set options
         $type = __FUNCTION__;
         if (isset($options['dateFormat'])) {
-            list($dateFormat, $separator, $timeFormat) = MUtil_Date_Format::splitDateTimeFormat($options['dateFormat']);
+            list($dateFormat, $separator, $timeFormat) = \MUtil_Date_Format::splitDateTimeFormat($options['dateFormat']);
 
             if ($timeFormat) {
                 if ($dateFormat) {
@@ -424,23 +424,23 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
      * usage: $this->addDisplayGroup('mygroup', array('elements', array('element1', 'element2'), 'description', 'Pretty name for the group'));
      *
      * @param string $name Name of element
-     * @param array $elements or MUtil_Ra::pairs() name => value array with 'elements' item in it
-     * @param mixed $arrayOrKey1 MUtil_Ra::pairs() name => value array
-     * @return Zend_Form_Displaygroup
+     * @param array $elements or \MUtil_Ra::pairs() name => value array with 'elements' item in it
+     * @param mixed $arrayOrKey1 \MUtil_Ra::pairs() name => value array
+     * @return \Zend_Form_Displaygroup
      */
     public function addDisplayGroup($name, $elements, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
         $options = func_get_args();
-        $options = MUtil_Ra::pairs($options, 2);
+        $options = \MUtil_Ra::pairs($options, 2);
 
-        // MUtil_Echo::track($elements);
+        // \MUtil_Echo::track($elements);
         if (isset($elements['elements'])) {
-            // MUtil_Echo::track($elements, $options);
+            // \MUtil_Echo::track($elements, $options);
             $tmpElements = $elements['elements'];
             unset($elements['elements']);
             $options = $elements + $options;
             $elements = $tmpElements;
-            // MUtil_Echo::track($elements, $options);
+            // \MUtil_Echo::track($elements, $options);
         }
 
         $options = $this->_mergeOptions($name, $options,
@@ -454,10 +454,10 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
     /**
      * Add an element of your choice to the form
      *
-     * @param Zend_Form_Element $element
-     * @return Zend_Form_Element
+     * @param \Zend_Form_Element $element
+     * @return \Zend_Form_Element
      */
-    public function addElement(Zend_Form_Element $element)
+    public function addElement(\Zend_Form_Element $element)
     {
         return $this->_addToForm($element->getName(), $element);
     }
@@ -466,14 +466,14 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
      * Add an element that just displays the value to the user
      *
      * @param string $name Name of element
-     * @param mixed $arrayOrKey1 MUtil_Ra::pairs() name => value array
+     * @param mixed $arrayOrKey1 \MUtil_Ra::pairs() name => value array
      * @return \MUtil_Form_Element_Exhibitor
      */
     public function addExhibitor($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
         $options = $this->_mergeOptions(
                 $name,
-                MUtil_Ra::pairs(func_get_args(), 1),
+                \MUtil_Ra::pairs(func_get_args(), 1),
                 self::DATE_OPTIONS,
                 self::DISPLAY_OPTIONS,
                 self::EXHIBIT_OPTIONS,
@@ -487,14 +487,14 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
      * Add an element that just displays the value to the user
      *
      * @param string $name Name of element
-     * @param mixed $arrayOrKey1 MUtil_Ra::pairs() name => value array
+     * @param mixed $arrayOrKey1 \MUtil_Ra::pairs() name => value array
      * @return \MUtil_Form_Element_FakeSubmit
      */
     public function addFakeSubmit($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
         $options = $this->_mergeOptions(
                 $name,
-                MUtil_Ra::pairs(func_get_args(), 1),
+                \MUtil_Ra::pairs(func_get_args(), 1),
                 self::FAKESUBMIT_OPTIONS
                 );
 
@@ -504,7 +504,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
     public function addFile($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
         $options = func_get_args();
-        $options = MUtil_Ra::pairs($options, 1);
+        $options = \MUtil_Ra::pairs($options, 1);
 
         $options = $this->_mergeOptions($name, $options,
             self::DISPLAY_OPTIONS, self::FILE_OPTIONS, self::TEXT_OPTIONS);
@@ -514,7 +514,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
         $size      = $this->_moveOption('size',      $options);
         $extension = $this->_moveOption('extension', $options);
 
-        $element = new Zend_Form_Element_File($name, $options);
+        $element = new \Zend_Form_Element_File($name, $options);
 
         if ($filename) {
             $count = 1;
@@ -528,7 +528,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
                 (false === strpos($name, '.'))) {
                 $filename .= '.' . $extension;
             }
-            $element->addFilter(new Zend_Filter_File_Rename(array('target' => $filename, 'overwrite' => true)));
+            $element->addFilter(new \Zend_Filter_File_Rename(array('target' => $filename, 'overwrite' => true)));
         }
         if ($count) {
             $element->addValidator('Count', false, $count);
@@ -540,7 +540,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
             $element->addValidator('Extension', false, $extension);
             // Now set a custom validation message telling what extensions are allowed
             $validator = $element->getValidator('Extension');
-            $validator->setMessage('Only %extension% files are accepted.', Zend_Validate_File_Extension::FALSE_EXTENSION);
+            $validator->setMessage('Only %extension% files are accepted.', \Zend_Validate_File_Extension::FALSE_EXTENSION);
         }
 
         return $this->_addToForm($name, $element);
@@ -571,13 +571,13 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
      * instance using the default label / non-label distinction.
      *
      * @param string $name Name of element
-     * @param mixed $arrayOrKey1 MUtil_Ra::pairs() name => value array
-     * @return MUtil_Form_Element_Table
+     * @param mixed $arrayOrKey1 \MUtil_Ra::pairs() name => value array
+     * @return \MUtil_Form_Element_Table
      */
     public function addFormTable($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
         $options = func_get_args();
-        $options = MUtil_Ra::pairs($options, 1);
+        $options = \MUtil_Ra::pairs($options, 1);
 
         $options = $this->_mergeOptions($name, $options,
             self::SUBFORM_OPTIONS);
@@ -591,7 +591,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
         }
 
         $submodel = $this->model->get($name, 'model');
-        if ($submodel instanceof MUtil_Model_ModelAbstract) {
+        if ($submodel instanceof \MUtil_Model_ModelAbstract) {
             $bridge = new self($submodel, $form);
 
             foreach ($submodel->getItemsOrdered() as $itemName) {
@@ -605,7 +605,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
             }
         }
 
-        $element = new MUtil_Form_Element_Table($form, $name, $options);
+        $element = new \MUtil_Form_Element_Table($form, $name, $options);
 
         $this->form->addElement($element);
 
@@ -615,7 +615,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
     public function addHidden($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
         $options = func_get_args();
-        $options = MUtil_Ra::pairs($options, 1);
+        $options = \MUtil_Ra::pairs($options, 1);
 
 
         return $this->_addToForm($name, 'Hidden', $options, true, false);
@@ -623,7 +623,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
 
     public function addHiddenMulti($name_args)
     {
-        $args = MUtil_Ra::args(func_get_args());
+        $args = \MUtil_Ra::args(func_get_args());
 
         foreach ($args as $name) {
             $this->addHidden($name);
@@ -633,7 +633,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
     public function addHtml($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
         $options = func_get_args();
-        $options = MUtil_Ra::pairs($options, 1);
+        $options = \MUtil_Ra::pairs($options, 1);
 
         $options = $this->_mergeOptions($name, $options,
             self::DISPLAY_OPTIONS);
@@ -644,7 +644,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
     public function addList($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
         $options = func_get_args();
-        $options = MUtil_Ra::pairs($options, 1);
+        $options = \MUtil_Ra::pairs($options, 1);
 
         // Is often added automatically, but should not be used here
         $this->_moveOption('maxlength', $options);
@@ -663,16 +663,16 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
     /**
      * Adds a group of checkboxes (multicheckbox)
      *
-     * @see Zend_Form_Element_MultiCheckbox
+     * @see \Zend_Form_Element_MultiCheckbox
      *
      * @param string $name Name of element
-     * @param mixed $arrayOrKey1 MUtil_Ra::pairs() name => value array
-     * @return Zend_Form_Element_MultiCheckbox
+     * @param mixed $arrayOrKey1 \MUtil_Ra::pairs() name => value array
+     * @return \Zend_Form_Element_MultiCheckbox
      */
     public function addMultiCheckbox($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
         $options = func_get_args();
-        $options = MUtil_Ra::pairs($options, 1);
+        $options = \MUtil_Ra::pairs($options, 1);
 
         // Is often added automatically, but should not be used here
         $this->_moveOption('maxlength', $options);
@@ -686,15 +686,15 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
     /**
      * Adds a select box with multiple options
      *
-     * @see Zend_Form_Element_Multiselect
+     * @see \Zend_Form_Element_Multiselect
      *
      * @param string $name Name of element
-     * @param mixed $arrayOrKey1 MUtil_Ra::pairs() name => value array
+     * @param mixed $arrayOrKey1 \MUtil_Ra::pairs() name => value array
      */
     public function addMultiSelect($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
         $options = func_get_args();
-        $options = MUtil_Ra::pairs($options, 1);
+        $options = \MUtil_Ra::pairs($options, 1);
 
         // Is often added automatically, but should not be used here
         $this->_moveOption('maxlength', $options);
@@ -718,7 +718,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
     public function addPassword($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
         $options = func_get_args();
-        $options = MUtil_Ra::pairs($options, 1);
+        $options = \MUtil_Ra::pairs($options, 1);
 
         $options = $this->_mergeOptions($name, $options,
             self::DISPLAY_OPTIONS, self::PASSWORD_OPTIONS, self::TEXT_OPTIONS);
@@ -747,8 +747,8 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
                 $repeatElement->addValidator('StringLength', true, $stringlength);
             }
 
-            $element->addValidator(new MUtil_Validate_IsConfirmed($repeatName, $repeatLabel));
-            $repeatElement->addValidator(new MUtil_Validate_IsConfirmed($name, isset($options['label']) ? $options['label'] : null));
+            $element->addValidator(new \MUtil_Validate_IsConfirmed($repeatName, $repeatLabel));
+            $repeatElement->addValidator(new \MUtil_Validate_IsConfirmed($name, isset($options['label']) ? $options['label'] : null));
         }
 
         return $element;
@@ -757,7 +757,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
     public function addRadio($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
         $options = func_get_args();
-        $options = MUtil_Ra::pairs($options, 1);
+        $options = \MUtil_Ra::pairs($options, 1);
 
         $options = $this->_mergeOptions($name, $options,
             self::DISPLAY_OPTIONS, self::MULTI_OPTIONS);
@@ -768,7 +768,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
     public function addSelect($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
         $options = func_get_args();
-        $options = MUtil_Ra::pairs($options, 1);
+        $options = \MUtil_Ra::pairs($options, 1);
 
         // Is often added automatically, but should not be used here
         $this->_moveOption('maxlength', $options);
@@ -789,13 +789,13 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
      * instance using the default label / non-label distinction.
      *
      * @param string $name Name of element
-     * @param mixed $arrayOrKey1 MUtil_Ra::pairs() name => value array
-     * @return MUtil_Form_Element_Table
+     * @param mixed $arrayOrKey1 \MUtil_Ra::pairs() name => value array
+     * @return \MUtil_Form_Element_Table
      */
     public function addSubForm($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
         $options = func_get_args();
-        $options = MUtil_Ra::pairs($options, 1);
+        $options = \MUtil_Ra::pairs($options, 1);
 
         $options = $this->_mergeOptions($name, $options,
             self::SUBFORM_OPTIONS);
@@ -809,7 +809,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
         }
 
         $submodel = $this->model->get($name, 'model');
-        if ($submodel instanceof MUtil_Model_ModelAbstract) {
+        if ($submodel instanceof \MUtil_Model_ModelAbstract) {
             $bridge = new self($submodel, $form);
 
             foreach ($submodel->getItemsOrdered() as $itemName) {
@@ -823,7 +823,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
             }
         }
 
-        $element = new MUtil_Form_Element_SubForms($form, $name, $options);
+        $element = new \MUtil_Form_Element_SubForms($form, $name, $options);
 
         $this->form->addElement($element);
 
@@ -845,13 +845,13 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
      * </code>
      *
      * @param string $name Name of element
-     * @param mixed $arrayOrKey1 MUtil_Ra::pairs() name => value array
-     * @return MUtil_Form_Element_Tab
+     * @param mixed $arrayOrKey1 \MUtil_Ra::pairs() name => value array
+     * @return \MUtil_Form_Element_Tab
      */
     public function addTab($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
         $options = func_get_args();
-        $options = MUtil_Ra::pairs($options, 1);
+        $options = \MUtil_Ra::pairs($options, 1);
 
         $options = $this->_mergeOptions($name, $options,
             self::DISPLAY_OPTIONS, self::TAB_OPTIONS);
@@ -859,7 +859,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
         if (method_exists($this->form, 'addTab')) {
             return $this->form->addTab($name, isset($options['value']) ? $options['value'] : null);
         } else {
-            $element = new MUtil_Form_Element_Tab($name, $options);
+            $element = new \MUtil_Form_Element_Tab($name, $options);
             $this->form->addElement($element);
         }
 
@@ -870,7 +870,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
     {
         $options = $this->_mergeOptions(
                 $name,
-                MUtil_Ra::pairs(func_get_args(), 1),
+                \MUtil_Ra::pairs(func_get_args(), 1),
                 self::DISPLAY_OPTIONS,
                 self::TEXT_OPTIONS
                 );
@@ -887,7 +887,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
     public function addTextarea($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
         $options = func_get_args();
-        $options = MUtil_Ra::pairs($options, 1);
+        $options = \MUtil_Ra::pairs($options, 1);
 
         $options = $this->_mergeOptions($name, $options,
             self::DISPLAY_OPTIONS, self::TEXT_OPTIONS, self::TEXTAREA_OPTIONS);
@@ -909,7 +909,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
      * @param mixed $validator
      * @param boolean $breakChainOnFailure
      * @param mixed $options
-     * @return MUtil_Model_Bridge_FormBridge
+     * @return \MUtil_Model_Bridge_FormBridge
      */
     public function addValidator($elementName, $validator, $breakChainOnFailure = false, $options = array())
     {
@@ -929,8 +929,8 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
      */
     public static function applyFixedOptions($type, array &$options)
     {
-        if (Zend_Registry::getInstance()->isRegistered(self::REGISTRY_KEY)) {
-            $typeOptions = Zend_Registry::get(self::REGISTRY_KEY);
+        if (\Zend_Registry::getInstance()->isRegistered(self::REGISTRY_KEY)) {
+            $typeOptions = \Zend_Registry::get(self::REGISTRY_KEY);
         } else {
             $typeOptions = array();
         }
@@ -938,7 +938,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
         if (substr($type, 0, 3) == 'add') {
             $type = strtolower(substr($type, 3));
         }
-        // MUtil_Echo::rs($type, $options);
+        // \MUtil_Echo::rs($type, $options);
 
         if (isset($typeOptions[$type])) {
             foreach ($typeOptions[$type] as $key => $value) {
@@ -950,7 +950,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
                 }
             }
         }
-        // MUtil_Echo::rs('After', $options, $typeOptions);
+        // \MUtil_Echo::rs('After', $options, $typeOptions);
     }
 
     /**
@@ -1008,7 +1008,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
 
     /**
      *
-     * @return Zend_Form
+     * @return \Zend_Form
      */
     public function getForm()
     {
@@ -1017,7 +1017,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
 
     /**
      *
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     public function getModel()
     {
@@ -1025,10 +1025,10 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
     }
 
     /**
-     * Retrieve a tab from a Gems_TabForm to add extra content to it
+     * Retrieve a tab from a \Gems_TabForm to add extra content to it
      *
      * @param string $name
-     * @return Gems_Form_TabSubForm
+     * @return \Gems_Form_TabSubForm
      */
     public function getTab($name)
     {
@@ -1042,7 +1042,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
      *
      * @param string $key
      * @param array $options
-     * @return MUtil_Model_Bridge_FormBridge
+     * @return \MUtil_Model_Bridge_FormBridge
      */
     public function setAllowedOptions($key, $options)
     {
@@ -1061,6 +1061,6 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
      */
     public static function setFixedOptions($options)
     {
-        Zend_Registry::set(MUtil_Model_Bridge_FormBridge::REGISTRY_KEY, $options);
+        \Zend_Registry::set(\MUtil_Model_Bridge_FormBridge::REGISTRY_KEY, $options);
     }
 }

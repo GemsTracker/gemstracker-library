@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Model_NestedArrayModel extends MUtil_Model_ArrayModelAbstract
+class MUtil_Model_NestedArrayModel extends \MUtil_Model_ArrayModelAbstract
 {
     /**
      * The array containing the data
@@ -83,7 +83,7 @@ class MUtil_Model_NestedArrayModel extends MUtil_Model_ArrayModelAbstract
      * An ArrayModel assumes that (usually) all data needs to be loaded before any load
      * action, this is done using the iterator returned by this function.
      *
-     * @return Traversable Return an iterator over or an array of all the rows in this object
+     * @return \Traversable Return an iterator over or an array of all the rows in this object
      */
     protected function _loadAllTraversable()
     {
@@ -135,7 +135,7 @@ class MUtil_Model_NestedArrayModel extends MUtil_Model_ArrayModelAbstract
      *
      * @param array $indices Array containing the field names
      * @param array $fields Nested array
-     * @throws MUtil_Model_ModelException
+     * @throws \MUtil_Model_ModelException
      */
     public function saveIndexed(array $rows, array $indices)
     {
@@ -146,7 +146,7 @@ class MUtil_Model_NestedArrayModel extends MUtil_Model_ArrayModelAbstract
 
         foreach ($rows as $id => $row) {
             if (!is_array($row)) {
-                throw new MUtil_Model_ModelException("Row item '$id' is not an array in.");
+                throw new \MUtil_Model_ModelException("Row item '$id' is not an array in.");
             }
             $max = min(array(count($indices), count($row)));
             $this->_data[$id] = array_combine(array_slice($indices, 0, $max), array_slice($row, 0, $max));

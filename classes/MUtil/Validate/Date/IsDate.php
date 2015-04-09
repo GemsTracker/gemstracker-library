@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.0
  */
-class MUtil_Validate_Date_IsDate extends MUtil_Validate_Date_DateAbstract
+class MUtil_Validate_Date_IsDate extends \MUtil_Validate_Date_DateAbstract
 {
     /**
      * Error constants
@@ -68,23 +68,23 @@ class MUtil_Validate_Date_IsDate extends MUtil_Validate_Date_DateAbstract
      *
      * @param  mixed $value
      * @return boolean
-     * @throws Zend_Valid_Exception If validation of $value is impossible
+     * @throws \Zend_Valid_Exception If validation of $value is impossible
      */
     public function isValid($value, $context = null)
     {
         try {
-            $date = new Zend_Date($value, $this->getDateFormat());
-        } catch (Zend_Date_Exception $e) {
+            $date = new \Zend_Date($value, $this->getDateFormat());
+        } catch (\Zend_Date_Exception $e) {
             $this->_error(self::NOT_VALID_DATE, $value);
             return false;
         }
         
-        $year = $date->get(Zend_Date::YEAR);
+        $year = $date->get(\Zend_Date::YEAR);
 
         /**
          * Prevent extreme dates (also fixes errors when saving to the db)
          */
-        if ($year > 1850 && $year < 2200 && Zend_Date::isDate($value, $this->getDateFormat())) {
+        if ($year > 1850 && $year < 2200 && \Zend_Date::isDate($value, $this->getDateFormat())) {
             return true;
         }
 

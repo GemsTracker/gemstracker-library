@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.4 8-mei-2014 11:12:40
  */
-interface MUtil_Model_Bridge_FormBridgeInterface extends MUtil_Model_Bridge_BridgeInterface
+interface MUtil_Model_Bridge_FormBridgeInterface extends \MUtil_Model_Bridge_BridgeInterface
 {
     public function add($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null);
 
@@ -56,8 +56,8 @@ interface MUtil_Model_Bridge_FormBridgeInterface extends MUtil_Model_Bridge_Brid
      * Add a ZendX date picker to the form
      *
      * @param string $name Name of element
-     * @param mixed $arrayOrKey1 MUtil_Ra::pairs() name => value array
-     * @return ZendX_JQuery_Form_Element_DatePicker
+     * @param mixed $arrayOrKey1 \MUtil_Ra::pairs() name => value array
+     * @return \ZendX_JQuery_Form_Element_DatePicker
      */
     public function addDate($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null);
 
@@ -78,19 +78,19 @@ interface MUtil_Model_Bridge_FormBridgeInterface extends MUtil_Model_Bridge_Brid
      * usage: $this->addDisplayGroup('mygroup', array('elements', array('element1', 'element2'), 'description', 'Pretty name for the group'));
      *
      * @param string $name Name of element
-     * @param array $elements or MUtil_Ra::pairs() name => value array with 'elements' item in it
-     * @param mixed $arrayOrKey1 MUtil_Ra::pairs() name => value array
-     * @return Zend_Form_Displaygroup
+     * @param array $elements or \MUtil_Ra::pairs() name => value array with 'elements' item in it
+     * @param mixed $arrayOrKey1 \MUtil_Ra::pairs() name => value array
+     * @return \Zend_Form_Displaygroup
      */
     public function addDisplayGroup($name, $elements, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null);
 
-    public function addElement(Zend_Form_Element $element);
+    public function addElement(\Zend_Form_Element $element);
 
     /**
      * Add an element that just displays the value to the user
      *
      * @param string $name Name of element
-     * @param mixed $arrayOrKey1 MUtil_Ra::pairs() name => value array
+     * @param mixed $arrayOrKey1 \MUtil_Ra::pairs() name => value array
      * @return \MUtil_Form_Element_Exhibitor
      */
     public function addExhibitor($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null);
@@ -99,7 +99,7 @@ interface MUtil_Model_Bridge_FormBridgeInterface extends MUtil_Model_Bridge_Brid
      * Add an element that just displays the value to the user
      *
      * @param string $name Name of element
-     * @param mixed $arrayOrKey1 MUtil_Ra::pairs() name => value array
+     * @param mixed $arrayOrKey1 \MUtil_Ra::pairs() name => value array
      * @return \MUtil_Form_Element_FakeSubmit
      */
     public function addFakeSubmit($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null);
@@ -118,8 +118,8 @@ interface MUtil_Model_Bridge_FormBridgeInterface extends MUtil_Model_Bridge_Brid
      * instance using the default label / non-label distinction.
      *
      * @param string $name Name of element
-     * @param mixed $arrayOrKey1 MUtil_Ra::pairs() name => value array
-     * @return MUtil_Form_Element_Table
+     * @param mixed $arrayOrKey1 \MUtil_Ra::pairs() name => value array
+     * @return \MUtil_Form_Element_Table
      */
     public function addFormTable($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null);
 
@@ -134,21 +134,21 @@ interface MUtil_Model_Bridge_FormBridgeInterface extends MUtil_Model_Bridge_Brid
     /**
      * Adds a group of checkboxes (multicheckbox)
      *
-     * @see Zend_Form_Element_MultiCheckbox
+     * @see \Zend_Form_Element_MultiCheckbox
      *
      * @param string $name Name of element
-     * @param mixed $arrayOrKey1 MUtil_Ra::pairs() name => value array
-     * @return Zend_Form_Element_MultiCheckbox
+     * @param mixed $arrayOrKey1 \MUtil_Ra::pairs() name => value array
+     * @return \Zend_Form_Element_MultiCheckbox
      */
     public function addMultiCheckbox($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null);
 
     /**
      * Adds a select box with multiple options
      *
-     * @see Zend_Form_Element_Multiselect
+     * @see \Zend_Form_Element_Multiselect
      *
      * @param string $name Name of element
-     * @param mixed $arrayOrKey1 MUtil_Ra::pairs() name => value array
+     * @param mixed $arrayOrKey1 \MUtil_Ra::pairs() name => value array
      */
     public function addMultiSelect($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null);
 
@@ -175,8 +175,8 @@ interface MUtil_Model_Bridge_FormBridgeInterface extends MUtil_Model_Bridge_Brid
      * instance using the default label / non-label distinction.
      *
      * @param string $name Name of element
-     * @param mixed $arrayOrKey1 MUtil_Ra::pairs() name => value array
-     * @return MUtil_Form_Element_Table
+     * @param mixed $arrayOrKey1 \MUtil_Ra::pairs() name => value array
+     * @return \MUtil_Form_Element_Table
      */
     public function addSubForm($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null);
 
@@ -195,8 +195,8 @@ interface MUtil_Model_Bridge_FormBridgeInterface extends MUtil_Model_Bridge_Brid
      * </code>
      *
      * @param string $name Name of element
-     * @param mixed $arrayOrKey1 MUtil_Ra::pairs() name => value array
-     * @return MUtil_Form_Element_Tab
+     * @param mixed $arrayOrKey1 \MUtil_Ra::pairs() name => value array
+     * @return \MUtil_Form_Element_Tab
      */
     public function addTab($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null);
 
@@ -210,7 +210,7 @@ interface MUtil_Model_Bridge_FormBridgeInterface extends MUtil_Model_Bridge_Brid
      * @param mixed $validator
      * @param boolean $breakChainOnFailure
      * @param mixed $options
-     * @return MUtil_Model_Bridge_FormBridge
+     * @return \MUtil_Model_Bridge_FormBridge
      */
     public function addValidator($elementName, $validator, $breakChainOnFailure = false, $options = array());
 
@@ -225,21 +225,21 @@ interface MUtil_Model_Bridge_FormBridgeInterface extends MUtil_Model_Bridge_Brid
 
     /**
      *
-     * @return Zend_Form
+     * @return \Zend_Form
      */
     public function getForm();
 
     /**
      *
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     public function getModel();
 
     /**
-     * Retrieve a tab from a Gems_TabForm to add extra content to it
+     * Retrieve a tab from a \Gems_TabForm to add extra content to it
      *
      * @param string $name
-     * @return Gems_Form_TabSubForm
+     * @return \Gems_Form_TabSubForm
      */
     public function getTab($name);
 
@@ -248,7 +248,7 @@ interface MUtil_Model_Bridge_FormBridgeInterface extends MUtil_Model_Bridge_Brid
      *
      * @param string $key
      * @param array $options
-     * @return MUtil_Model_Bridge_FormBridge
+     * @return \MUtil_Model_Bridge_FormBridge
      */
     public function setAllowedOptions($key, $options);
  }

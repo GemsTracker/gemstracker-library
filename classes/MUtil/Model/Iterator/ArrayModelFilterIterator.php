@@ -28,23 +28,22 @@
  *
  *
  * @package    MUtil
- * @subpackage Model
+ * @subpackage Model_Iterator
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 201e Erasmus MC
+ * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ArrayModelFilterIterator.php 203 2012-01-01t 12:51:32Z matijs $
+ * @version    $Id: ArrayModelFilterIterator.php 203 2012-01-01 12:51:32 matijs $
  */
 
 /**
  *
- *
  * @package    MUtil
- * @subpackage Model
+ * @subpackage Model_Iterator
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Model_Iterator_ArrayModelFilterIterator extends FilterIterator
+class MUtil_Model_Iterator_ArrayModelFilterIterator extends \FilterIterator
 {
     /**
      * The filter to apply
@@ -55,17 +54,17 @@ class MUtil_Model_Iterator_ArrayModelFilterIterator extends FilterIterator
 
     /**
      *
-     * @var MUtil_Model_ArrayModelAbstract
+     * @var \MUtil_Model_ArrayModelAbstract
      */
     protected $_model;
 
     /**
      *
-     * @param Iterator $iterator
-     * @param MUtil_Model_ArrayModelAbstract $model
+     * @param \Iterator $iterator
+     * @param \MUtil_Model_ArrayModelAbstract $model
      * @param array $filter
      */
-    public function __construct(Iterator $iterator, MUtil_Model_ArrayModelAbstract $model, array $filter)
+    public function __construct(\Iterator $iterator, \MUtil_Model_ArrayModelAbstract $model, array $filter)
     {
         parent::__construct($iterator);
 

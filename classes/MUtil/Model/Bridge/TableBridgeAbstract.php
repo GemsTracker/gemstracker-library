@@ -43,12 +43,12 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-abstract class MUtil_Model_Bridge_TableBridgeAbstract extends MUtil_Model_Bridge_BridgeAbstract
-//    implements MUtil_Model_Bridge_BridgeInterface
+abstract class MUtil_Model_Bridge_TableBridgeAbstract extends \MUtil_Model_Bridge_BridgeAbstract
+//    implements \MUtil_Model_Bridge_BridgeInterface
 {
     /**
      *
-     * @var MUtil_Model_ModelAbstract
+     * @var \MUtil_Model_ModelAbstract
      * /
     protected $model;
 
@@ -61,7 +61,7 @@ abstract class MUtil_Model_Bridge_TableBridgeAbstract extends MUtil_Model_Bridge
     /**
      * The actual table
      *
-     * @var MUtil_Html_TableElement
+     * @var \MUtil_Html_TableElement
      */
     protected $table;
 
@@ -80,77 +80,23 @@ abstract class MUtil_Model_Bridge_TableBridgeAbstract extends MUtil_Model_Bridge
     /**
      * Constructs a bridge for a model
      *
-     * @param MUtil_Model_ModelAbstract $model The model it is all about
-     * @param MUtil_Html_ElementInterface $args_array
+     * @param \MUtil_Model_ModelAbstract $model The model it is all about
+     * @param \MUtil_Html_ElementInterface $args_array
      */
-    public function __construct(MUtil_Model_ModelAbstract $model, $args_array = null)
+    public function __construct(\MUtil_Model_ModelAbstract $model, $args_array = null)
     {
         parent::__construct($model);
 
         $this->_chainedBridge = $model->getBridgeFor('display');
 
-        if ($args_array instanceof MUtil_Html_ElementInterface) {
+        if ($args_array instanceof \MUtil_Html_ElementInterface) {
             $this->table = $args_array;
         } else {
             $args = func_get_args();
-            $args = MUtil_Ra::args($args, 1);
+            $args = \MUtil_Ra::args($args, 1);
 
-            $this->table = MUtil_Html::table($args);
+            $this->table = \MUtil_Html::table($args);
         }
-    }
-
-    /**
-     * Returns a lazy variable for this field.
-     *
-     * Lazy means that the value is esthablished only when rendering.
-     * When redering this value with a repeater it will return a different
-     * value for every row.
-     *
-     * @param string $name
-     * @return MUtil_Lazy_Abstract
-     * @throws MUtil_Model_ModelException
-     * /
-    public function __get($name)
-    {
-        $this->$name = $this->_displayBridge->$name;
-        return $this->$name;
-        /*
-        $this->_checkName($name);
-
-        if (! $this->model->has($name)) {
-            throw new MUtil_Model_ModelException(
-                    sprintf('Request for unknown item %s from model %s.', $name, $this->model->getName())
-                    );
-        }
-
-        $value = $this->getLazy($name);
-
-        if ($this->model->get($name, 'multiOptions')) {
-            $value = MUtil_Lazy::offsetGet(
-                    MUtil_Lazy::call(array($this->model, 'get'), $name, 'multiOptions'),
-                    $value
-                    );
-        }
-
-        if ($function = $this->model->get($name, 'formatFunction')) {
-            $value = MUtil_Lazy::call($function, $value);
-        } elseif ($format = $this->model->get($name, 'dateFormat')) {
-            if (is_callable($format)) {
-                $value = MUtil_Lazy::call($format, $value);
-            } else {
-                $value = MUtil_Lazy::call('MUtil_Date::format', $value, $format, $this->model->get($name, 'storageFormat'));
-            }
-        }
-
-        if ($marker = $this->model->get($name, 'markCallback')) {
-            $value = MUtil_Lazy::call($marker, $value);
-        }
-
-        // Cache for next call
-        $this->$name = $value;
-
-        return $value;
-        // * /
     }
 
     /**
@@ -163,13 +109,13 @@ abstract class MUtil_Model_Bridge_TableBridgeAbstract extends MUtil_Model_Bridge
      */
     private static function _applyDisplayFunction($item, $function)
     {
-        // MUtil_Echo::track($function);
+        // \MUtil_Echo::track($function);
         if (is_callable($function)) {
             return call_user_func($function, $item);
         }
 
         if (is_object($function)) {
-            if (($function instanceof MUtil_Html_ElementInterface)
+            if (($function instanceof \MUtil_Html_ElementInterface)
                 || method_exists($function, 'append')) {
 
                 $object = clone $function;
@@ -183,7 +129,7 @@ abstract class MUtil_Model_Bridge_TableBridgeAbstract extends MUtil_Model_Bridge
         // Assume it is a html tag when a string
         if (is_string($function)) {
 
-            return MUtil_Html::create($function, $item);
+            return \MUtil_Html::create($function, $item);
 
         } elseif (is_array($function)) {
             foreach ($function as $display) {
@@ -255,25 +201,9 @@ abstract class MUtil_Model_Bridge_TableBridgeAbstract extends MUtil_Model_Bridge
     }
 
     /**
-     * Checks name for being a key id field and in that case returns the real field name
      *
      * @param string $name
-     * @return string
-     * /
-    protected function _checkName(&$name)
-    {
-        $modelKeys = $this->model->getKeys();
-        if (isset($modelKeys[$name])) {
-            $name = $modelKeys[$name];
-        }
-
-        return $name;
-    }
-
-    /**
-     *
-     * @param string $name
-     * @return MUtil_Lazy_LazyAbstract
+     * @return \MUtil_Lazy_LazyAbstract
      */
     protected function _getLazyName($name)
     {
@@ -282,77 +212,6 @@ abstract class MUtil_Model_Bridge_TableBridgeAbstract extends MUtil_Model_Bridge
         }
 
         return $name;
-    }
-
-    /**
-     * Return the lazy value without any makeup.
-     *
-     * @param string $name
-     * @return MUtil_Lazy_LazyAbstract
-     * /
-    public function getLazy($name)
-    {
-        $this->_checkName($name);
-
-        if (! $this->repeater) {
-            $this->repeater = $this->table->getRepeater();
-
-            if (! $this->repeater) {
-                if ($this->_displayBridge->hasRepeater()) {
-                    $this->repeater = $this->_displayBridge->getRepeater();
-                } else {
-                    // Wait with
-                    return MUtil_Lazy::method($this, 'getLazyValue', $name);
-                }
-            }
-
-            $this->_displayBridge->setRepeater($this->repeater);
-        }
-
-        return $this->repeater->$name;
-    }
-
-    /**
-     * Returns the real underlying value. Not the lazy object.
-     *
-     * @param string $name
-     * @return mixed
-     * /
-    public function getLazyValue($name)
-    {
-        if ($this->repeater && $this->_displayBridge->hasRepeater()) {
-            //if ($this->repeater !== $this->_displayBridge->getRepeater()) {
-            //    MUtil_Echo::track('Chakka!');
-            //}
-        }
-        if (! $this->repeater) {
-            $this->repeater = $this->table->getRepeater();
-
-            if (! $this->repeater) {
-                if ($this->_displayBridge->hasRepeater()) {
-                    $this->repeater = $this->_displayBridge->getRepeater();
-                } else {
-                    $this->repeater = $this->model->loadRepeatable();
-                    $this->table->setRepeater($this->repeater);
-                }
-            }
-            $this->_displayBridge->setRepeater($this->repeater);
-        }
-        if (null === $name) {
-            return null;
-        }
-
-        // We are no longer being lazy.
-        // But there may not be a current value.
-        if ($current = $this->repeater->__current()) {
-            if (!$current->offsetExists($name)) {
-                if (MUtil_Model::$verbose) {
-                    MUtil_Echo::r(sprintf("Field %s missing in model %s.", $name, $this->model->getName()));
-                }
-                return null;
-            }
-            return $current->offsetGet($name);
-        }
     }
 
     /**
@@ -380,7 +239,7 @@ abstract class MUtil_Model_Bridge_TableBridgeAbstract extends MUtil_Model_Bridge
     /**
      * Get the actual table
      *
-     * @return MUtil_Html_TableElement
+     * @return \MUtil_Html_TableElement
      */
     abstract public function getTable();
 
@@ -405,23 +264,9 @@ abstract class MUtil_Model_Bridge_TableBridgeAbstract extends MUtil_Model_Bridge
     abstract public function itemIf($if, $item, $else = null);
 
     /**
-     * Set the model to use in the tablebridge
-     *
-     * @param MUtil_Model_ModelAbstract $model
-     * @return MUtil_Model_Bridge_TableBridgeAbstract (continaution pattern)
-     * /
-    public function setModel(MUtil_Model_ModelAbstract $model)
-    {
-        $this->model          = $model;
-        $this->_displayBridge = $model->getBridgeFor('display');
-
-        return $this;
-    } // */
-
-    /**
      * Set the repeater source for the lazy data
      *
-     * @param mixed $repeater MUtil_Lazy_RepeatableInterface or something that can be made into one.
+     * @param mixed $repeater \MUtil_Lazy_RepeatableInterface or something that can be made into one.
      * @return \MUtil_Model_Format_DisplayFormatter (continuation pattern)
      */
     public function setRepeater($repeater)

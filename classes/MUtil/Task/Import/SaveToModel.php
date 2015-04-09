@@ -44,11 +44,11 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Task_Import_SaveToModel extends MUtil_Task_TaskAbstract
+class MUtil_Task_Import_SaveToModel extends \MUtil_Task_TaskAbstract
 {
     /**
      *
-     * @var MUtil_Model_ModelAbstract
+     * @var \MUtil_Model_ModelAbstract
      */
     protected $targetModel;
 
@@ -60,7 +60,7 @@ class MUtil_Task_Import_SaveToModel extends MUtil_Task_TaskAbstract
      */
     public function checkRegistryRequestsAnswers()
     {
-        return ($this->targetModel instanceof MUtil_Model_ModelAbstract) &&
+        return ($this->targetModel instanceof \MUtil_Model_ModelAbstract) &&
             parent::checkRegistryRequestsAnswers();
     }
 
@@ -78,7 +78,7 @@ class MUtil_Task_Import_SaveToModel extends MUtil_Task_TaskAbstract
             $batch = $this->getBatch();
             $batch->addToCounter('imported');
 
-            // MUtil_Echo::track($row);
+            // \MUtil_Echo::track($row);
             $this->targetModel->save($row);
             $batch->addToCounter('changed', $this->targetModel->getChanged());
         }

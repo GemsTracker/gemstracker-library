@@ -44,26 +44,26 @@
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-class MUtil_Model_TableModel extends MUtil_Model_DatabaseModelAbstract
+class MUtil_Model_TableModel extends \MUtil_Model_DatabaseModelAbstract
 {
     /**
      *
-     * @var Zend_Db_Table_Abstract
+     * @var \Zend_Db_Table_Abstract
      */
     private $_table;
 
     /**
      *
-     * @param Zend_Db_Table_Abstract $table An Zend abstract table or the table name
+     * @param \Zend_Db_Table_Abstract $table An Zend abstract table or the table name
      * @param string $altName An alternative name to use, default is the name of the table itself
      */
     public function __construct($table, $altName = null)
     {
-        if ($table instanceof Zend_Db_Table_Abstract) {
+        if ($table instanceof \Zend_Db_Table_Abstract) {
             $this->_table = $table;
             $table_name = $this->_getTableName($table);
         } else {
-            $this->_table = new Zend_Db_Table($table);
+            $this->_table = new \Zend_Db_Table($table);
             $table_name = $table;
         }
 
@@ -104,7 +104,7 @@ class MUtil_Model_TableModel extends MUtil_Model_DatabaseModelAbstract
     /**
      * The database adapter used by the model.
      *
-     * @return Zend_Db_Adapter_Abstract
+     * @return \Zend_Db_Adapter_Abstract
      */
     public function getAdapter()
     {
@@ -112,18 +112,18 @@ class MUtil_Model_TableModel extends MUtil_Model_DatabaseModelAbstract
     }
 
     /**
-     * Returns a Zend_Db_Table_Select object to work with
+     * Returns a \Zend_Db_Table_Select object to work with
      *
-     * @return Zend_Db_Table_Select
+     * @return \Zend_Db_Table_Select
      */
     public function getSelect()
     {
         if ($this->hasItemsUsed()) {
-            $select = $this->_table->select(Zend_Db_Table_Abstract::SELECT_WITHOUT_FROM_PART);
+            $select = $this->_table->select(\Zend_Db_Table_Abstract::SELECT_WITHOUT_FROM_PART);
             $select->from($this->_getTableName($this->_table), array());
             return $select;
         } else {
-            return $this->_table->select(Zend_Db_Table_Abstract::SELECT_WITH_FROM_PART);
+            return $this->_table->select(\Zend_Db_Table_Abstract::SELECT_WITH_FROM_PART);
         }
     }
 

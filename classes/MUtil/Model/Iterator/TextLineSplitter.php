@@ -28,21 +28,21 @@
  *
  *
  * @package    MUtil
- * @subpackage Model
+ * @subpackage Model_Iterator
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TextLineSplitter.php$
+ * @version    $Id: TextLineSplitter.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
 /**
  * Helper function to prevent having to use the whole model to serialize
  * a TextFileIterator.
  *
- * @see MUtil_Model_Iterator_TextFileIterator
+ * @see \MUtil_Model_Iterator_TextFileIterator
  *
  * @package    MUtil
- * @subpackage Model
+ * @subpackage Model_Iterator
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3

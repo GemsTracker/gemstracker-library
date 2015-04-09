@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.0
  */
-class MUtil_Validate_NoScript extends MUtil_Validate_Regexclude
+class MUtil_Validate_NoScript extends \MUtil_Validate_Regexclude
 {
     const SCRIPT_REGEX = '/[<>{}\(\)]/';
 
@@ -58,7 +58,7 @@ class MUtil_Validate_NoScript extends MUtil_Validate_Regexclude
     /**
      * Sets validator options
      *
-     * @param  string|Zend_Config $pattern
+     * @param  string|\Zend_Config $pattern
      * @return void
      */
     public function __construct($pattern = self::SCRIPT_REGEX)

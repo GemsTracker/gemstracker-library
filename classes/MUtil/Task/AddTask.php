@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 201e Erasmus MC
  * @license    New BSD License
- * @version    $Id: AddTask.php 203 2012-01-01t 12:51:32Z matijs $
+ * @version    $Id: AddTask.php 2033 2012-01-01t 12:51:32Z matijs $
  */
 
 /**
@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Task_AddTask extends MUtil_Task_TaskAbstract
+class MUtil_Task_AddTask extends \MUtil_Task_TaskAbstract
 {
     /**
      * Should handle execution of the task, taking as much (optional) parameters as needed

@@ -49,7 +49,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
+class MUtil_Model_JoinModel extends \MUtil_Model_DatabaseModelAbstract
 {
     protected $_joinFields = array();
     protected $_saveTables;
@@ -74,7 +74,7 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
         // Fix primary keys to those of the current table.
         $this->getKeys();
 
-        $this->_select = new Zend_Db_Select($table->getAdapter());
+        $this->_select = new \Zend_Db_Select($table->getAdapter());
         $this->_select->from(array($alias => $this->_getTableName($table)), array());
     }
 
@@ -107,7 +107,7 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
     /**
      *
      * @param string $alias
-     * @return Zend_Db_Table_Abstract
+     * @return \Zend_Db_Table_Abstract
      */
     protected function _getTable($alias)
     {
@@ -145,7 +145,7 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
             $tableName = array($alias => $tableName);
         }
 
-        $this->_select->$join($tableName, implode(' ' . Zend_Db_Select::SQL_AND . ' ', $joinSql), array());
+        $this->_select->$join($tableName, implode(' ' . \Zend_Db_Select::SQL_AND . ' ', $joinSql), array());
     }
 
     /**
@@ -158,7 +158,7 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
     protected function _loadTable($table, $saveable = false)
     {
         $alias = null;
-        if ($table instanceof Zend_Db_Table_Abstract) {
+        if ($table instanceof \Zend_Db_Table_Abstract) {
             $tableName = $this->_getTableName($table);
         } else {
             if (is_array($table)) {
@@ -172,7 +172,7 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
             } else {
                 $tableName = (string) $table;
             }
-            $table = new Zend_DB_Table($tableName);
+            $table = new \Zend_DB_Table($tableName);
         }
         if (! $alias) {
             $alias = $tableName;
@@ -206,19 +206,19 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
         $saveTables = $this->_checkSaveTables($saveTables);
         $oldChanged = $this->getChanged();
 
-        // MUtil_Echo::track($newValues, $filter, $saveTables, $this->_joinFields);
+        // \MUtil_Echo::track($newValues, $filter, $saveTables, $this->_joinFields);
 
         $oldValues = $newValues;
         foreach ($saveTables as $tableName => $saveMode) {
             // Gotta repeat this every time, as keys may be set later
             foreach ($this->_joinFields as $source => $target) {
-                // Use is_string as $target and $target can be e.g. a Zend_Db_Expr() object
+                // Use is_string as $target and $target can be e.g. a \Zend_Db_Expr() object
                 // as $source is an index keys it must be a string
                 if (is_string($target)) {
                     if (! (isset($newValues[$target]) && $newValues[$target])) {
                         if (! (isset($newValues[$source]) && $newValues[$source])) {
-                            if (MUtil_Model::$verbose) {
-                                MUtil_Echo::r('Missing: ' . $source . ' -> ' . $target, 'ERROR!');
+                            if (\MUtil_Model::$verbose) {
+                                \MUtil_Echo::r('Missing: ' . $source . ' -> ' . $target, 'ERROR!');
                             }
                             continue;
                         }
@@ -242,7 +242,7 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
                         // The changing field must be stated first in the join statement.
                         $newValues[$target] = $newValues[$source];
                     }
-                } elseif ($target instanceof Zend_Db_Expr &&
+                } elseif ($target instanceof \Zend_Db_Expr &&
                         (! (isset($newValues[$source]) && $newValues[$source]))) {
                     $newValues[$source] = $target;
                 }
@@ -251,7 +251,7 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
             //$this->_saveTableData returns the new row values, including any automatic changes.
             $newValues = $this->_saveTableData($this->_tables[$tableName], $newValues, $filter, $saveMode)
                     + $oldValues;
-            // MUtil_Echo::track($oldValues, $newValues, $filter);
+            // \MUtil_Echo::track($oldValues, $newValues, $filter);
             $oldValues = $newValues;
         }
 
@@ -292,7 +292,7 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
      * @param mixed $table      The name of the table to join or a table object or an array(corr_name => tablename) or array(int => tablename, corr_name)
      * @param array $joinFields Array of source->dest primary keys for this join
      * @param mixed $saveable   Will changes to this table be saved, true or a combination of SAVE_MODE constants
-     * @return MUtil_Model_JoinModel
+     * @return \MUtil_Model_JoinModel
      */
     public function addLeftTable($table, array $joinFields, $saveable = false)
     {
@@ -307,7 +307,7 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
      * @param array $joinFields Array of source->dest primary keys for this join
      * @param mixed $saveable   Will changes to this table be saved, true or a combination of SAVE_MODE constants
      *
-     * @return MUtil_Model_JoinModel
+     * @return \MUtil_Model_JoinModel
      */
     public function addRightTable($table, array $joinFields, $saveable = false)
     {
@@ -322,7 +322,7 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
      * @param array $joinFields Array of source->dest primary keys for this join
      * @param mixed $saveable   Will changes to this table be saved, true or a combination of SAVE_MODE constants
      *
-     * @return Gems_Model_JoinModel
+     * @return \Gems_Model_JoinModel
      */
     public function addTable($table, array $joinFields, $saveable = false)
     {
@@ -384,7 +384,7 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
                     }
                 }
 
-                // MUtil_Echo::r($table_filter, $tableName);
+                // \MUtil_Echo::r($table_filter, $tableName);
                 if ($delete && $table_filter) {
                     $changed = max($changed, $this->_deleteTableData($this->_tables[$tableName], $table_filter));
                 }
@@ -399,7 +399,7 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
     /**
      * The database adapter used by the model.
      *
-     * @return Zend_Db_Adapter_Abstract
+     * @return \Zend_Db_Adapter_Abstract
      */
     public function getAdapter()
     {
@@ -409,7 +409,7 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
     /**
      * The select object where we get the query from.
      *
-     * @return Zend_Db_Select
+     * @return \Zend_Db_Select
      */
     public function getSelect()
     {
@@ -417,7 +417,7 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
 
         if (! $this->hasItemsUsed()) {
             foreach ($this->_tables as $name => $table) {
-                $select->columns(Zend_Db_Select::SQL_WILDCARD, $name);
+                $select->columns(\Zend_Db_Select::SQL_WILDCARD, $name);
             }
             foreach ($this->getCol('column_expression') as $name => $expression) {
                 $select->columns(array($name => $expression));
@@ -441,7 +441,7 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
     /**
      *
      * @param string $tableName Does not test for existence
-     * @return MUtil_Model_JoinModel (continuation pattern)
+     * @return \MUtil_Model_JoinModel (continuation pattern)
      */
     public function setTableKeysToJoin($tableName)
     {
@@ -473,7 +473,7 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
      *
      * @param string $tableName     Does not test for existence
      * @param mixed  $saveable      Will changes to this table be saved, true or a combination of SAVE_MODE constants
-     * @return MUtil_Model_JoinModel (continuation pattern)
+     * @return \MUtil_Model_JoinModel (continuation pattern)
      */
     public function setTableSaveable($tableName, $saveable = true)
     {

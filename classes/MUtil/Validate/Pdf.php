@@ -28,14 +28,14 @@
  *
  * @package    MUtil
  * @subpackage Validate
- * @author Michiel Rook <michiel@touchdownconsulting.nl>
+ * @author     Michiel Rook <michiel@touchdownconsulting.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version $Id$
+ * @version    $Id$
  */
 
 /**
- * Validate that a Pdf can be loaded by Zend_Pdf
+ * Validate that a Pdf can be loaded by \Zend_Pdf
  *
  * @package    MUtil
  * @subpackage Validate
@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Validate_Pdf extends Zend_Validate_Abstract
+class MUtil_Validate_Pdf extends \Zend_Validate_Abstract
 {
     /**
      * Error constants
@@ -66,15 +66,15 @@ class MUtil_Validate_Pdf extends Zend_Validate_Abstract
      *
      * @param  mixed $value
      * @return boolean
-     * @throws Zend_Valid_Exception If validation of $value is impossible
+     * @throws \Zend_Valid_Exception If validation of $value is impossible
      */
     public function isValid($value, $context = array())
     {
         // Only fail when file really can't be loaded.
         try {
-            Zend_Pdf::load($value);
+            \Zend_Pdf::load($value);
             return true;
-        } catch (Zend_Pdf_Exception $e) {
+        } catch (\Zend_Pdf_Exception $e) {
             $this->_error(self::ERROR_INVALID_VERSION, $e->getMessage());
             return false;
         }

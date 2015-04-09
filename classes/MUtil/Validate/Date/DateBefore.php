@@ -1,10 +1,9 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,24 +25,25 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * @package    MUtil
+ * @subpackage Validate
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
- * 
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package MUtil
+ *
+ * @package    MUtil
  * @subpackage Validate
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since MUtil version 1.0
  */
-
-/**
- * 
- * @author Matijs de Jong
- * @package MUtil
- * @subpackage Validate
- */
-class MUtil_Validate_Date_DateBefore extends MUtil_Validate_Date_DateAbstract
+class MUtil_Validate_Date_DateBefore extends \MUtil_Validate_Date_DateAbstract
 {
     /**
      * Error constants
@@ -82,24 +82,24 @@ class MUtil_Validate_Date_DateBefore extends MUtil_Validate_Date_DateAbstract
      *
      * @param  mixed $value
      * @return boolean
-     * @throws Zend_Valid_Exception If validation of $value is impossible
+     * @throws \Zend_Valid_Exception If validation of $value is impossible
      */
     public function isValid($value, $context = null)
     {
         if (null === $this->_beforeDate) {
-            $this->_beforeDate = new Zend_Date();
+            $this->_beforeDate = new \Zend_Date();
         }
 
-        if ($this->_beforeDate instanceof Zend_Date) {
+        if ($this->_beforeDate instanceof \Zend_Date) {
             $before = $this->_beforeDate;
         } elseif (isset($context[$this->_beforeDate])) {
-            $before = new Zend_Date($context[$this->_beforeDate], $this->getDateFormat());
+            $before = new \Zend_Date($context[$this->_beforeDate], $this->getDateFormat());
         } else {
-            $before = new Zend_Date($this->_beforeDate);
+            $before = new \Zend_Date($this->_beforeDate);
         }
         $this->_beforeValue = $before->toString($this->getDateFormat());
 
-        $check = new Zend_Date($value, $this->getDateFormat());
+        $check = new \Zend_Date($value, $this->getDateFormat());
 
         if ($check->isLater($before)) {
             $this->_error(self::NOT_BEFORE);

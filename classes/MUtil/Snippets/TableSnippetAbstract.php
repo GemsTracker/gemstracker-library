@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class MUtil_Snippets_TableSnippetAbstract extends MUtil_Snippets_SnippetAbstract
+class MUtil_Snippets_TableSnippetAbstract extends \MUtil_Snippets_SnippetAbstract
 {
     /**
      * Optional, instead of repeater array containing the data to show
@@ -61,7 +61,7 @@ class MUtil_Snippets_TableSnippetAbstract extends MUtil_Snippets_SnippetAbstract
     /**
      * REQUIRED, but can be derived from $this->data
      *
-     * @var MUtil_Lazy_RepeatableInterface
+     * @var \MUtil_Lazy_RepeatableInterface
      */
     protected $repeater;
 
@@ -70,9 +70,9 @@ class MUtil_Snippets_TableSnippetAbstract extends MUtil_Snippets_SnippetAbstract
      *
      * This is a default implementation, overrule at will
      *
-     * @param MUtil_Html_TableElement $table
+     * @param \MUtil_Html_TableElement $table
      */
-    protected function addColumns(MUtil_Html_TableElement $table)
+    protected function addColumns(\MUtil_Html_TableElement $table)
     {
         if ($this->data) {
             $row = reset($this->data);
@@ -91,12 +91,12 @@ class MUtil_Snippets_TableSnippetAbstract extends MUtil_Snippets_SnippetAbstract
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param Zend_View_Abstract $view Just in case it is needed here
-     * @return MUtil_Html_HtmlInterface Something that can be rendered
+     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @return \MUtil_Html_HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view)
     {
-        $table = new MUtil_Html_TableElement($this->repeater);
+        $table = new \MUtil_Html_TableElement($this->repeater);
 
         if ($this->onEmpty) {
             $table->setOnEmpty($this->onEmpty);
@@ -109,7 +109,7 @@ class MUtil_Snippets_TableSnippetAbstract extends MUtil_Snippets_SnippetAbstract
             $table->appendAttrib('class', $this->class);
         }
 
-        $container = MUtil_Html::create()->div(array('class' => 'table-container'));
+        $container = \MUtil_Html::create()->div(array('class' => 'table-container'));
         $container[] = $table;
 
         return $container;
@@ -122,14 +122,14 @@ class MUtil_Snippets_TableSnippetAbstract extends MUtil_Snippets_SnippetAbstract
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see MUtil_Registry_TargetInterface}.
+     * {@see \MUtil_Registry_TargetInterface}.
      *
      * @return boolean
      */
     public function hasHtmlOutput()
     {
         if (! $this->repeater) {
-            $this->repeater = MUtil_Lazy::repeat($this->data);
+            $this->repeater = \MUtil_Lazy::repeat($this->data);
         } else {
             // We do not know whether there is any link between
             // the data and the repeater, so do not use the data

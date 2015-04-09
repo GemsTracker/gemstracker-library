@@ -28,23 +28,23 @@
  *
  *
  * @package    MUtil
- * @subpackage Model
+ * @subpackage Model_Iterator
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TextFileIterator.php$
+ * @version    $Id: TextFileIterator.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
 /**
  * Iterate line by line through a file, with a separate output for the first header line
  *
  * @package    MUtil
- * @subpackage Model
+ * @subpackage Model_Iterator
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
+class MUtil_Model_Iterator_TextFileIterator implements \Iterator, \Serializable
 {
     /**
      *
@@ -61,7 +61,7 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
 
     /**
      *
-     * @var SplFileObject
+     * @var \SplFileObject
      */
     protected $_file = null;
 
@@ -111,7 +111,7 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
         $this->_splitFunction = $splitFunction;
 
         if (!is_callable($splitFunction)) {
-            throw new MUtil_Model_ModelException(__CLASS__ . " needs a callable splitFunction argument.");
+            throw new \MUtil_Model_ModelException(__CLASS__ . " needs a callable splitFunction argument.");
         }
     }
 
@@ -140,8 +140,8 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
         }
 
         try {
-            $this->_file = new SplFileObject($this->_filename, 'r');
-            $firstline   = trim(MUtil_Encoding::removeBOM($this->_file->current(), "\r\n"));
+            $this->_file = new \SplFileObject($this->_filename, 'r');
+            $firstline   = trim(\MUtil_Encoding::removeBOM($this->_file->current(), "\r\n"));
 
             if ($firstline) {
                 $this->_fieldMap = call_user_func($this->_splitFunction, $firstline);
@@ -162,7 +162,7 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
             // Always move to next, even if there was no first line
             $this->next();
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->_file = false;
         }
     }
@@ -178,7 +178,7 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
             $this->_openFile();
         }
 
-        if (! ($this->_file instanceof SplFileObject && $this->_valid)) {
+        if (! ($this->_file instanceof \SplFileObject && $this->_valid)) {
             return false;
         }
 
@@ -255,7 +255,7 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
     }
 
     /**
-     *  Rewind the Iterator to the first element
+     *  Rewind the \Iterator to the first element
      */
     public function rewind()
     {

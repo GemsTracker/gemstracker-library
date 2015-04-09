@@ -52,11 +52,12 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-abstract class MUtil_Snippets_SnippetAbstract extends MUtil_Translate_TranslateableAbstract implements MUtil_Snippets_SnippetInterface
+abstract class MUtil_Snippets_SnippetAbstract extends \MUtil_Translate_TranslateableAbstract
+    implements \MUtil_Snippets_SnippetInterface
 {
     /**
      *
-     * @var Zend_Controller_Action_Helper_FlashMessenger
+     * @var \Zend_Controller_Action_Helper_FlashMessenger
      */
     private $_messenger;
 
@@ -90,7 +91,7 @@ abstract class MUtil_Snippets_SnippetAbstract extends MUtil_Translate_Translatea
      */
     public function addMessage($message_args)
     {
-        $messages  = MUtil_Ra::flatten(func_get_args());
+        $messages  = \MUtil_Ra::flatten(func_get_args());
         $messenger = $this->getMessenger();
 
         foreach ($messages as $message) {
@@ -104,9 +105,9 @@ abstract class MUtil_Snippets_SnippetAbstract extends MUtil_Translate_Translatea
      * Applies the $this=>attributes and $this->class snippet parameters to the
      * $html element.
      *
-     * @param MUtil_Html_HtmlElement $html Element to apply the snippet parameters to.
+     * @param \MUtil_Html_HtmlElement $html Element to apply the snippet parameters to.
      */
-    protected function applyHtmlAttributes(MUtil_Html_HtmlElement $html)
+    protected function applyHtmlAttributes(\MUtil_Html_HtmlElement $html)
     {
         if ($this->attributes) {
             foreach ($this->attributes as $name => $value) {
@@ -125,10 +126,10 @@ abstract class MUtil_Snippets_SnippetAbstract extends MUtil_Translate_Translatea
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param Zend_View_Abstract $view Just in case it is needed here
-     * @return MUtil_Html_HtmlInterface Something that can be rendered
+     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @return \MUtil_Html_HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view)
     {
         return null;
     }
@@ -136,22 +137,22 @@ abstract class MUtil_Snippets_SnippetAbstract extends MUtil_Translate_Translatea
     /**
      * Helper function for snippets returning a sequence of Html items.
      *
-     * @return MUtil_Html_Sequence
+     * @return \MUtil_Html_Sequence
      */
     protected function getHtmlSequence()
     {
-        return new MUtil_Html_Sequence();
+        return new \MUtil_Html_Sequence();
     }
 
     /**
      * Retrieves the messenger
      *
-     * @return Zend_Controller_Action_Helper_FlashMessenger
+     * @return \Zend_Controller_Action_Helper_FlashMessenger
      */
     protected function getMessenger()
     {
         if (! isset($this->_messenger)) {
-            $this->_messenger = new MUtil_Controller_Action_Helper_FlashMessenger();
+            $this->_messenger = new \MUtil_Controller_Action_Helper_FlashMessenger();
         }
         return $this->_messenger;
     }
@@ -167,7 +168,7 @@ abstract class MUtil_Snippets_SnippetAbstract extends MUtil_Translate_Translatea
      * Also when hasHtmlOutput() is true this function should not be
      * called.
      *
-     * @see Zend_Controller_Action_Helper_Redirector
+     * @see \Zend_Controller_Action_Helper_Redirector
      *
      * @return mixed Nothing or either an array or a string that is acceptable for Redector->gotoRoute()
      */
@@ -181,7 +182,7 @@ abstract class MUtil_Snippets_SnippetAbstract extends MUtil_Translate_Translatea
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see MUtil_Registry_TargetInterface}.
+     * {@see \MUtil_Registry_TargetInterface}.
      *
      * @return boolean
      */
@@ -195,13 +196,13 @@ abstract class MUtil_Snippets_SnippetAbstract extends MUtil_Translate_Translatea
      *
      * When hasHtmlOutput() is true this functions should not be called.
      *
-     * @see Zend_Controller_Action_Helper_Redirector
+     * @see \Zend_Controller_Action_Helper_Redirector
      */
     public function redirectRoute()
     {
         if ($url = $this->getRedirectRoute()) {
-            //MUtil_Echo::track($url);
-            $router = new Zend_Controller_Action_Helper_Redirector();
+            //\MUtil_Echo::track($url);
+            $router = new \Zend_Controller_Action_Helper_Redirector();
             $router->gotoRouteAndExit($url, null, $this->resetRoute);
         }
     }
@@ -211,12 +212,12 @@ abstract class MUtil_Snippets_SnippetAbstract extends MUtil_Translate_Translatea
      *
      * You should override either getHtmlOutput() or this function to generate output
      *
-     * @param Zend_View_Abstract $view
+     * @param \Zend_View_Abstract $view
      * @return string Html output
      */
-    public function render(Zend_View_Abstract $view)
+    public function render(\Zend_View_Abstract $view)
     {
-        // MUtil_Echo::r(sprintf('Rendering snippet %s.', get_class($this)));
+        // \MUtil_Echo::r(sprintf('Rendering snippet %s.', get_class($this)));
         //
         // TODO: Change snippet workings.
         // All forms are processed twice if hasHtmlOutput() is called here. This is
@@ -232,13 +233,13 @@ abstract class MUtil_Snippets_SnippetAbstract extends MUtil_Translate_Translatea
             $html = $this->getHtmlOutput($view);
 
             if ($html) {
-                if ($html instanceof MUtil_Html_HtmlInterface) {
-                    if ($html instanceof MUtil_Html_HtmlElement) {
+                if ($html instanceof \MUtil_Html_HtmlInterface) {
+                    if ($html instanceof \MUtil_Html_HtmlElement) {
                         $this->applyHtmlAttributes($html);
                     }
                     return $html->render($view);
                 } else {
-                    return MUtil_Html::renderAny($view, $html);
+                    return \MUtil_Html::renderAny($view, $html);
                 }
             }
         }

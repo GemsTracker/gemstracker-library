@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.0
  */
-class MUtil_Validate_Phone extends Zend_Validate_Regex
+class MUtil_Validate_Phone extends \Zend_Validate_Regex
 {
     const PHONE_REGEX = '/^[\d\s\+\(\)\-]*$/';
 
@@ -66,7 +66,7 @@ class MUtil_Validate_Phone extends Zend_Validate_Regex
     /**
      * Sets validator options
      *
-     * @param  string|Zend_Config $pattern
+     * @param  string|\Zend_Config $pattern
      * @return void
      */
     public function __construct($pattern = self::PHONE_REGEX)

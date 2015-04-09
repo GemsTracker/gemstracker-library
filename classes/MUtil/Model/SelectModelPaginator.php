@@ -41,7 +41,7 @@
  *
  * It also implements some extra fancy functions to speed up the result retrieval on MySQL databases.
  *
- * @see MUtil_Model_DatabaseModelAbstract
+ * @see \MUtil_Model_DatabaseModelAbstract
  *
  * @package    MUtil
  * @subpackage Model
@@ -49,7 +49,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_Model_SelectModelPaginator implements MUtil_Paginator_Adapter_PrefetchInterface
+class MUtil_Model_SelectModelPaginator implements \MUtil_Paginator_Adapter_PrefetchInterface
 {
     /**
      * Store for count
@@ -81,31 +81,31 @@ class MUtil_Model_SelectModelPaginator implements MUtil_Paginator_Adapter_Prefet
 
     /**
      *
-     * @var MUtil_Model_DatabaseModelAbstract
+     * @var \MUtil_Model_DatabaseModelAbstract
      */
     protected $_model;
 
     /**
      *
-     * @var Zend_Db_Select
+     * @var \Zend_Db_Select
      */
     protected $_select;
 
     /**
      *
-     * @var Zend_Paginator_Adapter_DbSelect
+     * @var \Zend_Paginator_Adapter_DbSelect
      */
     protected $_selectAdapter;
 
     /**
      *
-     * @param Zend_Db_Select $select
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \Zend_Db_Select $select
+     * @param \MUtil_Model_ModelAbstract $model
      */
-    public function __construct(Zend_Db_Select $select, MUtil_Model_DatabaseModelAbstract $model)
+    public function __construct(\Zend_Db_Select $select, \MUtil_Model_DatabaseModelAbstract $model)
     {
         $this->_select = $select;
-        $this->_selectAdapter = new Zend_Paginator_Adapter_DbSelect($select);
+        $this->_selectAdapter = new \Zend_Paginator_Adapter_DbSelect($select);
         $this->_model = $model;
     }
 
@@ -145,12 +145,12 @@ class MUtil_Model_SelectModelPaginator implements MUtil_Paginator_Adapter_Prefet
         // Optimization: by using the MySQL feature SQL_CALC_FOUND_ROWS
         // we can get the count and the results in a single query.
         $db = $this->_select->getAdapter();
-        if ($db instanceof Zend_Db_Adapter_Mysqli) {
+        if ($db instanceof \Zend_Db_Adapter_Mysqli) {
 
             $this->_select->limit($itemCountPerPage, $offset);
             $sql = $this->_select->__toString();
 
-            if (MUtil_String::startsWith($sql, 'select ', true)) {
+            if (\MUtil_String::startsWith($sql, 'select ', true)) {
                 $sql = 'SELECT SQL_CALC_FOUND_ROWS ' . substr($sql, 7);
             }
 
@@ -162,11 +162,11 @@ class MUtil_Model_SelectModelPaginator implements MUtil_Paginator_Adapter_Prefet
             $this->_lastItems = $this->_selectAdapter->getItems($offset, $itemCountPerPage);
         }
 
-        // MUtil_Echo::track($this->_lastItems);
+        // \MUtil_Echo::track($this->_lastItems);
         if (is_array($this->_lastItems)) {
             $this->_lastItems = $this->_model->processAfterLoad($this->_lastItems);
         }
-        // MUtil_Echo::track($this->_lastItems);
+        // \MUtil_Echo::track($this->_lastItems);
 
         return $this->_lastItems;
     }

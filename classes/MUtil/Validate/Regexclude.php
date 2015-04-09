@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Validate_Regexclude extends Zend_Validate_Abstract
+class MUtil_Validate_Regexclude extends \Zend_Validate_Abstract
 {
     const INVALID   = 'regexInvalid';
     const MATCH     = 'regexMatch';
@@ -76,8 +76,8 @@ class MUtil_Validate_Regexclude extends Zend_Validate_Abstract
     /**
      * Sets validator options
      *
-     * @param  string|Zend_Config $pattern
-     * @throws Zend_Validate_Exception On missing 'pattern' parameter
+     * @param  string|\Zend_Config $pattern
+     * @throws \Zend_Validate_Exception On missing 'pattern' parameter
      * @return void
      */
     public function __construct($pattern = null)
@@ -86,7 +86,7 @@ class MUtil_Validate_Regexclude extends Zend_Validate_Abstract
             return;
         }
 
-        if ($pattern instanceof Zend_Config) {
+        if ($pattern instanceof \Zend_Config) {
             $pattern = $pattern->toArray();
         }
 
@@ -95,7 +95,7 @@ class MUtil_Validate_Regexclude extends Zend_Validate_Abstract
                 $pattern = $pattern['pattern'];
             } else {
                 require_once 'Zend/Validate/Exception.php';
-                throw new Zend_Validate_Exception("Missing option 'pattern'");
+                throw new \Zend_Validate_Exception("Missing option 'pattern'");
             }
         }
 
@@ -116,8 +116,8 @@ class MUtil_Validate_Regexclude extends Zend_Validate_Abstract
      * Sets the pattern option
      *
      * @param  string $pattern
-     * @throws Zend_Validate_Exception if there is a fatal error in pattern matching
-     * @return Zend_Validate_Regex Provides a fluent interface
+     * @throws \Zend_Validate_Exception if there is a fatal error in pattern matching
+     * @return \Zend_Validate_Regex Provides a fluent interface
      */
     public function setPattern($pattern)
     {
@@ -126,14 +126,14 @@ class MUtil_Validate_Regexclude extends Zend_Validate_Abstract
 
         if (false === $status) {
             require_once 'Zend/Validate/Exception.php';
-            throw new Zend_Validate_Exception("Internal error while using the pattern '$this->_pattern'");
+            throw new \Zend_Validate_Exception("Internal error while using the pattern '$this->_pattern'");
         }
 
         return $this;
     }
 
     /**
-     * Defined by Zend_Validate_Interface
+     * Defined by \Zend_Validate_Interface
      *
      * Returns true if and only if $value matches against the pattern option
      *

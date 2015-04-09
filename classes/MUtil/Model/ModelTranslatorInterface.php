@@ -150,7 +150,7 @@ interface MUtil_Model_ModelTranslatorInterface extends \MUtil_Registry_TargetInt
     /**
      * Perform any translations necessary for the code to work
      *
-     * @param mixed $row array or Traversable row
+     * @param mixed $row array or \Traversable row
      * @param scalar $key
      * @return mixed Row array or false when errors occurred
      */

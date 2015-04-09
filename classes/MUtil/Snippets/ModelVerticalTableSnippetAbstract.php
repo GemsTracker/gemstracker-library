@@ -48,7 +48,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-abstract class MUtil_Snippets_ModelVerticalTableSnippetAbstract extends MUtil_Snippets_ModelSnippetAbstract
+abstract class MUtil_Snippets_ModelVerticalTableSnippetAbstract extends \MUtil_Snippets_ModelSnippetAbstract
 {
     /**
      *
@@ -57,11 +57,11 @@ abstract class MUtil_Snippets_ModelVerticalTableSnippetAbstract extends MUtil_Sn
     protected $bridgeColumns = 1;
 
     /**
-     * One of the MUtil_Model_Bridge_BridgeAbstract MODE constants
+     * One of the \MUtil_Model_Bridge_BridgeAbstract MODE constants
      *
      * @var int
      */
-    protected $bridgeMode = MUtil_Model_Bridge_BridgeAbstract::MODE_LAZY;
+    protected $bridgeMode = \MUtil_Model_Bridge_BridgeAbstract::MODE_LAZY;
 
     /**
      * Shortfix to add class attribute
@@ -82,11 +82,11 @@ abstract class MUtil_Snippets_ModelVerticalTableSnippetAbstract extends MUtil_Sn
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_VerticalTableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @return void
      */
-    protected function addShowTableRows(MUtil_Model_Bridge_VerticalTableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addShowTableRows(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
         foreach($model->getItemsOrdered() as $name) {
             if ($label = $model->get($name, 'label')) {
@@ -111,10 +111,10 @@ abstract class MUtil_Snippets_ModelVerticalTableSnippetAbstract extends MUtil_Sn
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param Zend_View_Abstract $view Just in case it is needed here
-     * @return MUtil_Html_HtmlInterface Something that can be rendered
+     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @return \MUtil_Html_HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view)
     {
         $model = $this->getModel();
         if ($this->trackUsage) {
@@ -123,7 +123,7 @@ abstract class MUtil_Snippets_ModelVerticalTableSnippetAbstract extends MUtil_Sn
 
         $table = $this->getShowTable($model);
 
-        $container = MUtil_Html::create()->div(array('class' => 'table-container'));
+        $container = \MUtil_Html::create()->div(array('class' => 'table-container'));
         $container[] = $table;
         return $container;
     }
@@ -131,29 +131,29 @@ abstract class MUtil_Snippets_ModelVerticalTableSnippetAbstract extends MUtil_Sn
     /**
      * Function that allows for overruling the repeater loading.
      *
-     * @param MUtil_Model_ModelAbstract $model
-     * @return MUtil_Lazy_RepeatableInterface
+     * @param \MUtil_Model_ModelAbstract $model
+     * @return \MUtil_Lazy_RepeatableInterface
      */
-    public function getRepeater(MUtil_Model_ModelAbstract $model)
+    public function getRepeater(\MUtil_Model_ModelAbstract $model)
     {
         return $model->loadRepeatable();
     }
 
     /**
-     * Creates from the model a MUtil_Html_TableElement that can display multiple items.
+     * Creates from the model a \MUtil_Html_TableElement that can display multiple items.
      *
      * Allows overruling
      *
-     * @param MUtil_Model_ModelAbstract $model
-     * @return MUtil_Html_TableElement
+     * @param \MUtil_Model_ModelAbstract $model
+     * @return \MUtil_Html_TableElement
      */
-    public function getShowTable(MUtil_Model_ModelAbstract $model)
+    public function getShowTable(\MUtil_Model_ModelAbstract $model)
     {
         $bridge = $model->getBridgeFor('itemTable', array('class' => $this->class));
         $bridge->setColumnCount($this->bridgeColumns)
                 ->setMode($this->bridgeMode);
 
-        if (($this->bridgeMode = MUtil_Model_Bridge_BridgeAbstract::MODE_SINGLE_ROW) &&
+        if (($this->bridgeMode = \MUtil_Model_Bridge_BridgeAbstract::MODE_SINGLE_ROW) &&
                 $model->hasDependencies()) {
             // Trigger the dependencies
             $bridge->getRow();
@@ -176,11 +176,11 @@ abstract class MUtil_Snippets_ModelVerticalTableSnippetAbstract extends MUtil_Sn
      * Overrule this function to set the header differently, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_VerticalTableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @return void
      */
-    protected function setShowTableFooter(MUtil_Model_Bridge_VerticalTableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function setShowTableFooter(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     { }
 
     /**
@@ -189,10 +189,10 @@ abstract class MUtil_Snippets_ModelVerticalTableSnippetAbstract extends MUtil_Sn
      * Overrule this function to set the header differently, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_VerticalTableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @return void
      */
-    protected function setShowTableHeader(MUtil_Model_Bridge_VerticalTableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function setShowTableHeader(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     { }
 }

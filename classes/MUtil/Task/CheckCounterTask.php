@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Task_CheckCounterTask extends MUtil_Task_TaskAbstract
+class MUtil_Task_CheckCounterTask extends \MUtil_Task_TaskAbstract
 {
     /**
      * Should handle execution of the task, taking as much (optional) parameters as needed

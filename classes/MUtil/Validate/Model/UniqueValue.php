@@ -28,23 +28,23 @@
  *
  *
  * @package    MUtil
- * @subpackage UniqueValue
+ * @subpackage Validate
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: UniqueValue.php $
+ * @version    $Id: UniqueValue.php 2436 2015-02-20 11:47:27Z matijsdejong $
  */
 
 /**
  *
  *
  * @package    MUtil
- * @subpackage UniqueValue
+ * @subpackage Validate
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
  * @since      Class available since MUtil version 1.4 23-jan-2014 17:57:39
  */
-class MUtil_Validate_Model_UniqueValue extends Zend_Validate_Abstract
+class MUtil_Validate_Model_UniqueValue extends \Zend_Validate_Abstract
 {
     /**
      * Error constants
@@ -66,17 +66,17 @@ class MUtil_Validate_Model_UniqueValue extends Zend_Validate_Abstract
 
     /**
      *
-     * @var MUtil_Model_ModelAbstract
+     * @var \MUtil_Model_ModelAbstract
      */
     protected $_model;
 
     /**
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      * @param string|array $field A field to check or an array of fields to check for an
      * unique value combination, though only the value of the first will be shown
      */
-    public function __construct(MUtil_Model_ModelAbstract $model, $field)
+    public function __construct(\MUtil_Model_ModelAbstract $model, $field)
     {
         $this->_model  = $model;
         $this->_fields = (array) $field;
@@ -92,7 +92,7 @@ class MUtil_Validate_Model_UniqueValue extends Zend_Validate_Abstract
      * @param  mixed $value
      * @param  array $context
      * @return boolean
-     * @throws Zend_Validate_Exception If validation of $value is impossible
+     * @throws \Zend_Validate_Exception If validation of $value is impossible
      */
     public function isValid($value, $context = array())
     {

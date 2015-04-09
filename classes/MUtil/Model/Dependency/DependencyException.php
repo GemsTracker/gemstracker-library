@@ -38,7 +38,7 @@
 namespace MUtil\Model\Dependency;
 
 /**
- * Exception for conditions
+ * \Exception for conditions
  *
  * @package    MUtil
  * @subpackage Model_Dependency

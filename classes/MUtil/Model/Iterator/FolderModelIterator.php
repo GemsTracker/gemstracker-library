@@ -28,23 +28,23 @@
  *
  *
  * @package    MUtil
- * @subpackage FileModelIterator
+ * @subpackage Model_Iterator
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 201e Erasmus MC
+ * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: FileModelIterator.php 203 2012-01-01t 12:51:32Z matijs $
+ * @version    $Id: FolderModelIterator.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
 /**
  *
  *
  * @package    MUtil
- * @subpackage FileModelIterator
+ * @subpackage Model_Iterator
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Model_Iterator_FolderModelIterator extends FilterIterator
+class MUtil_Model_Iterator_FolderModelIterator extends \FilterIterator
 {
     /**
      * Optional preg expression for relative filename, use of backslashes for directory seperator required
@@ -62,11 +62,11 @@ class MUtil_Model_Iterator_FolderModelIterator extends FilterIterator
 
     /**
      *
-     * @param Iterator $iterator
+     * @param \Iterator $iterator
      * @param string $startPath
      * @param string $mask Preg expression for relative filename, use of / slashes for directory seperator required
      */
-    public function __construct(Iterator $iterator, $startPath = '', $mask = false)
+    public function __construct(\Iterator $iterator, $startPath = '', $mask = false)
     {
         parent::__construct($iterator);
 
@@ -74,13 +74,13 @@ class MUtil_Model_Iterator_FolderModelIterator extends FilterIterator
         if ($this->startPath) {
             $this->startPath = $this->startPath . DIRECTORY_SEPARATOR;
         }
-        // MUtil_Echo::track($startPath, $this->startPath);
+        // \MUtil_Echo::track($startPath, $this->startPath);
 
         $this->mask = $mask;
     }
 
     /**
-     * FilterIterator::accept — Check whether the current element of the iterator is acceptable
+     * \FilterIterator::accept — Check whether the current element of the iterator is acceptable
      *
      * @return boolean
      */
@@ -97,7 +97,7 @@ class MUtil_Model_Iterator_FolderModelIterator extends FilterIterator
         }
 
         if ($this->mask) {
-            $rel = str_replace('\\', '//', MUtil_String::stripStringLeft($file->getRealPath(), $this->startPath));
+            $rel = str_replace('\\', '//', \MUtil_String::stripStringLeft($file->getRealPath(), $this->startPath));
 
             if (!preg_match($this->mask, $rel)) {
                 return false;
@@ -121,11 +121,11 @@ class MUtil_Model_Iterator_FolderModelIterator extends FilterIterator
             return null;
         }
 
-        $real = MUtil_File::cleanupSlashes($file->getRealPath());
+        $real = \MUtil_File::cleanupSlashes($file->getRealPath());
 
         // The relative file name uses the windows directory seperator convention as this
         // does not screw up the use of this value as a parameter
-        $rel = MUtil_File::cleanupSlashes(MUtil_String::stripStringLeft($real, $this->startPath));
+        $rel = \MUtil_File::cleanupSlashes(\MUtil_String::stripStringLeft($real, $this->startPath));
 
         // Function was first implemented in PHP 5.3.6
         if (method_exists($file, 'getExtension')) {
@@ -138,12 +138,12 @@ class MUtil_Model_Iterator_FolderModelIterator extends FilterIterator
             'fullpath'  => $real,
             'relpath'   => $rel,
             'urlpath'   => str_replace(array('\\', '/'), '|', $rel),
-            'path'      => MUtil_File::cleanupSlashes($file->getPath()),
+            'path'      => \MUtil_File::cleanupSlashes($file->getPath()),
             'filename'  => $file->getFilename(),
             'extension' => $extension,
-            'content'   => MUtil_Lazy::call('file_get_contents', $real),
+            'content'   => \MUtil_Lazy::call('file_get_contents', $real),
             'size'      => $file->getSize(),
-            'changed'   => new MUtil_Date($file->getMTime()),
+            'changed'   => new \MUtil_Date($file->getMTime()),
             );
     }
 }

@@ -46,7 +46,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4.4
  */
-abstract class MUtil_Snippets_ModelYesNoDeleteSnippetAbstract extends MUtil_Snippets_ModelVerticalTableSnippetAbstract
+abstract class MUtil_Snippets_ModelYesNoDeleteSnippetAbstract extends \MUtil_Snippets_ModelVerticalTableSnippetAbstract
 {
     /**
      * The action to go to when the user clicks 'No'.
@@ -58,7 +58,7 @@ abstract class MUtil_Snippets_ModelYesNoDeleteSnippetAbstract extends MUtil_Snip
     protected $abortAction = 'show';
 
     /**
-     * @see Zend_Controller_Action_Helper_Redirector
+     * @see \Zend_Controller_Action_Helper_Redirector
      *
      * @var mixed Nothing or either an array or a string that is acceptable for Redector->gotoRoute()
      */
@@ -156,7 +156,7 @@ abstract class MUtil_Snippets_ModelYesNoDeleteSnippetAbstract extends MUtil_Snip
      *
      * When hasHtmlOutput() is true this functions should not be called.
      *
-     * @see Zend_Controller_Action_Helper_Redirector
+     * @see \Zend_Controller_Action_Helper_Redirector
      *
      * @return mixed Nothing or either an array or a string that is acceptable for Redector->gotoRoute()
      */
@@ -172,7 +172,7 @@ abstract class MUtil_Snippets_ModelYesNoDeleteSnippetAbstract extends MUtil_Snip
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see MUtil_Registry_TargetInterface}.
+     * {@see \MUtil_Registry_TargetInterface}.
      *
      * @return boolean
      */
@@ -196,7 +196,7 @@ abstract class MUtil_Snippets_ModelYesNoDeleteSnippetAbstract extends MUtil_Snip
     protected function performAction()
     {
         $model = $this->getModel();
-        // MUtil_Echo::track($model->getFilter());
+        // \MUtil_Echo::track($model->getFilter());
         $model->delete();
 
         $this->setAfterDeleteRoute();
@@ -205,7 +205,7 @@ abstract class MUtil_Snippets_ModelYesNoDeleteSnippetAbstract extends MUtil_Snip
     /**
      * Set what to do when the form is 'finished'.
      *
-     * @return MUtil_Snippets_ModelFormSnippetAbstract (continuation pattern)
+     * @return \MUtil_Snippets_ModelFormSnippetAbstract (continuation pattern)
      */
     protected function setAfterDeleteRoute()
     {
@@ -224,11 +224,11 @@ abstract class MUtil_Snippets_ModelYesNoDeleteSnippetAbstract extends MUtil_Snip
      * Overrule this function to set the header differently, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_VerticalTableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @return void
      */
-    protected function setShowTableFooter(MUtil_Model_Bridge_VerticalTableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function setShowTableFooter(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
         $footer = $bridge->tfrow();
 

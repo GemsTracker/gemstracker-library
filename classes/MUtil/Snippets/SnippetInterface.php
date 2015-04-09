@@ -38,14 +38,14 @@
  * A snippet is a piece of html output that can be reused on multiple places in the code
  * or that isolates the processing needed for that output.
  *
- * Variables are intialized using the MUtil_Registry_TargetInterface mechanism.
- * The snippet is then rendered using MUtil_Html_HtmlInterface.
+ * Variables are intialized using the \MUtil_Registry_TargetInterface mechanism.
+ * The snippet is then rendered using \MUtil_Html_HtmlInterface.
  *
  * The only "program flow" that can be initiated by a snippet is that it can reroute
  * the browser to another page.
  *
- * @see MUtil_Registry_TargetInterface
- * @see MUtil_Html_HtmlInterface
+ * @see \MUtil_Registry_TargetInterface
+ * @see \MUtil_Html_HtmlInterface
  *
  * @package    MUtil
  * @subpackage Snippets
@@ -53,7 +53,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-interface MUtil_Snippets_SnippetInterface extends MUtil_Registry_TargetInterface, MUtil_Html_HtmlInterface
+interface MUtil_Snippets_SnippetInterface extends \MUtil_Registry_TargetInterface, \MUtil_Html_HtmlInterface
 {
     /**
      * When hasHtmlOutput() is false a snippet code user should check
@@ -66,7 +66,7 @@ interface MUtil_Snippets_SnippetInterface extends MUtil_Registry_TargetInterface
      * Also when hasHtmlOutput() is true this function should not be
      * called.
      *
-     * @see Zend_Controller_Action_Helper_Redirector
+     * @see \Zend_Controller_Action_Helper_Redirector
      *
      * @return mixed Nothing or either an array or a string that is acceptable for Redector->gotoRoute()
      */
@@ -79,7 +79,7 @@ interface MUtil_Snippets_SnippetInterface extends MUtil_Registry_TargetInterface
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see MUtil_Registry_TargetInterface}.
+     * {@see \MUtil_Registry_TargetInterface}.
      *
      * @return boolean
      */
@@ -90,7 +90,7 @@ interface MUtil_Snippets_SnippetInterface extends MUtil_Registry_TargetInterface
      *
      * When hasHtmlOutput() is true this functions should not be called.
      *
-     * @see Zend_Controller_Action_Helper_Redirector
+     * @see \Zend_Controller_Action_Helper_Redirector
      */
     public function redirectRoute();
 }

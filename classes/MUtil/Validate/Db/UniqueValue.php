@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.0
  */
-class MUtil_Validate_Db_UniqueValue extends Zend_Validate_Db_NoRecordExists
+class MUtil_Validate_Db_UniqueValue extends \Zend_Validate_Db_NoRecordExists
 {
     protected $_checkFields;
     protected $_keyFields;
@@ -60,7 +60,7 @@ class MUtil_Validate_Db_UniqueValue extends Zend_Validate_Db_NoRecordExists
 
 
     /**
-     * Provides basic configuration for use with Zend_Validate_Db Validators
+     * Provides basic configuration for use with \Zend_Validate_Db Validators
      * Setting $exclude allows a single record to be excluded from matching.
      * The KeyFields are fields that occur as names in the context of the form and that
      * identify the current row - that can have the value.
@@ -70,9 +70,9 @@ class MUtil_Validate_Db_UniqueValue extends Zend_Validate_Db_NoRecordExists
      * @param string|array $field A field to check or an array of fields to check for an
      * unique value combination, though only the value of the first will be shown
      * @param string|array $keyFields Names of the key fields to filter out the row of the value
-     * @param Zend_Db_Adapter_Abstract $adapter An optional database adapter to use.
+     * @param \Zend_Db_Adapter_Abstract $adapter An optional database adapter to use.
      */
-    public function __construct($table, $field, $keyFields, Zend_Db_Adapter_Abstract $adapter = null)
+    public function __construct($table, $field, $keyFields, \Zend_Db_Adapter_Abstract $adapter = null)
     {
         if (is_array($field)) {
             // This means a COMBINATION of fields must be unique
@@ -118,7 +118,7 @@ class MUtil_Validate_Db_UniqueValue extends Zend_Validate_Db_NoRecordExists
      * @param  mixed $value
      * @param  array $context
      * @return boolean
-     * @throws Zend_Validate_Exception If validation of $value is impossible
+     * @throws \Zend_Validate_Exception If validation of $value is impossible
      */
     public function isValid($value, $context = array())
     {
@@ -126,10 +126,10 @@ class MUtil_Validate_Db_UniqueValue extends Zend_Validate_Db_NoRecordExists
          * Check for an adapter being defined. if not, fetch the default adapter.
          */
         if ($this->_adapter === null) {
-            $this->_adapter = Zend_Db_Table_Abstract::getDefaultAdapter();
+            $this->_adapter = \Zend_Db_Table_Abstract::getDefaultAdapter();
             if (null === $this->_adapter) {
                 require_once 'Zend/Validate/Exception.php';
-                throw new Zend_Validate_Exception('No database adapter present');
+                throw new \Zend_Validate_Exception('No database adapter present');
             }
         }
 
@@ -200,7 +200,7 @@ class MUtil_Validate_Db_UniqueValue extends Zend_Validate_Db_NoRecordExists
         // Clear cached query
         $this->_select = null;
 
-        // MUtil_Echo::track($this->_exclude, $this->_checkFields, $this->_keyFields, $context, $_POST);
+        // \MUtil_Echo::track($this->_exclude, $this->_checkFields, $this->_keyFields, $context, $_POST);
 
         return parent::isValid($value, $context);
     }

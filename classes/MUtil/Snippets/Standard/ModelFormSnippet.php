@@ -45,18 +45,18 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class ModelFormSnippet extends MUtil_Snippets_ModelFormSnippetAbstract
+class ModelFormSnippet extends \MUtil_Snippets_ModelFormSnippetAbstract
 {
     /**
      *
-     * @var MUtil_Model_ModelAbstract
+     * @var \MUtil_Model_ModelAbstract
      */
     protected $model;
 
     /**
      * Creates the model
      *
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function createModel()
     {

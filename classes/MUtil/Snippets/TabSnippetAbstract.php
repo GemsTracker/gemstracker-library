@@ -45,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-abstract class MUtil_Snippets_TabSnippetAbstract extends MUtil_Snippets_SnippetAbstract
+abstract class MUtil_Snippets_TabSnippetAbstract extends \MUtil_Snippets_SnippetAbstract
 {
     /**
      * Optional standard url parts
@@ -90,7 +90,7 @@ abstract class MUtil_Snippets_TabSnippetAbstract extends MUtil_Snippets_SnippetA
     /**
      * Optional: $request or $tokenData must be set
      *
-     * @var Zend_Controller_Request_Abstract
+     * @var \Zend_Controller_Request_Abstract
      */
     protected $request;
 
@@ -137,10 +137,10 @@ abstract class MUtil_Snippets_TabSnippetAbstract extends MUtil_Snippets_SnippetA
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param Zend_View_Abstract $view Just in case it is needed here
-     * @return MUtil_Html_HtmlInterface Something that can be rendered
+     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @return \MUtil_Html_HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view)
     {
         $tabs = $this->getTabs();
 
@@ -153,8 +153,8 @@ abstract class MUtil_Snippets_TabSnippetAbstract extends MUtil_Snippets_SnippetA
                 $this->href = $this->href + $this->baseUrl;
             }
 
-            if (MUtil_Bootstrap::enabled()) {
-                $tabRow = MUtil_Html::create()->ul();
+            if (\MUtil_Bootstrap::enabled()) {
+                $tabRow = \MUtil_Html::create()->ul();
 
                 foreach ($tabs as $tabId => $content) {
 
@@ -167,7 +167,7 @@ abstract class MUtil_Snippets_TabSnippetAbstract extends MUtil_Snippets_SnippetA
                     }
                 }
             } else {
-                $tabRow = MUtil_Html::create()->div();
+                $tabRow = \MUtil_Html::create()->div();
 
                 foreach ($tabs as $tabId => $content) {
 

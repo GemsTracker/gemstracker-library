@@ -46,35 +46,35 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_ModelFormSnippetAbstract
+abstract class MUtil_Snippets_WizardFormSnippetAbstract extends \MUtil_Snippets_ModelFormSnippetAbstract
 {
     /**
      *
-     * @var Zend_Form_Element_Submit
+     * @var \Zend_Form_Element_Submit
      */
     protected $_cancelButton;
 
     /**
      *
-     * @var Zend_Form_Element_Submit
+     * @var \Zend_Form_Element_Submit
      */
     protected $_finishButton;
 
     /**
      *
-     * @var array of Zend_Form's, one for each step (that is initialized)
+     * @var array of \Zend_Form's, one for each step (that is initialized)
      */
     protected $_forms = array();
 
     /**
      *
-     * @var Zend_Form_Element_Submit
+     * @var \Zend_Form_Element_Submit
      */
     protected $_nextButton;
 
     /**
      *
-     * @var Zend_Form_Element_Submit
+     * @var \Zend_Form_Element_Submit
      */
     protected $_previousButton;
 
@@ -182,7 +182,7 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
     /**
      * Default button creation function.
      *
-     * @param Zend_Form_Element $button or null
+     * @param \Zend_Form_Element $button or null
      * @param string $buttonId
      * @param string $label
      * @param string $defaultLabel
@@ -190,7 +190,7 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
      */
     protected function _addButton(&$button, &$buttonId, &$label, $defaultLabel, $class = 'Zend_Form_Element_Submit')
     {
-        if ($button && ($button instanceof Zend_Form_Element)) {
+        if ($button && ($button instanceof \Zend_Form_Element)) {
             $buttonId = $button->getName();
 
         } elseif ($buttonId) {
@@ -225,7 +225,7 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
         $this->addPreviousButton();
         $this->addNextButton();
 
-        $element = new MUtil_Form_Element_Exhibitor('button_spacer');
+        $element = new \MUtil_Form_Element_Exhibitor('button_spacer');
         $element->setValue('&nbsp;');
         $element->setDecorators(array('ViewHelper'));
 
@@ -262,11 +262,11 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @param int $step The current step
      */
-    protected function addFormElementsFor(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model, $step)
+    protected function addFormElementsFor(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model, $step)
     {
         //Get all elements in the model if not already done
         $this->initItems();
@@ -299,20 +299,20 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
     /**
      * Add items in hidden form to the bridge, and remove them from the items array
      *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
      * @param string $element1
      *
      * @return void
      */
-    protected function addItemsHidden(MUtil_Model_Bridge_FormBridgeInterface $bridge, $element1)
+    protected function addItemsHidden(\MUtil_Model_Bridge_FormBridgeInterface $bridge, $element1)
     {
         $args = func_get_args();
         if (count($args)<2) {
-            throw new Gems_Exception_Coding('Use at least 2 arguments, first the bridge and then one or more individual items');
+            throw new \Gems_Exception_Coding('Use at least 2 arguments, first the bridge and then one or more individual items');
         }
 
         $bridge   = array_shift($args);
-        $elements = MUtil_Ra::flatten($args);
+        $elements = \MUtil_Ra::flatten($args);
         $form     = $bridge->getForm();
 
         //Remove the elements from the _items variable
@@ -321,7 +321,7 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
         // And add them to the bridge
         foreach($elements as $name) {
             // Do not use $bridge->addHidden as that adds validators and filters.
-            $element = new Zend_Form_Element_Hidden($name);
+            $element = new \Zend_Form_Element_Hidden($name);
 
             $bridge->addElement($element);
         }
@@ -367,18 +367,18 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
     /**
      * Add the elements from the model to the bridge for the current step
      *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @param int $step The current step
      */
-    abstract protected function addStepElementsFor(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model, $step);
+    abstract protected function addStepElementsFor(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model, $step);
 
     /**
      * Perform some actions on the form, right before it is displayed but already populated
      *
      * Here we add the table display to the form.
      *
-     * @return Zend_Form
+     * @return \Zend_Form
      */
     protected function beforeDisplay()
     {
@@ -398,18 +398,18 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
     { }
 
     /**
-     * Creates from the model a Zend_Form using createForm and adds elements
+     * Creates from the model a \Zend_Form using createForm and adds elements
      * using addFormElements().
      *
      * @param int $step The current step
-     * @return Zend_Form
+     * @return \Zend_Form
      */
     protected function getFormFor($step)
     {
         $model    = $this->getModel();
         $baseform = $this->createForm();
-        if ($baseform instanceof MUtil_Form) {
-            $table = new MUtil_Html_TableElement();
+        if ($baseform instanceof \MUtil_Form) {
+            $table = new \MUtil_Html_TableElement();
             $table->setAsFormLayout($baseform, true, true);
 
             // There is only one row with formLayout, so all in output fields get class.
@@ -499,7 +499,7 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
         $this->loadFormFor($this->currentStep);
 
         if ($this->request->isPost()) {
-            // MUtil_Echo::track($this->formData);
+            // \MUtil_Echo::track($this->formData);
             if ($this->_cancelButton && $this->_cancelButton->isChecked()) {
                 $this->setAfterSaveRoute();
 

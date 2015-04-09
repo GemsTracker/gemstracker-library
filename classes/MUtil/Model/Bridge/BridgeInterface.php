@@ -52,13 +52,13 @@ interface MUtil_Model_Bridge_BridgeInterface
      * Extra parameters can be added in subclasses, but the first parameter
      * must remain the model.
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      */
-    public function __construct(MUtil_Model_ModelAbstract $model);
+    public function __construct(\MUtil_Model_ModelAbstract $model);
 
     /**
      *
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     #public function getModel();
 }

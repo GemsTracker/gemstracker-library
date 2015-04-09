@@ -32,12 +32,12 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TaskAbstract.php$
+ * @version    $Id: TaskAbstract.php 2483 2015-04-08 14:51:22Z matijsdejong $
  */
 
 /**
- * Basic implementation of MUtil_Task_TaskInterface, the interface for a Task object.
- * The MUtil_Registry_TargetInterface allows the automatic loading of global objects.
+ * Basic implementation of \MUtil_Task_TaskInterface, the interface for a Task object.
+ * The \MUtil_Registry_TargetInterface allows the automatic loading of global objects.
  *
  * Task objects split large jobs into a number of serializeable small jobs that are
  * stored in the session or elsewhere and that can be executed one job at a time
@@ -49,11 +49,12 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-abstract class MUtil_Task_TaskAbstract extends MUtil_Translate_TranslateableAbstract implements MUtil_Task_TaskInterface
+abstract class MUtil_Task_TaskAbstract extends \MUtil_Translate_TranslateableAbstract
+    implements \MUtil_Task_TaskInterface
 {
     /**
      *
-     * @var MUtil_Task_TaskBatch
+     * @var \MUtil_Task_TaskBatch
      */
     protected $_batch;
 
@@ -68,12 +69,12 @@ abstract class MUtil_Task_TaskAbstract extends MUtil_Translate_TranslateableAbst
     /**
      * Returns the batch this task belongs to
      *
-     * @return MUtil_Task_TaskBatch
+     * @return \MUtil_Task_TaskBatch
      */
     public function getBatch()
     {
-        if (! $this->_batch instanceof MUtil_Task_TaskBatch) {
-            throw new MUtil_Batch_BatchException(sprintf(
+        if (! $this->_batch instanceof \MUtil_Task_TaskBatch) {
+            throw new \MUtil_Batch_BatchException(sprintf(
                     "Batch not set during execution of task class %s!!",
                     __CLASS__
                     ));
@@ -95,13 +96,13 @@ abstract class MUtil_Task_TaskAbstract extends MUtil_Translate_TranslateableAbst
     /**
      * Sets the batch this task belongs to
      *
-     * This method will be called from the Gems_Task_TaskRunnerBatch upon execution of the
+     * This method will be called from the \Gems_Task_TaskRunnerBatch upon execution of the
      * task. It allows the task to communicate with the batch queue.
      *
-     * @param MUtil_Task_TaskBatch $batch
-     * @return MUtil_Task_TaskInterface (continuation pattern)
+     * @param \MUtil_Task_TaskBatch $batch
+     * @return \MUtil_Task_TaskInterface (continuation pattern)
      */
-    public function setBatch(MUtil_Task_TaskBatch $batch)
+    public function setBatch(\MUtil_Task_TaskBatch $batch)
     {
         $this->_batch = $batch;
         return $this;

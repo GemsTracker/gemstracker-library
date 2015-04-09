@@ -46,18 +46,18 @@
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-class ModelVerticalTableSnippet extends MUtil_Snippets_ModelVerticalTableSnippetAbstract
+class MUtil_Snippets_Standard_ModelVerticalTableSnippet extends \MUtil_Snippets_ModelVerticalTableSnippetAbstract
 {
     /**
      *
-     * @var MUtil_Model_ModelAbstract
+     * @var \MUtil_Model_ModelAbstract
      */
     protected $model;
 
     /**
      * Creates the model
      *
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function createModel()
     {

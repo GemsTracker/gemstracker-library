@@ -1155,7 +1155,7 @@ abstract class MUtil_Model_ModelAbstract extends \MUtil_Registry_TargetAbstract
      * basically transforms the fieldnames ointo oan IDn => value array
      *
      * @param mixed $forData Array value to vilter on
-     * @param array $href Or ArrayObject
+     * @param array $href Or \ArrayObject
      * @return array That can by used as href
      */
     public function getKeyRef($forData, $href = array())
@@ -1671,11 +1671,11 @@ abstract class MUtil_Model_ModelAbstract extends \MUtil_Registry_TargetAbstract
     }
 
     /**
-     * Returns a Traversable spewing out arrays containing the items requested.
+     * Returns a \Traversable spewing out arrays containing the items requested.
      *
      * @param mixed $filter True to use the stored filter, array to specify a different filter
      * @param mixed $sort True to use the stored sort, array to specify a different sort
-     * @return Traversable
+     * @return \Traversable
      */
     public function loadIterator($filter = true, $sort = true)
     {
@@ -1720,7 +1720,7 @@ abstract class MUtil_Model_ModelAbstract extends \MUtil_Registry_TargetAbstract
     public function processAfterLoad($data, $new = false, $isPostData = false)
     {
         if (($this->_transformers || $isPostData || $this->getMeta(self::LOAD_TRANSFORMER)) &&
-                ($data instanceof Traversable)) {
+                ($data instanceof \Traversable)) {
             $data = iterator_to_array($data, true);
         }
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -27,6 +28,7 @@
  *
  * @package    MUtil
  * @subpackage Snippets
+ * @author     Menoo Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @version    $Id$
@@ -46,7 +48,7 @@ interface MUtil_Snippets_SnippetLoaderInterface
     /**
      * Sets the source of variables and the first directory for snippets
      *
-     * @param mixed $source Something that is or can be made into MUtil_Registry_SourceInterface, otheriwse Zend_Registry is used.
+     * @param mixed $source Something that is or can be made into \MUtil_Registry_SourceInterface, otheriwse \Zend_Registry is used.
      * @param array $dirs prefix => pathname The inital paths to load from
      */
     public function __construct($source = null, array $dirs = array());
@@ -56,7 +58,7 @@ interface MUtil_Snippets_SnippetLoaderInterface
      *
      * @param string $prefix
      * @param string $path
-     * @return MUtil_Snippets_SnippetLoaderInterface
+     * @return \MUtil_Snippets_SnippetLoaderInterface
      */
     public function addPrefixPath($prefix, $path);
 
@@ -65,14 +67,14 @@ interface MUtil_Snippets_SnippetLoaderInterface
      *
      * @param string $className The name of the snippet
      * @param array $extraSourceParameters name/value pairs to add to the source for this snippet
-     * @return MUtil_Snippets_SnippetInterface The snippet
+     * @return \MUtil_Snippets_SnippetInterface The snippet
      */
     public function getSnippet($className, array $extraSourceParameters = null);
 
     /**
      * Returns a source of values for snippets.
      *
-     * @return MUtil_Registry_SourceInterface
+     * @return \MUtil_Registry_SourceInterface
      */
     public function getSource();
 
@@ -81,15 +83,15 @@ interface MUtil_Snippets_SnippetLoaderInterface
      *
      * @param string $prefix
      * @param string $path OPTIONAL
-     * @return MUtil_Snippets_SnippetLoaderInterface
+     * @return \MUtil_Snippets_SnippetLoaderInterface
      */
     public function removePrefixPath($prefix, $path = null);
 
     /**
      * Sets the source of variables for snippets
      *
-     * @param MUtil_Registry_SourceInterface $source
-     * @return MUtil_Snippets_SnippetLoader (continuation pattern)
+     * @param \MUtil_Registry_SourceInterface $source
+     * @return \MUtil_Snippets_SnippetLoader (continuation pattern)
      */
-    public function setSource(MUtil_Registry_SourceInterface $source);
+    public function setSource(\MUtil_Registry_SourceInterface $source);
 }

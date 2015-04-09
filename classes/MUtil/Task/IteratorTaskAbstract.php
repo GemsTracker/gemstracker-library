@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: IteratorTaskAbstract.php$
+ * @version    $Id: IteratorTaskAbstract.php 2483 2015-04-08 14:51:22Z matijsdejong $
  */
 
 /**
@@ -44,11 +44,11 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-abstract class MUtil_Task_IteratorTaskAbstract extends MUtil_Task_TaskAbstract
+abstract class MUtil_Task_IteratorTaskAbstract extends \MUtil_Task_TaskAbstract
 {
     /**
      *
-     * @var Iterator
+     * @var \Iterator
      */
     protected $iterator;
 
@@ -60,7 +60,7 @@ abstract class MUtil_Task_IteratorTaskAbstract extends MUtil_Task_TaskAbstract
      */
     public function checkRegistryRequestsAnswers()
     {
-        return ($this->iterator instanceof Iterator) &&
+        return ($this->iterator instanceof \Iterator) &&
             parent::checkRegistryRequestsAnswers();
     }
 

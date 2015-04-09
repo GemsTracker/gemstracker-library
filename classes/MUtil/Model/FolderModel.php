@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 201e Erasmus MC
  * @license    New BSD License
- * @version    $Id: FileListModel.php 203 2012-01-01t 12:51:32Z matijs $
+ * @version    $Id: FolderModel.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
 /**
@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Model_FolderModel extends MUtil_Model_ArrayModelAbstract
+class MUtil_Model_FolderModel extends \MUtil_Model_ArrayModelAbstract
 {
     /**
      * The directory to list
@@ -84,15 +84,15 @@ class MUtil_Model_FolderModel extends MUtil_Model_ArrayModelAbstract
 
         $this->recursive = $recursive;
 
-        $this->set('fullpath',     'type', MUtil_Model::TYPE_STRING);
-        $this->set('path',         'type', MUtil_Model::TYPE_STRING);
-        $this->set('filename',     'type', MUtil_Model::TYPE_STRING);
-        $this->set('relpath',      'type', MUtil_Model::TYPE_STRING);
-        $this->set('urlpath',      'type', MUtil_Model::TYPE_STRING);
-        $this->set('extension',    'type', MUtil_Model::TYPE_STRING);
-        $this->set('content',      'type', MUtil_Model::TYPE_STRING);
-        $this->set('size',         'type', MUtil_Model::TYPE_NUMERIC);
-        $this->set('changed',      'type', MUtil_Model::TYPE_DATETIME);
+        $this->set('fullpath',     'type', \MUtil_Model::TYPE_STRING);
+        $this->set('path',         'type', \MUtil_Model::TYPE_STRING);
+        $this->set('filename',     'type', \MUtil_Model::TYPE_STRING);
+        $this->set('relpath',      'type', \MUtil_Model::TYPE_STRING);
+        $this->set('urlpath',      'type', \MUtil_Model::TYPE_STRING);
+        $this->set('extension',    'type', \MUtil_Model::TYPE_STRING);
+        $this->set('content',      'type', \MUtil_Model::TYPE_STRING);
+        $this->set('size',         'type', \MUtil_Model::TYPE_NUMERIC);
+        $this->set('changed',      'type', \MUtil_Model::TYPE_DATETIME);
 
         $this->setKeys(array('urlpath'));
     }
@@ -101,7 +101,7 @@ class MUtil_Model_FolderModel extends MUtil_Model_ArrayModelAbstract
      * An ArrayModel assumes that (usually) all data needs to be loaded before any load
      * action, this is done using the iterator returned by this function.
      *
-     * @return Traversable Return an iterator over or an array of all the rows in this object
+     * @return \Traversable Return an iterator over or an array of all the rows in this object
      */
     protected function _loadAllTraversable()
     {
@@ -110,16 +110,16 @@ class MUtil_Model_FolderModel extends MUtil_Model_ArrayModelAbstract
         }
 
         if ($this->recursive) {
-            $dirIter = new RecursiveIteratorIterator(
-                    new RecursiveDirectoryIterator($this->dir, FilesystemIterator::CURRENT_AS_FILEINFO),
-                    RecursiveIteratorIterator::SELF_FIRST,
-                    RecursiveIteratorIterator::CATCH_GET_CHILD
+            $dirIter = new \RecursiveIteratorIterator(
+                    new \RecursiveDirectoryIterator($this->dir, \FilesystemIterator::CURRENT_AS_FILEINFO),
+                    \RecursiveIteratorIterator::SELF_FIRST,
+                    \RecursiveIteratorIterator::CATCH_GET_CHILD
                     );
         } else {
-            $dirIter = new DirectoryIterator($this->dir, FilesystemIterator::CURRENT_AS_FILEINFO);
+            $dirIter = new \DirectoryIterator($this->dir, \FilesystemIterator::CURRENT_AS_FILEINFO);
         }
 
-        $modelIter = new MUtil_Model_Iterator_FolderModelIterator($dirIter, $this->dir, $this->mask);
+        $modelIter = new \MUtil_Model_Iterator_FolderModelIterator($dirIter, $this->dir, $this->mask);
 
         return $modelIter;
     }
@@ -139,10 +139,10 @@ class MUtil_Model_FolderModel extends MUtil_Model_ArrayModelAbstract
             if (unlink($fileData['fullpath'])) {
                 $count = $count + 1;
             } elseif (file_exists($fileData['fullpath'])) {
-                throw new MUtil_Model_ModelException(sprintf(
+                throw new \MUtil_Model_ModelException(sprintf(
                         'Unable to delete %s: %s',
                         $fileData['fullpath'],
-                        MUtil_Error::getLastPhpErrorMessage('reason unknown')
+                        \MUtil_Error::getLastPhpErrorMessage('reason unknown')
                         ));
             }
         }
@@ -170,7 +170,7 @@ class MUtil_Model_FolderModel extends MUtil_Model_ArrayModelAbstract
         }
 
         if (! $filename) {
-            throw new MUtil_Model_ModelException('Cannot save file: no filename known');
+            throw new \MUtil_Model_ModelException('Cannot save file: no filename known');
         }
 
         $filename = trim($filename, '\\/');
@@ -181,13 +181,13 @@ class MUtil_Model_FolderModel extends MUtil_Model_ArrayModelAbstract
 
         $content = isset($newValues['content']) ? $newValues['content'] : '';
 
-        MUtil_File::ensureDir(dirname($filename));
+        \MUtil_File::ensureDir(dirname($filename));
 
         if (false === file_put_contents($filename, $content) || (!file_exists($filename))) {
-            throw new MUtil_Model_ModelException(sprintf(
+            throw new \MUtil_Model_ModelException(sprintf(
                     'Unable to save %s: %s',
                     $filename,
-                    MUtil_Error::getLastPhpErrorMessage('reason unknown')
+                    \MUtil_Error::getLastPhpErrorMessage('reason unknown')
                     ));
         }
         $this->setChanged(1);

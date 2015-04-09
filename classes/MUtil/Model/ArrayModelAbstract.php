@@ -127,13 +127,13 @@ abstract class MUtil_Model_ArrayModelAbstract extends \MUtil_Model_ModelAbstract
     /**
      * Filters the data array using a model filter
      *
-     * @param Traversable $data
+     * @param \Traversable $data
      * @param array $filters
-     * @return Traversable
+     * @return \Traversable
      */
     protected function _filterData($data, array $filters)
     {
-        if ($data instanceof IteratorAggregate) {
+        if ($data instanceof \IteratorAggregate) {
             $data = $data->getIterator();
         }
 
@@ -142,7 +142,7 @@ abstract class MUtil_Model_ArrayModelAbstract extends \MUtil_Model_ModelAbstract
             return $data;
         }
 
-        if ($data instanceof Iterator) {
+        if ($data instanceof \Iterator) {
             return new \MUtil_Model_Iterator_ArrayModelFilterIterator($data, $this, $filters);
         }
 
@@ -187,7 +187,7 @@ abstract class MUtil_Model_ArrayModelAbstract extends \MUtil_Model_ModelAbstract
      * An ArrayModel assumes that (usually) all data needs to be loaded before any load
      * action, this is done using the iterator returned by this function.
      *
-     * @return Traversable Return an iterator over or an array of all the rows in this object
+     * @return \Traversable Return an iterator over or an array of all the rows in this object
      */
     abstract protected function _loadAllTraversable();
 
@@ -204,7 +204,7 @@ abstract class MUtil_Model_ArrayModelAbstract extends \MUtil_Model_ModelAbstract
     {
         if ($this->_saveable) {
             $data = $this->_loadAllTraversable();
-            if ($data instanceof Traversable) {
+            if ($data instanceof \Traversable) {
                 $data = iterator_to_array($this->_loadAllTraversable());
             }
 
@@ -421,11 +421,11 @@ abstract class MUtil_Model_ArrayModelAbstract extends \MUtil_Model_ModelAbstract
     }
 
     /**
-     * Returns a Traversable spewing out arrays containing the items requested.
+     * Returns a \Traversable spewing out arrays containing the items requested.
      *
      * @param mixed $filter True to use the stored filter, array to specify a different filter
      * @param mixed $sort True to use the stored sort, array to specify a different sort
-     * @return Traversable
+     * @return \Traversable
      */
     public function loadIterator($filter = true, $sort = true)
     {

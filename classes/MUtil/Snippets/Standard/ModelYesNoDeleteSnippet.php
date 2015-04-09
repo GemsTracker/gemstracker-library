@@ -46,18 +46,18 @@
  * @license    New BSD License
  * @since      Class available since version 1.4.4
  */
-class ModelYesNoDeleteSnippet extends MUtil_Snippets_ModelYesNoDeleteSnippetAbstract
+class MUtil_Snippets_Standard_ModelYesNoDeleteSnippet extends \MUtil_Snippets_ModelYesNoDeleteSnippetAbstract
 {
     /**
      *
-     * @var MUtil_Model_ModelAbstract
+     * @var \MUtil_Model_ModelAbstract
      */
     protected $model;
 
     /**
      * Creates the model
      *
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function createModel()
     {

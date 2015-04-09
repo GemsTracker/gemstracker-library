@@ -270,7 +270,7 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends \MUtil_Translate_Tran
     /**
      * Default preparation for row import.
      *
-     * @param mixed $row array or Traversable row
+     * @param mixed $row array or \Traversable row
      * @param scalar $key
      * @return array or boolean
      * @throws \MUtil_Model_ModelException
@@ -281,7 +281,7 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends \MUtil_Translate_Tran
             throw new \MUtil_Model_ModelException("Trying to translate without call to startImport().");
         }
 
-        if ($row instanceof Traversable) {
+        if ($row instanceof \Traversable) {
             $row = iterator_to_array($row);
         }
 
@@ -595,7 +595,7 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends \MUtil_Translate_Tran
      *
      * This code does not validate the individual inputs, but does check the ovrall structure of the input
      *
-     * @param Traversable|array $data a nested data set as loaded from the source model
+     * @param \Traversable|array $data a nested data set as loaded from the source model
      * @return mixed Nested row array or false when errors occurred
      */
     public function translateImport($data)
@@ -622,7 +622,7 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends \MUtil_Translate_Tran
     /**
      * Perform any translations necessary for the code to work
      *
-     * @param mixed $row array or Traversable row
+     * @param mixed $row array or \Traversable row
      * @param scalar $key
      * @return mixed Row array or false when errors occurred
      */

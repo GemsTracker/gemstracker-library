@@ -32,11 +32,11 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ModelTranslateException.php$
+ * @version    $Id: ModelTranslateException.php 2483 2015-04-08 14:51:22Z matijsdejong $
  */
 
 /**
- * Marker Exception for model translations
+ * Marker \Exception for model translations
  *
  * @package    MUtil
  * @subpackage Model
@@ -44,5 +44,5 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Model_ModelTranslateException extends MUtil_Model_ModelException
+class MUtil_Model_ModelTranslateException extends \MUtil_Model_ModelException
 { }

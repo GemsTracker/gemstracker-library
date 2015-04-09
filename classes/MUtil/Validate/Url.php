@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -137,7 +136,7 @@ class MUtil_Validate_Url extends \Zend_Validate_Abstract
                     return true;
                 }
 
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->_error(self::ERROR_URL_NOT_VALID);
                 $this->setMessage($e->getMessage(), self::ERROR_URL_NOT_VALID);
 

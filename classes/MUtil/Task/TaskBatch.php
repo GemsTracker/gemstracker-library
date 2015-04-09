@@ -32,22 +32,22 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TaskRunnerBatch.php$
+ * @version    $Id: TaskBatch.php 2483 2015-04-08 14:51:22Z matijsdejong$
  */
 
 /**
- * The TaskBatch is an implementation of MUtil_Batch_BatchAbstract that simplifies
+ * The TaskBatch is an implementation of \MUtil_Batch_BatchAbstract that simplifies
  * batch creation by allowing each job step to be created in a seperate class.
  *
  * These tasks can automatically load global objects when they implement
- * MUtil_Registry_TargetInterface. Otherwise you can pass only scalar values during
+ * \MUtil_Registry_TargetInterface. Otherwise you can pass only scalar values during
  * execution.
  *
  * Task are loaded through a plugin architecture, but you can also specify them using
  * their full class name.
  *
- * @see MUtil_Batch_BatchAbstract
- * @see MUtil_Registry_TargetInterface
+ * @see \MUtil_Batch_BatchAbstract
+ * @see \MUtil_Registry_TargetInterface
  *
  * @package    MUtil
  * @subpackage Task
@@ -55,17 +55,17 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Task_TaskBatch extends MUtil_Batch_BatchAbstract
+class MUtil_Task_TaskBatch extends \MUtil_Batch_BatchAbstract
 {
     /**
      *
-     * @var MUtil_Registry_SourceInterface
+     * @var \MUtil_Registry_SourceInterface
      */
     protected $source;
 
     /**
      *
-     * @var MUtil_Loader_PluginLoader
+     * @var \MUtil_Loader_PluginLoader
      */
     protected $taskLoader;
 
@@ -108,12 +108,12 @@ class MUtil_Task_TaskBatch extends MUtil_Batch_BatchAbstract
     /**
      * Return the source used to set variables in tasks.
      *
-     * @return MUtil_Registry_SourceInterface
+     * @return \MUtil_Registry_SourceInterface
      */
     public function getSource()
     {
         if (! $this->source) {
-            $this->setSource(new MUtil_Registry_Source());
+            $this->setSource(new \MUtil_Registry_Source());
         }
         return $this->source;
     }
@@ -121,13 +121,13 @@ class MUtil_Task_TaskBatch extends MUtil_Batch_BatchAbstract
     /**
      * Get the plugin loader to load the tasks
      *
-     * @return  MUtil_Loader_PluginLoader
+     * @return  \MUtil_Loader_PluginLoader
      */
     public function getTaskLoader()
     {
-        // MUtil_Echo::track($this->getTaskLoaderPrefixDirectories());
+        // \MUtil_Echo::track($this->getTaskLoaderPrefixDirectories());
         if (! $this->taskLoader) {
-            $this->setTaskLoader(new MUtil_Loader_PluginLoader($this->getTaskLoaderPrefixDirectories()));
+            $this->setTaskLoader(new \MUtil_Loader_PluginLoader($this->getTaskLoaderPrefixDirectories()));
         }
 
         return $this->taskLoader;
@@ -149,27 +149,27 @@ class MUtil_Task_TaskBatch extends MUtil_Batch_BatchAbstract
      * @param string $task Class name of task
      * @param array $params Parameters used in the call to execute
      * @return boolean true when the task has completed, otherwise task is rerun.
-     * @throws MUtil_Batch_BatchException
+     * @throws \MUtil_Batch_BatchException
      */
     public function runTask($task, array $params = array())
     {
-        // MUtil_Echo::track($task);
+        // \MUtil_Echo::track($task);
 
         $taskObject = $this->getTaskLoader()->createClass($task);
-        if ($taskObject instanceof MUtil_Registry_TargetInterface) {
+        if ($taskObject instanceof \MUtil_Registry_TargetInterface) {
             if (!$this->getSource()->applySource($taskObject)) {
-                throw new MUtil_Batch_BatchException(sprintf('ERROR: Parameters failed to load for task %s.', $task));
+                throw new \MUtil_Batch_BatchException(sprintf('ERROR: Parameters failed to load for task %s.', $task));
             }
         }
 
-        if ($taskObject instanceof MUtil_Task_TaskInterface) {
+        if ($taskObject instanceof \MUtil_Task_TaskInterface) {
             $taskObject->setBatch($this);
             call_user_func_array(array($taskObject, 'execute'), $params);
 
             return $taskObject->isFinished();
 
         } else {
-            throw new MUtil_Batch_BatchException(sprintf('ERROR: Task by name %s not found', $task));
+            throw new \MUtil_Batch_BatchException(sprintf('ERROR: Task by name %s not found', $task));
         }
     }
 
@@ -192,10 +192,10 @@ class MUtil_Task_TaskBatch extends MUtil_Batch_BatchAbstract
     /**
      * Set the variable source for tasks.
      *
-     * @param MUtil_Registry_SourceInterface $source
+     * @param \MUtil_Registry_SourceInterface $source
      * @return \MUtil_Task_TaskBatch (continuation pattern)
      */
-    public function setSource(MUtil_Registry_SourceInterface $source)
+    public function setSource(\MUtil_Registry_SourceInterface $source)
     {
         $this->source = $source;
 
@@ -229,10 +229,10 @@ class MUtil_Task_TaskBatch extends MUtil_Batch_BatchAbstract
     /**
      * Set the plugin loader to load the tasks
      *
-     * @param MUtil_Loader_PluginLoader $taskLoader
+     * @param \MUtil_Loader_PluginLoader $taskLoader
      * @return \MUtil_Task_TaskBatch (continuation pattern)
      */
-    public function setTaskLoader(MUtil_Loader_PluginLoader $taskLoader)
+    public function setTaskLoader(\MUtil_Loader_PluginLoader $taskLoader)
     {
         $this->taskLoader = $taskLoader;
         return $this;

@@ -809,7 +809,7 @@ abstract class MUtil_Model_DatabaseModelAbstract extends \MUtil_Model_ModelAbstr
                     if ($date->get($format) === $value) {
                         return $date;
                     }
-                } catch (Exception $exc) {
+                } catch (\Exception $exc) {
                     // Silently fail and try next one
                 }
             }
@@ -819,7 +819,7 @@ abstract class MUtil_Model_DatabaseModelAbstract extends \MUtil_Model_ModelAbstr
             // Last try
             $tmpDate = new \MUtil_Date($value, \Zend_Date::ISO_8601);
 
-        } catch (Exception $exc) {
+        } catch (\Exception $exc) {
             // On failure, we use the input value
             $tmpDate = $value;
         }
@@ -1015,11 +1015,11 @@ abstract class MUtil_Model_DatabaseModelAbstract extends \MUtil_Model_ModelAbstr
     }
 
     /**
-     * Returns a Traversable spewing out arrays containing the items requested.
+     * Returns a \Traversable spewing out arrays containing the items requested.
      *
      * @param mixed $filter True to use the stored filter, array to specify a different filter
      * @param mixed $sort True to use the stored sort, array to specify a different sort
-     * @return Traversable
+     * @return \Traversable
      */
     public function loadIterator($filter = true, $sort = true)
     {

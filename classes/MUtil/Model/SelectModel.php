@@ -35,7 +35,7 @@
  */
 
 /**
- * A model that takes any Zend_Db_Select statement as a source
+ * A model that takes any \Zend_Db_Select statement as a source
  *
  * @package    MUtil
  * @subpackage Model
@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class MUtil_Model_SelectModel extends MUtil_Model_DatabaseModelAbstract
+class MUtil_Model_SelectModel extends \MUtil_Model_DatabaseModelAbstract
 {
     /**
      * Child classes may technically be able or not able to add extra rows,
@@ -56,21 +56,21 @@ class MUtil_Model_SelectModel extends MUtil_Model_DatabaseModelAbstract
 
     /**
      *
-     * @var Zend_Db_Select
+     * @var \Zend_Db_Select
      */
     private $_select;
 
     /**
      *
-     * @param Zend_Db_Select $select
+     * @param \Zend_Db_Select $select
      * @param string $name Optiona name
      */
-    public function __construct(Zend_Db_Select $select, $name = null)
+    public function __construct(\Zend_Db_Select $select, $name = null)
     {
         $this->_select = $select;
 
         // Make sure the columns are known to the model
-        foreach ($select->getPart(Zend_Db_Select::COLUMNS) as $column) {
+        foreach ($select->getPart(\Zend_Db_Select::COLUMNS) as $column) {
             if (isset($column[2])) {
                 $this->set($column[2]);
             } elseif (is_string($column[1])) {
@@ -95,7 +95,7 @@ class MUtil_Model_SelectModel extends MUtil_Model_DatabaseModelAbstract
      */
     protected function _save(array $newValues, array $filter = null)
     {
-        throw new Exception('Cannot save ' . __CLASS__ . ' data.');
+        throw new \Exception('Cannot save ' . __CLASS__ . ' data.');
     }
 
     /**
@@ -106,13 +106,13 @@ class MUtil_Model_SelectModel extends MUtil_Model_DatabaseModelAbstract
      */
     public function delete($filter = true)
     {
-        throw new Exception('Cannot delete ' . __CLASS__ . ' data.');
+        throw new \Exception('Cannot delete ' . __CLASS__ . ' data.');
     }
 
     /**
      * The database adapter used by the model.
      *
-     * @return Zend_Db_Adapter_Abstract
+     * @return \Zend_Db_Adapter_Abstract
      */
     public function getAdapter()
     {
@@ -122,7 +122,7 @@ class MUtil_Model_SelectModel extends MUtil_Model_DatabaseModelAbstract
     /**
      * The select object where we get the query from.
      *
-     * @return Zend_Db_Select
+     * @return \Zend_Db_Select
      */
     public function getSelect()
     {

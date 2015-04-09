@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: RelativePath.php$
+ * @version    $Id: Path.php 2436 2015-02-20 11:47:27Z matijsdejong $
  */
 
 /**
@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Validate_File_Path extends MUtil_Validate_Regexclude
+class MUtil_Validate_File_Path extends \MUtil_Validate_Regexclude
 {
     /**
      * @var array
@@ -63,7 +63,7 @@ class MUtil_Validate_File_Path extends MUtil_Validate_Regexclude
     protected $_pattern = '#[:?*|"<>]#';
 
      /**
-     * Defined by Zend_Validate_Interface
+     * Defined by \Zend_Validate_Interface
      *
      * Returns true if and only if $value matches against the pattern option
      *

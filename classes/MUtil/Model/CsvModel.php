@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TabbedTextModel.php$
+ * @version    $Id: CsvModel.php 2483 2015-04-08 14:51:22Z matijsdejong $
  */
 
 /**
@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Model_CsvModel extends MUtil_Model_ArrayModelAbstract
+class MUtil_Model_CsvModel extends \MUtil_Model_ArrayModelAbstract
 {
     /**
      * The content file encoding
@@ -77,11 +77,11 @@ class MUtil_Model_CsvModel extends MUtil_Model_ArrayModelAbstract
      * An ArrayModel assumes that (usually) all data needs to be loaded before any load
      * action, this is done using the iterator returned by this function.
      *
-     * @return Traversable Return an iterator over or an array of all the rows in this object
+     * @return \Traversable Return an iterator over or an array of all the rows in this object
      */
     protected function _loadAllTraversable()
     {
-        $iterator = new MUtil_Model_Iterator_CsvFileIterator($this->_fileName, $this->_encoding);
+        $iterator = new \MUtil_Model_Iterator_CsvFileIterator($this->_fileName, $this->_encoding);
 
         // Store the positions in the model
         foreach ($iterator->getFieldMap() as $pos => $name) {

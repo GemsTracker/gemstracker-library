@@ -48,6 +48,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-class TableSnippet extends MUtil_Snippets_TableSnippetAbstract
+class TableSnippet extends \MUtil_Snippets_TableSnippetAbstract
 {
 }

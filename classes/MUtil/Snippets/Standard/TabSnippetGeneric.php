@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Snippets_Standard_TabSnippetGeneric extends MUtil_Snippets_TabSnippetAbstract
+class MUtil_Snippets_Standard_TabSnippetGeneric extends \MUtil_Snippets_TabSnippetAbstract
 {
     /**
      *

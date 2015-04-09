@@ -28,18 +28,18 @@
  *
  *
  * @package    MUtil
- * @subpackage Model
+ * @subpackage Model_Iterator
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TextFileIterator.php$
+ * @version    $Id: FileIteratorAbstract.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
 /**
  * Iterate line by line through a file, with a separate output for the first header line
  *
  * @package    MUtil
- * @subpackage Model
+ * @subpackage Model_Iterator
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
@@ -75,7 +75,7 @@ abstract class MUtil_Model_Iterator_FileIteratorAbstract implements \Iterator, \
     protected $_file = null;
 
     /**
-     * SplFileObject::DROP_NEW_LINE | SplFileObject::READ_AHEAD | SplFileObject::SKIP_EMPTY
+     * \SplFileObject::DROP_NEW_LINE | \SplFileObject::READ_AHEAD | \SplFileObject::SKIP_EMPTY
      *
      * @var int
      */
@@ -165,7 +165,7 @@ abstract class MUtil_Model_Iterator_FileIteratorAbstract implements \Iterator, \
             // Always move to next, even if there was no first line
             $this->next();
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->_file = false;
         }
     }
@@ -204,7 +204,7 @@ abstract class MUtil_Model_Iterator_FileIteratorAbstract implements \Iterator, \
             $this->_openFile();
         }
 
-        if ((! $this->_file instanceof SplFileObject) || $this->_file->eof()) {
+        if ((! $this->_file instanceof \SplFileObject) || $this->_file->eof()) {
             return false;
         }
 
@@ -276,7 +276,7 @@ abstract class MUtil_Model_Iterator_FileIteratorAbstract implements \Iterator, \
     }
 
     /**
-     *  Rewind the Iterator to the first element
+     *  Rewind the \Iterator to the first element
      */
     public function rewind()
     {
