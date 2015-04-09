@@ -36,7 +36,7 @@
  */
 
 /**
- * Extends Zend_Markup with extra utility functions
+ * Extends \Zend_Markup with extra utility functions
  *
  * @package    MUtil
  * @subpackage Markup
@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class MUtil_Markup extends Zend_Markup
+class MUtil_Markup extends \Zend_Markup
 {
     /**
      * Factory pattern
@@ -52,7 +52,7 @@ class MUtil_Markup extends Zend_Markup
      * @param  string $parser
      * @param  string $renderer
      * @param  array $options
-     * @return Zend_Markup_Renderer_RendererAbstract
+     * @return \Zend_Markup_Renderer_RendererAbstract
      */
     public static function factory($parser, $renderer = 'Html', array $options = array())
     {
@@ -66,7 +66,7 @@ class MUtil_Markup extends Zend_Markup
         // Ignore email tags (in any output)
         $renderer->addMarkup(
                 'email',
-                Zend_Markup_Renderer_RendererAbstract::TYPE_REPLACE,
+                \Zend_Markup_Renderer_RendererAbstract::TYPE_REPLACE,
                 array('start' => '', 'end' => '', 'group' => 'inline')
                 );
 
@@ -76,12 +76,12 @@ class MUtil_Markup extends Zend_Markup
     /**
      * Get the renderer loader
      *
-     * @return Zend_Loader_PluginLoader
+     * @return \Zend_Loader_PluginLoader
      */
     public static function getRendererLoader()
     {
-        if (!(self::$_rendererLoader instanceof Zend_Loader_PluginLoader)) {
-            self::$_rendererLoader = new Zend_Loader_PluginLoader(array(
+        if (!(self::$_rendererLoader instanceof \Zend_Loader_PluginLoader)) {
+            self::$_rendererLoader = new \Zend_Loader_PluginLoader(array(
                 'Zend_Markup_Renderer'  => 'Zend/Markup/Renderer/',
                 'MUtil_Markup_Renderer' => 'MUtil/Markup/Renderer/',
             ));
@@ -92,7 +92,7 @@ class MUtil_Markup extends Zend_Markup
 
     public static function render($content, $parser, $renderer = 'Html', array $options = array())
     {
-        $renderer = MUtil_Markup::factory($parser, $renderer, $options);
+        $renderer = \MUtil_Markup::factory($parser, $renderer, $options);
         return $renderer->render($content);
     }
 }

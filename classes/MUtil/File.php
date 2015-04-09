@@ -95,7 +95,7 @@ class MUtil_File
      * @param string $dir The path of the directory
      * @param int $mode Unix file mask mode, ignored on Windows
      * @return string the directory
-     * @throws Zend_Exception
+     * @throws \Zend_Exception
      */
     public static function ensureDir($dir, $mode = 0777)
     {
@@ -104,7 +104,7 @@ class MUtil_File
 
         if (! is_dir($dir)) {
             if (! @mkdir($dir, $mode, true)) {
-                throw new Zend_Exception(sprintf(
+                throw new \Zend_Exception(sprintf(
                         "Could not create '%s' directory: %s.",
                         $dir,
                         \MUtil_Error::getLastPhpErrorMessage('reason unknown')
@@ -125,7 +125,7 @@ class MUtil_File
     {
         $units = array( '', 'Kb', 'Mb', 'Gb', 'Tb', 'Pb', 'Eb', 'Zb', 'Yb');
         $power = $size > 0 ? floor(log($size, 1024)) : 0;
-        return Zend_Locale_Format::toInteger($size / pow(1024, $power)) . ' ' . $units[$power];
+        return \Zend_Locale_Format::toInteger($size / pow(1024, $power)) . ' ' . $units[$power];
     }
 
     /**

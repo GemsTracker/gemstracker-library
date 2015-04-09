@@ -38,7 +38,7 @@
 namespace MUtil\Ra;
 
 /**
- * TargetInterface version of ArrayObject
+ * TargetInterface version of \ArrayObject
  *
  * @package    MUtil
  * @subpackage Ra
@@ -86,8 +86,8 @@ class RaObject extends \ArrayObject implements \MUtil_Registry_TargetInterface
     /**
      *
      * @param mixed $input The input parameter accepts an array or an Object.
-     * @param int $flags Flags to control the behaviour of the ArrayObject object, STD_PROP_LIST is always set on
-     * @param string $iterator_class Specify the class that will be used for iteration of the ArrayObject object.
+     * @param int $flags Flags to control the behaviour of the \ArrayObject object, STD_PROP_LIST is always set on
+     * @param string $iterator_class Specify the class that will be used for iteration of the \ArrayObject object.
      */
     public function __construct($input = array(), $flags = 0, $iterator_class = "ArrayIterator")
     {

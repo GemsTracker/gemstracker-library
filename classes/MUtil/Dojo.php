@@ -31,9 +31,9 @@
  * @package MUtil
  */
 
-class MUtil_Dojo extends Zend_Dojo
+class MUtil_Dojo extends \Zend_Dojo
 {
-    public static function usesDojo(Zend_View_Abstract $view) 
+    public static function usesDojo(\Zend_View_Abstract $view) 
     {
         return false !== $view->getPluginLoader('helper')->getPaths('Zend_Dojo_View_Helper');
     }

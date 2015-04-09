@@ -47,7 +47,7 @@
 class MUtil_Bootstrap
 {
     /**
-     * Current default supported Bootstrap library version with MUtil_Bootstrap
+     * Current default supported Bootstrap library version with \MUtil_Bootstrap
      *
      * @const string
      */
@@ -82,7 +82,7 @@ class MUtil_Bootstrap
     /**
      * Bootsrap view helper
      *
-     * @var MUtil_Bootstrap_View_Helper_Bootstrap
+     * @var \MUtil_Bootstrap_View_Helper_Bootstrap
      */
     private static $_bootstrap;
 
@@ -91,8 +91,8 @@ class MUtil_Bootstrap
     /**
      * Returns the Bootstrapper object assigned to the view helper.
      *
-     * @staticvar MUtil_Bootstrap_View_Helper_Bootstrapper $bootstrap
-     * @return MUtil_Bootstrap_View_Helper_Bootstrapper
+     * @staticvar \MUtil_Bootstrap_View_Helper_Bootstrapper $bootstrap
+     * @return \MUtil_Bootstrap_View_Helper_Bootstrapper
      */
     public static function bootstrap($options=array())
     {
@@ -109,10 +109,10 @@ class MUtil_Bootstrap
     /**
      * jQuery-enable a form instance
      *
-     * @param  Zend_Form $form
+     * @param  \Zend_Form $form
      * @return void
      * /
-    public static function enableForm(Zend_Form $form)
+    public static function enableForm(\Zend_Form $form)
     {
         $form->addPrefixPath('MUtil_Bootstrap_Form_Decorator', 'MUtil/Bootstrap/Form/Decorator', 'decorator')
              ->addPrefixPath('MUtil_Bootstrap_Form_Element', 'MUtil/Bootstrap/Form/Element', 'element')
@@ -131,13 +131,13 @@ class MUtil_Bootstrap
     /**
      * Bootstrap-enable a view instance
      *
-     * @param  Zend_View_Interface $view
+     * @param  \Zend_View_Interface $view
      * @return void
      */
-    public static function enableView(Zend_View_Interface $view)
+    public static function enableView(\Zend_View_Interface $view)
     {
-        if (! MUtil_JQuery::usesJQuery($view)) {
-            MUtil_JQuery::enableView($view);
+        if (! \MUtil_JQuery::usesJQuery($view)) {
+            \MUtil_JQuery::enableView($view);
         }
 
         if (false === $view->getPluginLoader('helper')->getPaths('MUtil_Bootstrap_View_Helper')) {
@@ -153,32 +153,32 @@ class MUtil_Bootstrap
      */
     public static function enabled()
     {
-        return self::$_bootstrap instanceof MUtil_Bootstrap_View_Helper_Bootstrapper;
+        return self::$_bootstrap instanceof \MUtil_Bootstrap_View_Helper_Bootstrapper;
     }
 
     /**
      * Check if the view or form is using Bootstrap
      *
-     * @param mixed $object Zend_View_Abstract or Zend_Form
+     * @param mixed $object \Zend_View_Abstract or \Zend_Form
      * @return boolean
      */
     public static function usesBootstrap($object)
     {
-        if ($object instanceof Zend_View_Abstract) {
+        if ($object instanceof \Zend_View_Abstract) {
             return false !== $object->getPluginLoader('helper')->getPaths('MUtil_Bootstrap_View_Helper');
         }
 
         /*
-        if ($object instanceof Zend_Form) {
-            return false !== $object->getPluginLoader(Zend_Form::DECORATOR)->getPaths('ZendX_JQuery_Form_Decorator');
+        if ($object instanceof \Zend_Form) {
+            return false !== $object->getPluginLoader(\Zend_Form::DECORATOR)->getPaths('ZendX_JQuery_Form_Decorator');
         } // */
 
         if (is_object($object))  {
-            throw new MUtil_Bootstrap_BootstrapException(
+            throw new \MUtil_Bootstrap_BootstrapException(
                     'Checking for Bootstrap on invalid object of class: ' . get_class($object)
                     );
         } else {
-            throw new MUtil_Bootstrap_BootstrapException('Checking for Bootstrap on non-object');
+            throw new \MUtil_Bootstrap_BootstrapException('Checking for Bootstrap on non-object');
         }
     }
 }

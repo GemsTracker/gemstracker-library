@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Less .php 1748 2014-02-19 18:09:41Z matijsdejong $
+ * @version    $Id: Less.php 1748 2014-02-19 18:09:41Z matijsdejong $
  */
 
 /**
@@ -49,10 +49,10 @@ class MUtil_Less
     /**
      * Less-enable a view instance
      *
-     * @param  Zend_View_Interface $view
+     * @param  \Zend_View_Interface $view
      * @return void
      */
-    public static function enableView(Zend_View_Interface $view)
+    public static function enableView(\Zend_View_Interface $view)
     {
         if (false === $view->getPluginLoader('helper')->getPaths('MUtil_Less_View_Helper')) {
             $view->addHelperPath('MUtil/Less/View/Helper', 'MUtil_Less_View_Helper');

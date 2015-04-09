@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.2
  */
-class MUtil_Log extends Zend_Log
+class MUtil_Log extends \Zend_Log
 {
     /**
      * Have a log file for each month, overwriting it after 11 months
@@ -82,7 +82,7 @@ class MUtil_Log extends Zend_Log
      *
      * @param mixed $filename Start of the filename minus .log extension
      * @param mixed $logRotate One of the cosntants for log rotate
-     * @param int One of the Zend_Log constants
+     * @param int One of the \Zend_Log constants
      */
     public function __construct($filename, $logRotate = null, $priority = null)
     {
@@ -94,13 +94,13 @@ class MUtil_Log extends Zend_Log
         $this->_checkLogOverwrite();
 
         try {
-            $writer = new Zend_Log_Writer_Stream($this->_logFileName);
-        } catch (Exception $exc) {
+            $writer = new \Zend_Log_Writer_Stream($this->_logFileName);
+        } catch (\Exception $exc) {
             try {
                 // Try to solve the problem, otherwise fail heroically
-                MUtil_File::ensureDir(dirname($this->_logFileName));
-                $writer = new Zend_Log_Writer_Stream($this->_logFileName);
-            } catch (Exception $exc) {
+                \MUtil_File::ensureDir(dirname($this->_logFileName));
+                $writer = new \Zend_Log_Writer_Stream($this->_logFileName);
+            } catch (\Exception $exc) {
                 $this->bootstrap(array('locale', 'translate'));
                 die(sprintf($this->translate->_('Path %s not writable'), dirname($this->_logFileName)));
             }
@@ -117,12 +117,12 @@ class MUtil_Log extends Zend_Log
     {
         switch ($this->_logRotate) {
             case self::ROTATE_PER_MONTH:
-                $now = new MUtil_Date();
+                $now = new \MUtil_Date();
                 $now->subMonth(10);
                 break;
 
             case self::ROTATE_PER_MONTH:
-                $now = new MUtil_Date();
+                $now = new \MUtil_Date();
                 $now->subWeek(50)->subDay(1);
                 break;
 
@@ -131,7 +131,7 @@ class MUtil_Log extends Zend_Log
 
         }
 
-        $fileTime = new MUtil_Date(filectime($this->_logFileName));
+        $fileTime = new \MUtil_Date(filectime($this->_logFileName));
         if ($fileTime) {
 
         }
@@ -148,8 +148,8 @@ class MUtil_Log extends Zend_Log
         switch ($this->_logRotate) {
             case self::ROTATE_PER_MONTH:
                 if (null === $index) {
-                    $now = new MUtil_Date();
-                    $index = $now->toString(Zend_Date::MONTH);
+                    $now = new \MUtil_Date();
+                    $index = $now->toString(\Zend_Date::MONTH);
                 } elseif ($index < 10) {
                     $index = "0" . $index;
                 }
@@ -158,8 +158,8 @@ class MUtil_Log extends Zend_Log
 
             case self::ROTATE_PER_MONTH:
                 if (null === $index) {
-                    $now = new MUtil_Date();
-                    $index = $now->toString(Zend_Date::WEEK);
+                    $now = new \MUtil_Date();
+                    $index = $now->toString(\Zend_Date::WEEK);
                 } elseif ($index < 10) {
                     $index = "0" . $index;
                 }
@@ -168,7 +168,7 @@ class MUtil_Log extends Zend_Log
 
             default:
                 $filename = $this->_logFileRoot;
-                if (! MUtil_String::endsWith($filename, '.log')) {
+                if (! \MUtil_String::endsWith($filename, '.log')) {
                     $filename .= '.log';
                 }
                 break;
@@ -187,7 +187,7 @@ class MUtil_Log extends Zend_Log
     {
         if (file_exists($this->_logFileName)) {
             $writer = reset($this->_writers);
-            if ($writer instanceof Zend_Log_Writer_Stream) {
+            if ($writer instanceof \Zend_Log_Writer_Stream) {
                 // $writer->
             }
 
@@ -224,13 +224,13 @@ class MUtil_Log extends Zend_Log
     public function getLogIndices()
     {
         $locale = null;
-        if (Zend_Registry::isRegistered('Zend_Locale')) {
-            $locale = Zend_Registry::get('Zend_Locale');
-        } elseif (Zend_Registry::isRegistered('locale')) {
-            $locale = Zend_Registry::get('locale');
+        if (\Zend_Registry::isRegistered('Zend_Locale')) {
+            $locale = \Zend_Registry::get('Zend_Locale');
+        } elseif (\Zend_Registry::isRegistered('locale')) {
+            $locale = \Zend_Registry::get('locale');
         }
-        if (! $locale instanceof Zend_Locale) {
-            $locale = Zend_Locale::findLocale();
+        if (! $locale instanceof \Zend_Locale) {
+            $locale = \Zend_Locale::findLocale();
         }
 
         switch ($this->_logRotate) {
@@ -252,14 +252,14 @@ class MUtil_Log extends Zend_Log
     /**
      * Set the log level
      * @param int $priority One
-     * @param int One of the Zend_Log constants
+     * @param int One of the \Zend_Log constants
      */
     public function setLogPriority($priority)
     {
         $writer = reset($this->_writers);
 
-        if ($writer instanceof Zend_Log_Writer_Abstract) {
-            $filter = new Zend_Log_Filter_Priority($priority);
+        if ($writer instanceof \Zend_Log_Writer_Abstract) {
+            $filter = new \Zend_Log_Filter_Priority($priority);
             $writer->addFilter($filter);
         }
 

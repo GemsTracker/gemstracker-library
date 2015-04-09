@@ -49,7 +49,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.3
  */
-class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
+class MUtil_XmlRa implements \IteratorAggregate, \ArrayAccess, \Countable
 {
     /**
      * Marker for search anything
@@ -64,7 +64,7 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
     /**
      * In effect cache of getFirstElement()
      *
-     * @var DOMElement
+     * @var \DOMElement
      */
     private $_first;
 
@@ -87,7 +87,7 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
     /**
      * The "main" node of this object, unless $nodes is set.
      *
-     * @var DOMNode
+     * @var \DOMNode
      */
     private $_rootNode;
 
@@ -159,10 +159,10 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
      * to it at initiation.
      *
      * @param array $nodes optionally empty array
-     * @param DOMNode $rootNode
+     * @param \DOMNode $rootNode
      * @param type $next_name
      */
-    public function __construct(array $nodes, DOMNode $rootNode = null, $nextName)
+    public function __construct(array $nodes, \DOMNode $rootNode = null, $nextName)
     {
         $this->_nodes = $nodes;
         $this->_nextName = $nextName;
@@ -275,10 +275,10 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
      * Private static creater for an XmlRa item that
      * loops over all child items.
      *
-     * @param DOMNode $rootNode
+     * @param \DOMNode $rootNode
      * @return \self
      */
-    private static function _createForChildren(DOMNode $rootNode)
+    private static function _createForChildren(\DOMNode $rootNode)
     {
         return new self(array(), $rootNode, self::XMLRA_ANY);
     }
@@ -288,11 +288,11 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
      *
      * Only used in conjunction with $this->name
      *
-     * @param DOMNode $rootNode
+     * @param \DOMNode $rootNode
      * @param string $childName
      * @return \self
      */
-    private static function _createForName(DOMNode $rootNode, $childName)
+    private static function _createForName(\DOMNode $rootNode, $childName)
     {
         return new self(array(), $rootNode, $childName);
     }
@@ -301,10 +301,10 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
      * Returns an instance of self containing the nodes in the
      * nodelist as an array of items.
      *
-     * @param DOMNodeList $nodes
+     * @param \DOMNodeList $nodes
      * @return \self
      */
-    private static function _createFromNodeList(DOMNodeList $nodes)
+    private static function _createFromNodeList(\DOMNodeList $nodes)
     {
         $count = $nodes->length;
 
@@ -321,10 +321,10 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
      * Returns an instance of self containing the nodes returned by the
      * xpath expression.
      *
-     * @param DOMNodeList $nodes
+     * @param \DOMNodeList $nodes
      * @return \self
      */
-    private static function _createFromXPath(DOMNode $node, $xpath)
+    private static function _createFromXPath(\DOMNode $node, $xpath)
     {
         $doc = self::getNodeDocument($node);
 
@@ -360,7 +360,7 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
         $i = 0;
 
         while ($n = $this->getNodeByNumber($i++, true)) {
-            if ($n instanceof DOMElement) {
+            if ($n instanceof \DOMElement) {
                 // echo $n->localName."\n";
                 $this->_first = $n;
                 return $n;
@@ -409,16 +409,16 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
      * Process the found result for returning
      *
      * @param mixed $node
-     * @return mixed XmlRa or text when attribute or DOMCharacterData
+     * @return mixed XmlRa or text when attribute or \DOMCharacterData
      */
     private function _returnValue($node)
     {
-        if ($node instanceof DOMNode) {
-            if ($node instanceof DOMAttr) {
+        if ($node instanceof \DOMNode) {
+            if ($node instanceof \DOMAttr) {
                 return $node->value;
             }
 
-            if ($node instanceof DOMCharacterData) {
+            if ($node instanceof \DOMCharacterData) {
                 return $node->data;
             }
 
@@ -448,8 +448,8 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
         return $value;
     }
 
-    // ArrayObject implementation
-    // void ArrayObject::append ( mixed $newval )
+    // \ArrayObject implementation
+    // void \ArrayObject::append ( mixed $newval )
     public function append($newval)
     {
         if ($this->_isForChildren()) {
@@ -459,7 +459,7 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
         } elseif (count($this->_nodes)) {
             $n = $this->_nodes[0];
         } else {
-            throw new MUtil_XmlRa_XmlRaException('No parent node available to append to.');
+            throw new \MUtil_XmlRa_XmlRaException('No parent node available to append to.');
         }
 
 
@@ -472,14 +472,14 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
                 self::appendNode($n, $newval->_nodes[$i]);
             }
         } else {
-            throw new MUtil_XmlRa_XmlRaException('Cannot (yet) append a value of a ' . get_class($newval) . ' type.');
+            throw new \MUtil_XmlRa_XmlRaException('Cannot (yet) append a value of a ' . get_class($newval) . ' type.');
         }
     }
 
-    private static function appendNode(DOMNode $parent, DOMNode $newchild)
+    private static function appendNode(\DOMNode $parent, \DOMNode $newchild)
     {
-        if ($parent instanceof DOMElement) {
-            if ($newchild instanceof DOMAttr) {
+        if ($parent instanceof \DOMElement) {
+            if ($newchild instanceof \DOMAttr) {
                 $a = $parent->setAttribute($newchild->name, $newchild->value);
             } else {
                 if (self::isSameDocument($parent, $newchild)) {
@@ -490,12 +490,12 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
                 }
             }
         } else {
-            throw new MUtil_XmlRa_XmlRaException('Cannot (yet) append to parent node of the ' . get_class($parent) . ' type.');
+            throw new \MUtil_XmlRa_XmlRaException('Cannot (yet) append to parent node of the ' . get_class($parent) . ' type.');
         }
     }
 
     /**
-     * Countable implementation
+     * \Countable implementation
      *
      * Returns the number of nodes in this object
      *
@@ -507,7 +507,7 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
 
         if ($this->nodes) {
             return count($this->_nodes);
-        } elseif ($this->_rootNode instanceof DOMNode) {
+        } elseif ($this->_rootNode instanceof \DOMNode) {
             return $this->_rootNode->childNodes->length;
         }
 
@@ -536,23 +536,23 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
      *
      * @param int $errno
      * @param string $errstr
-     * @throws MUtil_XmlRa_XmlRaException
+     * @throws \MUtil_XmlRa_XmlRaException
      */
     public static function errorCallback($errno, $errstr, $errfile, $errline, array $errcontext)
     {
         self::_errorInterceptionOff();
 
         // echo "XML ERROR:\n" . implode("\n", func_get_args()) . "\n";
-        throw new MUtil_XmlRa_XmlRaException($errstr, $errno);
+        throw new \MUtil_XmlRa_XmlRaException($errstr, $errno);
     }
 
     /**
-     * Get the Nth indexed DOMNode element of this object.
+     * Get the Nth indexed \DOMNode element of this object.
      *
      * Use this when you want to perform basic DOM manipulations.
      *
      * @param mixed $index An integer or empty
-     * @return DOMNode
+     * @return \DOMNode
      */
     public function getDOMNode($index = null)
     {
@@ -566,10 +566,10 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
     }
 
     /**
-     * Returns the DOMDocument of this XmlRa object.
+     * Returns the \DOMDocument of this XmlRa object.
      *
      * Only the document class of all XmlRa objects is of the
-     * DOMDoucment child class MUtil_XmlRa_XmlRaDocument.
+     * \DOMDoucment child class MUtil_XmlRa_XmlRaDocument.
      *
      * @return \MUtil_XmlRa_XmlRaDocument
      */
@@ -581,7 +581,7 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
             $n = $this->_getFirstElement();
         }
 
-        if ($n instanceof MUtil_XmlRa_XmlRaDocument) {
+        if ($n instanceof \MUtil_XmlRa_XmlRaDocument) {
             return $n;
         } else {
             return $n->ownerDocument;
@@ -589,28 +589,28 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
     }
 
     /**
-     * ArrayAccess iterator implementation, returns an iterator over
+     * \ArrayAccess iterator implementation, returns an iterator over
      * all the node children of this item.
      *
      * @return \MUtil_XmlRa_XmlRaIterator
      */
     public function getElementIterator()
     {
-        $iter = new MUtil_XmlRa_XmlRaIterator($this);
+        $iter = new \MUtil_XmlRa_XmlRaIterator($this);
         $iter->setFilterFunction(array(__CLASS__, 'isElement'));
 
         return $iter;
     }
 
     /**
-     * ArrayAccess iterator implementation, returns an iterator over
+     * \ArrayAccess iterator implementation, returns an iterator over
      * all the node children of this item.
      *
      * @return \MUtil_XmlRa_XmlRaIterator
      */
     public function getIterator()
     {
-        return new MUtil_XmlRa_XmlRaIterator($this);
+        return new \MUtil_XmlRa_XmlRaIterator($this);
     }
 
     /**
@@ -679,9 +679,9 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
         return null;
     }
 
-    private static function getNodeDocument(DOMNode $node)
+    private static function getNodeDocument(\DOMNode $node)
     {
-        if ($node instanceof DOMDocument) {
+        if ($node instanceof \DOMDocument) {
             $doc = $node;
         } else {
             $doc = $node->ownerDocument;
@@ -690,7 +690,7 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
         return $doc;
     }
 
-    private function hasName(DOMNode $node)
+    private function hasName(\DOMNode $node)
     {
         // Any next sibling will do
         if ($this->_nextName == self::XMLRA_ANY) {
@@ -705,7 +705,7 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
     }
 
     /**
-     * Return true if the passed value is a DOMElemennt
+     * Return true if the passed value is a \DOMElemennt
      *
      * @param mixed $value
      * @return boolean
@@ -714,7 +714,7 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
     {
         $value = self::_unpackValue($value);
 
-        return $value instanceof DOMElement;
+        return $value instanceof \DOMElement;
     }
 
     /**
@@ -737,13 +737,13 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
     }
 
     /**
-     * Check whether two DOMNodes are from the same document.
+     * Check whether two \DOMNodes are from the same document.
      *
-     * @param DOMNode $n1
-     * @param DOMNode $n2
+     * @param \DOMNode $n1
+     * @param \DOMNode $n2
      * @return boolean
      */
-    public static function isSameDocument(DOMNode $n1, DOMNode $n2)
+    public static function isSameDocument(\DOMNode $n1, \DOMNode $n2)
     {
         return self::getNodeDocument($n1) === self::getNodeDocument($n2);
     }
@@ -787,13 +787,13 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
      * @param string $filename
      * @param string $xpath
      * @return self
-     * @throws MUtil_XmlRa_XmlRaException
+     * @throws \MUtil_XmlRa_XmlRaException
      */
     public static function loadFile($filename, $xpath = null)
     {
         self::_errorInterceptionOn();
 
-        $doc = new MUtil_XmlRa_XmlRaDocument();
+        $doc = new \MUtil_XmlRa_XmlRaDocument();
         $loaded = $doc->load($filename);
 
         self::_errorInterceptionOff();
@@ -807,7 +807,7 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
                 return $ra;
             }
         } else {
-            throw new MUtil_XmlRa_XmlRaException('Document: "' . $filename . '" failed to load.');
+            throw new \MUtil_XmlRa_XmlRaException('Document: "' . $filename . '" failed to load.');
         }
     }
 
@@ -821,13 +821,13 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
      */
     public static function loadString($string)
     {
-        $doc = new MUtil_XmlRa_XmlRaDocument();
+        $doc = new \MUtil_XmlRa_XmlRaDocument();
         $doc->loadXML($string);
         return self::_createForChildren($doc);
     }
 
-    // ArrayObject implementation
-    // bool ArrayObject::offsetExists ( mixed $index )
+    // \ArrayObject implementation
+    // bool \ArrayObject::offsetExists ( mixed $index )
     public function offsetExists($index)
     {
         // echo "Check: $index\n";
@@ -835,7 +835,7 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
     }
 
     /**
-     * ArrayAccess implementation offsetGet
+     * \ArrayAccess implementation offsetGet
      *
      * Return child element when $index is integer, the attribute
      * value when $index starts with '@' and executes and xpath
@@ -846,40 +846,40 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
      */
     public function offsetGet($index)
     {
-        // MUtil_Echo::track("Get $index");
+        // \MUtil_Echo::track("Get $index");
         return $this->_returnValue($this->getNode($index, true));
     }
 
-    // ArrayObject implementation
-    // void ArrayObject::offsetSet ( mixed $index, mixed $newval )
+    // \ArrayObject implementation
+    // void \ArrayObject::offsetSet ( mixed $index, mixed $newval )
     public function offsetSet($index, $value)
     {
         if ($value) {
             if ($index) {
-                throw new MUtil_XmlRa_XmlRaException('Cannot (yet) set the value of an indexed item.');
+                throw new \MUtil_XmlRa_XmlRaException('Cannot (yet) set the value of an indexed item.');
             } else {
                 $this->append($value);
             }
         }
     }
 
-    // ArrayObject implementation
-    // void void ArrayObject::offsetUnset ( mixed $index )
+    // \ArrayObject implementation
+    // void void \ArrayObject::offsetUnset ( mixed $index )
     public function offsetUnset($index)
     {
-        throw new MUtil_XmlRa_XmlRaException('Cannot (yet) unset the value of an indexed item.');
+        throw new \MUtil_XmlRa_XmlRaException('Cannot (yet) unset the value of an indexed item.');
     }
 
     /* public function saveToFile($filename) {
       $node = $this->rootNode;
 
-      if ($node instanceof DOMDocument) {
+      if ($node instanceof \DOMDocument) {
       $doc = $node;
       // $doc->normalizeDocument();
       } else {
-      // Make a new DOMDocument, otherwise the namespace
+      // Make a new \DOMDocument, otherwise the namespace
       // declarations may come out wrong.
-      $doc = new DOMDocument();
+      $doc = new \DOMDocument();
       $doc->appendChild($doc->importNode($node, true));
       }
 
@@ -951,7 +951,7 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
       }
 
       if (! is_null($node)) {
-      if ($node instanceof DOMElement) {
+      if ($node instanceof \DOMElement) {
       return xmlra_to_array($node);
       } else {
       return array();
@@ -991,15 +991,15 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
      * If two items have the same name, all values will be combined in an array.
      *
      * <code>
-     *  $x = MUtil_XmlRa::loadString('&lt;a b="c"&gt;&lt;d&gt;e&lt;/d&gt;&lt;f&gt;g&lt;/f&gt;&lt;f&gt;h&lt;/f&gt;&lt;/a&gt;');
-     *  print_r(MUtil_XmlRa::toArray($x));
+     *  $x = \MUtil_XmlRa::loadString('&lt;a b="c"&gt;&lt;d&gt;e&lt;/d&gt;&lt;f&gt;g&lt;/f&gt;&lt;f&gt;h&lt;/f&gt;&lt;/a&gt;');
+     *  print_r(\MUtil_XmlRa::toArray($x));
      * </code>
      * Will output:
      * <code>
      * array{'@b' => 'c', 'd' => 'e', 'f' => array(0 => 'g', 1 => 'h');
      * </code>
      *
-     * @param MUtil_XmlRa $value
+     * @param \MUtil_XmlRa $value
      * @return array name -> value[s]
      */
     public static function toArray(self $value)
@@ -1008,25 +1008,25 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
 
         $parent = self::_unpackValue($value);
 
-        if ($parent instanceof DOMDocument) {
+        if ($parent instanceof \DOMDocument) {
             $parent = $parent->documentElement;
         }
 
-        if ($parent instanceof DOMNode) {
+        if ($parent instanceof \DOMNode) {
             // Iterate first over
-            $iter = new AppendIterator();
+            $iter = new \AppendIterator();
             if (isset($parent->attributes)) {
-                $iter->append(new IteratorIterator($parent->attributes));
+                $iter->append(new \IteratorIterator($parent->attributes));
             }
             if (isset($parent->childNodes)) {
-                $iter->append(new IteratorIterator($parent->childNodes));
+                $iter->append(new \IteratorIterator($parent->childNodes));
             }
 
             foreach ($iter as $n) {
-               if ($n instanceof DOMElement) {
+               if ($n instanceof \DOMElement) {
                     $name = $n->tagName;
                     $text = $n->textContent;
-                } elseif ($n instanceof DOMAttr) {
+                } elseif ($n instanceof \DOMAttr) {
                     $name = self::XMLRA_ATTR . $n->localName;
                     $text = $n->textContent;
                 } else {
@@ -1046,7 +1046,7 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
             }
         }
 
-        // MUtil_Echo::track($results);
+        // \MUtil_Echo::track($results);
 
         return $results;
     }
@@ -1076,23 +1076,23 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
     }
 
     /**
-     * Returns any DOMNode type as a valid XML document string
+     * Returns any \DOMNode type as a valid XML document string
      *
-     * @param DOMNode $node
+     * @param \DOMNode $node
      * @return string
      */
-    public static function xmlToString(DOMNode $node)
+    public static function xmlToString(\DOMNode $node)
     {
-        if ($node instanceof DOMAttr) {
+        if ($node instanceof \DOMAttr) {
             return $node->name . '="' . htmlspecialchars($node->value, ENT_QUOTES) . '"';
         } else {
-            if ($node instanceof DOMDocument) {
+            if ($node instanceof \DOMDocument) {
                 $doc = $node;
                 $doc->normalizeDocument();
             } else {
-                // Make a new DOMDocument, otherwise the namespace
+                // Make a new \DOMDocument, otherwise the namespace
                 // declarations may come out wrong.
-                $doc = new DOMDocument();
+                $doc = new \DOMDocument();
                 $doc->appendChild($doc->importNode($node, true));
             }
 

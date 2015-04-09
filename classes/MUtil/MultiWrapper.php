@@ -1,10 +1,9 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,52 +25,55 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
- * 
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package MUtil
+ *
+ *
+ * @package    MUtil
+ * @subpackage Ra
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
  * Magic object for enabling multiple objects to be treated as one object.
- * 
+ *
  * This objects passed all object manipulations on to the array of objects contained in it
  * allowing you to handle multiple objects as if they were a single object.
- * 
+ *
  * No the creators of object orientation do not tumble in their graves. First most of them
  * all still alive and second this is acutally just an extension of generics. PHP does
  * not have generics at this time and those languages that do, do not support this type of
  * generics, but there is no mathematical reason why this should not work.
- * 
- * @author Matijs de Jong
- * @package MUtil
+ *
+ * @package    MUtil
+ * @subpackage Ra
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since MUtil version 1.0
  */
-class MUtil_MultiWrapper implements ArrayAccess
+class MUtil_MultiWrapper implements \ArrayAccess
 {
     /**
      * The items that will be treated as one.
-     * 
+     *
      * @var array
      */
     protected $_array;
-    
+
     /**
      * The class name used to create new class instances for function call results
-     * 
-     * @var string 
+     *
+     * @var string
      */
     protected $_class = __CLASS__;
 
     /**
      * Pass on functions calls ans return the results as a new Wrapper
-     * 
+     *
      * @param string $name
      * @param array $arguments
-     * @return MUtil_MultiWrapper
+     * @return \MUtil_MultiWrapper
      */
     public function __call($name, array $arguments)
     {
@@ -85,8 +87,8 @@ class MUtil_MultiWrapper implements ArrayAccess
     }
 
     /**
-     * 
-     * @param array|Traversable $array 
+     *
+     * @param array|Traversable $array
      */
     public function __construct($array)
     {

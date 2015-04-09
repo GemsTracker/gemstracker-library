@@ -28,7 +28,7 @@
  *
  *
  * @package    MUtil
- * @subpackage Html
+ * @subpackage Ra
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
@@ -36,10 +36,10 @@
  */
 
 /**
- * Simple extension of ArrayObject allowing casting to string with (optionally) a specified glue.
+ * Simple extension of \ArrayObject allowing casting to string with (optionally) a specified glue.
  *
  * @package    MUtil
- * @subpackage Html
+ * @subpackage Ra
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since MUtil version 1.0

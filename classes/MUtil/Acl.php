@@ -35,7 +35,7 @@
  */
 
 /**
- * Extends Zend_Acl with a couple of overview functions
+ * Extends \Zend_Acl with a couple of overview functions
  *
  * @package    MUtil
  * @subpackage Acl
@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class MUtil_Acl extends Zend_Acl
+class MUtil_Acl extends \Zend_Acl
 {
     const PARENTS   = 'PARENTS';
     const INHERITED = 'INHERITED';
@@ -51,21 +51,21 @@ class MUtil_Acl extends Zend_Acl
     /**
      * Adds an "allow" rule to the ACL
      *
-     * @param  Zend_Acl_Role_Interface|string|array     $roles
+     * @param  \Zend_Acl_Role_Interface|string|array     $roles
      * @param  string|array                             $privileges
-     * @uses   Zend_Acl::allow()
-     * @return Zend_Acl Provides a fluent interface
+     * @uses   \Zend_Acl::allow()
+     * @return \Zend_Acl Provides a fluent interface
      */
     public function addPrivilege($roles, $privileges_args)
     {
-        $privileges = MUtil_Ra::args(func_get_args(), 1);
+        $privileges = \MUtil_Ra::args(func_get_args(), 1);
 
         return $this->allow($roles, null, $privileges);
     }
 
     public function echoRules()
     {
-        MUtil_Echo::r($this->_rules);
+        \MUtil_Echo::r($this->_rules);
     }
 
     public function getPrivilegeRoles()
@@ -92,7 +92,7 @@ class MUtil_Acl extends Zend_Acl
                         }
                     }
                 }
-                // MUtil_Echo::r($results);
+                // \MUtil_Echo::r($results);
             }
         }
 
@@ -124,11 +124,11 @@ class MUtil_Acl extends Zend_Acl
      *
      * Sample output:
      * <code>
-     *   [MUtil_Acl::PARENTS]=>array(parent_name=>parent_object),
-     *   [Zend_Acl::TYPE_ALLOW]=>array([index]=>privilege),
-     *   [Zend_Acl::TYPE_DENY]=>array([index]=>privilege),
-     *   [MUtil_Acl::INHERITED]=>array([Zend_Acl::TYPE_ALLOW]=>array([index]=>privilege),
-     *                                 [Zend_Acl::TYPE_DENY]=>array([index]=>privilege))
+     *   [\MUtil_Acl::PARENTS]=>array(parent_name=>parent_object),
+     *   [\Zend_Acl::TYPE_ALLOW]=>array([index]=>privilege),
+     *   [\Zend_Acl::TYPE_DENY]=>array([index]=>privilege),
+     *   [\MUtil_Acl::INHERITED]=>array([\Zend_Acl::TYPE_ALLOW]=>array([index]=>privilege),
+     *                                 [\Zend_Acl::TYPE_DENY]=>array([index]=>privilege))
      * </code>
      *
      * @return array
@@ -169,8 +169,8 @@ class MUtil_Acl extends Zend_Acl
      *
      * Sample output:
      * <code>
-     *   [Zend_Acl::TYPE_ALLOW]=>array(<index>=>privilege),
-     *   [Zend_Acl::TYPE_DENY]=>array(<index>=>privilege)
+     *   [\Zend_Acl::TYPE_ALLOW]=>array(<index>=>privilege),
+     *   [\Zend_Acl::TYPE_DENY]=>array(<index>=>privilege)
      * </code>
      *
      * @param string $role
@@ -199,14 +199,14 @@ class MUtil_Acl extends Zend_Acl
     /**
      * Removes a previously set "allow" rule from the ACL
      *
-     * @param  Zend_Acl_Role_Interface|string|array     $roles
+     * @param  \Zend_Acl_Role_Interface|string|array     $roles
      * @param  string|array                             $privileges
-     * @uses   Zend_Acl::allow()
-     * @return Zend_Acl Provides a fluent interface
+     * @uses   \Zend_Acl::allow()
+     * @return \Zend_Acl Provides a fluent interface
      */
     public function removePrivilege($roles, $privileges_args)
     {
-        $privileges = MUtil_Ra::args(func_get_args(), 1);
+        $privileges = \MUtil_Ra::args(func_get_args(), 1);
 
         return $this->removeAllow($roles, null, $privileges);
     }

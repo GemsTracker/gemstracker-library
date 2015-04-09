@@ -52,13 +52,13 @@ class MUtil_Https
      */
     public static function enforce()
     {
-        if (self::on() || MUtil_Console::isConsole() || Zend_Session::$_unitTestEnabled) {
+        if (self::on() || \MUtil_Console::isConsole() || \Zend_Session::$_unitTestEnabled) {
             return;
         }
 
-        $request    = Zend_Controller_Front::getInstance()->getRequest();
+        $request    = \Zend_Controller_Front::getInstance()->getRequest();
         $url        = 'https://' . $_SERVER['HTTP_HOST'] . $request->getRequestUri();
-        $redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
+        $redirector = \Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
         $redirector->gotoUrl($url);
 
     }
