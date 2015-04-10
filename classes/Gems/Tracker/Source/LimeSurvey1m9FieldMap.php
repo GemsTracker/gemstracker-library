@@ -797,7 +797,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                     $tmpres['answers'] = array(''); // Empty array prevents "n/a" display
 
                     // Add non answered question for grouping
-                    $result['_' . $name . '_'] = $tmpres;
+                    $result[$field['title']] = $tmpres;
 
                     // "Next" question
                     $tmpres['question'] = $this->removeMarkup($field['sq_question']);
