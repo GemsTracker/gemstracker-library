@@ -54,7 +54,7 @@ class Gems_AccessLog
      *
      * @var \Gems_Util_AccessLogActions
      */
-    private $_actions = array();
+    private $_actions = false;
 
     /**
      *
@@ -156,21 +156,20 @@ class Gems_AccessLog
     {
         try {
             $rows = $this->_db->fetchAssoc("SELECT * FROM gems__log_setup ORDER BY gls_name");
-        } catch (Exception $exc) {
+
+        } catch (\Exception $exc) {
             $rows = array();
 
-            if ($this->_loader->getCurrentUser()->isActive()) {
-                \MUtil_Echo::r('Database needs to be updated!');
-            }
+            \MUtil_Echo::r('Database needs to be updated!');
         }
 
         $output = array();
-        foreach ($rows as $row) {
+        foreach ((array) $rows as $row) {
             $output[$row['gls_name']] = $row;
         }
 
         // \MUtil_Echo::track($output);
-        $this->_cache->save($output, $this->_cacheId, array('accesslog_actions'));
+        // $this->_cache->save($output, $this->_cacheId, array('accesslog_actions'));
 
         return $output;
     }
@@ -262,7 +261,7 @@ class Gems_AccessLog
         try {
             $this->_db->insert('gems__log_activity', $row);
             return true;
-        } catch (Exception $exc) {
+        } catch (\Exception $exc) {
             \Gems_Log::getLogger()->logError($exc, $request);
             \MUtil_Echo::r('Database needs to be updated!');
             return false;
@@ -309,12 +308,16 @@ class Gems_AccessLog
         $values['gls_changed']      = $values['gls_created']    = new \MUtil_Db_Expr_CurrentTimestamp();
         $values['gls_changed_by']   = $values['gls_created_by'] = \Gems_User_UserLoader::SYSTEM_USER_ID;
 
-        $this->_db->insert('gems__log_setup', $values);
+        try {
+            $this->_db->insert('gems__log_setup', $values);
 
-        $this->_actions = $this->_getActionsDb();
+            $this->_actions = $this->_getActionsDb();
 
-        if (array_key_exists($action,  $this->_actions)) {
-            return $this->_actions[$action];
+            if (array_key_exists($action,  $this->_actions)) {
+                return $this->_actions[$action];
+            }
+        } catch (\Exception $exc) {
+            \MUtil_Echo::r('Database needs to be updated!');
         }
 
         return array(
