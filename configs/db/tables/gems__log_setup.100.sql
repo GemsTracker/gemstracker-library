@@ -23,6 +23,7 @@ CREATE TABLE if not exists gems__log_setup (
 INSERT INTO gems__log_setup (gls_name, gls_when_no_user, gls_on_action, gls_on_post, gls_on_change,
         gls_changed, gls_changed_by, gls_created, gls_created_by)
     VALUES
+        ('index.login',        0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('respondent.show',    0, 1, 0, 0, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('track.edit-track',   0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('track.delete-track', 0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
@@ -30,4 +31,5 @@ INSERT INTO gems__log_setup (gls_name, gls_when_no_user, gls_on_action, gls_on_p
         ('database.run',       0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('database.run-all',   0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('database.run-sql',   0, 0, 1, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-        ('database.view',      0, 1, 0, 0, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
+        ('database.view',      0, 1, 0, 0, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('export.index',       0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);

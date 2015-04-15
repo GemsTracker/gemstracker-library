@@ -445,7 +445,7 @@ class Gems_Default_ExportAction extends \Gems_Controller_Action
         if (isset($data['type']) && !empty($data['sid'])) {
             //Do the logging
             $message = \Zend_Json::encode($data);
-            $this->accesslog->log('export', $this->getRequest(), $message, null, true);
+            $this->accesslog->logChange($this->getRequest());
 
             //And delegate the export to the right class
             $exportClass = $this->export->getExport($data['type']);

@@ -281,7 +281,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                 /**
                  * Log the login
                  */
-                $this->accesslog->log("index.login", $this->getRequest(), null, $user->getUserId(), true);
+                $this->accesslog->logChange($this->getRequest(), null, "Login successful");
 
                 if ($previousRequestParameters) {
                     $this->_reroute(array('controller' => $previousRequestParameters['controller'], 'action' => $previousRequestParameters['action']), false);
@@ -301,7 +301,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                 //when the project has logging enabled
                 $logErrors = join(' - ', $errors);
                 $msg = sprintf('Failed login for : %s (%s) - %s', $request->getParam($form->usernameFieldName), $request->getParam($form->organizationFieldName), $logErrors);
-                $this->accesslog->log('loginFail', $this->getRequest(), $msg, null, true);
+                $this->accesslog->logChange($this->getRequest(), null, $msg);
             } // */
         } else {
             if ($request->isPost()) {
