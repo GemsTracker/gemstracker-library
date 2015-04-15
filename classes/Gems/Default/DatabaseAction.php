@@ -486,7 +486,10 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
                 // Hide the form: it is needed for the batch post, but we do not want it visible
                 $form->setAttrib('style', 'display: none;');
 
-                $this->accesslog->logChange($this->_request, null, $this->getMessenger()->getMessages());
+                $messages = $this->getMessenger()->getCurrentMessages();
+                if ($messages) {
+                    $this->accesslog->logChange($this->_request, null, $messages);
+                }
             }
 
         } else {

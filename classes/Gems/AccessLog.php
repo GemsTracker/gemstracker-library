@@ -160,7 +160,7 @@ class Gems_AccessLog
         } catch (\Exception $exc) {
             $rows = array();
 
-            \MUtil_Echo::r('Database needs to be updated!');
+            $this->_warn();
         }
 
         $output = array();
@@ -263,7 +263,7 @@ class Gems_AccessLog
             return true;
         } catch (\Exception $exc) {
             \Gems_Log::getLogger()->logError($exc, $request);
-            \MUtil_Echo::r('Database needs to be updated!');
+            $this->_warn();
             return false;
         }
     }
@@ -279,7 +279,36 @@ class Gems_AccessLog
         if (is_scalar($data)) {
             return $data;
         }
-        return json_encode($data);
+        if ($data) {
+            // Cleanup messenger data
+            //
+            // Array with only one element with key 0 are normalized
+            while (is_array($data) && (1 === count($data)) && isset($data[0])) {
+                $data = $data[0];
+            }
+            // "Info" data removed
+            if (is_array($data) && (2 === count($data)) && isset($data[0], $data[1])) {
+                if ('info' === $data[1]) {
+                    $data = $data[0];
+                }
+            }
+            return json_encode($data);
+        }
+    }
+
+    /**
+     * Send a warning, if not already done
+     *
+     * @staticvar boolean $warn
+     */
+    private function _warn()
+    {
+        static $warn = true;
+
+        if ($warn) {
+            \MUtil_Echo::r('Database needs to be updated, tables missing!');
+            $warn = false;
+        }
     }
 
     /**
@@ -317,7 +346,7 @@ class Gems_AccessLog
                 return $this->_actions[$action];
             }
         } catch (\Exception $exc) {
-            \MUtil_Echo::r('Database needs to be updated!');
+            $this->_warn();
         }
 
         return array(
