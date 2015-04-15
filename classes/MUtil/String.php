@@ -217,4 +217,15 @@ class MUtil_String
 
         return substr($input, $i);
     }
+
+    /**
+     * Cleanup characters not allowed in a cache id.
+     *
+     * @param string $cacheId
+     * @return string
+     */
+    public static function toCacheId($cacheId)
+    {
+        return preg_replace('/[^a-zA-Z0-9_]/', '_', $cacheId);
+    }
 }

@@ -1046,7 +1046,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends \MUtil_Snippets_WizardF
     /**
      * Set what to do when the form is 'finished'.
      *
-     * @return \MUtil_Snippets_ModelFormSnippetAbstract (continuation pattern)
+     * @return \MUtil_Snippets_Standard_ModelImportSnippet
      */
     protected function setAfterSaveRoute()
     {

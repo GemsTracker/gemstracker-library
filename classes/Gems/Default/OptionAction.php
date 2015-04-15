@@ -220,11 +220,12 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
         $this->html->p($this->_('This overview provides information about the last login activity on your account.'));
         $this->html->br();
 
-        $sql = "SELECT glua.glua_remote_ip,UNIX_TIMESTAMP(glua.glua_created) AS glua_created
-        FROM gems__log_actions glac LEFT JOIN gems__log_useractions glua
-        ON glac.glac_id_action = glua_action AND glua_by = ?
-        WHERE glac.glac_name = 'index.login'
-        ORDER BY glua.glua_created DESC LIMIT 10";
+        $sql = "SELECT glua.glua_remote_ip, UNIX_TIMESTAMP(glua.glua_created) AS glua_created
+                    FROM gems__log_setup LEFT JOIN
+                            gems__log_useractions glua ON gls_id_action = glua_action AND glua_by = ?
+                    WHERE gls_name = 'index.login'
+                    ORDER BY glua.glua_created DESC
+                    LIMIT 10";
 
         $activity = $this->db->fetchAll($sql, $this->loader->getCurrentUser()->getUserId());
 

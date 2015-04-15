@@ -1,0 +1,33 @@
+
+CREATE TABLE if not exists gems__log_setup (
+        gls_id_action       int unsigned not null auto_increment,
+        gls_name            varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null unique,
+
+        gls_when_no_user    boolean not null default 0,
+        gls_on_action       boolean not null default 0,
+        gls_on_post         boolean not null default 0,
+        gls_on_change       boolean not null default 1,
+
+        gls_changed         timestamp not null default current_timestamp on update current_timestamp,
+        gls_changed_by      bigint unsigned not null,
+        gls_created         timestamp not null,
+        gls_created_by      bigint unsigned not null,
+
+        PRIMARY KEY (gls_id_action),
+        INDEX (gls_name)
+    )
+    ENGINE=InnoDB
+    auto_increment = 70
+    CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+
+INSERT INTO gems__log_setup (gls_name, gls_when_no_user, gls_on_action, gls_on_post, gls_on_change,
+        gls_changed, gls_changed_by, gls_created, gls_created_by)
+    VALUES
+        ('respondent.show',    0, 1, 0, 0, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('track.edit-track',   0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('track.delete-track', 0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('database.patch',     0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('database.run',       0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('database.run-all',   0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('database.run-sql',   0, 0, 1, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('database.view',      0, 1, 0, 0, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);

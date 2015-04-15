@@ -73,11 +73,12 @@ class LogSearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
 
         $elements[] = $this->_('Specific action');
 
-        $sql = "SELECT glac_name, glac_name
-            FROM gems__log_actions
-            WHERE glac_change = 1 OR glac_on_post = 1 OR glac_log = 1
-            ORDER BY glac_name";
-        $elements[] = $this->_createSelectElement('glac_name', $sql, $this->_('(any action)'));
+        $sql = "SELECT gls_name, gls_name
+                    FROM gems__log_setup
+                    WHERE gls_when_no_user = 1 OR gls_on_action = 1 OR gls_on_change = 1 OR gls_on_post = 1
+                    ORDER BY gls_name";
+
+        $elements[] = $this->_createSelectElement('glua_id_action', $sql, $this->_('(any action)'));
 
         $elements[] = $this->_createSelectElement(
                 'glua_organization',

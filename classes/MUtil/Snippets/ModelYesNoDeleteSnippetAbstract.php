@@ -125,7 +125,7 @@ abstract class MUtil_Snippets_ModelYesNoDeleteSnippetAbstract extends \MUtil_Sni
     public function afterRegistry()
     {
         parent::afterRegistry();
-        
+
         if ($this->buttonClass) {
             if (! $this->buttonNoClass) {
                 $this->buttonNoClass = $this->buttonClass;
@@ -205,7 +205,7 @@ abstract class MUtil_Snippets_ModelYesNoDeleteSnippetAbstract extends \MUtil_Sni
     /**
      * Set what to do when the form is 'finished'.
      *
-     * @return \MUtil_Snippets_ModelFormSnippetAbstract (continuation pattern)
+     * @return \MUtil_Snippets_ModelYesNoDeleteSnippetAbstract
      */
     protected function setAfterDeleteRoute()
     {

@@ -44,19 +44,19 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Snippets_Tracker_Fields_FieldDeleteSnippet extends Gems_Snippets_ModelItemYesNoDeleteSnippetGeneric
+class Gems_Snippets_Tracker_Fields_FieldDeleteSnippet extends \Gems_Snippets_ModelItemYesNoDeleteSnippetGeneric
 {
     /**
      * Set what to do when the form is 'finished'.
      *
-     * @return MUtil_Snippets_ModelFormSnippetAbstract (continuation pattern)
+     * @return \Gems_Snippets_Tracker_Fields_FieldDeleteSnippet (continuation pattern)
      */
     protected function setAfterDeleteRoute()
     {
         parent::setAfterDeleteRoute();
 
         if ($this->afterSaveRouteUrl) {
-            $this->afterSaveRouteUrl[MUtil_Model::REQUEST_ID] = $this->request->getParam(MUtil_Model::REQUEST_ID);
+            $this->afterSaveRouteUrl[\MUtil_Model::REQUEST_ID] = $this->request->getParam(\MUtil_Model::REQUEST_ID);
         }
     }
 }

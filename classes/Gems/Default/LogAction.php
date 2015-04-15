@@ -88,7 +88,7 @@ class Gems_Default_LogAction extends \Gems_Controller_ModelSnippetActionAbstract
         $html = \MUtil_Html::create();
         $br   = $html->br();
 
-        $columns[10] = array('glua_created', $br, 'glac_name');
+        $columns[10] = array('glua_created', $br, 'gls_name');
         // $columns[15] = array('glua_message');
         $columns[20] = array('staff_name', $br, 'glua_organization');
         $columns[30] = array('respondent_name');
@@ -111,14 +111,14 @@ class Gems_Default_LogAction extends \Gems_Controller_ModelSnippetActionAbstract
     {
         //\MUtil_Model::$verbose=true;
         $model = new \Gems_Model_JoinModel('Log', 'gems__log_useractions');
-        $model->addLeftTable('gems__log_actions', array('glua_action'=>'glac_id_action'));
+        $model->addLeftTable('gems__log_setup', array('glua_action' => 'gls_id_action'));
         $model->addLeftTable('gems__respondents', array('glua_to'=>'grs_id_user'));
         $model->addLeftTable('gems__staff', array('glua_by'=>'gsf_id_user'));
         $model->addColumn("CONCAT(gsf_last_name, ', ', COALESCE(CONCAT(gsf_first_name, ' '), ''), COALESCE(gsf_surname_prefix, ''))", 'staff_name');
         $model->addColumn("CONCAT(grs_last_name, ', ', COALESCE(CONCAT(grs_first_name, ' '), ''), COALESCE(grs_surname_prefix, ''))", 'respondent_name');
         $model->resetOrder();
         $model->set('glua_created', 'label', $this->_('Date'));
-        $model->set('glac_name', 'label', $this->_('Action'));
+        $model->set('gls_name', 'label', $this->_('Action'));
         $model->set('glua_message', 'label', $this->_('Message'));
         $model->set('staff_name', 'label', $this->_('Staff'));
 

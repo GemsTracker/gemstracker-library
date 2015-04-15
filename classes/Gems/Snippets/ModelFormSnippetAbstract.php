@@ -58,6 +58,12 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
 {
     /**
      *
+     * @var \Gems_AccessLog
+     */
+    protected $accesslog;
+
+    /**
+     *
      * @var \Zend_Cache_Core
      */
     protected $cache;
@@ -210,6 +216,15 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
     protected function afterSave($changed)
     {
         parent::afterSave($changed);
+
+        if ($changed) {
+            $this->accesslog->logChange(
+                    $this->request,
+                    null,
+                    sprintf($this->_('%2$u %1$s saved'), $this->getTopic($changed), $changed),
+                    $this->formData
+                    );
+        }
 
         if ($this->cacheTags && ($this->cache instanceof \Zend_Cache_Core)) {
             $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, (array) $this->cacheTags);
@@ -371,7 +386,7 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
     /**
      * If menu item does not exist or is not allowed, redirect to index
      *
-     * @return \MUtil_Snippets_ModelFormSnippetAbstract (continuation pattern)
+     * @return \Gems_Snippets_ModelFormSnippetAbstract
      */
     protected function setAfterSaveRoute()
     {

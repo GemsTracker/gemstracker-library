@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-abstract class Gems_Registry_CachedArrayTargetAbstract extends Gems_Registry_TargetAbstract
+abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_TargetAbstract
 {
     /**
      * Variable to add tags to the cache for cleanup.
@@ -69,7 +69,7 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends Gems_Registry_Tar
 
     /**
      *
-     * @var Zend_Cache_Core
+     * @var \Zend_Cache_Core
      */
     protected $cache;
 
@@ -101,7 +101,8 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends Gems_Registry_Tar
      *
      * @return string
      */
-    private function _getCacheId() {
+    private function _getCacheId()
+    {
         return GEMS_PROJECT_NAME . '__' . get_class($this) . '__' . preg_replace('/[^a-zA-Z0-9_]/', '_', $this->_id);
     }
 
@@ -115,13 +116,13 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends Gems_Registry_Tar
     {
         return (boolean) isset($this->_data[$name]);
     }
-    
+
     /**
      * Changes a value and signals the cache.
      *
      * @param string $name
      * @param mixed $value
-     * @return Gems_Registry_CachedArrayTargetAbstract (continuation pattern)
+     * @return \Gems_Registry_CachedArrayTargetAbstract (continuation pattern)
      */
     protected function _set($name, $value)
     {
@@ -158,7 +159,7 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends Gems_Registry_Tar
                 $this->cache->save($this->_data, $cacheId, $this->_cacheTags);
             }
         }
-        // MUtil_Echo::track($this->_data);
+        // \MUtil_Echo::track($this->_data);
 
         return is_array($this->_data) && parent::checkRegistryRequestsAnswers();
     }
@@ -166,9 +167,10 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends Gems_Registry_Tar
     /**
      * Empty the cache of the organization
      *
-     * @return Gems_User_Organization (continutation pattern)
+     * @return \Gems_User_Organization (continutation pattern)
      */
-    public function invalidateCache() {
+    public function invalidateCache()
+    {
         if ($this->cache) {
             $cacheId = $this->_getCacheId();
             $this->cache->remove($cacheId);

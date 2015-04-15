@@ -43,95 +43,95 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Loader extends Gems_Loader_LoaderAbstract
+class Gems_Loader extends \Gems_Loader_LoaderAbstract
 {
     /**
      *
-     * @var Gems_Agenda
+     * @var \Gems_Agenda
      */
     protected $agenda;
 
     /**
      *
-     * @var Gems_Events
+     * @var \Gems_Events
      */
     protected $events;
 
     /**
      *
-     * @var Gems_Export
+     * @var \Gems_Export
      */
     protected $export;
 
     /**
      *
-     * @var Gems_Import_ImportLoader
+     * @var \Gems_Import_ImportLoader
      */
     protected $importLoader;
 
     /**
      *
-     * @var Gems_Model
+     * @var \Gems_Model
      */
     protected $models;
 
     /**
      *
-     * @var Gems_Pdf
+     * @var \Gems_Pdf
      */
     protected $pdf;
 
     /**
      *
-     * @var Gems_Export_RespondentExport
+     * @var \Gems_Export_RespondentExport
      */
     protected $respondentexport;
 
     /**
      *
-     * @var Gems_Roles
+     * @var \Gems_Roles
      */
     protected $roles;
 
     /**
      *
-     * @var Gems_Selector
+     * @var \Gems_Selector
      */
     protected $selector;
 
     /**
      *
-     * @var Gems_Snippets_SnippetLoader
+     * @var \Gems_Snippets_SnippetLoader
      */
     protected $snippetLoader;
 
     /**
      *
-     * @var Gems_Tracker
+     * @var \Gems_Tracker
      */
     protected $tracker;
 
     /**
      *
-     * @var Gems_Upgrades
+     * @var \Gems_Upgrades
      */
     protected $upgrades;
 
     /**
      *
-     * @var Gems_User_UserLoader
+     * @var \Gems_User_UserLoader
      */
     protected $userLoader;
 
     /**
      *
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     protected $util;
 
     /**
      *
-     * @var Gems_Versions
+     * @var \Gems_Versions
      */
     protected $versions;
 
@@ -139,7 +139,7 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
      * Load project specific menu or general Gems menu otherwise
      *
      * @param GemsEscort $escort
-     * @return Gems_Menu
+     * @return \Gems_Menu
      */
     public function createMenu(GemsEscort $escort)
     {
@@ -149,7 +149,7 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return Gems_Agenda
+     * @return \Gems_Agenda
      */
     public function getAgenda()
     {
@@ -158,7 +158,7 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return Gems_User_User
+     * @return \Gems_User_User
      */
     public function getCurrentUser()
     {
@@ -169,7 +169,7 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return Gems_Events
+     * @return \Gems_Events
      */
     public function getEvents()
     {
@@ -178,7 +178,7 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return Gems_Export
+     * @return \Gems_Export
      */
     public function getExport()
     {
@@ -186,7 +186,7 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
     }
 
     /**
-     * @return Gems_Mail
+     * @return \Gems_Mail
      */
     public function getMail($charset = null)
     {
@@ -194,7 +194,7 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
     }
 
     /**
-     * @return Gems_Mail_MailLoader
+     * @return \Gems_Mail_MailLoader
      */
     public function getMailLoader()
     {
@@ -211,7 +211,7 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
      * Get the project specific menu or general Gems menu otherwise
      *
      * @param GemsEscort $escort
-     * @return Gems_Menu
+     * @return \Gems_Menu
      */
     public function getMenu(GemsEscort $escort)
     {
@@ -220,7 +220,7 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return Gems_Import_ImportLoader
+     * @return \Gems_Import_ImportLoader
      */
     public function getImportLoader()
     {
@@ -234,7 +234,7 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return Gems_Model
+     * @return \Gems_Model
      */
     public function getModels()
     {
@@ -245,7 +245,7 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
      * Returns an organization object, initiated from the database.
      *
      * @param int $organizationId Optional, uses current user when empty
-     * @return Gems_User_Organization
+     * @return \Gems_User_Organization
      */
     public function getOrganization($organizationId = null)
     {
@@ -256,7 +256,7 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return Gems_Pdf
+     * @return \Gems_Pdf
      */
     public function getPdf()
     {
@@ -269,7 +269,7 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
      * @param string $patientId   Patient number, you can use $respondentId instead
      * @param int $organizationId Organization id
      * @param int $respondentId   Optional respondent id, used when patient id is empty
-     * @return Gems_Tracker_Respondent
+     * @return \Gems_Tracker_Respondent
      */
     public function getRespondent($patientId, $organizationId, $respondentId = null)
     {
@@ -279,7 +279,7 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
     /**
      * Get a new respondentExport
      *
-     * @return Gems_Export_RespondentExport
+     * @return \Gems_Export_RespondentExport
      */
     public function getRespondentExport($container)
     {
@@ -293,7 +293,7 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
     /**
      *
      * @param GemsEscort $escort
-     * @return Gems_Roles
+     * @return \Gems_Roles
      */
     public function getRoles(GemsEscort $escort)
     {
@@ -302,7 +302,7 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return Gems_Selector
+     * @return \Gems_Selector
      */
     public function getSelector()
     {
@@ -311,7 +311,7 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return Gems_Snippets_SnippetLoader
+     * @return \Gems_Snippets_SnippetLoader
      */
     public function getSnippetLoader($container)
     {
@@ -325,10 +325,10 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
     /**
      *
      * @param type $id
-     * @param MUtil_Batch_Stack_Stackinterface $stack Optional different stack than session stack
-     * @return Gems_Task_TaskRunnerBatch
+     * @param \MUtil_Batch_Stack_Stackinterface $stack Optional different stack than session stack
+     * @return \Gems_Task_TaskRunnerBatch
      */
-    public function getTaskRunnerBatch($id, MUtil_Batch_Stack_Stackinterface $stack = null)
+    public function getTaskRunnerBatch($id, \MUtil_Batch_Stack_Stackinterface $stack = null)
     {
         $id = preg_replace('/[^a-zA-Z0-9_]/', '', $id);
 
@@ -336,13 +336,13 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
             $cache = $this->_containers[0]->cache;
 
             // Make sure the cache is caching
-            if (($cache instanceof Zend_Cache_Core) && $cache->getOption('caching')) {
-                $stack = new MUtil_Batch_Stack_CacheStack($id, $this->_containers[0]->cache);
+            if (($cache instanceof \Zend_Cache_Core) && $cache->getOption('caching')) {
+                $stack = new \MUtil_Batch_Stack_CacheStack($id, $this->_containers[0]->cache);
             }
         }
         $taskBatch = $this->_loadClass('Task_TaskRunnerBatch', true, array_filter(array($id, $stack)));
 
-        if ($taskBatch instanceof MUtil_Task_TaskBatch) {
+        if ($taskBatch instanceof \MUtil_Task_TaskBatch) {
             $taskBatch->setSource($this);
             $taskBatch->addTaskLoaderPrefixDirectories($this->_cascadedDirs($this->_dirs, 'Task'));
         }
@@ -352,7 +352,7 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return Gems_Tracker_TrackerInterface
+     * @return \Gems_Tracker_TrackerInterface
      */
     public function getTracker()
     {
@@ -361,7 +361,7 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return Gems_Upgrades
+     * @return \Gems_Upgrades
      */
     public function getUpgrades()
     {
@@ -372,7 +372,7 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
      *
      * @param string $login_name
      * @param int $organization
-     * @return Gems_User_User
+     * @return \Gems_User_User
      */
     public function getUser($login_name, $organization)
     {
@@ -383,7 +383,7 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return Gems_User_UserLoader
+     * @return \Gems_User_UserLoader
      */
     public function getUserLoader()
     {
@@ -392,7 +392,7 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return Gems_Util
+     * @return \Gems_Util
      */
     public function getUtil()
     {
@@ -401,7 +401,7 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return Gems_Versions
+     * @return \Gems_Versions
      */
     public function getVersions()
     {

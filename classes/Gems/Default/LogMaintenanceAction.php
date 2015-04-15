@@ -57,7 +57,7 @@ class Gems_Default_LogMaintenanceAction extends \Gems_Controller_ModelSnippetAct
      * @var array Mixed key => value array for snippet initialization
      */
     protected $autofilterParameters = array(
-        'extraSort' => array('glac_name' => SORT_ASC),
+        'extraSort' => array('gls_name' => SORT_ASC),
         );
 
     /**
@@ -94,23 +94,30 @@ class Gems_Default_LogMaintenanceAction extends \Gems_Controller_ModelSnippetAct
      */
     protected function createModel($detailed, $action)
     {
-        $model = new \Gems_Model_JoinModel('log_maint', 'gems__log_actions', true);
-        $model->set('glac_name', 'label', $this->_('Action'),
-                'elementClass', 'Exhibitor');
+        $model = new \Gems_Model_JoinModel('log_maint', 'gems__log_setup', true);
+        $model->set('gls_name', 'label', $this->_('Action'),
+                'elementClass', 'Exhibitor',
+                'validators[unique]', $model->createUniqueValidator('gls_name'));
 
-        $model->set('glac_log', 'label', $this->_('Log always'),
+        $model->set('gls_when_no_user', 'label', $this->_('Log when no user'),
+                'description', $this->_('Always log this action, even when no one is logged in.'),
+                'elementClass', 'CheckBox',
+                'multiOptions', $this->util->getTranslated()->getYesNo()
+                );
+
+        $model->set('gls_on_action', 'label', $this->_('Log action'),
                 'description', $this->_('Always log this action.'),
                 'elementClass', 'CheckBox',
                 'multiOptions', $this->util->getTranslated()->getYesNo()
                 );
 
-        $model->set('glac_on_post', 'label', $this->_('Log on post'),
-                'description', $this->_('Log only when posted.'),
+        $model->set('gls_on_post', 'label', $this->_('Log on post'),
+                'description', $this->_('Log when posted.'),
                 'elementClass', 'CheckBox',
                 'multiOptions', $this->util->getTranslated()->getYesNo()
                 );
 
-        $model->set('glac_change', 'label', $this->_('Log on change'),
+        $model->set('gls_on_change', 'label', $this->_('Log on change'),
                 'description', $this->_('Log when this action changes data.'),
                 'elementClass', 'CheckBox',
                 'multiOptions', $this->util->getTranslated()->getYesNo()

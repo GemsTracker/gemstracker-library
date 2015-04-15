@@ -47,6 +47,12 @@
 class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
+     *
+     * @var \Gems_AccessLog
+     */
+    public $accesslog;
+
+    /**
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
@@ -479,6 +485,8 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
 
                 // Hide the form: it is needed for the batch post, but we do not want it visible
                 $form->setAttrib('style', 'display: none;');
+
+                $this->accesslog->logChange($this->_request, null, $this->getMessenger()->getMessages());
             }
 
         } else {
@@ -620,6 +628,7 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
                     $results[] = sprintf($this->_('Finished %s creation script for object %d of %d'), $this->_(strtolower($data['type'])), $i, $oCount);
                     $i++;
                 }
+                $this->accesslog->logChange($this->_request, null, $results);
 
             } else {
                 $results[] = $this->_('All objects exist. Nothing was executed.');
@@ -680,14 +689,17 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
             $results   = $model->runScript($data, true);
             $resultSet = 1;
             $echos     = \MUtil_Html::create()->array();
+            $output    = array();
             foreach ($results as $result) {
                 if (is_string($result)) {
                     $this->addMessage($result);
+                    $output[] = $result;
                 } else {
                     $echo = $echos->echo($result, sprintf($this->_('Result set %s.'), $resultSet++));
                     $echo->class = 'browser';
                 }
             }
+            $this->accesslog->logChange($this->_request, null, $output, $data['script']);
 
         } else {
             $form->populate($_POST);

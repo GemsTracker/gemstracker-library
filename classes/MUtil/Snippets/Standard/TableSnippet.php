@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,8 +25,8 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
- * 
+ *
+ *
  * @package    MUtil
  * @subpackage Snippets
  * @author     Matijs de Jong <mjong@magnafacta.nl>
@@ -36,9 +36,9 @@
  */
 
 /**
- * Outputs the data supplied through the $data or $repeater parameter 
+ * Outputs the data supplied through the $data or $repeater parameter
  * in a simple standard Html table.
- * 
+ *
  * This class does not change anything in the code, but was created
  * to make sure all standard snippets are written in the same pattern.
  *
@@ -48,6 +48,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-class TableSnippet extends \MUtil_Snippets_TableSnippetAbstract
+class MUtil_Snippets_Standard_TableSnippet extends \MUtil_Snippets_TableSnippetAbstract
 {
 }

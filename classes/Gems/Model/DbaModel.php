@@ -47,7 +47,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Model_DbaModel extends MUtil_Model_ArrayModelAbstract
+class Gems_Model_DbaModel extends \MUtil_Model_ArrayModelAbstract
 {
     const DEFAULT_ORDER = 1000;
 
@@ -65,13 +65,13 @@ class Gems_Model_DbaModel extends MUtil_Model_ArrayModelAbstract
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $defaultDb;
 
     /**
      *
-     * @var array 'path' => directory, 'db' => Zend_Db_Adapter_Abstract, 'name' => name
+     * @var array 'path' => directory, 'db' => \Zend_Db_Adapter_Abstract, 'name' => name
      */
     protected $directories;
 
@@ -82,16 +82,16 @@ class Gems_Model_DbaModel extends MUtil_Model_ArrayModelAbstract
     protected $file_encoding;
 
     /**
-     * @var Zend_Translate_Adapter
+     * @var \Zend_Translate_Adapter
      */
     protected $translate;
 
     /**
      *
-     * @param Zend_Db_Adapter_Abstract $db
-     * @param array $directories directory => name | Zend_Db_Adaptor_Abstract | array(['path' =>], 'name' =>, 'db' =>,)
+     * @param \Zend_Db_Adapter_Abstract $db
+     * @param array $directories directory => name | \Zend_Db_Adaptor_Abstract | array(['path' =>], 'name' =>, 'db' =>,)
      */
-    public function __construct(Zend_Db_Adapter_Abstract $db, array $directories)
+    public function __construct(\Zend_Db_Adapter_Abstract $db, array $directories)
     {
         parent::__construct('DbaModel');
 
@@ -100,33 +100,33 @@ class Gems_Model_DbaModel extends MUtil_Model_ArrayModelAbstract
         $this->directories = $directories;
 
         //Grab translate object from the Escort
-        $this->translate = GemsEscort::getInstance()->translate;
+        $this->translate = \GemsEscort::getInstance()->translate;
 
-        $this->set('group',       'maxlength', 40, 'type', MUtil_Model::TYPE_STRING);
-        $this->set('name',        'key', true, 'maxlength', 40, 'type', MUtil_Model::TYPE_STRING);
-        $this->set('type',        'maxlength', 40, 'type', MUtil_Model::TYPE_STRING);
-        $this->set('order',       'decimals', 0, 'default', self::DEFAULT_ORDER, 'maxlength', 6, 'type', MUtil_Model::TYPE_NUMERIC);
-        $this->set('defined',     'type', MUtil_Model::TYPE_NUMERIC);
-        $this->set('exists',      'type', MUtil_Model::TYPE_NUMERIC);
-        $this->set('state',       'type', MUtil_Model::TYPE_NUMERIC);
-        $this->set('path',        'maxlength', 255, 'type', MUtil_Model::TYPE_STRING);
-        $this->set('fullPath',    'maxlength', 255, 'type', MUtil_Model::TYPE_STRING);
-        $this->set('fileName',    'maxlength', 100, 'type', MUtil_Model::TYPE_STRING);
-        $this->set('script',      'type', MUtil_Model::TYPE_STRING);
-        $this->set('lastChanged', 'type', MUtil_Model::TYPE_DATETIME);
-        $this->set('location',    'maxlength', 12, 'type', MUtil_Model::TYPE_STRING);
+        $this->set('group',       'maxlength', 40, 'type', \MUtil_Model::TYPE_STRING);
+        $this->set('name',        'key', true, 'maxlength', 40, 'type', \MUtil_Model::TYPE_STRING);
+        $this->set('type',        'maxlength', 40, 'type', \MUtil_Model::TYPE_STRING);
+        $this->set('order',       'decimals', 0, 'default', self::DEFAULT_ORDER, 'maxlength', 6, 'type', \MUtil_Model::TYPE_NUMERIC);
+        $this->set('defined',     'type', \MUtil_Model::TYPE_NUMERIC);
+        $this->set('exists',      'type', \MUtil_Model::TYPE_NUMERIC);
+        $this->set('state',       'type', \MUtil_Model::TYPE_NUMERIC);
+        $this->set('path',        'maxlength', 255, 'type', \MUtil_Model::TYPE_STRING);
+        $this->set('fullPath',    'maxlength', 255, 'type', \MUtil_Model::TYPE_STRING);
+        $this->set('fileName',    'maxlength', 100, 'type', \MUtil_Model::TYPE_STRING);
+        $this->set('script',      'type', \MUtil_Model::TYPE_STRING);
+        $this->set('lastChanged', 'type', \MUtil_Model::TYPE_DATETIME);
+        $this->set('location',    'maxlength', 12, 'type', \MUtil_Model::TYPE_STRING);
         $this->set('state',       'multiOptions', array(
-            Gems_Model_DbaModel::STATE_CREATED => $this->_('created'),
-            Gems_Model_DbaModel::STATE_DEFINED => $this->_('not created'),
-            Gems_Model_DbaModel::STATE_UNKNOWN => $this->_('unknown')));
+            \Gems_Model_DbaModel::STATE_CREATED => $this->_('created'),
+            \Gems_Model_DbaModel::STATE_DEFINED => $this->_('not created'),
+            \Gems_Model_DbaModel::STATE_UNKNOWN => $this->_('unknown')));
     }
 
     /**
      * proxy for easy access to translations
      *
      * @param  string             $messageId Translation string
-     * @param  string|Zend_Locale $locale    (optional) Locale/Language to use, identical with locale
-     *                                       identifier, @see Zend_Locale for more information
+     * @param  string|\Zend_Locale $locale    (optional) Locale/Language to use, identical with locale
+     *                                       identifier, @see \Zend_Locale for more information
      * @return string
      */
     private function _($messageId, $locale = null)
@@ -185,7 +185,7 @@ class Gems_Model_DbaModel extends MUtil_Model_ArrayModelAbstract
             $location      = $pathData['name'];
             $db            = $pathData['db'];
             $tables        = $pathData['db']->listTables();
-            
+
             if ($tables) { // Can be empty
                 $tables = array_change_key_case(array_combine($tables, $tables), CASE_LOWER);
             }
@@ -231,8 +231,8 @@ class Gems_Model_DbaModel extends MUtil_Model_ArrayModelAbstract
                                     'path'        => $path,
                                     'fullPath'    => $file->getPathname(),
                                     'fileName'    => $file->getFilename(),
-                                    // MUtil_Lazy does not serialize
-                                    // 'script'      => MUtil_Lazy::call('file_get_contents', $file->getPathname()),
+                                    // \MUtil_Lazy does not serialize
+                                    // 'script'      => \MUtil_Lazy::call('file_get_contents', $file->getPathname()),
                                     'script'      => $fileContent,
                                     'lastChanged' => $file->getMTime(),
                                     'location'    => $location,
@@ -321,7 +321,7 @@ class Gems_Model_DbaModel extends MUtil_Model_ArrayModelAbstract
     {
         $results = array();
         if ($data['script']) {
-            $queries = MUtil_Parser_Sql_WordsParser::splitStatements($data['script'], false);
+            $queries = \MUtil_Parser_Sql_WordsParser::splitStatements($data['script'], false);
             $qCount  = count($queries);
 
             $results[] = sprintf($this->_('Executed %2$s creation script %1$s:'), $data['name'], $this->_(strtolower($data['type'])));
@@ -335,7 +335,7 @@ class Gems_Model_DbaModel extends MUtil_Model_ArrayModelAbstract
                         $db = $data['db'];
                     } else {
                         $db = $this->defaultDb;
-                        
+
                         // Lookup using location
                         if (isset($data['location'])) {
                             foreach ($this->directories as $path) {
@@ -358,8 +358,8 @@ class Gems_Model_DbaModel extends MUtil_Model_ArrayModelAbstract
                     } else {
                         $results[] = sprintf($this->_('Script ran step %d of %d succesfully.'), $i, $qCount);
                     }
-                } catch (Zend_Db_Statement_Exception $e) {
-                    $results[] = $e->getMessage() . $this->_('  in step ') . $i . ':<pre>' . $sql . '</pre>';
+                } catch (\Zend_Db_Statement_Exception $e) {
+                    $results[] = $e->getMessage() . $this->_('  in step ') . $i . ': ' . $sql;
                 }
                 $i++;
             }

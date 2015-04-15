@@ -44,16 +44,16 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Util extends Gems_Loader_TargetLoaderAbstract
+class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
 {
     /**
      *
-     * @var Gems_Util_BasePath
+     * @var \Gems_Util_BasePath
      */
     protected $basepath;
 
     /**
-     * Allows sub classes of Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
+     * Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
@@ -61,76 +61,58 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @var Gems_Util_DbLookup
+     * @var \Gems_Util_DbLookup
      */
     protected $dbLookup;
 
     /**
      *
-     * @var Gems_Util_ImportFiler
-     * /
-    protected $importFiler;
-
-    /**
-     *
-     * @var Gems_Util_Localized
+     * @var \Gems_Util_Localized
      */
     protected $localized;
 
     /**
      *
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     protected $project;
 
     /**
      *
-     * @var Gems_Util_ReceptionCodeLibrary
+     * @var \Gems_Util_ReceptionCodeLibrary
      */
     protected $receptionCodeLibrary;
 
     /**
      *
-     * @var Gems_Util_RequestCache
+     * @var \Gems_Util_RequestCache
      */
     protected $requestCache;
 
     /**
      *
-     * @var Gems_Util_TokenData
+     * @var \Gems_Util_TokenData
      */
     protected $tokenData;
 
     /**
      *
-     * @var Gems_Util_TrackData
+     * @var \Gems_Util_TrackData
      */
     protected $trackData;
 
     /**
      *
-     * @var Gems_Util_Translated
+     * @var \Gems_Util_Translated
      */
     protected $translated;
-
-    /**
-     * Returns the AccessLogActions
-     *
-     * @param string $code
-     * @return Gems_Util_AccessLogActions
-     */
-    public function getAccessLogActions()
-    {
-        return $this->_getClass('accessLogActions', null, array('AccessLogActions'));
-    }
-
 
     /**
      * Retrieve the consentCODE to use for rejected responses by the survey system
      * The mapping of actual consents to consentCODEs is done in the gems__consents table
      *
      * @return string Default value is 'do not use'
-     * @throws Gems_Exception_Coding
+     * @throws \Gems_Exception_Coding
      */
     public function getConsentRejected()
     {
@@ -139,7 +121,7 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
         }
 
         if ($this->project->offsetExists('concentRejected')) {
-            throw new Gems_Exception_Coding('project.ini setting was changed from "concentRejected" to "consentRejected", please update your project.ini');
+            throw new \Gems_Exception_Coding('project.ini setting was changed from "concentRejected" to "consentRejected", please update your project.ini');
         }
 
         return 'do not use';
@@ -177,7 +159,7 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
     /**
      * Returns the cron job lock
      *
-     * @return Gems_Util_LockFile
+     * @return \Gems_Util_LockFile
      */
     public function getCronJobLock()
     {
@@ -196,7 +178,7 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
         static $uri;
 
         if (! $uri) {
-            $uri = (MUtil_Https::on() || $this->project->isHttpsRequired()) ? 'https' : 'http';
+            $uri = (\MUtil_Https::on() || $this->project->isHttpsRequired()) ? 'https' : 'http';
 
             $uri .= '://';
             $uri .= isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : $this->project->getConsoleUrl();
@@ -227,7 +209,7 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @return Gems_Util_DbLookup
+     * @return \Gems_Util_DbLookup
      */
     public function getDbLookup()
     {
@@ -241,16 +223,7 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @return Gems_Util_ImportFiler
-     * /
-    public function getImportFiler()
-    {
-        return $this->_getClass('importFiler');
-    }
-
-    /**
-     *
-     * @return Gems_Util_Localized
+     * @return \Gems_Util_Localized
      */
     public function getLocalized()
     {
@@ -260,7 +233,7 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
     /**
      * Returns the maintenance lock
      *
-     * @return Gems_Util_LockFile
+     * @return \Gems_Util_LockFile
      */
     public function getMaintenanceLock()
     {
@@ -271,7 +244,7 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
      * Returns a single reception code object.
      *
      * @param string $code
-     * @return Gems_Util_ReceptionCode
+     * @return \Gems_Util_ReceptionCode
      */
     public function getReceptionCode($code)
     {
@@ -287,7 +260,7 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
     /**
      * Returns a
      *
-     * @return Gems_Util_ReceptionCodeLibrary
+     * @return \Gems_Util_ReceptionCodeLibrary
      */
     public function getReceptionCodeLibrary()
     {
@@ -298,7 +271,7 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
      *
      * @param string  $sourceAction    The action to get the cache from if not the current one.
      * @param boolean $readonly        Optional, tell the cache not to store any new values
-     * @return Gems_Util_RequestCache
+     * @return \Gems_Util_RequestCache
      */
     public function getRequestCache($sourceAction = null, $readonly = false)
     {
@@ -307,7 +280,7 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @return Gems_Util_TokenData
+     * @return \Gems_Util_TokenData
      */
     public function getTokenData()
     {
@@ -316,7 +289,7 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @return Gems_Util_TrackData
+     * @return \Gems_Util_TrackData
      */
     public function getTrackData()
     {
@@ -325,7 +298,7 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @return Gems_Util_Translated
+     * @return \Gems_Util_Translated
      */
     public function getTranslated()
     {

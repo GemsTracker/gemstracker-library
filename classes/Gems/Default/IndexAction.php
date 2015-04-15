@@ -47,6 +47,12 @@
 class Gems_Default_IndexAction extends Gems_Controller_Action
 {
     /**
+     *
+     * @var \Gems_AccessLog
+     */
+    public $accesslog;
+
+    /**
      * The width factor for the label elements.
      *
      * Width = (max(characters in labels) * labelWidthFactor) . 'em'
@@ -275,7 +281,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                 /**
                  * Log the login
                  */
-                Gems_AccessLog::getLog($this->db)->log("index.login", $this->getRequest(), null, $user->getUserId(), true);
+                $this->accesslog->log("index.login", $this->getRequest(), null, $user->getUserId(), true);
 
                 if ($previousRequestParameters) {
                     $this->_reroute(array('controller' => $previousRequestParameters['controller'], 'action' => $previousRequestParameters['action']), false);
@@ -295,8 +301,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                 //when the project has logging enabled
                 $logErrors = join(' - ', $errors);
                 $msg = sprintf('Failed login for : %s (%s) - %s', $request->getParam($form->usernameFieldName), $request->getParam($form->organizationFieldName), $logErrors);
-                $log = Gems_AccessLog::getLog();
-                $log->log('loginFail', $this->getRequest(), $msg, null, true);
+                $this->accesslog->log('loginFail', $this->getRequest(), $msg, null, true);
             } // */
         } else {
             if ($request->isPost()) {
@@ -327,7 +332,6 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
     {
         $errors  = array();
         $form    = $this->createResetRequestForm();
-        $logger  = Gems_AccessLog::getLog($this->db);
         $request = $this->getRequest();
 
         if ($key = $this->_getParam('key')) {
@@ -344,7 +348,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                 }
 
                 if (! $request->isPost()) {
-                    $logger->log(
+                    $this->accesslog->log(
                             "index.resetpassword.clicked",
                             $request,
                             sprintf("User %s opened valid reset link.", $user->getLoginName()),
@@ -355,7 +359,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
             } else {
                 if (! $request->isPost()) {
                     if ($user->getLoginName()) {
-                        $logger->log(
+                        $this->accesslog->log(
                                 "index.resetpassword.old",
                                 $request,
                                 sprintf("User %s used old reset key.", $user->getLoginName()),
@@ -363,7 +367,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                                 true
                                 );
                     } else {
-                        $logger->log(
+                        $this->accesslog->log(
                                 "index.resetpassword.false",
                                 $request,
                                 sprintf("Someone used a non existent reset key.", $user->getLoginName()),

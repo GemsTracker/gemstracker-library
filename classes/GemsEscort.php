@@ -229,6 +229,7 @@ class GemsEscort extends \MUtil_Application_Escort
             // Prevent self referencing
             if ($value !== $object) {
                 // \MUtil_Echo::r(get_class($value), $key);
+                // echo get_class($value) . ' => ' . $key . '<br/>';
                 $object->$key = $value;
             }
         }
@@ -243,15 +244,34 @@ class GemsEscort extends \MUtil_Application_Escort
     }
 
     /**
-     * Initialize the basepath string holde object.
+     * Initialize the GEMS project component.
      *
-     * Use $this->basepath to access afterwards
+     * The project component contains information about this project that are not Zend specific.
+     * For example:
+     * -- the super administrator,
+     * -- the project name, version and description,
+     * -- locales used,
+     * -- css and image directories used.
      *
-     * @return \Gems_Loader
+     * This is the place for you to store any project specific data that should not be in the code.
+     * I.e. if you make a controllor that needs a setting to work, then put the setting in this
+     * settings file.
+     *
+     * Use $this->project to access afterwards
+     *
+     * @return \Gems_Project_ProjectSettings
      */
-    protected function _initBasepath()
+    protected function _initProject()
     {
-        return $this->createProjectClass('Util_BasePath');
+        $projectArray = $this->includeFile(APPLICATION_PATH . '/configs/project');
+
+        if ($projectArray instanceof \Gems_Project_ProjectSettings) {
+            $project = $projectArray;
+        } else {
+            $project = $this->createProjectClass('Project_ProjectSettings', $projectArray);
+        }
+
+        return $project;
     }
 
     /**
@@ -317,47 +337,6 @@ class GemsEscort extends \MUtil_Application_Escort
     }
 
     /**
-     * Initialize the logger
-     *
-     * @return \Gems_Log
-     */
-    protected function _initLogger()
-    {
-        $this->bootstrap('project');    // Make sure the project object is available
-        $logger = \Gems_Log::getLogger();
-
-        $logPath = GEMS_ROOT_DIR . '/var/logs';
-
-        try {
-            $writer = new \Zend_Log_Writer_Stream($logPath . '/errors.log');
-        } catch (Exception $exc) {
-            try {
-                // Try to solve the problem, otherwise fail heroically
-                \MUtil_File::ensureDir($logPath);
-                $writer = new \Zend_Log_Writer_Stream($logPath . '/errors.log');
-            } catch (Exception $exc) {
-                $this->bootstrap(array('locale', 'translate'));
-                die(sprintf($this->translate->_('Path %s not writable'), $logPath));
-            }
-        }
-
-        $filter = new \Zend_Log_Filter_Priority($this->project->getLogLevel());
-        $writer->addFilter($filter);
-        $logger->addWriter($writer);
-
-        // OPTIONAL STARTY OF FIREBUG LOGGING.
-        if ($this->_startFirebird) {
-            $logger->addWriter(new \Zend_Log_Writer_Firebug());
-            //We do not add the logLevel here, as the firebug window is intended for use by
-            //developers only and it is only written to the active users' own screen.
-        }
-
-        \Zend_Registry::set('logger', $logger);
-
-        return $logger;
-    }
-
-    /**
      * Initialize the database.
      *
      * Use $this->db to access afterwards
@@ -393,6 +372,34 @@ class GemsEscort extends \MUtil_Application_Escort
     }
 
     /**
+     * Initialize the Project or Gems loader.
+     *
+     * Use $this->loader to access afterwards
+     *
+     * @return \Gems_Loader
+     */
+    protected function _initLoader()
+    {
+        return $this->createProjectClass('Loader', $this->getContainer(), $this->_loaderDirs);
+    }
+
+    /**
+     * Initialize the access log.
+     *
+     * Use $this->accesslog to access afterwards
+     *
+     * @return \Gems_AccessLog
+     */
+    protected function _initAccesslog()
+    {
+        $this->bootstrap(array('cache', 'db', 'loader'));
+
+        $accesslog = $this->createProjectClass('AccessLog', $this->cache, $this->db, $this->loader);
+
+        return $accesslog;
+    }
+
+    /**
      * Initialize the database.
      *
      * Use $this->acl to access afterwards
@@ -408,21 +415,61 @@ class GemsEscort extends \MUtil_Application_Escort
         return $acl->getAcl();
     }
 
+    /**
+     * Does nothing but add's the Gems Actionhelper path
+     */
     protected function _initActionHelpers()
     {
         \Zend_Controller_Action_HelperBroker::addPrefix('Gems_Controller_Action_Helper');
     }
 
     /**
-     * Initialize the Project or Gems loader.
+     * Initialize the basepath string holde object.
      *
-     * Use $this->loader to access afterwards
+     * Use $this->basepath to access afterwards
      *
      * @return \Gems_Loader
      */
-    protected function _initLoader()
+    protected function _initBasepath()
     {
-        return $this->createProjectClass('Loader', $this->getContainer(), $this->_loaderDirs);
+        return $this->createProjectClass('Util_BasePath');
+    }
+
+    /**
+     * Initialize the Gems session.
+     *
+     * The session contains information on the registered user from @see $this->loadLoginInfo($username)
+     * This includes:
+     * -- user_id
+     * -- user_login
+     * -- user_name
+     * -- user_role
+     * -- user_locale
+     * -- user_organization_id
+     *
+     * Use $this->session to access afterwards
+     *
+     * @deprecated since 1.5
+     * @return \Zend_Session_Namespace
+     */
+    protected function _initSession()
+    {
+        $this->bootstrap('project'); // Make sure the project is available
+        $session = new \Zend_Session_Namespace('gems.' . GEMS_PROJECT_NAME . '.session');
+
+        $idleTimeout = $this->project->getSessionTimeOut();
+
+        $session->setExpirationSeconds($idleTimeout);
+
+        if (! isset($session->user_role)) {
+            $session->user_role = 'nologin';
+        }
+
+        // Since userloading can clear the session, we put stuff that should remain (like redirect info)
+        // in a different namespace that we call a 'static session', use getStaticSession to access.
+        $this->staticSession = new \Zend_Session_Namespace('gems.' . GEMS_PROJECT_NAME . '.sessionStatic');
+
+        return $session;
     }
 
     /**
@@ -476,98 +523,45 @@ class GemsEscort extends \MUtil_Application_Escort
     }
 
     /**
-     * Initialize the OpenRosa survey source
+     * Initialize the logger
+     *
+     * @return \Gems_Log
      */
-    protected function _initOpenRosa()
+    protected function _initLogger()
     {
-        $this->bootstrap(array('loader', 'translate'));
+        $this->bootstrap('project');    // Make sure the project object is available
+        $logger = \Gems_Log::getLogger();
 
-        if ($this->getOption('useOpenRosa')) {
-            // First handle dependencies
-            $this->bootstrap(array('db', 'loader', 'util'));
+        $logPath = GEMS_ROOT_DIR . '/var/logs';
 
-            $this->getLoader()->addPrefixPath('OpenRosa', GEMS_LIBRARY_DIR . '/classes/OpenRosa', true);
-
-            $autoloader = \Zend_Loader_Autoloader::getInstance();
-            $autoloader->registerNamespace('OpenRosa_');
-
-            /**
-             * Add Source for OpenRosa
-             */
-            $tracker = $this->loader->getTracker();
-            $tracker->addSourceClasses(array('OpenRosa'=>'OpenRosa form'));
-        }
-    }
-
-
-    /**
-     * Initialize the GEMS project component.
-     *
-     * The project component contains information about this project that are not Zend specific.
-     * For example:
-     * -- the super administrator,
-     * -- the project name, version and description,
-     * -- locales used,
-     * -- css and image directories used.
-     *
-     * This is the place for you to store any project specific data that should not be in the code.
-     * I.e. if you make a controllor that needs a setting to work, then put the setting in this
-     * settings file.
-     *
-     * Use $this->project to access afterwards
-     *
-     * @return \Gems_Project_ProjectSettings
-     */
-    protected function _initProject()
-    {
-        $projectArray = $this->includeFile(APPLICATION_PATH . '/configs/project');
-
-        if ($projectArray instanceof \Gems_Project_ProjectSettings) {
-            $project = $projectArray;
-        } else {
-            $project = $this->createProjectClass('Project_ProjectSettings', $projectArray);
+        try {
+            $writer = new \Zend_Log_Writer_Stream($logPath . '/errors.log');
+        } catch (Exception $exc) {
+            try {
+                // Try to solve the problem, otherwise fail heroically
+                \MUtil_File::ensureDir($logPath);
+                $writer = new \Zend_Log_Writer_Stream($logPath . '/errors.log');
+            } catch (Exception $exc) {
+                $this->bootstrap(array('locale', 'translate'));
+                die(sprintf($this->translate->_('Path %s not writable'), $logPath));
+            }
         }
 
-        return $project;
-    }
+        $filter = new \Zend_Log_Filter_Priority($this->project->getLogLevel());
+        $writer->addFilter($filter);
+        $logger->addWriter($writer);
 
-    /**
-     * Initialize the Gems session.
-     *
-     * The session contains information on the registered user from @see $this->loadLoginInfo($username)
-     * This includes:
-     * -- user_id
-     * -- user_login
-     * -- user_name
-     * -- user_role
-     * -- user_locale
-     * -- user_organization_id
-     *
-     * Use $this->session to access afterwards
-     *
-     * @deprecated since 1.5
-     * @return \Zend_Session_Namespace
-     */
-    protected function _initSession()
-    {
-        $this->bootstrap('project'); // Make sure the project is available
-        $session = new \Zend_Session_Namespace('gems.' . GEMS_PROJECT_NAME . '.session');
-
-        $idleTimeout = $this->project->getSessionTimeOut();
-
-        $session->setExpirationSeconds($idleTimeout);
-
-        if (! isset($session->user_role)) {
-            $session->user_role = 'nologin';
+        // OPTIONAL STARTY OF FIREBUG LOGGING.
+        if ($this->_startFirebird) {
+            $logger->addWriter(new \Zend_Log_Writer_Firebug());
+            //We do not add the logLevel here, as the firebug window is intended for use by
+            //developers only and it is only written to the active users' own screen.
         }
 
-        // Since userloading can clear the session, we put stuff that should remain (like redirect info)
-        // in a different namespace that we call a 'static session', use getStaticSession to access.
-        $this->staticSession = new \Zend_Session_Namespace('gems.' . GEMS_PROJECT_NAME . '.sessionStatic');
+        \Zend_Registry::set('logger', $logger);
 
-        return $session;
+        return $logger;
     }
-
 
     /**
      * Initialize the translate component.
@@ -617,6 +611,30 @@ class GemsEscort extends \MUtil_Application_Escort
         \Zend_Registry::set('Zend_Translate', $translate);
 
         return $translate;
+    }
+
+    /**
+     * Initialize the OpenRosa survey source
+     */
+    protected function _initOpenRosa()
+    {
+        $this->bootstrap(array('loader', 'translate'));
+
+        if ($this->getOption('useOpenRosa')) {
+            // First handle dependencies
+            $this->bootstrap(array('db', 'loader', 'util'));
+
+            $this->getLoader()->addPrefixPath('OpenRosa', GEMS_LIBRARY_DIR . '/classes/OpenRosa', true);
+
+            $autoloader = \Zend_Loader_Autoloader::getInstance();
+            $autoloader->registerNamespace('OpenRosa_');
+
+            /**
+             * Add Source for OpenRosa
+             */
+            $tracker = $this->loader->getTracker();
+            $tracker->addSourceClasses(array('OpenRosa'=>'OpenRosa form'));
+        }
     }
 
     /**
@@ -693,13 +711,13 @@ class GemsEscort extends \MUtil_Application_Escort
 
         $autoloader = \Zend_Loader_Autoloader::getInstance();
         $autoloader->registerNamespace('ZFDebug');
-        
+
         # Instantiate the database adapter and cache
         $this->bootstrap('db');
         $db = $this->getPluginResource('db');
-        
+
         $this->bootstrap('cache');
-        $cache = $this->cache;        
+        $cache = $this->cache;
 
         $options = array(
             'plugins' => array('Variables',
@@ -1276,11 +1294,33 @@ class GemsEscort extends \MUtil_Application_Escort
      */
     public function beforeRun()
     {
-        //$this->front = $this->getResource('frontController');
-
         $this->_copyVariables($this->view);
     }
 
+
+    /**
+     * Hook 10: Called before the $controller->preDispatch() and $controller->{name}Action
+     * methods have been called.
+     *
+     * Here you can change or check all values set in $controller->init(). All output echoed
+     * here is captured for the output.
+     *
+     * Previous hook: controllerInit()
+     * Actions since: $controller->init(); ob_start(); $controller->dispatch()
+     * Actions after: $controller->preDispatch(); $controller->{name}Action(); $controller->postDispatch()
+     * Next hook: controllerAfterAction()
+     *
+     * @param \Zend_Controller_Action $actionController
+     * @return void
+     */
+    public function controllerBeforeAction(\Zend_Controller_Action $actionController = null)
+    {
+        if (method_exists($actionController, 'getRespondentId')) {
+            $this->accesslog->logRequest($this->request, $actionController->getRespondentId());
+        } else {
+            $this->accesslog->logRequest($this->request);
+        }
+    }
 
     /**
      * Hook 9: During action controller initialization.
@@ -1445,6 +1485,8 @@ class GemsEscort extends \MUtil_Application_Escort
                 );
         }
 
+        // Will be removed in 1.7.2 or later
+        // only left here for the patches
         if ($this instanceof \Gems_Project_Log_LogRespondentAccessInterface) {
             $path = GEMS_LIBRARY_DIR . '/configs/db_log_respondent_access';
             if (file_exists($path)) {
@@ -1455,6 +1497,7 @@ class GemsEscort extends \MUtil_Application_Escort
                     );
             }
         }
+        // End of: will be removed in 1.7.2 or later
 
         $path = GEMS_LIBRARY_DIR . '/configs/db';
         if (file_exists($path)) {
@@ -2035,10 +2078,6 @@ class GemsEscort extends \MUtil_Application_Escort
                         return;
                     }
                 }
-            } elseif ($this instanceof \Gems_Project_Log_LogRespondentAccessInterface) {
-                // If logging is enabled, log this action
-                $logAction = $request->getControllerName() . '.' . $request->getActionName();
-                \Gems_AccessLog::getLog()->log($logAction, $request);
             }
         }
 

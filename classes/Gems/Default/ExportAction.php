@@ -60,6 +60,12 @@ class Gems_Default_ExportAction extends \Gems_Controller_Action
 
     /**
      *
+     * @var \Gems_AccessLog
+     */
+    public $accesslog;
+
+    /**
+     *
      * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
@@ -373,7 +379,7 @@ class Gems_Default_ExportAction extends \Gems_Controller_Action
         $element->setLabel($this->_('Organization'))
                 ->setMultiOptions($organizations);
         $elements[] = $element;
-        
+
         if (MUtil_Bootstrap::enabled()) {
             $element = new \MUtil_Bootstrap_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=oid]'));
         } else {
@@ -439,7 +445,7 @@ class Gems_Default_ExportAction extends \Gems_Controller_Action
         if (isset($data['type']) && !empty($data['sid'])) {
             //Do the logging
             $message = \Zend_Json::encode($data);
-            \Gems_AccessLog::getLog()->log('export', $this->getRequest(), $message, null, true);
+            $this->accesslog->log('export', $this->getRequest(), $message, null, true);
 
             //And delegate the export to the right class
             $exportClass = $this->export->getExport($data['type']);

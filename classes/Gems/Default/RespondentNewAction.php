@@ -47,6 +47,12 @@
 abstract class Gems_Default_RespondentNewAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
+     *
+     * @var \Gems_AccessLog
+     */
+    public $accesslog;
+
+    /**
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
@@ -124,6 +130,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Controller_ModelSn
         'forOtherOrgs'   => 'getOtherOrgs',
         'onclick'        => 'getEditLink',
         'respondentData' => 'getRespondentData',
+        '-run-once'      => 'openedRespondent',
     );
 
     /**
@@ -374,19 +381,41 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Controller_ModelSn
      */
     public function getRespondentData()
     {
-        $orgId     = $this->_getParam(\MUtil_Model::REQUEST_ID2);
-        $patientNr = $this->_getParam(\MUtil_Model::REQUEST_ID1);
-        $respId    = $this->util->getDbLookup()->getRespondentId($patientNr, $orgId);
-        $user      = $this->loader->getCurrentUser();
-        $userId    = $user->getUserId();
-
-        $this->openedRespondent($patientNr, $orgId, $respId);
+        $orgId  = $this->_getParam(\MUtil_Model::REQUEST_ID2);
+        $respId = $this->getRespondentId();
+        $userId = $this->loader->getCurrentUser()->getUserId();
 
         // Check for completed tokens
         $this->loader->getTracker()->processCompletedTokens($respId, $userId, $orgId);
 
         $model = $this->getModel();
         return $model->applyRequest($this->getRequest(), true)->loadFirst();
+    }
+
+    /**
+     * Retrieve the respondent id
+     * (So we don't need to repeat that for every snippet.)
+     *
+     * @return int
+     */
+    public function getRespondentId()
+    {
+        static $respondentId = false;
+
+        if (false !== $respondentId) {
+            return $respondentId;
+        }
+
+        $orgId        = $this->_getParam(\MUtil_Model::REQUEST_ID2);
+        $patientNr    = $this->_getParam(\MUtil_Model::REQUEST_ID1);
+
+        if ($orgId && $patientNr) {
+            $respondentId = $this->util->getDbLookup()->getRespondentId($patientNr, $orgId);
+        } else {
+            $respondentId = null;
+        }
+
+        return $respondentId;
     }
 
     /**
@@ -452,31 +481,20 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Controller_ModelSn
     }
 
     /**
-     * Log the respondent opening
      *
-     * @param string $patientId
-     * @param int $orgId
-     * @param int $userId
      * @return \Gems_Default_RespondentNewAction
      */
-    protected function openedRespondent($patientId, $orgId, $respondentId = null)
+    protected function openedRespondent()
     {
-        if ($patientId) {
-            // Logging
-            if  (GemsEscort::getInstance() instanceof \Gems_Project_Log_LogRespondentAccessInterface) {
-                $request = $this->getRequest();
-                $logAction = $request->getControllerName() . ucfirst($request->getActionName());  // ucfirst to distinct from default actions
-                if (is_null($respondentId)) {
-                    $respondentId = $this->util->getDbLookup()->getRespondentId($patientId, $orgId);
-                }
+        $orgId     = $this->_getParam(\MUtil_Model::REQUEST_ID2);
+        $patientNr = $this->_getParam(\MUtil_Model::REQUEST_ID1);
 
-                \Gems_AccessLog::getLog()->log($logAction, $request, null, $respondentId);
-            }
-
-            $user      = $this->loader->getCurrentUser();
+        if ($patientId && $orgId) {
+            $user = $this->loader->getCurrentUser();
 
             $where['gr2o_patient_nr = ?']      = $patientId;
             $where['gr2o_id_organization = ?'] = $orgId;
+
             $values['gr2o_opened']             = new \MUtil_Db_Expr_CurrentTimestamp();
             $values['gr2o_opened_by']          = $user->getUserId();
 

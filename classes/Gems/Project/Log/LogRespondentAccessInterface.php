@@ -43,6 +43,7 @@
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.1
+ * @deprecated Since 1.7.1 code included for all projects
  */
 interface Gems_Project_Log_LogRespondentAccessInterface
 {}

@@ -47,6 +47,12 @@
 abstract class Gems_Default_RespondentAction extends \Gems_Controller_BrowseEditAction
         implements \Gems_Menu_ParameterSourceInterface
 {
+    /**
+     *
+     * @var \Gems_AccessLog
+     */
+    public $accesslog;
+
     public $deleteSnippets = array('RespondentDetailsSnippet');
 
     public $exportSnippets = array('RespondentDetailsSnippet');
@@ -443,6 +449,32 @@ abstract class Gems_Default_RespondentAction extends \Gems_Controller_BrowseEdit
         }
     }
 
+    /**
+     * Retrieve the respondent id
+     * (So we don't need to repeat that for every snippet.)
+     *
+     * @return int
+     */
+    public function getRespondentId()
+    {
+        static $respondentId = false;
+
+        if (false !== $respondentId) {
+            return $respondentId;
+        }
+
+        $orgId        = $this->_getParam(\MUtil_Model::REQUEST_ID2);
+        $patientNr    = $this->_getParam(\MUtil_Model::REQUEST_ID1);
+
+        if ($orgId && $patientNr) {
+            $respondentId = $this->util->getDbLookup()->getRespondentId($patientNr, $orgId);
+        } else {
+            $respondentId = null;
+        }
+
+        return $respondentId;
+    }
+
     public function getSubject($data)
     {
         return sprintf('%s - %s', $data['name'], $data['gr2o_patient_nr']);
@@ -488,21 +520,16 @@ abstract class Gems_Default_RespondentAction extends \Gems_Controller_BrowseEdit
         $this->loader->getCurrentUser()->setSurveyReturn($this->getRequest());
     }
 
-    protected function openedRespondent($patientId, $orgId, $respondentId)
+    /**
+     *
+     * @param string $patientId
+     * @param int $orgId
+     * @return \Gems_Default_RespondentAction
+     */
+    protected function openedRespondent($patientId, $orgId)
     {
-        if ($patientId) {
-            // Logging
-            if  (GemsEscort::getInstance() instanceof \Gems_Project_Log_LogRespondentAccessInterface) {
-                $request = $this->getRequest();
-                $logAction = $request->getControllerName() . ucfirst($request->getActionName());  // ucfirst to distinct from default actions
-                if (is_null($respondentId)) {
-                    $respondentId = $this->util->getDbLookup()->getRespondentId($patientId, $orgId);
-                }
-
-                \Gems_AccessLog::getLog()->log($logAction, $request, null, $respondentId);
-            }
-
-            $user      = $this->loader->getCurrentUser();
+        if ($patientId && $orgId) {
+            $user = $this->loader->getCurrentUser();
 
             $where['gr2o_patient_nr = ?']      = $patientId;
             $where['gr2o_id_organization = ?'] = $orgId;

@@ -44,9 +44,46 @@
  */
 class Gems_AccessLog
 {
+    /**
+     *
+     * @var \Gems_AccessLog
+     */
     private static $_log;
 
+    /**
+     *
+     * @var \Gems_Util_AccessLogActions
+     */
+    private $_actions = array();
+
+    /**
+     *
+     * @var \Zend_Cache_Core
+     */
+    private $_cache;
+
+    /**
+     *
+     * @var string
+     */
+    private $_cacheId;
+
+    /**
+     *
+     * @var \Zend_Db_Adapter_Abstract
+     */
     private $_db;
+
+    /**
+     *
+     * @var \Gems_Loader
+     */
+    private $_loader;
+
+    /**
+     *
+     * @var \Zend_Session_Namespace
+     */
     private $_sessionStore;
 
     /**
@@ -59,28 +96,234 @@ class Gems_AccessLog
      *
      * @see log()
      *
-     * @param <type> $name
+     * @param string $name
      * @param array $arguments
-     * @return <type>
+     * @return \Gems_AccessLog
+     * @deprecated Since 1.7.1
      */
     public function __call($name, array $arguments)
     {
         if ('log' == substr($name, 0, 3)) {
+            $logAction    = substr($name, 3);
             $respondentId = reset($arguments);
             $request      = next($arguments);
-            if (!$request) $request = null;
-            $logAction    = substr($name, 3);
+            if (!$request) {
+                $request = null;
+            }
+
             return $this->log($logAction, $request, null, $respondentId);
         }
 
         throw new exception(sprintf('Method %s does not exist', $name));
     }
 
-    public function __construct(\Zend_Db_Adapter_Abstract $db)
+    /**
+     *
+     * @param \Zend_Cache_Core $cache
+     * @param \Zend_Db_Adapter_Abstract $db
+     * @param \Gems_Loader $loader
+     */
+    public function __construct(\Zend_Cache_Core $cache, \Zend_Db_Adapter_Abstract $db, \Gems_Loader $loader)
     {
-        $this->_db = $db;
-        $this->_sessionStore = new \Zend_Session_Namespace(GEMS_PROJECT_NAME . APPLICATION_PATH . '__Gems__' . __CLASS__);
-        $this->loadActions();
+        $this->_cache        = $cache;
+        $this->_cacheId      = \MUtil_String::toCacheId(GEMS_PROJECT_NAME . APPLICATION_PATH . '__Gems__' . __CLASS__);
+        $this->_db           = $db;
+        $this->_loader       = $loader;
+        $this->_sessionStore = new \Zend_Session_Namespace($this->_cacheId);
+
+        $this->_actions = $this->_getActionsCache();
+        if (false === $this->_actions) {
+            $this->_actions = $this->_getActionsDb();
+        }
+
+        if (! self::$_log) {
+            self::$_log = $this;
+        }
+    }
+
+    /**
+     * Load the actions into memory from the cache
+     */
+    private function _getActionsCache()
+    {
+        return $this->_cache->load($this->_cacheId);
+    }
+
+    /**
+     * Load the actions into memory from the database (and cache them)
+     */
+    private function _getActionsDb()
+    {
+        try {
+            $rows = $this->_db->fetchAssoc("SELECT * FROM gems__log_setup ORDER BY gls_name");
+        } catch (Exception $exc) {
+            $rows = array();
+
+            if ($this->_loader->getCurrentUser()->isActive()) {
+                \MUtil_Echo::r('Database needs to be updated!');
+            }
+        }
+
+        $output = array();
+        foreach ($rows as $row) {
+            $output[$row['gls_name']] = $row;
+        }
+
+        // \MUtil_Echo::track($output);
+        $this->_cache->save($output, $this->_cacheId, array('accesslog_actions'));
+
+        return $output;
+    }
+
+    /**
+     *
+     * @param \Zend_Controller_Request_Abstract $request
+     * @param string $actionId
+     * @param boolean $changed
+     * @param mixed $message
+     * @param mixed $data
+     * @param int $respondentId
+     * @return boolean True when a log entry was stored
+     */
+    public function _logEntry(\Zend_Controller_Request_Abstract $request, $actionId, $changed, $message, $data, $respondentId)
+    {
+        $action      = $this->getAction($actionId);
+        $currentUser = $this->_loader->getCurrentUser();
+        $orgId       = $currentUser->getCurrentOrganizationId() ? $currentUser->getCurrentOrganizationId() : 0;
+
+        // Exit when the user is not logged in and we should only track for logged in users
+        if (! $currentUser->isActive()) {
+            if (! $action['gls_when_no_user']) {
+                return false;
+            }
+        }
+
+        if ($request instanceof \Zend_Controller_Request_Http) {
+            $post = $request->isPost();
+            $ip   = $request->getClientIp();
+
+            if ($post && (null === $data)) {
+                $data = $request->getPost();
+            }
+        } else {
+            $post = false;
+            $ip   = '';
+        }
+
+        // Get type for second exit check
+        if ($changed) {
+            $checkKey = 'gls_on_change';
+        } elseif ($post) {
+            $checkKey = 'gls_on_post';
+        } else {
+            $checkKey = 'gls_on_action';
+        }
+        if (! $action[$checkKey]) {
+            return false;
+        }
+
+        $values['gla_action']        = $action['gls_id_action'];
+        $values['gla_respondent_id'] = $respondentId;
+
+        $values['gla_by']            = $currentUser->getUserId();
+        $values['gla_organization']  = $orgId;
+        $values['gla_role']          = $currentUser->getRole() ? $currentUser->getRole() : '--not set--';
+
+        $values['gla_changed']       = $changed ? 1 : 0;
+        $values['gla_message']       = $this->_toText($message);
+        $values['gla_data']          = $this->_toText($data);
+        $values['gla_method']        = $post ? 'POST' : 'GET';
+        $values['gla_remote_ip']     = $ip;
+
+        return $this->_storeLogEntry($request, $values, $changed);
+    }
+
+    /**
+     * Stores the current log entry
+     *
+     * @param \Zend_Controller_Request_Abstract $request
+     * @param array $row
+     * @param boolean $force     Should we force the logentry to be inserted or should we try to skip duplicates?
+     * @return boolean True when a log entry was stored
+     */
+    private function _storeLogEntry(\Zend_Controller_Request_Abstract $request, array $row, $force)
+    {
+        if (! $force) {
+            if (isset($this->_sessionStore->last) && ($row === $this->_sessionStore->last)) {
+                return false;
+            }
+
+            // Now save the variables to the session to prevent duplicates if needed
+            //
+            // We skip $force as they are always saved and this prevents double logging in case of
+            // e.g. a show => edit => show cycle
+            $this->_sessionStore->last = $row;
+        }
+        try {
+            $this->_db->insert('gems__log_activity', $row);
+            return true;
+        } catch (Exception $exc) {
+            \Gems_Log::getLogger()->logError($exc, $request);
+            \MUtil_Echo::r('Database needs to be updated!');
+            return false;
+        }
+    }
+
+    /**
+     * Converts data types for storage
+     *
+     * @param mixed $data
+     * @return string
+     */
+    private function _toText($data)
+    {
+        if (is_scalar($data)) {
+            return $data;
+        }
+        return json_encode($data);
+    }
+
+    /**
+     *
+     * @param string $action
+     * @return array
+     */
+    protected function getAction($action)
+    {
+        if (array_key_exists($action,  $this->_actions)) {
+            return $this->_actions[$action];
+        }
+
+        // Check if a refresh from the db fixes the problem
+        $this->_actions = $this->_getActionsDb();
+        if (array_key_exists($action,  $this->_actions)) {
+            return $this->_actions[$action];
+        }
+
+        $values['gls_name']         = $action;
+        $values['gls_when_no_user'] = 0;
+        $values['gls_on_action']    = 0;
+        $values['gls_on_post']      = 0; // preg_match('/(create|edit)/', $action);
+        $values['gls_on_change']    = preg_match('/(create|edit|delete)/', $action);
+
+        $values['gls_changed']      = $values['gls_created']    = new \MUtil_Db_Expr_CurrentTimestamp();
+        $values['gls_changed_by']   = $values['gls_created_by'] = \Gems_User_UserLoader::SYSTEM_USER_ID;
+
+        $this->_db->insert('gems__log_setup', $values);
+
+        $this->_actions = $this->_getActionsDb();
+
+        if (array_key_exists($action,  $this->_actions)) {
+            return $this->_actions[$action];
+        }
+
+        return array(
+            'gls_id_action'    => 0,
+            'gls_when_no_user' => 0,
+            'gls_on_action'    => 0,
+            'gls_on_post'      => 0,
+            'gls_on_change'    => 0
+            );
     }
 
     /**
@@ -88,73 +331,15 @@ class Gems_AccessLog
      *
      * @param \Zend_Db_Adapter_Abstract $db
      * @return \Gems_AccessLog
+     * @deprecated since 1.7.1 Use accessLog source variable instead
      */
-    public static function getLog(\Zend_Db_Adapter_Abstract $db = null)
+    public static function getLog()
     {
         if (! self::$_log) {
-            if (null === $db) {
-                $db = \Zend_Registry::get('db');
-            }
-            self::$_log = new self($db);
+            throw new \Gems_Exception_Coding("AccessLog::getLog called before initialization.");
         }
 
         return self::$_log;
-    }
-
-    protected function getActionId($action)
-    {
-        if (! array_key_exists($action,  $this->_actions)) {
-            //Check if a refresh fixes the problem
-            $this->loadActions(true);
-            if (! array_key_exists($action,  $this->_actions)) {
-                $values['glac_name']    = $action;
-                $values['glac_change']  = preg_match('/(create|edit|delete)/', $action);
-                $values['glac_on_post'] = preg_match('/(create|edit)/', $action);
-
-                /*
-                 * For 1.3 release the default behaviour is to disable logging for all actions,
-                 * so we get an opt-in per action
-                 */
-                $values['glac_log']     = 0;
-
-                /*
-                 * Later on, we can set some rules like below to disable logging for
-                 * actions like the autofilter
-                 */
-                //$values['glac_log']  = !substr_count($action, '.autofilter');
-                $values['glac_changed'] = $values['glac_created'] = new \MUtil_Db_Expr_CurrentTimestamp();
-                $values['glac_changed_by'] = $values['glac_created_by'] = \Gems_User_UserLoader::SYSTEM_USER_ID;
-
-                $this->_db->insert('gems__log_actions', $values);
-
-                $this->loadActions(true);
-            }
-        }
-
-        return $this->_actions[$action]['id'];
-    }
-
-    /**
-     * Load the actions into memory, use optional parameter to enforce refreshing
-     *
-     * @param type $reset
-     */
-    public function loadActions($reset = false)
-    {
-        //When project escort doesn't implement the log interface, we disable logging and don't load actions
-        if  (GemsEscort::getInstance() instanceof \Gems_Project_Log_LogRespondentAccessInterface &&
-             ($reset || (! isset($this->_actions)))) {
-
-            $actions = GemsEscort::getInstance()->getUtil()->getAccessLogActions();
-            if ($reset) {
-                $actions->invalidateCache();
-                //Now unset to force a reload
-                unset(GemsEscort::getInstance()->getUtil()->accessLogActions);
-                $actions = GemsEscort::getInstance()->getUtil()->getAccessLogActions();
-            }
-
-            $this->_actions = $actions->getAllData();
-        }
     }
 
     /**
@@ -166,74 +351,42 @@ class Gems_AccessLog
      * @param <type>  $respondentId
      * @param boolean $force     Should we force the logentry to be inserted or should we try to skip duplicates? Default = false
      * @return \Gems_AccessLog
+     * @deprecated Since version 1.7.1: use logChange or logRequest
      */
     public function log($action, \Zend_Controller_Request_Abstract $request = null, $message = null, $respondentId = null, $force = false)
     {
-        try {
-            $currentUser = GemsEscort::getInstance()->getLoader()->getCurrentUser();
-            //When project escort doesn't implement the log interface, we disable logging
-            if (!(GemsEscort::getInstance() instanceof \Gems_Project_Log_LogRespondentAccessInterface)
-                || (is_null($currentUser->getUserId()) && $force === false ) ) {
-                return $this;
-            }
+        $this->_logEntry($request, $action, $force, $message, null, $respondentId);
 
-            /*
-             * For backward compatibility, get the request from the frontcontroller when it
-             * is not supplied in the
-             */
-            if (!($request instanceof \Zend_Controller_Request_Abstract)) {
-                $request = \Zend_Controller_Front::getInstance()->getRequest();
-            }
+        return $this;
+    }
 
-            $values['glua_to']           = $respondentId;
-            $values['glua_message']      = $message;
-            $values['glua_by']           = $currentUser->getUserId() ? $currentUser->getUserId() : 0;
-            $values['glua_organization'] = $currentUser->getCurrentOrganizationId() ? $currentUser->getCurrentOrganizationId() : 0;
-            $values['glua_action']       = $this->getActionId($action);
-            $values['glua_role']         = $currentUser->getRole() ? $currentUser->getRole() : '--not set--' ;
-            $values['glua_created']      = new \MUtil_Db_Expr_CurrentTimestamp();
+    /**
+     * Logs the action for the current user with optional message and respondent id
+     *
+     * @param \Zend_Controller_Request_Abstract $request
+     * @param int $respondentId
+     * @param mixed $message
+     * @param mixed $data
+     * @return boolean True when a log entry was stored
+     */
+    public function logChange(\Zend_Controller_Request_Abstract $request, $respondentId = null, $message = null, $data = null)
+    {
+        $action = $request->getControllerName() . '.' . $request->getActionName();
+        return $this->_logEntry($request, $action, true, $message, $data, $respondentId);
+    }
 
-            if ($request instanceof \Zend_Controller_Request_Http) {
-                $values['glua_remote_ip'] = $request->getClientIp();
-            } else {
-                $values['glua_remote_ip'] = '';
-            }
-
-            /*
-             * Now we know for sure that the action is in the list, check if we
-             * need to log this action
-             */
-            if (!($this->_actions[$action]['log']) && !$force) return $this;
-
-            if (isset($this->_sessionStore->glua_action)) {
-                //If we don't force a logentry, check if it is a duplicate
-                if (!$force) {
-                    if (($this->_sessionStore->glua_to == $values['glua_to']) &&
-                        ($this->_sessionStore->glua_organization == $values['glua_organization']) &&
-                        ($this->_sessionStore->glua_action == $values['glua_action']) &&
-                        ($this->_sessionStore->glua_message == $values['glua_message'])) {
-
-                        // Prevent double logging of nothing
-                        // \MUtil_Echo::r($values, 'Double');
-                        return $this;
-                    }
-                }
-            }
-            // \MUtil_Echo::r($values, 'Logged');
-
-            //Now save the variables to the session to prevent duplicates if needed
-            $this->_sessionStore->glua_to           = $values['glua_to'];
-            $this->_sessionStore->glua_organization = $values['glua_organization'];
-            $this->_sessionStore->glua_action       = $values['glua_action'];
-            $this->_sessionStore->glua_message      = $values['glua_message'];
-
-            $this->_db->insert('gems__log_useractions', $values);
-
-            return $this;
-        } catch (Exception $exc) {
-            \Gems_Log::getLogger()->logError($exc, $request);
-            \MUtil_Echo::r(\GemsEscort::getInstance()->translate->_('Database needs to be updated!'));
-            return $this;
-        }
+    /**
+     * Logs the action for the current user with optional message and respondent id
+     *
+     * @param \Zend_Controller_Request_Abstract $request
+     * @param int $respondentId
+     * @param mixed $message
+     * @param mixed $data
+     * @return boolean True when a log entry was stored
+     */
+    public function logRequest(\Zend_Controller_Request_Abstract $request, $respondentId = null, $message = null, $data = null)
+    {
+        $action = $request->getControllerName() . '.' . $request->getActionName();
+        return $this->_logEntry($request, $action, false, $message, $data, $respondentId);
     }
 }

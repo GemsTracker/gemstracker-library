@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2014, Erasmus MC
  * All rights reserved.
@@ -31,12 +30,10 @@
  * @subpackage Form_Element
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Table.php Jasper van Gestel $
+ * @version    $Id: ColorPicker.php Jasper van Gestel $
  */
 
 /**
- * Show a table containing a subform repeated for the number of rows set for
- * this item when rendered.
  *
  * @package    MUtil
  * @subpackage Form_Element
@@ -46,7 +43,6 @@
  */
 class Gems_JQuery_Form_Element_ColorPicker extends ZendX_JQuery_Form_Element_ColorPicker
 {
-	
     /**
      * Constructor
      *
@@ -66,7 +62,6 @@ class Gems_JQuery_Form_Element_ColorPicker extends ZendX_JQuery_Form_Element_Col
 
         $this->setAttrib('label_class', 'radio-inline');
     }
-
 
 	/**
      * Load default decorators
