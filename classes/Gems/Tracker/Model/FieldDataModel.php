@@ -388,6 +388,43 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
 
         return $currentValue;
     }
+	
+	/**
+     * On save calculation function
+     *
+     * @param array $currentValue The current value
+     * @param array $context The other values loaded so far
+     * @param int $respTrackId Gems respondent track id
+     * @return mixed the new value
+     */
+    public function calculateOnSaveDate($currentValue, array $context, $respTrackId)
+    {
+        if ((null === $currentValue) ||
+                ($currentValue instanceof Zend_Db_Expr) ||
+                MUtil_String::startsWith($currentValue, 'current_', true)) {
+            return $currentValue;
+        }
+
+        $saveFormat = Gems_Tracker::DB_DATE_FORMAT;
+
+        if ($currentValue instanceof Zend_Date) {
+            return $currentValue->toString($saveFormat);
+
+        } else {
+            $displayFormat = MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
+
+            try {
+                return MUtil_Date::format($currentValue, $saveFormat, $displayFormat);
+            } catch (Zend_Exception $e) {
+                if (Zend_Date::isDate($currentValue, $saveFormat)) {
+                    return $currentValue;
+                }
+                throw $e;
+            }
+        }
+
+        return $currentValue;
+    }
 
     /**
      * On save calculation function

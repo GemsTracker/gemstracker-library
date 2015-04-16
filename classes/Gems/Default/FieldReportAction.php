@@ -136,7 +136,7 @@ class Gems_Default_FieldReportAction extends Gems_Controller_ModelSnippetActionA
         $this->trackCount = $this->db->fetchOne($sql, $this->trackId);
 
         $model = $this->engine->getFieldsMaintenanceModel(false, 'index', array());
-        $model->setFilter($filter);
+        //$model->setFilter($filter);
 
         // $model->addColumn(new Zend_Db_Expr($trackCount), 'trackcount');
         // $model->addColumn(new Zend_Db_Expr("(SELECT COUNT())"), 'fillcount');

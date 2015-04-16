@@ -1,3 +1,8 @@
+1.7.0p3
+=======
+Fixed field recalc bug, where recalculation of track date fields resulted in storing the wrong dateformat
+Fixed #739: Search button on Track Field Utilization report not working
+
 1.7.0p2
 =======
 Double track assignment (appointments) fixed
