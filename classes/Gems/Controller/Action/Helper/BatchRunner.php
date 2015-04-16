@@ -61,9 +61,10 @@ class Gems_Controller_Action_Helper_BatchRunner extends \Zend_Controller_Action_
             $messages = array_values($batch->getMessages(true));
             echo implode("\n", $messages) . "\n";
 
-            if ($echo = \MUtil_Echo::out()) {
+            $echo = array_filter(array_map('trim', preg_split('/<[^>]+>/', \MUtil_Echo::out())));
+            if ($echo) {
                 echo "\n\n================================================================\nECHO OUTPUT:\n\n";
-                echo \MUtil_Console::removeHtml($echo);
+                echo implode("\n", $echo);
             }
             if ($accessLog instanceof \Gems_AccessLog) {
                 $accessLog->logChange($this->getRequest(), $messages, $echo);
