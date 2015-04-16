@@ -44,6 +44,12 @@
  */
 class Gems_Default_UpgradeAction extends Gems_Controller_Action
 {
+    /**
+     *
+     * @var \Gems_AccessLog
+     */
+    public $accesslog;
+
     public $useHtmlView = true;
 
     /**
@@ -92,7 +98,7 @@ class Gems_Default_UpgradeAction extends Gems_Controller_Action
         }
 
         $title = sprintf($this->_('Upgrading %s'), $context);
-        $this->_helper->BatchRunner($batch, $title);
+        $this->_helper->BatchRunner($batch, $title, $this->accesslog);
     }
 
     /**
@@ -114,19 +120,19 @@ class Gems_Default_UpgradeAction extends Gems_Controller_Action
     /**
      * Proxy for the menu
      */
-    public function executeOneAction()
-    {
-        $this->executeAction();
-    }
-
-    /**
-     * Proxy for the menu
-     */
     public function executeLastAction()
     {
         $level = $this->_upgrades->getmaxLevel();
 
         $this->executeAction($level, $level);
+    }
+
+    /**
+     * Proxy for the menu
+     */
+    public function executeOneAction()
+    {
+        $this->executeAction();
     }
 
     /**

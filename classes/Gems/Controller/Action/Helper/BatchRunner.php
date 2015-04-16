@@ -58,14 +58,15 @@ class Gems_Controller_Action_Helper_BatchRunner extends \Zend_Controller_Action_
         if ($batch->isConsole()) {
             $batch->runContinuous();
 
-            echo implode("\n", $batch->getMessages(true)) . "\n";
+            $messages = array_values($batch->getMessages(true));
+            echo implode("\n", $messages) . "\n";
 
             if ($echo = \MUtil_Echo::out()) {
                 echo "\n\n================================================================\nECHO OUTPUT:\n\n";
                 echo \MUtil_Console::removeHtml($echo);
             }
             if ($accessLog instanceof \Gems_AccessLog) {
-                $accessLog->logChange($this->getRequest(), null, $echo);
+                $accessLog->logChange($this->getRequest(), $messages, $echo);
             }
             exit;
         } elseif ($batch->run($this->getRequest())) {

@@ -46,4 +46,9 @@ INSERT INTO gems__log_setup (gls_name, gls_when_no_user, gls_on_action, gls_on_p
         ('track-maintenance.check-all',         0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('track-maintenance.check-track',       0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('track-maintenance.recalc-all-fields', 0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-        ('track-maintenance.recalc-fields',     0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
+        ('track-maintenance.recalc-fields',     0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('upgrade.execute-all',                 0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('upgrade.execute-from',                0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('upgrade.execute-last',                0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('upgrade.execute-one',                 0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('upgrade.execute-to',                  0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
