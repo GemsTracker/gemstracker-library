@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2014, Erasmus MC
  * All rights reserved.
@@ -43,7 +44,6 @@
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
  */
-
-class Gems_Controller_Action_Helper_FlashMessenger extends MUtil_Controller_Action_Helper_FlashMessenger
+class Gems_Controller_Action_Helper_FlashMessenger extends \MUtil_Controller_Action_Helper_FlashMessenger
 {
 }

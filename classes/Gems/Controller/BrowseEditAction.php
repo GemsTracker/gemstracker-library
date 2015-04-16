@@ -47,7 +47,7 @@
  * @since      Class available since version 1.0
  * @deprecated Since version 1.7.1
  */
-abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelActionAbstract
+abstract class Gems_Controller_BrowseEditAction extends \Gems_Controller_ModelActionAbstract
 {
     const RESET_PARAM   = 'reset';
     const SEARCH_BUTTON = 'AUTO_SEARCH_TEXT_BUTTON';
@@ -100,7 +100,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
 
     /**
      *
-     * @var Gems_Util_RequestCache
+     * @var \Gems_Util_RequestCache
      */
     public $requestCache;
 
@@ -125,7 +125,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
 
     public $useTabbedForms = false;
 
-    protected function _applySearchParameters(MUtil_Model_ModelAbstract $model, $useStored = false)
+    protected function _applySearchParameters(\MUtil_Model_ModelAbstract $model, $useStored = false)
     {
         $data = $this->getCachedRequestData();
 
@@ -136,7 +136,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
 
         if ($filter = $this->getDataFilter($data)) {
             $model->addFilter($filter);
-            // MUtil_Echo::track($filter, $data, $model->getFilter());
+            // \MUtil_Echo::track($filter, $data, $model->getFilter());
         }
 
         if ($this->sortKey) {
@@ -145,16 +145,16 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
     }
 
     /**
-     * Creates a Zend_Form_Element_Select
+     * Creates a \Zend_Form_Element_Select
      *
      * @param string        $name    Name of the select element
      * @param string|array  $options Can be a SQL select string or key/value array of options
      * @param string        $empty   Text to display for the empty selector
-     * @return Zend_Form_Element_Select
+     * @return \Zend_Form_Element_Select
      */
     protected function _createSelectElement($name, $options, $empty = null)
     {
-        if ($options instanceof MUtil_Model_ModelAbstract) {
+        if ($options instanceof \MUtil_Model_ModelAbstract) {
             $options = $options->get($name, 'multiOptions');
         } elseif (is_string($options)) {
             $options = $this->db->fetchPairs($options);
@@ -177,7 +177,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
         $request = $this->getRequest();
         $search  = $this->getCachedRequestData(false);
         $params  = array('baseUrl' => $search);
-        // MUtil_Echo::track($search);
+        // \MUtil_Echo::track($search);
 
         // Load the filters
         $this->_applySearchParameters($model);
@@ -186,8 +186,8 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
         $textKey = $model->getTextFilter();
         if (isset($search[$textKey])) {
             $searchText = $search[$textKey];
-            // MUtil_Echo::r('[' . $searchText . ']');
-            $marker = new MUtil_Html_Marker($model->getTextSearches($searchText), 'strong', 'UTF-8');
+            // \MUtil_Echo::r('[' . $searchText . ']');
+            $marker = new \MUtil_Html_Marker($model->getTextSearches($searchText), 'strong', 'UTF-8');
             foreach ($model->getItemNames() as $name) {
                 if ($model->get($name, 'label')) {
                     $model->set($name, 'markCallback', array($marker, 'mark'));
@@ -197,7 +197,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
 
         if ($this->tableSnippets) {
             $snippets = $this->getSnippets($this->tableSnippets, $params);
-            $sequence = new MUtil_Html_Sequence();
+            $sequence = new \MUtil_Html_Sequence();
             foreach ($snippets as $snippet) {
                 if ($snippet->hasHtmlOutput()) {
                     $sequence[] = $snippet;
@@ -224,11 +224,11 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
      *
      * Adds a button column to the model, if such a button exists in the model.
      *
-     * @param MUtil_Model_Bridge_TableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_TableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
         if ($model->has('row_class')) {
             $bridge->getTable()->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);
@@ -257,9 +257,9 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
      * $model->set('columnname', 'label', $this->_('Excel label'));
      * </code>
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      */
-    protected function addExcelColumns(MUtil_Model_ModelAbstract $model) {}
+    protected function addExcelColumns(\MUtil_Model_ModelAbstract $model) {}
 
     /**
      * Hook to alter the formdata just before the form is populated
@@ -293,6 +293,8 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
      */
     public function afterSaveRoute($data)
     {
+        $this->accesslog->logChange($this->request, null, $data);
+
         //Get default routing
         $url = $this->getAfterSaveRoute($data);
 
@@ -326,13 +328,13 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
         // Make sure all links are generated as if the current request was index.
         $this->aliasAction('index');
 
-        // MUtil_Model::$verbose = true;
+        // \MUtil_Model::$verbose = true;
 
         // We do not need to return the layout, just the above table
         $this->disableLayout();
 
         $this->html[] = $this->_createTable();
-        $this->html->raw(MUtil_Echo::out());
+        $this->html->raw(\MUtil_Echo::out());
     }
 
     /**
@@ -340,30 +342,30 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
      *
      * Here we add the table display to the form.
      *
-     * @param Zend_Form $form
+     * @param \Zend_Form $form
      * @param bool      $isNew
-     * @return Zend_Form
+     * @return \Zend_Form
      */
     public function beforeFormDisplay ($form, $isNew)
     {
-        if ($this->useTabbedForms || $form instanceof Gems_Form_TableForm) {
+        if ($this->useTabbedForms || $form instanceof \Gems_Form_TableForm) {
             //If needed, add a row of link buttons to the bottom of the form
             if ($links = $this->createMenuLinks($isNew ? $this->menuCreateIncludeLevel : $this->menuEditIncludeLevel)) {
-                $linkContainer = MUtil_Html::create()->div(array('class' => 'element-container-labelless'));
+                $linkContainer = \MUtil_Html::create()->div(array('class' => 'element-container-labelless'));
                 $linkContainer[] = $links;
 
                 $element = $this->_form->createElement('html', 'formLinks');
                 $element->setValue($linkContainer);
                 $element->setOrder(999);
-                if ($form instanceof Gems_TabForm)  {
+                if ($form instanceof \Gems_TabForm)  {
                     $form->resetContext();
                 }
                 $form->addElement($element);
                 $form->addDisplayGroup(array('formLinks'), 'form_buttons');
             }
         } else {
-            if (MUtil_Bootstrap::enabled() !== true) {
-                $table = new MUtil_Html_TableElement(array('class' => 'formTable'));
+            if (\MUtil_Bootstrap::enabled() !== true) {
+                $table = new \MUtil_Html_TableElement(array('class' => 'formTable'));
                 $table->setAsFormLayout($form, true, true);
                 $table['tbody'][0][0]->class = 'label';  // Is only one row with formLayout, so all in output fields get class.
 
@@ -387,10 +389,10 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
      *
      * @param array $data The data that will be saved.
      * @param boolean $isNew
-     * $param Zend_Form $form
+     * $param \Zend_Form $form
      * @return boolean Returns true if flow should continue
      */
-    public function beforeSave(array &$data, $isNew, Zend_Form $form = null)
+    public function beforeSave(array &$data, $isNew, \Zend_Form $form = null)
     {
         return true;
     }
@@ -413,14 +415,14 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
      * Retrieve a form object and add extra decorators
      *
      * @param array $options
-     * @return Gems_Form
+     * @return \Gems_Form
      */
     public function createForm($options = null) {
         if ($this->useTabbedForms) {
-            $form = new Gems_TabForm($options);
+            $form = new \Gems_TabForm($options);
         } else {
             $form = parent::createForm($options);
-            //$form = new Gems_Form_TableForm($options);
+            //$form = new \Gems_Form_TableForm($options);
         }
 
         return $form;
@@ -491,7 +493,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
         $this->addExcelColumns($model);     // Hook to modify the model
 
         // Use $this->formatExcelData to switch between formatted and unformatted data
-        $excelData = new Gems_FormattedData($this->getExcelData($model->load(), $model), $model, $this->formatExcelData);
+        $excelData = new \Gems_FormattedData($this->getExcelData($model->load(), $model), $model, $this->formatExcelData);
 
         $this->view->result   = $excelData;
         $this->view->filename = $this->getRequest()->getControllerName() . '.xls';
@@ -503,7 +505,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
     /**
      * Return an array with route options depending on de $data given.
      *
-     * @param mixed $data array or Zend_Controller_Request_Abstract
+     * @param mixed $data array or \Zend_Controller_Request_Abstract
      * @return mixed array with route options or false when no redirect is found
      */
     public function getAfterSaveRoute($data) {
@@ -511,16 +513,16 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
             $controller = $this->_getParam('controller');
             $url        = null;
 
-            if ($data instanceof Zend_Controller_Request_Abstract) {
+            if ($data instanceof \Zend_Controller_Request_Abstract) {
                 $refData = $data;
             } elseif (is_array($data)) {
                 $refData = $this->getModel()->getKeyRef($data) + $data;
             } else {
-                throw new Gems_Exception_Coding('The variable $data must be an array or a Zend_Controller_Request_Abstract object.');
+                throw new \Gems_Exception_Coding('The variable $data must be an array or a ' . 'Zend_Controller_Request_Abstract object.');
             }
 
             if ($parentItem = $currentItem->getParent()) {
-                if ($parentItem instanceof Gems_Menu_SubMenuItem) {
+                if ($parentItem instanceof \Gems_Menu_SubMenuItem) {
                     $controller = $parentItem->get('controller');
                 }
             }
@@ -537,7 +539,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
                 }
             }
 
-            if ((null === $url) && ($parentItem instanceof Gems_Menu_SubMenuItem)) {
+            if ((null === $url) && ($parentItem instanceof \Gems_Menu_SubMenuItem)) {
                 // Still nothing? Try parent item.
                 $url = $parentItem->toRouteUrl($refData);
             }
@@ -555,15 +557,15 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
      * The form / html elements to search on. Elements can be grouped by inserting null's between them.
      * That creates a distinct group of elements
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return array Of Zend_Form_Element's or static tekst to add to the html or null for group breaks.
+     * @return array Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.
      */
-    protected function getAutoSearchElements(MUtil_Model_ModelAbstract $model, array $data)
+    protected function getAutoSearchElements(\MUtil_Model_ModelAbstract $model, array $data)
     {
         if ($model->hasTextSearchFilter()) {
             // Search text
-            $element = $this->form->createElement('text', MUtil_Model::TEXT_FILTER, array('label' => $this->_('Free search text'), 'size' => 20, 'maxlength' => 30));
+            $element = $this->form->createElement('text', \MUtil_Model::TEXT_FILTER, array('label' => $this->_('Free search text'), 'size' => 20, 'maxlength' => 30));
 
             return array($element);
         }
@@ -573,7 +575,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
      * Creates an autosearch form for indexAction.
      *
      * @param string $targetId
-     * @return Gems_Form|null
+     * @return \Gems_Form|null
      */
     protected function getAutoSearchForm($targetId)
     {
@@ -600,12 +602,12 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
                 }
 
                 foreach ($elements as $element) {
-                    if ($element instanceof Zend_Form_Element) {
+                    if ($element instanceof \Zend_Form_Element) {
                         if ($element->getLabel()) {
                             $span->label($element);
                         }
                         $span->input($element);
-                        // TODO: Elementen automatisch toevoegen in MUtil_Form
+                        // TODO: Elementen automatisch toevoegen in \MUtil_Form
                         $form->addElement($element);
                     } elseif (null === $element) {
                         $span = $div->div(array('class' => 'panel panel-default'))->div(array('class' => 'inputgroup panel-body'));
@@ -625,7 +627,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
 
                 $href = $this->getAutoSearchHref();
                 $form->setAutoSubmit($href, $targetId);
-                //$div[] = new Gems_JQuery_AutoSubmitForm($href, $targetId, $form);
+                //$div[] = new \Gems_JQuery_AutoSubmitForm($href, $targetId, $form);
 
                 return $form;
             }
@@ -634,40 +636,40 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
 
     protected function getAutoSearchHref()
     {
-        return MUtil_Html::attrib('href', array('action' => 'autofilter', 'RouteReset' => true));
+        return \MUtil_Html::attrib('href', array('action' => 'autofilter', 'RouteReset' => true));
     }
 
     /**
      * Creates a reset button for the search form
      *
-     * @return Zend_Form_Element_Submit
+     * @return \Zend_Form_Element_Submit
      */
     protected function getAutoSearchReset()
     {
         if ($menuItem = $this->menu->getCurrent()) {
             $link    = $menuItem->toActionLink($this->request, array('reset' => 1), $this->_('Reset search'));
             //$link->appendAttrib('class', 'btn-xs');
-            $element = new MUtil_Form_Element_Html('reset');
+            $element = new \MUtil_Form_Element_Html('reset');
             $element->setValue($link);
 
             return $element;
         }
     }
 
-    protected function getAutoSearchSubmit(MUtil_Model_ModelAbstract $model, MUtil_Form $form)
+    protected function getAutoSearchSubmit(\MUtil_Model_ModelAbstract $model, \MUtil_Form $form)
     {
         return $form->createElement('submit', self::SEARCH_BUTTON, array('label' => $this->_('Search'), 'class' => 'button small'));
 
-        //return new Zend_Form_Element_Submit(self::SEARCH_BUTTON, array('label' => $this->_('Search'), 'class' => 'button small'));
+        //return new \Zend_Form_Element_Submit(self::SEARCH_BUTTON, array('label' => $this->_('Search'), 'class' => 'button small'));
     }
 
     /**
-     * Creates from the model a MUtil_Html_TableElement that can display multiple items.
+     * Creates from the model a \MUtil_Html_TableElement that can display multiple items.
      *
      * Overruled to add css classes for Gems
      *
      * @param array $baseUrl
-     * @return MUtil_Html_TableElement
+     * @return \MUtil_Html_TableElement
      */
     public function getBrowseTable(array $baseUrl = array(), $sort = null, $model = null)
     {
@@ -755,10 +757,10 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
      * Returns an array with all columns from the model that have a label
      *
      * @param array                     $data
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      * @return array
      */
-    protected function getExcelData($data, MUtil_Model_ModelAbstract $model)
+    protected function getExcelData($data, \MUtil_Model_ModelAbstract $model)
     {
         $headings = array();
         $emptyMsg = sprintf($this->_('No %s found.'), $this->getTopic(0));
@@ -789,12 +791,12 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
     }
 
     /**
-     * Creates from the model a Zend_Form using createForm and adds elements
+     * Creates from the model a \Zend_Form using createForm and adds elements
      * using addFormElements().
      *
      * @param array $data The data that will later be loaded into the form, can be changed
      * @param optional boolean $new Form should be for a new element
-     * @return Zend_Form
+     * @return \Zend_Form
      */
     public function getModelForm(array &$data, $new = false)
     {
@@ -803,9 +805,9 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
         $baseform = $this->createForm();
 
         if ($this->useMultiRowForm) {
-            $bridge    = $model->getBridgeFor('form', new Gems_Form_SubForm());
+            $bridge    = $model->getBridgeFor('form', new \Gems_Form_SubForm());
             $newData   = $this->addFormElements($bridge, $model, $data, $new);
-            $formtable = new MUtil_Form_Element_Table($bridge->getForm(), $model->getName(), array('class' => $this->editTableClass));
+            $formtable = new \MUtil_Form_Element_Table($bridge->getForm(), $model->getName(), array('class' => $this->editTableClass));
 
             $baseform->setMethod('post')
                 ->setDescription($this->getTopicTitle())
@@ -822,21 +824,21 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
             $data = $newData + $data;
         }
 
-        if ($form instanceof Gems_TabForm)  {
+        if ($form instanceof \Gems_TabForm)  {
             $form->resetContext();
         }
         return $form;
     }
 
     /**
-     * Creates from the model a MUtil_Html_TableElement for display of a single item.
+     * Creates from the model a \MUtil_Html_TableElement for display of a single item.
      *
      * Overruled to add css classes for Gems
      *
      * @param integer $columns The number of columns to use for presentation
-     * @param mixed $filter A valid filter for MUtil_Model_ModelAbstract->load()
-     * @param mixed $sort A valid sort for MUtil_Model_ModelAbstract->load()
-     * @return MUtil_Html_TableElement
+     * @param mixed $filter A valid filter for \MUtil_Model_ModelAbstract->load()
+     * @param mixed $sort A valid sort for \MUtil_Model_ModelAbstract->load()
+     * @return \MUtil_Html_TableElement
      */
     public function getShowTable($columns = 1, $filter = null, $sort = null)
     {
@@ -869,7 +871,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
 
     public function indexAction()
     {
-        // MUtil_Model::$verbose = true;
+        // \MUtil_Model::$verbose = true;
         $this->setPageTitle($this->getTopicTitle(), array('class' => 'title'));
 
         if (! $this->useMultiRowForm) {
@@ -879,7 +881,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
 
             $this->html->div(array('id' => $id), $this->_createTable());
             if ($this->useKeyboardSelector) {
-                $this->html[] = new Gems_JQuery_TableRowKeySelector($id);
+                $this->html[] = new \Gems_JQuery_TableRowKeySelector($id);
             }
 
             $this->html->buttonDiv($this->createMenuLinks($this->menuIndexIncludeLevel), array('class' => 'leftAlign', 'renderWithoutContent' => false));
@@ -927,7 +929,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
      *
      * When not rerouted, the form will be populated afterwards
      *
-     * @param Zend_Form $form   The populated form
+     * @param \Zend_Form $form   The populated form
      * @param array     $data   The data-array we are working on
      */
     public function onFakeSubmit(&$form, &$data) {
@@ -947,7 +949,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
      *
      * @param string        $saveLabel  A label describing the form
      * @param array         $data       An array of data to use, adding to the data from the post
-     * @return Zend_Form|null           Returns a form to display or null when finished
+     * @return \Zend_Form|null           Returns a form to display or null when finished
      */
     protected function processForm($saveLabel = null, $data = null)
     {
@@ -956,7 +958,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
         $request = $this->getRequest();
         $isNew   = $request->getActionName() === 'create';
 
-        //MUtil_Echo::r($data);
+        //\MUtil_Echo::r($data);
         if ($request->isPost()) {
             $data = $request->getPost() + (array) $data;
         } else {
@@ -981,7 +983,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
                 }
             }
         }
-        // MUtil_Echo::r($data, __CLASS__ . '->' . __FUNCTION__ . '(): ' . __LINE__);
+        // \MUtil_Echo::r($data, __CLASS__ . '->' . __FUNCTION__ . '(): ' . __LINE__);
 
         $form = $this->getModelForm($data, $isNew);
 
@@ -1019,11 +1021,11 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
             //First populate the form, otherwise the saveButton will never be 'checked'!
             $form->populate($data);
             if ($saveButton->isChecked()) {
-                // MUtil_Echo::r($_POST, 'POST');
-                // MUtil_Echo::r($data, 'data');
-                // MUtil_Echo::r($form->getValues(), 'values');
+                // \MUtil_Echo::r($_POST, 'POST');
+                // \MUtil_Echo::r($data, 'data');
+                // \MUtil_Echo::r($form->getValues(), 'values');
 
-                // MUtil_Model::$verbose = true;
+                // \MUtil_Model::$verbose = true;
                 if ($form->isValid($data, false)) {
                     /*
                      * Now that we validated, the form should be populated. I think the step
@@ -1049,7 +1051,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
                             $this->addMessage($this->_('No changes to save.'));
                         }
 
-                        //MUtil_Echo::r($data, 'after process');
+                        //\MUtil_Echo::r($data, 'after process');
                         if ($this->afterSaveRoute($data)) {
                             return null;
                         }
@@ -1090,7 +1092,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
         $this->pageTitle = $title;
 
         $args = array('class' => 'title');
-        $titleTag = MUtil_Html::create('h3', $title, $args);
+        $titleTag = \MUtil_Html::create('h3', $title, $args);
 
         $this->html->append($titleTag);
     }
@@ -1118,7 +1120,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
             $table->tbody()->onclick = array('location.href=\'', $menuItem->toHRefAttribute($this->getRequest()), '\';');
         }
 
-        $tableContainer = MUtil_Html::create('div', array('class' => 'table-container'), $table);
+        $tableContainer = \MUtil_Html::create('div', array('class' => 'table-container'), $table);
         $this->html[] = $tableContainer;
     }
 }

@@ -43,13 +43,17 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
+class Gems_Default_OptionAction  extends \Gems_Controller_BrowseEditAction
 {
+    /**
+     *
+     * @var boolean
+     */
     public $autoFilter = false;
 
     /**
      *
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     public $project;
 
@@ -59,13 +63,13 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @param array $data The data that will later be loaded into the form
      * @param optional boolean $new Form should be for a new element
      * @return void|array When an array of new values is return, these are used to update the $data array in the calling function
      */
-    protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
+    protected function addFormElements(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model, array $data, $new = false)
     {
         foreach($model->getItemsOrdered() as $name) {
             if ($label = $model->get($name, 'label')) {
@@ -95,7 +99,7 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
             $user->setCurrentOrganization($currentOrg);
 
             // If locale has changed, set it in a cookie
-            Gems_Cookies::setLocale($data['gsf_iso_lang'], GemsEscort::getInstance()->basepath);
+            \Gems_Cookies::setLocale($data['gsf_iso_lang'], GemsEscort::getInstance()->basepath);
             $this->_reroute();      // Force refresh
         }
     }
@@ -104,10 +108,10 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
      *
      * @param array $data
      * @param boolean $isNew
-     * @param Zend_Form $form
+     * @param \Zend_Form $form
      * @return boolean
      */
-    public function beforeSave(array &$data, $isNew, Zend_Form $form = null)
+    public function beforeSave(array &$data, $isNew, \Zend_Form $form = null)
     {
         // fix privilege escalation
 
@@ -119,7 +123,7 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
         // Now only take values from elements that allow input (exclude hidden)
         $validData = array();
         foreach($form->getElements() as $element) {
-            if (! ($element instanceof Zend_Form_Element_Hidden || $element instanceof Zend_Form_Element_Submit)) {
+            if (! ($element instanceof \Zend_Form_Element_Hidden || $element instanceof \Zend_Form_Element_Submit)) {
                 $validData[$element->getName()] = $data[$element->getName()];
             }
         }
@@ -182,17 +186,17 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     public function createModel($detailed, $action)
     {
         $model = $this->loader->getModels()->getStaffModel();
 
-        $noscript = new MUtil_Validate_NoScript();
+        $noscript = new \MUtil_Validate_NoScript();
 
         $model->set('gsf_login',          'label', $this->_('Login Name'), 'elementClass', 'Exhibitor');
         $model->set('gsf_email',          'label', $this->_('E-Mail'), 'size', 30,
-                'validator', new MUtil_Validate_SimpleEmail());
+                'validator', new \MUtil_Validate_SimpleEmail());
         $model->set('gsf_first_name',     'label', $this->_('First name'), 'validator', $noscript);
         $model->set('gsf_surname_prefix', 'label', $this->_('Surname prefix'), 'description', 'de, van der, \'t, etc...', 'validator', $noscript);
         $model->set('gsf_last_name',      'label', $this->_('Last name'), 'required', true, 'validator', $noscript);
@@ -215,31 +219,17 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
 
     public function overviewAction()
     {
-        $this->html->h3($this->_('Activity overview'));
+        $filter['gla_by'] = $this->loader->getCurrentUser()->getUserId();
+
+        $this->addSnippet('Generic_ContentTitleSnippet',
+                'contentTitle', $this->_('Activity overview')
+                );
+        $this->addSnippet('Log\\LogTableSnippet',
+                'browse', true,
+                'extraFilter', $filter
+                );
 
         $this->html->p($this->_('This overview provides information about the last login activity on your account.'));
-        $this->html->br();
-
-        $sql = "SELECT glua.glua_remote_ip, UNIX_TIMESTAMP(glua.glua_created) AS glua_created
-                    FROM gems__log_setup LEFT JOIN
-                            gems__log_useractions glua ON gls_id_action = glua_action AND glua_by = ?
-                    WHERE gls_name = 'index.login'
-                    ORDER BY glua.glua_created DESC
-                    LIMIT 10";
-
-        $activity = $this->db->fetchAll($sql, $this->loader->getCurrentUser()->getUserId());
-
-        foreach (array_keys($activity) as $key) {
-            $date = new MUtil_Date($activity[$key]['glua_created']);
-
-            $activity[$key]['glua_created'] = (string) $date . " (" . $date->diffReadable(new Zend_Date(), $this->translate) . ")";
-        }
-
-        $this->addSnippet('SelectiveTableSnippet',
-                'data', $activity,
-                'class', 'browser',
-                'columns', array('glua_remote_ip' => $this->_('IP address'), 'glua_created' => $this->_('Date / time'))
-                );
     }
 
     public function getTopic($count = 1)

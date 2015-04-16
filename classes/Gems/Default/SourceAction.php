@@ -44,8 +44,14 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Default_SourceAction extends Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_SourceAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
+    /**
+     *
+     * @var \Gems_AccessLog
+     */
+    public $accesslog;
+
     /**
      * The snippets used for the autofilter action.
      *
@@ -71,11 +77,11 @@ class Gems_Default_SourceAction extends Gems_Controller_ModelSnippetActionAbstra
     /**
      * Displays textual information what checking tokens does
      *
-     * @param MUtil_Html_Sequence $html
-     * @param Zend_Translate $translate
+     * @param \MUtil_Html_Sequence $html
+     * @param \Zend_Translate $translate
      * @param string $itemDescription Describe which tokens will be checked
      */
-    public static function addCheckInformation(MUtil_Html_Sequence $html, Zend_Translate $translate, $itemDescription)
+    public static function addCheckInformation(\MUtil_Html_Sequence $html, \Zend_Translate $translate, $itemDescription)
     {
         $html->pInfo($translate->_('Check tokens for being answered or not, reruns survey and round event code on completed tokens and recalculates the start and end times of all tokens in tracks that have completed tokens.'));
         $html->pInfo($translate->_('Run this code when survey result fields, survey or round events or the event code has changed or after bulk changes in a survey source.'));
@@ -105,7 +111,7 @@ class Gems_Default_SourceAction extends Gems_Controller_ModelSnippetActionAbstra
         $title = sprintf($this->_('Refreshing token attributes for %s source.'),
                     $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
 
-        $this->_helper->batchRunner($batch, $title);
+        $this->_helper->batchRunner($batch, $title, $this->accesslog);
 
         $this->html->pInfo($this->_('Refreshes the attributes for a token as stored in the source.'));
         $this->html->pInfo($this->_('Run this code when the number of attributes has changed or when you suspect the attributes have been corrupted somehow.'));
@@ -120,7 +126,7 @@ class Gems_Default_SourceAction extends Gems_Controller_ModelSnippetActionAbstra
 
         $title = $this->_('Refreshing token attributes for all sources.');
 
-        $this->_helper->batchRunner($batch, $title);
+        $this->_helper->batchRunner($batch, $title, $this->accesslog);
 
         $this->html->pInfo($this->_('Refreshes the attributes for a token as stored in on of the sources.'));
         $this->html->pInfo($this->_('Run this code when the number of attributes has changed or when you suspect the attributes have been corrupted somehow.'));
@@ -138,7 +144,7 @@ class Gems_Default_SourceAction extends Gems_Controller_ModelSnippetActionAbstra
 
         $title = sprintf($this->_('Checking survey results for %s source.'),
                     $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
-        $this->_helper->batchRunner($batch, $title);
+        $this->_helper->batchRunner($batch, $title, $this->accesslog);
 
         self::addCheckInformation($this->html, $this->translate, $this->_('This task checks all tokens in this source.'));
     }
@@ -151,7 +157,7 @@ class Gems_Default_SourceAction extends Gems_Controller_ModelSnippetActionAbstra
         $batch = $this->loader->getTracker()->recalculateTokens('surveyCheckAll', $this->loader->getCurrentUser()->getUserId());
 
         $title = $this->_('Checking survey results for all sources.');
-        $this->_helper->batchRunner($batch, $title);
+        $this->_helper->batchRunner($batch, $title, $this->accesslog);
 
         self::addCheckInformation($this->html, $this->translate, $this->_('This task checks all tokens in all sources.'));
     }
@@ -165,12 +171,12 @@ class Gems_Default_SourceAction extends Gems_Controller_ModelSnippetActionAbstra
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     public function createModel($detailed, $action)
     {
         $tracker = $this->loader->getTracker();
-        $model   = new MUtil_Model_TableModel('gems__sources');
+        $model   = new \MUtil_Model_TableModel('gems__sources');
 
         $model->set('gso_source_name', 'label', $this->_('Name'),
                 'description', $this->_('E.g. the name of the project - for single source projects.'),
@@ -183,7 +189,7 @@ class Gems_Default_SourceAction extends Gems_Controller_ModelSnippetActionAbstra
                 'description', $this->_('For creating token-survey url.'),
                 'size', 50,
                 'validators[unique]', $model->createUniqueValidator('gso_ls_url'),
-                'validators[url]', new MUtil_Validate_Url()
+                'validators[url]', new \MUtil_Validate_Url()
                 );
 
         $sourceClasses = $tracker->getSourceClasses();
@@ -232,7 +238,7 @@ class Gems_Default_SourceAction extends Gems_Controller_ModelSnippetActionAbstra
                 $model->set('gso_ls_password', 'description', $this->_('Enter only when changing'),
                         'renderPassword', false);
             }
-            $type = new Gems_Model_Type_EncryptedField($this->project, true);
+            $type = new \Gems_Model_Type_EncryptedField($this->project, true);
             $type->apply($model, 'gso_ls_password', 'gso_encryption');
 
             $model->set('gso_ls_charset',     'label', $this->_('Charset'),
@@ -253,7 +259,7 @@ class Gems_Default_SourceAction extends Gems_Controller_ModelSnippetActionAbstra
                 'elementClass', 'Exhibitor'
                 );
 
-        Gems_Model::setChangeFieldsByPrefix($model, 'gso');
+        \Gems_Model::setChangeFieldsByPrefix($model, 'gso');
 
         return $model;
     }
@@ -272,7 +278,7 @@ class Gems_Default_SourceAction extends Gems_Controller_ModelSnippetActionAbstra
      * Load a source object
      *
      * @param int $sourceId
-     * @return Gems_Tracker_Source_SourceInterface
+     * @return \Gems_Tracker_Source_SourceInterface
      */
     private function getSourceById($sourceId = null)
     {
@@ -335,7 +341,7 @@ class Gems_Default_SourceAction extends Gems_Controller_ModelSnippetActionAbstra
 
         $title = sprintf($this->_('Synchronize the %s source.'),
                     $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
-        $this->_helper->batchRunner($batch, $title);
+        $this->_helper->batchRunner($batch, $title, $this->accesslog);
 
         $this->addSynchronizationInformation();
     }
@@ -350,7 +356,7 @@ class Gems_Default_SourceAction extends Gems_Controller_ModelSnippetActionAbstra
         $batch->minimalStepDurationMs = 3000;
 
         $title = $this->_('Synchronize all sources.');
-        $this->_helper->batchRunner($batch, $title);
+        $this->_helper->batchRunner($batch, $title, $this->accesslog);
 
         $this->html->actionLink(array('action' => 'index'), $this->_('Cancel'), array('class' => 'btn-danger'));
 

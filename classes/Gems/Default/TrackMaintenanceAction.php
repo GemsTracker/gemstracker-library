@@ -46,6 +46,12 @@
 class Gems_Default_TrackMaintenanceAction  extends \Gems_Controller_BrowseEditAction
 {
     /**
+     *
+     * @var \Gems_AccessLog
+     */
+    public $accesslog;
+
+    /**
      * Mode for the current addBrowse drawing.
      *
      * @var string
@@ -216,7 +222,7 @@ class Gems_Default_TrackMaintenanceAction  extends \Gems_Controller_BrowseEditAc
     public function checkAllAction()
     {
         $batch = $this->loader->getTracker()->checkTrackRounds('trackCheckRoundsAll', $this->loader->getCurrentUser()->getUserId());
-        $this->_helper->BatchRunner($batch, $this->_('Checking round assignments for all tracks.'));
+        $this->_helper->BatchRunner($batch, $this->_('Checking round assignments for all tracks.'), $this->accesslog);
 
         $this->addCheckInformation();
     }
@@ -233,7 +239,7 @@ class Gems_Default_TrackMaintenanceAction  extends \Gems_Controller_BrowseEditAc
         $batch = $this->loader->getTracker()->checkTrackRounds('trackCheckRounds' . $id, $this->loader->getCurrentUser()->getUserId(), $where);
 
         $title = sprintf($this->_("Checking round assignments for track '%s'."), $track->getTrackName());
-        $this->_helper->BatchRunner($batch, $title);
+        $this->_helper->BatchRunner($batch, $title, $this->accesslog);
 
         $this->addCheckInformation();
     }
@@ -373,7 +379,7 @@ class Gems_Default_TrackMaintenanceAction  extends \Gems_Controller_BrowseEditAc
     public function recalcAllFieldsAction()
     {
         $batch = $this->loader->getTracker()->recalcTrackFields('trackRecalcAllFields', $this->loader->getCurrentUser()->getUserId());
-        $this->_helper->BatchRunner($batch, $this->_('Recalculating fields for all tracks.'));
+        $this->_helper->BatchRunner($batch, $this->_('Recalculating fields for all tracks.'), $this->accesslog);
 
         $this->addRecalcInformation();
     }
@@ -389,7 +395,7 @@ class Gems_Default_TrackMaintenanceAction  extends \Gems_Controller_BrowseEditAc
         $where = $this->db->quoteInto('gr2t_id_track = ?', $id);
         $batch = $this->loader->getTracker()->recalcTrackFields('trackRecalcFields' . $id, $this->loader->getCurrentUser()->getUserId(), $where);
 
-        $title = sprintf($this->_("Recalculating fields for track '%s'."), $track->getTrackName());
+        $title = sprintf($this->_("Recalculating fields for track '%s'."), $track->getTrackName(), $this->accesslog);
         $this->_helper->BatchRunner($batch, $title);
 
         $this->addRecalcInformation();

@@ -47,21 +47,11 @@
 class Gems_Default_LogAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
-     * The parameters used for the autofilter action.
+     * The snippets used for the autofilter action.
      *
-     * When the value is a function name of that object, then that functions is executed
-     * with the array key as single parameter and the return value is set as the used value
-     * - unless the key is an integer in which case the code is executed but the return value
-     * is not stored.
-     *
-     * @var array Mixed key => value array for snippet initialization
+     * @var mixed String or array of snippets name
      */
-    protected $autofilterParameters = array(
-        'columns'   => 'getBrowseColumns',
-        'extraSort' => array(
-            'glua_created' => SORT_DESC,
-            ),
-        );
+    protected $autofilterSnippets = 'Log\\LogTableSnippet';
 
     /**
      * The snippets used for the index action, before those in autofilter
@@ -77,26 +67,6 @@ class Gems_Default_LogAction extends \Gems_Controller_ModelSnippetActionAbstract
     public $loader;
 
     /**
-     * Set column usage to use for the browser.
-     *
-     * Must be an array of arrays containing the input for TableBridge->setMultisort()
-     *
-     * @return array or false
-     */
-    public function getBrowseColumns()
-    {
-        $html = \MUtil_Html::create();
-        $br   = $html->br();
-
-        $columns[10] = array('glua_created', $br, 'gls_name');
-        // $columns[15] = array('glua_message');
-        $columns[20] = array('staff_name', $br, 'glua_organization');
-        $columns[30] = array('respondent_name');
-
-        return $columns;
-    }
-
-    /**
      * Creates a model for getModel(). Called only for each new $action.
      *
      * The parameters allow you to easily adapt the model to the current action. The $detailed
@@ -109,27 +79,12 @@ class Gems_Default_LogAction extends \Gems_Controller_ModelSnippetActionAbstract
      */
     protected function createModel($detailed, $action)
     {
-        //\MUtil_Model::$verbose=true;
-        $model = new \Gems_Model_JoinModel('Log', 'gems__log_useractions');
-        $model->addLeftTable('gems__log_setup', array('glua_action' => 'gls_id_action'));
-        $model->addLeftTable('gems__respondents', array('glua_to'=>'grs_id_user'));
-        $model->addLeftTable('gems__staff', array('glua_by'=>'gsf_id_user'));
-        $model->addColumn("CONCAT(gsf_last_name, ', ', COALESCE(CONCAT(gsf_first_name, ' '), ''), COALESCE(gsf_surname_prefix, ''))", 'staff_name');
-        $model->addColumn("CONCAT(grs_last_name, ', ', COALESCE(CONCAT(grs_first_name, ' '), ''), COALESCE(grs_surname_prefix, ''))", 'respondent_name');
-        $model->resetOrder();
-        $model->set('glua_created', 'label', $this->_('Date'));
-        $model->set('gls_name', 'label', $this->_('Action'));
-        $model->set('glua_message', 'label', $this->_('Message'));
-        $model->set('staff_name', 'label', $this->_('Staff'));
-
-        //Not only active, we want to be able to read the log for inactive organizations too
-        $orgs = $this->db->fetchPairs('SELECT gor_id_organization, gor_name FROM gems__organizations');
-        $model->set('glua_organization', 'label', $this->_('Organization'), 'multiOptions', $orgs);
-        $model->set('respondent_name', 'label', $this->_('Respondent'));
+        $model = $this->loader->getModels()->createLogModel();
 
         if ($detailed) {
-            $model->set('glua_role', 'label', $this->_('Role'));
-            $model->set('glua_remote_ip', 'label', $this->_('IP address'));
+            $model->applyDetailSettings();
+        } else {
+            $model->applyBrowseSettings();
         }
 
         return $model;
@@ -158,10 +113,12 @@ class Gems_Default_LogAction extends \Gems_Controller_ModelSnippetActionAbstract
             $from = new \MUtil_Date();
             $from->subWeek(2);
 
+            $until = new \MUtil_Date();
+            $until->addDay(1);
+
             $this->defaultSearchData = array(
-                'glua_organization' => $this->loader->getOrganization()->getId(),
-                'datefrom'          => $from,
-                'dateuntil'         => new \MUtil_Date(),
+                'datefrom'         => $from,
+                'dateuntil'        => $until,
                 );
         }
 

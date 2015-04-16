@@ -44,7 +44,6 @@
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
  */
-
 class MUtil_Controller_Action_Helper_FlashMessenger extends \Zend_Controller_Action_Helper_FlashMessenger
 {
 	/**
@@ -65,9 +64,45 @@ class MUtil_Controller_Action_Helper_FlashMessenger extends \Zend_Controller_Act
 		}
 
         $message = array($message, $status);
+
 		parent::addMessage($message, $namespace);
+
 		return $this;
 	}
+
+    /**
+     * Return all messages in an array without status info.
+     */
+    public function getMessagesOnly()
+    {
+    	if ($this->hasMessages()) {
+            $messages = $this->getMessages();
+        } else {
+            $messages = array();
+        }
+
+        if ($this->hasCurrentMessages()) {
+            $messages = array_merge($messages, $this->getCurrentMessages());
+        }
+
+        if (! $messages) {
+            return null;
+        }
+
+        $output = array();
+        foreach ($messages as $message) {
+            if (is_array($message)) {
+                if ((2 === count($message)) &&
+                        isset($message[0], $message[1]) &&
+                        is_string($message[1])) {
+                    $message = $message[0];
+                }
+            }
+            $output[] = $message;
+        }
+
+        return \MUtil_Ra::flatten($output);
+    }
 
     /**
      * Show Available messages in alerts. Bootstrap compatible
@@ -96,6 +131,7 @@ class MUtil_Controller_Action_Helper_FlashMessenger extends \Zend_Controller_Act
 
                 if (is_array($message)) {
                  	if ((2 === count($message)) &&
+                            isset($message[0], $message[1]) &&
                             is_string($message[1])) {
                     	$status  = $message[1];
                     	$message = $message[0];

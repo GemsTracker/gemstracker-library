@@ -44,14 +44,15 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.2
  */
-class Gems_Controller_Action_Helper_BatchRunner extends Zend_Controller_Action_Helper_Abstract
+class Gems_Controller_Action_Helper_BatchRunner extends \Zend_Controller_Action_Helper_Abstract
 {
     /**
      *
-     * @param MUtil_Batch_BatchAbstract $batch
+     * @param \MUtil_Batch_BatchAbstract $batch
      * @param string $title
+     * @param \Gems_AccessLog $accessLog
      */
-    public function direct(MUtil_Batch_BatchAbstract $batch, $title)
+    public function direct(\MUtil_Batch_BatchAbstract $batch, $title, $accessLog = null)
     {
 
         if ($batch->isConsole()) {
@@ -59,9 +60,12 @@ class Gems_Controller_Action_Helper_BatchRunner extends Zend_Controller_Action_H
 
             echo implode("\n", $batch->getMessages(true)) . "\n";
 
-            if ($echo = MUtil_Echo::out()) {
+            if ($echo = \MUtil_Echo::out()) {
                 echo "\n\n================================================================\nECHO OUTPUT:\n\n";
-                echo MUtil_Console::removeHtml($echo);
+                echo \MUtil_Console::removeHtml($echo);
+            }
+            if ($accessLog instanceof \Gems_AccessLog) {
+                $accessLog->logChange($this->getRequest(), null, $echo);
             }
             exit;
         } elseif ($batch->run($this->getRequest())) {
@@ -74,6 +78,10 @@ class Gems_Controller_Action_Helper_BatchRunner extends Zend_Controller_Action_H
             if ($batch->isFinished()) {
                 $controller->addMessage($batch->getMessages(true), 'info');
                 $batchContainer->pInfo($batch->getRestartButton($controller->_('Prepare recheck'), array('class' => 'actionlink')));
+                if ($accessLog instanceof \Gems_AccessLog) {
+                    $echo = array_filter(array_map('trim', preg_split('/<[^>]+>/', \MUtil_Echo::getOutput())));
+                    $accessLog->logChange($this->getRequest(), null, $echo);
+                }
             } else {
                 if ($batch->count()) {
                     $batchContainer->pInfo($batch->getStartButton(sprintf($controller->_('Start %s jobs'), $batch->count())));

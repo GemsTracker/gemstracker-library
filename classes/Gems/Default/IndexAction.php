@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Default_IndexAction extends Gems_Controller_Action
+class Gems_Default_IndexAction extends \Gems_Controller_Action
 {
     /**
      *
@@ -104,11 +104,11 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
      *
      * @param boolean $showToken Optional, show 'Ask token' button, $this->showTokenButton is used when not specified
      * @param boolean $showPasswordLost Optional, show 'Lost password' button, $this->showPasswordLostButton is used when not specified
-     * @return Gems_User_Form_LoginForm
+     * @return \Gems_User_Form_LoginForm
      */
     protected function createLoginForm($showToken = null, $showPasswordLost = null)
     {
-        $args = MUtil_Ra::args(func_get_args(),
+        $args = \MUtil_Ra::args(func_get_args(),
                 array(
                     'showToken' => 'is_boolean',
                     'showPasswordLost' => 'is_boolean',
@@ -120,7 +120,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                     'organizationMaxLines' => $this->organizationMaxLines,
                     ));
 
-        Gems_Html::init();
+        \Gems_Html::init();
 
         if ($this->layeredLogin === true) {
             // Allow to set labels without modifying the form by overriding the below methods
@@ -137,11 +137,11 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
     /**
      * Gets a reset password form.
      *
-     * @return Gems_User_Form_ResetForm
+     * @return \Gems_User_Form_ResetForm
      */
     protected function createResetRequestForm()
     {
-        $args = MUtil_Ra::args(func_get_args(),
+        $args = \MUtil_Ra::args(func_get_args(),
                 array(),
                 array(
                     'labelWidthFactor' => $this->labelWidthFactor,
@@ -155,9 +155,9 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
     /**
      * Function for overruling the display of the login form.
      *
-     * @param Gems_User_Form_LoginForm $form
+     * @param \Gems_User_Form_LoginForm $form
      */
-    protected function displayLoginForm(Gems_User_Form_LoginForm $form)
+    protected function displayLoginForm(\Gems_User_Form_LoginForm $form)
     {
         $this->setCurrentOrganizationTo($form->getUser());
 
@@ -167,16 +167,16 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
     /**
      * Function for overruling the display of the reset form.
      *
-     * @param Gems_Form_AutoLoadFormAbstract $form Rset password or reset request form
+     * @param \Gems_Form_AutoLoadFormAbstract $form Rset password or reset request form
      * @param mixed $errors
      */
-    protected function displayResetForm(Gems_Form_AutoLoadFormAbstract $form, $errors)
+    protected function displayResetForm(\Gems_Form_AutoLoadFormAbstract $form, $errors)
     {
-        if ($form instanceof Gems_User_Validate_GetUserInterface) {
+        if ($form instanceof \Gems_User_Validate_GetUserInterface) {
             $user = $form->getUser();
         }
 
-        if ($form instanceof Gems_User_Form_ResetRequestForm) {
+        if ($form instanceof \Gems_User_Form_ResetRequestForm) {
             $this->html->h3($this->_('Request password reset'));
 
             $p = $this->html->pInfo();
@@ -187,7 +187,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
             }
             $this->html->p($this->_('We will then send you an e-mail with a link. The link will bring you to a page where you can set a new password of your choice.'));
 
-        } elseif ($form instanceof Gems_User_Form_ChangePasswordForm) {
+        } elseif ($form instanceof \Gems_User_Form_ChangePasswordForm) {
 
             $this->setCurrentOrganizationTo($user);
             if ($user->hasPassword()) {
@@ -210,7 +210,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
             $this->setCurrentOrganizationTo($user);
         }
 
-        $formContainer = MUtil_Html::create('div', array('class' => 'resetPassword'), $form);
+        $formContainer = \MUtil_Html::create('div', array('class' => 'resetPassword'), $form);
         $this->html->append($formContainer);
     }
 
@@ -271,7 +271,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                 /**
                  * Fix current locale in cookies
                  */
-                Gems_Cookies::setLocale($user->getLocale(), $this->basepath->getBasePath());
+                \Gems_Cookies::setLocale($user->getLocale(), $this->basepath->getBasePath());
 
                 /**
                  * Ready
@@ -281,7 +281,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                 /**
                  * Log the login
                  */
-                $this->accesslog->logChange($this->getRequest(), null, "Login successful");
+                $this->accesslog->logChange($request);
 
                 if ($previousRequestParameters) {
                     $this->_reroute(array('controller' => $previousRequestParameters['controller'], 'action' => $previousRequestParameters['action']), false);
@@ -294,18 +294,18 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                 }
                 return;
             } else {
-                $errors = MUtil_Ra::flatten($form->getMessages());
-                // MUtil_Echo::track($errors);
+                $errors = \MUtil_Ra::flatten($form->getMessages());
+                // \MUtil_Echo::track($errors);
 
                 //Also log the error to the log table
                 //when the project has logging enabled
                 $logErrors = join(' - ', $errors);
                 $msg = sprintf('Failed login for : %s (%s) - %s', $request->getParam($form->usernameFieldName), $request->getParam($form->organizationFieldName), $logErrors);
-                $this->accesslog->logChange($this->getRequest(), null, $msg);
+                $this->accesslog->logChange($request, $msg);
             } // */
         } else {
             if ($request->isPost()) {
-                $form->populate($this->getRequest()->getPost());
+                $form->populate($request->getPost());
             }
         }
 
@@ -320,8 +320,9 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
         $user = $this->loader->getCurrentUser();
 
         $this->addMessage(sprintf($this->_('Good bye: %s.'), $user->getFullName()));
+        $this->accesslog->logChange($this->getRequest());
         $user->unsetAsCurrentUser();
-        Zend_Session::destroy();
+        \Zend_Session::destroy();
         $this->_reroute(array('action' => 'index'), true);
     }
 
@@ -348,33 +349,16 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                 }
 
                 if (! $request->isPost()) {
-                    $this->accesslog->log(
-                            "index.resetpassword.clicked",
-                            $request,
-                            sprintf("User %s opened valid reset link.", $user->getLoginName()),
-                            $user->getUserId(),
-                            true
-                            );
+                    $this->accesslog->logChange($request, sprintf("User %s opened valid reset link.", $user->getLoginName()));
                 }
             } else {
                 if (! $request->isPost()) {
                     if ($user->getLoginName()) {
-                        $this->accesslog->log(
-                                "index.resetpassword.old",
-                                $request,
-                                sprintf("User %s used old reset key.", $user->getLoginName()),
-                                $user->getUserId(),
-                                true
-                                );
+                        $message = sprintf("User %s used old reset key.", $user->getLoginName());
                     } else {
-                        $this->accesslog->log(
-                                "index.resetpassword.false",
-                                $request,
-                                sprintf("Someone used a non existent reset key.", $user->getLoginName()),
-                                $user->getUserId(),
-                                true
-                                );
+                        $message = sprintf("Someone used a non existent reset key.", $user->getLoginName());
                     }
+                    $this->accesslog->logChange($request, $message);
 
                     if ($user->hasPassword() || (! $user->isActive())) {
                         $errors[] = $this->_('Your password reset request is no longer valid, please request a new link.');
@@ -392,7 +376,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
 
         if ($request->isPost() && $form->isValid($request->getPost())) {
 
-            if ($form instanceof Gems_User_Form_ResetRequestForm) {
+            if ($form instanceof \Gems_User_Form_ResetRequestForm) {
                 $user = $form->getUser();
 
                 $result = $user->authenticate(null, false);
@@ -404,17 +388,14 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
 
                 $errors = $this->sendUserResetEMail($user);
                 if ($errors) {
-                    $logger->log(
-                            "index.resetpassword.request.error",
+                    $this->accesslog->logChange(
                             $request,
                             sprintf(
                                     "User %s requested reset password but got %d error(s). %s",
                                     $form->getUserNameElement()->getValue(),
                                     count($errors),
                                     implode(' ', $errors)
-                                    ),
-                            $user->getUserId(),
-                            true
+                                    )
                             );
 
                 } else {
@@ -423,13 +404,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                             'We sent you an e-mail with a reset link. Click on the link in the e-mail.'
                             ));
 
-                    $logger->log(
-                            "index.resetpassword.request",
-                            $request,
-                            sprintf("User %s requested reset password.", $form->getUserNameElement()->getValue()),
-                            $user->getUserId(),
-                            true
-                            );
+                    $this->accesslog->logChange($request);
 
                     if ($this->returnToLoginAfterReset) {
                         $this->setCurrentOrganizationTo($user);
@@ -437,7 +412,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                     }
                 }
 
-            } elseif ($form instanceof Gems_User_Form_ChangePasswordForm) {
+            } elseif ($form instanceof \Gems_User_Form_ChangePasswordForm) {
                 $this->addMessage($this->_('New password is active.'));
 
                 // User set before this form was initiated
@@ -446,14 +421,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                 /**
                  * Log the login
                  */
-                $logger->log(
-                        "index.loginreset",
-                        $request,
-                        "User logged in through reset password.",
-                        $user->getUserId(),
-                        true
-                        );
-
+                $this->accesslog->logChange($request, $this->_("User logged in through reset password."));
         		$user->gotoStartPage($this->menu, $this->getRequest());
                 return;
             }
@@ -467,10 +435,10 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
     /**
      * Send the user an e-mail with a link for password reset
      *
-     * @param Gems_User_User $user
+     * @param \Gems_User_User $user
      * @return mixed string or array of Errors or null when successful.
      */
-    public function sendUserResetEMail(Gems_User_User $user)
+    public function sendUserResetEMail(\Gems_User_User $user)
     {
         $subjectTemplate = $this->_('Password reset requested');
 
@@ -484,9 +452,9 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
     /**
      * Helper function to safely switch org during login
      *
-     * @param Gems_User_User $user
+     * @param \Gems_User_User $user
      */
-    protected function setCurrentOrganizationTo(Gems_User_User $user)
+    protected function setCurrentOrganizationTo(\Gems_User_User $user)
     {
         $current = $this->loader->getCurrentUser();
 

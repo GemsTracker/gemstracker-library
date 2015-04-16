@@ -203,6 +203,16 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
     /**
      * Load project specific model or general Gems model otherwise
      *
+     * @return \Gems\Model\LogModel
+     */
+    public function createLogModel()
+    {
+        return $this->_loadClass('LogModel', true);
+    }
+
+    /**
+     * Load project specific model or general Gems model otherwise
+     *
      * @return Gems_Model_RespondentModel
      */
     public function createRespondentModel()
@@ -317,15 +327,15 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
 
         return $model;
     }
-    
+
     /**
      * Get the respondent relation model
-     * 
+     *
      * @return Gems_Model_RespondentRelationModel
      */
     public function getRespondentRelationModel()
     {
-        return $this->_loadClass('RespondentRelationModel', true);        
+        return $this->_loadClass('RespondentRelationModel', true);
     }
 
     /**

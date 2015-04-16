@@ -47,6 +47,12 @@
 class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
+     *
+     * @var \Gems_AccessLog
+     */
+    public $accesslog;
+
+    /**
      * The parameters used for the autofilter action.
      *
      * When the value is a function name of that object, then that functions is executed
@@ -76,7 +82,7 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
      */
     protected $createEditParameters = array(
         'cacheTags'       => array('surveys', 'tracks'),
-        'surveyId'        => '_getIdParam',
+        'surveyId'        => 'getSurveyId',
         );
 
     /**
@@ -121,7 +127,7 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $showParameters = array('surveyId' => '_getIdParam');
+    protected $showParameters = array('surveyId' => 'getSurveyId');
 
     /**
      * The snippets used for the show action
@@ -274,14 +280,14 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
      */
     public function checkAction()
     {
-        $surveyId = $this->_getParam(\MUtil_Model::REQUEST_ID);
+        $surveyId = $this->getSurveyId();
         $where    = $this->db->quoteInto('gto_id_survey = ?', $surveyId);
 
         $batch = $this->loader->getTracker()->recalculateTokens('surveyCheck' . $surveyId, $this->loader->getCurrentUser()->getUserId(), $where);
 
         $title = sprintf($this->_('Checking survey results for the %s survey.'),
                 $this->db->fetchOne("SELECT gsu_survey_name FROM gems__surveys WHERE gsu_id_survey = ?", $surveyId));
-        $this->_helper->BatchRunner($batch, $title);
+        $this->_helper->BatchRunner($batch, $title, $this->accesslog);
 
         \Gems_Default_SourceAction::addCheckInformation($this->html, $this->translate, $this->_('This task checks all tokens for this survey.'));
     }
@@ -294,7 +300,7 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
         $batch = $this->loader->getTracker()->recalculateTokens('surveyCheckAll', $this->loader->getCurrentUser()->getUserId());
 
         $title = $this->_('Checking survey results for all surveys.');
-        $this->_helper->BatchRunner($batch, $title);
+        $this->_helper->BatchRunner($batch, $title, $this->accesslog);
 
         \Gems_Default_SourceAction::addCheckInformation($this->html, $this->translate, $this->_('This task checks all tokens for all surveys.'));
     }
@@ -571,6 +577,22 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
         }
 
         return $filter;
+    }
+
+    /**
+     * Return the survey id (and set a menu var)
+     *
+     * @return int
+     */
+    public function getSurveyId()
+    {
+        $id = $this->_getIdParam();
+
+        $survey = $this->loader->getTracker()->getSurvey($id);
+
+        $this->menu->getParameterSource()->offsetSet('gsu_active', $survey->isActive() ? 1 : 0);
+
+        return $id;
     }
 
    /**

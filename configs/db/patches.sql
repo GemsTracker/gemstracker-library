@@ -950,5 +950,7 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.agenda-proce
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.locations.cleanup')
     WHERE grl_privileges LIKE '%pr.locations.edit,%' AND grl_privileges NOT LIKE '%,pr.locations.cleanup%';
 
-UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.agenda-staff.cleanup')
-    WHERE grl_privileges LIKE '%pr.agenda-staff.edit,%' AND grl_privileges NOT LIKE '%,pr.agenda-staff.cleanup%';
+-- PATCH: Respondent log
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.respondent-log')
+    WHERE grl_privileges LIKE '%pr.log%' AND grl_privileges NOT LIKE '%,pr.respondent-log%';
+

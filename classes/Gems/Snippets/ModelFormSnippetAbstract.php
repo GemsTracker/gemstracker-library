@@ -218,12 +218,7 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
         parent::afterSave($changed);
 
         if ($changed) {
-            $this->accesslog->logChange(
-                    $this->request,
-                    null,
-                    sprintf($this->_('%2$u %1$s saved'), $this->getTopic($changed), $changed),
-                    $this->formData
-                    );
+            $this->accesslog->logChange($this->request, null, $this->formData);
         }
 
         if ($this->cacheTags && ($this->cache instanceof \Zend_Cache_Core)) {

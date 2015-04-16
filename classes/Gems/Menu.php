@@ -225,10 +225,10 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $setup->addMailSetupMenu($this->_('Mail'));
 
         // LOG SETUP CONTROLLER
-        $setup->addBrowsePage($this->_('Logging Setup'), 'pr.log.maintenance', 'log-maintenance');
+        $setup->addBrowsePage($this->_('Log Setup'), 'pr.log.maintenance', 'log-maintenance');
 
         // LOG CONTROLLER
-        $page = $setup->addPage($this->_('Logging'), 'pr.log', 'log', 'index');
+        $page = $setup->addPage($this->_('Log'), 'pr.log', 'log', 'index');
         $page->addAutofilterAction();
         $page->addExcelAction();
         $page->addShowAction();
@@ -260,9 +260,11 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
     {
         $this->addPage($this->_('Logon'), 'pr.nologin', 'index', 'login')
              ->addAction($this->_('Lost password'), 'pr.nologin', 'resetpassword');
+        
         $optionPage = $this->addPage($this->_('Your account'), 'pr.option.edit', 'option', 'edit');
         $optionPage->addAction($this->_('Activity overview'), 'pr.option.edit', 'overview');
         $optionPage->addAction($this->_('Change password'), 'pr.option.password', 'change-password');
+
         $this->addAskPage($this->_('Token'));
         $this->addPage($this->_('Logoff'), 'pr.islogin', 'index', 'logoff');
 
@@ -470,6 +472,13 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $page->addPage($this->_('Mail Activity Log'), null, 'respondent-mail-log', 'index')
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
+
+        // LOG CONTROLLER
+        $logPage = $page->addPage($this->_('Other Activity Log'), 'pr.respondent-log', 'respondent-log', 'index');
+        $logPage->setNamedParameters($params)
+                ->setHiddenOrgId($orgId);
+//        $logPage->addShowAction()->setNamedParameters($params)
+//                ->setHiddenOrgId($orgId);
 
         $page->addDeleteAction('pr.respondent.delete')
                 ->setNamedParameters($params)

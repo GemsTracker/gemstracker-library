@@ -44,17 +44,17 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Model_JoinModel extends MUtil_Model_JoinModel
+class Gems_Model_JoinModel extends \MUtil_Model_JoinModel
 {
     /**
      *
-     * @var Zend_Translate
+     * @var \Zend_Translate
      */
     protected $translate;
 
     /**
      *
-     * @var Zend_Translate_Adapter
+     * @var \Zend_Translate_Adapter
      */
     protected $translateAdapter;
 
@@ -71,19 +71,19 @@ class Gems_Model_JoinModel extends MUtil_Model_JoinModel
         parent::__construct($name, $startTable, $this->_checkSaveable($saveable, $fieldPrefix));
 
         if ($fieldPrefix) {
-            Gems_Model::setChangeFieldsByPrefix($this, $fieldPrefix);
+            \Gems_Model::setChangeFieldsByPrefix($this, $fieldPrefix);
         }
     }
 
     /**
-     * Copy from Zend_Translate_Adapter
+     * Copy from \Zend_Translate_Adapter
      *
      * Translates the given string
      * returns the translation
      *
      * @param  string             $text   Translation string
-     * @param  string|Zend_Locale $locale (optional) Locale/Language to use, identical with locale
-     *                                    identifier, @see Zend_Locale for more information
+     * @param  string|\Zend_Locale $locale (optional) Locale/Language to use, identical with locale
+     *                                    identifier, @see \Zend_Locale for more information
      * @return string
      */
     public function _($text, $locale = null)
@@ -117,14 +117,14 @@ class Gems_Model_JoinModel extends MUtil_Model_JoinModel
      * @param string $fieldPrefix Prefix to use for change fields (date/userid), if $saveable empty sets it to true
      * @param mixed  $saveable    Will changes to this table be saved, true or a combination of SAVE_MODE constants
      *
-     * @return Gems_Model_JoinModel
+     * @return \Gems_Model_JoinModel
      */
     public function addLeftTable($table, array $joinFields, $fieldPrefix = null, $saveable = null)
     {
         parent::addLeftTable($table, $joinFields, $this->_checkSaveable($saveable, $fieldPrefix));
 
         if ($fieldPrefix) {
-            Gems_Model::setChangeFieldsByPrefix($this, $fieldPrefix);
+            \Gems_Model::setChangeFieldsByPrefix($this, $fieldPrefix);
         }
 
         return $this;
@@ -138,14 +138,14 @@ class Gems_Model_JoinModel extends MUtil_Model_JoinModel
      * @param string $fieldPrefix Prefix to use for change fields (date/userid), if $saveable empty sets it to true
      * @param mixed  $saveable    Will changes to this table be saved, true or a combination of SAVE_MODE constants
      *
-     * @return Gems_Model_JoinModel
+     * @return \Gems_Model_JoinModel
      */
     public function addRightTable($table, array $joinFields, $fieldPrefix = null, $saveable = null)
     {
         parent::addRightTable($table, $joinFields, $this->_checkSaveable($saveable, $fieldPrefix));
 
         if ($fieldPrefix) {
-            Gems_Model::setChangeFieldsByPrefix($this, $fieldPrefix);
+            \Gems_Model::setChangeFieldsByPrefix($this, $fieldPrefix);
         }
 
         return $this;
@@ -159,14 +159,14 @@ class Gems_Model_JoinModel extends MUtil_Model_JoinModel
      * @param string $fieldPrefix Prefix to use for change fields (date/userid), if $saveable empty sets it to true
      * @param mixed  $saveable    Will changes to this table be saved, true or a combination of SAVE_MODE constants
      *
-     * @return Gems_Model_JoinModel
+     * @return \Gems_Model_JoinModel
      */
     public function addTable($table, array $joinFields, $fieldPrefix = null, $saveable = null)
     {
         parent::addTable($table, $joinFields, $this->_checkSaveable($saveable, $fieldPrefix));
 
         if ($fieldPrefix) {
-            Gems_Model::setChangeFieldsByPrefix($this, $fieldPrefix);
+            \Gems_Model::setChangeFieldsByPrefix($this, $fieldPrefix);
         }
         return $this;
     }
@@ -196,39 +196,39 @@ class Gems_Model_JoinModel extends MUtil_Model_JoinModel
      */
     protected function initTranslateable()
     {
-        if ($this->translateAdapter instanceof Zend_Translate_Adapter) {
+        if ($this->translateAdapter instanceof \Zend_Translate_Adapter) {
             // OK
             return;
         }
 
-        if ($this->translate instanceof Zend_Translate) {
+        if ($this->translate instanceof \Zend_Translate) {
             // Just one step
             $this->translateAdapter = $this->translate->getAdapter();
             return;
         }
 
-        if ($this->translate instanceof Zend_Translate_Adapter) {
+        if ($this->translate instanceof \Zend_Translate_Adapter) {
             // It does happen and if it is all we have
             $this->translateAdapter = $this->translate;
             return;
         }
 
         // Make sure there always is an adapter, even if it is fake.
-        $this->translateAdapter = new MUtil_Translate_Adapter_Potemkin();
+        $this->translateAdapter = new \MUtil_Translate_Adapter_Potemkin();
     }
 
     /**
-     * Copy from Zend_Translate_Adapter
+     * Copy from \Zend_Translate_Adapter
      *
      * Translates the given string using plural notations
      * Returns the translated string
      *
-     * @see Zend_Locale
+     * @see \Zend_Locale
      * @param  string             $singular Singular translation string
      * @param  string             $plural   Plural translation string
      * @param  integer            $number   Number for detecting the correct plural
-     * @param  string|Zend_Locale $locale   (Optional) Locale/Language to use, identical with
-     *                                      locale identifier, @see Zend_Locale for more information
+     * @param  string|\Zend_Locale $locale   (Optional) Locale/Language to use, identical with
+     *                                      locale identifier, @see \Zend_Locale for more information
      * @return string
      */
     public function plural($singular, $plural, $number, $locale = null)
@@ -245,14 +245,14 @@ class Gems_Model_JoinModel extends MUtil_Model_JoinModel
      * @param string $table_name  Does not test for existence
      * @param string $fieldPrefix Prefix to use for change fields (date/userid), if $saveable empty sets it to true
      * @param mixed  $saveable    Will changes to this table be saved, true or a combination of SAVE_MODE constants
-     * @return Gems_Model_JoinModel
+     * @return \Gems_Model_JoinModel
      */
     public function setTableSaveable($table_name, $fieldPrefix = null, $saveable = null)
     {
         parent::setTableSaveable($table_name, $this->_checkSaveable($saveable, $fieldPrefix));
 
         if ($fieldPrefix) {
-            Gems_Model::setChangeFieldsByPrefix($this, $fieldPrefix);
+            \Gems_Model::setChangeFieldsByPrefix($this, $fieldPrefix);
         }
 
         return $this;

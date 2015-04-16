@@ -143,6 +143,17 @@ class MUtil_Echo
     }
 
     /**
+     * Returns any information to output.
+     *
+     * @return mixed
+     */
+    public static function getOutput()
+    {
+        $session = self::getSession();
+        return $session->content;
+    }
+
+    /**
      * Returns the current session namespace that stores the content.
      *
      * @staticvar \Zend_Session_Namespace $session

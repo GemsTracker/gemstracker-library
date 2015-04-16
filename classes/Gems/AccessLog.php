@@ -82,6 +82,48 @@ class Gems_AccessLog
 
     /**
      *
+     * @var \Zend_Controller_Action_Helper_FlashMessenger
+     */
+    private $_messenger;
+
+    /**
+     * Data fields that contain a organization id
+     *
+     * @var array In preferred us order
+     */
+    private $_organizationIdFields = array(
+        'gr2o_id_organization',
+        'gr2t_id_organization',
+        'gap_id_organization',
+        'gor_id_organization',
+        'gla_organization',
+        'grco_organization',
+    );
+
+    /**
+     * Cache for respondent id
+     *
+     * @var int
+     */
+    private $_respondentId;
+
+    /**
+     * Data fields that contain a respondent id
+     *
+     * @var array In preferred us order
+     */
+    private $_respondentIdFields = array(
+        'grs_id_user',
+        'gr2o_id_user',
+        'gr2t_id_user',
+        'gap_id_user',
+        'grr_id_respondent',
+        'gla_respondent_id',
+        'grco_id_to',
+    );
+
+    /**
+     *
      * @var \Zend_Session_Namespace
      */
     private $_sessionStore;
@@ -126,7 +168,7 @@ class Gems_AccessLog
     public function __construct(\Zend_Cache_Core $cache, \Zend_Db_Adapter_Abstract $db, \Gems_Loader $loader)
     {
         $this->_cache        = $cache;
-        $this->_cacheId      = \MUtil_String::toCacheId(GEMS_PROJECT_NAME . APPLICATION_PATH . '__Gems__' . __CLASS__);
+        $this->_cacheId      = \MUtil_String::toCacheId(GEMS_PROJECT_NAME . APPLICATION_PATH . '__gems__' . __CLASS__);
         $this->_db           = $db;
         $this->_loader       = $loader;
         $this->_sessionStore = new \Zend_Session_Namespace($this->_cacheId);
@@ -169,7 +211,7 @@ class Gems_AccessLog
         }
 
         // \MUtil_Echo::track($output);
-        // $this->_cache->save($output, $this->_cacheId, array('accesslog_actions'));
+        $this->_cache->save($output, $this->_cacheId, array('accesslog_actions'));
 
         return $output;
     }
@@ -188,7 +230,10 @@ class Gems_AccessLog
     {
         $action      = $this->getAction($actionId);
         $currentUser = $this->_loader->getCurrentUser();
-        $orgId       = $currentUser->getCurrentOrganizationId() ? $currentUser->getCurrentOrganizationId() : 0;
+
+        if ($respondentId) {
+            $this->_respondentId = $respondentId;
+        }
 
         // Exit when the user is not logged in and we should only track for logged in users
         if (! $currentUser->isActive()) {
@@ -207,6 +252,32 @@ class Gems_AccessLog
         } else {
             $post = false;
             $ip   = '';
+        }
+        if (null === $message) {
+            $message = $this->getMessages();
+        }
+
+        if (! $respondentId) {
+            // FallBack in case nothing is in $data
+            $respondentId = $this->_respondentId;
+            if (is_array($data)) {
+                foreach ($this->_respondentIdFields as $field) {
+                    if (isset($data[$field]) && $data[$field]) {
+                        $respondentId = $data[$field];
+                        break;
+                    }
+                }
+            }
+        }
+
+        $orgId = $currentUser->getCurrentOrganizationId() ? $currentUser->getCurrentOrganizationId() : 0;
+        if (is_array($data)) {
+            foreach ($this->_organizationIdFields as $field) {
+                if (isset($data[$field]) && $data[$field]) {
+                    $orgId = $data[$field];
+                    break;
+                }
+            }
         }
 
         // Get type for second exit check
@@ -229,8 +300,8 @@ class Gems_AccessLog
         $values['gla_role']          = $currentUser->getRole() ? $currentUser->getRole() : '--not set--';
 
         $values['gla_changed']       = $changed ? 1 : 0;
-        $values['gla_message']       = $this->_toText($message);
-        $values['gla_data']          = $this->_toText($data);
+        $values['gla_message']       = $this->_toJson($message);
+        $values['gla_data']          = $this->_toJson($data);
         $values['gla_method']        = $post ? 'POST' : 'GET';
         $values['gla_remote_ip']     = $ip;
 
@@ -269,29 +340,70 @@ class Gems_AccessLog
     }
 
     /**
+     * Remove password and pwd contents and clean up message status data and single item arrays
+     *
+     * @param array $data
+     * @return mixed
+     */
+    private function _toCleanArray(array $data)
+    {
+        switch (count($data)) {
+            case 0:
+                return null;
+
+            case 1:
+                if (isset($data[0])) {
+                    // Return array content when only one item
+                    // with the key 0.
+                    if (is_array($data[0])) {
+                        return $this->_toCleanArray($data[0]);
+                    } else {
+                        return $data[0];
+                    }
+                }
+                break;
+
+            case 2:
+                if (isset($data[0], $data[1]) && is_string($data[1])) {
+                    if (('info' === $data[1]) || ('warning' === $data[1]) || ('error' === $data[1])) {
+                        if (is_array($data[0])) {
+                            return $this->_toCleanArray($data[0]);
+                        } else {
+                            return $data[0];
+                        }
+                    }
+                }
+        }
+        $output = array();
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $output[$key] = $this->_toCleanArray($value);
+            } else {
+                if (is_string($value)) {
+                    if (\MUtil_String::contains($key, 'password', true) || \MUtil_String::contains($key, 'pwd', true)) {
+                        $value = '****';
+                    }
+                }
+                $output[$key] = $value;
+            }
+        }
+
+        return $output;
+    }
+
+    /**
      * Converts data types for storage
      *
      * @param mixed $data
      * @return string
      */
-    private function _toText($data)
+    private function _toJson($data)
     {
-        if (is_scalar($data)) {
-            return $data;
-        }
         if ($data) {
-            // Cleanup messenger data
-            //
-            // Array with only one element with key 0 are normalized
-            while (is_array($data) && (1 === count($data)) && isset($data[0])) {
-                $data = $data[0];
+            if (is_array($data)) {
+                return json_encode($this->_toCleanArray($data));
             }
-            // "Info" data removed
-            if (is_array($data) && (2 === count($data)) && isset($data[0], $data[1])) {
-                if ('info' === $data[1]) {
-                    $data = $data[0];
-                }
-            }
+
             return json_encode($data);
         }
     }
@@ -375,6 +487,20 @@ class Gems_AccessLog
     }
 
     /**
+     * The curent flash messenger messages
+     *
+     * @return array
+     */
+    protected function getMessages()
+    {
+        if (! $this->_messenger instanceof \MUtil_Controller_Action_Helper_FlashMessenger) {
+            $this->_messenger = new \MUtil_Controller_Action_Helper_FlashMessenger();
+        }
+
+        return $this->_messenger->getMessagesOnly();
+    }
+
+    /**
      * Logs the action for the current user with optional message and respondent id
      *
      * @param string  $action
@@ -387,7 +513,10 @@ class Gems_AccessLog
      */
     public function log($action, \Zend_Controller_Request_Abstract $request = null, $message = null, $respondentId = null, $force = false)
     {
-        $this->_logEntry($request, $action, $force, $message, null, $respondentId);
+        if (null === $request) {
+            $request = \Zend_Controller_Front::getInstance()->getRequest();
+        }
+        $this->_logEntry($request, $action, $force, null, $message, $respondentId);
 
         return $this;
     }
@@ -396,12 +525,12 @@ class Gems_AccessLog
      * Logs the action for the current user with optional message and respondent id
      *
      * @param \Zend_Controller_Request_Abstract $request
-     * @param int $respondentId
      * @param mixed $message
      * @param mixed $data
+     * @param int $respondentId
      * @return boolean True when a log entry was stored
      */
-    public function logChange(\Zend_Controller_Request_Abstract $request, $respondentId = null, $message = null, $data = null)
+    public function logChange(\Zend_Controller_Request_Abstract $request, $message = null, $data = null, $respondentId = null)
     {
         $action = $request->getControllerName() . '.' . $request->getActionName();
         return $this->_logEntry($request, $action, true, $message, $data, $respondentId);
@@ -411,12 +540,12 @@ class Gems_AccessLog
      * Logs the action for the current user with optional message and respondent id
      *
      * @param \Zend_Controller_Request_Abstract $request
-     * @param int $respondentId
      * @param mixed $message
      * @param mixed $data
+     * @param int $respondentId
      * @return boolean True when a log entry was stored
      */
-    public function logRequest(\Zend_Controller_Request_Abstract $request, $respondentId = null, $message = null, $data = null)
+    public function logRequest(\Zend_Controller_Request_Abstract $request, $message = null, $data = null, $respondentId = null)
     {
         $action = $request->getControllerName() . '.' . $request->getActionName();
         return $this->_logEntry($request, $action, false, $message, $data, $respondentId);

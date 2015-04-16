@@ -1,6 +1,6 @@
 
 CREATE TABLE if not exists gems__log_activity (
-        gla_id_action       bigint unsigned not null auto_increment,
+        gla_id       bigint unsigned not null auto_increment,
 
         gla_action          int unsigned    not null references gems__log_setup     (gls_id_action),
         gla_respondent_id   bigint unsigned null     references gems__respondents   (grs_id_user),
@@ -17,7 +17,7 @@ CREATE TABLE if not exists gems__log_activity (
 
         gla_created         timestamp not null default current_timestamp,
 
-        PRIMARY KEY (gla_id_action),
+        PRIMARY KEY (gla_id),
         INDEX (gla_action),
         INDEX (gla_respondent_id),
         INDEX (gla_by),
