@@ -871,7 +871,9 @@ class MUtil_Html_HtmlElement extends \Zend_View_Helper_HtmlElement
      */
     public function append($value = null)
     {
-        $this->offsetSet(null, $value);
+        foreach (func_get_args() as $val) {
+            $this->offsetSet(null, $val);
+        }
 
         return $this;
     }

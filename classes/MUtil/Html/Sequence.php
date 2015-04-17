@@ -245,6 +245,9 @@ class MUtil_Html_Sequence extends \MUtil_ArrayString implements \MUtil_Html_Elem
     {
         $html = '';
         $glue = $this->getGlue();
+        if ($glue instanceof \MUtil_Html_HtmlInterface) {
+            $glue = $glue->render($view);
+        }
 
         if (null !== $view) {
             $this->setView($view);

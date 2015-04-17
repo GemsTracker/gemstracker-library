@@ -87,8 +87,13 @@ class MUtil_Model_Type_ConcatenatedRow
     {
         $args = \MUtil_Ra::args(
                 func_get_args(),
-                array('seperatorChar' => 'is_string', 'displaySeperator' => 'is_string', 'valuePad' => 'is_boolean'),
-                array('seperatorChar' => ' ', 'displaySeperator' => ' ', 'valuePad' => true));
+                array(
+                    'seperatorChar' => 'is_string',
+                    'displaySeperator' => array('MUtil_Html_HtmlInterface', 'is_string'),
+                    'valuePad' => 'is_boolean',
+                    ),
+                array('seperatorChar' => ' ', 'displaySeperator' => ' ', 'valuePad' => true)
+                );
 
         $this->seperatorChar    = substr($args['seperatorChar'] . ' ', 0, 1);
         $this->displaySeperator = $args['displaySeperator'];
@@ -137,7 +142,13 @@ class MUtil_Model_Type_ConcatenatedRow
                     }
                  }
             }
-            return implode($this->displaySeperator, $value);
+            if (is_string($this->displaySeperator)) {
+                return implode($this->displaySeperator, $value);
+            } else {
+                $output = new \MUtil_Html_Sequence($value);
+                $output->setGlue($this->displaySeperator);
+                return $output;
+            }
         }
         if (isset($this->options[$value])) {
             return $this->options[$value];
