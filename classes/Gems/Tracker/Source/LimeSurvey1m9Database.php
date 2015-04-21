@@ -546,7 +546,37 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                     $values['gsu_survey_name'] = $surveyor_title;
                     $messages[] = sprintf($this->_('The name of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $surveyor_title);
                 }
+                
+                // Check return url description
+                $lsSurvLang = $this->_getSurveyLanguagesTableName();
+                $sql = 'SELECT surveyls_language FROM ' . $lsSurvLang . ' WHERE surveyls_survey_id = ?';
+                
+                $lsDb = $this->getSourceDatabase();
 
+                $languages = $lsDb->fetchAll($sql, array($sourceSurveyId));
+                $langChanges = 0;
+                foreach ($languages as $language)
+                {
+                    $langChanges = $langChanges + $lsDb->update(
+                        $lsSurvLang, 
+                        array(
+                            'surveyls_urldescription' => sprintf(
+                                $this->translate->_('Back to %s', $language),
+                                $this->project->getName()
+                                )
+                            ), 
+                        array(
+                            'surveyls_survey_id = ?' => $sourceSurveyId,
+                            'surveyls_language = ?'  => $language
+                            )
+                        );
+                }
+                
+                if ($langChanges > 0) {
+                    $messages[] = sprintf($this->_('The description of the exit url description was changed for %s languages in survey \'%s\'.'), $langChanges, $survey->getName());
+                }
+                
+                
             } else { // New record
                 $values['gsu_survey_name']        = $surveyor_title;
                 $values['gsu_surveyor_active']    = $surveyor_active ? 1 : 0;
