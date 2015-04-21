@@ -561,7 +561,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                         $lsSurvLang, 
                         array(
                             'surveyls_urldescription' => sprintf(
-                                $this->translate->_('Back to %s', $language),
+                                $this->translate->_('Back to %s', $language['surveyls_language']),
                                 $this->project->getName()
                                 )
                             ), 
