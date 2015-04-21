@@ -95,7 +95,7 @@ class Gems_Communication_RespondentContainer
 
     public function setBsn($bsn)
     {
-        $filter = new MUtil_Filter_Dutch_Burgerservicenummer();
+        $filter = new \MUtil_Filter_Dutch_Burgerservicenummer();
         $this->_bsn = $filter->filter($bsn);
     }
 

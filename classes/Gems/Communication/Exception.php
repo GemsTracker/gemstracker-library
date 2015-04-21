@@ -32,13 +32,13 @@
 
 
 /**
- * @see Gems_Exception
+ * @see \Gems_Exception
  * 
  * @author     Michiel Rook <michiel@touchdownconsulting.nl>
  * @version    $Id$
  * @package    Gems
  * @subpackage Communication
  */
-class Gems_Communication_Exception extends Gems_Exception
+class Gems_Communication_Exception extends \Gems_Exception
 {
 }

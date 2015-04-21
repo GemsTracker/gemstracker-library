@@ -38,10 +38,10 @@
  * @package    Gems
  * @subpackage Communication
  */
-class Gems_Communication_RespondentModelWriter implements Gems_Communication_RespondentWriter
+class Gems_Communication_RespondentModelWriter implements \Gems_Communication_RespondentWriter
 {
     /**
-     * @var Gems_Model_RespondentModel
+     * @var \Gems_Model_RespondentModel
      */
     private $_model = null;
 
@@ -54,14 +54,14 @@ class Gems_Communication_RespondentModelWriter implements Gems_Communication_Res
      * - Fetches respondent based on bsn / reception code and patient nr
      * - Creates the respondent if it does not exist, updates otherwise
      *
-	 * @see Gems_Model_RespondentModel
-     * @see Gems_Communication_RespondentWriter::writeRespondent()
+	 * @see \Gems_Model_RespondentModel
+     * @see \Gems_Communication_RespondentWriter::writeRespondent()
 	 *
-	 * @param  Gems_Communication_RespondentContainer $respondent
+	 * @param  \Gems_Communication_RespondentContainer $respondent
 	 * @param  int $userId
 	 * @return boolean True if a new respondent was added, false if one was updated
      */
-    public function writeRespondent(Gems_Communication_RespondentContainer $respondent, &$userId)
+    public function writeRespondent(\Gems_Communication_RespondentContainer $respondent, &$userId)
     {
         $parameters = $this->_model->applyParameters(
             array(

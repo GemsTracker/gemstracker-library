@@ -116,5 +116,5 @@ abstract class AppointmentSubFilterAbstract extends AppointmentFilterAbstract
      * @param \Gems\Agenda\Gems_Agenda_Appointment $appointment
      * @return boolean
      */
-    // public function matchAppointment(Gems_Agenda_Appointment $appointment);
+    // public function matchAppointment(\Gems_Agenda_Appointment $appointment);
 }

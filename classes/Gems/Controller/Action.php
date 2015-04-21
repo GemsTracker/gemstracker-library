@@ -26,53 +26,56 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @package    Gems
+ * @subpackage Controller
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
- * File descr
+ * Action controller, initialises the html object
  *
- * @author Matijs de Jong <mjong@magnafacta.nl>
- * @since       1.0
- * @version     1.1
- * @package     Gems
- * @subpackage  Controller
+ * @package    Gems
+ * @subpackage Controller
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
  */
-
-/**
- * Action controller, initialises the html
- *
- * @author Matijs de Jong <mjong@magnafacta.nl>
- * @package     Gems
- * @subpackage  Controller
- */
-class Gems_Controller_Action extends MUtil_Controller_Action
+class Gems_Controller_Action extends \MUtil_Controller_Action
 {
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
 
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     public $loader;
 
     /**
      *
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     public $util;
 
+    /**
+     *
+     * @var \Zend_Controller_Action_Helper_FlashMessenger
+     */
     public $messenger;
 
-    
+
     /**
      * Adds one or more messages to the session based message store.
      *
      * @param mixed $message_args Can be an array or multiple argemuents. Each sub element is a single message string
-     * @return MUtil_Controller_Action
+     * @return \MUtil_Controller_Action
      */
     public function addMessage($message, $status=null)
     {
@@ -85,7 +88,7 @@ class Gems_Controller_Action extends MUtil_Controller_Action
     /**
      * Returns a session based message store for adding messages to.
      *
-     * @return Zend_Controller_Action_Helper_FlashMessenger
+     * @return \Zend_Controller_Action_Helper_FlashMessenger
      */
     public function getMessenger()
     {
@@ -105,7 +108,7 @@ class Gems_Controller_Action extends MUtil_Controller_Action
     public function initHtml($reset = false)
     {
         if (! $this->html) {
-            Gems_Html::init();
+            \Gems_Html::init();
         }
 
         parent::initHtml();
@@ -123,10 +126,10 @@ class Gems_Controller_Action extends MUtil_Controller_Action
     /**
      * Set the session based message store.
      *
-     * @param Zend_Controller_Action_Helper_FlashMessenger $messenger
-     * @return MUtil_Controller_Action
+     * @param \Zend_Controller_Action_Helper_FlashMessenger $messenger
+     * @return \MUtil_Controller_Action
      */
-    public function setMessenger(Zend_Controller_Action_Helper_FlashMessenger $messenger)
+    public function setMessenger(\Zend_Controller_Action_Helper_FlashMessenger $messenger)
     {
         $this->messenger = $messenger;
         $this->view->messenger = $messenger;

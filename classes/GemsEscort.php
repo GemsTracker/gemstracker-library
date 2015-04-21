@@ -275,6 +275,47 @@ class GemsEscort extends \MUtil_Application_Escort
     }
 
     /**
+     * Initialize the logger
+     *
+     * @return \Gems_Log
+     */
+    protected function _initLogger()
+    {
+        $this->bootstrap('project');    // Make sure the project object is available
+        $logger = \Gems_Log::getLogger();
+
+        $logPath = GEMS_ROOT_DIR . '/var/logs';
+
+        try {
+            $writer = new \Zend_Log_Writer_Stream($logPath . '/errors.log');
+        } catch (Exception $exc) {
+            try {
+                // Try to solve the problem, otherwise fail heroically
+                \MUtil_File::ensureDir($logPath);
+                $writer = new \Zend_Log_Writer_Stream($logPath . '/errors.log');
+            } catch (Exception $exc) {
+                $this->bootstrap(array('locale', 'translate'));
+                die(sprintf($this->translate->_('Path %s not writable'), $logPath));
+            }
+        }
+
+        $filter = new \Zend_Log_Filter_Priority($this->project->getLogLevel());
+        $writer->addFilter($filter);
+        $logger->addWriter($writer);
+
+        // OPTIONAL STARTY OF FIREBUG LOGGING.
+        if ($this->_startFirebird) {
+            $logger->addWriter(new \Zend_Log_Writer_Firebug());
+            //We do not add the logLevel here, as the firebug window is intended for use by
+            //developers only and it is only written to the active users' own screen.
+        }
+
+        \Zend_Registry::set('logger', $logger);
+
+        return $logger;
+    }
+
+    /**
      * Create a default file cache for the Translate and DB adapters to speed up execution
      *
      * @return \Zend_Cache_Core
@@ -408,7 +449,7 @@ class GemsEscort extends \MUtil_Application_Escort
      */
     protected function _initAcl()
     {
-        $this->bootstrap(array('db', 'loader'));
+        $this->bootstrap(array('db', 'loader', 'logger'));
 
         $acl = $this->getLoader()->getRoles($this);
 
@@ -520,47 +561,6 @@ class GemsEscort extends \MUtil_Application_Escort
         \Zend_Registry::set('Zend_Locale', $locale);
 
         return $locale;
-    }
-
-    /**
-     * Initialize the logger
-     *
-     * @return \Gems_Log
-     */
-    protected function _initLogger()
-    {
-        $this->bootstrap('project');    // Make sure the project object is available
-        $logger = \Gems_Log::getLogger();
-
-        $logPath = GEMS_ROOT_DIR . '/var/logs';
-
-        try {
-            $writer = new \Zend_Log_Writer_Stream($logPath . '/errors.log');
-        } catch (Exception $exc) {
-            try {
-                // Try to solve the problem, otherwise fail heroically
-                \MUtil_File::ensureDir($logPath);
-                $writer = new \Zend_Log_Writer_Stream($logPath . '/errors.log');
-            } catch (Exception $exc) {
-                $this->bootstrap(array('locale', 'translate'));
-                die(sprintf($this->translate->_('Path %s not writable'), $logPath));
-            }
-        }
-
-        $filter = new \Zend_Log_Filter_Priority($this->project->getLogLevel());
-        $writer->addFilter($filter);
-        $logger->addWriter($writer);
-
-        // OPTIONAL STARTY OF FIREBUG LOGGING.
-        if ($this->_startFirebird) {
-            $logger->addWriter(new \Zend_Log_Writer_Firebug());
-            //We do not add the logLevel here, as the firebug window is intended for use by
-            //developers only and it is only written to the active users' own screen.
-        }
-
-        \Zend_Registry::set('logger', $logger);
-
-        return $logger;
     }
 
     /**
