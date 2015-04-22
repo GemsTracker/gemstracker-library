@@ -44,67 +44,26 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.5 23-feb-2015 16:21:35
  */
-class Gems_Default_SurveyAction extends \Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_SurveyAction extends \Gems_Default_TokenSearchActionAbstract
 {
     /**
-     * The parameters used for the autofilter action.
      *
-     * When the value is a function name of that object, then that functions is executed
-     * with the array key as single parameter and the return value is set as the used value
-     * - unless the key is an integer in which case the code is executed but the return value
-     * is not stored.
-     *
-     * @var array Mixed key => value array for snippet initialization
+     * @var \Zend_Db_Adapter_Abstract
      */
-    protected $autofilterParameters = array(
-        'extraSort' => array(
-            // 'gsu_survey_name' => SORT_ASC,
-            ),
-        'respondentData' => 'getRespondentData',
-        );
-
-    /**
-     * The snippets used for the autofilter action.
-     *
-     * @var mixed String or array of snippets name
-     */
-    protected $autofilterSnippets = 'RespondentTokenSnippet';
-
-    /**
-     *
-     * @var \Gems_Loader
-     */
-    public $loader;
+    public $db;
 
     /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'Survey\\SurveySearchSnippet');
+    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'Token\\SurveySearchSnippet');
 
     /**
      *
      * @var \Gems_Util
      */
     public $util;
-
-    /**
-     * Creates a model for getModel(). Called only for each new $action.
-     *
-     * The parameters allow you to easily adapt the model to the current action. The $detailed
-     * parameter was added, because the most common use of action is a split between detailed
-     * and summarized actions.
-     *
-     * @param boolean $detailed True when the current action is not in $summarizedActions.
-     * @param string $action The current action.
-     * @return \MUtil_Model_ModelAbstract
-     */
-    protected function createModel($detailed, $action)
-    {
-        $model = $this->loader->getModels()->createRespondentModel();
-        return $model->applyDetailSettings();
-    }
 
     /**
      * Helper function to get the title for the index action.
@@ -117,24 +76,50 @@ class Gems_Default_SurveyAction extends \Gems_Controller_ModelSnippetActionAbstr
     }
 
     /**
-     * Retrieve the respondent data in advance
+     * Retrieve the respondent id
      * (So we don't need to repeat that for every snippet.)
+     *
+     * @return int
+     */
+    public function getRespondentId()
+    {
+        static $respondentId = false;
+
+        if (false !== $respondentId) {
+            return $respondentId;
+        }
+
+        $orgId        = $this->_getParam(\MUtil_Model::REQUEST_ID2);
+        $patientNr    = $this->_getParam(\MUtil_Model::REQUEST_ID1);
+
+        if ($orgId && $patientNr) {
+            $respondentId = $this->util->getDbLookup()->getRespondentId($patientNr, $orgId);
+        } else {
+            $respondentId = null;
+        }
+
+        return $respondentId;
+    }
+
+    /**
+     * Get the data to use for searching: the values passed in the request + any defaults
+     * used in the search form (or any other search request mechanism).
+     *
+     * It does not return the actual filter used in the query.
+     *
+     * @see getSearchFilter()
      *
      * @return array
      */
-    public function getRespondentData()
+    public function getSearchData()
     {
-        $orgId     = $this->_getParam(\MUtil_Model::REQUEST_ID2);
-        $patientNr = $this->_getParam(\MUtil_Model::REQUEST_ID1);
-        $respId    = $this->util->getDbLookup()->getRespondentId($patientNr, $orgId);
-        $user      = $this->loader->getCurrentUser();
-        $userId    = $user->getUserId();
+        $data = parent::getSearchData();
 
-        // Check for completed tokens
-        // $this->loader->getTracker()->processCompletedTokens($respId, $userId, $orgId);
+        // Survey action data
+        $data['gto_id_respondent']   = $this->getRespondentId();
+        $data['gto_id_organization'] = $this->_getParam(\MUtil_Model::REQUEST_ID2);
 
-        $model = $this->getModel();
-        return $model->applyRequest($this->getRequest(), true)->loadFirst();
+        return $data;
     }
 
    /**

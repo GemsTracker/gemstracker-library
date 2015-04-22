@@ -35,6 +35,10 @@
  * @version    $Id$
  */
 
+namespace Gems\Snippets\Mail\Log;
+
+use Gems\Snippets\AutosearchInRespondentSnippet;
+
 /**
  *
  *
@@ -44,7 +48,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-class Gems_Snippets_Mail_Log_RespondentMailLogSearchSnippet extends Gems_Snippets_AutosearchFormSnippet
+class RespondentMailLogSearchSnippet extends AutosearchInRespondentSnippet
 {
     /**
      *
@@ -83,7 +87,7 @@ class Gems_Snippets_Mail_Log_RespondentMailLogSearchSnippet extends Gems_Snippet
 
         $this->_addPeriodSelectors($elements, array('grco_created' => $this->_('Date sent')));
 
-        $br  = MUtil_Html::create()->br();
+        $br  = \MUtil_Html::create()->br();
 
         $elements[] = null;
 
@@ -108,15 +112,15 @@ class Gems_Snippets_Mail_Log_RespondentMailLogSearchSnippet extends Gems_Snippet
 
     protected function getRespondentSurveyNames()
     {
-        $surveysSql = 'SELECT gsu_id_survey, gsu_survey_name FROM gems__respondent2track 
+        $surveysSql = 'SELECT gsu_id_survey, gsu_survey_name FROM gems__respondent2track
                         JOIN gems__respondent2org ON gr2t_id_user = gr2o_id_user AND gr2o_patient_nr = ? AND gr2o_id_organization = ?
                         LEFT JOIN gems__rounds ON gro_id_track = gr2t_id_track
                         LEFT JOIN gems__surveys ON gro_id_survey = gsu_id_survey';
 
-        $surveyNames = $this->db->fetchPairs($surveysSql, 
+        $surveyNames = $this->db->fetchPairs($surveysSql,
                 array(
-                    $this->request->getParam(MUtil_Model::REQUEST_ID1), 
-                    $this->request->getParam(MUtil_Model::REQUEST_ID2)
+                    $this->request->getParam(\MUtil_Model::REQUEST_ID1),
+                    $this->request->getParam(\MUtil_Model::REQUEST_ID2)
                 )
         );
         // MUtil_Echo::track($surveyNames);
@@ -125,14 +129,14 @@ class Gems_Snippets_Mail_Log_RespondentMailLogSearchSnippet extends Gems_Snippet
 
     protected function getRespondentTrackNames()
     {
-        $tracksSql = 'SELECT gtr_id_track, gtr_track_name FROM gems__respondent2track 
+        $tracksSql = 'SELECT gtr_id_track, gtr_track_name FROM gems__respondent2track
                         JOIN gems__respondent2org ON gr2t_id_user = gr2o_id_user AND gr2o_patient_nr = ? AND gr2o_id_organization = ?
                         LEFT JOIN gems__tracks ON gtr_id_track = gr2t_id_track';
-                        
-        $trackNames = $this->db->fetchPairs($tracksSql, 
+
+        $trackNames = $this->db->fetchPairs($tracksSql,
                 array(
-                    $this->request->getParam(MUtil_Model::REQUEST_ID1), 
-                    $this->request->getParam(MUtil_Model::REQUEST_ID2)
+                    $this->request->getParam(\MUtil_Model::REQUEST_ID1),
+                    $this->request->getParam(\MUtil_Model::REQUEST_ID2)
                 )
         );
         // MUtil_Echo::track($trackNames);

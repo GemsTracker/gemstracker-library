@@ -93,7 +93,7 @@ class Gems_Default_RespondentMailLogAction extends \Gems_Controller_ModelSnippet
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'Mail_Log_RespondentMailLogSearchSnippet');
+    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'Mail\\Log\\RespondentMailLogSearchSnippet');
 
 
     /**

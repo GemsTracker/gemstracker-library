@@ -59,6 +59,13 @@ class Gems_Default_RespondentLogAction extends \Gems_Default_LogAction
     protected $autofilterParameters = array('extraFilter' => 'getRespondentFilter');
 
     /**
+     * The snippets used for the index action, before those in autofilter
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'AutosearchInRespondentSnippet');
+
+    /**
      * Get filter for current respondent
      *
      * @return array

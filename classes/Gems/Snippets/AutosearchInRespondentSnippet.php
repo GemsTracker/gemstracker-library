@@ -28,25 +28,25 @@
  *
  *
  * @package    Gems
- * @subpackage Snippets_Survey
+ * @subpackage Snippets_Generic
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: SurveySearchSnippet.php $
+ * @version    $Id: AutosearchWithIdSnippet.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
-namespace Gems\Snippets\Survey;
+namespace Gems\Snippets;
 
 /**
  *
  *
  * @package    Gems
- * @subpackage Snippets_Survey
+ * @subpackage Snippets_Generic
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.6.5 23-feb-2015 16:44:02
+ * @since      Class available since version 1.7.1 21-apr-2015 13:28:39
  */
-class SurveySearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
+class AutosearchInRespondentSnippet extends \Gems_Snippets_AutosearchFormSnippet
 {
     /**
      * Returns a text element for autosearch. Can be overruled.
@@ -60,12 +60,8 @@ class SurveySearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
     protected function getAutoSearchElements(array $data)
     {
         $elements = parent::getAutoSearchElements($data);
-
-        array_unshift(
-                $elements,
-                new \Zend_Form_Element_Hidden(\MUtil_Model::REQUEST_ID1),
-                new \Zend_Form_Element_Hidden(\MUtil_Model::REQUEST_ID2)
-                );
+        $elements[] = new \Zend_Form_Element_Hidden(\MUtil_Model::REQUEST_ID1);
+        $elements[] = new \Zend_Form_Element_Hidden(\MUtil_Model::REQUEST_ID2);
 
         return $elements;
     }

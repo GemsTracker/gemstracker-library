@@ -260,7 +260,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
     {
         $this->addPage($this->_('Logon'), 'pr.nologin', 'index', 'login')
              ->addAction($this->_('Lost password'), 'pr.nologin', 'resetpassword');
-        
+
         $optionPage = $this->addPage($this->_('Your account'), 'pr.option.edit', 'option', 'edit');
         $optionPage->addAction($this->_('Activity overview'), 'pr.option.edit', 'overview');
         $optionPage->addAction($this->_('Change password'), 'pr.option.password', 'change-password');
@@ -333,8 +333,8 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $appParams = array(\Gems_Model::APPOINTMENT_ID => 'gap_id_appointment'); // + $params;
         $apage = $page->addPage($this->_('Appointments'), 'pr.appointments', 'appointment');
         $apage->setNamedParameters($params)
-                ->setHiddenOrgId($orgId)
-                ->addAutofilterAction();
+                ->setHiddenOrgId($orgId);
+        $apage->addAutofilterAction();
         $apage->addCreateAction()->setNamedParameters($params)->setHiddenOrgId($orgId);
         $apage = $apage->addShowAction()->setNamedParameters($appParams);
         $apage->addEditAction()->setNamedParameters($appParams);
@@ -469,14 +469,16 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
 
-        $page->addPage($this->_('Mail Activity Log'), null, 'respondent-mail-log', 'index')
+        $mailLogPage = $page->addPage($this->_('Mail Activity Log'), null, 'respondent-mail-log', 'index')
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
+        $mailLogPage->addAutofilterAction();
 
         // LOG CONTROLLER
         $logPage = $page->addPage($this->_('Other Activity Log'), 'pr.respondent-log', 'respondent-log', 'index');
         $logPage->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
+        $logPage->addAutofilterAction();
 //        $logPage->addShowAction()->setNamedParameters($params)
 //                ->setHiddenOrgId($orgId);
 
@@ -517,6 +519,18 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $find = $this->request2find($request);
 
         return $this->findItem($find, true);
+    }
+
+    /**
+     * Find a menu item through specifying the controller and action
+     *
+     * @param string $controller
+     * @param string $action
+     * @return \Gems_SubMenuItem
+     */
+    public function findAllowedController($controller, $action = 'index')
+    {
+        return $this->findItem(array('controller' => $controller, 'action' => $action, 'allowed' => true), false);
     }
 
     public function findAll($request)

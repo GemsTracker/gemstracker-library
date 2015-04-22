@@ -212,10 +212,12 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends \Gems_Snippets_Model
      */
     protected function processFilterAndSort(\MUtil_Model_ModelAbstract $model)
     {
-        $model->setFilter(array(
+        $model->addFilter(array(
             'gr2o_patient_nr'      => $this->request->getParam(\MUtil_Model::REQUEST_ID1),
             'gr2o_id_organization' => $this->request->getParam(\MUtil_Model::REQUEST_ID2),
             // 'gap_status'           => $this->loader->getAgenda()->getStatusKeysActive(),
             ));
+
+        parent::processFilterAndSort($model);
     }
 }

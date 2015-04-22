@@ -155,7 +155,8 @@ class Gems_Default_CalendarAction extends \Gems_Controller_ModelSnippetActionAbs
                 $filter[] = $where;
             }
 
-            unset($filter[\Gems_Snippets_AutosearchFormSnippet::PERIOD_DATE_USED], $filter['datefrom'], $filter['dateuntil']);
+            unset($filter[\Gems_Snippets_AutosearchFormSnippet::PERIOD_DATE_USED],
+                    $filter['datefrom'], $filter['dateuntil']);
         }
 
         return $filter;

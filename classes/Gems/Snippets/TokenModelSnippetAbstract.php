@@ -46,17 +46,27 @@
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-class Gems_Snippets_TokenModelSnippetAbstract extends Gems_Snippets_ModelTableSnippetAbstract
+class Gems_Snippets_TokenModelSnippetAbstract extends \Gems_Snippets_ModelTableSnippetAbstract
 {
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
-    public $loader;
+    protected $loader;
 
-    protected function addTokenLinks(MUtil_Model_Bridge_TableBridge $bridge)
+    /**
+     *
+     * @var \Gems_Tracker_Model_StandardTokenModel
+     */
+    protected $model;
+
+    /**
+     *
+     * @param \MUtil_Model_Bridge_TableBridge $bridge
+     */
+    protected function addTokenLinks(\MUtil_Model_Bridge_TableBridge $bridge)
     {
-        $title = MUtil_Html::create()->strong($this->_('+'));
+        $title = \MUtil_Html::create()->strong($this->_('+'));
 
         $showLinks[]   = $this->createMenuLink($bridge, 'track',  'show', $title);
         $showLinks[]   = $this->createMenuLink($bridge, 'survey', 'show', $title);
@@ -77,35 +87,37 @@ class Gems_Snippets_TokenModelSnippetAbstract extends Gems_Snippets_ModelTableSn
     /**
      * Creates the model
      *
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function createModel()
     {
-        $model = $this->loader->getTracker()->getTokenModel();
-        $model->addColumn(
+        if (! $this->model instanceof \Gems_Tracker_Model_StandardTokenModel) {
+            $this->model = $this->loader->getTracker()->getTokenModel();
+        }
+        $this->model->addColumn(
             'CASE WHEN gto_completion_time IS NULL THEN gto_valid_from ELSE gto_completion_time END',
             'calc_used_date',
             'gto_valid_from');
-        $model->addColumn(
+        $this->model->addColumn(
             'CASE WHEN gto_completion_time IS NULL THEN gto_valid_from ELSE NULL END',
             'calc_valid_from',
             'gto_valid_from');
-        $model->addColumn(
+        $this->model->addColumn(
             'CASE WHEN gto_completion_time IS NULL AND grc_success = 1 AND gto_valid_from <= CURRENT_TIMESTAMP AND gto_completion_time IS NULL AND (gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP) THEN gto_id_token ELSE NULL END',
             'calc_id_token',
             'gto_id_token');
-        $model->addColumn(
+        $this->model->addColumn(
             'CASE WHEN gto_completion_time IS NULL AND grc_success = 1 AND gto_valid_from <= CURRENT_TIMESTAMP AND gto_completion_time IS NULL AND gto_valid_until < CURRENT_TIMESTAMP THEN 1 ELSE 0 END',
             'was_missed');
-        return $model;
+        return $this->model;
     }
 
     /**
      * calc_used_date has special sort, see bugs 108 and 127
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      */
-    protected function sortCalcDateCheck(MUtil_Model_ModelAbstract $model)
+    protected function sortCalcDateCheck(\MUtil_Model_ModelAbstract $model)
     {
         $sort = $model->getSort();
 

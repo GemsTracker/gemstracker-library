@@ -99,6 +99,13 @@ class Gems_Default_AppointmentAction extends Gems_Controller_ModelSnippetActionA
         );
 
     /**
+     * The snippets used for the index action, before those in autofilter
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'AutosearchInRespondentSnippet');
+
+    /**
      * Organization ID of current request
      *
      * Set by loadParams()
