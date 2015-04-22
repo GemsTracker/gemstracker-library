@@ -42,7 +42,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Default_UpgradeAction extends Gems_Controller_Action
+class Gems_Default_UpgradeAction extends \Gems_Controller_Action
 {
     /**
      *
@@ -53,12 +53,12 @@ class Gems_Default_UpgradeAction extends Gems_Controller_Action
     public $useHtmlView = true;
 
     /**
-     * @var Gems_Menu
+     * @var \Gems_Menu
      */
     public $menu;
 
     /**
-     * @var Gems_Upgrades
+     * @var \Gems_Upgrades
      */
     protected $_upgrades;
 
@@ -72,7 +72,7 @@ class Gems_Default_UpgradeAction extends Gems_Controller_Action
 
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     public $loader;
 

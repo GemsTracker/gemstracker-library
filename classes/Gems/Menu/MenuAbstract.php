@@ -744,21 +744,18 @@ abstract class Gems_Menu_MenuAbstract
         $fpage->addDeleteAction('pr.track-maintenance.delete')
                 ->addNamedParameters('fid', 'gtf_id_field', \MUtil_Model::REQUEST_ID, 'gtf_id_track', 'sub', 'sub');
 
-        // Standard tracks
-        $fpage = $showPage->addPage($this->_('Rounds'), 'pr.track-maintenance', 'track-rounds')
+        // Rounds
+        $rpage = $showPage->addPage($this->_('Rounds'), 'pr.track-maintenance', 'track-rounds')
                 ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gro_id_track');
-        $fpage->addAutofilterAction();
-        $fpage->addCreateAction('pr.track-maintenance.create')
+        $rpage->addAutofilterAction();
+        $rpage->addCreateAction('pr.track-maintenance.create')
                 ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gro_id_track');
-        $fpage = $fpage->addShowAction()
+        $spage = $rpage->addShowAction()
                 ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gro_id_track', \Gems_Model::ROUND_ID, 'gro_id_round');
-        $fpage->addEditAction('pr.track-maintenance.edit')
+        $spage->addEditAction('pr.track-maintenance.edit')
                 ->addNamedParameters(\Gems_Model::ROUND_ID, 'gro_id_round', \MUtil_Model::REQUEST_ID, 'gro_id_track');
-        $fpage->addDeleteAction('pr.track-maintenance.delete')
+        $spage->addDeleteAction('pr.track-maintenance.delete')
                 ->addNamedParameters(\Gems_Model::ROUND_ID, 'gro_id_round', \MUtil_Model::REQUEST_ID, 'gro_id_track');
-
-        $fpage->addAction($this->_('Check assignments'), 'pr.track-maintenance.check', 'check-track')
-                ->addParameters(\MUtil_Model::REQUEST_ID);
 
         $showPage->addAction($this->_('Check assignments'), 'pr.track-maintenance.check', 'check-track')
                 ->addParameters(\MUtil_Model::REQUEST_ID);

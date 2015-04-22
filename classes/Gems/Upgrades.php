@@ -46,7 +46,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Upgrades extends Gems_UpgradesAbstract
+class Gems_Upgrades extends \Gems_UpgradesAbstract
 {
     public function __construct()
     {
@@ -65,12 +65,12 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
         $this->register(array($this, 'Upgrade155to156'), 'Upgrade from 1.5.5 to 1.5.6');
         $this->register(array($this, 'Upgrade156to157'), 'Upgrade from 1.5.6 to 1.5.7');
         $this->register(array($this, 'Upgrade157to16'),  'Upgrade from 1.5.7 to 1.6');
-        $this->register(array($this, 'Upgrade16to161'),  'Upgrade from 1.6 to 1.6.1');
+        $this->register(array($this, 'Upgrade16to161'),  'Upgrade from 1.6.0 to 1.6.1');
         $this->register(array($this, 'Upgrade161to162'), 'Upgrade from 1.6.1 to 1.6.2');
         $this->register(array($this, 'Upgrade162to163'), 'Upgrade from 1.6.2 to 1.6.3');
         $this->register(array($this, 'Upgrade163to164'), 'Upgrade from 1.6.3 to 1.6.4');
         $this->register(array($this, 'Upgrade164to170'), 'Upgrade from 1.6.4 to 1.7.0');
-
+        $this->register(array($this, 'Upgrade170to171'), 'Upgrade from 1.7.0 to 1.7.1');
         /**
          * To have the new_project updated to the highest level, update
          *
@@ -97,7 +97,7 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
         $this->_batch->addTask('Echo', $this->_('Syncing surveys for all sources'));
 
         //Now sync the db sources to allow limesurvey source to add a field to the tokentable
-        $model = new MUtil_Model_TableModel('gems__sources');
+        $model = new \MUtil_Model_TableModel('gems__sources');
         $data  = $model->load(false);
 
         foreach ($data as $row) {
@@ -247,7 +247,7 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
     }
 
     /**
-     * To upgrade to 1.7.0 / 1.6.5
+     * To upgrade to 1.7.0
      */
      public function Upgrade164to170()
    {
@@ -258,6 +258,19 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
         $this->_batch->addTask('AddTask', 'Updates_EncryptPasswords', 'gems__sources', 'gso_id_source', 'gso_ls_password', 'gso_encryption');
         $this->_batch->addTask('AddTask', 'Updates_EncryptPasswords', 'gems__mail_servers', 'gms_from', 'gms_password', 'gms_encryption');
         $this->_batch->addTask('AddTask', 'Updates_EncryptPasswords', 'gems__radius_config', 'grcfg_id', 'grcfg_secret', 'grcfg_encryption');
+
+        $this->_batch->addTask('Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
+
+        return true;
+    }
+
+    /**
+     * To upgrade to 1.7.1
+     */
+     public function Upgrade170to171()
+   {
+        $this->_batch->addTask('Db_CreateNewTables');
+        $this->_batch->addTask('Db_AddPatches', 57);
 
         $this->_batch->addTask('Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
 

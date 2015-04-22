@@ -44,5 +44,5 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class CalendarController extends Gems_Default_CalendarAction
+class CalendarController extends \Gems_Default_CalendarAction
 { }

@@ -44,5 +44,5 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class ChartconfigController extends Gems_Default_ChartconfigAction {
+class ChartconfigController extends \Gems_Default_ChartconfigAction {
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -43,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
+class Gems_UpgradesAbstract extends \Gems_Loader_TargetLoaderAbstract
 {
     protected $_context = null;
 
@@ -54,29 +55,29 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
     /**
      * Holds the inital config file
      *
-     * @var Zend_Config
+     * @var \Zend_Config
      */
     protected $originalFile;
-    
+
     /**
      * Holds the config file specific to this environment
-     * 
-     * @var Zend_Config
+     *
+     * @var \Zend_Config
      */
     protected $upgradeFile;
 
     /**
-     * @var Gems_Task_TaskRunnerBatch
+     * @var \Gems_Task_TaskRunnerBatch
      */
     protected $_batch;
 
     /**
-     * @var Zend_Config_Ini
+     * @var \Zend_Config_Ini
      */
     protected $_info;
 
     /**
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
 
@@ -86,17 +87,17 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
     public $escort;
 
     /**
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     public $loader;
 
     /**
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     public $project;
 
     /**
-     * @var Zend_Translate_Adapter
+     * @var \Zend_Translate_Adapter
      */
     public $translate;
 
@@ -113,9 +114,9 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
         if(!file_exists($this->upgradeFile)) {
             touch($this->upgradeFile);
         }
-        $this->_info = new Zend_Config_Ini($this->originalFile, null, array('allowModifications' => true));
+        $this->_info = new \Zend_Config_Ini($this->originalFile, null, array('allowModifications' => true));
         // Merge the environment config file
-        $this->_info->merge(new Zend_Config_Ini($this->upgradeFile, null, array('allowModifications' => true)));
+        $this->_info->merge(new \Zend_Config_Ini($this->upgradeFile, null, array('allowModifications' => true)));
     }
 
     /**
@@ -202,7 +203,7 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
     /**
      * Retrieve the current context
      *
-     * @return string 
+     * @return string
      */
     public function getContext() {
         return $this->_context;
@@ -270,7 +271,7 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
         $levels = array_keys($this->_upgradeStack[$context]);
         //Find the index of the current one
         $current = array_search($level, $levels);
-        
+
         //And if it is present, return the next level
         $current++;
         if (isset($levels[$current])) return $levels[$current];
@@ -334,11 +335,11 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
 
     /**
      * Register an upgrade in the stack, it can be executed by using $this->execute
-     * 
-     * Index and context are optional and will be generated when omitted. For the 
+     *
+     * Index and context are optional and will be generated when omitted. For the
      * user interface to be clear $info should provide a good description of what
      * the upgrade does.
-     * 
+     *
      * @param array|string $callback A valid callback, either string for a method of the current class or array otherwise
      * @param string $info A descriptive message about what this upgrade does
      * @param int $index The number of the upgrade
@@ -380,7 +381,7 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
     /**
      * Set the batch to use
      *
-     * @param Gems_Task_TaskRunnerBatch $batch
+     * @param \Gems_Task_TaskRunnerBatch $batch
      */
     public function setBatch($batch)
     {
@@ -414,7 +415,7 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
             $this->_info->$context != $level &&
             ($force || $this->_info->$context < $level)) {
             $this->_info->$context = $level;
-            $writer = new Zend_Config_Writer_Ini();
+            $writer = new \Zend_Config_Writer_Ini();
             $writer->write($this->upgradeFile, $this->_info);
         }
     }

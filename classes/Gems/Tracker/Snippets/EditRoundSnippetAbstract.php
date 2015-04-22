@@ -47,12 +47,12 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Tracker_Snippets_EditRoundSnippetAbstract extends Gems_Snippets_ModelFormSnippetAbstract
+class Gems_Tracker_Snippets_EditRoundSnippetAbstract extends \Gems_Snippets_ModelFormSnippetAbstract
 {
     /**
      * Required
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
@@ -65,7 +65,7 @@ class Gems_Tracker_Snippets_EditRoundSnippetAbstract extends Gems_Snippets_Model
     /**
      * Optional, required when creating or $trackId should be set
      *
-     * @var Gems_Tracker_Engine_TrackEngineInterface
+     * @var \Gems_Tracker_Engine_TrackEngineInterface
      */
     protected $trackEngine;
 
@@ -77,13 +77,7 @@ class Gems_Tracker_Snippets_EditRoundSnippetAbstract extends Gems_Snippets_Model
     protected $trackId;
 
     /**
-     *
-     * @var int $userId The current user
-     */
-    protected $userId = 0;
-
-    /**
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     protected $util;
 
@@ -110,7 +104,7 @@ class Gems_Tracker_Snippets_EditRoundSnippetAbstract extends Gems_Snippets_Model
     /**
      * Creates the model
      *
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function createModel()
     {
@@ -148,7 +142,7 @@ class Gems_Tracker_Snippets_EditRoundSnippetAbstract extends Gems_Snippets_Model
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see MUtil_Registry_TargetInterface}.
+     * {@see \MUtil_Registry_TargetInterface}.
      *
      * @return boolean
      */
@@ -170,7 +164,7 @@ class Gems_Tracker_Snippets_EditRoundSnippetAbstract extends Gems_Snippets_Model
         }
 
         if (! $this->roundId) {
-            $this->roundId = $this->request->getParam(Gems_Model::ROUND_ID);
+            $this->roundId = $this->request->getParam(\Gems_Model::ROUND_ID);
         }
 
         $this->createData = (! $this->roundId);
@@ -228,6 +222,6 @@ class Gems_Tracker_Snippets_EditRoundSnippetAbstract extends Gems_Snippets_Model
             $this->formData = $model->save($this->formData);
         }
 
-        $this->trackEngine->updateRoundCount($this->userId);
+        $this->trackEngine->updateRoundCount($this->loader->getCurrentUser()->getUserId());
     }
 }

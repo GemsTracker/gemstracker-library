@@ -28,7 +28,7 @@
  *
  *
  * @package    Gems
- * @subpackage Snippets\Generic
+ * @subpackage Snippets_Generic
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
@@ -39,7 +39,7 @@
  * Display a search form that selects on typed text only
  *
  * @package    Gems
- * @subpackage Snippets\Generic
+ * @subpackage Snippets_Generic
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.5.6

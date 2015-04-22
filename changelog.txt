@@ -12,8 +12,11 @@ Controllers have moved from BrowseEditAction to ModelSnippetActionAbstract, chec
     ReceptionController
     RoleController
     SurveyMaintenanceController
+    TrackRoundsController
 Some snippets have moved location in the code:
     AddTracksSnippet => Tracker\\AddTracksSnippet
+    EditRoundStepSnippet => Tracker\\Rounds\\EditRoundStepSnippet
+    ShowRoundStepSnippet => Tracker\\Rounds\\ShowRoundStepSnippet
     EditTrackEngineSnippet => Tracker\\EditTrackEngineSnippet
     SurveyQuestionsSnippet => Survey\\SurveyQuestionsSnippet
     TrackSurveyOverviewSnippet => Tracker\\TrackSurveyOverviewSnippet

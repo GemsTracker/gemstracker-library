@@ -36,6 +36,7 @@
  */
 
 use Gems\Tracker\Model\AddTrackFieldsTransformer;
+use Gems\Tracker\Model\RoundModel;
 use MUtil\Model\Dependency\DependencyInterface;
 
 /**
@@ -514,7 +515,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
      */
     protected function createRoundModel()
     {
-        return new \Gems_Model_JoinModel('rounds', 'gems__rounds', 'gro');
+        return new RoundModel($this->db);
     }
 
     /**
@@ -867,7 +868,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
                 'multiOptions', $this->util->getDbLookup()->getOrganizations(),
                 'data-source', 'org_specific_round'
                 );
-        $tp = new \MUtil_Model_Type_ConcatenatedRow('|', ', ');
+        $tp = new \MUtil_Model_Type_ConcatenatedRow('|', $this->_(', '));
         $tp->apply($model, 'organizations');
 
         switch ($action) {
@@ -881,11 +882,13 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
                 // Intentional fall through
                 // break;
             case 'edit':
+            case 'show':
             	$model->set('gro_icon_file',
                         'multiOptions', $translated->getEmptyDropdownArray() + $this->_getAvailableIcons()
                         );
                 $model->set('org_specific_round',
                         'label', $this->_('Organization specific round'),
+                        'default', 0,
                         'multiOptions', $translated->getYesNo(),
                         'elementClass', 'radio'
                         );

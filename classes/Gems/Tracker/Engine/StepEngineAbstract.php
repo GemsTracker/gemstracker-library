@@ -526,7 +526,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
      */
     public function getRoundEditSnippetNames()
     {
-        return array('EditRoundStepSnippet');
+        return array('Tracker\\Rounds\\EditRoundStepSnippet');
     }
 
     /**
@@ -674,7 +674,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
      */
     public function getRoundShowSnippetNames()
     {
-        return array('ShowRoundStepSnippet');
+        return array('Tracker\\Rounds\\ShowRoundStepSnippet');
     }
 
     /**

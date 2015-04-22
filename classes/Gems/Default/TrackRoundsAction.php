@@ -43,108 +43,132 @@
  * @license    New BSD License
  * @since      Class available since version 1.3
  */
-class Gems_Default_TrackRoundsAction  extends Gems_Controller_BrowseEditAction
+class Gems_Default_TrackRoundsAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
+     * The parameters used for the autofilter action.
      *
-     * @var Gems_Tracker_Engine_TrackEngineInterface
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $autofilterParameters = array(
+        'trackEngine' => 'getTrackEngine',
+        'trackId'     => '_getIdParam',
+        );
+
+    /**
+     * The snippets used for the autofilter action.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $autofilterSnippets = 'Tracker\\Rounds\\RoundsTableSnippet';
+
+    /**
+     * The parameters used for the create and edit actions.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $createEditParameters = array(
+        'roundId'     => 'getRoundId',
+        'trackEngine' => 'getTrackEngine',
+        'trackId'     => '_getIdParam',
+    );
+
+    /**
+     *
+     * @var \Zend_Db_Adapter_Abstract
+     */
+    public $db;
+
+    /**
+     * The parameters used for the delete action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $deleteParameters = array(
+        'roundId'     => 'getRoundId',
+        'trackEngine' => 'getTrackEngine',
+        'trackId'     => '_getIdParam',
+        );
+
+    /**
+     * The snippets used for the delete action.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $deleteSnippets = 'Tracker\\Rounds\\RoundDeleteSnippet';
+
+    /**
+     * The snippets used for the index action, before those in autofilter
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'AutosearchWithIdSnippet');
+
+    /**
+     * The parameters used for the show action
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $showParameters = array(
+        'roundId'     => 'getRoundId',
+        'trackEngine' => 'getTrackEngine',
+        'trackId'     => '_getIdParam',
+    );
+
+    /**
+     *
+     * @var \Gems_Tracker_Engine_TrackEngineInterface
      */
     protected $trackEngine;
-
-    public $sortKey = array('gro_id_order' => SORT_ASC);
-
-    /**
-     * Adds columns from the model to the bridge that creates the browse table.
-     *
-     * Adds a button column to the model, if such a button exists in the model.
-     *
-     * @param MUtil_Model_Bridge_TableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
-     * @return void
-     */
-    public function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model) {
-        if ($model->has('row_class')) {
-            $bridge->getTable()->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);
-        }
-
-        // Add edit button if allowed, otherwise show, again if allowed
-        if ($menuItem = $this->findAllowedMenuItem('show')) {
-            $bridge->addItemLink($menuItem->toActionLinkLower($this->getRequest(), $bridge));
-        }
-
-        $added = false;
-
-        foreach($model->getItemsOrdered() as $name) {
-
-            if ($label = $model->get($name, 'label')) {
-                if (strpos($name, 'valid') !== false) {
-                    if ($added === false) {
-                        $bridge->addMultiSort(array('', array($this->_('Valid from'), Mutil_Html::create('br'))), 'gro_valid_after_field', MUtil_Html::raw(' '), 'gro_valid_after_source', MUtil_Html::raw(' '), 'gro_valid_after_id');
-                        $bridge->addMultiSort(array('', array($this->_('Valid until'), Mutil_Html::create('br'))), 'gro_valid_for_field', MUtil_Html::raw(' '), 'gro_valid_for_source', MUtil_Html::raw(' '), 'gro_valid_for_id');
-                        $added = true;
-                    }
-                } else {
-                    $bridge->addSortable($name, $label);
-                }
-            }
-        }
-
-        // Add edit button if allowed, otherwise show, again if allowed
-        if ($menuItem = $this->findAllowedMenuItem('edit')) {
-            $bridge->addItemLink($menuItem->toActionLinkLower($this->getRequest(), $bridge));
-        }
-    }
-
-    /**
-     * Hook to perform action after a record (with changes) was saved
-     *
-     * As the data was already saved, it can NOT be changed anymore
-     *
-     * @param array $data
-     * @param boolean $isNew
-     * @return boolean  True when you want to display the default 'saved' messages
-     */
-    public function afterSave(array $data, $isNew)
-    {
-        $this->cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('surveys', 'rounds', 'tracks'));
-        return true;
-    }
-
-    /**
-     * Returns a text element for autosearch. Can be overruled.
-     *
-     * The form / html elements to search on. Elements can be grouped by inserting null's between them.
-     * That creates a distinct group of elements
-     *
-     * @param MUtil_Model_ModelAbstract $model
-     * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return array Of Zend_Form_Element's or static tekst to add to the html or null for group breaks.
-     */
-    protected function getAutoSearchElements(MUtil_Model_ModelAbstract $model, array $data)
-    {
-        $elements = parent::getAutoSearchElements($model, $data);
-        $elements[] = new Zend_Form_Element_Hidden(MUtil_Model::REQUEST_ID);
-
-        return $elements;
-    }
 
     /**
      * Create a new round
      */
     public function createAction()
     {
-        $trackId = $this->_getIdParam();
+        $this->createEditPrepare();
+        parent::createAction();
+    }
 
-        if (! $trackId) {
-            throw new Gems_Exception($this->_('Missing track identifier.'));
+    /**
+     * Preparations for creating and editing
+     */
+    protected function createEditPrepare()
+    {
+        $this->createEditSnippets = $this->getTrackEngine()->getRoundEditSnippetNames();
+
+        \MUtil_JQuery::enableView($this->view);
+        $this->view->headScript()->appendFile(\Zend_Controller_Front::getInstance()->getBaseUrl()  .  '/gems/js/jquery.showOnChecked.js');
+
+        if (\MUtil_Bootstrap::enabled()) {
+            $this->view->headScript()->appendScript("jQuery(document).ready(function($) {
+                $('input[name=\"organizations[]\"]').closest('div').showOnChecked( { showInput: $('#org_specific_round-1') });
+            });");
+        } else {
+            $this->view->headScript()->appendScript("jQuery(document).ready(function($) {
+                $('input[name=\"organizations[]\"]').closest('tr').showOnChecked( { showInput: $('#org_specific_round-1') });
+            });");
         }
-
-        $menuSource = $this->menu->getParameterSource();
-        $trackEngine = $this->loader->getTracker()->getTrackEngine($trackId);
-        $trackEngine->applyToMenuSource($menuSource);
-        $menuSource->setRequestId($trackId); // Tell the menu we're using track id as request id
-
-        $this->addSnippets($trackEngine->getRoundEditSnippetNames(), 'trackEngine', $trackEngine, 'trackId', $trackId, 'userId', $this->session->user_id);
     }
 
     /**
@@ -160,29 +184,22 @@ class Gems_Default_TrackRoundsAction  extends Gems_Controller_BrowseEditAction
      */
     public function createModel($detailed, $action)
     {
-        $trackId = $this->_getIdParam();
+        $trackEngine = $this->getTrackEngine();
+        $trackId     = $trackEngine->getTrackId();
 
-        if (! $trackId) {
-            throw new Gems_Exception($this->_('Missing track identifier.'));
-        }
-        $menuSource = $this->menu->getParameterSource();
-
-        $this->trackEngine = $this->loader->getTracker()->getTrackEngine($trackId);
-        $this->trackEngine->applyToMenuSource($menuSource);
-        $menuSource->setRequestId($trackId); // Tell the menu we're using track id as request id
-
-        $model  = $this->trackEngine->getRoundModel($detailed, $action, $this->getRequest()->isPost() ? $_POST : null);
+        $model = $trackEngine->getRoundModel($detailed, $action);
         $model->set('gro_id_track', 'default', $trackId);
 
         if ($detailed) {
             if ($action == 'create') {
                 // Set the default round order
-                $new_order = $this->db->fetchOne(
+                $newOrder = $this->db->fetchOne(
                         "SELECT MAX(gro_id_order) FROM gems__rounds WHERE gro_id_track = ?",
-                        $this->_getParam(MUtil_Model::REQUEST_ID));
+                        $trackId
+                        );
 
-                if ($new_order) {
-                    $model->set('gro_id_order', 'default', $new_order + 10);
+                if ($newOrder) {
+                    $model->set('gro_id_order', 'default', $newOrder + 10);
                 }
             }
         }
@@ -191,151 +208,77 @@ class Gems_Default_TrackRoundsAction  extends Gems_Controller_BrowseEditAction
     }
 
     /**
-     * Creates a form to delete a record
-     *
-     * Uses $this->getModel()
-     *      $this->addFormElements()
-     */
-    public function deleteAction()
-    {
-        $roundId = $this->_getParam(Gems_Model::ROUND_ID);
-        $used    = $this->db->fetchOne("SELECT COUNT(*) FROM gems__tokens WHERE gto_id_round = ? AND gto_start_time IS NOT NULL", $roundId);
-
-        if ($used) {
-            $title = $this->_('Deactivate %s');
-        } else {
-            $title = $this->_('Delete %s');
-        }
-        if ($this->isConfirmedItem($title)) {
-            if ($used) {
-                $deleted = $this->db->update('gems__rounds', array('gro_active' => 0), $this->db->quoteInto('gro_id_round = ?', $roundId));
-
-                $this->addMessage(sprintf($this->_('%2$u %1$s deactivated'), $this->getTopic($deleted), $deleted));
-                $this->_reroute(array('action' => 'show', 'confirmed' => null), false);
-            } else {
-                $model   = $this->getModel();
-                $deleted = $model->delete();
-
-                // Always perform delete, tokens may not be in use
-                $tokens = $this->db->delete('gems__tokens', $this->db->quoteInto('gto_id_round = ?', $roundId));
-
-                $this->addMessage(sprintf($this->_('%2$u %1$s deleted'), $this->getTopic($deleted), $deleted));
-
-                if ($tokens) {
-                    $this->addMessage(sprintf($this->plural('Also deleted %s unanswered token.', 'Also deleted %s unanswered tokens.', $tokens), $tokens));
-                }
-
-                $this->_reroute(array('action' => 'index', MUtil_Model::REQUEST_ID => $this->_getIdParam()), true);
-            }
-        } elseif ($used) {
-            $this->addMessage(sprintf($this->plural('This round has been completed %s time.', 'This round has been completed %s times.', $used), $used));
-            $this->addMessage($this->_('This round cannot be deleted, only deactivated.'));
-
-        }
-    }
-
-    /**
-     * Edit a single round
+     * Action for showing a edit item page
      */
     public function editAction()
     {
-        $trackId = $this->_getIdParam();
-
-        if (! $trackId) {
-            throw new Gems_Exception($this->_('Missing track identifier.'));
-        }
-
-        $menuSource = $this->menu->getParameterSource();
-        $trackEngine = $this->loader->getTracker()->getTrackEngine($trackId);
-        $trackEngine->applyToMenuSource($menuSource);
-        $menuSource->setRequestId($trackId); // Tell the menu we're using track id as request id
-
-        $this->addSnippets($trackEngine->getRoundEditSnippetNames(), 'roundId', $this->_getParam(Gems_Model::ROUND_ID), 'trackEngine', $trackEngine, 'trackId', $trackId, 'userId', $this->session->user_id);
-        MUtil_JQuery::enableView($this->view);
-        $this->view->headScript()->appendFile(Zend_Controller_Front::getInstance()->getBaseUrl()  .  '/gems/js/jquery.showOnChecked.js');
-        
-        if (MUtil_Bootstrap::enabled()) {
-            $this->view->headScript()->appendScript("jQuery(document).ready(function($) {
-                $('input[name=\"organizations[]\"]').closest('div').showOnChecked( { showInput: $('#org_specific_round-1') });
-            });");
-        } else {
-            $this->view->headScript()->appendScript("jQuery(document).ready(function($) {
-                $('input[name=\"organizations[]\"]').closest('tr').showOnChecked( { showInput: $('#org_specific_round-1') });
-            });");
-        }
-
+        $this->createEditPrepare();
+        parent::editAction();
     }
 
-    public function getTopic($count = 1)
-    {
-        return $this->plural('round', 'rounds', $count);
-    }
-
-    public function getTopicTitle()
+    /**
+     * Helper function to get the title for the index action.
+     *
+     * @return $string
+     */
+    public function getIndexTitle()
     {
         return $this->_('Rounds') . ' ' .
             $this->util->getTrackData()->getTrackTitle($this->_getIdParam());
     }
 
-    public function isConfirmedItem($title, $question = null, $info = null)
+    /**
+     * Get the current round id
+     *
+     * @return int
+     */
+    protected function getRoundId()
     {
-        $trackId = $this->_getIdParam();
-        $roundId = $this->_getParam(Gems_Model::ROUND_ID);
-
-        if (! $trackId) {
-            throw new Gems_Exception($this->_('Missing track identifier.'));
-        }
-
-        if ($this->_getParam('confirmed')) {
-            return true;
-        }
-
-        if (null === $question) {
-            $question = $this->_('Are you sure?');
-        }
-
-        $this->html->h3(sprintf($title, $this->getTopic()));
-
-        if ($info) {
-            $this->html->pInfo($info);
-        }
-
-        $menuSource  = $this->menu->getParameterSource();
-        $trackEngine = $this->loader->getTracker()->getTrackEngine($trackId);
-        $trackEngine->applyToMenuSource($menuSource);
-        $menuSource->setRequestId($trackId); // Tell the menu we're using track id as request id
-
-        $this->html->p($question);
-        $snippets = $this->getSnippets($trackEngine->getRoundShowSnippetNames(), 'roundId', $roundId, 'trackEngine', $trackEngine, 'trackId', $trackId, 'showMenu', false, 'showTitle', false);
-        foreach ($snippets as $snippet) {
-            $this->html->append($snippet);
-        }
-
-        $footer = $this->html->p($question, ' ', array('class' => 'centerAlign'));
-        $footer->actionLink(array('confirmed' => 1), $this->_('Yes'));
-        $footer->actionLink(array('action' => 'show'), $this->_('No'));
-
-        $this->html->buttonDiv($this->createMenuLinks());
-
-        return false;
+        return $this->_getParam(\Gems_Model::ROUND_ID);
     }
 
     /**
-     * Show a single round
+     * Helper function to allow generalized statements about the items in the model.
+     *
+     * @param int $count
+     * @return $string
      */
-    public function showAction()
+    public function getTopic($count = 1)
     {
+        return $this->plural('round', 'rounds', $count);
+    }
+
+    /**
+     *
+     * @return \Gems_Tracker_Engine_TrackEngineInterface
+     * @throws \Gems_Exception
+     */
+    protected function getTrackEngine()
+    {
+        if ($this->trackEngine instanceof \Gems_Tracker_Engine_TrackEngineInterface) {
+            return $this->trackEngine;
+        }
         $trackId = $this->_getIdParam();
 
         if (! $trackId) {
-            throw new Gems_Exception($this->_('Missing track identifier.'));
+            throw new \Gems_Exception($this->_('Missing track identifier.'));
         }
 
         $menuSource = $this->menu->getParameterSource();
-        $trackEngine = $this->loader->getTracker()->getTrackEngine($trackId);
-        $trackEngine->applyToMenuSource($menuSource);
+        $this->trackEngine = $this->loader->getTracker()->getTrackEngine($trackId);
+        $this->trackEngine->applyToMenuSource($menuSource);
         $menuSource->setRequestId($trackId); // Tell the menu we're using track id as request id
 
-        $this->addSnippets($trackEngine->getRoundShowSnippetNames(), 'roundId', $this->_getParam(Gems_Model::ROUND_ID), 'trackEngine', $trackEngine, 'trackId', $trackId);
+        return $this->trackEngine;
+   }
+
+    /**
+     * Action for showing an item page
+     */
+    public function showAction()
+    {
+        $this->showSnippets = $this->getTrackEngine()->getRoundShowSnippetNames();
+
+        return parent::showAction();
     }
 }

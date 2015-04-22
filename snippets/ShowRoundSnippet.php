@@ -42,7 +42,8 @@
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.4
+ * @deprecated Since 1.7.1 Single track engine no longer used
  */
-class ShowRoundSnippet extends Gems_Tracker_Snippets_ShowRoundSnippetAbstract
+class ShowRoundSnippet extends \Gems_Tracker_Snippets_ShowRoundSnippetAbstract
 {
 }
