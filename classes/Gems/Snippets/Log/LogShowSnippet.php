@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2014, Erasmus MC
+ * Copyright (c) 2015, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,12 +32,10 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: LogTableSnippet.php 2493 2015-04-15 16:29:48Z matijsdejong $
+ * @version    $Id: LogShowSnippet.php 2493 2015-04-15 16:29:48Z matijsdejong $
  */
 
 namespace Gems\Snippets\Log;
-
-use Gems\Model\LogModel;
 
 /**
  *
@@ -46,18 +44,16 @@ use Gems\Model\LogModel;
  * @subpackage Snippets_Log
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.7.1 16-apr-2015 17:17:48
+ * @since      Class available since version 1.7.1 23-apr-2015 11:10:02
  */
-class LogTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
+class LogShowSnippet extends \Gems_Snippets_ModelItemTableSnippetAbstract
 {
     /**
-     * Set a fixed model sort.
+     * One of the \MUtil_Model_Bridge_BridgeAbstract MODE constants
      *
-     * Leading _ means not overwritten by sources.
-     *
-     * @var array
+     * @var int
      */
-    protected $_fixedSort = array('gla_created' => SORT_DESC);
+    protected $bridgeMode = \MUtil_Model_Bridge_BridgeAbstract::MODE_SINGLE_ROW;
 
     /**
      *
@@ -72,28 +68,10 @@ class LogTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
     protected $model;
 
     /**
-     * Adds columns from the model to the bridge that creates the browse table.
      *
-     * Overrule this function to add different columns to the browse table, without
-     * having to recode the core table building code.
-     *
-     * @param \MUtil_Model_Bridge_TableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
-     * @return void
+     * @var \Gems_Util
      */
-    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
-    {
-        if (! $this->columns) {
-            $br   = \MUtil_Html::create('br');
-
-            $this->columns[10] = array('gla_created', $br, 'gls_name');
-            $this->columns[20] = array('gla_message');
-            $this->columns[30] = array('staff_name', $br, 'gla_role');
-            $this->columns[40] = array('respondent_name', $br, 'gla_organization');
-        }
-
-        parent::addBrowseTableColumns($bridge, $model);
-    }
+    protected $util;
 
     /**
      * Creates the model
@@ -104,8 +82,41 @@ class LogTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
     {
         if (! $this->model instanceof LogModel) {
             $this->model = $this->loader->getModels()->createLogModel();
-            $this->model->applyBrowseSettings();
+            $this->model->applyDetailSettings();
         }
         return $this->model;
+    }
+
+    /**
+     * Set the footer of the browse table.
+     *
+     * Overrule this function to set the header differently, without
+     * having to recode the core table building code.
+     *
+     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
+     * @return void
+     */
+    protected function setShowTableFooter(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    {
+        $row = $bridge->getRow();
+        if (isset($row['gla_respondent_id'], $row['gla_organization'])) {
+            $patientNr = $this->util->getDbLookup()->getPatientNr($row['gla_respondent_id'], $row['gla_organization']);
+
+            $this->menu->getParameterSource()->setPatient($patientNr, $row['gla_organization']);
+        } else {
+            $patientNr = false;
+        }
+
+        parent::setShowTableFooter($bridge, $model);
+
+        if ($patientNr && ($this->menuList instanceof \Gems_Menu_MenuList)) {
+            $this->menuList->addParameterSources(array(
+                'gr2o_patient_nr'      => $patientNr,
+                'gr2o_id_organization' => $row['gla_organization'],
+                ));
+
+            $this->menuList->addByController('respondent', 'show', $this->_('Show respondent'));
+        }
     }
 }

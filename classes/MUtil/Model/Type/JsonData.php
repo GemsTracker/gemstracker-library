@@ -112,8 +112,17 @@ class JsonData
         if ((null === $value) || is_scalar($value)) {
             return $value;
         }
-
-        return \MUtil_Html_TableElement::createArray($value);
+        if (! is_array($value)) {
+                return \MUtil_Html_TableElement::createArray($value)
+                        ->appendAttrib('class', 'jsonNestedObject');
+        }
+        foreach ($value as $key => $val) {
+            if (! (is_int($key) && (is_scalar($val) || ($val instanceof \MUtil_Html_HtmlInterface)))) {
+                return \MUtil_Html_TableElement::createArray($value)
+                        ->appendAttrib('class', 'jsonNestedArray');
+            }
+        }
+        return \MUtil_Html::create('ul', $value, array('class' => 'jsonArrayList'));
     }
 
     /**

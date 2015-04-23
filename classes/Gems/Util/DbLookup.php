@@ -401,6 +401,33 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * Find the patient nr corresponding to this respondentId / Orgid combo
+     *
+     * @param int $respondentId
+     * @param int $organizationId
+     * @return string A patient nr or null
+     * @throws Gems_Exception When the patient does not exist
+     */
+    public function getPatientNr($respondentId, $organizationId)
+    {
+        $result = $this->db->fetchOne(
+                "SELECT gr2o_patient_nr FROM gems__respondent2org WHERE gr2o_id_user = ? AND gr2o_id_organization = ?",
+                array($respondentId, $organizationId)
+                );
+
+        if ($result !== false) {
+            return $result;
+        }
+
+        throw new Gems_Exception(
+                sprintf($this->translate->_('Patient nr %s not found.'), $respondentId),
+                200,
+                null,
+                sprintf($this->translate->_('With the organization nr %d.'), $organizationId)
+                );
+    }
+
+    /**
      * Find the respondent id corresponding to this patientNr / Orgid combo
      *
      * @param string $patientId

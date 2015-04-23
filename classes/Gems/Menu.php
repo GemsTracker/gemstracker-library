@@ -469,18 +469,17 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
 
-        $mailLogPage = $page->addPage($this->_('Mail Activity Log'), null, 'respondent-mail-log', 'index')
+        $mailLogPage = $page->addPage($this->_('Log e-mail'), null, 'respondent-mail-log', 'index')
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
         $mailLogPage->addAutofilterAction();
 
         // LOG CONTROLLER
-        $logPage = $page->addPage($this->_('Other Activity Log'), 'pr.respondent-log', 'respondent-log', 'index');
+        $logPage = $page->addPage($this->_('Log other'), 'pr.respondent-log', 'respondent-log', 'index');
         $logPage->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
         $logPage->addAutofilterAction();
-//        $logPage->addShowAction()->setNamedParameters($params)
-//                ->setHiddenOrgId($orgId);
+        $logPage->addShowAction();
 
         $page->addDeleteAction('pr.respondent.delete')
                 ->setNamedParameters($params)

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -37,7 +36,6 @@
  */
 
 /**
- * Class description of MenuList
  *
  * @package    Gems
  * @subpackage Menu
@@ -45,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Menu_MenuList extends MUtil_ArrayString implements MUtil_Html_HtmlInterface
+class Gems_Menu_MenuList extends \MUtil_ArrayString implements \MUtil_Html_HtmlInterface
 {
     const KEY_DISABLED = 'key_disabled';
 
@@ -63,7 +61,7 @@ class Gems_Menu_MenuList extends MUtil_ArrayString implements MUtil_Html_HtmlInt
 
     /**
      *
-     * @var Gems_Menu
+     * @var \Gems_Menu
      */
     protected $menu;
 
@@ -76,10 +74,10 @@ class Gems_Menu_MenuList extends MUtil_ArrayString implements MUtil_Html_HtmlInt
 
     /**
      *
-     * @param Gems_Menu $menu
+     * @param \Gems_Menu $menu
      * @param string $glue Optional, text to put between link items
      */
-    public function __construct(Gems_Menu $menu, $glue = ' ')
+    public function __construct(\Gems_Menu $menu, $glue = ' ')
     {
         $this->menu = $menu;
         parent::__construct();
@@ -105,7 +103,7 @@ class Gems_Menu_MenuList extends MUtil_ArrayString implements MUtil_Html_HtmlInt
      * @param string $controller Controller name
      * @param string $action Action name
      * @param string $label Optional alternative label
-     * @return Gems_Menu_MenuList (continuation pattern)
+     * @return \Gems_Menu_MenuList (continuation pattern)
      */
     public function addByController($controller, $action = 'index', $label = null)
     {
@@ -122,7 +120,7 @@ class Gems_Menu_MenuList extends MUtil_ArrayString implements MUtil_Html_HtmlInt
     /**
      * Adds the children of the current menu item to this list
      *
-     * @return Gems_Menu_MenuList (continuation pattern)
+     * @return \Gems_Menu_MenuList (continuation pattern)
      */
     public function addCurrentChildren()
     {
@@ -136,10 +134,10 @@ class Gems_Menu_MenuList extends MUtil_ArrayString implements MUtil_Html_HtmlInt
      * Adds the parent of the current menu item
      *
      * Does nothing when the parent is a top level item (has no
-     * controllor or is the Gems_menu itself).
+     * controllor or is the \Gems_menu itself).
      *
      * @param string $label Optional alternative label
-     * @return Gems_Menu_MenuList (continuation pattern)
+     * @return \Gems_Menu_MenuList (continuation pattern)
      */
     public function addCurrentParent($label = null)
     {
@@ -156,7 +154,7 @@ class Gems_Menu_MenuList extends MUtil_ArrayString implements MUtil_Html_HtmlInt
      * Adds the siblings (= other children of the parent) of the current menu item to this list
      *
      * @param boolean $anyParameters When false, siblings must have the same parameter set as the current menu item
-     * @return Gems_Menu_MenuList (continuation pattern)
+     * @return \Gems_Menu_MenuList (continuation pattern)
      */
     public function addCurrentSiblings($anyParameters = false, $includeCurrent = false)
     {
@@ -182,11 +180,11 @@ class Gems_Menu_MenuList extends MUtil_ArrayString implements MUtil_Html_HtmlInt
     /**
      * Add a menu item to this list
      *
-     * @param Gems_Menu_SubMenuItem $menuItem
+     * @param \Gems_Menu_SubMenuItem $menuItem
      * @param string $label Optional alternative label
-     * @return Gems_Menu_MenuList (continuation pattern)
+     * @return \Gems_Menu_MenuList (continuation pattern)
      */
-    public function addMenuItem(Gems_Menu_SubMenuItem $menuItem, $label = null)
+    public function addMenuItem(\Gems_Menu_SubMenuItem $menuItem, $label = null)
     {
         $key = $this->_getKey($menuItem->get('controller'), $menuItem->get('action'));
 
@@ -201,7 +199,7 @@ class Gems_Menu_MenuList extends MUtil_ArrayString implements MUtil_Html_HtmlInt
     /**
      *
      * @param mixed $source_array (Unlimited)
-     * @return Gems_Menu_MenuList (continuation pattern)
+     * @return \Gems_Menu_MenuList (continuation pattern)
      */
     public function addParameterSources($source_1, $source_2 = null)
     {
@@ -218,7 +216,7 @@ class Gems_Menu_MenuList extends MUtil_ArrayString implements MUtil_Html_HtmlInt
      * @param string $controller Controller name
      * @param string $action Action name
      * @param boolean $remove Optional, set to true to remove the item from this list.
-     * @return MUtil_Html_HtmlElement
+     * @return \MUtil_Html_HtmlElement
      */
     public function getActionLink($controller, $action = 'index', $remove = false)
     {
@@ -242,13 +240,13 @@ class Gems_Menu_MenuList extends MUtil_ArrayString implements MUtil_Html_HtmlInt
      * @param boolean $remove Optional, set to true to remove the item from this list.
      * @param string $contr1 Controller name
      * @param string $action1 Action name, continues in pairs
-     * @return MUtil_Html_Sequence
+     * @return \MUtil_Html_Sequence
      */
     public function getActionLinks($remove, $contr1, $action1 = null, $contr2 = null, $action2 = null)
     {
         $args    = func_get_args();
         $count   = func_num_args();
-        $results = new MUtil_Html_Sequence();
+        $results = new \MUtil_Html_Sequence();
         $results->setGlue($this->getGlue());
 
         for ($i = 1; $i < $count; $i++) {
@@ -264,7 +262,7 @@ class Gems_Menu_MenuList extends MUtil_ArrayString implements MUtil_Html_HtmlInt
      * Get the action link for a specific item.
      *
      * @param boolean $remove Optional, set to true to remove the item from this list.
-     * @return MUtil_Html_HtmlElement
+     * @return \MUtil_Html_HtmlElement
      */
     public function getFirstAction($remove = true)
     {
@@ -286,10 +284,10 @@ class Gems_Menu_MenuList extends MUtil_ArrayString implements MUtil_Html_HtmlInt
      *
      * The $view is used to correctly encode and escape the output
      *
-     * @param Zend_View_Abstract $view
+     * @param \Zend_View_Abstract $view
      * @return string Correctly encoded and escaped html output
      */
-    public function render(Zend_View_Abstract $view)
+    public function render(\Zend_View_Abstract $view)
     {
         $html = '';
         $glue = $this->getGlue();
@@ -297,11 +295,11 @@ class Gems_Menu_MenuList extends MUtil_ArrayString implements MUtil_Html_HtmlInt
         foreach ($this->getIterator() as $key => $item) {
             $html .= $glue;
 
-            if ($item instanceof Gems_Menu_SubMenuItem) {
+            if ($item instanceof \Gems_Menu_SubMenuItem) {
                 $item = $this->toActionLink($key);
             }
 
-            $html .= MUtil_Html::renderAny($view, $item);
+            $html .= \MUtil_Html::renderAny($view, $item);
         }
 
         return substr($html, strlen($glue));
@@ -313,7 +311,7 @@ class Gems_Menu_MenuList extends MUtil_ArrayString implements MUtil_Html_HtmlInt
      * @param string $controller Controller name
      * @param string $action Action name
      * @param string $label Alternative label
-     * @return Gems_Menu_MenuList (continuation pattern)
+     * @return \Gems_Menu_MenuList (continuation pattern)
      */
     public function setLabel($controller, $action, $label)
     {
@@ -328,7 +326,7 @@ class Gems_Menu_MenuList extends MUtil_ArrayString implements MUtil_Html_HtmlInt
      * Switches between lowercase links or normal case
      *
      * @param boolean $value
-     * @return Gems_Menu_MenuList (continuation pattern)
+     * @return \Gems_Menu_MenuList (continuation pattern)
      */
     public function setLowerCase($value = true)
     {
@@ -340,7 +338,7 @@ class Gems_Menu_MenuList extends MUtil_ArrayString implements MUtil_Html_HtmlInt
      * Switches showing disabled menu items on or off (= default)
      *
      * @param boolean $value
-     * @return Gems_Menu_MenuList (continuation pattern)
+     * @return \Gems_Menu_MenuList (continuation pattern)
      */
     public function showDisabled($value = true)
     {
@@ -351,7 +349,7 @@ class Gems_Menu_MenuList extends MUtil_ArrayString implements MUtil_Html_HtmlInt
     /**
      *
      * @param string $key
-     * @return MUtil_Html_HtmlElement
+     * @return \MUtil_Html_HtmlElement
      */
     protected function toActionLink($key)
     {

@@ -28,7 +28,7 @@
  *
  *
  * @package    Gems
- * @subpackage Snippets
+ * @subpackage Snippets_Log
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
@@ -37,16 +37,18 @@
 
 namespace Gems\Snippets\Log;
 
+use Gems\Snippets\AutosearchInRespondentSnippet;
+
 /**
  *
  *
  * @package    Gems
- * @subpackage Snippets
+ * @subpackage Snippets_Log
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.6.5 16-feb-2015 19:46:34
  */
-class LogSearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
+class LogSearchSnippet extends AutosearchInRespondentSnippet
 {
     /**
      *

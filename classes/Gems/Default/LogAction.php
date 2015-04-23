@@ -67,6 +67,13 @@ class Gems_Default_LogAction extends \Gems_Controller_ModelSnippetActionAbstract
     public $loader;
 
     /**
+     * The snippets used for the show action
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $showSnippets = array('Generic_ContentTitleSnippet', 'Log\\LogShowSnippet');
+
+    /**
      * Creates a model for getModel(). Called only for each new $action.
      *
      * The parameters allow you to easily adapt the model to the current action. The $detailed
