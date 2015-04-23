@@ -127,14 +127,20 @@ class MUtil_Html_LabelElement extends \MUtil_Html_HtmlElement
                 }
 
                 // Only a label when a label decorator exists, but we do not use that decorator
-                if ($value->getDecorator('Label')) {
+                $decorator = $value->getDecorator('Label');
+                if ($decorator) {
+                    if (false === $decorator->getOption('escape')) {
+                        $label = \MUtil_Html::raw($value->getLabel());
+                    } else {
+                        $label = $value->getLabel();
+                    }
                     $class = $this->class ? \MUtil_Html::renderAny($this->class) . ' ' : '';
                     if ($value->isRequired()) {
                         $class .= $this->getRequiredClass();
-                        $this->_currentContent[$key] = array($this->getRequiredPrefix(), $value->getLabel(), $this->getRequiredPostfix());
+                        $this->_currentContent[$key] = array($this->getRequiredPrefix(), $label, $this->getRequiredPostfix());
                     } else {
                         $class .= $this->getOptionalClass();
-                        $this->_currentContent[$key] = array($this->getOptionalPrefix(), $value->getLabel(), $this->getOptionalPostfix());
+                        $this->_currentContent[$key] = array($this->getOptionalPrefix(), $label, $this->getOptionalPostfix());
                     }
                     parent::__set('class', $class); // Bypass existing property for drawing
 

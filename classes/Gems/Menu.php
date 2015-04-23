@@ -418,22 +418,12 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
                     ->setNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
                     ->setParameterFilter(\Gems_Model::ID_TYPE, 'token');
 
-            $trPage = $page->addPage($this->_('Surveys'), 'pr.survey', 'survey');
+            $trPage = $page->addPage($this->_('Surveys'), 'pr.survey', 'token');
 
             // Surveys overview
             $trPage->setNamedParameters($params)
                     ->setHiddenOrgId($orgId)
                     ->addAutofilterAction();
-
-            $trPage->addAction($this->_('Add'), 'pr.survey.create', 'create')
-                ->setNamedParameters($params)
-                ->addNamedParameters(\Gems_Model::TRACK_ID, 'gtr_id_track')
-                ->setHiddenOrgId($orgId);
-
-            $trPage->addAction($this->_('Assigned'), 'pr.survey', 'view')
-                ->setNamedParameters($params)
-                ->addNamedParameters(\Gems_Model::TRACK_ID, 'gtr_id_track')
-                ->setHiddenOrgId($orgId);
         }
 
         $tkPage->addEditAction('pr.token.edit')

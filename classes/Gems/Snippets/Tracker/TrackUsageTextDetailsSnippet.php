@@ -28,7 +28,7 @@
  *
  *
  * @package    Gems
- * @subpackage Snippets
+ * @subpackage Snippets_Tracker
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
@@ -41,7 +41,7 @@ namespace Gems\Snippets\Tracker;
  * Describes the use of a track in a text paragraph.
  *
  * @package    Gems
- * @subpackage Snippets
+ * @subpackage Snippets_Tracker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.1

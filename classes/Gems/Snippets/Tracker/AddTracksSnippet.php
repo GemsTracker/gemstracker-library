@@ -27,7 +27,7 @@
  *
  *
  * @package    Gems
- * @subpackage Snippets
+ * @subpackage Snippets_Tracker
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
@@ -48,7 +48,7 @@ namespace Gems\Snippets\Tracker;
  * Variables are intialized using the {@see \MUtil_Registry_TargetInterface} mechanism.
  *
  * @package    Gems
- * @subpackage Snippets
+ * @subpackage Snippets_Tracker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.1

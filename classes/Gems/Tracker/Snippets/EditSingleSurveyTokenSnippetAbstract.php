@@ -45,6 +45,7 @@
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.4
+ * @deprecated Since 1.7.1
  */
 class Gems_Tracker_Snippets_EditSingleSurveyTokenSnippetAbstract extends Gems_Snippets_ModelFormSnippetAbstract
 {

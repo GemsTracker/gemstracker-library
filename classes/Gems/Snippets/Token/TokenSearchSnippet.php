@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: SurveySearchSnippet.php $
+ * @version    $Id: TokenSearchSnippet.php 2508 2015-04-22 17:11:44Z matijsdejong $
  */
 
 namespace Gems\Snippets\Token;
@@ -48,7 +48,7 @@ use Gems\Snippets\AutosearchInRespondentSnippet;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 23-feb-2015 16:44:02
  */
-class SurveySearchSnippet extends PlanSearchSnippet
+class TokenSearchSnippet extends PlanSearchSnippet
 {
     /**
      * Returns a text element for autosearch. Can be overruled.

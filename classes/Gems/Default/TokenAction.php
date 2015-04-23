@@ -42,9 +42,9 @@
  * @subpackage Default
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.6.5 23-feb-2015 16:21:35
+ * @since      Class available since version 1.7.1
  */
-class Gems_Default_SurveyAction extends \Gems_Default_TokenSearchActionAbstract
+class Gems_Default_TokenAction extends \Gems_Default_TokenSearchActionAbstract
 {
     /**
      *
@@ -57,7 +57,7 @@ class Gems_Default_SurveyAction extends \Gems_Default_TokenSearchActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'Token\\SurveySearchSnippet');
+    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'Token\\TokenSearchSnippet');
 
     /**
      *
