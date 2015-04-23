@@ -48,18 +48,18 @@
  * @license    New BSD License
  * @since      Class available since version 1.4.4
  */
-class Gems_Snippets_ModelFormSnippetGeneric extends Gems_Snippets_ModelFormSnippetAbstract
+class Gems_Snippets_ModelFormSnippetGeneric extends \Gems_Snippets_ModelFormSnippetAbstract
 {
     /**
      *
-     * @var MUtil_Model_ModelAbstract
+     * @var \MUtil_Model_ModelAbstract
      */
     protected $model;
 
     /**
      * Creates the model
      *
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function createModel()
     {

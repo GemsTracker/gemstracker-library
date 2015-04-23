@@ -911,7 +911,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
      */
     public function getRoundShowSnippetNames()
     {
-        return array('ShowRoundSnippet');
+        return array('Tracker\\Rounds\\ShowRoundStepSnippet', 'Survey\\SurveyQuestionsSnippet');
     }
 
     /**

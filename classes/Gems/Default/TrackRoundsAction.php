@@ -131,6 +131,7 @@ class Gems_Default_TrackRoundsAction extends \Gems_Controller_ModelSnippetAction
      */
     protected $showParameters = array(
         'roundId'     => 'getRoundId',
+        'surveyId'    => 'getSurveyid',
         'trackEngine' => 'getTrackEngine',
         'trackId'     => '_getIdParam',
     );
@@ -235,6 +236,19 @@ class Gems_Default_TrackRoundsAction extends \Gems_Controller_ModelSnippetAction
     protected function getRoundId()
     {
         return $this->_getParam(\Gems_Model::ROUND_ID);
+    }
+
+    /**
+     * Get the current survey id using the round id
+     *
+     * @return int
+     */
+    protected function getSurveyId()
+    {
+        return $this->db->fetchOne(
+                "SELECT gro_id_survey FROM gems__rounds WHERE gro_id_round = ?",
+                $this->_getParam(\Gems_Model::ROUND_ID)
+                );
     }
 
     /**

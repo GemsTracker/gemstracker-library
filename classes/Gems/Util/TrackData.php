@@ -230,6 +230,30 @@ class Gems_Util_TrackData extends \Gems_Registry_TargetAbstract
     }
 
     /**
+     * Retrieve an array of key/value pairs for gsu_id_survey and gsu_survey_name
+     * that are active and are insertable
+     *
+     * @return array
+     */
+    public function getInsertableSurveys()
+    {
+        $cacheId = __CLASS__ . '_' . __FUNCTION__;
+
+        if ($results = $this->cache->load($cacheId)) {
+            return $results;
+        }
+
+        $select = "SELECT gsu_id_survey, gsu_survey_name
+            FROM gems__surveys
+            WHERE gsu_active = 1 AND gsu_insertable = 1
+            ORDER BY gsu_survey_name";
+
+        $results = $this->db->fetchPairs($select);
+        $this->cache->save($results, $cacheId, array('surveys'));
+        return $results;
+    }
+
+    /**
      *
      * @param type $respId
      * @param type $orgId

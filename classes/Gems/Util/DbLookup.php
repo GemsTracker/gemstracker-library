@@ -280,6 +280,12 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
         return $filter;
     }
 
+    /**
+     * The active groups
+     * 
+     * @staticvar array $groups
+     * @return array
+     */
     public function getGroups()
     {
         static $groups;
@@ -444,6 +450,40 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
 
         if ($result !== false) {
             return $result;
+        }
+
+        throw new Gems_Exception(
+                sprintf($this->translate->_('Respondent id %s not found.'), $patientId),
+                200,
+                null,
+                sprintf($this->translate->_('With the organization nr %d.'), $organizationId)
+                );
+    }
+
+    /**
+     * Find the respondent id name corresponding to this patientNr / Orgid combo
+     *
+     * @param string $patientId
+     * @param int $organizationId
+     * @return array ['id', 'name']
+     * @throws Gems_Exception When the respondent does not exist
+     */
+    public function getRespondentIdAndName($patientId, $organizationId)
+    {
+        $output = $this->db->fetchRow(
+                "SELECT gr2o_id_user as id,
+                    TRIM(CONCAT(
+                        COALESCE(CONCAT(grs_last_name, ', '), '-, '),
+                        COALESCE(CONCAT(grs_first_name, ' '), ''),
+                        COALESCE(grs_surname_prefix, ''))) as name
+                    FROM gems__respondent2org INNER JOIN
+                        gems__respondents ON gr2o_id_user = grs_id_user
+                    WHERE gr2o_patient_nr = ? AND gr2o_id_organization = ?",
+                array($patientId, $organizationId)
+                );
+
+        if ($output !== false) {
+            return $output;
         }
 
         throw new Gems_Exception(

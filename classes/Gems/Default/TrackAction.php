@@ -546,7 +546,9 @@ class Gems_Default_TrackAction extends \Gems_Default_TrackActionAbstract
      */
     public function insertAction()
     {
-        $this->addMessage('Coming soon');
+        $params['createData'] = true;
+
+        $this->addSnippet('Tracker\\InsertSurveySnippet', $params);
     }
 
     /**
@@ -588,7 +590,7 @@ class Gems_Default_TrackAction extends \Gems_Default_TrackActionAbstract
             $baseUrl[\MUtil_Model::REQUEST_ID1]     = $this->_getParam(\MUtil_Model::REQUEST_ID1);
             $baseUrl[\MUtil_Model::REQUEST_ID2]     = $this->_getParam(\MUtil_Model::REQUEST_ID2);
             $baseUrl[\Gems_Model::RESPONDENT_TRACK] = $this->_getParam(\Gems_Model::RESPONDENT_TRACK);
-
+            
             $this->addSnippet('TrackTokenOverviewSnippet', 'trackData', $data, 'baseUrl', $baseUrl);
 
             if (! $this->escort instanceof \Gems_Project_Tracks_SingleTrackInterface) {

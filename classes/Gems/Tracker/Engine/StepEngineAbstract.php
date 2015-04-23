@@ -668,16 +668,6 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
     }
 
     /**
-     * An array of snippet names for editing a round.
-     *
-     * @return array of string snippet names
-     */
-    public function getRoundShowSnippetNames()
-    {
-        return array('Tracker\\Rounds\\ShowRoundStepSnippet');
-    }
-
-    /**
      * Get the display values for rounds
      *
      * @return array roundId => display string

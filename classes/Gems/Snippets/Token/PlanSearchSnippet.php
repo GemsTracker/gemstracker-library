@@ -101,7 +101,7 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
 
         $allowedOrgs = $this->getOrganizationList($data);
         $orgWhere    = "(INSTR(gtr_organizations, '|" .
-                implode("|') > 0 OR INSTR(gtr_organizations, '|", $allowedOrgs) .
+                implode("|') > 0 OR INSTR(gtr_organizations, '|", array_keys($allowedOrgs)) .
                 "|') > 0)";
 
         $elements[] = $this->_('Select:');
