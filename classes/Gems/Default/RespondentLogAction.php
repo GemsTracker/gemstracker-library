@@ -65,10 +65,7 @@ class Gems_Default_RespondentLogAction extends \Gems_Default_LogAction
      */
     public function getRespondentFilter()
     {
-        return array(
-            'gla_respondent_id' => $this->getRespondentId(),
-            'gla_organization'  => $this->_getParam(\MUtil_Model::REQUEST_ID2),
-            );
+        return array('gla_respondent_id' => $this->getRespondentId());
     }
 
     /**
@@ -85,8 +82,8 @@ class Gems_Default_RespondentLogAction extends \Gems_Default_LogAction
             return $respondentId;
         }
 
-        $orgId        = $this->_getParam(\MUtil_Model::REQUEST_ID2);
-        $patientNr    = $this->_getParam(\MUtil_Model::REQUEST_ID1);
+        $orgId     = $this->_getParam(\MUtil_Model::REQUEST_ID2);
+        $patientNr = $this->_getParam(\MUtil_Model::REQUEST_ID1);
 
         if ($orgId && $patientNr) {
             $respondentId = $this->util->getDbLookup()->getRespondentId($patientNr, $orgId);

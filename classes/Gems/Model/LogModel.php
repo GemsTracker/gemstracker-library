@@ -67,10 +67,10 @@ class LogModel extends \Gems_Model_JoinModel
                 ->addLeftTable('gems__staff', array('gla_by' => 'gsf_id_user'));
 
         $this->addColumn(new \Zend_Db_Expr(
-                "CONCAT(gsf_last_name, ', ', COALESCE(CONCAT(gsf_first_name, ' '), ''), COALESCE(gsf_surname_prefix, ''))"
+                "CONCAT(COALESCE(gsf_last_name, '-'), ', ', COALESCE(CONCAT(gsf_first_name, ' '), ''), COALESCE(gsf_surname_prefix, ''))"
                 ), 'staff_name');
         $this->addColumn(new \Zend_Db_Expr(
-                "CONCAT(grs_last_name, ', ', COALESCE(CONCAT(grs_first_name, ' '), ''), COALESCE(grs_surname_prefix, ''))"
+                "CONCAT(COALESCE(grs_last_name, '-'), ', ', COALESCE(CONCAT(grs_first_name, ' '), ''), COALESCE(grs_surname_prefix, ''))"
                 ), 'respondent_name');
     }
 
