@@ -487,7 +487,7 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
         }
 
         throw new Gems_Exception(
-                sprintf($this->translate->_('Patient number  %s not found.'), $patientId),
+                sprintf($this->translate->_('Patient number %s not found.'), $patientId),
                 200,
                 null,
                 sprintf($this->translate->_('In the organization nr %d.'), $organizationId)

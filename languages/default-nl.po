@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-24 15:04+0100\n"
+"POT-Creation-Date: 2015-04-24 15:11+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -6996,14 +6996,9 @@ msgstr "Patiënt id %s niet gevonden."
 msgid "In the organization nr %d."
 msgstr "Voor het organisatie nummer %d."
 
-#: classes/Gems/Util/DbLookup.php:456
+#: classes/Gems/Util/DbLookup.php:456 classes/Gems/Util/DbLookup.php:490
 #, php-format
 msgid "Patient number %s not found."
-msgstr "Patiënt nummer %s niet geveonden."
-
-#: classes/Gems/Util/DbLookup.php:490
-#, php-format
-msgid "Patient number  %s not found."
 msgstr "Patiënt nummer %s niet geveonden."
 
 #: classes/Gems/Util/DbLookup.php:573
@@ -7991,6 +7986,9 @@ msgid_plural ""
 "After this survey there are another %d surveys we would like you to answer."
 msgstr[0] "Na deze vragenlijst hebben we nog één andere vragenlijst voor u."
 msgstr[1] "Na deze vragenlijst hebben we nog %d andere vragenlijsten voor u."
+
+#~ msgid "Patient number  %s not found."
+#~ msgstr "Patiënt nummer %s niet geveonden."
 
 #~ msgid "Survey insertion impossible: no tracks exist for respondent."
 #~ msgstr ""
