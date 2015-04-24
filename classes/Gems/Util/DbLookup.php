@@ -282,7 +282,7 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
 
     /**
      * The active groups
-     * 
+     *
      * @staticvar array $groups
      * @return array
      */
@@ -426,10 +426,10 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
         }
 
         throw new Gems_Exception(
-                sprintf($this->translate->_('Patient nr %s not found.'), $respondentId),
+                sprintf($this->translate->_('Respondent id %s not found.'), $respondentId),
                 200,
                 null,
-                sprintf($this->translate->_('With the organization nr %d.'), $organizationId)
+                sprintf($this->translate->_('In the organization nr %d.'), $organizationId)
                 );
     }
 
@@ -453,10 +453,10 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
         }
 
         throw new Gems_Exception(
-                sprintf($this->translate->_('Respondent id %s not found.'), $patientId),
+                sprintf($this->translate->_('Patient number %s not found.'), $patientId),
                 200,
                 null,
-                sprintf($this->translate->_('With the organization nr %d.'), $organizationId)
+                sprintf($this->translate->_('In the organization nr %d.'), $organizationId)
                 );
     }
 
@@ -487,10 +487,10 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
         }
 
         throw new Gems_Exception(
-                sprintf($this->translate->_('Respondent id %s not found.'), $patientId),
+                sprintf($this->translate->_('Patient number  %s not found.'), $patientId),
                 200,
                 null,
-                sprintf($this->translate->_('With the organization nr %d.'), $organizationId)
+                sprintf($this->translate->_('In the organization nr %d.'), $organizationId)
                 );
     }
 

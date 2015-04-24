@@ -351,7 +351,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
                 $this->formData['gto_id_track'] = key($tracks);
             }
         } else {
-            $this->addMessage($this->_('Survey insertion impossible: no tracks exist for respondent.'));
+            $this->addMessage($this->_('Survey insertion impossible: respondent has no tracks!'));
             $tracks = $this->util->getTranslated()->getEmptyDropdownArray();
         }
         asort($tracks);
