@@ -543,10 +543,17 @@ class Gems_Default_TrackAction extends \Gems_Default_TrackActionAbstract
 
     /**
      * Insert a single survey into a track
+     *
+     * @param array $params Optional parameters from child class
      */
-    public function insertAction()
+    public function insertAction(array $params = array())
     {
         $params['createData'] = true;
+        $params['formTitle']  = sprintf(
+                $this->_('Inserting a survey in a track for respondent %s: %s'),
+                $this->_getParam(\MUtil_Model::REQUEST_ID1),
+                $this->getRespondentName()
+                );
 
         $this->addSnippet('Tracker\\InsertSurveySnippet', $params);
     }
@@ -590,7 +597,7 @@ class Gems_Default_TrackAction extends \Gems_Default_TrackActionAbstract
             $baseUrl[\MUtil_Model::REQUEST_ID1]     = $this->_getParam(\MUtil_Model::REQUEST_ID1);
             $baseUrl[\MUtil_Model::REQUEST_ID2]     = $this->_getParam(\MUtil_Model::REQUEST_ID2);
             $baseUrl[\Gems_Model::RESPONDENT_TRACK] = $this->_getParam(\Gems_Model::RESPONDENT_TRACK);
-            
+
             $this->addSnippet('TrackTokenOverviewSnippet', 'trackData', $data, 'baseUrl', $baseUrl);
 
             if (! $this->escort instanceof \Gems_Project_Tracks_SingleTrackInterface) {

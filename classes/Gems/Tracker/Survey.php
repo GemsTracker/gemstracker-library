@@ -205,7 +205,7 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
                 $this->exists = true;
             } else {
                 //Row not present, try with empty array? or should we throw an error?
-                $this->_gemsSurvey = array();
+                $this->_gemsSurvey = array('gsu_code' => null);
                 $this->exists = false;
             }
         }

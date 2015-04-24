@@ -489,10 +489,10 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Controller_ModelSn
         $orgId     = $this->_getParam(\MUtil_Model::REQUEST_ID2);
         $patientNr = $this->_getParam(\MUtil_Model::REQUEST_ID1);
 
-        if ($patientId && $orgId) {
+        if ($patientNr && $orgId) {
             $user = $this->loader->getCurrentUser();
 
-            $where['gr2o_patient_nr = ?']      = $patientId;
+            $where['gr2o_patient_nr = ?']      = $patientNr;
             $where['gr2o_id_organization = ?'] = $orgId;
 
             $values['gr2o_opened']             = new \MUtil_Db_Expr_CurrentTimestamp();

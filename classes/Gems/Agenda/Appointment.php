@@ -349,6 +349,26 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * The source of the appointment
+     *
+     * @return string
+     */
+    public function getSource()
+    {
+        return $this->_gemsData['gap_source'];
+    }
+
+    /**
+     * The source id of the appointment
+     *
+     * @return string
+     */
+    public function getSourceId()
+    {
+        return $this->_gemsData['gap_id_in_source'];
+    }
+
+    /**
      * The subject of the appointment
      *
      * @return string

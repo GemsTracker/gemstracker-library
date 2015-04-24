@@ -288,11 +288,17 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
      * @param int $respondentId When null $patientNr is required
      * @param int $organizationId
      * @param string $patientNr Optional for when $respondentId is null
+     * @param string $where Optional extra where statement
      * @return array appointmentId => appointment description
      */
-    public function getActiveAppointments($respondentId, $organizationId, $patientNr = null)
+    public function getActiveAppointments($respondentId, $organizationId, $patientNr = null, $where = null)
     {
-        $where = sprintf('gap_status IN (%s)', $this->getStatusKeysActiveDbQuoted());
+        if ($where) {
+            $where = "($where) AND ";
+        } else {
+            $where = "";
+        }
+        $where .= sprintf('gap_status IN (%s)', $this->getStatusKeysActiveDbQuoted());
 
         return $this->getAppointments($respondentId, $organizationId, $patientNr, $where);
     }

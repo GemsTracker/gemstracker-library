@@ -76,6 +76,12 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     protected $survey;
 
     /**
+     *
+     * @var array id => label
+     */
+    protected $surveyList;
+
+    /**
      * The newly create token
      *
      * @var Gems_Tracker_Token
@@ -95,6 +101,19 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     protected $util;
 
     /**
+     * Adds one or more messages to the session based message store.
+     *
+     * @param mixed $message_args Can be an array or multiple argemuents. Each sub element is a single message string
+     * @return self (continuation pattern)
+     */
+    public function addMessage($message_args)
+    {
+        $this->saveButtonId = null;
+        $this->saveLabel    = null;
+
+        parent::addMessage(func_get_args());
+    }
+    /**
      * Called after the check that all required registry values
      * have been set correctly has run.
      *
@@ -104,7 +123,8 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     {
         parent::afterRegistry();
 
-        $this->tracker = $this->loader->getTracker();
+        $this->saveLabel = $this->_('Insert survey');
+        $this->tracker   = $this->loader->getTracker();
     }
 
     /**
@@ -119,6 +139,8 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
         $dbLookup  = $this->util->getDbLookup();
         $trackData = $this->util->getTrackData();
 
+        $this->surveyList = $trackData->getInsertableSurveys();
+
         $model->set('gr2o_patient_nr', 'elementClass', 'Exhibitor');
         $model->set('respondent_name', 'elementClass', 'Exhibitor');
 
@@ -127,7 +149,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
                 'multiOptions', $dbLookup->getOrganizationsWithRespondents()
                 );
         $model->set('gto_id_survey', 'label', $this->_('Suvey to insert'),
-                'multiOptions', $trackData->getInsertableSurveys(),
+                'multiOptions', $this->surveyList,
                 'onchange', 'this.form.submit();'
                 );
         $model->set('group_name', 'label', $this->_('Assigned to'),
@@ -151,7 +173,8 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
         $model->set('gto_comment',
                 'elementClass', 'Textarea'
                 );
-        // $this->
+
+        $model->addEditTracking();
 
         return $model;
     }
@@ -197,13 +220,15 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
             $respondentData = $this->util->getDbLookup()->getRespondentIdAndName($patientId, $organizationId);
 
             $this->formData = array(
-                'gr2o_patient_nr'     => $patientId,
-                'gto_id_organization' => $organizationId,
-                'gto_id_respondent'   => $respondentData['id'],
-                'respondent_name'     => $respondentData['name'],
-                'gto_id_survey'       => $this->request->getParam(\Gems_Model::SURVEY_ID),
-                'gto_id_track'        => $this->request->getParam(\Gems_Model::TRACK_ID),
-                'gto_valid_from'      => $now,
+                'gr2o_patient_nr'        => $patientId,
+                'gto_id_organization'    => $organizationId,
+                'gto_id_respondent'      => $respondentData['id'],
+                'respondent_name'        => $respondentData['name'],
+                'gto_id_survey'          => $this->request->getParam(\Gems_Model::SURVEY_ID),
+                'gto_id_track'           => $this->request->getParam(\Gems_Model::TRACK_ID),
+                'gto_valid_from'         => $now,
+                'gto_valid_from_manual'  => 0,
+                'gto_valid_until_manual' => 0,
                 );
         } else {
             parent::loadFormData();
@@ -273,6 +298,17 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
      */
     protected function loadSurvey()
     {
+        if (! $this->surveyList) {
+            $this->addMessage($this->_('Survey insertion impossible: no insertable surveys exist!'));
+        }
+        if (count($this->surveyList ) === 1) {
+            $model = $this->getModel();
+            $model->set('gto_id_survey', 'elementClass', 'Exhibitor');
+
+            reset($this->surveyList);
+            $this->formData['gto_id_survey'] = key($this->surveyList);
+        }
+
         if (isset($this->formData['gto_id_survey'])) {
             $this->survey = $this->tracker->getSurvey($this->formData['gto_id_survey']);
 
@@ -321,6 +357,9 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
         asort($tracks);
         $model = $this->getModel();
         $model->set('gto_id_track', 'multiOptions', $tracks);
+        if (count($tracks) === 1) {
+            $model->set('gto_id_track', 'elementClass', 'Exhibitor');
+        }
 
         if (isset($this->formData['gto_id_track'])) {
             $this->respondentTrack = $respTracks[$this->formData['gto_id_track']];

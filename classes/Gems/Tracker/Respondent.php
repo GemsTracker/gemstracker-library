@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
+class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
 {
     /**
      *
@@ -54,7 +54,7 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
@@ -66,7 +66,7 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
 
 	/**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
@@ -78,7 +78,7 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var Gems_Model_RespondentModel
+     * @var \Gems_Model_RespondentModel
      */
 	protected $model;
 
@@ -107,7 +107,7 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     protected $util;
 
@@ -141,7 +141,7 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
     /**
      * Get the birthdate
      *
-     * @return MUtil_Date|null
+     * @return \MUtil_Date|null
      */
     public function getBirthday()
     {
@@ -263,7 +263,7 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
 
     /**
      *
-     * @return Gems_User_Organization
+     * @return \Gems_User_Organization
      */
     public function getOrganization()
     {
