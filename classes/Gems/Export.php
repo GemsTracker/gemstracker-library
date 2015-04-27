@@ -65,8 +65,17 @@ class Gems_Export extends \Gems_Loader_TargetLoaderAbstract
      * @var array Of classname => description
      */
     protected $_exportClasses = array(
-        'Excel' => 'Excel (xls)',
-        'Spss' => 'SPSS',
+        'ExcelExport' => 'Excel (xls)',
+        'SpssExport' => 'SPSS',
+        'CsvExport' => 'CSV',
+    );
+
+    /**
+     * Holds all registered export descriptions, which describe the models that can be exported
+     * @var array of classnames of descriptions
+     */
+    protected $_exportModelSources = array(
+        'AnswerExportModelSource' => 'Answers',
     );
 
     /**
@@ -76,7 +85,8 @@ class Gems_Export extends \Gems_Loader_TargetLoaderAbstract
      * @var array
      */
     protected $_defaults = array(
-        'type' => 'excel'
+        'exportmodelsource' => 'AnswerExportModelSource',
+        'type' => 'ExcelExport'
     );
 
     /**
@@ -124,6 +134,16 @@ class Gems_Export extends \Gems_Loader_TargetLoaderAbstract
     public function getExportClasses()
     {
         return $this->_exportClasses;
+    }
+
+    /**
+     * Returns all registered export models
+     *
+     * @return array Of classnames
+     */
+    public function getExportModelSources()
+    {
+        return $this->_exportModelSources;
     }
 
     /**

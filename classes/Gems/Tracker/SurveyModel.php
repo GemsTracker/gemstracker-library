@@ -68,6 +68,11 @@ class Gems_Tracker_SurveyModel extends Gems_Model_JoinModel
      */
     protected $survey;
 
+    public function getSurvey()
+    {
+        return $this->survey;
+    }
+
     public function __construct(Gems_Tracker_Survey $survey, Gems_Tracker_Source_SourceInterface $source)
     {
         parent::__construct($survey->getName(), 'gems__tokens', 'gto');

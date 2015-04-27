@@ -298,20 +298,9 @@ class Gems_Default_ExportAction extends \Gems_Controller_Action
      */
     public function getForm(&$data)
     {
-        $dbLookup      = $this->util->getDbLookup();
-        $translated    = $this->util->getTranslated();
-
-        $empty         = $translated->getEmptyDropdownArray();
-        $organizations = $this->loader->getCurrentUser()->getRespondentOrganizations();
-        $noRound       = array(self::NoRound => $this->_('No round description'));
-        $rounds        = $empty + $noRound + $dbLookup->getRoundsForExport(
-                isset($data['tid']) ? $data['tid'] : null,
-                isset($data['sid']) ? $data['sid'] : null
-            );
-        $tracks        = $empty + $this->util->getTrackData()->getSteppedTracks();
-        $surveys       = $empty + $dbLookup->getSurveysForExport(isset($data['tid']) ? $data['tid'] : null);
+        // MUtil_Echo::track($data);
         $types         = $this->export->getExportClasses();
-        $yesNo         = $translated->getYesNo();
+        $exportModelSources = $this->export->getExportModelSources();
 
         //Create the basic form
         if (\MUtil_Bootstrap::enabled()) {
@@ -320,74 +309,20 @@ class Gems_Default_ExportAction extends \Gems_Controller_Action
             $form = new \Gems_Form_TableForm();
         }
 
+        $element = $form->createElement('select', 'exportmodelsource');
+        $element->setLabel($this->_('Export'))
+            ->setMultiOptions($exportModelSources);
+        $elements[] = $element;
+
+        if (!empty($data['exportmodelsource'])) {
+
+            $exportModelSource = $this->loader->getExportModelSource($data['exportmodelsource']);
+            $exportFormElements = $exportModelSource->getFormElements($form, $data);
+
+            $elements = array_merge($elements, $exportFormElements);
+        }
+
         $form->getDecorator('AutoFocus')->setSelectall(false);
-
-        //Start adding elements
-        $element = $form->createElement('textarea', 'ids');
-        $element->setLabel($this->_('Respondent id\'s'))
-                ->setAttrib('cols', 60)
-                ->setAttrib('rows', 4)
-                ->setDescription($this->_('Not respondent nr, but respondent id as exported here.'));
-        $elements[] = $element;
-
-        $element = $form->createElement('select', 'tid');
-        $element->setLabel($this->_('Tracks'))
-            ->setMultiOptions($tracks);
-        $elements[] = $element;
-
-        if (isset($data['tid']) && $data['tid']) {
-            $element = $form->createElement('radio', 'tid_fields');
-            $element->setLabel($this->_('Export fields'))
-                ->setMultiOptions($yesNo);
-            $elements[] = $element;
-
-            if (!array_key_exists('tid_fields', $data)) {
-                $data['tid_fields'] = 1;
-            }
-        }
-
-        $element = $form->createElement('select', 'sid');
-        $element->setLabel($this->_('Survey'))
-            ->setMultiOptions($surveys);
-        $elements[] = $element;
-
-        $element = $form->createElement('select', 'rounds');
-        $element->setLabel($this->_('Round description'))
-            ->setMultiOptions($rounds);
-        $elements[] = $element;
-
-        if ($this->project->hasResponseDatabase()) {
-            $this->_addResponseDatabaseForm($form, $data, $elements);
-        }
-
-        //Add a field to the form showing the record count. If this is too slow for large recordsets
-        //then remove it or make it more efficient
-        unset($data['records']);
-        if (!empty($data['sid'])) {
-            $survey   = $this->loader->getTracker()->getSurvey(intval($data['sid']));
-            $filter   = $this->_getFilter($data);
-            //$answers  = $survey->getRawTokenAnswerRows($filter);
-            //$recordCount = count($answers);
-            $recordCount = $survey->getRawTokenAnswerRowsCount($filter);
-
-            $element = $form->createElement('exhibitor', 'records');
-            $element->setValue(sprintf($this->_('%s records found.'), $recordCount));
-            $elements[] = $element;
-        }
-
-        $element = $form->createElement('multiCheckbox', 'oid');
-        $element->setLabel($this->_('Organization'))
-                ->setMultiOptions($organizations);
-        $elements[] = $element;
-
-        if (MUtil_Bootstrap::enabled()) {
-            $element = new \MUtil_Bootstrap_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=oid]'));
-        } else {
-            $element = new \Gems_JQuery_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=oid]'));
-        }
-
-        $element->setLabel($this->_('Toggle'));
-        $elements[] = $element;
 
         $element = $form->createElement('select', 'type');
         $element->setLabel($this->_('Export to'))
@@ -413,7 +348,7 @@ class Gems_Default_ExportAction extends \Gems_Controller_Action
             }
 
             if (!isset($data[$exportName])) {
-                $data[$exportName] = $exportClass->getDefaults();
+                $data[$exportName] = $exportClass->getDefaultFormValues();
             }
         }
 
@@ -447,34 +382,12 @@ class Gems_Default_ExportAction extends \Gems_Controller_Action
             $message = \Zend_Json::encode($data);
             $this->accesslog->logChange($this->getRequest());
 
-            //And delegate the export to the right class
-            $exportClass = $this->export->getExport($data['type']);
-
-            if ($exportClass instanceof \Gems_Export_ExportBatchInterface) {
-                // Clear possible existing batch
-                $batch = $this->loader->getTaskRunnerBatch('export_data');
-                $batch->reset();
-                // Have a batch handle the export
-                $this->_session->exportParams = $data;
-                $this->_reroute(array('action'=>'handle-export'));
-
-            } else {
-                // If not possible / available, handle direct
-                $language    = $this->locale->getLanguage();
-                $survey      = $this->loader->getTracker()->getSurvey($data['sid']);
-                $filter      = $this->_getFilter($data);
-                $answers     = $survey->getRawTokenAnswerRows($filter);
-                $answerModel = $survey->getAnswerModel($language);
-
-                //Now add the organization id => name mapping
-                $answerModel->set('organizationid', 'multiOptions', $this->loader->getCurrentUser()->getAllowedOrganizations());
-
-                if (count($answers) === 0) {
-                    $answers[0] = array('' => sprintf($this->_('No %s found.'), $this->getTopic(0)));
-                }
-
-                $exportClass->handleExport($data, $survey, $answers, $answerModel, $language);
-            }
+            // Clear possible existing batch
+            $batch = $this->loader->getTaskRunnerBatch('export_data');
+            $batch->reset();
+            // Have a batch handle the export
+            $this->_session->exportParams = $data;
+            $this->_reroute(array('action'=>'handle-export'));
         }
     }
 
@@ -485,10 +398,17 @@ class Gems_Default_ExportAction extends \Gems_Controller_Action
         $batch->minimalStepDurationMs = 2000;
         if (!$batch->count()) {
             $data     = $this->_session->exportParams;
-            $filter   = $this->_getFilter($data);
+            $exportModelName = $data['exportmodelsource'];
+            $exportModel = $this->loader->getExportModelSource($exportModelName);
+            $exportFilters = $exportModel->getFilters($data);
             $language = $this->locale->getLanguage();
-
-            $batch->addTask('Export_ExportCommand', $data['type'], 'handleExportBatch', $filter, $language, $data);
+            $batch->setSessionVariable('files', array());
+            MUtil_Echo::track($exportFilters);
+            //$export = $this->loader->getTestExport();
+            foreach($exportFilters as $filter) {
+                $batch->addTask('Export_ExportCommand', $data['type'], 'addExport', $exportModelName, $filter, $data);
+            }
+            $batch->addTask('addTask', 'Export_ExportCommand', $data['type'], 'finalizeFiles', $exportModelName);
             $batch->autoStart = true;
         }
 
@@ -501,8 +421,6 @@ class Gems_Default_ExportAction extends \Gems_Controller_Action
             $controller->html->h3($title);
 
             if ($batch->isFinished()) {
-                // $controller->addMessage($batch->getMessages());
-
                 $file = $batch->getSessionVariable('file');
                 if ((!empty($file)) && isset($file['file']) && file_exists($file['file'])) {
                     // Forward to download action

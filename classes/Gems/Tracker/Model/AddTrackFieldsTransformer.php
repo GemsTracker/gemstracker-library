@@ -70,16 +70,17 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
 
     /**
      *
+     * @param \Gems_Loader; $loader
      * @param \Gems\Tracker\Engine\FieldsDefinition; $fieldsDefinition
-     * @param int $respondentId When null $patientNr is required
-     * @param int $organizationId
-     * @param string $patientNr Optional for when $respondentId is null
-     * @param boolean $edit True when editing, false for display (detailed is assumed to be true)
+     * @param $respTrackIdField Overwrite the default field that contains the respondent track id (gr2t_id_respondent_track)
      */
-    public function __construct(\Gems_Loader $loader, FieldsDefinition $fieldsDefinition)
+    public function __construct(\Gems_Loader $loader, FieldsDefinition $fieldsDefinition, $respTrackIdField = false)
     {
         $this->loader = $loader;
         $this->fieldsDefinition = $fieldsDefinition;
+        if ($respTrackIdField) {
+            $this->respTrackIdField = $respTrackIdField;
+        }
     }
 
     /**
@@ -114,16 +115,20 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
         $empty = false;
 
         foreach ($data as $key => $row) {
+            
             if (isset($row[$this->respTrackIdField]) && $row[$this->respTrackIdField]) {
                 $fields = $this->fieldsDefinition->getFieldsDataFor($row[$this->respTrackIdField]);
             } else {
+
                 if (! $empty) {
                     $empty = array_fill_keys(array_keys($this->fieldsDefinition->getFieldNames()), null);
                 }
                 $fields = $empty;
             }
 
-            $data[$key] = $row + $fields;
+            //$data[$key] = array_merge($row, $fields);
+            $data[$key] = array_replace($row, $fields);
+            //$data[$key] = $row  $fields;
         }
 
         return $data;

@@ -206,13 +206,14 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
      *
      * @param \MUtil_Model_ModelAbstract $model
      * @param boolean $addDependency True when editing, can be false in all other cases
+     * @param $respTrackId Optional Database column name where Respondent Track Id is set
      * @return \Gems_Tracker_Engine_TrackEngineAbstract
      */
-    public function addFieldsToModel(\MUtil_Model_ModelAbstract $model, $addDependency = true)
+    public function addFieldsToModel(\MUtil_Model_ModelAbstract $model, $addDependency = true, $respTrackId = false)
     {
         if ($this->_fieldsDefinition->exists) {
             // Add the data to the load / save
-            $transformer = new AddTrackFieldsTransformer($this->loader, $this->_fieldsDefinition);
+            $transformer = new AddTrackFieldsTransformer($this->loader, $this->_fieldsDefinition, $respTrackId);
             $model->addTransformer($transformer);
 
             if ($addDependency) {
