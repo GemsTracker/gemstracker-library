@@ -186,6 +186,24 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
     }
 
     /**
+     *
+     * @return Gems_Export
+     */
+    public function getExportModelSource($exportModelSourceName)
+    {
+        return $this->_loadClass('Export_ModelSource_' . $exportModelSourceName, true);
+    }
+
+    /**
+     *
+     * @return Gems_Export
+     */
+    public function getTestExport()
+    {
+        return $this->_getClass('excelExport', 'Export_ExcelExport');
+    }
+
+    /**
      * @return \Gems_Mail
      */
     public function getMail($charset = null)
