@@ -35,6 +35,8 @@
  * @version    $Id$
  */
 
+namespace Gems\Snippets\Token;
+
 /**
  *
  * @package    Gems
@@ -43,94 +45,32 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class EditTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbstract
+class EditTrackTokenSnippet extends \Gems_Tracker_Snippets_EditTokenSnippetAbstract
 {
-    /**
-     *
-     * @var ArrayObject
-     */
-    protected $session;
-
     /**
      * Adds elements from the model to the bridge that creates the form.
      *
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      */
-    protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addFormElements(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
     {
-        $bridge->addHiddenMulti(
-                'gr2o_id_organization',
-                'gr2t_id_respondent_track',
-                'gr2t_id_user',
-                'gr2t_id_organization',
-                'gr2t_id_track',
-                'gr2t_active',
-                'gr2t_count',
-                'gr2t_reception_code',
-                'gto_id_respondent_track',
-                'gto_id_round',
-                'gto_id_respondent',
-                'gto_id_organization',
-                'gto_id_track',
-                'gto_id_survey',
-                'gto_mail_sent_num',
-                'gto_valid_from_manual',
-                'gto_valid_until_manual',
-                'gtr_id_track',
-                $model->getMeta(MUtil_Model_Type_ChangeTracker::HIDDEN_FIELDS, array())
-                );
-
-        if (! $this->createData) {
-            $bridge->addExhibitor('gto_id_token');
+        $onOffFields = array('gr2t_track_info', 'gto_round_description', 'grc_description');
+        foreach ($onOffFields  as $field) {
+            if (! (isset($this->formData[$field]) && $this->formData[$field])) {
+                $model->set($field, 'elementClass', 'None');
+            }
         }
 
-        // Patient
-        $bridge->addExhibitor('gr2o_patient_nr');
-        $bridge->addExhibitor('respondent_name');
-
-        // Track
-        $bridge->addExhibitor('gtr_track_name');
-        if ($this->formData['gr2t_track_info']) {
-            $bridge->addExhibitor('gr2t_track_info');
-        } else {
-            $bridge->addHidden('gr2t_track_info');
-        }
-
-        // Round
-        $bridge->addExhibitor('gsu_survey_name');
-        if ($this->formData['gto_round_description']) {
-            $bridge->addExhibitor('gto_round_description');
-        } else {
-            $bridge->addHidden('gto_round_description');
-        }
-        $bridge->addExhibitor('ggp_name');
-
-        // Token
-        if ($this->token->isCompleted()) {
-            $bridge->addExhibitor('gto_valid_from');
-            $bridge->addExhibitor('gto_valid_until');
-        } else {
-            $bridge->addDate(     'gto_valid_from');
-            $bridge->addDate(     'gto_valid_until')
-                ->addValidator(new MUtil_Validate_Date_DateAfter('gto_valid_from'));
-        }
-        $bridge->addTextarea('gto_comment', 'rows', 3, 'cols', 50);
-
-        $bridge->addExhibitor('gto_mail_sent_date');
-        $bridge->addExhibitor('gto_completion_time');
-
-        if (! $this->token->hasSuccesCode()) {
-            $bridge->addExhibitor('grc_description');
-        }
+        parent::addFormElements($bridge, $model);
     }
 
     /**
      *
-     * @return Gems_Menu_MenuList
+     * @return \Gems_Menu_MenuList
      */
     protected function getMenuList()
     {
@@ -146,6 +86,42 @@ class EditTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbstra
     }
 
     /**
+     * Initialize the _items variable to hold all items from the model
+     */
+    protected function initItems()
+    {
+        if (is_null($this->_items)) {
+            $this->_items = array_merge(
+                    array(
+                        'gto_id_respondent',
+                        'gr2o_patient_nr',
+                        'respondent_name',
+                        'gto_id_organization',
+                        'gtr_track_name',
+                        'gr2t_track_info',
+                        'gto_round_description',
+                        'gsu_survey_name',
+                        'ggp_name',
+                        'gto_valid_from_manual',
+                        'gto_valid_from',
+                        'gto_valid_until_manual',
+                        'gto_valid_until',
+                        'gto_comment',
+                        'gto_mail_sent_date',
+                        'gto_completion_time',
+                        'grc_description',
+                        'gto_changed',
+                        'assigned_by',
+                        ),
+                    $this->getModel()->getMeta(\MUtil_Model_Type_ChangeTracker::HIDDEN_FIELDS, array())
+                    );
+            if (! $this->createData) {
+                array_unshift($this->_items, 'gto_id_token');
+            }
+        }
+    }
+
+    /**
      * Hook containing the actual save code.
      *
      * Call's afterSave() for user interaction.
@@ -158,32 +134,39 @@ class EditTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbstra
 
         if ($this->formData['gto_valid_until']) {
             // Make sure date based units are valid until the end of the day.
-            $date = new MUtil_Date($this->formData['gto_valid_until'], $model->get('gto_valid_until', 'dateFormat'));
+            $date = new \MUtil_Date(
+                    $this->formData['gto_valid_until'],
+                    $model->get('gto_valid_until', 'dateFormat')
+                    );
             $date->setTimeToDayEnd();
             $this->formData['gto_valid_until'] = $date;
         }
 
+        // Save the token using the model
         parent::saveData();
         // $this->token->setValidFrom($this->formData['gto_valid_from'], $this->formData['gto_valid_until'], $this->loader->getCurrentUser()->getUserId());
 
-        // MUtil_Echo::track($this->formData);
+        // \MUtil_Echo::track($this->formData);
 
-        // Refresh token with current form data
-        $updateData['gto_valid_from']         = $model->getOnSave($this->formData['gto_valid_from'], true, 'gto_valid_from');
+        // Refresh (NOT UPDATE!) token with current form data
+        $updateData['gto_valid_from']         = $this->formData['gto_valid_from'];
         $updateData['gto_valid_from_manual']  = $this->formData['gto_valid_from_manual'];
-        $updateData['gto_valid_until']        = $model->getOnSave($this->formData['gto_valid_until'], true, 'gto_valid_until');
+        $updateData['gto_valid_until']        = $this->formData['gto_valid_until'];
         $updateData['gto_valid_until_manual'] = $this->formData['gto_valid_until_manual'];
         $updateData['gto_comment']            = $this->formData['gto_comment'];
 
         $this->token->refresh($updateData);
 
         $respTrack = $this->token->getRespondentTrack();
-        if ($nextToken = $this->token->getNextToken()) {
-            $changed = $respTrack->checkTrackTokens($this->session->user_id, $nextToken, $this->token);
+        $userId    = $this->loader->getCurrentUser()->getUserId();
+        $changed   = $respTrack->checkTrackTokens($userId, $this->token);
 
-            if ($changed) {
-                $this->addMessage(sprintf($this->plural('%d token changed by recalculation.', '%d tokens changed by recalculation.', $changed), $changed));
-            }
+        if ($changed) {
+            $this->addMessage(sprintf($this->plural(
+                    '%d token changed by recalculation.',
+                    '%d tokens changed by recalculation.',
+                    $changed
+                    ), $changed));
         }
     }
 }

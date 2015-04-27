@@ -49,6 +49,25 @@ namespace Gems\Snippets\Tracker;
 class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
 {
     /**
+     * True when the form should edit a new model item.
+     *
+     * @var boolean
+     */
+    protected $createData = true;
+
+    /**
+     *
+     * @var \Zend_Db_Adapter_Abstract
+     */
+    protected $db;
+
+    /**
+     *
+     * @var int
+     */
+    protected $defaultRound = 10;
+
+    /**
      * Required
      *
      * @var \Gems_Loader
@@ -106,13 +125,14 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
      * @param mixed $message_args Can be an array or multiple argemuents. Each sub element is a single message string
      * @return self (continuation pattern)
      */
-    public function addMessage($message_args)
+    public function addMessageInvalid($message_args)
     {
         $this->saveButtonId = null;
         $this->saveLabel    = null;
 
         parent::addMessage(func_get_args());
     }
+
     /**
      * Called after the check that all required registry values
      * have been set correctly has run.
@@ -136,47 +156,158 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     {
         $model = $this->loader->getTracker()->getTokenModel();
 
-        $dbLookup  = $this->util->getDbLookup();
+        if ($model instanceof \Gems_Tracker_Model_StandardTokenModel) {
+            $model->addEditTracking();
+
+            if ($this->createData) {
+                $model->applyInsertionFormatting();
+            }
+        }
+
         $trackData = $this->util->getTrackData();
 
         $this->surveyList = $trackData->getInsertableSurveys();
 
-        $model->set('gr2o_patient_nr', 'elementClass', 'Exhibitor');
-        $model->set('respondent_name', 'elementClass', 'Exhibitor');
-
-        $model->set('gto_id_organization', 'label', $this->_('Organization'),
-                'elementClass', 'Exhibitor',
-                'multiOptions', $dbLookup->getOrganizationsWithRespondents()
-                );
-        $model->set('gto_id_survey', 'label', $this->_('Suvey to insert'),
+        $model->set('gto_id_survey',   'label', $this->_('Suvey to insert'),
+                // 'elementClass' set in loadSurvey
                 'multiOptions', $this->surveyList,
                 'onchange', 'this.form.submit();'
                 );
-        $model->set('group_name', 'label', $this->_('Assigned to'),
-                'elementClass', 'Exhibitor'
-                );
-        $model->set('gto_id_track', 'label', $this->_('Existing track'),
+        $model->set('gto_id_track',    'label', $this->_('Existing track'),
                 'elementClass', 'Select',
+                //'multiOptions' set in loadTrackSettings
                 'onchange', 'this.form.submit();'
                 );
         $model->set('gto_round_order', 'label', $this->_('In round'),
                 'elementClass', 'Select',
+                //'multiOptions' set in loadRoundSettings
                 'required', true
                 );
         $model->set('gto_valid_from',
-                'elementClass', 'Date',
                 'required', true
                 );
-        $model->set('gto_valid_until',
-                'elementClass', 'Date'
-                );
-        $model->set('gto_comment',
-                'elementClass', 'Textarea'
-                );
-
-        $model->addEditTracking();
 
         return $model;
+    }
+
+    /**
+     * Get a select with the fields:
+     *  - round_order: The gto_round_order to use for this round
+     *  - has_group: True when has surveys for same group as current survey
+     *  - group_answered: True when has answers for same group as current survey
+     *  - any_answered: True when has answers for any survey
+     *  - round_description: The gto_round_description for the round
+     *
+     * @return \Zend_Db_Select or you can return a nested array containing said output/
+     */
+    protected function getRoundSelect()
+    {
+        $select = $this->db->select();
+
+        $select->from('gems__tokens', array('gto_round_description AS round_description'))
+                ->joinInner('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', array())
+                ->joinInner('gems__surveys', 'gto_id_survey = gsu_id_survey', array())
+                ->where('grc_success = 1')
+                ->group('gto_round_description');
+
+        if ($this->survey instanceof \Gems_Tracker_Survey) {
+            $groupId = $this->survey->getGroupId();
+            $select->columns(array(
+                // Round order is maximum for the survey's group unless this round had no surveys of the same group
+                'round_order'    => new \Zend_Db_Expr(
+                        "COALESCE(
+                            MAX(CASE WHEN gsu_id_primary_group = $groupId THEN gto_round_order ELSE NULL END),
+                            MAX(gto_round_order)
+                            ) + 1"
+                        ),
+                'has_group'      => new \Zend_Db_Expr(
+                        "SUM(CASE WHEN gsu_id_primary_group = $groupId THEN 1 ELSE 0 END)"
+                        ),
+                'group_answered' => new \Zend_Db_Expr(
+                        "SUM(CASE WHEN gto_completion_time IS NOT NULL AND gsu_id_primary_group = $groupId
+                            THEN 1
+                            ELSE 0
+                            END)"
+                        ),
+                'any_answered'   => new \Zend_Db_Expr(
+                        "SUM(CASE WHEN gto_completion_time IS NOT NULL THEN 1 ELSE 0 END)"
+                        ),
+            ));
+        } else {
+            $select->columns(array(
+                'round_order'    => new \Zend_Db_Expr("MAX(gto_round_order)+ 1"),
+                'has_group'      => new \Zend_Db_Expr("0"),
+                'group_answered' => new \Zend_Db_Expr("0"),
+                'any_answered'   => new \Zend_Db_Expr(
+                        "SUM(CASE WHEN gto_completion_time IS NOT NULL THEN 1 ELSE 0 END)"
+                        ),
+            ));
+        }
+
+        if (isset($this->formData['gto_id_track'])) {
+            $select->where('gto_id_respondent_track = ?', $this->formData['gto_id_track']);
+        } else {
+            $select->where('1=0');
+        }
+
+        $select->order('round_order');
+
+        return $select;
+    }
+
+    /**
+     * Get the list of rounds and set the default
+     *
+     * @return array [roundInsertNr => RoundDescription
+     */
+    protected function getRoundsListAndSetDefault()
+    {
+        $output = array();
+        $select = $this->getRoundSelect();
+
+        if ($select instanceof \Zend_Db_Select) {
+            $rows = $this->db->fetchAll($select);
+        } else {
+            $rows = $select;
+        }
+
+        if ($rows) {
+
+            // Initial values
+            $maxAnswered      = 0;
+            $maxGroup         = 0;
+            $maxGroupAnswered = 0;
+
+            foreach ($rows as $row) {
+                $output[$row['round_order']] = $row['round_description'];
+
+                if ($row['has_group']) {
+                    $maxGroup = $row['round_order'];
+                    if ($row['group_answered']) {
+                        $maxGroupAnswered = $row['round_order'];
+                    }
+                }
+                if ($row['any_answered']) {
+                    $maxAnswered = $row['round_order'];
+                }
+            }
+            if ($maxGroupAnswered) {
+                $this->defaultRound = $maxGroupAnswered;
+            } elseif ($maxAnswered) {
+                $this->defaultRound = $maxAnswered;
+            } elseif ($maxGroup) {
+                $this->defaultRound = $maxAnswered;
+            } else {
+                $row = reset($rows);
+                $this->defaultRound = $row['round_order'];
+            }
+
+        } else {
+            $output[10] = $this->_('Added survey');
+            $this->defaultRound = 10;
+        }
+
+        return $output;
     }
 
     /**
@@ -185,21 +316,24 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     protected function initItems()
     {
         if (is_null($this->_items)) {
-            $this->_items = array(
-                'gto_id_respondent',
-                'gr2o_patient_nr',
-                'respondent_name',
-                'gto_id_organization',
-                'gto_id_survey',
-                'group_name',
-                'gto_id_track',
-                'gto_round_order',
-                'gto_valid_from',
-                'gto_valid_from_manual',
-                'gto_valid_until',
-                'gto_valid_until_manual',
-                'gto_comment'
-                );
+            $this->_items = array_merge(
+                    array(
+                        'gto_id_respondent',
+                        'gr2o_patient_nr',
+                        'respondent_name',
+                        'gto_id_organization',
+                        'gto_id_survey',
+                        'ggp_name',
+                        'gto_id_track',
+                        'gto_round_order',
+                        'gto_valid_from_manual',
+                        'gto_valid_from',
+                        'gto_valid_until_manual',
+                        'gto_valid_until',
+                        'gto_comment',
+                        ),
+                    $this->getModel()->getMeta(\MUtil_Model_Type_ChangeTracker::HIDDEN_FIELDS, array())
+                    );
             if (! $this->createData) {
                 array_unshift($this->_items, 'gto_id_token');
             }
@@ -226,10 +360,13 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
                 'respondent_name'        => $respondentData['name'],
                 'gto_id_survey'          => $this->request->getParam(\Gems_Model::SURVEY_ID),
                 'gto_id_track'           => $this->request->getParam(\Gems_Model::TRACK_ID),
-                'gto_valid_from'         => $now,
                 'gto_valid_from_manual'  => 0,
+                'gto_valid_from'         => $now,
                 'gto_valid_until_manual' => 0,
+                'gto_valid_until'        => null, // Set in loadSurvey
                 );
+
+            $this->getModel()->processAfterLoad(array($this->formData), $this->createData, false);
         } else {
             parent::loadFormData();
         }
@@ -246,51 +383,13 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
      */
     protected function loadRoundSettings()
     {
-        $rounds = array();
-
-        if ($this->respondentTrack instanceof \Gems_Tracker_RespondentTrack) {
-            $hasAnswers = false;
-            $lastOrder  = 10;
-            $lastRound  = $this->respondentTrack->getFirstToken()->getRoundDescription();
-            $lastToken  = null;
-            foreach ($this->respondentTrack->getTokens() as $token)
-            {
-                if ($token instanceof \Gems_Tracker_Token) {
-                    $descr = $token->getRoundDescription();
-                    if ($descr != $lastRound) {
-                        if ($lastToken) {
-                            $order = $lastToken->getRoundOrder() + 1;
-                        } else {
-                            $order = $token->getRoundOrder() - 1;
-                        }
-                        $rounds[$order] = $lastRound;
-                        if ($hasAnswers) {
-                            $lastOrder = $order;
-                        }
-                        $hasAnswers = false;
-                        $lastRound  = $descr;
-                    }
-                    $hasAnswers = $hasAnswers || $token->isCompleted();
-                    $lastToken  = $token;
-                }
-            }
-            $order = $lastToken->getRoundOrder() + 1;
-            $rounds[$order] = $lastRound;
-            if ($hasAnswers) {
-                $lastOrder = $order;
-            }
-        }
-        if (! $rounds) {
-            $rounds    = array(10 => $this->_('Added survey'));
-            $lastOrder = key($rounds);
-        }
-        $model = $this->getModel();
+        $rounds = $this->getRoundsListAndSetDefault();
+        $model  = $this->getModel();
         $model->set('gto_round_order', 'multiOptions', $rounds, 'size', count($rounds));
 
         if (! isset($this->formData['gto_round_order'], $rounds[$this->formData['gto_round_order']])) {
-            $this->formData['gto_round_order'] = $lastOrder;
+            $this->formData['gto_round_order'] = $this->defaultRound;
         }
-
     }
 
     /**
@@ -299,9 +398,9 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     protected function loadSurvey()
     {
         if (! $this->surveyList) {
-            $this->addMessage($this->_('Survey insertion impossible: no insertable surveys exist!'));
+            $this->addMessageInvalid($this->_('Survey insertion impossible: no insertable surveys exist!'));
         }
-        if (count($this->surveyList ) === 1) {
+        if (count($this->surveyList) === 1) {
             $model = $this->getModel();
             $model->set('gto_id_survey', 'elementClass', 'Exhibitor');
 
@@ -315,12 +414,10 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
             $groupId = $this->survey->getGroupId();
             $groups  = $this->util->getDbLookup()->getGroups();
             if (isset($groups[$groupId])) {
-                $this->formData['group_name'] = $groups[$groupId];
+                $this->formData['ggp_name'] = $groups[$groupId];
             }
 
-            $then = new \MUtil_Date();
-            $then->addMonth(6);
-            $this->formData['gto_valid_until'] = $then;
+            $this->formData['gto_valid_until'] = $this->survey->getInsertDateUntil($this->formData['gto_valid_from']);
         }
     }
 
@@ -351,7 +448,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
                 $this->formData['gto_id_track'] = key($tracks);
             }
         } else {
-            $this->addMessage($this->_('Survey insertion impossible: respondent has no tracks!'));
+            $this->addMessageInvalid($this->_('Survey insertion impossible: respondent has no tracks!'));
             $tracks = $this->util->getTranslated()->getEmptyDropdownArray();
         }
         asort($tracks);

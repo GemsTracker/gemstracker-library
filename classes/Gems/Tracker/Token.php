@@ -1346,10 +1346,13 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     public function getValidFrom()
     {
         if (isset($this->_gemsData['gto_valid_from']) && $this->_gemsData['gto_valid_from']) {
-            if ($this->_gemsData['gto_valid_from'] instanceof \MUtil_Date) {
-                return $this->_gemsData['gto_valid_from'];
+            if (! $this->_gemsData['gto_valid_from'] instanceof \MUtil_Date) {
+                $this->_gemsData['gto_valid_from'] = new \MUtil_Date(
+                        $this->_gemsData['gto_valid_from'],
+                        \Gems_Tracker::DB_DATETIME_FORMAT
+                        );
             }
-            return new \MUtil_Date($this->_gemsData['gto_valid_from'], \Gems_Tracker::DB_DATETIME_FORMAT);
+            return $this->_gemsData['gto_valid_from'];
         }
     }
 
@@ -1360,10 +1363,13 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     public function getValidUntil()
     {
         if (isset($this->_gemsData['gto_valid_until']) && $this->_gemsData['gto_valid_until']) {
-            if ($this->_gemsData['gto_valid_until'] instanceof \MUtil_Date) {
-                return $this->_gemsData['gto_valid_until'];
+            if (! $this->_gemsData['gto_valid_until'] instanceof \MUtil_Date) {
+                $this->_gemsData['gto_valid_until'] = new \MUtil_Date(
+                        $this->_gemsData['gto_valid_until'],
+                        \Gems_Tracker::DB_DATETIME_FORMAT
+                        );
             }
-            return new \MUtil_Date($this->_gemsData['gto_valid_until'], \Gems_Tracker::DB_DATETIME_FORMAT);
+            return $this->_gemsData['gto_valid_until'];
         }
     }
 

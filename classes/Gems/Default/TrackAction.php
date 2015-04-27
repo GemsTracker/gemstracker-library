@@ -548,14 +548,15 @@ class Gems_Default_TrackAction extends \Gems_Default_TrackActionAbstract
      */
     public function insertAction(array $params = array())
     {
-        $params['createData'] = true;
-        $params['formTitle']  = sprintf(
+        $params['formTitle'] = sprintf(
                 $this->_('Inserting a survey in a track for respondent %s: %s'),
                 $this->_getParam(\MUtil_Model::REQUEST_ID1),
                 $this->getRespondentName()
                 );
 
-        $this->addSnippet('Tracker\\InsertSurveySnippet', $params);
+        $snippets[] = 'Tracker\\InsertSurveySnippet';
+        // $snippets[] = 'Survey\\SurveyQuestionsSnippet';
+        $this->addSnippets($snippets, $params);
     }
 
     /**

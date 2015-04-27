@@ -18,6 +18,8 @@ Some snippets have moved location in the code:
     EditRoundStepSnippet => Tracker\\Rounds\\EditRoundStepSnippet
     ShowRoundStepSnippet => Tracker\\Rounds\\ShowRoundStepSnippet
     EditTrackEngineSnippet => Tracker\\EditTrackEngineSnippet
+    EditTrackTokenSnippet  => Token\\EditTrackTokenSnippet
+    ShowTrackTokenSnippet  => Token\\ShowTrackTokenSnippet
     SurveyQuestionsSnippet => Survey\\SurveyQuestionsSnippet
     TrackSurveyOverviewSnippet => Tracker\\TrackSurveyOverviewSnippet
     TrackUsageTextDetailsSnippet => Tracker\\TrackUsageTextDetailsSnippet

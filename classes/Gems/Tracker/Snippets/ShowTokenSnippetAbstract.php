@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-abstract class Gems_Tracker_Snippets_ShowTokenSnippetAbstract extends MUtil_Snippets_ModelVerticalTableSnippetAbstract
+abstract class Gems_Tracker_Snippets_ShowTokenSnippetAbstract extends \MUtil_Snippets_ModelVerticalTableSnippetAbstract
 {
     /**
      * Shortfix to add class attribute
@@ -56,21 +56,21 @@ abstract class Gems_Tracker_Snippets_ShowTokenSnippetAbstract extends MUtil_Snip
     /**
      * Required
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
     /**
      * Required
      *
-     * @var Gems_Menu
+     * @var \Gems_Menu
      */
     protected $menu;
 
     /**
      * Required
      *
-     * @var Zend_Controller_Request_Abstract
+     * @var \Zend_Controller_Request_Abstract
      */
     protected $request;
 
@@ -79,7 +79,7 @@ abstract class Gems_Tracker_Snippets_ShowTokenSnippetAbstract extends MUtil_Snip
      *
      * The display data of the token shown
      *
-     * @var Gems_Tracker_Token
+     * @var \Gems_Tracker_Token
      */
     protected $token;
 
@@ -115,7 +115,7 @@ abstract class Gems_Tracker_Snippets_ShowTokenSnippetAbstract extends MUtil_Snip
     /**
      * Creates the model
      *
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function createModel()
     {
@@ -136,14 +136,14 @@ abstract class Gems_Tracker_Snippets_ShowTokenSnippetAbstract extends MUtil_Snip
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param Zend_View_Abstract $view Just in case it is needed here
-     * @return MUtil_Html_HtmlInterface Something that can be rendered
+     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @return \MUtil_Html_HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view)
     {
         if ($this->tokenId) {
             if ($this->token->exists) {
-                $htmlDiv   = MUtil_Html::div();
+                $htmlDiv   = \MUtil_Html::div();
 
                 $htmlDiv->h3($this->getTitle());
 
@@ -175,7 +175,7 @@ abstract class Gems_Tracker_Snippets_ShowTokenSnippetAbstract extends MUtil_Snip
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see MUtil_Registry_TargetInterface}.
+     * {@see \MUtil_Registry_TargetInterface}.
      *
      * @return boolean
      */
@@ -185,7 +185,7 @@ abstract class Gems_Tracker_Snippets_ShowTokenSnippetAbstract extends MUtil_Snip
             if ($this->token) {
                 $this->tokenId = $this->token->getTokenId();
             } elseif ($this->request) {
-                $this->tokenId = $this->request->getParam(MUtil_Model::REQUEST_ID);
+                $this->tokenId = $this->request->getParam(\MUtil_Model::REQUEST_ID);
             }
         }
 
@@ -202,19 +202,19 @@ abstract class Gems_Tracker_Snippets_ShowTokenSnippetAbstract extends MUtil_Snip
      * copy and paste a token.
      *
      * @param string $value Gems token value
-     * @return Gems_Form
+     * @return \Gems_Form
      */
     public static function makeFakeForm($value)
     {
-        $form = new Gems_Form();
+        $form = new \Gems_Form();
         $form->removeDecorator('HtmlTag');
 
-        $element = new Zend_Form_Element_Text('gto_id_token');
+        $element = new \Zend_Form_Element_Text('gto_id_token');
         $element->class = 'token_copy';
         $element->setDecorators(array('ViewHelper', array('HtmlTag', 'Div')));
 
         $form->addElement($element);
-        $form->isValid(array('gto_id_token' => MUtil_Lazy::call('strtoupper', $value)));
+        $form->isValid(array('gto_id_token' => \MUtil_Lazy::call('strtoupper', $value)));
 
         return $form;
     }

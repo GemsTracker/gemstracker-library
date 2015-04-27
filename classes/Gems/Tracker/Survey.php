@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
+class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
 {
     /**
      *
@@ -54,7 +54,7 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var Gems_Tracker_SourceInterface
+     * @var \Gems_Tracker_SourceInterface
      */
     private $_source;
 
@@ -66,13 +66,13 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
     /**
      *
-     * @var Gems_Events
+     * @var \Gems_Events
      */
     protected $events;
 
@@ -85,7 +85,7 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var Gems_Tracker
+     * @var \Gems_Tracker
      */
     protected $tracker;
 
@@ -125,7 +125,7 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
                 $this->_gemsSurvey = $row + $this->_gemsSurvey;
             } else {
                 $name = $this->getName();
-                throw new Gems_Exception("Group code $code is missing for survey '$name'.");
+                throw new \Gems_Exception("Group code $code is missing for survey '$name'.");
             }
         }
     }
@@ -141,17 +141,17 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
     {
         if ($this->tracker->filterChangesOnly($this->_gemsSurvey, $values)) {
 
-            if (Gems_Tracker::$verbose) {
+            if (\Gems_Tracker::$verbose) {
                 $echo = '';
                 foreach ($values as $key => $val) {
                     $old = isset($this->_gemsSurvey[$key]) ? $this->_gemsSurvey[$key] : null;
                     $echo .= $key . ': ' . $old . ' => ' . $val . "\n";
                 }
-                MUtil_Echo::r($echo, 'Updated values for ' . $this->_surveyId);
+                \MUtil_Echo::r($echo, 'Updated values for ' . $this->_surveyId);
             }
 
             if (! isset($values['gsu_changed'])) {
-                $values['gsu_changed'] = new MUtil_Db_Expr_CurrentTimestamp();
+                $values['gsu_changed'] = new \MUtil_Db_Expr_CurrentTimestamp();
             }
             if (! isset($values['gsu_changed_by'])) {
                 $values['gsu_changed_by'] = $userId;
@@ -166,7 +166,7 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
 
             } else {
                 if (! isset($values['gsu_created'])) {
-                    $values['gsu_created'] = new MUtil_Db_Expr_CurrentTimestamp();
+                    $values['gsu_created'] = new \MUtil_Db_Expr_CurrentTimestamp();
                 }
                 if (! isset($values['gsu_created_by'])) {
                     $values['gsu_created_by'] = $userId;
@@ -216,12 +216,12 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
     /**
      * Inserts the token in the source (if needed) and sets those attributes the source wants to set.
      *
-     * @param Gems_Tracker_Token $token
+     * @param \Gems_Tracker_Token $token
      * @param string $language
      * @return int 1 of the token was inserted or changed, 0 otherwise
-     * @throws Gems_Tracker_Source_SurveyNotFoundException
+     * @throws \Gems_Tracker_Source_SurveyNotFoundException
      */
-    public function copyTokenToSource(Gems_Tracker_Token $token, $language)
+    public function copyTokenToSource(\Gems_Tracker_Token $token, $language)
     {
         $source = $this->getSource();
         return $source->copyTokenToSource($token, $language, $this->_surveyId, $this->_gemsSurvey['gsu_surveyor_id']);
@@ -231,10 +231,10 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
      * Returns a field from the raw answers as a date object.
      *
      * @param string $fieldName Name of answer field
-     * @param Gems_Tracker_Token  $token Gems token object
-     * @return MUtil_Date date time or null
+     * @param \Gems_Tracker_Token  $token Gems token object
+     * @return \MUtil_Date date time or null
      */
-    public function getAnswerDateTime($fieldName, Gems_Tracker_Token $token)
+    public function getAnswerDateTime($fieldName, \Gems_Tracker_Token $token)
     {
         $source = $this->getSource();
         return $source->getAnswerDateTime($fieldName, $token, $this->_surveyId, $this->_gemsSurvey['gsu_surveyor_id']);
@@ -243,10 +243,10 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
     /**
      * Returns a snippet name that can be used to display the answers to the token or nothing.
      *
-     * @param Gems_Tracker_Token $token
+     * @param \Gems_Tracker_Token $token
      * @return array Of snippet names
      */
-    public function getAnswerSnippetNames(Gems_Tracker_Token $token)
+    public function getAnswerSnippetNames(\Gems_Tracker_Token $token)
     {
         if (isset($this->_gemsSurvey['gsu_display_event'])) {
             $event = $this->events->loadSurveyDisplayEvent($this->_gemsSurvey['gsu_display_event']);
@@ -259,7 +259,7 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
      * Returns a model for displaying the answers to this survey in the requested language.
      *
      * @param string $language (ISO) language string
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     public function getAnswerModel($language)
     {
@@ -279,10 +279,10 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
     /**
      * The time the survey was completed according to the source
      *
-     * @param Gems_Tracker_Token $token Gems token object
-     * @return MUtil_Date date time or null
+     * @param \Gems_Tracker_Token $token Gems token object
+     * @return \MUtil_Date date time or null
      */
-    public function getCompletionTime(Gems_Tracker_Token $token)
+    public function getCompletionTime(\Gems_Tracker_Token $token)
     {
         $source = $this->getSource();
         return $source->getCompletionTime($token, $this->_surveyId, $this->_gemsSurvey['gsu_surveyor_id']);
@@ -327,6 +327,50 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
     public function getGroupId()
     {
         return $this->_gemsSurvey['gsu_id_primary_group'];
+    }
+
+    public function getInsertDateUntil(\MUtil_Date $from)
+    {
+        $period = $this->_gemsSurvey['gsu_valid_for_length'];
+        $date   = clone $from;
+
+        if ($period) {
+            switch (strtoupper($this->_gemsSurvey['gsu_valid_for_unit'])) {
+                case 'D':
+                    $date->addDay($period);
+                    break;
+
+                case 'H':
+                    $date->addHour($period);
+                    break;
+
+                case 'M':
+                    $date->addMonth($period);
+                    break;
+
+                case 'N':
+                    $date->addMinute($period);
+                    break;
+
+                case 'Q':
+                    $date->addMonth($period * 3);
+                    break;
+
+                case 'W':
+                    $date->addDay($period * 7);
+                    break;
+
+                case 'Y':
+                    $date->addYear($period);
+                    break;
+
+                default:
+                    throw new \Gems_Exception_Coding('Unknown period type; ' . $type);
+
+            }
+        }
+
+        return $date;
     }
 
     /**
@@ -422,10 +466,10 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
     /**
      * The time the survey was started according to the source
      *
-     * @param Gems_Tracker_Token $token Gems token object
-     * @return MUtil_Date date time or null
+     * @param \Gems_Tracker_Token $token Gems token object
+     * @return \MUtil_Date date time or null
      */
-    public function getStartTime(Gems_Tracker_Token $token)
+    public function getStartTime(\Gems_Tracker_Token $token)
     {
         $source = $this->getSource();
         return $source->getStartTime($token, $this->_surveyId, $this->_gemsSurvey['gsu_surveyor_id']);
@@ -433,7 +477,7 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
 
     /**
      *
-     * @return Gems_Tracker_Source_SourceInterface
+     * @return \Gems_Tracker_Source_SourceInterface
      */
     public function getSource()
     {
@@ -441,7 +485,7 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
             $this->_source = $this->tracker->getSource($this->_gemsSurvey['gsu_id_source']);
 
             if (! $this->_source) {
-                throw new Gems_Exception('No source for exists for source ' . $this->_gemsSurvey['gsu_id_source'] . '.');
+                throw new \Gems_Exception('No source for exists for source ' . $this->_gemsSurvey['gsu_id_source'] . '.');
             }
         }
 
@@ -469,7 +513,7 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
     /**
      * Return the Survey Before Answering event (if any)
      *
-     * @return Gems_Event_SurveyBeforeAnsweringEventInterface event instance or null
+     * @return \Gems_Event_SurveyBeforeAnsweringEventInterface event instance or null
      */
     public function getSurveyBeforeAnsweringEvent()
     {
@@ -481,7 +525,7 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
     /**
      * Return the Survey Completed event
      *
-     * @return Gems_Event_SurveyCompletedEventInterface event instance or null
+     * @return \Gems_Event_SurveyCompletedEventInterface event instance or null
      */
     public function getSurveyCompletedEvent()
     {
@@ -502,11 +546,11 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
     /**
      * Returns the url that (should) start the survey for this token
      *
-     * @param Gems_Tracker_Token $token Gems token object
+     * @param \Gems_Tracker_Token $token Gems token object
      * @param string $language
      * @return string The url to start the survey
      */
-    public function getTokenUrl(Gems_Tracker_Token $token, $language)
+    public function getTokenUrl(\Gems_Tracker_Token $token, $language)
     {
         $source = $this->getSource();
         return $source->getTokenUrl($token, $language, $this->_surveyId, $this->_gemsSurvey['gsu_surveyor_id']);
@@ -524,10 +568,10 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
     /**
      * Checks whether the token is in the source.
      *
-     * @param Gems_Tracker_Token $token Gems token object
+     * @param \Gems_Tracker_Token $token Gems token object
      * @return boolean
      */
-    public function inSource(Gems_Tracker_Token $token)
+    public function inSource(\Gems_Tracker_Token $token)
     {
         $source = $this->getSource();
         return $source->inSource($token, $this->_surveyId, $this->_gemsSurvey['gsu_surveyor_id']);
@@ -554,10 +598,10 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
     /**
      * Returns true if the survey was completed according to the source
      *
-     * @param Gems_Tracker_Token $token Gems token object
+     * @param \Gems_Tracker_Token $token Gems token object
      * @return boolean True if the token has completed
      */
-    public function isCompleted(Gems_Tracker_Token $token)
+    public function isCompleted(\Gems_Tracker_Token $token)
     {
         $source = $this->getSource();
         return $source->isCompleted($token, $this->_surveyId, $this->_gemsSurvey['gsu_surveyor_id']);
@@ -594,11 +638,11 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
     /**
      * Updates the consent code of the the token in the source (if needed)
      *
-     * @param Gems_Tracker_Token $token
+     * @param \Gems_Tracker_Token $token
      * @param string $consentCode Optional consent code, otherwise code from token is used.
      * @return int 1 of the token was inserted or changed, 0 otherwise
      */
-    public function updateConsent(Gems_Tracker_Token $token, $consentCode = null)
+    public function updateConsent(\Gems_Tracker_Token $token, $consentCode = null)
     {
         $source = $this->getSource();
         return $source->updateConsent($token, $this->_surveyId, $this->_gemsSurvey['gsu_surveyor_id'], $consentCode);

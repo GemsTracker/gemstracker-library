@@ -758,7 +758,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
      */
     public function getTokenEditSnippetNames(\Gems_Tracker_Token $token)
     {
-        return array('EditTrackTokenSnippet');
+        return array('Token\\EditTrackTokenSnippet');
     }
 
     /**
@@ -767,9 +767,16 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
      * @param \Gems_Tracker_Token $token Allows token status dependent show snippets
      * @return array of string snippet names
      */
-    public function getTokenShowSnippetNames(\Gems_Tracker_Token $token )
+    public function getTokenShowSnippetNames(\Gems_Tracker_Token $token)
     {
-        return array('ShowTrackTokenSnippet');
+        $output[] = 'Token\\ShowTrackTokenSnippet';
+
+        if ($token->isCompleted()) {
+            $output[] = 'Tracker_Answers_SingleTokenAnswerModelSnippet';
+        } else {
+            $output[] = 'Survey\\SurveyQuestionsSnippet';
+        }
+        return $output;
     }
 
     /**

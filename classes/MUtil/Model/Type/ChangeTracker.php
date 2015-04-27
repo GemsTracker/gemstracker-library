@@ -28,7 +28,7 @@
  *
  *
  * @package    MUtil
- * @subpackage Model
+ * @subpackage Model_Type
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
@@ -42,7 +42,7 @@
  * as hidden fields to the form.
  *
  * @package    MUtil
- * @subpackage Model
+ * @subpackage Model_Type
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.4
@@ -147,10 +147,15 @@ class MUtil_Model_Type_ChangeTracker
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
+     * @param boolean $isPost True when passing on post data
      * @return array Of the values
      */
-    public function loadOldValue($value, $isNew = false, $name = null, array $context = array())
+    public function loadOldValue($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {
+        if ($isPost) {
+            return $value;
+        }
+
         $trackedField = $this->_model->get($name, __CLASS__);
 
         if (isset($context[$trackedField])) {
@@ -181,7 +186,7 @@ class MUtil_Model_Type_ChangeTracker
 
         $compare = $this->_model->get($name, __CLASS__);
         if (! (is_array($compare) && (2 === count($compare)))) {
-            // Actually an arrer
+            // Actually a valid setting, do nothring
             return $value;
         }
 
@@ -224,7 +229,7 @@ class MUtil_Model_Type_ChangeTracker
             $currentValue  = new \MUtil_Date($context[$trackedField], $secondFormat);
         }
 
-        // \MUtil_Echo::track($context[$trackedField], $context[$oldValueField], $oldValue->getTimestamp() === $currentValue->getTimestamp());
+        // \MUtil_Echo::track($trackedField, $oldValueField, $oldValue->toString(), $currentValue->toString(), $oldValue->getTimestamp() === $currentValue->getTimestamp());
 
         return $oldValue->getTimestamp() === $currentValue->getTimestamp() ?
                 $this->_unchangedValue :

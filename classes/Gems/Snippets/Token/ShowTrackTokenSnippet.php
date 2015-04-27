@@ -28,23 +28,25 @@
  *
  *
  * @package    Gems
- * @subpackage Tracker
+ * @subpackage Snippets_Token
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @version    $Id$
  */
 
+namespace Gems\Snippets\Token;
+
 /**
  * Display snippet for standard track tokens
  *
  * @package    Gems
- * @subpackage Tracker
+ * @subpackage Snippets_Token
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class ShowTrackTokenSnippet extends Gems_Tracker_Snippets_ShowTokenSnippetAbstract
+class ShowTrackTokenSnippet extends \Gems_Tracker_Snippets_ShowTokenSnippetAbstract
 {
     /**
      * Adds rows from the model to the bridge that creates the browse table.
@@ -52,13 +54,13 @@ class ShowTrackTokenSnippet extends Gems_Tracker_Snippets_ShowTokenSnippetAbstra
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_VerticalTableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @return void
      */
-    protected function addShowTableRows(MUtil_Model_Bridge_VerticalTableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addShowTableRows(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
-        // MUtil_Model::$verbose = true;
+        // \MUtil_Model::$verbose = true;
 
         // Extra item needed for menu items
         $bridge->gr2t_id_respondent_track;
@@ -124,7 +126,7 @@ class ShowTrackTokenSnippet extends Gems_Tracker_Snippets_ShowTokenSnippetAbstra
         }
 
         foreach ($bridge->tbody() as $row) {
-            if (isset($row[1]) && ($row[1] instanceof MUtil_Html_HtmlElement)) {
+            if (isset($row[1]) && ($row[1] instanceof \MUtil_Html_HtmlElement)) {
                 if (isset($row[1]->skiprowclass)) {
                     unset($row[1]->skiprowclass);
                 } else {
@@ -136,7 +138,7 @@ class ShowTrackTokenSnippet extends Gems_Tracker_Snippets_ShowTokenSnippetAbstra
 
     /**
      *
-     * @return Gems_Menu_MenuList
+     * @return \Gems_Menu_MenuList
      */
     protected function getMenuList()
     {
@@ -148,7 +150,7 @@ class ShowTrackTokenSnippet extends Gems_Tracker_Snippets_ShowTokenSnippetAbstra
                 ->addCurrentChildren()
                 ->showDisabled();
 
-        // MUtil_Echo::track($links->count());
+        // \MUtil_Echo::track($links->count());
 
         return $links;
     }

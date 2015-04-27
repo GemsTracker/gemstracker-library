@@ -46,12 +46,12 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-abstract class Gems_Tracker_Snippets_EditTokenSnippetAbstract extends Gems_Snippets_ModelFormSnippetAbstract
+abstract class Gems_Tracker_Snippets_EditTokenSnippetAbstract extends \Gems_Snippets_ModelFormSnippetAbstract
 {
     /**
      * Required
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
@@ -59,7 +59,7 @@ abstract class Gems_Tracker_Snippets_EditTokenSnippetAbstract extends Gems_Snipp
     /**
      * Required
      *
-     * @var Zend_Controller_Request_Abstract
+     * @var \Zend_Controller_Request_Abstract
      */
     protected $request;
 
@@ -68,7 +68,7 @@ abstract class Gems_Tracker_Snippets_EditTokenSnippetAbstract extends Gems_Snipp
      *
      * The display data of the token shown
      *
-     * @var Gems_Tracker_Token
+     * @var \Gems_Tracker_Token
      */
     protected $token;
 
@@ -95,14 +95,19 @@ abstract class Gems_Tracker_Snippets_EditTokenSnippetAbstract extends Gems_Snipp
     /**
      * Creates the model
      *
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function createModel()
     {
         $model = $this->token->getModel();
 
-        $model->addEditTracking();
-        $model->set('gto_id_token', 'formatFunction', 'strtoupper');
+        if ($model instanceof \Gems_Tracker_Model_StandardTokenModel) {
+            $model->addEditTracking();
+
+            if ($this->createData) {
+                $model->applyInsertionFormatting();
+            }
+        }
 
         return $model;
     }
@@ -112,10 +117,10 @@ abstract class Gems_Tracker_Snippets_EditTokenSnippetAbstract extends Gems_Snipp
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param Zend_View_Abstract $view Just in case it is needed here
-     * @return MUtil_Html_HtmlInterface Something that can be rendered
+     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @return \MUtil_Html_HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view)
     {
 
         if ($this->tokenId) {
@@ -149,7 +154,7 @@ abstract class Gems_Tracker_Snippets_EditTokenSnippetAbstract extends Gems_Snipp
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see MUtil_Registry_TargetInterface}.
+     * {@see \MUtil_Registry_TargetInterface}.
      *
      * @return boolean
      */
@@ -159,7 +164,7 @@ abstract class Gems_Tracker_Snippets_EditTokenSnippetAbstract extends Gems_Snipp
             if ($this->token) {
                 $this->tokenId = $this->token->getTokenId();
             } elseif ($this->request) {
-                $this->tokenId = $this->request->getParam(MUtil_Model::REQUEST_ID);
+                $this->tokenId = $this->request->getParam(\MUtil_Model::REQUEST_ID);
             }
         }
 

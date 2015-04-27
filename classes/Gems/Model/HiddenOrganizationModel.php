@@ -45,17 +45,17 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Model_HiddenOrganizationModel extends Gems_Model_JoinModel
+class Gems_Model_HiddenOrganizationModel extends \Gems_Model_JoinModel
 {
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
     /**
      *
-     * @var Gems_User_User
+     * @var \Gems_User_User
      */
     protected $user;
 
@@ -86,9 +86,9 @@ class Gems_Model_HiddenOrganizationModel extends Gems_Model_JoinModel
     {
         if ($parameters) {
             // Allow use when passed only an ID value
-            if (isset($parameters[MUtil_Model::REQUEST_ID]) && (! isset($parameters[MUtil_Model::REQUEST_ID1], $parameters[MUtil_Model::REQUEST_ID2]))) {
+            if (isset($parameters[\MUtil_Model::REQUEST_ID]) && (! isset($parameters[\MUtil_Model::REQUEST_ID1], $parameters[\MUtil_Model::REQUEST_ID2]))) {
 
-                $id    = $parameters[MUtil_Model::REQUEST_ID];
+                $id    = $parameters[\MUtil_Model::REQUEST_ID];
                 $keys  = $this->getKeys();
                 $field = array_shift($keys);
 
@@ -96,19 +96,19 @@ class Gems_Model_HiddenOrganizationModel extends Gems_Model_JoinModel
 
                 if ($field2 = array_shift($keys)) {
                     $parameters[$field2] = $this->getCurrentOrganization();
-                    MUtil_Echo::r('Still using old HiddenModel parameters.', 'DEPRECIATION WARNING');
-                    MUtil_Echo::r($parameters);
+                    \MUtil_Echo::r('Still using old HiddenModel parameters.', 'DEPRECIATION WARNING');
+                    \MUtil_Echo::r($parameters);
                 }
 
-                unset($parameters[MUtil_Model::REQUEST_ID]);
+                unset($parameters[\MUtil_Model::REQUEST_ID]);
             }
 
-            if (isset($parameters[MUtil_Model::REQUEST_ID2]) &&
-                (! array_key_exists($parameters[MUtil_Model::REQUEST_ID2], $this->user->getAllowedOrganizations()))) {
+            if (isset($parameters[\MUtil_Model::REQUEST_ID2]) &&
+                (! array_key_exists($parameters[\MUtil_Model::REQUEST_ID2], $this->user->getAllowedOrganizations()))) {
 
                 $this->initTranslateable();
 
-                throw new Gems_Exception(
+                throw new \Gems_Exception(
                         $this->_('Inaccessible or unknown organization'),
                         403, null,
                         sprintf($this->_('Access to this page is not allowed for current role: %s.'), $this->user->getRole()));
@@ -128,7 +128,7 @@ class Gems_Model_HiddenOrganizationModel extends Gems_Model_JoinModel
      */
     public function checkRegistryRequestsAnswers()
     {
-        return ($this->loader instanceof Gems_Loader);
+        return ($this->loader instanceof \Gems_Loader);
     }
 
     /**
@@ -155,7 +155,7 @@ class Gems_Model_HiddenOrganizationModel extends Gems_Model_JoinModel
         $keys = $this->getKeys();
 
         if (! $organizationInKey) {
-            if ($forData instanceof MUtil_Lazy_RepeatableInterface) {
+            if ($forData instanceof \MUtil_Lazy_RepeatableInterface) {
                 // Here I kind of assume that the data always contains the organization key.
                 $organizationInKey = true;
             } else {
@@ -165,11 +165,11 @@ class Gems_Model_HiddenOrganizationModel extends Gems_Model_JoinModel
         }
 
         if ($organizationInKey) {
-            $href[MUtil_Model::REQUEST_ID]  = self::_getValueFrom(reset($keys), $forData);
+            $href[\MUtil_Model::REQUEST_ID]  = self::_getValueFrom(reset($keys), $forData);
         } else {
-            $href[MUtil_Model::REQUEST_ID1] = self::_getValueFrom(reset($keys), $forData);
+            $href[\MUtil_Model::REQUEST_ID1] = self::_getValueFrom(reset($keys), $forData);
             next($keys);
-            $href[MUtil_Model::REQUEST_ID2] = self::_getValueFrom(key($keys), $forData);
+            $href[\MUtil_Model::REQUEST_ID2] = self::_getValueFrom(key($keys), $forData);
         }
 
         return $href;
@@ -178,17 +178,17 @@ class Gems_Model_HiddenOrganizationModel extends Gems_Model_JoinModel
     /**
      * Returns a translate adaptor
      *
-     * @return Zend_Translate_Adapter
+     * @return \Zend_Translate_Adapter
      */
     protected function getTranslateAdapter()
     {
-        if ($this->translate instanceof Zend_Translate)
+        if ($this->translate instanceof \Zend_Translate)
         {
             return $this->translate->getAdapter();
         }
 
-        if (! $this->translate instanceof Zend_Translate_Adapter) {
-            $this->translate = new MUtil_Translate_Adapter_Potemkin();
+        if (! $this->translate instanceof \Zend_Translate_Adapter) {
+            $this->translate = new \MUtil_Translate_Adapter_Potemkin();
         }
 
         return $this->translate;

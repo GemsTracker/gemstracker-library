@@ -283,6 +283,7 @@ class Gems_Default_TrackMaintenanceAction  extends \Gems_Controller_BrowseEditAc
             default: {
                 $model = $tracker->getTrackModel();
                 $model->applyFormatting($detailed);
+                $model->addFilter(array("gtr_track_class != 'SingleSurveyEngine'"));
             }
         }
 

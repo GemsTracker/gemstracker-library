@@ -35,6 +35,8 @@
  * @version    $Id$
  */
 
+use MUtil\Model\Dependency\OffOnElementsDependency;
+
 /**
  * The StandardTokenModel is the model used to display tokens
  * in e.g. browse tables. It can also be used to edit standard
@@ -72,11 +74,6 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
      * @var boolean Set to true when data in the respondent2track table must be saved as well
      */
     protected $saveRespondentTracks = false;
-
-    /**
-     * @var \Zend_Translate
-     */
-    protected $translate;
 
     /**
      * @var \Gems_Util
@@ -154,18 +151,6 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
             $this->_saveTables = array_reverse($this->_saveTables);
         }
 
-        //If we are allowed to see who filled out a survey, modify the model accordingly
-        $escort = GemsEscort::getInstance();
-        if ($escort->hasPrivilege('pr.respondent.who')) {
-            $this->addLeftTable('gems__staff', array('gto_by' => 'gems__staff_2.gsf_id_user'));
-            $this->addColumn('CASE WHEN gems__staff_2.gsf_id_user IS NULL THEN ggp_name ELSE COALESCE(CONCAT_WS(" ", CONCAT(COALESCE(gems__staff_2.gsf_last_name,"-"),","), gems__staff_2.gsf_first_name, gems__staff_2.gsf_surname_prefix)) END', 'ggp_name');
-        }
-        if ($escort->hasPrivilege('pr.respondent.result')) {
-            $this->addColumn('gto_result', 'calc_result', 'gto_result');
-        } else {
-            $this->addColumn(new \Zend_Db_Expr('NULL'), 'calc_result', 'gto_result');
-        }
-
         $this->set('gsu_id_primary_group', 'default', 800);
 
         $this->setOnSave('gto_mail_sent_date', array($this, 'saveCheckedMailDate'));
@@ -227,12 +212,50 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
      */
     public function addEditTracking()
     {
-        $changer = new \MUtil_Model_Type_ChangeTracker($this, 1, 0);
+//        Old code
+//        $changer = new \MUtil_Model_Type_ChangeTracker($this, 1, 0);
+//
+//        $changer->apply('gto_valid_from_manual',  'gto_valid_from');
+//        $changer->apply('gto_valid_until_manual', 'gto_valid_until');
 
-        $changer->apply('gto_valid_from_manual',  'gto_valid_from');
-        $changer->apply('gto_valid_until_manual', 'gto_valid_until');
+        $this->addDependency(new OffOnElementsDependency('gto_valid_from_manual',  'gto_valid_from'));
+        $this->addDependency(new OffOnElementsDependency('gto_valid_until_manual', 'gto_valid_until'));
+        
+        $this->set('gto_valid_until', 'validators[dateAfter]',
+                new \MUtil_Validate_Date_DateAfter('gto_valid_from')
+                );
 
         return $this;
+    }
+
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    {
+        parent::afterRegistry();
+
+        //If we are allowed to see who filled out a survey, modify the model accordingly
+        if ($this->user->hasPrivilege('pr.respondent.who')) {
+            $this->addLeftTable('gems__staff', array('gto_by' => 'gems__staff_2.gsf_id_user'));
+            $this->addColumn('CASE
+                WHEN gems__staff_2.gsf_id_user IS NULL THEN ggp_name
+                ELSE COALESCE(CONCAT_WS(
+                    " ",
+                    CONCAT(COALESCE(gems__staff_2.gsf_last_name, "-"), ","),
+                    gems__staff_2.gsf_first_name,
+                    gems__staff_2.gsf_surname_prefix
+                    ))
+                END', 'ggp_name');
+        }
+        if ($this->user->hasPrivilege('pr.respondent.result')) {
+            $this->addColumn('gto_result', 'calc_result', 'gto_result');
+        } else {
+            $this->addColumn(new \Zend_Db_Expr('NULL'), 'calc_result', 'gto_result');
+        }
     }
 
     /**
@@ -242,41 +265,111 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
      */
     public function applyFormatting()
     {
+        $this->resetOrder();
+
+        $dbLookup   = $this->util->getDbLookup();
         $translated = $this->util->getTranslated();
 
-        // Token items
-        $this->set('gto_id_token',          'label', $this->translate->_('Token'));
-        $this->set('gto_round_description', 'label', $this->translate->_('Round'));
-        $this->set('gto_valid_from',        'label', $this->translate->_('Measure(d) on'),
+        // Token id & respondent
+        $this->set('gto_id_token',           'label', $this->_('Token'),
+                'elementClass', 'Exhibitor',
+                'formatFunction', 'strtoupper'
+                );
+        $this->set('gr2o_patient_nr',        'label', $this->_('Respondent nr'),
+                'elementClass', 'Exhibitor'
+                );
+        $this->set('respondent_name',        'label', $this->_('Respondent name'),
+                'elementClass', 'Exhibitor'
+                );
+        $this->set('gto_id_organization',    'label', $this->_('Organization'),
+                'elementClass', 'Exhibitor',
+                'multiOptions', $dbLookup->getOrganizationsWithRespondents()
+                );
+
+        // Track, round & survey
+        $this->set('gtr_track_name',         'label', $this->_('Track'),
+                'elementClass', 'Exhibitor'
+                );
+        $this->set('gr2t_track_info',        'label', $this->_('Description'),
+                'elementClass', 'Exhibitor'
+                );
+        $this->set('gto_round_description',  'label', $this->_('Round'),
+                'elementClass', 'Exhibitor'
+                );
+        $this->set('gsu_survey_name',        'label', $this->_('Survey'),
+                'elementClass', 'Exhibitor'
+                );
+        $this->set('ggp_name',               'label', $this->_('Assigned to'),
+                'elementClass', 'Exhibitor'
+                );
+
+        // Token, editable part
+        $manual = array(0 => $this->_('Automatic'), 1 => $this->_('Manually'));
+        $this->set('gto_valid_from_manual',  'label', $this->_('Set valid from'),
+                'elementClass', 'Radio',
+                'multiOptions', $manual,
+                'separator', ' '
+                );
+        $this->set('gto_valid_from',         'label', $this->_('Valid from'),
+                'elementClass', 'Date',
                 'formatFunction', $translated->formatDateNever,
                 'tdClass', 'date');
-        $this->set('gto_valid_until',       'label', $this->translate->_('Valid until'),
+        $this->set('gto_valid_until_manual', 'label', $this->_('Set valid until'),
+                'elementClass', 'Radio',
+                'multiOptions', $manual,
+                'separator', ' '
+                );
+        $this->set('gto_valid_until',        'label', $this->_('Valid until'),
+                'elementClass', 'Date',
                 'formatFunction', $translated->formatDateForever,
                 'tdClass', 'date');
-        $this->set('gto_mail_sent_date',    'label', $this->translate->_('Last contact'),
+        $this->set('gto_comment',            'label', $this->_('Comments'),
+                'cols', 50,
+                'elementClass', 'Textarea',
+                'rows', 3,
+                'tdClass', 'pre'
+                );
+
+        // Token, display part
+        $this->set('gto_mail_sent_date',     'label', $this->_('Last contact'),
+                'elementClass', 'Exhibitor',
                 'formatFunction', $translated->formatDateNever,
                 'tdClass', 'date');
-        $this->set('gto_mail_sent_num',     'label', $this->translate->_('Number of contact moments'));
-        $this->set('gto_completion_time',   'label', $this->translate->_('Completed'),
+        $this->set('gto_mail_sent_num',      'label', $this->_('Number of contact moments'),
+                'elementClass', 'Exhibitor'
+                );
+        $this->set('gto_completion_time',    'label', $this->_('Completed'),
+                'elementClass', 'Exhibitor',
                 'formatFunction', $translated->formatDateNa,
                 'tdClass', 'date');
-        $this->set('gto_duration_in_sec',   'label', $this->translate->_('Duration in seconds'));
-        $this->set('gto_result',            'label', $this->translate->_('Score'));
-        $this->set('gto_comment',           'label', $this->translate->_('Comments'),
-                'tdClass', 'pre');
-        $this->set('gto_changed',           'label', $this->translate->_('Changed on'));
+        $this->set('gto_duration_in_sec',    'label', $this->_('Duration in seconds'),
+                'elementClass', 'Exhibitor'
+                );
+        $this->set('gto_result',             'label', $this->_('Score'),
+                'elementClass', 'Exhibitor'
+                );
+        $this->set('grc_description',        'label', $this->_('Reception code'),
+                'formatFunction', array($this->translate, '_'),
+                'elementClass', 'Exhibitor'
+                );
+        $this->set('gto_changed',            'label', $this->_('Changed on'),
+                'elementClass', 'Exhibitor'
+                );
+        $this->set('assigned_by',            'label', $this->_('Assigned by'),
+                'elementClass', 'Exhibitor'
+                );
 
-        // Calculatd items
-        $this->set('assigned_by',           'label', $this->translate->_('Assigned by'));
-        $this->set('respondent_name',       'label', $this->translate->_('Respondent name'));
+        return $this;
+    }
 
-        // Other items
-        $this->set('ggp_name',              'label', $this->translate->_('Assigned to'));
-        $this->set('grc_description',       'label', $this->translate->_('Reception code'), 'formatFunction', array($this->translate, '_'));
-        $this->set('gr2o_patient_nr',       'label', $this->translate->_('Respondent nr'));
-        $this->set('gr2t_track_info',       'label', $this->translate->_('Description'));
-        $this->set('gsu_survey_name',       'label', $this->translate->_('Survey'));
-        $this->set('gtr_track_name',        'label', $this->translate->_('Track'));
+    /**
+     * Sets the labels, format functions, etc...
+     *
+     * @return \Gems_Tracker_Model_StandardTokenModel
+     */
+    public function applyInsertionFormatting()
+    {
+        $this->set('gto_id_token', 'elementClass', 'None');
 
         return $this;
     }

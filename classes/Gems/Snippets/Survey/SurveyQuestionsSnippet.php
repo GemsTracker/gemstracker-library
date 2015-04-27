@@ -117,6 +117,13 @@ class SurveyQuestionsSnippet extends \MUtil_Snippets_TableSnippetAbstract
     protected $surveyId;
 
     /**
+     * Optional: to load from token
+     *
+     * @var \Gems_Tracker_Token
+     */
+    protected $token;
+
+    /**
      * Optional: alternative method for passing surveyId or trackId
      *
      * @var array
@@ -219,7 +226,10 @@ class SurveyQuestionsSnippet extends \MUtil_Snippets_TableSnippetAbstract
         $this->repeater = null;
 
         if (! $this->surveyId) {
-            if ($this->trackData && (! $this->trackId)) {
+            if (($this->token instanceof \Gems_Tracker_Token) && $this->token->exists) {
+                $this->surveyId = $this->token->getSurveyId();
+                
+            } elseif ($this->trackData && (! $this->trackId)) {
                 // Look up key values from trackData
                 if (isset($this->trackData['gsu_id_survey'])) {
                     $this->surveyId = $this->trackData['gsu_id_survey'];
