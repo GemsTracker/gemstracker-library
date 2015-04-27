@@ -41,7 +41,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.7.1
  */
-class Gems_Export_Modelsource_AnswerExportModelsource extends Gems_Export_Modelsource_ExportModelsourceAbstract
+class Gems_Export_ModelSource_AnswerExportModelsource extends Gems_Export_ModelSource_ExportModelsourceAbstract
 {
 
 	/**
