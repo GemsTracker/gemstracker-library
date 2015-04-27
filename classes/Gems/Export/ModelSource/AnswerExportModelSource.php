@@ -321,8 +321,15 @@ class Gems_Export_ModelSource_AnswerExportModelsource extends Gems_Export_ModelS
         $model->set('consentcode',                         'label', $this->_('Consent'));
         $model->set('resptrackid',              'label', $this->_('Respondent track ID'));
         $model->set('gto_round_description',                'label', $this->_('Round description'));
-        $model->set('gr2t_track_info',                      'label', $this->_('Track description'));
-        $model->set('gtr_track_name',                       'label', $this->_('Track name'));
+        $model->set('trackdescription',                      'label', $this->_('Track description'));
+        $model->set('trackname',                       'label', $this->_('Track name'));
+        $model->set('location',                       'label', $this->_('Location'));
+        $model->set('submitdate',                       'label', $this->_('Submit date'));
+        $model->set('startdate',                       'label', $this->_('Start date'));
+        $model->set('datestamp',                       'label', $this->_('Datestamp'));
+        $model->set('datestamp',                       'label', $this->_('Datestamp'));
+        $model->set('startlanguage',                       'label', $this->_('Start language'));
+        $model->set('lastpage',                       'label', $this->_('Last page'));
         
 
         $model->set('gto_id_token',                       'label', $this->_('Token'));
