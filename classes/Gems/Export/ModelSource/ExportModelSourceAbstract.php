@@ -41,7 +41,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-abstract class Gems_Export_ModelSource_ExportModelsourceAbstract extends \MUtil_Translate_TranslateableAbstract 
+abstract class Gems_Export_ModelSource_ExportModelSourceAbstract extends \MUtil_Translate_TranslateableAbstract 
 {
 
 	public $loader;
