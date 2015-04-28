@@ -230,7 +230,7 @@ class DeleteRespondentSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
                         }
                     }
                 }
-                $this->addMessage(sprintf($this->plural('Restored %d track', 'Restored %d tracks', $count), $count));
+                $this->addMessage(sprintf($this->plural('Restored %d track.', 'Restored %d tracks.', $count), $count));
             }
 
         } else {

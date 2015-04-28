@@ -177,7 +177,7 @@ class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstr
         $select = $this->_getDeletionCodeSelect();
         $select->where('grc_for_respondents = 1');
 
-        return array('' => $this->_('')) + $this->db->fetchPairs($select);
+        return array('' => '') + $this->db->fetchPairs($select);
     }
 
     /**
@@ -190,7 +190,7 @@ class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstr
         $select = $this->_getRestoreSelect();
         $select->where('grc_for_respondents = 1');
 
-        return array('' => $this->_('')) + $this->db->fetchPairs($select);
+        return array('' => '') + $this->db->fetchPairs($select);
     }
 
     /**
@@ -204,7 +204,7 @@ class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstr
         $select->where('(grc_for_surveys = ? OR grc_for_tracks = 1)', self::APPLY_DO);
                 //->where('grc_redo_survey = ?', self::REDO_NONE);
 
-        return array('' => $this->_('')) + $this->db->fetchPairs($select);
+        return array('' => '') + $this->db->fetchPairs($select);
     }
 
     /**
@@ -217,6 +217,6 @@ class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstr
         $select = $this->_getDeletionCodeSelect();
         $select->where('(grc_for_tracks = 1 OR grc_for_surveys = ?)', self::APPLY_STOP);
 
-        return array('' => $this->_('')) + $this->db->fetchPairs($select);
+        return array('' => '') + $this->db->fetchPairs($select);
     }
 }
