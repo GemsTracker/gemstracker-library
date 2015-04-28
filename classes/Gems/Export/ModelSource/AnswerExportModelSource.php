@@ -157,7 +157,7 @@ class Gems_Export_ModelSource_AnswerExportModelsource extends Gems_Export_ModelS
 			    }
 		    }
 		}
-        MUtil_Echo::track($filters);
+        
         // \Gems_Tracker::$verbose = true;
         return $filters;
 	}
@@ -181,8 +181,8 @@ class Gems_Export_ModelSource_AnswerExportModelsource extends Gems_Export_ModelS
     	$rounds        = $empty + $noRound + $dbLookup->getRoundsForExport(
                 isset($data['tid']) ? $data['tid'] : null
             );
-        MUtil_Echo::track($rounds);
-    	$yesNo         = $translated->getYesNo();
+        
+        $yesNo         = $translated->getYesNo();
 		$elements = array();
 
 		$element = $form->createElement('textarea', 'ids');
