@@ -135,7 +135,7 @@ class Gems_Export_ModelSource_AnswerExportModelsource extends Gems_Export_ModelS
 			        }
 
 			        if (isset($data['rounds']) && !empty($data['rounds'])) {
-			        	$filter['gto_id_round'] = $data['rounds'];
+			        	$filter['gto_round_description'] = $data['rounds'];
 			        }
 
 			        if (isset($data['oid'])) {
@@ -157,6 +157,7 @@ class Gems_Export_ModelSource_AnswerExportModelsource extends Gems_Export_ModelS
 			    }
 		    }
 		}
+        MUtil_Echo::track($filters);
         // \Gems_Tracker::$verbose = true;
         return $filters;
 	}
@@ -180,6 +181,7 @@ class Gems_Export_ModelSource_AnswerExportModelsource extends Gems_Export_ModelS
     	$rounds        = $empty + $noRound + $dbLookup->getRoundsForExport(
                 isset($data['tid']) ? $data['tid'] : null
             );
+        MUtil_Echo::track($rounds);
     	$yesNo         = $translated->getYesNo();
 		$elements = array();
 
