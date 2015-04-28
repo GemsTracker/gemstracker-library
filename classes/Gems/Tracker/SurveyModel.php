@@ -146,7 +146,11 @@ class Gems_Tracker_SurveyModel extends Gems_Model_JoinModel
      */
     public function loadFirst($filter = true, $sort = true)
     {
-        $result = $this->addAnswers(array(parent::loadFirst($filter, $sort)));
+        if ($firstResult = parent::loadFirst($filter, $sort)) {
+            $result = $this->addAnswers(array($firstResult));
+        } else {
+            $result = array();
+        }
         return reset($result);
     }
 

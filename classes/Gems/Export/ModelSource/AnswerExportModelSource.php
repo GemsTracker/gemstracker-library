@@ -327,7 +327,8 @@ class Gems_Export_ModelSource_AnswerExportModelsource extends Gems_Export_ModelS
         $model->set('submitdate',                       'label', $this->_('Submit date'));
         $model->set('startdate',                       'label', $this->_('Start date'));
         $model->set('datestamp',                       'label', $this->_('Datestamp'));
-        $model->set('datestamp',                       'label', $this->_('Datestamp'));
+        $model->set('gto_valid_from',                       'label', $this->_('Valid from'));
+        $model->set('gto_valid_until',                       'label', $this->_('Valid until'));
         $model->set('startlanguage',                       'label', $this->_('Start language'));
         $model->set('lastpage',                       'label', $this->_('Last page'));
         
