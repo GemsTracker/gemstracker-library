@@ -386,6 +386,10 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
         $rounds = $this->getRoundsListAndSetDefault();
         $model  = $this->getModel();
         $model->set('gto_round_order', 'multiOptions', $rounds, 'size', count($rounds));
+        
+        if (count($rounds) === 1) {
+            $model->set('gto_round_order', 'elementClass', 'Exhibitor');
+        }
 
         if (! isset($this->formData['gto_round_order'], $rounds[$this->formData['gto_round_order']])) {
             $this->formData['gto_round_order'] = $this->defaultRound;

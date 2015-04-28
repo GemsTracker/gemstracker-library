@@ -59,7 +59,9 @@ abstract class MUtil_Registry_TargetAbstract implements \MUtil_Registry_TargetIn
      * @return void
      */
     public function afterRegistry()
-    { }
+    {
+        // parent::afterRegistry();
+    }
 
     /**
      * Allows the loader to set resources.

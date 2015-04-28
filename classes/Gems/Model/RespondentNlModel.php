@@ -51,17 +51,14 @@ class Gems_Model_RespondentNlModel extends \Gems_Model_RespondentModel
     /**
      * Set those settings needed for the detailed display
      *
-     * @param mixed $locale The locale for the settings
      * @return \Gems_Model_RespondentModel
      */
-    public function applyDetailSettings($locale = null)
+    public function applyDetailSettings()
     {
-        parent::applyDetailSettings($locale);
+        parent::applyDetailSettings();
 
-        $translator = $this->getTranslateAdapter();
-
-        $this->setIfExists('grs_surname_prefix', 'description', $translator->_('de, van der, \'t, etc...'));
-        $this->setIfExists('grs_partner_surname_prefix', 'description', $translator->_('de, van der, \'t, etc...'));
+        $this->setIfExists('grs_surname_prefix', 'description', $this->_('de, van der, \'t, etc...'));
+        $this->setIfExists('grs_partner_surname_prefix', 'description', $this->_('de, van der, \'t, etc...'));
 
         return $this;
     }
@@ -69,12 +66,11 @@ class Gems_Model_RespondentNlModel extends \Gems_Model_RespondentModel
     /**
      * Set those values needed for editing
      *
-     * @param mixed $locale The locale for the settings
      * @return \Gems_Model_RespondentModel
      */
-    public function applyEditSettings($locale = null)
+    public function applyEditSettings()
     {
-        parent::applyEditSettings($locale);
+        parent::applyEditSettings();
         $translator = $this->getTranslateAdapter();
 
         if ($this->hashSsn !== \Gems_Model_RespondentModel::SSN_HIDE) {
@@ -82,7 +78,7 @@ class Gems_Model_RespondentNlModel extends \Gems_Model_RespondentModel
         }
 
         $this->setIfExists('grs_iso_lang', 'default', 'nl');
-        $this->setIfExists('gr2o_treatment', 'description', $translator->_('DBC\'s, etc...'));
+        $this->setIfExists('gr2o_treatment', 'description', $this->_('DBC\'s, etc...'));
 
         self::setDutchZipcode($this, $translator);
 

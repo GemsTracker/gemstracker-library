@@ -94,6 +94,13 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
     protected $respondentData;
 
     /**
+     * Optional: set display of buttons on or off
+     *
+     * @var boolean
+     */
+    protected $showButtons = true;
+
+    /**
      * Show a warning if informed consent has not been set
      *
      * @var boolean
@@ -119,13 +126,15 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
      */
     protected function addButtons(\MUtil_Model_Bridge_VerticalTableBridge $bridge)
     {
-        if ($this->buttons) {
-            $bridge->tfrow($this->buttons, array('class' => 'centerAlign'));
-        } else {
-            $menuList = $this->menu->getCurrentMenuList($this->request, $this->_('Cancel'));
-            $menuList->addParameterSources($bridge);
+        if ($this->showButtons) {
+            if ($this->buttons) {
+                $bridge->tfrow($this->buttons, array('class' => 'centerAlign'));
+            } else {
+                $menuList = $this->menu->getCurrentMenuList($this->request, $this->_('Cancel'));
+                $menuList->addParameterSources($bridge);
 
-            $bridge->tfrow($menuList, array('class' => 'centerAlign'));
+                $bridge->tfrow($menuList, array('class' => 'centerAlign'));
+            }
         }
     }
 

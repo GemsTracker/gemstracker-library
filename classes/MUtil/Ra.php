@@ -105,7 +105,7 @@ class MUtil_Ra
     public static function addKey(array $input, $keyField = 'key', $valueField = 'value')
     {
         $output = array();
-        
+
         foreach ($input as $key => $value) {
             if (is_array($value)) {
                 $output[$key] = $value;
@@ -432,6 +432,25 @@ class MUtil_Ra
             }
         }
         return $results;
+    }
+
+    /**
+     * Search through an array and return those keys that are in the list
+     *
+     * @param array $data
+     * @param array|scalar $keyArrayOrKey1
+     * @param scalar $keys2
+     */
+    public static function filterKeys(array $data, $keyArrayOrKey1, $keys2 = null)
+    {
+        if (is_array($keyArrayOrKey1)) {
+            $keys = $keyArrayOrKey1;
+        } else {
+            $keys = func_get_args();
+            array_shift($keys);
+        }
+
+        return array_intersect_key($data, array_fill_keys($keys, null));
     }
 
     /**

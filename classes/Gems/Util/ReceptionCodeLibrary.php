@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Util_ReceptionCodeLibrary extends Gems_Registry_TargetAbstract
+class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstract
 {
     const APPLY_NOT  = 0;
     const APPLY_DO   = 1;
@@ -56,24 +56,42 @@ class Gems_Util_ReceptionCodeLibrary extends Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
     /**
      *
-     * @var Zend_Translate
-     */
-    protected $translate;
-
-    /**
-     *
-     * @return Zend_Db_Select for a fetchPairs
+     * @return \Zend_Db_Select for a fetchPairs
      */
     protected function _getDeletionCodeSelect()
     {
         $select = $this->db->select();
         $select->from('gems__reception_codes', array('grc_id_reception_code', 'grc_description'))
+                ->where('grc_success = 0')
+                ->where('grc_active = 1')
+                ->order('grc_description');
+
+        return $select;
+    }
+
+    /**
+     *
+     * @return \Zend_Db_Select for a fetchPairs
+     */
+    protected function _getRestoreSelect()
+    {
+        $select = $this->db->select();
+        $select->from('gems__reception_codes', array(
+            'grc_id_reception_code',
+            'name' => new \Zend_Db_Expr(
+                    "CASE
+                        WHEN grc_description IS NULL OR grc_description = '' THEN grc_id_reception_code
+                        ELSE grc_description
+                        END"
+                    ),
+            ))
+                ->where('grc_success = 1')
                 ->where('grc_active = 1')
                 ->order('grc_description');
 
@@ -159,7 +177,20 @@ class Gems_Util_ReceptionCodeLibrary extends Gems_Registry_TargetAbstract
         $select = $this->_getDeletionCodeSelect();
         $select->where('grc_for_respondents = 1');
 
-        return $this->db->fetchPairs($select);
+        return array('' => $this->_('')) + $this->db->fetchPairs($select);
+    }
+
+    /**
+     * Returns the respondent deletion reception code list.
+     *
+     * @return array a value => label array.
+     */
+    public function getRespondentRestoreCodes()
+    {
+        $select = $this->_getRestoreSelect();
+        $select->where('grc_for_respondents = 1');
+
+        return array('' => $this->_('')) + $this->db->fetchPairs($select);
     }
 
     /**
@@ -173,7 +204,7 @@ class Gems_Util_ReceptionCodeLibrary extends Gems_Registry_TargetAbstract
         $select->where('(grc_for_surveys = ? OR grc_for_tracks = 1)', self::APPLY_DO);
                 //->where('grc_redo_survey = ?', self::REDO_NONE);
 
-        return $this->db->fetchPairs($select);
+        return array('' => $this->_('')) + $this->db->fetchPairs($select);
     }
 
     /**
@@ -186,6 +217,6 @@ class Gems_Util_ReceptionCodeLibrary extends Gems_Registry_TargetAbstract
         $select = $this->_getDeletionCodeSelect();
         $select->where('(grc_for_tracks = 1 OR grc_for_surveys = ?)', self::APPLY_STOP);
 
-        return $this->db->fetchPairs($select);
+        return array('' => $this->_('')) + $this->db->fetchPairs($select);
     }
 }

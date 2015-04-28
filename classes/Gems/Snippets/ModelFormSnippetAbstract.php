@@ -403,6 +403,7 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
                 $this->resetRoute = true;
             }
         }
+        \MUtil_Echo::track($this->routeAction, $this->resetRoute);
 
         return $this;
     }

@@ -324,7 +324,7 @@ class MUtil_Model
      * Set the current source for loaders
      *
      * @param \MUtil_Registry_SourceInterface $source
-     * @param boolean $setExisting When true the source is set for all exiting loader
+     * @param boolean $setExisting When true the source is set for all exiting loaders
      * @return void
      */
     public static function setSource(\MUtil_Registry_SourceInterface $source, $setExisting = true)

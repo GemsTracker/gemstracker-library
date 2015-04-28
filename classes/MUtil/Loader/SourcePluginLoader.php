@@ -53,6 +53,13 @@ class MUtil_Loader_SourcePluginLoader extends \MUtil_Loader_PluginLoader
     protected $_source;
 
     /**
+     * Show warning when source not set.
+     *
+     * @var boolean
+     */
+    public static $verbose = false;
+
+    /**
      * Instantiate a new class using the arguments array for initiation
      *
      * @param string $className
@@ -62,11 +69,12 @@ class MUtil_Loader_SourcePluginLoader extends \MUtil_Loader_PluginLoader
     public function createClass($className, array $arguments = array())
     {
         $object = parent::createClass($className, $arguments);
-
-        if ($object instanceof \MUtil_Registry_TargetInterface &&
-                $this->_source instanceof \MUtil_Registry_SourceInterface) {
-
-            $this->_source->applySource($object);
+        if ($object instanceof \MUtil_Registry_TargetInterface) {
+            if ($this->_source instanceof \MUtil_Registry_SourceInterface) {
+                $this->_source->applySource($object);
+            } elseif (self::$verbose) {
+                \MUtil_Echo::r("Loading target class $className, but source not set.");
+            }
         }
 
         return $object;

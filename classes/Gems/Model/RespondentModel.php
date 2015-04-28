@@ -246,39 +246,63 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
     {
         $dbLookup   = $this->util->getDbLookup();
         $translated = $this->util->getTranslated();
-        $translator = $this->getTranslateAdapter();
 
         $this->resetOrder();
 
         if ($this->has('gr2o_id_organization') && $this->isMultiOrganization()) {
             $this->set('gr2o_id_organization',
-                    'label', $translator->_('Organization'),
+                    'label', $this->_('Organization'),
                     'multiOptions', $dbLookup->getOrganizationsWithRespondents()
                     );
         }
 
-        $this->setIfExists('gr2o_patient_nr', 'label', $translator->_('Respondent nr'));
+        $this->setIfExists('gr2o_patient_nr', 'label', $this->_('Respondent nr'));
 
-        self::addNameToModel($this, $translator->_('Name'));
+        self::addNameToModel($this, $this->_('Name'));
 
-        $this->setIfExists('grs_email',       'label', $translator->_('E-Mail'));
+        $this->setIfExists('grs_email',       'label', $this->_('E-Mail'));
 
-        $this->setIfExists('grs_address_1',   'label', $translator->_('Street'));
-        $this->setIfExists('grs_zipcode',     'label', $translator->_('Zipcode'));
-        $this->setIfExists('grs_city',        'label', $translator->_('City'));
+        $this->setIfExists('grs_address_1',   'label', $this->_('Street'));
+        $this->setIfExists('grs_zipcode',     'label', $this->_('Zipcode'));
+        $this->setIfExists('grs_city',        'label', $this->_('City'));
 
-        $this->setIfExists('grs_phone_1',     'label', $translator->_('Phone'));
+        $this->setIfExists('grs_phone_1',     'label', $this->_('Phone'));
 
         $this->setIfExists('grs_birthday',
-                'label', $translator->_('Birthday'),
+                'label', $this->_('Birthday'),
                 'dateFormat', \Zend_Date::DATE_MEDIUM);
 
         $this->setIfExists('gr2o_opened',
-                'label', $translator->_('Opened'),
+                'label', $this->_('Opened'),
                 'formatFunction', $translated->formatDateTime);
         $this->setIfExists('gr2o_consent',
-                'label', $translator->_('Consent'),
+                'label', $this->_('Consent'),
                 'multiOptions', $dbLookup->getUserConsents()
+                );
+
+        return $this;
+    }
+
+    /**
+     * Set those values needed for deleting
+     *
+     * @return \Gems_Model_RespondentModel
+     */
+    public function applyDeleteSettings()
+    {
+        $this->applyDetailSettings();
+
+        $this->setMulti(array(
+            'gr2o_patient_nr',
+            'gr2o_id_organization',
+            'gr2o_id_user',
+            ), 'elementClass', 'Hidden');
+
+        $options = $this->util->getReceptionCodeLibrary()->getRespondentDeletionCodes();
+        $this->set('gr2o_reception_code', 'label', $this->_('Rejection code'),
+                'multiOptions', $options,
+                'required', true,
+                'size', min(7, max(3, count($options) + 1))
                 );
 
         return $this;
@@ -287,23 +311,21 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
     /**
      * Set those settings needed for the detailed display
      *
-     * @param mixed $locale The locale for the settings
      * @return \Gems_Model_RespondentModel
      */
-    public function applyDetailSettings($locale = null)
+    public function applyDetailSettings()
     {
         $dbLookup   = $this->util->getDbLookup();
         $localized  = $this->util->getLocalized();
         $translated = $this->util->getTranslated();
-        $translator = $this->getTranslateAdapter();
 
         $this->resetOrder();
         if ($this->has('gr2o_id_organization')) {
             $user = $this->loader->getCurrentUser();
 
             $this->set('gr2o_id_organization',
-                    'label', $translator->_('Organization'),
-                    'tab', $translator->_('Identification'),
+                    'label', $this->_('Organization'),
+                    'tab', $this->_('Identification'),
                     'multiOptions', $user->getRespondentOrganizations()
                     );
 
@@ -316,73 +338,73 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
 
         // The SSN
         if ($this->hashSsn !== \Gems_Model_RespondentModel::SSN_HIDE) {
-            $this->set('grs_ssn', 'label', $translator->_('SSN'),
-                    'tab', $translator->_('Identification'));
+            $this->set('grs_ssn', 'label', $this->_('SSN'),
+                    'tab', $this->_('Identification'));
         }
 
-        $this->setIfExists('gr2o_patient_nr', 'label', $translator->_('Respondent number'),
-                'tab', $translator->_('Identification'));
+        $this->setIfExists('gr2o_patient_nr', 'label', $this->_('Respondent number'),
+                'tab', $this->_('Identification'));
 
-        $this->setIfExists('grs_initials_name',  'label', $translator->_('Initials'));
-        $this->setIfExists('grs_first_name',  'label', $translator->_('First name'));
-        $this->setIfExists('grs_surname_prefix', 'label', $translator->_('Surname prefix'),
-                'description', $translator->_('de, ibn, Le, Mac, von, etc...'));
+        $this->setIfExists('grs_initials_name',  'label', $this->_('Initials'));
+        $this->setIfExists('grs_first_name',  'label', $this->_('First name'));
+        $this->setIfExists('grs_surname_prefix', 'label', $this->_('Surname prefix'),
+                'description', $this->_('de, ibn, Le, Mac, von, etc...'));
 
-        $this->setIfExists('grs_last_name',   'label', $translator->_('Last name'));
+        $this->setIfExists('grs_last_name',   'label', $this->_('Last name'));
 
-        $this->setIfExists('grs_partner_surname_prefix', 'label', $translator->_('Partner surname prefix'),
-                'description', $translator->_('de, ibn, Le, Mac, von, etc...'));
-        $this->setIfExists('grs_partner_last_name',   'label', $translator->_('Partner last name'));
+        $this->setIfExists('grs_partner_surname_prefix', 'label', $this->_('Partner surname prefix'),
+                'description', $this->_('de, ibn, Le, Mac, von, etc...'));
+        $this->setIfExists('grs_partner_last_name',   'label', $this->_('Partner last name'));
 
         $this->setIfExists('grs_gender',
-                'label', $translator->_('Gender'),
+                'label', $this->_('Gender'),
                 'multiOptions', $translated->getGenderHello()
                 );
 
         $this->setIfExists('grs_birthday',
-                'label', $translator->_('Birthday'),
+                'label', $this->_('Birthday'),
                 'dateFormat', \Zend_Date::DATE_MEDIUM
                 );
 
-        $this->setIfExists('gr2o_treatment',          'label', $translator->_('Treatment'));
-        $this->setIfExists('gr2o_comments',           'label', $translator->_('Comments'));
+        $this->setIfExists('gr2o_treatment',          'label', $this->_('Treatment'));
+        $this->setIfExists('gr2o_comments',           'label', $this->_('Comments'));
 
-        $this->setIfExists('grs_email',       'label', $translator->_('E-Mail'),
-                'tab', $translator->_('Contact information'));
-        $this->setIfExists('gr2o_mailable',     'label', $translator->_('May be mailed'));
+        $this->setIfExists('grs_email',       'label', $this->_('E-Mail'),
+                'tab', $this->_('Contact information'));
+        $this->setIfExists('gr2o_mailable',     'label', $this->_('May be mailed'));
 
-        $this->setIfExists('grs_address_1',   'label', $translator->_('Street'));
+        $this->setIfExists('grs_address_1',   'label', $this->_('Street'));
         $this->setIfExists('grs_address_2',   'label', '&nbsp;');
 
         // \MUtil_Echo::track($this->getItemsOrdered(), $this->getOrder('grs_email'));
 
-        $this->setIfExists('grs_zipcode',     'label', $translator->_('Zipcode'));
-        $this->setIfExists('grs_city',        'label', $translator->_('City'));
-        $this->setIfExists('grs_iso_country', 'label', $translator->_('Country'),
+        $this->setIfExists('grs_zipcode',     'label', $this->_('Zipcode'));
+        $this->setIfExists('grs_city',        'label', $this->_('City'));
+        $this->setIfExists('grs_iso_country', 'label', $this->_('Country'),
                 'multiOptions', $localized->getCountries());
 
-        $this->setIfExists('grs_phone_1',     'label', $translator->_('Phone'));
-        $this->setIfExists('grs_phone_2',     'label', $translator->_('Phone 2'));
-        $this->setIfExists('grs_phone_3',     'label', $translator->_('Phone 3'));
-        $this->setIfExists('grs_phone_4',     'label', $translator->_('Phone 4'));
+        $this->setIfExists('grs_phone_1',     'label', $this->_('Phone'));
+        $this->setIfExists('grs_phone_2',     'label', $this->_('Phone 2'));
+        $this->setIfExists('grs_phone_3',     'label', $this->_('Phone 3'));
+        $this->setIfExists('grs_phone_4',     'label', $this->_('Phone 4'));
 
-        $this->setIfExists('grs_iso_lang',    'label', $translator->_('Language'),
+        $this->setIfExists('grs_iso_lang',    'label', $this->_('Language'),
                 'multiOptions', $localized->getLanguages(),
-                'tab', $translator->_('Settings'));
+                'tab', $this->_('Settings'));
 
-        $this->setIfExists('gr2o_consent',    'label', $translator->_('Consent'),
-                'description', $translator->_('Has the respondent signed the informed consent letter?'),
+        $this->setIfExists('gr2o_consent',    'label', $this->_('Consent'),
+                'description', $this->_('Has the respondent signed the informed consent letter?'),
                 'multiOptions', $dbLookup->getUserConsents()
                 );
 
-        $this->setIfExists('gr2o_opened',     'label', $translator->_('Opened'),
+        $this->setIfExists('gr2o_opened',     'label', $this->_('Opened'),
                 'formatFunction', $translated->formatDateTime
                 );
 
-        $this->setIfExists('gr2o_changed',    'label', $translator->_('Changed on'),
+        $this->setIfExists('gr2o_changed',    'label', $this->_('Changed on'),
                 'formatFunction', $translated->formatDateTime);
 
-        $this->setIfExists('gr2o_changed_by', 'label', $translator->_('Changed by'),
+        $this->setIfExists('gr2o_changed_by', 'label', $this->_('Changed by'),
                 'multiOptions', $this->util->getDbLookup()->getStaff());
 
         return $this;
@@ -391,16 +413,14 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
     /**
      * Set those values needed for editing
      *
-     * @param mixed $locale The locale for the settings
      * @return \Gems_Model_RespondentModel
      */
-    public function applyEditSettings($locale = null)
+    public function applyEditSettings()
     {
-        $this->applyDetailSettings($locale);
+        $this->applyDetailSettings();
         $this->copyKeys(); // The user can edit the keys.
 
         $translated = $this->util->getTranslated();
-        $translator = $this->getTranslateAdapter();
         $ucfirst    = new \Zend_Filter_Callback('ucfirst');
 
         if ($this->hashSsn !== \Gems_Model_RespondentModel::SSN_HIDE) {
@@ -430,12 +450,12 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                 'validator', 'SimpleEmail');
         $this->addColumn('CASE WHEN grs_email IS NULL OR LENGTH(TRIM(grs_email)) = 0 THEN 1 ELSE 0 END', 'calc_email');
         $this->set('calc_email',
-                'label', $translator->_('Respondent has no e-mail'),
+                'label', $this->_('Respondent has no e-mail'),
                 'elementClass', 'Checkbox',
                 'required', true,
                 'order', $this->getOrder('grs_email') + 1,
                 'validator', new \Gems_Validate_OneOf(
-                        $translator->_('Respondent has no e-mail'),
+                        $this->_('Respondent has no e-mail'),
                         'grs_email',
                         $this->get('grs_email', 'label')
                         )
@@ -458,7 +478,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                 'elementClass', 'Radio',
                 'separator', '',
                 'multiOptions', $translated->getGenders(),
-                'tab', $translator->_('Medical data')
+                'tab', $this->_('Medical data')
                 );
 
         $this->setIfExists('grs_birthday',
@@ -471,7 +491,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
 
         $this->setIfExists('grs_address_1',
                 'size',  40,
-                'description', $translator->_('With housenumber'),
+                'description', $this->_('With housenumber'),
                 'filter', $ucfirst
                 );
         $this->setIfExists('grs_address_2', 'size', 40);
@@ -744,8 +764,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         } else {
             $code    = $this->util->getReceptionCode($newCode);
         }
-        $translator = $this->getTranslateAdapter();
-        $userId     = $this->loader->getCurrentUser()->getUserId();
+        $userId = $this->loader->getCurrentUser()->getUserId();
 
         // Perform actual save, but not for simple stop codes.
         if ($code->isForRespondents()) {

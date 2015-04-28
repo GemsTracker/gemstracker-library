@@ -89,11 +89,29 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Controller_ModelSn
     protected $defaultSearchData = array('grc_success' => 1);
 
     /**
+     * The parameters used for the delete action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $deleteParameters = array(
+        'baseUrl'        => 'getItemUrlArray',
+        'forOtherOrgs'   => 'getOtherOrgs',
+        'onclick'        => 'getEditLink',
+        'respondentData' => 'getRespondentData',
+        'showButtons'    => false,
+        );
+
+    /**
      * The snippets used for the delete action.
      *
      * @var mixed String or array of snippets name
      */
-    public $deleteSnippets = array('RespondentDetailsSnippet');
+    public $deleteSnippets = array('RespondentDetailsSnippet', 'Respondent\\DeleteRespondentSnippet');
 
     /**
      * The snippets used for the export action.
@@ -171,79 +189,12 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Controller_ModelSn
             case 'import':
                 return $model->applyEditSettings();
 
+            case 'delete':
+                return $model->applyDeleteSettings();
+
             default:
                 return $model->applyDetailSettings();
         }
-    }
-
-    /**
-     * Adjusted delete action
-     */
-    public function deleteAction()
-    {
-        $model   = $this->getModel();
-        $params  = $this->_processParameters($this->showParameters);
-        $data    = $params['respondentData'];
-        $request = $this->getRequest();
-
-        $options = $this->util->getReceptionCodeLibrary()->getRespondentDeletionCodes();
-
-        $bridge = $model->getBridgeFor('form', new \Gems_Form());
-        $bridge->addSelect('gr2o_reception_code',
-            'label', $this->_('Rejection code'),
-            'multiOptions', $options,
-            'required', true,
-            'size', max(7, min(3, count($options) + 1)));
-
-        $form = $bridge->getForm();
-
-        $save = new \Zend_Form_Element_Submit(
-                'save_button',
-                array('label' => $this->_('Delete respondent'), 'class' => 'button')
-                );
-        $form->addElement($save);
-
-        if ($request->isPost()) {
-            $oldCode = $data['gr2o_reception_code'];
-            $data    = $_POST + $data;
-
-            if ($form->isValid($data )) {
-                $code = $model->setReceptionCode(
-                        $data['gr2o_patient_nr'],
-                        $data['gr2o_id_organization'],
-                        $data['gr2o_reception_code'],
-                        $data['gr2o_id_user'],
-                        $oldCode
-                        );
-
-                // Is the respondent really removed
-                if (! $code->isSuccess()) {
-
-                    // Perform actual save, but not simple stop codes.
-                    if ($code->isForRespondents()) {
-                        $this->addMessage($this->_('Respondent deleted.'));
-                        $this->_reroute(array('action' => 'index'), true);
-                    } else {
-                        // Just a stop code
-                        $this->addMessage($this->_('Respondent tracks stopped.'));
-                        $this->_reroute(array('action' => 'show'));
-                    }
-                } else {
-                    $this->addMessage($this->_('Choose a reception code to delete.'));
-                }
-            } else {
-                $this->addMessage($this->_('Input error! No changes saved!'), 'danger');
-            }
-        }
-        $form->populate($data);
-
-        $table = new \MUtil_Html_TableElement(array('class' => 'formTable'));
-        $table->setAsFormLayout($form, true, true);
-        $table['tbody'][0][0]->class = 'label';  // Is only one row with formLayout, so all in output fields get class.
-
-        $this->addSnippets($this->deleteSnippets, $params);
-
-        $this->html[] = $form;
     }
 
     /**

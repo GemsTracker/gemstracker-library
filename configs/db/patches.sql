@@ -924,13 +924,13 @@ UPDATE gems__tracks
 
 ALTER IGNORE TABLE gems__tracks DROP gtr_track_model;
 
-INSERT INTO gems__rounds (gro_id_track, gro_id_order, gro_id_survey, gro_survey_name, gro_round_description,
+INSERT ignore INTO gems__rounds (gro_id_track, gro_id_order, gro_id_survey, gro_survey_name, gro_round_description,
     gro_valid_after_id, gro_valid_for_id, gro_active, gro_changed, gro_changed_by, gro_created, gro_created_by)
     VALUES
     (0, 10, 0, 'Dummy for inserted surveys', 'Dummy for inserted surveys',
         0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
-UPDATE gems__rounds SET gro_id_round = 0 WHERE gro_survey_name = 'Dummy for inserted surveys';
+UPDATE ignore gems__rounds SET gro_id_round = 0 WHERE gro_survey_name = 'Dummy for inserted surveys';
 
 DELETE FROM gems__rounds WHERE gro_id_round != 0 AND gro_survey_name = 'Dummy for inserted surveys';
 

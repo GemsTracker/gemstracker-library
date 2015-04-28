@@ -80,6 +80,12 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_M
     protected $_saveButton;
 
     /**
+     *
+     * @var boolean When true the item key fields are added to the after save route url
+     */
+    protected $afterSaveRouteKeys = true;
+
+    /**
      * @see \Zend_Controller_Action_Helper_Redirector
      *
      * @var mixed Nothing or either an array or a string that is acceptable for Redirector->gotoRoute()
@@ -612,13 +618,15 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_M
         if ($this->routeAction && ($this->request->getActionName() !== $this->routeAction)) {
             $this->afterSaveRouteUrl = array($this->request->getActionKey() => $this->routeAction);
 
-            // Set the key identifiers for the route.
-            //
-            // Mind you the values may have changed, either because of an edit or
-            // because a new item was created.
-            foreach ($this->getModel()->getKeys() as $id => $key) {
-                if (isset($this->formData[$key])) {
-                    $this->afterSaveRouteUrl[$id] = $this->formData[$key];
+            if ($this->afterSaveRouteKeys) {
+                // Set the key identifiers for the route.
+                //
+                // Mind you the values may have changed, either because of an edit or
+                // because a new item was created.
+                foreach ($this->getModel()->getKeys() as $id => $key) {
+                    if (isset($this->formData[$key])) {
+                        $this->afterSaveRouteUrl[$id] = $this->formData[$key];
+                    }
                 }
             }
         }

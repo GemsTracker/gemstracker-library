@@ -421,7 +421,11 @@ class GemsEscort extends \MUtil_Application_Escort
      */
     protected function _initLoader()
     {
-        return $this->createProjectClass('Loader', $this->getContainer(), $this->_loaderDirs);
+        $loader = $this->createProjectClass('Loader', $this->getContainer(), $this->_loaderDirs);
+
+        \MUtil_Model::setSource($loader, true);
+
+        return $loader;
     }
 
     /**
