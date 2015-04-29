@@ -161,13 +161,8 @@ class Gems_Model_Translator_RespondentAnswerTranslator extends \Gems_Model_Trans
      * @return array of fields sourceName => targetName
      * @throws \MUtil_Model_ModelException
      */
-    public function getFieldsTranslations()
+    public function getRespondentAnswerTranslations()
     {
-        if (! $this->_targetModel instanceof \MUtil_Model_ModelAbstract) {
-            throw new \MUtil_Model_ModelTranslateException(sprintf('Called %s without a set target model.', __FUNCTION__));
-        }
-        // \MUtil_Echo::track($this->_targetModel->getItemNames());
-
         $this->_targetModel->set($this->patientNrField, 'label', $this->_('Patient ID'),
                 'order', 5,
                 'required', true,
@@ -183,7 +178,23 @@ class Gems_Model_Translator_RespondentAnswerTranslator extends \Gems_Model_Trans
         return array(
             $this->patientNrField => $this->patientNrField,
             $this->orgIdField     => $this->orgIdField,
-            ) + parent::getFieldsTranslations();
+            );
+    }
+
+    /**
+     * Get information on the field translations
+     *
+     * @return array of fields sourceName => targetName
+     * @throws \MUtil_Model_ModelException
+     */
+    public function getFieldsTranslations()
+    {
+        if (! $this->_targetModel instanceof \MUtil_Model_ModelAbstract) {
+            throw new \MUtil_Model_ModelTranslateException(sprintf('Called %s without a set target model.', __FUNCTION__));
+        }
+        // \MUtil_Echo::track($this->_targetModel->getItemNames());
+
+        return $this->getRespondentAnswerTranslations() + parent::getFieldsTranslations();
     }
 
     /**

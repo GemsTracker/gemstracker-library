@@ -375,7 +375,7 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends \Gems_Mode
         $row['track_id']  = $this->getTrackId();
         $row['survey_id'] = $this->_surveyId;
         $row['token']     = strtolower($this->findTokenFor($row));
-
+        
         return $row;
     }
 

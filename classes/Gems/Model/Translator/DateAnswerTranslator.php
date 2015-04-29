@@ -93,28 +93,13 @@ class Gems_Model_Translator_DateAnswerTranslator extends \Gems_Model_Translator_
                     ->order('gto_round_order');
 
             $token = $this->db->fetchOne($select);
-
+            
             if ($token) {
                 return $token;
             }
         }
 
         return null;
-    }
-
-    /**
-     * Get information on the field translations
-     *
-     * @return array of fields sourceName => targetName
-     * @throws \MUtil_Model_ModelException
-     */
-    public function getFieldsTranslations()
-    {
-        if (! $this->_targetModel instanceof \MUtil_Model_ModelAbstract) {
-            throw new \MUtil_Model_ModelTranslateException(sprintf('Called %s without a set target model.', __FUNCTION__));
-        }
-
-        return parent::getFieldsTranslations();
     }
 
     /**
@@ -125,7 +110,7 @@ class Gems_Model_Translator_DateAnswerTranslator extends \Gems_Model_Translator_
     public function getRequiredFields()
     {
         return parent::getRequiredFields() + array(
-            'completion_date'      => 'completion_date',
+            'completion_date' => 'completion_date',
             );
     }
 }
