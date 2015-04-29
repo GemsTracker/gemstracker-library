@@ -141,6 +141,13 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
         $formatDate = $this->util->getTranslated()->formatDate;
 
         $this->resetOrder();
+
+        $this->setKeys(array(
+            \Gems_Model::RESPONDENT_TRACK => 'gr2t_id_respondent_track',
+            \MUtil_Model::REQUEST_ID1     => 'gr2o_patient_nr',
+            \MUtil_Model::REQUEST_ID2 => 'gr2o_id_organization',
+            ));
+
         $this->set('gtr_track_name',    'label', $this->_('Track'));
         $this->set('gr2t_track_info',   'label', $this->_('Description'),
             'description', $this->_('Enter the particulars concerning the assignment to this respondent.'));
@@ -154,6 +161,9 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
             'formatFunction', $formatDate);
         $this->set('gr2t_reception_code');
         $this->set('gr2t_comment',       'label', $this->_('Comment'));
+
+        $this->addColumn('CONCAT(gr2t_completed, \'' . $this->_(' of ') . '\', gr2t_count)', 'progress');
+        $this->set('progress', 'label', $this->_('Progress'));
 
         return $this;
     }
