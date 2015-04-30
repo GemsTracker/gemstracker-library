@@ -108,6 +108,13 @@ abstract class MUtil_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_
     public $sortableLinks = true;
 
     /**
+     * When true query only the used columns
+     *
+     * @var boolean
+     */
+    public $trckUsage = true;
+
+    /**
      * Adds columns from the model to the bridge that creates the browse table.
      *
      * Overrule this function to add different columns to the browse table, without
@@ -193,7 +200,9 @@ abstract class MUtil_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_
     {
         $model = $this->getModel();
 
-        $model->trackUsage();
+        if ($this->trckUsage) {
+            $model->trackUsage();
+        }
         $table = $this->getBrowseTable($model);
 
         if (! $table->getRepeater()) {

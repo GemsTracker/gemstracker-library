@@ -616,25 +616,17 @@ abstract class Gems_Menu_MenuAbstract
 
             // \MUtil_Echo::track($infoPage->_toNavigationArray(array($this->escort->request)));
         } else {
-            if ($this->escort instanceof \Gems_Project_Tracks_StandAloneSurveysInterface) {
-                $infoPage = $this->addContainer($label);
-                $tracksPage = $infoPage->addPage($this->_('Tracks'), 'pr.project', 'project-tracks');
-                $tracksPage->addAutofilterAction();
+            $infoPage = $this->addContainer($label);
+            $tracksPage = $infoPage->addPage($this->_('Tracks'), 'pr.project', 'project-tracks');
+            $tracksPage->addAutofilterAction();
 
-                $trackSurveys = $tracksPage->addShowAction('pr.project');
-                $trackSurveys->addAction($this->_('Preview'), 'pr.project.questions', 'questions')
-                        ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gro_id_track', \Gems_Model::SURVEY_ID, 'gsu_id_survey');
+            $trackSurveys = $tracksPage->addShowAction('pr.project');
+            $trackSurveys->addAction($this->_('Preview'), 'pr.project.questions', 'questions')
+                    ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gro_id_track', \Gems_Model::SURVEY_ID, 'gsu_id_survey');
 
-                $surveysPage = $infoPage->addPage($this->_('Surveys'), 'pr.project', 'project-surveys');
-                $surveysPage->addAutofilterAction();
-                $surveysPage->addShowAction('pr.project');
-            } else {
-                $infoPage = $this->addPage($label, 'pr.project', 'project-tracks');
-                $infoPage->addAutofilterAction();
-                $trackSurveys = $infoPage->addShowAction('pr.project');
-                $trackSurveys->addAction($this->_('Preview'), 'pr.project.questions', 'questions')
-                        ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gro_id_track', \Gems_Model::SURVEY_ID, 'gsu_id_survey');
-            }
+            $surveysPage = $infoPage->addPage($this->_('Surveys'), 'pr.project', 'project-surveys');
+            $surveysPage->addAutofilterAction();
+            $surveysPage->addShowAction('pr.project');
         }
 
         return $infoPage;

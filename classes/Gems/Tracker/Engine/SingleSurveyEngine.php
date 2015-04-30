@@ -42,6 +42,7 @@
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.4
+ * @deprecated since version 1.7.1 Should no longer be used
  */
 class Gems_Tracker_Engine_SingleSurveyEngine extends Gems_Tracker_Engine_TrackEngineAbstract implements Gems_Tracker_Engine_TrackEngineInterface
 {

@@ -497,7 +497,6 @@ class Gems_Default_ExportAction extends \Gems_Controller_Action
         //Add this controller to the export so it can render view when needed
         $this->export->controller = $this;
 
-        // $this->_session = GemsEscort::getInstance()->session;
         $this->_session = new \Zend_Session_Namespace(__CLASS__);
     }
 

@@ -35,8 +35,6 @@
  * @version    $Id$
  */
 
-include_once('Gems/Project/Tracks/TracksOnlyInterface.php');
-
 /**
  * Marker interface for Pulse Projects using only a single track
  *
@@ -44,8 +42,6 @@ include_once('Gems/Project/Tracks/TracksOnlyInterface.php');
  * Gems_Project_Tracks_TracksOnlyInterface (we assume until
  * proven wrong)
  *
- * @see Gems_Project_Tracks_TracksOnlyInterface
- * @see Gems_Project_Tracks_FixedTracksInterface
  * @see Gems_Project_Tracks_MultiTracksInterface
  *
  * @package    Gems
@@ -54,7 +50,7 @@ include_once('Gems/Project/Tracks/TracksOnlyInterface.php');
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-interface Gems_Project_Tracks_SingleTrackInterface extends Gems_Project_Tracks_TracksOnlyInterface
+interface Gems_Project_Tracks_SingleTrackInterface
 {
     /**
      * Return the "single" track id

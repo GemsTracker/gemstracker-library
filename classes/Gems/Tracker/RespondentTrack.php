@@ -687,6 +687,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     /**
      *
      * @return array of snippet names for editing this respondent track
+     * @deprecated since version 1.7.1 Snippets defined TrackAction
      */
     public function getEditSnippets()
     {

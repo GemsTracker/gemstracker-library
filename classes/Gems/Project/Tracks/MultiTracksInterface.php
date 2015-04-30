@@ -39,7 +39,6 @@
  * Marker interface for Pulse Projects that use tracks that be assigned at will by the user
  * to respondents.
  *
- * @see Gems_Project_Tracks_FixedTracksInterface
  * @see Gems_Project_Tracks_SingleTrackInterface
  *
  * @package    Gems

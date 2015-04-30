@@ -359,14 +359,6 @@ interface Gems_Tracker_Engine_TrackEngineInterface
     public function getTrackDeleteSnippetNames(\Gems_Tracker_RespondentTrack $respTrack);
 
     /**
-     * An array of snippet names for editing a track.
-     *
-     * @param \Gems_Tracker_RespondentTrack $respTrack Allows track status dependent edit snippets
-     * @return array of string snippet names
-     */
-    public function getTrackEditSnippetNames(\Gems_Tracker_RespondentTrack $respTrack);
-
-    /**
      *
      * @return int The track id
      */

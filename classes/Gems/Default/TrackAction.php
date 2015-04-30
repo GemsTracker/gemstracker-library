@@ -60,6 +60,7 @@ class Gems_Default_TrackAction extends \Gems_Controller_ModelSnippetActionAbstra
         'extraFilter'     => 'getRespondentFilter',
         'menuEditActions' => array('edit-track'),
         'menuShowActions' => array('show-track'),
+        'trckUsage'       => false,
         );
 
     /**
@@ -80,9 +81,7 @@ class Gems_Default_TrackAction extends \Gems_Controller_ModelSnippetActionAbstra
      * @var array $summarizedActions Array of the actions that use a
      * summarized version of the model.
      */
-    public $summarizedActions = array(
-        'index', 'autofilter', 'create', 'delete-track', 'edit-track', 'show-track', 'export-track',
-        );
+    public $summarizedActions = array('index', 'autofilter', 'create', 'view');
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -99,24 +98,66 @@ class Gems_Default_TrackAction extends \Gems_Controller_ModelSnippetActionAbstra
     {
         $model = $this->loader->getTracker()->getRespondentTrackModel();
 
-        if (! $detailed) {
-            return $model->applyBrowseSettings();
+        if ($detailed) {
+            $engine = $this->getRespondentTrack()->getTrackEngine();
+
+            switch ($action) {
+                case 'export-track':
+                case 'show-track':
+                    $model->applyDetailSettings($engine);
+                    break;
+
+                default:
+                    $model->applyEditSettings($engine);
+                    break;
+            }
+        } else {
+            $model->applyBrowseSettings();
         }
 
-        switch ($action) {
-            case 'create':
-            case 'delete':
-            case 'delete-track':
-            case 'edit':
-            case 'edit-track':
-            case 'import':
-                return $model->applyEditSettings();
+        return $model;
+    }
 
-            case 'export-track':
-            case 'show-track':
-            default:
-                return $model->applyDetailSettings();
+    /**
+     * Edit the respondent track data
+     *
+     * @param array $params Optional parameters from child class
+     * @param array $snippets Contains snippet names when other names are needed in a child class
+     */
+    public function editTrackAction(array $params = array(), array $snippets = null)
+    {
+        $respondent  = $this->getRespondent();
+        $respTrack   = $this->getRespondentTrack();
+        $trackEngine = $respTrack->getTrackEngine();
+
+        // Set params
+        $params['formTitle']      = sprintf(
+                $this->_('%s track for respondent nr %s: %s'),
+                $trackEngine->getTrackName(),
+                $this->_getParam(\MUtil_Model::REQUEST_ID1),
+                $this->getRespondent()->getFullName()
+                );
+        $params['respondentTrack']   = $respTrack;
+        $params['respondentTrackId'] = $respTrack->getRespondentTrackId();
+        $params['trackEngine']       = $trackEngine;
+        $params['trackId']           = $trackEngine->getTrackId();
+
+        // Set snippets
+        if (! $snippets) {
+            $singleTracks = $this->escort instanceof \Gems_Project_Tracks_SingleTrackInterface;
+
+            $snippets[] = 'EditTrackSnippet';
+
+            if (! $singleTracks) {
+                $snippets[] = 'Tracker\\TrackUsageTextDetailsSnippet';
+            }
+            $snippets[] = 'Tracker\\TrackTokenOverviewSnippet';
+
+            if (! $singleTracks) {
+                $snippets[] = 'Tracker\\TrackUsageOverviewSnippet';
+            }
         }
+        $this->addSnippets($snippets, $params);
     }
 
     /**
@@ -161,7 +202,11 @@ class Gems_Default_TrackAction extends \Gems_Controller_ModelSnippetActionAbstra
             $respondent = $this->loader->getRespondent($patientNumber, $organizationId);
 
             $this->menu->getParameterSource()->setPatient($patientNumber, $organizationId);
-            \Gems_Menu::$verbose = true;
+            // \Gems_Menu::$verbose = true;
+
+            if (! $respondent->exists) {
+                throw new \Gems_Exception($this->_('Unknown respondent.'));
+            }
         }
 
         return $respondent;
@@ -179,6 +224,54 @@ class Gems_Default_TrackAction extends \Gems_Controller_ModelSnippetActionAbstra
     }
 
     /**
+     * Retrieve the respondent track
+     * (So we don't need to repeat that for every snippet.)
+     *
+     * @return \Gems_Tracker_RespondentTrack
+     */
+    public function getRespondentTrack()
+    {
+        static $respTrack;
+
+        if ($respTrack instanceof \Gems_Tracker_RespondentTrack) {
+            return $respTrack;
+        }
+
+        $respTrackId = $this->_getParam(\Gems_Model::RESPONDENT_TRACK);
+        $tracker     = $this->loader->getTracker();
+
+        if ($respTrackId) {
+            $respTrack = $tracker->getRespondentTrack($respTrackId);
+        } else {
+            if (! $this->escort instanceof \Gems_Project_Tracks_SingleTrackInterface) {
+                throw new \Gems_Exception($this->_('No respondent track specified!'));
+            }
+
+            $trackId    = $this->escort->getTrackId();
+            $respTracks = $tracker->getRespondentTracks($respondent->getId(), $respondent->getOrganizationId());
+            foreach ($respTracks as $respTrack) {
+                if ($respTrack instanceof \Gems_Tracker_RespondentTrack) {
+                    if ($trackId === $respTrack->getTrackId()) {
+                        // Return the right track if it exists
+                        break;
+                    }
+                }
+            }
+        }
+        if (! $respTrack instanceof \Gems_Tracker_RespondentTrack) {
+            throw new \Gems_Exception($this->_('No respondent track found!'));
+        }
+
+        $menuSource = $this->menu->getParameterSource();
+        $menuSource->setRespondentTrackId($respTrack->getRespondentTrackId())
+                ->setTrackId($respTrack->getTrackId())
+                ->offsetSet('can_edit', $respTrack->getReceptionCode()->isSuccess() ? 1 : 0);
+
+        // Otherwise return the last created track (yeah some implementations are not correct!)
+        return $respTrack;
+    }
+
+    /**
      * Helper function to allow generalized statements about the items in the model.
      *
      * @param int $count
@@ -187,5 +280,70 @@ class Gems_Default_TrackAction extends \Gems_Controller_ModelSnippetActionAbstra
     public function getTopic($count = 1)
     {
         return $this->plural('track', 'tracks', $count);;
+    }
+
+    /**
+     * Insert a single survey into a track
+     *
+     * @param array $params Optional parameters from child class
+     * @param array $snippets Contains snippet names when other names are needed in a child class
+     */
+    public function insertAction(array $params = array(), array $snippets = array())
+    {
+        $params['formTitle'] = sprintf(
+                $this->_('Inserting a survey in a track for respondent %s: %s'),
+                $this->_getParam(\MUtil_Model::REQUEST_ID1),
+                $this->getRespondent()->getFullName()
+                );
+
+        if (! $snippets) {
+            $snippets[] = 'Tracker\\InsertSurveySnippet';
+            // $snippets[] = 'Survey\\SurveyQuestionsSnippet';
+        }
+        $this->addSnippets($snippets, $params);
+    }
+
+    /**
+     * Show information on a single track assigned to a respondent
+     *
+     * @param array $params Optional parameters from child class
+     * @param array $snippets Contains snippet names when other names are needed in a child class
+     */
+    public function showTrackAction(array $params = array(), array $snippets = null)
+    {
+        $respondent  = $this->getRespondent();
+        $respTrack   = $this->getRespondentTrack();
+        $trackEngine = $respTrack->getTrackEngine();
+
+        // Set params
+        $params['contentTitle']      = sprintf(
+                $this->_('%s track for respondent nr %s: %s'),
+                $trackEngine->getTrackName(),
+                $this->_getParam(\MUtil_Model::REQUEST_ID1),
+                $this->getRespondent()->getFullName()
+                );
+        $params['model']             = $this->getModel();
+        $params['respondentTrack']   = $respTrack;
+        $params['respondentTrackId'] = $respTrack->getRespondentTrackId();
+        $params['trackEngine']       = $trackEngine;
+        $params['trackId']           = $trackEngine->getTrackId();
+
+        // Set snippets
+        if (! $snippets) {
+            $singleTracks = $this->escort instanceof \Gems_Project_Tracks_SingleTrackInterface;
+
+            $snippets[] = 'Generic_ContentTitleSnippet';
+            $snippets[] = 'ModelItemTableSnippetGeneric';
+
+            if (! $singleTracks) {
+                $snippets[] = 'Tracker\\TrackUsageTextDetailsSnippet';
+            }
+            $snippets[] = 'Tracker\\TrackTokenOverviewSnippet';
+
+            if (! $singleTracks) {
+                $snippets[] = 'Tracker\\TrackUsageOverviewSnippet';
+            }
+        }
+        $this->addSnippets($snippets, $params);
     }
 }

@@ -49,7 +49,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4.4
  */
-class Gems_Snippets_ModelTableSnippetGeneric extends Gems_Snippets_ModelTableSnippetAbstract
+class Gems_Snippets_ModelTableSnippetGeneric extends \Gems_Snippets_ModelTableSnippetAbstract
 {
     /**
      *
@@ -60,7 +60,7 @@ class Gems_Snippets_ModelTableSnippetGeneric extends Gems_Snippets_ModelTableSni
     /**
      * Creates the model
      *
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function createModel()
     {

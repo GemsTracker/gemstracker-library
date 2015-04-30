@@ -39,10 +39,6 @@ namespace Gems\Snippets\Tracker;
 /**
  * Displays a toolbox of drop down UL's to assign tracks / surveys to a patient.
  *
- * If project uses the \Gems_Project_Tracks_MultiTracksInterface, show a track drowpdown
- * If project uses the \Gems_Project_Tracks_StandAloneSurveysInterface, show a survey
- * drowpdown for both staff and patient
- *
  * A snippet is a piece of html output that is reused on multiple places in the code.
  *
  * Variables are intialized using the {@see \MUtil_Registry_TargetInterface} mechanism.

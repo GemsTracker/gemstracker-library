@@ -46,7 +46,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class Gems_Exception extends Zend_Exception
+class Gems_Exception extends \Zend_Exception
 {
     /**
      * Optional extra information on the exception
@@ -62,7 +62,7 @@ class Gems_Exception extends Zend_Exception
      * @param Exception $previous
      * @param string $info Optional extra information on the exception
      */
-    public function __construct($msg = '', $code = 200, Exception $previous = null, $info = null)
+    public function __construct($msg = '', $code = 200, \Exception $previous = null, $info = null)
     {
         parent::__construct($msg, $code, $previous);
 
