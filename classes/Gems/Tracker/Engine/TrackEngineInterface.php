@@ -344,13 +344,6 @@ interface Gems_Tracker_Engine_TrackEngineInterface
     public function getTrackCompletionEvent();
 
     /**
-     * An array of snippet names for creating a track.
-     *
-     * @return array of string snippet names
-     */
-    public function getTrackCreateSnippetNames();
-
-    /**
      * An array of snippet names for deleting a track.
      *
      * @param \Gems_Tracker_RespondentTrack $respTrack Allows track status dependent edit snippets

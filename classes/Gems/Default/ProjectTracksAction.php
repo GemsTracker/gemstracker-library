@@ -114,7 +114,6 @@ class Gems_Default_ProjectTracksAction extends \Gems_Controller_ModelSnippetActi
         $translated = $this->util->getTranslated();
 
         $model = new \MUtil_Model_TableModel('gems__tracks');
-        //$model->resetOrder();
 
         $model->set('gtr_track_name',    'label', $this->_('Track'));
         $model->set('gtr_survey_rounds', 'label', $this->_('Survey #'));
@@ -175,7 +174,6 @@ class Gems_Default_ProjectTracksAction extends \Gems_Controller_ModelSnippetActi
     public function getTrackData()
     {
         return $this->getModel()->loadFirst();
-        return $this->db->fetchRow('SELECT * FROM gems__tracks WHERE gtr_id_track = ?', $this->_getIdParam());
     }
 
     /**

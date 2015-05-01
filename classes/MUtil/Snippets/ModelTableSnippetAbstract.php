@@ -112,7 +112,7 @@ abstract class MUtil_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_
      *
      * @var boolean
      */
-    public $trckUsage = true;
+    public $trackUsage = true;
 
     /**
      * Adds columns from the model to the bridge that creates the browse table.
@@ -200,7 +200,7 @@ abstract class MUtil_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_
     {
         $model = $this->getModel();
 
-        if ($this->trckUsage) {
+        if ($this->trackUsage) {
             $model->trackUsage();
         }
         $table = $this->getBrowseTable($model);

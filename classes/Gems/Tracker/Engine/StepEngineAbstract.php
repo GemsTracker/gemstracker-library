@@ -794,6 +794,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
      * An array of snippet names for editing a track.
      *
      * @return array of string snippet names
+     * @deprecated since version 1.7.1 Snippets defined TrackAction
      */
     public function getTrackCreateSnippetNames()
     {

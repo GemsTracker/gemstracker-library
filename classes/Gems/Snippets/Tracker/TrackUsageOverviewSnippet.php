@@ -55,11 +55,45 @@ class TrackUsageOverviewSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
     protected $loader;
 
     /**
+     * Menu actions to show in Edit box.
+     *
+     * If controller is numeric $menuActionController is used, otherwise
+     * the key specifies the controller.
+     *
+     * @var array (int/controller => action)
+     */
+    public $menuEditActions = array('edit-track');
+
+    /**
+     * Menu actions to show in Show box.
+     *
+     * If controller is numeric $menuActionController is used, otherwise
+     * the key specifies the controller.
+     *
+     * @var array (int/controller => action)
+     */
+    public $menuShowActions = array('show-track');
+
+    /**
+     * Are we working in a multi tracks environment?
+     *
+     * @var boolean
+     */
+    protected $multiTracks = true;
+
+    /**
      * The oganization ID
      *
      * @var int
      */
     protected $organizationId;
+
+    /**
+     * The respondent
+     *
+     * @var \Gems_Tracker_Respondent
+     */
+    protected $respondent;
 
     /**
      * The respondent ID
@@ -132,6 +166,10 @@ class TrackUsageOverviewSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
      */
     public function hasHtmlOutput()
     {
+        if (! $this->multiTracks) {
+            return false;
+        }
+
         $this->tracker = $this->loader->getTracker();
 
         if (! $this->respondentTrackId) {
@@ -152,6 +190,14 @@ class TrackUsageOverviewSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
             $this->onEmpty = $this->_('This track is assigned only once to this respondent.');
 
         } else {
+            if ($this->respondent instanceof \Gems_Tracker_Respondent) {
+                if (! $this->respondentId) {
+                    $this->respondentId = $this->respondent->getId();
+                }
+                if (! $this->organizationId) {
+                    $this->organizationId = $this->respondent->getOrganizationId();
+                }
+            }
             $this->caption = $this->_('Assignments of this track to this respondent.');
             $this->onEmpty = $this->_('This track is not assigned to this respondent.');
         }

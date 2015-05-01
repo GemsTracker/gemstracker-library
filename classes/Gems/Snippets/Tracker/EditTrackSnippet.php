@@ -28,22 +28,24 @@
  *
  *
  * @package    Gems
- * @subpackage Snippets
+ * @subpackage Snippets\Tracker
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @version    $Id$
  */
 
+namespace Gems\Snippets\Tracker;
+
 /**
  *
  * @package    Gems
- * @subpackage Snippets
+ * @subpackage Snippets\Tracker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Snippets_EditTrackSnippet extends \Gems_Tracker_Snippets_EditTrackSnippetAbstract
+class EditTrackSnippet extends \Gems_Tracker_Snippets_EditTrackSnippetAbstract
 {
     /**
      *

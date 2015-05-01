@@ -53,6 +53,13 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
     protected $_gemsData;
 
     /**
+     * Allow login info to be loaded
+     *
+     * @var boolean
+     */
+    protected $addLoginCheck = false;
+
+    /**
      *
      * @var \Zend_Db_Adapter_Abstract
      */
@@ -132,10 +139,27 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
      */
     public function afterRegistry()
     {
-        $this->model = $this->loader->getModels()->getRespondentModel(true);
+        parent::afterRegistry();
 
+        $this->model = $this->loader->getModels()->getRespondentModel(true);
+        if ($this->addLoginCheck) {
+            $this->model->addLoginCheck();
+        }
         // Load the data
         $this->refresh();
+    }
+
+    /**
+     * Set menu parameters from this token
+     *
+     * @param \Gems_Menu_ParameterSource $source
+     * @return \Gems_Tracker_RespondentTrack (continuation pattern)
+     */
+    public function applyToMenuSource(\Gems_Menu_ParameterSource $source)
+    {
+        $source->setPatient($this->getPatientNumber(), $this->getOrganizationId());
+
+        return $this;
     }
 
     /**

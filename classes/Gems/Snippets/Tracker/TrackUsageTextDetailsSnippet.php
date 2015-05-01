@@ -55,6 +55,13 @@ class TrackUsageTextDetailsSnippet extends \MUtil_Snippets_SnippetAbstract
     protected $db;
 
     /**
+     * Are we working in a multi tracks environment?
+     *
+     * @var boolean
+     */
+    protected $multiTracks = true;
+
+    /**
      * When true the name is show as a header
      * @var boolean
      */
@@ -125,17 +132,6 @@ class TrackUsageTextDetailsSnippet extends \MUtil_Snippets_SnippetAbstract
     }
 
     /**
-     * Used by ProjectTracksAction_>showAction
-     *
-     * @deprecated
-     * @return array
-     */
-    public function getTrackData()
-    {
-        return $this->trackData;
-    }
-
-    /**
      * The place to check if the data set in the snippet is valid
      * to generate the snippet.
      *
@@ -148,6 +144,10 @@ class TrackUsageTextDetailsSnippet extends \MUtil_Snippets_SnippetAbstract
      */
     public function hasHtmlOutput()
     {
+        if (! $this->multiTracks) {
+            return false;
+        }
+
         if (! $this->trackData) {
             if (! $this->trackId) {
                 if ($this->trackEngine instanceof \Gems_Tracker_Engine_TrackEngineInterface) {

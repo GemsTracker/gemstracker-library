@@ -77,6 +77,13 @@ class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends \Gems_Snippets_Mode
     protected $request;
 
     /**
+     * The respondent
+     *
+     * @var \Gems_Tracker_Respondent
+     */
+    protected $respondent;
+
+    /**
      * Optional, required when editing or $respondentTrackId should be set
      *
      * @var \Gems_Tracker_RespondentTrack
@@ -98,12 +105,6 @@ class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends \Gems_Snippets_Mode
     protected $routeAction = 'show-track';
 
     /**
-     *
-     * @var \Zend_Session_Namespace
-     */
-    protected $session;
-
-    /**
      * Optional, required when creating or $trackId should be set
      *
      * @var \Gems_Tracker_Engine_TrackEngineInterface
@@ -118,7 +119,7 @@ class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends \Gems_Snippets_Mode
     protected $trackId;
 
     /**
-     * Optional, required when creating or $session should be set
+     * Optional, required when creating or loader should be set
      *
      * @var int The user Id of the one doing the changing
      */
@@ -199,6 +200,15 @@ class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends \Gems_Snippets_Mode
      */
     public function hasHtmlOutput()
     {
+        if ($this->respondent instanceof \Gems_Tracker_Respondent) {
+            if (! $this->patientId) {
+                $this->patientId = $this->respondent->getPatientNumber();
+            }
+            if (! $this->organizationId) {
+                $this->organizationId = $this->respondent->getOrganizationId();
+            }
+        }
+
         // Try to get $this->respondentTrackId filled
         if (! $this->respondentTrackId) {
             if ($this->respondentTrack) {
@@ -213,8 +223,8 @@ class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends \Gems_Snippets_Mode
         }
 
         // Set the user id
-        if ((! $this->userId) && $this->session) {
-            $this->userId = $this->session->user_id;
+        if (! $this->userId) {
+            $this->userId = $this->loader->getCurrentUser()->getUserId();
         }
 
         if ($this->respondentTrack) {

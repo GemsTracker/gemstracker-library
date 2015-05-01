@@ -162,7 +162,7 @@ class TrackSurveyOverviewSnippet extends \Gems_Snippets_MenuSnippetAbstract
                 $this->trackName = $this->trackEngine->getTrackName();
             }
         }
-        return (boolean) $this->trackData && parent::hasHtmlOutput();
+        return (boolean) $this->trackName && parent::hasHtmlOutput();
     }
 
     public static function oneLine($line)
