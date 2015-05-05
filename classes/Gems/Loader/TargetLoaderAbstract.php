@@ -35,7 +35,7 @@
  */
 
 /**
- * TargetLoaderAbstract is used for classes that chain from Gems_Loader but are
+ * TargetLoaderAbstract is used for classes that chain from \Gems_Loader but are
  * also a target themselves.
  *
  * As these classes may need setting of values this subclass implements the
@@ -47,7 +47,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class Gems_Loader_TargetLoaderAbstract extends Gems_Loader_LoaderAbstract implements MUtil_Registry_TargetInterface
+class Gems_Loader_TargetLoaderAbstract extends \Gems_Loader_LoaderAbstract implements \MUtil_Registry_TargetInterface
 {
     /**
      * Called after the check that all required registry values

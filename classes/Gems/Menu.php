@@ -370,6 +370,10 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
                     ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
                     ->setParameterFilter(\Gems_Model::ID_TYPE, 'token');
 
+            $subPage->addAction($this->_('Insert'), 'pr.track.insert', 'insert')
+                    ->setNamedParameters($params)
+                    ->setHiddenOrgId($orgId);
+
         } else {
 
             $trPage = $page->addPage($this->_('Tracks'), 'pr.track', 'track');
@@ -382,14 +386,14 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
                     ->addNamedParameters(\Gems_Model::TRACK_ID, 'gtr_id_track')
                     ->setHiddenOrgId($orgId);
 
-            $trPage->addAction($this->_('Insert'), 'pr.track.insert', 'insert')
-                    ->setNamedParameters($params)
-                    ->addNamedParameters(\Gems_Model::SURVEY_ID, 'gsu_id_survey')
-                    ->setHiddenOrgId($orgId);
-
             $trPage->addAction($this->_('Assignments'), 'pr.track', 'view')
                     ->setNamedParameters($params)
                     ->addNamedParameters(\Gems_Model::TRACK_ID, 'gtr_id_track')
+                    ->setHiddenOrgId($orgId);
+
+            $trPage->addAction($this->_('Insert'), 'pr.track.insert', 'insert')
+                    ->setNamedParameters($params)
+                    // ->addNamedParameters(\Gems_Model::SURVEY_ID, 'gsu_id_survey')
                     ->setHiddenOrgId($orgId);
 
             $itemPage = $trPage->addAction($this->_('Show track'), 'pr.track', 'show-track')

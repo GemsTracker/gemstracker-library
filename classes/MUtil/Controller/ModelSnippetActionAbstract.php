@@ -169,7 +169,6 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends \MUtil_Contro
      * The parameters used for the edit actions, overrules any values in
      * $this->createEditParameters.
      *
-     *
      * When the value is a function name of that object, then that functions is executed
      * with the array key as single parameter and the return value is set as the used value
      * - unless the key is an integer in which case the code is executed but the return value
@@ -178,6 +177,20 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends \MUtil_Contro
      * @var array Mixed key => value array for snippet initialization
      */
     protected $createParameters = array();
+
+    /**
+     * Model level parameters used for all actions, overruled by any values set in any other
+     * parameters array except the private $_defaultParamters values in this module.
+     *
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $defaultParameters = array();
 
     /**
      * The default search data to use.
@@ -349,7 +362,7 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends \MUtil_Contro
     {
         $output = array();
 
-        foreach ($input + $this->_defaultParameters as $key => $value) {
+        foreach ($input + $this->defaultParameters + $this->_defaultParameters as $key => $value) {
             if (is_string($value) && method_exists($this, $value)) {
                 $value = $this->$value($key);
 

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2014, Erasmus MC
+ * Copyright (c) 2015, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -18,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL MAGNAFACTA BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: RespondentLogAction.php 2493 2015-04-15 16:29:48Z matijsdejong $
+ * @version    $Id: RespondentChildActionAbstract.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 /**
@@ -42,12 +42,20 @@
  * @subpackage Default
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.7.1 16-apr-2015 17:36:20
+ * @since      Class available since version 1.7.1 5-mei-2015 13:15:49
  */
-class Gems_Default_RespondentLogAction extends \Gems_Default_LogAction
+abstract class Gems_Default_RespondentChildActionAbstract extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
-     * The parameters used for the autofilter action.
+     *
+     * @var \Gems_Tracker_Respondent
+     */
+    private $_respondent;
+
+    /**
+     * Model level parameters used for all actions, overruled by any values set in any other
+     * parameters array except the private $_defaultParamters values in this module.
+     *
      *
      * When the value is a function name of that object, then that functions is executed
      * with the array key as single parameter and the return value is set as the used value
@@ -56,7 +64,16 @@ class Gems_Default_RespondentLogAction extends \Gems_Default_LogAction
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = array('extraFilter' => 'getRespondentFilter');
+    protected $defaultParameters = array(
+        'respondent' => 'getRespondent',
+    );
+
+    /**
+     * The snippets used for the index action, before those in autofilter
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'AutosearchInRespondentSnippet');
 
     /**
      * Get the respondent object
@@ -65,32 +82,20 @@ class Gems_Default_RespondentLogAction extends \Gems_Default_LogAction
      */
     protected function getRespondent()
     {
-        static $respondent;
-
-        if (! $respondent) {
+        if (! $this->_respondent) {
             $patientNumber  = $this->_getParam(\MUtil_Model::REQUEST_ID1);
             $organizationId = $this->_getParam(\MUtil_Model::REQUEST_ID2);
 
-            $respondent = $this->loader->getRespondent($patientNumber, $organizationId);
+            $this->_respondent = $this->loader->getRespondent($patientNumber, $organizationId);
 
-            if (! $respondent->exists) {
+            if (! $this->_respondent->exists) {
                 throw new \Gems_Exception($this->_('Unknown respondent.'));
             }
-            
-            $respondent->applyToMenuSource($this->menu->getParameterSource());
+
+            $this->_respondent->applyToMenuSource($this->menu->getParameterSource());
         }
 
-        return $respondent;
-    }
-
-    /**
-     * Get filter for current respondent
-     *
-     * @return array
-     */
-    public function getRespondentFilter()
-    {
-        return array('gla_respondent_id' => $this->getRespondentId());
+        return $this->_respondent;
     }
 
     /**

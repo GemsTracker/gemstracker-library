@@ -154,12 +154,17 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
      */
     public function autofilterAction($resetMvc = true)
     {
+        $htmlOrig = $this->html;
+        $div      = $this->html->div(array('id' => 'autofilter_target', 'class' => 'table-container'));
+
         // Already done when this value is false
         if ($resetMvc) {
             $this->autofilterParameters = $this->autofilterParameters + $this->_autofilterExtraParameters;
         }
 
-        return parent::autofilterAction($resetMvc);
+        $this->html = $div;
+        parent::autofilterAction($resetMvc);
+        $this->html = $htmlOrig;
     }
 
     /**

@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Model_AppointmentModel extends Gems_Model_JoinModel
+class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
 {
     /**
      * The number of tokens changed by the last save
@@ -61,24 +61,18 @@ class Gems_Model_AppointmentModel extends Gems_Model_JoinModel
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
     /**
-     *
-     * @var Zend_Translate
-     */
-    protected $translate;
-
-    /**
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     protected $util;
 
@@ -97,8 +91,8 @@ class Gems_Model_AppointmentModel extends Gems_Model_JoinModel
                 false
                 );
 
-        $this->addColumn(new Zend_Db_Expr("'appointment'"), Gems_Model::ID_TYPE);
-        $this->setKeys(array(Gems_Model::APPOINTMENT_ID => 'gap_id_appointment'));
+        $this->addColumn(new \Zend_Db_Expr("'appointment'"), \Gems_Model::ID_TYPE);
+        $this->setKeys(array(\Gems_Model::APPOINTMENT_ID => 'gap_id_appointment'));
     }
 
     /**
@@ -207,7 +201,10 @@ class Gems_Model_AppointmentModel extends Gems_Model_JoinModel
 
         $dels = $this->loader->getAgenda()->getStatusKeysInactiveDbQuoted();
         if ($dels) {
-            $this->addColumn(new Zend_Db_Expr("CASE WHEN gap_status IN ($dels) THEN 'deleted' ELSE '' END "), 'row_class');
+            $this->addColumn(
+                    new \Zend_Db_Expr("CASE WHEN gap_status IN ($dels) THEN 'deleted' ELSE '' END "),
+                    'row_class'
+                    );
         }
 
         return $this;
@@ -348,7 +345,7 @@ class Gems_Model_AppointmentModel extends Gems_Model_JoinModel
                 $this->_changedTokenCount += $appointment->updateTracks();
             }
         }
-        // MUtil_Echo::track($this->_changedTokenCount);
+        // \MUtil_Echo::track($this->_changedTokenCount);
 
         return $returnValues;
     }

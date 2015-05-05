@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Model extends Gems_Loader_TargetLoaderAbstract
+class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
 {
     const ID_TYPE = 'id_type';
 
@@ -79,7 +79,7 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
     const TRACK_ID = 'tr';
 
     /**
-     * Allows sub classes of Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
+     * Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
@@ -87,13 +87,13 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
@@ -105,7 +105,7 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
     public $respondentLoginIdField  = 'gr2o_patient_nr';
 
     /**
-     * @var Zend_Translate
+     * @var \Zend_Translate
      */
     protected $translate;
 
@@ -117,36 +117,36 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
     protected $userIdLen = 8;
 
     /**
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     protected $util;
 
     /**
      * Link the model to the user_logins table.
      *
-     * @param Gems_Model_JoinModel $model
+     * @param \Gems_Model_JoinModel $model
      * @param string $loginField Field that links to login name field.
      * @param string $organizationField Field that links to the organization field.
      */
-    protected function addUserLogin(Gems_Model_JoinModel $model, $loginField, $organizationField)
+    protected function addUserLogin(\Gems_Model_JoinModel $model, $loginField, $organizationField)
     {
         $model->addTable(
                 'gems__user_logins',
                 array($loginField => 'gul_login', $organizationField => 'gul_id_organization'),
                 'gul',
-                MUtil_Model_DatabaseModelAbstract::SAVE_MODE_INSERT |
-                MUtil_Model_DatabaseModelAbstract::SAVE_MODE_UPDATE |
-                MUtil_Model_DatabaseModelAbstract::SAVE_MODE_DELETE
+                \MUtil_Model_DatabaseModelAbstract::SAVE_MODE_INSERT |
+                \MUtil_Model_DatabaseModelAbstract::SAVE_MODE_UPDATE |
+                \MUtil_Model_DatabaseModelAbstract::SAVE_MODE_DELETE
                 );
     }
 
     /**
      * Link the model to the user_passwords table.
      *
-     * @param Gems_Model_JoinModel $model
+     * @param \Gems_Model_JoinModel $model
      * @deprecated since version 1.5.4
      */
-    public static function addUserPassword(Gems_Model_JoinModel $model)
+    public static function addUserPassword(\Gems_Model_JoinModel $model)
     {
         $model->addLeftTable('gems__user_passwords', array('gul_id_user' => 'gup_id_user'), 'gup');
     }
@@ -154,7 +154,7 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
     /**
      * Load project specific application model or general Gems model otherwise
      *
-     * @return Gems_Model_AppointmentModel
+     * @return \Gems_Model_AppointmentModel
      */
     public function createAppointmentModel()
     {
@@ -164,7 +164,7 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
     /**
      * Create a Gems project wide unique user id
      *
-     * @see Gems_Model_RespondentModel
+     * @see \Gems_Model_RespondentModel
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
@@ -175,7 +175,7 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
     public function createGemsUserId($value, $isNew = false, $name = null, array $context = array())
     {
         if ($isNew || (null === $value)) {
-            $creationTime = new MUtil_Db_Expr_CurrentTimestamp();
+            $creationTime = new \MUtil_Db_Expr_CurrentTimestamp();
 
             do {
                 $out = mt_rand(1, 9);
@@ -189,7 +189,7 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
                     if (0 === $this->db->insert('gems__user_ids', array('gui_id_user' => $out, 'gui_created' => $creationTime))) {
                         $out = null;
                     }
-                } catch (Zend_Db_Exception $e) {
+                } catch (\Zend_Db_Exception $e) {
                     $out = null;
                 }
             } while (null === $out);
@@ -213,7 +213,7 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
     /**
      * Load project specific model or general Gems model otherwise
      *
-     * @return Gems_Model_RespondentModel
+     * @return \Gems_Model_RespondentModel
      */
     public function createRespondentModel()
     {
@@ -228,7 +228,7 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
     /**
      * Load the commtemplate model
      *
-     * @return Gems_Model_CommtemplateModel
+     * @return \Gems_Model_CommtemplateModel
      */
     public function getCommtemplateModel()
     {
@@ -255,7 +255,7 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
      * Load the organization model
      *
      * @param array|mixed $styles
-     * @return Gems_Model_OrganizationModel
+     * @return \Gems_Model_OrganizationModel
      */
     public function getOrganizationModel($styles = array())
     {
@@ -268,7 +268,7 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
      * Load project specific respondent model or general Gems model otherwise
      *
      * @param boolean $detail When true more information needed for individual item display is added to the model.
-     * @return Gems_Model_RespondentModel
+     * @return \Gems_Model_RespondentModel
      */
     public function getRespondentModel($detailed)
     {
@@ -289,7 +289,7 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
             $model->setIfExists('gor_name', 'label', $this->translate->_('Organization'));
         }
         $model->setIfExists('gr2o_opened',        'label', $this->translate->_('Opened'), 'formatFunction', $translated->formatDateTime);
-        $model->setIfExists('gr2o_consent',       'label', $this->translate->_('Consent'), 'multiOptions', MUtil_Lazy::call($this->util->getDbLookup()->getUserConsents), 'default', $this->util->getDefaultConsent());
+        $model->setIfExists('gr2o_consent',       'label', $this->translate->_('Consent'), 'multiOptions', \MUtil_Lazy::call($this->util->getDbLookup()->getUserConsents), 'default', $this->util->getDefaultConsent());
 
         $model->setIfExists('grs_email',          'label', $this->translate->_('E-Mail'));
         $model->setIfExists('gr2o_mailable',
@@ -311,7 +311,7 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
             $model->setIfExists('grs_last_name',      'label', $this->translate->_('Last name'));
         }
         $model->set('name',                       'label', $this->translate->_('Name'),
-            'column_expression', new Zend_Db_Expr("CONCAT(COALESCE(CONCAT(grs_last_name, ', '), '-, '), COALESCE(CONCAT(grs_first_name, ' '), ''), COALESCE(grs_surname_prefix, ''))"),
+            'column_expression', new \Zend_Db_Expr("CONCAT(COALESCE(CONCAT(grs_last_name, ', '), '-, '), COALESCE(CONCAT(grs_first_name, ' '), ''), COALESCE(grs_surname_prefix, ''))"),
             'fieldlist', array('grs_last_name', 'grs_first_name', 'grs_surname_prefix'));
 
         $model->setIfExists('grs_address_1',      'label', $this->translate->_('Street'));
@@ -321,7 +321,7 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
 
         $model->setIfExists('grs_phone_1',        'label', $this->translate->_('Phone'));
 
-        $model->setIfExists('grs_birthday',       'label', $this->translate->_('Birthday'), 'dateFormat', Zend_Date::DATE_MEDIUM);
+        $model->setIfExists('grs_birthday',       'label', $this->translate->_('Birthday'), 'dateFormat', \Zend_Date::DATE_MEDIUM);
 
         $model->setIfExists('grs_iso_lang',       'default', 'nl');
 
@@ -331,7 +331,7 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
     /**
      * Get the respondent relation model
      *
-     * @return Gems_Model_RespondentRelationModel
+     * @return \Gems_Model_RespondentRelationModel
      */
     public function getRespondentRelationModel()
     {
@@ -341,7 +341,7 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
     /**
      * Load the staffmodel
      *
-     * @return Gems_Model_StaffModel
+     * @return \Gems_Model_StaffModel
      */
     public function getStaffModel()
     {
@@ -356,10 +356,10 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
     /**
      * Set a field in this model as a gems unique user id
      *
-     * @param MUtil_Model_DatabaseModelAbstract $model
+     * @param \MUtil_Model_DatabaseModelAbstract $model
      * @param string $idField Field that uses global id.
      */
-    public function setAsGemsUserId(MUtil_Model_DatabaseModelAbstract $model, $idField)
+    public function setAsGemsUserId(\MUtil_Model_DatabaseModelAbstract $model, $idField)
     {
         // Make sure field is added to save when not there
         $model->setAutoSave($idField);
@@ -371,11 +371,11 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
     /**
      * Function that automatically fills changed, changed_by, created and created_by fields with a certain prefix.
      *
-     * @param MUtil_Model_DatabaseModelAbstract $model
+     * @param \MUtil_Model_DatabaseModelAbstract $model
      * @param string $prefix Three letter code
      * @param int $userid Gems user id
      */
-    public static function setChangeFieldsByPrefix(MUtil_Model_DatabaseModelAbstract $model, $prefix, $userid = null)
+    public static function setChangeFieldsByPrefix(\MUtil_Model_DatabaseModelAbstract $model, $prefix, $userid = null)
     {
         $changed_field    = $prefix . '_changed';
         $changed_by_field = $prefix . '_changed_by';
@@ -386,9 +386,9 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
             $model->set($field, 'elementClass', 'none');
         }
 
-        $model->setOnSave($changed_field, new MUtil_Db_Expr_CurrentTimestamp());
+        $model->setOnSave($changed_field, new \MUtil_Db_Expr_CurrentTimestamp());
         $model->setSaveOnChange($changed_field);
-        $model->setOnSave($created_field, new MUtil_Db_Expr_CurrentTimestamp());
+        $model->setOnSave($created_field, new \MUtil_Db_Expr_CurrentTimestamp());
         $model->setSaveWhenNew($created_field);
 
         if (! $userid) {

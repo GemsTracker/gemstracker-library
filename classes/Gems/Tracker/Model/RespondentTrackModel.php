@@ -35,6 +35,8 @@
  * @version    $Id$
  */
 
+use MUtil\Model\Dependency\OffOnElementsDependency;
+
 /**
  * The RespondentTrackModel is the model used to display and edit
  * respondent tracks in snippets.
@@ -124,9 +126,7 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
      */
     public function addEditTracking()
     {
-        $changer = new \MUtil_Model_Type_ChangeTracker($this, 1, 0);
-
-        $changer->apply('gr2t_end_date_manual', 'gr2t_end_date');
+        $this->addDependency(new OffOnElementsDependency('gr2t_end_date_manual',  'gr2t_end_date'));
 
         return $this;
     }
@@ -198,15 +198,22 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
         // Integrate fields
         $trackEngine->addFieldsToModel($this, $edit);
 
-        $this->set('gr2t_track_info',   'label', $this->_('Description'));
-        $this->set('assigned_by',       'label', $this->_('Assigned by'));
-        $this->set('gr2t_start_date',   'label', $this->_('Start'),
+        $this->set('gr2t_track_info',      'label', $this->_('Description'));
+        $this->set('assigned_by',          'label', $this->_('Assigned by'));
+        $this->set('gr2t_start_date',      'label', $this->_('Start'),
             'dateFormat', 'dd-MM-yyyy',
             'formatFunction', $formatDate);
-        $this->set('gr2t_end_date',     'label', $this->_('Ending on'),
+        
+        $manual = array(0 => $this->_('Automatic'), 1 => $this->_('Manually'));
+        $this->set('gr2t_end_date_manual', 'label', $this->_('Set ending on'),
+                'elementClass', 'Radio',
+                'multiOptions', $manual,
+                'separator', ' '
+                );
+        $this->set('gr2t_end_date',        'label', $this->_('Ending on'),
             'dateFormat', 'dd-MM-yyyy',
             'formatFunction', $formatDate);
-        $this->set('gr2t_comment',      'label', $this->_('Comment'));
+        $this->set('gr2t_comment',         'label', $this->_('Comment'));
 
         return $this;
     }

@@ -298,4 +298,21 @@ class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends \Gems_Snippets_Mode
                     );
         }
     }
+
+    /**
+     * If menu item does not exist or is not allowed, redirect to index
+     *
+     * @return \Gems_Snippets_ModelFormSnippetAbstract
+     */
+    protected function setAfterSaveRoute()
+    {
+        parent::setAfterSaveRoute();
+
+        if (is_array($this->afterSaveRouteUrl)) {
+            if (isset($this->afterSaveRouteUrl['action'], $this->formData['gr2t_id_respondent_track']) &&
+                    'index' !== $this->afterSaveRouteUrl['action']) {
+                $this->afterSaveRouteUrl[\Gems_Model::RESPONDENT_TRACK] = $this->formData['gr2t_id_respondent_track'];
+            }
+        }
+    }
 }

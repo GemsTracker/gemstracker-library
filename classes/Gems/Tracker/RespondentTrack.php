@@ -73,6 +73,12 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
 
     /**
      *
+     * @var \Gems_Tracker_Respondent
+     */
+    protected $_respondentObject = null;
+
+    /**
+     *
      * @var array The gems__respondent2track data
      */
     protected $_respTrackData;
@@ -100,6 +106,12 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
+
+    /**
+     *
+     * @var \Gems_Loader
+     */
+    protected $loader;
 
     /**
      *
@@ -353,9 +365,10 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     public function applyToMenuSource(\Gems_Menu_ParameterSource $source)
     {
         $source->setRespondentTrackId($this->_respTrackId);
-        $source->setPatient($this->getPatientNumber(), $this->getOrganizationId());
-        $source->setTrackId($this->getTrackId());
         $source->offsetSet('can_edit', $this->hasSuccesCode());
+
+        $this->getRespondent()->applyToMenuSource($source);
+        $this->getTrackEngine()->applyToMenuSource($source);
 
         return $this;
     }
@@ -790,6 +803,25 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     public function getReceptionCode()
     {
         return $this->util->getReceptionCode($this->_respTrackData['gr2t_reception_code']);
+    }
+
+    /**
+     * Get the respondent linked to this token
+     *
+     * @return \Gems_Tracker_Respondent
+     */
+    public function getRespondent()
+    {
+        $patientNumber  = $this->getPatientNumber();
+        $organizationId = $this->getOrganizationId();
+
+        if (! ($this->_respondentObject instanceof \Gems_Tracker_Respondent)
+                || $this->_respondentObject->getPatientNumber()  !== $patientNumber
+                || $this->_respondentObject->getOrganizationId() !== $organizationId) {
+            $this->_respondentObject = $this->loader->getRespondent($patientNumber, $organizationId);
+        }
+
+        return $this->_respondentObject;
     }
 
     /**

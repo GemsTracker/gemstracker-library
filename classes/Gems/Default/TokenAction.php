@@ -76,6 +76,31 @@ class Gems_Default_TokenAction extends \Gems_Default_TokenSearchActionAbstract
     }
 
     /**
+     * Get the respondent object
+     *
+     * @return \Gems_Tracker_Respondent
+     */
+    protected function getRespondent()
+    {
+        static $respondent;
+
+        if (! $respondent) {
+            $patientNumber  = $this->_getParam(\MUtil_Model::REQUEST_ID1);
+            $organizationId = $this->_getParam(\MUtil_Model::REQUEST_ID2);
+
+            $respondent = $this->loader->getRespondent($patientNumber, $organizationId);
+
+            if (! $respondent->exists) {
+                throw new \Gems_Exception($this->_('Unknown respondent.'));
+            }
+
+            $respondent->applyToMenuSource($this->menu->getParameterSource());
+        }
+
+        return $respondent;
+    }
+
+    /**
      * Retrieve the respondent id
      * (So we don't need to repeat that for every snippet.)
      *
@@ -83,22 +108,7 @@ class Gems_Default_TokenAction extends \Gems_Default_TokenSearchActionAbstract
      */
     public function getRespondentId()
     {
-        static $respondentId = false;
-
-        if (false !== $respondentId) {
-            return $respondentId;
-        }
-
-        $orgId        = $this->_getParam(\MUtil_Model::REQUEST_ID2);
-        $patientNr    = $this->_getParam(\MUtil_Model::REQUEST_ID1);
-
-        if ($orgId && $patientNr) {
-            $respondentId = $this->util->getDbLookup()->getRespondentId($patientNr, $orgId);
-        } else {
-            $respondentId = null;
-        }
-
-        return $respondentId;
+        return $this->getRespondent()->getId();
     }
 
     /**

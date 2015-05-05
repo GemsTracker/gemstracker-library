@@ -74,6 +74,18 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends \Gems_Snippets_Model
     public $menuActionController = 'appointment';
 
     /**
+     *
+     * @var \MUtil_Model_ModelAbstract
+     */
+    protected $model;
+
+    /**
+     *
+     * @var \Gems_Tracker_Respondent
+     */
+    protected $respondent;
+
+    /**
      * Adds columns from the model to the bridge that creates the browse table.
      *
      * Overrule this function to add different columns to the browse table, without
@@ -154,8 +166,12 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends \Gems_Snippets_Model
      */
     protected function createModel()
     {
-        $model = $this->loader->getModels()->createAppointmentModel();
-        $model->applyBrowseSettings();
+        if ($this->model instanceof \Gems_Model_AppointmentModel) {
+            $model = $this->model;
+        } else {
+            $model = $this->loader->getModels()->createAppointmentModel();
+            $model->applyBrowseSettings();
+        }
 
         $model->addColumn(new \Zend_Db_Expr("CONVERT(gap_admission_time, DATE)"), 'date_only');
         $model->set('date_only', 'formatFunction', array($this, 'formatDate'));
@@ -168,6 +184,13 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends \Gems_Snippets_Model
         // $this->_timeImg           = \MUtil_Html::create('img', array('src' => 'stopwatch.png', 'alt' => ''));
 
         $model->set('gr2o_patient_nr', 'label', $this->_('Respondent nr'));
+
+        if ($this->respondent instanceof \Gems_Tracker_Respondent) {
+            $model->addFilter(array(
+                'gap_id_user' => $this->respondent->getId(),
+                'gap_id_organization' => $this->respondent->getOrganizationId(),
+                ));
+        }
 
         return $model;
     }
@@ -203,21 +226,5 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends \Gems_Snippets_Model
                 // $this->_timeImg,
                 \MUtil_Date::format($value, ' HH:mm ' . \Zend_Date::WEEKDAY_SHORT, $this->_dateStorageFormat)
                 );
-    }
-
-    /**
-     * Overrule to implement snippet specific filtering and sorting.
-     *
-     * @param \MUtil_Model_ModelAbstract $model
-     */
-    protected function processFilterAndSort(\MUtil_Model_ModelAbstract $model)
-    {
-        $model->addFilter(array(
-            'gr2o_patient_nr'      => $this->request->getParam(\MUtil_Model::REQUEST_ID1),
-            'gr2o_id_organization' => $this->request->getParam(\MUtil_Model::REQUEST_ID2),
-            // 'gap_status'           => $this->loader->getAgenda()->getStatusKeysActive(),
-            ));
-
-        parent::processFilterAndSort($model);
     }
 }

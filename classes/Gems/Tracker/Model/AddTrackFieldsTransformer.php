@@ -112,10 +112,14 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
      */
     public function transformLoad(\MUtil_Model_ModelAbstract $model, array $data, $new = false, $isPostData = false)
     {
+        if ($isPostData) {
+            return $data;
+        }
+        
         $empty = false;
 
         foreach ($data as $key => $row) {
-            
+
             if (isset($row[$this->respTrackIdField]) && $row[$this->respTrackIdField]) {
                 $fields = $this->fieldsDefinition->getFieldsDataFor($row[$this->respTrackIdField]);
             } else {

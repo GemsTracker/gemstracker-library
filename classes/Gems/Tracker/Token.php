@@ -325,6 +325,9 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
             }
 
             $source->setTokenId($this->_tokenId);
+            $this->getRespondentTrack()->applyToMenuSource($source);
+
+            $this->getRespondent()->applyToMenuSource($source);
             $source->setPatient($this->_gemsData['gr2o_patient_nr'], $this->_gemsData['gto_id_organization']);
             $source->setRespondentTrackId($this->_gemsData['gto_id_respondent_track']);
             $source->setTrackId($this->_gemsData['gto_id_track']);
@@ -993,11 +996,11 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
      */
     public function getRespondent()
     {
-        $patientNumber = $this->getPatientNumber();
+        $patientNumber  = $this->getPatientNumber();
         $organizationId = $this->getOrganizationId();
 
         if (! ($this->_respondentObject instanceof \Gems_Tracker_Respondent)
-                || $this->_respondentObject->getPatientNumber() !== $patientNumber
+                || $this->_respondentObject->getPatientNumber()  !== $patientNumber
                 || $this->_respondentObject->getOrganizationId() !== $organizationId) {
             $this->_respondentObject = $this->loader->getRespondent($patientNumber, $organizationId);
         }

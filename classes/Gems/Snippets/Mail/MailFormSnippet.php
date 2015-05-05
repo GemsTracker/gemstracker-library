@@ -44,13 +44,13 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbstract
+class Gems_Snippets_Mail_MailFormSnippet extends \MUtil_Snippets_ModelSnippetAbstract
 {
     protected $afterSendRouteUrl;
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
@@ -78,13 +78,13 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
 
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
     /**
      *
-     * @var Gems_Mail_MailElements
+     * @var \Gems_Mail_MailElements
      */
     protected $mailElements;
 
@@ -96,7 +96,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
 
     /**
      *
-     * @var Gems_Menu
+     * @var \Gems_Menu
      */
     protected $menu;
 
@@ -104,7 +104,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
 
     /**
      *
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     protected $project;
 
@@ -117,7 +117,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
 
     /**
      *
-     * @var Zend_Session
+     * @var \Zend_Session
      */
     protected $session;
 
@@ -129,7 +129,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
 
     /**
      *
-     * @var Zend_View
+     * @var \Zend_View
      */
     protected $view;
 
@@ -148,10 +148,10 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      */
-    protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addFormElements(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
     {
         $bridge->addHtml('to', 'label', $this->_('To'));
         $bridge->addHtml('prefered_language', 'label', $this->_('Prefered Language'));
@@ -165,7 +165,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
         }
 
         $mailBody = $bridge->addElement($this->mailElements->createBodyElement('mailBody', $this->_('Message'), $model->get('gctt_body', 'required'), $this->templateOnly));
-        if ($mailBody instanceof Gems_Form_Element_CKEditor) {
+        if ($mailBody instanceof \Gems_Form_Element_CKEditor) {
             $mailBody->config['availablefields'] = $this->mailer->getMailFields();
             $mailBody->config['availablefieldsLabel'] = $this->_('Fields');
 
@@ -189,8 +189,8 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
 
     protected function beforeDisplay()
     {
-        if (!MUtil_Bootstrap::enabled()) {
-            $table = new MUtil_Html_TableElement(array('class' => $this->formClass));
+        if (!\MUtil_Bootstrap::enabled()) {
+            $table = new \MUtil_Html_TableElement(array('class' => $this->formClass));
             $table->setAsFormLayout($this->form, true, true);
 
             // There is only one row with formLayout, so all in output fields get class.
@@ -205,7 +205,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
     protected function createForm()
     {
         if (!$this->form) {
-            $this->form = new Gems_Form(array('class' => 'form-horizontal', 'role' => 'form'));
+            $this->form = new \Gems_Form(array('class' => 'form-horizontal', 'role' => 'form'));
             $this->mailElements->setForm($this->form);
         }
         return $this->form;
@@ -216,7 +216,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
      */
     public function createModel()
     {
-        $this->model = $loader->getModels()->getCommTemplateModel();
+        return $this->loader->getModels()->getCommTemplateModel();
     }
 
     /**
@@ -242,7 +242,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
 
         if ($this->view) {
             if ($disabledTitle) {
-                $el = MUtil_Html::create()->span($text, array('class' => 'disabled'));
+                $el = \MUtil_Html::create()->span($text, array('class' => 'disabled'));
 
                 if ($menuFind && is_array($menuFind)) {
                     $menuFind['allowed'] = true;
@@ -251,7 +251,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
                         $href = $menuItem->toHRefAttribute($requestData);
 
                         if ($href) {
-                            $el = MUtil_Html::create()->a($href, $el);
+                            $el = \MUtil_Html::create()->a($href, $el);
                             $el->target = $menuItem->get('target', '_BLANK');
                         }
                     }
@@ -290,7 +290,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
             $title     = $this->_('Organization does not have an e-mail address.');
             $invalid[] = $key;
         }
-        $options[$key] = $this->createMultiOption(array(MUtil_Model::REQUEST_ID => $organization->getId()),
+        $options[$key] = $this->createMultiOption(array(\MUtil_Model::REQUEST_ID => $organization->getId()),
             $name, $email, $extra, $title,
             array('controller' => 'organization', 'action' => 'edit'));
         $this->fromOptions[$key] = $email;//$name . ' <' . $email . '>';
@@ -343,10 +343,10 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param Zend_View_Abstract $view Just in case it is needed here
-     * @return MUtil_Html_HtmlInterface Something that can be rendered
+     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @return \MUtil_Html_HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view)
     {
 
         // If there is data, populate
@@ -360,7 +360,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
 
         $this->beforeDisplay();
 
-        $htmlDiv = MUtil_Html::div();
+        $htmlDiv = \MUtil_Html::div();
 
         $htmlDiv->h3($this->getTitle());
 
@@ -372,7 +372,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
     /**
      * Returns the model, always use this function
      *
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function getModel()
     {
@@ -391,7 +391,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
      *
      * When hasHtmlOutput() is true this functions should not be called.
      *
-     * @see Zend_Controller_Action_Helper_Redirector
+     * @see \Zend_Controller_Action_Helper_Redirector
      *
      * @return mixed Nothing or either an array or a string that is acceptable for Redector->gotoRoute()
      */
@@ -405,8 +405,11 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
         if ($this->formTitle) {
              return $this->formTitle;
          } else {
-            $title = $this->_('Email to: '). $this->_($this->mailTarget);
-            return $title;
+            $target = $this->_($this->mailTarget);
+            if (is_array($target)) {
+                $target = reset($target);
+            }
+            return sprintf($this->_('Email %s '), $target);
          }
     }
 
@@ -417,7 +420,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see MUtil_Registry_TargetInterface}.
+     * {@see \MUtil_Registry_TargetInterface}.
      *
      * @return boolean
      */
@@ -484,11 +487,11 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
         } else {
             $content = ' ';
         }
-        $htmlView = MUtil_Html::create()->div();
-        $textView = MUtil_Html::create()->div();
+        $htmlView = \MUtil_Html::create()->div();
+        $textView = \MUtil_Html::create()->div();
 
-        $htmlView->div(array('class' => 'mailpreview'))->raw(MUtil_Markup::render($content, 'Bbcode', 'Html'));
-        $textView->pre(array('class' => 'mailpreview'))->raw(MUtil_Markup::render($content, 'Bbcode', 'Text'));
+        $htmlView->div(array('class' => 'mailpreview'))->raw(\MUtil_Markup::render($content, 'Bbcode', 'Html'));
+        $textView->pre(array('class' => 'mailpreview'))->raw(\MUtil_Markup::render($content, 'Bbcode', 'Text'));
 
         $this->formData['preview_html'] = $htmlView;
         $this->formData['preview_text'] = $textView;
@@ -538,13 +541,13 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
             if (count($keys) == 1) {
                 $key = reset($keys);
                 if (isset($this->formData[$key])) {
-                    $this->afterSendRouteUrl[MUtil_Model::REQUEST_ID] = $this->formData[$key];
+                    $this->afterSendRouteUrl[\MUtil_Model::REQUEST_ID] = $this->formData[$key];
                 }
             } else {
                 $i = 1;
                 foreach ($keys as $key) {
                     if (isset($this->formData[$key])) {
-                        $this->afterSendRouteUrl[MUtil_Model::REQUEST_ID . $i] = $this->formData[$key];
+                        $this->afterSendRouteUrl[\MUtil_Model::REQUEST_ID . $i] = $this->formData[$key];
                     }
                     $i++;
                 }

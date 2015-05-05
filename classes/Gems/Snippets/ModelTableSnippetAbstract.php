@@ -82,6 +82,13 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_M
     public $keyboard = false;
 
     /**
+     * Make sure the keyboard id is used only once
+     *
+     * @var boolean
+     */
+    public static $keyboardUsed = false;
+
+    /**
      *
      * @var \Gems_Menu
      */
@@ -322,19 +329,22 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_M
         $table = parent::getHtmlOutput($view);
         $table->getOnEmpty()->class = 'centerAlign';
 
-        if ($this->containingId || $this->keyboard) {
+        if (($this->containingId || $this->keyboard) && (! self::$keyboardUsed)) {
+            // Assign keyboard tracking only once
+            self::$keyboardUsed = true;
+
             $this->applyHtmlAttributes($table);
 
-            $div = \MUtil_Html::create()->div(array(
-                'id' => $this->containingId ? $this->containingId : 'keys_target',
-                'class' => 'table-container'
-                ), $table);
-
-            if ($this->keyboard) {
-                return array($div, new \Gems_JQuery_TableRowKeySelector($div));
-            } else {
-                return $div;
+            // If we are already in a containing div it is simple
+            if ($this->containingId) {
+                return array($table, new \Gems_JQuery_TableRowKeySelector($this->containingId));
             }
+
+            // Create a new containing div
+            $div = \MUtil_Html::create()->div(array('id' => 'keys_target', 'class' => 'table-container'), $table);
+
+            return array($div, new \Gems_JQuery_TableRowKeySelector($div));
+
         } else {
             return $table;
         }

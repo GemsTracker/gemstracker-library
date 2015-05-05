@@ -45,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Default_RespondentMailLogAction extends \Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_RespondentMailLogAction extends \Gems_Default_RespondentChildActionAbstract
 {
     /**
      * The parameters used for the autofilter action.
@@ -64,7 +64,7 @@ class Gems_Default_RespondentMailLogAction extends \Gems_Controller_ModelSnippet
         'onEmpty'       => 'getOnEmptyText',
         'sortParamAsc'  => 'asrt',
         'sortParamDesc' => 'dsrt',
-        'extraSort'   => array('grco_created' => SORT_DESC)
+        'extraSort'     => array('grco_created' => SORT_DESC)
         );
 
     /**

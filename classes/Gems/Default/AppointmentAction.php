@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Default_AppointmentAction extends Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_AppointmentAction extends \Gems_Default_RespondentChildActionAbstract
 {
     /**
      * Appointment ID of current request (if any)
@@ -97,13 +97,6 @@ class Gems_Default_AppointmentAction extends Gems_Controller_ModelSnippetActionA
     protected $indexParameters = array(
         'contentTitle' => 'getContentTitle',
         );
-
-    /**
-     * The snippets used for the index action, before those in autofilter
-     *
-     * @var mixed String or array of snippets name
-     */
-    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'AutosearchInRespondentSnippet');
 
     /**
      * Organization ID of current request

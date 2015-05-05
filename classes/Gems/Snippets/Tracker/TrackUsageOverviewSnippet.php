@@ -103,6 +103,13 @@ class TrackUsageOverviewSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
     protected $respondentId;
 
     /**
+     * The respondent2track
+     *
+     * @var \Gems_Tracker_RespondentTrack
+     */
+    protected $respondentTrack;
+
+    /**
      * The respondent2track ID
      *
      * @var int
@@ -177,14 +184,22 @@ class TrackUsageOverviewSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
         }
 
         if ($this->respondentTrackId) {
-            $respTrack     = $this->tracker->getRespondentTrack($this->respondentTrackId);
-            $this->trackId = $respTrack->getTrackId();
+            if (! $this->respondentTrack instanceof \Gems_Tracker_RespondentTrack) {
+                $this->respondentTrack = $this->tracker->getRespondentTrack($this->respondentTrackId);
+            }
+        }
+        if ($this->respondentTrack instanceof \Gems_Tracker_RespondentTrack) {
+            if (! $this->respondentTrackId) {
+                $this->respondentTrackId = $this->respondentTrack->getRespondentTrackId();
+            }
+
+            $this->trackId = $this->respondentTrack->getTrackId();
 
             if (! $this->respondentId) {
-                $this->respondentId = $respTrack->getRespondentId();
+                $this->respondentId = $this->respondentTrack->getRespondentId();
             }
             if (! $this->organizationId) {
-                $this->organizationId = $respTrack->getOrganizationId();
+                $this->organizationId = $this->respondentTrack->getOrganizationId();
             }
             $this->caption = $this->_('Other assignments of this track to this respondent.');
             $this->onEmpty = $this->_('This track is assigned only once to this respondent.');
@@ -198,7 +213,7 @@ class TrackUsageOverviewSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
                     $this->organizationId = $this->respondent->getOrganizationId();
                 }
             }
-            $this->caption = $this->_('Assignments of this track to this respondent.');
+            $this->caption = $this->_('Existing assignments of this track to this respondent.');
             $this->onEmpty = $this->_('This track is not assigned to this respondent.');
         }
 
