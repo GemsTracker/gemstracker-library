@@ -108,6 +108,23 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
     protected $translated;
 
     /**
+     * Returns a single consent code object.
+     *
+     * @param string $description
+     * @return \Gems\Util\ConsentCode
+     */
+    public function getConsent($description)
+    {
+        static $codes = array();
+
+        if (! isset($codes[$description])) {
+            $codes[$description] = $this->_loadClass('consentCode', true, array($description));
+        }
+
+        return $codes[$description];
+    }
+
+    /**
      * Retrieve the consentCODE to use for rejected responses by the survey system
      * The mapping of actual consents to consentCODEs is done in the gems__consents table
      *

@@ -43,35 +43,35 @@
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
-class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
+class Gems_Util_DbLookup extends \Gems_Registry_TargetAbstract
 {
     /**
      *
-     * @var Zend_Acl
+     * @var \Zend_Acl
      */
     protected $acl;
 
     /**
      *
-     * @var Zend_Cache_Core
+     * @var \Zend_Cache_Core
      */
     protected $cache;
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
     /**
      *
-     * @var Zend_Translate
+     * @var \Zend_Translate
      */
     protected $translate;
 
     /**
      *
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     protected $util;
 
@@ -86,7 +86,7 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
         static $organizations;
 
         if (! $organizations) {
-            $orgId = GemsEscort::getInstance()->getCurrentOrganization();
+            $orgId = \GemsEscort::getInstance()->getCurrentOrganization();
             $organizations = $this->db->fetchPairs('
                 SELECT gor_id_organization, gor_name
                     FROM gems__organizations
@@ -412,7 +412,7 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
      * @param int $respondentId
      * @param int $organizationId
      * @return string A patient nr or null
-     * @throws Gems_Exception When the patient does not exist
+     * @throws \Gems_Exception When the patient does not exist
      */
     public function getPatientNr($respondentId, $organizationId)
     {
@@ -425,7 +425,7 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
             return $result;
         }
 
-        throw new Gems_Exception(
+        throw new \Gems_Exception(
                 sprintf($this->translate->_('Respondent id %s not found.'), $respondentId),
                 200,
                 null,
@@ -439,7 +439,7 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
      * @param string $patientId
      * @param int $organizationId
      * @return int A respondent id or null
-     * @throws Gems_Exception When the respondent does not exist
+     * @throws \Gems_Exception When the respondent does not exist
      */
     public function getRespondentId($patientId, $organizationId)
     {
@@ -452,7 +452,7 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
             return $result;
         }
 
-        throw new Gems_Exception(
+        throw new \Gems_Exception(
                 sprintf($this->translate->_('Patient number %s not found.'), $patientId),
                 200,
                 null,
@@ -466,7 +466,7 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
      * @param string $patientId
      * @param int $organizationId
      * @return array ['id', 'name']
-     * @throws Gems_Exception When the respondent does not exist
+     * @throws \Gems_Exception When the respondent does not exist
      */
     public function getRespondentIdAndName($patientId, $organizationId)
     {
@@ -486,7 +486,7 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
             return $output;
         }
 
-        throw new Gems_Exception(
+        throw new \Gems_Exception(
                 sprintf($this->translate->_('Patient number %s not found.'), $patientId),
                 200,
                 null,
@@ -570,7 +570,7 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
         $results = $this->db->fetchPairs($select);
 
         $results = $results + array(
-            Gems_User_UserLoader::SYSTEM_USER_ID => $this->translate->_('&laquo;system&raquo;'),
+            \Gems_User_UserLoader::SYSTEM_USER_ID => $this->translate->_('&laquo;system&raquo;'),
         );
 
         $this->cache->save($results, $cacheId, array('staff'));

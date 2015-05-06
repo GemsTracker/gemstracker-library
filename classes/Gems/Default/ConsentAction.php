@@ -54,6 +54,20 @@ class Gems_Default_ConsentAction extends \Gems_Controller_ModelSnippetActionAbst
         );
 
     /**
+     * The parameters used for the create and edit actions.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $createEditParameters = array(
+        'cacheTags' => array('consent', 'consents'),
+    );
+
+    /**
      * Creates a model for getModel(). Called only for each new $action.
      *
      * The parameters allow you to easily adapt the model to the current action. The $detailed

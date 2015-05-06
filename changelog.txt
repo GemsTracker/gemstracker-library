@@ -3,6 +3,7 @@ Important changes from 1.7.0 => 1.7.1
 Ignore any messages that a "Column does not exist in table" during the upgrade
 GemsTracker is now auditable. See Respondent => Other Activity Log, Setup => Log Setup, Log and Your account => Activity overview
 Manual or automatic token recalculation is now determined through an input element instead of through 'magic'
+You can select all respondents with or without tracks in the respondent screen
 "Single Survey" tracks are replaced by survey level "insert into track" settings.
     Check code for any 'gtr_track_type'
     These calculated fields are no longer used, instead we just use the original field:

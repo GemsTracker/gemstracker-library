@@ -49,6 +49,19 @@ namespace Gems\Snippets\Tracker;
 class AvailableTracksSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
 {
     /**
+     * Set a fixed model filter.
+     *
+     * Leading _ means not overwritten by sources.
+     *
+     * @var array
+     */
+    protected $_fixedFilter = array(
+        'gtr_active' => 1,
+        'gtr_date_start <= CURRENT_DATE',
+        '(gtr_date_until IS NULL OR gtr_date_until >= CURRENT_DATE)',
+        );
+
+    /**
      * Set a fixed model sort.
      *
      * Leading _ means not overwritten by sources.
@@ -98,14 +111,9 @@ class AvailableTracksSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
         // These values are set for the generic table snippet and
         // should be reset for this snippet
         $this->browse          = false;
-        $this->extraFilter     = array(
-            'gtr_active' => 1,
-            'gtr_date_start <= CURRENT_DATE',
-            '(gtr_date_until IS NULL OR gtr_date_until >= CURRENT_DATE)',
-            "gtr_organizations LIKE '%|$orgId|%'",
-            );
-        $this->menuEditActions = 'create';
-        $this->menuShowActions = 'view';
+        $this->extraFilter[]   = "gtr_organizations LIKE '%|$orgId|%'";
+        $this->menuEditActions = 'view';
+        $this->menuShowActions = 'create';
     }
 
     /**
@@ -132,5 +140,4 @@ class AvailableTracksSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
 
         return $model;
     }
-
 }

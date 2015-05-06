@@ -71,22 +71,25 @@ class Gems_Snippets_RespondentSearchSnippet extends Gems_Snippets_AutosearchForm
     {
         $elements = parent::getAutoSearchElements($data);
 
+        $elements[] = $this->_createCheckboxElement('show_with_track',    $this->_('Has track'));
+        $elements[] = $this->_createCheckboxElement('show_without_track', $this->_('No track'));
+
+
         $user = $this->loader->getCurrentUser();
         if ($user->hasPrivilege('pr.respondent.show-deleted')) {
-            $element = $this->form->createElement('checkbox', 'grc_success');
-            $element->setLabel($this->_('Show active'));
-            $element->getDecorator('Label')->setOption('placement', Zend_Form_Decorator_Abstract::APPEND);
-
-            $elements[] = $element;
+            $elements[] = $this->_createCheckboxElement('grc_success', $this->_('Show active'));
         }
 
         if ($this->model->isMultiOrganization()) {
-            $options = $user->getRespondentOrganizations();
+            $elements[] = \MUtil_Html::create('br');
 
-            $elements[] = $this->_createSelectElement(
+            $element = $this->_createSelectElement(
                     MUtil_Model::REQUEST_ID2,
-                    $options, $this->_('(all organizations)')
+                    $user->getRespondentOrganizations(),
+                    $this->_('(all organizations)')
                     );
+            $element->setLabel($this->_('Organization'));
+            $elements[] = $element;
         }
 
         return $elements;

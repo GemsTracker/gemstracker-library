@@ -289,6 +289,16 @@ class Gems_Util_Translated extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * The date calculation versus manual set
+     *
+     * @return array
+     */
+    public function getDateCalculationOptions()
+    {
+        return array(0 => $this->_('Calculated'), 1 => $this->_('Manually'));
+    }
+
+    /**
      * Get a translated empty value for usage in dropdowns
      *
      * On instantiation of the class via \Gems_Loader this variable will be populated

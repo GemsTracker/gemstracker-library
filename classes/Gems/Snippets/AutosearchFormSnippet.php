@@ -191,6 +191,26 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
      *
      * If $options is a string it is assumed to contain an SQL statement.
      *
+     * @param string $name  Name of the element
+     * @param string $label Label for element
+     * @return \Zend_Form_Element_Checkbox
+     */
+    protected function _createCheckboxElement($name, $label)
+    {
+        if ($name && $label) {
+            $element = $this->form->createElement('checkbox', $name);
+            $element->setLabel($label);
+            $element->getDecorator('Label')->setOption('placement', Zend_Form_Decorator_Abstract::APPEND);
+
+            return $element;
+        }
+    }
+
+    /**
+     * Creates a \Zend_Form_Element_Select
+     *
+     * If $options is a string it is assumed to contain an SQL statement.
+     *
      * @param string        $class   Name of the class to use
      * @param string        $name    Name of the select element
      * @param string|array  $options Can be a SQL select string or key/value array of options

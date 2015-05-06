@@ -179,6 +179,7 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
     {
         $this->resetOrder();
 
+        $translated = $this->util->getTranslated();
         $formatDate = $this->util->getTranslated()->formatDate;
 
         $this->set('gr2o_patient_nr',   'label', $this->_('Respondent number'));
@@ -203,11 +204,11 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
         $this->set('gr2t_start_date',      'label', $this->_('Start'),
             'dateFormat', 'dd-MM-yyyy',
             'formatFunction', $formatDate);
-        
-        $manual = array(0 => $this->_('Automatic'), 1 => $this->_('Manually'));
+
         $this->set('gr2t_end_date_manual', 'label', $this->_('Set ending on'),
+                'description', $this->_('Manually set dates are fixed an will never be (re)calculated.'),
                 'elementClass', 'Radio',
-                'multiOptions', $manual,
+                'multiOptions', $translated->getDateCalculationOptions(),
                 'separator', ' '
                 );
         $this->set('gr2t_end_date',        'label', $this->_('Ending on'),

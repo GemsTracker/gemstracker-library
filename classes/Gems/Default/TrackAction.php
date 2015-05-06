@@ -111,6 +111,7 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
     protected $createParameters = array(
         'createData'  => true,
         'formTitle'   => 'getCreateTrackTitle',
+        'multiTracks' => 'isMultiTracks',
         'trackEngine' => 'getTrackEngine',
         );
 
@@ -265,6 +266,7 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
      */
     protected $showTrackSnippets = array(
         'Generic_ContentTitleSnippet',
+        'Tracker\\SingleSurveyAvailableTracksSnippet',
         'ModelItemTableSnippetGeneric',
         'Tracker\\TrackUsageTextDetailsSnippet',
         'Tracker\\TrackTokenOverviewSnippet',
@@ -608,6 +610,7 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
             if ($this->isMultiTracks()) {
                 throw new \Gems_Exception($this->_('No track found for respondent!'));
             } else {
+                $this->menu->getParameterSource()->offsetSet('track_can_be_created', 1);
                 return null;
             }
         }
@@ -765,16 +768,24 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
      */
     protected function getViewTrackTitle()
     {
-        $respondent  = $this->getRespondent();
         $trackEngine = $this->getTrackEngine();
 
-        // Set params
-        return sprintf(
-                $this->_('%s track assignments for respondent nr %s: %s'),
-                $trackEngine->getTrackName(),
-                $this->_getParam(\MUtil_Model::REQUEST_ID1),
-                $this->getRespondent()->getFullName()
-                );
+        if ($this->isMultiTracks()) {
+            $respondent = $this->getRespondent();
+
+            // Set params
+            return sprintf(
+                    $this->_('%s track assignments for respondent nr %s: %s'),
+                    $trackEngine->getTrackName(),
+                    $this->_getParam(\MUtil_Model::REQUEST_ID1),
+                    $this->getRespondent()->getFullName()
+                    );
+        } else {
+            return sprintf(
+                    $this->_('%s track overview'),
+                    $trackEngine->getTrackName()
+                    );
+        }
     }
 
     /**

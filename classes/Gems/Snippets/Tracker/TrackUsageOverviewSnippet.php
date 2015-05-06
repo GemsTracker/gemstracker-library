@@ -224,7 +224,7 @@ class TrackUsageOverviewSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
             $this->trackId = $this->trackEngine->getTrackId();
         }
 
-        return $this->trackId && $this->respondentId && $this->organizationId;
+        return $this->trackId && $this->respondentId && $this->organizationId && parent::hasHtmlOutput();
     }
 
     /**

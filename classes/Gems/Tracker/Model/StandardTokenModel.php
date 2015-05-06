@@ -220,7 +220,7 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
 
         $this->addDependency(new OffOnElementsDependency('gto_valid_from_manual',  'gto_valid_from'));
         $this->addDependency(new OffOnElementsDependency('gto_valid_until_manual', 'gto_valid_until'));
-        
+
         $this->set('gto_valid_until', 'validators[dateAfter]',
                 new \MUtil_Validate_Date_DateAfter('gto_valid_from')
                 );
@@ -304,13 +304,15 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
                 );
 
         // Token, editable part
-        $manual = array(0 => $this->_('Automatic'), 1 => $this->_('Manually'));
+        $manual = $translated->getDateCalculationOptions();
         $this->set('gto_valid_from_manual',  'label', $this->_('Set valid from'),
+                'description', $this->_('Manually set dates are fixed an will never be (re)calculated.'),
                 'elementClass', 'Radio',
                 'multiOptions', $manual,
                 'separator', ' '
                 );
         $this->set('gto_valid_from',         'label', $this->_('Valid from'),
+                'description', $this->_('Manually set dates are fixed an will never be (re)calculated.'),
                 'elementClass', 'Date',
                 'formatFunction', $translated->formatDateNever,
                 'tdClass', 'date');

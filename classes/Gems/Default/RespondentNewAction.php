@@ -386,8 +386,44 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Controller_ModelSn
             } else {
                 $this->defaultSearchData[\MUtil_Model::REQUEST_ID2] = $user->getCurrentOrganizationId();
             }
+            $this->defaultSearchData['show_with_track']    = 1;
+            $this->defaultSearchData['show_without_track'] = 1;
+
         }
         return parent::getSearchDefaults();
+    }
+
+    /**
+     * Get the filter to use with the model for searching including model sorts, etc..
+     *
+     * @return array or false
+     */
+    public function getSearchFilter()
+    {
+        $filter = parent::getSearchFilter();
+
+        $with    = isset($filter['show_with_track']) ? $filter['show_with_track'] : false;
+        $without = isset($filter['show_without_track']) ? $filter['show_without_track'] : false;
+
+        if ($with) {
+            if (! $without) {
+                $filter[] = "EXISTS (SELECT * FROM gems__respondent2track
+                       WHERE gr2o_id_user = gr2t_id_user AND gr2o_id_organization = gr2t_id_organization)";
+            }
+        } elseif ($without) {
+            $filter[] = "NOT EXISTS (SELECT * FROM gems__respondent2track
+                   WHERE gr2o_id_user = gr2t_id_user AND gr2o_id_organization = gr2t_id_organization)";
+        } else {
+            $filter[] = '1=0';
+        }
+
+        if (! isset($filter['show_with_track'])) {
+            $filter['show_with_track'] = 1;
+        }
+
+        unset($filter['show_with_track'], $filter['show_without_track']);
+
+        return $filter;
     }
 
     /**

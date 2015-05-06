@@ -173,6 +173,16 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
     }
 
     /**
+     * Get the birthdate
+     *
+     * @return \Gems\Util\ConsentCode
+     */
+    public function getConsent()
+    {
+        return $this->util->getConsent($this->_gemsData['gr2o_consent']);
+    }
+
+    /**
      * Get Email adres of respondent
      * @return string
      */
@@ -337,6 +347,16 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
         }
 
         return null;
+    }
+
+    /**
+     * Return the \Gems_Util_ReceptionCode object
+     *
+     * @return \Gems_Util_ReceptionCode reception code
+     */
+    public function getReceptionCode()
+    {
+        return $this->util->getReceptionCode($this->_gemsData['gr2o_reception_code']);
     }
 
     /**

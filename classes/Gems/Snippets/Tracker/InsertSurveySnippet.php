@@ -386,7 +386,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
         $rounds = $this->getRoundsListAndSetDefault();
         $model  = $this->getModel();
         $model->set('gto_round_order', 'multiOptions', $rounds, 'size', count($rounds));
-        
+
         if (count($rounds) === 1) {
             $model->set('gto_round_order', 'elementClass', 'Exhibitor');
         }
@@ -402,7 +402,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     protected function loadSurvey()
     {
         if (! $this->surveyList) {
-            $this->addMessageInvalid($this->_('Survey insertion impossible: no insertable surveys exist!'));
+            $this->addMessageInvalid($this->_('Survey insertion impossible: no insertable survey exists!'));
         }
         if (count($this->surveyList) === 1) {
             $model = $this->getModel();
@@ -452,7 +452,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
                 $this->formData['gto_id_track'] = key($tracks);
             }
         } else {
-            $this->addMessageInvalid($this->_('Survey insertion impossible: respondent has no tracks!'));
+            $this->addMessageInvalid($this->_('Survey insertion impossible: respondent has no track!'));
             $tracks = $this->util->getTranslated()->getEmptyDropdownArray();
         }
         asort($tracks);
