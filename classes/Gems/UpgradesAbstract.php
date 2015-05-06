@@ -349,7 +349,7 @@ class Gems_UpgradesAbstract extends \Gems_Loader_TargetLoaderAbstract
     public function register($callback, $info = null, $index = null, $context = null)
     {
         if (is_string($callback)) {
-            $callback = array(get_class($this), $callback);
+            $callback = array($this, $callback);
         }
         if (is_callable($callback)) {
             if (! $context) {

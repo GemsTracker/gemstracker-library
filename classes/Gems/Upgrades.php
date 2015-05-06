@@ -56,21 +56,21 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
         //Now set the context
         $this->setContext('gems');
         //And add our patches
-        $this->register(array($this, 'Upgrade143to150'), 'Upgrade from 1.4.3 to 1.5.0');
-        $this->register(array($this, 'Upgrade150to151'), 'Upgrade from 1.5.0 to 1.5.1');
-        $this->register(array($this, 'Upgrade151to152'), 'Upgrade from 1.5.1 to 1.5.2');
-        $this->register(array($this, 'Upgrade152to153'), 'Upgrade from 1.5.2 to 1.5.3');
-        $this->register(array($this, 'Upgrade153to154'), 'Upgrade from 1.5.3 to 1.5.4');
-        $this->register(array($this, 'Upgrade154to155'), 'Upgrade from 1.5.4 to 1.5.5');
-        $this->register(array($this, 'Upgrade155to156'), 'Upgrade from 1.5.5 to 1.5.6');
-        $this->register(array($this, 'Upgrade156to157'), 'Upgrade from 1.5.6 to 1.5.7');
-        $this->register(array($this, 'Upgrade157to16'),  'Upgrade from 1.5.7 to 1.6');
-        $this->register(array($this, 'Upgrade16to161'),  'Upgrade from 1.6.0 to 1.6.1');
-        $this->register(array($this, 'Upgrade161to162'), 'Upgrade from 1.6.1 to 1.6.2');
-        $this->register(array($this, 'Upgrade162to163'), 'Upgrade from 1.6.2 to 1.6.3');
-        $this->register(array($this, 'Upgrade163to164'), 'Upgrade from 1.6.3 to 1.6.4');
-        $this->register(array($this, 'Upgrade164to170'), 'Upgrade from 1.6.4 to 1.7.0');
-        $this->register(array($this, 'Upgrade170to171'), 'Upgrade from 1.7.0 to 1.7.1');
+        $this->register('Upgrade143to150', 'Upgrade from 1.4.3 to 1.5.0');
+        $this->register('Upgrade150to151', 'Upgrade from 1.5.0 to 1.5.1');
+        $this->register('Upgrade151to152', 'Upgrade from 1.5.1 to 1.5.2');
+        $this->register('Upgrade152to153', 'Upgrade from 1.5.2 to 1.5.3');
+        $this->register('Upgrade153to154', 'Upgrade from 1.5.3 to 1.5.4');
+        $this->register('Upgrade154to155', 'Upgrade from 1.5.4 to 1.5.5');
+        $this->register('Upgrade155to156', 'Upgrade from 1.5.5 to 1.5.6');
+        $this->register('Upgrade156to157', 'Upgrade from 1.5.6 to 1.5.7');
+        $this->register('Upgrade157to16',  'Upgrade from 1.5.7 to 1.6');
+        $this->register('Upgrade16to161',  'Upgrade from 1.6.0 to 1.6.1');
+        $this->register('Upgrade161to162', 'Upgrade from 1.6.1 to 1.6.2');
+        $this->register('Upgrade162to163', 'Upgrade from 1.6.2 to 1.6.3');
+        $this->register('Upgrade163to164', 'Upgrade from 1.6.3 to 1.6.4');
+        $this->register('Upgrade164to170', 'Upgrade from 1.6.4 to 1.7.0');
+        $this->register('Upgrade170to171', 'Upgrade from 1.7.0 to 1.7.1');
         /**
          * To have the new_project updated to the highest level, update
          *
