@@ -366,6 +366,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     {
         $source->setRespondentTrackId($this->_respTrackId);
         $source->offsetSet('can_edit', $this->hasSuccesCode() ? 1 : 0);
+        $source->offsetSet('track_can_be_created', 0);
 
         $this->getRespondent()->applyToMenuSource($source);
         $this->getTrackEngine()->applyToMenuSource($source);

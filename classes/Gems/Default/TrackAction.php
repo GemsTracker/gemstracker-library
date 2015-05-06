@@ -377,7 +377,7 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
         $model = $this->loader->getTracker()->getRespondentTrackModel();
 
         if ($detailed) {
-            $engine = $this->getRespondentTrack()->getTrackEngine();
+            $engine = $this->getTrackEngine();
 
             switch ($action) {
                 case 'export-track':
@@ -469,15 +469,17 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
     {
         $respondent  = $this->getRespondent();
         $respTrack   = $this->getRespondentTrack();
-        $trackEngine = $respTrack->getTrackEngine();
+        if ($respTrack) {
+            $trackEngine = $respTrack->getTrackEngine();
 
-        // Set params
-        return sprintf(
-                $this->_('%s track for respondent nr %s: %s'),
-                $trackEngine->getTrackName(),
-                $respondent->getPatientNumber(),
-                $respondent->getName()
-                );
+            // Set params
+            return sprintf(
+                    $this->_('%s track for respondent nr %s: %s'),
+                    $trackEngine->getTrackName(),
+                    $respondent->getPatientNumber(),
+                    $respondent->getName()
+                    );
+        }
     }
 
     /**
@@ -513,7 +515,7 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
 
         // Set params
         return sprintf(
-                $this->_('Send mail to %s respondent  r %s for token %s'),
+                $this->_('Send mail to %s respondent nr %s for token %s'),
                 $respondent->getEmailAddress(),
                 $respondent->getPatientNumber(),
                 $token->getTokenId()
@@ -586,10 +588,11 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
         if ($respTrackId) {
             $respTrack = $tracker->getRespondentTrack($respTrackId);
         } else {
-            if (! $this->escort instanceof \Gems_Project_Tracks_SingleTrackInterface) {
-                throw new \Gems_Exception($this->_('No respondent track specified!'));
+            if ($this->isMultiTracks()) {
+                throw new \Gems_Exception($this->_('No track specified for respondent!'));
             }
 
+            $respondent = $this->getRespondent();
             $trackId    = $this->escort->getTrackId();
             $respTracks = $tracker->getRespondentTracks($respondent->getId(), $respondent->getOrganizationId());
             foreach ($respTracks as $respTrack) {
@@ -602,7 +605,11 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
             }
         }
         if (! $respTrack instanceof \Gems_Tracker_RespondentTrack) {
-            throw new \Gems_Exception($this->_('No respondent track found!'));
+            if ($this->isMultiTracks()) {
+                throw new \Gems_Exception($this->_('No track found for respondent!'));
+            } else {
+                return null;
+            }
         }
 
         $respTrack->applyToMenuSource($this->menu->getParameterSource());
@@ -619,7 +626,10 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
      */
     public function getRespondentTrackId()
     {
-        return $this->getRespondentTrack()->getRespondentTrackId();
+        $respTrack = $this->getRespondentTrack();
+        if ($respTrack) {
+            return $respTrack->getRespondentTrackId();
+        }
     }
 
     /**
@@ -702,13 +712,23 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
         }
 
         try {
-            $engine = $this->getRespondentTrack()->getTrackEngine();
+            $respTrack = $this->getRespondentTrack();
+            if ($respTrack instanceof \Gems_Tracker_RespondentTrack) {
+                $engine = $respTrack->getTrackEngine();
+            }
 
         } catch (\Exception $ex) {
+        }
+
+        if (! $engine instanceof \Gems_Tracker_Engine_TrackEngineInterface) {
             $engineId = $this->_getParam(\Gems_model::TRACK_ID);
 
             if (! $engineId) {
-                throw new \Gems_Exception($this->_('No track engine specified!'));
+                if ($this->isMultiTracks()) {
+                    throw new \Gems_Exception($this->_('No track engine specified!'));
+                }
+
+                $engineId = $this->escort->getTrackId();
             }
 
             $engine = $this->loader->getTracker()->getTrackEngine($engineId);

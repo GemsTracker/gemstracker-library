@@ -327,19 +327,10 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
             $source->setTokenId($this->_tokenId);
             $this->getRespondentTrack()->applyToMenuSource($source);
 
-            $this->getRespondent()->applyToMenuSource($source);
-            $source->setPatient($this->_gemsData['gr2o_patient_nr'], $this->_gemsData['gto_id_organization']);
-            $source->setRespondentTrackId($this->_gemsData['gto_id_respondent_track']);
-            $source->setTrackId($this->_gemsData['gto_id_track']);
-
             $source->offsetSet('gsu_id_survey', $this->_gemsData['gto_id_survey']);
-            $source->offsetSet('grc_success', $this->_gemsData['grc_success']);
+            $source->offsetSet('grc_success', $this->_gemsData['grc_success'] ? 1 : 0);
             $source->offsetSet('is_completed', $this->_gemsData['gto_completion_time'] ? 1 : 0);
             $source->offsetSet('show_answers', $this->_gemsData['gto_completion_time'] ? 1 : 0);
-
-            // Used with single track interface
-            $source->offsetSet('can_edit', $this->getRespondentTrack()->hasSuccesCode() ? 1 : 0);
-            $source->offsetSet('track_can_be_created', 0);
 
             if ($this->_gemsData['grc_success'] &&
                     (! $this->_gemsData['gto_completion_time']) &&
