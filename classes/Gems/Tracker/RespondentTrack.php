@@ -365,7 +365,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     public function applyToMenuSource(\Gems_Menu_ParameterSource $source)
     {
         $source->setRespondentTrackId($this->_respTrackId);
-        $source->offsetSet('can_edit', $this->hasSuccesCode());
+        $source->offsetSet('can_edit', $this->hasSuccesCode() ? 1 : 0);
 
         $this->getRespondent()->applyToMenuSource($source);
         $this->getTrackEngine()->applyToMenuSource($source);

@@ -74,7 +74,13 @@ class ShowTrackTokenSnippet extends \Gems_Tracker_Snippets_ShowTokenSnippetAbstr
 
         $bridge->addItem('gto_id_token', null, array('colspan' => 1.5));
 
-        $buttons = $links->getActionLinks(true, 'ask', 'take', 'pdf', 'show', $controller, 'questions', $controller, 'answer');
+        $buttons = $links->getActionLinks(true,
+                'ask', 'take',
+                'pdf', 'show',
+                $controller, 'questions',
+                $controller, 'answer',
+                $controller, 'answer-export'
+                );
         if (count($buttons)) {
             $bridge->tr();
             $bridge->tdh($this->_('Actions'));

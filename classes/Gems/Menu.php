@@ -450,14 +450,14 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $tkPage->addAction($this->_('Preview'), 'pr.project.questions', 'questions')
                 ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
                 ->setParameterFilter(\Gems_Model::ID_TYPE, 'token');
-        $answers = $tkPage->addActionButton($this->_('Answers'), 'pr.token.answers', 'answer')
+        $tkPage->addActionButton($this->_('Answers'), 'pr.token.answers', 'answer')
                 ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
                 ->setParameterFilter('is_completed', 1, \Gems_Model::ID_TYPE, 'token')
                 ->set('target', \MUtil_Model::REQUEST_ID);
-        $answers->addActionButton($this->_('PDF export'), 'pr.token.answers', 'answer-export')
+        $tkPage->addActionButton($this->_('Export answers'), 'pr.token.answers', 'answer-export')
                 ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
                 ->setParameterFilter('is_completed', 1, \Gems_Model::ID_TYPE, 'token')
-                ->set('target', \MUtil_Model::REQUEST_ID);
+                ;
 
         $page->addAction($this->_('Export archive'), 'pr.respondent.export-html', 'export')
                 ->setNamedParameters($params)

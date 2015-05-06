@@ -70,6 +70,13 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
     protected $importLoader;
 
     /**
+     * Required
+     *
+     * @var \Gems_Menu
+     */
+    protected $menu;
+
+    /**
      *
      * @var \Gems_Model
      */
@@ -138,13 +145,12 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
     /**
      * Load project specific menu or general Gems menu otherwise
      *
-     * @param GemsEscort $escort
+     * @param \GemsEscort $escort
      * @return \Gems_Menu
      */
-    public function createMenu(GemsEscort $escort)
+    public function createMenu(\GemsEscort $escort)
     {
-        return $this->getMenu($escort);
-        // return $this->_loadClass('Menu', true, func_get_args());
+        return $this->_getClass('menu', 'Menu', func_get_args());
     }
 
     /**
@@ -228,12 +234,11 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
     /**
      * Get the project specific menu or general Gems menu otherwise
      *
-     * @param GemsEscort $escort
      * @return \Gems_Menu
      */
-    public function getMenu(GemsEscort $escort)
+    public function getMenu()
     {
-        return $this->_getClass('menu', 'Menu', func_get_args());
+        return $this->menu;
     }
 
     /**
@@ -299,11 +304,9 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
      *
      * @return \Gems_Export_RespondentExport
      */
-    public function getRespondentExport($container)
+    public function getRespondentExport()
     {
-        $this->addRegistryContainer($container, 'tmp_export');
         $class = $this->_loadClass('Export_RespondentExport', true);
-        $this->removeRegistryContainer('tmp_export');
 
         return $class;
     }

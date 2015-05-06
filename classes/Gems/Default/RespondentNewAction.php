@@ -208,7 +208,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Controller_ModelSn
         $this->addSnippets($this->exportSnippets, $params);
 
         //Now show the export form
-        $export = $this->loader->getRespondentExport($this);
+        $export = $this->loader->getRespondentExport();
         $form = $export->getForm();
         $this->html->h2($this->_('Export respondent archive'));
         $div = $this->html->div(array('id' => 'mainform'));

@@ -47,6 +47,23 @@
 class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstract
 {
     /**
+     * The parameters used for the answer export action.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $answerExportParameters = array(
+        'formTitle' => 'getTokenTitle',
+        'hideGroup' => true,
+    );
+
+    /**
+     * This snippets for answer export
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $answerExportSnippets = array('Export\\RespondentExportSnippet');
+
+    /**
      * The parameters used for the answers action.
      *
      * Currently filled from $defaultTokenParameters
@@ -133,7 +150,7 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
      */
     protected $editTrackParameters = array(
         'createData'        => false,
-        'formTitle'         => 'getEditTrackTitle',
+        'formTitle'         => 'getTrackTitle',
         'multiTracks'       => 'isMultiTracks',
         'respondentTrack'   => 'getRespondentTrack',
         'respondentTrackId' => 'getRespondentTrackId',
@@ -176,6 +193,23 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
     protected $emailSnippets = array('Mail_TokenMailFormSnippet');
 
     /**
+     * The parameters used for the export track action.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $exportTrackParameters = array(
+        'formTitle'         => 'getTrackTitle',
+        'respondentTrack'   => 'getRespondentTrack',
+    );
+
+    /**
+     * This snippets for track export
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $exportTrackSnippets = array('Export\\RespondentExportSnippet');
+
+    /**
      * The parameters used for the insert action.
      *
      * @var array Mixed key => value array for snippet initialization
@@ -216,7 +250,7 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
      * @var array Mixed key => value array for snippet initialization
      */
     protected $showTrackParameters = array(
-        'contentTitle'      => 'getEditTrackTitle',
+        'contentTitle'      => 'getTrackTitle',
         'multiTracks'       => 'isMultiTracks',
         'respondentTrack'   => 'getRespondentTrack',
         'respondentTrackId' => 'getRespondentTrackId',
@@ -302,6 +336,18 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
     }
 
     /**
+     * Export a single token
+     */
+    public function answerExportAction()
+    {
+        if ($this->answerExportSnippets) {
+            $params = $this->_processParameters($this->answerExportParameters + $this->defaultTokenParameters);
+
+            $this->addSnippets($this->answerExportSnippets, $params);
+        }
+    }
+
+    /**
      * Action for showing a create new item page
      *
      * Uses separate createSnippets instead of createEditSnipppets
@@ -374,48 +420,15 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
         }
     }
 
+    /**
+     * Export a single track
+     */
     public function exportTrackAction()
     {
-        $request   = $this->getRequest();
-        $respTrack = $this->getRespondentTrack();
+        if ($this->exportTrackSnippets) {
+            $params = $this->_processParameters($this->exportTrackParameters);
 
-//        $model   = $this->getModel();
-//        if ($data = $model->applyRequest($request)->loadFirst()) {
-//            $menuData = $data;
-//            unset($menuData['gto_id_token']);   // To fix menu
-//            $this->setMenuParameters($menuData);
-//        }
-
-        $this->html->h2(sprintf(
-                $this->_('%s track for respondent nr %s: %s'),
-                $respTrack->getTrackEngine()->getTrackName(),
-                $respTrack->getPatientNumber(),
-                $respTrack->getRespondent()->getFullName()
-                ));
-
-//        if (! $this->escort instanceof \Gems_Project_Tracks_SingleTrackInterface) {
-//            $links = parent::createMenuLinks(10);
-//            $this->addSnippet('ModelItemTableSnippetGeneric',
-//                    'menuList', $links,
-//                    'model', $model
-//                    );
-//        }
-
-        $export = $this->loader->getRespondentExport($this);
-        $export->trackFilter = array(array(
-            'resptrackid' => $respTrack->getRespondentTrackId(),
-            ));
-
-        $form = $export->getForm();
-        $div  = $this->html->div(array('id' => 'mainform'), $form);
-
-        $form->populate($request->getParams());
-
-        if ($request->isPost()) {
-            $export->render(array(array(
-                'gr2o_id_organization' => $respTrack->getOrganizationId(),
-                'gr2o_patient_nr'      => $respTrack->getPatientNumber(),
-                )), $this->getRequest()->getParam('group'), $this->getRequest()->getParam('format'));
+            $this->addSnippets($this->exportTrackSnippets, $params);
         }
     }
 
@@ -448,11 +461,11 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
     }
 
     /**
-     * Get the title for editing a track
+     * Get the title describing the track
      *
      * @return string
      */
-    protected function getEditTrackTitle()
+    protected function getTrackTitle()
     {
         $respondent  = $this->getRespondent();
         $respTrack   = $this->getRespondentTrack();
@@ -463,7 +476,28 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
                 $this->_('%s track for respondent nr %s: %s'),
                 $trackEngine->getTrackName(),
                 $respondent->getPatientNumber(),
-                $respondent->getFullName()
+                $respondent->getName()
+                );
+    }
+
+    /**
+     * Get the title describing the token
+     *
+     * @return string
+     */
+    protected function getTokenTitle()
+    {
+        $token      = $this->getToken();
+        $respondent = $token->getRespondent();
+
+        // Set params
+        return sprintf(
+                $this->_('Token %s in round "%s" in track "%s" for respondent nr %s: %s'),
+                $token->getTokenId(),
+                $token->getRoundDescription(),
+                $token->getTrackName(),
+                $respondent->getPatientNumber(),
+                $respondent->getName()
                 );
     }
 

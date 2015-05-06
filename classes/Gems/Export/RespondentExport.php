@@ -42,36 +42,68 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.5
  */
-class Gems_Export_RespondentExport extends \Gems_Registry_TargetAbstract
+class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstract
 {
-    protected $_reportFooter         = 'Export_ReportFooterSnippet';
-    protected $_reportHeader         = 'Export_ReportHeaderSnippet';
-    protected $_respondentSnippet    = 'Export_RespondentSnippet';
+    /**
+     * @var \Gems_Pdf
+     */
+    protected $_pdf;
 
     /**
      *
-     * @var GemsEscort
+     * @var string
      */
-    public $escort;
+    protected $_reportFooter      = 'Export_ReportFooterSnippet';
 
+    /**
+     *
+     * @var string
+     */
+    protected $_reportHeader      = 'Export_ReportHeaderSnippet';
+
+    /**
+     *
+     * @var string
+     */
+    protected $_respondentSnippet = 'Export_RespondentSnippet';
+
+    /**
+     *
+     * @var \GemsEscort
+     */
+    protected $escort;
+
+    /**
+     *
+     * @var \MUtil_Html_Sequence
+     */
     protected $html;
 
     /**
      *
      * @var \Gems_Loader
      */
-    public $loader;
+    protected $loader;
+
+    /**
+     * Required
+     *
+     * @var \Gems_Menu
+     */
+    protected $menu;
 
     /**
      *
      * @var \Gems_Project_ProjectSettings
      */
-    public $project;
+    protected $project;
 
     /**
-     * @var \Zend_Translate_Adapter
+     * Required
+     *
+     * @var \Zend_Controller_Request_Abstract
      */
-    public $translate;
+    protected $request;
 
     /**
      * Holds the optional token filter.
@@ -108,37 +140,13 @@ class Gems_Export_RespondentExport extends \Gems_Registry_TargetAbstract
      *
      * @var \Gems_Util
      */
-    public $util;
-
-    public $view;
+    protected $util;
 
     /**
-     * @var \Gems_Pdf
-     */
-    protected $_pdf;
-
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-
-        $this->_pdf = $this->loader->getPdf();
-    }
-
-    /**
-     * Copy from \Zend_Translate_Adapter
      *
-     * Translates the given string
-     * returns the translation
-     *
-     * @param  string             $text   Translation string
-     * @param  string|\Zend_Locale $locale (optional) Locale/Language to use, identical with locale
-     *                                    identifier, @see \Zend_Locale for more information
-     * @return string
+     * @var \Zend_View
      */
-    public function _($messageid, $locale = null)
-    {
-        return $this->translate->getAdapter()->_($messageid, $locale);
-    }
+    protected $view;
 
     /**
      * Returns true when this token should be displayed
@@ -405,17 +413,62 @@ class Gems_Export_RespondentExport extends \Gems_Registry_TargetAbstract
     }
 
     /**
+     *
+     * @param int $respTrackId
+     * @return \Gems_Export_RespondentExport
+     */
+    public function addRespondentTrackFilter($respTrackId)
+    {
+        $this->trackFilter[]['resptrackid'] = $respTrackId;
+        return $this;
+    }
+
+    /**
+     *
+     * @param string $tokenId
+     * @return \Gems_Export_RespondentExport
+     */
+    public function addTokenFilter($tokenId)
+    {
+        $this->tokenFilter[]['tokenid'] = $tokenId;
+        return $this;
+    }
+
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    {
+        parent::afterRegistry();
+
+        $this->_pdf   = $this->loader->getPdf();
+        $this->escort = \GemsEscort::getInstance();
+        $this->html   = new \MUtil_Html_Sequence();
+
+        // Do not know why, but for some reason menu is not loaded automatically.
+        $this->menu   = $this->loader->getMenu();
+    }
+
+    /**
      * Constructs the form
      *
+     * @param boolean $hideGroup When true group checkbox is hidden
      * @return \Gems_Form_TableForm
      */
-    public function getForm()
+    public function getForm($hideGroup = false)
     {
-        $form = new \Gems_Form_TableForm();
+        $form = new \Gems_Form();
         $form->setAttrib('target', '_blank');
 
-        $element = new \Zend_Form_Element_Checkbox('group');
-        $element->setLabel($this->_('Group surveys'));
+        if ($hideGroup) {
+            $element = new \Zend_Form_Element_Hidden('group');
+        } else {
+            $element = new \Zend_Form_Element_Checkbox('group');
+            $element->setLabel($this->_('Group surveys'));
+        }
         $element->setValue(1);
         $form->addElement($element);
 
@@ -434,6 +487,16 @@ class Gems_Export_RespondentExport extends \Gems_Registry_TargetAbstract
                 ->setAttrib('class', 'button');
         $form->addElement($element);
 
+        $links = $this->menu->getMenuList();
+        $links->addParameterSources($this->request, $this->menu->getParameterSource());
+        $links->addCurrentParent($this->_('Cancel'));
+        if (count($links)) {
+            $element = new \MUtil_Form_Element_Html('menuLinks');
+            $element->setValue($links);
+            // $element->setOrder(999);
+            $form->addElement($element);
+        }
+
         return $form;
     }
 
@@ -447,8 +510,6 @@ class Gems_Export_RespondentExport extends \Gems_Registry_TargetAbstract
     public function render($respondents, $group = true, $format = 'html')
     {
         $this->_group = $group;
-        $this->_format = $format;
-        $this->html = new \MUtil_Html_Sequence();
 
         $this->html->snippet($this->_reportHeader);
 
@@ -466,7 +527,7 @@ class Gems_Export_RespondentExport extends \Gems_Registry_TargetAbstract
 
         $this->html->snippet($this->_reportFooter,  'respondents', $respondents);
 
-        $this->escort->menu->setVisible(false);
+        $this->menu->setVisible(false);
         if ($this->escort instanceof \Gems_Project_Layout_MultiLayoutInterface) {
             $this->escort->layoutSwitch();
         }
@@ -479,7 +540,7 @@ class Gems_Export_RespondentExport extends \Gems_Registry_TargetAbstract
 
         $content = $this->view->layout->render();
 
-        if ($this->_format == 'pdf') {
+        if ($format == 'pdf') {
             if (is_array($respondentId) && isset($respondentId['gr2o_id_organization'])) {
                 $respondentId = $respondentId['gr2o_patient_nr'];
             }
@@ -490,7 +551,7 @@ class Gems_Export_RespondentExport extends \Gems_Registry_TargetAbstract
             echo $content;
         }
 
-        $this->escort->menu->setVisible(true);
+        $this->menu->setVisible(true);
     }
 
 }

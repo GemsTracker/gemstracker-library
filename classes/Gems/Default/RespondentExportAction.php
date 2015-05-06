@@ -42,16 +42,16 @@
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
  */
-class Gems_Default_RespondentExportAction extends Gems_Controller_Action
+class Gems_Default_RespondentExportAction extends \Gems_Controller_Action
 {
     public $useHtmlView = true;
 
     public function indexAction()
     {
-        $export = $this->loader->getRespondentExport($this);
+        $export = $this->loader->getRespondentExport();
         $form   = $export->getForm();
 
-        $element = new Zend_Form_Element_Textarea('id');
+        $element = new \Zend_Form_Element_Textarea('id');
         $element->setLabel($this->_('Respondent numbers'))
                 ->setAttrib('cols', 60)
                 ->setAttrib('rows', 4)

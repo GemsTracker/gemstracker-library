@@ -168,38 +168,6 @@ class Gems_Default_TokenPlanAction extends \Gems_Controller_BrowseEditAction
             $params['multipleTokenData']    = $tokensData;
 
             $this->addSnippet('Mail_TokenBulkMailFormSnippet', $params);
-            /*
-            $form = new \Gems_Email_MultiMailForm(array(
-                'escort' => $this->escort,
-                'templateOnly' => ! $this->escort->hasPrivilege('pr.token.mail.freetext'),
-            ));
-            $form->setTokensData($tokensData);
-
-            $wasSent = $form->processRequest($this->getRequest());
-
-            if ($form->hasMessages()) {
-                $this->addMessage($form->getMessages());
-            }
-
-            if ($wasSent) {
-                if ($this->afterSaveRoute(array())) {
-                    return null;
-                }
-
-            } else {
-                $table = new \MUtil_Html_TableElement(array('class' => 'formTable'));
-                $table->setAsFormLayout($form, true, true);
-                $table['tbody'][0][0]->class = 'label';  // Is only one row with formLayout, so all in output fields get class.
-                if ($links = $this->createMenuLinks(10)) {
-                    $table->tf(); // Add empty cell, no label
-                    $linksCell = $table->tf($links);
-                }
-
-                $this->html->h3(sprintf($this->_('Email %s'), $this->getTopic()));
-                $this->html[] = $form;
-            }*/
-
-
         } else {
             $this->addMessage($this->_('No tokens found.'));
         }
