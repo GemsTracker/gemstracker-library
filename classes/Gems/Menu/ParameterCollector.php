@@ -51,7 +51,7 @@ class Gems_Menu_ParameterCollector
 
     public function __construct()
     {
-        $sources = MUtil_Ra::args(func_get_args());
+        $sources = \MUtil_Ra::args(func_get_args());
         $array   = array();
         foreach ($sources as $key => $source) {
             // Fix for array sources.
@@ -87,26 +87,26 @@ class Gems_Menu_ParameterCollector
 
         $this->values[$name] = null;
         foreach ($this->sources as $source) {
-            if ($source instanceof Zend_Controller_Request_Abstract) {
+            if ($source instanceof \Zend_Controller_Request_Abstract) {
                 $value = $source->getParam($name, null);
                 if (null === $value || empty($value)) {
                     $value = $source->getParam($altname, $this->values[$name]);
                 }
                 $this->values[$name] = $value;
 
-            } elseif ($source instanceof MUtil_Model_Bridge_TableBridgeAbstract) {
+            } elseif ($source instanceof \MUtil_Model_Bridge_TableBridgeAbstract) {
                 if ($source->has($name)) {
                     $this->values[$name] = $source->getLazy($name);
                 }
 
-            } elseif ($source instanceof Gems_Menu_ParameterSourceInterface) {
+            } elseif ($source instanceof \Gems_Menu_ParameterSourceInterface) {
                 $this->values[$name] = $source->getMenuParameter($name, $this->values[$name]);
 
-            } elseif ($source instanceof MUtil_Lazy_RepeatableInterface) {
+            } elseif ($source instanceof \MUtil_Lazy_RepeatableInterface) {
                 $this->values[$name] = $source->__get($name);
 
             } elseif (is_array($source)) {
-                // MUtil_Echo::track($name, $source);
+                // \MUtil_Echo::track($name, $source);
                 if (isset($source[$name])) {
                     $this->values[$name] = $source[$name];
                 }

@@ -150,6 +150,7 @@ class DeleteRespondentSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
         }
 
         $model = $this->getModel();
+        $model->setMulti(array('gr2o_patient_nr', 'gr2o_id_organization'), 'elementClass', 'Exhibitor');
 
         if (array_key_exists('grc_success', $this->respondentData) && (! $this->respondentData['grc_success'])) {
             $this->unDelete = true;

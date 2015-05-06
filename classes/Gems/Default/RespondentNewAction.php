@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-abstract class Gems_Default_RespondentNewAction extends \Gems_Controller_ModelSnippetActionAbstract
+abstract class Gems_Default_RespondentNewAction extends \Gems_Default_RespondentChildActionAbstract
 {
     /**
      *
@@ -60,6 +60,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Controller_ModelSn
     protected $autofilterParameters = array(
         'columns'     => 'getBrowseColumns',
         'extraSort'   => array('gr2o_opened' => SORT_DESC),
+        'respondent'  => null,
         );
 
     /**
@@ -490,4 +491,17 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Controller_ModelSn
 
         return $this;
     }
+
+    /**
+     * Action for showing a delete item page
+     */
+    public function undeleteAction()
+    {
+        if ($this->deleteSnippets) {
+            $params = $this->_processParameters($this->deleteParameters);
+
+            $this->addSnippets($this->deleteSnippets, $params);
+        }
+    }
+
 }

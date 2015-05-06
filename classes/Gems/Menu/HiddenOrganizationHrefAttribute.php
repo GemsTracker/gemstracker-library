@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.5
  */
-class Gems_Menu_HiddenOrganizationHrefAttribute extends MUtil_Html_HrefArrayAttribute
+class Gems_Menu_HiddenOrganizationHrefAttribute extends \MUtil_Html_HrefArrayAttribute
 {
     private $_hiddenOrgId;
 
@@ -57,9 +57,11 @@ class Gems_Menu_HiddenOrganizationHrefAttribute extends MUtil_Html_HrefArrayAttr
     {
         $results = parent::_getArrayRendered();
 
-        if (isset($results[MUtil_Model::REQUEST_ID1], $results[MUtil_Model::REQUEST_ID2]) && ($results[MUtil_Model::REQUEST_ID2] == $this->_hiddenOrgId)) {
-            $results[MUtil_Model::REQUEST_ID] = $results[MUtil_Model::REQUEST_ID1];
-            unset($results[MUtil_Model::REQUEST_ID1], $results[MUtil_Model::REQUEST_ID2]);
+        if (isset($results[\MUtil_Model::REQUEST_ID1], $results[\MUtil_Model::REQUEST_ID2]) &&
+                ($results[\MUtil_Model::REQUEST_ID2] == $this->_hiddenOrgId)) {
+
+            $results[\MUtil_Model::REQUEST_ID] = $results[\MUtil_Model::REQUEST_ID1];
+            unset($results[\MUtil_Model::REQUEST_ID1], $results[\MUtil_Model::REQUEST_ID2]);
         }
 
         return $results;

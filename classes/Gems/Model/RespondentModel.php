@@ -124,6 +124,9 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         $this->setOnSave('gr2o_opened_by', GemsEscort::getInstance()->session->user_id);
         $this->setSaveOnChange('gr2o_opened_by');
 
+        $this->addColumn(new \Zend_Db_Expr("CASE WHEN grc_success = 1 THEN '' ELSE 'deleted' END"), 'row_class');
+        $this->addColumn(new \Zend_Db_Expr("CASE WHEN grc_success = 1 THEN 0 ELSE 1 END"), 'resp_deleted');
+
         if (! $this->has('grs_ssn')) {
             $this->hashSsn = self::SSN_HIDE;
         }

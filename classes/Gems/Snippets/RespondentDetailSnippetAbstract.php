@@ -233,6 +233,18 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
         $bridge->setColumnCount(2); // May be overruled
 
         $this->addTableCells($bridge);
+
+        if ($this->model->has('row_class')) {
+            // Make sure deactivated rounds are show as deleted
+            foreach ($bridge->getTable()->tbody() as $tr) {
+                foreach ($tr as $td) {
+                    if ('td' === $td->tagName) {
+                        $td->appendAttrib('class', $bridge->row_class);
+                    }
+                }
+            }
+        }
+        
         $this->addButtons($bridge);
         $this->addOnClick($bridge);
 

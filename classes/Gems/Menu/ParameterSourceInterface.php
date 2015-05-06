@@ -40,7 +40,7 @@
  * able to return data to set a named parameter for a
  * SubMenuItem.
  *
- * @see Gems_Menu_SubMenuItem
+ * @see \Gems_Menu_SubMenuItem
  *
  * @package    Gems
  * @subpackage Menu

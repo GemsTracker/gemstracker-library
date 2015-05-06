@@ -158,6 +158,7 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
     public function applyToMenuSource(\Gems_Menu_ParameterSource $source)
     {
         $source->setPatient($this->getPatientNumber(), $this->getOrganizationId());
+        $source->offsetSet('resp_deleted', ($this->getReceptionCode()->isSuccess() ? 0 : 1));
 
         return $this;
     }

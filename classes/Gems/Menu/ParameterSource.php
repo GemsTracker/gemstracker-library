@@ -47,7 +47,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Menu_ParameterSource extends ArrayObject implements \Gems_Menu_ParameterSourceInterface
+class Gems_Menu_ParameterSource extends \ArrayObject implements \Gems_Menu_ParameterSourceInterface
 {
     /**
      * Helper function to set more than one array key to the same value

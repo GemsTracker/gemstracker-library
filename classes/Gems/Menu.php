@@ -477,6 +477,11 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
 
         $page->addDeleteAction('pr.respondent.delete')
                 ->setNamedParameters($params)
+                ->setParameterFilter('resp_deleted', 0)
+                ->setHiddenOrgId($orgId);
+        $page->addAction($this->_('Undelete!'), 'pr.respondent.undelete', 'undelete')
+                ->setNamedParameters($params)
+                ->setParameterFilter('resp_deleted', 1)
                 ->setHiddenOrgId($orgId);
 
         /* Add respondent relations */
