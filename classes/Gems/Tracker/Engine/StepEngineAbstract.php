@@ -747,7 +747,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
      */
     public function getTokenDeleteSnippetNames(\Gems_Tracker_Token $token)
     {
-        return array('DeleteTrackTokenSnippet');
+        return array('Token\\DeleteTrackTokenSnippet');
     }
 
     /**
@@ -784,6 +784,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
      *
      * @param \Gems_Tracker_RespondentTrack $respTrack Allows track status dependent edit snippets
      * @return array of string snippet names
+     * @deprecated since version 1.7.1 Snippets defined TrackAction
      */
     public function getTrackDeleteSnippetNames(\Gems_Tracker_RespondentTrack $respTrack)
     {

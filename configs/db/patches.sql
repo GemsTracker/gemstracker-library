@@ -966,4 +966,11 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.respondent-l
 
 -- PATCH: New rights for undeleting
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.respondent.undelete')
-    WHERE grl_privileges LIKE '%pr.respondent.show-deleted%' AND grl_privileges NOT LIKE '%,pr.respondent.undelete%';
+    WHERE (grl_name = 'admin' OR grl_privileges LIKE '%pr.respondent.show-deleted%')
+        AND grl_privileges NOT LIKE '%,pr.respondent.undelete%';
+
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.track.undelete')
+    WHERE grl_name = 'admin' AND grl_privileges NOT LIKE '%,pr.track.undelete%';
+
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.token.undelete')
+    WHERE grl_name = 'admin' AND grl_privileges NOT LIKE '%,pr.token.undelete%';

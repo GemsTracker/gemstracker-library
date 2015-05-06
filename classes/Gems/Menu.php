@@ -413,10 +413,17 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
                     ->setHiddenOrgId($orgId)
                     ->setParameterFilter('can_edit', 1);
 
+            $itemPage->addAction($this->_('Undelete!'), 'pr.track.undelete', 'undelete-track')
+                    ->setNamedParameters($params)
+                    ->addNamedParameters(\Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
+                    ->setHiddenOrgId($orgId)
+                    ->setParameterFilter('can_edit', 0);
+
             $itemPage->addAction($this->_('Export track'), 'pr.track', 'export-track')
                     ->setNamedParameters($params)
                     ->addNamedParameters(\Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
-                    ->setHiddenOrgId($orgId);
+                    ->setHiddenOrgId($orgId)
+                    ->setParameterFilter('can_edit', 1);
 
             $tkPage = $itemPage->addAction($this->_('Token'), 'pr.token', 'show')
                     ->setNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
@@ -437,6 +444,9 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $tkPage->addDeleteAction('pr.token.delete')
                 ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
                 ->setParameterFilter('grc_success', 1, \Gems_Model::ID_TYPE, 'token');
+        $tkPage->addAction($this->_('Undelete!'), 'pr.token.undelete', 'undelete')
+                ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
+                ->setParameterFilter('grc_success', 0, \Gems_Model::ID_TYPE, 'token');
 
         $tkPage->addButtonOnly($this->_('Fill in'), 'pr.ask', 'ask', 'take')
                 ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')

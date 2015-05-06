@@ -149,6 +149,30 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
      *
      * @var array Mixed key => value array for snippet initialization
      */
+    protected $deleteTrackParameters = array(
+        'multiTracks'       => 'isMultiTracks',
+        'respondentTrack'   => 'getRespondentTrack',
+        'respondentTrackId' => 'getRespondentTrackId',
+        'trackEngine'       => 'getTrackEngine',
+        'trackId'           => 'getTrackId',
+    );
+
+    /**
+     * Snippets for deleting tracks
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $deleteTrackSnippets = array(
+        'Tracker\\DeleteTrackSnippet',
+        'Tracker\\TrackTokenOverviewSnippet',
+        'Tracker\\TrackUsageOverviewSnippet',
+        );
+
+    /**
+     * The parameters used for the edit track action.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
     protected $editTrackParameters = array(
         'createData'        => false,
         'formTitle'         => 'getTrackTitle',
@@ -160,7 +184,7 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
     );
 
     /**
-     * This action uses a different snippet order during create
+     * Snippets for editing tracks
      *
      * @var mixed String or array of snippets name
      */
@@ -399,6 +423,40 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
     }
 
     /**
+     * Delete a single token
+     */
+    public function deleteAction()
+    {
+        $this->deleteParameters = $this->deleteParameters + $this->defaultTokenParameters;
+        $this->deleteSnippets   = $this->getToken()->getDeleteSnippetNames();
+
+        parent::deleteAction();
+    }
+
+    /**
+     * Delete a track
+     */
+    public function deleteTrackAction()
+    {
+        if ($this->deleteTrackSnippets) {
+            $params = $this->_processParameters($this->deleteTrackParameters + $this->deleteParameters);
+
+            $this->addSnippets($this->deleteTrackSnippets, $params);
+        }
+    }
+
+    /**
+     * Edit single token
+     */
+    public function editAction()
+    {
+        $this->editParameters      = $this->editParameters + $this->defaultTokenParameters;
+        $this->createEditSnippets  = $this->getToken()->getEditSnippetNames();
+
+        parent::editAction();
+    }
+
+    /**
      * Edit the respondent track data
      */
     public function editTrackAction()
@@ -449,17 +507,6 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
                 $respondent->getPatientNumber(),
                 $respondent->getFullName()
                 );
-    }
-
-    /**
-     * Edita single token, mind you: it can be a SingleSurveyTrack
-     */
-    public function editAction()
-    {
-        $this->showParameters = $this->showParameters + $this->defaultTokenParameters;
-        $this->showSnippets   = $this->getToken()->getEditSnippetNames();
-
-        parent::showAction();
     }
 
     /**
@@ -865,7 +912,30 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
         }
     }
 
+     /**
+     * Delete a single token
+     */
+    public function undeleteAction()
+    {
+        $this->deleteParameters = $this->deleteParameters + $this->defaultTokenParameters;
+        $this->deleteSnippets   = $this->getToken()->getDeleteSnippetNames();
+
+        parent::deleteAction();
+    }
+
     /**
+     * Undelete a track
+     */
+    public function undeleteTrackAction()
+    {
+        if ($this->deleteTrackSnippets) {
+            $params = $this->_processParameters($this->deleteTrackParameters + $this->deleteParameters);
+
+            $this->addSnippets($this->deleteTrackSnippets, $params);
+        }
+    }
+
+   /**
      * Show information on a single track type assigned to a respondent
      */
     public function viewAction()

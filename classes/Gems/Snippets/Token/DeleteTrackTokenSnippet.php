@@ -28,23 +28,25 @@
  *
  *
  * @package    Gems
- * @subpackage Tracker
+ * @subpackage Snippets\Token
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @version    $Id$
  */
 
+namespace Gems\Snippets\Token;
+
 /**
  * Snippet for editing reception code of token.
  *
  * @package    Gems
- * @subpackage Tracker
+ * @subpackage Snippets\Token
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class DeleteTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbstract
+class DeleteTrackTokenSnippet extends \Gems_Tracker_Snippets_EditTokenSnippetAbstract
 {
     /**
      * Replacement token after a redo delete
@@ -55,25 +57,26 @@ class DeleteTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbst
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
     /**
+     * Marker that the snippet is in undelete mode (for subclasses)
      *
-     * @var Zend_Session_Namespace
+     * @var boolean
      */
-    protected $session;
+    protected $unDelete = false;
 
     /**
      *
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     protected $util;
 
     /**
      *
-     * @var Zend_View
+     * @var \Zend_View
      */
     protected $view;
 
@@ -83,10 +86,10 @@ class DeleteTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbst
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      */
-    protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addFormElements(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
     {
         $bridge->addHidden('gr2o_id_organization');
         $bridge->addHidden('gr2t_id_respondent_track');
@@ -157,16 +160,28 @@ class DeleteTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbst
     /**
      * Creates the model
      *
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function createModel()
     {
         $model = parent::createModel();
 
-        $sql = 'SELECT grc_id_reception_code, grc_description FROM gems__reception_codes WHERE grc_active = 1 AND grc_for_surveys = 1';
+        $this->unDelete = ! $this->token->getReceptionCode()->isSuccess();
+
+        $sql = "SELECT grc_id_reception_code, CASE
+                        WHEN grc_description IS NULL OR grc_description = '' THEN grc_id_reception_code
+                        ELSE grc_description
+                        END
+                    FROM gems__reception_codes
+                    WHERE grc_active = 1 AND grc_for_surveys = 1";
+
+        if ($this->unDelete) {
+            $sql .= ' AND grc_success = 1';
+        }
         if (! $this->token->isCompleted()) {
             $sql .= ' AND grc_redo_survey = 0';
         }
+
         $sql .= ' ORDER BY grc_description';
 
         $model->set('gto_reception_code',
@@ -179,7 +194,7 @@ class DeleteTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbst
 
     /**
      *
-     * @return Gems_Menu_MenuList
+     * @return \Gems_Menu_MenuList
      */
     protected function getMenuList()
     {
@@ -202,6 +217,9 @@ class DeleteTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbst
      */
     protected function getTitle()
     {
+        if ($this->unDelete) {
+            return sprintf($this->_('Undelete %s!'), $this->getTopic());
+        }
         return sprintf($this->_('Delete %s!'), $this->getTopic());
     }
 
@@ -212,7 +230,7 @@ class DeleteTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbst
      * processing, which happens by default when the data is saved.
      *
      * @return boolean True when the form should be displayed
-     */
+     * /
     protected function processForm()
     {
         if (parent::processForm()) {
@@ -235,10 +253,11 @@ class DeleteTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbst
     protected function saveData()
     {
         // Get the code object
-        $code = $this->util->getReceptionCode($this->formData['gto_reception_code']);
+        $code   = $this->util->getReceptionCode($this->formData['gto_reception_code']);
+        $userId = $this->loader->getCurrentUser()->getUserId();
 
         // Use the token function as that cascades the consent code
-        $changed = $this->token->setReceptionCode($code, $this->formData['gto_comment'], $this->session->user_id);
+        $changed = $this->token->setReceptionCode($code, $this->formData['gto_comment'], $userId);
 
         if ($code->hasRedoCode()) {
             $newComment = sprintf($this->_('Redo of token %s.'), $this->tokenId);
@@ -249,12 +268,12 @@ class DeleteTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbst
                 $newComment .= $this->formData['gto_comment'];
             }
 
-            $this->_replacementTokenId = $this->token->createReplacement($newComment, $this->session->user_id);
+            $this->_replacementTokenId = $this->token->createReplacement($newComment, $userId);
 
             // Create a link for the old token
             if ($menuItem = $this->menu->find(array('controller' => $this->request->getControllerName(), 'action' => 'show', 'allowed' => true))) {
                 $paramSource['gto_id_token']      = $this->tokenId;
-                $paramSource[Gems_Model::ID_TYPE] = 'token';
+                $paramSource[\Gems_Model::ID_TYPE] = 'token';
 
                 $link = $menuItem->toActionLink($paramSource, strtoupper($this->tokenId), true);
                 $link->class = '';
@@ -265,7 +284,7 @@ class DeleteTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbst
             }
 
             // Tell what the user what happened
-            $this->addMessage(new MUtil_Html_Raw(sprintf(
+            $this->addMessage(new \MUtil_Html_Raw(sprintf(
                     $this->_('Created replacement token %2$s for token %1$s.'),
                     $oldTokenUrl,
                     strtoupper($this->_replacementTokenId)
@@ -285,7 +304,7 @@ class DeleteTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbst
 
         $respTrack = $this->token->getRespondentTrack();
         if ($nextToken = $this->token->getNextToken()) {
-            if ($recalc = $respTrack->checkTrackTokens($this->session->user_id, $nextToken)) {
+            if ($recalc = $respTrack->checkTrackTokens($userId, $nextToken)) {
                 $this->addMessage(sprintf($this->plural('%d token changed by recalculation.', '%d tokens changed by recalculation.', $recalc), $recalc));
             }
         }
@@ -306,7 +325,7 @@ class DeleteTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbst
         if ($this->routeAction && ($this->request->getActionName() !== $this->routeAction)) {
             $this->afterSaveRouteUrl = array(
                 $this->request->getActionKey() => $this->routeAction,
-                MUtil_Model::REQUEST_ID => $this->_replacementTokenId ? $this->_replacementTokenId : $this->tokenId,
+                \MUtil_Model::REQUEST_ID => $this->_replacementTokenId ? $this->_replacementTokenId : $this->tokenId,
                 );
         }
 

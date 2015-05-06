@@ -100,12 +100,13 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     ,pr.plan.respondent,pr.plan.respondent.excel,pr.plan.summary.excel,pr.plan.token.excel,
     ,pr.project-information,
     ,pr.reception,pr.reception.create,pr.reception.edit,
-    ,pr.respondent.choose-org,pr.respondent.delete,pr.respondent.result,
+    ,pr.respondent.choose-org,pr.respondent.delete,pr.respondent.result,pr.respondent.undelete,
     ,pr.role,
     ,pr.staff,pr.staff.create,pr.staff.delete,pr.staff.edit,pr.staff.see.all,
     ,pr.source,
     ,pr.survey-maintenance,
-    ,pr.token.mail.freetext,
+    ,pr.token.mail.freetext,pr.token.undelete,
+    ,pr.track.undelete,
     ,pr.track-maintenance,pr.track-maintenance.trackperorg',
     CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 

@@ -1,9 +1,10 @@
 Important changes from 1.7.0 => 1.7.1
 ============================================================
 Ignore any messages that a "Column does not exist in table" during the upgrade
-GemsTracker is now auditable. See Respondent => Other Activity Log, Setup => Log Setup, Log and Your account => Activity overview
+In the respondent screen just those respondents with or without tracks can be selected
+Respondents, tracks and tokens can now be undeleted - with the admin level user rights
 Manual or automatic token recalculation is now determined through an input element instead of through 'magic'
-You can select all respondents with or without tracks in the respondent screen
+GemsTracker is now auditable. See Respondent => Other Activity Log, Setup => Log Setup, Log and Your account => Activity overview
 "Single Survey" tracks are replaced by survey level "insert into track" settings.
     Check code for any 'gtr_track_type'
     These calculated fields are no longer used, instead we just use the original field:
@@ -24,14 +25,16 @@ Controllers have moved from BrowseEditAction to ModelSnippetActionAbstract, chec
     SurveyMaintenanceController
     TrackRoundsController
 Some snippets have moved location in the code:
-    AddTracksSnippet       => Tracker\\AddTracksSnippet
-    EditRoundStepSnippet   => Tracker\\Rounds\\EditRoundStepSnippet
-    ShowRoundStepSnippet   => Tracker\\Rounds\\ShowRoundStepSnippet
-    EditTrackEngineSnippet => Tracker\\EditTrackEngineSnippet
-    EditTrackSnippet       => Tracker\\EditTrackSnippet
-    EditTrackTokenSnippet  => Token\\EditTrackTokenSnippet
-    ShowTrackTokenSnippet  => Token\\ShowTrackTokenSnippet
-    SurveyQuestionsSnippet => Survey\\SurveyQuestionsSnippet
+    AddTracksSnippet             => Tracker\\AddTracksSnippet
+    EditRoundStepSnippet         => Tracker\\Rounds\\EditRoundStepSnippet
+    ShowRoundStepSnippet         => Tracker\\Rounds\\ShowRoundStepSnippet
+    DeleteInSourceTrackSnippet   => Tracker\\DeleteTrackSnippet
+    DeleteTrackTokenSnippet      => Tracker\\DeleteTrackTokenSnippet
+    EditTrackEngineSnippet       => Tracker\\EditTrackEngineSnippet
+    EditTrackSnippet             => Tracker\\EditTrackSnippet
+    EditTrackTokenSnippet        => Token\\EditTrackTokenSnippet
+    ShowTrackTokenSnippet        => Token\\ShowTrackTokenSnippet
+    SurveyQuestionsSnippet       => Survey\\SurveyQuestionsSnippet
     TrackSurveyOverviewSnippet   => Tracker\\TrackSurveyOverviewSnippet
     TrackTokenOverviewSnippet    => Tracker\\TrackTokenOverviewSnippet
     TrackUsageTextDetailsSnippet => Tracker\\TrackUsageTextDetailsSnippet

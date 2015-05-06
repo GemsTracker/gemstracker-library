@@ -219,4 +219,17 @@ class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstr
 
         return array('' => '') + $this->db->fetchPairs($select);
     }
+
+    /**
+     * Returns the track deletion reception code list.
+     *
+     * @return array a value => label array.
+     */
+    public function getTrackRestoreCodes()
+    {
+        $select = $this->_getRestoreSelect();
+        $select->where('(grc_for_tracks = 1 OR grc_for_surveys = ?)', self::APPLY_STOP);
+
+        return array('' => '') + $this->db->fetchPairs($select);
+    }
 }
