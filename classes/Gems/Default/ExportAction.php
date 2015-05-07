@@ -412,7 +412,6 @@ class Gems_Default_ExportAction extends \Gems_Controller_Action
             }
             $batch->addTask('addTask', 'Export_ExportCommand', $data['type'], 'finalizeFiles', $exportModelName);
             $batch->autoStart = true;
-            MUtil_Echo::track(get_class($batch));
         }
 
         $title = $this->_('Export');
