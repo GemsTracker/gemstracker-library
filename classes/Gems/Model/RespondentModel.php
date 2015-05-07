@@ -287,31 +287,6 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
     }
 
     /**
-     * Set those values needed for deleting
-     *
-     * @return \Gems_Model_RespondentModel
-     */
-    public function applyDeleteSettings()
-    {
-        $this->applyDetailSettings();
-
-        $this->setMulti(array(
-            'gr2o_patient_nr',
-            'gr2o_id_organization',
-            'gr2o_id_user',
-            ), 'elementClass', 'Hidden');
-
-        $options = $this->util->getReceptionCodeLibrary()->getRespondentDeletionCodes();
-        $this->set('gr2o_reception_code', 'label', $this->_('Rejection code'),
-                'multiOptions', $options,
-                'required', true,
-                'size', min(7, max(3, count($options) + 1))
-                );
-
-        return $this;
-    }
-
-    /**
      * Set those settings needed for the detailed display
      *
      * @return \Gems_Model_RespondentModel
@@ -809,7 +784,9 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
             // the responsiblilty to handle it correctly is on the sub objects now.
             $tracks = $this->loader->getTracker()->getRespondentTracks($respondentId, $organizationId);
             foreach ($tracks as $track) {
-                $track->setReceptionCode($code, null, $userId);
+                if ($track->setReceptionCode($code, null, $userId)) {
+                    $this->addChanged();
+                }
             }
         }
 

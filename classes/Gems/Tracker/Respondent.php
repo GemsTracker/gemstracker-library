@@ -164,6 +164,16 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
     }
 
     /**
+     * Creates a copy of the data data
+     *
+     * @return array
+     */
+    public function getArrayCopy()
+    {
+        return $this->_gemsData;
+    }
+
+    /**
      * Get the birthdate
      *
      * @return \MUtil_Date|null
@@ -348,6 +358,15 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
         }
 
         return null;
+    }
+
+    /**
+     *
+     * @return \Gems_Model_RespondentModel
+     */
+    public function getRespondentModel()
+    {
+        return $this->model;
     }
 
     /**

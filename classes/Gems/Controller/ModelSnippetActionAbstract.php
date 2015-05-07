@@ -62,6 +62,40 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         );
 
     /**
+     * Gems only parameters used for the autofilter action. Can be overruled
+     * by setting $this->autofilterParameters
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    private $_createExtraParameters = array(
+        'formTitle'     => 'getCreateTitle',
+        'topicCallable' => 'getTopicCallable',
+        );
+
+    /**
+     * Gems only parameters used for the autofilter action. Can be overruled
+     * by setting $this->autofilterParameters
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    private $_deleteExtraParameters = array(
+        'displayTitle'  => 'getDeleteTitle',
+        'formTitle'     => 'getDeleteTitle',
+        'topicCallable' => 'getTopicCallable',
+        );
+
+    /**
+     * Gems only parameters used for the autofilter action. Can be overruled
+     * by setting $this->autofilterParameters
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    private $_editExtraParameters = array(
+        'formTitle'     => 'getEditTitle',
+        'topicCallable' => 'getTopicCallable',
+        );
+
+    /**
      * Gems only parameters used for the import action. Can be overruled
      * by setting $this->inmportParameters
      *
@@ -172,12 +206,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
      */
     public function createAction()
     {
-        if (! isset($this->createEditParameters['formTitle'])) {
-            $this->createEditParameters['formTitle']     = $this->getCreateTitle();
-        }
-        if (! isset($this->createEditParameters['topicCallable'])) {
-            $this->createEditParameters['topicCallable'] = array($this, 'getTopic');
-        }
+        $this->createEditParameters = $this->createEditParameters + $this->_createExtraParameters;
 
         parent::createAction();
     }
@@ -187,12 +216,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
      */
     public function deleteAction()
     {
-        if (! isset($this->deleteParameters['displayTitle'])) {
-            $this->deleteParameters['displayTitle']   = $this->getDeleteTitle();
-        }
-        if (! isset($this->deleteParameters['deleteQuestion'])) {
-            $this->deleteParameters['deleteQuestion'] = $this->getDeleteQuestion();
-        }
+        $this->deleteParameters = $this->deleteParameters + $this->_deleteExtraParameters;
 
         parent::deleteAction();
     }
@@ -202,8 +226,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
      */
     public function editAction()
     {
-        $this->createEditParameters['formTitle']     = $this->getEditTitle();
-        $this->createEditParameters['topicCallable'] = array($this, 'getTopic');
+        $this->createEditParameters = $this->createEditParameters + $this->_editExtraParameters;
 
         parent::editAction();
     }
@@ -480,6 +503,15 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
     public function getTopic($count = 1)
     {
         return $this->plural('item', 'items', $count);
+    }
+
+    /**
+     * Get a callable for the gettopic function
+     * @return callable
+     */
+    public function getTopicCallable()
+    {
+        return array($this, 'getTopic');
     }
 
     /**

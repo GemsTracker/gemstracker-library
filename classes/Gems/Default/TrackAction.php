@@ -145,14 +145,31 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
     );
 
     /**
+     * The parameters used for the delete action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $deleteParameters = array(
+        'formTitle'     => null,
+        'topicCallable' => 'getTokenTopicCallable',
+    );
+
+    /**
      * The parameters used for the edit track action.
      *
      * @var array Mixed key => value array for snippet initialization
      */
     protected $deleteTrackParameters = array(
+        'formTitle'         => null,
         'multiTracks'       => 'isMultiTracks',
         'respondentTrack'   => 'getRespondentTrack',
         'respondentTrackId' => 'getRespondentTrackId',
+        'topicCallable'     => 'getTopicCallable',
         'trackEngine'       => 'getTrackEngine',
         'trackId'           => 'getTrackId',
     );
@@ -735,6 +752,26 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
     public function getTokenId()
     {
         return $this->_getIdParam();
+    }
+
+    /**
+     * Helper function to allow generalized statements about the items in the model.
+     *
+     * @param int $count
+     * @return $string
+     */
+    public function getTokenTopic($count = 1)
+    {
+        return $this->plural('token', 'tokens', $count);;
+    }
+
+    /**
+     *
+     * @return callable Get the getTokenTopic function as a callable
+     */
+    public function getTokenTopicCallable()
+    {
+        return array($this, 'getTokenTopic');
     }
 
     /**

@@ -262,7 +262,7 @@ abstract class Gems_Default_RespondentAction extends \Gems_Controller_BrowseEdit
         // Log
         $this->openedRespondent($data['gr2o_patient_nr'], $data['gr2o_id_organization'], $data['grs_id_user']);
 
-        $options = $this->util->getReceptionCodeLibrary()->getRespondentDeletionCodes();
+        $options = array('' => '') + $this->util->getReceptionCodeLibrary()->getRespondentDeletionCodes();
 
         $this->useTabbedForms = false;
         $bridge = $model->getBridgeFor('form', $this->createForm());

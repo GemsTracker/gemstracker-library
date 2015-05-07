@@ -37,6 +37,8 @@
 
 namespace Gems\Snippets\Respondent;
 
+use Gems\Snippets\ReceptionCode\ChangeReceptionCodeSnippetAbstract;
+
 /**
  *
  *
@@ -46,19 +48,47 @@ namespace Gems\Snippets\Respondent;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 28-apr-2015 10:28:02
  */
-class DeleteRespondentSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
+class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
 {
     /**
+     * Array of items that should be shown to the user
      *
-     * @var \Gems_Loader
+     * @var array
      */
-    protected $loader;
+    protected $editItems = array();
+
+    /**
+     * Array of items that should be shown to the user
+     *
+     * @var array
+     */
+    protected $exhibitItems = array('gr2o_patient_nr', 'gr2o_id_organization');
+
+    /**
+     * Array of items that should be kept, but as hidden
+     *
+     * @var array
+     */
+    protected $hiddenItems = array('grs_id_user');
 
     /**
      *
      * @var \MUtil_Model_ModelAbstract
      */
     protected $model;
+
+    /**
+     * The item containing the reception code field
+     *
+     * @var string
+     */
+    protected $receptionCodeItem = 'gr2o_reception_code';
+
+    /**
+     *
+     * @var \Gems_Tracker_Respondent
+     */
+    protected $respondent;
 
     /**
      * Optional: not always filled, use repeater
@@ -68,23 +98,23 @@ class DeleteRespondentSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     protected $respondentData;
 
     /**
-     * The name of the action to forward to after form completion
+     * Optional right to check for undeleting
      *
      * @var string
      */
-    protected $routeAction = 'show';
+    protected $unDeleteRight = 'pr.respondent.undelete';
 
     /**
-     * Marker that the snippet is in undelete mode (for subclasses)
+     * Hook that allows actions when data was saved
      *
-     * @var boolean
+     * When not rerouted, the form will be populated afterwards
+     *
+     * @param int $changed The number of changed rows (0 or 1 usually, but can be more)
      */
-    protected $unDelete = false;
-
-    /**
-     * @var \Gems_Util
-     */
-    protected $util;
+    protected function afterSave($changed)
+    {
+        // Do nothing, performed in setReceptionCode()
+    }
 
     /**
      * Creates the model
@@ -97,43 +127,31 @@ class DeleteRespondentSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
             $model = $this->model;
 
         } else {
-            $model = $this->loader->getModels()->createRespondentModel();;
-            $model->applyDeleteSettings();
+            if ($this->respondent instanceof \Gems_Tracker_Respondent) {
+                $model = $this->respondent->getRespondentModel();
+
+            } else {
+                $model = $this->loader->getModels()->getRespondentModel(true);;
+            }
+            $model->applyDetailSettings();
         }
 
         return $model;
     }
 
     /**
-     * Retrieve the header title to display
+     * Called after loadFormData() and isUndeleting() but before the form is created
      *
-     * @return string
+     * @return array code name => description
      */
-    protected function getTitle()
+    public function getReceptionCodes()
     {
+        $rcLib = $this->util->getReceptionCodeLibrary();
+
         if ($this->unDelete) {
-            return $this->_('Undelete respondent');
+            return $rcLib->getRespondentRestoreCodes();
         }
-        return $this->_('Delete or stop respondent');
-    }
-
-    /**
-     * Initialize the _items variable to hold all items from the model
-     */
-    protected function initItems()
-    {
-        if (is_null($this->_items)) {
-            $this->_items = array(
-                'gr2o_patient_nr',
-                'gr2o_id_organization',
-                'gr2o_id_user',
-                'gr2o_reception_code',
-                );
-
-            if ($this->unDelete) {
-                $this->_items[] = 'restore_tracks';
-            }
-        }
+        return $rcLib->getRespondentDeletionCodes();
     }
 
     /**
@@ -143,71 +161,61 @@ class DeleteRespondentSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
      */
     protected function loadFormData()
     {
-        if ($this->respondentData && (! $this->request->isPost())) {
-            $this->formData = $this->respondentData;
-        } else {
+        if (! $this->request->isPost()) {
+            if ($this->respondentData) {
+                $this->formData = $this->respondentData;
+            } elseif ($this->respondent instanceof \Gems_Tracker_Respondent) {
+                $this->formData = $this->respondent->getArrayCopy();
+            }
+        }
+
+        if (! $this->formData) {
             parent::loadFormData();
         }
 
         $model = $this->getModel();
-        $model->setMulti(array('gr2o_patient_nr', 'gr2o_id_organization'), 'elementClass', 'Exhibitor');
 
-        if (array_key_exists('grc_success', $this->respondentData) && (! $this->respondentData['grc_success'])) {
-            $this->unDelete = true;
+        $model->set('restore_tracks', 'label', $this->_('Restore tracks'),
+                'description', $this->_('Restores tracks with the same code as the respondent.'),
+                'elementClass', 'Checkbox'
+                );
 
-            $options = $this->util->getReceptionCodeLibrary()->getRespondentRestoreCodes();
-            $model->set('gr2o_reception_code', 'label', $this->_('Restore code'),
-                    'multiOptions', $options,
-                    'size', min(7, max(3, count($options) + 1))
-                    );
-
-            $model->set('restore_tracks', 'label', $this->_('Restore tracks'),
-                    'description', $this->_('Restores tracks with the same code as the respondent.'),
-                    'elementClass', 'Checkbox'
-                    );
-
-            if (! array_key_exists('restore_tracks', $this->formData)) {
-                $this->formData['restore_tracks'] = 1;
-            }
-        } else {
-            $options = $model->get('gr2o_reception_code', 'multiOptions');
-        }
-
-        if (! isset($this->formData['gr2o_reception_code'], $options[$this->formData['gr2o_reception_code']])) {
-            reset($options);
-            $this->formData['gr2o_reception_code'] = key($options);
-        }
-
-        if ($this->unDelete) {
-            $this->saveLabel = $this->_('Restore respondent');
-        } else {
-            $this->saveLabel = $this->_('Delete respondent');
+        if (! array_key_exists('restore_tracks', $this->formData)) {
+            $this->formData['restore_tracks'] = 1;
         }
     }
 
     /**
-     * Hook containing the actual save code.
+     * Are we undeleting or deleting?
      *
-     * Call's afterSave() for user interaction.
-     *
-     * @see afterSave()
+     * @return boolean
      */
-    protected function saveData()
+    public function isUndeleting()
     {
-        $model = $this->getModel();
-
-        if (! $model instanceof \Gems_Model_RespondentModel) {
-            parent::saveData();
+        if ($this->respondent->getReceptionCode()->isSuccess()) {
+            return false;
         }
 
-        $this->beforeSave();
+        $this->editItems[] = 'restore_tracks';
+        return true;
+    }
 
-        $oldCode = $this->respondentData['gr2o_reception_code'];
+    /**
+     * Hook performing actual save
+     *
+     * @param string $newCode
+     * @param int $userId
+     * @return $changed
+     */
+    public function setReceptionCode($newCode, $userId)
+    {
+        $model   = $this->getModel();
+        $oldCode = $this->respondent->getReceptionCode()->getCode();
         $code    = $model->setReceptionCode(
                 $this->formData['gr2o_patient_nr'],
                 $this->formData['gr2o_id_organization'],
-                $this->formData['gr2o_reception_code'],
-                $this->formData['gr2o_id_user'],
+                $newCode,
+                $userId,
                 $oldCode
                 );
 
@@ -221,7 +229,6 @@ class DeleteRespondentSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
                         $this->formData['gr2o_id_user'],
                         $this->formData['gr2o_id_organization']
                         );
-                $userId    = $this->loader->getCurrentUser()->getUserId();
 
                 foreach ($respTracks as $respTrack) {
                     if ($respTrack instanceof \Gems_Tracker_RespondentTrack) {
@@ -243,12 +250,10 @@ class DeleteRespondentSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
                 $this->routeAction        = 'index';
             } else {
                 // Just a stop code
-                $this->addMessage($this->_('Respondent tracks stopped.'));
+                $this->addMessage(sprintf($this->plural('Stopped %d track.', 'Stopped %d tracks.', $count), $count));
             }
         }
 
-        $this->accesslog->logChange($this->request, null, $this->formData);
-
-        // No after3Save() as we placed the messages here.
+        return 1;
     }
 }

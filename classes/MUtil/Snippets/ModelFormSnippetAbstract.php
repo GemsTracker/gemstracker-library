@@ -603,7 +603,7 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_M
         $this->formData = $model->save($this->formData);
         $changed        = $model->getChanged();
 
-        // Perform the save
+        // Message the save
         $this->afterSave($changed);
     }
 

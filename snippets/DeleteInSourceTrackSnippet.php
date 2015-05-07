@@ -106,7 +106,7 @@ class DeleteInSourceTrackSnippet extends Gems_Tracker_Snippets_EditTrackSnippetA
     {
         $model = parent::createModel();
 
-        $options = $this->util->getReceptionCodeLibrary()->getTrackDeletionCodes();
+        $options = array('' => '') + $this->util->getReceptionCodeLibrary()->getTrackDeletionCodes();
 
         $model->set('gr2t_reception_code',
             'label',        $this->_('Rejection code'),

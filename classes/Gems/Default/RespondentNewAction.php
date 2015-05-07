@@ -191,11 +191,19 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
                 return $model->applyEditSettings();
 
             case 'delete':
-                return $model->applyDeleteSettings();
-
             default:
                 return $model->applyDetailSettings();
         }
+    }
+
+    /**
+     * Action for showing a delete item page
+     */
+    public function deleteAction()
+    {
+        $this->deleteParameters['formTitle'] = $this->_('Delete or stop respondent');
+
+        parent::deleteAction();
     }
 
     /**
@@ -333,15 +341,16 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      */
     public function getRespondentData()
     {
-        $orgId  = $this->_getParam(\MUtil_Model::REQUEST_ID2);
-        $respId = $this->getRespondentId();
-        $userId = $this->loader->getCurrentUser()->getUserId();
-
-        // Check for completed tokens
-        $this->loader->getTracker()->processCompletedTokens($respId, $userId, $orgId);
-
-        $model = $this->getModel();
-        return $model->applyRequest($this->getRequest(), true)->loadFirst();
+        return $this->getRespondent()->getArrayCopy();
+//        $orgId  = $this->_getParam(\MUtil_Model::REQUEST_ID2);
+//        $respId = $this->getRespondentId();
+//        $userId = $this->loader->getCurrentUser()->getUserId();
+//
+//        // Check for completed tokens
+//        $this->loader->getTracker()->processCompletedTokens($respId, $userId, $orgId);
+//
+//        $model = $this->getModel();
+//        return $model->applyRequest($this->getRequest(), true)->loadFirst();
     }
 
     /**
@@ -349,7 +358,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      * (So we don't need to repeat that for every snippet.)
      *
      * @return int
-     */
+     * /
     public function getRespondentId()
     {
         static $respondentId = false;
@@ -503,5 +512,4 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
             $this->addSnippets($this->deleteSnippets, $params);
         }
     }
-
 }

@@ -66,7 +66,7 @@ abstract class Gems_Tracker_Snippets_EditTokenSnippetAbstract extends \Gems_Snip
     /**
      * Optional: $request or $tokenData must be set
      *
-     * The display data of the token shown
+     * The token shown
      *
      * @var \Gems_Tracker_Token
      */

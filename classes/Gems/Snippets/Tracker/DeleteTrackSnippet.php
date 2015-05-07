@@ -37,6 +37,8 @@
 
 namespace Gems\Snippets\Tracker;
 
+use Gems\Snippets\ReceptionCode\ChangeReceptionCodeSnippetAbstract;
+
 /**
  *
  * @package    Gems
@@ -45,63 +47,75 @@ namespace Gems\Snippets\Tracker;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class DeleteTrackSnippet extends \Gems_Tracker_Snippets_EditTrackSnippetAbstract
+class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
 {
     /**
-     * Marker that the snippet is in undelete mode (for subclasses)
+     * Array of items that should be shown to the user
      *
-     * @var boolean
+     * @var array
      */
-    protected $unDelete = false;
+    protected $editItems = array('gr2t_comment');
+
+    /**
+     * Array of items that should be shown to the user
+     *
+     * @var array
+     */
+    protected $exhibitItems = array(
+        'gr2o_patient_nr', 'respondent_name', 'gtr_track_name', 'gr2t_track_info', 'gr2t_start_date',
+        );
+
+    /**
+     * Array of items that should be kept, but as hidden
+     *
+     * @var array
+     */
+    protected $hiddenItems = array('gr2t_id_respondent_track', 'gr2t_id_user', 'gr2t_id_organization');
 
     /**
      *
-     * @var \Gems_Util
+     * @var \MUtil_Model_ModelAbstract
      */
-    protected $util;
+    protected $model;
 
     /**
-     * Adds elements from the model to the bridge that creates the form.
+     * The item containing the reception code field
      *
-     * Overrule this function to add different elements to the browse table, without
-     * having to recode the core table building code.
-     *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @var string
      */
-    protected function addFormElements(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
+    protected $receptionCodeItem = 'gr2t_reception_code';
+
+    /**
+     * Required
+     *
+     * @var \Gems_Tracker_RespondentTrack
+     */
+    protected $respondentTrack;
+
+    /**
+     * The name of the action to forward to after form completion
+     *
+     * @var string
+     */
+    protected $routeAction = 'show-track';
+
+    /**
+     * Optional
+     *
+     * @var \Gems_Tracker_Engine_TrackEngineInterface
+     */
+    protected $trackEngine;
+
+    /**
+     * Hook that allows actions when data was saved
+     *
+     * When not rerouted, the form will be populated afterwards
+     *
+     * @param int $changed The number of changed rows (0 or 1 usually, but can be more)
+     */
+    protected function afterSave($changed)
     {
-        $bridge->addHidden(   'gr2t_id_respondent_track');
-        $bridge->addHidden(   'gr2t_id_user');
-        $bridge->addHidden(   'gr2t_id_track');
-        $bridge->addHidden(   'gr2t_id_organization');
-        $bridge->addHidden(   'gr2t_active');
-        $bridge->addHidden(   'gr2t_count');
-        $bridge->addHidden(   'gr2o_id_organization');
-        $bridge->addHidden(   'gtr_id_track');
-        $bridge->addHidden(   'grc_success');
-
-        // Patient
-        $bridge->addExhibitor('gr2o_patient_nr', 'label', $this->_('Respondent number'));
-        $bridge->addExhibitor('respondent_name', 'label', $this->_('Respondent name'));
-
-        // Track
-        $bridge->addExhibitor('gtr_track_name');
-        $bridge->addExhibitor('gr2t_track_info');
-        $bridge->addExhibitor('gr2t_start_date');
-
-        // The edit element
-        $bridge->addList('gr2t_reception_code');
-
-        if ($this->unDelete) {
-            $bridge->addCheckbox('restore_tokens');
-        }
-
-        // Comment text
-        $bridge->addTextarea('gr2t_comment', 'rows', 3, 'cols', 50);
-
-        // Change the button
-        $this->saveLabel = $this->getTitle();
+        // Do nothing, performed in setReceptionCode()
     }
 
     /**
@@ -111,29 +125,22 @@ class DeleteTrackSnippet extends \Gems_Tracker_Snippets_EditTrackSnippetAbstract
      */
     protected function createModel()
     {
-        $model = parent::createModel();
+        if (! $this->model instanceof \Gems_Tracker_Model_TrackModel) {
+            $tracker     = $this->loader->getTracker();
+            $this->model = $tracker->getRespondentTrackModel();
 
-        if ($this->respondentTrack->hasSuccesCode()) {
-            $options = $this->util->getReceptionCodeLibrary()->getTrackDeletionCodes();
-        } else {
-            $this->unDelete = true;
-            $options = $this->util->getReceptionCodeLibrary()->getTrackRestoreCodes();
+            if (! $this->trackEngine instanceof \Gems_Tracker_Engine_TrackEngineInterface) {
+                $this->trackEngine = $this->respondentTrack->getTrackEngine();
+            }
+            $this->model->applyEditSettings($this->trackEngine);
         }
 
-        $model->set('gr2t_reception_code',
-            'label',        ($this->unDelete ? $this->_('Reception code') : $this->_('Rejection code')),
-            'multiOptions', $options,
-            'required',     true,
-            'size',         min(7, max(3, count($options) + 1)));
+        $this->model->set('restore_tokens', 'label', $this->_('Restore tokens'),
+                'description', $this->_('Restores tokens with the same code as the track.'),
+                'elementClass', 'Checkbox'
+                );
 
-        if ($this->unDelete) {
-            $model->set('restore_tokens', 'label', $this->_('Restore tokens'),
-                    'description', $this->_('Restores tokens with the same code as the track.'),
-                    'elementClass', 'Checkbox'
-                    );
-        }
-
-        return $model;
+        return $this->model;
     }
 
     /**
@@ -154,44 +161,72 @@ class DeleteTrackSnippet extends \Gems_Tracker_Snippets_EditTrackSnippetAbstract
     }
 
     /**
+     * Called after loadFormData() and isUndeleting() but before the form is created
      *
-     * @return string The header title to display
+     * @return array
      */
-    protected function getTitle()
+    public function getReceptionCodes()
     {
+        $rcLib = $this->util->getReceptionCodeLibrary();
+
         if ($this->unDelete) {
-            return sprintf($this->_('Undelete %s!'), $this->getTopic());
+            return $rcLib->getTrackRestoreCodes();
         }
-        return sprintf($this->_('Delete %s!'), $this->getTopic());
+
+        return $rcLib->getTrackDeletionCodes();
     }
 
     /**
-     * Hook containing the actual save code.
+     * Called after loadFormData() in loadForm() before the form is created
      *
-     * Call's afterSave() for user interaction.
-     *
-     * @see afterSave()
+     * @return boolean Are we undeleting or deleting?
      */
-    protected function saveData()
+    public function isUndeleting()
+    {
+        if ($this->respondentTrack->hasSuccesCode()) {
+            return false;
+        }
+
+        $this->editItems[] = 'restore_tokens';
+        return true;
+    }
+
+    /**
+     * Hook performing actual save
+     *
+     * @param string $newCode
+     * @param int $userId
+     * @return $changed
+     */
+    public function setReceptionCode($newCode, $userId)
     {
         $oldCode = $this->respondentTrack->getReceptionCode()->getCode();
-        $userId  = $this->loader->getCurrentUser()->getUserId();
-        $newCode = $this->formData['gr2t_reception_code'];
 
         // Use the repesondent track function as that cascades the consent code
         $changed = $this->respondentTrack->setReceptionCode($newCode, $this->formData['gr2t_comment'], $userId);
 
-        if ($this->unDelete && isset($this->formData['restore_tokens']) && $this->formData['restore_tokens']) {
-            foreach ($this->respondentTrack->getTokens() as $token) {
-                if ($token instanceof \Gems_Tracker_Token) {
-                    if ($oldCode === $token->getReceptionCode()->getCode()) {
-                        $token->setReceptionCode($newCode, null, $userId);
+        if ($this->unDelete) {
+            $this->addMessage($this->_('Track restored.'));
+
+            if (isset($this->formData['restore_tokens']) && $this->formData['restore_tokens']) {
+                $count = 0;
+                foreach ($this->respondentTrack->getTokens() as $token) {
+                    if ($token instanceof \Gems_Tracker_Token) {
+                        if ($oldCode === $token->getReceptionCode()->getCode()) {
+                            $count += $token->setReceptionCode($newCode, null, $userId);
+                        }
                     }
                 }
+                $this->addMessage(sprintf($this->plural(
+                        '%d token reception codes restored.',
+                        '%d tokens reception codes restored.',
+                        $count
+                        ), $count));
             }
+        } else {
+            $this->addMessage($this->_('Track deleted.'));
         }
 
-        // Tell the user what happened
-        $this->afterSave($changed);
+        return $changed;
     }
 }

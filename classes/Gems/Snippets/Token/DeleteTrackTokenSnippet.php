@@ -37,6 +37,8 @@
 
 namespace Gems\Snippets\Token;
 
+use Gems\Snippets\ReceptionCode\ChangeReceptionCodeSnippetAbstract;
+
 /**
  * Snippet for editing reception code of token.
  *
@@ -46,7 +48,7 @@ namespace Gems\Snippets\Token;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class DeleteTrackTokenSnippet extends \Gems_Tracker_Snippets_EditTokenSnippetAbstract
+class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
 {
     /**
      * Replacement token after a redo delete
@@ -62,83 +64,55 @@ class DeleteTrackTokenSnippet extends \Gems_Tracker_Snippets_EditTokenSnippetAbs
     protected $db;
 
     /**
-     * Marker that the snippet is in undelete mode (for subclasses)
+     * Array of items that should be shown to the user
      *
-     * @var boolean
+     * @var array
      */
-    protected $unDelete = false;
+    protected $editItems = array('gto_comment');
 
     /**
+     * Array of items that should be shown to the user
      *
-     * @var \Gems_Util
+     * @var array
      */
-    protected $util;
+    protected $exhibitItems = array(
+        'gto_id_token', 'gr2o_patient_nr', 'respondent_name', 'gtr_track_name', 'gr2t_track_info', 'gsu_survey_name',
+        'gto_round_description', 'ggp_name', 'gto_valid_from', 'gto_valid_until', 'gto_completion_time',
+        );
+
+    /**
+     * Array of items that should be kept, but as hidden
+     *
+     * @var array
+     */
+    protected $hiddenItems = array('gto_id_organization', 'gto_id_respondent', 'gto_id_respondent_track');
+
+    /**
+     * The item containing the reception code field
+     *
+     * @var string
+     */
+    protected $receptionCodeItem = 'gto_reception_code';
+
+    /**
+     * The token shown
+     *
+     * @var \Gems_Tracker_Token
+     */
+    protected $token;
+
+    /**
+     * Optional right to check for undeleting
+     *
+     * @var string
+     */
+    protected $unDeleteRight = 'pr.token.undelete';
 
     /**
      *
      * @var \Zend_View
      */
     protected $view;
-
-    /**
-     * Adds elements from the model to the bridge that creates the form.
-     *
-     * Overrule this function to add different elements to the browse table, without
-     * having to recode the core table building code.
-     *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
-     */
-    protected function addFormElements(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
-    {
-        $bridge->addHidden('gr2o_id_organization');
-        $bridge->addHidden('gr2t_id_respondent_track');
-        $bridge->addHidden('gr2t_id_user');
-        $bridge->addHidden('gr2t_id_organization');
-        $bridge->addHidden('gr2t_id_track');
-        $bridge->addHidden('gr2t_active');
-        $bridge->addHidden('gr2t_count');
-        $bridge->addHidden('gr2t_reception_code');
-        $bridge->addHidden('gto_id_respondent_track');
-        $bridge->addHidden('gto_id_round');
-        $bridge->addHidden('gto_id_respondent');
-        $bridge->addHidden('gto_id_organization');
-        $bridge->addHidden('gto_id_track');
-        $bridge->addHidden('gto_id_survey');
-        $bridge->addHidden('gtr_id_track');
-
-        // Patient
-        $bridge->addExhibitor('gto_id_token');
-        $bridge->addExhibitor('gr2o_patient_nr');
-        $bridge->addExhibitor('respondent_name');
-
-        // Track
-        $bridge->addExhibitor('gtr_track_name');
-        if ($this->formData['gr2t_track_info']) {
-            $bridge->addExhibitor('gr2t_track_info');
-        } else {
-            $bridge->addHidden('gr2t_track_info');
-        }
-
-        // Round
-        $bridge->addExhibitor('gsu_survey_name');
-        if ($this->formData['gto_round_description']) {
-            $bridge->addExhibitor('gto_round_description');
-        } else {
-            $bridge->addHidden('gto_round_description');
-        }
-        $bridge->addExhibitor('ggp_name');
-
-        // Token
-        $bridge->addExhibitor('gto_valid_from');
-        $bridge->addExhibitor('gto_valid_until');
-        $bridge->addTextarea('gto_comment', 'rows', 3, 'cols', 50);
-        $bridge->addExhibitor('gto_completion_time');
-        $bridge->addList('gto_reception_code');
-
-        // Change the button
-        $this->saveLabel = $this->getTitle();
-    }
 
     /**
      * Hook that allows actions when data was saved
@@ -149,12 +123,7 @@ class DeleteTrackTokenSnippet extends \Gems_Tracker_Snippets_EditTokenSnippetAbs
      */
     protected function afterSave($changed)
     {
-        // Communicate to user
-        if ($changed) {
-            $this->addMessage(sprintf($this->_('%2$u %1$s deleted'), $this->getTopic($changed), $changed));
-        } else {
-            parent::afterSave($changed);
-        }
+        // Do nothing, performed in setReceptionCode()
     }
 
     /**
@@ -164,29 +133,10 @@ class DeleteTrackTokenSnippet extends \Gems_Tracker_Snippets_EditTokenSnippetAbs
      */
     protected function createModel()
     {
-        $model = parent::createModel();
-
-        $this->unDelete = ! $this->token->getReceptionCode()->isSuccess();
-
-        $sql = "SELECT grc_id_reception_code, CASE
-                        WHEN grc_description IS NULL OR grc_description = '' THEN grc_id_reception_code
-                        ELSE grc_description
-                        END
-                    FROM gems__reception_codes
-                    WHERE grc_active = 1 AND grc_for_surveys = 1";
-
-        if ($this->unDelete) {
-            $sql .= ' AND grc_success = 1';
-        }
-        if (! $this->token->isCompleted()) {
-            $sql .= ' AND grc_redo_survey = 0';
-        }
-
-        $sql .= ' ORDER BY grc_description';
+        $model = $this->token->getModel();
 
         $model->set('gto_reception_code',
             'label',        $model->get('grc_description', 'label'),
-            'multiOptions', $this->db->fetchPairs($sql),
             'required',     true);
 
         return $model;
@@ -212,106 +162,110 @@ class DeleteTrackTokenSnippet extends \Gems_Tracker_Snippets_EditTokenSnippetAbs
     }
 
     /**
+     * Called after loadFormData() and isUndeleting() but before the form is created
      *
-     * @return string The header title to display
+     * @return array
      */
-    protected function getTitle()
+    public function getReceptionCodes()
     {
+        $rcLib = $this->util->getReceptionCodeLibrary();
+
         if ($this->unDelete) {
-            return sprintf($this->_('Undelete %s!'), $this->getTopic());
+            return $rcLib->getTokenRestoreCodes();
         }
-        return sprintf($this->_('Delete %s!'), $this->getTopic());
+        if ($this->token->isCompleted()) {
+            return $rcLib->getCompletedTokenDeletionCodes();
+        }
+        return $rcLib->getUnansweredTokenDeletionCodes();
     }
 
     /**
-     * Step by step form processing
+     * Called after loadFormData() in loadForm() before the form is created
      *
-     * Returns false when $this->afterSaveRouteUrl is set during the
-     * processing, which happens by default when the data is saved.
-     *
-     * @return boolean True when the form should be displayed
-     * /
-    protected function processForm()
-    {
-        if (parent::processForm()) {
-            // Warn the world, can do only now
-            $this->addMessage(sprintf($this->_('Watch out! You cannot undo a %s deletion!'), $this->getTopic()));
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Hook containing the actual save code.
-     *
-     * Call's afterSave() for user interaction.
-     *
-     * @see afterSave()
+     * @return boolean Are we undeleting or deleting?
      */
-    protected function saveData()
+    public function isUndeleting()
+    {
+        return ! $this->token->getReceptionCode()->isSuccess();
+    }
+
+    /**
+     * Hook performing actual save
+     *
+     * @param string $newCode
+     * @param int $userId
+     * @return $changed
+     */
+    public function setReceptionCode($newCode, $userId)
     {
         // Get the code object
-        $code   = $this->util->getReceptionCode($this->formData['gto_reception_code']);
-        $userId = $this->loader->getCurrentUser()->getUserId();
+        $code    = $this->util->getReceptionCode($newCode);
 
         // Use the token function as that cascades the consent code
         $changed = $this->token->setReceptionCode($code, $this->formData['gto_comment'], $userId);
 
-        if ($code->hasRedoCode()) {
-            $newComment = sprintf($this->_('Redo of token %s.'), $this->tokenId);
-            if ($this->formData['gto_comment']) {
-                $newComment .= "\n\n";
-                $newComment .= $this->_('Old comment:');
-                $newComment .= "\n";
-                $newComment .= $this->formData['gto_comment'];
-            }
+        if ($code->isSuccess()) {
+            $this->addMessage(sprintf($this->_('Token %s restored.'), $this->token->getTokenId()));
+        } else {
+            $this->addMessage(sprintf($this->_('Token %s deleted.'), $this->token->getTokenId()));
 
-            $this->_replacementTokenId = $this->token->createReplacement($newComment, $userId);
+            if ($code->hasRedoCode()) {
+                $newComment = sprintf($this->_('Redo of token %s.'), $this->tokenId);
+                if ($this->formData['gto_comment']) {
+                    $newComment .= "\n\n";
+                    $newComment .= $this->_('Old comment:');
+                    $newComment .= "\n";
+                    $newComment .= $this->formData['gto_comment'];
+                }
 
-            // Create a link for the old token
-            if ($menuItem = $this->menu->find(array('controller' => $this->request->getControllerName(), 'action' => 'show', 'allowed' => true))) {
-                $paramSource['gto_id_token']      = $this->tokenId;
-                $paramSource[\Gems_Model::ID_TYPE] = 'token';
+                $this->_replacementTokenId = $this->token->createReplacement($newComment, $userId);
 
-                $link = $menuItem->toActionLink($paramSource, strtoupper($this->tokenId), true);
-                $link->class = '';
+                // Create a link for the old token
+                $menuItem = $this->menu->findAllowedController($this->request->getControllerName(), 'show');
+                if ($menuItem) {
+                    $paramSource['gto_id_token']      = $this->tokenId;
+                    $paramSource[\Gems_Model::ID_TYPE] = 'token';
 
-                $oldTokenUrl = $link->render($this->view);
-            } else {
-                $oldTokenUrl = strtoupper($this->tokenId);
-            }
+                    $link = $menuItem->toActionLink($paramSource, strtoupper($this->tokenId), true);
+                    $link->class = '';
 
-            // Tell what the user what happened
-            $this->addMessage(new \MUtil_Html_Raw(sprintf(
-                    $this->_('Created replacement token %2$s for token %1$s.'),
-                    $oldTokenUrl,
-                    strtoupper($this->_replacementTokenId)
-                    )));
+                    $oldTokenUrl = $link->render($this->view);
+                } else {
+                    $oldTokenUrl = strtoupper($this->tokenId);
+                }
 
-            // Lookup token
-            $newToken = $this->loader->getTracker()->getToken($this->_replacementTokenId);
+                // Tell what the user what happened
+                $this->addMessage(new \MUtil_Html_Raw(sprintf(
+                        $this->_('Created replacement token %2$s for token %1$s.'),
+                        $oldTokenUrl,
+                        strtoupper($this->_replacementTokenId)
+                        )));
 
-            // Make sure the Next token is set right
-            $this->token->setNextToken($newToken);
+                // Lookup token
+                $newToken = $this->loader->getTracker()->getToken($this->_replacementTokenId);
 
-            // Copy answers when requested.
-            if ($code->hasRedoCopyCode()) {
-                $newToken->setRawAnswers($this->token->getRawAnswers());
+                // Make sure the Next token is set right
+                $this->token->setNextToken($newToken);
+
+                // Copy answers when requested.
+                if ($code->hasRedoCopyCode()) {
+                    $newToken->setRawAnswers($this->token->getRawAnswers());
+                }
             }
         }
 
         $respTrack = $this->token->getRespondentTrack();
         if ($nextToken = $this->token->getNextToken()) {
             if ($recalc = $respTrack->checkTrackTokens($userId, $nextToken)) {
-                $this->addMessage(sprintf($this->plural('%d token changed by recalculation.', '%d tokens changed by recalculation.', $recalc), $recalc));
+                $this->addMessage(sprintf($this->plural(
+                        '%d token changed by recalculation.',
+                        '%d tokens changed by recalculation.',
+                        $recalc
+                        ), $recalc));
             }
         }
 
-
-        // Tell the user what happened
-        $this->afterSave($changed);
+        return $changed;
     }
 
     /**
@@ -323,9 +277,10 @@ class DeleteTrackTokenSnippet extends \Gems_Tracker_Snippets_EditTokenSnippetAbs
     {
         // Default is just go to the index
         if ($this->routeAction && ($this->request->getActionName() !== $this->routeAction)) {
+            $tokenId = $this->_replacementTokenId ? $this->_replacementTokenId : $this->token->getTokenId();
             $this->afterSaveRouteUrl = array(
                 $this->request->getActionKey() => $this->routeAction,
-                \MUtil_Model::REQUEST_ID => $this->_replacementTokenId ? $this->_replacementTokenId : $this->tokenId,
+                \MUtil_Model::REQUEST_ID       => $tokenId,
                 );
         }
 

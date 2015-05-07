@@ -99,6 +99,19 @@ class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstr
     }
 
     /**
+     * Returns the token deletion reception code list.
+     *
+     * @return array a value => label array.
+     */
+    public function getCompletedTokenDeletionCodes()
+    {
+        $select = $this->_getDeletionCodeSelect();
+        $select->where('grc_for_surveys = ?', self::APPLY_DO);
+
+        return $this->db->fetchPairs($select);
+    }
+
+    /**
      * Returns the string version of the OK code
      *
      * @return string
@@ -125,9 +138,9 @@ class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstr
 
         if (! $data) {
             $data = array(
-                self::REDO_NONE => $this->translate->_('No'),
-                self::REDO_ONLY => $this->translate->_('Yes (forget answers)'),
-                self::REDO_COPY => $this->translate->_('Yes (keep answers)'));
+                self::REDO_NONE => $this->_('No'),
+                self::REDO_ONLY => $this->_('Yes (forget answers)'),
+                self::REDO_COPY => $this->_('Yes (keep answers)'));
         }
 
         return $data;
@@ -159,9 +172,9 @@ class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstr
 
         if (! $data) {
             $data = array(
-                self::APPLY_NOT  => $this->translate->_('No'),
-                self::APPLY_DO   => $this->translate->_('Yes (to individual tokens)'),
-                self::APPLY_STOP => $this->translate->_('Stop (to uncompleted tokens)'));
+                self::APPLY_NOT  => $this->_('No'),
+                self::APPLY_DO   => $this->_('Yes (for individual tokens)'),
+                self::APPLY_STOP => $this->_('Stop (for tokens in uncompleted tracks)'));
         }
 
         return $data;
@@ -177,7 +190,7 @@ class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstr
         $select = $this->_getDeletionCodeSelect();
         $select->where('grc_for_respondents = 1');
 
-        return array('' => '') + $this->db->fetchPairs($select);
+        return $this->db->fetchPairs($select);
     }
 
     /**
@@ -190,13 +203,14 @@ class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstr
         $select = $this->_getRestoreSelect();
         $select->where('grc_for_respondents = 1');
 
-        return array('' => '') + $this->db->fetchPairs($select);
+        return $this->db->fetchPairs($select);
     }
 
     /**
      * Returns the single survey deletion reception code list.
      *
      * @return array a value => label array.
+     * @deprecated since 1.7.1
      */
     public function getSingleSurveyDeletionCodes()
     {
@@ -205,6 +219,19 @@ class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstr
                 //->where('grc_redo_survey = ?', self::REDO_NONE);
 
         return array('' => '') + $this->db->fetchPairs($select);
+    }
+
+    /**
+     * Returns the token deletion reception code list.
+     *
+     * @return array a value => label array.
+     */
+    public function getTokenRestoreCodes()
+    {
+        $select = $this->_getRestoreSelect();
+        $select->where('grc_for_surveys = ?', self::APPLY_DO);
+
+        return $this->db->fetchPairs($select);
     }
 
     /**
@@ -217,7 +244,7 @@ class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstr
         $select = $this->_getDeletionCodeSelect();
         $select->where('(grc_for_tracks = 1 OR grc_for_surveys = ?)', self::APPLY_STOP);
 
-        return array('' => '') + $this->db->fetchPairs($select);
+        return $this->db->fetchPairs($select);
     }
 
     /**
@@ -230,6 +257,20 @@ class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstr
         $select = $this->_getRestoreSelect();
         $select->where('(grc_for_tracks = 1 OR grc_for_surveys = ?)', self::APPLY_STOP);
 
-        return array('' => '') + $this->db->fetchPairs($select);
+        return $this->db->fetchPairs($select);
+    }
+
+    /**
+     * Returns the token deletion reception code list.
+     *
+     * @return array a value => label array.
+     */
+    public function getUnansweredTokenDeletionCodes()
+    {
+        $select = $this->_getDeletionCodeSelect();
+        $select->where('grc_for_surveys = ?', self::APPLY_DO)
+                ->where('grc_redo_survey = ?', self::REDO_NONE);
+
+        return $this->db->fetchPairs($select);
     }
 }
