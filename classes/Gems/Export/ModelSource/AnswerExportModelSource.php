@@ -387,26 +387,27 @@ class Gems_Export_ModelSource_AnswerExportModelsource extends \Gems_Export_Model
 
         $survey      = $this->loader->getTracker()->getSurvey($surveyId);
         $model = $survey->getAnswerModel($language);
+        $model->addTable('gems__respondent2track', array('gr2t_id_respondent_track' => 'gto_id_respondent_track'), 'gr2t');
+        $model->addTable('gems__tracks', array('gtr_id_track' => 'gto_id_track'), 'gtr');
 
-        $model->set('gto_id_respondent',                    'label', $this->_('Respondent ID'));
-        $model->set('gto_id_organization',                  'label', $this->_('Organization'),
-                                                                'multiOptions', $this->loader->getCurrentUser()->getAllowedOrganizations()
+        $model->set('gto_id_respondent',        'label', $this->_('Respondent ID'));
+        $model->set('gto_id_organization',      'label', $this->_('Organization'),
+                                                'multiOptions', $this->loader->getCurrentUser()->getAllowedOrganizations()
         );
         // Add Consent 
-        $model->set('consentcode',                         'label', $this->_('Consent'));
+        $model->set('consentcode',              'label', $this->_('Consent'));
         $model->set('resptrackid',              'label', $this->_('Respondent track ID'));
-        $model->set('gto_round_description',                'label', $this->_('Round description'));
-        $model->set('trackdescription',                      'label', $this->_('Track description'));
-        $model->set('trackname',                       'label', $this->_('Track name'));
-        $model->set('location',                       'label', $this->_('Location'));
-        $model->set('submitdate',                       'label', $this->_('Submit date'));
-        $model->set('startdate',                       'label', $this->_('Start date'));
-        $model->set('datestamp',                       'label', $this->_('Datestamp'));
-        $model->set('gto_valid_from',                       'label', $this->_('Valid from'));
-        $model->set('gto_valid_until',                       'label', $this->_('Valid until'));
-        $model->set('startlanguage',                       'label', $this->_('Start language'));
-        $model->set('lastpage',                       'label', $this->_('Last page'));
+        $model->set('gto_round_description',    'label', $this->_('Round description'));
+        $model->set('gtr_track_name',           'label', $this->_('Track name'));
+        $model->set('gr2t_track_info',          'label', $this->_('Track description'));
         
+        $model->set('submitdate',               'label', $this->_('Submit date'));
+        $model->set('startdate',                'label', $this->_('Start date'));
+        $model->set('datestamp',                'label', $this->_('Datestamp'));
+        $model->set('gto_valid_from',           'label', $this->_('Valid from'));
+        $model->set('gto_valid_until',          'label', $this->_('Valid until'));
+        $model->set('startlanguage',            'label', $this->_('Start language'));
+        $model->set('lastpage',                 'label', $this->_('Last page'));       
 
         $model->set('gto_id_token',                       'label', $this->_('Token'));
 
