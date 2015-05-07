@@ -267,6 +267,12 @@ class Gems_Export_ModelSource_AnswerExportModelsource extends \Gems_Export_Model
                 ->setMultiOptions($organizations);
         $elements[] = $element;
 
+        if (MUtil_Bootstrap::enabled()) {
+            $element = new \MUtil_Bootstrap_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=oid]'));
+        } else {
+            $element = new \Gems_JQuery_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=oid]'));
+        }
+
         $element->setLabel($this->_('Toggle'));
         $elements[] = $element;
 

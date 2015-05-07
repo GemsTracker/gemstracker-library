@@ -120,6 +120,8 @@ class Gems_Export_SpssExport extends \Gems_Export_ExportAbstract
     public function addRow($row, $file)
     {
         $exportRow = $this->filterRow($row);
+        $labeledCols = $this->model->getColNames('label');
+        $exportRow = array_replace(array_flip($labeledCols), $exportRow);
         fputcsv($file, $exportRow, $this->delimiter, "'");
     }
 
