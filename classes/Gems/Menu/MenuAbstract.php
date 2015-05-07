@@ -651,6 +651,15 @@ abstract class Gems_Menu_MenuAbstract
         $pages[] = $showPage->addDeleteAction();
         $pages[] = $page->addExcelAction();
         $pages[] = $page->addImportAction();
+
+        // LOG CONTROLLER
+        $logPage = $showPage->addPage($this->_('Activity overview'), 'pr.staff-log', 'staff-log', 'index');
+        $logPage->setModelParameters(1);
+        $logPage->addAutofilterAction();
+        $logPage->addShowAction()->setModelParameters(1)->addNamedParameters('log', 'gla_id');
+
+        $pages[] = $logPage;
+
         if (! $this->escort->hasPrivilege('pr.staff.edit.all')) {
             $filter = array_keys($this->escort->loader->getCurrentUser()->getAllowedOrganizations());
             foreach ($pages as $sub_page) {

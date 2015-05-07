@@ -256,7 +256,7 @@ abstract class ChangeReceptionCodeSnippetAbstract extends \Gems_Snippets_ModelFo
                 );
 
         $this->afterSave($changed);
-        \MUtil_Echo::track($this->formData);
+        
         $this->accesslog->logChange($this->request, null, $this->formData);
     }
 

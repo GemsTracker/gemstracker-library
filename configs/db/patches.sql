@@ -974,3 +974,6 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.track.undele
 
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.token.undelete')
     WHERE grl_name = 'admin' AND grl_privileges NOT LIKE '%,pr.token.undelete%';
+
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.staff-log')
+    WHERE grl_name = 'admin' AND grl_privileges NOT LIKE '%,pr.staff-log%';

@@ -41,7 +41,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.7.1
  */
-class Gems_Export_ModelSource_DefaultExportModelSource extends \Gems_Export_ModelSource_ExportModelsourceAbstract 
+class Gems_Export_ModelSource_DefaultExportModelSource extends \Gems_Export_ModelSource_ExportModelsourceAbstract
 {
 
 	/**
@@ -60,7 +60,7 @@ class Gems_Export_ModelSource_DefaultExportModelSource extends \Gems_Export_Mode
      * @param  array  $filter Filter for the model
      * @return string   proposed filename
      */
-	public function getFileName($filter);
+	public function getFileName($filter)
 	{
 		return false;
 	}

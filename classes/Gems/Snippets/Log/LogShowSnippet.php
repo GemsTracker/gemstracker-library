@@ -88,6 +88,21 @@ class LogShowSnippet extends \Gems_Snippets_ModelItemTableSnippetAbstract
     }
 
     /**
+     * Overrule to implement snippet specific filtering and sorting.
+     *
+     * @param \MUtil_Model_ModelAbstract $model
+     */
+    protected function processFilterAndSort(\MUtil_Model_ModelAbstract $model)
+    {
+        if ($this->request->getParam('log')) {
+            $model->setFilter(array('gla_id'), $this->request->getParam('log'));
+            parent::processSortOnly($model);
+        } else {
+            parent::processFilterAndSort($model);
+        }
+    }
+
+    /**
      * Set the footer of the browse table.
      *
      * Overrule this function to set the header differently, without
@@ -100,17 +115,14 @@ class LogShowSnippet extends \Gems_Snippets_ModelItemTableSnippetAbstract
     protected function setShowTableFooter(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
         $row = $bridge->getRow();
-        if (isset($row['gla_respondent_id'], $row['gla_organization'])) {
-            $patientNr = $this->util->getDbLookup()->getPatientNr($row['gla_respondent_id'], $row['gla_organization']);
-
-            $this->menu->getParameterSource()->setPatient($patientNr, $row['gla_organization']);
-        } else {
-            $patientNr = false;
-        }
 
         parent::setShowTableFooter($bridge, $model);
 
-        if ($patientNr && ($this->menuList instanceof \Gems_Menu_MenuList)) {
+        if (isset($row['gla_respondent_id'], $row['gla_organization']) &&
+                ($this->menuList instanceof \Gems_Menu_MenuList)) {
+
+            $patientNr = $this->util->getDbLookup()->getPatientNr($row['gla_respondent_id'], $row['gla_organization']);
+
             $this->menuList->addParameterSources(array(
                 'gr2o_patient_nr'      => $patientNr,
                 'gr2o_id_organization' => $row['gla_organization'],
