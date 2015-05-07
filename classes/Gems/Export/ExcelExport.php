@@ -37,16 +37,19 @@
  *
  * @package    Gems
  * @subpackage Export
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.5
+ * @since      Class available since version 1.7.1
  */
 class Gems_Export_ExcelExport extends \Gems_Export_ExportAbstract
 {
+    /**
+     * @var string  Current used file extension
+     */
     protected $fileExtension = '.xls';
 
     /**
-     * return name of the specific export
+     * @return string name of the specific export
      */
     public function getName() {
         return 'ExcelExport';
@@ -54,6 +57,9 @@ class Gems_Export_ExcelExport extends \Gems_Export_ExportAbstract
 
     /**
      * form elements for extra options for this particular export option
+     * @param  \MUtil_Form $form Current form to add the form elements
+     * @param  array $data current options set in the form
+     * @return array Form elements
      */
     public function getFormElements(&$form, &$data)
     {
@@ -69,9 +75,7 @@ class Gems_Export_ExcelExport extends \Gems_Export_ExportAbstract
     }
 
     /**
-     * Sets the default form values when this export type is first chosen
-     *
-     * @return array
+     * @return array Default values in form
      */
     public function getDefaultFormValues()
     {
@@ -80,6 +84,7 @@ class Gems_Export_ExcelExport extends \Gems_Export_ExportAbstract
 
     /**
      * Add headers to a specific file
+     * @param  string $filename The temporary filename while the file is being written
      */
     protected function addheader($filename)
     {
@@ -155,6 +160,13 @@ class Gems_Export_ExcelExport extends \Gems_Export_ExportAbstract
         fclose($file);
     }
 
+    /**
+     * Add model rows to file. Can be batched
+     * @param string $exportModelSourceName     name of the current export model source
+     * @param array $filter                     Model filters for export             
+     * @param array $data                       Data submitted by export form
+     * @param string $tempFilename              The temporary filename while the file is being written
+     */
     public function addRows($exportModelSourceName, $filter, $data, $tempFilename)
     {
         $name = $this->getName();
@@ -164,6 +176,11 @@ class Gems_Export_ExcelExport extends \Gems_Export_ExportAbstract
         parent::addRows($exportModelSourceName, $filter, $data, $tempFilename);
     }
 
+    /**
+     * Add a separate row to a file
+     * @param array $row a row in the model
+     * @param file $file The already opened file
+     */
     public function addRow($row, $file)
     {
         fwrite($file, "\t\t<tr>\r\n");
@@ -204,6 +221,10 @@ class Gems_Export_ExcelExport extends \Gems_Export_ExportAbstract
         fwrite($file, "\t\t</tr>\r\n");
     }
 
+    /**
+     * Add a footer to a specific file
+     * @param string $filename The temporary filename while the file is being written
+     */
     public function addFooter($filename)
     {
         $file = fopen($filename, 'a');
@@ -214,6 +235,9 @@ class Gems_Export_ExcelExport extends \Gems_Export_ExportAbstract
         fclose($file);
     }
 
+    /**
+     * Preprocess the model to add specific options
+     */
     protected function preprocessModel()
     {
         //print_r(get_class($this->model));

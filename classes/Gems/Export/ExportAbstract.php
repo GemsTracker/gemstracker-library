@@ -37,57 +37,115 @@
  *
  * @package    Gems
  * @subpackage Export
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.5
+ * @since      Class available since version 1.7.1
  */
 abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_TranslateableAbstract
 {
-
+    /**
+     * @var Gems_Task_TaskRunnerBatch   The batch object if one is set
+     */
     protected $batch;
 
+    /**
+     * @var array   Data submitted by export form
+     */
     protected $data;
 
+    /**
+     * @var string  Default export model source, for when no model source exists
+     */
     protected $defaultExportModelSource = 'DefaultExportModelSource';
 
+    /**
+     * @var \Gems_Export_ModelSource_ExportModelsourceAbstract  Current Export model source
+     */
     protected $exportModelSource;
 
+    /**
+     * @var string  Name of the current export model source
+     */ 
     protected $modelSourceName;
 
+    /**
+     * @var string  The temporary filename while the file is being written
+     */
     protected $tempFilename;
 
-    protected $filename;
-
-    protected $files;
-
-    protected $firstRow;
-
-    protected $modelFilterAttributes = array('multiOptions', 'formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay');
-
-    public $loader;
-
-    protected $model;
-
+    /**
+     * @var string  Current used file extension
+     */
     protected $fileExtension;
 
+    /**
+     * @var string     The export file name, how it should be downloaded
+     */
+    protected $filename;
+
+    /**
+     * @var array   Array of all the filenames, new_name => temp_name
+     */
+    protected $files;
+
+    /**
+     * @var array   Model filters for export
+     */
+    protected $filter;
+
+    /**
+     * @var array   Array of the loaded first row of the model
+     */
+    protected $firstRow;
+
+    /**
+     * @var array   Array with the filter options that should be used for this exporter
+     */
+    protected $modelFilterAttributes = array('multiOptions', 'formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay');
+
+    /**
+     * @var \Gems_Loader
+     */
+    public $loader;
+
+    /**
+     * @var \MUtil_Model_ModelAbstract  Current model to export
+     */
+    protected $model;
+
+    /**
+     * @var integer     How many rows the batch will do in one go
+     */
     protected $rowsPerBatch = 500;
 
+    /**
+     * @var Zend_Session    Session used for non-batch exports
+     */
     protected $session;
 
     /**
-     * return name of the specific export
+     * @return string name of the specific export
      */
     abstract public function getName();
 
     /**
      * form elements for extra options for this particular export option
+     * @param  \MUtil_Form $form Current form to add the form elements
+     * @param  array $data current options set in the form
+     * @return array Form elements
      */
     public function getFormElements(&$form, &$data) {}
 
+    /**
+     * @return array Default values in form
+     */
     public function getDefaultFormValues() {}
 
     /**
-     * Add an export command with specific details
+     * Add an export command with specific details. Can be batched.
+     * @param string $exportModelSourceName     name of the current export model source
+     * @param array $filter                     Model filters for export             
+     * @param array $data                       Data submitted by export form
      */
     public function addExport($exportModelSourceName, $filter, $data) {
         
@@ -132,6 +190,9 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
         }
     }
 
+    /**
+     * Creates a new file and adds it to the files array
+     */
     protected function addFile()
     {
         $tempFilename = GEMS_ROOT_DIR . '/var/tmp/export-' . md5(time() . rand());
@@ -139,7 +200,7 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
 
         $this->tempFilename = $tempFilename;
 
-        if ($basename = $this->getExportModelSource()->getName($this->filter)) {
+        if ($basename = $this->getExportModelSource()->getFileName($this->filter)) {
             $basename = $this->cleanupName($basename);
         } else {
             $basename = $this->cleanupName($this->model->getName());
@@ -161,9 +222,17 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
 
     /**
      * Add headers to a specific file
+     * @param  string $filename The temporary filename while the file is being written
      */
     abstract protected function addheader($filename);
 
+    /**
+     * Add model rows to file. Can be batched
+     * @param string $exportModelSourceName     name of the current export model source
+     * @param array $filter                     Model filters for export             
+     * @param array $data                       Data submitted by export form
+     * @param string $tempFilename              The temporary filename while the file is being written
+     */
     public function addRows($exportModelSourceName, $filter, $data, $tempFilename)
     {
         $this->filter = $filter;
@@ -179,10 +248,24 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
         fclose($file);
     }
 
+    /**
+     * Add a separate row to a file
+     * @param array $row a row in the model
+     * @param file $file The already opened file
+     */
     abstract public function addRow($row, $file);
 
+    /**
+     * Add a footer to a specific file
+     * @param string $filename The temporary filename while the file is being written
+     */
     public function addFooter($filename) {}
 
+    /**
+     * Clean a proposed filename up so it can be used correctly as a filename
+     * @param  string $filename Proposed filename
+     * @return string           filtered filename
+     */
     protected function cleanupName($filename)
     {
         $filename = str_replace(array('/', '\\', ':', ' '), '_', $filename);
@@ -192,6 +275,11 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
         return \MUtil_File::cleanupName($filename);
     }
 
+    /**
+     * Filter the data in a row so that correct values are being used
+     * @param  array $row a row in the model
+     * @return array The filtered row
+     */
     protected function filterRow($row)
     {
         $exportRow = array();
@@ -268,6 +356,11 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
         return $exportRow;
     }
 
+    /**
+     * Finalizes the files stored in $this->files. 
+     * If it has 1 file, it will return that file, if it has more, it will return a zip containing all the files, named as the first file in the array.
+     * @return File with download headers
+     */
     public function finalizeFiles()
     {
         $this->getFiles();
@@ -324,6 +417,10 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
         
     }
 
+    /**
+     * Load the ExportModelSource
+     * @return \Gems_Export_ModelSource_ExportModelSourceAbstract
+     */
     protected function getExportModelSource()
     {
         if (!$this->exportModelSource && $this->modelSourceName) {
@@ -333,6 +430,10 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
         return $this->exportModelSource;
     }
 
+    /**
+     * Returns the files array. It might be stored in the batch session or normal session.
+     * @return array Files array
+     */
     protected function getFiles()
     {
         if (!$this->files) {
@@ -350,9 +451,12 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
         return $this->files;
     }
 
+    /**
+     * Get the model to export
+     * @return \MUtil_Model_ModelAbstract
+     */
     protected function getModel()
     {
-
         $this->model = false;
         if ($this->batch && $models = $this->batch->getSessionVariable('models')) {
             $this->model = $models[0];
@@ -372,6 +476,11 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
         return $this->model;
     }
 
+    /**
+     * Get the number of items in a specific model, using the models paginator
+     * @param  array $filter Filter for the model
+     * @return int Number of items in the model
+     */
     protected function getModelCount($filter=true)
     {
         if ($this->model && $this->model instanceof \MUtil_Model_ModelAbstract) {
@@ -381,6 +490,9 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
         return 0;
     }
 
+    /**
+     * Preprocess the model to add specific options
+     */
     protected function preprocessModel()
     {
     }

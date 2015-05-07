@@ -37,37 +37,41 @@
  *
  * @package    Gems
  * @subpackage Export
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.5
+ * @since      Class available since version 1.7.1
  */
 abstract class Gems_Export_ModelSource_ExportModelSourceAbstract extends \MUtil_Translate_TranslateableAbstract 
 {
-
+	/**
+	 * @var Gems_Loader
+	 */
 	public $loader;
 
-	public function getForm()
+	/**
+	 * Get form elements for the specific Export
+	 * @param  Gems_Form $form existing form type
+	 * @param  array data existing options set in the form
+	 * @return array of form elements
+	 */
+	public function getFormElements(Gems_Form $form, &$data)
 	{
 		return array();
 	}
 
-	protected function addColumnSelect(Gems_Form $form)
-	{
-		$options = array();
 
-		$element = $form->createElement('select');
-		$element->setLabel($this->_('Export fields'));
-		$element->setMultiOptions($options);
-
-		return $element;
-	}
-
-	protected function addOrganizationSelect()
-	{
-
-	}
-
+	/**
+     * Get the model to export
+     * @param  array  $filter Filter for the model
+     * @param  array  $data   Data from the form options
+     * @return \MUtil_Model_ModelAbstract
+     */
 	abstract public function getModel($filter = array(), $data = array());
 
-	abstract public function getName($filter);
+	/**
+     * Get the proposed filename for the export of a model with specific filter options
+     * @param  array  $filter Filter for the model
+     * @return string   proposed filename
+     */
+	abstract public function getFileName($filter);
 }

@@ -37,11 +37,11 @@
  *
  * @package    Gems
  * @subpackage Export
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.7.1
  */
-class Gems_Export_ModelSource_AnswerExportModelsource extends Gems_Export_ModelSource_ExportModelSourceAbstract
+class Gems_Export_ModelSource_AnswerExportModelsource extends \Gems_Export_ModelSource_ExportModelSourceAbstract
 {
 
 	/**
@@ -51,10 +51,19 @@ class Gems_Export_ModelSource_AnswerExportModelsource extends Gems_Export_ModelS
      */
     const NoRound = '-1';
 
+    /**
+     * @var \Zend_Db_Adapter_Abstract
+     */
     public $db;
 
+    /**
+     * @var \Gems_Loader
+     */
 	public $loader;
 
+    /**
+     * @var \Zend_Locale
+     */
 	public $locale;
 
 	/**
@@ -63,9 +72,18 @@ class Gems_Export_ModelSource_AnswerExportModelsource extends Gems_Export_ModelS
      */
     public $project;
 
+    /**
+     * @var \Gems_Util
+     */
 	public $util;
 
 
+    /**
+     * Translate the set form options to a valid filter for the model for the Response Database
+     * @param  array data existing options set in the form
+     * @param  array Filter for the model already set in getFilters()
+     * @return array Filter for the model
+     */
 	protected function getResponseDatabaseFilter($data, &$filter)
     {
         if (isset($data['filter_answer']) &&
@@ -97,6 +115,11 @@ class Gems_Export_ModelSource_AnswerExportModelsource extends Gems_Export_ModelS
         }
     }
 
+    /**
+     * Translate the set form options to a valid filter for the model
+     * @param  array data existing options set in the form
+     * @return array Filter for the model
+     */
 	public function getFilters($data)
 	{
 		$filters = array();
@@ -177,10 +200,11 @@ class Gems_Export_ModelSource_AnswerExportModelsource extends Gems_Export_ModelS
 	}
 
 	/**
-	 * Get form elements for the specific Export
-	 * @param  Gems_Form $form existing form type
-	 * @return array of form elements
-	 */
+     * Get form elements for the specific Export
+     * @param  Gems_Form $form existing form type
+     * @param  array data existing options set in the form
+     * @return array of form elements
+     */
 	public function getFormElements(Gems_Form $form, &$data)
 	{
 
@@ -255,7 +279,7 @@ class Gems_Export_ModelSource_AnswerExportModelsource extends Gems_Export_ModelS
         $element->setLabel($this->_('Valid until'));
         $elements[] = $element;
         
-        if (MUtil_Bootstrap::enabled()) {
+        if (\MUtil_Bootstrap::enabled()) {
             $element = new \MUtil_Bootstrap_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=oid]'));
         } else {
             $element = new \Gems_JQuery_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=oid]'));
@@ -286,6 +310,12 @@ class Gems_Export_ModelSource_AnswerExportModelsource extends Gems_Export_ModelS
 		return $elements;
 	}
 
+    /**
+     * Add form elements when a responseDatabase is present
+     * @param  Gems_Form $form existing form type
+     * @param  array data existing options set in the form
+     * @return array of form elements
+     */
     protected function addResponseDatabaseForm($form, &$data, &$elements)
     {
         if (isset($data['tid']) && (!empty($data['tid']))) {
@@ -338,6 +368,12 @@ class Gems_Export_ModelSource_AnswerExportModelsource extends Gems_Export_ModelS
         }
     }
 
+    /**
+     * Get the model to export
+     * @param  array  $filter Filter for the model
+     * @param  array  $data   Data from the form options
+     * @return \MUtil_Model_ModelAbstract
+     */
 	public function getModel($filter = array(), $data = array())
 	{
 		$surveyId = $filter['gto_id_survey'];
@@ -377,7 +413,12 @@ class Gems_Export_ModelSource_AnswerExportModelsource extends Gems_Export_ModelS
 		return $model;
 	}
 
-	public function getName($filter)
+    /**
+     * Get the proposed filename for the export of a model with specific filter options
+     * @param  array  $filter Filter for the model
+     * @return string   proposed filename
+     */
+	public function getFileName($filter)
 	{
 		$surveyId = $filter['gto_id_survey'];
 		$survey      = $this->loader->getTracker()->getSurvey($surveyId);

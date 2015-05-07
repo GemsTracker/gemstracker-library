@@ -37,9 +37,9 @@
  *
  * @package    Gems
  * @subpackage Export
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.5
+ * @since      Class available since version 1.7.1
  */
 class Gems_Export_SpssExport extends \Gems_Export_ExportAbstract
 {
@@ -60,26 +60,39 @@ class Gems_Export_SpssExport extends \Gems_Export_ExportAbstract
      */
     public $defaultNumericSize = 5;
 
+    /**
+     * Delimiter used for the DAT export
+     * @var string
+     */
     protected $delimiter = ',';
 
+    /**
+     * @var string  Current used file extension
+     */
     protected $fileExtension = '.dat';
 
+    /**
+     * @var array   Array with the filter options that should be used for this exporter
+     */
     protected $modelFilterAttributes = array('formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay');
 
     /**
-     * return name of the specific export
+     * @return string name of the specific export
      */
     public function getName() {
         return 'test Export';
     }
 
     /**
-     * Add an export command with specific details
+     * Add an export command with specific details. Can be batched.
+     * Adds spss file to the export
+     * @param string $exportModelSourceName     name of the current export model source
+     * @param array $filter                     Model filters for export             
+     * @param array $data                       Data submitted by export form
      */
     public function addExport($exportModelName, $filter, $data)
     {
         parent::addExport($exportModelName, $filter, $data);
-        MUtil_Echo::track($this->filename);
         if ($model = $this->getModel()) {
             $this->addSpssFile();
 
@@ -89,6 +102,7 @@ class Gems_Export_SpssExport extends \Gems_Export_ExportAbstract
 
     /**
      * Add headers to a specific file
+     * @param  string $filename The temporary filename while the file is being written
      */
     protected function addheader($filename)
     {
@@ -98,15 +112,22 @@ class Gems_Export_SpssExport extends \Gems_Export_ExportAbstract
         fclose($file);
     }
 
+    /**
+     * Add a separate row to a file
+     * @param array $row a row in the model
+     * @param file $file The already opened file
+     */
     public function addRow($row, $file)
     {
         $exportRow = $this->filterRow($row);
         fputcsv($file, $exportRow, $this->delimiter, "'");
     }
 
+    /**
+     * Creates a correct SPSS file and adds it to the Files array
+     */
     protected function addSpssFile()
     {
-        MUtil_Echo::track($this->filename);
         $model = $this->getModel($this->modelSourceName);
 
         $this->files[$this->filename.'.sps'] = $this->tempFilename . '.sps';
@@ -254,6 +275,9 @@ GET DATA
         return $output;
     }
 
+    /**
+     * Preprocess the model to add specific options
+     */
     protected function preprocessModel()
     {
         $labeledCols = $this->model->getColNames('label');
