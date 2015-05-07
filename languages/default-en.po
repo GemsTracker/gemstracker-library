@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-07 16:23+0100\n"
+"POT-Creation-Date: 2015-05-07 16:51+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -5980,7 +5980,11 @@ msgid_plural "%d tokens reception codes restored."
 msgstr[0] "%d token reception codes restored."
 msgstr[1] "%d tokens reception codes restored."
 
-#: classes/Gems/Snippets/Tracker/DeleteTrackSnippet.php:227
+#: classes/Gems/Snippets/Tracker/DeleteTrackSnippet.php:228
+msgid "Track stopped."
+msgstr "Track stopped."
+
+#: classes/Gems/Snippets/Tracker/DeleteTrackSnippet.php:230
 msgid "Track deleted."
 msgstr "Track deleted."
 

@@ -224,7 +224,11 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
                         ), $count));
             }
         } else {
-            $this->addMessage($this->_('Track deleted.'));
+            if ($this->util->getReceptionCode($newCode)->isStopCode()) {
+                $this->addMessage($this->_('Track stopped.'));
+            } else {
+                $this->addMessage($this->_('Track deleted.'));
+            }
         }
 
         return $changed;

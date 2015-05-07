@@ -247,7 +247,10 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
                 'default', null,
                 'size',    30
                 );
-        $this->set('gr2t_comment',    'elementClass', 'None');
+        $this->set('gr2t_comment',    'elementClass', 'Textarea',
+                'cols', 80,
+                'rows', 5
+                );
 
         return $this;
     }

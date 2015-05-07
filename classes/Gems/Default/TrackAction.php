@@ -873,6 +873,21 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
     }
 
     /**
+     * Initialize translate and html objects
+     *
+     * Called from {@link __construct()} as final step of object instantiation.
+     *
+     * @return void
+     */
+    public function init()
+    {
+        parent::init();
+
+        // Tell the system where to return to after a survey has been taken
+        $this->loader->getCurrentUser()->setSurveyReturn($this->getRequest());
+    }
+    
+    /**
      * Insert a single survey into a track
      */
     public function insertAction()
