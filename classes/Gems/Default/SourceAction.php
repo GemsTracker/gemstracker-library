@@ -255,7 +255,7 @@ class Gems_Default_SourceAction extends \Gems_Controller_ModelSnippetActionAbstr
                 'default', 'Not checked',
                 'elementClass', 'Exhibitor'
                 );
-        $model->set('gso_last_synch',         'label', $this->_('Last check'),
+        $model->set('gso_last_synch',         'label', $this->_('Last synch'),
                 'elementClass', 'Exhibitor'
                 );
 

@@ -276,6 +276,52 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
     }
 
     /**
+     * A ModelAbstract->setOnLoad() function that takes care of transforming a
+     * dateformat read from the database to a \Zend_Date format
+     *
+     * If empty or \Zend_Db_Expression (after save) it will return just the value
+     * currently there are no checks for a valid date format.
+     *
+     * @see \MUtil_Model_ModelAbstract
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @param boolean $isPost True when passing on post data
+     * @return \MUtil_Date|\Zend_Db_Expr|string
+     */
+    public function calculateTrackUsage($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
+    {
+        $surveyId = isset($context['gsu_id_survey']) ? $context['gsu_id_survey'] : false;
+        if (! $surveyId) {
+            return 0;
+        }
+
+        $select = new \Zend_Db_Select($this->db);
+        $select->from('gems__tracks', array('gtr_track_name'));
+        $select->joinLeft('gems__rounds', 'gro_id_track = gtr_id_track', array('useCnt' => 'COUNT(*)'))
+                ->where('gro_id_survey = ?', $surveyId)
+                ->group('gtr_track_name');
+        $usage = $this->db->fetchPairs($select);
+
+        if ($usage) {
+            $seq = new \MUtil_Html_Sequence();
+            $seq->setGlue(\MUtil_Html::create('br'));
+            foreach ($usage as $track => $count) {
+                $seq[] = sprintf($this->plural(
+                        '%d time in %s track.',
+                        '%d times in %s track.',
+                        $count), $count, $track);
+            }
+            return $seq;
+
+        } else {
+            return $this->_('Not in any track.');
+        }
+    }
+
+    /**
      * Check the tokens for a single survey
      */
     public function checkAction()
@@ -422,14 +468,14 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
             $model->addDependency(array('ValueSwitchDependency', $switches), 'gsu_insertable');
         }
 
-        $model->set('track_count',              'label', $detailed ? $this->_('Usage') : ' ',
-                'elementClass', 'Exhibitor',
-                'noSort', true,
-                'no_text_search', true
-                );
-        $model->setOnLoad('track_count', array($this, 'calculateTrackCount'));
-
         if ($detailed) {
+            $model->set('track_usage',          'label', $this->_('Usage'),
+                    'elementClass', 'Exhibitor',
+                    'noSort', true,
+                    'no_text_search', true
+                    );
+            $model->setOnLoad('track_usage', array($this, 'calculateTrackUsage'));
+
             $model->set('calc_duration',        'label', $this->_('Duration calculated'),
                     'elementClass', 'Html'
                     );
@@ -446,6 +492,13 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
                         );
                 // $model->set('gsu_agenda_result',         'label', $this->_('Agenda field'));
             }
+        } else {
+            $model->set('track_count',          'label', ' ',
+                    'elementClass', 'Exhibitor',
+                    'noSort', true,
+                    'no_text_search', true
+                    );
+            $model->setOnLoad('track_count', array($this, 'calculateTrackCount'));
         }
         $model->set('gsu_code',                 'label', $this->_('Survey code'),
                 'description', $this->_('Optional code name to link the survey to program code.'),

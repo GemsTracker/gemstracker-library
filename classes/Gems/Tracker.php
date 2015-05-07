@@ -1074,6 +1074,7 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
                 $batch->addTask('CleanCache');
                 // Reset cache after field synch
                 $batch->addTask('AddTask', 'CleanCache');
+                $batch->addTask('AddTask', 'Tracker\\UpdateSyncDate', $source, $userId);
             }
         }
 
