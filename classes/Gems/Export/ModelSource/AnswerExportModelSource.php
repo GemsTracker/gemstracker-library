@@ -101,6 +101,9 @@ class Gems_Export_ModelSource_AnswerExportModelsource extends Gems_Export_ModelS
 	{
 		$filters = array();
 
+        $dateOutFormat = 'yyyy-MM-dd';
+        $dateInFormat  = \MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
+
 		if (isset($data['sid']) && is_array($data['sid'])) {
 			foreach($data['sid'] as $surveyId) {
 				if ($surveyId) {
@@ -145,6 +148,17 @@ class Gems_Export_ModelSource_AnswerExportModelsource extends Gems_Export_ModelS
 			            // $filter['organizationid'] = '-1';
 			        }
 
+                    if (isset($data['valid_from']) && !empty($data['valid_from'])) {
+                        $filter[] = "gto_valid_from >= ".$this->db->quote(\MUtil_Date::format($data['valid_from'],  $dateOutFormat, $dateInFormat))."";
+                    }
+                    if (isset($data['valid_until']) && !empty($data['valid_until'])) {
+                        $filter[] = "gto_valid_until >= ".$this->db->quote(\MUtil_Date::format($data['valid_until'],  $dateOutFormat, $dateInFormat))."";
+                    }
+
+                    /*if (isset($data['valid_until'])) {
+                        $filter[] = 'gto_valid_until >= ' . $data['valid_until'];
+                    }*/
+
 			        $filter['grc_success'] = 1;
 
 			        // Consent codes
@@ -169,18 +183,24 @@ class Gems_Export_ModelSource_AnswerExportModelsource extends Gems_Export_ModelS
 	 */
 	public function getFormElements(Gems_Form $form, &$data)
 	{
+
+        $form->activateJQuery();
 		$dbLookup      = $this->util->getDbLookup();
 		$translated    = $this->util->getTranslated();
 		$noRound       = array(self::NoRound => $this->_('No round description'));
         $empty         = $translated->getEmptyDropdownArray();
 
+        $dateOptions = array();
+        \MUtil_Model_Bridge_FormBridge::applyFixedOptions('date', $dateOptions);
+
         $organizations = $this->loader->getCurrentUser()->getRespondentOrganizations();
 
         $tracks        = $empty + $this->util->getTrackData()->getSteppedTracks();
-    	$surveys       = $empty + $dbLookup->getSurveysForExport(isset($data['tid']) ? $data['tid'] : null);
     	$rounds        = $empty + $noRound + $dbLookup->getRoundsForExport(
                 isset($data['tid']) ? $data['tid'] : null
             );
+
+        $surveys       = $empty + $dbLookup->getSurveysForExport(isset($data['tid']) ? $data['tid'] : null, isset($data['rounds']) ? $data['rounds'] : null);
         
         $yesNo         = $translated->getYesNo();
 		$elements = array();
@@ -208,19 +228,31 @@ class Gems_Export_ModelSource_AnswerExportModelsource extends Gems_Export_ModelS
             }
         }
 
-        $element = $form->createElement('multiselect', 'sid');
-        $element->setLabel($this->_('Survey'))
-            ->setMultiOptions($surveys);
-        $elements[] = $element;
-
         $element = $form->createElement('select', 'rounds');
         $element->setLabel($this->_('Round description'))
             ->setMultiOptions($rounds);
         $elements[] = $element;
 
+        $element = $form->createElement('multiselect', 'sid');
+        $element->setLabel($this->_('Survey'))
+            ->setMultiOptions($surveys);
+        $elements[] = $element;
+
         $element = $form->createElement('multiCheckbox', 'oid');
         $element->setLabel($this->_('Organization'))
                 ->setMultiOptions($organizations);
+        $elements[] = $element;
+
+        $element->setLabel($this->_('Toggle'));
+        $elements[] = $element;
+
+        $element = $form->createElement('datePicker', 'valid_from', $dateOptions);
+        $element->setLabel($this->_('Valid from'));
+
+        $elements[] = $element;
+
+        $element = $form->createElement('datePicker', 'valid_until', $dateOptions);
+        $element->setLabel($this->_('Valid until'));
         $elements[] = $element;
         
         if (MUtil_Bootstrap::enabled()) {
@@ -229,8 +261,7 @@ class Gems_Export_ModelSource_AnswerExportModelsource extends Gems_Export_ModelS
             $element = new \Gems_JQuery_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=oid]'));
         }
 
-        $element->setLabel($this->_('Toggle'));
-        $elements[] = $element;
+        
 
         //unset($data['records']);
         if (!empty($data['sid'])) {

@@ -56,6 +56,8 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
 
     protected $tempFilename;
 
+    protected $filename;
+
     protected $files;
 
     protected $firstRow;
@@ -127,7 +129,7 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
                     $this->session->files = $this->files;
                 }
             }            
-        }   
+        }
     }
 
     protected function addFile()
@@ -268,7 +270,6 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
 
     public function finalizeFiles()
     {
-        MUtil_Echo::track('finalizing');
         $this->getFiles();
         if (count($this->files) === 0) {
             return false;

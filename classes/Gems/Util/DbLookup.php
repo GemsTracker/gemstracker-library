@@ -599,7 +599,7 @@ class Gems_Util_DbLookup extends \Gems_Registry_TargetAbstract
      * @param int $trackId Optional track id
      * @return array
      */
-    public function getSurveysForExport($trackId = null)
+    public function getSurveysForExport($trackId = null, $roundDescription = null)
     {
         // Read some data from tables, initialize defaults...
         $select = $this->db->select();
@@ -612,7 +612,13 @@ class Gems_Util_DbLookup extends \Gems_Registry_TargetAbstract
             ->order(array('gsu_active DESC', 'gsu_survey_name'));
 
         if ($trackId) {
-            $select->where('gsu_id_survey IN (SELECT gto_id_survey FROM gems__tokens WHERE gto_id_track = ?)', $trackId);
+            if ($roundDescription) {
+                $select->where('gsu_id_survey IN (SELECT gto_id_survey FROM gems__tokens WHERE gto_id_track = ? AND gto_round_description = ' . $this->db->quote($roundDescription) . ')', $trackId);
+            } else {
+                $select->where('gsu_id_survey IN (SELECT gto_id_survey FROM gems__tokens WHERE gto_id_track = ?)', $trackId);
+            }
+        } elseif ($roundDescription) {
+            $select->where('gsu_id_survey IN (SELECT gto_id_survey FROM gems__tokens WHERE gto_round_description = ?)', $roundDescription);
         }
 
         $result = $this->db->fetchAll($select);

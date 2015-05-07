@@ -79,6 +79,7 @@ class Gems_Export_SpssExport extends \Gems_Export_ExportAbstract
     public function addExport($exportModelName, $filter, $data)
     {
         parent::addExport($exportModelName, $filter, $data);
+        MUtil_Echo::track($this->filename);
         if ($model = $this->getModel()) {
             $this->addSpssFile();
 
@@ -105,6 +106,7 @@ class Gems_Export_SpssExport extends \Gems_Export_ExportAbstract
 
     protected function addSpssFile()
     {
+        MUtil_Echo::track($this->filename);
         $model = $this->getModel($this->modelSourceName);
 
         $this->files[$this->filename.'.sps'] = $this->tempFilename . '.sps';

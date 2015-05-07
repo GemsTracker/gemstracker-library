@@ -64,6 +64,8 @@ class Gems_Default_ExportAction extends \Gems_Controller_Action
      */
     public $accesslog;
 
+    protected $exportModelSource = 'AnswerExportModelSource';
+
     /**
      *
      * @var \Zend_Db_Adapter_Abstract
@@ -299,8 +301,9 @@ class Gems_Default_ExportAction extends \Gems_Controller_Action
     public function getForm(&$data)
     {
         // MUtil_Echo::track($data);
-        $types         = $this->export->getExportClasses();
-        $exportModelSources = $this->export->getExportModelSources();
+        $types = $this->export->getExportClasses();
+        $elements = array();
+        // $exportModelSources = $this->export->getExportModelSources();
 
         //Create the basic form
         if (\MUtil_Bootstrap::enabled()) {
@@ -309,14 +312,13 @@ class Gems_Default_ExportAction extends \Gems_Controller_Action
             $form = new \Gems_Form_TableForm();
         }
 
-        $element = $form->createElement('select', 'exportmodelsource');
+        /*$element = $form->createElement('select', 'exportmodelsource');
         $element->setLabel($this->_('Export'))
             ->setMultiOptions($exportModelSources);
-        $elements[] = $element;
+        $elements[] = $element;*/
+        if ($this->exportModelSource) {
 
-        if (!empty($data['exportmodelsource'])) {
-
-            $exportModelSource = $this->loader->getExportModelSource($data['exportmodelsource']);
+            $exportModelSource = $this->loader->getExportModelSource($this->exportModelSource);
             $exportFormElements = $exportModelSource->getFormElements($form, $data);
 
             $elements = array_merge($elements, $exportFormElements);
@@ -398,13 +400,13 @@ class Gems_Default_ExportAction extends \Gems_Controller_Action
         $batch->minimalStepDurationMs = 2000;
         if (!$batch->count()) {
             $data     = $this->_session->exportParams;
-            $exportModelName = $data['exportmodelsource'];
+
+            $exportModelName = $this->exportModelSource;
             $exportModel = $this->loader->getExportModelSource($exportModelName);
             $exportFilters = $exportModel->getFilters($data);
             $language = $this->locale->getLanguage();
             $batch->setSessionVariable('files', array());
-            MUtil_Echo::track($exportFilters);
-            //$export = $this->loader->getTestExport();
+
             foreach($exportFilters as $filter) {
                 $batch->addTask('Export_ExportCommand', $data['type'], 'addExport', $exportModelName, $filter, $data);
             }

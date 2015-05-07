@@ -83,7 +83,6 @@ class Gems_Export_ExcelExport extends \Gems_Export_ExportAbstract
      */
     protected function addheader($filename)
     {
-        MUtil_Echo::track($this->data);
         $file = fopen($filename, 'w');
         fwrite($file, '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
 <head>
@@ -132,18 +131,8 @@ class Gems_Export_ExcelExport extends \Gems_Export_ExportAbstract
         $output = "<table>\r\n";
         $output .= "\t<thead>\r\n";
         $output .= "\t\t<tr>\r\n";
-        MUtil_Echo::track($this->data[$this->getName()]);
-        if (isset($this->data[$this->getName()])) {
-            MUtil_Echo::track('value exists');
-            if (isset($this->data[$this->getName()]['format'])) {
-                MUtil_Echo::track('format exists', $this->data[$this->getName()]['format']);
-                if (in_array('formatVariable', $this->data[$this->getName()]['format'])) {
-                    MUtil_Echo::track('formatVariable is found in Array');
-                }
-            }
-        }
+
         if (isset($this->data[$this->getName()]) && isset($this->data[$this->getName()]['format']) && in_array('formatVariable', $this->data[$this->getName()]['format'])) {
-            MUtil_Echo::track('formatVariable!');
             foreach ($labeledCols as $columnName) {
                 if ($label = $this->model->get($columnName, 'label')) {
 
@@ -170,7 +159,6 @@ class Gems_Export_ExcelExport extends \Gems_Export_ExportAbstract
     {
         $name = $this->getName();
         if (!(isset($data[$name]) && isset($data[$name]['format']) && in_array('formatAnswer', $data[$name]['format']))) {
-            MUtil_Echo::track('Do not format answers');
             $this->modelFilterAttributes = array('formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay');
         }
         parent::addRows($exportModelSourceName, $filter, $data, $tempFilename);
