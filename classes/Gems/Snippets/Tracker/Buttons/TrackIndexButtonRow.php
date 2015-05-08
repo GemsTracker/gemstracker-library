@@ -57,7 +57,7 @@ class TrackIndexButtonRow extends CurrentButtonRowSnippet
      */
     protected function addButtons(\Gems_Menu_MenuList $menuList)
     {
-        $menuList->addCurrentParent($this->_('Show respondent'))
+        $menuList->addByController('respondent', 'show', $this->_('Show respondent'))
                 ->addCurrentChildren();
     }
 }
