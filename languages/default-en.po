@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-08 20:32+0100\n"
+"POT-Creation-Date: 2015-05-08 20:45+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -304,12 +304,12 @@ msgstr "Activity search filter"
 #: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:120
 #: classes/Gems/Default/AgendaActivityAction.php:133
 #: classes/Gems/Default/AgendaProcedureAction.php:133
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:463
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:469
 msgid "Activity"
 msgstr "Activity"
 
 #: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:125
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:470
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:476
 msgid "Procedure"
 msgstr "Procedure"
 
@@ -682,14 +682,14 @@ msgstr[1] "activities"
 
 #: classes/Gems/Default/AgendaFilterAction.php:124
 #: classes/Gems/Menu/MenuAbstract.php:223
-msgid "Agenda filters"
-msgstr "Agenda filters"
+msgid "Track field filters"
+msgstr "Track field filters"
 
 #: classes/Gems/Default/AgendaFilterAction.php:135
-msgid "agenda filter"
-msgid_plural "agenda filters"
-msgstr[0] "agenda filter"
-msgstr[1] "agenda filters"
+msgid "track field filter"
+msgid_plural "track field filters"
+msgstr[0] "track field filter"
+msgstr[1] "track field filters"
 
 #: classes/Gems/Default/AgendaProcedureAction.php:134
 msgid ""
@@ -850,7 +850,7 @@ msgstr "The survey for token %s is no longer active."
 #: classes/Gems/Snippets/Tracker/AvailableTracksSnippet.php:130
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:669
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:822
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:298
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:304
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:151
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:187
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:290
@@ -908,7 +908,7 @@ msgstr "Survey code"
 #: classes/Gems/Export/RespondentExport.php:344
 #: classes/Gems/Snippets/Tracker/TrackSurveyOverviewSnippet.php:123
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:836
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:301
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:307
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:152
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:202
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:293
@@ -1392,7 +1392,7 @@ msgstr "Group"
 #: classes/Gems/Model/AppointmentModel.php:198
 #: classes/Gems/Model/AppointmentModel.php:245
 #: classes/Gems/Model/OrganizationModel.php:106
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:468
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:474
 msgid "Location"
 msgstr "Location"
 
@@ -4944,7 +4944,7 @@ msgstr "May be mailed"
 #: classes/Gems/Model/AppointmentModel.php:188
 #: classes/Gems/Model/AppointmentModel.php:228
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:662
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:464
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:470
 msgid "Appointment"
 msgstr "Appointment"
 
@@ -5014,7 +5014,7 @@ msgstr "No script for %1$s."
 #: classes/Gems/Model/LogModel.php:89
 #: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:94
 #: classes/Gems/Snippets/Survey/Display/BarChartSnippet.php:227
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:466
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:472
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:492
 msgid "Date"
 msgstr "Date"
@@ -6432,7 +6432,7 @@ msgid "Tracks of this type may link only once to an appointment."
 msgstr "Tracks of this type may link only once to an appointment."
 
 #: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:190
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:278
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:284
 msgid "Create track"
 msgstr "Create track"
 
@@ -6451,7 +6451,7 @@ msgid "Calculate from"
 msgstr "Calculate from"
 
 #: classes/Gems/Tracker/Model/Dependency/FromAppointmentsMaintenanceDependency.php:151
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:266
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:272
 msgid "Automatically calculate this field using other fields"
 msgstr "Automatically calculate this field using other fields"
 
@@ -6475,25 +6475,29 @@ msgstr "In description"
 msgid "Add this field to the track description"
 msgstr "Add this field to the track description"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:257
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:256
+msgid "Add the name of this field to the track description"
+msgstr "Add the name of this field to the track description"
+
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:261
 #: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:736
 msgid "Required"
 msgstr "Required"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:260
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:265
 msgid "Readonly"
 msgstr "Readonly"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:262
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:266
 msgid "Check this box if this field is always set by code instead of the user."
 msgstr ""
 "Check this box if this field is always set by code instead of the user."
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:265
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:271
 msgid "Calculate using"
 msgstr "Calculate using"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:279
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:285
 msgid ""
 "Create a track if the respondent does not have a track where this field is "
 "empty."
@@ -6501,47 +6505,43 @@ msgstr ""
 "Create a track if the patient does not have a track where this field is "
 "empty."
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:302
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:308
 msgid "Optional extra description to show the user."
 msgstr "Optional extra description to show the user."
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:304
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:310
 msgid "Add name to description"
 msgstr "Add name to description"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:305
-msgid "Add the name of this field to the track description"
-msgstr "Add the name of this field to the track description"
-
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:393
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:399
 #, php-format
 msgid "%d field"
 msgid_plural "%d fields"
 msgstr[0] "%d field"
 msgstr[1] "%d fields"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:465
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:471
 msgid "Caretaker"
 msgstr "Caretaker"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:467
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:473
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:507
 msgid "Free text"
 msgstr "Free text"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:469
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:475
 msgid "Moment in time"
 msgstr "Moment in time"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:471
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:477
 msgid "Relation"
 msgstr "Relation"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:472
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:478
 msgid "Select one"
 msgstr "Select one"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:473
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:479
 msgid "Select multiple"
 msgstr "Select multiple"
 
@@ -8113,6 +8113,14 @@ msgstr[0] ""
 "After this survey there is one other survey we would like you to answer."
 msgstr[1] ""
 "After this survey there are another %d surveys we would like you to answer."
+
+#~ msgid "Agenda filters"
+#~ msgstr "Agenda filters"
+
+#~ msgid "agenda filter"
+#~ msgid_plural "agenda filters"
+#~ msgstr[0] "agenda filter"
+#~ msgstr[1] "agenda filters"
 
 #~ msgid ""
 #~ "Zero is unlimited, must have the same sign as the minimal difference."

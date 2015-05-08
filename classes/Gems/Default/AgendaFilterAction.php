@@ -47,7 +47,7 @@
 class Gems_Default_AgendaFilterAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
-     * The snippets used for the autofilter action.
+* The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
      */
@@ -121,7 +121,7 @@ class Gems_Default_AgendaFilterAction extends \Gems_Controller_ModelSnippetActio
      */
     public function getIndexTitle()
     {
-        return $this->_('Agenda filters');
+        return $this->_('Track field filters');
     }
 
     /**
@@ -132,7 +132,7 @@ class Gems_Default_AgendaFilterAction extends \Gems_Controller_ModelSnippetActio
      */
     public function getTopic($count = 1)
     {
-        return $this->plural('agenda filter', 'agenda filters', $count);
+        return $this->plural('track field filter', 'track field filters', $count);
     }
 
     /**
