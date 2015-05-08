@@ -35,6 +35,8 @@
  * @version    $Id$
  */
 
+use Gems\Date\Period;
+
 /**
  * Object representing a specific Survey
  *
@@ -329,48 +331,19 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
         return $this->_gemsSurvey['gsu_id_primary_group'];
     }
 
+    /**
+     * Calculate the until date for single survey insertion
+     *
+     * @param \MUtil_Date $from
+     * @return \MUtil_Date
+     */
     public function getInsertDateUntil(\MUtil_Date $from)
     {
-        $period = $this->_gemsSurvey['gsu_valid_for_length'];
-        $date   = clone $from;
-
-        if ($period) {
-            switch (strtoupper($this->_gemsSurvey['gsu_valid_for_unit'])) {
-                case 'D':
-                    $date->addDay($period);
-                    break;
-
-                case 'H':
-                    $date->addHour($period);
-                    break;
-
-                case 'M':
-                    $date->addMonth($period);
-                    break;
-
-                case 'N':
-                    $date->addMinute($period);
-                    break;
-
-                case 'Q':
-                    $date->addMonth($period * 3);
-                    break;
-
-                case 'W':
-                    $date->addDay($period * 7);
-                    break;
-
-                case 'Y':
-                    $date->addYear($period);
-                    break;
-
-                default:
-                    throw new \Gems_Exception_Coding('Unknown period type; ' . $type);
-
-            }
-        }
-
-        return $date;
+        return Period::applyPeriod(
+                $from,
+                $this->_gemsSurvey['gsu_valid_for_length'],
+                $this->_gemsSurvey['gsu_valid_for_unit']
+                );
     }
 
     /**

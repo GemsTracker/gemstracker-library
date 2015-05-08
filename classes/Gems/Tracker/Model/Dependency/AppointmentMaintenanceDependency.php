@@ -57,7 +57,9 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
      *
      * @var array
      */
-    protected $_defaultEffects = array('description', 'elementClass', 'label', 'multiOptions', 'onchange', 'onclick');
+    protected $_defaultEffects = array('description', 'elementClass', 'label', 'multiOptions', 'onchange', 'onclick',
+        'filters', 'validators',
+        );
 
     /**
      * Array of name => name of items dependency depends on.
@@ -76,7 +78,9 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
      * @var array of name => array(setting => setting)
      */
     protected $_effecteds = array(
-        'gtf_id_order', 'gtf_filter_id', 'gtf_after_next', 'gtf_uniqueness', 'gtf_create_track', 'gtf_create_wait_days',
+        'gtf_id_order', 'gtf_filter_id',
+        'gtf_min_diff_unit', 'gtf_min_diff_length', 'gtf_max_diff_unit', 'gtf_max_diff_length', 'gtf_uniqueness',
+        'gtf_create_track', 'gtf_create_wait_days',
         );
 
     /**
@@ -137,12 +141,39 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
             );
 
         if ($context['gtf_filter_id']) {
-            $output['gtf_after_next'] = array(
-                'label'        => $this->_('Link ascending'),
-                'description'  => $this->_('Automatically linked appointments are added in ascending (or otherwise descending) order; starting with the track start date.'),
-                'elementClass' => 'Checkbox',
-                'multiOptions' => $translated->getYesNo(),
+            $periodUnits = $this->util->getTranslated()->getPeriodUnits();
+
+            $output['gtf_min_diff_length'] = array(
+                'label'             => $this->_('Minimal time difference'),
+                'description'       => $this->_('Can be negative but not zero'),
+                'elementClass'      => 'Text',
+                'required'          => true,
+                'filters[int]'      => 'Int',
+                'validators[isnot]' => new \MUtil_Validate_IsNot(0, $this->_('This value may not be zero!')),
                 );
+            $output['gtf_min_diff_unit'] = array(
+                'label'        => $this->_('Minimal difference unit'),
+                'elementClass' => 'Select',
+                'multiOptions' => $periodUnits,
+                );
+            $output['gtf_max_diff_length'] = array(
+                'label'        => $this->_('Maximum time difference'),
+                'description'  => $this->_('Zero means no end limit, sign must be the same as the minimal difference.'),
+                'elementClass' => 'Text',
+                'required'     => false,
+                'filters[int]' => 'Int'
+                );
+            $output['gtf_max_diff_unit'] = array(
+                'label'        => $this->_('Maximum difference unit'),
+                'elementClass' => 'Select',
+                'multiOptions' => $periodUnits,
+                );
+//            $output['gtf_after_next'] = array(
+//                'label'        => $this->_('Link ascending'),
+//                'description'  => $this->_('Automatically linked appointments are added in ascending (or otherwise descending) order; starting with the track start date.'),
+//                'elementClass' => 'Checkbox',
+//                'multiOptions' => $translated->getYesNo(),
+//                );
             $output['gtf_uniqueness'] = array(
                 'label'        => $this->_('Link unique'),
                 'description'  => $this->_('Can one appointment be used in multiple fields?'),

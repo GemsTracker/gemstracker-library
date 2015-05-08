@@ -213,12 +213,13 @@ class Gems_Util_TrackData extends \Gems_Registry_TargetAbstract
     /**
      * Get an array of translated labels for the date units used by this engine
      *
-     * @param boolean $validAfter True if it concenrs _valid_after_ dates
      * @return array date_unit => label
+     * @deprecated since 1.7.1 use Translated->getDatePeriodUnits()
      */
-    public function getDateUnitsList($validAfter)
+    public function getDateUnitsList()
     {
         return array(
+            'S' => $this->translate->_('Seconds'),
             'N' => $this->translate->_('Minutes'),
             'H' => $this->translate->_('Hours'),
             'D' => $this->translate->_('Days'),

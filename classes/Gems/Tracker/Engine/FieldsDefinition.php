@@ -222,6 +222,13 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
                     $inVal  = isset($data[$key]) ? $data[$key] : null;
                     $outVal = $field->calculateFieldInfo($inVal, $data);
 
+                    if ($outVal && $field->isLabelInTrackInfo()) {
+                        $label = $field->getLabel();
+                        if ($label) {
+                            $output[] = $label;
+                        }
+                    }
+
                     if (is_array($outVal)) {
                         $output = array_merge($output, array_filter($outVal));
                     } elseif ($outVal || ($outVal == 0)) {

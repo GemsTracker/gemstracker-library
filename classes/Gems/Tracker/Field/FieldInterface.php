@@ -190,6 +190,13 @@ interface FieldInterface
     // */
 
     /**
+     * Should the label be included in the track information?
+     *
+     * @return boolean
+     */
+    public function isLabelInTrackInfo();
+
+    /**
      *
      * @return boolean When this field has dependencies
      */

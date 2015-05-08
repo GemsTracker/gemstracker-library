@@ -140,7 +140,7 @@ class AppointmentField extends FieldAbstract
             $time = $appointment->getAdmissionTime();
 
             if ($time) {
-                return array($this->getLabel(), ' ', $time->toString($this->appointmentTimeFormat));
+                return $time->toString($this->appointmentTimeFormat);
             }
         }
 

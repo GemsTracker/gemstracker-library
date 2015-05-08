@@ -364,9 +364,10 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
      */
     protected function createModel($detailed, $action)
     {
-        $dbLookup = $this->util->getDbLookup();
-        $survey   = null;
-        $yesNo    = $this->util->getTranslated()->getYesNo();
+        $dbLookup   = $this->util->getDbLookup();
+        $survey     = null;
+        $translated = $this->util->getTranslated();
+        $yesNo      = $translated->getYesNo();
 
         if ($detailed) {
             $surveyId = $this->_getIdParam();
@@ -441,7 +442,7 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
                     );
             $model->set('gsu_valid_for_unit',   'label', $this->_('Inserted end date unit'),
                     'description', $this->_('The unit used to calculate the end date when inserting the survey.'),
-                    'multiOptions', $this->util->getTrackData()->getDateUnitsList(true)
+                    'multiOptions', $translated->getPeriodUnits()
                     );
             $model->set('gsu_insert_organizations', 'label', $this->_('Insert organizations'),
                     'description', $this->_('The organizations where the survey may be inserted.'),

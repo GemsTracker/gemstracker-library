@@ -105,10 +105,10 @@ class DateField extends FieldAbstract
             $value = $currentValue;
         }
 
-        if (! $currentValue) {
-            return null;
+        if ($currentValue) {
+            return $value;
         } else {
-            return array($this->getLabel(), ' ', $value);
+            return null;
         }
     }
 

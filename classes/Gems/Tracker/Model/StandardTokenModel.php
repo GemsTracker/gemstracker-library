@@ -312,11 +312,11 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
                 'separator', ' '
                 );
         $this->set('gto_valid_from',         'label', $this->_('Valid from'),
-                'description', $this->_('Manually set dates are fixed an will never be (re)calculated.'),
                 'elementClass', 'Date',
                 'formatFunction', $translated->formatDateNever,
                 'tdClass', 'date');
         $this->set('gto_valid_until_manual', 'label', $this->_('Set valid until'),
+                'description', $this->_('Manually set dates are fixed an will never be (re)calculated.'),
                 'elementClass', 'Radio',
                 'multiOptions', $manual,
                 'separator', ' '

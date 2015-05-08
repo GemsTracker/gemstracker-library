@@ -290,6 +290,16 @@ abstract class FieldAbstract extends \MUtil_Translate_TranslateableAbstract impl
     }
 
     /**
+     * Should the label be included in the track information?
+     * 
+     * @return boolean
+     */
+    public function isLabelInTrackInfo()
+    {
+        return $this->_fieldDefinition['gtf_track_info_label'];
+    }
+
+    /**
      *
      * @return boolean True when this field is read only
      */

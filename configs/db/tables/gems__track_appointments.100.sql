@@ -10,12 +10,20 @@ CREATE TABLE if not exists gems__track_appointments (
         gtap_field_description  varchar(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
         gtap_to_track_info      boolean not null default true,
+        gtap_track_info_label   boolean not null default false
         gtap_required           boolean not null default false,
         gtap_readonly           boolean not null default false,
 
         gtap_filter_id          bigint unsigned null references gems__appointment_filters (gaf_id),
+        -- deprecated
         gtap_after_next         boolean not null default 1,
+        -- deprecated
+        gtap_min_diff_unit   char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'S',
+        gtap_min_diff_length int not null default 1,
+        gtap_max_diff_unit   char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'S',
+        gtap_max_diff_length int not null default 0,
         gtap_uniqueness         tinyint unsigned not null default 0,
+
         gtap_create_track       boolean not null default 0,
         gtap_create_wait_days   bigint signed not null default 182,
 

@@ -43,7 +43,7 @@
  * @deprecated
  * @license    New BSD License
  */
-class LimeSurveySoapClient extends MUtil_Validate_Url
+class LimeSurveySoapClient extends \MUtil_Validate_Url
 {
     /**
      * Error constants

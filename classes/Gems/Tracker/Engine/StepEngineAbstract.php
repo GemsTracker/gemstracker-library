@@ -35,6 +35,7 @@
  * @version    $Id$
  */
 
+use Gems\Date\Period;
 use Gems\Tracker\Engine\FieldsDefinition;
 
 /**
@@ -205,56 +206,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
      */
     protected function calculateFromDate($startDate, $type, $period)
     {
-        if ($startDate instanceof \MUtil_Date) {
-            $date = clone $startDate;
-
-            switch (strtoupper($type)) {
-                case 'N':
-                case 'H':
-                    break;
-
-                default:
-                    // A 'whole day' period should start at 00:00:00, even when the period is '0'
-                    $date->setTime(0);
-            }
-
-            if ($period) {
-                switch (strtoupper($type)) {
-                    case 'D':
-                        $date->addDay($period);
-                        break;
-
-                    case 'H':
-                        $date->addHour($period);
-                        break;
-
-                    case 'M':
-                        $date->addMonth($period);
-                        break;
-
-                    case 'N':
-                        $date->addMinute($period);
-                        break;
-
-                    case 'Q':
-                        $date->addMonth($period * 3);
-                        break;
-
-                    case 'W':
-                        $date->addDay($period * 7);
-                        break;
-
-                    case 'Y':
-                        $date->addYear($period);
-                        break;
-
-                    default:
-                        throw new \Gems_Exception_Coding('Unknown period type; ' . $type);
-
-                }
-            }
-            return $date;
-        }
+        return Period::applyPeriod($startDate, $type, $period);
     }
 
     /**
@@ -416,7 +368,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
             $format = $this->_('%s');
         }
 
-        $units = $this->getDateUnitsList($validAfter);
+        $units = $this->util->getTranslated()->getPeriodUnits();
         if (isset($units[$context[$fieldBase . 'unit']])) {
             $unit = $units[$context[$fieldBase . 'unit']];
         } else {
@@ -509,17 +461,6 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
     }
 
     /**
-     * Get an array of translated labels for the date units used by this engine
-     *
-     * @param boolean $validAfter True if it concenrs _valid_after_ dates
-     * @return array date_unit => label
-     */
-    protected function getDateUnitsList($validAfter)
-    {
-        return $this->util->getTrackData()->getDateUnitsList($validAfter);
-    }
-
-    /**
      * An array of snippet names for editing a round.
      *
      * @return array of string snippet names
@@ -582,6 +523,8 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
                 );
 
         if ($detailed) {
+            $periodUnits = $this->util->getTranslated()->getPeriodUnits();
+
             $model->set('gro_valid_after_field',
                     'label', $this->_('Date used'),
                     'default', 'gto_valid_from',
@@ -595,14 +538,22 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
                     );
             $model->set('gro_valid_after_unit',
                     'label', $this->_('Add to date unit'),
-                    'multiOptions',
-                    $this->getDateUnitsList(true)
+                    'multiOptions', $periodUnits
                     );
         } else {
-            $model->set('gro_valid_after_source', 'tableDisplay', 'small', 'label', $this->_('Source'));
-            $model->set('gro_valid_after_id', 'multiOptions', $this->getRoundTranslations(), 'tableDisplay', 'small', 'label', $this->_('Round'));
+            $model->set('gro_valid_after_source',
+                    'label', $this->_('Source'),
+                    'tableDisplay', 'small'
+                    );
+            $model->set('gro_valid_after_id', 'label', $this->_('Round'),
+                    'multiOptions', $this->getRoundTranslations(),
+                    'tableDisplay', 'small'
+                    );
             $model->setOnLoad('gro_valid_after_id', array($this, 'displayRoundId'));
-            $model->set('gro_valid_after_field', 'label', $this->_('Date calculation'), 'tableHeaderDisplay', 'small');
+            $model->set('gro_valid_after_field',
+                    'label', $this->_('Date calculation'),
+                    'tableHeaderDisplay', 'small'
+                    );
             $model->setOnLoad('gro_valid_after_field', array($this, 'displayDateCalculation'));
             $model->set('gro_valid_after_length');
             $model->set('gro_valid_after_unit');
@@ -642,23 +593,34 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
                     );
             $model->set('gro_valid_for_length',
                     'label', $this->_('Add to date'),
+                    'description', $this->_('Can be negative'),
                     'required', false,
                     'default', 2,
                     'filter', 'Int'
                     );
             $model->set('gro_valid_for_unit',
                     'label', $this->_('Add to date unit'),
-                    'multiOptions', $this->getDateUnitsList(false)
+                    'multiOptions', $periodUnits
                     );
 
             // Continue with last round level items
             $model->set('gro_active');
             $model->set('gro_changed_event');
         } else {
-            $model->set('gro_valid_for_source', 'tableDisplay', 'small', 'label', $this->_('Source'));
-            $model->set('gro_valid_for_id', 'multiOptions', $this->getRoundTranslations(), 'tableDisplay', 'small', 'label', $this->_('Round'));
+            $model->set('gro_valid_for_source',
+                    'label', $this->_('Source'),
+                    'tableDisplay', 'small'
+                    );
+            $model->set('gro_valid_for_id',
+                    'label', $this->_('Round'),
+                    'multiOptions', $this->getRoundTranslations(),
+                    'tableDisplay', 'small'
+                    );
             $model->setOnLoad('gro_valid_for_id', array($this, 'displayRoundId'));
-            $model->set('gro_valid_for_field', 'label', $this->_('Date calculation'), 'tableHeaderDisplay', 'small');
+            $model->set('gro_valid_for_field',
+                    'label', $this->_('Date calculation'),
+                    'tableHeaderDisplay', 'small'
+                    );
             $model->setOnLoad('gro_valid_for_field', array($this, 'displayDateCalculation'));
             $model->set('gro_valid_for_length');
             $model->set('gro_valid_for_unit');

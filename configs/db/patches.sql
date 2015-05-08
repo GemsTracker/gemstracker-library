@@ -977,3 +977,30 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.token.undele
 
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.staff-log')
     WHERE grl_name = 'admin' AND grl_privileges NOT LIKE '%,pr.staff-log%';
+
+-- PATCH: Advanced appointment integration
+ALTER TABLE gems__track_fields
+    ADD gtf_track_info_label boolean not null default false AFTER gtf_to_track_info;
+
+UPDATE gems__track_fields SET gtf_track_info_label = true WHERE gtf_field_type IN ('date', 'datetime');
+
+ALTER TABLE gems__track_appointments
+    ADD gtap_track_info_label boolean not null default false AFTER gtap_to_track_info;
+
+UPDATE gems__track_appointments SET gtap_track_info_label = true;
+
+ALTER TABLE gems__track_appointments
+    ADD gtap_min_diff_unit char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'S'
+    AFTER gtap_after_next;
+
+ALTER TABLE gems__track_appointments
+    ADD gtap_min_diff_length int not null default 1 AFTER gtap_min_diff_unit;
+
+ALTER TABLE gems__track_appointments
+    ADD gtap_max_diff_unit char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'S'
+    AFTER gtap_min_diff_length;
+
+ALTER TABLE gems__track_appointments
+    ADD gtap_max_diff_length int not null default 0 AFTER gtap_max_diff_unit;
+
+UPDATE gems__track_appointments SET gtap_min_diff_length = -1 WHERE gtap_after_next = 0;

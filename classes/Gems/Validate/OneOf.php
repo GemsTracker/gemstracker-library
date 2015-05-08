@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-class Gems_Validate_OneOf extends Zend_Validate_Abstract
+class Gems_Validate_OneOf extends \Zend_Validate_Abstract
 {
     /**
      * Error codes

@@ -340,4 +340,14 @@ class MUtil_Date extends \Zend_Date
     {
         return $this->setTime('23:59:59', 'hh:mm:ss');
     }
+
+    /**
+     * Set the time of this object to 00:00:00
+     *
+     * @return \MUtil_Date (continuation pattern)
+     */
+    public function setTimeToDayStart()
+    {
+        return $this->setTime('00:00:00', 'hh:mm:ss');
+    }
 }

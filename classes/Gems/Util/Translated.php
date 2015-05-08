@@ -349,6 +349,25 @@ class Gems_Util_Translated extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * Get an array of translated labels for the date period units
+     *
+     * @return array date_unit => label
+     */
+    public function getPeriodUnits()
+    {
+        return array(
+            'S' => $this->translate->_('Seconds'),
+            'N' => $this->translate->_('Minutes'),
+            'H' => $this->translate->_('Hours'),
+            'D' => $this->translate->_('Days'),
+            'W' => $this->translate->_('Weeks'),
+            'M' => $this->translate->_('Months'),
+            'Q' => $this->translate->_('Quarters'),
+            'Y' => $this->translate->_('Years')
+        );
+    }
+
+    /**
      * Yes / no values array
      *
      * @staticvar array $data

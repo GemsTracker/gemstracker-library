@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright (c) 2011, Erasmus MC
+ * Copyright (c) 2015, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -17,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL MAGNAFACTA BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -25,74 +26,56 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @package    Gems
- * @subpackage Validate
- * @author     Michiel Rook <michiel@touchdownconsulting.nl>
- * @copyright  Copyright (c) 2011 Erasmus MC
- * @license    New BSD License
- * @version    $Id$
- */
-
-/**
- * Not used anymore, checked if we could use soap connection. As soap is no longer a reliable
- * interface in LimeSurvey it is deprecated for now.
  *
  * @package    Gems
  * @subpackage Validate
- * @author     Michiel Rook <michiel@touchdownconsulting.nl>
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
+ * @version    $Id: ValidPeriodEndValidator.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
-class Gems_Validate_IPRanges extends \Zend_Validate_Abstract
+
+/**
+ *
+ *
+ * @package    Gems
+ * @subpackage Validate
+ * @copyright  Copyright (c) 2015 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.7.1 8-mei-2015 19:55:39
+ */
+class Gems_Validate_ValidPeriodEndValidator extends \Zend_Validate_Abstract
 {
     /**
-     * Error constants
+     * Error codes
+     * @const string
      */
-    const ERROR_INVALID_IP = 'invalidIPInRange';
+    const DIRECTION_NEG = 'dirNeg';
+    const DIRECTION_POS = 'dirPos';
 
-    /**
-     * Error messages
-     * @var array
-     */
     protected $_messageTemplates = array(
-        self::ERROR_INVALID_IP => 'One or more IPs are illegal.'
+        self::DIRECTION_NEG => "End difference must earlier than start difference.",
+        self::DIRECTION_POS => "End difference must later than start difference.",
     );
 
+    private $_minField;
+
+    public function __construct($minField, $minUnit, $maxUnit, $message)
+    {
+
+    }
+
     /**
-     * Returns true if and only if $value meets the validation requirements
+     * Defined by \Zend_Validate_Interface
      *
-     * If $value fails validation, then this method returns false, and
-     * getMessages() will return an array of messages that explain why the
-     * validation failed.
+     * Returns true if and only if a token has been set and the provided value
+     * matches that token.
      *
      * @param  mixed $value
      * @return boolean
-     * @throws Zend_Valid_Exception If validation of $value is impossible
-     * @todo ip2long is broken on Windows, find a replacement
      */
     public function isValid($value, $context = array())
     {
-        $result = true;
 
-        $ranges = explode('|', $value);
-
-        foreach ($ranges as $range) {
-            if (($sep = strpos($range, '-')) !== false) {
-                $min = ip2long(substr($range, 0, $sep));
-                $max = ip2long(substr($range, $sep + 1));
-
-                if ($min === false || $max === false) {
-                    $result = false;
-                }
-            } else if (ip2long($range) === false) {
-                $result = false;
-            }
-        }
-
-        if (!$result) {
-            $this->_error(self::ERROR_INVALID_IP);
-        }
-
-        return $result;
     }
 }

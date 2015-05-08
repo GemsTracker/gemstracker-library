@@ -15,6 +15,7 @@ CREATE TABLE if not exists gems__track_fields (
         gtf_field_type          varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
 
         gtf_to_track_info       boolean not null default true,
+        gtf_track_info_label    boolean not null default false,
         gtf_required            boolean not null default false,
         gtf_readonly            boolean not null default false,
 

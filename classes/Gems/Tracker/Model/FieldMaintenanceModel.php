@@ -38,6 +38,7 @@
 namespace Gems\Tracker\Model;
 
 use Gems\Tracker\Engine\FieldsDefinition;
+use MUtil\Model\Dependency\ValueSwitchDependency;
 
 /**
  *
@@ -251,12 +252,20 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
                 'description', $this->_('Add this field to the track description'),
                 'multiOptions', $yesNo
                 );
+        $this->set('gtf_track_info_label', // No label, set order
+                'description', $this->_('Add the name of this field to the track description'),
+                'multiOptions', $yesNo,
+                'required', false
+                );
+
         $this->set('gtf_required',      'label', $this->_('Required'),
-                'multiOptions', $yesNo
+                'multiOptions', $yesNo,
+                'required', false
                 );
         $this->set('gtf_readonly',      'label', $this->_('Readonly'),
+                'description', $this->_('Check this box if this field is always set by code instead of the user.'),
                 'multiOptions', $yesNo,
-                'description', $this->_('Check this box if this field is always set by code instead of the user.')
+                'required', false
                 );
 
         $this->set('gtf_calculate_using', 'label', $this->_('Calculate using'),
@@ -265,8 +274,13 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
                 );
 
         $this->set('gtf_filter_id'); // Set order
+        $this->set('gtf_min_diff_unit'); // Set order
+        $this->set('gtf_min_diff_length'); // Set order
+        $this->set('gtf_max_diff_unit'); // Set order
+        $this->set('gtf_max_diff_length'); // Set order
         $this->set('gtf_after_next'); // Set order
         $this->set('gtf_uniqueness'); // Set order
+
         $this->set('gtf_create_track', 'label', $this->_('Create track'),
                 'description', $this->_('Create a track if the respondent does not have a track where this field is empty.'),
                 'multiOptions', $yesNo
@@ -293,6 +307,8 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
         $this->set('gtf_field_description', 'label', $this->_('Description'),
                 'description', $this->_('Optional extra description to show the user.')
                 );
+        $this->set('gtf_track_info_label',   'label', $this->_('Add name to description'));
+
 
         // Clean up data always show in browse view, but not always in detail views
         $this->set('gtf_calculate_using', 'label', null, 'formatFunction', null);
@@ -304,6 +320,13 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
 
         // Clean up data always show in browse view, but not always in detail views
         $this->set('gtf_create_track',    'label', null);
+
+        $switches = array(
+            0 => array(
+                'gtf_track_info_label'     => array('elementClass' => 'Hidden', 'label' => null),
+            ),
+        );
+        $this->addDependency(array('ValueSwitchDependency', $switches), 'gtf_to_track_info');
     }
 
     /**
@@ -321,7 +344,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
 
         $this->set('gtf_field_name',        'elementClass', 'Text',
                 'size', '30',
-                'minlength', 4,
+                'minlength', 2,
                 'required', true,
                 'validator', $this->createUniqueValidator(array('gtf_field_name', 'gtf_id_track'))
                 );
@@ -336,13 +359,22 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
         $this->set('gtf_field_description', 'elementClass', 'Text', 'size', 30);
         $this->set('gtf_field_values',      'elementClass', 'Hidden');
 
-        $this->set('gtf_to_track_info',     'elementClass', 'CheckBox');
+        $this->set('gtf_to_track_info',     'elementClass', 'CheckBox',
+                'onclick', 'this.form.submit();'
+                );
+        $this->set('gtf_track_info_label',  'elementClass', 'CheckBox',
+                'required', false);
         $this->set('gtf_required',          'elementClass', 'CheckBox');
         $this->set('gtf_readonly',          'elementClass', 'CheckBox');
 
         $this->set('gtf_filter_id',         'elementClass', 'Hidden');
-        $this->set('gtf_after_next',        'elementClass', 'Hidden');
+        $this->set('gtf_min_diff_unit',     'elementClass', 'Hidden');
+        $this->set('gtf_min_diff_length',   'elementClass', 'Hidden');
+        $this->set('gtf_max_diff_unit',     'elementClass', 'Hidden');
+        $this->set('gtf_max_diff_length',   'elementClass', 'Hidden');
+        $this->set('gtf_after_next',        'elementClass', 'None');  // Deprecatedin 1.7.1
         $this->set('gtf_uniqueness',        'elementClass', 'Hidden');
+
         $this->set('gtf_create_track',      'elementClass', 'Hidden');
         $this->set('gtf_create_wait_days',  'elementClass', 'Hidden');
 
