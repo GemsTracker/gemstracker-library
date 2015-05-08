@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: FieldReportAction.php $
+ * @version    $Id: FieldReportAction.php 2534 2015-05-05 18:07:37Z matijsdejong $
  */
 
 use Gems\Tracker\Model\FieldDataModel;
@@ -80,7 +80,7 @@ class Gems_Default_FieldReportAction extends \Gems_Controller_ModelSnippetAction
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'Tracker_Fields_FieldReportSearchSnippet');
+    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Tracker_Fields_FieldReportSearchSnippet');
 
     /**
      * The number of instances of the currently selected track id

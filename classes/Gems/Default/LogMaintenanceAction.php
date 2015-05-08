@@ -79,7 +79,7 @@ class Gems_Default_LogMaintenanceAction extends \Gems_Controller_ModelSnippetAct
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'Log\\LogMaintenanceSearchSnippet');
+    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Log\\LogMaintenanceSearchSnippet');
 
     /**
      * Creates a model for getModel(). Called only for each new $action.

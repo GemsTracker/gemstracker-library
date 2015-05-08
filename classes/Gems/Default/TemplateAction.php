@@ -44,13 +44,13 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class Gems_Default_TemplateAction extends Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_TemplateAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     protected $createEditSnippets = 'ModelTabFormSnippetGeneric';
-    
+
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     public $loader;
 
@@ -63,12 +63,12 @@ class Gems_Default_TemplateAction extends Gems_Controller_ModelSnippetActionAbst
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     public function createModel($detailed, $action)
     {
-        $model = new Gems_Model_TemplateModel('templates', $this->escort->project);
-        
+        $model = new \Gems_Model_TemplateModel('templates', $this->escort->project);
+
         return $model;
     }
 
@@ -102,24 +102,24 @@ class Gems_Default_TemplateAction extends Gems_Controller_ModelSnippetActionAbst
     {
         return $this->plural('template', 'templates', $count);
     }
-    
+
     /**
      * Reset action
-     * 
+     *
      * Deletes the template-local.ini (by means of a model function) and displays
      * success or fail messages and returns to the index
      */
     public function resetAction()
     {
         $model = $this->getModel();
-        
+
         $id = $this->getInstanceId();
         if ($model->reset($id)) {
             $this->addMessage(sprintf($this->_('Resetting values for template %s to defaults successful'), $id), 'success');
         } else {
             $this->addMessage(sprintf($this->_('Resetting values for template %s to defaults failed'), $id), 'warning');
         }
-        
+
         $this->_reroute(array('action'=>'edit', 'id'=>$id), true);
     }
 }

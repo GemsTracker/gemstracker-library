@@ -57,7 +57,7 @@ class Gems_Default_ConsentPlanAction extends \Gems_Controller_ModelSnippetAction
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic_ContentTitleSnippet');
+    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet');
 
     /**
      * The parameters used for the show action

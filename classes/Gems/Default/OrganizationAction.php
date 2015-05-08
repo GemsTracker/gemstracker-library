@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_OrganizationAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
      * The snippets used for the autofilter action.
@@ -69,7 +69,7 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
 
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     public $loader;
 
@@ -90,7 +90,7 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
 
             if ($origUrl) {
                 // Check for organisation id in url, but not when a patient id is stated
-                if (strpos($origUrl, '/' . MUtil_Model::REQUEST_ID1 . '/') === false) {
+                if (strpos($origUrl, '/' . \MUtil_Model::REQUEST_ID1 . '/') === false) {
                     foreach ($user->possibleOrgIds as $key) {
                         $finds[]    = '/' . $key. '/' . $oldOrg;
                         $replaces[] = '/' . $key. '/' . $orgId;
@@ -99,7 +99,7 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
                 } else {
                     $correctUrl = $origUrl;
                 }
-                // MUtil_Echo::track($origUrl, $correctUrl);
+                // \MUtil_Echo::track($origUrl, $correctUrl);
                 $this->getResponse()->setRedirect($correctUrl);
             } else {
                 $user->gotoStartPage($this->menu, $request);
@@ -107,7 +107,7 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
             return;
         }
 
-        throw new Gems_Exception(
+        throw new \Gems_Exception(
                 $this->_('Inaccessible or unknown organization'),
                 403, null,
                 sprintf($this->_('Access to this page is not allowed for current role: %s.'), $this->loader->getCurrentUser()->getRole()));
@@ -122,12 +122,12 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     public function createModel($detailed, $action)
     {
-        if ($this->escort instanceof Gems_Project_Layout_MultiLayoutInterface) {
-            $styles = MUtil_Lazy::call(array($this->escort, 'getStyles'));
+        if ($this->escort instanceof \Gems_Project_Layout_MultiLayoutInterface) {
+            $styles = \MUtil_Lazy::call(array($this->escort, 'getStyles'));
         } else {
             $styles = array();
         }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2014, Erasmus MC
  * All rights reserved.
@@ -43,15 +44,14 @@
  *  formList        - Lists the forms available
  *  submission      - Handles receiving a submitted form
  *  download        - Download a form
- * 
+ *
  * @package    Gems
  * @subpackage Default
  * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
-class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
+class Gems_Default_OpenrosaAction extends \Gems_Controller_BrowseEditAction
 {
     /**
      * This holds the path to the location where the form definitions will be stored.
@@ -60,11 +60,11 @@ class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
      * @var string
      */
     public $formDir;
-    
+
     /**
-     * This holds the path to the location where the uploaded responses and their 
+     * This holds the path to the location where the uploaded responses and their
      * backups will be stored.
-     * 
+     *
      * Will be set on init to: GEMS_ROOT_DIR . '/var/uploads/openrosa/';
      *
      * @var string
@@ -72,7 +72,7 @@ class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
     public $responseDir;
 
     /**
-     * @var Zend_Auth
+     * @var \Zend_Auth
      */
     protected $auth;
 
@@ -85,33 +85,33 @@ class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
      * @var array Array of actions
      */
     protected $authActions = array('formlist', 'submission', 'download');
-    
+
     /**
      * The id to the last processed received form (gof_id)
-     * 
+     *
      * @var int
      */
     protected $openrosaFormID = null;
-    
+
     /**
-     * This can be used to generate barcodes, use the action 
-     * 
+     * This can be used to generate barcodes, use the action
+     *
      * /openrosa/barcode/code/<tokenid>
-     * 
+     *
      * example:
      * /openrosa/barocde/code/22pq-grkq
-     * 
+     *
      * The image will be a png
      */
     public function barcodeAction()
     {
         $code = $this->getRequest()->getParam('code', 'empty');
-        Zend_Layout::getMvcInstance()->disableLayout();
+        \Zend_Layout::getMvcInstance()->disableLayout();
         $this->_helper->viewRenderer->setNoRender();
-        
+
         $barcodeOptions = array('text' => $code);
         $rendererOptions = array();
-        $barcode = Zend_Barcode::render('code128', 'image', $barcodeOptions, $rendererOptions);
+        $barcode = \Zend_Barcode::render('code128', 'image', $barcodeOptions, $rendererOptions);
         $barcode->render();
     }
 
@@ -120,7 +120,7 @@ class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
         $model = $this->loader->getModels()->getOpenRosaFormModel();
 
         $model->set('TABLE_ROWS', 'label', $this->_('Responses'), 'elementClass', 'Exhibitor');
-        
+
         return $model;
     }
 
@@ -162,8 +162,8 @@ class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
     public function formlistAction()
     {
         //first create the baseurl of the form http(s)://projecturl/openrosa/download/form/
-        $helper  = new Zend_View_Helper_ServerUrl();
-        $baseUrl = $helper->serverUrl() . Zend_Controller_Front::getInstance()->getBaseUrl() . '/openrosa/download/form/';
+        $helper  = new \Zend_View_Helper_ServerUrl();
+        $baseUrl = $helper->serverUrl() . \Zend_Controller_Front::getInstance()->getBaseUrl() . '/openrosa/download/form/';
 
         //As we don't have forms defined yet, we pass in an array, but ofcourse this should be dynamic
         //and come from a helper method
@@ -178,7 +178,7 @@ class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
                 'downloadUrl' => $baseUrl . $form['gof_form_xml']
             );
         }
-        
+
         //Now make it a rosaresponse
         $this->makeRosaResponse();
 
@@ -202,7 +202,7 @@ class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
     {
         return 'OpenRosa Forms';
     }
-    
+
     /**
      * Create an xml response
      *
@@ -217,9 +217,9 @@ class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
 
         return $xml;
     }
-    
+
     public function imageAction() {
-        $request = $this->getRequest();             
+        $request = $this->getRequest();
         $formId      = $request->getParam('id');
         $formVersion = $request->getParam('version');
         $resp        = $request->getParam('resp');
@@ -235,11 +235,11 @@ class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
         if ($formData = $model->loadFirst($filter)) {
             $this->openrosaFormID = $formData['gof_id'];
             // Now find the file in the response table and serve the file
-                        
+
             $file = $this->responseDir . 'forms/' . $this->openrosaFormID . '/' . $resp . '_' . str_replace('_', '.', $field);
-            
-            Zend_Layout::getMvcInstance()->disableLayout();
-            $this->_helper->viewRenderer->setNoRender();           
+
+            \Zend_Layout::getMvcInstance()->disableLayout();
+            $this->_helper->viewRenderer->setNoRender();
 
             if (file_exists($file)) {
                 $size = getimagesize($file);
@@ -267,7 +267,7 @@ class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
 
                     exit;
                 }
-            } 
+            }
             header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
             exit;
         } else {
@@ -292,19 +292,19 @@ class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
         $this->getHelper('layout')->disableLayout();
         $this->getResponse()->setHeader('X-OpenRosa-Version', '1.0');
     }
-    
+
     /**
      * Handles receiving and storing the data from a form, files are stored on actual upload process
      * this only handles storing form data and can be used for resubmission too.
-     * 
+     *
      * @param type $xmlFile
      * @return string ResultID or false on failure
      */
     private function processReceivedForm($answerXmlFile)
     {
         //Log what we received
-        $log     = Gems_Log::getLogger();
-        //$log->log(print_r($xmlFile, true), Zend_Log::ERR);
+        $log     = \Gems_Log::getLogger();
+        //$log->log(print_r($xmlFile, true), \Zend_Log::ERR);
 
         $xml = simplexml_load_file($answerXmlFile);
 
@@ -323,7 +323,7 @@ class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
             try {
                 $form = new OpenRosa_Tracker_Source_OpenRosa_Form($this->formDir . $formData['gof_form_xml']);
                 $answers = $form->saveAnswer($answerXmlFile);
-                return $answers['orf_id'];                
+                return $answers['orf_id'];
             } catch (Exception $exc) {
                 return false;
             }
@@ -331,7 +331,7 @@ class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
             return false;
         }
     }
-    
+
 
     /**
      * Implements HTTP Basic auth
@@ -342,7 +342,7 @@ class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
 
         $action = strtolower($this->getRequest()->getActionName());
         if (in_array($action, $this->authActions)) {
-            $auth       = Zend_Auth::getInstance();
+            $auth       = \Zend_Auth::getInstance();
             $this->auth = $auth;
 
             if (!$auth->hasIdentity()) {
@@ -351,25 +351,25 @@ class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
                     'realm'          => GEMS_PROJECT_NAME,
                     'nonce_timeout'  => 3600,
                 );
-                $adapter         = new Zend_Auth_Adapter_Http($config);
-                $basicResolver   = new Zend_Auth_Adapter_Http_Resolver_File();
+                $adapter         = new \Zend_Auth_Adapter_Http($config);
+                $basicResolver   = new \Zend_Auth_Adapter_Http_Resolver_File();
 
                 //This is a basic resolver, use username:realm:password
                 //@@TODO: move to a better db stored authentication system
-                
+
                 $basicResolver->setFile(GEMS_ROOT_DIR . '/var/settings/pwd.txt');
                 $adapter->setBasicResolver($basicResolver);
                 $request  = $this->getRequest();
                 $response = $this->getResponse();
 
-                assert($request instanceof Zend_Controller_Request_Http);
-                assert($response instanceof Zend_Controller_Response_Http);
+                assert($request instanceof \Zend_Controller_Request_Http);
+                assert($response instanceof \Zend_Controller_Response_Http);
 
                 $adapter->setRequest($request);
                 $adapter->setResponse($response);
 
                 $result = $auth->authenticate($adapter);
-                
+
                 if (!$result->isValid()) {
                     $adapter->getResponse()->sendResponse();
                     print 'Unauthorized';
@@ -378,7 +378,7 @@ class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
             }
         }
     }
-    
+
     public function scanresponsesAction()
     {
         $model = $this->getModel();
@@ -399,7 +399,7 @@ class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
                     rename($this->responseDir . $oldname, $this->responseDir . $filename);
                 }
                 $files[] = $filename;
-                $formCnt++;                
+                $formCnt++;
             }
         }
 
@@ -437,7 +437,7 @@ class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
             //Post
             // We get $_FILES variable holding the formresults as xml and all possible
             // attachments like photo's and video's
-            $upload = new Zend_File_Transfer_Adapter_Http();
+            $upload = new \Zend_File_Transfer_Adapter_Http();
 
             // We should really add some validators here see http://framework.zend.com/manual/en/zend.file.transfer.validators.html
             // Returns all known internal file information
@@ -469,12 +469,12 @@ class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
                 if ($resultId === false) {
                     //form not accepted!
                     foreach ($xml->children() as $child) {
-                        $log->log($child->getName() . ' -> ' . $child, Zend_Log::ERR);
+                        $log->log($child->getName() . ' -> ' . $child, \Zend_Log::ERR);
                     }
-                } else {                
-                    //$log->log(print_r($files, true), Zend_Log::ERR);
-                    //$log->log($deviceId, Zend_Log::ERR);
-                    MUtil_File::ensureDir($this->responseDir . 'forms/' . (int) $this->openrosaFormID . '/');
+                } else {
+                    //$log->log(print_r($files, true), \Zend_Log::ERR);
+                    //$log->log($deviceId, \Zend_Log::ERR);
+                    \MUtil_File::ensureDir($this->responseDir . 'forms/' . (int) $this->openrosaFormID . '/');
                     $upload->setDestination($this->responseDir . 'forms/' . (int) $this->openrosaFormID . '/');
                     foreach ($upload->getFileInfo() as $file => $info) {
                         if ($info['received'] != 1) {
@@ -489,7 +489,7 @@ class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
                         $messages = $upload->getMessages();
                         echo implode("\n", $messages);
                     }
-                    $this->getResponse()->setHttpResponseCode(201); //Form received ok                
+                    $this->getResponse()->setHttpResponseCode(201); //Form received ok
                 }
             }
         }

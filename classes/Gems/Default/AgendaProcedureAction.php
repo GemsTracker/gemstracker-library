@@ -80,7 +80,7 @@ class Gems_Default_AgendaProcedureAction extends \Gems_Controller_ModelSnippetAc
      * @var mixed String or array of snippets name
      */
     protected $showSnippets = array(
-        'Generic_ContentTitleSnippet',
+        'Generic\\ContentTitleSnippet',
         'ModelItemTableSnippetGeneric',
         'Agenda_CalendarTableSnippet',
         );
@@ -102,7 +102,7 @@ class Gems_Default_AgendaProcedureAction extends \Gems_Controller_ModelSnippetAc
         $params['filterWhen']   = 'gap_filter';
 
         $snippets = array(
-            'Generic_ContentTitleSnippet',
+            'Generic\\ContentTitleSnippet',
             'Agenda\\AppointmentCleanupSnippet',
             'Agenda_CalendarTableSnippet',
             );

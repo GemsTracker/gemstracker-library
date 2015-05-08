@@ -81,7 +81,7 @@ class Gems_Default_TrackFieldsAction extends \Gems_Controller_ModelSnippetAction
      * @var mixed String or array of snippets name
      */
     protected $indexStartSnippets = array(
-        'Generic_ContentTitleSnippet',
+        'Generic\\ContentTitleSnippet',
         'Tracker_Fields_FieldsAutosearchForm'
         );
 

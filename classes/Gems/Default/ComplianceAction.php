@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-class Gems_Default_ComplianceAction extends Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_ComplianceAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
      * The snippets used for the autofilter action.
@@ -58,14 +58,14 @@ class Gems_Default_ComplianceAction extends Gems_Controller_ModelSnippetActionAb
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'Tracker_Compliance_ComplianceSearchFormSnippet');
+    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Tracker_Compliance_ComplianceSearchFormSnippet');
 
     /**
      * The snippets used for the index action, after those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStopSnippets = array('Tracker_TokenStatusLegenda', 'Generic_CurrentButtonRowSnippet');
+    protected $indexStopSnippets = array('Tracker_TokenStatusLegenda', 'Generic\\CurrentButtonRowSnippet');
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -76,11 +76,11 @@ class Gems_Default_ComplianceAction extends Gems_Controller_ModelSnippetActionAb
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     public function createModel($detailed, $action)
     {
-        $model = new Gems_Model_JoinModel('resptrack' , 'gems__respondent2track');
+        $model = new \Gems_Model_JoinModel('resptrack' , 'gems__respondent2track');
         $model->addTable('gems__respondent2org', array(
             'gr2t_id_user' => 'gr2o_id_user',
             'gr2t_id_organization' => 'gr2o_id_organization'
@@ -105,7 +105,7 @@ class Gems_Default_ComplianceAction extends Gems_Controller_ModelSnippetActionAb
         }
 
         // Add the period filter - if any
-        if ($where = Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($filter, $this->db)) {
+        if ($where = \Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($filter, $this->db)) {
             $model->addFilter(array($where));
         }
 
@@ -136,17 +136,17 @@ class Gems_Default_ComplianceAction extends Gems_Controller_ModelSnippetActionAb
                 ->order('gto_id_respondent_track')
                 ->order('gto_round_order');
 
-        // MUtil_Echo::track($this->db->fetchAll($select));
-        $newModel = new MUtil_Model_SelectModel($select, 'tok');
+        // \MUtil_Echo::track($this->db->fetchAll($select));
+        $newModel = new \MUtil_Model_SelectModel($select, 'tok');
         $newModel->setKeys(array('gto_id_respondent_track'));
 
-        $transformer = new MUtil_Model_Transform_CrossTabTransformer();
+        $transformer = new \MUtil_Model_Transform_CrossTabTransformer();
         $transformer->addCrosstabField('gto_id_round', 'status', 'stat_')
                 ->addCrosstabField('gto_id_round', 'gto_id_token', 'tok_');
 
         foreach ($data as $row) {
             $name = 'stat_' . $row['gro_id_round'];
-            $transformer->set($name, 'label', MUtil_Lazy::call('substr', $row['gsu_survey_name'], 0, 2),
+            $transformer->set($name, 'label', \MUtil_Lazy::call('substr', $row['gsu_survey_name'], 0, 2),
                     'description', sprintf("%s\n[%s]", $row['gsu_survey_name'], $row['gro_round_description']),
                     'noSort', true,
                     'round', $row['gro_round_description'],
@@ -156,9 +156,9 @@ class Gems_Default_ComplianceAction extends Gems_Controller_ModelSnippetActionAb
         }
 
         $newModel->addTransformer($transformer);
-        // MUtil_Echo::track($data);
+        // \MUtil_Echo::track($data);
 
-        $joinTrans = new MUtil_Model_Transform_JoinTransformer();
+        $joinTrans = new \MUtil_Model_Transform_JoinTransformer();
         $joinTrans->addModel($newModel, array('gr2t_id_respondent_track' => 'gto_id_respondent_track'));
 
         $model->resetOrder();

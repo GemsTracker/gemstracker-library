@@ -103,7 +103,7 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'Survey\\SurveyMaintenanceSearchSnippet');
+    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Survey\\SurveyMaintenanceSearchSnippet');
 
     /**
      *
@@ -135,7 +135,7 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
      * @var mixed String or array of snippets name
      */
     protected $showSnippets = array(
-        'Generic_ContentTitleSnippet',
+        'Generic\\ContentTitleSnippet',
         'ModelItemTableSnippetGeneric',
         'Survey\\SurveyQuestionsSnippet'
         );

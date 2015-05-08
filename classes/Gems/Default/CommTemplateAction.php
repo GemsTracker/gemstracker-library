@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Default_CommTemplateAction extends Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_CommTemplateAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
 
     protected $createEditSnippets = 'Mail_MailModelFormSnippet';
@@ -60,7 +60,7 @@ class Gems_Default_CommTemplateAction extends Gems_Controller_ModelSnippetAction
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     public function createModel($detailed, $action)
     {
@@ -72,7 +72,7 @@ class Gems_Default_CommTemplateAction extends Gems_Controller_ModelSnippetAction
         $model->set('gct_target', 'label', $this->_('Mail Target'), 'multiOptions', $commTargets, 'Gems_Default_CommTemplateAction', 'translateTargets');
         $model->set('gct_name', 'label', $this->_('Name'), 'size', 50);
 
-        $translationModel = new MUtil_Model_TableModel('gems__comm_template_translations', 'gctt');
+        $translationModel = new \MUtil_Model_TableModel('gems__comm_template_translations', 'gctt');
         if ($action === 'index') {
             $translationModel->set('gctt', 'label', $this->_('Subject'), 'size', 50, 'formatFunction', array('Gems_Default_CommTemplateAction', 'displayMultipleSubjects'));
         } else {
@@ -106,7 +106,7 @@ class Gems_Default_CommTemplateAction extends Gems_Controller_ModelSnippetAction
                 'size', 50,
                 'description', $this->_('Optional code name to link the template to program code.')
                 );
-        $transformer = new MUtil_Model_Transform_RequiredRowsTransformer();
+        $transformer = new \MUtil_Model_Transform_RequiredRowsTransformer();
         $transformer->setRequiredRows($requiredRows);
         $translationModel->addTransformer($transformer);
 
@@ -136,11 +136,11 @@ class Gems_Default_CommTemplateAction extends Gems_Controller_ModelSnippetAction
     public static function bbToHtml($bbcode) {
         $text = '';
         if (!empty($bbcode)) {
-            $text = MUtil_Markup::render($bbcode, 'Bbcode', 'Html');
+            $text = \MUtil_Markup::render($bbcode, 'Bbcode', 'Html');
         }
 
 
-        $div = MUtil_Html::create()->div(array('class' => 'mailpreview'));
+        $div = \MUtil_Html::create()->div(array('class' => 'mailpreview'));
         $div->raw($text);
 
         return $div;
@@ -148,7 +148,7 @@ class Gems_Default_CommTemplateAction extends Gems_Controller_ModelSnippetAction
 
     public static function displayMultipleSubjects($subValuesArray)
     {
-        $html = MUtil_Html::create()->div();
+        $html = \MUtil_Html::create()->div();
         $output = '';
 
         $multi = false;

@@ -159,21 +159,21 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'AutosearchFormSnippet');
+    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'AutosearchFormSnippet');
 
     /**
      * The snippets used for the index action, after those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStopSnippets = 'Generic_CurrentButtonRowSnippet';
+    protected $indexStopSnippets = 'Generic\\CurrentButtonRowSnippet';
 
     /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = array('Generic_ContentTitleSnippet', 'ModelItemTableSnippetGeneric');
+    protected $showSnippets = array('Generic\\ContentTitleSnippet', 'ModelItemTableSnippetGeneric');
 
     /**
      *

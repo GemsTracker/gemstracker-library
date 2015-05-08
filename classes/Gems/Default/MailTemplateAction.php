@@ -42,7 +42,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class Gems_Default_MailTemplateAction extends Gems_Controller_BrowseEditAction
+class Gems_Default_MailTemplateAction extends \Gems_Controller_BrowseEditAction
 {
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -53,11 +53,11 @@ class Gems_Default_MailTemplateAction extends Gems_Controller_BrowseEditAction
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * $return MUtil_Model_ModelAbstract
+     * $return \MUtil_Model_ModelAbstract
      */
     public function createModel($detailed, $action)
     {
-        $model = new MUtil_Model_TableModel('gems__mail_templates');
+        $model = new \MUtil_Model_TableModel('gems__mail_templates');
         $model->addSort(array('gmt_subject' => SORT_ASC));
         $model->set('gmt_subject', 'label', $this->_('Subject'));
 
@@ -70,12 +70,12 @@ class Gems_Default_MailTemplateAction extends Gems_Controller_BrowseEditAction
         return $model;
     }
 
-    public function getAutoSearchElements(MUtil_Model_ModelAbstract $model, array $data)
+    public function getAutoSearchElements(\MUtil_Model_ModelAbstract $model, array $data)
     {
         $elements = parent::getAutoSearchElements($model, $data);
         $options = array('' => $this->_('(all organizations)')) + $this->util->getDbLookup()->getOrganizations();
 
-        $elements[] = new Zend_Form_Element_Select('org_id', array('multiOptions' => $options));
+        $elements[] = new \Zend_Form_Element_Select('org_id', array('multiOptions' => $options));
 
         return $elements;
     }
@@ -105,7 +105,7 @@ class Gems_Default_MailTemplateAction extends Gems_Controller_BrowseEditAction
      */
     public function indexAction()
     {
-        $style = new MUtil_Html_StyleArrayAttribute();
+        $style = new \MUtil_Html_StyleArrayAttribute();
         $style->add('background', 'yellow');
         $style->add('border', "3px solid red");
         $style->add('color', 'red');
@@ -113,15 +113,15 @@ class Gems_Default_MailTemplateAction extends Gems_Controller_BrowseEditAction
         $div = $this->html->div($style);
         $div->h1($this->_('Deprecated'), array('style' => 'color: red;'));
         $div->pInfo($this->_('Go to Setup -> Communication -> Templates for the replacement.'));
-        
+
         parent::indexAction();
     }
-    
+
     protected function processForm($saveLabel = null, $data = null)
     {
         $model = $this->getModel();
         $isNew = ! $model->applyRequest($this->getRequest())->hasFilter();
-        $form  = new Gems_Email_MailTemplateForm($this->escort);
+        $form  = new \Gems_Email_MailTemplateForm($this->escort);
 
         $wasSaved = $form->processRequest($this->_request);
 
@@ -134,7 +134,7 @@ class Gems_Default_MailTemplateAction extends Gems_Controller_BrowseEditAction
             $this->afterSaveRoute($form->getValues());
 
         } else {
-            $table = new MUtil_Html_TableElement(array('class' => 'formTable'));
+            $table = new \MUtil_Html_TableElement(array('class' => 'formTable'));
             $table->setAsFormLayout($form, true, true);
             $table['tbody'][0][0]->class = 'label';  // Is only one row with formLayout, so all in output fields get class.
             if ($links = $this->createMenuLinks(10)) {

@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-class Gems_Default_SummaryAction extends Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_SummaryAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
      * The parameters used for the autofilter action.
@@ -70,7 +70,7 @@ class Gems_Default_SummaryAction extends Gems_Controller_ModelSnippetActionAbstr
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
 
@@ -79,7 +79,7 @@ class Gems_Default_SummaryAction extends Gems_Controller_ModelSnippetActionAbstr
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'Tracker_Summary_SummarySearchFormSnippet');
+    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Tracker_Summary_SummarySearchFormSnippet');
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -90,14 +90,14 @@ class Gems_Default_SummaryAction extends Gems_Controller_ModelSnippetActionAbstr
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     public function createModel($detailed, $action)
     {
         $select = $this->getSelect();
 
-        // MUtil_Model::$verbose = true;
-        $model = new MUtil_Model_SelectModel($select, 'summary');
+        // \MUtil_Model::$verbose = true;
+        $model = new \MUtil_Model_SelectModel($select, 'summary');
 
         // Make sure of filter and sort for these fields
         $model->set('gro_id_order');
@@ -129,7 +129,7 @@ class Gems_Default_SummaryAction extends Gems_Controller_ModelSnippetActionAbstr
 
         if (isset($filter['gto_id_track']) && $filter['gto_id_track']) {
             // Add the period filter
-            if ($where = Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($filter, $this->db)) {
+            if ($where = \Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($filter, $this->db)) {
                 $select->joinInner('gems__respondent2track', 'gto_id_respondent_track = gr2t_id_respondent_track', array());
                 $model->addFilter(array($where));
             }
@@ -154,30 +154,30 @@ class Gems_Default_SummaryAction extends Gems_Controller_ModelSnippetActionAbstr
     /**
      * Select creation function, allowes overruling in child classes
      *
-     * @return Zend_Db_Select
+     * @return \Zend_Db_Select
      */
     public function getSelect()
     {
         $select = $this->db->select();
 
-        $fields['answered'] = new Zend_Db_Expr("SUM(
+        $fields['answered'] = new \Zend_Db_Expr("SUM(
             CASE
             WHEN grc_success = 1 AND gto_completion_time IS NOT NULL
             THEN 1 ELSE 0 END
             )");
-        $fields['missed']   = new Zend_Db_Expr('SUM(
+        $fields['missed']   = new \Zend_Db_Expr('SUM(
             CASE
             WHEN grc_success = 1 AND gto_completion_time IS NULL AND gto_valid_until < CURRENT_TIMESTAMP
             THEN 1 ELSE 0 END
             )');
-        $fields['open']   = new Zend_Db_Expr('SUM(
+        $fields['open']   = new \Zend_Db_Expr('SUM(
             CASE
             WHEN grc_success = 1 AND gto_completion_time IS NULL AND
                 gto_valid_from <= CURRENT_TIMESTAMP AND
                 (gto_valid_until >= CURRENT_TIMESTAMP OR gto_valid_until IS NULL)
             THEN 1 ELSE 0 END
             )');
-        $fields['total'] = new Zend_Db_Expr('SUM(
+        $fields['total'] = new \Zend_Db_Expr('SUM(
             CASE
             WHEN grc_success = 1 AND (
                     gto_completion_time IS NOT NULL OR
@@ -186,23 +186,23 @@ class Gems_Default_SummaryAction extends Gems_Controller_ModelSnippetActionAbstr
             THEN 1 ELSE 0 END
             )');
         /*
-        $fields['future'] = new Zend_Db_Expr('SUM(
+        $fields['future'] = new \Zend_Db_Expr('SUM(
             CASE
             WHEN grc_success = 1 AND gto_completion_time IS NULL AND gto_valid_from > CURRENT_TIMESTAMP
             THEN 1 ELSE 0 END
             )');
-        $fields['unknown'] = new Zend_Db_Expr('SUM(
+        $fields['unknown'] = new \Zend_Db_Expr('SUM(
             CASE
             WHEN grc_success = 1 AND gto_completion_time IS NULL AND gto_valid_from IS NULL
             THEN 1 ELSE 0 END
             )');
-        $fields['is']      = new Zend_Db_Expr("'='");
-        $fields['success'] = new Zend_Db_Expr('SUM(
+        $fields['is']      = new \Zend_Db_Expr("'='");
+        $fields['success'] = new \Zend_Db_Expr('SUM(
             CASE
             WHEN grc_success = 1
             THEN 1 ELSE 0 END
             )');
-        $fields['removed'] = new Zend_Db_Expr('SUM(
+        $fields['removed'] = new \Zend_Db_Expr('SUM(
             CASE
             WHEN grc_success = 0
             THEN 1 ELSE 0 END

@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class Gems_Default_OptionAction  extends \Gems_Controller_BrowseEditAction
+class Gems_Default_OptionAction extends \Gems_Controller_BrowseEditAction
 {
     /**
      *
@@ -221,7 +221,7 @@ class Gems_Default_OptionAction  extends \Gems_Controller_BrowseEditAction
     {
         $filter['gla_by'] = $this->loader->getCurrentUser()->getUserId();
 
-        $this->addSnippet('Generic_ContentTitleSnippet',
+        $this->addSnippet('Generic\\ContentTitleSnippet',
                 'contentTitle', $this->_('Activity overview')
                 );
         $this->addSnippet('Log\\LogTableSnippet',

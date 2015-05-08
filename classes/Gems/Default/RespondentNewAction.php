@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: RespondentNewAction.php$
+ * @version    $Id$
  */
 
 /**
@@ -126,7 +126,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'RespondentSearchSnippet');
+    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'RespondentSearchSnippet');
 
     /**
      *
@@ -158,7 +158,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      * @var mixed String or array of snippets name
      */
     protected $showSnippets = array(
-        'Generic_ContentTitleSnippet',
+        'Generic\\ContentTitleSnippet',
         'RespondentDetailsSnippet',
     	'Tracker\\AddTracksSnippet',
         'RespondentTokenTabsSnippet',

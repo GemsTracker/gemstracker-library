@@ -92,7 +92,7 @@ class Gems_Default_ProjectTracksAction extends \Gems_Controller_ModelSnippetActi
      * @var mixed String or array of snippets name
      */
     protected $showSnippets = array(
-        'Generic_ContentTitleSnippet',
+        'Generic\\ContentTitleSnippet',
         'Tracker\\TrackUsageTextDetailsSnippet',
         'ModelItemTableSnippetGeneric',
         'Tracker\\TrackSurveyOverviewSnippet',

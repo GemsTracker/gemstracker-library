@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Default_ProjectInformationAction  extends Gems_Controller_Action
+class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
 {
     /**
      *
@@ -53,7 +53,7 @@ class Gems_Default_ProjectInformationAction  extends Gems_Controller_Action
 
     /**
      *
-     * @var Gems_Menu
+     * @var \Gems_Menu
      */
     public $menu;
 
@@ -61,8 +61,8 @@ class Gems_Default_ProjectInformationAction  extends Gems_Controller_Action
 
     protected function _showTable($caption, $data, $nested = false)
     {
-        $tableContainer = $div = MUtil_Html::create()->div(array('class' => 'table-container'));
-        $table = MUtil_Html_TableElement::createArray($data, $caption, $nested);
+        $tableContainer = $div = \MUtil_Html::create()->div(array('class' => 'table-container'));
+        $table = \MUtil_Html_TableElement::createArray($data, $caption, $nested);
         $table->class = 'browser table';
         $tableContainer[] = $table;
         $this->html[] = $tableContainer;
@@ -72,7 +72,7 @@ class Gems_Default_ProjectInformationAction  extends Gems_Controller_Action
     {
         $this->html->h2($caption);
 
-        if ($empty_label && (1 == $this->_getParam(MUtil_Model::REQUEST_ID)) && file_exists($log_file)) {
+        if ($empty_label && (1 == $this->_getParam(\MUtil_Model::REQUEST_ID)) && file_exists($log_file)) {
             unlink($log_file);
         }
 
@@ -94,7 +94,7 @@ class Gems_Default_ProjectInformationAction  extends Gems_Controller_Action
             if ($error) {
                 $buttons->actionDisabled($empty_label);
             } else {
-                $buttons->actionLink(array(MUtil_Model::REQUEST_ID => 1), $empty_label);
+                $buttons->actionLink(array(\MUtil_Model::REQUEST_ID => 1), $empty_label);
             }
         }
 
@@ -151,8 +151,8 @@ class Gems_Default_ProjectInformationAction  extends Gems_Controller_Action
         return sprintf(
                 $this->_('%s - %s free of %s = %d%% available'),
                 $directory,
-                MUtil_File::getByteSized($free),
-                MUtil_File::getByteSized($total),
+                \MUtil_File::getByteSized($free),
+                \MUtil_File::getByteSized($total),
                 $percent
                 );
     }
@@ -172,8 +172,8 @@ class Gems_Default_ProjectInformationAction  extends Gems_Controller_Action
         $data[$this->_('Gems root directory')]     = $this->getDirInfo(GEMS_ROOT_DIR);
         $data[$this->_('Gems code directory')]     = $this->getDirInfo(GEMS_LIBRARY_DIR);
         $data[$this->_('Gems variable directory')] = $this->getDirInfo(GEMS_ROOT_DIR . '/var');
-        $data[$this->_('MUtil version')]           = MUtil_Version::get();
-        $data[$this->_('Zend version')]            = Zend_Version::VERSION;
+        $data[$this->_('MUtil version')]           = \MUtil_Version::get();
+        $data[$this->_('Zend version')]            = \Zend_Version::VERSION;
         $data[$this->_('Application environment')] = APPLICATION_ENV;
         $data[$this->_('Application baseuri')]     = $this->loader->getUtil()->getCurrentURI();
         $data[$this->_('Application directory')]   = $this->getDirInfo(APPLICATION_PATH);
@@ -184,7 +184,7 @@ class Gems_Default_ProjectInformationAction  extends Gems_Controller_Action
         $data[$this->_('Time on server')]          = date('r');
 
         $driveVars = array(
-            $this->_('Session directory') => Zend_Session::getOptions('save_path'),
+            $this->_('Session directory') => \Zend_Session::getOptions('save_path'),
             $this->_('Temporary files directory') => realpath(getenv('TMP')),
         );
         if ($system =  getenv('SystemDrive')) {
@@ -224,7 +224,7 @@ class Gems_Default_ProjectInformationAction  extends Gems_Controller_Action
         // Dump the existing maintenance mode messages.
         $this->escort->getMessenger()->clearCurrentMessages();
         $this->escort->getMessenger()->clearMessages();
-        MUtil_Echo::out();
+        \MUtil_Echo::out();
 
         // Redirect
         $request = $this->getRequest();
@@ -244,7 +244,7 @@ class Gems_Default_ProjectInformationAction  extends Gems_Controller_Action
     {
         $this->html->h2($this->_('Server PHP Info'));
 
-        $php = new MUtil_Config_Php();
+        $php = new \MUtil_Config_Php();
 
         $this->view->headStyle($php->getStyle());
         $this->html->raw($php->getInfo());

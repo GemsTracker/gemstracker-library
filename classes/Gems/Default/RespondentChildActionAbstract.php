@@ -73,7 +73,7 @@ abstract class Gems_Default_RespondentChildActionAbstract extends \Gems_Controll
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'AutosearchInRespondentSnippet');
+    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'AutosearchInRespondentSnippet');
 
     /**
      * Get the respondent object

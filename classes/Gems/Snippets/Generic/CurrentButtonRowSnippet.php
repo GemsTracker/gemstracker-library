@@ -18,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -28,66 +28,62 @@
  *
  *
  * @package    Gems
- * @subpackage Snippets
+ * @subpackage Snippets\Generic
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ContentTitleSnippet.php $
+ * @version    $Id: CurrentButtonRowSnippet.php 203 2011-07-07 12:51:32Z matijs $
  */
+
+namespace Gems\Snippets\Generic;
 
 /**
- *
+ * Displays the parent menu item (if existing) plus any current
+ * level buttons that are visible
  *
  * @package    Gems
- * @subpackage Snippets
+ * @subpackage Snippets\Generic
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.5
+ * @since      Class available since version 1.4.2
  */
-class Generic_ContentTitleSnippet extends MUtil_Snippets_SnippetAbstract
+class  extends \MUtil_Snippets_SnippetAbstract
 {
     /**
-     * The title to display
+     * Required
      *
-     * @var string
+     * @var \Gems_Menu
      */
-    protected $contentTitle;
+    protected $menu;
 
     /**
-     * Tagname of the HtmlElement to create
+     * Required
      *
-     * @var string
+     * @var \Zend_Controller_Request_Abstract
      */
-    protected $tagName = 'h3';
+    protected $request;
 
     /**
      * Create the snippets content
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param Zend_View_Abstract $view Just in case it is needed here
-     * @return MUtil_Html_HtmlInterface Something that can be rendered
+     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @return \MUtil_Html_HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view)
     {
-        if ($this->contentTitle) {
-            return MUtil_Html::create($this->tagName, $this->contentTitle, array('class' => 'title'));
+        $menuList = $this->menu->getMenuList();
+
+        $menuList->addParameterSources($this->request)
+                ->addCurrentParent($this->_('Cancel'))
+                ->addCurrentChildren();
+
+        $buttonContainer = false;
+        if ($menuList->render($view)) {
+            $buttonContainer = \MUtil_Html::create('div', array('class' => 'buttons', 'renderClosingTag' => true), $menuList);
         }
+        return $buttonContainer;
     }
 
-    /**
-     * The place to check if the data set in the snippet is valid
-     * to generate the snippet.
-     *
-     * When invalid data should result in an error, you can throw it
-     * here but you can also perform the check in the
-     * checkRegistryRequestsAnswers() function from the
-     * {@see MUtil_Registry_TargetInterface}.
-     *
-     * @return boolean
-     */
-    public function hasHtmlOutput()
-    {
-        return $this->contentTitle && $this->tagName;
-    }
 }

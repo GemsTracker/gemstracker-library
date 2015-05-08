@@ -42,22 +42,22 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Default_ContactAction extends Gems_Controller_Action
+class Gems_Default_ContactAction extends \Gems_Controller_Action
 {
     /**
      *
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     public $project;
 
     /**
      * A list of all participating organizations.
      *
-     * @return MUtil_Html_HtmlElement
+     * @return \MUtil_Html_HtmlElement
      */
     private function _getOrganizationsList()
     {
-        $html = new MUtil_Html_Sequence();
+        $html = new \MUtil_Html_Sequence();
         $sql = '
             SELECT *
             FROM gems__organizations
@@ -96,7 +96,7 @@ class Gems_Default_ContactAction extends Gems_Controller_Action
                         $this->project->getName()
                         ));
 
-                $data = MUtil_Lazy::repeat($organizations);
+                $data = \MUtil_Lazy::repeat($organizations);
                 $ul = $p->ul($data, array('class' => 'indent'));
                 $li = $ul->li();
                 $li->a($data->gor_url->call($this, '_'), $data->gor_name, array('rel' => 'external'));
@@ -121,7 +121,7 @@ class Gems_Default_ContactAction extends Gems_Controller_Action
         $this->initHtml();
 
         $this->html->h3()->sprintf($this->_('About %s'), $this->project->getName());
-        $this->html->pInfo(MUtil_Html_Raw::raw($this->project->getLongDescription($this->locale->getLanguage())));
+        $this->html->pInfo(\MUtil_Html_Raw::raw($this->project->getLongDescription($this->locale->getLanguage())));
         $this->html->append($this->_getOrganizationsList());
     }
 

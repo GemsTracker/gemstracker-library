@@ -42,7 +42,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Default_MailServerAction extends Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_MailServerAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
      * The snippets used for the autofilter action.
@@ -62,13 +62,13 @@ class Gems_Default_MailServerAction extends Gems_Controller_ModelSnippetActionAb
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * $return MUtil_Model_ModelAbstract
+     * $return \MUtil_Model_ModelAbstract
      */
     public function createModel($detailed, $action)
     {
-        $model = new MUtil_Model_TableModel('gems__mail_servers');
+        $model = new \MUtil_Model_TableModel('gems__mail_servers');
 
-        Gems_Model::setChangeFieldsByPrefix($model, 'gms');
+        \Gems_Model::setChangeFieldsByPrefix($model, 'gms');
 
         // Key can be changed by users
         $model->copyKeys();
@@ -82,9 +82,9 @@ class Gems_Default_MailServerAction extends Gems_Controller_ModelSnippetActionAb
                 'label', $this->_('Encryption'),
                 'required', false,
                 'multiOptions', array(
-                    Gems_Email_TemplateMailer::MAIL_NO_ENCRYPT => $this->_('None'),
-                    Gems_Email_TemplateMailer::MAIL_SSL => $this->_('SSL'),
-                    Gems_Email_TemplateMailer::MAIL_TLS => $this->_('TLS')));
+                    \Gems_Email_TemplateMailer::MAIL_NO_ENCRYPT => $this->_('None'),
+                    \Gems_Email_TemplateMailer::MAIL_SSL => $this->_('SSL'),
+                    \Gems_Email_TemplateMailer::MAIL_TLS => $this->_('TLS')));
         $model->set('gms_port',
                 'label', $this->_('Port'),
                 'required', true,
@@ -99,7 +99,7 @@ class Gems_Default_MailServerAction extends Gems_Controller_ModelSnippetActionAb
                     'repeatLabel', $this->_('Repeat password'),
                     'description', $this->_('Enter only when changing'));
 
-            $type = new Gems_Model_Type_EncryptedField($this->project, true);
+            $type = new \Gems_Model_Type_EncryptedField($this->project, true);
             $type->apply($model, 'gms_password', 'gms_encryption');
         }
 

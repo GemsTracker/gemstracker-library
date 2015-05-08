@@ -28,7 +28,7 @@
  *
  *
  * @package    Gems
- * @subpackage Snippets
+ * @subpackage Snippets\Respondent
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
@@ -38,7 +38,7 @@
 /**
  *
  * @package    Gems
- * @subpackage Snippets
+ * @subpackage Snippets\Respondent
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.2

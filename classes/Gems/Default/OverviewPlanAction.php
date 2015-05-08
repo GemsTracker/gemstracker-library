@@ -43,13 +43,13 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class Gems_Default_OverviewPlanAction extends Gems_Default_TokenPlanAction
+class Gems_Default_OverviewPlanAction extends \Gems_Default_TokenPlanAction
 {
     public $tableSnippets = array('TokenDateSelectorSnippet', 'SelectedTokensTitleSnippet');
 
     /**
      *
-     * @var Gems_Selector_DateSelectorAbstract
+     * @var \Gems_Selector_DateSelectorAbstract
      */
     public $dateSelector;
 
@@ -69,22 +69,22 @@ class Gems_Default_OverviewPlanAction extends Gems_Default_TokenPlanAction
      * The form / html elements to search on. Elements can be grouped by inserting null's between them.
      * That creates a distinct group of elements
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return array Of Zend_Form_Element's or static tekst to add to the html or null for group breaks.
+     * @return array Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.
      */
-    protected function getAutoSearchElements(MUtil_Model_ModelAbstract $model, array $data)
+    protected function getAutoSearchElements(\MUtil_Model_ModelAbstract $model, array $data)
     {
-        $elements[] = new Zend_Form_Element_Hidden(Gems_Selector_DateSelectorAbstract::DATE_FACTOR);
-        $elements[] = new Zend_Form_Element_Hidden(Gems_Selector_DateSelectorAbstract::DATE_GROUP);
-        $elements[] = new Zend_Form_Element_Hidden(Gems_Selector_DateSelectorAbstract::DATE_TYPE);
+        $elements[] = new \Zend_Form_Element_Hidden(\Gems_Selector_DateSelectorAbstract::DATE_FACTOR);
+        $elements[] = new \Zend_Form_Element_Hidden(\Gems_Selector_DateSelectorAbstract::DATE_GROUP);
+        $elements[] = new \Zend_Form_Element_Hidden(\Gems_Selector_DateSelectorAbstract::DATE_TYPE);
 
         return array_merge($elements, $this->getAutoSearchSelectElements());
     }
 
     protected function getDataFilter(array $data)
     {
-        // MUtil_Echo::r($data, __FUNCTION__);
+        // \MUtil_Echo::r($data, __FUNCTION__);
         $parent = parent::getDataFilter($data);
 
         $selector = $this->getDateSelector();
@@ -93,7 +93,7 @@ class Gems_Default_OverviewPlanAction extends Gems_Default_TokenPlanAction
 
     /**
      *
-     * @return Gems_Selector_DateSelectorAbstract
+     * @return \Gems_Selector_DateSelectorAbstract
      */
     public function getDateSelector()
     {

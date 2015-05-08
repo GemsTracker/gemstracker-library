@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-abstract class Gems_Default_FileActionAbstract extends Gems_Controller_ModelSnippetActionAbstract
+abstract class Gems_Default_FileActionAbstract extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
      * The snippets used for the autofilter action.
@@ -92,11 +92,11 @@ abstract class Gems_Default_FileActionAbstract extends Gems_Controller_ModelSnip
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     public function createModel($detailed, $action)
     {
-        $model = new MUtil_Model_FolderModel(
+        $model = new \MUtil_Model_FolderModel(
                 $this->getPath($detailed, $action),
                 $this->getMask($detailed, $action),
                 $this->recursive
@@ -118,7 +118,7 @@ abstract class Gems_Default_FileActionAbstract extends Gems_Controller_ModelSnip
             $model->set('fullpath',  'label', $this->_('Full name'), 'elementClass', 'Exhibitor');
             $model->set('extension', 'label', $this->_('Type'), 'elementClass', 'Exhibitor');
             $model->set('content',   'label', $this->_('Content'),
-                    'formatFunction', array(MUtil_Html::create(), 'pre'),
+                    'formatFunction', array(\MUtil_Html::create(), 'pre'),
                     'elementClass', 'TextArea');
         }
         $model->set('size',      'label', $this->_('Size'),
@@ -198,9 +198,9 @@ abstract class Gems_Default_FileActionAbstract extends Gems_Controller_ModelSnip
 
         if (! is_dir($dir)) {
             try {
-                MUtil_File::ensureDir($dir);
+                \MUtil_File::ensureDir($dir);
 
-            } catch (Zend_Exception $e) {
+            } catch (\Zend_Exception $e) {
                 $text = $e->getMessage();
 
                 if (! $warned) {
@@ -275,6 +275,6 @@ abstract class Gems_Default_FileActionAbstract extends Gems_Controller_ModelSnip
 
         $this->html->pInfo($this->_('Checks this file for validity and then performs an import.'));
 
-        // MUtil_Echo::track($data);
+        // \MUtil_Echo::track($data);
     }
 }

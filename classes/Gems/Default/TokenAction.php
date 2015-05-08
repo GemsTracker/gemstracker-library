@@ -57,7 +57,7 @@ class Gems_Default_TokenAction extends \Gems_Default_TokenSearchActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'Token\\TokenSearchSnippet');
+    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Token\\TokenSearchSnippet');
 
     /**
      *

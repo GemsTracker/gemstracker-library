@@ -43,14 +43,14 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Default_AskAction extends Gems_Controller_Action
+class Gems_Default_AskAction extends \Gems_Controller_Action
 {
     /**
-     * Usually a child of Gems_Tracker_Snippets_ShowTokenLoopAbstract,
+     * Usually a child of \Gems_Tracker_Snippets_ShowTokenLoopAbstract,
      * Track_Token_ShowAllOpenSnippet or Track_Token_ShowFirstOpenSnippet or
      * a project specific one.
      *
-     * @var array Or string of snippet names, presumably Gems_Tracker_Snippets_ShowTokenLoopAbstract snippets
+     * @var array Or string of snippet names, presumably \Gems_Tracker_Snippets_ShowTokenLoopAbstract snippets
      */
     // protected $forwardSnippets = 'Track_Token_ShowAllOpenSnippet';
     protected $forwardSnippets = 'Track_Token_ShowFirstOpenSnippet';
@@ -66,7 +66,7 @@ class Gems_Default_AskAction extends Gems_Controller_Action
 
     /**
      *
-     * @var Zend_Locale
+     * @var \Zend_Locale
      */
     public $locale;
 
@@ -75,7 +75,7 @@ class Gems_Default_AskAction extends Gems_Controller_Action
      *
      * set by _initToken()
      *
-     * @var Gems_Tracker
+     * @var \Gems_Tracker
      */
     protected $tokenId;
 
@@ -84,7 +84,7 @@ class Gems_Default_AskAction extends Gems_Controller_Action
      *
      * set by _initToken()
      *
-     * @var Gems_Tracker_Token
+     * @var \Gems_Tracker_Token
      */
     protected $token;
 
@@ -93,7 +93,7 @@ class Gems_Default_AskAction extends Gems_Controller_Action
      *
      * set by _initToken()
      *
-     * @var Gems_Tracker
+     * @var \Gems_Tracker
      */
     protected $tracker;
 
@@ -121,7 +121,7 @@ class Gems_Default_AskAction extends Gems_Controller_Action
         }
 
         $this->tracker = $this->loader->getTracker();
-        $this->tokenId = $this->tracker->filterToken($this->_getParam(MUtil_Model::REQUEST_ID));
+        $this->tokenId = $this->tracker->filterToken($this->_getParam(\MUtil_Model::REQUEST_ID));
 
         if (! $this->tokenId) {
             return false;
@@ -135,12 +135,12 @@ class Gems_Default_AskAction extends Gems_Controller_Action
 
         if (! ($this->loader->getCurrentUser()->isActive() || $this->token->getSurvey()->isTakenByStaff())) {
             $tokenLang = strtolower($this->token->getRespondentLanguage());
-            // MUtil_Echo::track($tokenLang, $this->locale->getLanguage());
+            // \MUtil_Echo::track($tokenLang, $this->locale->getLanguage());
             if ($tokenLang != $this->locale->getLanguage()) {
                 $this->locale->setLocale($tokenLang);
                 $this->translate->getAdapter()->setLocale($this->locale);
                 $this->session->user_locale = $tokenLang;
-                Gems_Cookies::setLocale($tokenLang, $this->basepath->getBasePath());
+                \Gems_Cookies::setLocale($tokenLang, $this->basepath->getBasePath());
             }
 
             $currentOrg = $this->loader->getOrganization();
@@ -158,9 +158,9 @@ class Gems_Default_AskAction extends Gems_Controller_Action
     /**
      * Function for overruling the display of the login form.
      *
-     * @param Gems_Tracker_Form_AskTokenForm $form
+     * @param \Gems_Tracker_Form_AskTokenForm $form
      */
-    protected function displayTokenForm(Gems_Tracker_Form_AskTokenForm $form)
+    protected function displayTokenForm(\Gems_Tracker_Form_AskTokenForm $form)
     {
         $user = $this->loader->getCurrentUser();
 
@@ -303,7 +303,7 @@ class Gems_Default_AskAction extends Gems_Controller_Action
             $request = $this->getRequest();
             $parameters[$request->getControllerKey()] = 'respondent';
             $parameters[$request->getActionKey()]     = 'show';
-            $parameters[MUtil_Model::REQUEST_ID]      = $this->token->getPatientNumber();
+            $parameters[\MUtil_Model::REQUEST_ID]      = $this->token->getPatientNumber();
         }
 
         $this->_reroute($parameters, true);
@@ -356,7 +356,7 @@ class Gems_Default_AskAction extends Gems_Controller_Action
             header('Location: ' . $url);
             exit();
 
-        } catch (Gems_Tracker_Source_SurveyNotFoundException $e) {
+        } catch (\Gems_Tracker_Source_SurveyNotFoundException $e) {
             $this->addMessage(sprintf(
                     $this->_('The survey for token %s is no longer active.'),
                     strtoupper($this->tokenId)

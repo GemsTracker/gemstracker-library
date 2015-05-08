@@ -44,16 +44,17 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class Gems_Default_ChartconfigAction extends Gems_Controller_ModelSnippetActionAbstract {
+class Gems_Default_ChartconfigAction extends \Gems_Controller_ModelSnippetActionAbstract {
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
 
-    protected function createModel($detailed, $action) {
-        $model = new Gems_Model_JoinModel('chartconfig', 'gems__chart_config', 'gcc');
+    protected function createModel($detailed, $action)
+    {
+        $model = new \Gems_Model_JoinModel('chartconfig', 'gems__chart_config', 'gcc');
 
         $empty = $this->loader->getUtil()->getTranslated()->getEmptyDropdownArray();
 
@@ -120,15 +121,17 @@ class Gems_Default_ChartconfigAction extends Gems_Controller_ModelSnippetActionA
         return $this->plural('Chart config', 'Chart configs', $count);
     }
 
-    public function formatjsonpre($json, $new = null, $name = null, $context = null) {
-        return MUtil_Html_Raw::raw('<pre>' .$json . '</pre>');
+    public function formatjsonpre($json, $new = null, $name = null, $context = null)
+    {
+        return \MUtil_Html_Raw::raw('<pre>' .$json . '</pre>');
     }
 
-    public function formatjson($json, $new = null, $name = null, $context = null) {
+    public function formatjson($json, $new = null, $name = null, $context = null)
+    {
         try {
-            if ($result = Zend_Json::decode($json)) {
+            if ($result = \Zend_Json::decode($json)) {
                 // To prevent multiple new lines, make compact json
-                $json = Zend_Json::encode($result);
+                $json = \Zend_Json::encode($result);
             }
         } catch (Exception $exc) {
             // Oops, not valid json...
@@ -136,7 +139,7 @@ class Gems_Default_ChartconfigAction extends Gems_Controller_ModelSnippetActionA
                 $json = "INVALIDJSON\n" . $json;
             }
             return $json;
-        }        
+        }
 
         $result      = '';
         $pos         = 0;

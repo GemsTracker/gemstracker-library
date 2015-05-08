@@ -78,7 +78,7 @@ class Gems_Default_CalendarAction extends \Gems_Controller_ModelSnippetActionAbs
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'Agenda_CalendarSearchSnippet');
+    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Agenda_CalendarSearchSnippet');
 
     /**
      * Creates a model for getModel(). Called only for each new $action.

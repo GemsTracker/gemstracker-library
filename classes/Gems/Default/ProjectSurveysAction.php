@@ -94,7 +94,7 @@ class Gems_Default_ProjectSurveysAction extends \Gems_Controller_ModelSnippetAct
      * @var mixed String or array of snippets name
      */
     protected $showSnippets = array(
-        'Generic_ContentTitleSnippet',
+        'Generic\\ContentTitleSnippet',
         'ModelItemTableSnippetGeneric',
         'Survey\\SurveyQuestionsSnippet'
         );

@@ -18,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -28,88 +28,68 @@
  *
  *
  * @package    Gems
- * @subpackage Snippets\Respondent
+ * @subpackage Snippets\Generic
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Sample.php 203 2011-07-07 12:51:32Z matijs $
+ * @version    $Id: ContentTitleSnippet.php 2534 2015-05-05 18:07:37Z matijsdejong $
  */
 
+namespace Gems\Snippets\Generic;
+
 /**
- * Displays tabs for multiple organizations.
+ *
  *
  * @package    Gems
- * @subpackage Snippets\Respondent
+ * @subpackage Snippets
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Respondent_MultiOrganizationTab extends MUtil_Snippets_TabSnippetAbstract
+class ContentTitleSnippet extends \MUtil_Snippets_SnippetAbstract
 {
-    protected $href = array();
+    /**
+     * The title to display
+     *
+     * @var string
+     */
+    protected $contentTitle;
 
     /**
-     * Required
+     * Tagname of the HtmlElement to create
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var string
      */
-    protected $db;
+    protected $tagName = 'h3';
 
     /**
+     * Create the snippets content
      *
-     * @var array id specific hrefs
-     */
-    protected $hrefs;
-
-    /**
-     * Required
+     * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @var Gems_Loader
+     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @return \MUtil_Html_HtmlInterface Something that can be rendered
      */
-    protected $loader;
-
-    /**
-     * Required
-     *
-     * @var array
-     */
-    protected $respondentData;
-
-    /**
-     * Return the parameters that should be used for this tabId
-     *
-     * @param string $tabId
-     * @return array
-     */
-    protected function getParameterKeysFor($tabId)
+    public function getHtmlOutput(\Zend_View_Abstract $view)
     {
-        return $this->hrefs[$tabId];
+        if ($this->contentTitle) {
+            return \MUtil_Html::create($this->tagName, $this->contentTitle, array('class' => 'title'));
+        }
     }
 
     /**
-     * Function used to fill the tab bar
+     * The place to check if the data set in the snippet is valid
+     * to generate the snippet.
      *
-     * @return array tabId => label
+     * When invalid data should result in an error, you can throw it
+     * here but you can also perform the check in the
+     * checkRegistryRequestsAnswers() function from the
+     * {@see \MUtil_Registry_TargetInterface}.
+     *
+     * @return boolean
      */
-    protected function getTabs()
+    public function hasHtmlOutput()
     {
-        $user = $this->loader->getCurrentUser();
-
-        $sql  = "SELECT gr2o_id_organization, gr2o_patient_nr FROM gems__respondent2org WHERE gr2o_id_user = ?";
-
-        $this->defaultTab = $user->getCurrentOrganizationId();
-        $this->currentTab = $this->request->getParam(MUtil_Model::REQUEST_ID2);
-
-        $allowedOrgs  = $user->getRespondentOrganizations();
-        $existingOrgs = $this->db->fetchPairs($sql, $this->respondentData['grs_id_user']);
-
-        foreach ($allowedOrgs as $orgId => $name) {
-            if (isset($existingOrgs[$orgId])) {
-                $tabs[$orgId] = $name;
-                $this->hrefs[$orgId] = array(MUtil_Model::REQUEST_ID1 => $existingOrgs[$orgId], MUtil_Model::REQUEST_ID2 => $orgId, 'RouteReset' => true);
-            }
-        }
-
-        return $tabs;
+        return $this->contentTitle && $this->tagName;
     }
 }

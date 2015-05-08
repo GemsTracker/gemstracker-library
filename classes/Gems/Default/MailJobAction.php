@@ -44,11 +44,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.4.4
  */
-class Gems_Default_MailJobAction extends Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_MailJobAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
      *
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     public $project;
 
@@ -61,7 +61,7 @@ class Gems_Default_MailJobAction extends Gems_Controller_ModelSnippetActionAbstr
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function createModel($detailed, $action)
     {
@@ -71,9 +71,9 @@ class Gems_Default_MailJobAction extends Gems_Controller_ModelSnippetActionAbstr
         $empty      = $translated->getEmptyDropdownArray();
         $unselected = array('' => '');
 
-        $model = new MUtil_Model_TableModel('gems__mail_jobs');
+        $model = new \MUtil_Model_TableModel('gems__mail_jobs');
 
-        Gems_Model::setChangeFieldsByPrefix($model, 'gmj');
+        \Gems_Model::setChangeFieldsByPrefix($model, 'gmj');
 
         $model->set('gmj_id_message',          'label', $this->_('Template'), 'multiOptions', $unselected + $dbLookup->getMailTemplates());
         $model->set('gmj_id_user_as',          'label', $this->_('By staff member'),
@@ -161,7 +161,7 @@ class Gems_Default_MailJobAction extends Gems_Controller_ModelSnippetActionAbstr
      */
     public function indexAction()
     {
-        $style = new MUtil_Html_StyleArrayAttribute();
+        $style = new \MUtil_Html_StyleArrayAttribute();
         $style->add('background', 'yellow');
         $style->add('border', "3px solid red");
         $style->add('color', 'red');
@@ -188,7 +188,7 @@ class Gems_Default_MailJobAction extends Gems_Controller_ModelSnippetActionAbstr
     public function showAction()
     {
         parent::showAction();
-        
+
         $id = $this->getRequest()->getParam('id');
         if (!is_null($id)) {
             $id = (int) $id;

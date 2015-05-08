@@ -73,7 +73,7 @@ class Gems_Default_MailLogAction extends \Gems_Controller_ModelSnippetActionAbst
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'Mail_Log_MailLogSearchSnippet');
+    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Mail_Log_MailLogSearchSnippet');
 
     /**
      * Creates a model for getModel(). Called only for each new $action.

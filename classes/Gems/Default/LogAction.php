@@ -58,7 +58,7 @@ class Gems_Default_LogAction extends \Gems_Controller_ModelSnippetActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'Log\\LogSearchSnippet');
+    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Log\\LogSearchSnippet');
 
     /**
      *
@@ -71,7 +71,7 @@ class Gems_Default_LogAction extends \Gems_Controller_ModelSnippetActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = array('Generic_ContentTitleSnippet', 'Log\\LogShowSnippet');
+    protected $showSnippets = array('Generic\\ContentTitleSnippet', 'Log\\LogShowSnippet');
 
     /**
      * Creates a model for getModel(). Called only for each new $action.

@@ -80,7 +80,7 @@ class Gems_Default_LocationAction extends \Gems_Controller_ModelSnippetActionAbs
      * @var mixed String or array of snippets name
      */
     protected $showSnippets = array(
-        'Generic_ContentTitleSnippet',
+        'Generic\\ContentTitleSnippet',
         'ModelItemTableSnippetGeneric',
         'Agenda_CalendarTableSnippet',
         );
@@ -102,7 +102,7 @@ class Gems_Default_LocationAction extends \Gems_Controller_ModelSnippetActionAbs
         $params['filterWhen']   = 'glo_filter';
 
         $snippets = array(
-            'Generic_ContentTitleSnippet',
+            'Generic\\ContentTitleSnippet',
             'Agenda\\AppointmentCleanupSnippet',
             'Agenda_CalendarTableSnippet',
             );

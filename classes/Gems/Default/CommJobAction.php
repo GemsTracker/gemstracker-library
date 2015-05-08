@@ -44,11 +44,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Default_CommJobAction extends Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
      *
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     public $project;
 
@@ -74,7 +74,7 @@ class Gems_Default_CommJobAction extends Gems_Controller_ModelSnippetActionAbstr
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function createModel($detailed, $action)
     {
@@ -84,9 +84,9 @@ class Gems_Default_CommJobAction extends Gems_Controller_ModelSnippetActionAbstr
         $empty      = $translated->getEmptyDropdownArray();
         $unselected = array('' => '');
 
-        $model = new MUtil_Model_TableModel('gems__comm_jobs');
+        $model = new \MUtil_Model_TableModel('gems__comm_jobs');
 
-        Gems_Model::setChangeFieldsByPrefix($model, 'gcj');
+        \Gems_Model::setChangeFieldsByPrefix($model, 'gcj');
 
         $model->set('gcj_id_message',          'label', $this->_('Template'), 'multiOptions', $unselected + $dbLookup->getCommTemplates('token'));
         $model->set('gcj_id_user_as',          'label', $this->_('By staff member'),
@@ -215,7 +215,7 @@ class Gems_Default_CommJobAction extends Gems_Controller_ModelSnippetActionAbstr
      */
     public function roundselectAction()
     {
-        Zend_Layout::resetMvcInstance();
+        \Zend_Layout::resetMvcInstance();
         $trackId = $this->getRequest()->getParam('sourceValue');
         $rounds = $this->db->fetchPairs($this->roundDescriptionQuery, $trackId);
         echo json_encode($rounds);

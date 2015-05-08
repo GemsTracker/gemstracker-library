@@ -44,14 +44,14 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.4
  */
-class Gems_Default_TrackOverviewAction extends Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_TrackOverviewAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
-    
+
     /**
      * The snippets used for the autofilter action.
      *
@@ -64,7 +64,7 @@ class Gems_Default_TrackOverviewAction extends Gems_Controller_ModelSnippetActio
      *
      * @var mixed String or array of snippets name
      */
-    //protected $indexStartSnippets = array('Generic_ContentTitleSnippet');
+    //protected $indexStartSnippets = array('Generic\\ContentTitleSnippet');
 
     /**
      * The parameters used for the show action
@@ -85,7 +85,7 @@ class Gems_Default_TrackOverviewAction extends Gems_Controller_ModelSnippetActio
         );
 
     /**
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     public $util;
 
@@ -98,7 +98,7 @@ class Gems_Default_TrackOverviewAction extends Gems_Controller_ModelSnippetActio
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function createModel($detailed, $action)
     {
@@ -109,52 +109,52 @@ class Gems_Default_TrackOverviewAction extends Gems_Controller_ModelSnippetActio
         }
 
         $organizations = $this->util->getDbLookup()->getOrganizations();
-        
-        
+
+
         $fields[] = 'gtr_track_name';
-        
+
         $sql      = "CASE WHEN gtr_organizations LIKE '%%|%s|%%' THEN 1 ELSE 0 END";
-        
+
         foreach ($organizations as $orgId => $orgName) {
-            $fields['O'.$orgId] = new Zend_Db_Expr(sprintf($sql, $orgId));
+            $fields['O'.$orgId] = new \Zend_Db_Expr(sprintf($sql, $orgId));
         }
-        
-        $fields['total'] = new Zend_Db_Expr("(LENGTH(gtr_organizations) - LENGTH(REPLACE(gtr_organizations, '|', ''))-1)");
-        
+
+        $fields['total'] = new \Zend_Db_Expr("(LENGTH(gtr_organizations) - LENGTH(REPLACE(gtr_organizations, '|', ''))-1)");
+
         $fields[] = 'gtr_id_track';
 
         $select = $this->db->select();
         $select->from('gems__tracks', $fields);
 
-        $model = new MUtil_Model_SelectModel($select, 'track-verview');
+        $model = new \MUtil_Model_SelectModel($select, 'track-verview');
         $model->setKeys(array('gtr_id_track'));
         $model->resetOrder();
 
         $model->set('gtr_track_name', 'label', $this->_('Track name'));
-        
+
         $model->set('total', 'label', $this->_('Total'));
         $model->setOnTextFilter('total', array($this, 'noTextFilter'));
-        
+
         foreach ($organizations as $orgId => $orgName) {
             $model->set('O' . $orgId, 'label', $orgName,
                     'tdClass', 'rightAlign',
                     'thClass', 'rightAlign');
-            
+
             $model->setOnTextFilter('O' . $orgId, array($this, 'noTextFilter'));
-            
+
             if ($action !== 'excel') {
                 $model->set('O'. $orgId, 'formatFunction', array($this, 'formatCheckmark'));
             }
         }
-        
-         // MUtil_Model::$verbose = true;
+
+         // \MUtil_Model::$verbose = true;
 
         return $model;
     }
-    
+
     public function formatCheckmark($value) {
         if ($value === 1) {
-            return MUtil_Html::create('span', array('class'=>'checked'))->append('V');
+            return \MUtil_Html::create('span', array('class'=>'checked'))->append('V');
         }
         return;
     }
@@ -171,11 +171,11 @@ class Gems_Default_TrackOverviewAction extends Gems_Controller_ModelSnippetActio
     }
 
     /**
-     * Calculated fields can not exists in a where clause. 
-     * 
+     * Calculated fields can not exists in a where clause.
+     *
      * We don't need to search on them with the text filter so we return
      * an empty array to disable text search.
-     * 
+     *
      * @param type $filter
      * @param type $name
      * @param type $field

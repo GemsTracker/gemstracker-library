@@ -63,7 +63,7 @@ class Gems_Default_StaffLogAction extends \Gems_Default_LogAction
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'Log\\StaffLogSearchSnippet');
+    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Log\\StaffLogSearchSnippet');
 
     /**
      * Creates a model for getModel(). Called only for each new $action.

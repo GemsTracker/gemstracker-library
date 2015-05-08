@@ -80,7 +80,7 @@ class Gems_Default_AppointmentAction extends \Gems_Default_RespondentChildAction
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
 
@@ -121,7 +121,7 @@ class Gems_Default_AppointmentAction extends \Gems_Default_RespondentChildAction
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = array('Generic_ContentTitleSnippet', 'Agenda_AppointmentShowSnippet');
+    protected $showSnippets = array('Generic\\ContentTitleSnippet', 'Agenda_AppointmentShowSnippet');
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -132,7 +132,7 @@ class Gems_Default_AppointmentAction extends \Gems_Default_RespondentChildAction
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function createModel($detailed, $action)
     {
@@ -147,7 +147,7 @@ class Gems_Default_AppointmentAction extends \Gems_Default_RespondentChildAction
 
                 if ($action == 'create') {
                     // Set default date to tomoorow.
-                    $now  = new MUtil_Date();
+                    $now  = new \MUtil_Date();
                     $now->addDay(1);
 
                     $loid = $this->db->fetchOne(
@@ -191,11 +191,11 @@ class Gems_Default_AppointmentAction extends \Gems_Default_RespondentChildAction
      */
     public function getContentTitle()
     {
-        $patientId = $this->_getParam(MUtil_Model::REQUEST_ID1);
+        $patientId = $this->_getParam(\MUtil_Model::REQUEST_ID1);
         if ($patientId) {
             $respondent = $this->loader->getRespondent(
                     $patientId,
-                    $this->getRequest()->getParam(MUtil_Model::REQUEST_ID2)
+                    $this->getRequest()->getParam(\MUtil_Model::REQUEST_ID2)
                 );
             return sprintf($this->_('Appointments for respondent number %s: %s'), $patientId, $respondent->getName());
         }
@@ -226,12 +226,12 @@ class Gems_Default_AppointmentAction extends \Gems_Default_RespondentChildAction
     /**
      * Loads and checks the request parameters
      *
-     * @throws Gems_Exception
+     * @throws \Gems_Exception
      */
     protected function loadParams()
     {
-        $patientNr           = $this->_getParam(MUtil_Model::REQUEST_ID1);
-        $this->appointmentId = $this->_getParam(Gems_Model::APPOINTMENT_ID);
+        $patientNr           = $this->_getParam(\MUtil_Model::REQUEST_ID1);
+        $this->appointmentId = $this->_getParam(\Gems_Model::APPOINTMENT_ID);
 
         if ($this->appointmentId) {
             $select = $this->db->select();
@@ -250,7 +250,7 @@ class Gems_Default_AppointmentAction extends \Gems_Default_RespondentChildAction
                 $patientNr            = $data['gr2o_patient_nr'];
             }
         } else {
-            $this->organizationId = $this->_getParam(MUtil_Model::REQUEST_ID2);
+            $this->organizationId = $this->_getParam(\MUtil_Model::REQUEST_ID2);
 
             if ($patientNr && $this->organizationId) {
                 $this->respondentId   = $this->util->getDbLookup()->getRespondentId(
@@ -261,7 +261,7 @@ class Gems_Default_AppointmentAction extends \Gems_Default_RespondentChildAction
         }
 
         if (! $this->respondentId) {
-            throw new Gems_Exception($this->_('Requested agenda data not available!'));
+            throw new \Gems_Exception($this->_('Requested agenda data not available!'));
         } else {
             $orgs = $this->loader->getCurrentUser()->getAllowedOrganizations();
 
@@ -269,11 +269,11 @@ class Gems_Default_AppointmentAction extends \Gems_Default_RespondentChildAction
                 $org = $this->loader->getOrganization($this->organizationId);
 
                 if ($org->exists()) {
-                    throw new Gems_Exception(
+                    throw new \Gems_Exception(
                             sprintf($this->_('You have no access to %s appointments!'), $org->getName())
                             );
                 } else {
-                    throw new Gems_Exception($this->_('Organization does not exist.'));
+                    throw new \Gems_Exception($this->_('Organization does not exist.'));
                 }
             }
         }

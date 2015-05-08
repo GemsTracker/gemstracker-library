@@ -28,60 +28,94 @@
  *
  *
  * @package    Gems
- * @subpackage Snippets\Generic
+ * @subpackage Snippets\Respondent
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Sample.php 203 2011-07-07 12:51:32Z matijs $
+ * @version    $Id: MultiOrganizationTab.php 203 2011-07-07 12:51:32Z matijs $
  */
+
+namespace Gems\Snippets\Respondent;
 
 /**
- * Displays the parent menu item (if existing) plus any current
- * level buttons that are visible
+ * Displays tabs for multiple organizations.
  *
  * @package    Gems
- * @subpackage Snippets\Generic
+ * @subpackage Snippets\Respondent
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.4.2
+ * @since      Class available since version 1.5
  */
-class Generic_CurrentButtonRowSnippet extends MUtil_Snippets_SnippetAbstract
+class MultiOrganizationTab extends \MUtil_Snippets_TabSnippetAbstract
 {
-    /**
-     * Required
-     *
-     * @var Gems_Menu
-     */
-    protected $menu;
+    protected $href = array();
 
     /**
      * Required
      *
-     * @var Zend_Controller_Request_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
-    protected $request;
+    protected $db;
 
     /**
-     * Create the snippets content
      *
-     * This is a stub function either override getHtmlOutput() or override render()
-     *
-     * @param Zend_View_Abstract $view Just in case it is needed here
-     * @return MUtil_Html_HtmlInterface Something that can be rendered
+     * @var array id specific hrefs
      */
-    public function getHtmlOutput(Zend_View_Abstract $view)
+    protected $hrefs;
+
+    /**
+     * Required
+     *
+     * @var \Gems_Loader
+     */
+    protected $loader;
+
+    /**
+     * Required
+     *
+     * @var array
+     */
+    protected $respondentData;
+
+    /**
+     * Return the parameters that should be used for this tabId
+     *
+     * @param string $tabId
+     * @return array
+     */
+    protected function getParameterKeysFor($tabId)
     {
-        $menuList = $this->menu->getMenuList();
-
-        $menuList->addParameterSources($this->request)
-                ->addCurrentParent($this->_('Cancel'))
-                ->addCurrentChildren();
-
-        $buttonContainer = false;
-        if ($menuList->render($view)) {
-            $buttonContainer = MUtil_Html::create('div', array('class' => 'buttons', 'renderClosingTag' => true), $menuList);
-        }
-        return $buttonContainer;
+        return $this->hrefs[$tabId];
     }
 
+    /**
+     * Function used to fill the tab bar
+     *
+     * @return array tabId => label
+     */
+    protected function getTabs()
+    {
+        $user = $this->loader->getCurrentUser();
+
+        $sql  = "SELECT gr2o_id_organization, gr2o_patient_nr FROM gems__respondent2org WHERE gr2o_id_user = ?";
+
+        $this->defaultTab = $user->getCurrentOrganizationId();
+        $this->currentTab = $this->request->getParam(\MUtil_Model::REQUEST_ID2);
+
+        $allowedOrgs  = $user->getRespondentOrganizations();
+        $existingOrgs = $this->db->fetchPairs($sql, $this->respondentData['grs_id_user']);
+
+        foreach ($allowedOrgs as $orgId => $name) {
+            if (isset($existingOrgs[$orgId])) {
+                $tabs[$orgId] = $name;
+                $this->hrefs[$orgId] = array(
+                    \MUtil_Model::REQUEST_ID1 => $existingOrgs[$orgId],
+                    \MUtil_Model::REQUEST_ID2 => $orgId,
+                    'RouteReset' => true,
+                    );
+            }
+        }
+
+        return $tabs;
+    }
 }

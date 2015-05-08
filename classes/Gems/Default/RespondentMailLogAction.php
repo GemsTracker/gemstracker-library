@@ -93,7 +93,7 @@ class Gems_Default_RespondentMailLogAction extends \Gems_Default_RespondentChild
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'Mail\\Log\\RespondentMailLogSearchSnippet');
+    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Mail\\Log\\RespondentMailLogSearchSnippet');
 
 
     /**
@@ -101,7 +101,7 @@ class Gems_Default_RespondentMailLogAction extends \Gems_Default_RespondentChild
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStopSnippets = array('Generic_CurrentButtonRowSnippet');
+    protected $indexStopSnippets = array('Generic\\CurrentButtonRowSnippet');
 
     /**
      * Creates a model for getModel(). Called only for each new $action.

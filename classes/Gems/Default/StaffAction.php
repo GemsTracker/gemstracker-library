@@ -42,7 +42,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
+class Gems_Default_StaffAction extends \Gems_Controller_BrowseEditAction
 {
     protected $_instanceId;
     protected $_organizations;
@@ -50,26 +50,26 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
     /**
      * The current user for detailed actions, set by createModel()
      *
-     * @var Gems_User_User
+     * @var \Gems_User_User
      */
     protected $_user = false;
 
     //@@TODO What if we want a different one per organization?
     //Maybe check if org has a default and otherwise use this one?
-    public $defaultStaffDefinition = Gems_User_UserLoader::USER_STAFF;
+    public $defaultStaffDefinition = \Gems_User_UserLoader::USER_STAFF;
 
     public $filterStandard = array('gsf_active' => 1);
 
     public $menu;
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     public $loader;
 
     /**
      *
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     public $project;
 
@@ -84,18 +84,18 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
      *
      * Adds a button column to the model, if such a button exists in the model.
      *
-     * @param MUtil_Model_Bridge_TableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_TableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @rturn void
      */
-    protected function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
         // Add edit button if allowed, otherwise show, again if allowed
         if ($menuItem = $this->findAllowedMenuItem('show')) {
             $bridge->addItemLink($menuItem->toActionLinkLower($this->getRequest(), $bridge));
         }
 
-        $br = MUtil_Html::create('br');
+        $br = \MUtil_Html::create('br');
         $orgCount = count($model->get('gsf_id_organization', 'multiOptions'));
         foreach($model->getItemsOrdered() as $name) {
             if ($label = $model->get($name, 'label')) {
@@ -150,13 +150,13 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @param array $data The data that will later be loaded into the form
      * @param optional boolean $new Form should be for a new element
      * @return void|array When an array of new values is return, these are used to update the $data array in the calling function
      */
-    protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
+    protected function addFormElements(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model, array $data, $new = false)
     {
         // Sorry, for the time being no password complexity checking on new
         // users. Can be done, but is to complex for the moment.
@@ -169,7 +169,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
             $model->set('gsf_id_primary_group', 'default', $this->util->getDbLookup()->getDefaultGroup());
         }
 
-        $ucfirst = new Zend_Filter_Callback('ucfirst');
+        $ucfirst = new \Zend_Filter_Callback('ucfirst');
 
         $bridge->addHiddenMulti('gsf_id_user', 'gul_id_user', 'gup_id_user', 'gul_login', 'gul_id_organization');
 
@@ -238,7 +238,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
 
         if (! ($this->escort->hasPrivilege('pr.staff.edit.all') ||
                array_key_exists($data['gsf_id_organization'], $this->loader->getCurrentUser()->getAllowedOrganizations()))) {
-                throw new Zend_Exception($this->_('You are not allowed to edit this staff member.'));
+                throw new \Zend_Exception($this->_('You are not allowed to edit this staff member.'));
         }
     }
 
@@ -328,7 +328,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     public function createModel($detailed, $action)
     {
@@ -344,19 +344,19 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
 
                     default:
                         if (! $this->_user->hasAllowedRole()) {
-                            throw new Gems_Exception($this->_('No access to page'), 403, null,
+                            throw new \Gems_Exception($this->_('No access to page'), 403, null,
                                 sprintf($this->_('Access to this page is not allowed for current role: %s.'), $this->loader->getCurrentUser()->getRole()));
                         }
                 }
             }
         }
 
-        // MUtil_Model::$verbose = true;
+        // \MUtil_Model::$verbose = true;
         $model = $this->loader->getModels()->getStaffModel();
 
         $model->set('gsf_login',            'label', $this->_('Username'));
         $model->set('name',                 'label', $this->_('Name'),
-            'column_expression', new Zend_Db_Expr("CONCAT(COALESCE(CONCAT(gsf_last_name, ', '), '-, '), COALESCE(CONCAT(gsf_first_name, ' '), ''), COALESCE(gsf_surname_prefix, ''))"));
+            'column_expression', new \Zend_Db_Expr("CONCAT(COALESCE(CONCAT(gsf_last_name, ', '), '-, '), COALESCE(CONCAT(gsf_first_name, ' '), ''), COALESCE(gsf_surname_prefix, ''))"));
         $model->set('gsf_email',            'label', $this->_('E-Mail'), 'itemDisplay', 'MUtil_Html_AElement::ifmail');
         if ($detailed) {
             $model->set('gsf_first_name',     'label', $this->_('First name'));
@@ -374,7 +374,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         }
         $model->set('gsf_id_organization',  'label', $this->_('Organization'), 'multiOptions', $options);
 
-        $model->set('gsf_id_primary_group', 'label', $this->_('Primary function'), 'multiOptions', MUtil_Lazy::call($this->util->getDbLookup()->getStaffGroups));
+        $model->set('gsf_id_primary_group', 'label', $this->_('Primary function'), 'multiOptions', \MUtil_Lazy::call($this->util->getDbLookup()->getStaffGroups));
         $model->set('gsf_gender',           'label', $this->_('Gender'), 'multiOptions', $this->util->getTranslated()->getGenders());
 
         if ($detailed) {
@@ -400,7 +400,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
     /**
      * Return an array with route options depending on de $data given.
      *
-     * @param mixed $data array or Zend_Controller_Request_Abstract
+     * @param mixed $data array or \Zend_Controller_Request_Abstract
      * @return mixed array with route options or false when no redirect is found
      */
     public function getAfterSaveRoute($data)
@@ -408,20 +408,20 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         if (! $this->_user) {
             $this->_user = $this->loader->getUser($data['gul_login'], $data['gul_id_organization']);
         }
-        //MUtil_Echo::track($this->_user->canSetPassword());
+        //\MUtil_Echo::track($this->_user->canSetPassword());
 
         if ($this->_user->canSetPassword()) {
             if ($currentItem = $this->menu->getCurrent()) {
                 $controller = $this->_getParam('controller');
 
-                if ($data instanceof Zend_Controller_Request_Abstract) {
+                if ($data instanceof \Zend_Controller_Request_Abstract) {
                     $refData = $data;
                     $refData->setParam('accessible_role', $this->_user->hasAllowedRole());
                 } elseif (is_array($data)) {
                     $refData = $this->getModel()->getKeyRef($data) + $data;
                     $refData['accessible_role'] = $this->_user->hasAllowedRole();
                 } else {
-                    throw new Gems_Exception_Coding('The variable $data must be an array or a Zend_Controller_Request_Abstract object.');
+                    throw new \Gems_Exception_Coding('The variable $data must be an array or a \Zend_Controller_Request_Abstract object.');
                 }
 
                 // Look for reset
@@ -434,7 +434,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         return parent::getAfterSaveRoute($data);
     }
 
-    protected function getAutoSearchElements(MUtil_Model_ModelAbstract $model, array $data)
+    protected function getAutoSearchElements(\MUtil_Model_ModelAbstract $model, array $data)
     {
         $elements = parent::getAutoSearchElements($model, $data);
 
@@ -448,7 +448,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         }
 
         if (count($options)>1) {
-            $select = new Zend_Form_Element_Select('gsf_id_organization', array('multiOptions' => $options));
+            $select = new \Zend_Form_Element_Select('gsf_id_organization', array('multiOptions' => $options));
 
             // Position as second element
             $search = array_shift($elements);
@@ -562,14 +562,14 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
             'forceRules' => false    // If user logs in using password that does not obey the rules, he is forced to change it
             ));
 
-        $createElement = new MUtil_Form_Element_FakeSubmit('create_account');
+        $createElement = new \MUtil_Form_Element_FakeSubmit('create_account');
         $createElement->setLabel($this->translate->_('Create account mail'))
                     ->setAttrib('class', 'button')
                     ->setOrder(0);
 
         $form->addElement($createElement);
 
-        $resetElement = new MUtil_Form_Element_FakeSubmit('reset_password');
+        $resetElement = new \MUtil_Form_Element_FakeSubmit('reset_password');
         $resetElement->setLabel($this->translate->_('Reset password mail'))
                     ->setAttrib('class', 'button')
                     ->setOrder(1);
@@ -580,7 +580,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
          ****************/
         if ($this->_request->isPost()) {
             $data = $this->_request->getPost();
-            // MUtil_Echo::track($data);
+            // \MUtil_Echo::track($data);
             if (isset($data['create_account']) && $data['create_account']) {
                 $mail = $this->loader->getMailLoader()->getMailer('staffPassword', $this->_getIdParam());
                 $mail->setOrganizationFrom();

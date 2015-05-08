@@ -81,7 +81,7 @@ class Gems_Default_AgendaFilterAction extends \Gems_Controller_ModelSnippetActio
      * @var mixed String or array of snippets name
      */
     protected $showSnippets = array(
-        'Generic_ContentTitleSnippet',
+        'Generic\\ContentTitleSnippet',
         'ModelItemTableSnippetGeneric',
         'Agenda_CalendarTableSnippet',
         );

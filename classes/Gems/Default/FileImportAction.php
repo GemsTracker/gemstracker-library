@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.1
  */
-class Gems_Default_FileImportAction extends Gems_Default_FileActionAbstract
+class Gems_Default_FileImportAction extends \Gems_Default_FileActionAbstract
 {
     /**
      * Should the action look recursively through the files

@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: FieldOverviewAction.php $
+ * @version    $Id: FieldOverviewAction.php 2534 2015-05-05 18:07:37Z matijsdejong $
  */
 
 /**
@@ -59,7 +59,7 @@ class Gems_Default_FieldOverviewAction extends \Gems_Controller_ModelSnippetActi
      * @var mixed String or array of snippets name
      */
     protected $indexStartSnippets = array(
-        'Generic_ContentTitleSnippet',
+        'Generic\\ContentTitleSnippet',
         'Tracker_Compliance_ComplianceSearchFormSnippet'
         );
 
@@ -84,7 +84,7 @@ class Gems_Default_FieldOverviewAction extends \Gems_Controller_ModelSnippetActi
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     public function createModel($detailed, $action)
     {

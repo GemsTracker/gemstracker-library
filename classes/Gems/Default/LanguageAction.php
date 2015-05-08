@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Default_LanguageAction  extends Gems_Controller_Action
+class Gems_Default_LanguageAction extends \Gems_Controller_Action
 {
     public function changeUiAction()
     {
@@ -59,8 +59,8 @@ class Gems_Default_LanguageAction  extends Gems_Controller_Action
         if (in_array($lang, $this->view->project->locales)) {
 
             $this->loader->getCurrentUser()->setLocale($lang);
-            
-            if (Gems_Cookies::setLocale($lang, $this->basepath->getBasePath())) {
+
+            if (\Gems_Cookies::setLocale($lang, $this->basepath->getBasePath())) {
                 if ($url) {
                     $this->getResponse()->setRedirect($url);
                 } else {

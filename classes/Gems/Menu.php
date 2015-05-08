@@ -707,10 +707,6 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         // MAIN PLANNING ITEM
         $this->addPlanPage($this->_('Overview'));
 
-        // MAIN RESULTS ITEM
-        // $menu->addPage($this->_('Results'), 'pr.result', 'result');
-        // $menu->addPage($this->_('Invite'), 'pr.invitation', 'invitation');
-
         // PROJECT INFO
         $this->addProjectPage($this->_('Project'));
 

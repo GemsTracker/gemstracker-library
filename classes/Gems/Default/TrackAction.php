@@ -93,7 +93,7 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
      */
     protected $autofilterSnippets = array(
         'ModelTableSnippetGeneric',
-        'Generic_CurrentButtonRowSnippet',
+        'Generic\\CurrentButtonRowSnippet',
         'Tracker\\AvailableTracksSnippet',
         );
 
@@ -306,7 +306,7 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
      * @var mixed String or array of snippets name
      */
     protected $showTrackSnippets = array(
-        'Generic_ContentTitleSnippet',
+        'Generic\\ContentTitleSnippet',
         'Tracker\\SingleSurveyAvailableTracksSnippet',
         'ModelItemTableSnippetGeneric',
         'Tracker\\TrackUsageTextDetailsSnippet',
@@ -352,9 +352,9 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
      */
     protected $viewSnippets = array(
         'Tracker\\TrackUsageTextDetailsSnippet',
-        'Generic_ContentTitleSnippet',
+        'Generic\\ContentTitleSnippet',
         'Tracker\\TrackUsageOverviewSnippet',
-        'Generic_CurrentButtonRowSnippet',
+        'Generic\\CurrentButtonRowSnippet',
         'Tracker\\TrackSurveyOverviewSnippet',
         );
 
@@ -886,7 +886,7 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
         // Tell the system where to return to after a survey has been taken
         $this->loader->getCurrentUser()->setSurveyReturn($this->getRequest());
     }
-    
+
     /**
      * Insert a single survey into a track
      */

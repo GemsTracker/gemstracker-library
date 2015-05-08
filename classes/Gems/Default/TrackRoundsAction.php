@@ -117,7 +117,7 @@ class Gems_Default_TrackRoundsAction extends \Gems_Controller_ModelSnippetAction
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'AutosearchWithIdSnippet');
+    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'AutosearchWithIdSnippet');
 
     /**
      * The parameters used for the show action
@@ -181,7 +181,7 @@ class Gems_Default_TrackRoundsAction extends \Gems_Controller_ModelSnippetAction
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return Gems_Model_TrackModel
+     * @return \Gems_Model_TrackModel
      */
     public function createModel($detailed, $action)
     {

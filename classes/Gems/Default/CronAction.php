@@ -44,11 +44,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Default_CronAction extends Gems_Controller_Action
+class Gems_Default_CronAction extends \Gems_Controller_Action
 {
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
 
@@ -60,19 +60,19 @@ class Gems_Default_CronAction extends Gems_Controller_Action
 
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     public $loader;
 
     /**
      *
-     * @var Gems_Menu
+     * @var \Gems_Menu
      */
     public $menu;
 
     /**
      *
-     * @var Zend_Session_Namespace
+     * @var \Zend_Session_Namespace
      */
     public $session;
 
@@ -87,7 +87,7 @@ class Gems_Default_CronAction extends Gems_Controller_Action
 
     /**
      *
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     public $util;
 
@@ -97,9 +97,9 @@ class Gems_Default_CronAction extends Gems_Controller_Action
     public function commJob()
     {
         /*
-        Zend_Mail::setDefaultTransport(new Zend_Mail_Transport_File(array(
+        \Zend_Mail::setDefaultTransport(new \Zend_Mail_Transport_File(array(
             'callback' => function ($transport) {
-                // throw new Zend_Mail_Transport_Exception('Invalid e-mail address');
+                // throw new \Zend_Mail_Transport_Exception('Invalid e-mail address');
                 return $transport->recipients . '_' . time() . '_' . mt_rand() . '.tmp';
             },
             'path'     => GEMS_ROOT_DIR . '/var/sentmails'
@@ -150,7 +150,7 @@ class Gems_Default_CronAction extends Gems_Controller_Action
 
                     foreach($multipleTokensData as $tokenData) {
                         $mailer = $mailLoader->getMailer('token', $tokenData);
-                        /* @var $mailer Gems_Mail_TokenMailer */
+                        /* @var $mailer \Gems_Mail_TokenMailer */
                         $token = $mailer->getToken();
                         $email = $token->getEmail();
                         $respondentId = $token->getRespondent()->getId();
@@ -189,7 +189,7 @@ class Gems_Default_CronAction extends Gems_Controller_Action
                                     $mailer->updateToken();
                                     $updates++;
                                 }
-                            } catch (Zend_Mail_Exception $exception) {
+                            } catch (\Zend_Mail_Exception $exception) {
                                 $fields = $mailer->getMailFields(false);
 
                                 $info = sprintf("Error mailing to %s respondent %s with email address %s.",
@@ -199,8 +199,8 @@ class Gems_Default_CronAction extends Gems_Controller_Action
                                         );
 
                                 // Use a gems exception to pass extra information to the log
-                                $gemsException = new Gems_Exception($info, 0, $exception);
-                                Gems_Log::getLogger()->logError($gemsException);
+                                $gemsException = new \Gems_Exception($info, 0, $exception);
+                                \Gems_Log::getLogger()->logError($gemsException);
 
                                 $errors++;
                             }
