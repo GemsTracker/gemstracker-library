@@ -77,10 +77,10 @@ class EditTrackTokenSnippet extends \Gems_Tracker_Snippets_EditTokenSnippetAbstr
         $links = $this->menu->getMenuList();
         $links->addParameterSources($this->request, $this->menu->getParameterSource());
 
-        $links->addByController('track', 'show', $this->_('Show token'))
-                ->addCurrentParent($this->_('Show track'))
-                // ->addByController('track', 'index', $this->_('Show tracks'))
-                ->addByController('respondent', 'show', $this->_('Show respondent'));
+        $links->addByController('respondent', 'show', $this->_('Show respondent'))
+                ->addByController('track', 'index', $this->_('Show tracks'))
+                ->addByController('track', 'show-track', $this->_('Show track'))
+                ->addByController('track', 'show', $this->_('Show token'));
 
         return $links;
     }

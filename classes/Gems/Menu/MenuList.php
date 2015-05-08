@@ -131,6 +131,28 @@ class Gems_Menu_MenuList extends \MUtil_ArrayString implements \MUtil_Html_HtmlI
     }
 
     /**
+     * Adds the parent of parent of the current menu item
+     *
+     * Does nothing when the parent is a top level item (has no
+     * controllor or is the \Gems_menu itself).
+     *
+     * @param string $label Optional alternative label
+     * @return \Gems_Menu_MenuList (continuation pattern)
+     */
+    public function addCurrentGrandParent($label = null)
+    {
+        $parent = $this->menu->getCurrentParent();
+
+        if ($parent && (! $parent->isTopLevel())) {
+            $grandPa = $parent->getParent();
+            if ($grandPa && (! $grandPa->isTopLevel())) {
+                $this->addMenuItem($grandPa, $label);
+            }
+        }
+        return $this;
+    }
+
+    /**
      * Adds the parent of the current menu item
      *
      * Does nothing when the parent is a top level item (has no
@@ -148,7 +170,6 @@ class Gems_Menu_MenuList extends \MUtil_ArrayString implements \MUtil_Html_HtmlI
         }
         return $this;
     }
-
 
     /**
      * Adds the siblings (= other children of the parent) of the current menu item to this list

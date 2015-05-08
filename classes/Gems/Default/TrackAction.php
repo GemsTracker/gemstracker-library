@@ -93,7 +93,7 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
      */
     protected $autofilterSnippets = array(
         'ModelTableSnippetGeneric',
-        'Generic\\CurrentButtonRowSnippet',
+        'Tracker\\Buttons\\TrackIndexButtonRow',
         'Tracker\\AvailableTracksSnippet',
         );
 
@@ -284,7 +284,10 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
      *
      * @var mixed String or array of snippets name
      */
-    protected $questionsSnippets = array('Survey\\SurveyQuestionsSnippet');
+    protected $questionsSnippets = array(
+        'Survey\\SurveyQuestionsSnippet',
+        'Tracker\\Buttons\\TokenActionButtonRow',
+        );
 
     /**
      * The parameters used for the edit track action.
@@ -296,6 +299,7 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
         'multiTracks'       => 'isMultiTracks',
         'respondentTrack'   => 'getRespondentTrack',
         'respondentTrackId' => 'getRespondentTrackId',
+        'displayMenu'       => false,
         'trackEngine'       => 'getTrackEngine',
         'trackId'           => 'getTrackId',
     );
@@ -309,6 +313,7 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
         'Generic\\ContentTitleSnippet',
         'Tracker\\SingleSurveyAvailableTracksSnippet',
         'ModelItemTableSnippetGeneric',
+        'Tracker\\Buttons\\TrackActionButtonRow',
         'Tracker\\TrackUsageTextDetailsSnippet',
         'Tracker\\TrackTokenOverviewSnippet',
         'Tracker\\TrackUsageOverviewSnippet',
@@ -354,7 +359,7 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
         'Tracker\\TrackUsageTextDetailsSnippet',
         'Generic\\ContentTitleSnippet',
         'Tracker\\TrackUsageOverviewSnippet',
-        'Generic\\CurrentButtonRowSnippet',
+        'Tracker\\Buttons\\TrackActionButtonRow',
         'Tracker\\TrackSurveyOverviewSnippet',
         );
 

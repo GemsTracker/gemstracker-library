@@ -64,7 +64,7 @@ class Gems_Menu_ContainerItem extends \Gems_Menu_SubMenuItem
             self::$_sessionStore = new \Zend_Session_Namespace('MenuContainerItems');
         }
         if (! isset(self::$_sessionStore->$label)) {
-            self::$_sessionStore->$label = new ArrayObject();
+            self::$_sessionStore->$label = new \ArrayObject();
         }
 
         return self::$_sessionStore->$label;

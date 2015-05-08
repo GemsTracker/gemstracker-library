@@ -149,9 +149,9 @@ class ShowTrackTokenSnippet extends \Gems_Tracker_Snippets_ShowTokenSnippetAbstr
     protected function getMenuList()
     {
         $links = $this->menu->getMenuList();
-        $links->addCurrentParent($this->_('Show track'))
-                ->addByController('respondent', 'show', $this->_('Show respondent'))
+        $links->addByController('respondent', 'show', $this->_('Show respondent'))
                 ->addByController('track', 'index', $this->_('Show tracks'))
+                ->addCurrentParent($this->_('Show track'))
                 ->addCurrentSiblings()
                 ->addCurrentChildren()
                 ->showDisabled();

@@ -153,10 +153,10 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
 
         $controller = $this->request->getControllerName();
 
-        $links->addByController($controller, 'show', $this->_('Show token'))
-                ->addByController($controller, 'edit', $this->_('Edit token'))
-                ->addByController($controller, 'show-track', $this->_('Show tracks'))
-                ->addByController('respondent', 'show', $this->_('Show respondent'));
+        $links->addByController('respondent', 'show', $this->_('Show respondent'))
+                ->addByController('track', 'index', $this->_('Show tracks'))
+                ->addByController('track', 'show-track', $this->_('Show track'))
+                ->addByController('track', 'show', $this->_('Show token'));
 
         return $links;
     }

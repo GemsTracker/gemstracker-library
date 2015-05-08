@@ -72,7 +72,7 @@ abstract class Gems_Menu_MenuAbstract
         return $this->escort->translate->getAdapter()->_($text, $locale);
     }
 
-    public function __construct(GemsEscort $escort)
+    public function __construct(\GemsEscort $escort)
     {
         $this->escort = $escort;
     }
@@ -867,6 +867,7 @@ abstract class Gems_Menu_MenuAbstract
     public function getChildren()
     {
         if ($this->_subItems) {
+            $this->sortByOrder();
             return $this->_subItems;
         } else {
             return array();

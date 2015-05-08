@@ -77,7 +77,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
     private $_parent;
     private $_requiredParameters;
 
-    public function __construct(GemsEscort $escort, \Gems_Menu_MenuAbstract $parent, array $options)
+    public function __construct(\GemsEscort $escort, \Gems_Menu_MenuAbstract $parent, array $options)
     {
         parent::__construct($escort);
 
@@ -186,7 +186,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
             foreach ($this->_requiredParameters as $param => $name) {
                 if (! isset($parameters[$param])) {
                     if (\Gems_Menu::$verbose) {
-                        // MUtil_Echo::backtrace();
+                        // \MUtil_Echo::backtrace();
                         \MUtil_Echo::r('<b>Not found:</b> ' . $param . '/' . $name, $this->get('label') . ' (' . $this->get('controller') . '/' . $this->get('action') . ')');
                     }
                     return false;

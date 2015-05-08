@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2011, Erasmus MC
+ * Copyright (c) 2015, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -18,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL MAGNAFACTA BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -28,41 +28,28 @@
  *
  *
  * @package    Gems
- * @subpackage Snippets\Generic
+ * @subpackage Snippets\Tracker
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: CurrentButtonRowSnippet.php 203 2011-07-07 12:51:32Z matijs $
+ * @version    $Id: TrackctionButtonRow.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
-namespace Gems\Snippets\Generic;
+namespace Gems\Snippets\Tracker\Buttons;
+
+use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 
 /**
- * Displays the parent menu item (if existing) plus any current
- * level buttons that are visible
+ *
  *
  * @package    Gems
- * @subpackage Snippets\Generic
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @subpackage Snippets\Tracker
+ * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.4.2
+ * @since      Class available since version 1.7.1 8-mei-2015 13:46:43
  */
-class CurrentButtonRowSnippet extends \MUtil_Snippets_SnippetAbstract
+class TrackActionButtonRow extends CurrentButtonRowSnippet
 {
-    /**
-     * Required
-     *
-     * @var \Gems_Menu
-     */
-    protected $menu;
-
-    /**
-     * Required
-     *
-     * @var \Zend_Controller_Request_Abstract
-     */
-    protected $request;
-
     /**
      * Set the menu items (allows for overruling in subclasses)
      *
@@ -70,28 +57,9 @@ class CurrentButtonRowSnippet extends \MUtil_Snippets_SnippetAbstract
      */
     protected function addButtons(\Gems_Menu_MenuList $menuList)
     {
-        $menuList->addCurrentParent($this->_('Cancel'))
+        $menuList->addCurrentGrandParent($this->_('Show respondent'))
+                ->addCurrentParent($this->_('Show tracks'))
+                ->addCurrentSiblings()
                 ->addCurrentChildren();
-    }
-
-    /**
-     * Create the snippets content
-     *
-     * This is a stub function either override getHtmlOutput() or override render()
-     *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
-     */
-    public function getHtmlOutput(\Zend_View_Abstract $view)
-    {
-        $menuList = $this->menu->getMenuList();
-
-        $menuList->addParameterSources($this->request, $this->menu->getParameterSource());
-
-        $this->addButtons($menuList);
-
-        if ($menuList->render($view)) {
-            return \MUtil_Html::create('div', array('class' => 'buttons', 'renderClosingTag' => true), $menuList);
-        }
     }
 }

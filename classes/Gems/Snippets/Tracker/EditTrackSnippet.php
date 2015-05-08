@@ -56,9 +56,9 @@ class EditTrackSnippet extends \Gems_Tracker_Snippets_EditTrackSnippetAbstract
         $links = $this->menu->getMenuList();
         $links->addParameterSources($this->request, $this->menu->getParameterSource());
 
-        $links->addByController('track', 'show-track', $this->_('Show track'))
+        $links->addByController('respondent', 'show', $this->_('Show respondent'))
                 ->addByController('track', 'index', $this->_('Show tracks'))
-                ->addByController('respondent', 'show', $this->_('Show respondent'));
+                ->addByController('track', 'show-track', $this->_('Show track'));
 
         return $links;
     }
