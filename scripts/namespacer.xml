@@ -13,9 +13,13 @@
                     <regexp pattern="([^\\'&quot;])(MUtil|Zend|ZendX|Gems|Booth|Desk|Pulse|Depar)_" replace="\1\\\2_" />
                     <regexp pattern="class \\(MUtil|Zend|ZendX|Gems|Booth|Desk|Pulse|Depar)_" replace="class \1_" />
                     <regexp pattern="interface \\(MUtil|Zend|ZendX|Gems|Booth|Desk|Pulse|Depar)_" replace="interface \1_" />
+                    <regexp pattern="([^\\'&quot;])(GemsEscort::)" replace="\1\\\2" />
+                    <regexp pattern="\(GemsEscort " replace="(\\GemsEscort " />
                     <regexp
                         pattern="(\s|\()(ArrayObject|ArrayAccess|Countable|Iterator|FilterIterator|Traversable|SplFileObject|Serializable|Exception)"
                         replace="\1\\\2" />
+                    <regexp pattern="@subpackage \\Exception" replace="@subpackage Exception" />
+                    <regexp pattern="\$Id: \\Exception" replace="\$Id: Exception" />
                 </replaceregexp>
             </filterchain>
         </reflexive>

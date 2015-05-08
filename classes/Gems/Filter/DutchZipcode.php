@@ -26,27 +26,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @version    $Id$
  * @package    Gems
  * @subpackage Filter
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
- * @version    $Id$
  * @package    Gems
  * @subpackage Filter
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
-class Gems_Filter_DutchZipcode implements Zend_Filter_Interface
+class Gems_Filter_DutchZipcode implements \Zend_Filter_Interface
 {
     /**
      * Returns the result of filtering $value
      *
      * @param  mixed $value
-     * @throws Zend_Filter_Exception If filtering $value is impossible
+     * @throws \Zend_Filter_Exception If filtering $value is impossible
      * @return mixed
      */
     public function filter($value)

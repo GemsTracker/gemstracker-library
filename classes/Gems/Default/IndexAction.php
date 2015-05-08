@@ -250,7 +250,7 @@ class Gems_Default_IndexAction extends \Gems_Controller_Action
         $form    = $this->createLoginForm();
 
         // Retrieve these before the session is reset
-        $staticSession = GemsEscort::getInstance()->getStaticSession();
+        $staticSession = \GemsEscort::getInstance()->getStaticSession();
         $previousRequestParameters = $staticSession->previousRequestParameters;
         $previousRequestMode = $staticSession->previousRequestMode;
 

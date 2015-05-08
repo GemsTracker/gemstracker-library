@@ -39,7 +39,7 @@
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
-class Gems_Email_OneMailForm extends Gems_Email_EmailFormAbstract
+class Gems_Email_OneMailForm extends \Gems_Email_EmailFormAbstract
 {
     public function applyElements()
     {
@@ -79,15 +79,15 @@ class Gems_Email_OneMailForm extends Gems_Email_EmailFormAbstract
 
         $name = 'exhibit_' . $count++;
 
-        return new MUtil_Form_Element_Exhibitor($name, array('label' => $label, 'value' => $value) + $options);
+        return new \MUtil_Form_Element_Exhibitor($name, array('label' => $label, 'value' => $value) + $options);
     }
 
     protected function createToElement()
     {
-        return new MUtil_Form_Element_Exhibitor('to', array('label' => $this->escort->_('To')));
+        return new \MUtil_Form_Element_Exhibitor('to', array('label' => $this->escort->_('To')));
     }
 
-    protected function loadData(Zend_Controller_Request_Abstract $request)
+    protected function loadData(\Zend_Controller_Request_Abstract $request)
     {
         $tokenData = $this->getTokenData();
 

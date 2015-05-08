@@ -28,15 +28,19 @@
  *
  * @package    Gems
  * @subpackage Communication
+ * @author     Michiel Rook <michiel@touchdownconsulting.nl>
+ * @copyright  Copyright (c) 2014 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
  * Writer implementation to save respondents to the database
  *
- * @author     Michiel Rook <michiel@touchdownconsulting.nl>
- * @version    $Id$
  * @package    Gems
  * @subpackage Communication
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
  */
 class Gems_Communication_RespondentModelWriter implements \Gems_Communication_RespondentWriter
 {
@@ -47,7 +51,7 @@ class Gems_Communication_RespondentModelWriter implements \Gems_Communication_Re
 
     public function __construct()
     {
-        $this->_model = GemsEscort::getInstance()->getLoader()->getModels()->createRespondentModel();
+        $this->_model = \GemsEscort::getInstance()->getLoader()->getModels()->createRespondentModel();
     }
 
     /**
@@ -66,7 +70,7 @@ class Gems_Communication_RespondentModelWriter implements \Gems_Communication_Re
         $parameters = $this->_model->applyParameters(
             array(
                 'grs_ssn' => $respondent->getBsn(),
-                'gr2o_reception_code' => GemsEscort::RECEPTION_OK,
+                'gr2o_reception_code' => \GemsEscort::RECEPTION_OK,
                 'gr2o_patient_nr' => $respondent->getPatientId()
             )
         );

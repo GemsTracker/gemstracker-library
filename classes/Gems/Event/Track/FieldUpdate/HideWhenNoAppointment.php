@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: HideWhenNoAppointment.php $
+ * @version    $Id: HideWhenNoAppointment.php 2474 2015-03-19 17:36:51Z matijsdejong  $
  */
 
 /**
@@ -98,13 +98,13 @@ class Gems_Event_Track_FieldUpdate_HideWhenNoAppointment extends \MUtil_Translat
                 }
 
                 if ($appointment && $appointment->isActive()) {
-                    $newCode = GemsEscort::RECEPTION_OK;
+                    $newCode = \GemsEscort::RECEPTION_OK;
                     $newText = null;
                 } else {
                     $newCode = 'skip';
                     $newText = $this->_('Skipped until appointment is set');
                 }
-                $oldCode = GemsEscort::RECEPTION_OK === $newCode ? 'skip' : GemsEscort::RECEPTION_OK;
+                $oldCode = \GemsEscort::RECEPTION_OK === $newCode ? 'skip' : \GemsEscort::RECEPTION_OK;
                 $curCode = $token->getReceptionCode()->getCode();
                 // \MUtil_Echo::track($token->getTokenId(), $curCode, $oldCode, $newCode);
                 if (($oldCode === $curCode) && ($curCode !== $newCode)) {

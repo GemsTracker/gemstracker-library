@@ -39,7 +39,7 @@
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
-class Gems_Email_MultiMailForm extends Gems_Email_EmailFormAbstract
+class Gems_Email_MultiMailForm extends \Gems_Email_EmailFormAbstract
 {
     protected $tokensData;
 
@@ -71,7 +71,7 @@ class Gems_Email_MultiMailForm extends Gems_Email_EmailFormAbstract
     {
         $options = $this->escort->getUtil()->getTranslated()->getBulkMailProcessOptions();
 
-        return new Zend_Form_Element_Radio('multi_method', array(
+        return new \Zend_Form_Element_Radio('multi_method', array(
             'label'        => $this->escort->_('Method'),
             'multiOptions' => $options,
             'required'     => true,
@@ -95,7 +95,7 @@ class Gems_Email_MultiMailForm extends Gems_Email_EmailFormAbstract
             $options[$tokenData['gto_id_token']] = $this->createToText($tokenData, $disabled);
         }
 
-        $element = new Zend_Form_Element_MultiCheckbox('to', array(
+        $element = new \Zend_Form_Element_MultiCheckbox('to', array(
             'disable'      => $invalid,
             'escape'       => (! $this->getView()),
             'label'        => $this->escort->_('To'),
@@ -147,10 +147,10 @@ class Gems_Email_MultiMailForm extends Gems_Email_EmailFormAbstract
      *
      * Filters out tokens that can not be emailed or that have been sent today
      *
-     * @param Zend_Controller_Request_Abstract $request
+     * @param \Zend_Controller_Request_Abstract $request
      * @return array
      */
-    protected function loadData(Zend_Controller_Request_Abstract $request)
+    protected function loadData(\Zend_Controller_Request_Abstract $request)
     {
         $data = $this->model->loadNew();
 

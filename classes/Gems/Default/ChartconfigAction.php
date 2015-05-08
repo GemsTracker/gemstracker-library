@@ -133,7 +133,7 @@ class Gems_Default_ChartconfigAction extends \Gems_Controller_ModelSnippetAction
                 // To prevent multiple new lines, make compact json
                 $json = \Zend_Json::encode($result);
             }
-        } catch (Exception $exc) {
+        } catch (\Exception $exc) {
             // Oops, not valid json...
             If (substr($json, 0,7) !== 'INVALID') {
                 $json = "INVALIDJSON\n" . $json;

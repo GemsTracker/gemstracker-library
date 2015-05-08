@@ -53,7 +53,7 @@ class Gems_Default_LanguageAction extends \Gems_Controller_Action
         $url  = base64_decode($request->getParam('current_uri'));
 
         if ((! $url) || ('/' !== $url[0])) {
-            throw new Exception($this->_('Illegal language redirect url.'));
+            throw new \Exception($this->_('Illegal language redirect url.'));
         }
 
         if (in_array($lang, $this->view->project->locales)) {
@@ -69,9 +69,9 @@ class Gems_Default_LanguageAction extends \Gems_Controller_Action
                 return;
             }
 
-            throw new Exception($this->_('Cookies must be enabled for setting the language.'));
+            throw new \Exception($this->_('Cookies must be enabled for setting the language.'));
         }
 
-        throw new Exception($this->_('Invalid language setting.'));
+        throw new \Exception($this->_('Invalid language setting.'));
     }
 }

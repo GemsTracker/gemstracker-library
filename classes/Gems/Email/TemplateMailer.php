@@ -26,17 +26,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @version    $Id$
  * @package    Gems
  * @subpackage Email
+ * @author     Michiel Rook <michiel@touchdownconsulting.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
  * Mailer utility class
  *
- * @author     Michiel Rook <michiel@touchdownconsulting.nl>
  * @package    Gems
  * @subpackage Email
  * @copyright  Copyright (c) 2011 Erasmus MC
@@ -73,7 +73,7 @@ class Gems_Email_TemplateMailer
 
     /**
      *
-     * @var Zend_Mail_Transport
+     * @var \Zend_Mail_Transport
      */
     protected $defaultTransport = null;
 
@@ -91,19 +91,19 @@ class Gems_Email_TemplateMailer
 
     /**
      *
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     protected $project;
 
     /**
-     * Constructs a new Gems_Email_TemplateMailer
+     * Constructs a new \Gems_Email_TemplateMailer
      * @param GemsEscort $escort
      */
-    public function __construct(GemsEscort $escort)
+    public function __construct(\GemsEscort $escort)
     {
         $this->escort    = $escort;
         $this->project   = $this->escort->project;
-        $this->_mailDate = MUtil_Date::format(new Zend_Date(), 'yyyy-MM-dd');
+        $this->_mailDate = \MUtil_Date::format(new \Zend_Date(), 'yyyy-MM-dd');
     }
 
     protected function addMessage($message)
@@ -140,11 +140,11 @@ class Gems_Email_TemplateMailer
     }
 
     /**
-     * Returns Zend_Mail_Transport_Abstract when something else than the default mail protocol should be used.
+     * Returns \Zend_Mail_Transport_Abstract when something else than the default mail protocol should be used.
      *
      * @staticvar array $mailServers
      * @param email address $from
-     * @return Zend_Mail_Transport_Abstract or null
+     * @return \Zend_Mail_Transport_Abstract or null
      */
     public function checkTransport($from)
     {
@@ -156,7 +156,7 @@ class Gems_Email_TemplateMailer
             // Always set cache, se we know when not to check for this row.
             $serverData = $this->escort->db->fetchRow($sql, $from);
 
-            // MUtil_Echo::track($serverData);
+            // \MUtil_Echo::track($serverData);
 
             if (isset($serverData['gms_server'])) {
                 $options = array();
@@ -187,7 +187,7 @@ class Gems_Email_TemplateMailer
                     }
                 }
 
-                $mailServers[$from] = new Zend_Mail_Transport_Smtp($serverData['gms_server'], $options);
+                $mailServers[$from] = new \Zend_Mail_Transport_Smtp($serverData['gms_server'], $options);
             } else {
                 $mailServers[$from] = $this->defaultTransport;
             }
@@ -359,12 +359,12 @@ class Gems_Email_TemplateMailer
         }
 
         if ($this->_verbose) {
-            MUtil_Echo::r($to, $to_name);
-            MUtil_Echo::r($from, $from_name);
+            \MUtil_Echo::r($to, $to_name);
+            \MUtil_Echo::r($from, $from_name);
         }
 
         if (!$this->bounceCheck()) {
-            $validate = new Zend_Validate_EmailAddress();
+            $validate = new \Zend_Validate_EmailAddress();
 
             if (!$validate->isValid($to)) {
                 return sprintf($this->escort->_("Invalid e-mail address '%s'."), $to);
@@ -373,7 +373,7 @@ class Gems_Email_TemplateMailer
 
         $this->setTokenData($tokenData);
 
-        $mail = new Gems_Mail();
+        $mail = new \Gems_Mail();
         $mail->setTemplateStyle($tokenData['gor_style']);
 
         $mail->setFrom($from, $from_name);
@@ -394,7 +394,7 @@ class Gems_Email_TemplateMailer
             $mail->send($this->checkTransport($from));
             $result = false;
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $result = $e->getMessage();
 
             // Log to error file
@@ -407,7 +407,7 @@ class Gems_Email_TemplateMailer
     /**
      * Sets the body of the mail
      * @param string $body
-     * @return Gems_Email_TemplateMailer (continuation pattern)
+     * @return \Gems_Email_TemplateMailer (continuation pattern)
      */
     public function setBody($body)
     {
@@ -418,10 +418,10 @@ class Gems_Email_TemplateMailer
     /**
      * Set a different default transport protocol.
      *
-     * @param Zend_Mail_Transport_Abstract $transport
-     * @return Gems_Email_TemplateMailer (continuation pattern)
+     * @param \Zend_Mail_Transport_Abstract $transport
+     * @return \Gems_Email_TemplateMailer (continuation pattern)
      */
-    public function setDefaultTransport(Zend_Mail_Transport_Abstract $transport)
+    public function setDefaultTransport(\Zend_Mail_Transport_Abstract $transport)
     {
         $this->defaultTransport = $transport;
         return $this;
@@ -434,7 +434,7 @@ class Gems_Email_TemplateMailer
      *    'U' - Uses the contact information of the currently logged in user
      *
      * @param string $from
-     * @return Gems_Email_TemplateMailer (continuation pattern)
+     * @return \Gems_Email_TemplateMailer (continuation pattern)
      */
     public function setFrom($from)
     {
@@ -449,7 +449,7 @@ class Gems_Email_TemplateMailer
      *    'A' - Send one mail per respondent, mark only mailed tokens as send.
      *
      * @param string $method
-     * @return Gems_Email_TemplateMailer (continuation pattern)
+     * @return \Gems_Email_TemplateMailer (continuation pattern)
      */
     public function setMethod($method)
     {
@@ -460,7 +460,7 @@ class Gems_Email_TemplateMailer
     /**
      * Sets the subject of the mail
      * @param string $subject
-     * @return Gems_Email_TemplateMailer (continuation pattern)
+     * @return \Gems_Email_TemplateMailer (continuation pattern)
      */
     public function setSubject($subject)
     {
@@ -498,7 +498,7 @@ class Gems_Email_TemplateMailer
      * Sets the list of tokens that will be mailed.
      *
      * @param string[] $tokens
-     * @return Gems_Email_TemplateMailer (continuation pattern)
+     * @return \Gems_Email_TemplateMailer (continuation pattern)
      */
     public function setTokens(array $tokens)
     {
@@ -510,7 +510,7 @@ class Gems_Email_TemplateMailer
      * Sets verbose (noisy) operation
      *
      * @param boolean $verbose
-     * @return Gems_Email_TemplateMailer (continuation pattern)
+     * @return \Gems_Email_TemplateMailer (continuation pattern)
      */
     public function setVerbose($verbose)
     {
@@ -528,13 +528,13 @@ class Gems_Email_TemplateMailer
     protected function updateToken(array $tokenData, $to = null, $from = null)
     {
         if (null === $this->_changeDate) {
-            $this->_changeDate = new MUtil_Db_Expr_CurrentTimestamp();
+            $this->_changeDate = new \MUtil_Db_Expr_CurrentTimestamp();
         }
 
         $db  = $this->escort->db;
         $uid = $this->escort->getCurrentUserId();
 
-        $tdata['gto_mail_sent_num'] = new Zend_Db_Expr('gto_mail_sent_num + 1');
+        $tdata['gto_mail_sent_num'] = new \Zend_Db_Expr('gto_mail_sent_num + 1');
         $tdata['gto_mail_sent_date'] = $this->_mailDate;
 
         $db->update('gems__tokens', $tdata, $db->quoteInto('gto_id_token = ?', $tokenData['gto_id_token']));

@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class Gems_Email_MailTemplateForm extends Gems_Email_EmailFormAbstract
+class Gems_Email_MailTemplateForm extends \Gems_Email_EmailFormAbstract
 {
     protected $fromTest;
     protected $sendTest;
@@ -56,7 +56,7 @@ class Gems_Email_MailTemplateForm extends Gems_Email_EmailFormAbstract
         $this->sendTest = $this->createSendButton($this->escort->_('Send (test)'));
 
         $this->addElement($this->createMessageIdElement());
-        if ($this->escort instanceof Gems_Project_Organization_MultiOrganizationInterface) {
+        if ($this->escort instanceof \Gems_Project_Organization_MultiOrganizationInterface) {
             $this->addElement($this->createOrganizationSet());
             $this->addElement($this->createOrganizationToggle());
         }
@@ -65,7 +65,7 @@ class Gems_Email_MailTemplateForm extends Gems_Email_EmailFormAbstract
         $this->addElement($this->createPreviewButton());
         $this->addElement($this->toTest);
         $this->addElement($this->fromTest);
-        if ($this->escort instanceof Gems_Project_Organization_MultiOrganizationInterface) {
+        if ($this->escort instanceof \Gems_Project_Organization_MultiOrganizationInterface) {
             $this->addElement($this->createOrganizationSelect());
         }
         $this->addElement($this->sendTest);
@@ -93,7 +93,7 @@ class Gems_Email_MailTemplateForm extends Gems_Email_EmailFormAbstract
         $options = $this->escort->db->fetchPairs($sql);
         natsort($options);
 
-        return new Zend_Form_Element_Select('gto_id_organization', array('multiOptions' => $options, 'label' => $this->escort->_('Test using')));
+        return new \Zend_Form_Element_Select('gto_id_organization', array('multiOptions' => $options, 'label' => $this->escort->_('Test using')));
     }
 
     protected function createOrganizationSet()
@@ -101,13 +101,13 @@ class Gems_Email_MailTemplateForm extends Gems_Email_EmailFormAbstract
         $options['multiOptions'] = $this->escort->getUtil()->getDbLookup()->getOrganizations();
         $options['label'] = $this->escort->_('Organizations');
 
-        return new Zend_Form_Element_MultiCheckbox('gmt_organizations', $options);
+        return new \Zend_Form_Element_MultiCheckbox('gmt_organizations', $options);
     }
 
     protected function createOrganizationToggle()
     {
         $this->activateJQuery();
-        $element = new Gems_JQuery_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=gmt_organizations]'));
+        $element = new \Gems_JQuery_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=gmt_organizations]'));
         $element->setLabel($this->escort->_('Toggle'));
 
         return $element;
@@ -115,7 +115,7 @@ class Gems_Email_MailTemplateForm extends Gems_Email_EmailFormAbstract
 
     protected function createSaveButton()
     {
-        $element = new Zend_Form_Element_Submit('save_button', $this->escort->_('Save'));
+        $element = new \Zend_Form_Element_Submit('save_button', $this->escort->_('Save'));
         $element->setAttrib('class', 'button');
 
         return $element;
@@ -186,7 +186,7 @@ class Gems_Email_MailTemplateForm extends Gems_Email_EmailFormAbstract
         return false;
     }
 
-    protected function loadData(Zend_Controller_Request_Abstract $request)
+    protected function loadData(\Zend_Controller_Request_Abstract $request)
     {
         $this->model->applyRequest($request);
         if ($this->model->hasFilter()) {

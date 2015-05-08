@@ -99,7 +99,7 @@ class Gems_Default_OptionAction extends \Gems_Controller_BrowseEditAction
             $user->setCurrentOrganization($currentOrg);
 
             // If locale has changed, set it in a cookie
-            \Gems_Cookies::setLocale($data['gsf_iso_lang'], GemsEscort::getInstance()->basepath);
+            \Gems_Cookies::setLocale($data['gsf_iso_lang'], \GemsEscort::getInstance()->basepath);
             $this->_reroute();      // Force refresh
         }
     }

@@ -324,7 +324,7 @@ class Gems_Default_OpenrosaAction extends \Gems_Controller_BrowseEditAction
                 $form = new OpenRosa_Tracker_Source_OpenRosa_Form($this->formDir . $formData['gof_form_xml']);
                 $answers = $form->saveAnswer($answerXmlFile);
                 return $answers['orf_id'];
-            } catch (Exception $exc) {
+            } catch (\Exception $exc) {
                 return false;
             }
         } else {
@@ -409,7 +409,7 @@ class Gems_Default_OpenrosaAction extends \Gems_Controller_BrowseEditAction
                 $addCnt++;
             }
         }
-        $cache = GemsEscort::getInstance()->cache;
+        $cache = \GemsEscort::getInstance()->cache;
         $cache->clean();
 
         $this->html[] = sprintf('Checked %s responses and added %s responses', $formCnt, $addCnt);

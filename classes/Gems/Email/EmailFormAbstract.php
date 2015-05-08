@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-abstract class Gems_Email_EmailFormAbstract extends Gems_Form
+abstract class Gems_Email_EmailFormAbstract extends \Gems_Form
 {
     protected $addInputError = true;
 
@@ -63,7 +63,7 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
     protected $templateOnly = true;
 
     /**
-     * @var Gems_Email_TemplateMailer
+     * @var \Gems_Email_TemplateMailer
      */
     protected $mailer;
 
@@ -92,7 +92,7 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
         }
 
         $this->model = $this->createModel();
-        $this->mailer = new Gems_Email_TemplateMailer($this->escort);
+        $this->mailer = new \Gems_Email_TemplateMailer($this->escort);
     }
 
     protected function _createMultiOption(array $requestData, $name, $email, $extra = null, $disabledTitle = false, $menuFind = false)
@@ -108,7 +108,7 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
 
         if ($view = $this->getView()) {
             if ($disabledTitle) {
-                $el = MUtil_Html::create()->span($text, array('class' => 'disabled'));
+                $el = \MUtil_Html::create()->span($text, array('class' => 'disabled'));
 
                 if ($menuFind && is_array($menuFind)) {
                     $menuFind['allowed'] = true;
@@ -117,7 +117,7 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
                         $href = $menuItem->toHRefAttribute($requestData);
 
                         if ($href) {
-                            $el = MUtil_Html::create()->a($href, $el);
+                            $el = \MUtil_Html::create()->a($href, $el);
                             $el->target = $menuItem->get('target', '_BLANK');
                         }
                     }
@@ -145,7 +145,7 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
         $options['label']    = $this->escort->_('Available fields');
         $options['nohidden'] = true;
 
-        return new MUtil_Form_Element_Exhibitor('available_fields', $options);
+        return new \MUtil_Form_Element_Exhibitor('available_fields', $options);
     }
 
     protected function createBBCodeLink()
@@ -153,7 +153,7 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
         $options['label']    = $this->escort->_('BBCode');
         $options['nohidden'] = true;
 
-        return new MUtil_Form_Element_Exhibitor('bbcode_link', $options);
+        return new \MUtil_Form_Element_Exhibitor('bbcode_link', $options);
     }
 
     protected function createBodyElement($hidden = false)
@@ -161,13 +161,13 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
         $name = 'gmt_body';
 
         if ($hidden) {
-            return new Zend_Form_Element_Hidden($name);
+            return new \Zend_Form_Element_Hidden($name);
         }
 
         $options['required'] = $this->model->get($name, 'required');
         $options['label']    = $this->escort->_('Message');
 
-        return new Gems_Form_Element_CKEditor($name, $options);
+        return new \Gems_Form_Element_CKEditor($name, $options);
     }
 
     protected function createEmailElement($name, $label, $required = false, $multi = false)
@@ -177,7 +177,7 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
         $options['required']  = $required;
         $options['size']      = 50;
 
-        $element = new Zend_Form_Element_Text($name, $options);
+        $element = new \Zend_Form_Element_Text($name, $options);
 
         if ($multi) {
             $element->addValidator('SimpleEmails');
@@ -216,7 +216,7 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
             $title     = $this->escort->_('Organization does not have an e-mail address.');
             $invalid[] = $key;
         }
-        $options[$key] = $this->_createMultiOption(array(MUtil_Model::REQUEST_ID => $tokenData['gor_id_organization']),
+        $options[$key] = $this->_createMultiOption(array(\MUtil_Model::REQUEST_ID => $tokenData['gor_id_organization']),
             $name, $email, $extra, $title,
             array('controller' => 'organization', 'action' => 'edit'));
 
@@ -245,7 +245,7 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
             }
         }
 
-        $element = new Zend_Form_Element_Radio('from', array(
+        $element = new \Zend_Form_Element_Radio('from', array(
             'disable'      => $invalid,
             'escape'       => (! $this->getView()),
             'label'        => $this->escort->_('From'),
@@ -263,21 +263,21 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
 
     protected function createMessageIdElement()
     {
-        return new Zend_Form_Element_Hidden('gmt_id_message');
+        return new \Zend_Form_Element_Hidden('gmt_id_message');
     }
 
     public function createModel()
     {
-        $model = new MUtil_Model_TableModel('gems__mail_templates');
+        $model = new \MUtil_Model_TableModel('gems__mail_templates');
 
-        Gems_Model::setChangeFieldsByPrefix($model, 'gmt', $this->escort->session->user_id);
+        \Gems_Model::setChangeFieldsByPrefix($model, 'gmt', $this->escort->session->user_id);
 
         return $model;
     }
 
     protected function createPreviewButton()
     {
-        $element = new Zend_Form_Element_Submit('preview_button', $this->escort->_('Preview'));
+        $element = new \Zend_Form_Element_Submit('preview_button', $this->escort->_('Preview'));
         $element->setAttrib('class', 'button');
 
         $this->preview = $element;
@@ -291,7 +291,7 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
         $options['label']       = $noText ? $this->escort->_('Preview') : $this->escort->_('Preview HTML');
         $options['nohidden']    = true;
 
-        return new MUtil_Form_Element_Exhibitor('preview_html', $options);
+        return new \MUtil_Form_Element_Exhibitor('preview_html', $options);
     }
 
     protected function createPreviewTextElement()
@@ -300,13 +300,13 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
         $options['label']       = $this->escort->_('Preview text');
         $options['nohidden']    = true;
 
-        return new MUtil_Form_Element_Exhibitor('preview_text', $options);
+        return new \MUtil_Form_Element_Exhibitor('preview_text', $options);
     }
 
     protected function createTemplateSelectElement($list)
     {
         $options['label']        = $this->escort->_('Template');
-        if ($this->escort instanceof Gems_Project_Organization_MultiOrganizationInterface) {
+        if ($this->escort instanceof \Gems_Project_Organization_MultiOrganizationInterface) {
             $organizationId = intval($this->escort->getCurrentOrganization());
             $sql = "SELECT gmt_id_message, gmt_subject FROM gems__mail_templates WHERE LOCATE('|$organizationId|', gmt_organizations) > 0 ORDER BY gmt_subject";
         } else {
@@ -323,7 +323,7 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
             $options['size'] = min(count($options['multiOptions']) + 1, 7);
         }
 
-        return new Zend_Form_Element_Select('select_subject', $options);
+        return new \Zend_Form_Element_Select('select_subject', $options);
     }
 
     protected function createSendButton($label = null)
@@ -331,7 +331,7 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
         if (null === $label) {
             $label = $this->escort->_('Send');
         }
-        $element = new Zend_Form_Element_Submit('send_button', $label);
+        $element = new \Zend_Form_Element_Submit('send_button', $label);
         $element->setAttrib('class', 'button');
 
         return $element;
@@ -342,19 +342,19 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
         $name = 'gmt_subject';
 
         if ($hidden) {
-            return new Zend_Form_Element_Hidden($name);
+            return new \Zend_Form_Element_Hidden($name);
         }
 
         $options = $this->model->get($name, 'maxlength', 'required');
         $options['label'] = $this->escort->_('Subject');
         $options['size']  = min(array($options['maxlength'], 80));
 
-        return new Zend_Form_Element_Text($name, $options);
+        return new \Zend_Form_Element_Text($name, $options);
     }
 
     public static function displayMailHtml($text)
     {
-        $div = MUtil_Html::create()->div(array('class' => 'mailpreview'));
+        $div = \MUtil_Html::create()->div(array('class' => 'mailpreview'));
         $div->raw($text);
 
         return $div;
@@ -362,7 +362,7 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
 
     public static function displayMailText($text)
     {
-        return MUtil_Html::create()->pre($text, array('class' => 'mailpreview'));
+        return \MUtil_Html::create()->pre($text, array('class' => 'mailpreview'));
     }
 
     public function getMessages()
@@ -397,14 +397,14 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
         return (boolean) $this->messages;
     }
 
-    abstract protected function loadData(Zend_Controller_Request_Abstract $request);
+    abstract protected function loadData(\Zend_Controller_Request_Abstract $request);
 
     protected function processPost(array &$data)
     {
         return false;
     }
 
-    public function processRequest(Zend_Controller_Request_Abstract $request)
+    public function processRequest(\Zend_Controller_Request_Abstract $request)
     {
         $this->applyElements();
 
@@ -434,7 +434,7 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
         }
 
         /* if ($bbtext) {
-            $bbmark = MUtil_Markup::factory('Bbcode', 'Text');
+            $bbmark = \MUtil_Markup::factory('Bbcode', 'Text');
             $data['bbcode_text'] = '<pre>' . $bbmark->render(str_replace(array_keys($mailFields), $mailFields, $bbtext)) . '</pre>';
         } */
 
@@ -454,7 +454,7 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
 
             if ($this->getElement('preview_html')) {
                 if ($content) {
-                    $data['preview_html'] = MUtil_Markup::render($content, 'Bbcode', 'Html');
+                    $data['preview_html'] = \MUtil_Markup::render($content, 'Bbcode', 'Html');
                 } else {
                     $this->removeElement('preview_html');
                 }
@@ -462,7 +462,7 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
 
             if ($this->getElement('preview_text')) {
                 if ($content) {
-                    $data['preview_text'] = MUtil_Markup::render($content, 'Bbcode', 'Text');
+                    $data['preview_text'] = \MUtil_Markup::render($content, 'Bbcode', 'Text');
                 } else {
                     $this->removeElement('preview_text');
                 }
@@ -470,8 +470,8 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
         }
         $mailBody = $this->getElement('gmt_body');
         $tokenMailFields = $this->mailer->getTokenMailFields();
-        
-        if ($mailBody instanceof Gems_Form_Element_CKEditor) {
+
+        if ($mailBody instanceof \Gems_Form_Element_CKEditor) {
             $mailBody->config['availablefields'] = $tokenMailFields;
             $mailBody->config['availablefieldsLabel'] = $this->escort->_('Fields');
 
@@ -479,13 +479,13 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
             $mailBody->config['toolbar'][] = array('availablefields');
         }
 
-        $mailRepeater = new MUtil_Lazy_RepeatableByKeyValue($tokenMailFields);
-        $mailHtml     = new MUtil_Html_TableElement($mailRepeater);
+        $mailRepeater = new \MUtil_Lazy_RepeatableByKeyValue($tokenMailFields);
+        $mailHtml     = new \MUtil_Html_TableElement($mailRepeater);
         $mailHtml->addColumn($mailRepeater->key, $this->escort->_('Field'));
         $mailHtml->addColumn($mailRepeater->value, $this->escort->_('Value'));
         $data['available_fields'] = $mailHtml;
 
-        $data['bbcode_link'] = MUtil_Html::create()->a('http://en.wikipedia.org/wiki/BBCode', $this->escort->_('BBCode info page'), array('target' => 'BLANK'));
+        $data['bbcode_link'] = \MUtil_Html::create()->a('http://en.wikipedia.org/wiki/BBCode', $this->escort->_('BBCode info page'), array('target' => 'BLANK'));
         $this->populate($data);
 
         return false;
@@ -507,10 +507,10 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
         return $result;
     }
 
-    public function setEscort(GemsEscort $escort = null)
+    public function setEscort(\GemsEscort $escort = null)
     {
         if (null === $escort) {
-            $escort = GemsEscort::getInstance();
+            $escort = \GemsEscort::getInstance();
         }
 
         $this->escort = $escort;

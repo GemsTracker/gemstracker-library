@@ -47,7 +47,7 @@ namespace Gems\Snippets\Generic;
  * @license    New BSD License
  * @since      Class available since version 1.4.2
  */
-class  extends \MUtil_Snippets_SnippetAbstract
+class CurrentButtonRowSnippet extends \MUtil_Snippets_SnippetAbstract
 {
     /**
      * Required

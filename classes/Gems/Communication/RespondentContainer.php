@@ -28,15 +28,19 @@
  *
  * @package    Gems
  * @subpackage Communication
+ * @author     Michiel Rook <michiel@touchdownconsulting.nl>
+ * @copyright  Copyright (c) 2014 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
  * A simple value-object containing respondent information
  *
- * @author     Michiel Rook <michiel@touchdownconsulting.nl>
- * @version    $Id$
  * @package    Gems
  * @subpackage Communication
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
  */
 class Gems_Communication_RespondentContainer
 {
