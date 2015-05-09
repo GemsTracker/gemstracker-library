@@ -355,7 +355,8 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
                 'elementClass', 'Exhibitor'
                 );
         $this->set('gto_changed',            'label', $this->_('Changed on'),
-                'elementClass', 'Exhibitor'
+                'elementClass', 'Exhibitor',
+                'formatFunction', $translated->formatDateUnknown
                 );
         $this->set('assigned_by',            'label', $this->_('Assigned by'),
                 'elementClass', 'Exhibitor'

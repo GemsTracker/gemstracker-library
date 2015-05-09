@@ -234,6 +234,7 @@ abstract class FieldAbstract extends \MUtil_Translate_TranslateableAbstract impl
         $output['label']       = $this->getLabel();
         $output['required']    = $this->_fieldDefinition['gtf_required'];
         $output['description'] = $this->_fieldDefinition['gtf_field_description'];
+        $output['noSort']      = true;
 
         $this->addModelSettings($output);
 
@@ -291,7 +292,7 @@ abstract class FieldAbstract extends \MUtil_Translate_TranslateableAbstract impl
 
     /**
      * Should the label be included in the track information?
-     * 
+     *
      * @return boolean
      */
     public function isLabelInTrackInfo()
