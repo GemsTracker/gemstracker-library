@@ -248,6 +248,11 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
         $this->set('gtf_field_code',    'label', $this->_('Field code'),
                 'description', $this->_('Optional code name to link the field to program code.')
                 );
+
+        $this->set('htmlUse',
+                'elementClass', 'Exhibitor',
+                'value', \MUtil_Html::create('h3', $this->_('Field use'))
+                );
         $this->set('gtf_to_track_info', 'label', $this->_('In description'),
                 'description', $this->_('Add this field to the track description'),
                 'multiOptions', $yesNo
@@ -257,7 +262,6 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
                 'multiOptions', $yesNo,
                 'required', false
                 );
-
         $this->set('gtf_required',      'label', $this->_('Required'),
                 'multiOptions', $yesNo,
                 'required', false
@@ -268,16 +272,21 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
                 'required', false
                 );
 
+        $this->set('htmlCalc',
+                'elementClass', 'None',
+                'value', \MUtil_Html::create('h3', $this->_('Field calculation'))
+                );
         $this->set('gtf_calculate_using', 'label', $this->_('Calculate using'),
                 'description', $this->_('Automatically calculate this field using other fields'),
                 'formatFunction', array($this, 'countCalculationSources')
                 );
-
+        // Appointment caculcation field
         $this->set('gtf_filter_id'); // Set order
-        $this->set('gtf_min_diff_unit'); // Set order
         $this->set('gtf_min_diff_length'); // Set order
-        $this->set('gtf_max_diff_unit'); // Set order
+        $this->set('gtf_min_diff_unit'); // Set order
+        $this->set('gtf_max_diff_exists', 'multiOptions', $yesNo); // Set order
         $this->set('gtf_max_diff_length'); // Set order
+        $this->set('gtf_max_diff_unit'); // Set order
         $this->set('gtf_after_next'); // Set order
         $this->set('gtf_uniqueness'); // Set order
 
@@ -309,6 +318,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
                 );
         $this->set('gtf_track_info_label',   'label', $this->_('Add name to description'));
 
+        $this->set('htmlUse', 'label', ' ');
 
         // Clean up data always show in browse view, but not always in detail views
         $this->set('gtf_calculate_using', 'label', null, 'formatFunction', null);
@@ -368,10 +378,10 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
         $this->set('gtf_readonly',          'elementClass', 'CheckBox');
 
         $this->set('gtf_filter_id',         'elementClass', 'Hidden');
-        $this->set('gtf_min_diff_unit',     'elementClass', 'Hidden');
         $this->set('gtf_min_diff_length',   'elementClass', 'Hidden');
-        $this->set('gtf_max_diff_unit',     'elementClass', 'Hidden');
+        $this->set('gtf_min_diff_unit',     'elementClass', 'Hidden');
         $this->set('gtf_max_diff_length',   'elementClass', 'Hidden');
+        $this->set('gtf_max_diff_unit',     'elementClass', 'Hidden');
         $this->set('gtf_after_next',        'elementClass', 'None');  // Deprecatedin 1.7.1
         $this->set('gtf_uniqueness',        'elementClass', 'Hidden');
 

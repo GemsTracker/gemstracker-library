@@ -990,17 +990,21 @@ ALTER TABLE gems__track_appointments
 UPDATE gems__track_appointments SET gtap_track_info_label = true;
 
 ALTER TABLE gems__track_appointments
-    ADD gtap_min_diff_unit char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'S'
-    AFTER gtap_after_next;
+    ADD gtap_min_diff_length int not null default 1 AFTER gtap_after_next;
 
 ALTER TABLE gems__track_appointments
-    ADD gtap_min_diff_length int not null default 1 AFTER gtap_min_diff_unit;
-
-ALTER TABLE gems__track_appointments
-    ADD gtap_max_diff_unit char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'S'
+    ADD gtap_min_diff_unit char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'D'
     AFTER gtap_min_diff_length;
 
 ALTER TABLE gems__track_appointments
-    ADD gtap_max_diff_length int not null default 0 AFTER gtap_max_diff_unit;
+    ADD gtap_max_diff_length int not null default 0 AFTER gtap_min_diff_unit;
+
+ALTER TABLE gems__track_appointments
+    ADD gtap_max_diff_unit char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'D'
+    AFTER gtap_max_diff_length;
+
+ALTER TABLE gems__track_appointments
+    ADD gtap_max_diff_exists boolean not null default 0 AFTER gtap_min_diff_unit;
 
 UPDATE gems__track_appointments SET gtap_min_diff_length = -1 WHERE gtap_after_next = 0;
+UPDATE gems__track_appointments SET gtap_min_diff_unit = 'S', gtap_max_diff_unit = 'S';

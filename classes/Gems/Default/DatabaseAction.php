@@ -464,7 +464,11 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
                     $patcher->loadPatchBatch($data['level'], $data['completed'], $data['executed'], $batch);
                 }
 
-                $this->_helper->batchRunner($batch, sprintf($this->_('Executing patch level %d'), $data['level']));
+                $this->_helper->batchRunner(
+                        $batch,
+                        sprintf($this->_('Executing patch level %d'), $data['level']),
+                        $this->accesslog
+                        );
 
                 $data['db_level'] = $data['level'];
                 $form->getElement('db_level')->setValue($data['db_level']);

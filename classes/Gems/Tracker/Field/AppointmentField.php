@@ -37,6 +37,8 @@
 
 namespace Gems\Tracker\Field;
 
+use Gems\Date\Period;
+
 /**
  *
  *
@@ -166,7 +168,6 @@ class AppointmentField extends FieldAbstract
 
                 if (($lastActive instanceof \Gems_Agenda_Appointment) && $lastActive->isActive()) {
                     $fromDate = $lastActive->getAdmissionTime();
-                    $oper     = $this->_fieldDefinition['gtf_after_next'] ? '>' : '<';
                 }
 
                 if ((! $fromDate) && isset($trackData['gr2t_start_date']) && $trackData['gr2t_start_date']) {
@@ -178,20 +179,32 @@ class AppointmentField extends FieldAbstract
                     }
                     // Always use start of the day for start date comparisons
                     $fromDate->setTime('00:00:00');
-
-                    if ($this->_fieldDefinition['gtf_after_next']) {
-                        $oper = '>=';
-                    } else {
-                        $fromDate->addDay(1);
-                        $oper = '<'; // < as we check before the end of the day of start date
-                    }
                 }
 
-                if ($fromDate) {
+                if ($fromDate instanceof \MUtil_Date) {
                     $select = $agenda->createAppointmentSelect(array('gap_id_appointment'));
                     $select->forFilterId($this->_fieldDefinition['gtf_filter_id'])
-                            ->forRespondent($trackData['gr2t_id_user'], $trackData['gr2t_id_organization'])
-                            ->fromDate($fromDate, $oper);
+                            ->forRespondent($trackData['gr2t_id_user'], $trackData['gr2t_id_organization']);
+
+                    $minDate = Period::applyPeriod(
+                            $fromDate,
+                            $this->_fieldDefinition['gtf_min_diff_unit'],
+                            $this->_fieldDefinition['gtf_min_diff_length']
+                            );
+                    if ($this->_fieldDefinition['gtf_max_diff_exists']) {
+                        $maxDate = Period::applyPeriod(
+                                $fromDate,
+                                $this->_fieldDefinition['gtf_max_diff_unit'],
+                                $this->_fieldDefinition['gtf_max_diff_length']
+                                );
+                    } else {
+                        $maxDate = null;
+                    }
+                    if ($this->_fieldDefinition['gtf_min_diff_length'] > 0) {
+                        $select->forPeriod($minDate, $maxDate, true);
+                    } else {
+                        $select->forPeriod($maxDate, $minDate, false);
+                    }
 
                     if ($this->_fieldDefinition['gtf_uniqueness']) {
                         switch ($this->_fieldDefinition['gtf_uniqueness']) {

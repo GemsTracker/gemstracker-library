@@ -47,6 +47,12 @@
 abstract class Gems_Default_FileActionAbstract extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
+     *
+     * @var \Gems_AccessLog
+     */
+    public $accesslog;
+
+    /**
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
@@ -271,7 +277,7 @@ abstract class Gems_Default_FileActionAbstract extends \Gems_Controller_ModelSni
 
         $title = $this->_('Import the file.');
 
-        $this->_helper->batchRunner($batch, $title);
+        $this->_helper->batchRunner($batch, $title, $this->accesslog);
 
         $this->html->pInfo($this->_('Checks this file for validity and then performs an import.'));
 

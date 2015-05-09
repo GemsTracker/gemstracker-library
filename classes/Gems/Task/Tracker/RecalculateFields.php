@@ -80,6 +80,6 @@ class Gems_Task_Tracker_RecalculateFields extends \MUtil_Task_TaskAbstract
 
         $batch->setMessage(
                 'trackFieldsCheck',
-                sprintf($this->_('%d tracks checked, %d had field changes, %d had token changes..'), $t, $i, $j));
+                sprintf($this->_('%d tracks checked, %d fields changed, %d token changed.'), $t, $i, $j));
     }
 }

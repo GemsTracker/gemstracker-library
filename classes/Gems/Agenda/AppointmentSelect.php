@@ -159,6 +159,30 @@ class AppointmentSelect extends \MUtil_Registry_TargetAbstract
     }
 
     /**
+     *
+     * @param \MUtil_Date $from Optional date after which the appointment must occur
+     * @param \MUtil_Date $until Optional date before which the appointment must occur
+     * @param boolean $sortAsc Retrieve first or last appointment first
+     * @return \Gems\Agenda\AppointmentSelect
+     */
+    public function forPeriod(\MUtil_Date $from = null, \MUtil_Date $until = null, $sortAsc = true)
+    {
+        if ($from) {
+            $this->_select->where("gap_admission_time >= ?", $from->toString('yyyy-MM-dd HH:mm:ss'));
+        }
+        if ($until) {
+            $this->_select->where("gap_admission_time <= ?", $until->toString('yyyy-MM-dd HH:mm:ss'));
+        }
+        if ($sortAsc) {
+            $this->order('gap_admission_time ASC');
+        } else {
+            $this->order('gap_admission_time DESC');
+        }
+
+        return $this;
+    }
+
+    /**
      * For a certain respondent / organization
      *
      * @param int $respondentId
@@ -178,6 +202,7 @@ class AppointmentSelect extends \MUtil_Registry_TargetAbstract
      * @param mixed $from Optional date or appointment after which the appointment must occur
      * @param string $oper Comparison operator for the from date: <= < = > >=
      * @return \Gems\Agenda\AppointmentSelect
+     * @deprecated since 1.7.1 replace by forPeriod()
      */
     public function fromDate($from = null, $oper = '>=')
     {

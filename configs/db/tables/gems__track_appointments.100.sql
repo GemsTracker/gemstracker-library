@@ -18,10 +18,11 @@ CREATE TABLE if not exists gems__track_appointments (
         -- deprecated
         gtap_after_next         boolean not null default 1,
         -- deprecated
-        gtap_min_diff_unit   char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'S',
-        gtap_min_diff_length int not null default 1,
-        gtap_max_diff_unit   char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'S',
-        gtap_max_diff_length int not null default 0,
+        gtap_min_diff_length    int not null default 1,
+        gtap_min_diff_unit      char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'D',
+        gtap_max_diff_exists    boolean not null default 0,
+        gtap_max_diff_length    int not null default 0,
+        gtap_max_diff_unit      char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'D',
         gtap_uniqueness         tinyint unsigned not null default 0,
 
         gtap_create_track       boolean not null default 0,

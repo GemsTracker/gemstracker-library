@@ -68,7 +68,7 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
      *
      * @var array Of name => name
      */
-    protected $_dependentOn = array('gtf_filter_id', 'gtf_create_track');
+    protected $_dependentOn = array('gtf_filter_id', 'gtf_max_diff_exists', 'gtf_min_diff_length', 'gtf_create_track');
 
     /**
      * Array of name => array(setting => setting) of fields with settings changed by this dependency
@@ -78,8 +78,8 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
      * @var array of name => array(setting => setting)
      */
     protected $_effecteds = array(
-        'gtf_id_order', 'gtf_filter_id',
-        'gtf_min_diff_unit', 'gtf_min_diff_length', 'gtf_max_diff_unit', 'gtf_max_diff_length', 'gtf_uniqueness',
+        'gtf_id_order', 'htmlCalc', 'gtf_filter_id', 'gtf_min_diff_unit', 'gtf_min_diff_length',
+        'gtf_max_diff_exists', 'gtf_max_diff_unit', 'gtf_max_diff_length', 'gtf_uniqueness',
         'gtf_create_track', 'gtf_create_wait_days',
         );
 
@@ -132,6 +132,10 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
             $this->_('When using automatic filters the fields are ALWAYS filled with appointments in ascending order.'),
             );
 
+        $output['htmlCalc'] = array(
+            'label'        => ' ',
+            'elementClass' => 'Exhibitor',
+        );
         $output['gtf_filter_id'] = array(
             'label'        => $this->_('Automatic link'),
             'description'  => $this->_('Automatically link an appointment when it passes this filter.'),
@@ -156,18 +160,35 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
                 'elementClass' => 'Select',
                 'multiOptions' => $periodUnits,
                 );
-            $output['gtf_max_diff_length'] = array(
-                'label'        => $this->_('Maximum time difference'),
-                'description'  => $this->_('Zero means no end limit, sign must be the same as the minimal difference.'),
-                'elementClass' => 'Text',
-                'required'     => false,
-                'filters[int]' => 'Int'
-                );
-            $output['gtf_max_diff_unit'] = array(
-                'label'        => $this->_('Maximum difference unit'),
-                'elementClass' => 'Select',
-                'multiOptions' => $periodUnits,
-                );
+            $output['gtf_max_diff_exists'] = array(
+                'label'        => $this->_('Set a maximum time difference'),
+                'elementClass' => 'Checkbox',
+                'onclick'      => 'this.form.submit();',
+            );
+            if ($context['gtf_max_diff_exists']) {
+                $output['gtf_max_diff_length'] = array(
+                    'label'             => $this->_('Maximum time difference'),
+                    'elementClass'      => 'Text',
+                    'required'          => false,
+                    'filters[int]'      => 'Int',
+                    );
+                if ($context['gtf_min_diff_length'] < 0) {
+                    $output['gtf_max_diff_length']['description'] = $this->_(
+                            'Must be negative, just like the minimal difference.'
+                            );
+                    $output['gtf_max_diff_length']['validators[lt]'] = new \Zend_Validate_LessThan(0);
+                } else {
+                    $output['gtf_max_diff_length']['description'] = $this->_(
+                            'Must be positive, just like the minimal difference.'
+                            );
+                    $output['gtf_max_diff_length']['validators[gt]'] = new \Zend_Validate_GreaterThan(0);
+                }
+                $output['gtf_max_diff_unit'] = array(
+                    'label'        => $this->_('Maximum difference unit'),
+                    'elementClass' => 'Select',
+                    'multiOptions' => $periodUnits,
+                    );
+            }
 //            $output['gtf_after_next'] = array(
 //                'label'        => $this->_('Link ascending'),
 //                'description'  => $this->_('Automatically linked appointments are added in ascending (or otherwise descending) order; starting with the track start date.'),

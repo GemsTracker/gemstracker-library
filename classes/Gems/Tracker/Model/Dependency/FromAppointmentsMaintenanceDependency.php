@@ -68,9 +68,10 @@ class FromAppointmentsMaintenanceDependency extends DependencyAbstract
      *
      * @var array of name => array(setting => setting)
      */
-    protected $_effecteds = array('gtf_calculate_using' => array(
-        'description', 'elementClass', 'formatFunction', 'label', 'multiOptions',
-        ));
+    protected $_effecteds = array(
+        'htmlCalc' => array('elementClass', 'label'),
+        'gtf_calculate_using' => array('description', 'elementClass', 'formatFunction', 'label', 'multiOptions')
+        );
 
     /**
      * The current trackId
@@ -146,13 +147,19 @@ class FromAppointmentsMaintenanceDependency extends DependencyAbstract
 
         if ($options) {
             // formatFunction is needed because the options are not set before the concatenated row
-            return array('gtf_calculate_using' => array(
-                'label'          => $this->_('Calculate from'),
-                'description'    => $this->_('Automatically calculate this field using other fields'),
-                'elementClass'   => 'MultiCheckbox',
-                'formatFunction' => array($this, 'formatValues'),
-                'multiOptions'   => $this->getOptions($context['gtf_id_track']),
-                ));
+            return array(
+                'htmlCalc' => array(
+                    'label'        => ' ',
+                    'elementClass' => 'Exhibitor',
+                    ),
+                'gtf_calculate_using' => array(
+                    'label'          => $this->_('Calculate from'),
+                    'description'    => $this->_('Automatically calculate this field using other fields'),
+                    'elementClass'   => 'MultiCheckbox',
+                    'formatFunction' => array($this, 'formatValues'),
+                    'multiOptions'   => $this->getOptions($context['gtf_id_track']),
+                    ),
+                );
         }
     }
 
