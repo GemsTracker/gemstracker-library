@@ -105,6 +105,19 @@ class AppointmentField extends FieldAbstract
 
     /**
      *
+     * @var \Gems_Menu
+     */
+    protected $menu;
+
+    /**
+     * Required
+     *
+     * @var \Zend_Controller_Request_Abstract
+     */
+    protected $request;
+
+    /**
+     *
      * @var \Gems_Util
      */
     protected $util;
@@ -329,6 +342,17 @@ class AppointmentField extends FieldAbstract
             $appointment = $this->loader->getAgenda()->getAppointment($value);
         }
         if ($appointment instanceof \Gems_Agenda_Appointment) {
+            if (! $this->menu instanceof \Gems_Mail) {
+                $this->menu = $this->loader->getMenu();
+            }
+            $menuItem = false; //$this->menu->findAllowedController('appointment', 'show');
+            if ($menuItem) {
+                $href = $menuItem->toHRefAttribute(
+                        array(\Gems_Model::APPOINTMENT_ID => $appointment->getId())
+                        );
+
+                return \MUtil_Html::create('a', $href, $appointment->getDisplayString());
+            }
             return $appointment->getDisplayString();
         }
 

@@ -196,14 +196,13 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
                     )
                 );
 
-        // Integrate fields
-        $trackEngine->addFieldsToModel($this, $edit);
-
-        $this->set('gr2t_track_info',      'label', $this->_('Description'));
         $this->set('assigned_by',          'label', $this->_('Assigned by'));
         $this->set('gr2t_start_date',      'label', $this->_('Start'),
             'dateFormat', 'dd-MM-yyyy',
             'formatFunction', $formatDate);
+
+        // Integrate fields
+        $trackEngine->addFieldsToModel($this, $edit);
 
         $this->set('gr2t_end_date_manual', 'label', $this->_('Set ending on'),
                 'description', $this->_('Manually set dates are fixed an will never be (re)calculated.'),
@@ -214,6 +213,7 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
         $this->set('gr2t_end_date',        'label', $this->_('Ending on'),
             'dateFormat', 'dd-MM-yyyy',
             'formatFunction', $formatDate);
+        $this->set('gr2t_track_info',      'label', $this->_('Description'));
         $this->set('gr2t_comment',         'label', $this->_('Comment'));
 
         return $this;
