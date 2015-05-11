@@ -232,7 +232,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
 
         $yesNo = $this->util->getTranslated()->getYesNo();
         $types = $this->getFieldTypes();
-        asort($types);
+        \MUtil_Echo::track($types);
 
         $this->set('gtf_id_track'); // Set order
         $this->set('gtf_field_name',    'label', $this->_('Name'));
@@ -479,6 +479,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
             'activity'    => $this->_('Activity'),
             'appointment' => $this->_('Appointment'),
             'caretaker'   => $this->_('Caretaker'),
+            'consent'     => $this->_('Consent'),
             'date'        => $this->_('Date'),
             'text'        => $this->_('Free text'),
             'location'    => $this->_('Location'),

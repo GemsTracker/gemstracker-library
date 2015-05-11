@@ -656,7 +656,8 @@ class Gems_Util_DbLookup extends \Gems_Registry_TargetAbstract
         static $consents;
 
         if (! $consents) {
-            $consents = $this->db->fetchPairs('SELECT gco_description, gco_description FROM gems__consents ORDER BY gco_order');
+            $sql      = "SELECT gco_description, gco_description FROM gems__consents ORDER BY gco_order";
+            $consents = $this->db->fetchPairs($sql);
 
             foreach ($consents as &$name) {
                 $name = $this->translate->_($name);
