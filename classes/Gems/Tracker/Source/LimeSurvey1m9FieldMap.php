@@ -710,7 +710,8 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             if (isset($field['sq_question'])) {
                 if (isset($tmpres['label'])) {
                     // Add non answered question for grouping and make it the current parent
-                    $parent = '_' . $name . '_';
+                    //$parent = '_' . $name . '_';
+                    $parent = $field['title'];
                     $model->set($parent, $tmpres);
                     $model->set($parent, 'type', MUtil_Model::TYPE_NOVALUE);
                 }
