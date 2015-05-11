@@ -59,6 +59,11 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
     const FIELD_ID = 'fid';
 
     /**
+     * Request key for log items
+     */
+    const LOG_ITEM_ID = 'li';
+
+    /**
      * Request key for respondent tracks
      */
     const RESPONDENT_TRACK = 'rt';

@@ -581,11 +581,31 @@ abstract class Gems_Menu_MenuAbstract
         $page->addButtonOnly($this->_('Maintenance mode'), 'pr.maintenance.maintenance-mode', 'project-information', 'maintenance');
         $page->addButtonOnly($this->_('Clean cache'), 'pr.maintenance.clean-cache', 'project-information', 'cacheclean');
 
+        // TEMPLATES CONTROLLER
         $templates = $page->addPage($this->_('Templates'), 'pr.templates', 'template');
         $templates->addAutofilterAction();
         $edit  = $templates->addEditAction();
         $reset = $edit->addAction($this->_('Reset to default values'), 'pr.templates.reset', 'reset');
         $reset->setModelParameters(1);
+
+        // UPGRADES CONTROLLER
+        $upage = $page->addPage($this->_('Upgrade'), 'pr.upgrade', 'upgrade', 'index');
+        $upage->addPage(sprintf($this->_('Changelog %s'), 'GemsTracker'), 'pr.upgrade', 'project-information', 'changeloggt');
+        $upage->addPage(sprintf($this->_('Changelog %s'), $this->escort->project->getName()), 'pr.upgrade', 'project-information', 'changelog');
+        $show = $upage->addAction($this->_('Show'), null, 'show')
+                ->setNamedParameters('id','context');
+        $upage->addAction($this->_('Execute all'), 'pr.upgrade.all', 'execute-all')
+                ->setModelParameters(1);
+        $show->addActionButton($this->_('Execute this'), 'pr.upgrade.one', 'execute-one')
+                ->setModelParameters(1)
+                ->addNamedParameters('from','from','to','to');
+        $show->addActionButton($this->_('Execute from here'), 'pr.upgrade.from', 'execute-from')
+                ->setModelParameters(1)
+                ->addNamedParameters('from','from');
+        $show->addActionButton($this->_('Execute to here'), 'pr.upgrade.to', 'execute-to')
+                ->setModelParameters(1)
+                ->addNamedParameters('to','to');
+        $show->addAction(null, 'pr.upgrade.to', 'execute-last');
 
         return $page;
     }
@@ -739,11 +759,11 @@ abstract class Gems_Menu_MenuAbstract
         $fpage->addCreateAction('pr.track-maintenance.create')
                 ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gtf_id_track');
         $fpage = $fpage->addShowAction()
-                ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gtf_id_track', 'fid', 'gtf_id_field', 'sub', 'sub');
+                ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gtf_id_track', \Gems_Model::FIELD_ID, 'gtf_id_field', 'sub', 'sub');
         $fpage->addEditAction('pr.track-maintenance.edit')
-                ->addNamedParameters('fid', 'gtf_id_field', \MUtil_Model::REQUEST_ID, 'gtf_id_track', 'sub', 'sub');
+                ->addNamedParameters(\Gems_Model::FIELD_ID, 'gtf_id_field', \MUtil_Model::REQUEST_ID, 'gtf_id_track', 'sub', 'sub');
         $fpage->addDeleteAction('pr.track-maintenance.delete')
-                ->addNamedParameters('fid', 'gtf_id_field', \MUtil_Model::REQUEST_ID, 'gtf_id_track', 'sub', 'sub');
+                ->addNamedParameters(\Gems_Model::FIELD_ID, 'gtf_id_field', \MUtil_Model::REQUEST_ID, 'gtf_id_track', 'sub', 'sub');
 
         // Rounds
         $rpage = $showPage->addPage($this->_('Rounds'), 'pr.track-maintenance', 'track-rounds')

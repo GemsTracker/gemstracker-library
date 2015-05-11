@@ -358,25 +358,15 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      * (So we don't need to repeat that for every snippet.)
      *
      * @return int
-     * /
+     */
     public function getRespondentId()
     {
-        static $respondentId = false;
-
-        if (false !== $respondentId) {
-            return $respondentId;
+        // The actions do not set an respondent id
+        if (in_array($this->getRequest()->getActionName(), $this->summarizedActions)) {
+            return null;
         }
 
-        $orgId        = $this->_getParam(\MUtil_Model::REQUEST_ID2);
-        $patientNr    = $this->_getParam(\MUtil_Model::REQUEST_ID1);
-
-        if ($orgId && $patientNr) {
-            $respondentId = $this->util->getDbLookup()->getRespondentId($patientNr, $orgId);
-        } else {
-            $respondentId = null;
-        }
-
-        return $respondentId;
+        return parent::getRespondentId();
     }
 
     /**

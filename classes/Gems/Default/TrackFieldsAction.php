@@ -69,11 +69,18 @@ class Gems_Default_TrackFieldsAction extends \Gems_Controller_ModelSnippetAction
     public $cacheTags = array('track', 'tracks');
 
     /**
+     * The snippets used for the create and edit actions.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $createEditSnippets = 'Tracker\\Fields\\FieldEditSnippet';
+
+    /**
      * The snippets used for the delete action.
      *
      * @var mixed String or array of snippets name
      */
-    protected $deleteSnippets = 'Tracker_Fields_FieldDeleteSnippet';
+    protected $deleteSnippets = 'Tracker\\Fields\\FieldDeleteSnippet';
 
     /**
      * The snippets used for the index action, before those in autofilter

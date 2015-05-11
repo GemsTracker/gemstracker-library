@@ -224,12 +224,13 @@ class Gems_Default_OptionAction extends \Gems_Controller_BrowseEditAction
         $this->addSnippet('Generic\\ContentTitleSnippet',
                 'contentTitle', $this->_('Activity overview')
                 );
+        $this->html->p($this->_('This overview provides information about the last login activity on your account.'));
         $this->addSnippet('Log\\LogTableSnippet',
                 'browse', true,
-                'extraFilter', $filter
+                'extraFilter', $filter,
+                'menuEditActions', false,
+                'menuShowActions', array('show-log')
                 );
-
-        $this->html->p($this->_('This overview provides information about the last login activity on your account.'));
     }
 
     public function getTopic($count = 1)
@@ -240,5 +241,16 @@ class Gems_Default_OptionAction extends \Gems_Controller_BrowseEditAction
     public function getTopicTitle()
     {
         return $this->_('Item');
+    }
+
+    /**
+     * Show a log item
+     */
+    public function showLogAction()
+    {
+        $params['contentTitle'] = $this->_('Show activity');
+        $snippets = array('Generic\\ContentTitleSnippet', 'Log\\LogShowSnippet');
+
+        $this->addSnippets($snippets, $params);
     }
 }

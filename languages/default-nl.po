@@ -2155,7 +2155,7 @@ msgstr "Actie"
 
 #: classes/Gems/Default/LogMaintenanceAction.php:102
 msgid "Log when no user"
-msgstr "Log ook zonder gebruiker."
+msgstr "Log zonder gebruiker"
 
 #: classes/Gems/Default/LogMaintenanceAction.php:103
 msgid "Always log this action, even when no one is logged in."

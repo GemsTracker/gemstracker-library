@@ -105,20 +105,20 @@ class Gems_Default_LogMaintenanceAction extends \Gems_Controller_ModelSnippetAct
                 'multiOptions', $this->util->getTranslated()->getYesNo()
                 );
 
-        $model->set('gls_on_action', 'label', $this->_('Log action'),
-                'description', $this->_('Always log this action.'),
+        $model->set('gls_on_action', 'label', $this->_('Log view'),
+                'description', $this->_('Always log when viewed / opened.'),
                 'elementClass', 'CheckBox',
                 'multiOptions', $this->util->getTranslated()->getYesNo()
                 );
 
-        $model->set('gls_on_post', 'label', $this->_('Log on post'),
-                'description', $this->_('Log when posted.'),
+        $model->set('gls_on_post', 'label', $this->_('Log change tries'),
+                'description', $this->_('Log when trying to change the data.'),
                 'elementClass', 'CheckBox',
                 'multiOptions', $this->util->getTranslated()->getYesNo()
                 );
 
-        $model->set('gls_on_change', 'label', $this->_('Log on change'),
-                'description', $this->_('Log when this action changes data.'),
+        $model->set('gls_on_change', 'label', $this->_('Log data change'),
+                'description', $this->_('Log when data changes.'),
                 'elementClass', 'CheckBox',
                 'multiOptions', $this->util->getTranslated()->getYesNo()
                 );

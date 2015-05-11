@@ -168,17 +168,6 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         // PROJECT LEVEL
         $cont = $setup->addProjectInfoPage($this->_('Project setup'));
 
-        // UPGRADES CONTROLLER
-        $page = $cont->addPage($this->_('Upgrade'), 'pr.upgrade', 'upgrade', 'index');
-        $page->addPage(sprintf($this->_('Changelog %s'), 'GemsTracker'), 'pr.upgrade', 'project-information', 'changeloggt');
-        $page->addPage(sprintf($this->_('Changelog %s'), $this->escort->project->getName()), 'pr.upgrade', 'project-information', 'changelog');
-        $show = $page->addAction($this->_('Show'), null, 'show')->setNamedParameters('id','context');
-        $page->addAction($this->_('Execute all'), 'pr.upgrade.all', 'execute-all')->setModelParameters(1);
-        $show->addActionButton($this->_('Execute this'), 'pr.upgrade.one', 'execute-one')->setModelParameters(1)->addNamedParameters('from','from','to','to');
-        $show->addActionButton($this->_('Execute from here'), 'pr.upgrade.from', 'execute-from')->setModelParameters(1)->addNamedParameters('from','from');
-        $show->addActionButton($this->_('Execute to here'), 'pr.upgrade.to', 'execute-to')->setModelParameters(1)->addNamedParameters('to','to');
-        $show->addAction(null, 'pr.upgrade.to', 'execute-last');
-
         // DATABASE CONTROLLER
         $page = $setup->addPage($this->_('Database'), 'pr.database', 'database');
         $page->addAutofilterAction();
@@ -231,7 +220,8 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $page = $setup->addPage($this->_('Log'), 'pr.log', 'log', 'index');
         $page->addAutofilterAction();
         $page->addExcelAction();
-        $page->addShowAction();
+        $page->addShowAction()
+                ->setNamedParameters(\Gems_Model::LOG_ITEM_ID, 'gla_id');
 
         // OpenRosa
         $this->addOpenRosaContainer($this->_('OpenRosa'), $setup);
@@ -262,7 +252,9 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
              ->addAction($this->_('Lost password'), 'pr.nologin', 'resetpassword');
 
         $optionPage = $this->addPage($this->_('Your account'), 'pr.option.edit', 'option', 'edit');
-        $optionPage->addAction($this->_('Activity overview'), 'pr.option.edit', 'overview');
+        $logPage = $optionPage->addAction($this->_('Activity overview'), 'pr.option.edit', 'overview');
+        $logPage->addAction($this->_('Show'), 'pr.option.edit', 'show-log')
+                ->setNamedParameters(\Gems_Model::LOG_ITEM_ID, 'gla_id');
         $optionPage->addAction($this->_('Change password'), 'pr.option.password', 'change-password');
 
         $this->addAskPage($this->_('Token'));
@@ -483,7 +475,8 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $logPage->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
         $logPage->addAutofilterAction();
-        $logPage->addShowAction();
+        $logPage->addShowAction()
+                ->setNamedParameters(\Gems_Model::LOG_ITEM_ID, 'gla_id');
 
         $page->addDeleteAction('pr.respondent.delete')
                 ->setNamedParameters($params)

@@ -1,6 +1,6 @@
 
 CREATE TABLE if not exists gems__log_activity (
-        gla_id       bigint unsigned not null auto_increment,
+        gla_id              bigint unsigned not null auto_increment,
 
         gla_action          int unsigned    not null references gems__log_setup     (gls_id_action),
         gla_respondent_id   bigint unsigned null     references gems__respondents   (grs_id_user),

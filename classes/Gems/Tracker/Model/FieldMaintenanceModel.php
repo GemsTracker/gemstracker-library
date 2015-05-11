@@ -575,7 +575,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
         $oldDep = $this->_addLoadDependency;
         $this->_addLoadDependency = $loadDependencies;
 
-        $output = parent::loadFirst();
+        $output = parent::loadFirst($filter, $sort);
 
         $this->_addLoadDependency = $oldDep;
 

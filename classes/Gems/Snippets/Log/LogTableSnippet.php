@@ -106,6 +106,7 @@ class LogTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
             $this->model = $this->loader->getModels()->createLogModel();
             $this->model->applyBrowseSettings();
         }
+
         return $this->model;
     }
 }

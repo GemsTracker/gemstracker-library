@@ -66,12 +66,43 @@ class LogModel extends \Gems_Model_JoinModel
                 ->addLeftTable('gems__respondents', array('gla_respondent_id' => 'grs_id_user'))
                 ->addLeftTable('gems__staff', array('gla_by' => 'gsf_id_user'));
 
-        $this->addColumn(new \Zend_Db_Expr(
-                "CONCAT(COALESCE(gsf_last_name, '-'), ', ', COALESCE(CONCAT(gsf_first_name, ' '), ''), COALESCE(gsf_surname_prefix, ''))"
-                ), 'staff_name');
-        $this->addColumn(new \Zend_Db_Expr(
-                "CONCAT(COALESCE(grs_last_name, '-'), ', ', COALESCE(CONCAT(grs_first_name, ' '), ''), COALESCE(grs_surname_prefix, ''))"
-                ), 'respondent_name');
+        $this->setKeys(array(\Gems_Model::LOG_ITEM_ID => 'gla_id'));
+    }
+
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * This function is no needed if the classes are setup correctly
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    {
+        parent::afterRegistry();
+
+        $this->addColumn(new \Zend_Db_Expr(sprintf(
+                "CASE WHEN gla_by IS NULL THEN '%s'
+                    ELSE CONCAT(
+                        COALESCE(gsf_last_name, '-'),
+                        ', ',
+                        COALESCE(CONCAT(gsf_first_name, ' '), ''),
+                        COALESCE(gsf_surname_prefix, '')
+                        )
+                    END",
+                $this->_('(no user)')
+                )), 'staff_name');
+        $this->addColumn(new \Zend_Db_Expr(sprintf(
+                "CASE WHEN grs_id_user IS NULL THEN '%s'
+                    ELSE CONCAT(
+                        COALESCE(grs_last_name, '-'),
+                        ', ',
+                        COALESCE(CONCAT(grs_first_name, ' '), ''),
+                        COALESCE(grs_surname_prefix, '')
+                        )
+                    END",
+                $this->_('(no respondent)')
+                )), 'respondent_name');
     }
 
     /**

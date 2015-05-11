@@ -457,7 +457,7 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
                             array('gtf_id_order' => SORT_DESC),
                             false // Make sure this does not trigger type dependency
                             );
-
+                    
                     if ($row && isset($row['gtf_id_order'])) {
                         $newOrder = $row['gtf_id_order'] + 10;
                         $model->set('gtf_id_order', 'default', $newOrder);

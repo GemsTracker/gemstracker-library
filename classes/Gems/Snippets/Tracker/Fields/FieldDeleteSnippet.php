@@ -28,23 +28,25 @@
  *
  *
  * @package    Gems
- * @subpackage Tracker
+ * @subpackage Snippets\Tracker
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
  * @version    $Id$
  */
 
+namespace Gems\Snippets\Tracker\Fields;
+
 /**
  *
  *
  * @package    Gems
- * @subpackage Tracker
+ * @subpackage Snippets\Tracker
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Snippets_Tracker_Fields_FieldDeleteSnippet extends \Gems_Snippets_ModelItemYesNoDeleteSnippetGeneric
+class FieldDeleteSnippet extends \Gems_Snippets_ModelItemYesNoDeleteSnippetGeneric
 {
     /**
      * Set what to do when the form is 'finished'.

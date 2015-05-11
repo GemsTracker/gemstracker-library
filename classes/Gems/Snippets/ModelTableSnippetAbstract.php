@@ -314,6 +314,7 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_M
         if ($this->menuEditActions) {
             return $this->findMenuItems($this->menuActionController, $this->menuEditActions);
         }
+        return array();
     }
 
     /**
@@ -373,5 +374,6 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_M
         if ($this->menuShowActions) {
             return $this->findMenuItems($this->menuActionController, $this->menuShowActions);
         }
+        return array();
     }
 }

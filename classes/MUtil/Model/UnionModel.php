@@ -280,7 +280,7 @@ class MUtil_Model_UnionModel extends \MUtil_Model_ModelAbstract
 
             $this->setChanged($model->getChanged());
 
-            return array($this->_modelField => $newName) + $result;
+            return array($this->_modelField => $newName) + $this->_map($result, $newName, true, false);
         }
 
         throw new \MUtil_Model_ModelException('Could not save to union model as values do not belong to a sub model.');
@@ -323,7 +323,6 @@ class MUtil_Model_UnionModel extends \MUtil_Model_ModelAbstract
                 }
             }
         }
-
         usort($data, array($this, 'sortCmp'));
 
         return $data;
@@ -530,7 +529,7 @@ class MUtil_Model_UnionModel extends \MUtil_Model_ModelAbstract
     {
         foreach ($this->_sorts as $key => $direction) {
             if ($a[$key] !== $b[$key]) {
-                // \MUtil_Echo::r($key . ': [' . $direction . ']' . $a[$key] . '-' . $b[$key]);
+                // \MUtil_Echo::r($key . ': [' . (SORT_ASC == $direction ? 'up' : 'down') . '] ' . $a[$key] . '-' . $b[$key]);
                 if (SORT_ASC == $direction) {
                     return $a[$key] > $b[$key] ? 1 : -1;
                 } else {
