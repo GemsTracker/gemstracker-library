@@ -115,7 +115,8 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
      */
     protected function addFileReport(\SplFileInfo $fileinfo)
     {
-        $extension = strtolower($fileinfo->getExtension());
+        // $extension = strtolower($fileinfo->getExtension());
+        $extension = strtolower($fileinfo->getPathInfo(PATHINFO_EXTENSION));
         if (('php' !== $extension) && ('phtml' !== $extension)) {
             return false;
         }
