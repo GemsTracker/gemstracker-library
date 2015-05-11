@@ -85,7 +85,7 @@ class Gems_Tracker_Source_LimeSurvey2m00FieldMap extends Gems_Tracker_Source_Lim
             }
 
             if ($tmpres['type'] === MUtil_Model::TYPE_NUMERIC) {
-                $tmpres['formatFunction'] = 'floatval';
+                $tmpres['formatFunction'] = array($this, 'handleFloat');
             }
 
             $oldQuestion = isset($oldfld['question']) ? $oldfld['question'] : null;
@@ -133,5 +133,16 @@ class Gems_Tracker_Source_LimeSurvey2m00FieldMap extends Gems_Tracker_Source_Lim
 
             $oldfld = $field;
         }
+    }
+
+
+    /**
+     * Function to cast numbers as float, but leave null intact
+     * @param  The number to cast to float
+     * @return float 
+     */
+    public function handleFloat($value)
+    {
+        return is_null($value) ? null : (float)$value;
     }
 }
