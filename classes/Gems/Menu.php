@@ -458,8 +458,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
                 ->set('target', \MUtil_Model::REQUEST_ID);
         $tkPage->addActionButton($this->_('Export answers'), 'pr.token.answers', 'answer-export')
                 ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
-                ->setParameterFilter('is_completed', 1, \Gems_Model::ID_TYPE, 'token')
-                ;
+                ->setParameterFilter('is_completed', 1, \Gems_Model::ID_TYPE, 'token');
 
         $page->addAction($this->_('Export archive'), 'pr.respondent.export-html', 'export')
                 ->setNamedParameters($params)

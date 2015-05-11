@@ -206,10 +206,14 @@ abstract class ChangeReceptionCodeSnippetAbstract extends \Gems_Snippets_ModelFo
 
         if ($this->fixedReceptionCode) {
             if (! isset($receptionCodes[$this->fixedReceptionCode])) {
-                throw new \Gems_Exception(sprintf(
-                        $this->_('Reception code %s does not exist.'),
-                        $this->fixedReceptionCode
-                        ));
+                if ($this->fixedReceptionCode = $this->formData[$this->receptionCodeItem]) {
+                    throw new \Gems_Exception($this->_('Already set to this reception code.'));
+                } else {
+                    throw new \Gems_Exception(sprintf(
+                            $this->_('Reception code %s does not exist.'),
+                            $this->fixedReceptionCode
+                            ));
+                }
             }
         } elseif (count($receptionCodes) == 1) {
             reset($receptionCodes);
@@ -256,7 +260,7 @@ abstract class ChangeReceptionCodeSnippetAbstract extends \Gems_Snippets_ModelFo
                 );
 
         $this->afterSave($changed);
-        
+
         $this->accesslog->logChange($this->request, null, $this->formData);
     }
 

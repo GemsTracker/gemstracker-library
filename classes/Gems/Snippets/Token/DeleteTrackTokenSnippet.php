@@ -210,7 +210,7 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
             $this->addMessage(sprintf($this->_('Token %s deleted.'), $this->token->getTokenId()));
 
             if ($code->hasRedoCode()) {
-                $newComment = sprintf($this->_('Redo of token %s.'), $this->tokenId);
+                $newComment = sprintf($this->_('Redo of token %s.'), $this->token->getTokenId());
                 if ($this->formData['gto_comment']) {
                     $newComment .= "\n\n";
                     $newComment .= $this->_('Old comment:');
@@ -221,24 +221,26 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
                 $this->_replacementTokenId = $this->token->createReplacement($newComment, $userId);
 
                 // Create a link for the old token
-                $menuItem = $this->menu->findAllowedController($this->request->getControllerName(), 'show');
+                $oldToken = strtoupper($this->token->getTokenId());
+                $menuItem = $this->menu->findAllowedController('track', 'show');
                 if ($menuItem) {
-                    $paramSource['gto_id_token']      = $this->tokenId;
+                    $paramSource['gto_id_token']       = $this->token->getTokenId();
                     $paramSource[\Gems_Model::ID_TYPE] = 'token';
 
-                    $link = $menuItem->toActionLink($paramSource, strtoupper($this->tokenId), true);
-                    $link->class = '';
+                    $href = $menuItem->toHRefAttribute($paramSource);
+                    if ($href) {
+                        \MUtil_Echo::track($oldToken);
+                        $link = \MUtil_Html::create('a', $href, $oldToken);
 
-                    $oldTokenUrl = $link->render($this->view);
-                } else {
-                    $oldTokenUrl = strtoupper($this->tokenId);
+                        $oldToken = $link->setView($this->view);
+                    }
                 }
 
                 // Tell what the user what happened
                 $this->addMessage(new \MUtil_Html_Raw(sprintf(
-                        $this->_('Created replacement token %2$s for token %1$s.'),
-                        $oldTokenUrl,
-                        strtoupper($this->_replacementTokenId)
+                        $this->_('Created this token %s as replacement for token %s.'),
+                        strtoupper($this->_replacementTokenId),
+                        $oldToken
                         )));
 
                 // Lookup token
