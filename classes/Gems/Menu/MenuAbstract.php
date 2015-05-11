@@ -590,8 +590,7 @@ abstract class Gems_Menu_MenuAbstract
 
         // UPGRADES CONTROLLER
         $upage = $page->addPage($this->_('Upgrade'), 'pr.upgrade', 'upgrade', 'index');
-        $upage->addPage(sprintf($this->_('Changelog %s'), 'GemsTracker'), 'pr.upgrade', 'project-information', 'changeloggt');
-        $upage->addPage(sprintf($this->_('Changelog %s'), $this->escort->project->getName()), 'pr.upgrade', 'project-information', 'changelog');
+
         $show = $upage->addAction($this->_('Show'), null, 'show')
                 ->setNamedParameters('id','context');
         $upage->addAction($this->_('Execute all'), 'pr.upgrade.all', 'execute-all')
@@ -606,6 +605,24 @@ abstract class Gems_Menu_MenuAbstract
                 ->setModelParameters(1)
                 ->addNamedParameters('to','to');
         $show->addAction(null, 'pr.upgrade.to', 'execute-last');
+
+        $upage->addAction(
+                $this->_('Code compatibility report'),
+                'pr.upgrade',
+                'compatibility-report'
+                );
+        $upage->addPage(
+                sprintf($this->_('Changelog %s'), 'GemsTracker'),
+                'pr.upgrade',
+                'project-information',
+                'changelog-gems'
+                );
+        $upage->addPage(
+                sprintf($this->_('Changelog %s'), $this->escort->project->getName()),
+                'pr.upgrade',
+                'project-information',
+                'changelog'
+                );
 
         return $page;
     }

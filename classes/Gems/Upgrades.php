@@ -273,6 +273,7 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
         $this->_batch->addTask('Db_AddPatches', 57);
 
         $this->_batch->addTask('Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
+        $this->_batch->addTask('Echo', $this->_('Check the Code compatibility report for any issues with project specific code!'));
 
         return true;
     }

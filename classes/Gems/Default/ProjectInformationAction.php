@@ -61,13 +61,20 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
 
     protected function _showTable($caption, $data, $nested = false)
     {
-        $tableContainer = $div = \MUtil_Html::create()->div(array('class' => 'table-container'));
+        $tableContainer = \MUtil_Html::create()->div(array('class' => 'table-container'));
         $table = \MUtil_Html_TableElement::createArray($data, $caption, $nested);
         $table->class = 'browser table';
         $tableContainer[] = $table;
         $this->html[] = $tableContainer;
     }
 
+    /**
+     * Helper function to show content of a text file
+     *
+     * @param string $caption
+     * @param string $log_file
+     * @param string $empty_label
+     */
     protected function _showText($caption, $log_file, $empty_label = null)
     {
         $this->html->h2($caption);
@@ -110,12 +117,18 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
         }
     }
 
+    /**
+     * Show the project specific change log
+     */
     public function changelogAction()
     {
         $this->_showText(sprintf($this->_('Changelog %s'), $this->escort->project->name), APPLICATION_PATH . '/changelog.txt');
     }
 
-    public function changeloggtAction()
+    /**
+     * Show the GemsTracker change log
+     */
+    public function changelogGemsAction()
     {
         $this->_showText(sprintf($this->_('Changelog %s'), 'GemsTracker'), GEMS_LIBRARY_DIR . '/changelog.txt');
     }

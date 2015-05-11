@@ -1,57 +1,28 @@
 Important changes from 1.7.0 => 1.7.1
 ============================================================
 ABOUT THE UPGRADE
+    Check the upgrade compatibility report for any possible code issues!!
     Ignore any messages that a "Column does not exist in table" during the upgrade
 INTERFACE EXTENSIONS
-    Only those respondents with or without a track can be selected in the respondent screen
+    User can select those respondents either with or without a track in the respondent browse screen
     Respondents, tracks and tokens can now be undeleted - with the admin level user right
     Manual or automatic token recalculation is now determined through an input element instead of through 'magic'
     Manual or automatic track end date recalculation is now determined through an input element instead of through 'magic'
 SECURITY
-    GemsTracker is now auditable. See Respondent => Other Activity Log, Setup => Log Setup, Log and Your account => Activity overview
+    GemsTracker is now auditable, manageable through Setup => Log Setup
+    Activity reports are at several locations:
+        Respondent => Show => Other Activity Log
+        Setup => Access => Staff => Show => Activity overview
+        Setup => Log
+        Your account => Activity overview
+TRACK BUILDER
+    "Single Survey" tracks are replaced by survey level "insert into track" settings
+    Stand alone Single survey tracks are converted to AnyStepEngine tracks, any other Single Survey tracks are deleted
 TRACK FIELDS
     Appointment track fields can now get an additional timespan within which they must occur
     Consent track fields added
     Datetime track fields can be added to tracks, both date and datetime field can be filled using an appointment
     All track fields can add their label as well as their contents to the track info field
-CODE UPDATES
-    "Single Survey" tracks are replaced by survey level "insert into track" settings.
-        Check code for any 'gtr_track_type'
-        These calculated fields are no longer used, instead we just use the original field:
-            calc_track_name => gtr_track_name
-            calc_track_info => gr2t_track_info
-            calc_round_description => gto_round_description
-        Stand alone Single survey tracks are converted to AnyStepEngine tracks, any other Single Survey tracks are deleted.
-        Remove any project specific SurveyController file.
-    Controllers have moved from BrowseEditAction to ModelSnippetActionAbstract, check these project specific controllers for compatibility:
-        ConsentController
-        DatabaseController
-        LogController
-        LogMaintenanceController
-        ProjectSurveysController
-        ProjectTracksController
-        ReceptionController
-        RoleController
-        SurveyMaintenanceController
-        TrackRoundsController
-    Some snippets have moved location in the code:
-        AddTracksSnippet             => Tracker\\AddTracksSnippet
-        EditRoundStepSnippet         => Tracker\\Rounds\\EditRoundStepSnippet
-        ShowRoundStepSnippet         => Tracker\\Rounds\\ShowRoundStepSnippet
-        DeleteInSourceTrackSnippet   => Tracker\\DeleteTrackSnippet
-        DeleteTrackTokenSnippet      => Tracker\\DeleteTrackTokenSnippet
-        EditTrackEngineSnippet       => Tracker\\EditTrackEngineSnippet
-        EditTrackSnippet             => Tracker\\EditTrackSnippet
-        EditTrackTokenSnippet        => Token\\EditTrackTokenSnippet
-        ShowTrackTokenSnippet        => Token\\ShowTrackTokenSnippet
-        SurveyQuestionsSnippet       => Survey\\SurveyQuestionsSnippet
-        TrackSurveyOverviewSnippet   => Tracker\\TrackSurveyOverviewSnippet
-        TrackTokenOverviewSnippet    => Tracker\\TrackTokenOverviewSnippet
-        TrackUsageTextDetailsSnippet => Tracker\\TrackUsageTextDetailsSnippet
-    The following interfaces are no longer used:
-        FixedTracksInterface
-        TracksOnlyInterface
-        StandAloneSurveysInterface
 
 Important changes from 1.6.4 => 1.7.0
 ============================================================

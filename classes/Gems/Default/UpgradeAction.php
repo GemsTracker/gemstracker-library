@@ -45,12 +45,21 @@
 class Gems_Default_UpgradeAction extends \Gems_Controller_Action
 {
     /**
+     * @var \Gems_Upgrades
+     */
+    protected $_upgrades;
+
+    /**
      *
      * @var \Gems_AccessLog
      */
     public $accesslog;
 
-    public $useHtmlView = true;
+    /**
+     *
+     * @var \Gems_Loader
+     */
+    public $loader;
 
     /**
      * @var \Gems_Menu
@@ -58,9 +67,24 @@ class Gems_Default_UpgradeAction extends \Gems_Controller_Action
     public $menu;
 
     /**
-     * @var \Gems_Upgrades
+     * Set to true in child class for automatic creation of $this->html.
+     *
+     * To initiate the use of $this->html from the code call $this->initHtml()
+     *
+     * Overrules $useRawOutput.
+     *
+     * @see $useRawOutput
+     * @var boolean $useHtmlView
      */
-    protected $_upgrades;
+    public $useHtmlView = true;
+
+    /**
+     * Show a compatibility report
+     */
+    public function compatibilityReportAction()
+    {
+        $this->addSnippet('Upgrade\\UpgradeCompatibilitySnippet', 'escort', $this->escort);
+    }
 
     public function init()
     {
@@ -69,12 +93,6 @@ class Gems_Default_UpgradeAction extends \Gems_Controller_Action
         $this->_upgrades = $this->loader->getUpgrades();
 
     }
-
-    /**
-     *
-     * @var \Gems_Loader
-     */
-    public $loader;
 
     /**
      * Executes the upgrades for a certain context
@@ -99,6 +117,9 @@ class Gems_Default_UpgradeAction extends \Gems_Controller_Action
 
         $title = sprintf($this->_('Upgrading %s'), $context);
         $this->_helper->BatchRunner($batch, $title, $this->accesslog);
+
+        $this->html->br();
+        $this->compatibilityReportAction();
     }
 
     /**
