@@ -101,7 +101,13 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     public $possibleOrgIds = array(
         MUtil_Model::REQUEST_ID2,
         'gr2o_id_organization',
-        'gto_id_organization');
+        'gr2t_id_organization',
+        'gap_id_organization',
+        'gto_id_organization',
+        'gor_id_organization',
+        'gla_organization',
+        'grco_organization',
+        );
 
     /**
      *
