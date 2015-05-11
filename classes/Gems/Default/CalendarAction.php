@@ -125,8 +125,9 @@ class Gems_Default_CalendarAction extends \Gems_Controller_ModelSnippetActionAbs
     public function getSearchDefaults()
     {
         if (! $this->defaultSearchData) {
+            $org = $this->loader->getCurrentUser()->getCurrentOrganization();
             $this->defaultSearchData = array(
-                'gap_id_organization' => $this->loader->getCurrentUser()->getCurrentOrganizationId(),
+                'gap_id_organization' => $org->canHaveRespondents() ? $org->getId() : null,
                 'dateused'            => 'gap_admission_time',
                 'datefrom'            => new \MUtil_Date(),
                 );

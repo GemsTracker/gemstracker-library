@@ -203,7 +203,10 @@ class Gems_Util_TrackData extends \Gems_Registry_TargetAbstract
             return $results;
         }
 
-        $select = "SELECT gtr_id_track, gtr_track_name FROM gems__tracks ORDER BY gtr_track_name";
+        $select = "SELECT gtr_id_track, gtr_track_name
+                    FROM gems__tracks
+                    WHERE gtr_track_class != 'SingleSurveyEngine'
+                    ORDER BY gtr_track_name";
 
         $results = $this->db->fetchPairs($select);
         $this->cache->save($results, $cacheId, array('tracks'));
@@ -280,6 +283,7 @@ class Gems_Util_TrackData extends \Gems_Registry_TargetAbstract
     /**
      * Returns array (id => name) of all 'T' tracks, sorted alphabetically
      * @return array
+     * @deprecated Since 1.7.1 getAllTracks() is all we need
      */
     public function getSteppedTracks()
     {
@@ -289,7 +293,10 @@ class Gems_Util_TrackData extends \Gems_Registry_TargetAbstract
             return $results;
         }
 
-        $select = "SELECT gtr_id_track, gtr_track_name FROM gems__tracks ORDER BY gtr_track_name";
+        $select = "SELECT gtr_id_track, gtr_track_name
+                    FROM gems__tracks
+                    WHERE gtr_track_class != 'SingleSurveyEngine'
+                    ORDER BY gtr_track_name";
 
         $results = $this->db->fetchPairs($select);
         $this->cache->save($results, $cacheId, array('tracks'));

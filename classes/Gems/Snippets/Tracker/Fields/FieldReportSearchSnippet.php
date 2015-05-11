@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.5 30-nov-2014 18:11:58
  */
-class Gems_Snippets_Tracker_Fields_FieldReportSearchSnippet extends Gems_Snippets_AutosearchFormSnippet
+class Gems_Snippets_Tracker_Fields_FieldReportSearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
 {
     /**
      * Returns a text element for autosearch. Can be overruled.
@@ -53,13 +53,13 @@ class Gems_Snippets_Tracker_Fields_FieldReportSearchSnippet extends Gems_Snippet
      * That creates a distinct group of elements
      *
      * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return array Of Zend_Form_Element's or static tekst to add to the html or null for group breaks.
+     * @return array Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.
      */
     protected function getAutoSearchElements(array $data)
     {
         $elements[] = $this->_createSelectElement(
                 'gtf_id_track',
-                $this->util->getTrackData()->getSteppedTracks(),
+                $this->util->getTrackData()->getAllTracks(),
                 $this->_('(select a track)')
                 );
 

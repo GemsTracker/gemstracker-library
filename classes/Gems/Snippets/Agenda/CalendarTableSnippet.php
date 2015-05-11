@@ -83,7 +83,8 @@ class Gems_Snippets_Agenda_CalendarTableSnippet extends \Gems_Snippets_ModelTabl
             $respButton = null;
         }
 
-        $br    = \MUtil_Html::create('br');
+        $br = \MUtil_Html::create('br');
+        $sp = \MUtil_Html::raw(' ');
 
         $table = $bridge->getTable();
         $table->appendAttrib('class', 'calendar');
@@ -104,7 +105,7 @@ class Gems_Snippets_Agenda_CalendarTableSnippet extends \Gems_Snippets_ModelTabl
 
         $bridge->tr()->class = array('odd', $bridge->row_class);
         $bridge->addColumn($appButton)->class = 'middleAlign';
-        $bridge->addMultiSort('gr2o_patient_nr', $br, 'name');
+        $bridge->addMultiSort('gr2o_patient_nr', $sp, 'gap_subject', $br, 'name');
         // $bridge->addColumn(array($bridge->gr2o_patient_nr, $br, $bridge->name));
         $bridge->addMultiSort(array($this->_('With')), array(' '), 'gas_name', $br, 'gaa_name', array(' '), 'gapr_name');
         // $bridge->addColumn(array($bridge->gaa_name, $br, $bridge->gapr_name));

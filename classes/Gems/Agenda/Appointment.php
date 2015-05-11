@@ -222,6 +222,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
         $results[] = $this->getActivityDescription();
         $results[] = $this->getProcedureDescription();
         $results[] = $this->getLocationDescription();
+        $results[] = $this->getSubject();
 
         return implode($this->_('; '), array_filter($results));
     }

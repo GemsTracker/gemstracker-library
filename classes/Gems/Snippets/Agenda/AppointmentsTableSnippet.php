@@ -122,8 +122,9 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends \Gems_Snippets_Model
         }
         if ($this->sortableLinks) {
             $bridge->addMultiSort(array($bridge->date_only), $br, 'gap_admission_time')->class = 'date';
-            $bridge->addMultiSort('gas_name', $br, 'glo_name');
+            $bridge->addMultiSort('gap_subject', $br, 'glo_name');
             $bridge->addMultiSort('gaa_name', $br, 'gapr_name');
+            $bridge->addMultiSort('gor_name', $br, 'glo_name');
         } else {
             $bridge->addMultiSort(
                     array($bridge->date_only),
@@ -131,14 +132,19 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends \Gems_Snippets_Model
                     array($bridge->gap_admission_time, $model->get('gap_admission_time', 'label'))
                     );
             $bridge->addMultiSort(
-                    array($bridge->gas_name, $model->get('gas_name', 'label')),
+                    array($bridge->gap_subject, $model->get('gap_subject', 'label')),
                     $br,
-                    array($bridge->glo_name, $model->get('glo_name', 'label'))
+                    array($bridge->gas_name, $model->get('gas_name', 'label'))
                     );
             $bridge->addMultiSort(
                     array($bridge->gaa_name, $model->get('gaa_name', 'label')),
                     $br,
                     array($bridge->gapr_name, $model->get('gapr_name', 'label'))
+                    );
+            $bridge->addMultiSort(
+                    array($bridge->gor_name, $model->get('gor_name', 'label')),
+                    $br,
+                    array($bridge->glo_name, $model->get('glo_name', 'label'))
                     );
         }
         if ($editButton) {

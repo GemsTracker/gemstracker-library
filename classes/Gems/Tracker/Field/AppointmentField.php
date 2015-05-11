@@ -345,12 +345,11 @@ class AppointmentField extends FieldAbstract
             if (! $this->menu instanceof \Gems_Mail) {
                 $this->menu = $this->loader->getMenu();
             }
-            $menuItem = false; //$this->menu->findAllowedController('appointment', 'show');
+            $menuItem = $this->menu->findAllowedController('appointment', 'show');
             if ($menuItem) {
                 $href = $menuItem->toHRefAttribute(
-                        array(\Gems_Model::APPOINTMENT_ID => $appointment->getId())
+                        array('gap_id_appointment' => $appointment->getId())
                         );
-
                 return \MUtil_Html::create('a', $href, $appointment->getDisplayString());
             }
             return $appointment->getDisplayString();

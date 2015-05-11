@@ -76,7 +76,7 @@ class Gems_Snippets_Mail_Log_MailLogSearchSnippet extends \Gems_Snippets_Autosea
 
         $elements[] = $this->_createSelectElement(
                 'gto_id_track',
-                $this->util->getTrackData()->getSteppedTracks(),
+                $this->util->getTrackData()->getAllTracks(),
                 $this->_('(select a track)')
                 );
 

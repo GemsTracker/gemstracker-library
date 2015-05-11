@@ -65,7 +65,7 @@ class Gems_Snippets_Tracker_Summary_SummarySearchFormSnippet extends \Gems_Snipp
     {
         $elements[] = $this->_createSelectElement(
                 'gto_id_track',
-                $this->util->getTrackData()->getSteppedTracks(),
+                $this->util->getTrackData()->getAllTracks(),
                 $this->_('(select a track)')
                 );
 

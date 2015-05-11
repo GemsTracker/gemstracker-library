@@ -29,8 +29,10 @@
  *
  * @package    Gems
  * @subpackage Export
+ * @author     Jasper van Gestel <jvangestel@gmail.com>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
+ * @version    $Id: AnswerExportModelsource.php 2451 2015-03-09 18:03:25Z matijsdejong $
  */
 
 /**
@@ -194,18 +196,18 @@ class Gems_Export_ModelSource_AnswerExportModelsource extends \Gems_Export_Model
 			    }
 		    }
 		}
-        
+
         // \Gems_Tracker::$verbose = true;
         return $filters;
 	}
 
 	/**
      * Get form elements for the specific Export
-     * @param  Gems_Form $form existing form type
+     * @param  \Gems_Form $form existing form type
      * @param  array data existing options set in the form
      * @return array of form elements
      */
-	public function getFormElements(Gems_Form $form, &$data)
+	public function getFormElements(\Gems_Form $form, &$data)
 	{
 
         $form->activateJQuery();
@@ -219,13 +221,13 @@ class Gems_Export_ModelSource_AnswerExportModelsource extends \Gems_Export_Model
 
         $organizations = $this->loader->getCurrentUser()->getRespondentOrganizations();
 
-        $tracks        = $empty + $this->util->getTrackData()->getSteppedTracks();
+        $tracks        = $empty + $this->util->getTrackData()->getAllTracks();
     	$rounds        = $empty + $noRound + $dbLookup->getRoundsForExport(
                 isset($data['tid']) ? $data['tid'] : null
             );
 
         $surveys       = $empty + $dbLookup->getSurveysForExport(isset($data['tid']) ? $data['tid'] : null, isset($data['rounds']) ? $data['rounds'] : null);
-        
+
         $yesNo         = $translated->getYesNo();
 		$elements = array();
 
@@ -267,7 +269,7 @@ class Gems_Export_ModelSource_AnswerExportModelsource extends \Gems_Export_Model
                 ->setMultiOptions($organizations);
         $elements[] = $element;
 
-        if (MUtil_Bootstrap::enabled()) {
+        if (\MUtil_Bootstrap::enabled()) {
             $element = new \MUtil_Bootstrap_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=oid]'));
         } else {
             $element = new \Gems_JQuery_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=oid]'));
@@ -284,18 +286,18 @@ class Gems_Export_ModelSource_AnswerExportModelsource extends \Gems_Export_Model
         $element = $form->createElement('datePicker', 'valid_until', $dateOptions);
         $element->setLabel($this->_('Valid until'));
         $elements[] = $element;
-        
+
         if (\MUtil_Bootstrap::enabled()) {
             $element = new \MUtil_Bootstrap_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=oid]'));
         } else {
             $element = new \Gems_JQuery_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=oid]'));
         }
 
-        
+
 
         //unset($data['records']);
         if (!empty($data['sid'])) {
-        	$filters   = $this->getFilters($data);        	
+        	$filters   = $this->getFilters($data);
         	foreach($filters as $key => $filter) {
         		unset($data['records_'.$key]);
         		$model = $this->getModel($filter);
@@ -318,7 +320,7 @@ class Gems_Export_ModelSource_AnswerExportModelsource extends \Gems_Export_Model
 
     /**
      * Add form elements when a responseDatabase is present
-     * @param  Gems_Form $form existing form type
+     * @param  \Gems_Form $form existing form type
      * @param  array data existing options set in the form
      * @return array of form elements
      */
@@ -394,20 +396,20 @@ class Gems_Export_ModelSource_AnswerExportModelsource extends \Gems_Export_Model
         $model->set('gto_id_organization',      'label', $this->_('Organization'),
                                                 'multiOptions', $this->loader->getCurrentUser()->getAllowedOrganizations()
         );
-        // Add Consent 
+        // Add Consent
         $model->set('consentcode',              'label', $this->_('Consent'));
         $model->set('resptrackid',              'label', $this->_('Respondent track ID'));
         $model->set('gto_round_description',    'label', $this->_('Round description'));
         $model->set('gtr_track_name',           'label', $this->_('Track name'));
         $model->set('gr2t_track_info',          'label', $this->_('Track description'));
-        
+
         $model->set('submitdate',               'label', $this->_('Submit date'));
         $model->set('startdate',                'label', $this->_('Start date'));
         $model->set('datestamp',                'label', $this->_('Datestamp'));
         $model->set('gto_valid_from',           'label', $this->_('Valid from'));
         $model->set('gto_valid_until',          'label', $this->_('Valid until'));
         $model->set('startlanguage',            'label', $this->_('Start language'));
-        $model->set('lastpage',                 'label', $this->_('Last page'));       
+        $model->set('lastpage',                 'label', $this->_('Last page'));
 
         $model->set('gto_id_token',                       'label', $this->_('Token'));
 
