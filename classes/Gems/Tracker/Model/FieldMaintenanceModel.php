@@ -232,7 +232,6 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
 
         $yesNo = $this->util->getTranslated()->getYesNo();
         $types = $this->getFieldTypes();
-        \MUtil_Echo::track($types);
 
         $this->set('gtf_id_track'); // Set order
         $this->set('gtf_field_name',    'label', $this->_('Name'));

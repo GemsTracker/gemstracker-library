@@ -8,6 +8,7 @@ INTERFACE EXTENSIONS
     Respondents, tracks and tokens can now be undeleted - with the admin level user right
     Manual or automatic token recalculation is now determined through an input element instead of through 'magic'
     Manual or automatic track end date recalculation is now determined through an input element instead of through 'magic'
+    Support of the use of respondent relations is now included but not yet part of the default interface
 SECURITY
     GemsTracker is now auditable, manageable through Setup => Log Setup
     Activity reports are at several locations:
@@ -15,6 +16,10 @@ SECURITY
         Setup => Access => Staff => Show => Activity overview
         Setup => Log
         Your account => Activity overview
+EXPORT
+    CSV format export supported
+    Trackinformation can be added to the export
+    Multiple surveys can be selected for a single export
 TRACK BUILDER
     "Single Survey" tracks are replaced by survey level "insert into track" settings
     Stand alone Single survey tracks are converted to AnyStepEngine tracks, any other Single Survey tracks are deleted
@@ -22,6 +27,7 @@ TRACK FIELDS
     Appointment track fields can now get an additional timespan within which they must occur
     Consent track fields added
     Datetime track fields can be added to tracks, both date and datetime field can be filled using an appointment
+    Relation fields added
     All track fields can add their label as well as their contents to the track info field
 
 Important changes from 1.6.4 => 1.7.0
