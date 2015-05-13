@@ -158,7 +158,8 @@ class Gems_Default_LocationAction extends \Gems_Controller_ModelSnippetActionAbs
         $model->set('glo_organizations', 'label', $this->_('Organizations'),
                 'description', $this->_('Checked organizations see this organizations respondents.'),
                 'elementClass', 'MultiCheckbox',
-                'multiOptions', $this->util->getDbLookup()->getOrganizations()
+                'multiOptions', $this->util->getDbLookup()->getOrganizations(),
+                'noSort', true
                 );
         $tp = new \MUtil_Model_Type_ConcatenatedRow(':', ', ');
         $tp->apply($model, 'glo_organizations');

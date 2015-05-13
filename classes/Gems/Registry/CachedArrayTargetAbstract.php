@@ -103,7 +103,7 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_Ta
      */
     private function _getCacheId()
     {
-        return GEMS_PROJECT_NAME . '__' . get_class($this) . '__' . preg_replace('/[^a-zA-Z0-9_]/', '_', $this->_id);
+        return preg_replace('/[^a-zA-Z0-9_]/', '_', GEMS_PROJECT_NAME . '__' . get_class($this) . '__' . $this->_id);
     }
 
     /**
