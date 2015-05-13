@@ -98,6 +98,12 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
 
     /**
      *
+     * @var \Gems_Loader
+     */
+    protected $loader;
+
+    /**
+     *
      * @var \Gems_Tracker
      */
     protected $tracker;
@@ -224,9 +230,10 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
     /**
      * Set those settings needed for the browse display
      *
+     * @param boolean $detailed For detailed settings
      * @return \Gems\Tracker\Model\FieldMaintenanceModel (continuation pattern)
      */
-    public function applyBrowseSettings()
+    public function applyBrowseSettings($detailed = false)
     {
         $this->resetOrder();
 
@@ -242,8 +249,10 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
                 'multiOptions', $types,
                 'default', 'text'
                 );
-        $this->set('gtf_field_values'); // Set order
-        $this->set('gtf_field_description'); // Set order
+        if ($detailed) {
+            $this->set('gtf_field_values'); // Set order
+            $this->set('gtf_field_description'); // Set order
+        }
         $this->set('gtf_field_code',    'label', $this->_('Field code'),
                 'description', $this->_('Optional code name to link the field to program code.')
                 );
@@ -275,19 +284,28 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
                 'elementClass', 'None',
                 'value', \MUtil_Html::create('h3', $this->_('Field calculation'))
                 );
-        $this->set('gtf_calculate_using', 'label', $this->_('Calculate using'),
-                'description', $this->_('Automatically calculate this field using other fields'),
-                'formatFunction', array($this, 'countCalculationSources')
+
+        $this->set('gtf_calculate_using',
+                'description', $this->_('Automatically calculate this field using other fields')
                 );
-        // Appointment caculcation field
-        $this->set('gtf_filter_id'); // Set order
-        $this->set('gtf_min_diff_length'); // Set order
-        $this->set('gtf_min_diff_unit'); // Set order
-        $this->set('gtf_max_diff_exists', 'multiOptions', $yesNo); // Set order
-        $this->set('gtf_max_diff_length'); // Set order
-        $this->set('gtf_max_diff_unit'); // Set order
-        $this->set('gtf_after_next'); // Set order
-        $this->set('gtf_uniqueness'); // Set order
+
+        if ($detailed) {
+            // Appointment caculcation field
+            $this->set('gtf_filter_id'); // Set order
+            $this->set('gtf_min_diff_length'); // Set order
+            $this->set('gtf_min_diff_unit'); // Set order
+            $this->set('gtf_max_diff_exists', 'multiOptions', $yesNo); // Set order
+            $this->set('gtf_max_diff_length'); // Set order
+            $this->set('gtf_max_diff_unit'); // Set order
+            $this->set('gtf_after_next'); // Set order
+            $this->set('gtf_uniqueness'); // Set order
+        } else {
+            $this->set('calculation', 'label', $this->_('Calculate using'),
+                    'description', $this->_('Automatically calculate this field using other fields'),
+                    'noSort', true
+                    );
+            $this->setOnLoad('calculation', array($this, 'loadCalculationSources'));
+        }
 
         $this->set('gtf_create_track', 'label', $this->_('Create track'),
                 'description', $this->_('Create a track if the respondent does not have a track where this field is empty.'),
@@ -305,7 +323,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
      */
     public function applyDetailSettings()
     {
-        $this->applyBrowseSettings();
+        $this->applyBrowseSettings(true);
 
         $this->_addLoadDependency = true;
 
@@ -318,9 +336,6 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
         $this->set('gtf_track_info_label',   'label', $this->_('Add name to description'));
 
         $this->set('htmlUse', 'label', ' ');
-
-        // Clean up data always show in browse view, but not always in detail views
-        $this->set('gtf_calculate_using', 'label', null, 'formatFunction', null);
 
         // But do always transform gtf_calculate_using on load and save
         // as otherwise we might not be sure what to do
@@ -390,22 +405,6 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
         $class      = 'Model\\Dependency\\FieldTypeChangeableDependency';
         $dependency = $this->tracker->createTrackClass($class, $this->_modelField);
         $this->addDependency($dependency);
-    }
-
-    /**
-     * A format function
-     *
-     * @return A string describing the contentn
-     */
-    public function countCalculationSources($value)
-    {
-        if (! $value) {
-            return null;
-        }
-
-        $count = substr_count($value, '|') + 1;
-
-        return sprintf($this->plural('%d field', '%d fields', $count), $count);
     }
 
     /**
@@ -559,6 +558,42 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
 
         // Make sure there always is an adapter, even if it is fake.
         $this->translateAdapter = new \MUtil_Translate_Adapter_Potemkin();
+    }
+
+    /**
+     * A ModelAbstract->setOnLoad() function that concatenates the
+     * value if it is an array.
+     *
+     * @see \MUtil_Model_ModelAbstract
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @param boolean $isPost True when passing on post data
+     * @return string Desciption
+     */
+    protected function loadCalculationSources($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
+    {
+        if ($isPost) {
+            return $value;
+        }
+
+        if (isset($context['gtf_filter_id']) && $context['gtf_filter_id']) {
+            $filters = $this->loader->getAgenda()->getFilterList();
+            if (isset($filters[$context['gtf_filter_id']])) {
+                return $filters[$context['gtf_filter_id']];
+            } else {
+                return sprintf($this->_("Non-existing filter %s"), $context['gtf_filter_id']);
+            }
+        }
+
+        if (isset($context['gtf_calculate_using']) && $context['gtf_calculate_using']) {
+            $count = substr_count($value, '|') + 1;
+            return sprintf($this->plural('%d field', '%d fields', $count), $count);
+        }
+
+        return $value;
     }
 
     /**

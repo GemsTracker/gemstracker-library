@@ -170,7 +170,7 @@ class RoleEditFormSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
      */
     protected function beforeSave()
     {
-        if (isset($this->formData['grl_parents']) && (! is_array(['grl_parents']))) {
+        if (isset($this->formData['grl_parents']) && (! is_array($this->formData['grl_parents']))) {
             $this->formData['grl_parents'] = explode(',', $this->formData['grl_parents']);
         }
         if (isset($this->formData['grl_parents']) && is_array($this->formData['grl_parents'])) {
