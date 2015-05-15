@@ -307,7 +307,7 @@ class Gems_Default_ExportAction extends \Gems_Controller_Action
 
         //Create the basic form
         if (\MUtil_Bootstrap::enabled()) {
-            $form = new \Gems_Form();
+            $form = new \Gems_Form(array('class' => 'form-horizontal'));
         } else {
             $form = new \Gems_Form_TableForm();
         }
@@ -456,7 +456,7 @@ class Gems_Default_ExportAction extends \Gems_Controller_Action
             if ($form->getElement('export')->isChecked()) {
                 $this->handleExport($form->getValues());
             }
-            $this->html->h3($this->getTopicTitle());
+            $this->html->h3($this->getTopicTitle(), array('class' => 'title'));
             $div = $this->html->div(array('id' => 'mainform'));
             $div[] = $form;
 

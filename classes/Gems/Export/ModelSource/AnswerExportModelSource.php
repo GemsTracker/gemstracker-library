@@ -261,7 +261,8 @@ class Gems_Export_ModelSource_AnswerExportModelsource extends \Gems_Export_Model
 
         $element = $form->createElement('multiselect', 'sid');
         $element->setLabel($this->_('Survey'))
-            ->setMultiOptions($surveys);
+            ->setMultiOptions($surveys)
+            ->setDescription($this->_('Use CTRL or Shift to select more'));
         $elements[] = $element;
 
         $element = $form->createElement('multiCheckbox', 'oid');
