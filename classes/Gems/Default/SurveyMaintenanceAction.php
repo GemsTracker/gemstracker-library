@@ -149,7 +149,7 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
         $importLoader = $this->loader->getImportLoader();
 
         $params['defaultImportTranslator'] = $importLoader->getDefaultTranslator($controller);
-        $params['formatBoxClass']          = 'browser';
+        $params['formatBoxClass']          = 'browser table';
         $params['importer']                = $importLoader->getImporter($controller);
         $params['importLoader']            = $importLoader;
         $params['tempDirectory']           = $importLoader->getTempDirectory();

@@ -232,7 +232,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends \MUtil_Snippets_WizardF
     {
         $translator = $this->getImportTranslator();
         if ($translator instanceof \MUtil_Model_ModelTranslatorInterface) {
-            $element = new \MUtil_Form_Element_Html('trans_header');
+            $element = $bridge->getForm()->createElement('html', 'trans_header');
             $element->span($this->_('Choosen import definition: '));
             $element->strong($translator->getDescription());
             $element->setDecorators(array('Tooltip', 'ViewHelper'));
@@ -304,7 +304,8 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends \MUtil_Snippets_WizardF
 
             // \MUtil_Echo::track($this->sourceModel->load());
 
-            $element  = new \MUtil_Form_Element_Html('importdisplay');
+            $element = $bridge->getForm()->createElement('html', 'importdisplay');
+
             $repeater = \MUtil_Lazy::repeat(new LimitIterator($this->sourceModel->loadIterator(), 0, 20));
             $table    = new \MUtil_Html_TableElement($repeater, array('class' => $this->formatBoxClass));
 
@@ -345,7 +346,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends \MUtil_Snippets_WizardF
                 exit;
             }
 
-            $element = new \MUtil_Form_Element_Html($batch->getId());
+            $element = $bridge->getForm()->createElement('html', $batch->getId());
 
             if ($batch->isFinished()) {
                 $this->nextDisabled = $batch->getCounter('import_errors');
@@ -393,7 +394,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends \MUtil_Snippets_WizardF
                 exit;
             }
 
-            $element = new \MUtil_Form_Element_Html($batch->getId());
+            $element = $bridge->getForm()->createElement('html', $batch->getId());
 
             if ($batch->isFinished()) {
                 $this->nextDisabled = $batch->getCounter('import_errors');
@@ -545,7 +546,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends \MUtil_Snippets_WizardF
                 $table->addColumn($repeater->$title, $title);
             }
 
-            $element = new \MUtil_Form_Element_Html('transtable');
+            $element = $this->_form->createElement('html', 'transtable');
             $element->setValue($table);
 
             $this->_form->addElement($element);
@@ -619,7 +620,8 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends \MUtil_Snippets_WizardF
         }
 
         if ($errors) {
-            $element = new \MUtil_Form_Element_Html('errors');
+            $element = $bridge->getForm()->createElement('html', 'transtable');
+
             $element->ul($errors, array('class' => $this->errorClass));
 
             $bridge->addElement($element);
@@ -635,7 +637,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends \MUtil_Snippets_WizardF
      */
     protected function displayHeader(\MUtil_Model_Bridge_FormBridgeInterface $bridge, $header, $tagName = 'h2')
     {
-        $element = new \MUtil_Form_Element_Html('step_header');
+        $element = $bridge->getForm()->createElement('html', 'step_header');
         $element->$tagName($header);
 
         $bridge->addElement($element);

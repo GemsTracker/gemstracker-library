@@ -99,7 +99,7 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends \MUtil_Snippets_
      *
      * @var string
      */
-    protected $class = 'wizard';
+    protected $class = 'wizard form-horizontal';
 
     /**
      * The current step, starting at 1.
@@ -408,7 +408,7 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends \MUtil_Snippets_
     {
         $model    = $this->getModel();
         $baseform = $this->createForm();
-        if ($baseform instanceof \MUtil_Form) {
+        if ((MUtil_Bootstrap::enabled() !== true) && $baseform instanceof \MUtil_Form) {
             $table = new \MUtil_Html_TableElement();
             $table->setAsFormLayout($baseform, true, true);
 

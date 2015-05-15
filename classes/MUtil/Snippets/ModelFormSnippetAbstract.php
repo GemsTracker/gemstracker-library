@@ -345,6 +345,9 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_M
     protected function createForm($options = null)
     {
         $form = new \MUtil_Form($options);
+        if (MUtil_Bootstrap::enabled()) {
+            $form->activateBootstrap();
+        }
 
         return $form;
     }

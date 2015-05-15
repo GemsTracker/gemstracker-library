@@ -194,8 +194,11 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends \MUtil_Snippets_Standard_
                     'elementClass', 'Hidden',  // 'Radio',
                     'multiOptions', $tokenTreatments
                     );
-
-            $this->importModel->set('trans', 'separator', '<br/>');
+            if (\MUtil_Bootstrap::enabled() !== true) {
+                $this->importModel->set('trans', 'separator', '<br/>');
+            } else {
+                $this->importModel->set('tokenCompleted', 'separator', '');
+            }
         }
 
         return $this->importModel;
