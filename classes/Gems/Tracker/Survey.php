@@ -207,7 +207,11 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
                 $this->exists = true;
             } else {
                 //Row not present, try with empty array? or should we throw an error?
-                $this->_gemsSurvey = array('gsu_code' => null);
+                $this->_gemsSurvey = array(
+                    'gsu_code'             => null,
+                    'gsu_valid_for_length' => 6,
+                    'gsu_valid_for_unit'   => 'M',
+                    );
                 $this->exists = false;
             }
         }
@@ -341,8 +345,8 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
     {
         return Period::applyPeriod(
                 $from,
-                $this->_gemsSurvey['gsu_valid_for_length'],
-                $this->_gemsSurvey['gsu_valid_for_unit']
+                $this->_gemsSurvey['gsu_valid_for_unit'],
+                $this->_gemsSurvey['gsu_valid_for_length']
                 );
     }
 

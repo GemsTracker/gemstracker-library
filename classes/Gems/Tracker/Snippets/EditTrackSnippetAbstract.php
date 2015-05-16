@@ -292,7 +292,7 @@ class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends \Gems_Snippets_Mode
                     'description', $this->_('Cannot be changed after first answered token.')
                     );
         }
-        if (isset($this->formData['grc_success']) && (! $this->formData['grc_success'])) {
+        if ((! $this->createData) && isset($this->formData['grc_success']) && (! $this->formData['grc_success'])) {
             $model->set('grc_description', 'label', $this->_('Rejection code'),
                     'elementClass', 'Exhibitor'
                     );

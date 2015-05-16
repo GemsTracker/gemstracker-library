@@ -152,7 +152,7 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
                 'description'       => $this->_('Difference with the previous appointment or track start date, can be negative but not zero'),
                 'elementClass'      => 'Text',
                 'required'          => true,
-                'size'              => 5,
+                // 'size'              => 5, // Causes trouble during save
                 'filters[int]'      => 'Int',
                 'validators[isnot]' => new \MUtil_Validate_IsNot(0, $this->_('This value may not be zero!')),
                 );
@@ -171,7 +171,7 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
                     'label'             => $this->_('Maximum time difference'),
                     'elementClass'      => 'Text',
                     'required'          => false,
-                    'size'              => 5,
+                    // 'size'              => 5, // Causes trouble during save
                     'filters[int]'      => 'Int',
                     );
                 if ($context['gtf_min_diff_length'] < 0) {

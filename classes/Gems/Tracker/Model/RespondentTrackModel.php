@@ -230,15 +230,16 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
         $this->applyDetailSettings($trackEngine, true);
         $this->addEditTracking();
 
-        $this->set('gr2o_patient_nr', 'elementClass', 'Exhibitor');
-        $this->set('respondent_name', 'elementClass', 'Exhibitor');
-        $this->set('gtr_track_name',  'elementClass', 'Exhibitor');
+        $this->set('gr2o_patient_nr',     'elementClass', 'Exhibitor');
+        $this->set('respondent_name',     'elementClass', 'Exhibitor');
+        $this->set('gtr_track_name',      'elementClass', 'Exhibitor');
 
         // Fields set in details
 
-        $this->set('gr2t_track_info', 'elementClass', 'None');
-        $this->set('assigned_by',     'elementClass', 'None');
-        $this->set('gr2t_start_date', 'elementClass', 'Date',
+        $this->set('gr2t_track_info',     'elementClass', 'None');
+        $this->set('assigned_by',         'elementClass', 'None');
+        $this->set('gr2t_reception_code', 'elementClass', 'None');
+        $this->set('gr2t_start_date',     'elementClass', 'Date',
                 'default',  new \Zend_Date(),
                 'required', true,
                 'size',     30

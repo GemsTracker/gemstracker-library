@@ -459,7 +459,7 @@ class Gems_Default_TrackMaintenanceAction  extends \Gems_Controller_BrowseEditAc
 
         $this->html->h3(sprintf($this->_('%s in track'), $this->_(ucfirst($mode))));
         $this->html[] = $table;
-        $this->html->actionLink(array('controller' => 'track-' . $mode, 'action' => 'create', 'id' => $this->getRequest()->getParam(\MUtil_Model::REQUEST_ID)), $this->_('Add'));
+        $this->html->actionLink(array('controller' => 'track-' . $mode, 'action' => 'create', 'id' => $this->getRequest()->getParam(\MUtil_Model::REQUEST_ID)), $this->_('New'));
 
         $this->getRequest()->setActionName($action);
     }

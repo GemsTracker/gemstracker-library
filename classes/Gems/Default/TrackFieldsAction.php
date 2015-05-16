@@ -69,6 +69,21 @@ class Gems_Default_TrackFieldsAction extends \Gems_Controller_ModelSnippetAction
     public $cacheTags = array('track', 'tracks');
 
     /**
+     * The parameters used for the edit actions, overrules any values in
+     * $this->createEditParameters.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $createParameters = array(
+        'formTitle' => 'getCreateTitle',
+    );
+
+    /**
      * The snippets used for the create and edit actions.
      *
      * @var mixed String or array of snippets name
@@ -151,6 +166,19 @@ class Gems_Default_TrackFieldsAction extends \Gems_Controller_ModelSnippetAction
                 'Do you want to delete this field and the value stored for the field?',
                 'Do you want to delete this field and the %s values stored for the field?',
                 $used), $used);
+    }
+
+    /**
+     * Helper function to get the title for the create action.
+     *
+     * @return $string
+     */
+    public function getCreateTitle()
+    {
+        return sprintf(
+                $this->_('New field for %s track...') ,
+                $this->util->getTrackData()->getTrackTitle($this->_getIdParam())
+                );
     }
 
     /**
