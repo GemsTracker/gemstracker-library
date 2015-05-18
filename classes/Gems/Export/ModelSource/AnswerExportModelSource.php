@@ -32,7 +32,7 @@
  * @author     Jasper van Gestel <jvangestel@gmail.com>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: AnswerExportModelsource.php 2451 2015-03-09 18:03:25Z matijsdejong $
+ * @version    $Id: AnswerExportModelSource.php 2451 2015-03-09 18:03:25Z matijsdejong $
  */
 
 /**
@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.7.1
  */
-class Gems_Export_ModelSource_AnswerExportModelsource extends \Gems_Export_ModelSource_ExportModelSourceAbstract
+class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_ModelSource_ExportModelSourceAbstract
 {
 
 	/**
