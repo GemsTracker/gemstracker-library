@@ -226,7 +226,7 @@ class Gems_Export_ModelSource_AnswerExportModelsource extends \Gems_Export_Model
                 isset($data['tid']) ? $data['tid'] : null
             );
 
-        $surveys       = $empty + $dbLookup->getSurveysForExport(isset($data['tid']) ? $data['tid'] : null, isset($data['rounds']) ? $data['rounds'] : null);
+        $surveys       = $dbLookup->getSurveysForExport(isset($data['tid']) ? $data['tid'] : null, isset($data['rounds']) ? $data['rounds'] : null);
 
         $yesNo         = $translated->getYesNo();
 		$elements = array();
