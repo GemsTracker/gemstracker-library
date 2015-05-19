@@ -303,7 +303,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
         		unset($data['records_'.$key]);
         		$model = $this->getModel($filter);
 	            $survey   = $this->loader->getTracker()->getSurvey(intval($filter['gto_id_survey']));
-	            $test = $model->loadFirst($filter);
+
 	           	$recordCount = $model->loadPaginator($filter)->getTotalItemCount();
 	            $element = $form->createElement('exhibitor', 'records_'.$key);
 	            $element->setValue($survey->getName() . ': ' . sprintf($this->_('%s records found.'), $recordCount));

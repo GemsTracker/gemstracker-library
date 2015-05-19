@@ -35,6 +35,8 @@
  * @version    $Id$
  */
 
+use Gems\Tracker\Model\AddAnswersTransformer;
+
 /**
  * More correctly a Survey ANSWERS Model as it adds answers to token information/
  *
@@ -87,6 +89,7 @@ class Gems_Tracker_SurveyModel extends Gems_Model_JoinModel
 
         $this->source = $source;
         $this->survey = $survey;
+        $this->addAnswersToModel();
     }
 
     /**
@@ -96,10 +99,10 @@ class Gems_Tracker_SurveyModel extends Gems_Model_JoinModel
      * @param array $sort Sort array field name => sort type
      * @return array Nested array or false
      */
-    protected function _load(array $filter, array $sort)
+    /*protected function _load(array $filter, array $sort)
     {
         return $this->addAnswers(parent::_load($filter, $sort));
-    }
+    }*/
 
     /**
      * Returns a nested array containing the items requested, including answers.
@@ -109,9 +112,11 @@ class Gems_Tracker_SurveyModel extends Gems_Model_JoinModel
      */
     protected function addAnswers(array $inputRows)
     {
-        $tokens = MUtil_Ra::column('gto_id_token', $inputRows);
+        $resultRows = $inputRows;
+        $tokens = \MUtil_Ra::column('gto_id_token', $inputRows);
 
-        $answerRows = $this->source->getRawTokenAnswerRows(array('token' => $tokens), $this->survey->getSurveyId());
+        \MUtil_Echo::track($tokens);
+        /*$answerRows = $this->source->getRawTokenAnswerRows(array('token' => $tokens), $this->survey->getSurveyId());
         $emptyRow   = array_fill_keys($this->getItemNames(), null);
         $resultRows = array();
 
@@ -123,8 +128,14 @@ class Gems_Tracker_SurveyModel extends Gems_Model_JoinModel
             } else {
                 $resultRows[$tokenId] = $row + $emptyRow;
             }
-        }
+        }*/
         return $resultRows;
+    }
+
+    protected function addAnswersToModel()
+    {
+        $transformer = new AddAnswersTransformer($this->survey, $this->source);
+        $this->addTransformer($transformer);
     }
 
     /**
@@ -144,7 +155,7 @@ class Gems_Tracker_SurveyModel extends Gems_Model_JoinModel
      * @param mixed $sort True to use the stored sort, array to specify a different sort
      * @return array An array or false
      */
-    public function loadFirst($filter = true, $sort = true)
+    /*public function loadFirst($filter = true, $sort = true)
     {
         if ($firstResult = parent::loadFirst($filter, $sort)) {
             $result = $this->addAnswers(array($firstResult));
@@ -152,7 +163,7 @@ class Gems_Tracker_SurveyModel extends Gems_Model_JoinModel
             $result = array();
         }
         return reset($result);
-    }
+    }*/
 
     /**
      * Returns a Traversable spewing out arrays containing the items requested.
@@ -161,10 +172,10 @@ class Gems_Tracker_SurveyModel extends Gems_Model_JoinModel
      * @param mixed $sort True to use the stored sort, array to specify a different sort
      * @return Traversable
      */
-    public function loadIterator($filter = true, $sort = true)
+    /*public function loadIterator($filter = true, $sort = true)
     {
         return $this->addAnswers(parent::loadIterator($filter, $sort));
-    }
+    }*/
 
     /**
      * Returns a Zend_Paginator for the items in the model
@@ -173,9 +184,9 @@ class Gems_Tracker_SurveyModel extends Gems_Model_JoinModel
      * @param mixed $sort True to use the stored sort, array to specify a different sort
      * @return Zend_Paginator
      */
-    public function loadPaginator($filter = true, $sort = true)
+    /*public function loadPaginator($filter = true, $sort = true)
     {
         // Do not use a select paginator for the moment, till we can add addAnswers()
         return Zend_Paginator::factory($this->load($filter, $sort));
-    }
+    }*/
 }
