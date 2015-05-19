@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-16 15:57+0100\n"
+"POT-Creation-Date: 2015-05-19 15:58+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -148,11 +148,11 @@ msgstr "Actief"
 #: classes/Gems/Agenda/AppointmentFilterModel.php:125
 #: classes/Gems/Agenda/AppointmentFilterModel.php:193
 msgid "Use in track fields"
-msgstr "Gebruik in trajectevelden"
+msgstr "Gebruik in trajectvelden"
 
 #: classes/Gems/Agenda/AppointmentFilterModel.php:126
 msgid "The number of uses of this filter in track fields."
-msgstr "Het aantal keren dat dit filter in traject velden gebruikt is."
+msgstr "Het aantal keren dat dit filter in trajectvelden gebruikt is."
 
 #: classes/Gems/Agenda/AppointmentFilterModel.php:141
 #: classes/Gems/Agenda/AppointmentFilterModel.php:211
@@ -186,7 +186,7 @@ msgstr "Niet gebruikt in trajecten"
 
 #: classes/Gems/Agenda/AppointmentFilterModel.php:194
 msgid "The use of this filter in track fields."
-msgstr "Gebruik van dit filter in andere traject velden."
+msgstr "Gebruik van dit filter in trajectvelden."
 
 #: classes/Gems/Agenda/AppointmentFilterModel.php:209
 msgid "Not used in filters"
@@ -194,7 +194,7 @@ msgstr "Niet gebruikt in filters"
 
 #: classes/Gems/Agenda/AppointmentFilterModel.php:212
 msgid "The use of this filter in other filters."
-msgstr "Gebruik van dit filter in andere filters"
+msgstr "Gebruik van dit filter in andere filters."
 
 #: classes/Gems/Agenda/Filter/AndModelDependency.php:109
 msgid " AND "
@@ -691,13 +691,13 @@ msgstr[1] "activiteiten"
 #: classes/Gems/Default/AgendaFilterAction.php:124
 #: classes/Gems/Menu/MenuAbstract.php:223
 msgid "Track field filters"
-msgstr "Trajectveld filters"
+msgstr "Trajectveldfilters"
 
 #: classes/Gems/Default/AgendaFilterAction.php:135
 msgid "track field filter"
 msgid_plural "track field filters"
-msgstr[0] "trajectveld filter"
-msgstr[1] "trajectveld filters"
+msgstr[0] "trajectveldfilter"
+msgstr[1] "trajectveldfilters"
 
 #: classes/Gems/Default/AgendaProcedureAction.php:134
 msgid ""
@@ -2244,7 +2244,7 @@ msgstr "Adres van"
 #: classes/Gems/Snippets/Import/FileImportSnippet.php:89
 #: classes/Gems/Snippets/Mail/Log/MailLogBrowseSnippet.php:96
 #: classes/Gems/Snippets/Respondent/MailLogSnippet.php:98
-#: classes/Gems/Snippets/TokenModelSnippetAbstract.php:80
+#: classes/Gems/Snippets/TokenModelSnippetAbstract.php:81
 #: classes/Gems/Snippets/Tracker/TrackTokenOverviewSnippet.php:148
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:667
 #: classes/Gems/Tracker/Form/AskTokenForm.php:77
@@ -2896,7 +2896,7 @@ msgstr "Kies een ontvangstcode om te verwijderen."
 #: classes/Gems/Default/RespondentExportAction.php:63
 #: classes/Gems/Default/RespondentNewAction.php:222
 msgid "Export respondent archive"
-msgstr "Exporteer patiënt dossier"
+msgstr "Exporteer patiëntdossier"
 
 #: classes/Gems/Default/RespondentAction.php:485
 #: classes/Gems/Default/RespondentNewAction.php:437
@@ -3737,7 +3737,7 @@ msgstr "(alle medewerkers)"
 #: classes/Gems/Snippets/Mail/Log/MailLogBrowseSnippet.php:80
 #: classes/Gems/Snippets/Respondent/MailLogSnippet.php:80
 #: classes/Gems/Snippets/Token/PlanTokenSnippet.php:169
-#: classes/Gems/Snippets/TokenModelSnippetAbstract.php:69
+#: classes/Gems/Snippets/TokenModelSnippetAbstract.php:70
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:129
 #: classes/Gems/Snippets/Tracker/TrackTokenOverviewSnippet.php:111
 #: snippets/BrowseSingleSurveyTokenSnippet.php:118
@@ -3908,7 +3908,7 @@ msgstr ""
 
 #: classes/Gems/Default/TrackMaintenanceAction.php:148
 msgid "Track field recalculation"
-msgstr "Herberekening traject velden"
+msgstr "Herberekening trajectvelden"
 
 #: classes/Gems/Default/TrackMaintenanceAction.php:150
 msgid "Recalculates the values the fields should have."
@@ -3935,7 +3935,7 @@ msgid ""
 "the appointment filters used by this track have changed or when the code has "
 "changed and the track must be adjusted."
 msgstr ""
-"Voer deze opdracht uit als automatisch berekende traject velden veranderd "
+"Voer deze opdracht uit als automatisch berekende trajectvelden veranderd "
 "zijn, als de afspraak filters gebruikt door dit traject veranderd zijn of "
 "als de programmacode veranderd is en het traject aangepast moet worden."
 
@@ -3968,7 +3968,7 @@ msgstr "(beide)"
 
 #: classes/Gems/Default/TrackMaintenanceAction.php:386
 msgid "Recalculating fields for all tracks."
-msgstr "Herbereken de traject velden van alle trajecten"
+msgstr "Herbereken de trajectvelden van alle trajecten"
 
 #: classes/Gems/Default/TrackMaintenanceAction.php:406
 #, php-format
@@ -4380,7 +4380,7 @@ msgstr "Trajectomschrijving"
 
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:407
 msgid "Submit date"
-msgstr "Invul datum"
+msgstr "Invuldatum"
 
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:409
 msgid "Datestamp"
@@ -4507,7 +4507,7 @@ msgstr "Koppel middels patiënt id"
 
 #: classes/Gems/Import/ImportLoader.php:334
 msgid "Link by patient id and completion date"
-msgstr "Koppel middels patiënt id en invul datum"
+msgstr "Koppel middels patiënt id en invuldatum"
 
 #: classes/Gems/Mail/RespondentMailer.php:96
 msgid "Respondent data not found"
@@ -4817,7 +4817,7 @@ msgstr "Antwoorden op vragenlijst"
 
 #: classes/Gems/Menu/MenuAbstract.php:390
 msgid "Respondent archives"
-msgstr "Patiënt dossiers"
+msgstr "Patiëntdossiers"
 
 #: classes/Gems/Menu/MenuAbstract.php:414
 msgid "Download"
@@ -4986,7 +4986,7 @@ msgstr "Controleer toewijzingen"
 
 #: classes/Gems/Menu/MenuAbstract.php:800
 msgid "Recalculate fields"
-msgstr "Herbereken traject velden"
+msgstr "Herbereken trajectvelden"
 
 #: classes/Gems/Menu/MenuAbstract.php:803
 msgid "Tracks per org"
@@ -4998,7 +4998,7 @@ msgstr "Controleer alle toewijzingen"
 
 #: classes/Gems/Menu/MenuAbstract.php:808
 msgid "Recalculate all fields"
-msgstr "Herbereken alle traject velden"
+msgstr "Herbereken alle trajectvelden"
 
 #: classes/Gems/Menu/SubMenuItem.php:468
 msgid "Export the current data set to Excel"
@@ -5684,7 +5684,7 @@ msgid_plural "Stopped %d tracks."
 msgstr[0] "%d traject gestopt."
 msgstr[1] "%d trajecten gestopt."
 
-#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:119
+#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:116
 #: classes/Gems/Snippets/RespondentTokenSnippet.php:143
 #: classes/Gems/Snippets/Tracker/TrackTokenOverviewSnippet.php:131
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:350
@@ -5692,16 +5692,16 @@ msgstr[1] "%d trajecten gestopt."
 msgid "Score"
 msgstr "Score"
 
-#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:182
+#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:179
 #, php-format
 msgid "Add %s track to this respondent"
 msgstr "%s traject toewijzen aan deze patiënt"
 
-#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:198
+#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:195
 msgid "Add a track to this respondent"
 msgstr "Traject toewijzen aan deze patiënt"
 
-#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:202
+#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:199
 msgid "No valid tokens found"
 msgstr "Geen geldige kenmerken gevonden."
 
@@ -5768,7 +5768,7 @@ msgstr "Maak een nieuwe extra set antwoorden"
 #: classes/Gems/Snippets/Survey/AnswerImportSnippet.php:167
 #: classes/Gems/Snippets/Survey/AnswerImportSnippet.php:188
 msgid "Abort the import"
-msgstr "Importer afbreken"
+msgstr "Importeren afbreken"
 
 #: classes/Gems/Snippets/Survey/AnswerImportSnippet.php:170
 msgid "When token completed"
@@ -7659,7 +7659,7 @@ msgstr "Weet u zeker dat dit item verwijderd moet worden?"
 
 #: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:236
 msgid "Choosen import definition: "
-msgstr "Gekozen import definitie: "
+msgstr "Gekozen importdefinitie: "
 
 #: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:261
 #, php-format
@@ -7715,15 +7715,15 @@ msgstr "Bulk import gegevens. Stap %d van %d."
 
 #: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:540
 msgid "Import field definitions"
-msgstr "Veld definities voor import"
+msgstr "Velddefinities voor import"
 
 #: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:567
 msgid "Import definition"
-msgstr "Import definitie"
+msgstr "Importdefinitie"
 
 #: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:569
 msgid "See import field definitions table"
-msgstr "Zie veld definities voor import tabel"
+msgstr "Zie velddefinities voor import tabel"
 
 #: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:575
 msgid "Choose work mode"
@@ -7735,7 +7735,7 @@ msgstr "Upload een bestand"
 
 #: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:579
 msgid "Copy and paste into a text field"
-msgstr "Kopiëren en plakken in een groot tekst veld"
+msgstr "Kopiëren en plakken in een groot tekstveld"
 
 #: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:599
 msgid "Import text - user header line - separate fields using tabs"
@@ -7749,17 +7749,17 @@ msgstr ""
 
 #: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:654
 msgid "No import definition specified"
-msgstr "Geen import definitie opgegeven"
+msgstr "Geen importdefinitie opgegeven"
 
 #: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:659
 #, php-format
 msgid "Import definition %s does not exist."
-msgstr "Import definitie %s bestaat niet."
+msgstr "Importdefinitie %s bestaat niet."
 
 #: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:665
 #, php-format
 msgid "%s is not a valid import definition."
-msgstr "%s is geen geldig import definitie."
+msgstr "%s is geen geldig importdefinitie."
 
 #: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:780
 msgid "For bold"

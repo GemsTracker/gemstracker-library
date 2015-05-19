@@ -197,7 +197,9 @@ class Gems_Snippets_RespondentTokenSnippet extends \Gems_Snippets_TokenModelSnip
         $filter['gro_active']  = 1;
         $filter['gsu_active']  = 1;
 
-        if ($tabFilter = $this->model->getMeta('tab_filter')) {
+        // NOTE! $this->model does not need to be the token model, but $model is a token model
+        $tabFilter = $this->model->getMeta('tab_filter');
+        if ($tabFilter) {
             $model->addFilter($tabFilter);
         }
 

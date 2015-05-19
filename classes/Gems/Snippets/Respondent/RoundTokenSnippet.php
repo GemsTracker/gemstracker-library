@@ -110,9 +110,6 @@ class Gems_Snippets_Respondent_RoundTokenSnippet extends \Gems_Snippets_Responde
         $bridge->addSortable('gto_changed');
         $bridge->addSortable('assigned_by', $this->_('Assigned by'));
 
-
-        $project = GemsEscort::getInstance()->project;
-
         // If we are allowed to see the result of the survey, show them
         $user = $this->loader->getCurrentUser();
         if ($user->hasPrivilege('pr.respondent.result')) {
@@ -206,5 +203,16 @@ class Gems_Snippets_Respondent_RoundTokenSnippet extends \Gems_Snippets_Responde
         }
 
         return parent::hasHtmlOutput();
+    }
+    /**
+     * Overrule to implement snippet specific filtering and sorting.
+     *
+     * @param \MUtil_Model_ModelAbstract $model
+     */
+    protected function processFilterAndSort(\MUtil_Model_ModelAbstract $model)
+    {
+        parent::processFilterAndSort($model);
+
+        $round = $this->request->getParam('round');
     }
 }
