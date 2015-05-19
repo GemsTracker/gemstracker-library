@@ -301,7 +301,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
         	$filters   = $this->getFilters($data);
         	foreach($filters as $key => $filter) {
         		unset($data['records_'.$key]);
-        		$model = $this->getModel($filter);
+        		$model = $this->getModel($filter, $data);
 	            $survey   = $this->loader->getTracker()->getSurvey(intval($filter['gto_id_survey']));
 
 	           	$recordCount = $model->loadPaginator($filter)->getTotalItemCount();

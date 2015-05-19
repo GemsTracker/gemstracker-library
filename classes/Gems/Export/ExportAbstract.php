@@ -350,6 +350,15 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
                             break;
                     }
                 }
+                if ($result instanceof \MUtil_Html_ElementInterface) {
+                    if ($result->count() > 0) {
+                        $result = $result[0];
+                    } elseif ($result instanceof \MUtil_Html_AElement) {
+                        $href = $result->href;
+                        $result = $href[0];
+                    }
+                }
+
                 $exportRow[$columnName] = $result;
             }
         }
