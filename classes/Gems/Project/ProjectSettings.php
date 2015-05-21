@@ -138,6 +138,8 @@ class Gems_Project_ProjectSettings extends ArrayObject
             ),
 
             'cache'        => 'apc',   // Use apc cache as default
+            
+            'logLevel'     => $this->getLogLevelDefault(),  // Depends on application environment
 
             'organization' => array(
                 'default'   => -1  // No default organization
@@ -601,14 +603,29 @@ class Gems_Project_ProjectSettings extends ArrayObject
         if (isset($this['logLevel'])) {
             $logLevel = $this['logLevel'];
         } else {
-            if ('development' == APPLICATION_ENV || 'testing' == APPLICATION_ENV) {
-                $logLevel = Zend_Log::DEBUG;
-            } else {
-                $logLevel = Zend_Log::ERR;
-            }
+            $logLevel = $this->getLogLevelDefault();
         }
 
         return (int) $logLevel;
+    }
+
+    /**
+     * Return the default logLevel to use with the Gems_Log
+     *
+     * Default settings is for development and testing environment to use Zend_Log::DEBUG and
+     * for all other environments to use the Zend_Log::ERR level. This can be overruled by
+     * specifying a logLevel in the project.ini 
+     * 
+     * @return int The loglevel to use
+     */
+    public function getLogLevelDefault() {        
+        if ('development' == APPLICATION_ENV || 'testing' == APPLICATION_ENV) {
+            $logLevel = Zend_Log::DEBUG;
+        } else {
+            $logLevel = Zend_Log::ERR;
+        }
+        
+        return $logLevel;        
     }
 
     /**
