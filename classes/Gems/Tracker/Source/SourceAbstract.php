@@ -45,20 +45,20 @@
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-abstract class Gems_Tracker_Source_SourceAbstract extends MUtil_Translate_TranslateableAbstract
-    implements Gems_Tracker_Source_SourceInterface
+abstract class Gems_Tracker_Source_SourceAbstract extends \MUtil_Translate_TranslateableAbstract
+    implements \Gems_Tracker_Source_SourceInterface
 {
     /**
      * Holds the current batch if there is any
      *
-     * @var Gems_Task_TaskRunnerBatch
+     * @var \Gems_Task_TaskRunnerBatch
      * /
     protected $_batch = null;
 
     /**
      * The database connection to Gems itself
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     private $_gemsDb;
 
@@ -72,19 +72,19 @@ abstract class Gems_Tracker_Source_SourceAbstract extends MUtil_Translate_Transl
     /**
      * The database connection to the source, usedable by all implementations that use a database
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     private $_sourceDb;
 
     /**
      *
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     protected $project;
 
     /**
      *
-     * @var Gems_Tracker
+     * @var \Gems_Tracker
      */
     protected $tracker;
 
@@ -92,9 +92,9 @@ abstract class Gems_Tracker_Source_SourceAbstract extends MUtil_Translate_Transl
      * Standard constructor for sources
      *
      * @param array $sourceData The information from gems__sources for this source.
-     * @param Zend_Db_Adapter_Abstract $gemsDb Do not want to copy db using registry because that is public and this should be private
+     * @param \Zend_Db_Adapter_Abstract $gemsDb Do not want to copy db using registry because that is public and this should be private
      */
-    public function __construct(array $sourceData, Zend_Db_Adapter_Abstract $gemsDb)
+    public function __construct(array $sourceData, \Zend_Db_Adapter_Abstract $gemsDb)
     {
         $this->_sourceData = $sourceData;
         $this->_gemsDb     = $gemsDb;
@@ -183,7 +183,7 @@ abstract class Gems_Tracker_Source_SourceAbstract extends MUtil_Translate_Transl
         $data['gsu_active']          = 0;
         $data['gsu_surveyor_active'] = 0;
         $data['gsu_status']          = 'Survey was removed from source.';
-        $data['gsu_changed']         = new MUtil_Db_Expr_CurrentTimestamp();
+        $data['gsu_changed']         = new \MUtil_Db_Expr_CurrentTimestamp();
         $data['gsu_changed_by']      = $userId;
 
         $this->_gemsDb->update('gems__surveys', $data, $sqlWhere);
@@ -203,16 +203,16 @@ abstract class Gems_Tracker_Source_SourceAbstract extends MUtil_Translate_Transl
         if ($this->tracker->filterChangesOnly($this->_sourceData, $values)) {
 
 
-            if (Gems_Tracker::$verbose) {
+            if (\Gems_Tracker::$verbose) {
                 $echo = '';
                 foreach ($values as $key => $val) {
                     $echo .= $key . ': ' . $this->_sourceData[$key] . ' => ' . $val . "\n";
                 }
-                MUtil_Echo::r($echo, 'Updated values for ' . $this->getId());
+                \MUtil_Echo::r($echo, 'Updated values for ' . $this->getId());
             }
 
             if (! isset($values['gso_changed'])) {
-                $values['gso_changed'] = new MUtil_Db_Expr_CurrentTimestamp();
+                $values['gso_changed'] = new \MUtil_Db_Expr_CurrentTimestamp();
             }
             if (! isset($values['gso_changed_by'])) {
                 $values['gso_changed_by'] = $userId;
@@ -247,7 +247,7 @@ abstract class Gems_Tracker_Source_SourceAbstract extends MUtil_Translate_Transl
      * Extract limit and offset from the filter and add it to a select
      *
      * @param array $filter
-     * @param Zend_Db_Select $select
+     * @param \Zend_Db_Select $select
      */
     protected function filterLimitOffset(&$filter, $select)
     {
@@ -303,7 +303,7 @@ abstract class Gems_Tracker_Source_SourceAbstract extends MUtil_Translate_Transl
     /**
      * Get the db adapter for this source
      *
-     * @return Zend_Db_Adapter_Abstract
+     * @return \Zend_Db_Adapter_Abstract
      */
     protected function getSourceDatabase()
     {
@@ -337,7 +337,7 @@ abstract class Gems_Tracker_Source_SourceAbstract extends MUtil_Translate_Transl
                                     )
                             : $gemsConfig['password'];
 
-                    $this->_sourceDb = Zend_Db::factory($adapter, $dbConfig);
+                    $this->_sourceDb = \Zend_Db::factory($adapter, $dbConfig);
                 }
             }
 
@@ -364,7 +364,7 @@ abstract class Gems_Tracker_Source_SourceAbstract extends MUtil_Translate_Transl
         static $cache = array();
 
         if (! isset($cache[$surveyId])) {
-            $cache[$surveyId] = $this->_gemsDb->fetchRow('SELECT * FROM gems__surveys WHERE gsu_id_survey = ? LIMIT 1', $surveyId, Zend_Db::FETCH_ASSOC);
+            $cache[$surveyId] = $this->_gemsDb->fetchRow('SELECT * FROM gems__surveys WHERE gsu_id_survey = ? LIMIT 1', $surveyId, \Zend_Db::FETCH_ASSOC);
         }
 
         if (null === $field) {
@@ -379,11 +379,11 @@ abstract class Gems_Tracker_Source_SourceAbstract extends MUtil_Translate_Transl
     /**
      * Updates the gems database with the latest information about the surveys in this source adapter
      *
-     * @param Gems_Task_TaskRunnerBatch $batch
+     * @param \Gems_Task_TaskRunnerBatch $batch
      * @param int $userId    Id of the user who takes the action (for logging)
      * @return array Returns an array of messages
      */
-    public function synchronizeSurveyBatch(Gems_Task_TaskRunnerBatch $batch, $userId)
+    public function synchronizeSurveyBatch(\Gems_Task_TaskRunnerBatch $batch, $userId)
     {
         // Surveys in Gems
         $select = $this->_gemsDb->select();

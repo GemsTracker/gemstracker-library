@@ -44,15 +44,15 @@
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-interface Gems_Tracker_Source_SourceInterface extends MUtil_Registry_TargetInterface
+interface Gems_Tracker_Source_SourceInterface extends \MUtil_Registry_TargetInterface
 {
     /**
      * Standard constructor for sources
      *
      * @param array $sourceData The information from gems__sources for this source.
-     * @param Zend_Db_Adapter_Abstract $gemsDb Do not want to copy db using registry because that is public and this should be private
+     * @param \Zend_Db_Adapter_Abstract $gemsDb Do not want to copy db using registry because that is public and this should be private
      */
-    public function __construct(array $sourceData, Zend_Db_Adapter_Abstract $gemsDb);
+    public function __construct(array $sourceData, \Zend_Db_Adapter_Abstract $gemsDb);
 
     /**
      * Checks wether this particular source is active or not and should handle updating the gems-db
@@ -76,14 +76,14 @@ interface Gems_Tracker_Source_SourceInterface extends MUtil_Registry_TargetInter
     /**
      * Inserts the token in the source (if needed) and sets those attributes the source wants to set.
      *
-     * @param Gems_Tracker_Token $token
+     * @param \Gems_Tracker_Token $token
      * @param string $language
      * @param int $surveyId Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return int 1 of the token was inserted or changed, 0 otherwise
-     * @throws Gems_Tracker_Source_SurveyNotFoundException
+     * @throws \Gems_Tracker_Source_SurveyNotFoundException
      */
-    public function copyTokenToSource(Gems_Tracker_Token $token, $language, $surveyId, $sourceSurveyId = null);
+    public function copyTokenToSource(\Gems_Tracker_Token $token, $language, $surveyId, $sourceSurveyId = null);
 
 
     /**
@@ -92,26 +92,26 @@ interface Gems_Tracker_Source_SourceInterface extends MUtil_Registry_TargetInter
      * A seperate function as only the source knows what format the date/time value has.
      *
      * @param string $fieldName Name of answer field
-     * @param Gems_Tracker_Token $token Gems token object
+     * @param \Gems_Tracker_Token $token Gems token object
      * @param int $surveyId Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
-     * @return MUtil_Date date time or null
+     * @return \MUtil_Date date time or null
      */
-    public function getAnswerDateTime($fieldName, Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null);
+    public function getAnswerDateTime($fieldName, \Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null);
 
     /**
      * Gets the time the survey was completed according to the source
      *
      * A source always return null when it does not know this time (or does not know
-     * it well enough). In the case Gems_Tracker_Token will do it's best to keep
+     * it well enough). In the case \Gems_Tracker_Token will do it's best to keep
      * track by itself.
      *
-     * @param Gems_Tracker_Token $token Gems token object
+     * @param \Gems_Tracker_Token $token Gems token object
      * @param int $surveyId Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
-     * @return MUtil_Date date time or null
+     * @return \MUtil_Date date time or null
      */
-    public function getCompletionTime(Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null);
+    public function getCompletionTime(\Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null);
 
     /**
      * Returns an array containing fieldname => label for each date field in the survey.
@@ -209,36 +209,36 @@ interface Gems_Tracker_Source_SourceInterface extends MUtil_Registry_TargetInter
      * Gets the time the survey was started according to the source.
      *
      * A source always return null when it does not know this time (or does not know
-     * it well enough). In the case Gems_Tracker_Token will do it's best to keep
+     * it well enough). In the case \Gems_Tracker_Token will do it's best to keep
      * track by itself.
      *
-     * @param Gems_Tracker_Token $token Gems token object
+     * @param \Gems_Tracker_Token $token Gems token object
      * @param int $surveyId Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
-     * @return MUtil_Date date time or null
+     * @return \MUtil_Date date time or null
      */
-    public function getStartTime(Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null);
+    public function getStartTime(\Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null);
 
     /**
      * Returns a model for the survey answers
      *
-     * @param Gems_Tracker_Survey $survey
+     * @param \Gems_Tracker_Survey $survey
      * @param string $language Optional (ISO) language string
      * @param string $sourceSurveyId Optional Survey Id used by source
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
-    public function getSurveyAnswerModel(Gems_Tracker_Survey $survey, $language = null, $sourceSurveyId = null);
+    public function getSurveyAnswerModel(\Gems_Tracker_Survey $survey, $language = null, $sourceSurveyId = null);
 
     /**
      * Returns the url that (should) start the survey for this token
      *
-     * @param Gems_Tracker_Token $token Gems token object
+     * @param \Gems_Tracker_Token $token Gems token object
      * @param string $language
      * @param int $surveyId Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return string The url to start the survey
      */
-    public function getTokenUrl(Gems_Tracker_Token $token, $language, $surveyId, $sourceSurveyId);
+    public function getTokenUrl(\Gems_Tracker_Token $token, $language, $surveyId, $sourceSurveyId);
 
     /**
      * Returns true if a batch is set
@@ -250,60 +250,60 @@ interface Gems_Tracker_Source_SourceInterface extends MUtil_Registry_TargetInter
     /**
      * Checks whether the token is in the source.
      *
-     * @param Gems_Tracker_Token $token Gems token object
+     * @param \Gems_Tracker_Token $token Gems token object
      * @param int $surveyId Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return boolean
      */
-    public function inSource(Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null);
+    public function inSource(\Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null);
 
     /**
      * Returns true if the survey was completed according to the source
      *
-     * @param Gems_Tracker_Token $token Gems token object
+     * @param \Gems_Tracker_Token $token Gems token object
      * @param int $surveyId Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return boolean True if the token has completed
      */
-    public function isCompleted(Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null);
+    public function isCompleted(\Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null);
 
     /**
      * Set the batch to be used by this source
      *
      * Use $this->hasBatch to check for existence
      *
-     * @param Gems_Task_TaskRunnerBatch $batch
+     * @param \Gems_Task_TaskRunnerBatch $batch
      * /
-    public function setBatch(Gems_Task_TaskRunnerBatch $batch);
+    public function setBatch(\Gems_Task_TaskRunnerBatch $batch);
 
     /**
      * Sets the answers passed on.
      *
-     * @param Gems_Tracker_Token $token Gems token object
+     * @param \Gems_Tracker_Token $token Gems token object
      * @param $answers array Field => Value array
      * @param int $surveyId Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
      */
-    public function setRawTokenAnswers(Gems_Tracker_Token $token, array $answers, $surveyId, $sourceSurveyId = null);
+    public function setRawTokenAnswers(\Gems_Tracker_Token $token, array $answers, $surveyId, $sourceSurveyId = null);
 
     /**
      * Sets the completion time.
      *
-     * @param Gems_Tracker_Token $token Gems token object
-     * @param Zend_Date|null $completionTime Zend_Date or null
+     * @param \Gems_Tracker_Token $token Gems token object
+     * @param \Zend_Date|null $completionTime \Zend_Date or null
      * @param int $surveyId Gems Survey Id (actually required)
      * @param string $sourceSurveyId Optional Survey Id used by source
      */
-    public function setTokenCompletionTime(Gems_Tracker_Token $token, $completionTime, $surveyId, $sourceSurveyId = null);
+    public function setTokenCompletionTime(\Gems_Tracker_Token $token, $completionTime, $surveyId, $sourceSurveyId = null);
 
     /**
      * Updates the gems database with the latest information about the surveys in this source adapter
      *
-     * @param Gems_Task_TaskRunnerBatch $batch
+     * @param \Gems_Task_TaskRunnerBatch $batch
      * @param int $userId    Id of the user who takes the action (for logging)
      * @return array Returns an array of messages
      */
-    public function synchronizeSurveyBatch(Gems_Task_TaskRunnerBatch $batch, $userId);
+    public function synchronizeSurveyBatch(\Gems_Task_TaskRunnerBatch $batch, $userId);
 
     /**
      * Updates the gems database with the latest information about the surveys in this source adapter
@@ -316,11 +316,11 @@ interface Gems_Tracker_Source_SourceInterface extends MUtil_Registry_TargetInter
     /**
      * Updates the consent code of the the token in the source (if needed)
      *
-     * @param Gems_Tracker_Token $token
+     * @param \Gems_Tracker_Token $token
      * @param int $surveyId Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @param string $consentCode Optional consent code, otherwise code from token is used.
      * @return int 1 of the token was inserted or changed, 0 otherwise
      */
-    public function updateConsent(Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null, $consentCode = null);
+    public function updateConsent(\Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null, $consentCode = null);
 }
