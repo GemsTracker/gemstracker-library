@@ -116,7 +116,7 @@ class Gems_Export_ExcelExport extends \Gems_Export_ExportAbstract
         mso-number-format:"\@";
     }
     td.number {
-        mso-number-format:"0\.00";
+        mso-number-format:"\#\,\#\#0\.##############";
     }
     td.date {
         mso-number-format:"yyyy\-mm\-dd";
