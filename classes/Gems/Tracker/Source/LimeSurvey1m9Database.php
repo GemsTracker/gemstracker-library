@@ -126,6 +126,42 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
      * @var Gems_Util
      */
     protected $util;
+    
+    /**
+     * Checks the return URI in LimeSurvey and sets it to the correct one when needed
+     * 
+     * @see checkSurvey()
+     * 
+     * @param string $sourceSurveyId
+     * @param \Gems_Tracker_Survey $survey
+     * @param array $messages
+     */
+    protected function _checkReturnURI($sourceSurveyId, \Gems_Tracker_Survey $survey, array &$messages) {
+        $lsSurvLang = $this->_getSurveyLanguagesTableName();
+        $sql = 'SELECT surveyls_language FROM ' . $lsSurvLang . ' WHERE surveyls_survey_id = ?';
+
+        $lsDb = $this->getSourceDatabase();
+
+        $languages = $lsDb->fetchAll($sql, array($sourceSurveyId));
+        $langChanges = 0;
+        foreach ($languages as $language)
+        {
+            $langChanges = $langChanges + $lsDb->update(
+                $lsSurvLang, 
+                array(
+                    'surveyls_urldescription' => $this->_getReturnURIDescription($language['surveyls_language'])                            
+                    ), 
+                array(
+                    'surveyls_survey_id = ?' => $sourceSurveyId,
+                    'surveyls_language = ?'  => $language
+                    )
+                );
+        }
+
+        if ($langChanges > 0) {
+            $messages[] = sprintf($this->_('The description of the exit url description was changed for %s languages in survey \'%s\'.'), $langChanges, $survey->getName());
+        }
+    }
 
     /**
      * Check a token table for any changes needed by this version.
@@ -274,6 +310,30 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
 
         return $this->_languageMap[$sourceSurveyId][$language];
     }
+    
+    /**
+     * Get the return URI to return from LimeSurvey to GemsTracker
+     * 
+     * @return string
+     */
+    protected function _getReturnURI()
+    {        
+        return $this->util->getCurrentURI('ask/return/' . MUtil_Model::REQUEST_ID . '/{TOKEN}');
+    }
+    
+    /**
+     * Get the return URI description to set in LimeSurvey
+     * 
+     * @param string $language
+     * @return string
+     */
+    protected function _getReturnURIDescription($language) 
+    {
+        return sprintf(
+            $this->translate->_('Back to %s', $language),
+            $this->project->getName()
+        );
+    }
 
     /**
      * Looks up the LimeSurvey Survey Id
@@ -380,7 +440,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
 
         return false;
     }
-
+    
     /**
      * Check if the tableprefix exists in the source database, and change the status of this
      * adapter in the gems_sources table accordingly
@@ -548,34 +608,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                 }
                 
                 // Check return url description
-                $lsSurvLang = $this->_getSurveyLanguagesTableName();
-                $sql = 'SELECT surveyls_language FROM ' . $lsSurvLang . ' WHERE surveyls_survey_id = ?';
-                
-                $lsDb = $this->getSourceDatabase();
-
-                $languages = $lsDb->fetchAll($sql, array($sourceSurveyId));
-                $langChanges = 0;
-                foreach ($languages as $language)
-                {
-                    $langChanges = $langChanges + $lsDb->update(
-                        $lsSurvLang, 
-                        array(
-                            'surveyls_urldescription' => sprintf(
-                                $this->translate->_('Back to %s', $language['surveyls_language']),
-                                $this->project->getName()
-                                )
-                            ), 
-                        array(
-                            'surveyls_survey_id = ?' => $sourceSurveyId,
-                            'surveyls_language = ?'  => $language
-                            )
-                        );
-                }
-                
-                if ($langChanges > 0) {
-                    $messages[] = sprintf($this->_('The description of the exit url description was changed for %s languages in survey \'%s\'.'), $langChanges, $survey->getName());
-                }
-                
+                $this->_checkReturnURI($sourceSurveyId, $survey, $messages);
                 
             } else { // New record
                 $values['gsu_survey_name']        = $surveyor_title;
@@ -641,7 +674,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
          *****************************/
 
         if (!MUtil_Console::isConsole()) {
-            $newUrl = $this->util->getCurrentURI('ask/return/' . MUtil_Model::REQUEST_ID . '/{TOKEN}');
+            $newUrl = $this->_getReturnURI();
 
             // Make sure the url is set correctly in surveyor.
             if ($currentUrl != $newUrl) {
