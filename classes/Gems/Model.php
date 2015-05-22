@@ -247,7 +247,7 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
      *
      * It is special since it can show how many responses each table has
      *
-     * @return OpenRosa_Model_OpenRosaFormModel
+     * @return \OpenRosa_Model_OpenRosaFormModel
      */
     public function getOpenRosaFormModel()
     {

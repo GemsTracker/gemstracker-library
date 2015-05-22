@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,33 +25,30 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * Short description of file
  *
  * @package    Gems
  * @subpackage OpenRosa
+ * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Sample.php 215 2011-07-12 08:52:54Z michiel $
+ * @version    $Id: OpenRosaFormModel.php 215 2011-07-12 08:52:54Z michiel $
  */
 
 /**
- * Short description for OpenRosaFormModel
- *
- * Long description for class OpenRosaFormModel (if any)...
  *
  * @package    Gems
  * @subpackage OpenRosa
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.0
- * @deprecated Class deprecated since version 2.0
+ * @since      Class available since version 1.6
  */
-class OpenRosa_Model_OpenRosaFormModel extends Gems_Model_JoinModel
+class OpenRosa_Model_OpenRosaFormModel extends \Gems_Model_JoinModel
 {
     /**
      *
-     * @var Zend_Translate_Adapter
+     * @var \Zend_Translate_Adapter
      */
     public $translate;
 
@@ -78,7 +75,7 @@ class OpenRosa_Model_OpenRosaFormModel extends Gems_Model_JoinModel
      *
      * @param array $filter
      * @param array $sort
-     * @return Zend_Db_Table_Select
+     * @return \Zend_Db_Table_Select
      */
     public function _createSelect(array $filter, array $sort)
     {

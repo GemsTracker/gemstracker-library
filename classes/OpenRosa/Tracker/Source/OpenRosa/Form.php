@@ -32,9 +32,10 @@
  *
  * @package    Gems
  * @subpackage OpenRosa
+ * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Sample.php 215 2011-07-12 08:52:54Z michiel $
+ * @version    $Id: Form.php 215 2011-07-12 08:52:54Z michiel $
  */
 
 /**
@@ -47,13 +48,12 @@
  * @subpackage OpenRosa
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.0
- * @deprecated Class deprecated since version 2.0
+ * @since      Class available since version 1.6
  */
 class OpenRosa_Tracker_Source_OpenRosa_Form
 {
     /**
-     * @var Gems_Model_JoinModel
+     * @var \Gems_Model_JoinModel
      */
     private $model;
     private $bind;
@@ -76,15 +76,15 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
      */
     public function __construct($file)
     {
-        $this->translate = Zend_Registry::getInstance()->get('Zend_Translate');
+        $this->translate = \Zend_Registry::getInstance()->get('Zend_Translate');
         if (!file_exists($file)) {
-            throw new Gems_Exception_Coding(sprintf($this->translate->_('File not found: %s'), $file));
+            throw new \Gems_Exception_Coding(sprintf($this->translate->_('File not found: %s'), $file));
         }
 
         //We read the xml file
         $xml = simplexml_load_file($file);
         if ($xml === false) {
-            throw new Gems_Exception_Coding(sprintf($this->translate->_('Could not read form definition for form %s'), $file));
+            throw new \Gems_Exception_Coding(sprintf($this->translate->_('Could not read form definition for form %s'), $file));
         }
         $this->_xml = $xml;
 
@@ -118,7 +118,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
      */
     protected function _getFinalSql($tablePrefix)
     {
-        $db = Zend_Registry::getInstance()->get('db');
+        $db = \Zend_Registry::getInstance()->get('db');
 
         return $db->quoteIdentifier($tablePrefix . '_changed') . " timestamp NOT NULL,\n"
             . $db->quoteIdentifier($tablePrefix . '_changed_by') . " bigint(20) NOT NULL,\n"
@@ -139,7 +139,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
     {
         $output    = array();
         $modelName = str_replace('/', '_', $key);
-        
+
         if (array_key_exists($key, $input))
         {
             $value = $input[$key];
@@ -149,9 +149,9 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
 
         switch ($type) {
             case 'dateTime':
-                // A null value will sometimes be empty, causing errors in Zend_Date
+                // A null value will sometimes be empty, causing errors in \Zend_Date
                 if (empty($value)) {$value = null;}
-                $output[$modelName] = new Zend_Date($value, Zend_Date::ISO_8601);
+                $output[$modelName] = new \Zend_Date($value, \Zend_Date::ISO_8601);
                 break;
 
             case 'select':
@@ -183,7 +183,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
 
     private function createTable()
     {
-        $db          = Zend_Registry::getInstance()->get('db');
+        $db          = \Zend_Registry::getInstance()->get('db');
         $nested      = false;
 
         $mainTableName   = $this->getTableName();
@@ -205,7 +205,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
             } else {
                 $bindInfo['type'] = 'string';
             }
-            
+
             // Now convert $name including / to _
             $mysqlName = str_replace('/', '_', $name);
 
@@ -309,7 +309,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
             $db->query($relatedSql);
         }
 
-        return new Gems_Model_JoinModel($this->getFormID(), $mainTableName, $mainTablePrefix);
+        return new \Gems_Model_JoinModel($this->getFormID(), $mainTableName, $mainTablePrefix);
     }
 
     private function flattenAnswers($xml, $parent = '')
@@ -525,13 +525,13 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
     }
 
     /**
-     * @return Gems_Model_JoinModel
+     * @return \Gems_Model_JoinModel
      */
     public function getModel()
     {
         if (empty($this->model)) {
             try {
-                $model = new Gems_Model_JoinModel($this->getFormID(), $this->getTableName(), 'orf');
+                $model = new \Gems_Model_JoinModel($this->getFormID(), $this->getTableName(), 'orf');
             } catch (Exception $exc) {
                 //Failed, now create the table as it obviously doesn't exist
                 $model = $this->createTable();
@@ -554,7 +554,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                 } else {
                     $bindInfo['type'] = 'string';
                 }
-                
+
                 // Now convert $name including / to _
                 $modelName = str_replace('/', '_', $name);
 
@@ -562,8 +562,8 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                     if ($nested === false) {
                         $nested = true;
                         $nestedName = $this->body[$bindName]['repeat'];
-                        $relatedModel = new Gems_Model_JoinModel($nestedName, $this->getRelatedTableName(), 'orfr');
-                        
+                        $relatedModel = new \Gems_Model_JoinModel($nestedName, $this->getRelatedTableName(), 'orfr');
+
                         // Add some meta information to make export a little easier
                         $model->setMeta('nested', true);
                         $model->setMeta('nestedName', $nestedName);
@@ -696,26 +696,26 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
     public function saveAnswer($file, $remove = true)
     {
         if (!file_exists($file)) {
-            throw new Gems_Exception_Coding(sprintf($this->translate->_('File not found: %s'), $file));
+            throw new \Gems_Exception_Coding(sprintf($this->translate->_('File not found: %s'), $file));
         }
 
         //We read the xml file
         $xml = simplexml_load_file($file);
         if ($xml === false) {
-            throw new Gems_Exception_Coding(sprintf($this->translate->_('Could not read form definition for form %s'), $file));
+            throw new \Gems_Exception_Coding(sprintf($this->translate->_('Could not read form definition for form %s'), $file));
         }
 
         $formId = (string) $xml->attributes()->id;
         if ($formId != $this->getFormID()) {
             //Can not save to this object as it is a different form!
-            throw new Gems_Exception_Coding(sprintf($this->translate->_('Response is for a different formId: %s <-> %s'), $formId, $this->getFormID()));
+            throw new \Gems_Exception_Coding(sprintf($this->translate->_('Response is for a different formId: %s <-> %s'), $formId, $this->getFormID()));
         }
 
         $model   = $this->getModel();
         $answers = $this->flattenAnswers($xml);
-        
+
         //Now we should parse the response, extract the options given for a (multi)select
-        $output = array();      
+        $output = array();
         foreach ($this->instance as $name => $element) {
                 $bindName = $this->_getBindName($name);
                 if (array_key_exists($bindName, $this->bind)) {
@@ -745,10 +745,10 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
 
         $output['orf_id'] = null;
         $answers = $model->save($output);
-        
+
         if ($model->getChanged() && $remove) {
-            $log     = Gems_Log::getLogger();
-            $log->log($file .  '-->' .  substr($file, 0, -4) . '.bak', Zend_Log::ERR);
+            $log     = \Gems_Log::getLogger();
+            $log->log($file .  '-->' .  substr($file, 0, -4) . '.bak', \Zend_Log::ERR);
             rename($file, substr($file, 0, -4) . '.bak');
         }
         // @@TODO: make hook for respondentID lookup too
@@ -767,7 +767,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
         // TODO: Find a way to build an url that identifies the form so we can download the attachted image
         //       and still check if one is logged in
         if (!empty($value)) {
-            return MUtil_Html_ImgElement::img(array(
+            return \MUtil_Html_ImgElement::img(array(
                         'src' => array(
                             'controller' => 'openrosa',
                             'action'     => 'image',

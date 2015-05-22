@@ -1606,7 +1606,7 @@ abstract class MUtil_Model_ModelAbstract extends \MUtil_Registry_TargetAbstract
         $empty = array();
         foreach ($this->getItemNames() as $name) {
             $value = $this->get($name, 'default');
-
+            
             // Load 'Value' if set
             if (null === $value) {
                 $value = $this->get($name, 'value');

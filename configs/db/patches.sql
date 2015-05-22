@@ -1008,3 +1008,6 @@ ALTER TABLE gems__track_appointments
 
 UPDATE gems__track_appointments SET gtap_min_diff_length = -1 WHERE gtap_after_next = 0;
 UPDATE gems__track_appointments SET gtap_min_diff_unit = 'S', gtap_max_diff_unit = 'S';
+
+-- PATCH> Wrong fieldname
+ALTER TABLE gems__openrosaforms CHANGE gof_createf_by gof_created_by BIGINT( 20 ) NOT NULL;
