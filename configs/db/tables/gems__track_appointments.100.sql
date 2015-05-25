@@ -10,7 +10,7 @@ CREATE TABLE if not exists gems__track_appointments (
         gtap_field_description  varchar(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
         gtap_to_track_info      boolean not null default true,
-        gtap_track_info_label   boolean not null default false
+        gtap_track_info_label   boolean not null default false,
         gtap_required           boolean not null default false,
         gtap_readonly           boolean not null default false,
 

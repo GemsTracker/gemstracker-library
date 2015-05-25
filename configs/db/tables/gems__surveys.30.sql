@@ -25,7 +25,6 @@ CREATE TABLE if not exists gems__surveys (
 
         gsu_result_field            varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
-        gsu_result_field            varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
         gsu_agenda_result           varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
         gsu_duration                varchar(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
