@@ -354,7 +354,7 @@ abstract class Gems_Controller_BrowseEditAction extends \Gems_Controller_ModelAc
                 $linkContainer = \MUtil_Html::create()->div(array('class' => 'element-container-labelless'));
                 $linkContainer[] = $links;
 
-                $element = $this->_form->createElement('html', 'formLinks');
+                $element = $form->createElement('html', 'formLinks');
                 $element->setValue($linkContainer);
                 $element->setOrder(999);
                 if ($form instanceof \Gems_TabForm)  {
