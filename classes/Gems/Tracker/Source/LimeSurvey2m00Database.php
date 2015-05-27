@@ -47,7 +47,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.1
  */
-class Gems_Tracker_Source_LimeSurvey2m00Database extends Gems_Tracker_Source_LimeSurvey1m91Database
+class Gems_Tracker_Source_LimeSurvey2m00Database extends \Gems_Tracker_Source_LimeSurvey1m91Database
 {
     /**
      * Check a token table for any changes needed by this version.
@@ -67,10 +67,10 @@ class Gems_Tracker_Source_LimeSurvey2m00Database extends Gems_Tracker_Source_Lim
      *
      * Adds the fields without default new in 2.00
      *
-     * @param Gems_Tracker_Token $token
+     * @param \Gems_Tracker_Token $token
      * @return array Of fieldname => value type
      */
-    protected function _fillAttributeMap(Gems_Tracker_Token $token)
+    protected function _fillAttributeMap(\Gems_Tracker_Token $token)
     {
         $values = parent::_fillAttributeMap($token);
 
@@ -80,7 +80,7 @@ class Gems_Tracker_Source_LimeSurvey2m00Database extends Gems_Tracker_Source_Lim
     /**
      * Adds the fields without default new in 2.00
      *
-     * @param Gems_Tracker_Token $token
+     * @param \Gems_Tracker_Token $token
      * @return array Of fieldname => value type
      */
     public static function addnewAttributeDefaults(array $values)
@@ -116,15 +116,15 @@ class Gems_Tracker_Source_LimeSurvey2m00Database extends Gems_Tracker_Source_Lim
      *
      * @param int $sourceSurveyId Survey ID
      * @param string $language      Optional (ISO) Language, uses default language for survey when null
-     * @return Gems_Tracker_Source_LimeSurvey1m9FieldMap
+     * @return \Gems_Tracker_Source_LimeSurvey1m9FieldMap
      */
     protected function _getFieldMap($sourceSurveyId, $language = null)
     {
         $language = $this->_getLanguage($sourceSurveyId, $language);
-        // MUtil_Echo::track($language, $sourceSurveyId);
+        // \MUtil_Echo::track($language, $sourceSurveyId);
 
         if (! isset($this->_fieldMaps[$sourceSurveyId][$language])) {
-            $this->_fieldMaps[$sourceSurveyId][$language] = new Gems_Tracker_Source_LimeSurvey2m00FieldMap(
+            $this->_fieldMaps[$sourceSurveyId][$language] = new \Gems_Tracker_Source_LimeSurvey2m00FieldMap(
                     $sourceSurveyId,
                     $language,
                     $this->getSourceDatabase(),
@@ -134,17 +134,17 @@ class Gems_Tracker_Source_LimeSurvey2m00Database extends Gems_Tracker_Source_Lim
 
         return $this->_fieldMaps[$sourceSurveyId][$language];
     }
-    
+
     /**
      * Returns the url that (should) start the survey for this token
      *
-     * @param Gems_Tracker_Token $token Gems token object
+     * @param \Gems_Tracker_Token $token Gems token object
      * @param string $language
      * @param int $surveyId Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return string The url to start the survey
      */
-    public function getTokenUrl(Gems_Tracker_Token $token, $language, $surveyId, $sourceSurveyId)
+    public function getTokenUrl(\Gems_Tracker_Token $token, $language, $surveyId, $sourceSurveyId)
     {
         if (null === $sourceSurveyId) {
             $sourceSurveyId = $this->_getSid($surveyId);

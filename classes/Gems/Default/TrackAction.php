@@ -821,6 +821,10 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
                 }
 
                 $engineId = $this->escort->getTrackId();
+
+                if (! $engineId) {
+                    throw new \Gems_Exception($this->_('No track engine specified!'));
+                }
             }
 
             $engine = $this->loader->getTracker()->getTrackEngine($engineId);
