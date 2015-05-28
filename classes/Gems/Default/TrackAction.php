@@ -813,21 +813,21 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
         }
 
         if (! $engine instanceof \Gems_Tracker_Engine_TrackEngineInterface) {
-            $engineId = $this->_getParam(\Gems_model::TRACK_ID);
+            $trackId = $this->_getParam(\Gems_model::TRACK_ID);
 
-            if (! $engineId) {
+            if (! $trackId) {
                 if ($this->isMultiTracks()) {
                     throw new \Gems_Exception($this->_('No track engine specified!'));
                 }
 
-                $engineId = $this->escort->getTrackId();
+                $trackId = $this->escort->getTrackId();
 
                 if (! $engineId) {
                     throw new \Gems_Exception($this->_('No track engine specified!'));
                 }
             }
 
-            $engine = $this->loader->getTracker()->getTrackEngine($engineId);
+            $engine = $this->loader->getTracker()->getTrackEngine($trackId);
         }
         $engine->applyToMenuSource($this->menu->getParameterSource());
 
