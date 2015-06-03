@@ -224,10 +224,14 @@ class Gems_Snippets_Respondent_RoundsTabsSnippet extends \MUtil_Snippets_TabSnip
                         ) AS waiting,
                         COUNT(*) AS any
                     FROM gems__tokens INNER JOIN
-                        gems__reception_codes ON gto_reception_code = grc_id_reception_code
+                        gems__reception_codes ON gto_reception_code = grc_id_reception_code INNER JOIN
+                        gems__surveys ON gto_id_survey = gsu_id_survey INNER JOIN
+                        gems__rounds ON gto_id_round = gro_id_round
                     WHERE gto_id_respondent = ? AND
                         gto_id_organization = ? AND
-                        grc_success = 1
+                        grc_success = 1 AND
+                        gro_active = 1 AND
+                        gsu_active = 1
                     GROUP BY COALESCE(gto_round_description, '')
                     ORDER BY MIN(COALESCE(gto_round_order, 100000)), gto_round_description";
 
@@ -242,14 +246,14 @@ class Gems_Snippets_Respondent_RoundsTabsSnippet extends \MUtil_Snippets_TabSnip
 
             foreach ($tabLabels as $row) {
                 $name = '_' . \MUtil_Form::normalizeName($row['label']);
+                $label = $row['label'] ? $row['label'] : $this->_('empty');
                 if ($row['waiting']) {
-                    $label = sprintf(
-                            $this->_('%s (%d open)'),
-                            $row['label'],
-                            $row['waiting']
-                            );
+                    $label = sprintf($this->_('%s (%d open)'), $label, $row['waiting']);
                 } else {
-                    $label = $row['label'];
+                    $label = $label;
+                }
+                if (! $row['label']) {
+                    $label = \MUtil_Html::create('em', $label);
                 }
 
                 $filters[$name] = $row['label'];

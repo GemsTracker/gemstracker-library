@@ -99,11 +99,6 @@ class Gems_Snippets_Respondent_RoundTokenSnippet extends \Gems_Snippets_Responde
 
         $roundIcon[] = \MUtil_Lazy::iif($bridge->gro_icon_file, \MUtil_Html::create('img', array('src' => $bridge->gro_icon_file, 'class' => 'icon')));
 
-        if ($menuItem = $this->findMenuItem('track', 'show-track')) {
-            $href = $menuItem->toHRefAttribute($this->request, $bridge);
-        } else {
-        }
-
         $bridge->addMultiSort('gsu_survey_name', $roundIcon);
         $bridge->addSortable('ggp_name');
         $bridge->addSortable('calc_used_date', null, $HTML->if($bridge->is_completed, 'disabled date', 'enabled date'));
@@ -119,9 +114,11 @@ class Gems_Snippets_Respondent_RoundTokenSnippet extends \Gems_Snippets_Responde
         $bridge->useRowHref = false;
 
         $actionLinks[] = $this->createMenuLink($bridge, 'track',  'answer');
-        $actionLinks[] = $this->createMenuLink($bridge, 'survey', 'answer');
         $actionLinks[] = array(
-            $bridge->ggp_staff_members->if($this->createMenuLink($bridge, 'ask', 'take'), $bridge->calc_id_token->strtoupper()),
+            $bridge->ggp_staff_members->if(
+                    $this->createMenuLink($bridge, 'ask', 'take'),
+                    $bridge->calc_id_token->strtoupper()
+                    ),
             'class' => $bridge->ggp_staff_members->if(null, $bridge->calc_id_token->if('token')));
         // calc_id_token is empty when the survey has been completed
 
@@ -168,8 +165,8 @@ class Gems_Snippets_Respondent_RoundTokenSnippet extends \Gems_Snippets_Responde
     public function hasHtmlOutput()
     {
         if ($this->menu) {
-            if ($default = $this->project->getDefaultTrackId()) {
-
+            $default = $this->project->getDefaultTrackId();
+            if ($default) {
                 if ($this->respondentData['grc_success']) {
                     $track = $this->loader->getTracker()->getTrackEngine($default);
 
@@ -180,7 +177,7 @@ class Gems_Snippets_Respondent_RoundTokenSnippet extends \Gems_Snippets_Responde
                                         )
                                 ->addParameterSources(
                                         array(
-                                            \Gems_Model::TRACK_ID   => $default,
+                                            \Gems_Model::TRACK_ID  => $default,
                                             'gtr_id_track'         => $default,
                                             'track_can_be_created' => 1,
                                             ),
@@ -203,16 +200,5 @@ class Gems_Snippets_Respondent_RoundTokenSnippet extends \Gems_Snippets_Responde
         }
 
         return parent::hasHtmlOutput();
-    }
-    /**
-     * Overrule to implement snippet specific filtering and sorting.
-     *
-     * @param \MUtil_Model_ModelAbstract $model
-     */
-    protected function processFilterAndSort(\MUtil_Model_ModelAbstract $model)
-    {
-        parent::processFilterAndSort($model);
-
-        $round = $this->request->getParam('round');
     }
 }
