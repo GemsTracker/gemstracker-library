@@ -186,15 +186,15 @@ class Gems_Snippets_Respondent_RoundTokenSnippet extends \Gems_Snippets_Responde
                         $this->onEmpty = $list->getActionLink('track', 'create');
                     }
                 }
-                if (! $this->onEmpty) {
-                    if ($this->respondentData['grc_success']) {
-                        $list = $this->menu->getMenuList()
-                                ->addByController('track', 'show-track', $this->_('Add a track to this respondent'))
-                                ->addParameterSources($this->request);
-                        $this->onEmpty = $list->getActionLink('track', 'show-track');
-                    } else {
-                        $this->onEmpty = MUtil_Html::create('em', $this->_('No valid tokens found'));
-                    }
+            }
+            if (! $this->onEmpty) {
+                if ($this->respondentData['grc_success']) {
+                    $list = $this->menu->getMenuList()
+                            ->addByController('track', 'show-track', $this->_('Add a track to this respondent'))
+                            ->addParameterSources($this->request);
+                    $this->onEmpty = $list->getActionLink('track', 'show-track');
+                } else {
+                    $this->onEmpty = MUtil_Html::create('em', $this->_('No valid tokens found'));
                 }
             }
         }

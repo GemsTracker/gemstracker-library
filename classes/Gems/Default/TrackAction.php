@@ -422,22 +422,27 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
      */
     protected function createModel($detailed, $action)
     {
+        $apply = true;
         $model = $this->loader->getTracker()->getRespondentTrackModel();
-
         if ($detailed) {
             $engine = $this->getTrackEngine();
 
-            switch ($action) {
-                case 'export-track':
-                case 'show-track':
-                    $model->applyDetailSettings($engine);
-                    break;
+            if ($engine) {
+                switch ($action) {
+                    case 'export-track':
+                    case 'show-track':
+                        $model->applyDetailSettings($engine);
+                        break;
 
-                default:
-                    $model->applyEditSettings($engine);
-                    break;
+                    default:
+                        $model->applyEditSettings($engine);
+                        break;
+                }
+
+                $apply = false;
             }
-        } else {
+        }
+        if ($apply) {
             $model->applyBrowseSettings();
         }
 
@@ -822,8 +827,8 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
 
                 $trackId = $this->escort->getTrackId();
 
-                if (! $engineId) {
-                    throw new \Gems_Exception($this->_('No track engine specified!'));
+                if (! $trackId) {
+                    return null;
                 }
             }
 
@@ -841,7 +846,10 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
      */
     public function getTrackId()
     {
-        return $this->getTrackEngine()->getTrackId();
+        $trackEngine = $this->getTrackEngine();
+        if ($trackEngine) {
+            return $trackEngine->getTrackId();
+        }
     }
 
     /**

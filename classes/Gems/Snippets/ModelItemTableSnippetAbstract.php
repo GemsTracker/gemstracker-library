@@ -150,7 +150,7 @@ abstract class Gems_Snippets_ModelItemTableSnippetAbstract extends \MUtil_Snippe
     {
         if ($table = parent::getHtmlOutput($view)) {
             if ($title = $this->getTitle()) {
-                $htmlDiv = \MUtil_Html::div();
+                $htmlDiv = \MUtil_Html::div(array('renderWithoutContent' => false));
 
                 $htmlDiv->h3($title);
 
