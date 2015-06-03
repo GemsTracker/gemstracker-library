@@ -233,16 +233,18 @@ class MUtil_Markup_Renderer_Text extends \Zend_Markup_Renderer_RendererAbstract
                 'filter' => true,
             ),
             'list' => array(
-                'type'     => 6,
-                'callback' => 'MUtil_Markup_Renderer_Text::url',
-                'group'    => 'list',
-                // 'filter'   => new \Zend_Filter_PregReplace('/.*/is', ''),
+                'type'   => 10,
+                'tag'    => 'ul',
+                'group'  => 'block',
+                'filter' => true,
             ),
             '*' => array(
                 'type'   => 10,
                 'tag'    => 'li',
-                'group'  => 'list-item',
+                'group'  => 'block',
                 'filter' => true,
+                'start'  => ' - ',
+                'end'    => "\n",
             ),
             'hr' => array(
                 'type'    => 9, // self::TYPE_REPLACE | self::TAG_SINGLE
@@ -325,34 +327,35 @@ class MUtil_Markup_Renderer_Text extends \Zend_Markup_Renderer_RendererAbstract
     /**
      * Execute a replace token
      *
-     * @param  \Zend_Markup_Token $token
-     * @param  array $markup
+     * @param  Zend_Markup_Token $token
+     * @param  array $tag
      * @return string
      */
-    protected function _executeReplace(\Zend_Markup_Token $token, $markup)
+    protected function _executeReplace(Zend_Markup_Token $token, $tag)
     {
-        return $this->_render($token);
-        if (isset($markup['tag'])) {
-            if (!isset($markup['attributes'])) {
-                $markup['attributes'] = array();
-            }
-            $attrs = self::renderAttributes($token, $markup['attributes']);
-            return "<{$markup['tag']}{$attrs}>{$this->_render($token)}</{$markup['tag']}>";
+        if (! isset($tag['start'])) {
+            $tag['start'] = '';
+        }
+        if (! isset($tag['end'])) {
+            $tag['end'] = '';
         }
 
-        return parent::_executeReplace($token, $markup);
+        return parent::_executeReplace($token, $tag);
     }
 
     /**
      * Execute a single replace token
      *
-     * @param  \Zend_Markup_Token $token
-     * @param  array $markup
+     * @param  Zend_Markup_Token $token
+     * @param  array $tag
      * @return string
      */
-    protected function _executeSingleReplace(\Zend_Markup_Token $token, $markup)
+    protected function _executeSingleReplace(Zend_Markup_Token $token, $tag)
     {
-        return '';
+        if (! isset($tag['replace'])) {
+            $tag['replace'] = '';
+        }
+        return parent::_executeReplace($token, $tag);
     }
 
     /**
@@ -365,7 +368,8 @@ class MUtil_Markup_Renderer_Text extends \Zend_Markup_Renderer_RendererAbstract
         $this->_defaultFilter = new \Zend_Filter();
     }
 
-    public static function url()
+    public static function ul(\Zend_Markup_Token $token, $markup)
     {
+        return $this->_render($token);
     }
 }
