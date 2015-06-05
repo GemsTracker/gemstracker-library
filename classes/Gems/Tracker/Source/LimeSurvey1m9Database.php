@@ -126,12 +126,12 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
      * @var Gems_Util
      */
     protected $util;
-    
+
     /**
      * Checks the return URI in LimeSurvey and sets it to the correct one when needed
-     * 
+     *
      * @see checkSurvey()
-     * 
+     *
      * @param string $sourceSurveyId
      * @param \Gems_Tracker_Survey $survey
      * @param array $messages
@@ -147,10 +147,10 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
         foreach ($languages as $language)
         {
             $langChanges = $langChanges + $lsDb->update(
-                $lsSurvLang, 
+                $lsSurvLang,
                 array(
-                    'surveyls_urldescription' => $this->_getReturnURIDescription($language['surveyls_language'])                            
-                    ), 
+                    'surveyls_urldescription' => $this->_getReturnURIDescription($language['surveyls_language'])
+                    ),
                 array(
                     'surveyls_survey_id = ?' => $sourceSurveyId,
                     'surveyls_language = ?'  => $language
@@ -310,24 +310,24 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
 
         return $this->_languageMap[$sourceSurveyId][$language];
     }
-    
+
     /**
      * Get the return URI to return from LimeSurvey to GemsTracker
-     * 
+     *
      * @return string
      */
     protected function _getReturnURI()
-    {        
+    {
         return $this->util->getCurrentURI('ask/return/' . MUtil_Model::REQUEST_ID . '/{TOKEN}');
     }
-    
+
     /**
      * Get the return URI description to set in LimeSurvey
-     * 
+     *
      * @param string $language
      * @return string
      */
-    protected function _getReturnURIDescription($language) 
+    protected function _getReturnURIDescription($language)
     {
         return sprintf(
             $this->translate->_('Back to %s', $language),
@@ -440,7 +440,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
 
         return false;
     }
-    
+
     /**
      * Check if the tableprefix exists in the source database, and change the status of this
      * adapter in the gems_sources table accordingly
@@ -536,7 +536,6 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
 
             // IS ACTIVE
             if ($lsSurvey['active'] == 'Y') {
-                $surveyor_active = true;
                 try {
                     $tokenTable = $lsDb->fetchAssoc('SHOW COLUMNS FROM ' . $this->_getTokenTableName($sourceSurveyId));
                 } catch (Zend_Exception $e) {
@@ -544,7 +543,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                 }
 
                 if ($tokenTable) {
-                    $missingFields = $this->_checkTokenTable($tokenTable);
+                    $missingFields   = $this->_checkTokenTable($tokenTable);
 
                     if ($missingFields) {
                         $sql    = "ALTER TABLE " . $this->_getTokenTableName($sourceSurveyId) . " " . implode(', ', $missingFields);
@@ -572,9 +571,9 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
 
 
             } else {
-                $surveyor_active = false;
                 $surveyor_status .= 'Not active. ';
             }
+            $surveyor_active = (0 === strlen($surveyor_status));
 
             // Update Gems
             $values = array();
@@ -606,10 +605,10 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                     $values['gsu_survey_name'] = $surveyor_title;
                     $messages[] = sprintf($this->_('The name of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $surveyor_title);
                 }
-                
+
                 // Check return url description
                 $this->_checkReturnURI($sourceSurveyId, $survey, $messages);
-                
+
             } else { // New record
                 $values['gsu_survey_name']        = $surveyor_title;
                 $values['gsu_surveyor_active']    = $surveyor_active ? 1 : 0;
