@@ -461,7 +461,11 @@ class Gems_Snippets_Mail_MailFormSnippet extends \MUtil_Snippets_ModelSnippetAbs
         if ($this->request->isPost()) {
             $requestData = $this->request->getPost();
             foreach($requestData as $key=>$value) {
-                $this->formData[$key] = htmlspecialchars($value);
+                if (!is_array($value)) {
+                    $this->formData[$key] = htmlspecialchars($value);
+                } else {
+                    $this->formData[$key] = array_map('htmlspecialchars', $value);
+                }
             }
         }
 
