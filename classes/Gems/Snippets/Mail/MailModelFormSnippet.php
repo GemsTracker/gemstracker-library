@@ -262,8 +262,10 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
             } elseif (!empty($data['sendtest'])) {
                 $this->mailer->setTo($data['to']);
 
-                $template = array();
+                // Make sure at least one template is set (for single language projects)
+                $template = reset($data['gctt']);
                 foreach($data['gctt'] as $templateLanguage) {
+                    // Find the current template (for multi language projects)
                     if ($templateLanguage['gctt_lang'] == $data['send_language']) {
                         $template = $templateLanguage;
                     }
