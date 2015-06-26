@@ -87,6 +87,7 @@ class AddAnswersTransformer extends \MUtil_Model_ModelTransformerAbstract
         $tokens = \MUtil_Ra::column('gto_id_token', $data);
 
         $answerRows = $this->source->getRawTokenAnswerRows(array('token' => $tokens), $this->survey->getSurveyId());
+        $resultRows = array();
         
         $emptyRow = array_fill_keys($model->getItemNames(), null);
 
