@@ -193,7 +193,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
      */
     private function _ensureFieldData($reload = false)
     {
-        if ((null === $this->_fieldData) || $reload) {
+        if ($this->_respTrackData && (null === $this->_fieldData) || $reload) {
             $engine    = $this->getTrackEngine();
             $fieldData = $engine->getFieldsData($this->_respTrackId);
             $fieldMap  = $engine->getFields();

@@ -68,6 +68,12 @@ class Gems_Default_TrackRoundsAction extends \Gems_Controller_ModelSnippetAction
     protected $autofilterSnippets = 'Tracker\\Rounds\\RoundsTableSnippet';
 
     /**
+     *
+     * @var \Gems_Util_BasePath
+     */
+    public $basepath;
+
+    /**
      * The parameters used for the create and edit actions.
      *
      * When the value is a function name of that object, then that functions is executed
@@ -159,7 +165,7 @@ class Gems_Default_TrackRoundsAction extends \Gems_Controller_ModelSnippetAction
         $this->createEditSnippets = $this->getTrackEngine()->getRoundEditSnippetNames();
 
         \MUtil_JQuery::enableView($this->view);
-        $this->view->headScript()->appendFile(\Zend_Controller_Front::getInstance()->getBaseUrl()  .  '/gems/js/jquery.showOnChecked.js');
+        $this->view->headScript()->appendFile($this->basepath->getBasePath()  .  '/gems/js/jquery.showOnChecked.js');
 
         if (\MUtil_Bootstrap::enabled()) {
             $this->view->headScript()->appendScript("jQuery(document).ready(function($) {
@@ -201,6 +207,8 @@ class Gems_Default_TrackRoundsAction extends \Gems_Controller_ModelSnippetAction
 
                 if ($newOrder) {
                     $model->set('gro_id_order', 'default', $newOrder + 10);
+                } else {
+                    $model->set('gro_valid_after_source', 'default', 'rtr');
                 }
             }
         }
