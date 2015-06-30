@@ -94,7 +94,7 @@ class DateField extends FieldAbstract
         if ((null === $currentValue) ||
                 ($currentValue instanceof \Zend_Db_Expr) ||
                 \MUtil_String::startsWith($currentValue, 'current_', true)) {
-            return $currentValue;
+            return null;
         }
 
         if ($currentValue instanceof \Zend_Date) {
