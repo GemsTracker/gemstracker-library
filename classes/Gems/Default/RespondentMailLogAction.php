@@ -75,6 +75,13 @@ class Gems_Default_RespondentMailLogAction extends \Gems_Default_RespondentChild
     protected $autofilterSnippets = 'Respondent_MailLogSnippet';
 
     /**
+     * The default search data to use.
+     *
+     * @var array()
+     */
+    protected $defaultSearchData = array(\Gems_Snippets_AutosearchFormSnippet::PERIOD_DATE_USED => 'grco_created');
+
+    /**
      * The parameters used for the index action minus those in autofilter.
      *
      * When the value is a function name of that object, then that functions is executed
