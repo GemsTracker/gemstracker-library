@@ -211,21 +211,36 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends Gems_Snippets_Mail_Mai
                         $mailer->setSubject($this->formData['subject']);
                         $mailer->setBody($this->formData['body']);
                         $mailer->setTemplateId($this->formData['select_template']);
-                        $mailer->send();
+                        
+                        try {
+                            $mailer->send();
 
-                        $mails++;
-                        $updates++;
+                            $mails++;
+                            $updates++;
+                            
+                        } catch (Zend_Mail_Transport_Exception $exc) {
+                            // Sending failed
+                            $this->addMessage(sprintf($this->_('Sending failed for token %s with reason: %s.'), $token->getTokenId(), $exc->getMessage()));
+                        }
+                        
                     } elseif (!isset($sentMailAddresses[$email])) {
                         $mailer->setFrom($this->fromOptions[$this->formData['from']]);
                         $mailer->setSubject($this->formData['subject']);
                         $mailer->setBody($this->formData['body']);
                         $mailer->setTemplateId($this->formData['select_template']);
-                        $mailer->send();
-                        $mails++;
-                        $updates++;
+                        
+                        try {
+                            $mailer->send();
+                            $mails++;
+                            $updates++;
 
-                        $sentMailAddresses[$email] = true;
-
+                            $sentMailAddresses[$email] = true;
+                            
+                        } catch (Zend_Mail_Transport_Exception $exc) {
+                            // Sending failed
+                            $this->addMessage(sprintf($this->_('Sending failed for token %s with reason: %s.'), $token->getTokenId(), $exc->getMessage()));
+                        }
+                        
                     } elseif ($this->formData['multi_method'] == 'O') {
                         $this->mailer->updateToken($tokenData['gto_id_token']);
                         $updates++;
