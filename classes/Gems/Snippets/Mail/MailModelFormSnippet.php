@@ -111,9 +111,16 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
             array('availablefields')
             )
         );
-        $config['availablefields'] = $this->mailer->getMailFields();
-        $config['availablefieldsLabel'] = $this->_('Fields');
 
+        
+        $mailfields = $this->mailer->getMailFields();
+        foreach($mailfields as $field => $value) {
+            $mailfields[$field] = utf8_encode($value);
+        }
+        $config['availablefields'] = $mailfields;
+
+
+        $config['availablefieldsLabel'] = $this->_('Fields');
         $this->view->inlineScript()->prependScript("
             CKEditorConfig = ".Zend_Json::encode($config).";
             ");

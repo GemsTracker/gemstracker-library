@@ -141,10 +141,14 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
 
                         // Take care of double definitions
                         if (! isset($results[$eventName])) {
-                            if (! class_exists($eventName)) {
+                            $eventNsName = '\\' . strtr($eventName, '_', '\\');
+                            if (! (class_exists($eventName, false) || class_exists($eventNsName, false))) {
                                 include($path . '/' . $filename);
                             }
 
+                            if ((! class_exists($eventName, false)) && class_exists($eventNsName, false)) {
+                                $eventName = $eventNsName;
+                            }
                             $event = new $eventName();
 
                             if ($event instanceof $eventClass) {

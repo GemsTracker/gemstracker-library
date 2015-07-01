@@ -409,12 +409,18 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
 
         $prefixes['A'] = array_keys($questions);
 
+        $source = $survey->getSource();
+        $attributes = $source->getAttributes();
+
+        foreach($attributes as $attribute) {
+            $model->set($attribute, 'label', $attribute);
+        }
 
         $model->addTable('gems__respondent2track', array('gr2t_id_respondent_track' => 'gto_id_respondent_track'), 'gr2t');
         $model->addTable('gems__tracks', array('gtr_id_track' => 'gto_id_track'), 'gtr');
 
-        $model->set('gto_id_respondent',        'label', $this->_('Respondent ID'));
-        $model->set('gto_id_organization',      'label', $this->_('Organization'),
+        $model->set('respondentid',        'label', $this->_('Respondent ID'));
+        $model->set('organizationid',      'label', $this->_('Organization'),
                                                 'multiOptions', $this->loader->getCurrentUser()->getAllowedOrganizations()
         );
         // Add Consent

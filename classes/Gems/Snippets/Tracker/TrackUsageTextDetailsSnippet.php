@@ -157,7 +157,9 @@ class TrackUsageTextDetailsSnippet extends \MUtil_Snippets_SnippetAbstract
                 }
             }
 
-            $this->trackData = $this->db->fetchRow('SELECT * FROM gems__tracks WHERE gtr_id_track = ?', $this->trackId);
+            $trackModel = new \MUtil_Model_TableModel('gems__tracks');
+            $this->trackData = $trackModel->loadFirst(array('gtr_id_track' => $this->trackId));
+            
         } elseif (! $this->trackId) {
             $this->trackId = $this->trackData['gtr_id_track'];
         }
