@@ -279,6 +279,9 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
         $model = $this->getConfigModel(false);
 
         $newData = $model->loadFirst(array('grcfg_id_organization' => $data['gor_id_organization']));
+        if (empty($newData)) {
+            $newData = $model->loadNew();
+        }
         $newData['grcfg_id_organization'] = $data['gor_id_organization'];
 
         return $newData;
