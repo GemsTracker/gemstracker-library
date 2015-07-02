@@ -71,24 +71,30 @@ class Gems_Snippets_RespondentSearchSnippet extends Gems_Snippets_AutosearchForm
     {
         $elements = parent::getAutoSearchElements($data);
 
-        $elements[] = $this->_createCheckboxElement('show_with_track',    $this->_('Has track'));
-        $elements[] = $this->_createCheckboxElement('show_without_track', $this->_('No track'));
-
-
         $user = $this->loader->getCurrentUser();
+        if ($user->hasPrivilege('pr.respondent.select-on-track')) {
+            $elements[] = $this->_createCheckboxElement('show_with_track',    $this->_('Has track'));
+            $elements[] = $this->_createCheckboxElement('show_without_track', $this->_('No track'));
+            $lineBreak = true;
+        } else {
+            $lineBreak = false;
+        }
+
         if ($user->hasPrivilege('pr.respondent.show-deleted')) {
             $elements[] = $this->_createCheckboxElement('grc_success', $this->_('Show active'));
         }
 
         if ($this->model->isMultiOrganization()) {
-            $elements[] = \MUtil_Html::create('br');
-
             $element = $this->_createSelectElement(
                     MUtil_Model::REQUEST_ID2,
                     $user->getRespondentOrganizations(),
                     $this->_('(all organizations)')
                     );
-            $element->setLabel($this->_('Organization'));
+
+            if ($lineBreak) {
+                $element->setLabel($this->_('Organization'));
+                $elements[] = \MUtil_Html::create('br');
+            }
             $elements[] = $element;
         }
 
