@@ -386,7 +386,7 @@ abstract class MUtil_Batch_BatchAbstract extends \MUtil_Registry_TargetAbstract 
 
         $this->addMessage($message);
         $this->_session->exceptions[] = $message;
-        
+
         if ($this->log instanceof \Zend_Log) {
             $messages[] = $message;
 
@@ -395,7 +395,7 @@ abstract class MUtil_Batch_BatchAbstract extends \MUtil_Registry_TargetAbstract 
                 $messages[] = '  Previous exception: ' . $previous->getMessage();
             }
             $messages[] = $e->getTraceAsString();
-
+            
             $this->log->log(implode("\n", $messages), \Zend_Log::ERR);
         }
         return $this;

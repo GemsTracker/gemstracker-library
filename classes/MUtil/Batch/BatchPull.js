@@ -41,9 +41,18 @@ jQuery.widget("ui.pullProgressPanel", {
     error: function (request, status, error) {
         "use strict";
 
+        var message;
+
         // alert('Communication error: ' + status);
-        this.progressTarget.after('<h3>Communication error</h3><p><strong>' + status + '</strong><br/>' + request.responseText + '</p>');
-        // console.log(request);
+        if (request.responseText) {
+            message = request.responseText;
+        } else if (error) {
+            message = error;
+        } else {
+            message = 'No information was returned by the server.';
+        }
+        this.progressTarget.after('<h3>Communication error</h3><p><strong>' + status + '</strong><br/>' + message + '</p>');
+        // console.log(request, status, error);
     },
 
     progressTarget: null,
@@ -93,7 +102,7 @@ jQuery.widget("ui.pullProgressPanel", {
             data.percent = 'xx';
             data.text = 'An error occured, no data was returned, check the error logs.';
         }
-        
+
         // console.log(data);
         if (data.finished) {
             data.percent = 100;
