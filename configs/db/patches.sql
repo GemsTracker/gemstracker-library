@@ -978,6 +978,9 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.token.undele
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.staff-log')
     WHERE grl_name = 'admin' AND grl_privileges NOT LIKE '%,pr.staff-log%';
 
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.respondent.select-on-track')
+    WHERE grl_name = 'admin' AND grl_privileges NOT LIKE '%,pr.respondent.select-on-track%';
+
 -- PATCH: Advanced appointment integration
 ALTER TABLE gems__track_fields
     ADD gtf_track_info_label boolean not null default false AFTER gtf_to_track_info;
