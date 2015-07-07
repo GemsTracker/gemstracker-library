@@ -284,7 +284,7 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends MUtil_Mode
     {
         $row = parent::validateRowValues($row, $key);
 
-        $token = $this->loader->getTracker()->getToken($row['token']);
+        $token = $this->loader->getTracker()->getToken($row['token'] ? $row['token'] : 'emptytoken');
 
         if ($token->exists) {
             if ($token->isCompleted() && (self::TOKEN_ERROR == $this->getTokenCompleted())) {
