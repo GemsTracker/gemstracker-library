@@ -257,6 +257,19 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends \Gems_Mode
     }
 
     /**
+     * Get the error message for when no token exists
+     *
+     * @return string
+     */
+    public function getNoTokenError(array $row, $key)
+    {
+        return sprintf(
+                $this->_('No token found for %s.'),
+                implode(" / ", $row)
+                );
+    }
+
+    /**
      * Get the id of the survey to import to
      *
      * @return int $surveyId
@@ -375,7 +388,7 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends \Gems_Mode
         $row['track_id']  = $this->getTrackId();
         $row['survey_id'] = $this->_surveyId;
         $row['token']     = strtolower($this->findTokenFor($row));
-        
+
         return $row;
     }
 
@@ -400,10 +413,7 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends \Gems_Mode
                         ), $key);
             }
         } elseif (self::TOKEN_ERROR == $this->getNoToken()) {
-            $this->_addErrors(sprintf(
-                    $this->_('No token found for %s.'),
-                    implode(" / ", $row)
-                    ), $key);
+            $this->_addErrors($this->getNoTokenError($row, $key), $key);
         } else {
             $respTrack = $this->findRespondentTrackFor($row);
 

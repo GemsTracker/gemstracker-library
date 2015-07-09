@@ -93,13 +93,51 @@ class Gems_Model_Translator_DateAnswerTranslator extends \Gems_Model_Translator_
                     ->order('gto_round_order');
 
             $token = $this->db->fetchOne($select);
-            
+
             if ($token) {
                 return $token;
             }
         }
 
         return null;
+    }
+
+    /**
+     * Get the error message for when no token exists
+     *
+     * @return string
+     */
+    public function getNoTokenError(array $row, $key)
+    {
+        if (! (isset($row['completion_date']) && $row['completion_date'])) {
+            return $this->_('Missing date in completion_date field.');
+        }
+        if (isset($row[$this->patientNrField], $row[$this->orgIdField]) &&
+                $row[$this->patientNrField] &&
+                $row[$this->orgIdField]) {
+
+            $select = $this->db->select();
+            $select->from('gems__tokens', array('gto_id_token'))
+                    ->joinInner(
+                            'gems__respondent2org',
+                            'gto_id_respondent = gr2o_id_user AND gto_id_organization = gr2o_id_organization',
+                            array()
+                            )
+                    ->where('gr2o_patient_nr = ?', $row[$this->patientNrField])
+                    ->where('gr2o_id_organization = ?', $row[$this->orgIdField])
+                    ->where('gto_id_survey = ?', $this->getSurveyId());
+
+            if ($this->db->fetchOne($select)) {
+                $survey = $tracker->getSurvey($this->getSurveyId());
+                return sprintf(
+                        $this->_('Respondent %s has no valid token for the %s survey.'),
+                        $respondent->getPatientNumber(),
+                        $survey->getName()
+                        );
+            }
+        }
+
+        return parent::getNoTokenError($row, $key);
     }
 
     /**

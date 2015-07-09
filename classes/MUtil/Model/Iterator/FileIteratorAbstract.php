@@ -100,7 +100,7 @@ abstract class MUtil_Model_Iterator_FileIteratorAbstract implements \Iterator, \
      *
      * @var type
      */
-    protected $_key = -1;
+    protected $_key = 0;
 
     /**
      * Variables for stuff that should be serialized by sub classes
@@ -281,7 +281,7 @@ abstract class MUtil_Model_Iterator_FileIteratorAbstract implements \Iterator, \
     public function rewind()
     {
         $this->_filepos = null;
-        $this->_key = -1;
+        $this->_key = 0;
 
         if (null === $this->_file) {
             $this->_openFile();
