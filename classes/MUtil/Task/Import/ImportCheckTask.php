@@ -98,7 +98,6 @@ class MUtil_Task_Import_ImportCheckTask extends \MUtil_Task_IteratorTaskAbstract
         if (! $current) {
             return;
         }
-
         $batch = $this->getBatch();
 
         $row = $this->modelTranslator->translateRowValues($current, $key);

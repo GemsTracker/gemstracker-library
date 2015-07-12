@@ -360,6 +360,11 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends \MUtil_Snippets_WizardF
                 }
 
             } else {
+                $iter = $batch->getSessionVariable('iterator');
+                if ($iter instanceof \Iterator) {
+                    // Restart the iterator
+                    $iter->rewind();
+                }
                 $element->setValue($batch->getPanel($this->view, $batch->getProgressPercentage() . '%'));
 
             }
@@ -412,6 +417,11 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends \MUtil_Snippets_WizardF
                 $element->pInfo($text);
 
             } else {
+                $iter = $batch->getSessionVariable('iterator');
+                if ($iter instanceof \Iterator) {
+                    // Restart the iterator
+                    $iter->rewind();
+                }
                 $element->setValue($batch->getPanel($this->view, $batch->getProgressPercentage() . '%'));
 
             }
