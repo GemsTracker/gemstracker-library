@@ -376,7 +376,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
      */
     public function getSubject()
     {
-        return $this->_gemsData['gap_subject'];
+        return isset($this->_gemsData['gap_subject']) ? $this->_gemsData['gap_subject'] : null;
     }
 
     /**

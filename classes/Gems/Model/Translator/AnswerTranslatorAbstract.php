@@ -129,6 +129,13 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends \Gems_Mode
     protected $patientNrField = 'patient_id';
 
     /**
+     * The task used for import
+     *
+     * @var string
+     */
+    protected $saveTask = 'Import_SaveAnswerTask';
+
+    /**
      * Add the current row to a (possibly separate) batch that does the importing.
      *
      * @param \MUtil_Task_TaskBatch $importBatch The import batch to impor this row into
@@ -139,7 +146,7 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends \Gems_Mode
     public function addSaveTask(\MUtil_Task_TaskBatch $importBatch, $key, array $row)
     {
         $importBatch->setTask(
-                'Import_SaveAnswerTask',
+                $this->saveTask,
                 'import-' . $key,
                 $row,
                 $this->getNoToken(),
