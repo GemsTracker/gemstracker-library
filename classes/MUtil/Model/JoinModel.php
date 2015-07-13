@@ -104,6 +104,14 @@ class MUtil_Model_JoinModel extends \MUtil_Model_DatabaseModelAbstract
         return $results;
     }
 
+    public function checkJoinExists($sourceField, $targetField)
+    {
+        if (isset($this->_joinFields[$sourceField]) && $this->_joinFields[$sourceField] == $targetField) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      *
      * @param string $alias
