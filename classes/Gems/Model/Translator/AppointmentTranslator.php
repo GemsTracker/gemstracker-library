@@ -53,6 +53,13 @@ class Gems_Model_Translator_AppointmentTranslator extends \Gems_Model_Translator
     protected $_agenda;
 
     /**
+     * The name of the field to store the organization id in
+     *
+     * @var string
+     */
+    protected $orgIdField = 'gap_id_organization';
+
+    /**
      *
      * @var \Gems_loader
      */
@@ -139,14 +146,13 @@ class Gems_Model_Translator_AppointmentTranslator extends \Gems_Model_Translator
         $row['gap_manual_edit'] = 0;
 
         if (! isset($row['gap_id_user'])) {
-            if (isset($row['gr2o_patient_nr'], $row['gap_id_organization'])) {
+            if (isset($row['gr2o_patient_nr'], $row[$this->orgIdField])) {
 
                 $sql = 'SELECT gr2o_id_user
                         FROM gems__respondent2org
                         WHERE gr2o_patient_nr = ? AND gr2o_id_organization = ?';
 
-                $id = $this->db->fetchOne($sql, array($row['gr2o_patient_nr'], $row['gap_id_organization']));
-                // \MUtil_Echo::track($id, $row['gr2o_patient_nr'], $row['gap_id_organization']);
+                $id = $this->db->fetchOne($sql, array($row['gr2o_patient_nr'], $row[$this->orgIdField]));
 
                 if ($id) {
                     $row['gap_id_user'] = $id;
@@ -170,35 +176,35 @@ class Gems_Model_Translator_AppointmentTranslator extends \Gems_Model_Translator
         if (isset($row['gas_name_attended_by'])) {
             $row['gap_id_attended_by'] = $this->_agenda->matchHealthcareStaff(
                     $row['gas_name_attended_by'],
-                    $row['gap_id_organization']
+                    $row[$this->orgIdField]
                     );
             $skip = $skip || (false === $row['gap_id_attended_by']);
         }
         if (isset($row['gas_name_referred_by'])) {
             $row['gap_id_referred_by'] = $this->_agenda->matchHealthcareStaff(
                     $row['gas_name_referred_by'],
-                    $row['gap_id_organization']
+                    $row[$this->orgIdField]
                     );
             $skip = $skip || (false === $row['gap_id_referred_by']);
         }
         if (isset($row['gaa_name'])) {
             $row['gap_id_activity'] = $this->_agenda->matchActivity(
                     $row['gaa_name'],
-                    $row['gap_id_organization']
+                    $row[$this->orgIdField]
                     );
             $skip = $skip || (false === $row['gap_id_activity']);
         }
         if (isset($row['gapr_name'])) {
             $row['gap_id_procedure'] = $this->_agenda->matchProcedure(
                     $row['gapr_name'],
-                    $row['gap_id_organization']
+                    $row[$this->orgIdField]
                     );
             $skip = $skip || (false === $row['gap_id_procedure']);
         }
         if (isset($row['glo_name'])) {
             $location = $this->_agenda->matchLocation(
                     $row['glo_name'],
-                    $row['gap_id_organization']
+                    $row[$this->orgIdField]
                     );
             $row['gap_id_location'] = $location['glo_id_location'];
             $skip = $skip || $location['glo_filter'];
@@ -209,5 +215,25 @@ class Gems_Model_Translator_AppointmentTranslator extends \Gems_Model_Translator
         // \MUtil_Echo::track($row);
 
         return $row;
+    }
+
+    /**
+     * Prepare for the import.
+     *
+     * @return \MUtil_Model_ModelTranslatorAbstract (continuation pattern)
+     */
+    public function startImport()
+    {
+        if ($this->_targetModel instanceof \MUtil_Model_ModelAbstract) {
+            // No multiOptions as a new items can be created during import
+            $fields = array(
+                'gap_id_attended_by', 'gap_id_referred_by', 'gap_id_activity',  'gap_id_procedure', 'gap_id_location',
+                );
+            foreach ($fields as $name) {
+                $this->_targetModel->del($name, 'multiOptions');
+            }
+        }
+
+        return parent::startImport();
     }
 }

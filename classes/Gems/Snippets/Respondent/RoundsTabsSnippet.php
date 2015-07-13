@@ -228,15 +228,14 @@ class Gems_Snippets_Respondent_RoundsTabsSnippet extends \MUtil_Snippets_TabSnip
                         gems__surveys ON gto_id_survey = gsu_id_survey INNER JOIN
                         gems__rounds ON gto_id_round = gro_id_round
                     WHERE gto_id_respondent = ? AND
-                        gto_id_organization = ? AND
                         grc_success = 1 AND
                         gro_active = 1 AND
                         gsu_active = 1
                     GROUP BY COALESCE(gto_round_description, '')
                     ORDER BY MIN(COALESCE(gto_round_order, 100000)), gto_round_description";
 
-        // \MUtil_Echo::track($this->respondentId, $this->organizationId);
-        $tabLabels = $this->db->fetchAll($sql, array($this->respondentId, $this->organizationId));
+        // \MUtil_Echo::track($this->respondentId);
+        $tabLabels = $this->db->fetchAll($sql, $this->respondentId);
 
         if ($tabLabels) {
             $default = null;

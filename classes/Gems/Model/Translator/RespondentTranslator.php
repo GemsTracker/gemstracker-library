@@ -47,14 +47,16 @@
 class Gems_Model_Translator_RespondentTranslator extends \Gems_Model_Translator_StraightTranslator
 {
     /**
-     * Create an empty form for filtering and validation
-     *
-     * @return \MUtil_Form
+     * @var \Zend_Db_Adapter_Abstract
      */
-    protected function _createTargetForm()
-    {
-        return new \Gems_Form();
-    }
+    protected $db;
+
+    /**
+     * The task used for import
+     *
+     * @var string
+     */
+    protected $saveTask = 'Import_SaveRespondentTask';
 
     /**
      * Should be called after answering the request to allow the Target
@@ -113,49 +115,12 @@ class Gems_Model_Translator_RespondentTranslator extends \Gems_Model_Translator_
             return false;
         }
 
-        if (! isset($row['grs_id_user'])) {
-            $id = false;
+        if ((! isset($row['grs_id_user'])) && isset($row['gr2o_patient_nr'], $row['gr2o_id_organization'])) {
+            $sql = 'SELECT gr2o_id_user
+                    FROM gems__respondent2org
+                    WHERE gr2o_patient_nr = ? AND gr2o_id_organization = ?';
 
-            if (isset($row['gr2o_patient_nr'], $row['gr2o_id_organization'])) {
-                $sql = 'SELECT gr2o_id_user
-                        FROM gems__respondent2org
-                        WHERE gr2o_patient_nr = ? AND gr2o_id_organization = ?';
-
-                $id = $this->db->fetchOne($sql, array($row['gr2o_patient_nr'], $row['gr2o_id_organization']));
-            }
-
-            if ((!$id) &&
-                    isset($row['grs_ssn']) &&
-                    $this->_targetModel instanceof \Gems_Model_RespondentModel &&
-                    $this->_targetModel->hashSsn !== \Gems_Model_RespondentModel::SSN_HIDE) {
-
-                if (\Gems_Model_RespondentModel::SSN_HASH === $this->_targetModel->hashSsn) {
-                    $search = $this->_targetModel->saveSSN($row['grs_ssn']);
-                } else {
-                    $search = $row['grs_ssn'];
-                }
-
-                $sql = 'SELECT grs_id_user FROM gems__respondents WHERE grs_ssn = ?';
-
-                $id = $this->db->fetchOne($sql, $search);
-
-                // Check for change in patient ID
-                if ($id &&
-                        isset($row['gr2o_id_organization']) &&
-                        $this->_targetModel instanceof \MUtil_Model_DatabaseModelAbstract) {
-
-                    $sql = 'SELECT gr2o_patient_nr
-                            FROM gems__respondent2org
-                            WHERE gr2o_id_user = ? AND gr2o_id_organization = ?';
-
-                    $patientId = $this->db->fetchOne($sql, array($id, $row['gr2o_id_organization']));
-
-                    if ($patientId) {
-                        $copyId       = $this->_targetModel->getKeyCopyName('gr2o_patient_nr');
-                        $row[$copyId] = $patientId;
-                    }
-                }
-            }
+            $id = $this->db->fetchOne($sql, array($row['gr2o_patient_nr'], $row['gr2o_id_organization']));
 
             if ($id) {
                 $row['grs_id_user']  = $id;

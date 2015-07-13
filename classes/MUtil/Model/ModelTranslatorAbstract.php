@@ -146,6 +146,13 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends \MUtil_Translate_Tran
     public $nullValue = 'NULL';
 
     /**
+     * The task used for import
+     *
+     * @var string
+     */
+    protected $saveTask = 'Import_SaveToModel';
+
+    /**
      * The form used to validate the input values
      *
      * @var \Zend_Form
@@ -318,7 +325,7 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends \MUtil_Translate_Tran
      */
     public function addSaveTask(\MUtil_Task_TaskBatch $importBatch, $key, array $row)
     {
-        $importBatch->setTask('Import_SaveToModel', 'import-' . $key, $row);
+        $importBatch->setTask($this->saveTask, 'import-' . $key, $row);
         return $this;
     }
 
@@ -342,7 +349,7 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends \MUtil_Translate_Tran
             } elseif ($this->_targetModel->is($key, 'type', \MUtil_Model::TYPE_DATETIME)) {
                 $format = $this->datetimeFormat;
             } elseif ($this->_targetModel->is($key, 'type', \MUtil_Model::TYPE_TIME)) {
-                $format = $this->timeFormat ;
+                $format = $this->timeFormat;
             } else {
                 $format = false;
             }
