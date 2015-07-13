@@ -169,17 +169,20 @@ class Gems_Tracker_Engine_AnyStepEngine extends \Gems_Tracker_Engine_StepEngineA
      *
      * @return array Of fieldname => default
      */
-    public function getRoundDefaults() {
+    public function getRoundDefaults()
+    {
         $defaults = parent::getRoundDefaults();
 
         // Now check if the valid for depends on the same round
-        if(count($defaults)>1) {
+        if (count($defaults) > 1) {
             $lastRound = end($this->_rounds);   // We need the ID to compare
-            if ($defaults['gro_valid_for_source'] == 'tok'
-             && $defaults['gro_valid_for_field']  == 'gto_valid_from'
-             && $defaults['gro_valid_for_id']     == $lastRound['gro_id_round']) {
+            if ($defaults['gro_valid_for_source']     == 'tok' &&
+                    $defaults['gro_valid_for_field']  == 'gto_valid_from' &&
+                    $defaults['gro_valid_for_id']     == $lastRound['gro_id_round']) {
                 $defaults['gro_valid_for_id'] = 0;  // Will be updated on save
             }
+        } else {
+            $defaults['gro_valid_after_source'] = 'rtr';
         }
 
         return $defaults;

@@ -185,7 +185,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
                     }*/
 
 			        $filter['grc_success'] = 1;
-
+                    $filter[] = "gto_completion_time IS NOT NULL";
 			        // Consent codes
 			        /*$filter['consentcode'] = array_diff(
 			                (array) $this->util->getConsentTypes(),
@@ -294,6 +294,10 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
             $element = new \Gems_JQuery_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=oid]'));
         }
 
+        $element = $form->createElement('checkbox', 'column_identifiers');
+        $element->setLabel($this->_('Column Identifiers'));
+        $element->setDescription($this->_('Prefix the column labels with an identifier. (A) Answers, (TF) Trackfields, (D) Description'));
+        $elements[] = $element;
 
 
         //unset($data['records']);
@@ -390,11 +394,33 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
 
         $survey      = $this->loader->getTracker()->getSurvey($surveyId);
         $model = $survey->getAnswerModel($language);
+
+        $questions = $survey->getQuestionList($language);
+        foreach($questions as $questionName => $label ) {
+            if ($parent = $model->get($questionName, 'parent_question')) {
+                if ($model->get($parent, 'type') === \MUtil_Model::TYPE_NOVALUE) {
+                    $model->remove($parent, 'label');
+                    $model->set($questionName, 'label', $label);
+                }
+            }
+        }
+
+        $prefixes = array();
+
+        $prefixes['A'] = array_keys($questions);
+
+        $source = $survey->getSource();
+        $attributes = $source->getAttributes();
+
+        foreach($attributes as $attribute) {
+            $model->set($attribute, 'label', $attribute);
+        }
+
         $model->addTable('gems__respondent2track', array('gr2t_id_respondent_track' => 'gto_id_respondent_track'), 'gr2t');
         $model->addTable('gems__tracks', array('gtr_id_track' => 'gto_id_track'), 'gtr');
 
-        $model->set('gto_id_respondent',        'label', $this->_('Respondent ID'));
-        $model->set('gto_id_organization',      'label', $this->_('Organization'),
+        $model->set('respondentid',        'label', $this->_('Respondent ID'));
+        $model->set('organizationid',      'label', $this->_('Organization'),
                                                 'multiOptions', $this->loader->getCurrentUser()->getAllowedOrganizations()
         );
         // Add Consent
@@ -414,10 +440,26 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
 
         $model->set('gto_id_token',                       'label', $this->_('Token'));
 
+        $prefixes['D'] = array_diff($model->getItemNames(), $prefixes['A']);
+
         if (isset($data['tid_fields']) && $data['tid_fields'] == 1) {
         	$trackId = $filter['gto_id_track'];
         	$engine = $this->loader->getTracker()->getTrackEngine($trackId);
         	$engine->addFieldsToModel($model, false, 'gto_id_respondent_track');
+
+            $prefixes['TF'] = array_diff($model->getItemNames(), $prefixes['A'], $prefixes['D']);
+
+        }
+
+        if (isset($data['column_identifiers']) && $data['column_identifiers'] == 1) {
+
+            foreach ($prefixes as $prefix => $prefixCategory) {
+                foreach($prefixCategory as $columnName) {
+                    if ($label = $model->get($columnName, 'label')) {
+                        $model->set($columnName, 'label', '(' . $prefix . ') ' . $label);
+                    }
+                }
+            }
         }
 
 		return $model;

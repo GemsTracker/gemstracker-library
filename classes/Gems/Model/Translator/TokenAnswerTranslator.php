@@ -119,4 +119,17 @@ class Gems_Model_Translator_TokenAnswerTranslator extends \Gems_Model_Translator
 
         return array('token' => 'gto_id_token') + parent::getFieldsTranslations();
     }
+
+    /**
+     * Get the error message for when no token exists
+     *
+     * @return string
+     */
+    public function getNoTokenError(array $row, $key)
+    {
+        return sprintf(
+                $this->_('No token defined in row %s.'),
+                implode(" / ", $row)
+                );
+    }
 }

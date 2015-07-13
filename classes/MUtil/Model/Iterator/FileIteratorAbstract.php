@@ -100,7 +100,7 @@ abstract class MUtil_Model_Iterator_FileIteratorAbstract implements \Iterator, \
      *
      * @var type
      */
-    protected $_key = -1;
+    protected $_key = 0;
 
     /**
      * Variables for stuff that should be serialized by sub classes
@@ -160,6 +160,8 @@ abstract class MUtil_Model_Iterator_FileIteratorAbstract implements \Iterator, \
             // Restore old file position if any
             if (null !== $this->_filepos) {
                 $this->_file->fseek($this->_filepos, SEEK_SET);
+                // This is apparently needed, because otherwise the import may skip lines
+                $this->_file->current();
             }
 
             // Always move to next, even if there was no first line
@@ -281,13 +283,13 @@ abstract class MUtil_Model_Iterator_FileIteratorAbstract implements \Iterator, \
     public function rewind()
     {
         $this->_filepos = null;
-        $this->_key = -1;
+        $this->_key     = 0;
 
         if (null === $this->_file) {
             $this->_openFile();
         } elseif ($this->_file) {
             $this->_file->rewind();
-            $this->_file->current(); // Reading line is nexessary for correct loading of file.
+            $this->_file->current(); // Reading first line is necessary for correct loading of file.
             $this->next();
         }
     }
@@ -303,7 +305,7 @@ abstract class MUtil_Model_Iterator_FileIteratorAbstract implements \Iterator, \
             'encoding'   => $this->_encoding,
             'filename'   => $this->_filename,
             'filepos'    => $this->_filepos,
-            'key'        => $this->_key - 1,
+            'key'        => $this->_key - ($this->_file ? 1 : 0),
             'serialized' => $this->_serialized,
         );
 

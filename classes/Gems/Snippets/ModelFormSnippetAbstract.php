@@ -104,6 +104,12 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
     protected $menu;
 
     /**
+     *
+     * @var \Gems_Project_ProjectSettings
+     */
+    protected $project;
+
+    /**
      * The name of the action to forward to after form completion
      *
      * @var string
@@ -204,6 +210,21 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
             $this->_form->resetContext();
         }
         parent::addSaveButton();
+    }
+
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    {
+        parent::afterRegistry();
+
+        if ($this->project instanceof \Gems_Project_ProjectSettings) {
+            $this->useCsrf = $this->project->useCsrfCheck();
+        }
     }
 
     /**

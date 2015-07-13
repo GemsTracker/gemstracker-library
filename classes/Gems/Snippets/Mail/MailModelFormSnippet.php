@@ -44,49 +44,57 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSnippetGeneric
+class Gems_Snippets_Mail_MailModelFormSnippet extends \Gems_Snippets_ModelFormSnippetGeneric
 {
     /**
      *
-     * @var Gems_Mail_MailElements
+     * @var \Gems_Mail_MailElements
      */
     protected $mailElements;
 
     /**
      *
-     * @var Gems_Mail_MailerAbstract
+     * @var \Gems_Mail_MailerAbstract
      */
     protected $mailer;
 
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
     /**
      *
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     protected $project;
 
     /**
      *
-     * @var Zend_Controller_Request_Abstract
+     * @var \Zend_Controller_Request_Abstract
      */
     protected $request;
 
+    /**
+     *
+     * @var \Gems_Util
+     */
     protected $util;
 
+    /**
+     *
+     * @var \Zend_View
+     */
     protected $view;
 
     /**
      * Adds elements from the model to the bridge that creates the form.
      *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      */
-    protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addFormElements(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
     {
         $this->mailElements->setForm($bridge->getForm());
         $this->initItems();
@@ -111,11 +119,18 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
             array('availablefields')
             )
         );
-        $config['availablefields'] = $this->mailer->getMailFields();
-        $config['availablefieldsLabel'] = $this->_('Fields');
 
+
+        $mailfields = $this->mailer->getMailFields();
+        foreach($mailfields as $field => $value) {
+            $mailfields[$field] = utf8_encode($value);
+        }
+        $config['availablefields'] = $mailfields;
+
+
+        $config['availablefieldsLabel'] = $this->_('Fields');
         $this->view->inlineScript()->prependScript("
-            CKEditorConfig = ".Zend_Json::encode($config).";
+            CKEditorConfig = ".\Zend_Json::encode($config).";
             ");
 
         $bridge->addFakeSubmit('preview', array('label' => $this->_('Preview')));
@@ -141,7 +156,8 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
      *
      * @return void
      */
-    public function afterRegistry() {
+    public function afterRegistry()
+    {
         $this->mailElements = $this->loader->getMailLoader()->getMailElements();
         $this->mailTargets  = $this->loader->getMailLoader()->getMailTargets();
 
@@ -162,18 +178,16 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
             $allLanguages = $this->util->getLocalized()->getLanguages();
         }
 
-        $htmlView = MUtil_Html::create()->div();
-        $textView = MUtil_Html::create()->div();
+        $htmlView = \MUtil_Html::create()->div();
+        $textView = \MUtil_Html::create()->div();
+
         foreach($templateArray as $template) {
-
-
             $content = '';
             if ($template['gctt_subject'] || $template['gctt_body']) {
                 if ($multi) {
                     $htmlView->h3()->append($allLanguages[$template['gctt_lang']]);
                     $textView->h3()->append($allLanguages[$template['gctt_lang']]);
                 }
-
 
                 $content .= '[b]';
                 $content .= $this->_('Subject:');
@@ -182,10 +196,8 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
                 $content .= "[/i]\n\n";
                 $content .= $this->mailer->applyFields($template['gctt_body']);
 
-
-
-                $htmlView->div(array('class' => 'mailpreview'))->raw(MUtil_Markup::render($content, 'Bbcode', 'Html'));
-                $textView->pre(array('class' => 'mailpreview'))->raw(MUtil_Markup::render($content, 'Bbcode', 'Text'));
+                $htmlView->div(array('class' => 'mailpreview'))->raw(\MUtil_Markup::render($content, 'Bbcode', 'Html'));
+                $textView->pre(array('class' => 'mailpreview'))->raw(\MUtil_Markup::render($content, 'Bbcode', 'Text'));
             }
 
         }
@@ -208,7 +220,6 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
     {
         parent::loadFormData();
         $this->loadMailer();
-
 
         if (isset($this->formData['gctt'])) {
             $multi = false;
@@ -256,26 +267,55 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
     protected function onFakeSubmit()
     {
         if ($this->request->isPost()) {
-            $data = $this->request->getPost();
-            if (!empty($data['preview'])) {
-                $this->addMessage($this->_('Preview updated'));
-            } elseif (!empty($data['sendtest'])) {
-                $this->mailer->setTo($data['to']);
 
-                $template = array();
-                foreach($data['gctt'] as $templateLanguage) {
-                    if ($templateLanguage['gctt_lang'] == $data['send_language']) {
-                        $template = $templateLanguage;
+            if (! empty($this->formData['preview'])) {
+                $this->addMessage($this->_('Preview updated'));
+                return;
+            }
+
+            if (! empty($this->formData['sendtest'])) {
+                $this->mailer->setTo($this->formData['to']);
+
+                // Make sure at least one template is set (for single language projects)
+                $template   = reset($this->formData['gctt']);
+                $languageId = key($this->formData['gctt']);
+                if ($this->formData['send_language']) {
+                    foreach($this->formData['gctt'] as $languageId => $templateLanguage) {
+                        // Find the current template (for multi language projects)
+                        if ($templateLanguage['gctt_lang'] == $this->formData['send_language']) {
+                            $template = $templateLanguage;
+                        }
                     }
                 }
 
-                $this->mailer->setFrom($data['from']);
+                // \MUtil_Echo::track($this->formData);
+                $errors = false;
+                if (! $template['gctt_subject']) {
+                    $this->addMessage(sprintf(
+                            $this->_('Subject required for %s part.'),
+                            strtoupper($template['gctt_lang'])
+                            ));
+                    $errors = true;
+                }
+                if (! $template['gctt_body']) {
+                    $this->addMessage(sprintf(
+                            $this->_('Body required for %s part.'),
+                            strtoupper($template['gctt_lang']))
+                            );
+                    $errors = true;
+                }
+
+                if ($errors) {
+                   return;
+                }
+
+                $this->mailer->setFrom($this->formData['from']);
                 $this->mailer->setSubject($template['gctt_subject']);
                 $this->mailer->setBody($template['gctt_body'], 'Bbcode');
-                $this->mailer->setTemplateId($data['gct_id_template']);
+                $this->mailer->setTemplateId($this->formData['gct_id_template']);
                 $this->mailer->send();
 
-                $this->addMessage(sprintf($this->_('Test mail sent to %s'), $data['to']));
+                $this->addMessage(sprintf($this->_('Test mail sent to %s'), $this->formData['to']));
             }
         }
     }

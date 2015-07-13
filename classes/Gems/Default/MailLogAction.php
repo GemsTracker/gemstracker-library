@@ -174,6 +174,7 @@ class Gems_Default_MailLogAction extends \Gems_Controller_ModelSnippetActionAbst
             $from->subWeek(2);
 
             $this->defaultSearchData = array(
+                \Gems_Snippets_AutosearchFormSnippet::PERIOD_DATE_USED => 'grco_created',
                 'grco_organization' => $this->loader->getOrganization()->getId(),
                 'datefrom'          => $from,
                 'dateuntil'         => new \MUtil_Date(),
@@ -194,7 +195,6 @@ class Gems_Default_MailLogAction extends \Gems_Controller_ModelSnippetActionAbst
 
         if (isset($filter[\Gems_Snippets_AutosearchFormSnippet::PERIOD_DATE_USED])) {
             $where = \Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($filter, $this->db);
-
             if ($where) {
                 $filter[] = $where;
             }

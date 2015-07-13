@@ -733,6 +733,9 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $this->addHiddenPrivilege('pr.respondent.result', $this->_(
                 'Display results in token overviews.'
                 ));
+        $this->addHiddenPrivilege('pr.respondent.select-on-track', $this->_(
+                'Grant checkboxes to select respondents on track status in respondent overview.'
+                ));
         $this->addHiddenPrivilege('pr.respondent.show-deleted', $this->_(
                 'Grant checkbox to view deleted respondents in respondent overview.'
                 ));

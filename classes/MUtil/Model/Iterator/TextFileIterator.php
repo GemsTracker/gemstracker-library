@@ -84,7 +84,7 @@ class MUtil_Model_Iterator_TextFileIterator implements \Iterator, \Serializable
      *
      * @var type
      */
-    protected $_key = -1;
+    protected $_key = 0;
 
     /**
      * The function that splits the input string into an array
@@ -260,7 +260,7 @@ class MUtil_Model_Iterator_TextFileIterator implements \Iterator, \Serializable
     public function rewind()
     {
         $this->_filepos = null;
-        $this->_key = -1;
+        $this->_key = 0;
 
         if (null === $this->_file) {
             $this->_openFile();

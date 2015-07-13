@@ -402,6 +402,21 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
      */
     public function createAction()
     {
+        if (! $this->isMultiTracks()) {
+            // Fix for double pressing of create button
+            $request = $this->getRequest();
+            $model   = $this->getModel();
+
+            $model->setFilter(array()) // First clear existing filter
+                    ->applyRequest($request);
+            $data = $model->loadFirst();
+
+            if ($data) {
+                $this->_reroute(array($request->getActionKey() => 'edit-track'));
+                return;
+            }
+        }
+
         if ($this->createSnippets) {
             $params = $this->_processParameters($this->createParameters + $this->createEditParameters);
 
@@ -669,15 +684,24 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
             }
 
             $respondent = $this->getRespondent();
-            $trackId    = $this->escort->getTrackId();
-            $respTracks = $tracker->getRespondentTracks($respondent->getId(), $respondent->getOrganizationId());
-            foreach ($respTracks as $respTrack) {
-                if ($respTrack instanceof \Gems_Tracker_RespondentTrack) {
-                    if ($trackId === $respTrack->getTrackId()) {
-                        // Return the right track if it exists
-                        break;
+            $respTracks = $tracker->getRespondentTracks(
+                    $respondent->getId(),
+                    $respondent->getOrganizationId(),
+                    array('grc_success DESC', 'gr2t_start_date')
+                    );
+
+            $trackId = $this->escort->getTrackId();
+            if ($trackId) {
+                foreach ($respTracks as $respTrack) {
+                    if ($respTrack instanceof \Gems_Tracker_RespondentTrack) {
+                        if ($trackId === $respTrack->getTrackId()) {
+                            // Return the right track if it exists
+                            break;
+                        }
                     }
                 }
+            } else {
+                $respTrack = reset($respTracks);
             }
         }
         if (! $respTrack instanceof \Gems_Tracker_RespondentTrack) {

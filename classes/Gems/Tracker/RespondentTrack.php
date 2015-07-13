@@ -193,7 +193,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
      */
     private function _ensureFieldData($reload = false)
     {
-        if ((null === $this->_fieldData) || $reload) {
+        if ($this->_respTrackData && (null === $this->_fieldData) || $reload) {
             $engine    = $this->getTrackEngine();
             $fieldData = $engine->getFieldsData($this->_respTrackId);
             $fieldMap  = $engine->getFields();
@@ -1207,7 +1207,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         }
 
         $this->_fieldData = $fieldDef->processBeforeSave($fieldData, $this->_respTrackData);
-        $changes          = $fieldDef->saveFields($this->_respTrackData, $this->_fieldData);
+        $changes          = $fieldDef->saveFields($this->_respTrackId, $this->_fieldData);
 
         if ($userId && $changes) {
             $this->handleFieldUpdate($userId);

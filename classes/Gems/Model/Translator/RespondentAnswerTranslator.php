@@ -209,4 +209,99 @@ class Gems_Model_Translator_RespondentAnswerTranslator extends \Gems_Model_Trans
             $this->orgIdField     => $this->orgIdField,
             );
     }
+
+    /**
+     * Get the error message for when no token exists
+     *
+     * @return string
+     */
+    public function getNoTokenError(array $row, $key)
+    {
+        $messages = array();
+        if (! (isset($row[$this->patientNrField]) && $row[$this->patientNrField])) {
+            $messages[] = sprintf($this->_('Missing respondent number in %s field.'), $this->patientNrField);
+        }
+        if (! (isset($row[$this->orgIdField]) && $row[$this->orgIdField])) {
+            $messages[] = sprintf($this->_('Missing organization number in %s field.'), $this->orgIdField);
+        }
+        if (! $this->getSurveyId()) {
+            $messages[] = $this->_('Missing survey definition.');
+        }
+        if ($messages) {
+            return implode(' ', $messages);
+        }
+
+        if (! $this->_skipUnknownPatients) {
+            $respondent   = $this->loader->getRespondent($row[$this->patientNrField], $row[$this->orgIdField]);
+            $organization = $respondent->getOrganization();
+
+            if (! $organization->exists()) {
+                return sprintf(
+                        $this->_('Organization %s (specified for respondent %s) does not exist.'),
+                        $respondent->getOrganizationId(),
+                        $respondent->getPatientNumber()
+                        );
+            }
+            if (! $respondent->exists) {
+                return sprintf(
+                        $this->_('Respondent %s does not exist in organization %s.'),
+                        $respondent->getPatientNumber(),
+                        $organization->getName()
+                        );
+            }
+
+            $tracker = $this->loader->getTracker();
+            $trackId = $this->getTrackId();
+            if ($trackId) {
+                $trackEngine = $tracker->getTrackEngine($trackId);
+                if (! $trackEngine->getTrackName()) {
+                    return sprintf($this->_('Track id %d does not exist'), $trackId);
+                }
+
+                $select = $this->db->select();
+                $select->from('gems__respondent2track')
+                        ->joinInner(
+                                'gems__reception_codes',
+                                'gr2t_reception_code = grc_id_reception_code',
+                                array()
+                                )
+                        ->where('gr2t_id_user = ?', $respondent->getId())
+                        ->where('gr2t_id_organization = ?', $respondent->getOrganizationId())
+                        ->where('grc_success = 1');
+
+                if (! $this->db->fetchOne($select)) {
+                    return sprintf(
+                            $this->_('Respondent %s does not have a valid %s track.'),
+                            $respondent->getPatientNumber(),
+                            $trackEngine->getTrackName()
+                            );
+                }
+            }
+
+            $survey      = $tracker->getSurvey($this->getSurveyId());
+            $tokenSelect = $tracker->getTokenSelect();
+            $tokenSelect->andReceptionCodes()
+                    ->forRespondent($respondent->getId(), $respondent->getOrganizationId())
+                    ->forSurveyId($this->getSurveyId());
+
+            if ($tokenSelect->fetchOne()) {
+                $tokenSelect->onlySucces();
+                if (! $tokenSelect->fetchOne()) {
+                    return sprintf(
+                            $this->_('Respondent %s has only deleted %s surveys.'),
+                            $respondent->getPatientNumber(),
+                            $survey->getName()
+                            );
+                }
+            } else {
+                return sprintf(
+                        $this->_('Respondent %s has no %s surveys.'),
+                        $respondent->getPatientNumber(),
+                        $survey->getName()
+                        );
+            }
+        }
+
+        return parent::getNoTokenError($row, $key);
+    }
 }

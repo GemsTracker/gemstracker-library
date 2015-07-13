@@ -360,6 +360,11 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends \MUtil_Snippets_WizardF
                 }
 
             } else {
+                $iter = $batch->getSessionVariable('iterator');
+                if ($iter instanceof \Iterator) {
+                    // Restart the iterator
+                    $iter->rewind();
+                }
                 $element->setValue($batch->getPanel($this->view, $batch->getProgressPercentage() . '%'));
 
             }
@@ -412,6 +417,11 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends \MUtil_Snippets_WizardF
                 $element->pInfo($text);
 
             } else {
+                $iter = $batch->getSessionVariable('iterator');
+                if ($iter instanceof \Iterator) {
+                    // Restart the iterator
+                    $iter->rewind();
+                }
                 $element->setValue($batch->getPanel($this->view, $batch->getProgressPercentage() . '%'));
 
             }
@@ -620,7 +630,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends \MUtil_Snippets_WizardF
         }
 
         if ($errors) {
-            $element = $bridge->getForm()->createElement('html', 'transtable');
+            $element = $bridge->getForm()->createElement('html', 'errorlist');
 
             $element->ul($errors, array('class' => $this->errorClass));
 
@@ -819,11 +829,22 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends \MUtil_Snippets_WizardF
 
                     default:
                         $maxlength = $this->targetModel->get($name, 'maxlength');
-                        if ($maxlength) {
-                            $type = sprintf(
-                                    $this->plural('Text, %d character', 'Text, %d characters', $maxlength),
-                                    $maxlength
-                                    );
+                        $minlength = $this->targetModel->get($name, 'minlength');
+                        if ($maxlength && $minlength) {
+                            $type = sprintf($this->plural(
+                                    'Text, between %d and %d character',
+                                    'Text, between %d and %d characters',
+                                    $maxlength), $minlength, $maxlength);
+                        } elseif ($maxlength) {
+                            $type = sprintf($this->plural(
+                                    'Text, %d character',
+                                    'Text, %d characters',
+                                    $maxlength), $maxlength);
+                        } elseif ($minlength) {
+                            $type = sprintf($this->plural(
+                                    'Text, at least %d character',
+                                    'Text, at least %d characters',
+                                    $minlength), $minlength);
                         } else {
                             $type = $this->_('Text');
                         }

@@ -49,6 +49,8 @@ namespace Gems\Tracker\Model;
 class AddAnswersTransformer extends \MUtil_Model_ModelTransformerAbstract
 {
 
+    protected $changed = 0;
+
     /**
      * @var \Gems_Tracker_Source_SourceInterface
      */
@@ -71,6 +73,16 @@ class AddAnswersTransformer extends \MUtil_Model_ModelTransformerAbstract
     }
 
     /**
+     * The number of item rows changed since the last save or delete
+     *
+     * @return int
+     */
+    public function getChanged()
+    {
+        return $this->changed;
+    }
+
+    /**
      * The transform function performs the actual transformation of the data and is called after
      * the loading of the data in the source model.
      *
@@ -87,6 +99,7 @@ class AddAnswersTransformer extends \MUtil_Model_ModelTransformerAbstract
         $tokens = \MUtil_Ra::column('gto_id_token', $data);
 
         $answerRows = $this->source->getRawTokenAnswerRows(array('token' => $tokens), $this->survey->getSurveyId());
+        $resultRows = array();
         
         $emptyRow = array_fill_keys($model->getItemNames(), null);
 
@@ -106,5 +119,27 @@ class AddAnswersTransformer extends \MUtil_Model_ModelTransformerAbstract
 
         // No changes
         return $resultRows;
+    }
+
+    /**
+     * This transform function performs the actual save (if any) of the transformer data and is called after
+     * the saving of the data in the source model.
+     *
+     * @param \MUtil_Model_ModelAbstract $model The parent model
+     * @param array $row Array containing row
+     * @return array Row array containing (optionally) transformed data
+     */
+    public function transformRowAfterSave(\MUtil_Model_ModelAbstract $model, array $row)
+    {
+
+        $token = $this->source->getToken($row['gto_id_token']);
+        $answers = $row;
+        $surveyId = $this->survey->getSurveyId();
+        if ($this->source->setRawTokenAnswers($token, $answers, $surveyId)) {
+            $this->changed++;
+        }
+        
+        // No changes
+        return $row;
     }
 }

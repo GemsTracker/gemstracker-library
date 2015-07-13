@@ -301,7 +301,7 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends \MUtil_Snippets_Standard_
         if ($this->_survey instanceof \Gems_Tracker_Survey) {
             $this->targetModel = $this->_survey->getAnswerModel($this->locale->toString());
             $this->importer->setTargetModel($this->targetModel);
-
+            
             $source = $this->menu->getParameterSource();
             $source->offsetSet('gsu_has_pdf', $this->_survey->hasPdf() ? 1 : 0);
             $source->offsetSet('gsu_active', $this->_survey->isActive() ? 1 : 0);

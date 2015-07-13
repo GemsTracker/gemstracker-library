@@ -91,11 +91,9 @@ class Gems_Model_Translator_RespondentTranslator extends \Gems_Model_Translator_
      */
     public function startImport()
     {
-        if (! $this->_targetModel instanceof \MUtil_Model_ModelAbstract) {
-            throw new \MUtil_Model_ModelException("Trying to start the import without target model.");
+        if ($this->_targetModel instanceof \MUtil_Model_ModelAbstract) {
+            $this->_targetModel->set('grs_gender', 'extraValueKeys', array('V' => 'F'));
         }
-
-        $this->_targetModel->set('grs_gender', 'extraValueKeys', array('V' => 'F'));
 
         return parent::startImport();
     }

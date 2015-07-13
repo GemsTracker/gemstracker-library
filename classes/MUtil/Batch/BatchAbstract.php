@@ -386,7 +386,7 @@ abstract class MUtil_Batch_BatchAbstract extends \MUtil_Registry_TargetAbstract 
 
         $this->addMessage($message);
         $this->_session->exceptions[] = $message;
-        
+
         if ($this->log instanceof \Zend_Log) {
             $messages[] = $message;
 
@@ -836,6 +836,8 @@ abstract class MUtil_Batch_BatchAbstract extends \MUtil_Registry_TargetAbstract 
      */
     public function reset()
     {
+        $this->_session->unsetAll();
+        
         $this->_session->count      = 0;
         $this->_session->counters   = array();
         $this->_session->exceptions = array();

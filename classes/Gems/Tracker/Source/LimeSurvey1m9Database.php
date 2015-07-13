@@ -766,6 +766,11 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
         }
     }
 
+    public function getAttributes()
+    {
+        return array_keys($this->_attributeMap);
+    }
+
     /**
      * Gets the time the survey was completed according to the source
      *

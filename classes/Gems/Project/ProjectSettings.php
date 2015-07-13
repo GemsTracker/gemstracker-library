@@ -44,12 +44,12 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Project_ProjectSettings extends ArrayObject
+class Gems_Project_ProjectSettings extends \ArrayObject
 {
     /**
      * The db adapter for the responses
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $_responsesDb;
 
@@ -94,7 +94,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
     public function __construct($array)
     {
         // Convert to array when needed
-        if ($array instanceof Zend_Config) {
+        if ($array instanceof \Zend_Config) {
             $array = $array->toArray();
         } elseif ($array instanceof ArrayObject) {
             $array = $array->getArrayCopy();
@@ -138,7 +138,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
             ),
 
             'cache'        => 'apc',   // Use apc cache as default
-            
+
             'logLevel'     => $this->getLogLevelDefault(),  // Depends on application environment
 
             'organization' => array(
@@ -203,9 +203,9 @@ class Gems_Project_ProjectSettings extends ArrayObject
         }
 
         // Chek for https
-        if (!MUtil_Https::on()) {
+        if (!\MUtil_Https::on()) {
             if ($this->isHttpsRequired()) {
-                MUtil_Https::enforce();
+                \MUtil_Https::enforce();
             }
         }
 
@@ -215,7 +215,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
             } else {
                 $error = sprintf("Missing required project settings: '%s'.", implode("', '", $missing));
             }
-            throw new Gems_Exception_Coding($error);
+            throw new \Gems_Exception_Coding($error);
         }
 
         $superPassword = $this->getSuperAdminPassword();
@@ -223,7 +223,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
                 $this->getSuperAdminName() && $superPassword) {
             if (strlen($superPassword) < $this->minimumSuperPasswordLength) {
                 $error = sprintf("Project setting 'admin.pwd' is shorter than %d characters. That is not allowed.", $this->minimumSuperPasswordLength);
-                throw new Gems_Exception_Coding($error);
+                throw new \Gems_Exception_Coding($error);
             }
         }
     }
@@ -285,11 +285,11 @@ class Gems_Project_ProjectSettings extends ArrayObject
      * Calculate the delay between surveys being asked for this request. Zero means forward
      * at once, a negative value means wait forever.
      *
-     * @param Zend_Controller_Request_Abstract $request
+     * @param \Zend_Controller_Request_Abstract $request
      * @param boolean $wasAnswered When true use the ask delay
      * @return int -1 means waiting indefinitely
      */
-    public function getAskDelay(Zend_Controller_Request_Abstract $request, $wasAnswered)
+    public function getAskDelay(\Zend_Controller_Request_Abstract $request, $wasAnswered)
     {
         if ($request->getParam('delay_cancelled', false)) {
             return -1;
@@ -586,13 +586,13 @@ class Gems_Project_ProjectSettings extends ArrayObject
     }
 
     /**
-     * Get the logLevel to use with the Gems_Log
+     * Get the logLevel to use with the \Gems_Log
      *
-     * Default settings is for development and testing environment to use Zend_Log::DEBUG and
-     * for all other environments to use the Zend_Log::ERR level. This can be overruled by
+     * Default settings is for development and testing environment to use \Zend_Log::DEBUG and
+     * for all other environments to use the \Zend_Log::ERR level. This can be overruled by
      * specifying a logLevel in the project.ini
      *
-     * Using a level higher than Zend_Log::ERR will output full error messages, traces and request
+     * Using a level higher than \Zend_Log::ERR will output full error messages, traces and request
      * info to the logfile. Please be aware that this might introduce a security risk as passwords
      * might be written to the logfile in plain text.
      *
@@ -610,22 +610,22 @@ class Gems_Project_ProjectSettings extends ArrayObject
     }
 
     /**
-     * Return the default logLevel to use with the Gems_Log
+     * Return the default logLevel to use with the \Gems_Log
      *
-     * Default settings is for development and testing environment to use Zend_Log::DEBUG and
-     * for all other environments to use the Zend_Log::ERR level. This can be overruled by
-     * specifying a logLevel in the project.ini 
-     * 
+     * Default settings is for development and testing environment to use \Zend_Log::DEBUG and
+     * for all other environments to use the \Zend_Log::ERR level. This can be overruled by
+     * specifying a logLevel in the project.ini
+     *
      * @return int The loglevel to use
      */
-    public function getLogLevelDefault() {        
+    public function getLogLevelDefault() {
         if ('development' == APPLICATION_ENV || 'testing' == APPLICATION_ENV) {
-            $logLevel = Zend_Log::DEBUG;
+            $logLevel = \Zend_Log::DEBUG;
         } else {
-            $logLevel = Zend_Log::ERR;
+            $logLevel = \Zend_Log::ERR;
         }
-        
-        return $logLevel;        
+
+        return $logLevel;
     }
 
     /**
@@ -692,7 +692,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
     {
         // Process the codes array to a format better used for filtering
         $codes = array_change_key_case(array_flip(array_filter($codes)));
-        // MUtil_Echo::track($codes);
+        // \MUtil_Echo::track($codes);
 
         $rules = array();
         if ($this->offsetExists('passwords') && is_array($this->passwords)) {
@@ -705,7 +705,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
     /**
      * The response database with a table with one row for each token answer.
      *
-     * @return Zend_Db_Adapter_Abstract
+     * @return \Zend_Db_Adapter_Abstract
      */
     public function getResponseDatabase()
     {
@@ -723,17 +723,17 @@ class Gems_Project_ProjectSettings extends ArrayObject
                         $options['password']
                         )) {
 
-                    $db = Zend_Registry::get('db');
+                    $db = \Zend_Registry::get('db');
 
-                    if ($db instanceof Zend_Db_Adapter_Abstract) {
+                    if ($db instanceof \Zend_Db_Adapter_Abstract) {
                         $options = $options + $db->getConfig();
                     }
                 }
-                $this->_responsesDb = Zend_Db::factory($adapter, $options);
+                $this->_responsesDb = \Zend_Db::factory($adapter, $options);
             } else {
-                $db = Zend_Registry::get('db');
+                $db = \Zend_Registry::get('db');
 
-                if ($db instanceof Zend_Db_Adapter_Abstract) {
+                if ($db instanceof \Zend_Db_Adapter_Abstract) {
                     $this->_responsesDb = $db;
                 }
             }
@@ -833,7 +833,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
             $salted = sprintf($salt, $value);
         }
 
-        // MUtil_Echo::track($value, md5($salted));
+        // \MUtil_Echo::track($value, md5($salted));
         if (null == $algorithm) {
             return md5($salted, false);
         }
@@ -977,5 +977,18 @@ class Gems_Project_ProjectSettings extends ArrayObject
     public function isValidUntilRequired()
     {
         return isset($this['track'], $this['track']['requireValidUntil']) && $this['track']['requireValidUntil'];
+    }
+
+    /**
+     * Does this project use Csrf checks
+     *
+     * @return boolean
+     */
+    public function useCsrfCheck()
+    {
+        if (isset($this['security'], $this['security']['disableCsrf']) && (1 == $this['security']['disableCsrf'])) {
+            return false;
+        }
+        return true;
     }
 }

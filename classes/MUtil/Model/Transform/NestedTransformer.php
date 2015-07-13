@@ -107,8 +107,12 @@ class MUtil_Model_Transform_NestedTransformer extends \MUtil_Model_SubmodelTrans
                         $filter[$child] = $row[$parent];
                     }
                 }
-
-                $rows = $sub->load($filter);
+                // If $filter is empty, treat as new
+                if (empty($filter)) {
+                    $rows = $sub->loadAllNew();
+                } else {
+                    $rows = $sub->load($filter);
+                }
             }
 
             $data[$key][$name] = $rows;
@@ -138,9 +142,11 @@ class MUtil_Model_Transform_NestedTransformer extends \MUtil_Model_SubmodelTrans
         foreach ($join as $parent => $child) {
             if (isset($row[$parent])) {
                 $keys[$child] = $row[$parent];
+            } else {
+                // if there is no parent identifier set, don't save
+                return;
             }
         }
-
         foreach($data as $key => $subrow) {
             // Make sure the (possibly changed) parent key
             // is stored in the sub data.
