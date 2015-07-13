@@ -395,7 +395,7 @@ abstract class MUtil_Batch_BatchAbstract extends \MUtil_Registry_TargetAbstract 
                 $messages[] = '  Previous exception: ' . $previous->getMessage();
             }
             $messages[] = $e->getTraceAsString();
-            
+
             $this->log->log(implode("\n", $messages), \Zend_Log::ERR);
         }
         return $this;
@@ -836,6 +836,8 @@ abstract class MUtil_Batch_BatchAbstract extends \MUtil_Registry_TargetAbstract 
      */
     public function reset()
     {
+        $this->_session->unsetAll();
+        
         $this->_session->count      = 0;
         $this->_session->counters   = array();
         $this->_session->exceptions = array();

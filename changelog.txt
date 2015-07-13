@@ -21,6 +21,8 @@ EXPORT
     CSV format export supported
     Trackinformation can be added to the export
     Multiple surveys can be selected for a single export
+IMPORT
+    Improved error reporting during answer import
 TRACK BUILDER
     "Single Survey" tracks are replaced by survey level "insert into track" settings
     Stand alone Single survey tracks are converted to AnyStepEngine tracks, any other Single Survey tracks are deleted

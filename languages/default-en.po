@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-02 18:29+0200\n"
+"POT-Creation-Date: 2015-07-09 18:35+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -21,7 +21,7 @@ msgstr ""
 #: classes/Gems/Agenda/AppointmentFilterModel.php:190
 #: classes/Gems/Agenda/AppointmentFilterModel.php:208
 #: classes/Gems/Tracker/Model/Dependency/FromAppointmentsMaintenanceDependency.php:116
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:862
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:873
 msgid "; "
 msgstr "; "
 
@@ -292,8 +292,8 @@ msgstr "but not \"%s\""
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:872
 #: classes/Gems/Tracker/Model/TrackModel.php:155
 #: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:550
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:838
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:992
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:849
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:1003
 msgid ", "
 msgstr ", "
 
@@ -1767,7 +1767,7 @@ msgid "Full name"
 msgstr "Full name"
 
 #: classes/Gems/Default/FileActionAbstract.php:126 classes/Gems/Menu.php:176
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:866
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:877
 msgid "Content"
 msgstr "Content"
 
@@ -5250,20 +5250,29 @@ msgstr ""
 msgid "Compiled %s file(s)"
 msgstr "Compiled %s file(s)"
 
-#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:398
-#, php-format
-msgid "Token %s is completed."
-msgstr "Token %s is completed."
-
-#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:404
+#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:267
 #, php-format
 msgid "No token found for %s."
 msgstr "No token found for %s."
 
-#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:414
+#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:411
+#, php-format
+msgid "Token %s is completed."
+msgstr "Token %s is completed."
+
+#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:424
 #, php-format
 msgid "No track for inserting found for %s."
 msgstr "No track for inserting found for %s."
+
+#: classes/Gems/Model/Translator/DateAnswerTranslator.php:113
+msgid "Missing date in completion_date field."
+msgstr "Missing date in completion_date field."
+
+#: classes/Gems/Model/Translator/DateAnswerTranslator.php:133
+#, php-format
+msgid "Respondent %s has no valid token for the %s survey."
+msgstr "Patient %s has no valid token for the %s survey."
 
 #: classes/Gems/Model/Translator/RespondentAnswerTranslator.php:166
 msgid "Patient ID"
@@ -5272,6 +5281,55 @@ msgstr "Patient ID"
 #: classes/Gems/Model/Translator/RespondentAnswerTranslator.php:171
 msgid "Organization ID"
 msgstr "Organization ID"
+
+#: classes/Gems/Model/Translator/RespondentAnswerTranslator.php:222
+#, php-format
+msgid "Missing respondent number in %s field."
+msgstr "Missing patient number in %s field."
+
+#: classes/Gems/Model/Translator/RespondentAnswerTranslator.php:225
+#, php-format
+msgid "Missing organization number in %s field."
+msgstr "Missing organization number in %s field."
+
+#: classes/Gems/Model/Translator/RespondentAnswerTranslator.php:228
+msgid "Missing survey definition."
+msgstr "Missing survey definition."
+
+#: classes/Gems/Model/Translator/RespondentAnswerTranslator.php:240
+#, php-format
+msgid "Organization %s (specified for respondent %s) does not exist."
+msgstr "Organization %s (specified for patient %s) does not exist."
+
+#: classes/Gems/Model/Translator/RespondentAnswerTranslator.php:247
+#, php-format
+msgid "Respondent %s does not exist in organization %s."
+msgstr "Patient %s does not exist in organization %s."
+
+#: classes/Gems/Model/Translator/RespondentAnswerTranslator.php:258
+#, php-format
+msgid "Track id %d does not exist"
+msgstr "Track id %d does not exist"
+
+#: classes/Gems/Model/Translator/RespondentAnswerTranslator.php:274
+#, php-format
+msgid "Respondent %s does not have a valid %s track."
+msgstr "Patient %s does not have a valid %s track."
+
+#: classes/Gems/Model/Translator/RespondentAnswerTranslator.php:291
+#, php-format
+msgid "Respondent %s has only deleted %s surveys."
+msgstr "Patient %s has only deleted %s surveys."
+
+#: classes/Gems/Model/Translator/RespondentAnswerTranslator.php:298
+#, php-format
+msgid "Respondent %s has no %s surveys."
+msgstr "Patient %s has no %s surveys."
+
+#: classes/Gems/Model/Translator/TokenAnswerTranslator.php:131
+#, php-format
+msgid "No token defined in row %s."
+msgstr "No token defined in row %s."
 
 #: classes/Gems/Pdf.php:280
 #, php-format
@@ -7746,41 +7804,55 @@ msgstr "Datetime value using ISO 8601: yyyy-mm-ddThh:mm::ss[+-hh:mm]"
 msgid "Time value using ISO 8601: hh:mm::ss[+-hh:mm]"
 msgstr "Time value using ISO 8601: hh:mm::ss[+-hh:mm]"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:824
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:825
+#, php-format
+msgid "Text, between %d and %d character"
+msgid_plural "Text, between %d and %d characters"
+msgstr[0] "Text, between %d and %d character"
+msgstr[1] "Text, between %d and %d characters"
+
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:830
 #, php-format
 msgid "Text, %d character"
 msgid_plural "Text, %d characters"
 msgstr[0] "Text, %d character"
 msgstr[1] "Text, %d characters"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:828
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:835
+#, php-format
+msgid "Text, at least %d character"
+msgid_plural "Text, at least %d characters"
+msgstr[0] "Text, at least %d character"
+msgstr[1] "Text, at least %d characters"
+
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:839
 msgid "Text"
 msgstr "Text"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:843
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:854
 #, php-format
 msgid ", %s"
 msgstr ", %s"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:854
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:865
 #, php-format
 msgid "; one of: %s"
 msgstr "; one of: %s"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:856
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:867
 #, php-format
 msgid "; e.g. one of: %s, ..."
 msgstr "; e.g. one of: %s, ..."
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:865
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:876
 msgid "Field description"
 msgstr "Field description"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:865
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:876
 msgid "<<no description>>"
 msgstr "<<no description>>"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:990
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:1001
 #, php-format
 msgid "Unknown translator '%s'. Should be one of: %s"
 msgstr "Unknown translator '%s'. Should be one of: %s"
@@ -8285,9 +8357,6 @@ msgstr[1] ""
 
 #~ msgid "Overview of %s track for respondent %s: %s"
 #~ msgstr "Overview of %s track for patient %s: %s"
-
-#~ msgid "Track %s does not exist."
-#~ msgstr "Track %s does not exist."
 
 #~ msgid "Track deleted!"
 #~ msgstr "Track deleted!"

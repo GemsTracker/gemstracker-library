@@ -115,7 +115,7 @@ class Gems_Tracker_SurveyModel extends Gems_Model_JoinModel
         $resultRows = $inputRows;
         $tokens = \MUtil_Ra::column('gto_id_token', $inputRows);
 
-        \MUtil_Echo::track($tokens);
+        // \MUtil_Echo::track($tokens);
         /*$answerRows = $this->source->getRawTokenAnswerRows(array('token' => $tokens), $this->survey->getSurveyId());
         $emptyRow   = array_fill_keys($this->getItemNames(), null);
         $resultRows = array();
