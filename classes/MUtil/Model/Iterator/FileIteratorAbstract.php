@@ -160,6 +160,8 @@ abstract class MUtil_Model_Iterator_FileIteratorAbstract implements \Iterator, \
             // Restore old file position if any
             if (null !== $this->_filepos) {
                 $this->_file->fseek($this->_filepos, SEEK_SET);
+                // This is apparently needed, because otherwise the import may skip lines
+                $this->_file->current();
             }
 
             // Always move to next, even if there was no first line
