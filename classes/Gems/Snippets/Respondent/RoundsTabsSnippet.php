@@ -224,13 +224,16 @@ class Gems_Snippets_Respondent_RoundsTabsSnippet extends \MUtil_Snippets_TabSnip
                         ) AS waiting,
                         COUNT(*) AS any
                     FROM gems__tokens INNER JOIN
-                        gems__reception_codes ON gto_reception_code = grc_id_reception_code INNER JOIN
                         gems__surveys ON gto_id_survey = gsu_id_survey INNER JOIN
-                        gems__rounds ON gto_id_round = gro_id_round
+                        gems__rounds ON gto_id_round = gro_id_round INNER JOIN
+                        gems__respondent2track ON gto_id_respondent_track = gr2t_id_respondent_track INNER JOIN
+                        gems__reception_codes AS rcto ON gto_reception_code = rcto.grc_id_reception_code INNER JOIN
+                        gems__reception_codes AS rctr ON gr2t_reception_code = rctr.grc_id_reception_code
                     WHERE gto_id_respondent = ? AND
-                        grc_success = 1 AND
                         gro_active = 1 AND
-                        gsu_active = 1
+                        gsu_active = 1 AND
+                        rcto.grc_success = 1 AND
+                        rctr.grc_success = 1
                     GROUP BY COALESCE(gto_round_description, '')
                     ORDER BY MIN(COALESCE(gto_round_order, 100000)), gto_round_description";
 

@@ -689,12 +689,11 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
                     $respondent->getOrganizationId(),
                     array('grc_success DESC', 'gr2t_start_date')
                     );
-
             $trackId = $this->escort->getTrackId();
             if ($trackId) {
                 foreach ($respTracks as $respTrack) {
                     if ($respTrack instanceof \Gems_Tracker_RespondentTrack) {
-                        if ($trackId === $respTrack->getTrackId()) {
+                        if ($trackId == $respTrack->getTrackId()) {
                             // Return the right track if it exists
                             break;
                         }
