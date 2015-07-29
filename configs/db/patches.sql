@@ -1018,3 +1018,5 @@ ALTER TABLE gems__openrosaforms CHANGE gof_createf_by gof_created_by BIGINT( 20 
 UPDATE gems__patches
     SET gpa_completed = 1
     WHERE gpa_sql = "ALTER TABLE gems__openrosaforms CHANGE gof_createf_by gof_created_by BIGINT( 20 ) NOT NULL";
+
+-- GEMS VERSION: 58
