@@ -69,6 +69,18 @@ abstract class Gems_Default_RespondentChildActionAbstract extends \Gems_Controll
     );
 
     /**
+     * The parameters used for the import action
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $importParameters = array('respondent' => null);
+
+    /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
@@ -106,6 +118,8 @@ abstract class Gems_Default_RespondentChildActionAbstract extends \Gems_Controll
      */
     public function getRespondentId()
     {
-        return $this->getRespondent()->getId();
+        if ($this->_getParam(\MUtil_Model::REQUEST_ID1)) {
+            return $this->getRespondent()->getId();
+        }
     }
 }
