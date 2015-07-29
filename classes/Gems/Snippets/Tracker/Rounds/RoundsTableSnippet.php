@@ -109,6 +109,8 @@ class RoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
     {
         parent::afterRegistry();
 
+        $model = $this->getModel();
+
         $br = \MUtil_Html::create('br');
         $sp = \MUtil_Html::raw(' ');
 
@@ -119,8 +121,12 @@ class RoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
         $this->columns[50] = array('gro_valid_after_field', $sp, 'gro_valid_after_source', $sp, 'gro_valid_after_id');
         $this->columns[60] = array('gro_valid_for_field', $sp, 'gro_valid_for_source', $sp, 'gro_valid_for_id');
         $this->columns[70] = array('gro_active');
-        $this->columns[80] = array('gro_changed_event');
-        $this->columns[90] = array('gro_display_event');
+        if ($label = $model->get('gro_changed_event', 'label')) {
+            $this->columns[80] = array('gro_changed_event');
+        }
+        if ($label = $model->get('gro_changed_event', 'label')) {
+            $this->columns[90] = array('gro_display_event');
+        }
         $this->columns[100] = array('gro_code');
         $this->columns[110] = array('organizations');
     }

@@ -394,6 +394,10 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
             $filter['gr2o_id_user'] = $this->respondentId;
             $default = false;
         }
+        if (! $filter) {
+            // Otherwise we load the first patient in the current organization
+            $filter[] = '1=0';
+        }
         if ($this->organizationId) {
             $filter['gr2o_id_organization'] = $this->organizationId;
         }

@@ -1277,6 +1277,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
      * @param array $answers Field => Value array
      * @param int $surveyId Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
+     * @return true When answers changed
      */
     public function setRawTokenAnswers(Gems_Tracker_Token $token, array $answers, $surveyId, $sourceSurveyId = null)
     {
@@ -1297,7 +1298,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
 
         if ($lsDb->fetchOne("SELECT token FROM $lsTab WHERE token = ?", $lsTokenId)) {
             $where = $lsDb->quoteInto("token = ?", $lsTokenId);
-            $lsDb->update($lsTab, $answers, $where);
+            return $lsDb->update($lsTab, $answers, $where);
         } else {
             $current = new MUtil_Db_Expr_CurrentTimestamp();
 
@@ -1307,6 +1308,8 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
             $answers['startdate']     = $current;
 
             $lsDb->insert($lsTab, $answers);
+
+            return true;
         }
     }
 
