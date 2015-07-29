@@ -90,6 +90,21 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends \MUtil_Contro
         );
 
     /**
+     * Default parameters used for the import action
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    private $_defaultImportParameters = array(
+        'defaultImportTranslator' => 'getDefaultImportTranslator',
+        'importTranslators'       => 'getImportTranslators',
+    );
+
+    /**
      * Default parameters for all actions, unless overruled by values with the same key at
      * the action level
      *
@@ -241,10 +256,7 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends \MUtil_Contro
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $importParameters = array(
-        'defaultImportTranslator' => 'getDefaultImportTranslator',
-        'importTranslators'       => 'getImportTranslators',
-    );
+    protected $importParameters = array();
 
     /**
      * The snippets used for the import action
@@ -673,7 +685,7 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends \MUtil_Contro
     public function importAction()
     {
         if ($this->importSnippets) {
-            $params = $this->_processParameters($this->importParameters);
+            $params = $this->_processParameters($this->importParameters + $this->_defaultImportParameters);
 
             $this->addSnippets($this->importSnippets, $params);
         }

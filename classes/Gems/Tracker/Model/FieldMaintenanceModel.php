@@ -418,7 +418,8 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
         $rows = $this->load($filter);
 
         foreach ($rows as $row) {
-            $name = $this->getModelNameForRow($row);
+            $name  = $this->getModelNameForRow($row);
+            $field = $row['gtf_id_field'];
 
             if (self::FIELDS_NAME === $name) {
                 $this->db->delete(
@@ -429,7 +430,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
             } elseif (self::APPOINTMENTS_NAME === $name) {
                 $this->db->delete(
                         'gems__respondent2track2appointment',
-                        $this->db->quoteInto('gr2t2a_id_app_field= ?', $field)
+                        $this->db->quoteInto('gr2t2a_id_app_field = ?', $field)
                         );
             }
         }

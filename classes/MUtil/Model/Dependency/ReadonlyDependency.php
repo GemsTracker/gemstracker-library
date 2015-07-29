@@ -62,7 +62,7 @@ class ReadonlyDependency extends DependencyAbstract
      *
      * @var array of setting => setting of setting changed by this dependency
      */
-    protected $_defaultEffects = array('readonly');
+    protected $_defaultEffects = array('readonly', 'disabled');
 
     /**
      * Array for unsetting the readonly attributes

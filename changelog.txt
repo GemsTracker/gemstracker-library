@@ -1,3 +1,11 @@
+Changes in 1.7.1p1
+============================================================
+ - Surveys not active in a source can no longer be activated
+ - Track field values are deleted when their definition is deleted
+ - UnionModel change tracking bug prevented correct change counts
+ - Translation and display issues
+ 
+ 
 Important changes from 1.7.0 => 1.7.1
 ============================================================
 ABOUT THE UPGRADE

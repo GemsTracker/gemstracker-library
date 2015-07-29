@@ -283,6 +283,7 @@ interface Gems_Tracker_Source_SourceInterface extends \MUtil_Registry_TargetInte
      * @param $answers array Field => Value array
      * @param int $surveyId Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
+     * @return true When answers changed
      */
     public function setRawTokenAnswers(\Gems_Tracker_Token $token, array $answers, $surveyId, $sourceSurveyId = null);
 

@@ -278,7 +278,7 @@ class MUtil_Model_UnionModel extends \MUtil_Model_ModelAbstract
                     $this->_map((array) $filter, $newName, false, true)
                     );
 
-            $this->setChanged($model->getChanged());
+            $this->addChanged($model->getChanged());
 
             return array($this->_modelField => $newName) + $this->_map($result, $newName, true, false);
         }

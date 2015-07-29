@@ -421,13 +421,18 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
                 );
         $model->set('gsu_id_primary_group',   'label', $this->_('Group'),
                 'description', $this->_('If empty, survey will never show up!'),
-                'multiOptions', $dbLookup->getGroups(),
-                'validator', new \MUtil_Validate_Require(
-                        $model->get('gsu_active', 'label'),
-                        'gsu_id_primary_group',
-                        $model->get('gsu_id_primary_group', 'label')
-                        )
+                'multiOptions', $dbLookup->getGroups()
                 );
+
+        if ($detailed) {
+            $model->addDependency('CanEditDependency', 'gsu_surveyor_active', array('gsu_active'));
+            $model->set('gsu_active',
+                    'validators[group]', new \MUtil_Validate_Require(
+                            $model->get('gsu_active', 'label'),
+                            'gsu_id_primary_group',
+                            $model->get('gsu_id_primary_group', 'label')
+                            ));
+        }
 
         $model->set('gsu_insertable',         'label', $this->_('Insertable'),
                 'description', $this->_('Can this survey be manually inserted into a track?'),
