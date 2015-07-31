@@ -474,8 +474,10 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $logPage->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
         $logPage->addAutofilterAction();
+        $logParams = $params + array(\Gems_Model::LOG_ITEM_ID => 'gla_id');
         $logPage->addShowAction()
-                ->setNamedParameters(\Gems_Model::LOG_ITEM_ID, 'gla_id');
+                ->setNamedParameters($logParams)
+                ->setHiddenOrgId($orgId);
 
         $page->addDeleteAction('pr.respondent.delete')
                 ->setNamedParameters($params)
