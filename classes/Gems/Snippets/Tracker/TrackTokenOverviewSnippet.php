@@ -102,7 +102,6 @@ class TrackTokenOverviewSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
      */
     protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
-        \MUtil_Model::$verbose = true;
         // Signal the bridge that we need these values
         $bridge->gr2t_id_respondent_track;
         $bridge->gr2o_patient_nr;
