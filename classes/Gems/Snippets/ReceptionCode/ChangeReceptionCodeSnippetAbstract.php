@@ -228,7 +228,8 @@ abstract class ChangeReceptionCodeSnippetAbstract extends \Gems_Snippets_ModelFo
             $this->formData[$this->receptionCodeItem] = $this->fixedReceptionCode;
 
         } else {
-            $model->set($this->receptionCodeItem,
+            $model->set($this->receptionCodeItem, 
+                    'elementClass', 'Select',
                     'multiOptions', array('' => '') + $receptionCodes,
                     'size', min(7, max(3, count($receptionCodes) + 2))
                     );
