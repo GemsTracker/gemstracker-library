@@ -60,7 +60,7 @@ class TrackTokenOverviewSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
      * @var array
      */
     protected $_fixedFilter = array(
-        'gro_active' => 1,
+        'gro_active = 1 OR gro_active IS NULL',
         'gsu_active' => 1,
     );
 
@@ -102,6 +102,7 @@ class TrackTokenOverviewSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
      */
     protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
+        \MUtil_Model::$verbose = true;
         // Signal the bridge that we need these values
         $bridge->gr2t_id_respondent_track;
         $bridge->gr2o_patient_nr;
