@@ -1019,4 +1019,17 @@ UPDATE gems__patches
     SET gpa_completed = 1
     WHERE gpa_sql = "ALTER TABLE gems__openrosaforms CHANGE gof_createf_by gof_created_by BIGINT( 20 ) NOT NULL";
 
+-- PATCH: Respondent relations can take surveys
+ALTER TABLE gems__rounds ADD
+        gro_id_relationfield BIGINT( 20 ) NULL DEFAULT NULL
+        AFTER gro_id_survey;
+
+ALTER TABLE gems__tokens ADD
+        gto_id_relationfield BIGINT( 20 ) NULL DEFAULT NULL
+        AFTER gto_round_description;
+
+ALTER TABLE gems__tokens ADD
+        gto_id_relation  bigint(20) NULL DEFAULT NULL
+        AFTER gto_round_description;
+
 -- GEMS VERSION: 58

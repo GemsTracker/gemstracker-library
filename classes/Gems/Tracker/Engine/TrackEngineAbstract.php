@@ -448,8 +448,8 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
     public function copyTrack($oldTrackId)
     {
         $trackModel = $this->tracker->getTrackModel();
-
-        $roundModel = $this->getRoundModel(true, 'rounds');
+        
+        $roundModel = $this->getRoundModel(true, 'rounds');      
         $fieldModel = $this->getFieldsMaintenanceModel();
 
         // First load the track
@@ -465,7 +465,31 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
         $savedValues = $trackModel->save($newTrack);
         $newTrackId = $savedValues['gtr_id_track'];
 
-        // Now copy the rounds
+        // Now copy the fields
+        $fieldModel->applyParameters(array('id' => $oldTrackId));
+        $fields = $fieldModel->load();
+
+        if ($fields) {
+            $oldIds = array();
+            $numFields = count($fields);
+            $newFields = $fieldModel->loadNew($numFields);
+            foreach ($newFields as $idx => $newField) {
+                $field = $fields[$idx];
+                $oldIds[$idx] = $field['gtf_id_field'];
+                unset($field['gtf_id_field'], $field['gtf_changed'], $field['gtf_changed_by'], $field['gtf_created'], $field['gtf_created_by']);
+                $field['gtf_id_track'] = $newTrackId;
+                $newFields[$idx] = $field + $newFields[$idx];
+            }
+            // Now save (not done yet)
+            $savedValues = $fieldModel->saveAll($newFields);
+            foreach($savedValues as $idx => $field) {
+                $oldNewFieldMap[$oldIds[$idx]] = $field['gtf_id_field'];
+            }
+        } else {
+            $numFields = 0;
+        }
+        
+        // Now copy the rounds and map the gro_id_relation to the right field
         $roundModel->applyParameters(array('id' => $oldTrackId));
         $rounds = $roundModel->load();
 
@@ -476,6 +500,9 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
                 $round = $rounds[$idx];
                 unset($round['gro_id_round'], $round['gro_changed'], $round['gro_changed_by'], $round['gro_created'], $round['gro_created_by']);
                 $round['gro_id_track'] = $newTrackId;
+                if (array_key_exists('gro_id_relationfield', $round) && $round['gro_id_relationfield']>0) {
+                    $round['gro_id_relationfield'] = $oldNewFieldMap[$round['gro_id_relationfield']];
+                }
                 $newRounds[$idx] = $round + $newRounds[$idx];
             }
             // Now save (not done yet)
@@ -484,30 +511,11 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
             $numRounds = 0;
         }
 
-        // Now copy the fields
-        $fieldModel->applyParameters(array('id' => $oldTrackId));
-        $fields = $fieldModel->load();
-
-        if ($fields) {
-            $numFields = count($fields);
-            $newFields = $fieldModel->loadNew($numFields);
-            foreach ($newFields as $idx => $newField) {
-                $field = $fields[$idx];
-                unset($field['gtf_id_field'], $field['gtf_changed'], $field['gtf_changed_by'], $field['gtf_created'], $field['gtf_created_by']);
-                $field['gtf_id_track'] = $newTrackId;
-                $newFields[$idx] = $field + $newFields[$idx];
-            }
-            // Now save (not done yet)
-            $savedValues = $fieldModel->saveAll($newFields);
-        } else {
-            $numFields = 0;
-        }
-
-        //\MUtil_Echo::track($track, $copy);
-        //\MUtil_Echo::track($rounds, $newRounds);
-        //\MUtil_Echo::track($fields, $newFields);
-        \Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage(sprintf($this->_('Copied track, including %s round(s) and %s field(s).'), $numRounds, $numFields));
-
+        //MUtil_Echo::track($track, $copy);
+        //MUtil_Echo::track($rounds, $newRounds);
+        //MUtil_Echo::track($fields, $newFields);
+        Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage(sprintf($this->_('Copied track, including %s round(s) and %s field(s).'), $numRounds, $numFields));
+        
         return $newTrackId;
     }
 

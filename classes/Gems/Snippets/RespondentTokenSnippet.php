@@ -194,7 +194,7 @@ class Gems_Snippets_RespondentTokenSnippet extends \Gems_Snippets_TokenModelSnip
         // Filter for valid track reception codes
         $filter[] = 'gr2t_reception_code IN (SELECT grc_id_reception_code FROM gems__reception_codes WHERE grc_success = 1)';
         $filter['grc_success'] = 1;
-        $filter['gro_active']  = 1;
+        $filter[] = 'gro_active = 1 OR gro_active IS NULL';
         $filter['gsu_active']  = 1;
 
         // NOTE! $this->model does not need to be the token model, but $model is a token model
