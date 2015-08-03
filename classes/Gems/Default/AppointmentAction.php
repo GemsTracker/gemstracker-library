@@ -47,6 +47,12 @@
 class Gems_Default_AppointmentAction extends \Gems_Default_RespondentChildActionAbstract
 {
     /**
+     *
+     * @var \Gems_Tracker_Respondent
+     */
+    private $_respondent;
+
+    /**
      * Appointment ID of current request (if any)
      *
      * Set by loadParams()
@@ -212,6 +218,31 @@ class Gems_Default_AppointmentAction extends \Gems_Default_RespondentChildAction
         return $this->_('Appointments');
     }
 
+    /**
+     * Get the respondent object
+     *
+     * @return \Gems_Tracker_Respondent
+     */
+    protected function getRespondent()
+    {
+        if (! $this->_respondent) {
+            $id = $this->_getParam(\Gems_Model::APPOINTMENT_ID);
+            if ($id && ! ($this->_getParam(\MUtil_Model::REQUEST_ID1) || $this->_getParam(\MUtil_Model::REQUEST_ID2))) {
+                $appointment = $this->loader->getAgenda()->getAppointment($id);
+                $this->_respondent = $appointment->getRespondent();
+
+                if (! $this->_respondent->exists) {
+                    throw new \Gems_Exception($this->_('Unknown respondent.'));
+                }
+
+                $this->_respondent->applyToMenuSource($this->menu->getParameterSource());
+            } else {
+                $this->_respondent = parent::getRespondent();
+            }
+        }
+
+        return $this->_respondent;
+    }
     /**
      * Helper function to allow generalized statements about the items in the model.
      *
