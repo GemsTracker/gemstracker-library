@@ -100,7 +100,7 @@ abstract class Gems_Default_RespondentChildActionAbstract extends \Gems_Controll
 
             $this->_respondent = $this->loader->getRespondent($patientNumber, $organizationId);
 
-            if (! $this->_respondent->exists) {
+            if (! $this->_respondent->exists && $patientNumber && $organizationId) {
                 throw new \Gems_Exception($this->_('Unknown respondent.'));
             }
 

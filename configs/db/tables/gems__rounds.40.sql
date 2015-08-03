@@ -7,6 +7,9 @@ CREATE TABLE if not exists gems__rounds (
 
         gro_id_survey          bigint unsigned not null references gems__surveys (gsu_id_survey),
 
+        --- fields for relations
+        gro_id_relationfield   bigint(2) null default null,
+
         -- Survey_name is a temp copy from __surveys, needed by me to keep an overview as
         -- long as no track editor exists.
         gro_survey_name        varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,

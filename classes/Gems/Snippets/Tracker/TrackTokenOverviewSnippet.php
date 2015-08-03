@@ -60,7 +60,7 @@ class TrackTokenOverviewSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
      * @var array
      */
     protected $_fixedFilter = array(
-        'gro_active' => 1,
+        'gro_active = 1 OR gro_active IS NULL',
         'gsu_active' => 1,
     );
 
