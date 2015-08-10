@@ -63,7 +63,7 @@ class RelationField extends FieldAbstract
     protected $_effecteds = array('multiOptions');
 
     /**
-     * Query for respondent infomration.
+     * Query for respondent information.
      *
      * Can be changed by project specific classes
      *
@@ -126,19 +126,7 @@ class RelationField extends FieldAbstract
      */
     public function calculateFieldInfo($currentValue, array $fieldData)
     {
-        if (! $currentValue) {
-            return $currentValue;
-        }
-
-        // Display nice
-        $sql = $this->_sql . "WHERE grr_id = ?";
-        $row = $this->db->fetchRow($sql, $currentValue);
-
-        if ($row && isset($row['name'])) {
-            return $row['name'];
-        }
-
-        return $currentValue;
+        return $this->getRelation($currentValue);
     }
 
     /**
@@ -172,9 +160,31 @@ class RelationField extends FieldAbstract
 
         return $output;
     }
+    
+    /**
+     * Helper to retrieve the formatted name for a relation
+     * 
+     * @param type $currentValue
+     * @return string
+     */
+    public function getRelation($currentValue) {
+        if (! $currentValue) {
+            return $currentValue;
+        }
+
+        // Display nice
+        $sql = $this->_sql . "WHERE grr_id = ?";
+        $row = $this->db->fetchRow($sql, $currentValue);
+        
+        if ($row && isset($row['name'])) {
+            return $row['name'];
+        }
+
+        return $currentValue;
+    }
 
     /**
-     * Dispaly an appoitment as text
+     * Display a relation as text
      *
      * @param value $value
      * @return string
@@ -183,6 +193,6 @@ class RelationField extends FieldAbstract
     {
         // Display nicer
 
-        return $value;
+        return $this->getRelation($value);
     }
 }
