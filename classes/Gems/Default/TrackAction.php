@@ -333,6 +333,17 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
     public $summarizedActions = array('index', 'autofilter', 'create', 'view');
 
     /**
+     * The actions that should result in the survey return being set.
+     *
+     * @var array
+     */
+    protected $tokenReturnActions = array(
+        'index',
+        'show',
+        'show-track',
+    );
+
+    /**
      * The parameters used for the edit actions, overrules any values in
      * $this->createEditParameters.
      *
@@ -923,8 +934,12 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
     {
         parent::init();
 
-        // Tell the system where to return to after a survey has been taken
-        $this->loader->getCurrentUser()->setSurveyReturn($this->getRequest());
+        $request = $this->getRequest();
+
+        if (in_array($request->getActionName(), $this->tokenReturnActions)) {
+            // Tell the system where to return to after a survey has been taken
+            $this->loader->getCurrentUser()->setSurveyReturn($request);
+        }
     }
 
     /**
