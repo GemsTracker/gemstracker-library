@@ -96,6 +96,13 @@ abstract class MUtil_Model_Iterator_FileIteratorAbstract implements \Iterator, \
     protected $_filepos = null;
 
     /**
+     * True when first line contains headers
+     *
+     * @var boolean
+     */
+    protected $_firstLineContainsHeaders = true;
+
+    /**
      * The current key value
      *
      * @var type
@@ -131,8 +138,10 @@ abstract class MUtil_Model_Iterator_FileIteratorAbstract implements \Iterator, \
      */
     private function _openFile()
     {
-        $this->_fieldMap      = array();
-        $this->_fieldMapCount = 0;
+        if ($this->_firstLineContainsHeaders) {
+            $this->_fieldMap      = array();
+            $this->_fieldMapCount = 0;
+        }
 
         if (! file_exists($this->_filename)) {
             $this->_file = false;
@@ -144,10 +153,11 @@ abstract class MUtil_Model_Iterator_FileIteratorAbstract implements \Iterator, \
             $this->_file->setFlags($this->_fileFlags);
             $this->_skipBom();
 
-            $firstline = $this->_file->current();
+            // Read first line for headers when necessary
+            $firstline = $this->_firstLineContainsHeaders ? $this->_file->current() : false;
 
             if ($firstline) {
-                $this->_fieldMap = $this->_recode($firstline);
+                $this->_fieldMap      = $this->_recode($firstline);
                 $this->_fieldMapCount = count($this->_fieldMap);
 
                 // Check for fields, do not run when empty
