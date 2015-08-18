@@ -1,3 +1,8 @@
+Changes in 1.7.1p2
+============================================================
+ - Fixed bug that caused return to answer page after answering a survey
+ - Fixed bug where having a previouly calculated unique appointment field would cause a crash
+ 
 Changes in 1.7.1p1
 ============================================================
  - Surveys not active in a source can no longer be activated

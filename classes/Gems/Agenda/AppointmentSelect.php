@@ -271,9 +271,6 @@ class AppointmentSelect extends \MUtil_Registry_TargetAbstract
             // When unique for all tracks of this type the current track
             // appointment id's should also be excluded.
             $this->uniqueInTrackInstance($previousAppIds);
-
-            // Exclude the current app id's in the track
-            $this->_select->where("gr2t2a_id_appointment NOT IN (" . implode(", ", $previousAppIds) . ")");
         }
 
         $sql = "gap_id_appointment NOT IN
@@ -305,7 +302,7 @@ class AppointmentSelect extends \MUtil_Registry_TargetAbstract
     {
         if ($previousAppIds) {
             // Exclude the current app id's in the track
-            $this->_select->where("gr2t2a_id_appointment NOT IN (" . implode(", ", $previousAppIds) . ")");
+            $this->_select->where("gap_id_appointment NOT IN (" . implode(", ", $previousAppIds) . ")");
         }
     }
 }
