@@ -160,8 +160,6 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
                 $icons[$fileinfo->getFilename()] = \MUtil_Html::create('span', $filename, array('style' => 'background: transparent url(' . $url . $filename . ') center right no-repeat; padding-right: 20px;'));
             }
         }
-		
-		ksort($icons);
 
         return $icons;
     }
@@ -357,6 +355,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
                 gto_changed_by = $qUserId
             WHERE gto_id_round = gro_id_round AND
                 gto_reception_code = grc_id_reception_code AND
+                gto_id_round != 0 AND
                 gro_active = 1 AND
                 (
                     gto_id_respondent != $qRespId OR
@@ -448,8 +447,8 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
     public function copyTrack($oldTrackId)
     {
         $trackModel = $this->tracker->getTrackModel();
-        
-        $roundModel = $this->getRoundModel(true, 'rounds');      
+
+        $roundModel = $this->getRoundModel(true, 'rounds');
         $fieldModel = $this->getFieldsMaintenanceModel();
 
         // First load the track
@@ -488,7 +487,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
         } else {
             $numFields = 0;
         }
-        
+
         // Now copy the rounds and map the gro_id_relation to the right field
         $roundModel->applyParameters(array('id' => $oldTrackId));
         $rounds = $roundModel->load();
@@ -515,7 +514,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
         //MUtil_Echo::track($rounds, $newRounds);
         //MUtil_Echo::track($fields, $newFields);
         Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage(sprintf($this->_('Copied track, including %s round(s) and %s field(s).'), $numRounds, $numFields));
-        
+
         return $newTrackId;
     }
 
@@ -1003,6 +1002,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
 
         $where = "gto_start_time IS NULL AND
             gto_id_respondent_track = $qRespTrackId AND
+            gto_id_round != 0 AND
             gto_id_round IN (SELECT gro_id_round
                     FROM gems__rounds
                     WHERE (gro_active = 0 OR gro_organizations NOT LIKE CONCAT('%|',$orgId,'|%')) AND
