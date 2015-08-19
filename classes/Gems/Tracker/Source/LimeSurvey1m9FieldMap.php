@@ -336,6 +336,24 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                         } while ($i<$rowscount && $rows[$i]['qid']==$row1['qid']);
                         $i--;
                         break;
+                        
+                    case '*':   //Equation type
+                        $row['code'] = $row['title'];
+                        if (!is_null($row['sq_title'])) {
+                            $row['sgq'] .= $row['sq_title'];
+                            $row['code'] .= '_' . $row['sq_title'];
+                        }
+
+                        // Since there is no question text (it contains the equation)
+                        // We use the help text for that, but in case that is empty we use
+                        // The question code
+                        $row['question'] = $row['help'];
+                        $row['help']     = '';
+                        if (empty($row['question'])) {
+                            $row['question'] = $row['code'];
+                        }
+                        $map[$row['sgq']] = $row;
+                        break;
 
                     default:
                         $row['code'] = $row['title'];

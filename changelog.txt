@@ -3,6 +3,7 @@ Changes in 1.7.1p2
  - Fixed bug that caused return to answer page after answering a survey
  - Fixed bug where having a previouly calculated unique appointment field would cause a crash
  - Fixed bug where recalculating a track would overwrite all inserted rounds
+ - LimeSurvey equation questions now use help text for question or question code when empty
  
 Changes in 1.7.1p1
 ============================================================
