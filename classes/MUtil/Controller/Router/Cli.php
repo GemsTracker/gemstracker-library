@@ -94,7 +94,11 @@ name=value (string)  Zero or more name=value parameter pairs, without the
     {
         $url = '';
         foreach ($userParams as $key => $value) {
-            $url .= "/$key/$value";
+            // E.g. \Exceptions are stored as parameters
+            // and posted arrays can be a problem as well
+            if (is_scalar($value)) {
+                $url .= '/' . rawurlencode($key) . '/' . rawurlencode($value);
+            }
         }
         return $url;
     }
@@ -175,7 +179,7 @@ name=value (string)  Zero or more name=value parameter pairs, without the
         }
 
         echo "No command given.\n\n";
-        
+
         echo $this->_expandMessage($getopt), exit;
     }
 }
