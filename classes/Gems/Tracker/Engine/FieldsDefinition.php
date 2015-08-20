@@ -457,7 +457,7 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
                             array('gtf_id_order' => SORT_DESC),
                             false // Make sure this does not trigger type dependency
                             );
-                    
+
                     if ($row && isset($row['gtf_id_order'])) {
                         $newOrder = $row['gtf_id_order'] + 10;
                         $model->set('gtf_id_order', 'default', $newOrder);
@@ -549,7 +549,16 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
                 $inVal  = isset($fieldData[$key]) ? $fieldData[$key] : null;
                 $outVal = $field->calculateFieldValue($inVal, $fieldData, $trackData);
 
-                $this->changed = $this->changed || ((string) $inVal !== (string) $outVal);
+                if (is_array($outVal) || is_array($inVal)) {
+                   if (is_array($outVal) && is_array($inVal)) {
+                        $changedNow = ($outVal != $inVal);
+                    } else {
+                        $changedNow = true;
+                    }
+                } else {
+                    $changedNow = ((string) $inVal !== (string) $outVal);
+                }
+                $this->changed = $this->changed || $changedNow;
 
                 $fieldData[$key] = $outVal; // Make sure the new value is available to the next field
                 $output[$key]    = $outVal;
