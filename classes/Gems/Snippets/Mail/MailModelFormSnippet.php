@@ -233,13 +233,14 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends \Gems_Snippets_ModelFormSn
             $this->formData['preview_html'] = $preview['html'];
             $this->formData['preview_text'] = $preview['text'];
         }
-
-        $organization = $this->mailer->getOrganization();
-        $this->formData['to'] = $this->formData['from'] = null;
-        if ($organization->getEmail()) {
-            $this->formData['to'] = $this->formData['from'] = $organization->getEmail();
-        } elseif ($this->project->getSiteEmail ()) {
-            $this->formData['to'] = $this->formData['from'] = $this->project->getSiteEmail();
+        if (!isset($this->formData['to'])) {
+            $organization = $this->mailer->getOrganization();
+            $this->formData['to'] = $this->formData['from'] = null;
+            if ($organization->getEmail()) {
+                $this->formData['to'] = $this->formData['from'] = $organization->getEmail();
+            } elseif ($this->project->getSiteEmail ()) {
+                $this->formData['to'] = $this->formData['from'] = $this->project->getSiteEmail();
+            }
         }
 
         $this->formData['available_fields'] = $this->mailElements->displayMailFields($this->mailer->getMailFields());

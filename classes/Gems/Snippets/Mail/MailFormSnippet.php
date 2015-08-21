@@ -528,7 +528,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends \MUtil_Snippets_ModelSnippetAbs
     protected function sendMail() {
         $this->mailer->setFrom($this->fromOptions[$this->formData['from']]);
         $this->mailer->setSubject($this->formData['subject']);
-        $this->mailer->setBody($this->formData['mailBody']);
+        $this->mailer->setBody(htmlspecialchars_decode($this->formData['mailBody']), 'Bbcode');
         $this->mailer->setTemplateId($this->formData['select_template']);
         $this->mailer->send();
     }

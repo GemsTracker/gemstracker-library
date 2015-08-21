@@ -209,7 +209,7 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends Gems_Snippets_Mail_Mai
                     if ($this->formData['multi_method'] == 'M') {
                         $mailer->setFrom($this->fromOptions[$this->formData['from']]);
                         $mailer->setSubject($this->formData['subject']);
-                        $mailer->setBody($this->formData['body']);
+                        $mailer->setBody(htmlspecialchars_decode($this->formData['body']));
                         $mailer->setTemplateId($this->formData['select_template']);
                         
                         try {
@@ -226,7 +226,7 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends Gems_Snippets_Mail_Mai
                     } elseif (!isset($sentMailAddresses[$email])) {
                         $mailer->setFrom($this->fromOptions[$this->formData['from']]);
                         $mailer->setSubject($this->formData['subject']);
-                        $mailer->setBody($this->formData['body']);
+                        $mailer->setBody(htmlspecialchars_decode($this->formData['body']));
                         $mailer->setTemplateId($this->formData['select_template']);
                         
                         try {
