@@ -224,9 +224,9 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
             $this->addMessage($this->_('Respondent restored.'));
 
             if ($this->formData['restore_tracks']) {
-                $count     = 0;
-                $respTrack = $this->loader->getTracker()->getRespondentTracks(
-                        $this->formData['gr2o_id_user'],
+                $count      = 0;
+                $respTracks = $this->loader->getTracker()->getRespondentTracks(
+                        $this->formData['grs_id_user'],
                         $this->formData['gr2o_id_organization']
                         );
 

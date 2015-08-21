@@ -1496,14 +1496,15 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
             if ($this->isCurrentUser()) {
                 $this->getCurrentOrganization()->setAsCurrentOrganization();
 
+                if ($organization->canHaveRespondents()) {
+                    $usedOrganizationId = $organizationId;
+                } else {
+                    $usedOrganizationId = null;
+                }
+                
                 // Now update the requestcache to change the oldOrgId to the new orgId
                 // Don't do it when the oldOrgId doesn't match
                 if ($requestCache = $this->session->requestCache) {
-                    if ($organization->canHaveRespondents()) {
-                        $usedOrganizationId = $organizationId;
-                    } else {
-                        $usedOrganizationId = null;
-                    }
                     //Create the list of request cache keys that match an organization ID (to be extended)
                     foreach ($requestCache as $key => $value) {
                         if (is_array($value)) {
