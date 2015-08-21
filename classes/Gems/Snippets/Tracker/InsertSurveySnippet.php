@@ -324,6 +324,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
                         'gto_id_organization',
                         'gto_id_survey',
                         'ggp_name',
+                        'gto_id_relationfield',
                         'gto_id_track',
                         'gto_round_order',
                         'gto_valid_from_manual',
@@ -464,6 +465,18 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
 
         if (isset($this->formData['gto_id_track'])) {
             $this->respondentTrack = $respTracks[$this->formData['gto_id_track']];
+
+            // Add relation field when survey is not for staff
+            if ($this->survey && $this->survey->isTakenByStaff() === false) {
+                $engine = $this->respondentTrack->getTrackEngine();
+                if (method_exists($engine, 'getRespondentRelationFields')) {
+                    $empty = array('-1' => $this->_('Respondent'));
+                    $relations = $empty + $engine->getRespondentRelationFields();
+                    $model->set('gto_id_relationfield', 'label', $this->_('Fill out by'),
+                        'multiOptions', $relations, 'elementClass', 'Select',
+                    'required', true);
+                }
+            }
         }
     }
 
@@ -487,12 +500,15 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
             'gto_valid_until',
             'gto_valid_until_manual',
             'gto_comment',
+            'gto_id_relationfield'
             );
 
         foreach ($copyFields as $name) {
             if (array_key_exists($name, $this->formData)) {
                 if ($model->hasOnSave($name)) {
                     $tokenData[$name] = $model->getOnSave($this->formData[$name], $this->createData, $name, $this->formData);
+                } elseif ('' === $this->formData[$name]) {
+                    $tokenData[$name] = null;
                 } else {
                     $tokenData[$name] = $this->formData[$name];
                 }
