@@ -507,6 +507,8 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
             if (array_key_exists($name, $this->formData)) {
                 if ($model->hasOnSave($name)) {
                     $tokenData[$name] = $model->getOnSave($this->formData[$name], $this->createData, $name, $this->formData);
+                } elseif ('' === $this->formData[$name]) {
+                    $tokenData[$name] = null;
                 } else {
                     $tokenData[$name] = $this->formData[$name];
                 }
