@@ -60,6 +60,8 @@ class TrackActionButtonRow extends CurrentButtonRowSnippet
         $menuList->addByController('respondent', 'show', $this->_('Show respondent'))
                 ->addByController('track', 'index', $this->_('Show tracks'))
                 ->addCurrentSiblings()
-                ->addCurrentChildren();
+                ->addCurrentChildren()
+                ->setLabel('respondent', 'edit', $this->_('Edit respondent'))
+                ->setLabel('track', 'edit-track', $this->_('Edit track'));
     }
 }
