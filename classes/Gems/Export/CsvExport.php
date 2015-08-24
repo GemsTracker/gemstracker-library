@@ -98,7 +98,7 @@ class Gems_Export_CsvExport extends \Gems_Export_ExportAbstract
      * Add headers to a specific file
      * @param  string $filename The temporary filename while the file is being written
      */
-    protected function addheader($filename)
+    protected function addHeader($filename)
     {
         $file = fopen($filename, 'w');
         $bom = pack("CCC", 0xef, 0xbb, 0xbf);
