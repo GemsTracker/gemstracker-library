@@ -180,10 +180,10 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
             }
 
             if (\MUtil_Bootstrap::enabled()) {
-                $div->button($menuIndex->toHRefAttribute($this->request), $trackTypeDescription,
+                $div->button($trackTypeDescription,
                     array('class' => 'toolanchor btn btn-primary', 'data-toggle' => 'dropdown', 'type' => 'button'));
                 $dropdownButton = $div->button(array('class' => 'btn btn-primary dropdown-toggle', 'data-toggle' => 'dropdown', 'type' => 'button'));
-                $dropdownButton->span(array('class' => 'caret'));
+                $dropdownButton->span(array('class' => 'caret', 'renderClosingTag' => true));
             } else {
                 $div->a($menuIndex->toHRefAttribute($this->request), $trackTypeDescription, array('class' => 'toolanchor'));
             }
@@ -226,10 +226,10 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
 
         } else {
             if (\MUtil_Bootstrap::enabled()) {
-                $div->button($menuIndex->toHRefAttribute($this->request),                $trackTypeDescription,
+                $div->button($trackTypeDescription,
                     array('class' => 'toolanchor btn btn-primary disabled', 'data-toggle' => 'dropdown', 'type' => 'button'));
                 $dropdownButton = $div->button(array('class' => 'btn btn-primary disabled dropdown-toggle', 'data-toggle' => 'dropdown', 'type' => 'button'));
-                $dropdownButton->span(array('class' => 'caret'));
+                $dropdownButton->span(array('class' => 'caret', 'renderClosingTag' => true));
                 $options = array('class' => 'dropdown-menu disabled', 'role' => 'menu');
             } else {
                 $div->a($menuIndex->toHRefAttribute($this->request),
