@@ -114,6 +114,11 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
     protected $model;
 
     /**
+     * @var array Filter settings of the current loaded model
+     */
+    protected $modelFilter;
+
+    /**
      * @var integer     How many rows the batch will do in one go
      */
     protected $rowsPerBatch = 500;
@@ -224,7 +229,7 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
      * Add headers to a specific file
      * @param  string $filename The temporary filename while the file is being written
      */
-    abstract protected function addheader($filename);
+    abstract protected function addHeader($filename);
 
     /**
      * Add model rows to file. Can be batched
@@ -466,19 +471,17 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
      */
     protected function getModel()
     {
-        $this->model = false;
-        if ($this->batch && $models = $this->batch->getSessionVariable('models')) {
-            $this->model = $models[0];
-            $this->preprocessModel();
-            $this->modelSourceName = $this->defaultExportModelSource;
-        } elseif ($this->modelSourceName instanceof \MUtil_Model_ModelAbstract) {
-            $this->model = $this->modelSourceName;
-            $this->modelSourceName = $this->defaultExportModelSource;
-        }
-
-        $exportModelSource = $this->getExportModelSource($this->modelSourceName);
-        if (!$this->model) {
-            $this->model = $exportModelSource->getModel($this->filter, $this->data);
+        if ($this->model && $this->model instanceof \MUtil_Model_ModelAbstract && $this->modelFilter === $this->filter) {
+            return $this->model;
+        } else {
+            $this->modelFilter = $this->filter;
+            if ($this->modelSourceName instanceof \MUtil_Model_ModelAbstract) {
+                $this->model = $this->modelSourceName;
+                $this->modelSourceName = $this->defaultExportModelSource;
+            } else {
+                $exportModelSource = $this->getExportModelSource($this->modelSourceName);
+                $this->model = $exportModelSource->getModel($this->filter, $this->data);
+            }
             $this->preprocessModel();
         }
 

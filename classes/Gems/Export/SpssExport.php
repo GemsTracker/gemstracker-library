@@ -80,7 +80,7 @@ class Gems_Export_SpssExport extends \Gems_Export_ExportAbstract
      * @return string name of the specific export
      */
     public function getName() {
-        return 'test Export';
+        return 'SPSS Export';
     }
 
     /**
@@ -104,7 +104,7 @@ class Gems_Export_SpssExport extends \Gems_Export_ExportAbstract
      * Add headers to a specific file
      * @param  string $filename The temporary filename while the file is being written
      */
-    protected function addheader($filename)
+    protected function addHeader($filename)
     {
         $file = fopen($filename, 'w');
         $bom = pack("CCC", 0xef, 0xbb, 0xbf);
@@ -133,7 +133,7 @@ class Gems_Export_SpssExport extends \Gems_Export_ExportAbstract
         $model = $this->getModel($this->modelSourceName);
 
         $this->files[$this->filename.'.sps'] = $this->tempFilename . '.sps';
-        $this->addheader($this->tempFilename . '.sps');
+        $this->addHeader($this->tempFilename . '.sps');
 
         $file = fopen($this->tempFilename . '.sps', 'a');
 

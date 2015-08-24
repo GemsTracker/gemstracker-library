@@ -58,6 +58,8 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
      */
     public $db;
 
+    protected $filter;
+
     /**
      * @var \Gems_Loader
      */
@@ -391,7 +393,10 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
      */
 	public function getModel($filter = array(), $data = array())
 	{
-        if (!$this->model) {
+        if ($filter !== $this->filter || !$this->model) {
+
+            $this->filter = $filter;
+
     		$surveyId = $filter['gto_id_survey'];
             $language    = $this->locale->getLanguage();
 
@@ -426,13 +431,13 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
                 $model->addTable('gems__tracks', array('gems__tracks.gtr_id_track' => 'gems__tokens.gto_id_track'), 'gtr');
             }
 
-            $model->set('respondentid',        'label', $this->_('Respondent ID'));
-            $model->set('organizationid',      'label', $this->_('Organization'),
+            $model->set('respondentid',        'label', $this->_('Respondent ID'), 'type', \MUtil_Model::TYPE_NUMERIC);
+            $model->set('organizationid',      'label', $this->_('Organization'), 'type', \MUtil_Model::TYPE_NUMERIC,
                                                     'multiOptions', $this->loader->getCurrentUser()->getAllowedOrganizations()
             );
             // Add Consent
-            $model->set('consentcode',              'label', $this->_('Consent'));
-            $model->set('resptrackid',              'label', $this->_('Respondent track ID'));
+            $model->set('consentcode',              'label', $this->_('Consent'), 'type', \MUtil_Model::TYPE_STRING);
+            $model->set('resptrackid',              'label', $this->_('Respondent track ID'), 'type', \MUtil_Model::TYPE_NUMERIC);
             $model->set('gto_round_description',    'label', $this->_('Round description'));
             $model->set('gtr_track_name',           'label', $this->_('Track name'));
             $model->set('gr2t_track_info',          'label', $this->_('Track description'));
