@@ -46,6 +46,12 @@
  */
 class MUtil_Bootstrap_Form_Element_MultiCheckbox extends \Zend_Form_Element_MultiCheckbox
 {
+    /**
+     * Default separator is <br/> tag, not needed because of bootstrap wrappers
+     *  
+     * @var string 
+     */
+    protected $_separator = '';
 
     /**
      * Constructor
