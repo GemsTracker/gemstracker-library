@@ -48,13 +48,19 @@
  */
 abstract class Gems_Menu_MenuAbstract
 {
+    protected $_subItems = array();
+
     /**
      *
      * @var \GemsEscort
      */
     public $escort;
 
-    protected $_subItems = array();
+    /**
+     *
+     * @var \Zend_Translate_Adapter
+     */
+    protected $translateAdapter;
 
     /**
      * Copy from \Zend_Translate_Adapter
@@ -69,12 +75,13 @@ abstract class Gems_Menu_MenuAbstract
      */
     public function _($text, $locale = null)
     {
-        return $this->escort->translate->getAdapter()->_($text, $locale);
+        return $this->translateAdapter->_($text, $locale);
     }
 
     public function __construct(\GemsEscort $escort)
     {
         $this->escort = $escort;
+        $this->translateAdapter = $this->escort->translate->getAdapter();
     }
 
     /**
@@ -937,7 +944,7 @@ abstract class Gems_Menu_MenuAbstract
     public function plural($singular, $plural, $number, $locale = null)
     {
         $args = func_get_args();
-        return call_user_func_array(array($this->escort->translate->getAdapter(), 'plural'), $args);
+        return call_user_func_array(array($this->translateAdapter, 'plural'), $args);
     }
 
     /**
