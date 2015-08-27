@@ -49,10 +49,23 @@ namespace Gems\Snippets\Upgrade;
 class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
 {
     /**
+     * The current version of the code
+     *
+     * @var int
+     */
+    protected $codeVersion;
+
+    /**
      *
      * @var \GemsEscort
      */
     protected $escort;
+
+    /**
+     *
+     * @var \Gems_Loader
+     */
+    protected $loader;
 
     /**
      *
@@ -149,20 +162,21 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
 
                 default:
                     $changedControllers = array(
-                        'ConsentController',
-                        'DatabaseController',
-                        'LogController',
-                        'LogMaintenanceController',
-                        'ProjectSurveysController',
-                        'ProjectTracksController',
-                        'ReceptionController',
-                        'RoleController',
-                        'SurveyMaintenanceController',
-                        'TrackController',
-                        'TrackRoundsController',
+                        'ConsentController'           => 57,
+                        'DatabaseController'          => 57,
+                        'LogController'               => 57,
+                        'LogMaintenanceController'    => 57,
+                        'ProjectSurveysController'    => 57,
+                        'ProjectTracksController'     => 57,
+                        'ReceptionController'         => 57,
+                        'RoleController'              => 57,
+                        'SurveyMaintenanceController' => 57,
+                        'TrackController'             => 57,
+                        'TrackRoundsController'       => 57,
                         );
-                    foreach ($changedControllers as $controller) {
-                        if ($controller . '.php' == $fileinfo->getFilename()) {
+                    foreach ($changedControllers as $controller => $version) {
+                        if (($version == $this->codeVersion) &&
+                                ($controller . '.php' == $fileinfo->getFilename())) {
                             $messages[] = "The parent class changed from BrowseEditAction to ModelSnippetActionAbstract.";
                             $messages[] = \MUtil_Html::create('strong', "Check all code in the controller!");
                             break;
@@ -238,6 +252,23 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
         }
     }
 
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    {
+        $this->codeVersion = $this->loader->getVersions()->getBuild();
+    }
+
+    /**
+     * Iterator for looping thorugh all files in a directory and i's sub directories
+     *
+     * @param string $dir
+     * @return \RecursiveIteratorIterator
+     */
     protected function getRecursiveDirectoryIterator($dir)
     {
         return new \RecursiveIteratorIterator(
@@ -259,7 +290,12 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
     {
         $this->html = $this->getHtmlSequence();
 
-        $this->html->h1('Upgrade compatibility report');
+        $versions = $this->loader->getVersions();
+        $this->html->h1(sprintf(
+                'Upgrade compatibility report for GemsTracker %s, build %d',
+                $versions->getGemsVersion(),
+                $versions->getBuild()
+                ));
 
         $this->addEscortReport();
 

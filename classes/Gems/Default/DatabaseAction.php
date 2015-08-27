@@ -168,7 +168,7 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
                 return $links;
             }
 
-            //The reset parameter blocks the display of buttons, so we unset it
+            // The reset parameter blocks the display of buttons, so we unset it
             unset($parameters['reset']);
             if ($childItems) {
                 foreach ($childItems as $menuItem) {
@@ -513,13 +513,15 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
             $form->populate($data);
         }
 
-        //$table = new \MUtil_Html_TableElement(array('class' => 'formTable'));
-        //$table->setAsFormLayout($form, true, true);
-        //$table['tbody'][0][0]->class = 'label';  // Is only one row with formLayout, so all in output fields get class.
+        if (! \MUtil_Bootstrap::enabled()) {
+            $table = new \MUtil_Html_TableElement(array('class' => 'formTable'));
+            $table->setAsFormLayout($form, true, true);
+            $table['tbody'][0][0]->class = 'label';  // Is only one row with formLayout, so all in output fields get class.
 
-        if ($links = $this->createMenuLinks(1)) {
-            //$table->tf(); // Add empty cell, no label
-            //$linksCell = $table->tf($links);
+            if ($links = $this->createMenuLinks(1)) {
+                $table->tf(); // Add empty cell, no label
+                $linksCell = $table->tf($links);
+            }
         }
 
         $this->html[] = $form;

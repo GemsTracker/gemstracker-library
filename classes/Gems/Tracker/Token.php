@@ -1438,7 +1438,6 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                 $changed = $event->processTokenInsertion($this);
                 if ($changed && is_array($changed)) {
 
-                    $source = $survey->getSource();
                     $this->setRawAnswers($changed);
 
                     if (\Gems_Tracker::$verbose) {

@@ -59,7 +59,6 @@ use MUtil\Model\Dependency\OffOnElementsDependency;
  * these models can take care of their own formatting.
  *
  * @see \Gems_Tracker_Engine_TrackEngineInterface
- * @see \Gems_Tracker_Model_SingleSurveyTokenModel
  *
  * @package    Gems
  * @subpackage Tracker
