@@ -128,7 +128,7 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
         $cacheId = strtr(__CLASS__ . '_' . $trackType . '_' . $orgId, '\\/' , '__');
         $tracks  = $this->cache->load($cacheId);
 
-        if (true || ! $tracks) {
+        if (! $tracks) {
             switch ($trackType) {
                 case 'tracks':
                     $sql = "SELECT gtr_id_track, gtr_track_name

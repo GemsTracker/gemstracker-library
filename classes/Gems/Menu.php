@@ -81,7 +81,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
      */
     static public $verbose = false;
 
-    public function  __construct(GemsEscort $escort)
+    public function  __construct(\GemsEscort $escort)
     {
         parent::__construct($escort);
 
@@ -364,6 +364,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
 
             $subPage->addAction($this->_('Insert'), 'pr.track.insert', 'insert')
                     ->setNamedParameters($params)
+                    ->addOptionalParameters(\Gems_Model::SURVEY_ID, 'gsu_id_survey')
                     ->setHiddenOrgId($orgId);
 
         } else {
@@ -385,7 +386,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
 
             $trPage->addAction($this->_('Insert'), 'pr.track.insert', 'insert')
                     ->setNamedParameters($params)
-                    // ->addNamedParameters(\Gems_Model::SURVEY_ID, 'gsu_id_survey')
+                    ->addOptionalParameters(\Gems_Model::SURVEY_ID, 'gsu_id_survey')
                     ->setHiddenOrgId($orgId);
 
             $itemPage = $trPage->addAction($this->_('Show track'), 'pr.track', 'show-track')

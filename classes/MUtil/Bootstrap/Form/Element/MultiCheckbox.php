@@ -46,7 +46,7 @@
  */
 class MUtil_Bootstrap_Form_Element_MultiCheckbox extends \Zend_Form_Element_MultiCheckbox
 {
-
+    
     /**
      * Constructor
      *
@@ -63,7 +63,7 @@ class MUtil_Bootstrap_Form_Element_MultiCheckbox extends \Zend_Form_Element_Mult
     public function __construct($spec, $options = null)
     {
         parent::__construct($spec, $options);
-        $this->setAttrib('label_class', 'checkbox');
+        $this->setAttrib('label_class', 'checkbox-inline');
     }
 
 	/**
