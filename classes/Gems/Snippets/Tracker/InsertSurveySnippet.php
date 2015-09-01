@@ -262,6 +262,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
      */
     protected function getRoundsListAndSetDefault()
     {
+        $model  = $this->getModel();
         $output = array();
         $select = $this->getRoundSelect();
 
@@ -275,14 +276,16 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
 
             // Initial values
             $maxAnswered      = 0;
-            $maxGroup         = 0;
             $maxGroupAnswered = 0;
+            $minGroup         = -1;
 
             foreach ($rows as $row) {
                 $output[$row['round_order']] = $row['round_description'];
 
                 if ($row['has_group']) {
-                    $maxGroup = $row['round_order'];
+                    if (-1 === $minGroup) {
+                        $minGroup = $row['round_order'];
+                    }
                     if ($row['group_answered']) {
                         $maxGroupAnswered = $row['round_order'];
                     }
@@ -293,18 +296,39 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
             }
             if ($maxGroupAnswered) {
                 $this->defaultRound = $maxGroupAnswered;
+                $model->set('gto_round_order', 'description', sprintf(
+                        $this->_('The last round containing answers for surveys in the same user group is "%s".'),
+                        $output[$this->defaultRound]
+                        ));
+
             } elseif ($maxAnswered) {
                 $this->defaultRound = $maxAnswered;
-            } elseif ($maxGroup) {
-                $this->defaultRound = $maxAnswered;
+                $model->set('gto_round_order', 'description', sprintf(
+                        $this->_('The last round containing answers is "%s".'),
+                        $output[$this->defaultRound]
+                        ));
+
+            } elseif (-1 !== $minGroup) {
+                $this->defaultRound = $minGroup;
+                $model->set('gto_round_order', 'description', sprintf(
+                        $this->_('No survey has been answered, the first round with surveys in the same user group is "%s".'),
+                        $output[$this->defaultRound]
+                        ));
+
             } else {
-                $row = reset($rows);
-                $this->defaultRound = $row['round_order'];
+                reset($output);
+                $this->defaultRound = key($output);
+                $model->set('gto_round_order',
+                        'description', $this->_('No surveys have answers, nor are any in the same user group.')
+                        );
             }
 
         } else {
             $output[10] = $this->_('Added survey');
             $this->defaultRound = 10;
+            $model->set('gto_round_order',
+                    'description', $this->_('No current rounds available.')
+                    );
         }
 
         return $output;
@@ -394,6 +418,10 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
 
         if (! isset($this->formData['gto_round_order'], $rounds[$this->formData['gto_round_order']])) {
             $this->formData['gto_round_order'] = $this->defaultRound;
+        }
+        if (! isset($rounds[$this->formData['gto_round_order']])) {
+            reset($rounds);
+            $this->formData['gto_round_order'] = key($rounds);
         }
     }
 
