@@ -68,6 +68,28 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     protected $defaultRound = 10;
 
     /**
+     * The items on the form - in the order of display
+     *
+     * @var array
+     */
+    protected $formItems = array(
+        'gto_id_respondent',
+        'gr2o_patient_nr',
+        'respondent_name',
+        'gto_id_organization',
+        'gto_id_survey',
+        'ggp_name',
+        'gto_id_relationfield',
+        'gto_id_track',
+        'gto_round_order',
+        'gto_valid_from_manual',
+        'gto_valid_from',
+        'gto_valid_until_manual',
+        'gto_valid_until',
+        'gto_comment',
+        );
+
+    /**
      * Required
      *
      * @var \Gems_Loader
@@ -341,22 +363,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     {
         if (is_null($this->_items)) {
             $this->_items = array_merge(
-                    array(
-                        'gto_id_respondent',
-                        'gr2o_patient_nr',
-                        'respondent_name',
-                        'gto_id_organization',
-                        'gto_id_survey',
-                        'ggp_name',
-                        'gto_id_relationfield',
-                        'gto_id_track',
-                        'gto_round_order',
-                        'gto_valid_from_manual',
-                        'gto_valid_from',
-                        'gto_valid_until_manual',
-                        'gto_valid_until',
-                        'gto_comment',
-                        ),
+                    $this->formItems,
                     $this->getModel()->getMeta(\MUtil_Model_Type_ChangeTracker::HIDDEN_FIELDS, array())
                     );
             if (! $this->createData) {
@@ -498,7 +505,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
             if ($this->survey && $this->survey->isTakenByStaff() === false) {
                 $engine = $this->respondentTrack->getTrackEngine();
                 if (method_exists($engine, 'getRespondentRelationFields')) {
-                    $empty = array('-1' => $this->_('Respondent'));
+                    $empty = array('-1' => $this->_('Patient'));
                     $relations = $empty + $engine->getRespondentRelationFields();
                     $model->set('gto_id_relationfield', 'label', $this->_('Fill out by'),
                         'multiOptions', $relations, 'elementClass', 'Select',
