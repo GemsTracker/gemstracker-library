@@ -164,7 +164,9 @@ class Gems_Model_Translator_AppointmentTranslator extends \Gems_Model_Translator
             }
         }
 
-        if (($row['gap_admission_time'] instanceof \MUtil_Date) && ($row['gap_discharge_time'] instanceof \MUtil_Date)) {
+        if (isset($row['gap_admission_time'], $row['gap_admission_time']) &&
+                ($row['gap_admission_time'] instanceof \MUtil_Date) &&
+                ($row['gap_discharge_time'] instanceof \MUtil_Date)) {
             if ($row['gap_discharge_time']->diffDays($row['gap_admission_time']) > 366) {
                 if ($row['gap_discharge_time']->diffDays(new \MUtil_Date()) > 366) {
                     $row['gap_discharge_time'] = null;

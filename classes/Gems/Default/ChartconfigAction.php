@@ -58,9 +58,9 @@ class Gems_Default_ChartconfigAction extends \Gems_Controller_ModelSnippetAction
 
         $empty = $this->loader->getUtil()->getTranslated()->getEmptyDropdownArray();
 
-        $model->set('gcc_tid', 'label', $this->_('Track'), 'multiOptions', $empty + $this->db->fetchPairs('SELECT gtr_id_track, gtr_track_name FROM gems__tracks;'), 'onchange', 'this.form.submit();');
+        $model->set('gcc_tid', 'label', $this->_('Track'), 'multiOptions', $empty + $this->db->fetchPairs('SELECT gtr_id_track, gtr_track_name FROM gems__tracks ORDER BY gtr_track_name;'), 'onchange', 'this.form.submit();');
         $model->set('gcc_rid', 'label', $this->_('Round'));
-        $model->set('gcc_sid', 'label', $this->_('Survey'), 'multiOptions', $empty + $this->db->fetchPairs('SELECT gsu_id_survey, gsu_survey_name FROM gems__surveys;'));
+        $model->set('gcc_sid', 'label', $this->_('Survey'), 'multiOptions', $empty + $this->db->fetchPairs('SELECT gsu_id_survey, gsu_survey_name FROM gems__surveys ORDER BY gsu_survey_name;'));
         $model->set('gcc_code', 'label', $this->_('Survey code'));
         $model->set('gcc_description', 'label', $this->_('Description'));
 
