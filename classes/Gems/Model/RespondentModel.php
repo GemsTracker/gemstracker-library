@@ -368,7 +368,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
 
         $this->setIfExists('grs_iso_lang',    'label', $this->_('Language'),
                 'multiOptions', $localized->getLanguages(),
-                'tab', $this->_('Settings'));
+                'tab', $this->_('Settings'), 'default', $this->project->getLocaleDefault());
 
         $this->setIfExists('gr2o_consent',    'label', $this->_('Consent'),
                 'description', $this->_('Has the respondent signed the informed consent letter?'),
