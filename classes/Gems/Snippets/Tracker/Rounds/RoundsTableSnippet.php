@@ -28,7 +28,7 @@
  *
  *
  * @package    Gems
- * @subpackage Snippets_Rounds
+ * @subpackage Snippets\Tracker
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
@@ -43,7 +43,7 @@ use Gems\Tracker\Model\RoundModel;
  *
  *
  * @package    Gems
- * @subpackage Snippets_Rounds
+ * @subpackage Snippets\Tracker
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.7.1 21-apr-2015 13:39:42
@@ -58,6 +58,13 @@ class RoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
      * @var array
      */
     protected $_fixedSort = array('gro_id_order' => SORT_ASC);
+
+    /**
+     * The default controller for menu actions, if null the current controller is used.
+     *
+     * @var array (int/controller => action)
+     */
+    public $menuActionController = 'track-rounds';
 
     /**
      *

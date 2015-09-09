@@ -120,7 +120,8 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
      * @param array $options
      * @return \Gems_Form
      */
-    public function createForm($options = null) {
+    public function createForm($options = null)
+    {
         if (\MUtil_Bootstrap::enabled()) {
             $options['class'] = 'form-horizontal';
             $options['role'] = 'form';

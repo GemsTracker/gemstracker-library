@@ -43,7 +43,8 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Default_TrackMaintenanceAction  extends \Gems_Controller_BrowseEditAction
+class Gems_Default_TrackMaintenanceAction extends //\Gems_Controller_BrowseEditAction
+    \Gems_Default_TrackMaintenanceWithEngineActionAbstract
 {
     /**
      *
@@ -64,11 +65,70 @@ class Gems_Default_TrackMaintenanceAction  extends \Gems_Controller_BrowseEditAc
      */
     public $cache;
 
+    public $menuShowIncludeLevel = 10;
+
     public $sortKey = array('gtr_track_name' => SORT_ASC);
 
-    public $summarizedActions = array('index', 'autofilter', 'check-all');
+    /**
+     * The parameters used for the autofilter action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $autofilterParameters = array(
+        'extraSort'   => array('gtr_track_name' => SORT_ASC),
+        'trackEngine' => null,
+        );
 
-    public $menuShowIncludeLevel = 10;
+    /**
+     * Variable to set tags for cache cleanup after changes
+     *
+     * @var array
+     */
+    public $cacheTags = array('track', 'tracks');
+
+    /**
+     * The snippets used for the index action, before those in autofilter
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $indexStartSnippets = array(
+        'Generic\\ContentTitleSnippet',
+        'Tracker\\TrackMaintenance\\TrackMaintenanceSearchSnippet'
+        );
+
+    /**
+     * The snippets used for the show action
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $showSnippets = array(
+        'Generic\\ContentTitleSnippet',
+        'ModelItemTableSnippetGeneric',
+        'Tracker\\Fields\\FieldsTitleSnippet',
+        'Tracker\\Fields\\FieldsTableSnippet',
+        'Tracker\\Buttons\\NewFieldButtonRow',
+        'Tracker\\Rounds\\RoundsTitleSnippet',
+        'Tracker\\Rounds\\RoundsTableSnippet',
+        'Tracker\\Buttons\\NewRoundButtonRow',
+        );
+
+    /**
+     * Array of the actions that use a summarized version of the model.
+     *
+     * This determines the value of $detailed in createAction(). As it is usually
+     * less of a problem to use a $detailed model with an action that should use
+     * a summarized model and I guess there will usually be more detailed actions
+     * than summarized ones it seems less work to specify these.
+     *
+     * @var array $summarizedActions Array of the actions that use a
+     * summarized version of the model.
+     */
+    public $summarizedActions = array('index', 'autofilter', 'check-all', 'recalc-all-fields');
 
     /**
      * Adds columns from the model to the bridge that creates the browse table.
@@ -77,7 +137,7 @@ class Gems_Default_TrackMaintenanceAction  extends \Gems_Controller_BrowseEditAc
      *
      * @param \MUtil_Model_Bridge_TableBridge $bridge
      * @param \MUtil_Model_ModelAbstract $model
-     * @rturn void
+     * @return void
      */
     protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
@@ -409,6 +469,9 @@ class Gems_Default_TrackMaintenanceAction  extends \Gems_Controller_BrowseEditAc
         $this->addRecalcInformation();
     }
 
+    /**
+     *
+     * /
     public function showAction()
     {
         $tracker     = $this->loader->getTracker();
@@ -462,5 +525,5 @@ class Gems_Default_TrackMaintenanceAction  extends \Gems_Controller_BrowseEditAc
         $this->html->actionLink(array('controller' => 'track-' . $mode, 'action' => 'create', 'id' => $this->getRequest()->getParam(\MUtil_Model::REQUEST_ID)), $this->_('New'));
 
         $this->getRequest()->setActionName($action);
-    }
+    } // */
 }

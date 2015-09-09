@@ -45,7 +45,7 @@ use Gems\Tracker\Model\FieldMaintenanceModel;
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-class Gems_Default_TrackFieldsAction extends \Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_TrackFieldsAction extends \Gems_Default_TrackMaintenanceWithEngineActionAbstract
 {
     /**
      * The parameters used for the autofilter action.
@@ -60,6 +60,13 @@ class Gems_Default_TrackFieldsAction extends \Gems_Controller_ModelSnippetAction
     protected $autofilterParameters = array(
         'extraSort' => array('gtf_id_order' => SORT_ASC),
         );
+
+    /**
+     * The snippets used for the autofilter action.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $autofilterSnippets = 'Tracker\\Fields\\FieldsTableSnippet';
 
     /**
      * Variable to set tags for cache cleanup after changes
@@ -102,10 +109,7 @@ class Gems_Default_TrackFieldsAction extends \Gems_Controller_ModelSnippetAction
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array(
-        'Generic\\ContentTitleSnippet',
-        'Tracker_Fields_FieldsAutosearchForm'
-        );
+    protected $indexStartSnippets = array('Tracker\\Fields\\FieldsTitleSnippet', 'Tracker_Fields_FieldsAutosearchForm');
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -120,11 +124,8 @@ class Gems_Default_TrackFieldsAction extends \Gems_Controller_ModelSnippetAction
      */
     public function createModel($detailed, $action)
     {
-        $request = $this->getRequest();
-        $trackId = $this->_getIdParam();
-        $engine  = $this->loader->getTracker()->getTrackEngine($trackId);
-
-        $model   = $engine->getFieldsMaintenanceModel($detailed, $action);
+        $engine = $this->getTrackEngine();
+        $model  = $engine->getFieldsMaintenanceModel($detailed, $action);
 
         return $model;
     }

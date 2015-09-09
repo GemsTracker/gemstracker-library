@@ -28,7 +28,7 @@
  *
  *
  * @package    Gems
- * @subpackage RoundDeleteSnippet
+ * @subpackage Snippets\Tracker
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
@@ -43,7 +43,7 @@ use Gems\Tracker\Model\RoundModel;
  *
  *
  * @package    Gems
- * @subpackage RoundDeleteSnippet
+ * @subpackage Snippets\Tracker
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.7.1 22-apr-2015 15:32:11

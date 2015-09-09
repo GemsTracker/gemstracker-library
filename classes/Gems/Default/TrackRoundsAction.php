@@ -43,23 +43,8 @@
  * @license    New BSD License
  * @since      Class available since version 1.3
  */
-class Gems_Default_TrackRoundsAction extends \Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_TrackRoundsAction extends \Gems_Default_TrackMaintenanceWithEngineActionAbstract
 {
-    /**
-     * The parameters used for the autofilter action.
-     *
-     * When the value is a function name of that object, then that functions is executed
-     * with the array key as single parameter and the return value is set as the used value
-     * - unless the key is an integer in which case the code is executed but the return value
-     * is not stored.
-     *
-     * @var array Mixed key => value array for snippet initialization
-     */
-    protected $autofilterParameters = array(
-        'trackEngine' => 'getTrackEngine',
-        'trackId'     => '_getIdParam',
-        );
-
     /**
      * The snippets used for the autofilter action.
      *
@@ -74,6 +59,13 @@ class Gems_Default_TrackRoundsAction extends \Gems_Controller_ModelSnippetAction
     public $basepath;
 
     /**
+     * Variable to set tags for cache cleanup after changes
+     *
+     * @var array
+     */
+    public $cacheTags = array('track', 'tracks');
+
+    /**
      * The parameters used for the create and edit actions.
      *
      * When the value is a function name of that object, then that functions is executed
@@ -85,8 +77,6 @@ class Gems_Default_TrackRoundsAction extends \Gems_Controller_ModelSnippetAction
      */
     protected $createEditParameters = array(
         'roundId'     => 'getRoundId',
-        'trackEngine' => 'getTrackEngine',
-        'trackId'     => '_getIdParam',
     );
 
     /**
@@ -107,8 +97,6 @@ class Gems_Default_TrackRoundsAction extends \Gems_Controller_ModelSnippetAction
      */
     protected $deleteParameters = array(
         'roundId'     => 'getRoundId',
-        'trackEngine' => 'getTrackEngine',
-        'trackId'     => '_getIdParam',
         );
 
     /**
@@ -123,7 +111,7 @@ class Gems_Default_TrackRoundsAction extends \Gems_Controller_ModelSnippetAction
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'AutosearchWithIdSnippet');
+    protected $indexStartSnippets = array('Tracker\\Rounds\\RoundsTitleSnippet', 'AutosearchWithIdSnippet');
 
     /**
      * The parameters used for the show action
@@ -138,15 +126,7 @@ class Gems_Default_TrackRoundsAction extends \Gems_Controller_ModelSnippetAction
     protected $showParameters = array(
         'roundId'     => 'getRoundId',
         'surveyId'    => 'getSurveyid',
-        'trackEngine' => 'getTrackEngine',
-        'trackId'     => '_getIdParam',
     );
-
-    /**
-     *
-     * @var \Gems_Tracker_Engine_TrackEngineInterface
-     */
-    protected $trackEngine;
 
     /**
      * Create a new round
@@ -269,30 +249,6 @@ class Gems_Default_TrackRoundsAction extends \Gems_Controller_ModelSnippetAction
     {
         return $this->plural('round', 'rounds', $count);
     }
-
-    /**
-     *
-     * @return \Gems_Tracker_Engine_TrackEngineInterface
-     * @throws \Gems_Exception
-     */
-    protected function getTrackEngine()
-    {
-        if ($this->trackEngine instanceof \Gems_Tracker_Engine_TrackEngineInterface) {
-            return $this->trackEngine;
-        }
-        $trackId = $this->_getIdParam();
-
-        if (! $trackId) {
-            throw new \Gems_Exception($this->_('Missing track identifier.'));
-        }
-
-        $menuSource = $this->menu->getParameterSource();
-        $this->trackEngine = $this->loader->getTracker()->getTrackEngine($trackId);
-        $this->trackEngine->applyToMenuSource($menuSource);
-        $menuSource->setRequestId($trackId); // Tell the menu we're using track id as request id
-
-        return $this->trackEngine;
-   }
 
     /**
      * Action for showing an item page

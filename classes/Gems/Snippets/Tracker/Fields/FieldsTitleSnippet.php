@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2011, Erasmus MC
+ * Copyright (c) 2015, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -18,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL MAGNAFACTA BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -30,49 +30,54 @@
  * @package    Gems
  * @subpackage Snippets\Tracker
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: FieldsTitleSnippet.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
-namespace Gems\Snippets\Tracker\Rounds;
+namespace Gems\Snippets\Tracker\Fields;
+
+use Gems\Snippets\Generic\ContentTitleSnippet;
 
 /**
  *
+ *
  * @package    Gems
  * @subpackage Snippets\Tracker
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.4
+ * @since      Class available since version 1.7.2 9-sep-2015 18:36:59
  */
-class EditRoundStepSnippet extends \Gems_Tracker_Snippets_EditRoundSnippetAbstract
+class FieldsTitleSnippet extends ContentTitleSnippet
 {
     /**
+     * Required: the engine of the current track
      *
-     * @var Zend_Locale
+     * @var \Gems_Tracker_Engine_TrackEngineInterface
      */
-    protected $locale;
+    protected $trackEngine;
 
     /**
-     * Hook that loads the form data from $_POST or the model
+     * Called after the check that all required registry values
+     * have been set correctly has run.
      *
-     * Or from whatever other source you specify here.
+     * @return void
      */
-    protected function loadFormData()
+    public function afterRegistry()
     {
-        parent::loadFormData();
+        parent::afterRegistry();
 
-        if ($this->trackEngine instanceof \Gems_Tracker_Engine_StepEngineAbstract) {
-            if ($this->trackEngine->updateRoundModelToItem($this->getModel(), $this->formData, $this->locale->getLanguage())) {
+        $this->contentTitle = sprintf($this->_('Fields in %s track'), $this->trackEngine->getTrackName());
+    }
 
-                if (isset($this->formData[$this->saveButtonId])) {
-                    // Disable validation & save
-                    unset($this->formData[$this->saveButtonId]);
-
-                    // Warn user
-                    $this->addMessage($this->_('Lists choices changed.'));
-                }
-            }
-        }
+    /**
+     * Should be called after answering the request to allow the Target
+     * to check if all required registry values have been set correctly.
+     *
+     * @return boolean False if required values are missing.
+     */
+    public function checkRegistryRequestsAnswers()
+    {
+        return $this->trackEngine instanceof \Gems_Tracker_Engine_TrackEngineInterface;
     }
 }

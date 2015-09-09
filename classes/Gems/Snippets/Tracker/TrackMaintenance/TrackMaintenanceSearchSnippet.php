@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2013, Erasmus MC
+ * Copyright (c) 2015, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -18,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL MAGNAFACTA BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -30,22 +30,30 @@
  * @package    Gems
  * @subpackage Snippets\Tracker
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2013 Erasmus MC
+ * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: TrackMaintenanceSearchSnippet.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
+
+namespace Gems\Snippets\Tracker\TrackMaintenance;
 
 /**
  *
  *
  * @package    Gems
  * @subpackage Snippets\Tracker
- * @copyright  Copyright (c) 2013 Erasmus MC
+ * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.6.2
+ * @since      Class available since version 1.7.2 9-sep-2015 18:10:55
  */
-class Gems_Snippets_Tracker_Fields_FieldsAutosearchForm extends Gems_Snippets_AutosearchFormSnippet
+class TrackMaintenanceSearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
 {
+    /**
+     *
+     * @var \Gems_Loader
+     */
+    protected $loader;
+
     /**
      * Returns a text element for autosearch. Can be overruled.
      *
@@ -53,15 +61,28 @@ class Gems_Snippets_Tracker_Fields_FieldsAutosearchForm extends Gems_Snippets_Au
      * That creates a distinct group of elements
      *
      * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return array Of Zend_Form_Element's or static tekst to add to the html or null for group breaks.
+     * @return array Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.
      */
     protected function getAutoSearchElements(array $data)
     {
         $elements = parent::getAutoSearchElements($data);
 
-        $elements[] = new Zend_Form_Element_Hidden(MUtil_Model::REQUEST_ID);
-        $elements[] = $this->_createSelectElement('gtf_field_type', $this->model, $this->_('(all types)'));
-        $elements[] = MUtil_Html::create('br');
+        if ($elements) {
+            $br = \MUtil_Html::create('br');
+            $elements[] = $this->_createSelectElement('gtr_track_class', $this->model, $this->_('(all track engines)'));
+
+            $elements[] = $br;
+
+            $elementA = $this->_createSelectElement('active', $this->util->getTranslated()->getYesNo(), $this->_('(both)'));
+            $elementA->setLabel($this->model->get('gtr_active', 'label'));
+            $elements[] = $elementA;
+
+            $user = $this->loader->getCurrentUser();
+            $options = $user->getRespondentOrganizations();
+            $elementO = $this->_createSelectElement('org', $options, $this->_('(all organizations)'));
+            $elementO->setLabel($this->model->get('gtr_organizations', 'label'));
+            $elements[] = $elementO;
+        }
 
         return $elements;
     }

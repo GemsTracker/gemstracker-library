@@ -88,24 +88,33 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
     protected function _checkCodingChanged(\SplFileInfo $fileinfo, $content, array &$messages)
     {
         $phpObjects = array(
-            'ArrayObject',
             'ArrayAccess',
+            'ArrayIterator',
+            'ArrayObject',
+            'Closure',
             'Countable',
             'DirectoryIterator',
             'Exception',
             'FilesystemIterator',
             'FilterIterator',
             'GemsEscort',
-            'Iterator',
+            'Generator',
+            'Iterator', // also checks for 'IteratorAggregate',
+            'OuterIterator',
             'RecursiveDirectoryIterator',
-            'RecursiveIteratorIterator',
+            'RecursiveIterator', // also checks for 'RecursiveIteratorIterator',
+            'SeekableIterator',
             'Serializable',
+            'SplFileInfo',
             'SplFileObject',
+            'Throwable',
             'Traversable',
             );
-        foreach ($phpObjects as $className)
-        if (preg_match("/[^_\"'\\\\a-z]$className/", $content)) {
-            $messages[] = "The code in this file contains a not namespace proof reference to '$className', prefix a \\.";
+        
+        foreach ($phpObjects as $className) {
+            if (preg_match("/[^_\"'\\\\a-z]$className/", $content)) {
+                $messages[] = "The code in this file contains a not namespace proof reference to '$className', prefix a \\.";
+            }
         }
     }
 
