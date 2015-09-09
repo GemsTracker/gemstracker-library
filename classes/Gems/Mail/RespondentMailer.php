@@ -44,10 +44,10 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Mail_RespondentMailer extends Gems_Mail_MailerAbstract
+class Gems_Mail_RespondentMailer extends \Gems_Mail_MailerAbstract
 {
     /**
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
@@ -62,7 +62,7 @@ class Gems_Mail_RespondentMailer extends Gems_Mail_MailerAbstract
     protected $patientId;
 
     /**
-     * @var Gems_Tracker_Respondent
+     * @var \Gems_Tracker_Respondent
      */
     protected $respondent;
 

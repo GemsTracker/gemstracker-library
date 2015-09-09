@@ -43,7 +43,7 @@
  * @package Gems
  * @subpackage JQuery
  */
-class Gems_JQuery_Form_Decorator_TabContainer extends ZendX_JQuery_Form_Decorator_TabContainer
+class Gems_JQuery_Form_Decorator_TabContainer extends \ZendX_JQuery_Form_Decorator_TabContainer
 {
     /**
      * Render an jQuery UI Widget element using its associated view helper
@@ -54,7 +54,7 @@ class Gems_JQuery_Form_Decorator_TabContainer extends ZendX_JQuery_Form_Decorato
      *
      * @param  string $content
      * @return string
-     * @throws Zend_Form_Decorator_Exception if element or view are not registered
+     * @throws \Zend_Form_Decorator_Exception if element or view are not registered
      */
     public function render($content)
     {

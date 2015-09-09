@@ -40,7 +40,7 @@
  * @package Gems
  * @subpackage Form
  */
-class Gems_Form_Decorator_Tooltip extends Zend_Form_Decorator_Abstract
+class Gems_Form_Decorator_Tooltip extends \Zend_Form_Decorator_Abstract
 {
     /**
      * Whether or not to escape the description
@@ -94,7 +94,7 @@ class Gems_Form_Decorator_Tooltip extends Zend_Form_Decorator_Abstract
     {
         if (null === $this->_helper) {
             require_once 'Zend/Form/Decorator/Exception.php';
-            throw new Zend_Form_Decorator_Exception('No view helper specified for Tooltip decorator');
+            throw new \Zend_Form_Decorator_Exception('No view helper specified for Tooltip decorator');
         }
         return $this->_helper;
     }
@@ -104,7 +104,7 @@ class Gems_Form_Decorator_Tooltip extends Zend_Form_Decorator_Abstract
         return '<div class="ui-button ui-button-text-only ui-widget ui-state-default ui-corner-all">
    <span class="ui-icon ui-icon-help"></span>
 </div>';
-        //return '<img src="' . Zend_Controller_Front::getInstance()->getBaseUrl() . '/gems/js/images/question_mark.gif">';
+        //return '<img src="' . \Zend_Controller_Front::getInstance()->getBaseUrl() . '/gems/js/images/question_mark.gif">';
     }
 
     /**
@@ -170,8 +170,8 @@ class Gems_Form_Decorator_Tooltip extends Zend_Form_Decorator_Abstract
             return $content;
         }
 
-        $view->headScript()->appendFile(Zend_Controller_Front::getInstance()->getBaseUrl()  .  '/gems/js/jquery.cluetip.js');
-        $view->headLink()->appendStylesheet(Zend_Controller_Front::getInstance()->getBaseUrl()  . '/gems/js/jquery.cluetip.css');
+        $view->headScript()->appendFile(\Zend_Controller_Front::getInstance()->getBaseUrl()  .  '/gems/js/jquery.cluetip.js');
+        $view->headLink()->appendStylesheet(\Zend_Controller_Front::getInstance()->getBaseUrl()  . '/gems/js/jquery.cluetip.css');
         $script = "$('" . $this->getTag() . ".tooltip').cluetip({
             activation: 'click',
             sticky: 'true',
@@ -200,7 +200,7 @@ class Gems_Form_Decorator_Tooltip extends Zend_Form_Decorator_Abstract
 
         $options['tag'] = $tag;
         $options['tip'] = str_replace('"', '\"', $tooltip);
-        $decorator = new Zend_Form_Decorator_HtmlTag($options);
+        $decorator = new \Zend_Form_Decorator_HtmlTag($options);
         $tooltip = $decorator->render($this->getImg()) . $decorator->setOptions(array('class'=>'thetooltip', 'id'=>'tooltip-' . $this->getElement()->getAttrib('id')))->render($tooltip);
 
         switch ($placement) {
@@ -221,7 +221,7 @@ class Gems_Form_Decorator_Tooltip extends Zend_Form_Decorator_Abstract
      * Set whether or not to escape tooltip
      *
      * @param  bool $flag
-     * @return Gems_Form_Decorator_Tooltip
+     * @return \Gems_Form_Decorator_Tooltip
      */
     public function setEscape($flag)
     {
@@ -233,7 +233,7 @@ class Gems_Form_Decorator_Tooltip extends Zend_Form_Decorator_Abstract
      * Set HTML tag with which to surround description
      *
      * @param  string $tag
-     * @return Zend_Form_Decorator_Description
+     * @return \Zend_Form_Decorator_Description
      */
     public function setTag($tag)
     {

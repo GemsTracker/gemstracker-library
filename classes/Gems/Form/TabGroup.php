@@ -36,22 +36,22 @@
  * @package Gems
  * @subpackage Form
  */
-class Gems_Form_TabGroup extends Zend_Form_DisplayGroup {
+class Gems_Form_TabGroup extends \Zend_Form_DisplayGroup {
 
     private $_alternate = null;
 
-    public function  __construct($name, Zend_Loader_PluginLoader $loader, $options = null) {
-        $this->_alternate = new MUtil_Lazy_Alternate(array('odd','even'));
+    public function  __construct($name, \Zend_Loader_PluginLoader $loader, $options = null) {
+        $this->_alternate = new \MUtil_Lazy_Alternate(array('odd','even'));
         parent::__construct($name, $loader, $options);
     }
 
     /**
      * Add element to stack
      *
-     * @param  Zend_Form_Element $element
-     * @return Zend_Form_DisplayGroup
+     * @param  \Zend_Form_Element $element
+     * @return \Zend_Form_DisplayGroup
      */
-    public function addElement(Zend_Form_Element $element)
+    public function addElement(\Zend_Form_Element $element)
     {
         $decorators = $element->getDecorators();
         $decorator = array_shift($decorators);

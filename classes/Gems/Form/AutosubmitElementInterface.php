@@ -49,7 +49,7 @@ interface Gems_Form_AutosubmitElementInterface
     /**
      * Change the form into an autosubmit form
      *
-     * @see Gems_Form setAutoSubmit
+     * @see \Gems_Form setAutoSubmit
      * @param array $autoSubmitArgs Array containing submitUrl and targetId
      */
     public function enableAutoSubmit(array $autoSubmitArgs);

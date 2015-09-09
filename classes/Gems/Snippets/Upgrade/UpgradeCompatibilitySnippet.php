@@ -99,8 +99,8 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             'Iterator',
             'RecursiveDirectoryIterator',
             'RecursiveIteratorIterator',
-            'SplFileObject',
             'Serializable',
+            'SplFileObject',
             'Traversable',
             );
         foreach ($phpObjects as $className)

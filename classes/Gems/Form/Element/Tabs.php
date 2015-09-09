@@ -40,13 +40,13 @@
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
-class Gems_Form_Element_Tabs extends MUtil_Form_Element_Table
+class Gems_Form_Element_Tabs extends \MUtil_Form_Element_Table
 {
 
     private $_decoratorOptions;
 
 
-    public function __construct(Zend_Form $subForm, $spec, $options = null, $tabcolumn = null, $active = null)
+    public function __construct(\Zend_Form $subForm, $spec, $options = null, $tabcolumn = null, $active = null)
     {
         if (isset($options['tabcolumn'])) {
             $this->_decoratorOptions['tabcolumn'] = $options['tabcolumn'];

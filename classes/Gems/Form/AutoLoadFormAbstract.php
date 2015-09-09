@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.3
  */
-abstract class Gems_Form_AutoLoadFormAbstract extends Gems_Form
+abstract class Gems_Form_AutoLoadFormAbstract extends \Gems_Form
 {
     /**
      * The field name for the submit element.
@@ -62,7 +62,7 @@ abstract class Gems_Form_AutoLoadFormAbstract extends Gems_Form
 
     /**
      *
-     * @var Zend_Translate
+     * @var \Zend_Translate
      */
     protected $translate;
 
@@ -94,7 +94,7 @@ abstract class Gems_Form_AutoLoadFormAbstract extends Gems_Form
     /**
      * Returns/sets a submit button.
      *
-     * @return Zend_Form_Element_Submit
+     * @return \Zend_Form_Element_Submit
      */
     public function getSubmitButton()
     {
@@ -123,17 +123,17 @@ abstract class Gems_Form_AutoLoadFormAbstract extends Gems_Form
     /**
      * The function loads the elements for this form
      *
-     * @return Gems_Form_AutoLoadFormAbstract (continuation pattern)
+     * @return \Gems_Form_AutoLoadFormAbstract (continuation pattern)
      */
     abstract public function loadDefaultElements();
 
     /**
      * When true all elements are loaded after initiation.
      *
-     * Enables loading of parameter through Zend_Form::__construct()
+     * Enables loading of parameter through \Zend_Form::__construct()
      *
      * @param boolean $loadDefault
-     * @return Gems_User_Form_LoginForm (continuation pattern)
+     * @return \Gems_User_Form_LoginForm (continuation pattern)
      */
     public function setLoadDefault($loadDefault = true)
     {

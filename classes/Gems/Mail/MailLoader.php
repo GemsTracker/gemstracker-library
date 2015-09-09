@@ -44,16 +44,16 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Mail_MailLoader extends Gems_Loader_LoaderAbstract
+class Gems_Mail_MailLoader extends \Gems_Loader_LoaderAbstract
 {
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
     /**
-     * Allows sub classes of Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
+     * Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
@@ -72,7 +72,7 @@ class Gems_Mail_MailLoader extends Gems_Loader_LoaderAbstract
 
     /**
      * Return the mail elements helper class
-     * @return Gems_Mail_MailElements
+     * @return \Gems_Mail_MailElements
      */
     public function getMailElements()
     {
@@ -83,7 +83,7 @@ class Gems_Mail_MailLoader extends Gems_Loader_LoaderAbstract
      * Get the correct mailer class from the given target
      * @param  [type] $target      mailtarget (lowercase)
      * @param  array  $identifiers the identifiers needed for the specific mailtargets
-     * @return Gems_Mail_MailerAbstract class
+     * @return \Gems_Mail_MailerAbstract class
      */
     public function getMailer($target = null, $id = false, $orgId = false)
     {
@@ -107,7 +107,7 @@ class Gems_Mail_MailLoader extends Gems_Loader_LoaderAbstract
 
     /**
      * Get default mailform
-     * @return Gems_Mail_MailForm
+     * @return \Gems_Mail_MailForm
      */
     public function getMailForm()
     {

@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
+abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
 {
     /**
      * @var string  Message body in BBcode
@@ -89,7 +89,7 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
     protected $layout;
 
     /**
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
@@ -100,7 +100,7 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
     protected $project;
 
     /**
-     * @var Gems_User_Organization
+     * @var \Gems_User_Organization
      */
     protected $organization;
 
@@ -247,7 +247,7 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
 
     /**
      * Get the organization in relation to the current mailtarget
-     * @return Gems_User_Organization
+     * @return \Gems_User_Organization
      */
     public function getOrganization()
     {
@@ -379,7 +379,7 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
      */
     public function markMailFields($mailFields)
     {
-        $markedMailFields = MUtil_Ra::braceKeys($mailFields, $this->mailFieldMarkers['start'], $this->mailFieldMarkers['end']);
+        $markedMailFields = \MUtil_Ra::braceKeys($mailFields, $this->mailFieldMarkers['start'], $this->mailFieldMarkers['end']);
         return $markedMailFields;
     }
 

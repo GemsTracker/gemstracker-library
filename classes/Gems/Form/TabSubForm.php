@@ -35,14 +35,14 @@
  * @package Gems
  * @subpackage Form
  */
-class Gems_Form_TabSubForm extends Gems_Form_TableForm
+class Gems_Form_TabSubForm extends \Gems_Form_TableForm
 {
     /**
-     * For backward compatibility, allow MUtil_Html calls to set or append to the title
+     * For backward compatibility, allow \MUtil_Html calls to set or append to the title
      *
      * @param type $method
      * @param type $args
-     * @return Gems_Form_TabSubForm
+     * @return \Gems_Form_TabSubForm
      */
     public function __call($method, $args)
     {
@@ -50,7 +50,7 @@ class Gems_Form_TabSubForm extends Gems_Form_TableForm
             return parent::__call($method, $args);
         }
 
-        $elem = MUtil_Html::createArray($method, $args);
+        $elem = \MUtil_Html::createArray($method, $args);
 
         $value = $this->getAttrib('title');
 
@@ -75,7 +75,7 @@ class Gems_Form_TabSubForm extends Gems_Form_TableForm
      */
     public function fixDecorators()
     {
-        if (MUtil_Bootstrap::enabled() !== true) {
+        if (\MUtil_Bootstrap::enabled() !== true) {
             parent::fixDecorators();
         }
     }
@@ -94,7 +94,7 @@ class Gems_Form_TabSubForm extends Gems_Form_TableForm
         $decorators = $this->getDecorators();
         if (empty($decorators)) {
             $this->addDecorator('FormElements');
-            if (MUtil_Bootstrap::enabled() !== true) {
+            if (\MUtil_Bootstrap::enabled() !== true) {
                 $this->addDecorator(array('table' => 'HtmlTag'), array('tag' => 'table', 'class'=>'formTable'));
             }
             $this->addDecorator(array('tab' => 'HtmlTag'), array('tag' => 'div', 'class' => 'displayGroup'))

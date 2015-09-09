@@ -44,7 +44,7 @@ require_once "ZendX/JQuery/View/Helper/TabContainer.php";
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
-class Gems_JQuery_View_Helper_TabContainer extends ZendX_JQuery_View_Helper_TabContainer
+class Gems_JQuery_View_Helper_TabContainer extends \ZendX_JQuery_View_Helper_TabContainer
 {
 
     /**
@@ -61,7 +61,7 @@ class Gems_JQuery_View_Helper_TabContainer extends ZendX_JQuery_View_Helper_TabC
      * @param  string $id
      * @param  array  $params
      * @param  array  $attribs
-     * @return string|ZendX_JQuery_View_Helper_TabsContainer
+     * @return string|\ZendX_JQuery_View_Helper_TabsContainer
      */
     public function tabContainer($id=null, $params=array(), $attribs=array())
     {
@@ -69,7 +69,7 @@ class Gems_JQuery_View_Helper_TabContainer extends ZendX_JQuery_View_Helper_TabC
             return $this;
         }
 
-        $useBootstrap = MUtil_Bootstrap::enabled();
+        $useBootstrap = \MUtil_Bootstrap::enabled();
 
         if(!isset($attribs['id'])) {
             $attribs['id'] = $id;
@@ -132,7 +132,7 @@ class Gems_JQuery_View_Helper_TabContainer extends ZendX_JQuery_View_Helper_TabC
         }
 
         if(count($params)) {
-            $params = ZendX_JQuery::encodeJson($params);
+            $params = \ZendX_JQuery::encodeJson($params);
         } else {
             $params = '{}';
         }
@@ -146,14 +146,14 @@ class Gems_JQuery_View_Helper_TabContainer extends ZendX_JQuery_View_Helper_TabC
         //Load the selected tab if jQuery UI tabs
         if (!$useBootstrap) {
             $js = sprintf('%s("#%s").tabs(%s);',
-                ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(),
+                \ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(),
                 $attribs['id'],
                 $params
             ); 
             if (isset($selected)) {
                 $js .= sprintf('
                     %s("#%s").tabs("option", "active", %d);',
-                    ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(),
+                    \ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(),
                     $attribs['id'],
                     $selected
                 );

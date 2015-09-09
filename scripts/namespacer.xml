@@ -16,7 +16,7 @@
                     <regexp pattern="([^\\'&quot;])(GemsEscort::)" replace="\1\\\2" />
                     <regexp pattern="\(GemsEscort " replace="(\\GemsEscort " />
                     <regexp
-                        pattern="(\s|\()(ArrayObject|ArrayAccess|Countable|Iterator|FilterIterator|Traversable|SplFileObject|Serializable|Exception)"
+                        pattern="(\s|\()(ArrayObject|ArrayAccess|Countable|Exception|DirectoryIterator|FilesystemIterator|FilterIterator|Iterator|RecursiveDirectoryIterator|RecursiveIteratorIterator|Serializable|SplFileObject|Traversable)"
                         replace="\1\\\2" />
                     <regexp pattern="@subpackage \\Exception" replace="@subpackage Exception" />
                     <regexp pattern="\$Id: \\Exception" replace="\$Id: Exception" />

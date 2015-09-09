@@ -41,7 +41,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.5
  */
-class Gems_JQuery_Form_Element_ColorPicker extends ZendX_JQuery_Form_Element_ColorPicker
+class Gems_JQuery_Form_Element_ColorPicker extends \ZendX_JQuery_Form_Element_ColorPicker
 {
     /**
      * Constructor
@@ -49,12 +49,12 @@ class Gems_JQuery_Form_Element_ColorPicker extends ZendX_JQuery_Form_Element_Col
      * $spec may be:
      * - string: name of element
      * - array: options with which to configure element
-     * - Zend_Config: Zend_Config with options for configuring element
+     * - \Zend_Config: \Zend_Config with options for configuring element
      *
-     * @param  string|array|Zend_Config $spec
-     * @param  array|Zend_Config $options
+     * @param  string|array|\Zend_Config $spec
+     * @param  array|\Zend_Config $options
      * @return void
-     * @throws Zend_Form_Exception if no element name after initialization
+     * @throws \Zend_Form_Exception if no element name after initialization
      */
     public function __construct($spec, $options = null)
     {
@@ -66,11 +66,11 @@ class Gems_JQuery_Form_Element_ColorPicker extends ZendX_JQuery_Form_Element_Col
 	/**
      * Load default decorators
      *
-     * @return Zend_Form_Element
+     * @return \Zend_Form_Element
      */
     public function loadDefaultDecorators()
     {
-        if (MUtil_Bootstrap::enabled() === true) {
+        if (\MUtil_Bootstrap::enabled() === true) {
             $this->addDecorator('UiWidgetElement')
                  ->addDecorator('Errors')
                  ->addDecorator('Description', array('tag' => 'p', 'class' => 'help-block'))

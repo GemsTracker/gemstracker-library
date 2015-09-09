@@ -41,7 +41,7 @@
  * @package Gems
  * @subpackage Form
  */
-class Gems_Form_Decorator_TabErrors extends Zend_Form_Decorator_Abstract
+class Gems_Form_Decorator_TabErrors extends \Zend_Form_Decorator_Abstract
 {
     /**
      * By default, show verbose error messages in tabforms
@@ -60,7 +60,7 @@ class Gems_Form_Decorator_TabErrors extends Zend_Form_Decorator_Abstract
      */
     public function render($content) {
         $form = $this->getElement();
-        if (!$form instanceof Zend_Form) {
+        if (!$form instanceof \Zend_Form) {
             return $content;
         }
 
@@ -89,18 +89,18 @@ class Gems_Form_Decorator_TabErrors extends Zend_Form_Decorator_Abstract
     /**
      * Recurse through a form object, rendering errors
      *
-     * @param  Zend_Form $form
-     * @param  Zend_View_Interface $view
+     * @param  \Zend_Form $form
+     * @param  \Zend_View_Interface $view
      * @return string
      */
-    protected function _recurseForm(Zend_Form $form)
+    protected function _recurseForm(\Zend_Form $form)
  {
         $subFormsWithErrors = array();
         $subFormMessages = array();
         $tabId = 0;
 
         foreach ($form->getSubForms() as $subForm) {
-            if ($subForm instanceof Gems_Form_TabSubForm) {
+            if ($subForm instanceof \Gems_Form_TabSubForm) {
                 // See if any of the subformelements has an error message
                 foreach ($subForm->getElements() as $subFormElement) {
                     $elementMessages = $subFormElement->getMessages();
@@ -127,7 +127,7 @@ class Gems_Form_Decorator_TabErrors extends Zend_Form_Decorator_Abstract
             if (!empty($formMessage)) {
                 foreach ($formMessage as $message)
                 {
-                    Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage($message);
+                    \Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage($message);
                 }
             }
 
@@ -136,8 +136,8 @@ class Gems_Form_Decorator_TabErrors extends Zend_Form_Decorator_Abstract
             {
                 // If more then one tab, show in which tab we found the errors
                 if ($tabId > 1) {
-                    $translator = Zend_Registry::get('Zend_Translate');
-                    Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage(sprintf($translator->_('Error in tab "%s"'), $tabName));
+                    $translator = \Zend_Registry::get('Zend_Translate');
+                    \Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage(sprintf($translator->_('Error in tab "%s"'), $tabName));
                 }
 
                 // If we have them, show the tab custom error messages
@@ -145,7 +145,7 @@ class Gems_Form_Decorator_TabErrors extends Zend_Form_Decorator_Abstract
                 {
                     foreach ($subFormMessage as $message)
                     {
-                        Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage("--> " . $message);
+                        \Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage("--> " . $message);
                     }
                 }
             }

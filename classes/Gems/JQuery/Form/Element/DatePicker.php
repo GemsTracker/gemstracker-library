@@ -44,28 +44,32 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.7
  */
-class Gems_JQuery_Form_Element_DatePicker extends MUtil_JQuery_Form_Element_DatePicker implements Gems_Form_AutosubmitElementInterface
+class Gems_JQuery_Form_Element_DatePicker extends \MUtil_JQuery_Form_Element_DatePicker
+        implements \Gems_Form_AutosubmitElementInterface
 {
     /**
      * Change the form into an autosubmit form
      *
-     * @see Gems_Form setAutoSubmit
+     * @see \Gems_Form setAutoSubmit
      * @param array $autoSubmitArgs Array containing submitUrl and targetId
      */
     public function enableAutoSubmit(array $autoSubmitArgs)
     {
-        $this->setJQueryParam('onSelect', new Zend_Json_Expr('function(dateText, inst) {jQuery(this).trigger(jQuery.Event("keyup"));}'));
+        $this->setJQueryParam(
+                'onSelect',
+                new \Zend_Json_Expr('function(dateText, inst) {jQuery(this).trigger(jQuery.Event("keyup"));}')
+                );
     }
 
     /**
      * Load default decorators
      *
-     * @return Zend_Form_Element
+     * @return \Zend_Form_Element
      */
     public function loadDefaultDecorators()
     {
         parent::loadDefaultDecorators();
-        if (MUtil_Bootstrap::enabled() === true) {
+        if (\MUtil_Bootstrap::enabled() === true) {
             $this->addDecorator('Description', array('tag' => 'p', 'class' => 'help-block'))
                  ->addDecorator('HtmlTag', array(
                      'tag' => 'div',

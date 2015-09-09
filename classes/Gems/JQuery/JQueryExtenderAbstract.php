@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,11 +26,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @version    $Id$
  * @package    Gems
  * @subpackage JQuery
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
@@ -38,8 +39,9 @@
  * @subpackage JQuery
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
+ * @since      Class available since version 1.1
  */
-abstract class Gems_JQuery_JQueryExtenderAbstract implements MUtil_Html_HtmlInterface
+abstract class Gems_JQuery_JQueryExtenderAbstract implements \MUtil_Html_HtmlInterface
 {
     protected $basepath;
     protected $jqueryParams;
@@ -49,7 +51,7 @@ abstract class Gems_JQuery_JQueryExtenderAbstract implements MUtil_Html_HtmlInte
 
     public function __construct(array $options = null)
     {
-        $args = MUtil_Ra::args(func_get_args());
+        $args = \MUtil_Ra::args(func_get_args());
 
         foreach ($args as $name => $arg) {
             if (! is_int($name)) {
@@ -65,15 +67,15 @@ abstract class Gems_JQuery_JQueryExtenderAbstract implements MUtil_Html_HtmlInte
     public function getBasePath()
     {
         if (null === $this->basepath) {
-            $front = Zend_Controller_Front::getInstance();
+            $front = \Zend_Controller_Front::getInstance();
             $this->setBasePath($front->getRequest()->getBasePath());
         }
 
         return $this->basepath;
     }
-    public function getJQueryHandler() 
+    public function getJQueryHandler()
     {
-        return ZendX_JQuery_View_Helper_JQuery::getJQueryHandler();
+        return \ZendX_JQuery_View_Helper_JQuery::getJQueryHandler();
     }
 
     public function getJQueryParam($name)
@@ -85,7 +87,7 @@ abstract class Gems_JQuery_JQueryExtenderAbstract implements MUtil_Html_HtmlInte
 
     public function getJsonParameters()
     {
-        return ZendX_JQuery::encodeJson($this->jqueryParams);
+        return \ZendX_JQuery::encodeJson($this->jqueryParams);
     }
 
     public function getName()
@@ -109,7 +111,7 @@ abstract class Gems_JQuery_JQueryExtenderAbstract implements MUtil_Html_HtmlInte
         return $this->view;
     }
 
-    public function render(Zend_View_Abstract $view)
+    public function render(\Zend_View_Abstract $view)
     {
         $this->setView($view);
 
@@ -118,7 +120,7 @@ abstract class Gems_JQuery_JQueryExtenderAbstract implements MUtil_Html_HtmlInte
         return '';
     }
 
-    public function setBasePath($basepath) 
+    public function setBasePath($basepath)
     {
         $this->basepath = $basepath;
         return $this;
@@ -150,14 +152,14 @@ abstract class Gems_JQuery_JQueryExtenderAbstract implements MUtil_Html_HtmlInte
         $jquery->addOnLoad($js);
     }
 
-    public function setView(Zend_View_Abstract $view)
+    public function setView(\Zend_View_Abstract $view)
     {
-        if (isset($view->request) && ($view->request instanceof Zend_Controller_Request_Http)) {
+        if (isset($view->request) && ($view->request instanceof \Zend_Controller_Request_Http)) {
             $this->setBasePath($view->request->getBasePath());
         }
 
-        if (! MUtil_JQuery::usesJQuery($view)) {
-            ZendX_JQuery::enableView($view);
+        if (! \MUtil_JQuery::usesJQuery($view)) {
+            \ZendX_JQuery::enableView($view);
         }
 
         $this->view = $view;

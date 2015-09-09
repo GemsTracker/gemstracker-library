@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2014, Erasmus MC
  * All rights reserved.
@@ -33,7 +34,7 @@
  * @license    New BSD License
  * @version    $Id$
  */
-class Gems_Form_Decorator_CKEditor extends Zend_Form_Decorator_ViewHelper {
+class Gems_Form_Decorator_CKEditor extends \Zend_Form_Decorator_ViewHelper {
 
     /**
      * Default basedir for CKEditor. Can be overwritten through the Decorator options.
@@ -69,12 +70,12 @@ class Gems_Form_Decorator_CKEditor extends Zend_Form_Decorator_ViewHelper {
         $element = $this->getElement();
         $view    = $element->getView();
 
-        $baseUrl = GemsEscort::getInstance()->basepath->getBasePath() . '/';
+        $baseUrl = \GemsEscort::getInstance()->basepath->getBasePath() . '/';
         $view->headScript()->appendFile($baseUrl . $this->_basedir . '/' . 'ckeditor.js');
 
 
-        //MUtil_Echo::track($baseUrl);
-        //MUtil_Echo::track('test');
+        //\MUtil_Echo::track($baseUrl);
+        //\MUtil_Echo::track('test');
         $element = $this->getElement();
         $name    = htmlentities($element->getFullyQualifiedName());
         $label   = htmlentities($element->getLabel());

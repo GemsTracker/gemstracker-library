@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2014, Erasmus MC
  * All rights reserved.
@@ -48,7 +49,7 @@
  * @license    New BSD License
  * @version    $Id$
  */
-class Gems_Form_Element_CKEditor extends Zend_Form_Element_Textarea {
+class Gems_Form_Element_CKEditor extends \Zend_Form_Element_Textarea {
     /**
      * Use formTextarea view helper by default
      * @var string
@@ -92,24 +93,24 @@ class Gems_Form_Element_CKEditor extends Zend_Form_Element_Textarea {
      * $spec may be:
      * - string: name of element
      * - array: options with which to configure element
-     * - Zend_Config: Zend_Config with options for configuring element
+     * - \Zend_Config: \Zend_Config with options for configuring element
      *
-     * @param  string|array|Zend_Config $spec
-     * @param  array|Zend_Config $options
+     * @param  string|array|\Zend_Config $spec
+     * @param  array|\Zend_Config $options
      * @return void
-     * @throws Zend_Form_Exception if no element name after initialization
+     * @throws \Zend_Form_Exception if no element name after initialization
      */
     public function __construct($spec, $options = null)
     {
         parent::__construct($spec, $options);
-        if (MUtil_Bootstrap::enabled()) {
+        if (\MUtil_Bootstrap::enabled()) {
             $this->addClass($this->_elementClass);
         }
     }
 
-    /** 
+    /**
      * Add a class to an existing class, taking care of spacing
-     * @param string $targetClass  The existing class 
+     * @param string $targetClass  The existing class
      * @param string $addClass    the Class or classes to add, seperated by spaces
      */
     protected function addClass($addClass) {
@@ -133,7 +134,7 @@ class Gems_Form_Element_CKEditor extends Zend_Form_Element_Textarea {
     /**
      * Load default decorators
      *
-     * @return Zend_Form_Element
+     * @return \Zend_Form_Element
      */
     public function loadDefaultDecorators()
     {
@@ -146,7 +147,7 @@ class Gems_Form_Element_CKEditor extends Zend_Form_Element_Textarea {
                 'id'  => array('callback' => array(get_class($this), 'resolveElementId')),
         );
         $labelOptions = array();
-        if (MUtil_Bootstrap::enabled()) {
+        if (\MUtil_Bootstrap::enabled()) {
             $htmlTagOptions['class'] = 'element-container';
         }
 
@@ -174,7 +175,7 @@ class Gems_Form_Element_CKEditor extends Zend_Form_Element_Textarea {
         if (file_exists($basePath . '/ckeditor.js')) {
             $this->basePath = $basePath;
         } else {
-            throw new Zend_Exception(sprintf('CKEditor.php not found at %s', $basePath));
+            throw new \Zend_Exception(sprintf('CKEditor.php not found at %s', $basePath));
         }
 
         return $this;
@@ -218,10 +219,10 @@ class Gems_Form_Element_CKEditor extends Zend_Form_Element_Textarea {
      *
      * Ensures that the view object has the CKEditor view helper path set.
      *
-     * @param  Zend_View_Interface $view
+     * @param  \Zend_View_Interface $view
      * @return CKEditor_Form_CKEditor
      */
-    public function setView(Zend_View_Interface $view = null) {
+    public function setView(\Zend_View_Interface $view = null) {
         if (null !== $view) {
             if (false === $view->getPluginLoader('helper')->getPaths('CKEditor_View_Helper')) {
                 $view->addHelperPath('CKEditor/View/Helper', 'CKEditor_View_Helper');
@@ -229,7 +230,7 @@ class Gems_Form_Element_CKEditor extends Zend_Form_Element_Textarea {
         }
 
         if (!file_exists($this->basePath . '/ckeditor.js')) {
-            throw new Zend_Exception('Use setBasePath() to set the full path to the file ckeditor.php in the public folder of ckedit.');
+            throw new \Zend_Exception('Use setBasePath() to set the full path to the file ckeditor.php in the public folder of ckedit.');
         }
 
         return parent::setView($view);

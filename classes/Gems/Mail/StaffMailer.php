@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Mail_StaffMailer extends Gems_Mail_MailerAbstract
+class Gems_Mail_StaffMailer extends \Gems_Mail_MailerAbstract
 {
     /**
      *
@@ -53,7 +53,7 @@ class Gems_Mail_StaffMailer extends Gems_Mail_MailerAbstract
     public $dataLoaded;
 
     /**
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
@@ -70,7 +70,7 @@ class Gems_Mail_StaffMailer extends Gems_Mail_MailerAbstract
 
     /**
      *
-     * @var Zend_Controller_Request_Abstract
+     * @var \Zend_Controller_Request_Abstract
      */
     protected $request;
 
@@ -81,7 +81,7 @@ class Gems_Mail_StaffMailer extends Gems_Mail_MailerAbstract
     protected $staffId;
 
     /**
-     * @var Gems_User_User
+     * @var \Gems_User_User
      */
     protected $user;
 

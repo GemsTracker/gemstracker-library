@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Form_Decorator_Tabs extends Zend_Form_Decorator_ViewHelper
+class Gems_Form_Decorator_Tabs extends \Zend_Form_Decorator_ViewHelper
 {
     protected $_cellDecorators;
     protected $_options;
@@ -55,12 +55,12 @@ class Gems_Form_Decorator_Tabs extends Zend_Form_Decorator_ViewHelper
      *
      * Accept options during initialization.
      *
-     * @param  array|Zend_Config $options
+     * @param  array|\Zend_Config $options
      * @return void
      */
     public function __construct($options = null)
     {
-        if ($options instanceof Zend_Config) {
+        if ($options instanceof \Zend_Config) {
             $this->setConfig($options);
         } elseif (is_array($options)) {
             $this->setOptions($options);
@@ -69,7 +69,7 @@ class Gems_Form_Decorator_Tabs extends Zend_Form_Decorator_ViewHelper
         }
     }
 
-    private function applyDecorators(Zend_Form_Element $element, array $decorators)
+    private function applyDecorators(\Zend_Form_Element $element, array $decorators)
     {
         $element->clearDecorators();
         foreach ($decorators as $decorator) {
@@ -153,7 +153,7 @@ class Gems_Form_Decorator_Tabs extends Zend_Form_Decorator_ViewHelper
      */
     public function render($content)
     {
-        $useBootstrap = MUtil_Bootstrap::enabled();
+        $useBootstrap = \MUtil_Bootstrap::enabled();
 
         if ((null === ($element = $this->getElement())) ||
             (null === ($view = $element->getView()))) {
@@ -162,13 +162,13 @@ class Gems_Form_Decorator_Tabs extends Zend_Form_Decorator_ViewHelper
 
         $cellDecorators = $this->getCellDecorators();
 
-        $containerDiv = MUtil_Html::create()->div(array('id' => 'tabElement'));
+        $containerDiv = \MUtil_Html::create()->div(array('id' => 'tabElement'));
 
 
-        if ($element instanceof MUtil_Form_Element_Table) {
+        if ($element instanceof \MUtil_Form_Element_Table) {
             $containerDiv->appendAttrib('class', $element->getAttrib('class'));
             $subforms = $element->getSubForms();
-        } elseif ($element instanceof Zend_Form)  {
+        } elseif ($element instanceof \Zend_Form)  {
             $cellDecorators = null;
             $subforms = array($element);
         }
@@ -180,10 +180,10 @@ class Gems_Form_Decorator_Tabs extends Zend_Form_Decorator_ViewHelper
                 if (!$useBootstrap) {
                     $jquery = $view->jQuery();
 
-                    $js = sprintf('%1$s("#tabElement").tabs();', ZendX_JQuery_View_Helper_JQuery::getJQueryHandler());
+                    $js = sprintf('%1$s("#tabElement").tabs();', \ZendX_JQuery_View_Helper_JQuery::getJQueryHandler());
 
                     if ($selectedTabElement = $this->getOption('selectedTabElement')) {
-                        $js .= sprintf('%1$s("#tabElement").on("tabsactivate", function(event, ui) { console.log(ui.newTab.text()); %1$s("#%2$s").val(ui.newTab.text()) });', ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(), $selectedTabElement);    
+                        $js .= sprintf('%1$s("#tabElement").on("tabsactivate", function(event, ui) { console.log(ui.newTab.text()); %1$s("#%2$s").val(ui.newTab.text()) });', \ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(), $selectedTabElement);    
                     }
                     
                     $jquery->addOnLoad($js);
@@ -193,7 +193,7 @@ class Gems_Form_Decorator_Tabs extends Zend_Form_Decorator_ViewHelper
             }
             $tabNumber = 0;
 
-            $tabContainerDiv = $containerDiv->div(array('class' => 'tab-content'));//MUtil_Html::create()->div(array('class' => 'tab-content'));
+            $tabContainerDiv = $containerDiv->div(array('class' => 'tab-content'));//\MUtil_Html::create()->div(array('class' => 'tab-content'));
 
             $active = $this->getOption('active');
             foreach($subforms as $subform) {
@@ -211,7 +211,7 @@ class Gems_Form_Decorator_Tabs extends Zend_Form_Decorator_ViewHelper
                     $tabPaneOptions = array('id' => $tabId,'class' => 'tab-pane');
                     if ($active && $active == $tabName) {
                         if (!$useBootstrap) {
-                            $js = sprintf('%1$s("#tabElement").tabs({ selected: %2$d});', ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(), $tabNumber);
+                            $js = sprintf('%1$s("#tabElement").tabs({ selected: %2$d});', \ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(), $tabNumber);
                             $jquery->addOnLoad($js);
                         }
                         $liOptions['class'] = 'active';
@@ -234,7 +234,7 @@ class Gems_Form_Decorator_Tabs extends Zend_Form_Decorator_ViewHelper
                 }
                 foreach ($subform->getElements() as $subelement) {
 
-                    if ($subelement instanceof Zend_Form_Element_Hidden) {
+                    if ($subelement instanceof \Zend_Form_Element_Hidden) {
                         $this->applyDecorators($subelement, array(array('ViewHelper')));
                         $subContainer[] = $subelement;
                     } else {
@@ -272,10 +272,10 @@ class Gems_Form_Decorator_Tabs extends Zend_Form_Decorator_ViewHelper
     /**
      * Set decorator options from a config object
      *
-     * @param  Zend_Config $config
-     * @return Zend_Form_Decorator_Interface
+     * @param  \Zend_Config $config
+     * @return \Zend_Form_Decorator_Interface
      */
-    public function setConfig(Zend_Config $config)
+    public function setConfig(\Zend_Config $config)
     {
         $this->setOptions($config->toArray());
 
@@ -289,7 +289,7 @@ class Gems_Form_Decorator_Tabs extends Zend_Form_Decorator_ViewHelper
      * an element or a form object.
      *
      * @param  mixed $element
-     * @return Zend_Form_Decorator_Interface
+     * @return \Zend_Form_Decorator_Interface
      */
     public function setElement($element)
     {        $this->_subform = $element;
@@ -303,7 +303,7 @@ class Gems_Form_Decorator_Tabs extends Zend_Form_Decorator_ViewHelper
      *
      * @param  string $key
      * @param  mixed $value
-     * @return Zend_Form_Decorator_Interface
+     * @return \Zend_Form_Decorator_Interface
      */
     public function setOption($key, $value)
     {
@@ -327,7 +327,7 @@ class Gems_Form_Decorator_Tabs extends Zend_Form_Decorator_ViewHelper
      * Set decorator options from an array
      *
      * @param  array $options
-     * @return Zend_Form_Decorator_Interface
+     * @return \Zend_Form_Decorator_Interface
      */
     public function setOptions(array $options)
     {
