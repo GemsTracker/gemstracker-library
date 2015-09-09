@@ -28,22 +28,24 @@
  *
  *
  * @package    Gems
- * @subpackage Snippets\Mail\Log
+ * @subpackage Snippets\Mail
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @version    $Id$
  */
 
+namespace Gems\Snippets\Mail\Log;
+
 /**
  *
  * @package    Gems
- * @subpackage Snippets\Mail\Log
+ * @subpackage Snippets\Mail
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.4.4
  */
-class Gems_Snippets_Mail_Log_MailLogBrowseSnippet extends \Gems_Snippets_ModelTableSnippetGeneric
+class MailLogBrowseSnippet extends \Gems_Snippets_ModelTableSnippetGeneric
 {
     /**
      *
@@ -63,37 +65,40 @@ class Gems_Snippets_Mail_Log_MailLogBrowseSnippet extends \Gems_Snippets_ModelTa
      */
     protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
-        if ($menuItem = $this->getShowMenuItem()) {
-            $bridge->addItemLink($menuItem->toActionLinkLower($this->request, $bridge));
+        if ($model->has('row_class')) {
+            $bridge->getTable()->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);
+        }
+
+        if ($this->showMenu) {
+            $showMenuItems = $this->getShowMenuItems();
+
+            foreach ($showMenuItems as $menuItem) {
+                $bridge->addItemLink($menuItem->toActionLinkLower($this->request, $bridge));
+            }
         }
 
         // Newline placeholder
         $br = \MUtil_Html::create('br');
+        $by = \MUtil_Html::raw($this->_(' / '));
+        $sp = \MUtil_Html::raw('&nbsp;');
 
         // make sure search results are highlighted
         $this->applyTextMarker();
 
-        $bridge->addMultiSort('grco_created',  $br, 'respondent_name', $br, 'grco_address', $br, 'gtr_track_name');
-        $bridge->addMultiSort('grco_id_token', $br, 'assigned_by',     $br, 'grco_sender',  $br, 'gsu_survey_name');
-        $bridge->addMultiSort('status',        $br, 'grco_topic');
+        $bridge->addMultiSort('grco_created',  $br, 'gr2o_patient_nr', $sp, 'respondent_name', $br, 'grco_address', $br, 'gtr_track_name');
+        $bridge->addMultiSort('grco_id_token', $br, 'assigned_by',     $br, 'grco_sender',     $br, 'gsu_survey_name');
+        $bridge->addMultiSort('status',        $by, 'filler',          $br, 'grco_topic');
 
-        $title = \MUtil_Html::create()->strong($this->_('+'));
-        $params = array(
-            'gto_id_token'  => $bridge->gto_id_token,
-            'grc_success' => 1,
-            \Gems_Model::ID_TYPE => 'token',
-            );
+        if ($this->showMenu) {
+            $items  = $this->findMenuItems('track', 'show');
+            $links  = array();
+            $params = array('gto_id_token'  => $bridge->gto_id_token, \Gems_Model::ID_TYPE => 'token');
+            $title  = \MUtil_Html::create('strong', $this->_('+'));
 
-        $showLinks[]   = $this->createMenuLink($params, 'track',  'show', $title);
-        $showLinks[]   = $this->createMenuLink($params, 'survey', 'show', $title);
 
-        // Remove nulls
-        $showLinks   = array_filter($showLinks);
-
-        if ($showLinks) {
-            foreach ($showLinks as $showLink) {
-                if ($showLink) {
-                    $showLink->title = array($this->_('Token'), $bridge->gto_id_token->strtoupper());
+            foreach ($items as $item) {
+                if ($item instanceof \Gems_Menu_SubMenuItem) {
+                    $bridge->addItemLink($item->toActionLinkLower($this->request, $params, $title));
                 }
             }
         }
@@ -101,12 +106,9 @@ class Gems_Snippets_Mail_Log_MailLogBrowseSnippet extends \Gems_Snippets_ModelTa
 
         $tbody = $bridge->tbody();
         $td = $tbody[0][0];
-        /* // Does not repeat for some reason
-        $td->appendAttrib('class', \MUtil_Lazy::method($this->util->getTokenData(), 'getStatusClass', $bridge->status));
-        $td->append($br);
-        $td->append($br); // */
-        $td->append($br);
-        $td->append($showLinks);
-        // $bridge->addItemLink($showLinks);
+        $td->appendAttrib(
+                'class',
+                \MUtil_Lazy::method($this->util->getTokenData(), 'getStatusClass', $bridge->getLazy('status'))
+                );
     }
 }

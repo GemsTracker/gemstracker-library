@@ -80,6 +80,205 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
     protected $html;
 
     /**
+     *
+     * @param \SplFileInfo $fileinfo
+     * @param string $content
+     * @param array $messages
+     */
+    protected function _checkCodingChanged(\SplFileInfo $fileinfo, $content, array &$messages)
+    {
+        $phpObjects = array(
+            'ArrayObject',
+            'ArrayAccess',
+            'Countable',
+            'DirectoryIterator',
+            'Exception',
+            'FilesystemIterator',
+            'FilterIterator',
+            'GemsEscort',
+            'Iterator',
+            'RecursiveDirectoryIterator',
+            'RecursiveIteratorIterator',
+            'SplFileObject',
+            'Serializable',
+            'Traversable',
+            );
+        foreach ($phpObjects as $className)
+        if (preg_match("/[^_\"'\\\\a-z]$className/", $content)) {
+            $messages[] = "The code in this file contains a not namespace proof reference to '$className', prefix a \\.";
+        }
+    }
+
+    /**
+     *
+     * @param \SplFileInfo $fileinfo
+     * @param string $content
+     * @param array $messages
+     */
+    protected function _checkControllersChanged(\SplFileInfo $fileinfo, $content, array &$messages)
+    {
+        $fileName = $fileinfo->getFilename();
+        switch ($fileName) {
+            case 'MailJobController.php':
+            case 'MailTemplateController':
+            case 'SurveyController.php':
+                $messages[] = "You can delete this file. This controller is no longer in use.";
+                break;
+
+            case 'RespondentController.php':
+                if (preg_match(
+                        '/class\\s+RespondentController\\s+extends\\s+\\\\?Gems_Default_RespondentAction/', $content)
+                        ) {
+                    $messages[] = array(
+                        "Your respondent controller seems to inherit from Gems_Default_RespondentAction.",
+                        ' ',
+                        \MUtil_Html::create('strong', "This class may be obsolete in 1.7.2!"),
+                        ' ',
+                        "Use Gems_Default_RespondentNewAction instead.",
+                        );
+                }
+                break;
+
+            default:
+                $changedControllers = array(
+                    'ConsentController'           => 57,
+                    'DatabaseController'          => 57,
+                    'LogController'               => 57,
+                    'LogMaintenanceController'    => 57,
+                    'ProjectSurveysController'    => 57,
+                    'ProjectTracksController'     => 57,
+                    'ReceptionController'         => 57,
+                    'RoleController'              => 57,
+                    'SurveyMaintenanceController' => 57,
+                    'TrackController'             => 57,
+                    'TrackRoundsController'       => 57,
+                    );
+                foreach ($changedControllers as $controller => $version) {
+                    if (($version == $this->codeVersion) &&
+                            ($controller . '.php' == $fileName)) {
+                        $messages[] = "The parent class changed from BrowseEditAction to ModelSnippetActionAbstract.";
+                        $messages[] = \MUtil_Html::create('strong', "Check all code in the controller!");
+                        break;
+                    }
+                }
+        }
+    }
+
+    /**
+     *
+     * @param \SplFileInfo $fileinfo
+     * @param string $content
+     * @param array $messages
+     */
+    protected function _checkSnippetsChanged(\SplFileInfo $fileinfo, $content, array &$messages)
+    {
+        $filePathName = $fileinfo->getPathname();
+
+        $movedSnippets = array(
+            'AddTracksSnippet'             => 'Tracker\\AddTracksSnippet',
+            'EditRoundStepSnippet'         => 'Tracker\\Rounds\\EditRoundStepSnippet',
+            'ShowRoundStepSnippet'         => 'Tracker\\Rounds\\ShowRoundStepSnippet',
+            'DeleteInSourceTrackSnippet'   => 'Tracker\\DeleteTrackSnippet',
+            'DeleteTrackTokenSnippet'      => 'Tracker\\DeleteTrackTokenSnippet',
+            'EditTrackEngineSnippet'       => 'Tracker\\EditTrackEngineSnippet',
+            'EditTrackSnippet'             => 'Tracker\\EditTrackSnippet',
+            'EditTrackTokenSnippet'        => 'Token\\EditTrackTokenSnippet',
+            'ShowTrackTokenSnippet'        => 'Token\\ShowTrackTokenSnippet',
+            'SurveyQuestionsSnippet'       => 'Survey\\SurveyQuestionsSnippet',
+            'TrackSurveyOverviewSnippet'   => 'Tracker\\TrackSurveyOverviewSnippet',
+            'TrackTokenOverviewSnippet'    => 'Tracker\\TrackTokenOverviewSnippet',
+            'TrackUsageTextDetailsSnippet' => 'Tracker\\TrackUsageTextDetailsSnippet',
+            );
+
+        foreach ($movedSnippets as $oldSnippet => $newSnippet) {
+            if (\MUtil_String::endsWith($filePathName, $oldSnippet . '.php') &&
+                    (! \MUtil_String::endsWith($filePathName, $newSnippet . '.php'))) {
+
+                $messages[] = "This snippet is moved to $newSnippet.";
+                break;
+            }
+        }
+
+        $deletedSnippets = array(
+            'Respondent\\MailLogSnippet',
+            );
+        foreach ($deletedSnippets as $oldSnippet) {
+            if (\MUtil_String::endsWith($filePathName, $oldSnippet . '.php')) {
+                $messages[] = "This snippet is no longer in use.";
+                break;
+            }
+        }
+    }
+
+    /**
+     *
+     * @param \SplFileInfo $fileinfo
+     * @param string $content
+     * @param array $messages
+     */
+    protected function _checkTablesChanged(\SplFileInfo $fileinfo, $content, array &$messages)
+    {
+        $obsoleteFields = array(
+            'gtr_track_type',
+            'gtr_track_name'        => 'calc_track_name',
+            'gr2t_track_info'       => 'calc_track_info',
+            'gto_round_description' => 'calc_round_description',
+            );
+
+        foreach ($obsoleteFields as $replacement => $old) {
+            if (\MUtil_String::contains($content, $old)) {
+                if (is_integer($replacement)) {
+                    $messages[] = "Contains a reference to the obsolete '$old' field/variable.";
+                } else {
+                    $messages[] = "Contains a reference to the '$old' field/variable, replace it with '$replacement'.";
+                }
+            }
+        }
+
+        $obsoleteTables = array(
+            'gems__mail_jobs' => array(
+                'gmj_id_job',
+                'gmj_id_message',
+                'gmj_id_user_as',
+                'gmj_active',
+                'gmj_from_method',
+                'gmj_from_fixed',
+                'gmj_process_method',
+                'gmj_filter_mode',
+                'gmj_filter_days_between',
+                'gmj_filter_max_reminders',
+                'gmj_id_organization',
+                'gmj_id_track',
+                'gmj_id_survey',
+                'gmj_changed',
+                'gmj_changed_by',
+                'gmj_created',
+                'gmj_created_by',
+                ),
+            'gems__mail_templates' => array(
+                'gmt_id_message',
+                'gmt_subject',
+                'gmt_body',
+                'gmt_organizations',
+                'gmt_changed',
+                'gmt_changed_by',
+                'gmt_created',
+                'gmt_created_by',
+                ),
+            );
+
+        foreach ($obsoleteTables as $table => $fields) {
+            if (\MUtil_String::contains($content, $table)) {
+                $messages[] = "Contains a reference to the obsolete '$table' database table.";
+            }
+            foreach ($fields as $field) {
+                if (\MUtil_String::contains($content, $field)) {
+                    $messages[] = "Contains a reference to the obsolete '$field' field in the '$table' database table.";
+                }
+            }
+        }
+    }
+    /**
      * A specific report on the escort class
      */
     protected function addEscortReport()
@@ -141,90 +340,15 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             $messages[] = "This seems to be a file for (obsolete) SingleSurveys. This file can probably be removed.";
         }
 
+        $this->_checkCodingChanged($fileinfo, $content, $messages);
+
         if (\MUtil_String::endsWith($fileinfo->getPath(), 'controllers')) {
-            switch ($fileinfo->getFilename()) {
-                case 'SurveyController.php':
-                    $messages[] = "You can delete this file. This controller is no longer in use.";
-                    break;
-                case 'RespondentController.php':
-                    if (preg_match(
-                            '/class\\s+RespondentController\\s+extends\\s+\\\\?Gems_Default_RespondentAction/', $content)
-                            ) {
-                        $messages[] = array(
-                            "Your respondent controller seems to inherit from Gems_Default_RespondentAction.",
-                            ' ',
-                            \MUtil_Html::create('strong', "This class may be obsolete in 1.7.2!"),
-                            ' ',
-                            "Use Gems_Default_RespondentNewAction instead.",
-                            );
-                    }
-                    break;
-
-                default:
-                    $changedControllers = array(
-                        'ConsentController'           => 57,
-                        'DatabaseController'          => 57,
-                        'LogController'               => 57,
-                        'LogMaintenanceController'    => 57,
-                        'ProjectSurveysController'    => 57,
-                        'ProjectTracksController'     => 57,
-                        'ReceptionController'         => 57,
-                        'RoleController'              => 57,
-                        'SurveyMaintenanceController' => 57,
-                        'TrackController'             => 57,
-                        'TrackRoundsController'       => 57,
-                        );
-                    foreach ($changedControllers as $controller => $version) {
-                        if (($version == $this->codeVersion) &&
-                                ($controller . '.php' == $fileinfo->getFilename())) {
-                            $messages[] = "The parent class changed from BrowseEditAction to ModelSnippetActionAbstract.";
-                            $messages[] = \MUtil_Html::create('strong', "Check all code in the controller!");
-                            break;
-                        }
-                    }
-            }
+            $this->_checkControllersChanged($fileinfo, $content, $messages);
         } else {
-            $movedSnippets = array(
-                'AddTracksSnippet'             => 'Tracker\\AddTracksSnippet',
-                'EditRoundStepSnippet'         => 'Tracker\\Rounds\\EditRoundStepSnippet',
-                'ShowRoundStepSnippet'         => 'Tracker\\Rounds\\ShowRoundStepSnippet',
-                'DeleteInSourceTrackSnippet'   => 'Tracker\\DeleteTrackSnippet',
-                'DeleteTrackTokenSnippet'      => 'Tracker\\DeleteTrackTokenSnippet',
-                'EditTrackEngineSnippet'       => 'Tracker\\EditTrackEngineSnippet',
-                'EditTrackSnippet'             => 'Tracker\\EditTrackSnippet',
-                'EditTrackTokenSnippet'        => 'Token\\EditTrackTokenSnippet',
-                'ShowTrackTokenSnippet'        => 'Token\\ShowTrackTokenSnippet',
-                'SurveyQuestionsSnippet'       => 'Survey\\SurveyQuestionsSnippet',
-                'TrackSurveyOverviewSnippet'   => 'Tracker\\TrackSurveyOverviewSnippet',
-                'TrackTokenOverviewSnippet'    => 'Tracker\\TrackTokenOverviewSnippet',
-                'TrackUsageTextDetailsSnippet' => 'Tracker\\TrackUsageTextDetailsSnippet',
-                );
-
-            foreach ($movedSnippets as $oldSnippet => $newSnippet) {
-                if (($oldSnippet . '.php' == $fileinfo->getFilename()) &&
-                        (! \MUtil_String::endsWith($fileinfo->getPathname(), $newSnippet . '.php'))) {
-
-                    $messages[] = "This snippet is moved to $newSnippet.";
-                }
-            }
+            $this->_checkSnippetsChanged($fileinfo, $content, $messages);
         }
 
-        $obsoleteFields = array(
-            'gtr_track_type',
-            'gtr_track_name'        => 'calc_track_name',
-            'gr2t_track_info'       => 'calc_track_info',
-            'gto_round_description' => 'calc_round_description',
-            );
-
-        foreach ($obsoleteFields as $replacement => $old) {
-            if (\MUtil_String::contains($content, $old)) {
-                if (is_integer($replacement)) {
-                    $messages[] = "Contains a reference to the obsolete '$old' field/variable.";
-                } else {
-                    $messages[] = "Contains a reference to the '$old' field/variable, replace it with '$replacement'.";
-                }
-            }
-        }
+        $this->_checkTablesChanged($fileinfo, $content, $messages);
 
         if (! $messages) {
             return false;

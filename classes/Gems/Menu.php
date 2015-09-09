@@ -211,7 +211,6 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
 
         // MAIL CONTAINER
         $setup->addCommSetupMenu($this->_('Communication'));
-        $setup->addMailSetupMenu($this->_('Mail'));
 
         // LOG SETUP CONTROLLER
         $setup->addBrowsePage($this->_('Log Setup'), 'pr.log.maintenance', 'log-maintenance');
@@ -465,13 +464,14 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
 
-        $mailLogPage = $page->addPage($this->_('Log e-mail'), null, 'respondent-mail-log', 'index')
+        $mailLogPage = $page->addPage($this->_('Communication log'), 'pr.respondent-commlog', 'respondent-mail-log', 'index')
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
         $mailLogPage->addAutofilterAction();
+        $mailLogPage->addShowAction();
 
         // LOG CONTROLLER
-        $logPage = $page->addPage($this->_('Log other'), 'pr.respondent-log', 'respondent-log', 'index');
+        $logPage = $page->addPage($this->_('Activity log'), 'pr.respondent-log', 'respondent-log', 'index');
         $logPage->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
         $logPage->addAutofilterAction();

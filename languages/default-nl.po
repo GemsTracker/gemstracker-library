@@ -4832,7 +4832,7 @@ msgstr "Sjablonen"
 
 #: classes/Gems/Menu/MenuAbstract.php:344
 msgid "Activity log"
-msgstr "Activiteit"
+msgstr "Activiteiten log"
 
 #: classes/Gems/Menu/MenuAbstract.php:392
 msgid "Survey answers"

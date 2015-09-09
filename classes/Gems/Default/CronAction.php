@@ -245,16 +245,6 @@ class Gems_Default_CronAction extends \Gems_Controller_Action
     }
 
     /**
-     * Loads an e-mail template
-     *
-     * @param integer|null $templateId
-     */
-    protected function getTemplate($templateId)
-    {
-        return $this->db->fetchRow('SELECT * FROM gems__mail_templates WHERE gmt_id_message = ?', $templateId);
-    }
-
-    /**
      * Returns the login name belonging to this user.
      *
      * @param int $userId

@@ -231,6 +231,20 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Load the comm log model
+     *
+     * @param boolean $detailed True when the current action is not in $summarizedActions.
+     * @return \Gems\Model\CommLogModel
+     */
+    public function getCommLogModel($detailed)
+    {
+        $model = $this->_loadClass('CommLogModel', true);
+        $model->applySetting($detailed);
+
+        return $model;
+    }
+
+    /**
      * Load the commtemplate model
      *
      * @return \Gems_Model_CommtemplateModel

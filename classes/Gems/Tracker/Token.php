@@ -1409,7 +1409,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
                     return $changed;
                 }
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->logger->log(sprintf(
                         "After completion event error for token %s on survey '%s' using event '%s': %s",
                         $this->_tokenId,
@@ -1446,7 +1446,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
                     return $changed;
                 }
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->logger->log(sprintf(
                         "Before answering event error for token %s on survey '%s' using event '%s': %s",
                         $this->_tokenId,

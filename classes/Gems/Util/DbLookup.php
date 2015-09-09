@@ -299,23 +299,6 @@ class Gems_Util_DbLookup extends \Gems_Registry_TargetAbstract
     }
 
     /**
-     * Return the available mail templates.
-     *
-     * @staticvar array $data
-     * @return array The tempalteId => subject list
-     */
-    public function getMailTemplates()
-    {
-        static $data;
-
-        if (! $data) {
-            $data = $this->db->fetchPairs("SELECT gmt_id_message, gmt_subject FROM gems__mail_templates ORDER BY gmt_subject");
-        }
-
-        return $data;
-    }
-
-    /**
      *
      * @staticvar array $organizations
      * @return array List of the active organizations

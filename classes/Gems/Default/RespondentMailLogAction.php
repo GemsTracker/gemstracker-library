@@ -48,6 +48,12 @@
 class Gems_Default_RespondentMailLogAction extends \Gems_Default_RespondentChildActionAbstract
 {
     /**
+     *
+     * @var \Gems_Tracker_Respondent
+     */
+    private $_respondent;
+
+    /**
      * The parameters used for the autofilter action.
      *
      * When the value is a function name of that object, then that functions is executed
@@ -72,7 +78,7 @@ class Gems_Default_RespondentMailLogAction extends \Gems_Default_RespondentChild
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = 'Respondent_MailLogSnippet';
+    protected $autofilterSnippets = 'Mail\\Log\\MailLogBrowseSnippet';
 
     /**
      * The default search data to use.
@@ -123,69 +129,17 @@ class Gems_Default_RespondentMailLogAction extends \Gems_Default_RespondentChild
      */
     public function createModel($detailed, $action)
     {
-        $model = new \Gems_Model_JoinModel('maillog', 'gems__log_respondent_communications');
+        $model = $this->loader->getModels()->getCommLogModel($detailed);
 
-        $model->addLeftTable('gems__respondents', array('grco_id_to' => 'grs_id_user'));
-        $model->addLeftTable('gems__staff', array('grco_id_by' => 'gsf_id_user'));
-        $model->addLeftTable('gems__mail_templates', array('grco_id_message' => 'gmt_id_message'));
-
-        $model->addLeftTable('gems__tokens', array('grco_id_token' => 'gto_id_token'));
-        $model->addLeftTable('gems__reception_codes', array('gto_reception_code' => 'grc_id_reception_code'));
-        $model->addLeftTable('gems__tracks', array('gto_id_track' => 'gtr_id_track'));
-        $model->addLeftTable('gems__surveys', array('gto_id_survey' => 'gsu_id_survey'));
-
-        $model->addColumn(
-            "TRIM(CONCAT(COALESCE(CONCAT(grs_last_name, ', '), '-, '), COALESCE(CONCAT(grs_first_name, ' '), ''), COALESCE(grs_surname_prefix, '')))",
-            'respondent_name');
-        $model->addColumn(
-            "CASE WHEN gems__staff.gsf_id_user IS NULL
-                THEN '-'
-                ELSE
-                    CONCAT(
-                        COALESCE(gems__staff.gsf_last_name, ''),
-                        ', ',
-                        COALESCE(gems__staff.gsf_first_name, ''),
-                        COALESCE(CONCAT(' ', gems__staff.gsf_surname_prefix), '')
-                    )
-                END",
-            'assigned_by');
-        $model->addColumn($this->util->getTokenData()->getStatusExpression(), 'status');
-
-        $model->addTable('gems__respondent2org', array('grs_id_user' => 'gr2o_id_user'), 'gr2o');
-        $model->setKeys(array(\MUtil_Model::REQUEST_ID1  => 'gr2o_patient_nr', \MUtil_Model::REQUEST_ID2 => 'gr2o_id_organization'));
-
-        $model->addTable(    'gems__groups',           array('gsu_id_primary_group' => 'ggp_id_group'));
-        $model->addLeftTable('gems__rounds',           array('gto_id_round' => 'gro_id_round'));
-        $model->addLeftTable('gems__staff', array('gto_by' => 'gems__staff_2.gsf_id_user'));
-        $model->addColumn('CASE WHEN gems__staff_2.gsf_id_user IS NULL THEN
-                ggp_name
-                ELSE COALESCE(CONCAT_WS(" ", CONCAT(COALESCE(gems__staff_2.gsf_last_name,"-"),","), gems__staff_2.gsf_first_name, gems__staff_2.gsf_surname_prefix)) END', 'ggp_name');
-
-
-
-        $model->resetOrder();
-
-        $model->set('grco_created',    'label', $this->_('Date sent'));
-        $model->set('respondent_name', 'label', $this->_('Receiver'));
-        $model->set('grco_address',    'label', $this->_('To address'), 'itemDisplay', 'MUtil_Html_AElement::ifmail');
-        $model->set('assigned_by',     'label', $this->_('Sender'));
-        $model->set('grco_sender',     'label', $this->_('From address'), 'itemDisplay', 'MUtil_Html_AElement::ifmail');
-        $model->set('grco_id_token',   'label', $this->_('Token'));
-        $model->set('grco_topic',      'label', $this->_('Subject'));
-        $model->set('gtr_track_name',  'label', $this->_('Track'));
-        $model->set('gsu_survey_name', 'label', $this->_('Survey'));
-        $model->set('status',          'label', $this->_('Status'),
-                'formatFunction', array($this->util->getTokenData(), 'getStatusDescription'));
-
-
-        if ($detailed) {
-            $model->set('gmt_subject', 'label', $this->_('Template'));
-        } else {
-            $model->set('grco_created', 'formatFunction', $this->util->getTranslated()->formatDate);
+        if (! $detailed) {
+            $model->addFilter(array(
+                'gr2o_patient_nr' => $this->_getParam(\MUtil_Model::REQUEST_ID1),
+                'gr2o_id_organization' => $this->_getParam(\MUtil_Model::REQUEST_ID2),
+                ));
         }
-        $model->set('ggp_name', 'label', $this->translate->getAdapter()->_('Fill out by'));
 
         return $model;
+;
     }
 
     /**
@@ -195,15 +149,52 @@ class Gems_Default_RespondentMailLogAction extends \Gems_Default_RespondentChild
      */
     public function getContentTitle()
     {
-        $patientId = $this->_getParam(\MUtil_Model::REQUEST_ID1);
-        if ($patientId) {
-            $respondent = $this->loader->getRespondent(
-                    $patientId,
-                    $this->getRequest()->getParam(\MUtil_Model::REQUEST_ID2)
-                );
-            return sprintf($this->_('Mail Activity Log for respondent number %s: %s'), $patientId, $respondent->getName());
+        $respondent = $this->getRespondent();
+        if ($respondent) {
+            return sprintf(
+                    $this->_('Communication activity log for respondent %s: %s'),
+                    $respondent->getPatientNumber(),
+                    $respondent->getName()
+                    );
         }
         return $this->getIndexTitle();
+    }
+
+    /**
+     * Get the respondent object
+     *
+     * @return \Gems_Tracker_Respondent
+     */
+    protected function getRespondent()
+    {
+        if (! $this->_respondent instanceof \Gems_Tracker_Respondent) {
+            if ($this->_getParam(\MUtil_Model::REQUEST_ID1) && $this->_getParam(\MUtil_Model::REQUEST_ID2)) {
+                $this->_respondent = parent::getRespondent();
+
+            } else {
+                $id = $this->_getParam(\MUtil_Model::REQUEST_ID);
+
+                if ($id) {
+                    $model = $this->getModel();
+                    $row = $model->loadFirst(array('grco_id_action' => $id));
+
+                    if ($row) {
+                        $this->_respondent = $this->loader->getRespondent(
+                                $row['gr2o_patient_nr'],
+                                $row['gr2o_id_organization']
+                                );
+
+                        if (! $this->_respondent->exists && $patientNumber && $organizationId) {
+                            throw new \Gems_Exception($this->_('Unknown respondent.'));
+                        }
+
+                        $this->_respondent->applyToMenuSource($this->menu->getParameterSource());
+                    }
+                }
+            }
+        }
+
+        return $this->_respondent;
     }
 
     /**
@@ -214,7 +205,7 @@ class Gems_Default_RespondentMailLogAction extends \Gems_Default_RespondentChild
      */
     public function getTopic($count = 1)
     {
-        return $this->plural('mail activity', 'mail activities', $count);
+        return $this->plural('communication activity', 'communication activities', $count);
     }
 
     /**

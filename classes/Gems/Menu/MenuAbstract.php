@@ -341,7 +341,7 @@ abstract class Gems_Menu_MenuAbstract
 
         // COMMUNICATION ACTIVITY CONTROLLER
         //$setup->addBrowsePage();
-        $page = $setup->addPage($this->_('Activity log'), 'pr.mail.log', 'mail-log');
+        $page = $setup->addPage($this->_('Communication log'), 'pr.mail.log', 'mail-log');
         $page->addAutofilterAction();
         $page->addExcelAction();
         $page->addShowAction();
@@ -479,28 +479,6 @@ abstract class Gems_Menu_MenuAbstract
         $page = $import->addFilePage($this->_('Imported failures'), 'pr.file-import', 'imported-failures');
 
         return $import;
-    }
-
-    /**
-     * Add a Mail menu tree to the menu
-     *
-     * @param string $label
-     * @param array $other
-     * @return \Gems_Menu_SubMenuItem
-     */
-    public function addMailSetupMenu($label)
-    {
-        $setup = $this->addContainer($label);
-
-        // MAIL JOB CONTROLLER
-        $page = $setup->addBrowsePage($this->_('Automatic mail'), 'pr.mail.job', 'mail-job');
-        $page->addButtonOnly($this->_('Turn Automatic Mail Jobs OFF'), 'pr.mail.job', 'cron', 'cron-lock');
-        //$page->addPage($this->_('Run'), null, 'cron', 'index');
-
-        // MAIL CONTROLLER
-        $setup->addBrowsePage($this->_('Templates'), 'pr.mail', 'mail-template');
-
-        return $setup;
     }
 
     /**

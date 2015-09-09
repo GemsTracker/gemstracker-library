@@ -82,9 +82,9 @@ class Gems_Default_MailServerAction extends \Gems_Controller_ModelSnippetActionA
                 'label', $this->_('Encryption'),
                 'required', false,
                 'multiOptions', array(
-                    \Gems_Email_TemplateMailer::MAIL_NO_ENCRYPT => $this->_('None'),
-                    \Gems_Email_TemplateMailer::MAIL_SSL => $this->_('SSL'),
-                    \Gems_Email_TemplateMailer::MAIL_TLS => $this->_('TLS')));
+                    \Gems_Mail::MAIL_NO_ENCRYPT => $this->_('None'),
+                    \Gems_Mail::MAIL_SSL => $this->_('SSL'),
+                    \Gems_Mail::MAIL_TLS => $this->_('TLS')));
         $model->set('gms_port',
                 'label', $this->_('Port'),
                 'required', true,

@@ -60,7 +60,7 @@ class Gems_Mail_MailLoader extends Gems_Loader_LoaderAbstract
     protected $cascade = 'Mail';
 
     /**
-     * 
+     *
      * @var array Define the mail target options
      */
     protected $mailTargets = array(
@@ -72,7 +72,7 @@ class Gems_Mail_MailLoader extends Gems_Loader_LoaderAbstract
 
     /**
      * Return the mail elements helper class
-     * @return Gems_Mail_MailElements 
+     * @return Gems_Mail_MailElements
      */
     public function getMailElements()
     {
@@ -85,8 +85,8 @@ class Gems_Mail_MailLoader extends Gems_Loader_LoaderAbstract
      * @param  array  $identifiers the identifiers needed for the specific mailtargets
      * @return Gems_Mail_MailerAbstract class
      */
-    public function getMailer($target = null, $id = false, $orgId = false) 
-    {   
+    public function getMailer($target = null, $id = false, $orgId = false)
+    {
 
         if(isset($this->mailTargets[$target])) {
             $target = ucfirst($target);
@@ -103,16 +103,6 @@ class Gems_Mail_MailLoader extends Gems_Loader_LoaderAbstract
     public function getMailTargets()
     {
         return $this->mailTargets;
-    }
-
-    /**
-     * Get the form for mailtemplates
-     * @param  string $target mailtarget
-     * @return [type]          MailTemplateForm
-     */
-    public function getMailTemplateForm($target=false)
-    {
-        return $this->_loadClass('MailTemplateForm', true, array($target));
     }
 
     /**

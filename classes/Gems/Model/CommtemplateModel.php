@@ -45,22 +45,28 @@
  */
 Class Gems_Model_CommtemplateModel extends Gems_Model_JoinModel
 {
-
     protected $locale;
-    
+
     /**
 	 * Create the mail template model
 	 */
-	public function __construct() 
+	public function __construct()
 	{
 		parent::__construct('commtemplate', 'gems__comm_templates', 'gct');
 	}
 
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     * /
     public function afterRegistry()
     {
+        parent::afterRegistry();
         $currentLanguage = $this->locale->getLanguage();
-        
-        /*$this->addLeftTable(
+
+        $this->addLeftTable(
             'gems__comm_template_translations',
             array(
                 'gct_id_template' => 'gctt_id_template',
@@ -68,7 +74,6 @@ Class Gems_Model_CommtemplateModel extends Gems_Model_JoinModel
             ),
             'gctt');
 
-        $this->setOnSave('gctt_lang', $currentLanguage);*/
-    }
-
+        $this->setOnSave('gctt_lang', $currentLanguage);
+    } // */
 }

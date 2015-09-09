@@ -1033,3 +1033,8 @@ ALTER TABLE gems__tokens ADD
         AFTER gto_round_description;
 
 -- GEMS VERSION: 58
+-- PATCH: New rights for respondent comm log
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.respondent-commlog')
+    WHERE grl_privileges LIKE '%pr.respondent%'
+        AND grl_name != 'guest'
+        AND grl_privileges NOT LIKE '%,pr.respondent-commlog%';

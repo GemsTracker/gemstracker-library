@@ -66,7 +66,7 @@ class Gems_Default_MailLogAction extends \Gems_Controller_ModelSnippetActionAbst
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = 'Mail_Log_MailLogBrowseSnippet';
+    protected $autofilterSnippets = 'Mail\\Log\\MailLogBrowseSnippet';
 
     /**
      * The snippets used for the index action, before those in autofilter
@@ -88,55 +88,7 @@ class Gems_Default_MailLogAction extends \Gems_Controller_ModelSnippetActionAbst
      */
     public function createModel($detailed, $action)
     {
-        $model = new \Gems_Model_JoinModel('maillog', 'gems__log_respondent_communications');
-
-        $model->addLeftTable('gems__respondents', array('grco_id_to' => 'grs_id_user'));
-        $model->addLeftTable('gems__staff', array('grco_id_by' => 'gsf_id_user'));
-        $model->addLeftTable('gems__mail_templates', array('grco_id_message' => 'gmt_id_message'));
-
-        $model->addLeftTable('gems__tokens', array('grco_id_token' => 'gto_id_token'));
-        $model->addLeftTable('gems__reception_codes', array('gto_reception_code' => 'grc_id_reception_code'));
-        $model->addLeftTable('gems__tracks', array('gto_id_track' => 'gtr_id_track'));
-        $model->addLeftTable('gems__surveys', array('gto_id_survey' => 'gsu_id_survey'));
-
-        $model->addColumn(
-            "TRIM(CONCAT(COALESCE(CONCAT(grs_last_name, ', '), '-, '), COALESCE(CONCAT(grs_first_name, ' '), ''), COALESCE(grs_surname_prefix, '')))",
-            'respondent_name');
-        $model->addColumn(
-            "CASE WHEN gems__staff.gsf_id_user IS NULL
-                THEN '-'
-                ELSE
-                    CONCAT(
-                        COALESCE(gems__staff.gsf_last_name, ''),
-                        ', ',
-                        COALESCE(gems__staff.gsf_first_name, ''),
-                        COALESCE(CONCAT(' ', gems__staff.gsf_surname_prefix), '')
-                    )
-                END",
-            'assigned_by');
-        $model->addColumn($this->util->getTokenData()->getStatusExpression(), 'status');
-
-        $model->resetOrder();
-
-        $model->set('grco_created',    'label', $this->_('Date sent'));
-        $model->set('respondent_name', 'label', $this->_('Receiver'));
-        $model->set('grco_address',    'label', $this->_('To address'), 'itemDisplay', 'MUtil_Html_AElement::ifmail');
-        $model->set('assigned_by',     'label', $this->_('Sender'));
-        $model->set('grco_sender',     'label', $this->_('From address'), 'itemDisplay', 'MUtil_Html_AElement::ifmail');
-        $model->set('grco_id_token',   'label', $this->_('Token'));
-        $model->set('grco_topic',      'label', $this->_('Subject'));
-        $model->set('gtr_track_name',  'label', $this->_('Track'));
-        $model->set('gsu_survey_name', 'label', $this->_('Survey'));
-        $model->set('status',          'label', $this->_('Status'),
-                'formatFunction', array($this->util->getTokenData(), 'getStatusDescription'));
-
-        if ($detailed) {
-            $model->set('gmt_subject', 'label', $this->_('Template'));
-        } else {
-            $model->set('grco_created', 'formatFunction', $this->util->getTranslated()->formatDate);
-        }
-
-        return $model;
+        return $this->loader->getModels()->getCommLogModel($detailed);
     }
 
     /**
@@ -173,11 +125,14 @@ class Gems_Default_MailLogAction extends \Gems_Controller_ModelSnippetActionAbst
             $from = new \MUtil_Date();
             $from->subWeek(2);
 
+            $until = new \MUtil_Date();
+            $until->addDay(1);
+
             $this->defaultSearchData = array(
                 \Gems_Snippets_AutosearchFormSnippet::PERIOD_DATE_USED => 'grco_created',
                 'grco_organization' => $this->loader->getOrganization()->getId(),
                 'datefrom'          => $from,
-                'dateuntil'         => new \MUtil_Date(),
+                'dateuntil'         => $until,
                 );
         }
 
