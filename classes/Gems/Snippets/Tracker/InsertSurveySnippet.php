@@ -569,7 +569,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     /**
      * Set what to do when the form is 'finished'.
      *
-     * @return EditSingleSurveyTokenSnippet (continuation pattern)
+     * @return self
      */
     protected function setAfterSaveRoute()
     {
