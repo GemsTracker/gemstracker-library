@@ -160,6 +160,8 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends \Gems_Snippets_Mod
 
         $bridge->th($this->_('Question'));
         $td = $bridge->tdh(
+                \MUtil_Lazy::iif($bridge->grr_name, array($bridge->grr_name, $br)),
+                \MUtil_Lazy::iif($bridge->gtf_field_name, array($bridge->gtf_field_name, $br)),
                 $bridge->gto_round_description,
                 \MUtil_Lazy::iif($bridge->gto_round_description, $br),
                 \MUtil_Lazy::iif($bridge->gto_completion_time, $bridge->gto_completion_time, $bridge->gto_valid_from)
