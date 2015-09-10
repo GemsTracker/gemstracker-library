@@ -275,6 +275,24 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
         }
 
         $obsoleteTables = array(
+            'gems__log_actions' => array(
+                'glac_id_action',
+                'glac_name',
+                'glac_change',
+                'glac_log',
+                'glac_created',
+                ),
+            'gems__log_useractions' => array(
+                'glua_id_action',
+                'glua_to',
+                'glua_by',
+                'glua_organization',
+                'glua_action',
+                'glua_message',
+                'glua_role',
+                'glua_remote_ip',
+                'glua_created',
+                ),
             'gems__mail_jobs' => array(
                 'gmj_id_job',
                 'gmj_id_message',
@@ -317,7 +335,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             }
         }
     }
-    
+
     /**
      * A specific report on the escort class
      */
@@ -330,6 +348,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
         $projectName   = $this->project->getName();
 
         $oldInterfaces = array(
+            'Gems_Project_Log_LogRespondentAccessInterface',
             'Gems_Project_Tracks_FixedTracksInterface',
             'Gems_Project_Tracks_StandAloneSurveysInterface',
             'Gems_Project_Tracks_TracksOnlyInterface',

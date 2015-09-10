@@ -1489,20 +1489,6 @@ class GemsEscort extends \MUtil_Application_Escort
                 );
         }
 
-        // Will be removed in 1.7.2 or later
-        // only left here for the patches
-        if ($this instanceof \Gems_Project_Log_LogRespondentAccessInterface) {
-            $path = GEMS_LIBRARY_DIR . '/configs/db_log_respondent_access';
-            if (file_exists($path)) {
-                $paths[] = array(
-                    'path' => $path,
-                    'name' => 'gems_log',
-                    'db'   => $this->db,
-                    );
-            }
-        }
-        // End of: will be removed in 1.7.2 or later
-
         $path = GEMS_LIBRARY_DIR . '/configs/db';
         if (file_exists($path)) {
             $paths[] = array(
@@ -1767,7 +1753,7 @@ class GemsEscort extends \MUtil_Application_Escort
                     }
                 }
             }
-            
+
             // For AJAX calls we sometimes need to add JQuery onload scripts since otherwise they won't get rendered:
             // We expect JQuery to be loaded in the master page, since the call is probably made using JQuery
             if ($request instanceof \Zend_Controller_Request_Http && $request->isXmlHttpRequest()) {
