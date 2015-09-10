@@ -470,6 +470,8 @@ class Gems_Default_ExportAction extends \Gems_Controller_Action
 
             $this->html->raw($form->render($this->view));
 
+            /* DISABLED THIS CODE BLOCK AS IT IS NO LONGER NEEDED, ADDED THE 
+             * BOTTOM TWO LINES TO SHOW HOW IT CAN STILL WORK WHEN LEFT IN PLACE
             //Now add all onload actions to make the form still work
             $actions = $this->view->jQuery()->getOnLoadActions();
             $script  = $this->html->script(array('type' => "text/javascript"));
@@ -480,6 +482,10 @@ class Gems_Default_ExportAction extends \Gems_Controller_Action
             // \MUtil_Echo::track(htmlentities($script->render($this->view)));
             // \MUtil_Echo::track(htmlentities($this->view->inlineScript()));
             $this->html->raw(\MUtil_Echo::out());
+            // Now cleanup the rendered content (just to make sure)
+            $this->view->jQuery()->clearOnLoadActions();
+            $this->view->inlineScript()->exchangeArray(array());
+             */
         }
     }
 

@@ -1767,6 +1767,25 @@ class GemsEscort extends \MUtil_Application_Escort
                     }
                 }
             }
+            
+            // For AJAX calls we sometimes need to add JQuery onload scripts since otherwise they won't get rendered:
+            // We expect JQuery to be loaded in the master page, since the call is probably made using JQuery
+            if ($request instanceof \Zend_Controller_Request_Http && $request->isXmlHttpRequest()) {
+                $response = \Zend_Controller_Front::getInstance()->getResponse();
+                $scripts = $this->view->jQuery()->getOnLoadActions();
+                $content = '';
+                foreach($scripts as $script) {
+                    $content .= "<script type='text/javascript'>$script</script>\n";
+                }
+                $content .= $this->view->inlineScript();
+
+                // Now cleanup the rendered content (just to make sure)
+                $this->view->jQuery()->clearOnLoadActions();
+                $this->view->inlineScript()->exchangeArray(array());
+                if (!empty($content)) {
+                    $response->appendBody($content);
+                }
+            }
         }
     }
 
