@@ -782,15 +782,17 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
      */
     public function render(\Zend_View_Abstract $view)
     {
+        $request = $this->_getOriginalRequest();
+
         if ($this->_onlyActiveBranchVisible) {
-            $activePath = $this->_findPath($this->escort->request);
+            $activePath = $this->_findPath($request);
 
             // \MUtil_Echo::r($activePath);
 
             $this->setBranchVisible($activePath);
         }
 
-        $parameterSources[] = $this->escort->request;
+        $parameterSources[] = $request;
 
         if ($this->_menuParameters) {
             $parameterSources[] = $this->_menuParameters;
@@ -905,7 +907,8 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
      */
     public function toActiveBranchElement()
     {
-        $activePath = $this->_findPath($this->escort->request);
+        $request    = $this->_getOriginalRequest();
+        $activePath = $this->_findPath($request);
 
         if (! $activePath) {
             return null;
@@ -920,7 +923,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         }
         // \MUtil_Echo::track($activeItem->get('label'));
 
-        $parameterSources[] = $this->escort->request;
+        $parameterSources[] = $request;
 
         if ($this->_menuParameters) {
             $parameterSources[] = $this->_menuParameters;
@@ -954,7 +957,8 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
      */
     public function toTopLevelElement()
     {
-        $activeItems = $this->_findPath($this->escort->request);
+        $request     = $this->_getOriginalRequest();
+        $activeItems = $this->_findPath($request);
         $this->setBranchVisible($activeItems);
         foreach ($activeItems as $activeItem) {
             if ($activeItem instanceof \Gems_Menu_SubMenuItem) {
@@ -962,7 +966,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
             }
         }
 
-        $parameterSources[] = $this->escort->request;
+        $parameterSources[] = $request;
 
         if ($this->_menuParameters) {
             $parameterSources[] = $this->_menuParameters;

@@ -2031,8 +2031,7 @@ class GemsEscort extends \MUtil_Application_Escort
 
         } else {
             //find first allowed item in the menu
-            $menuItem = $this->menu->find(array('allowed'      => true,
-                                                'action'       => $request->getActionName(),
+            $menuItem = $this->menu->find(array('action'       => $request->getActionName(),
                                                 'controller'   => $request->getControllerName()));
 
             // Display error when not having the right priviliges

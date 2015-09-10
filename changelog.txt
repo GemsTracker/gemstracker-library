@@ -2,7 +2,7 @@ Important changes from 1.7.1 => 1.7.2
 ============================================================
 Fixed survey activation when survey not active in source
 LimeSurvey equation questions now use help text for question or question code when empty
-
+The menu remains fully visible when an error occurs
 
 Important changes from 1.7.0 => 1.7.1
 ============================================================

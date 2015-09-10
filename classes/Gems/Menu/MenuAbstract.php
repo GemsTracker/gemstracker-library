@@ -111,6 +111,23 @@ abstract class Gems_Menu_MenuAbstract
     }
 
     /**
+     * Get tge request to use for menu building
+     *
+     * @return \Zend_Controller_Request_Abstract
+     */
+    protected function _getOriginalRequest()
+    {
+        $request = $this->escort->request;
+        $handler = $request->getParam('error_handler');
+
+        if ($handler) {
+            return $handler->request;
+        }
+
+        return $request;
+    }
+
+    /**
      * Returns a \Zend_Navigation creation array for this menu item, with
      * sub menu items in 'pages'
      *
@@ -636,7 +653,7 @@ abstract class Gems_Menu_MenuAbstract
 
             $infoPage->addAutofilterAction();
 
-            // \MUtil_Echo::track($infoPage->_toNavigationArray(array($this->escort->request)));
+            // \MUtil_Echo::track($infoPage->_toNavigationArray(array($this->_getOriginalRequest())));
         } else {
             $infoPage = $this->addContainer($label);
             $tracksPage = $infoPage->addPage($this->_('Tracks'), 'pr.project', 'project-tracks');
