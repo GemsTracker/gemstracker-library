@@ -43,31 +43,13 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Default_TrackMaintenanceAction extends //\Gems_Controller_BrowseEditAction
-    \Gems_Default_TrackMaintenanceWithEngineActionAbstract
+class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenanceWithEngineActionAbstract
 {
     /**
      *
      * @var \Gems_AccessLog
      */
     public $accesslog;
-
-    /**
-     * Mode for the current addBrowse drawing.
-     *
-     * @var string
-     */
-    protected $browseMode;
-
-    /**
-     *
-     * @var \Zend_Cache_Core
-     */
-    public $cache;
-
-    public $menuShowIncludeLevel = 10;
-
-    public $sortKey = array('gtr_track_name' => SORT_ASC);
 
     /**
      * The parameters used for the autofilter action.
@@ -90,6 +72,21 @@ class Gems_Default_TrackMaintenanceAction extends //\Gems_Controller_BrowseEditA
      * @var array
      */
     public $cacheTags = array('track', 'tracks');
+
+    /**
+     * The parameters used for the edit actions, overrules any values in
+     * $this->createEditParameters.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $createParameters = array(
+        'trackEngine' => null,
+    );
 
     /**
      * The snippets used for the index action, before those in autofilter
@@ -131,59 +128,6 @@ class Gems_Default_TrackMaintenanceAction extends //\Gems_Controller_BrowseEditA
     public $summarizedActions = array('index', 'autofilter', 'check-all', 'recalc-all-fields');
 
     /**
-     * Adds columns from the model to the bridge that creates the browse table.
-     *
-     * Adds a button column to the model, if such a button exists in the model.
-     *
-     * @param \MUtil_Model_Bridge_TableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
-     * @return void
-     */
-    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
-    {
-        $request = $this->getRequest();
-
-        $actionKey  = $request->getActionKey();
-        $contrKey   = $request->getControllerKey();
-        $controller = $this->browseMode ? $this->browseMode : $request->getControllerName();
-
-        if ($menuItem = $this->menu->find(array($contrKey => $controller, $actionKey => 'show'))) {
-            $bridge->addItemLink($menuItem->toActionLinkLower($this->getRequest(), $bridge));
-        }
-
-        $menuItem = $this->menu->find(array($contrKey => $controller, $actionKey => 'edit'));
-
-        if ($model->getName() == 'rounds') {
-            $added = false;
-
-            foreach($model->getItemsOrdered() as $name) {
-
-                if ($label = $model->get($name, 'label')) {
-                    if (strpos($name, 'valid') !== false) {
-                        if ($added === false) {
-                            $bridge->addMultiSort(array('', array($this->_('Valid from'), Mutil_Html::create('br'))), 'gro_valid_after_field', \MUtil_Html::raw(' '), 'gro_valid_after_source', \MUtil_Html::raw(' '), 'gro_valid_after_id');
-                            $bridge->addMultiSort(array('', array($this->_('Valid until'), Mutil_Html::create('br'))), 'gro_valid_for_field', \MUtil_Html::raw(' '), 'gro_valid_for_source', \MUtil_Html::raw(' '), 'gro_valid_for_id');
-                            $added = true;
-                        }
-                    } else {
-                        $bridge->addSortable($name, $label);
-                    }
-                }
-            }
-        } else {
-            foreach($model->getItemsOrdered() as $name) {
-                if ($label = $model->get($name, 'label')) {
-                    $bridge->addSortable($name, $label);
-                }
-            }
-        }
-
-        if ($menuItem) {
-            $bridge->addItemLink($menuItem->toActionLinkLower($this->getRequest(), $bridge));
-        }
-    }
-
-    /**
      * Displays a textual explanation what check tracking does on the page.
      */
     protected function addCheckInformation()
@@ -217,60 +161,12 @@ class Gems_Default_TrackMaintenanceAction extends //\Gems_Controller_BrowseEditA
     }
 
     /**
-     * @param array $data
-     * @param bool  $isNew
-     * @return array
+     * Action for making a copy of a track
      */
-    public function afterFormLoad(array &$data, $isNew)
-    {
-        // feature request #200
-        if (isset($data['gtr_organizations']) && (! is_array($data['gtr_organizations']))) {
-            $data['gtr_organizations'] = explode('|', trim($data['gtr_organizations'], '|'));
-        }
-    }
-
-    /**
-     * Hook to perform action after a record (with changes) was saved
-     *
-     * As the data was already saved, it can NOT be changed anymore
-     *
-     * @param array $data
-     * @param boolean $isNew
-     * @return boolean  True when you want to display the default 'saved' messages
-     */
-    public function afterSave(array $data, $isNew)
-    {
-        $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('surveys', 'tracks'));
-
-        return true;
-    }
-
-    /**
-     *
-     * @param array $data The data that will be saved.
-     * @param boolean $isNew
-     * $param \Zend_Form $form
-     * @return array|null Returns null if save was already handled, the data otherwise.
-     */
-    public function beforeSave(array &$data, $isNew, \Zend_Form $form = null)
-    {
-        // feature request #200
-        if (isset($data['gtr_organizations']) && is_array($data['gtr_organizations'])) {
-            $data['gtr_organizations'] = '|' . implode('|', $data['gtr_organizations']) . '|';
-        }
-        if (isset($data['gtr_id_track'])) {
-            $data['gtr_survey_rounds'] = $this->db->fetchOne("SELECT COUNT(*) FROM gems__rounds WHERE gro_active = 1 AND gro_id_track = ?", $data['gtr_id_track']);
-        } else {
-            $data['gtr_survey_rounds'] = 0;
-        }
-
-        return true;
-    }
-
     public function copyAction()
     {
-        $trackId = $this->_getIdParam();
-        $engine = $this->loader->getTracker()->getTrackEngine($trackId);
+        $trackId    = $this->_getIdParam();
+        $engine     = $this->getTrackEngine();
         $newTrackId = $engine->copyTrack($trackId);
 
         $this->_reroute(array('action' => 'edit', \MUtil_Model::REQUEST_ID => $newTrackId));
@@ -293,10 +189,13 @@ class Gems_Default_TrackMaintenanceAction extends //\Gems_Controller_BrowseEditA
     public function checkTrackAction()
     {
         $id    = $this->_getIdParam();
-        $track = $this->loader->getTracker()->getTrackEngine($id);
-        $track->applyToMenuSource($this->menu->getParameterSource());
+        $track = $this->getTrackEngine();
         $where = $this->db->quoteInto('gr2t_id_track = ?', $id);
-        $batch = $this->loader->getTracker()->checkTrackRounds('trackCheckRounds' . $id, $this->loader->getCurrentUser()->getUserId(), $where);
+        $batch = $this->loader->getTracker()->checkTrackRounds(
+                'trackCheckRounds' . $id,
+                $this->loader->getCurrentUser()->getUserId(),
+                $where
+                );
 
         $title = sprintf($this->_("Checking round assignments for track '%s'."), $track->getTrackName());
         $this->_helper->BatchRunner($batch, $title, $this->accesslog);
@@ -304,9 +203,14 @@ class Gems_Default_TrackMaintenanceAction extends //\Gems_Controller_BrowseEditA
         $this->addCheckInformation();
     }
 
+    /**
+     * Action for showing a create new item page
+     */
     public function createAction()
     {
-        $this->addSnippets($this->loader->getTracker()->getTrackEngineEditSnippets());
+        $this->createEditSnippets = $this->loader->getTracker()->getTrackEngineEditSnippets();
+
+        parent::createAction();
     }
 
     /**
@@ -324,28 +228,9 @@ class Gems_Default_TrackMaintenanceAction extends //\Gems_Controller_BrowseEditA
     {
         $tracker = $this->loader->getTracker();
 
-        switch ($action) {
-            case "rounds": {
-                $trackId = $this->_getIdParam();
-                $engine = $tracker->getTrackEngine($trackId);
-                $model  = $engine->getRoundModel(false, $action);
-                $model->set('ggp_name', 'label', $this->_('Group'));
-                $model->addSort(array('gro_id_order' => SORT_ASC));
-            } break;
-
-            case "fields": {
-                $trackId = $this->_getIdParam();
-                $engine = $tracker->getTrackEngine($trackId);
-                $model = $engine->getFieldsMaintenanceModel(false, $action);
-                $model->addSort(array('gtf_id_order' => SORT_ASC));
-            } break;
-
-            default: {
-                $model = $tracker->getTrackModel();
-                $model->applyFormatting($detailed);
-                $model->addFilter(array("gtr_track_class != 'SingleSurveyEngine'"));
-            }
-        }
+        $model = $tracker->getTrackModel();
+        $model->applyFormatting($detailed);
+        $model->addFilter(array("gtr_track_class != 'SingleSurveyEngine'"));
 
         return $model;
     }
@@ -355,83 +240,37 @@ class Gems_Default_TrackMaintenanceAction extends //\Gems_Controller_BrowseEditA
      */
     public function editAction()
     {
-        $tracker     = $this->loader->getTracker();
-        $trackId     = $this->_getIdParam();
-        $trackEngine = $tracker->getTrackEngine($trackId);
+        $this->createEditSnippets = $this->loader->getTracker()->getTrackEngineEditSnippets();
 
-        // Set variables for the menu
-        $trackEngine->applyToMenuSource($this->menu->getParameterSource());
-
-        $this->addSnippets($tracker->getTrackEngineEditSnippets(), 'trackEngine', $trackEngine, 'trackId', $trackId);
+        parent::editAction();
     }
 
     /**
-     * Returns a text element for autosearch. Can be overruled.
+     * Get the filter to use with the model for searching including model sorts, etc..
      *
-     * The form / html elements to search on. Elements can be grouped by inserting null's between them.
-     * That creates a distinct group of elements
-     *
-     * @param \MUtil_Model_ModelAbstract $model
-     * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return array Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.
+     * @return array or false
      */
-    protected function getAutoSearchElements(\MUtil_Model_ModelAbstract $model, array $data)
+    public function getSearchFilter()
     {
-        $elements = parent::getAutoSearchElements($model, $data);
+        $filter = parent::getSearchFilter();
 
-        if ($elements) {
-            $br = \MUtil_Html::create('br');
-            $elements[] = $this->_createSelectElement('gtr_track_class', $model, $this->_('(all track engines)'));
-
-            $elements[] = $br;
-
-            $element = $this->_createSelectElement('active', $this->util->getTranslated()->getYesNo(), $this->_('(both)'));
-            $element->setLabel($model->get('gtr_active', 'label'));
-            $elements[] = $element;
-
-            $user = $this->loader->getCurrentUser();
-            $options = $user->getRespondentOrganizations();
-            $element = $this->_createSelectElement('org', $options, $this->_('(all organizations)'));
-            $element->setLabel($model->get('gtr_organizations', 'label'));
-            $elements[] = $element;
-        }
-
-        return $elements;
-    }
-
-    /**
-     * Additional data filter statements for the user input.
-     *
-     * User input that has the same name as a model field is automatically
-     * used as a filter, but if the name is different processing is needed.
-     * That processing should happen here.
-     *
-     * @param array $data The current user input
-     * @return array New filter statements
-     */
-    protected function getDataFilter(array $data)
-    {
-        $filter = parent::getDataFilter($data);
-
-        if (isset($data['active']) && strlen($data['active'])) {
-            $filter['gtr_active'] = $data['active'];
-        }
-
-        if (isset($data['org']) && strlen($data['org'])) {
-            $filter[] = 'gtr_organizations LIKE "%|' . $data['org'] . '|%"';
+        if (isset($filter['org']) && strlen($filter['org'])) {
+            $filter[] = 'gtr_organizations LIKE "%|' . $filter['org'] . '|%"';
+            unset($filter['org']);
         }
 
         return $filter;
     }
 
+    /**
+     * Helper function to allow generalized statements about the items in the model.
+     *
+     * @param int $count
+     * @return $string
+     */
     public function getTopic($count = 1)
     {
         return $this->plural('track', 'tracks', $count);
-    }
-
-    public function getTopicTitle()
-    {
-        return $this->_('Tracks');
     }
 
     /**
@@ -454,8 +293,7 @@ class Gems_Default_TrackMaintenanceAction extends //\Gems_Controller_BrowseEditA
     public function recalcFieldsAction()
     {
         $id    = $this->_getIdParam();
-        $track = $this->loader->getTracker()->getTrackEngine($id);
-        $track->applyToMenuSource($this->menu->getParameterSource());
+        $track = $this->getTrackEngine();
         $where = $this->db->quoteInto('gr2t_id_track = ?', $id);
         $batch = $this->loader->getTracker()->recalcTrackFields(
                 'trackRecalcFields' . $id,
@@ -468,62 +306,4 @@ class Gems_Default_TrackMaintenanceAction extends //\Gems_Controller_BrowseEditA
 
         $this->addRecalcInformation();
     }
-
-    /**
-     *
-     * /
-    public function showAction()
-    {
-        $tracker     = $this->loader->getTracker();
-        $trackId     = $this->_getIdParam();
-        $trackEngine = $tracker->getTrackEngine($trackId);
-
-        // Set variables for the menu
-        $trackEngine->applyToMenuSource($this->menu->getParameterSource());
-
-        // $this->addSnippets($tracker->getTrackEngineEditSnippets(), 'trackEngine', $trackEngine, 'trackId', $trackId);
-        parent::showAction();
-
-        $this->showList("fields", array(\MUtil_Model::REQUEST_ID => 'gtf_id_track', 'fid' => 'gtf_id_field'));
-        $this->showList("rounds", array(\MUtil_Model::REQUEST_ID => 'gro_id_track', 'rid' => 'gro_id_round'), 'row_class');
-
-        // explicitly translate
-        $this->_('fields');
-        $this->_('rounds');
-    }
-
-    /**
-     * Shows a list
-     *
-     * @param string $mode
-     * @param array $keys
-     */
-    private function showList($mode, array $keys, $rowclassField = null)
-    {
-        $action = $this->getRequest()->getActionName();
-        $this->getRequest()->setActionName($mode);
-
-        $baseurl = $this->getRequest()->getParams();
-
-        $model = $this->getModel();
-        $repeatable = $model->loadRepeatable();
-
-        $this->browseMode = 'track-' . $mode;
-
-        $table = $this->getBrowseTable($baseurl);
-        if ($rowclassField) {
-            foreach ($table->tbody() as $tr) {
-                $tr->appendAttrib('class', $repeatable->$rowclassField);
-            }
-        }
-        $table->setOnEmpty(sprintf($this->_('No %s found'), $this->_($mode)));
-        $table->getOnEmpty()->class = 'centerAlign';
-        $table->setRepeater($repeatable);
-
-        $this->html->h3(sprintf($this->_('%s in track'), $this->_(ucfirst($mode))));
-        $this->html[] = $table;
-        $this->html->actionLink(array('controller' => 'track-' . $mode, 'action' => 'create', 'id' => $this->getRequest()->getParam(\MUtil_Model::REQUEST_ID)), $this->_('New'));
-
-        $this->getRequest()->setActionName($action);
-    } // */
 }

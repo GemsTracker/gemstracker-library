@@ -73,14 +73,14 @@ class TrackMaintenanceSearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
 
             $elements[] = $br;
 
-            $elementA = $this->_createSelectElement('active', $this->util->getTranslated()->getYesNo(), $this->_('(both)'));
+            $optionsA = $this->util->getTranslated()->getYesNo();
+            $elementA = $this->_createSelectElement('gtr_active', $optionsA, $this->_('(both)'));
             $elementA->setLabel($this->model->get('gtr_active', 'label'));
             $elements[] = $elementA;
 
-            $user = $this->loader->getCurrentUser();
-            $options = $user->getRespondentOrganizations();
-            $elementO = $this->_createSelectElement('org', $options, $this->_('(all organizations)'));
-            $elementO->setLabel($this->model->get('gtr_organizations', 'label'));
+            $user     = $this->loader->getCurrentUser();
+            $optionsO = $user->getRespondentOrganizations();
+            $elementO = $this->_createSelectElement('org', $optionsO, $this->_('(all organizations)'));
             $elements[] = $elementO;
         }
 
