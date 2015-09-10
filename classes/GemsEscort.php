@@ -1549,6 +1549,16 @@ class GemsEscort extends \MUtil_Application_Escort
     }
 
     /**
+     * The prefix / directory paths where the Gems Loaders should look
+     *
+     * @return array
+     */
+    public function getLoaderDirs()
+    {
+        return $this->_loaderDirs;
+    }
+
+    /**
      * Retrieves / sets the messenger
      *
      * @return \Zend_Controller_Action_Helper_FlashMessenger

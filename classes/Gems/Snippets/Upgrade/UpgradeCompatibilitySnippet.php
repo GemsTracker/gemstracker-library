@@ -49,6 +49,13 @@ namespace Gems\Snippets\Upgrade;
 class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
 {
     /**
+     * When true there is a namespace error in the application code
+     *
+     * @var boolean
+     */
+    protected $appNamespaceError = false;
+
+    /**
      * The current version of the code
      *
      * @var int
@@ -72,6 +79,13 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
      * @var \Gems_Project_ProjectSettings
      */
     protected $project;
+
+    /**
+     * The prefix / classnames where the Gems Loaders should look
+     *
+     * @var array prefix => path
+     */
+    protected $projectDirs;
 
     /**
      *
@@ -110,9 +124,24 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             'Throwable',
             'Traversable',
             );
-        
+
         foreach ($phpObjects as $className) {
             if (preg_match("/[^_\"'\\\\a-z]$className/", $content)) {
+                $this->appNamespaceError = true;
+                $messages[] = "The code in this file contains a not namespace proof reference to '$className', prefix a \\.";
+            }
+        }
+
+        $gtObjects = array(
+            'Gems_' => 'Gems',
+            'MUtil_' => 'MUtil',
+        ) + $this->projectDirs;
+        // Remove the class statements
+        $noClass = preg_replace('/class\\s+([^\\s]+)/', '', $content);
+
+        foreach ($gtObjects as $search => $className) {
+            if (preg_match("/[^_\"'\\\\a-z]$search/", $noClass)) {
+                $this->appNamespaceError = true;
                 $messages[] = "The code in this file contains a not namespace proof reference to '$className', prefix a \\.";
             }
         }
@@ -160,6 +189,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
                     'RoleController'              => 57,
                     'SurveyMaintenanceController' => 57,
                     'TrackController'             => 57,
+                    'TrackMaintenanceController'  => 58,
                     'TrackRoundsController'       => 57,
                     );
                 foreach ($changedControllers as $controller => $version) {
@@ -287,6 +317,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             }
         }
     }
+    
     /**
      * A specific report on the escort class
      */
@@ -376,11 +407,23 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
      */
     protected function addFileReports()
     {
+        $sCode = $this->html->sequence();
+
         $output = false;
         foreach ($this->getRecursiveDirectoryIterator(APPLICATION_PATH) as  $filename) {
             $output = $this->addFileReport($filename) || $output;
         }
-        if (! $output) {
+        if ($this->appNamespaceError) {
+            $sCode->pInfo('The application code has code change issues. You can try to fix them by running this phing script:');
+            $sCode->pre(
+                    'cd ' . APPLICATION_PATH . "\n" .
+                    'phing -f ' . GEMS_LIBRARY_DIR . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR . 'namespacer.xml'
+                    );
+            $p = $sCode->pInfo('To use this script you have to install ');
+            $p->a('https://www.phing.info/', 'Phing');
+            $p->append('. Then run the script and check again for issues not fixed by the script.');
+
+        } elseif (! $output) {
             $this->html->pInfo('No compatibility issues found in the code for this project.');
         }
     }
@@ -394,6 +437,9 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
     public function afterRegistry()
     {
         $this->codeVersion = $this->loader->getVersions()->getBuild();
+        foreach ($this->escort->getLoaderDirs() as $prefix => $dir) {
+            $this->projectDirs[$prefix . '_'] = $prefix;
+        }
     }
 
     /**
