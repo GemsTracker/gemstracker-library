@@ -62,6 +62,11 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends \Gems_Mode
     const TOKEN_OVERWRITE = 'overwrite';
 
     /**
+     * Constant for creating a new token, while disabling the existing token
+     */
+    const TOKEN_SKIP = 'skip';
+
+    /**
      * One of the TOKEN_ constants telling what to do when no token exists
      *
      * @var string
@@ -309,7 +314,7 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends \Gems_Mode
     /**
      * Get the treatment when no token exists
      *
-     * @param string $noToken One of the TOKEN_ constants.
+     * @param string $noToken One of the TOKEN_ constants, but not TOKEN_OVERWRITE.
      * @return \Gems_Model_Translator_AnswerTranslatorAbstract (continuation pattern)
      */
     public function setNoToken($noToken)
@@ -321,7 +326,7 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends \Gems_Mode
     /**
      * Get the treatment when no token exists
      *
-     * @param string $noToken One of the TOKEN_ constants.
+     * @param boolean $skip
      * @return \Gems_Model_Translator_AnswerTranslatorAbstract (continuation pattern)
      */
     public function setSkipUnknownPatients($skip = false)
@@ -345,7 +350,7 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends \Gems_Mode
     /**
      * Set the treatment for answered or double tokens
      *
-     * @param string $tokenTreatment One f the TOKEN_ constants.
+     * @param string $tokenCompleted One f the TOKEN_ constants.
      * @return \Gems_Model_Translator_AnswerTranslatorAbstract (continuation pattern)
      */
     public function setTokenCompleted($tokenCompleted)
@@ -413,24 +418,43 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends \Gems_Mode
         $token = $this->loader->getTracker()->getToken($row['token'] ? $row['token'] : 'emptytoken');
 
         if ($token->exists) {
-            if ($token->isCompleted() && (self::TOKEN_ERROR == $this->getTokenCompleted())) {
-                $this->_addErrors(sprintf(
-                        $this->_('Token %s is completed.'),
-                        $token->getTokenId()
-                        ), $key);
-            }
-        } elseif (self::TOKEN_ERROR == $this->getNoToken()) {
-            $this->_addErrors($this->getNoTokenError($row, $key), $key);
-        } else {
-            $respTrack = $this->findRespondentTrackFor($row);
+            // If token is not completed we can use it, otherwise it depends on the settings
+            if ($token->isCompleted()) {
+                switch ($this->getTokenCompleted()) {
+                    case self::TOKEN_SKIP:
+                        return false;
 
-            if ($respTrack) {
-                $row['resp_track_id'] == $respTrack;
-            } else {
-                $this->_addErrors(sprintf(
-                        $this->_('No track for inserting found for %s.'),
-                        implode(" / ", $row)
-                        ), $key);
+                    case self::TOKEN_ERROR:
+                        $this->_addErrors(sprintf(
+                                $this->_('Token %s is completed.'),
+                                $token->getTokenId()
+                                ), $key);
+                        break;
+
+                    // Intentional fall-through,
+                    // other case are handled in SaveAnswerTask
+                }
+            }
+        } else {
+            switch ($this->getNoToken()) {
+                case self::TOKEN_SKIP:
+                    return false;
+
+                case self::TOKEN_ERROR:
+                    $this->_addErrors($this->getNoTokenError($row, $key), $key);
+                    break;
+
+                default:
+                    $respTrack = $this->findRespondentTrackFor($row);
+
+                    if ($respTrack) {
+                        $row['resp_track_id'] == $respTrack;
+                    } else {
+                        $this->_addErrors(sprintf(
+                                $this->_('No track for inserting found for %s.'),
+                                implode(" / ", $row)
+                                ), $key);
+                    }
             }
         }
 

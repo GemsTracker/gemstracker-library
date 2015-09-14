@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: ImportLoader.php$
  */
 
 /**
@@ -85,9 +85,10 @@ class Gems_Import_ImportLoader extends \Gems_Loader_TargetLoaderAbstract
      * using $this->getTranslators('answers')
      *
      * @param \Gems_Tracker_Survey $survey
+     * @param string $filename Optional, name of file to import
      * @return array name => translator
      */
-    public function getAnswerImporters(\Gems_Tracker_Survey $survey)
+    public function getAnswerImporters(\Gems_Tracker_Survey $survey, $filename = null)
     {
         return array();
     }
@@ -121,9 +122,10 @@ class Gems_Import_ImportLoader extends \Gems_Loader_TargetLoaderAbstract
      * Name of the default import translator
      *
      * @param string $controller Name of controller (or other id)
+     * @param string $filename Optional, name of file to import
      * @return string
      */
-    public function getDefaultTranslator($controller)
+    public function getDefaultTranslator($controller, $filename = null)
     {
         return 'default';
     }
@@ -147,9 +149,9 @@ class Gems_Import_ImportLoader extends \Gems_Loader_TargetLoaderAbstract
     public function getFileImporter($filename)
     {
         $controller   = $this->getFilenameController($filename);
-        $defaultTrans = $this->getDefaultTranslator($controller);
+        $defaultTrans = $this->getDefaultTranslator($controller, $filename);
         $targetModel  = $this->getControllerTargetModel($controller);
-        $translators  = $this->getTranslators($controller);
+        $translators  = $this->getTranslators($controller, $filename);
 
         if (! ($controller && $targetModel && isset($translators[$defaultTrans]))) {
             return null;
@@ -308,9 +310,10 @@ class Gems_Import_ImportLoader extends \Gems_Loader_TargetLoaderAbstract
      * Get the possible translators for the import snippet.
      *
      * @param string $controller Name of controller (or other id)
+     * @param string $filename Optional, name of file to import
      * @return array of \MUtil_Model_ModelTranslatorInterface objects
      */
-    public function getTranslators($controller)
+    public function getTranslators($controller, $filename = null)
     {
         $translator = $this->getTranslateAdapter();
 
