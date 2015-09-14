@@ -45,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
+class Gems_Import_ImportLoader extends \Gems_Loader_TargetLoaderAbstract
 {
     /**
      *
@@ -54,7 +54,7 @@ class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
     protected $_orgCode;
 
     /**
-     * Allows sub classes of Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
+     * Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
@@ -64,18 +64,18 @@ class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
     /**
      *
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     public $project;
 
     /**
-     * @var Zend_Translate
+     * @var \Zend_Translate
      */
     protected $translate;
 
@@ -84,10 +84,11 @@ class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
      * as opposed to the generic answer translators loaded
      * using $this->getTranslators('answers')
      *
-     * @param Gems_Tracker_Survey $survey
+     * @param \Gems_Tracker_Survey $survey
+     * @param string $filename Optional, name of file to import
      * @return array name => translator
      */
-    public function getAnswerImporters(Gems_Tracker_Survey $survey)
+    public function getAnswerImporters(\Gems_Tracker_Survey $survey, $filename = null)
     {
         return array();
     }
@@ -96,7 +97,7 @@ class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
      * The model to use with a controller
      *
      * @param string $controller Name of controller (or other id)
-     * @return MUtil_Model_ModelAbstract or null when not found
+     * @return \MUtil_Model_ModelAbstract or null when not found
      */
     protected function getControllerTargetModel($controller)
     {
@@ -121,9 +122,10 @@ class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
      * Name of the default import translator
      *
      * @param string $controller Name of controller (or other id)
+     * @param string $filename Optional, name of file to import
      * @return string
      */
-    public function getDefaultTranslator($controller)
+    public function getDefaultTranslator($controller, $filename = null)
     {
         return 'default';
     }
@@ -147,9 +149,9 @@ class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
     public function getFileImporter($filename)
     {
         $controller   = $this->getFilenameController($filename);
-        $defaultTrans = $this->getDefaultTranslator($controller);
+        $defaultTrans = $this->getDefaultTranslator($controller, $filename);
         $targetModel  = $this->getControllerTargetModel($controller);
-        $translators  = $this->getTranslators($controller);
+        $translators  = $this->getTranslators($controller, $filename);
 
         if (! ($controller && $targetModel && isset($translators[$defaultTrans]))) {
             return null;
@@ -204,14 +206,14 @@ class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
     /**
      *
      * @param string $controller Name of controller (or other id)
-     * @param MUtil_Model_ModelAbstract $targetModel
+     * @param \MUtil_Model_ModelAbstract $targetModel
      * @return \Gems_Import_Importer
      */
-    public function getImporter($controller, MUtil_Model_ModelAbstract $targetModel = null)
+    public function getImporter($controller, \MUtil_Model_ModelAbstract $targetModel = null)
     {
         $importer = $this->_loadClass('Importer', true);
 
-        if ($importer instanceof Gems_Import_Importer) {
+        if ($importer instanceof \Gems_Import_Importer) {
             $importer->setRegistrySource($this);
 
             $importer->setFailureDirectory($this->getFailureDirectory($controller));
@@ -237,7 +239,7 @@ class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
             $user = $this->loader->getCurrentUser();
             $this->_orgCode = $user->getCurrentOrganization()->getCode();
             if (! $this->_orgCode) {
-                $this->_orgCode = MUtil_File::cleanupName($user->getCurrentOrganization()->getName());
+                $this->_orgCode = \MUtil_File::cleanupName($user->getCurrentOrganization()->getName());
             }
 
         }
@@ -254,7 +256,7 @@ class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
     public function getLongtermFileName($controller)
     {
         $user   = $this->loader->getCurrentUser();
-        $date   = new MUtil_Date();
+        $date   = new \MUtil_Date();
 
         $name[] = $controller;
         $name[] = $date->toString('YYYY-MM-ddTHH-mm-ss');
@@ -288,17 +290,17 @@ class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
     /**
      * Returns a translate adaptor
      *
-     * @return Zend_Translate_Adapter
+     * @return \Zend_Translate_Adapter
      */
     protected function getTranslateAdapter()
     {
-        if ($this->translate instanceof Zend_Translate)
+        if ($this->translate instanceof \Zend_Translate)
         {
             return $this->translate->getAdapter();
         }
 
-        if (! $this->translate instanceof Zend_Translate_Adapter) {
-            $this->translate = new MUtil_Translate_Adapter_Potemkin();
+        if (! $this->translate instanceof \Zend_Translate_Adapter) {
+            $this->translate = new \MUtil_Translate_Adapter_Potemkin();
         }
 
         return $this->translate;
@@ -308,35 +310,36 @@ class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
      * Get the possible translators for the import snippet.
      *
      * @param string $controller Name of controller (or other id)
-     * @return array of MUtil_Model_ModelTranslatorInterface objects
+     * @param string $filename Optional, name of file to import
+     * @return array of \MUtil_Model_ModelTranslatorInterface objects
      */
-    public function getTranslators($controller)
+    public function getTranslators($controller, $filename = null)
     {
         $translator = $this->getTranslateAdapter();
 
         switch ($controller) {
             case 'respondent':
-                $output['default'] = new Gems_Model_Translator_RespondentTranslator($translator->_('Direct import'));
+                $output['default'] = new \Gems_Model_Translator_RespondentTranslator($translator->_('Direct import'));
                 break;
 
             case 'calendar':
-                $output['default'] = new Gems_Model_Translator_AppointmentTranslator($translator->_('Direct import'));
+                $output['default'] = new \Gems_Model_Translator_AppointmentTranslator($translator->_('Direct import'));
                 break;
 
             case 'answers':
-                $output['default'] = new Gems_Model_Translator_TokenAnswerTranslator(
+                $output['default'] = new \Gems_Model_Translator_TokenAnswerTranslator(
                         $translator->_('Link by token id')
                         );
-                $output['resp']    = new Gems_Model_Translator_RespondentAnswerTranslator(
+                $output['resp']    = new \Gems_Model_Translator_RespondentAnswerTranslator(
                         $translator->_('Link by patient id')
                         );
-                $output['date']    = new Gems_Model_Translator_DateAnswerTranslator(
+                $output['date']    = new \Gems_Model_Translator_DateAnswerTranslator(
                         $translator->_('Link by patient id and completion date')
                         );
                 break;
 
             default:
-                $output['default'] = new Gems_Model_Translator_StraightTranslator($translator->_('Direct import'));
+                $output['default'] = new \Gems_Model_Translator_StraightTranslator($translator->_('Direct import'));
                 break;
         }
 
