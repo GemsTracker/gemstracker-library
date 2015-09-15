@@ -50,6 +50,12 @@ class OnOffElementsDependency extends DependencyAbstract
 {
     /**
      *
+     * @var \MUtil_Model_ModelAbstract
+     */
+    protected $model;
+    
+    /**
+     *
      * @var array
      */
     protected $modeOff;
@@ -73,8 +79,9 @@ class OnOffElementsDependency extends DependencyAbstract
      * @param string $onElement The element that switches the other fields on or off
      * @param array|string $forElements The elements switched on or off
      * @param array|string $mode The values set ON when $onElement is true
+     * @param \MUtil_Model_ModelAbstract $model The model
      */
-    public function __construct($onElement, $forElements, $mode = 'readonly')
+    public function __construct($onElement, $forElements, $mode = 'readonly', $model = null)
     {
         $this->setDependsOn($onElement);
 
@@ -91,6 +98,8 @@ class OnOffElementsDependency extends DependencyAbstract
         $this->setEffecteds((array) $forElements);
 
         $this->addEffected($onElement, 'onchange');
+        
+        $this->model = $model;
     }
 
     /**
@@ -144,6 +153,9 @@ class OnOffElementsDependency extends DependencyAbstract
                 } else {
                     $valueOff = "e.removeAttribute('$key');";
                 }
+                
+                $this->checkPicker($valueOn, $valueOff);
+                
                 $setScript .= "if (this.value != 0) { $valueOn } else { $valueOff }; ";
             }
             $javaScript = '';
@@ -155,4 +167,50 @@ class OnOffElementsDependency extends DependencyAbstract
 
         return $output;
     }  // */
+    
+    /**
+     * Checks and updates the on and off strings when one of the effecteds is a date, time or datetime field
+     * 
+     * @param string $valueOn
+     * @param string $valueOff
+     */
+    protected function checkPicker(&$valueOn, &$valueOff)
+    {
+        $effecteds = array_keys($this->getEffecteds());
+        foreach ($effecteds as $field) {
+            if ($this->model instanceof \MUtil_Model_ModelAbstract && $this->model->has($field)) {
+                $modelItemType = $this->model->get($field, 'type');
+                $dateFormat = $this->model->get($field, 'dateFormat');
+                $timeFormat = $this->model->get($field, 'timeFormat');
+
+                switch ($modelItemType) {
+                    case \MUtil_Model::TYPE_DATE:
+                    case \MUtil_Model::TYPE_TIME:
+                    case \MUtil_Model::TYPE_DATETIME:
+                        $picker = 'datepicker';
+                        break;
+
+                    default:
+                        $picker = '';
+                        break;
+                }
+                
+                if (!empty($picker)) {
+                    // If none set, get the locale default dateformat
+                    if ((!$dateFormat) && (!$timeFormat) && \Zend_Registry::isRegistered('Zend_Locale')) {
+                        $dateFormat = \ZendX_JQuery_View_Helper_DatePicker::resolveZendLocaleToDatePickerFormat();
+                    }
+                    if ($dateFormat) {
+                        if ($timeFormat) {
+                            $picker  = 'datetimepicker';
+                        }
+                    } elseif ($timeFormat) {
+                        $picker  = 'timepicker';
+                    }
+                    $valueOn .= "$('#$field').$picker('enable');";
+                    $valueOff .= "$('#$field').$picker('disable');";
+                }
+            }
+        }
+    }
 }

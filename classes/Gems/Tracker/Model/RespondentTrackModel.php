@@ -126,7 +126,7 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
      */
     public function addEditTracking()
     {
-        $this->addDependency(new OffOnElementsDependency('gr2t_end_date_manual',  'gr2t_end_date'));
+        $this->addDependency(new OffOnElementsDependency('gr2t_end_date_manual',  'gr2t_end_date', 'readonly', $this));
 
         return $this;
     }
