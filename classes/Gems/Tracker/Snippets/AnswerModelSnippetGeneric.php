@@ -159,13 +159,21 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends \Gems_Snippets_Mod
         $td->appendAttrib('class', $selectedClass);
 
         $bridge->th($this->_('Question'));
-        $td = $bridge->tdh(
-                \MUtil_Lazy::iif($bridge->grr_name, array($bridge->grr_name, $br)),
-                \MUtil_Lazy::iif($bridge->gtf_field_name, array($bridge->gtf_field_name, $br)),
-                $bridge->gto_round_description,
-                \MUtil_Lazy::iif($bridge->gto_round_description, $br),
-                \MUtil_Lazy::iif($bridge->gto_completion_time, $bridge->gto_completion_time, $bridge->gto_valid_from)
-                        );
+        if ($model->has('grr_name') && $model->has('gtf_field_name')) {
+            $td = $bridge->tdh(
+                    \MUtil_Lazy::iif($bridge->grr_name, array($bridge->grr_name, $br)),
+                    \MUtil_Lazy::iif($bridge->gtf_field_name, array($bridge->gtf_field_name, $br)),
+                    $bridge->gto_round_description,
+                    \MUtil_Lazy::iif($bridge->gto_round_description, $br),
+                    \MUtil_Lazy::iif($bridge->gto_completion_time, $bridge->gto_completion_time, $bridge->gto_valid_from)
+                    );
+        } else {
+            $td = $bridge->tdh(
+                    $bridge->gto_round_description,
+                    \MUtil_Lazy::iif($bridge->gto_round_description, $br),
+                    \MUtil_Lazy::iif($bridge->gto_completion_time, $bridge->gto_completion_time, $bridge->gto_valid_from)
+                    );
+        }
         $td->appendAttrib('class', $selectedClass);
         $td->appendAttrib('class', $bridge->row_class);
 
