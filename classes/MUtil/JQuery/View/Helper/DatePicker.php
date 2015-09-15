@@ -146,7 +146,7 @@ class MUtil_JQuery_View_Helper_DatePicker extends \ZendX_JQuery_View_Helper_Date
         $onload = new \MUtil_Html_Code_JavaScript(array('ELEM_ID' => $id, 'PICKER' => $picker));
 
         if ($disabled) {
-            // $onload->addContent(__DIR__ . '/js/datepicker.disabled.js');
+            $onload->addContent(__DIR__ . '/js/datepicker.disabled.js');
         }
 
         return $onload;
