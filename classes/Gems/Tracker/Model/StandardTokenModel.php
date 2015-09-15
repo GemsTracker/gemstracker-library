@@ -218,8 +218,8 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
 //        $changer->apply('gto_valid_from_manual',  'gto_valid_from');
 //        $changer->apply('gto_valid_until_manual', 'gto_valid_until');
 
-        $this->addDependency(new OffOnElementsDependency('gto_valid_from_manual',  'gto_valid_from'));
-        $this->addDependency(new OffOnElementsDependency('gto_valid_until_manual', 'gto_valid_until'));
+        $this->addDependency(new OffOnElementsDependency('gto_valid_from_manual',  'gto_valid_from', 'readonly', $this));
+        $this->addDependency(new OffOnElementsDependency('gto_valid_until_manual', 'gto_valid_until', 'readonly', $this));
 
         $this->set('gto_valid_until', 'validators[dateAfter]',
                 new \MUtil_Validate_Date_DateAfter('gto_valid_from')

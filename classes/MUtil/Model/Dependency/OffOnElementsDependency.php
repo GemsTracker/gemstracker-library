@@ -54,10 +54,11 @@ class OffOnElementsDependency extends OnOffElementsDependency
      * @param string $offElement The element that switches the other fields on or off
      * @param array|string $forElements The elements switched on or off
      * @param array|string $mode The values set OFF when $offElement is true
+     * @param \MUtil\Model\ModelAbstract $model The model
      */
-    public function __construct($offElement, $forElements, $mode = 'readonly')
+    public function __construct($offElement, $forElements, $mode = 'readonly', $model = null)
     {
-        parent::__construct($offElement, $forElements, $mode);
+        parent::__construct($offElement, $forElements, $mode, $model);
 
         // Switch
         $t             = $this->modeOff;
