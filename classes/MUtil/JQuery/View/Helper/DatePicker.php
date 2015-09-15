@@ -124,7 +124,8 @@ class MUtil_JQuery_View_Helper_DatePicker extends \ZendX_JQuery_View_Helper_Date
         $onload = $this->onLoadJs(
                 $id,
                 $picker,
-                isset($attribs['readonly']) 
+                (isset($attribs['readonly']) && $attribs['readonly']) ||
+                    (isset($attribs['disabled']) && $attribs['disabled'])
                 );
 
         $onload->render($this->view);

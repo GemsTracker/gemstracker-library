@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_ModelTableSnippetAbstract
+class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends \Gems_Snippets_ModelTableSnippetAbstract
 {
     /**
      * Set a fixed model sort.
@@ -56,10 +56,10 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
     protected $_fixedSort = array('grc_success' => SORT_DESC, 'gto_round_order' => SORT_ASC, 'gto_valid_from' => SORT_ASC);
 
     /**
-     * Empty or a Gems_Tracker_Snippets_AnswerNameFilterInterface object that is
+     * Empty or a \Gems_Tracker_Snippets_AnswerNameFilterInterface object that is
      * used to filter the answers that are displayed.
      *
-     * @var Gems_Tracker_Snippets_AnswerNameFilterInterface
+     * @var \Gems_Tracker_Snippets_AnswerNameFilterInterface
      */
     protected $answerFilter;
 
@@ -74,19 +74,19 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
      *
      * @var string Format used for displaying dates.
      */
-    protected $dateFormat = Zend_Date::DATE_MEDIUM;
+    protected $dateFormat = \Zend_Date::DATE_MEDIUM;
 
     /**
      * Required
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
     /**
      * Required
      *
-     * @var Zend_Locale
+     * @var \Zend_Locale
      */
     protected $locale;
 
@@ -124,7 +124,7 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
      *
      * The display data of the token shown
      *
-     * @var Gems_Tracker_Token
+     * @var \Gems_Tracker_Token
      */
     protected $token;
 
@@ -141,37 +141,45 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_TableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_TableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
-        $br = MUtil_Html::create('br');
+        $br = \MUtil_Html::create('br');
         if ($this->showSelected) {
-            $selectedClass = MUtil_Lazy::iff(MUtil_Lazy::comp($bridge->gto_id_token, '==', $this->tokenId), 'selectedColumn', null);
+            $selectedClass = \MUtil_Lazy::iff(\MUtil_Lazy::comp($bridge->gto_id_token, '==', $this->tokenId), 'selectedColumn', null);
         } else {
             $selectedClass = null;
         }
 
         $bridge->th($this->_('Status'));
-        $td = $bridge->tdh(MUtil_Lazy::first($bridge->grc_description, $this->_('OK')));
+        $td = $bridge->tdh(\MUtil_Lazy::first($bridge->grc_description, $this->_('OK')));
         $td->appendAttrib('class', $selectedClass);
 
         $bridge->th($this->_('Question'));
-        $td = $bridge->tdh(
-                \MUtil_Lazy::iif($bridge->grr_name, array($bridge->grr_name, $br)),
-                \MUtil_Lazy::iif($bridge->gtf_field_name, array($bridge->gtf_field_name, $br)),
-                $bridge->gto_round_description,
-                MUtil_Lazy::iif($bridge->gto_round_description, $br),
-                MUtil_Lazy::iif($bridge->gto_completion_time, $bridge->gto_completion_time, $bridge->gto_valid_from)
-                        );
+        if ($model->has('grr_name') && $model->has('gtf_field_name')) {
+            $td = $bridge->tdh(
+                    \MUtil_Lazy::iif($bridge->grr_name, array($bridge->grr_name, $br)),
+                    \MUtil_Lazy::iif($bridge->gtf_field_name, array($bridge->gtf_field_name, $br)),
+                    $bridge->gto_round_description,
+                    \MUtil_Lazy::iif($bridge->gto_round_description, $br),
+                    \MUtil_Lazy::iif($bridge->gto_completion_time, $bridge->gto_completion_time, $bridge->gto_valid_from)
+                    );
+        } else {
+            $td = $bridge->tdh(
+                    $bridge->gto_round_description,
+                    \MUtil_Lazy::iif($bridge->gto_round_description, $br),
+                    \MUtil_Lazy::iif($bridge->gto_completion_time, $bridge->gto_completion_time, $bridge->gto_valid_from)
+                    );
+        }
         $td->appendAttrib('class', $selectedClass);
         $td->appendAttrib('class', $bridge->row_class);
 
         // Apply filter on the answers displayed
         $answerNames = $model->getItemsOrdered();
-        if ($this->answerFilter instanceof Gems_Tracker_Snippets_AnswerNameFilterInterface) {
+        if ($this->answerFilter instanceof \Gems_Tracker_Snippets_AnswerNameFilterInterface) {
             $answerNames = $this->answerFilter->filterAnswers($bridge, $model, $answerNames);
         }
 
@@ -190,7 +198,7 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
 
         $tokenUpper = $bridge->gto_id_token->strtoupper();
         if ($this->showTakeButton && $menuItem = $this->menu->find(array('controller' => 'ask', 'action' => 'take', 'allowed' => true))) {
-            $source = new Gems_Menu_ParameterSource();
+            $source = new \Gems_Menu_ParameterSource();
             $source->setTokenId($bridge->gto_id_token);
             $source->offsetSet('can_be_taken', $bridge->can_be_taken);
 
@@ -220,7 +228,7 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
     /**
      * Creates the model
      *
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function createModel()
     {
@@ -238,12 +246,12 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param Zend_View_Abstract $view Just in case it is needed here
-     * @return MUtil_Html_HtmlInterface Something that can be rendered
+     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @return \MUtil_Html_HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view)
     {
-        $htmlDiv   = MUtil_Html::create()->div(array('class' => 'answer-container'));
+        $htmlDiv   = \MUtil_Html::create()->div(array('class' => 'answer-container'));
 
         if ($this->tokenId) {
             if ($this->token->exists) {
@@ -288,7 +296,7 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see MUtil_Registry_TargetInterface}.
+     * {@see \MUtil_Registry_TargetInterface}.
      *
      * @return boolean
      */
