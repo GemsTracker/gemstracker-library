@@ -476,9 +476,18 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_M
             $formData = array($this->request->getPost() + $this->formData);
 
             $formData = $model->processAfterLoad($formData, $this->createData, true);
-
+            
             // Get the first row
             $this->formData = reset($formData);
+            
+            // Now load data from the model for possibly missing values. Since model
+            // loads them, we don't need a manual processAfterLoad anymore.
+            if ($this->createData) {
+                $modelData = $model->loadNew();
+            } else {
+                $modelData = $model->loadFirst();
+            }            
+            $this->formData = $this->formData + $modelData;
 
         } else {
             // Assume that if formData is set it is the correct formData
