@@ -349,6 +349,8 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
 
         $oldInterfaces = array(
             'Gems_Project_Log_LogRespondentAccessInterface',
+            'Gems_Project_Organization_MultiOrganizationInterface',
+            'Gems_Project_Organization_SingleOrganizationInterface',
             'Gems_Project_Tracks_FixedTracksInterface',
             'Gems_Project_Tracks_StandAloneSurveysInterface',
             'Gems_Project_Tracks_TracksOnlyInterface',

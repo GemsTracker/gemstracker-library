@@ -52,6 +52,7 @@
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.1
+ * @deprecated since 1.7.1: is default setup
  */
 interface Gems_Project_Organization_MultiOrganizationInterface
 {

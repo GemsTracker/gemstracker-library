@@ -264,10 +264,8 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
             $this->addPage(null, null, 'language', 'change-ui');
         }
 
-        if ($this->escort instanceof \Gems_Project_Organization_MultiOrganizationInterface) {
-            // ALLOW ORGANIZATION CHANGE
-            $this->addPage(null, null, 'organization', 'change-ui');
-        }
+        // ALLOW ORGANIZATION CHANGE
+        $this->addPage(null, null, 'organization', 'change-ui');
     }
 
     /**

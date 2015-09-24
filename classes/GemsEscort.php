@@ -1115,7 +1115,7 @@ class GemsEscort extends \MUtil_Application_Escort
      * @return mixed If null nothing is set, otherwise the name of
      * the function is used as \Zend_View variable name.
      */
-    protected function _layoutOrganizationSwitcher(array $args = null) // \Gems_Project_Organization_MultiOrganizationInterface
+    protected function _layoutOrganizationSwitcher(array $args = null) 
     {
         $user = $this->getLoader()->getCurrentUser();
         if ($user->isActive() && ($orgs = $user->getAllowedOrganizations())) {
