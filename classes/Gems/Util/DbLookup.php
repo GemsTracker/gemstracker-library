@@ -35,6 +35,8 @@
  * @version    $Id$
  */
 
+use Gems\Util\UtilAbstract;
+
 /**
  * Lookup global information from the database, allowing for project specific overrides
  *
@@ -43,7 +45,7 @@
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
-class Gems_Util_DbLookup extends \Gems_Registry_TargetAbstract
+class Gems_Util_DbLookup extends UtilAbstract
 {
     /**
      *
@@ -53,21 +55,9 @@ class Gems_Util_DbLookup extends \Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var \Zend_Cache_Core
+     * @var \Gems_Loader
      */
-    protected $cache;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
-     *
-     * @var \Zend_Translate
-     */
-    protected $translate;
+    protected $loader;
 
     /**
      *
@@ -78,54 +68,71 @@ class Gems_Util_DbLookup extends \Gems_Registry_TargetAbstract
     /**
      * Retrieve a list of orgid/name pairs
      *
-     * @staticvar array $organizations
      * @return array
      */
     public function getActiveOrganizations()
     {
-        static $organizations;
-
-        if (! $organizations) {
-            $orgId = \GemsEscort::getInstance()->getCurrentOrganization();
-            $organizations = $this->db->fetchPairs('
-                SELECT gor_id_organization, gor_name
+        $sql = "SELECT gor_id_organization, gor_name
                     FROM gems__organizations
-                    WHERE (gor_active=1 AND
+                    WHERE (gor_active = 1 AND
                             gor_id_organization IN (SELECT gr2o_id_organization FROM gems__respondent2org)) OR
                         gor_id_organization = ?
-                    ORDER BY gor_name', $orgId);
-        }
+                    ORDER BY gor_name";
 
-        return $organizations;
+        $orgId = $this->loader->getCurrentUser()->getCurrentOrganizationId();
+
+        return $this->_getSelectPairsCached(__FUNCTION__ . '_' . $orgId, $sql, $orgId, 'organizations');
     }
 
     /**
      * Return key/value pairs of all active staff members
      *
-     * @staticvar array $data
      * @return array
      */
     public function getActiveStaff()
     {
-        static $data;
+        $sql = "SELECT gsf_id_user,
+                    CONCAT(
+                        COALESCE(gsf_last_name, '-'),
+                        ', ',
+                        COALESCE(gsf_first_name, ''),
+                        COALESCE(CONCAT(' ', gsf_surname_prefix), '')
+                        ) AS name
+                FROM gems__staff
+                WHERE gsf_active = 1
+                ORDER BY gsf_last_name, gsf_first_name, gsf_surname_prefix";
 
-        if (! $data) {
-            $data = $this->db->fetchPairs("SELECT gsf_id_user, CONCAT(COALESCE(gsf_last_name, '-'), ', ', COALESCE(gsf_first_name, ''), COALESCE(CONCAT(' ', gsf_surname_prefix), ''))
-                    FROM gems__staff WHERE gsf_active = 1 ORDER BY gsf_last_name, gsf_first_name, gsf_surname_prefix");
-        }
-
-        return $data;
+        return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'staff');
     }
 
+    /**
+     * Return key/value pairs of all active staff groups
+     *
+     * @return array
+     */
     public function getActiveStaffGroups()
     {
-        static $groups;
+        $sql = "SELECT ggp_id_group, ggp_name
+            FROM gems__groups
+            WHERE ggp_group_active = 1 AND ggp_staff_members = 1
+            ORDER BY ggp_name";
 
-        if (! $groups) {
-            $groups = $this->db->fetchPairs('SELECT ggp_id_group, ggp_name FROM gems__groups WHERE ggp_group_active=1 AND ggp_staff_members=1 ORDER BY ggp_name');
-        }
+        return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'groups');
+    }
 
-        return $groups;
+    /**
+     * Return key/value pairs of all active staff groups
+     *
+     * @return array
+     */
+    public function getActiveStaffRoles()
+    {
+        $sql = "SELECT ggp_id_group, ggp_role
+            FROM gems__groups
+            WHERE ggp_group_active = 1 AND ggp_staff_members = 1
+            ORDER BY ggp_role";
+
+        return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'groups');
     }
 
     /**
@@ -136,17 +143,13 @@ class Gems_Util_DbLookup extends \Gems_Registry_TargetAbstract
      */
     public function getAllowedRespondentGroups()
     {
-        $cacheId = __CLASS__ . '_' . __FUNCTION__;
-        $results = $this->cache->load($cacheId);
-        if (! $results) {
-            $select = 'SELECT ggp_id_group, ggp_name '
-                    . 'FROM gems__groups WHERE ggp_group_active=1 AND ggp_respondent_members=1 ORDER BY ggp_name';
+        $sql = "SELECT ggp_id_group, ggp_name
+            FROM gems__groups
+            WHERE ggp_group_active = 1 AND ggp_respondent_members = 1
+            ORDER BY ggp_name";
 
-            $results = $this->db->fetchPairs($select);
-
-            $this->cache->save($results, $cacheId, array('roles'));
-        }
-        return $this->util->getTranslated()->getEmptyDropdownArray() + $results;
+        return $this->util->getTranslated()->getEmptyDropdownArray() +
+                $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'groups');
     }
 
     /**
@@ -158,13 +161,13 @@ class Gems_Util_DbLookup extends \Gems_Registry_TargetAbstract
     public function getAllowedStaffGroups()
     {
         $groups = $this->getActiveStaffGroups();
-        $user = GemsEscort::getInstance()->getLoader()->getCurrentUser();
+        $user   = $this->loader->getCurrentUser();
         if ($user->getRole() === 'master') {
             return $groups;
 
         } else {
             $rolesAllowed = $user->getRoles();
-            $roles        = $this->db->fetchPairs('SELECT ggp_id_group, ggp_role FROM gems__groups WHERE ggp_group_active=1 AND ggp_staff_members=1 ORDER BY ggp_name');
+            $roles        = $this->getActiveStaffRoles();
             $result       = array();
 
             foreach ($roles as $id => $role) {
@@ -183,16 +186,16 @@ class Gems_Util_DbLookup extends \Gems_Registry_TargetAbstract
      * @staticvar array $data
      * @return array The tempalteId => subject list
      */
-    public function getCommTemplates($mailTarget=false)
+    public function getCommTemplates($mailTarget = false)
     {
         static $data;
 
         if (! $data) {
-            $sql = 'SELECT gct_id_template, gct_name FROM gems__comm_templates';
+            $sql = 'SELECT gct_id_template, gct_name FROM gems__comm_templates ';
             if ($mailTarget) {
-                $sql .= ' WHERE gct_target = ?';
+                $sql .= 'WHERE gct_target = ? ';
             }
-            $sql .= ' ORDER BY gct_name';
+            $sql .= 'ORDER BY gct_name';
 
             if ($mailTarget) {
                 $data = $this->db->fetchPairs($sql, $mailTarget);
@@ -283,36 +286,32 @@ class Gems_Util_DbLookup extends \Gems_Registry_TargetAbstract
     /**
      * The active groups
      *
-     * @staticvar array $groups
      * @return array
      */
     public function getGroups()
     {
-        static $groups;
+        $sql = "SELECT ggp_id_group, ggp_name
+            FROM gems__groups
+            WHERE ggp_group_active = 1
+            ORDER BY ggp_name";
 
-        if (! $groups) {
-            $groups = $this->util->getTranslated()->getEmptyDropdownArray() +
-                $this->db->fetchPairs('SELECT ggp_id_group, ggp_name FROM gems__groups WHERE ggp_group_active=1 ORDER BY ggp_name');
-        }
-
-        return $groups;
+        return $this->util->getTranslated()->getEmptyDropdownArray() +
+                $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'groups');
     }
 
     /**
+     * Get all active organizations
      *
-     * @staticvar array $organizations
      * @return array List of the active organizations
      */
     public function getOrganizations()
     {
-        static $organizations;
+        $sql = "SELECT gor_id_organization, gor_name
+                    FROM gems__organizations
+                    WHERE gor_active = 1
+                    ORDER BY gor_name";
 
-        if (! $organizations) {
-            $organizations = $this->db->fetchPairs('SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active=1 ORDER BY gor_name');
-            natsort($organizations);
-        }
-
-        return $organizations;
+        return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'organizations');
     }
 
     /**
@@ -320,7 +319,6 @@ class Gems_Util_DbLookup extends \Gems_Registry_TargetAbstract
      *
      * On empty this will return all organizations
      *
-     * @staticvar array $organizations
      * @param string $code
      * @return array key = gor_id_organization, value = gor_name
      */
@@ -332,61 +330,41 @@ class Gems_Util_DbLookup extends \Gems_Registry_TargetAbstract
             return $this->getOrganizations();
         }
 
-        if (!isset($organizations[$code])) {
-            $organizations[$code] = $this->db->fetchPairs('SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active=1 and gor_code=? ORDER BY gor_name', array($code));
-        }
-
-        return $organizations[$code];
+        $sql = "SELECT gor_id_organization, gor_name
+                    FROM gems__organizations
+                    WHERE gor_active = 1 and gor_code = ?
+                    ORDER BY gor_name";
+        return $this->_getSelectPairsCached(__FUNCTION__ . '_' , $code, $sql, $code, 'organizations');
     }
 
     /**
      * Returns a list of the organizations where users can login.
      *
-     * @staticvar array $organizations
      * @return array List of the active organizations
      */
     public function getOrganizationsForLogin()
     {
-        static $organizations;
+        $sql = "SELECT gor_id_organization, gor_name
+            FROM gems__organizations
+            WHERE gor_active = 1 AND gor_has_login = 1
+            ORDER BY gor_name";
 
-        if (! $organizations) {
-            try {
-                $organizations = $this->db->fetchPairs('SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active=1 AND gor_has_login=1 ORDER BY gor_name');
-            } catch (Exception $e) {
-                try {
-                    // 1.4 fallback
-                    $organizations = $this->db->fetchPairs('SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active=1 ORDER BY gor_name');
-                } catch (Exception $e) {
-                    $organizations = array();
-                }
-            }
-            natsort($organizations);
-        }
-
-        return $organizations;
+        return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'organizations');
     }
 
     /**
      * Returns a list of the organizations that have respondents.
      *
-     * @staticvar array $organizations
      * @return array List of the active organizations
      */
     public function getOrganizationsWithRespondents()
     {
-        static $organizations;
-
-        if (! $organizations) {
-            $organizations = $this->db->fetchPairs(
-                    'SELECT gor_id_organization, gor_name
+        $sql = "SELECT gor_id_organization, gor_name
                         FROM gems__organizations
                         WHERE gor_active = 1 AND (gor_has_respondents = 1 OR gor_add_respondents = 1)
-                        ORDER BY gor_name'
-                    );
-            natsort($organizations);
-        }
+                        ORDER BY gor_name";
 
-        return $organizations;
+        return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, array('organization', 'organizations'), 'natsort');
     }
 
     /**
@@ -409,10 +387,10 @@ class Gems_Util_DbLookup extends \Gems_Registry_TargetAbstract
         }
 
         throw new \Gems_Exception(
-                sprintf($this->translate->_('Respondent id %s not found.'), $respondentId),
+                sprintf($this->_('Respondent id %s not found.'), $respondentId),
                 200,
                 null,
-                sprintf($this->translate->_('In the organization nr %d.'), $organizationId)
+                sprintf($this->_('In the organization nr %d.'), $organizationId)
                 );
     }
 
@@ -436,10 +414,10 @@ class Gems_Util_DbLookup extends \Gems_Registry_TargetAbstract
         }
 
         throw new \Gems_Exception(
-                sprintf($this->translate->_('Patient number %s not found.'), $patientId),
+                sprintf($this->_('Patient number %s not found.'), $patientId),
                 200,
                 null,
-                sprintf($this->translate->_('In the organization nr %d.'), $organizationId)
+                sprintf($this->_('In the organization nr %d.'), $organizationId)
                 );
     }
 
@@ -470,10 +448,10 @@ class Gems_Util_DbLookup extends \Gems_Registry_TargetAbstract
         }
 
         throw new \Gems_Exception(
-                sprintf($this->translate->_('Patient number %s not found.'), $patientId),
+                sprintf($this->_('Patient number %s not found.'), $patientId),
                 200,
                 null,
-                sprintf($this->translate->_('In the organization nr %d.'), $organizationId)
+                sprintf($this->_('In the organization nr %d.'), $organizationId)
                 );
     }
 
@@ -534,13 +512,7 @@ class Gems_Util_DbLookup extends \Gems_Registry_TargetAbstract
      */
     public function getStaff()
     {
-        $cacheId = __CLASS__ . '_' . __FUNCTION__;
-
-        if ($results = $this->cache->load($cacheId)) {
-            return $results;
-        }
-
-        $select = "SELECT gsf_id_user,
+        $sql = "SELECT gsf_id_user,
                         CONCAT(
                             COALESCE(gsf_last_name, '-'),
                             ', ',
@@ -550,26 +522,25 @@ class Gems_Util_DbLookup extends \Gems_Registry_TargetAbstract
                     FROM gems__staff
                     ORDER BY gsf_last_name, gsf_first_name, gsf_surname_prefix";
 
-        $results = $this->db->fetchPairs($select);
-
-        $results = $results + array(
-            \Gems_User_UserLoader::SYSTEM_USER_ID => $this->translate->_('&laquo;system&raquo;'),
-        );
-
-        $this->cache->save($results, $cacheId, array('staff'));
-
-        return $results;
+        return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'staff') +
+                array(
+                    \Gems_User_UserLoader::SYSTEM_USER_ID => $this->_('&laquo;system&raquo;'),
+                );
     }
 
+    /**
+     * Return key/value pairs of all staff groups, including not active
+     *
+     * @return array
+     */
     public function getStaffGroups()
     {
-        static $groups;
+        $sql = "SELECT ggp_id_group, ggp_name
+            FROM gems__groups
+            WHERE ggp_staff_members = 1
+            ORDER BY ggp_name";
 
-        if (! $groups) {
-            $groups = $this->db->fetchPairs('SELECT ggp_id_group, ggp_name FROM gems__groups WHERE ggp_staff_members=1 ORDER BY ggp_name');
-        }
-
-        return $groups;
+        return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'groups');
     }
 
     /**
@@ -591,7 +562,9 @@ class Gems_Util_DbLookup extends \Gems_Registry_TargetAbstract
         $select->from('gems__surveys')
             ->join('gems__sources', 'gsu_id_source = gso_id_source')
             ->where('gso_active = 1')
-            //->where('gsu_surveyor_active = 1')    // Leave inactive surveys, we toss out the inactive ones for limesurvey as it is no problem for OpenRosa to have them in
+            //->where('gsu_surveyor_active = 1')
+            // Leave inactive surveys, we toss out the inactive ones for limesurvey
+            // as it is no problem for OpenRosa to have them in
             ->order(array('gsu_active DESC', 'gsu_survey_name'));
 
         if ($trackId) {
@@ -610,8 +583,8 @@ class Gems_Util_DbLookup extends \Gems_Registry_TargetAbstract
             // And transform to have inactive surveys in gems and source in a
             // different group at the bottom
             $surveys = array();
-            $Inactive = $this->translate->_('inactive');
-            $sourceInactive = $this->translate->_('source inactive');
+            $Inactive = $this->_('inactive');
+            $sourceInactive = $this->_('source inactive');
             foreach ($result as $survey) {
                 $id   = $survey['gsu_id_survey'];
                 $name = $survey['gsu_survey_name'];
@@ -634,19 +607,14 @@ class Gems_Util_DbLookup extends \Gems_Registry_TargetAbstract
         return $surveys;
     }
 
+    /**
+     *
+     * @return array
+     */
     public function getUserConsents()
     {
-        static $consents;
+        $sql = "SELECT gco_description, gco_description FROM gems__consents ORDER BY gco_order";
 
-        if (! $consents) {
-            $sql      = "SELECT gco_description, gco_description FROM gems__consents ORDER BY gco_order";
-            $consents = $this->db->fetchPairs($sql);
-
-            foreach ($consents as &$name) {
-                $name = $this->translate->_($name);
-            }
-        }
-
-        return $consents;
+        return $this->_getSelectPairsProcessedCached(__FUNCTION__, $sql, array($this, '_'), null, 'consents');
     }
 }

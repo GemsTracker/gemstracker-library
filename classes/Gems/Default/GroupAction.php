@@ -47,6 +47,13 @@
 class Gems_Default_GroupAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
+     * Variable to set tags for cache cleanup after changes
+     *
+     * @var array
+     */
+    public $cacheTags = array('group', 'groups');
+
+    /**
      * The snippets used for the create and edit actions.
      *
      * @var mixed String or array of snippets name

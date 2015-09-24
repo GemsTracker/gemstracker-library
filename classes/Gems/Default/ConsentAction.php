@@ -45,6 +45,13 @@
 class Gems_Default_ConsentAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
+     * Variable to set tags for cache cleanup after changes
+     *
+     * @var array
+     */
+    public $cacheTags = array('consent', 'consents');
+
+    /**
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name

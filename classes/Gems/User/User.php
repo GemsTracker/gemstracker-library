@@ -44,38 +44,38 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_User extends MUtil_Registry_TargetAbstract
+class Gems_User_User extends \MUtil_Registry_TargetAbstract
 {
     /**
      *
-     * @var Zend_Auth_Result
+     * @var \Zend_Auth_Result
      */
     protected $_authResult;
 
     /**
      *
-     * @var ArrayObject or Zend_Session_Namespace
+     * @var ArrayObject or \Zend_Session_Namespace
      */
     private $_vars;
 
     /**
      * Required
      *
-     * @var MUtil_Acl
+     * @var \MUtil_Acl
      */
     protected $acl;
 
     /**
      * Required
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
     /**
      * Required, set in constructor
      *
-     * @var Gems_User_UserDefinitionInterface
+     * @var \Gems_User_UserDefinitionInterface
      */
     protected $definition;
 
@@ -99,7 +99,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      * @var array
      */
     public $possibleOrgIds = array(
-        MUtil_Model::REQUEST_ID2,
+        \MUtil_Model::REQUEST_ID2,
         'gr2o_id_organization',
         'gr2t_id_organization',
         'gap_id_organization',
@@ -111,49 +111,49 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
 
     /**
      *
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     protected $project;
 
     /**
      *
-     * @var Zend_Controller_Request_Abstract
+     * @var \Zend_Controller_Request_Abstract
      */
     protected $request;
 
     /**
      * Required
      *
-     * @var Zend_Session_Namespace
+     * @var \Zend_Session_Namespace
      */
     protected $session;
 
     /**
      *
-     * @var Zend_Translate
+     * @var \Zend_Translate
      */
     protected $translate;
 
     /**
      * Required
      *
-     * @var Gems_User_UserLoader
+     * @var \Gems_User_UserLoader
      */
     protected $userLoader;
 
     /**
      *
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     protected $util;
 
     /**
      * Creates the class for this user.
      *
-     * @param mixed $settings Array, Zend_Session_Namespace or ArrayObject for this user.
-     * @param Gems_User_UserDefinitionInterface $definition The user class definition.
+     * @param mixed $settings Array, \Zend_Session_Namespace or ArrayObject for this user.
+     * @param \Gems_User_UserDefinitionInterface $definition The user class definition.
      */
-    public function __construct($settings, Gems_User_UserDefinitionInterface $definition)
+    public function __construct($settings, \Gems_User_UserDefinitionInterface $definition)
     {
         if (is_array($settings)) {
             $this->_vars = new ArrayObject($settings);
@@ -174,7 +174,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     {
         $store = $this->_getVariableStore();
 
-        if ($store instanceof Zend_Session_Namespace) {
+        if ($store instanceof \Zend_Session_Namespace) {
             if ($store->__isset($name)) {
                 return $store->__get($name);
             }
@@ -190,7 +190,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     /**
      * The store currently used.
      *
-     * @return ArrayObject or Zend_Session_Namespace
+     * @return ArrayObject or \Zend_Session_Namespace
      */
     private function _getVariableStore()
     {
@@ -207,7 +207,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     {
         $store = $this->_getVariableStore();
 
-        if ($store instanceof Zend_Session_Namespace) {
+        if ($store instanceof \Zend_Session_Namespace) {
             return $store->__isset($name);
         } else {
             return $store->offsetExists($name);
@@ -225,7 +225,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     {
         $store = $this->_getVariableStore();
 
-        if ($store instanceof Zend_Session_Namespace) {
+        if ($store instanceof \Zend_Session_Namespace) {
             $store->__set($name, $value);
         } else {
             $store->offsetSet($name, $value);
@@ -242,7 +242,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     {
         $store = $this->_getVariableStore();
 
-        if ($store instanceof Zend_Session_Namespace) {
+        if ($store instanceof \Zend_Session_Namespace) {
             $store->__unset($name);
         } else {
             if ($store->offsetExists($name)) {
@@ -254,9 +254,9 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     /**
      * Process everything after authentication.
      *
-     * @param Zend_Auth_Result $result
+     * @param \Zend_Auth_Result $result
      */
-    protected function afterAuthorization(Zend_Auth_Result $result, $lastAuthorizer = null)
+    protected function afterAuthorization(\Zend_Auth_Result $result, $lastAuthorizer = null)
     {
         try {
             $select = $this->db->select();
@@ -301,18 +301,18 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
                 } else {
                     // Only set the block when needed
                     if ($this->failureBlockCount <= $values['gula_failed_logins']) {
-                        $values['gula_block_until'] = new Zend_Db_Expr('DATE_ADD(CURRENT_TIMESTAMP, INTERVAL ' . $this->failureIgnoreTime . ' SECOND)');
+                        $values['gula_block_until'] = new \Zend_Db_Expr('DATE_ADD(CURRENT_TIMESTAMP, INTERVAL ' . $this->failureIgnoreTime . ' SECOND)');
                     }
                 }
 
                 // Always record the last fail
-                $values['gula_last_failed']     = new MUtil_Db_Expr_CurrentTimestamp();
+                $values['gula_last_failed']     = new \MUtil_Db_Expr_CurrentTimestamp();
                 $values['gula_failed_logins']   = max(1, $values['gula_failed_logins']);
 
                 // Response gets slowly slower
                 $sleepTime = min($values['gula_failed_logins'] - 1, 10) * 2;
                 sleep($sleepTime);
-                // MUtil_Echo::track($sleepTime, $values, $result->getMessages());
+                // \MUtil_Echo::track($sleepTime, $values, $result->getMessages());
             }
 
             // Value not saveable
@@ -326,11 +326,24 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
                 $this->db->update('gems__user_login_attempts', $values, $where);
             }
 
-        } catch (Zend_Db_Exception $e) {
+        } catch (\Zend_Db_Exception $e) {
             // Fall through as this does not work if the database upgrade did not yet run
-            // MUtil_Echo::r($e);
+            // \MUtil_Echo::r($e);
         }
 
+    }
+
+    /**
+     * Set menu parameters from this user
+     *
+     * @param \Gems_Menu_ParameterSource $source
+     * @return \Gems_User_User
+     */
+    public function applyToMenuSource(\Gems_Menu_ParameterSource $source)
+    {
+        $source->offsetSet('gsf_id_organization', $this->getBaseOrganizationId());
+        $source->offsetSet('accessible_role',     $this->hasAllowedRole());
+        $source->offsetSet('can_mail',            $this->getEmailAddress() ? 1 : 0);
     }
 
     /**
@@ -338,7 +351,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      *
      * @param string $password The password to test
      * @param boolean $testPassword Set to false to test the non-password checks only
-     * @return Zend_Auth_Result
+     * @return \Zend_Auth_Result
      */
     public function authenticate($password, $testPassword = true)
     {
@@ -350,30 +363,30 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
                 $result = call_user_func($result);
             }
 
-            if ($result instanceof Zend_Auth_Adapter_Interface) {
+            if ($result instanceof \Zend_Auth_Adapter_Interface) {
                 $result = $result->authenticate();
             }
 
-            if ($result instanceof Zend_Auth_Result) {
+            if ($result instanceof \Zend_Auth_Result) {
                 if (! $result->isValid()) {
                     break;
                 }
             } else {
                 if (true === $result) {
-                    $result = new Zend_Auth_Result(Zend_Auth_Result::SUCCESS, $this->getLoginName());
+                    $result = new \Zend_Auth_Result(\Zend_Auth_Result::SUCCESS, $this->getLoginName());
 
                 } else {
                     // Always a fail when not true
                     if ($result === false) {
-                        $code   = Zend_Auth_Result::FAILURE_CREDENTIAL_INVALID;
+                        $code   = \Zend_Auth_Result::FAILURE_CREDENTIAL_INVALID;
                         $result = array();
                     } else {
-                        $code   = Zend_Auth_Result::FAILURE_UNCATEGORIZED;
+                        $code   = \Zend_Auth_Result::FAILURE_UNCATEGORIZED;
                         if (is_string($result)) {
                             $result = array($result);
                         }
                     }
-                    $result = new Zend_Auth_Result($code, $this->getLoginName(), $result);
+                    $result = new \Zend_Auth_Result($code, $this->getLoginName(), $result);
                     break;
                 }
             }
@@ -381,7 +394,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
 
         $this->afterAuthorization($result, $lastAuthorizer);
 
-        // MUtil_Echo::track($result);
+        // \MUtil_Echo::track($result);
         $this->_authResult = $result;
 
         return $result;
@@ -391,9 +404,9 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      * Checks if the user is allowed to login or is blocked
      *
      * An adapter authorizes and if the end resultis boolean, string or array
-     * it is converted into a Zend_Auth_Result.
+     * it is converted into a \Zend_Auth_Result.
      *
-     * @return mixed Zend_Auth_Adapter_Interface|Zend_Auth_Result|boolean|string|array
+     * @return mixed \Zend_Auth_Adapter_Interface|\Zend_Auth_Result|boolean|string|array
      */
     protected function authorizeBlock()
     {
@@ -425,9 +438,9 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
                 }
             }
 
-        } catch (Zend_Db_Exception $e) {
+        } catch (\Zend_Db_Exception $e) {
             // Fall through as this does not work if the database upgrade did not run
-            // MUtil_Echo::r($e);
+            // \MUtil_Echo::r($e);
         }
 
         return true;
@@ -438,17 +451,17 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      * according to the group he is in
      *
      * An adapter authorizes and if the end resultis boolean, string or array
-     * it is converted into a Zend_Auth_Result.
+     * it is converted into a \Zend_Auth_Result.
      *
-     * @return mixed Zend_Auth_Adapter_Interface|Zend_Auth_Result|boolean|string|array
+     * @return mixed \Zend_Auth_Adapter_Interface|\Zend_Auth_Result|boolean|string|array
      */
     protected function authorizeIp()
     {
         //In unit test REMOTE_ADDR is not available and will return null
-        $request = Zend_Controller_Front::getInstance()->getRequest();
+        $request = \Zend_Controller_Front::getInstance()->getRequest();
 
         // E.g. command line user
-        if (! $request instanceof Zend_Controller_Request_Http) {
+        if (! $request instanceof \Zend_Controller_Request_Http) {
             return true;
         }
 
@@ -465,9 +478,9 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      * according to his BASE organization
      *
      * An adapter authorizes and if the end resultis boolean, string or array
-     * it is converted into a Zend_Auth_Result.
+     * it is converted into a \Zend_Auth_Result.
      *
-     * @return mixed Zend_Auth_Adapter_Interface|Zend_Auth_Result|boolean|string|array
+     * @return mixed \Zend_Auth_Adapter_Interface|\Zend_Auth_Result|boolean|string|array
      */
     protected function authorizeOrgIp()
     {
@@ -477,10 +490,10 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         }
 
         //In unit test REMOTE_ADDR is not available and will return null
-        $request = Zend_Controller_Front::getInstance()->getRequest();
+        $request = \Zend_Controller_Front::getInstance()->getRequest();
 
         // E.g. command line user
-        if (! $request instanceof Zend_Controller_Request_Http) {
+        if (! $request instanceof \Zend_Controller_Request_Http) {
             return true;
         }
 
@@ -541,12 +554,12 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      */
     public function checkRegistryRequestsAnswers()
     {
-        if (! (($this->db instanceof Zend_Db_Adapter_Abstract) && ($this->session instanceof Zend_Session_Namespace))) {
+        if (! (($this->db instanceof \Zend_Db_Adapter_Abstract) && ($this->session instanceof \Zend_Session_Namespace))) {
             return false;
         }
 
         // Checks if this is the current user
-        if (! $this->_vars instanceof Zend_Session_Namespace) {
+        if (! $this->_vars instanceof \Zend_Session_Namespace) {
             $sessionStore = $this->session;
 
             $notCurrent = true;
@@ -562,7 +575,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
                 }
             }
             if (! $notCurrent) {
-                // When this is the case, use the Zend_Session_Namespace object with the current set values
+                // When this is the case, use the \Zend_Session_Namespace object with the current set values
                 // This way changes to this user object are reflected in the CurrentUser object and vice versa.
                 $this->setAsCurrentUser();
             }
@@ -592,7 +605,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         if (! $this->_hasVar('__allowedOrgs')) {
             $this->refreshAllowedOrganizations();
         }
-        // MUtil_Echo::track($this->_getVar('__allowedOrgs'));
+        // \MUtil_Echo::track($this->_getVar('__allowedOrgs'));
 
         return $this->_getVar('__allowedOrgs');
     }
@@ -632,7 +645,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     /**
      * Returns the original (not the current) organization used by this user.
      *
-     * @return Gems_User_Organization
+     * @return \Gems_User_Organization
      */
     public function getBaseOrganization()
     {
@@ -653,7 +666,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      * Returns a form to change the possword for this user.
      *
      * @param boolean $askOld Ask for the old password, calculated when not set.
-     * @return Gems_Form
+     * @return \Gems_Form
      */
     public function getChangePasswordForm($args_array = null)
     {
@@ -661,7 +674,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
             return;
         }
 
-        $args = MUtil_Ra::args(func_get_args());
+        $args = \MUtil_Ra::args(func_get_args());
         if (isset($args['askCheck']) && $args['askCheck']) {
             $args['checkFields'] = $this->loadResetPasswordCheckFields();
         }
@@ -672,7 +685,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     /**
      * Returns the organization that is currently used by this user.
      *
-     * @return Gems_User_Organization
+     * @return \Gems_User_Organization
      */
     public function getCurrentOrganization()
     {
@@ -690,7 +703,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
 
         //If not set, read it from the cookie
         if ($this->isCurrentUser() && (null === $orgId)) {
-            $orgId = Gems_Cookies::getOrganization($this->getRequest());
+            $orgId = \Gems_Cookies::getOrganization($this->getRequest());
         }
         return $orgId;
     }
@@ -749,7 +762,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
 
             $this->_setVar('user_name', $name);
 
-            // MUtil_Echo::track($name);
+            // \MUtil_Echo::track($name);
         }
 
         return $this->_getVar('user_name');
@@ -889,8 +902,8 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     public function getPasswordAge()
     {
         $date = $this->_getVar('user_password_last_changed');
-        if (MUtil_Date::isDate($date, Zend_Date::ISO_8601)) {
-            $date = new MUtil_Date($date, Zend_Date::ISO_8601);
+        if (\MUtil_Date::isDate($date, \Zend_Date::ISO_8601)) {
+            $date = new \MUtil_Date($date, \Zend_Date::ISO_8601);
             return abs($date->diffDays());
         } else {
             return 0;
@@ -910,12 +923,12 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     /**
      * Return the Request object
      *
-     * @return Zend_Controller_Request_Abstract
+     * @return \Zend_Controller_Request_Abstract
      */
     public function getRequest()
     {
         if (! $this->request) {
-            $this->request = Zend_Controller_Front::getInstance()->getRequest();
+            $this->request = \Zend_Controller_Front::getInstance()->getRequest();
         }
         return $this->request;
     }
@@ -950,7 +963,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
 
             $this->_setVar('__allowedRespOrgs', array_intersect($availableOrganizations, $allowedOrganizations));
         }
-        // MUtil_Echo::track($this->_getVar('__allowedOrgs'));
+        // \MUtil_Echo::track($this->_getVar('__allowedOrgs'));
 
         return $this->_getVar('__allowedRespOrgs');
     }
@@ -1047,11 +1060,11 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     /**
      * Redirects the user to his/her start page.
      *
-     * @param Gems_Menu $menu
-     * @param Zend_Controller_Request_Abstract $request
-     * @return Gems_Menu_SubMenuItem
+     * @param \Gems_Menu $menu
+     * @param \Zend_Controller_Request_Abstract $request
+     * @return \Gems_Menu_SubMenuItem
      */
-    public function gotoStartPage(Gems_Menu $menu, Zend_Controller_Request_Abstract $request)
+    public function gotoStartPage(\Gems_Menu $menu, \Zend_Controller_Request_Abstract $request)
     {
         if ($this->isPasswordResetRequired()) {
             // Set menu OFF
@@ -1080,7 +1093,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
                 }
 
                 if ($menuItem) {
-                    $redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
+                    $redirector = \Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
                     $redirector->gotoRoute($menuItem->toRouteUrl($request), null, true);
                 }
             }
@@ -1216,7 +1229,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      */
     public function isCurrentUser()
     {
-        return $this->_vars instanceof Zend_Session_Namespace;
+        return $this->_vars instanceof \Zend_Session_Namespace;
     }
 
     /**
@@ -1253,11 +1266,11 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      * Load the callables | results needed to authenticate/authorize this user
      *
      * A callable will be called, then an adapter authorizes and if the end result
-     * is boolean, string or array it is converted into a Zend_Auth_Result.
+     * is boolean, string or array it is converted into a \Zend_Auth_Result.
      *
      * @param string $password
      * @param boolean $testPassword Set to false to test on the non-password checks only
-     * @return array Of Callable|Zend_Auth_Adapter_Interface|Zend_Auth_Result|boolean|string|array
+     * @return array Of Callable|\Zend_Auth_Adapter_Interface|\Zend_Auth_Result|boolean|string|array
      */
     protected function loadAuthorizers($password, $testPassword = true)
     {
@@ -1289,7 +1302,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      *
      * Default is asking for the username but you can e.g. ask for someones birthday.
      *
-     * @return array Of 'label name' => 'required values' or Zend_Form_Element elements
+     * @return array Of 'label name' => 'required values' or \Zend_Form_Element elements
      */
     protected function loadResetPasswordCheckFields()
     {
@@ -1298,19 +1311,19 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         if ($value = $this->_getVar('user_birthday')) {
             $label    = $this->translate->_('Your birthday');
 
-            $birthdayElem = new Gems_JQuery_Form_Element_DatePicker('birthday');
+            $birthdayElem = new \Gems_JQuery_Form_Element_DatePicker('birthday');
             $birthdayElem->setLabel($label)
-                    ->setOptions(MUtil_Model_Bridge_FormBridge::getFixedOptions('date'))
-                    ->setStorageFormat(Zend_Date::ISO_8601);
+                    ->setOptions(\MUtil_Model_Bridge_FormBridge::getFixedOptions('date'))
+                    ->setStorageFormat(\Zend_Date::ISO_8601);
 
             if ($format = $birthdayElem->getDateFormat()) {
-                $valueFormatted = MUtil_Date::format($value, $format, $birthdayElem->getStorageFormat());
+                $valueFormatted = \MUtil_Date::format($value, $format, $birthdayElem->getStorageFormat());
             } else {
                 $valueFormatted = $value;
             }
 
-            $validator = new Zend_Validate_Identical($valueFormatted);
-            $validator->setMessage(sprintf($this->translate->_('%s is not correct.'), $label), Zend_Validate_Identical::NOT_SAME);
+            $validator = new \Zend_Validate_Identical($valueFormatted);
+            $validator->setMessage(sprintf($this->translate->_('%s is not correct.'), $label), \Zend_Validate_Identical::NOT_SAME);
             $birthdayElem->addValidator($validator);
 
             return array($birthdayElem);
@@ -1321,7 +1334,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     /**
      *
      * @param string $defName Optional
-     * @return Gems_User_User (continuation pattern)
+     * @return \Gems_User_User (continuation pattern)
      */
     public function refresh($defName = null)
     {
@@ -1343,18 +1356,17 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      * Allowes a refresh of the existing list of organizations
      * for this user.
      *
-     * @return Gems_User_User (continuation pattern)
+     * @return \Gems_User_User (continuation pattern)
      */
     public function refreshAllowedOrganizations()
     {
         // Privilege overrules organizational settings
         if ($this->hasPrivilege('pr.organization-switch')) {
-            $orgs = $this->db->fetchPairs("SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active = 1 ORDER BY gor_name");
-            natsort($orgs);
+            $orgs = $this->util->getDbLookup()->getOrganizations();
         } else {
             $orgs = $this->getBaseOrganization()->getAllowedOrganizations();
         }
-        // MUtil_Echo::track($orgs);
+        // \MUtil_Echo::track($orgs);
 
         $this->_setVar('__allowedOrgs', $orgs);
 
@@ -1379,7 +1391,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
             $codes[] = $this->getRoles();
             $codes[] = $this->_getVar('__user_definition');
 
-            return $checker->reportPasswordWeakness($this, $password, MUtil_Ra::flatten($codes));
+            return $checker->reportPasswordWeakness($this, $password, \MUtil_Ra::flatten($codes));
         }
     }
 
@@ -1398,7 +1410,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
             return $this->translate->_('Trying to send a password reset to a user that cannot be reset.');
         }
 
-        $mail = new Gems_Mail();
+        $mail = new \Gems_Mail();
         $mail->setTemplateStyle($this->getBaseOrganization()->getStyle());
         $mail->setFrom($this->getFrom());
         $mail->addTo($this->getEmailAddress(), $this->getFullName(), $this->project->getEmailBounce());
@@ -1411,8 +1423,8 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         } else {
             $fields = $this->getMailFields($locale);
         }
-        // MUtil_Echo::track($fields, $bbBodyTemplate);
-        $fields = MUtil_Ra::braceKeys($fields, '{', '}');
+        // \MUtil_Echo::track($fields, $bbBodyTemplate);
+        $fields = \MUtil_Ra::braceKeys($fields, '{', '}');
 
         $mail->setSubject(strtr($subjectTemplate, $fields));
         $mail->setBodyBBCode(strtr($bbBodyTemplate, $fields));
@@ -1435,19 +1447,19 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      *
      * @param boolean $signalLoader Do not set, except from UserLoader
      * @param boolean $resetSessionId Should the session be reset?
-     * @return Gems_User_User (continuation pattern)
+     * @return \Gems_User_User (continuation pattern)
      */
     public function setAsCurrentUser($signalLoader = true, $resetSessionId = true)
     {
         // Get the current variables
         $oldStore = $this->_getVariableStore();
 
-        // When $oldStore is a Zend_Session_Namespace, then this user is already the current user.
+        // When $oldStore is a \Zend_Session_Namespace, then this user is already the current user.
         if (! $this->isCurrentUser()) {
             $this->userLoader->unsetCurrentUser();
 
             if ($resetSessionId) {
-                Zend_Session::regenerateId();
+                \Zend_Session::regenerateId();
             }
 
             $this->_vars = $this->session;
@@ -1469,12 +1481,12 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     /**
      * Set the currently selected organization for this user
      *
-     * @param mixed $organization Gems_User_Organization or an organization id.
-     * @return Gems_User_User (continuation pattern)
+     * @param mixed $organization \Gems_User_Organization or an organization id.
+     * @return \Gems_User_User (continuation pattern)
      */
     public function setCurrentOrganization($organization)
     {
-        if ($organization instanceof Gems_User_Organization) {
+        if ($organization instanceof \Gems_User_Organization) {
             $organizationId = $organization->getId();
         } else {
             $organizationId = $organization;
@@ -1501,7 +1513,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
                 } else {
                     $usedOrganizationId = null;
                 }
-                
+
                 // Now update the requestcache to change the oldOrgId to the new orgId
                 // Don't do it when the oldOrgId doesn't match
                 if ($requestCache = $this->session->requestCache) {
@@ -1541,7 +1553,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      * Set the locale for this user..
      *
      * @param string $locale
-     * @return Gems_User_User (continuation pattern)
+     * @return \Gems_User_User (continuation pattern)
      */
     public function setLocale($locale)
     {
@@ -1553,7 +1565,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      * Set the password, if allowed for this user type.
      *
      * @param string $password
-     * @return Gems_User_User (continuation pattern)
+     * @return \Gems_User_User (continuation pattern)
      */
     public function setPassword($password)
     {
@@ -1566,7 +1578,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     /**
      *
      * @param boolean $reset
-     * @return Gems_User_User  (continuation pattern)
+     * @return \Gems_User_User  (continuation pattern)
      */
     public function setPasswordResetRequired($reset = true)
     {
@@ -1577,8 +1589,8 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     /**
      * Set the parameters where the survey should return to
      *
-     * @param mixed $return Zend_Controller_Request_Abstract, array of something that can be turned into one.
-     * @return Gems_User_User
+     * @param mixed $return \Zend_Controller_Request_Abstract, array of something that can be turned into one.
+     * @return \Gems_User_User
      */
     public function setSurveyReturn($return = null)
     {
@@ -1587,17 +1599,17 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
             return $this;
         }
 
-        if ($return instanceof Zend_Controller_Request_Abstract) {
+        if ($return instanceof \Zend_Controller_Request_Abstract) {
             $return = $return->getParams();
         } elseif (! is_array($return)) {
-            $return = MUtil_Ra::to($return);
+            $return = \MUtil_Ra::to($return);
         }
         if ('autofilter' == $return['action']) {
             $return['action'] = 'index';
         }
 
         $return = array_filter($return);
-        // MUtil_Echo::track($return);
+        // \MUtil_Echo::track($return);
 
         $this->_setVar('surveyReturn', $return);
 
@@ -1610,11 +1622,11 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      * This means that the data about this user will no longer be stored in a session.
      *
      * @param boolean $signalLoader Do not set, except from UserLoader
-     * @return Gems_User_User (continuation pattern)
+     * @return \Gems_User_User (continuation pattern)
      */
     public function unsetAsCurrentUser($signalLoader = true)
     {
-        // When $oldStore is a Zend_Session_Namespace, then this user is already the current user.
+        // When $oldStore is a \Zend_Session_Namespace, then this user is already the current user.
         if ($this->isCurrentUser()) {
             // Get the current variables
             $oldStore = $this->_vars;

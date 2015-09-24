@@ -686,7 +686,8 @@ abstract class Gems_Menu_MenuAbstract
         $showPage = $page->addShowAction();
         $pages[] = $showPage->addEditAction();
         $pages[] = $showPage->addAction($this->_('Reset password'), 'pr.staff.edit', 'reset')->setModelParameters(1);
-        $pages[] = $showPage->addAction($this->_('Send Mail'), 'pr.staff.edit', 'mail')->setModelParameters(1);
+        $pages[] = $showPage->addAction($this->_('Send Mail'), 'pr.staff.edit', 'mail')->setModelParameters(1)
+                ->setParameterFilter('can_mail', 1);
         $pages[] = $showPage->addDeleteAction();
         $pages[] = $page->addExcelAction();
         $pages[] = $page->addImportAction();

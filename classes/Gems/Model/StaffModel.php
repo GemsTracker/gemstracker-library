@@ -48,11 +48,64 @@
  */
 class Gems_Model_StaffModel extends Gems_Model_JoinModel
 {
-    public function __construct(Gems_Loader $loader)
-    {
-        parent::__construct('staff', 'gems__staff', 'gsf');
+    /**
+     * One of the user classes available to the user loader
+     *
+     * @var string
+     */
+    protected $defaultStaffDefinition = \Gems_User_UserLoader::USER_STAFF;
 
-        $allowedGroups = $loader->getUtil()->getDbLookup()->getAllowedStaffGroups();
+    /**
+     *
+     * @var \Gems_Loader
+     */
+    protected $loader;
+
+    /**
+     *
+     * @var \Gems_Project_ProjectSettings
+     */
+    protected $project;
+
+    /**
+     *
+     * @var \Gems_Util
+     */
+    protected $util;
+
+    /**
+     * Create a model that joins two or more tables
+     *
+     * @param string $name An alternative name for the model
+     */
+    public function __construct($name = 'staff')
+    {
+        parent::__construct('staff', 'gems__staff', 'gsf', true);
+
+        $this->addColumn(
+                new \Zend_Db_Expr("CONCAT(
+                    COALESCE(CONCAT(gsf_last_name, ', '), '-, '),
+                    COALESCE(CONCAT(gsf_first_name, ' '), ''),
+                    COALESCE(gsf_surname_prefix, '')
+                    )"),
+                'name');
+        $this->addColumn(
+                new \Zend_Db_Expr("CASE WHEN gsf_email IS NULL OR gsf_email = '' THEN 0 ELSE 1 END"),
+                'can_mail'
+                );
+    }
+
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    {
+        parent::afterRegistry();
+
+        $allowedGroups = $this->util->getDbLookup()->getAllowedStaffGroups();
         if ($allowedGroups) {
             $expr = new Zend_Db_Expr('CASE WHEN gsf_id_primary_group IN (' . implode(', ', array_keys($allowedGroups)) . ') THEN 1 ELSE 0 END');
         } else {
@@ -60,6 +113,126 @@ class Gems_Model_StaffModel extends Gems_Model_JoinModel
         }
         $this->addColumn($expr, 'accessible_role');
         $this->set('accessible_role', 'default', 1);
+    }
+
+    /**
+     *
+     * @param boolean $detailed True when the current action is not in $summarizedActions.
+     * @param string $action The current action.
+     * @param int $defaultOrgId The default organization id or null if current organization
+     * @return \Gems_Model_StaffModel
+     */
+    public function applySettings($detailed, $action, $defaultOrgId)
+    {
+        $this->resetOrder();
+
+        $dbLookup   = $this->util->getDbLookup();
+        $editing    = ($action == 'edit') || ($action == 'create');
+        $translated = $this->util->getTranslated();
+        $user       = $this->loader->getCurrentUser();
+        $yesNo      = $translated->getYesNo();
+
+        if ($editing) {
+            $ucfirst = new \Zend_Filter_Callback('ucfirst');
+
+            if ($this->project->isLoginShared()) {
+                $this->set('gsf_login', 'validator', $this->createUniqueValidator('gsf_login', array('gsf_id_user')));
+            } else {
+                // per organization
+                $this->set(
+                        'gsf_login',
+                        'validator',
+                        $this->createUniqueValidator(array('gsf_login', 'gsf_id_organization'), array('gsf_id_user'))
+                        );
+            }
+        } else {
+            $ucfirst = null;
+        }
+        $this->set('gsf_login',                'label', $this->_('Username'),
+                'minlength', 4,
+                'required', true,
+                'size', 15
+                );
+
+        if ($user->hasPrivilege('pr.staff.see.all') || (! $editing)) {
+            // Select organization
+            $options = $dbLookup->getOrganizations();
+        } else {
+            $options = $user->getAllowedOrganizations();
+        }
+        $this->set('gsf_id_organization',      'label', $this->_('Organization'),
+                'multiOptions', $options,
+                'required', true
+                );
+
+        if ($detailed) {
+            $this->set('gsf_first_name',       'label', $this->_('First name'),
+                    'filters[ucfirst]', $ucfirst);
+            $this->set('gsf_surname_prefix',   'label', $this->_('Surname prefix'),
+                    'description', $this->_('de, van der, \'t, etc...')
+                    );
+            $this->set('gsf_last_name',        'label', $this->_('Last name'),
+                    'required', true,
+                    'filters[ucfirst]', $ucfirst
+                    );
+        } else {
+            $this->set('name',                 'label', $this->_('Name'));
+        }
+
+        $this->set('gsf_gender',               'label', $this->_('Gender'),
+                'elementClass', 'Radio',
+                'multiOptions', $translated->getGenders(),
+                'separator', ' '
+                );
+        $this->set('gsf_email',                'label', $this->_('E-Mail'),
+                'itemDisplay', 'MUtil_Html_AElement::ifmail',
+                'size', 30,
+                'validators[email]', 'SimpleEmail'
+                );
+
+
+        $this->set('gsf_id_primary_group',     'label', $this->_('Primary function'),
+                'multiOptions', \MUtil_Lazy::call($dbLookup->getStaffGroups)
+                );
+
+        if ($detailed) {
+            // Now try to load the current organization and find out if it has a default user definition
+            // otherwise use the defaultStaffDefinition
+            $organization = $this->loader->getOrganization(
+                    $defaultOrgId ? $defaultOrgId : $user->getCurrentOrganizationId()
+                    );
+            $this->set('gsf_id_organization', 'default', $organization->getId());
+
+            $this->set('gul_user_class',       'label', $this->_('User Definition'),
+                    'default', $organization->get('gor_user_class', $this->defaultStaffDefinition),
+                    'multiOptions', $this->loader->getUserLoader()->getAvailableStaffDefinitions()
+                    );
+            if ($editing) {
+                $this->set('gul_user_class', 'order', 1,
+                        'required', true);
+            }
+            $this->set('gsf_iso_lang',         'label', $this->_('Language'),
+                    'default', $this->project->locale['default'],
+                    'multiOptions', $this->util->getLocalized()->getLanguages()
+                    );
+            $this->set('gul_can_login',        'label', $this->_('Can login'),
+                    'default', 1,
+                    'description', $this->_('Users can only login when this box is checked.'),
+                    'multiOptions', $yesNo
+                    );
+            $this->set('gsf_logout_on_survey', 'label', $this->_('Logout on survey'),
+                    'description', $this->_('If checked the user will logoff when answering a survey.'),
+                    'multiOptions', $yesNo
+                    );
+        }
+
+        $this->setDeleteValues('gsf_active', 0, 'gul_can_login', 0);
+
+        if (! $user->hasPrivilege('pr.staff.edit.all')) {
+            $this->set('gsf_id_organization', 'elementClass', 'Exhibitor');
+        }
+
+        return $this;
     }
 
     /**
