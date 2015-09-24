@@ -19,7 +19,7 @@ ABOUT THE UPGRADE
     Check the upgrade compatibility report for any possible code issues!!
     Ignore any messages that a "Column does not exist in table" during the upgrade
 INTERFACE EXTENSIONS
-    User with the right right can select those respondents either with or without a track in the respondent screen
+    User with the right privileges can select those respondents either with or without a track in the respondent screen
     Respondents, tracks and tokens can now be undeleted - with the admin level user right
     Manual or automatic token recalculation is now determined through an input element instead of through 'magic'
     Manual or automatic track end date recalculation is now determined through an input element instead of through 'magic'
