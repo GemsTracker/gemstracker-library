@@ -342,8 +342,9 @@ class Gems_User_User extends \MUtil_Registry_TargetAbstract
     public function applyToMenuSource(\Gems_Menu_ParameterSource $source)
     {
         $source->offsetSet('gsf_id_organization', $this->getBaseOrganizationId());
-        $source->offsetSet('accessible_role',     $this->hasAllowedRole());
-        $source->offsetSet('can_mail',            $this->getEmailAddress() ? 1 : 0);
+        $source->offsetSet('gsf_active',          $this->isActive() ? 1 : 0);
+        $source->offsetSet('accessible_role',     $this->hasAllowedRole() ? 1 : 0);
+        $source->offsetSet('can_mail',            $this->hasEmailAddress() ? 1 : 0);
     }
 
     /**
@@ -582,6 +583,21 @@ class Gems_User_User extends \MUtil_Registry_TargetAbstract
         }
 
         return (boolean) $this->acl && $this->userLoader;
+    }
+
+    /**
+     * Retrieve an array of groups the user is allowed to assign: his own group and all groups
+     * he/she inherits rights from
+     *
+     * @return array
+     */
+    public function getAllowedStaffGroups()
+    {
+        if (! $this->_hasVar('__allowedStaffGroups')) {
+            $this->refreshAllowedStaffGroups();
+        }
+
+        return $this->_getVar('__allowedStaffGroups');
     }
 
     /**
@@ -1125,7 +1141,8 @@ class Gems_User_User extends \MUtil_Registry_TargetAbstract
             return true;
         }
 
-        if ($allowedGroups = $dbLookup->getAllowedStaffGroups()) {
+        $allowedGroups = $this->userLoader->getCurrentUser()->getAllowedStaffGroups();
+        if ($allowedGroups) {
             return (boolean) isset($allowedGroups[$this->getGroup()]);
         } else {
             return false;
@@ -1139,7 +1156,7 @@ class Gems_User_User extends \MUtil_Registry_TargetAbstract
      */
     public function hasEmailAddress()
     {
-        return $this->_hasVar('user_email');
+        return $this->_hasVar('user_email') && $this->_getVar('user_email');
     }
 
     /**
@@ -1353,6 +1370,36 @@ class Gems_User_User extends \MUtil_Registry_TargetAbstract
     }
 
     /**
+     * Allowes a refresh of the existing list of groups the user is allowed to assign:
+     * his own group and all groups he/she inherits rights from
+     *
+     * @return array
+     */
+    public function refreshAllowedStaffGroups()
+    {
+        $dbLookup = $this->util->getDbLookup();
+        $groups   = $dbLookup->getActiveStaffGroups();
+
+        if ('master' === $this->getRole()) {
+            $this->_setVar('__allowedStaffGroups', $groups);
+            return;
+        }
+
+        $rolesAllowed = $this->getRoles();
+        $roles        = $dbLookup->getActiveStaffRoles();
+        $result       = array();
+
+        foreach ($roles as $id => $role) {
+            if ((in_array($role, $rolesAllowed)) && isset($groups[$id])) {
+                $result[$id] = $groups[$id];
+            }
+        }
+        natsort($result);
+
+        $this->_setVar('__allowedStaffGroups', $result);
+    }
+
+    /**
      * Allowes a refresh of the existing list of organizations
      * for this user.
      *
@@ -1364,7 +1411,10 @@ class Gems_User_User extends \MUtil_Registry_TargetAbstract
         if ($this->hasPrivilege('pr.organization-switch')) {
             $orgs = $this->util->getDbLookup()->getOrganizations();
         } else {
-            $orgs = $this->getBaseOrganization()->getAllowedOrganizations();
+            $org = $this->getBaseOrganization();
+
+            $orgs = array($org->getId() => $org->getName()) +
+                    $org->getAllowedOrganizations();
         }
         // \MUtil_Echo::track($orgs);
 

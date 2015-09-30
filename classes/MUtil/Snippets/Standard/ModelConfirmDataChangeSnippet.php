@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2011, Erasmus MC
+ * Copyright (c) 2015, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -18,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -27,30 +27,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * @package    Gems
- * @subpackage Snippets
+ * @package    MUtil
+ * @subpackage Snippets\Standard
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: ModelConfirmDataChangeSnippet.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
+namespace MUtil\Snippets\Standard;
+
+use MUtil\Snippets\ModelConfirmDataChangeSnippetAbstract;
+
 /**
- * Ask Yes/No conformation for deletion and deletes item when confirmed.
  *
- * Can be used for other uses than delete by overriding performAction().
  *
- * This class is not in the standard snippet loading directories and does not follow
- * their naming conventions, but exists only to make it simple to extend this class
- * for a specific implementation.
- *
- * @package    Gems
- * @subpackage Snippets
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @package    MUtil
+ * @subpackage Snippets\Standard
+ * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.4.4
+ * @since      Class available since MUtil version 1.7.2 30-sep-2015 19:15:02
  */
-class Gems_Snippets_ModelItemYesNoDeleteSnippetGeneric extends \Gems_Snippets_ModelItemYesNoDeleteSnippetAbstract
+class ModelConfirmDataChangeSnippet extends ModelConfirmDataChangeSnippetAbstract
 {
     /**
      *

@@ -16,9 +16,9 @@ CREATE TABLE if not exists gems__staff (
         -- end depreciated
 
 
-        gsf_id_primary_group bigint unsigned
-                               references gems__groups (ggp_id_group),
-        gsf_iso_lang         char(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'en',
+        gsf_id_primary_group bigint unsigned references gems__groups (ggp_id_group),
+        gsf_iso_lang         char(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'en'
+                             references gems__languages (gml_iso_lang),
         gsf_logout_on_survey boolean not null default 0,
 
         gsf_email            varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
@@ -54,7 +54,6 @@ CREATE TABLE if not exists gems__staff (
 
         PRIMARY KEY (gsf_id_user),
         UNIQUE KEY (gsf_login, gsf_id_organization),
-        UNIQUE KEY (gsf_reset_key),
         KEY (gsf_email)
     )
     ENGINE=InnoDB

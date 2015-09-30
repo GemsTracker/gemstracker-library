@@ -62,8 +62,8 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         );
 
     /**
-     * Gems only parameters used for the autofilter action. Can be overruled
-     * by setting $this->autofilterParameters
+     * Gems only parameters used for the create action. Can be overruled
+     * by setting $this->createParameters or $this->createEditParameters
      *
      * @var array Mixed key => value array for snippet initialization
      */
@@ -73,20 +73,34 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         );
 
     /**
-     * Gems only parameters used for the autofilter action. Can be overruled
-     * by setting $this->autofilterParameters
+     * Gems only parameters used for the deactivate action. Can be overruled
+     * by setting $this->deactivateParameters
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    private $_deactivateExtraParameters = array(
+        'confirmQuestion' => 'getDeactivateQuestion',
+        'displayTitle'    => 'getDeactivateTitle',
+        'formTitle'       => 'getDeactivateTitle',
+        'topicCallable'   => 'getTopicCallable',
+        );
+
+    /**
+     * Gems only parameters used for the delete action. Can be overruled
+     * by setting $this->deleteParameters
      *
      * @var array Mixed key => value array for snippet initialization
      */
     private $_deleteExtraParameters = array(
-        'displayTitle'  => 'getDeleteTitle',
-        'formTitle'     => 'getDeleteTitle',
-        'topicCallable' => 'getTopicCallable',
+        'deleteQuestion' => 'getDeleteQuestion',
+        'displayTitle'   => 'getDeleteTitle',
+        'formTitle'      => 'getDeleteTitle',
+        'topicCallable'  => 'getTopicCallable',
         );
 
     /**
-     * Gems only parameters used for the autofilter action. Can be overruled
-     * by setting $this->autofilterParameters
+     * Gems only parameters used for the edit action. Can be overruled
+     * by setting $this->editParameters or $this->createEditParameters
      *
      * @var array Mixed key => value array for snippet initialization
      */
@@ -106,6 +120,19 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         'importer'         => 'getImporter',
         'tempDirectory'    => 'getImportTempDirectory',
         'topicCallable'    => 'getTopic',
+        );
+
+    /**
+     * Gems only parameters used for the deactivate action. Can be overruled
+     * by setting $this->deactivateParameters
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    private $_reactivateExtraParameters = array(
+        'confirmQuestion' => 'getReactivateQuestion',
+        'displayTitle'    => 'getReactivateTitle',
+        'formTitle'       => 'getReactivateTitle',
+        'topicCallable'   => 'getTopicCallable',
         );
 
     /**
@@ -209,6 +236,16 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         $this->createEditParameters = $this->createEditParameters + $this->_createExtraParameters;
 
         parent::createAction();
+    }
+
+    /**
+     * Action for showing a deactivate item page with extra titles
+     */
+    public function deactivateAction()
+    {
+        $this->deactivateParameters = $this->deactivateParameters + $this->_deactivateExtraParameters;
+
+        parent::deactivateAction();
     }
 
     /**
@@ -319,6 +356,26 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
     public function getDefaultImportTranslator()
     {
         return $this->loader->getImportLoader()->getDefaultTranslator($this->getRequest()->getControllerName());
+    }
+
+    /**
+     * Helper function to get the question for the deactivate action.
+     *
+     * @return $string
+     */
+    public function getDeactivateQuestion()
+    {
+        return sprintf($this->_('Do you want to deactivate this %s?'), $this->getTopic(1));
+    }
+
+    /**
+     * Helper function to get the title for the deactivate action.
+     *
+     * @return $string
+     */
+    public function getDeactivateTitle()
+    {
+        return sprintf($this->_('Deactivate %s'), $this->getTopic(1));
     }
 
     /**
@@ -460,6 +517,26 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
     }
 
     /**
+     * Helper function to get the question for the reactivate action.
+     *
+     * @return $string
+     */
+    public function getReactivateQuestion()
+    {
+        return sprintf($this->_('Do you want to reactivate this %s?'), $this->getTopic(1));
+    }
+
+    /**
+     * Helper function to get the title for the reactivate action.
+     *
+     * @return $string
+     */
+    public function getReactivateTitle()
+    {
+        return sprintf($this->_('Reactivate %s'), $this->getTopic(1));
+    }
+
+    /**
      * Helper function to get the title for the show action.
      *
      * @return $string
@@ -559,6 +636,16 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
     {
         // Create the snippet with this controller as the parameter source
         $this->snippetLoader = $this->loader->getSnippetLoader($this);
+    }
+
+    /**
+     * Action for showing a reactivate item page with extra titles
+     */
+    public function reactivateAction()
+    {
+        $this->reactivateParameters = $this->reactivateParameters + $this->_reactivateExtraParameters;
+
+        parent::reactivateAction();
     }
 
     /**

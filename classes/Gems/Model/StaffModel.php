@@ -93,6 +93,10 @@ class Gems_Model_StaffModel extends Gems_Model_JoinModel
                 new \Zend_Db_Expr("CASE WHEN gsf_email IS NULL OR gsf_email = '' THEN 0 ELSE 1 END"),
                 'can_mail'
                 );
+        $this->addColumn(
+                new \Zend_Db_Expr("CASE WHEN gsf_active = 1 THEN '' ELSE 'deleted' END"),
+                'row_class'
+                );
     }
 
     /**
@@ -105,9 +109,12 @@ class Gems_Model_StaffModel extends Gems_Model_JoinModel
     {
         parent::afterRegistry();
 
-        $allowedGroups = $this->util->getDbLookup()->getAllowedStaffGroups();
+        $allowedGroups = $this->loader->getCurrentUser()->getAllowedStaffGroups();
         if ($allowedGroups) {
-            $expr = new Zend_Db_Expr('CASE WHEN gsf_id_primary_group IN (' . implode(', ', array_keys($allowedGroups)) . ') THEN 1 ELSE 0 END');
+            $expr = new Zend_Db_Expr(sprintf(
+                    "CASE WHEN gsf_id_primary_group IN (%s) THEN 1 ELSE 0 END",
+                    implode(", ", array_keys($allowedGroups))
+                    ));
         } else {
             $expr = new Zend_Db_Expr('0');
         }
@@ -192,8 +199,9 @@ class Gems_Model_StaffModel extends Gems_Model_JoinModel
 
 
         $this->set('gsf_id_primary_group',     'label', $this->_('Primary function'),
-                'multiOptions', \MUtil_Lazy::call($dbLookup->getStaffGroups)
+                'multiOptions', $editing ? $user->getAllowedStaffGroups() : $dbLookup->getStaffGroups()
                 );
+
 
         if ($detailed) {
             // Now try to load the current organization and find out if it has a default user definition
@@ -225,6 +233,11 @@ class Gems_Model_StaffModel extends Gems_Model_JoinModel
                     'multiOptions', $yesNo
                     );
         }
+
+        $this->set('gsf_active', 'label', $this->_('Active'),
+                'elementClass', 'None',
+                'multiOptions', $yesNo
+                );
 
         $this->setDeleteValues('gsf_active', 0, 'gul_can_login', 0);
 

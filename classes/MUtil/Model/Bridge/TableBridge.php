@@ -74,6 +74,11 @@ class MUtil_Model_Bridge_TableBridge extends \MUtil_Model_Bridge_TableBridgeAbst
         return $this->table->addColumn($td, $th);
     }
 
+    /**
+     *
+     * @param \MUtil_Html_HtmlElement $link Or anything else to put a the column
+     * @return \MUtil_MultiWrapper containing the column, header and footer cell
+     */
     public function addItemLink($link)
     {
         $tds = $this->table->addColumnArray($link);

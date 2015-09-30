@@ -65,7 +65,7 @@ class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract imple
      * @var boolean $verbose If true echo information about snippet loading.
      */
     public static $verbose = false;
-    
+
     /**
      * Allows sub classes of Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
      *
@@ -81,10 +81,14 @@ class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract imple
      */
     public function __construct($source = null, array $dirs = array())
     {
-        parent::__construct($source, $dirs);
+        // Add the standard snippets diractor as first dir (so it is loaded at the last try)
+        $standardDirs['MUtil_Snippets_Standard'] = GEMS_LIBRARY_DIR . '/classes/MUtil/Snippets/Standard';
 
-        $this->addPrefixPath('MUtil_Snippets_Standard', GEMS_LIBRARY_DIR . '/classes/MUtil/Snippets/Standard');
-        
+        parent::__construct($source, $standardDirs + $dirs);
+
+        // Old standard dir loading
+        // $this->addPrefixPath('MUtil_Snippets_Standard', GEMS_LIBRARY_DIR . '/classes/MUtil/Snippets/Standard');
+
         $noPrefixDirs = array(
             GEMS_LIBRARY_DIR . '/classes/MUtil/Snippets/Standard',
             GEMS_LIBRARY_DIR . '/snippets',
@@ -92,6 +96,7 @@ class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract imple
         );
         $this->_loader->addPrefixPath('', $noPrefixDirs, false);
         // $this->_loader->addFallBackPath(); // Enable to allow full class name specification
+
     }
 
     /**

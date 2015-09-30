@@ -49,6 +49,15 @@ namespace Gems\Snippets\Staff;
 class StaffTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
 {
     /**
+     * Set a fixed model sort.
+     *
+     * Leading _ means not overwritten by sources.
+     *
+     * @var array
+     */
+    protected $_fixedSort = array('name' => SORT_ASC);
+
+    /**
      *
      * @var \Gems_Loader
      */
@@ -79,19 +88,15 @@ class StaffTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
      */
     protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
-        $this->columns = array(
-            10 => array('gsf_login'),
-            20 => array('name'),
-            30 => array('gsf_email'),
-            40 => array('gsf_id_primary_group'),
-            50 => array('gsf_gender'),
-        );
-        if (count($this->loader->getCurrentUser()->getAllowedOrganizations()) > 1) {
-            $br = \MUtil_Html::create('br');
+        $br = \MUtil_Html::create('br');
 
-            $this->columns[20] = array('name', $br, 'gsf_email');
-            $this->columns[30] = array('gsf_id_organization');
-        }
+        $this->columns = array(
+            10 => array('gsf_login', $br, 'gsf_id_primary_group'),
+            20 => array('name', $br, 'gsf_email'),
+            30 => array('gsf_id_organization'),
+            40 => array('gsf_gender', $br, 'gsf_active'),
+        );
+
         parent::addBrowseTableColumns($bridge, $model);
     }
 

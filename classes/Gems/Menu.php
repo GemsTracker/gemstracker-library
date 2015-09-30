@@ -92,7 +92,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $this->loadProjectMenu();
 
         $this->setOnlyActiveBranchVisible();
-        $this->applyAcl($escort->acl, $escort->getLoader()->getCurrentUser()->getRole());
+        $this->applyAcl($escort->acl, $this->user->getRole());
     }
 
     private function _findPath($request)
@@ -299,7 +299,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
      */
     public function addRespondentPage($label)
     {
-        $orgId = $this->escort->getLoader()->getCurrentUser()->getCurrentOrganizationId();
+        $orgId = $this->user->getCurrentOrganizationId();
 
         $params = array(\MUtil_Model::REQUEST_ID1  => 'gr2o_patient_nr', \MUtil_Model::REQUEST_ID2 => 'gr2o_id_organization');
 

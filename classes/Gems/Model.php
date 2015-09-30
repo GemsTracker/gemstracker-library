@@ -360,13 +360,16 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Load the staffmodel
      *
+     * @param boolean $addLogin Add the login tables to the model
      * @return \Gems_Model_StaffModel
      */
-    public function getStaffModel()
+    public function getStaffModel($addLogin = true)
     {
         $model = $this->_loadClass('StaffModel', true, array($this->loader));
 
-        $this->addUserLogin($model, 'gsf_login', 'gsf_id_organization');
+        if ($addLogin) {
+            $this->addUserLogin($model, 'gsf_login', 'gsf_id_organization');
+        }
         $this->setAsGemsUserId($model, 'gsf_id_user');
 
         return $model;

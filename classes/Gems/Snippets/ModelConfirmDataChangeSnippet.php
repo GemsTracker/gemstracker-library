@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2011, Erasmus MC
+ * Copyright (c) 2015, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -18,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL MAGNAFACTA BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -30,37 +30,26 @@
  * @package    Gems
  * @subpackage Snippets
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: ModelConfirmDataChangeSnippet.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
+namespace Gems\Snippets;
+
+use MUtil\Snippets\ModelConfirmDataChangeSnippetAbstract;
+
 /**
- * Ask Yes/No conformation for deletion and deletes item when confirmed.
  *
- * Can be used for other uses than delete by overriding performAction().
  *
  * @package    Gems
  * @subpackage Snippets
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.4.4
+ * @since      Class available since version 1.7.2 30-sep-2015 19:01:28
  */
-abstract class Gems_Snippets_ModelItemYesNoDeleteSnippetAbstract extends \MUtil_Snippets_ModelYesNoDeleteSnippetAbstract
+class ModelConfirmDataChangeSnippet extends ModelConfirmDataChangeSnippetAbstract
 {
-    /**
-     *
-     * @var \Zend_Cache_Core
-     */
-    protected $cache;
-
-    /**
-     * Variable to set tags for cache cleanup after changes
-     *
-     * @var array
-     */
-    public $cacheTags;
-
     /**
      * Shortfix to add class attribute
      *
@@ -78,16 +67,15 @@ abstract class Gems_Snippets_ModelItemYesNoDeleteSnippetAbstract extends \MUtil_
     /**
      * Required
      *
-     * @var \Gems_Loader
-     */
-    protected $loader;
-
-    /**
-     * Required
-     *
      * @var \Gems_Menu
      */
     protected $menu;
+
+    /**
+     *
+     * @var \MUtil_Model_ModelAbstract
+     */
+    protected $model;
 
     /**
      * Adds rows from the model to the bridge that creates the browse table.
@@ -132,6 +120,16 @@ abstract class Gems_Snippets_ModelItemYesNoDeleteSnippetAbstract extends \MUtil_
     }
 
     /**
+     * Creates the model
+     *
+     * @return \MUtil_Model_ModelAbstract
+     */
+    protected function createModel()
+    {
+        return $this->model;
+    }
+
+    /**
      * Create the snippets content
      *
      * This is a stub function either override getHtmlOutput() or override render()
@@ -141,20 +139,21 @@ abstract class Gems_Snippets_ModelItemYesNoDeleteSnippetAbstract extends \MUtil_
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
-        if ($table = parent::getHtmlOutput($view)) {
-            if ($title = $this->getTitle()) {
-                $htmlDiv = \MUtil_Html::div();
+        $table = parent::getHtmlOutput($view);
+        $title = $this->getTitle();
 
-                $htmlDiv->h3($title);
+        if ($title) {
+            $htmlDiv = \MUtil_Html::div();
 
-                $this->applyHtmlAttributes($table);
+            $htmlDiv->h3($title);
 
-                $htmlDiv[] = $table;
+            $this->applyHtmlAttributes($table);
 
-                return $htmlDiv;
-            } else {
-                return $table;
-            }
+            $htmlDiv[] = $table;
+
+            return $htmlDiv;
+        } else {
+            return $table;
         }
     }
 
@@ -168,19 +167,6 @@ abstract class Gems_Snippets_ModelItemYesNoDeleteSnippetAbstract extends \MUtil_
         return $this->displayTitle;
     }
 
-    /**
-     * Overrule this function if you want to perform a different
-     * action than deleting when the user choose 'yes'.
-     */
-    protected function performAction()
-    {
-        parent::performAction();
-
-        if ($this->cacheTags && ($this->cache instanceof \Zend_Cache_Core)) {
-            $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, (array) $this->cacheTags);
-        }
-    }
-    
     /**
      * Set the footer of the browse table.
      *

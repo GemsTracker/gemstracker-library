@@ -403,10 +403,52 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
     }
 
     /**
+     * Add a standard deactivate action and optional reactivate action to the current menu item
+     *
+     * @param string $checkField   The name of the field to filter on for deactivation
+     * @param string $deactivateOn The value to check against for deactivation, no menu item when null
+     * @param string $reactivateOn The value to check against for reactivation, no menu item when null
+     * @param array  $otherDeact    Array of extra options for deactivate item, e.g. 'visible', 'allowed', 'class',
+     *                             'icon', 'privilege', 'target', 'type', 'button_only'.
+     * @param array  $otherReact    Array of extra options for reactivate item, e.g. 'visible', 'allowed', 'class',
+     *                             'icon', 'privilege', 'target', 'type', 'button_only'.
+     * @return \Gems_Menu_SubmenuItem
+     */
+    public function addDeReactivateAction($checkField, $deactivateOn = 1, $reactivateOn = 1, array $otherDeact = array(), array $otherReact = array())
+    {
+        if (null !== $deactivateOn) {
+            if (isset($otherDeact['privilege'])) {
+                $privilege = $otherDeact['privilege'];
+            } else {
+                $privilege = $this->get('privilege') . '.deactivate';
+            }
+
+            $menu = $this->addAction($this->_('Deactivate'), $privilege, 'deactivate', $otherDeact);
+            $menu->setModelParameters(1)
+                    ->addParameterFilter($checkField, $deactivateOn);
+        }
+
+        if (null !== $reactivateOn) {
+            if (isset($otherReact['privilege'])) {
+                $privilege = $otherReact['privilege'];
+            } else {
+                $privilege = $this->get('privilege') . '.reactivate';
+            }
+
+            $menu = $this->addAction($this->_('Reactivate'), $privilege, 'reactivate', $otherReact);
+            $menu->setModelParameters(1)
+                    ->addParameterFilter($checkField, $reactivateOn);
+        }
+
+        return $menu;
+    }
+
+    /**
      * Add a standard delete action to the current menu item
      *
      * @param string $privilege A privilege name, defaults to parent + .delete when not specified
-     * @param array $other      Array of extra options for this item, e.g. 'visible', 'allowed', 'class', 'icon', 'target', 'type', 'button_only'
+     * @param array $other      Array of extra options for this item, e.g. 'visible', 'allowed', 'class', 'icon',
+     *                          target', 'type', 'button_only'.
      * @return \Gems_Menu_SubmenuItem
      */
     public function addDeleteAction($privilege = null, array $other = array())

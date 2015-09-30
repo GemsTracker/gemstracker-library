@@ -1115,7 +1115,7 @@ class GemsEscort extends \MUtil_Application_Escort
      * @return mixed If null nothing is set, otherwise the name of
      * the function is used as \Zend_View variable name.
      */
-    protected function _layoutOrganizationSwitcher(array $args = null) 
+    protected function _layoutOrganizationSwitcher(array $args = null)
     {
         $user = $this->getLoader()->getCurrentUser();
         if ($user->isActive() && ($orgs = $user->getAllowedOrganizations())) {
@@ -1575,6 +1575,7 @@ class GemsEscort extends \MUtil_Application_Escort
      * @param string $privilege
      * @param string $role
      * @return bool
+     * @deprecated Since 1.7.2 Replaced by $this->getLoader->getCurrentUser()->hasPrivilege();
      */
     public function hasPrivilege($privilege, $role = null)
     {

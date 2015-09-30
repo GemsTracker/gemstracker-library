@@ -59,6 +59,25 @@ class Gems_Default_StaffAction extends \Gems_Controller_ModelSnippetActionAbstra
     public $cacheTags = array('staff');
 
     /**
+     * The parameters used for the deactivate action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $deactivateParameters = array('saveData' => array('gsf_active' => 0));
+
+    /**
+     * The snippets used for the index action, before those in autofilter
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Staff\StaffSearchSnippet');
+
+    /**
      * The parameters used for the mail action.
      *
      * @var array Mixed key => value array for snippet initialization
@@ -76,6 +95,18 @@ class Gems_Default_StaffAction extends \Gems_Controller_ModelSnippetActionAbstra
      * @var mixed String or array of snippets name
      */
     protected $mailSnippets = array('Mail_MailFormSnippet');
+
+    /**
+     * The parameters used for the reactivate action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $reactivateParameters = array('saveData' => array('gsf_active' => 1));
 
     /**
      * The parameters used for the reset action.
@@ -131,7 +162,7 @@ class Gems_Default_StaffAction extends \Gems_Controller_ModelSnippetActionAbstra
         }
 
         // \MUtil_Model::$verbose = true;
-        $model = $this->loader->getModels()->getStaffModel();
+        $model = $this->loader->getModels()->getStaffModel(! (('deactivate' === $action) || ('reactivate' === $action)));
 
         $model->applySettings($detailed, $action, $defaultOrgId);
 
@@ -158,6 +189,22 @@ class Gems_Default_StaffAction extends \Gems_Controller_ModelSnippetActionAbstra
         $user = $this->getSelectedUser();
 
         return sprintf($this->_('Send mail to: %s'), $user->getFullName());
+    }
+
+    /**
+     * Get the filter to use with the model for searching including model sorts, etc..
+     *
+     * @return array or false
+     */
+    public function getSearchFilter()
+    {
+        $filter = parent::getSearchFilter();
+
+        if (! (isset($filter['gsf_id_organization']) && $filter['gsf_id_organization'])) {
+            $filter['gsf_id_organization'] = array_keys($this->loader->getCurrentUser()->getAllowedOrganizations());
+        }
+
+        return $filter;
     }
 
     /**

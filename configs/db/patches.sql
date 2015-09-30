@@ -1038,3 +1038,12 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.respondent-c
     WHERE grl_privileges LIKE '%pr.respondent%'
         AND grl_name != 'guest'
         AND grl_privileges NOT LIKE '%,pr.respondent-commlog%';
+
+-- PATCH: New right for deactivation and reactivation
+UPDATE gems__roles
+    SET grl_privileges = REPLACE(grl_privileges, ',pr.staff.delete', ',pr.staff.deactivate,pr.staff.reactivate')
+    WHERE grl_privileges LIKE '%,pr.staff.delete%';
+
+-- PATCH: Old database structures cleanup
+ALTER IGNORE TABLE gems__staff DROP KEY gsf_reset_key;
+

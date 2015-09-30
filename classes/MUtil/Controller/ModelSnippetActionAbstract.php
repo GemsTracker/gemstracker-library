@@ -215,6 +215,25 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends \MUtil_Contro
     protected $defaultSearchData = array();
 
     /**
+     * The parameters used for the deactivate action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $deactivateParameters = array();
+
+    /**
+     * The snippets used for the deactivate  action.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $deactivateSnippets = 'ModelConfirmDataChangeSnippet';
+
+    /**
      * The parameters used for the delete action.
      *
      * When the value is a function name of that object, then that functions is executed
@@ -296,6 +315,25 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends \MUtil_Contro
      * @var mixed String or array of snippets name
      */
     protected $indexStopSnippets = null;
+
+    /**
+     * The parameters used for the reactivate action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $reactivateParameters = array();
+
+    /**
+     * The snippets used for the reactivate action.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $reactivateSnippets = 'ModelConfirmDataChangeSnippet';
 
     /**
      * Optional search field renames
@@ -469,6 +507,18 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends \MUtil_Contro
      * @return \MUtil_Model_ModelAbstract
      */
     abstract protected function createModel($detailed, $action);
+
+    /**
+     * Action for showing a deactivate item page
+     */
+    public function deactivateAction()
+    {
+        if ($this->deactivateSnippets) {
+            $params = $this->_processParameters($this->deactivateParameters);
+
+            $this->addSnippets($this->deactivateSnippets, $params);
+        }
+    }
 
     /**
      * Action for showing a delete item page
@@ -710,6 +760,18 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends \MUtil_Contro
 
         if ($this->indexStopSnippets) {
             $this->addSnippets($this->indexStopSnippets, $params);
+        }
+    }
+
+    /**
+     * Action for showing a reactivate item page
+     */
+    public function reactivateAction()
+    {
+        if ($this->reactivateSnippets) {
+            $params = $this->_processParameters($this->reactivateParameters);
+
+            $this->addSnippets($this->reactivateSnippets, $params);
         }
     }
 

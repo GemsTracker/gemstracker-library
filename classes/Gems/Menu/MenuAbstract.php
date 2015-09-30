@@ -63,6 +63,12 @@ abstract class Gems_Menu_MenuAbstract
     protected $translateAdapter;
 
     /**
+     *
+     * @var \Gems_User_User
+     */
+    protected $user;
+
+    /**
      * Copy from \Zend_Translate_Adapter
      *
      * Translates the given string
@@ -81,7 +87,8 @@ abstract class Gems_Menu_MenuAbstract
     public function __construct(\GemsEscort $escort)
     {
         $this->escort = $escort;
-        $this->translateAdapter = $this->escort->translate->getAdapter();
+        $this->translateAdapter = $escort->translate->getAdapter();
+        $this->user = $escort->getLoader()->getCurrentUser();
     }
 
     /**
@@ -451,12 +458,11 @@ abstract class Gems_Menu_MenuAbstract
     public function addGroupsPage($label, array $other = array())
     {
         $page  = $this->addBrowsePage($label, 'pr.group', 'group', $other);
-        $user  = $this->escort->loader->getCurrentUser();
         $roles = array();
 
-        if ($user instanceof \Gems_User_User) {
-            if ($user->hasPrivilege('pr.group')) {
-                $roles = $user->getAllowedRoles();
+        if ($this->user instanceof \Gems_User_User) {
+            if ($this->user->hasPrivilege('pr.group')) {
+                $roles = $this->user->getAllowedRoles();
             }
         }
         // \MUtil_Echo::track($roles);
@@ -685,10 +691,13 @@ abstract class Gems_Menu_MenuAbstract
         $createPage = $page->addCreateAction();
         $showPage = $page->addShowAction();
         $pages[] = $showPage->addEditAction();
-        $pages[] = $showPage->addAction($this->_('Reset password'), 'pr.staff.edit', 'reset')->setModelParameters(1);
-        $pages[] = $showPage->addAction($this->_('Send Mail'), 'pr.staff.edit', 'mail')->setModelParameters(1)
-                ->setParameterFilter('can_mail', 1);
-        $pages[] = $showPage->addDeleteAction();
+        $pages[] = $showPage->addAction($this->_('Reset password'), 'pr.staff.edit', 'reset')
+                ->setModelParameters(1)
+                ->addParameterFilter('gsf_active', 1);
+        $pages[] = $showPage->addAction($this->_('Send Mail'), 'pr.staff.edit', 'mail')
+                ->setModelParameters(1)
+                ->addParameterFilter('can_mail', 1, 'gsf_active', 1);
+        $pages[] = $showPage->addDeReactivateAction('gsf_active', 1, 0);
         $pages[] = $page->addExcelAction();
         $pages[] = $page->addImportAction();
 
@@ -700,10 +709,10 @@ abstract class Gems_Menu_MenuAbstract
 
         $pages[] = $logPage;
 
-        if (! $this->escort->hasPrivilege('pr.staff.edit.all')) {
-            $filter = array_keys($this->escort->loader->getCurrentUser()->getAllowedOrganizations());
+        if (! $this->user->hasPrivilege('pr.staff.edit.all')) {
+            $filter = array_keys($this->user->getAllowedOrganizations());
             foreach ($pages as $sub_page) {
-                $sub_page->setParameterFilter('gsf_id_organization', $filter, 'accessible_role', true);
+                $sub_page->addParameterFilter('gsf_id_organization', $filter, 'accessible_role', 1);
             }
         }
 

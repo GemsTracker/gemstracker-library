@@ -157,27 +157,11 @@ class Gems_Util_DbLookup extends UtilAbstract
      * he inherits rights from
      *
      * @return array
+     * @deprecated Since 1.7.2 Replaced by loader->getCurrentUser()->getAllowedStaffGroups()
      */
     public function getAllowedStaffGroups()
     {
-        $groups = $this->getActiveStaffGroups();
-        $user   = $this->loader->getCurrentUser();
-        if ($user->getRole() === 'master') {
-            return $groups;
-
-        } else {
-            $rolesAllowed = $user->getRoles();
-            $roles        = $this->getActiveStaffRoles();
-            $result       = array();
-
-            foreach ($roles as $id => $role) {
-                if ((in_array($role, $rolesAllowed)) && isset($groups[$id])) {
-                    $result[$id] = $groups[$id];
-                }
-            }
-
-            return $result;
-        }
+        return $this->loader->getCurrentUser()->getAllowedStaffGroups();
     }
 
     /**
