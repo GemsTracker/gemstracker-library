@@ -1,3 +1,14 @@
+Changes in 1.7.1p3
+============================================================
+ - Fixed bug: New respondent now uses the project default locale
+ - Fixed bug: Readonly date fields will not show the datepicker anymore
+ - Fixed bug: reception code not required during delete
+ - Fixed bug: wrong group chosen during insert survey in track when no surveys have been answered
+ - Changed  : Added ordering to chartconfig lookup lists
+ - Extension: Information on default choice during insert survey in track
+ - Extension: Show respondent relation fieldname and name of the person in answer display
+ - Extension:Changes to answer import allowing skip of tokens already answered or not-existing
+
 Changes in 1.7.1p2
 ============================================================
  - Fixed bug that caused return to answer page after answering a survey
@@ -19,7 +30,7 @@ ABOUT THE UPGRADE
     Check the upgrade compatibility report for any possible code issues!!
     Ignore any messages that a "Column does not exist in table" during the upgrade
 INTERFACE EXTENSIONS
-    User with the right right can select those respondents either with or without a track in the respondent screen
+    User with the right privileges can select those respondents either with or without a track in the respondent screen
     Respondents, tracks and tokens can now be undeleted - with the admin level user right
     Manual or automatic token recalculation is now determined through an input element instead of through 'magic'
     Manual or automatic track end date recalculation is now determined through an input element instead of through 'magic'
