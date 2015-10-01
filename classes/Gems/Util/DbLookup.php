@@ -332,8 +332,15 @@ class Gems_Util_DbLookup extends UtilAbstract
             FROM gems__organizations
             WHERE gor_active = 1 AND gor_has_login = 1
             ORDER BY gor_name";
-
-        return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'organizations');
+        
+        try {
+            $organizations = $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'organizations');    
+        } catch (Exception $exc) {
+            // Intentional fallthrough when no db present
+            $organizations = array();
+        }        
+        
+        return $organizations;
     }
 
     /**
