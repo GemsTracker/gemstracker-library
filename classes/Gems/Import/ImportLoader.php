@@ -318,14 +318,6 @@ class Gems_Import_ImportLoader extends \Gems_Loader_TargetLoaderAbstract
         $translator = $this->getTranslateAdapter();
 
         switch ($controller) {
-            case 'respondent':
-                $output['default'] = new \Gems_Model_Translator_RespondentTranslator($translator->_('Direct import'));
-                break;
-
-            case 'calendar':
-                $output['default'] = new \Gems_Model_Translator_AppointmentTranslator($translator->_('Direct import'));
-                break;
-
             case 'answers':
                 $output['default'] = new \Gems_Model_Translator_TokenAnswerTranslator(
                         $translator->_('Link by token id')
@@ -336,6 +328,18 @@ class Gems_Import_ImportLoader extends \Gems_Loader_TargetLoaderAbstract
                 $output['date']    = new \Gems_Model_Translator_DateAnswerTranslator(
                         $translator->_('Link by patient id and completion date')
                         );
+                break;
+            
+            case 'calendar':
+                $output['default'] = new \Gems_Model_Translator_AppointmentTranslator($translator->_('Direct import'));
+                break;
+            
+            case 'respondent':
+                $output['default'] = new \Gems_Model_Translator_RespondentTranslator($translator->_('Direct import'));
+                break;
+            
+            case 'staff':
+                $output['default'] = new \Gems_Model_Translator_StaffTranslator($translator->_('Direct import'));
                 break;
 
             default:
