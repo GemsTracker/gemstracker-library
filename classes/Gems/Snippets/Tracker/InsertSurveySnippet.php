@@ -447,6 +447,10 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
             reset($this->surveyList);
             $this->formData['gto_id_survey'] = key($this->surveyList);
         }
+		
+		if (isset($this->formData['gto_valid_from_manual']) && $this->formData['gto_valid_from_manual'] == 0 && !isset($this->formData['gto_valid_from'])) {
+            $this->formData['gto_valid_from'] = new \MUtil_Date();
+        }
 
         if (isset($this->formData['gto_id_survey'])) {
             $this->survey = $this->tracker->getSurvey($this->formData['gto_id_survey']);
