@@ -81,7 +81,7 @@ class Gems_Util_DbLookup extends UtilAbstract
 
         $orgId = $this->loader->getCurrentUser()->getCurrentOrganizationId();
 
-        return $this->_getSelectPairsCached(__FUNCTION__ . '_' . $orgId, $sql, $orgId, 'organizations');
+        return $this->_getSelectPairsCached(__FUNCTION__ . '_' . $orgId, $sql, $orgId, 'organizations', 'natsort');
     }
 
     /**
@@ -295,7 +295,7 @@ class Gems_Util_DbLookup extends UtilAbstract
                     WHERE gor_active = 1
                     ORDER BY gor_name";
 
-        return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'organizations');
+        return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'organizations', 'natsort');
     }
 
     /**
@@ -318,7 +318,7 @@ class Gems_Util_DbLookup extends UtilAbstract
                     FROM gems__organizations
                     WHERE gor_active = 1 and gor_code = ?
                     ORDER BY gor_name";
-        return $this->_getSelectPairsCached(__FUNCTION__ . '_' , $code, $sql, $code, 'organizations');
+        return $this->_getSelectPairsCached(__FUNCTION__ . '_' , $code, $sql, $code, 'organizations', 'natsort');
     }
 
     /**
@@ -334,7 +334,7 @@ class Gems_Util_DbLookup extends UtilAbstract
             ORDER BY gor_name";
         
         try {
-            $organizations = $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'organizations');    
+            $organizations = $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'organizations', 'natsort');    
         } catch (Exception $exc) {
             // Intentional fallthrough when no db present
             $organizations = array();
@@ -355,7 +355,7 @@ class Gems_Util_DbLookup extends UtilAbstract
                         WHERE gor_active = 1 AND (gor_has_respondents = 1 OR gor_add_respondents = 1)
                         ORDER BY gor_name";
 
-        return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, array('organization', 'organizations'), 'natsort');
+        return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'organizations', 'natsort');
     }
 
     /**
