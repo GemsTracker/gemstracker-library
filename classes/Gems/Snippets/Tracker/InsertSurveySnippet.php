@@ -185,6 +185,9 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
                 $model->applyInsertionFormatting();
             }
         }
+        
+        // Valid from can not be calculated for inserted rounds, and should always be manual
+        $model->set('gto_valid_from_manual', 'elementClass', 'Hidden', 'default', '1');
 
         $trackData = $this->util->getTrackData();
 
@@ -392,7 +395,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
                 'respondent_name'        => $respondentData['name'],
                 'gto_id_survey'          => $this->request->getParam(\Gems_Model::SURVEY_ID),
                 'gto_id_track'           => $this->request->getParam(\Gems_Model::TRACK_ID),
-                'gto_valid_from_manual'  => 0,
+                'gto_valid_from_manual'  => 1,
                 'gto_valid_from'         => $now,
                 'gto_valid_until_manual' => 0,
                 'gto_valid_until'        => null, // Set in loadSurvey
