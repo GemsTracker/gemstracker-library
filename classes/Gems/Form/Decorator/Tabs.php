@@ -187,7 +187,18 @@ class Gems_Form_Decorator_Tabs extends \Zend_Form_Decorator_ViewHelper
                     }
                     
                     $jquery->addOnLoad($js);
-                }
+                } else {
+                    $jquery = $view->jQuery();
+                    
+                    if ($selectedTabElement = $this->getOption('selectedTabElement')) {
+                        $js = sprintf('%1$s(\'a[data-toggle="tab"]\').on(\'shown.bs.tab\', function (e) {
+                            var tabtext = $(e.target).text();
+                            %1$s("#%2$s").val(tabtext);
+                    })', \ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(), $selectedTabElement);
+                        
+                    $jquery->addOnLoad($js);
+                    }
+                }                   
 
                 $list = $containerDiv->ul(array('class' => 'nav nav-tabs', 'role' => 'tablist'));
             }
@@ -210,10 +221,15 @@ class Gems_Form_Decorator_Tabs extends \Zend_Form_Decorator_ViewHelper
                     $liOptions = array();
                     $tabPaneOptions = array('id' => $tabId,'class' => 'tab-pane');
                     if ($active && $active == $tabName) {
+                        // If a tab is active, select it
                         if (!$useBootstrap) {
                             $js = sprintf('%1$s("#tabElement").tabs({ selected: %2$d});', \ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(), $tabNumber);
                             $jquery->addOnLoad($js);
+                        } else {
+                            $js = sprintf('%1$s(\'a[data-toggle="tab"]\').eq(%2$d).tab(\'show\');', \ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(), $tabNumber);
+                            $jquery->addOnLoad($js);
                         }
+                            
                         $liOptions['class'] = 'active';
                         $tabPaneOptions['class'] .= ' active';
                     }
