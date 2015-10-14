@@ -43,139 +43,114 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class Gems_Default_OptionAction extends \Gems_Controller_BrowseEditAction
+class Gems_Default_OptionAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
+     * Variable to set tags for cache cleanup after changes
      *
-     * @var boolean
+     * @var array
      */
-    public $autoFilter = false;
+    public $cacheTags = array('staff');
 
     /**
+     * The parameters used for the reset action.
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var array Mixed key => value array for snippet initialization
      */
-    public $project;
+    protected $changePasswordParameters = array(
+        'askOld'           => true,
+        'menuShowSiblings' => true,
+        'routeAction'      => 'edit',
+        'user'             => 'getCurrentUser',
+        );
 
     /**
-     * Adds elements from the model to the bridge that creates the form.
+     * Snippets for reset
      *
-     * Overrule this function to add different elements to the browse table, without
-     * having to recode the core table building code.
-     *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
-     * @param array $data The data that will later be loaded into the form
-     * @param optional boolean $new Form should be for a new element
-     * @return void|array When an array of new values is return, these are used to update the $data array in the calling function
+     * @var mixed String or array of snippets name
      */
-    protected function addFormElements(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model, array $data, $new = false)
-    {
-        foreach($model->getItemsOrdered() as $name) {
-            if ($label = $model->get($name, 'label')) {
-                $bridge->add($name);
-            }
-        }
-    }
+    protected $changePasswordSnippets = array('User\\PasswordResetSnippet');
 
     /**
-     * Hook to perform action after a record (with changes) was saved
+     * The parameters used for the create and edit actions.
      *
-     * As the data was already saved, it can NOT be changed anymore
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
      *
-     * @param array $data
-     * @param boolean $isNew
-     * @return boolean  True when you want to display the default 'saved' messages
+     * @var array Mixed key => value array for snippet initialization
      */
-    public function afterSave(array $data, $isNew)
-    {
-        // Reload the current user data
-        $user = $this->loader->getCurrentUser();
-        if ($user->getLoginName() === $data['gsf_login']) {
-            $currentOrg = $user->getCurrentOrganizationId();
-
-            $this->loader->getUserLoader()->unsetCurrentUser();
-            $user = $this->loader->getUser($data['gsf_login'], $data['gsf_id_organization'])->setAsCurrentUser();
-            $user->setCurrentOrganization($currentOrg);
-
-            // If locale has changed, set it in a cookie
-            \Gems_Cookies::setLocale($data['gsf_iso_lang'], \GemsEscort::getInstance()->basepath);
-            $this->_reroute();      // Force refresh
-        }
-    }
+    protected $createEditParameters = array(
+        'menuShowChildren' => true,
+        'onlyUsedElements' => true,
+        'routeAction'      => 'edit',
+        );
 
     /**
+     * The snippets used for the create and edit actions.
      *
-     * @param array $data
-     * @param boolean $isNew
-     * @param \Zend_Form $form
-     * @return boolean
+     * @var mixed String or array of snippets name
      */
-    public function beforeSave(array &$data, $isNew, \Zend_Form $form = null)
-    {
-        // fix privilege escalation
+    protected $createEditSnippets = 'User\\OwnAccountEditSnippet';
 
-        // first load the current record from the database
-        $model = $this->getModel();
-        $model->setFilter(array('gsf_id_user' => $this->loader->getCurrentUser()->getUserId()));
-        $databaseData = $model->loadFirst();
+    /**
+     * The parameters used for the reset action.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $overviewParameters = array(
+        'browse'          => true,
+        'contentTitle'    => 'getShowLogOverviewTitle',
+        'explanationText' => 'getShowLogOverviewExplanation',
+        'extraFilter'     => 'getShowLogOverviewFilter',
+        'menuEditActions' => false,
+        'menuShowActions' => array('show-log'),
+        );
 
-        // Now only take values from elements that allow input (exclude hidden)
-        $validData = array();
-        foreach($form->getElements() as $element) {
-            if (! ($element instanceof \Zend_Form_Element_Hidden || $element instanceof \Zend_Form_Element_Submit)) {
-                $validData[$element->getName()] = $data[$element->getName()];
-            }
-        }
+    /**
+     * Snippets for reset
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $overviewSnippets = array(
+        'Generic\\ContentTitleSnippet',
+        'Generic\\TextExplanationSnippet',
+        'Log\\LogTableSnippet',
+        'Generic\\CurrentSiblingsButtonRowSnippet',
+        );
 
-        // Now add the other fields back from the current record so we have all id's etc.
-        $data = $validData + $databaseData;
+    /**
+     * The parameters used for the showLog action.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $showLogParameters = array(
+        'contentTitle' => 'getShowLogItemTitle',
+        );
 
-        return true;
-    }
+    /**
+     * Snippets for showLog
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $showLogSnippets = array(
+        'Generic\\ContentTitleSnippet',
+        'Log\\LogShowSnippet',
+        'Generic\\CurrentButtonRowSnippet',
+        );
 
     /**
      * Allow a user to change his / her password.
      */
     public function changePasswordAction()
     {
-        $user = $this->loader->getCurrentUser();
+        if ($this->changePasswordSnippets) {
+            $params = $this->_processParameters($this->changePasswordParameters);
 
-        $this->html->h3($this->_('Change password'));
-
-        if (! $user->canSetPassword()) {
-            $this->addMessage($this->_('You are not allowed to change your password.'));
-            return;
+            $this->addSnippets($this->changePasswordSnippets, $params);
         }
-
-        /*************
-         * Make form *
-         *************/
-        $form = $user->getChangePasswordForm(array('showReport' => false, 'useTableLayout' => true));
-
-        /****************
-         * Process form *
-         ****************/
-        if ($this->_request->isPost() && $form->isValid($_POST, false)) {
-            $this->addMessage($this->_('New password is active.'));
-			$user->gotoStartPage($this->menu, $this->getRequest());
-            $this->_reroute(array($this->getRequest()->getActionKey() => 'edit'));
-        } else {
-            $this->addMessage($form->getErrorMessages());
-        }
-
-        /****************
-         * Display form *
-         ****************/
-        if ($user->isPasswordResetRequired()) {
-            $this->menu->setVisible(false);
-        } else {
-            $form->addButtons($this->createMenuLinks());
-        }
-
-        $this->html[] = $form;
     }
-
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -190,57 +165,88 @@ class Gems_Default_OptionAction extends \Gems_Controller_BrowseEditAction
      */
     public function createModel($detailed, $action)
     {
-        $model = $this->loader->getModels()->getStaffModel();
+        $model = $this->loader->getModels()->getStaffModel(false);
 
-        $noscript = new \MUtil_Validate_NoScript();
-
-        $model->set('gsf_login',          'label', $this->_('Login Name'), 'elementClass', 'Exhibitor');
-        $model->set('gsf_email',          'label', $this->_('E-Mail'), 'size', 30,
-                'validator', new \MUtil_Validate_SimpleEmail());
-        $model->set('gsf_first_name',     'label', $this->_('First name'), 'validator', $noscript);
-        $model->set('gsf_surname_prefix', 'label', $this->_('Surname prefix'), 'description', 'de, van der, \'t, etc...', 'validator', $noscript);
-        $model->set('gsf_last_name',      'label', $this->_('Last name'), 'required', true, 'validator', $noscript);
-        $model->set('gsf_gender',         'label', $this->_('Gender'), 'multiOptions', $this->util->getTranslated()->getGenders(),
-                'elementClass', 'Radio', 'separator', '');
-        $model->set('gsf_iso_lang',       'label', $this->_('Language'), 'multiOptions', $this->util->getLocalized()->getLanguages());
+        $model->applyOwnAccountEdit();
 
         return $model;
     }
 
-    public function editAction()
+    /**
+     *
+     * @return \Gems_User_User
+     */
+    public function getCurrentUser()
     {
-        $this->getModel()->setFilter(array('gsf_id_user' => $this->loader->getCurrentUser()->getUserId()));
-
-        if ($form = $this->processForm()) {
-            $this->html->h3(sprintf($this->_('Options'), $this->getTopic()));
-            $this->html[] = $form;
-        }
+        return $this->loader->getCurrentUser();
     }
 
-    public function overviewAction()
+    /**
+     * Helper function to get the title for the edit action.
+     *
+     * @return $string
+     */
+    public function getEditTitle()
     {
-        $filter['gla_by'] = $this->loader->getCurrentUser()->getUserId();
-
-        $this->addSnippet('Generic\\ContentTitleSnippet',
-                'contentTitle', $this->_('Activity overview')
-                );
-        $this->html->p($this->_('This overview provides information about the last login activity on your account.'));
-        $this->addSnippet('Log\\LogTableSnippet',
-                'browse', true,
-                'extraFilter', $filter,
-                'menuEditActions', false,
-                'menuShowActions', array('show-log')
-                );
+        return $this->_('Options');
     }
 
+    /**
+     *
+     * @return string Title for show log item
+     */
+    public function getShowLogItemTitle()
+    {
+        return $this->_('Show activity');
+    }
+
+    /**
+     *
+     * @return string Explanation for show log overview
+     */
+    public function getShowLogOverviewExplanation()
+    {
+        return $this->_('This overview provides information about the last login activity on your account.');
+    }
+
+    /**
+     * Get a filter for the show log snippet
+     */
+    public function getShowLogOverviewFilter()
+    {
+        return array('gla_by' => $this->loader->getCurrentUser()->getUserId());
+    }
+
+    /**
+     *
+     * @return string Title for show log overview
+     */
+    public function getShowLogOverviewTitle()
+    {
+        return $this->_('Activity overview');
+    }
+
+    /**
+     * Helper function to allow generalized statements about the items in the model.
+     *
+     * @param int $count
+     * @return $string
+     */
     public function getTopic($count = 1)
     {
-        return $this->plural('item', 'items', $count);
+        return $this->plural('your setup', 'your setup', $count);
     }
 
-    public function getTopicTitle()
+    /**
+     * Show log overview for the current user
+     */
+    public function overviewAction()
     {
-        return $this->_('Item');
+        if ($this->overviewSnippets) {
+            $params = $this->_processParameters($this->overviewParameters);
+
+            $this->addSnippets($this->overviewSnippets, $params);
+        }
     }
 
     /**
@@ -248,9 +254,10 @@ class Gems_Default_OptionAction extends \Gems_Controller_BrowseEditAction
      */
     public function showLogAction()
     {
-        $params['contentTitle'] = $this->_('Show activity');
-        $snippets = array('Generic\\ContentTitleSnippet', 'Log\\LogShowSnippet');
+        if ($this->showLogSnippets) {
+            $params = $this->_processParameters($this->showLogParameters);
 
-        $this->addSnippets($snippets, $params);
+            $this->addSnippets($this->showLogSnippets, $params);
+        }
     }
 }

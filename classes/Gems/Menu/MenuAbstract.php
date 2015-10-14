@@ -709,11 +709,10 @@ abstract class Gems_Menu_MenuAbstract
 
         // LOG CONTROLLER
         $logPage = $showPage->addPage($this->_('Activity overview'), 'pr.staff-log', 'staff-log', 'index')
-                ->setModelParameters(1);
+                ->setModelParameters(1)
+                ->addParameterFilter('gsf_id_organization', $filter);
         $logPage->addAutofilterAction();
         $logPage->addShowAction()->setModelParameters(1)->addNamedParameters('log', 'gla_id');
-
-        $pages[] = $logPage;
 
         $page->addExcelAction();
         $page->addImportAction();

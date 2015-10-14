@@ -84,6 +84,18 @@ abstract class FormSnippetAbstract extends MUtilFormSnippetAbstract
     protected $formTitle;
 
     /**
+     *
+     * @var boolean
+     */
+    protected $menuShowChildren = false;
+
+    /**
+     *
+     * @var boolean
+     */
+    protected $menuShowSiblings = false;
+
+    /**
      * When set getTopic uses this function instead of parent class.
      *
      * @var callable
@@ -174,6 +186,10 @@ abstract class FormSnippetAbstract extends MUtilFormSnippetAbstract
      */
     public function beforeDisplay()
     {
+        if ($this->_csrf) {
+            $this->_csrf->initCsrfToken();
+        }
+
         $links = $this->getMenuList();
         if (\MUtil_Bootstrap::enabled()) {
             if ($links) {
@@ -239,6 +255,14 @@ abstract class FormSnippetAbstract extends MUtilFormSnippetAbstract
 
         $links->addParameterSources($this->request, $this->menu->getParameterSource());
         $links->addCurrentParent($this->_('Cancel'));
+
+        if ($this->menuShowSiblings) {
+            $links->addCurrentSiblings();
+        }
+
+        if ($this->menuShowChildren) {
+            $links->addCurrentChildren();
+        }
 
         return $links;
     }

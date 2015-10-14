@@ -105,6 +105,18 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
 
     /**
      *
+     * @var boolean
+     */
+    protected $menuShowChildren = false;
+
+    /**
+     *
+     * @var boolean
+     */
+    protected $menuShowSiblings = false;
+
+    /**
+     *
      * @var \Gems_Project_ProjectSettings
      */
     protected $project;
@@ -364,6 +376,14 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
 
         $links->addParameterSources($this->request, $this->menu->getParameterSource());
         $links->addCurrentParent($this->_('Cancel'));
+
+        if ($this->menuShowSiblings) {
+            $links->addCurrentSiblings();
+        }
+
+        if ($this->menuShowChildren) {
+            $links->addCurrentChildren();
+        }
 
         return $links;
     }

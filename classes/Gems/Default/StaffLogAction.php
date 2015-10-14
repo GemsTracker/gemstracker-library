@@ -66,6 +66,37 @@ class Gems_Default_StaffLogAction extends \Gems_Default_LogAction
     protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Log\\StaffLogSearchSnippet');
 
     /**
+     * Creates a model for getModel(). Called only for each new $action.
+     *
+     * The parameters allow you to easily adapt the model to the current action. The $detailed
+     * parameter was added, because the most common use of action is a split between detailed
+     * and summarized actions.
+     *
+     * @param boolean $detailed True when the current action is not in $summarizedActions.
+     * @param string $action The current action.
+     * @return \MUtil_Model_ModelAbstract
+     */
+    protected function createModel($detailed, $action)
+    {
+        // Make sure the user is loaded
+        $user = $this->getSelectedUser();
+
+        if ($user) {
+            $current = $this->loader->getCurrentUser();
+
+            if (! ($current->hasPrivilege('pr.staff.see.all') ||
+                    $current->isAllowedOrganization($user->getBaseOrganizationId()))) {
+                throw new \Gems_Exception($this->_('No access to page'), 403, null, sprintf(
+                        $this->_('You have no right to access users from the organization %s.'),
+                        $user->getBaseOrganization()->getName()
+                        ));
+            }
+        }
+
+        return parent::createModel($detailed, $action);
+    }
+
+    /**
      * Function to allow the creation of search defaults in code
      *
      * @see getSearchFilter()
@@ -81,6 +112,32 @@ class Gems_Default_StaffLogAction extends \Gems_Default_LogAction
         }
 
         return $data;
+    }
+
+    /**
+     * Load the user selected by the request - if any
+     *
+     * @staticvar \Gems_User_User $user
+     * @return \Gems_User_User or false when not available
+     */
+    public function getSelectedUser()
+    {
+        static $user = null;
+
+        if ($user !== null) {
+            return $user;
+        }
+
+        $staffId = $this->_getIdParam();
+        if ($staffId) {
+            $user   = $this->loader->getUserLoader()->getUserByStaffId($staffId);
+            $source = $this->menu->getParameterSource();
+            $user->applyToMenuSource($source);
+        } else {
+            $user = false;
+        }
+
+        return $user;
     }
 
     /**

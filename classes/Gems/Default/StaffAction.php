@@ -114,9 +114,12 @@ class Gems_Default_StaffAction extends \Gems_Controller_ModelSnippetActionAbstra
      * @var array Mixed key => value array for snippet initialization
      */
     protected $resetParameters = array(
-        'askOld'     => false,   // Do not ask for the old password
-        'forceRules' => false,   // If user logs in using password that does not obey the rules, he is forced to change it
-        'user' => 'getSelectedUser',
+        'askOld'           => false,   // Do not ask for the old password
+        'forceRules'       => false,   // If user logs in using password that does not obey the rules, he is forced to change it
+        'menuShowChildren' => true,
+        'menuShowSiblings' => true,
+        'routeAction'      => 'show',
+        'user'             => 'getSelectedUser',
         );
 
     /**
@@ -146,6 +149,16 @@ class Gems_Default_StaffAction extends \Gems_Controller_ModelSnippetActionAbstra
             $user = $this->getSelectedUser();
 
             if ($user) {
+                $current = $this->loader->getCurrentUser();
+
+                if (! ($current->hasPrivilege('pr.staff.see.all') ||
+                        $current->isAllowedOrganization($user->getBaseOrganizationId()))) {
+                    throw new \Gems_Exception($this->_('No access to page'), 403, null, sprintf(
+                            $this->_('You have no right to access users from the organization %s.'),
+                            $user->getBaseOrganization()->getName()
+                            ));
+                }
+
                 switch ($action) {
                     case 'create':
                     case 'show':
@@ -153,18 +166,11 @@ class Gems_Default_StaffAction extends \Gems_Controller_ModelSnippetActionAbstra
                         break;
 
                     default:
-                        $current = $this->loader->getCurrentUser();
                         if (! $user->hasAllowedRole()) {
                             throw new \Gems_Exception($this->_('No access to page'), 403, null, sprintf(
                                     $this->_('As %s user you have no right to access users with the role %s.'),
                                     $current->getRole(),
                                     $user->getRole()
-                                    ));
-                        }
-                        if (! $current->isAllowedOrganization($user->getBaseOrganizationId())) {
-                            throw new \Gems_Exception($this->_('No access to page'), 403, null, sprintf(
-                                    $this->_('You have no right to access users from the organization %s.'),
-                                    $user->getBaseOrganization()->getName()
                                     ));
                         }
                 }

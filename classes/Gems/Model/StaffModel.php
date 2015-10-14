@@ -124,6 +124,45 @@ class Gems_Model_StaffModel extends Gems_Model_JoinModel
 
     /**
      *
+     * @return \Gems_Model_StaffModel
+     */
+    public function applyOwnAccountEdit()
+    {
+        $noscript = new \MUtil_Validate_NoScript();
+
+        $this->set('gsf_id_user',        'elementClass', 'None');
+        $this->set('gsf_login',          'label', $this->_('Login Name'),
+                'elementClass', 'Exhibitor'
+                );
+        $this->set('gsf_email',          'label', $this->_('E-Mail'),
+                'size', 30,
+                'validator', new \MUtil_Validate_SimpleEmail()
+                );
+        $this->set('gsf_first_name',     'label', $this->_('First name'), 'validator', $noscript);
+        $this->set('gsf_surname_prefix', 'label', $this->_('Surname prefix'),
+                'description', 'de, van der, \'t, etc...',
+                'validator', $noscript
+                );
+        $this->set('gsf_last_name',      'label', $this->_('Last name'),
+                'required', true,
+                'validator', $noscript
+                );
+        $this->set('gsf_gender',         'label', $this->_('Gender'),
+                'multiOptions', $this->util->getTranslated()->getGenders(),
+                'elementClass', 'Radio',
+                'separator', ''
+                );
+        $this->set('gsf_iso_lang',       'label', $this->_('Language'),
+                'multiOptions', $this->util->getLocalized()->getLanguages()
+                );
+
+        $this->setFilter(array('gsf_id_user' => $this->loader->getCurrentUser()->getUserId()));
+
+        return $this;
+    }
+
+    /**
+     *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
      * @param int $defaultOrgId The default organization id or null if current organization

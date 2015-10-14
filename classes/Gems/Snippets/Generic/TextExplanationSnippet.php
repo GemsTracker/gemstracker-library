@@ -28,66 +28,49 @@
  *
  *
  * @package    Gems
- * @subpackage Snippets\Log
+ * @subpackage Snippets\Generic
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: LogSearchSnippet.php $
+ * @version    $Id: TextExplanationSnippet.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
-namespace Gems\Snippets\Log;
-
-use Gems\Snippets\AutosearchInRespondentSnippet;
+namespace Gems\Snippets\Generic;
 
 /**
  *
  *
  * @package    Gems
- * @subpackage Snippets\Log
+ * @subpackage Snippets\Generic
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.6.5 16-feb-2015 19:46:34
+ * @since      Class available since version 1.7.2 14-okt-2015 16:06:13
  */
-class LogSearchSnippet extends AutosearchInRespondentSnippet
+class TextExplanationSnippet extends \MUtil_Snippets_SnippetAbstract
 {
     /**
      *
-     * @var \Gems_Loader
+     * @var the tag of the element to create
      */
-    protected $loader;
+    protected $explanationTag = 'p';
 
     /**
-     * Returns a text element for autosearch. Can be overruled.
+     * The text to show
      *
-     * The form / html elements to search on. Elements can be grouped by inserting null's between them.
-     * That creates a distinct group of elements
-     *
-     * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return array Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.
+     * @var string
      */
-    protected function getAutoSearchElements(array $data)
+    protected $explanationText;
+
+    /**
+     * Create the snippets content
+     *
+     * This is a stub function either override getHtmlOutput() or override render()
+     *
+     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     */
+    public function getHtmlOutput(\Zend_View_Abstract $view)
     {
-        $elements = parent::getAutoSearchElements($data);
-
-        $this->_addPeriodSelectors($elements, 'gla_created');
-
-        $elements[] = null;
-
-        $elements[] = $this->_('Specific action');
-
-        $sql = "SELECT gls_id_action, gls_name
-                    FROM gems__log_setup
-                    WHERE gls_when_no_user = 1 OR gls_on_action = 1 OR gls_on_change = 1 OR gls_on_post = 1
-                    ORDER BY gls_name";
-
-        $elements[] = $this->_createSelectElement('gla_action', $sql, $this->_('(any action)'));
-
-        $elements[] = $this->_createSelectElement(
-                'gla_organization',
-                $this->loader->getCurrentUser()->getAllowedOrganizations(),
-                $this->_('(all organizations)')
-                );
-
-        return $elements;
+        return \MUtil_Html::create($this->explanationTag, $this->explanationText);
     }
 }

@@ -263,6 +263,10 @@ abstract class FormSnippetAbstract extends \MUtil_Snippets_SnippetAbstract
      */
     public function beforeDisplay()
     {
+        if ($this->_csrf) {
+            $this->_csrf->initCsrfToken();
+        }
+
         if ($this->layoutAutoWidthFactor || $this->layoutFixedWidth) {
             $div = new \MUtil_Html_DivFormElement();
 
@@ -283,6 +287,16 @@ abstract class FormSnippetAbstract extends \MUtil_Snippets_SnippetAbstract
     public function checkRegistryRequestsAnswers()
     {
         return (boolean) $this->request;
+    }
+
+    /**
+     * After validation we clean the form data to remove all
+     * entries that do not have elements in the form (and
+     * this filters the data as well).
+     */
+    public function cleanFormData()
+    {
+        $this->formData = $this->_form->getValues();
     }
 
     /**
@@ -339,6 +353,17 @@ abstract class FormSnippetAbstract extends \MUtil_Snippets_SnippetAbstract
     public function getRedirectRoute()
     {
         return $this->afterSaveRouteUrl;
+    }
+
+    /**
+     * Helper function to allow generalized statements about the items in the model to used specific item names.
+     *
+     * @param int $count
+     * @return $string
+     */
+    public function getTopic($count = 1)
+    {
+        return $this->plural('item', 'items', $count);
     }
 
     /**
@@ -401,6 +426,22 @@ abstract class FormSnippetAbstract extends \MUtil_Snippets_SnippetAbstract
     { }
 
     /**
+     * Hook that allows actions when the input is invalid
+     *
+     * When not rerouted, the form will be populated afterwards
+     */
+    protected function onInValid()
+    {
+        $this->addMessage(sprintf($this->_('Input error! Changes to %s not saved!'), $this->getTopic()));
+
+        if ($this->_csrf) {
+            if ($this->_csrf->getMessages()) {
+                $this->addMessage($this->_('The form was open for too long or was opened in multiple windows.'));
+            }
+        }
+    }
+
+    /**
      * Hook for setting the data on the form.
      */
     protected function populateForm()
@@ -438,20 +479,18 @@ abstract class FormSnippetAbstract extends \MUtil_Snippets_SnippetAbstract
 
             // If there is a save button it should be checked, otherwise just validate
             if ((! $this->_saveButton) || $this->_saveButton->isChecked()) {
+
                 if ($this->_form->isValid($this->formData)) {
-                    /*
-                     * Now that we validated, the form is be populated. But I think the step
-                     * below is not needed as the values in the form come from the data array
-                     * but performing a getValues() cleans the data array so data in post but
-                     * not in the form is removed from the data variable.
-                     */
-                    $this->formData = $this->_form->getValues();
+                    // Remove all unwanted data
+                    $this->cleanFormData();
 
                     // Save
                     $this->afterSave($this->saveData());
 
                     // Reroute (always, override function otherwise)
                     $this->setAfterSaveRoute();
+                } else {
+                    $this->onInValid();
                 }
             } else {
                 //The default save button was NOT used, so we have a fakesubmit button

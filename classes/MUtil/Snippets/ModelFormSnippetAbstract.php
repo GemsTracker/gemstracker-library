@@ -337,6 +337,16 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_M
     }
 
     /**
+     * After validation we clean the form data to remove all
+     * entries that do not have elements in the form (and
+     * this filters the data as well).
+     */
+    public function cleanFormData()
+    {
+        $this->formData = $this->_form->getValues();
+    }
+
+    /**
      * Creates an empty form. Allows overruling in sub-classes.
      *
      * @param mixed $options
@@ -476,17 +486,17 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_M
             $formData = array($this->request->getPost() + $this->formData);
 
             $formData = $model->processAfterLoad($formData, $this->createData, true);
-            
+
             // Get the first row
             $this->formData = reset($formData);
-            
+
             // Now load data from the model for possibly missing values. Since model
             // loads them, we don't need a manual processAfterLoad anymore.
             if ($this->createData) {
                 $modelData = $model->loadNew();
             } else {
                 $modelData = $model->loadFirst();
-            }            
+            }
             $this->formData = $this->formData + $modelData;
 
         } else {
@@ -568,14 +578,10 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_M
 
             // If there is a save button it should be checked, otherwise just validate
             if ((! $this->_saveButton) || $this->_saveButton->isChecked()) {
+
                 if ($this->validateForm()) {
-                    /*
-                     * Now that we validated, the form is be populated. But I think the step
-                     * below is not needed as the values in the form come from the data array
-                     * but performing a getValues() cleans the data array so data in post but
-                     * not in the form is removed from the data variable.
-                     */
-                    $this->formData = $this->_form->getValues();
+                    // Remove all unwanted data
+                    $this->cleanFormData();
 
                     // Save
                     $this->saveData();
