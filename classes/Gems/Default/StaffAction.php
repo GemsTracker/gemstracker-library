@@ -112,17 +112,19 @@ class Gems_Default_StaffAction extends \Gems_Controller_ModelSnippetActionAbstra
      * The parameters used for the reset action.
      *
      * @var array Mixed key => value array for snippet initialization
-     * /
+     */
     protected $resetParameters = array(
+        'askOld'     => false,   // Do not ask for the old password
+        'forceRules' => false,   // If user logs in using password that does not obey the rules, he is forced to change it
+        'user' => 'getSelectedUser',
         );
 
     /**
      * Snippets for reset
      *
      * @var mixed String or array of snippets name
-     * /
-    protected $resetSnippets = array(
-        );
+     */
+    protected $resetSnippets = array('User\\AdminPasswordResetSnippet');
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -147,13 +149,22 @@ class Gems_Default_StaffAction extends \Gems_Controller_ModelSnippetActionAbstra
                 switch ($action) {
                     case 'create':
                     case 'show':
+                    case 'mail':
                         break;
 
                     default:
+                        $current = $this->loader->getCurrentUser();
                         if (! $user->hasAllowedRole()) {
                             throw new \Gems_Exception($this->_('No access to page'), 403, null, sprintf(
-                                    $this->_('Access to this page is not allowed for current role: %s.'),
-                                    $this->loader->getCurrentUser()->getRole()
+                                    $this->_('As %s user you have no right to access users with the role %s.'),
+                                    $current->getRole(),
+                                    $user->getRole()
+                                    ));
+                        }
+                        if (! $current->isAllowedOrganization($user->getBaseOrganizationId())) {
+                            throw new \Gems_Exception($this->_('No access to page'), 403, null, sprintf(
+                                    $this->_('You have no right to access users from the organization %s.'),
+                                    $user->getBaseOrganization()->getName()
                                     ));
                         }
                 }
@@ -261,97 +272,10 @@ class Gems_Default_StaffAction extends \Gems_Controller_ModelSnippetActionAbstra
      */
     public function resetAction()
     {
-        /*
         if ($this->resetSnippets) {
             $params = $this->_processParameters($this->resetParameters);
 
             $this->addSnippets($this->resetSnippets, $params);
-        } // */
-
-        // @TODO: Throw all this in a snippet
-        // Make sure the user is loaded
-        $user = $this->getSelectedUser();
-
-        $this->html->h3(sprintf($this->_('Reset password for: %s'), $user->getFullName()));
-
-        if (! ($user->hasAllowedRole() && $user->canSetPassword())) {
-            $this->addMessage($this->_('You are not allowed to change this password.'));
-            return;
         }
-
-        /*************
-         * Make form *
-         *************/
-        $form = $user->getChangePasswordForm(array(
-            'askOld'     => false,
-            'forceRules' => false    // If user logs in using password that does not obey the rules, he is forced to change it
-            ));
-
-        $createElement = new \MUtil_Form_Element_FakeSubmit('create_account');
-        $createElement->setLabel($this->_('Create account mail'))
-                    ->setAttrib('class', 'button')
-                    ->setOrder(0);
-
-        $form->addElement($createElement);
-
-        $resetElement = new \MUtil_Form_Element_FakeSubmit('reset_password');
-        $resetElement->setLabel($this->_('Reset password mail'))
-                    ->setAttrib('class', 'button')
-                    ->setOrder(1);
-        $form->addElement($resetElement);
-
-        /****************
-         * Process form *
-         ****************/
-        if ($this->_request->isPost()) {
-            $data = $this->_request->getPost();
-            // \MUtil_Echo::track($data);
-            if (isset($data['create_account']) && $data['create_account']) {
-                $mail = $this->loader->getMailLoader()->getMailer('staffPassword', $this->_getIdParam());
-                $mail->setOrganizationFrom();
-                if ($mail->setCreateAccountTemplate()) {
-                    $mail->send();
-                    $this->addMessage($this->_('Mail sent'));
-                    $this->_reroute(array($this->getRequest()->getActionKey() => 'show'));
-                } else {
-                    $this->addMessage($this->_('No default Create Account mail template set in organization or project'));
-                }
-
-            } elseif (isset($data['reset_password']) && $data['reset_password']) {
-                $mail = $this->loader->getMailLoader()->getMailer('staffPassword', $this->_getIdParam());
-                $mail->setOrganizationFrom();
-                if ($mail->setResetPasswordTemplate()) {
-                    $mail->send();
-                    $this->addMessage($this->_('Mail sent'));
-                    $this->_reroute(array($this->getRequest()->getActionKey() => 'show'));
-                } else {
-                    $this->addMessage($this->_('No default Reset Password mail template set in organization or project'));
-                }
-
-
-            } elseif ($form->isValid($data, false)) {
-                // If form is valid, but contains messages, do show them. Most likely these are the not enforced password rules
-                if ($form->getMessages()) {
-                    $this->addMessage($form->getMessages());
-                }
-                $this->addMessage($this->_('New password is active.'));
-                $this->_reroute(array($this->getRequest()->getActionKey() => 'show'));
-
-            } else {
-                $this->addMessage($form->getErrorMessages());
-            }
-        }
-
-        /****************
-         * Display form *
-         ****************/
-        if ($user->isPasswordResetRequired()) {
-            $this->menu->setVisible(false);
-        }
-        // $this->beforeFormDisplay($form, false);
-
-        $this->html[] = $form;
-
-        $this->addSnippet('Generic\\CurrentSiblingsButtonRowSnippet');
     }
 }

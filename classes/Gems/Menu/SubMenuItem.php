@@ -412,10 +412,12 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
      *                             'icon', 'privilege', 'target', 'type', 'button_only'.
      * @param array  $otherReact    Array of extra options for reactivate item, e.g. 'visible', 'allowed', 'class',
      *                             'icon', 'privilege', 'target', 'type', 'button_only'.
-     * @return \Gems_Menu_SubmenuItem
+     * @return array of \Gems_Menu_SubmenuItem
      */
     public function addDeReactivateAction($checkField, $deactivateOn = 1, $reactivateOn = 1, array $otherDeact = array(), array $otherReact = array())
     {
+        $pages = array();
+
         if (null !== $deactivateOn) {
             if (isset($otherDeact['privilege'])) {
                 $privilege = $otherDeact['privilege'];
@@ -423,9 +425,10 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
                 $privilege = $this->get('privilege') . '.deactivate';
             }
 
-            $menu = $this->addAction($this->_('Deactivate'), $privilege, 'deactivate', $otherDeact);
-            $menu->setModelParameters(1)
+            $deactivate = $this->addAction($this->_('Deactivate'), $privilege, 'deactivate', $otherDeact);
+            $deactivate->setModelParameters(1)
                     ->addParameterFilter($checkField, $deactivateOn);
+            $pages['deactivate'] = $deactivate;
         }
 
         if (null !== $reactivateOn) {
@@ -435,12 +438,13 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
                 $privilege = $this->get('privilege') . '.reactivate';
             }
 
-            $menu = $this->addAction($this->_('Reactivate'), $privilege, 'reactivate', $otherReact);
-            $menu->setModelParameters(1)
+            $reactivate = $this->addAction($this->_('Reactivate'), $privilege, 'reactivate', $otherReact);
+            $reactivate->setModelParameters(1)
                     ->addParameterFilter($checkField, $reactivateOn);
+            $pages['reactivate'] = $reactivate;
         }
 
-        return $menu;
+        return $pages;
     }
 
     /**

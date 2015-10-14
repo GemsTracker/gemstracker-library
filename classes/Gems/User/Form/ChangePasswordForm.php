@@ -44,7 +44,8 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract implements Gems_User_Validate_GetUserInterface
+class Gems_User_Form_ChangePasswordForm extends \Gems_Form_AutoLoadFormAbstract
+        implements \Gems_User_Validate_GetUserInterface
 {
     /**
      * The field name for the new password element.
@@ -68,6 +69,13 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract i
     protected $_repeatPasswordFieldName = 'repeat_password';
 
     /**
+     * The field name for the report no rule enforcement element.
+     *
+     * @var string
+     */
+    protected $_reportNoEnforcementFieldName = 'report_no_enforcement';
+
+    /**
      * The field name for the report rules element.
      *
      * @var string
@@ -77,7 +85,7 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract i
     /**
      * Layout table
      *
-     * @var MUtil_Html_TableElements
+     * @var \MUtil_Html_TableElements
      */
     protected $_table;
 
@@ -104,10 +112,10 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract i
      *
      * Default is asking for the username but you can e.g. ask for someones birthday.
      *
-     * @return array Of 'label name' => 'required values' or Zend_Form_Element elements
+     * @return array Of 'label name' => 'required values' or \Zend_Form_Element elements
      */
     protected $checkFields = array();
-    
+
     /**
      * Should the password rules be enforced.
      *
@@ -124,13 +132,19 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract i
 
     /**
      *
-     * @var Zend_Translate
+     * @var \Zend_Translate
      */
     protected $translate;
 
     /**
      *
-     * @var Gems_User_User
+     * @var \Zend_Translate_Adapter
+     */
+    protected $translateAdapter;
+
+    /**
+     *
+     * @var \Gems_User_User
      */
     protected $user;
 
@@ -141,6 +155,26 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract i
      */
     protected $useTableLayout = false;
 
+    /**
+     * Copy from \Zend_Translate_Adapter
+     *
+     * Translates the given string
+     * returns the translation
+     *
+     * @param  string             $text   Translation string
+     * @param  string|\Zend_Locale $locale (optional) Locale/Language to use, identical with locale
+     *                                    identifier, @see \Zend_Locale for more information
+     * @return string
+     */
+    public function _($text, $locale = null)
+    {
+        return $this->translateAdapter->_($text, $locale);
+    }
+
+    /**
+     *
+     * @param mixed $links
+     */
     public function addButtons($links)
     {
         if ($links && $this->_table) {
@@ -158,16 +192,19 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract i
     {
         $check = 1;
         foreach ($this->checkFields as $label => &$value) {
-            if ($value instanceof Zend_Form_Element) {
+            if ($value instanceof \Zend_Form_Element) {
                 $element = $value;
             } else {
                 if ($value) {
-                    $element = new Zend_Form_Element_Text('check_' . $check);
+                    $element = new \Zend_Form_Element_Text('check_' . $check);
                     $element->setAllowEmpty(false);
                     $element->setLabel($label);
 
-                    $validator = new Zend_Validate_Identical($value);
-                    $validator->setMessage(sprintf($this->translate->_('%s is not correct.'), $label), Zend_Validate_Identical::NOT_SAME);
+                    $validator = new \Zend_Validate_Identical($value);
+                    $validator->setMessage(
+                            sprintf($this->_('%s is not correct.'), $label),
+                            \Zend_Validate_Identical::NOT_SAME
+                            );
                     $element->addValidator($validator);
 
                     $value = $element;
@@ -183,6 +220,21 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract i
     }
 
     /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * This function is no needed if the classes are setup correctly
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    {
+        $this->initTranslateable();
+
+        parent::afterRegistry();
+    }
+
+    /**
      * Should be called after answering the request to allow the Target
      * to check if all required registry values have been set correctly.
      *
@@ -190,7 +242,7 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract i
      */
     public function checkRegistryRequestsAnswers()
     {
-        if ($this->translate && $this->user) {
+        if ($this->user instanceof \Gems_User_User) {
             return parent::checkRegistryRequestsAnswers();
         } else {
             return false;
@@ -230,7 +282,7 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract i
     /**
      * Returns/sets a new password element.
      *
-     * @return Zend_Form_Element_Password
+     * @return \Zend_Form_Element_Password
      */
     public function getNewPasswordElement()
     {
@@ -238,15 +290,18 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract i
 
         if (! $element) {
             // Field new password
-            $element = new Zend_Form_Element_Password($this->_newPasswordFieldName);
-            $element->setLabel($this->translate->_('New password'));
+            $element = new \Zend_Form_Element_Password($this->_newPasswordFieldName);
+            $element->setLabel($this->_('New password'));
             $element->setAttrib('size', 40);
             $element->setRequired(true);
             $element->setRenderPassword(true);
-            $element->addValidator(new Gems_User_Validate_NewPasswordValidator($this->user));
+            $element->addValidator(new \Gems_User_Validate_NewPasswordValidator($this->user));
 
-            $validator = new MUtil_Validate_IsConfirmed($this->_newPasswordFieldName, $this->translate->_('Repeat password'));
-            $validator->setMessage($this->translate->_("Must be the same as %fieldDescription%."), MUtil_Validate_IsConfirmed::NOT_SAME);
+            $validator = new \MUtil_Validate_IsConfirmed($this->_newPasswordFieldName, $this->_('Repeat password'));
+            $validator->setMessage(
+                    $this->_("Must be the same as %fieldDescription%."),
+                    \MUtil_Validate_IsConfirmed::NOT_SAME
+                    );
             $element->addValidator($validator);
 
             $this->addElement($element);
@@ -258,7 +313,7 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract i
     /**
      * Returns/sets a check old password element.
      *
-     * @return Zend_Form_Element_Password
+     * @return \Zend_Form_Element_Password
      */
     public function getOldPasswordElement()
     {
@@ -266,12 +321,14 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract i
 
         if (! $element) {
             // Field current password
-            $element = new Zend_Form_Element_Password($this->_oldPasswordFieldName);
-            $element->setLabel($this->translate->_('Current password'));
+            $element = new \Zend_Form_Element_Password($this->_oldPasswordFieldName);
+            $element->setLabel($this->_('Current password'));
             $element->setAttrib('size', 40);
             $element->setRenderPassword(true);
             $element->setRequired(true);
-            $element->addValidator(new Gems_User_Validate_UserPasswordValidator($this->user, $this->translate->_('Wrong password.')));
+            $element->addValidator(
+                    new \Gems_User_Validate_UserPasswordValidator($this->user, $this->_('Wrong password.'))
+                    );
 
             $this->addElement($element);
         }
@@ -282,7 +339,7 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract i
     /**
      * Returns/sets a repeat password element.
      *
-     * @return Zend_Form_Element_Password
+     * @return \Zend_Form_Element_Password
      */
     public function getRepeatPasswordElement()
     {
@@ -290,14 +347,17 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract i
 
         if (! $element) {
             // Field repeat password
-            $element = new Zend_Form_Element_Password($this->_repeatPasswordFieldName);
-            $element->setLabel($this->translate->_('Repeat password'));
+            $element = new \Zend_Form_Element_Password($this->_repeatPasswordFieldName);
+            $element->setLabel($this->_('Repeat password'));
             $element->setAttrib('size', 40);
             $element->setRequired(true);
             $element->setRenderPassword(true);
 
-            $validator = new MUtil_Validate_IsConfirmed($this->_newPasswordFieldName, $this->translate->_('New password'));
-            $validator->setMessage($this->translate->_("Must be the same as %fieldDescription%."), MUtil_Validate_IsConfirmed::NOT_SAME);
+            $validator = new \MUtil_Validate_IsConfirmed($this->_newPasswordFieldName, $this->_('New password'));
+            $validator->setMessage(
+                    $this->_("Must be the same as %fieldDescription%."),
+                    \MUtil_Validate_IsConfirmed::NOT_SAME
+                    );
             $element->addValidator($validator);
 
             $this->addElement($element);
@@ -309,27 +369,50 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract i
     /**
      * Returns/sets an element showing the password rules
      *
-     * @return MUtil_Form_Element_Html
+     * @return \MUtil_Form_Element_Html
+     */
+    public function getReportNoEnforcementElement()
+    {
+        $element = $this->getElement($this->_reportNoEnforcementFieldName);
+
+        if (! $element) {
+            // Show no enforcement info
+            $element = new \MUtil_Form_Element_Html($this->_reportNoEnforcementFieldName);
+            $element->setLabel($this->_('Rule enforcement'));
+
+            $element->div()->strong($this->_('Choose a non-compliant password to force a password change at login.'));
+            $this->addElement($element);
+        }
+
+        return $element;
+    }
+
+    /**
+     * Returns/sets an element showing the password rules
+     *
+     * @return \MUtil_Form_Element_Html
      */
     public function getReportRulesElement()
     {
         $element = $this->getElement($this->_reportRulesFieldName);
 
         if (! $element) {
+            $info = $this->user->reportPasswordWeakness();
+
             // Show password info
-            if ($info = $this->user->reportPasswordWeakness()) {
-                $element = new MUtil_Form_Element_Html($this->_reportRulesFieldName);
-                $element->setLabel($this->translate->_('Password rules'));
+            if ($info) {
+                $element = new \MUtil_Form_Element_Html($this->_reportRulesFieldName);
+                $element->setLabel($this->_('Password rules'));
 
                 if (1 == count($info)) {
-                    $element->div(sprintf($this->translate->_('A password %s.'), reset($info)));
+                    $element->div(sprintf($this->_('A password %s.'), reset($info)));
                 } else {
                     foreach ($info as &$line) {
                         $line .= ';';
                     }
                     $line[strlen($line) - 1] = '.';
 
-                    $element->div($this->translate->_('A password:'))->ul($info);
+                    $element->div($this->_('A password:'))->ul($info);
                 }
                 $this->addElement($element);
             }
@@ -345,17 +428,57 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract i
      */
     public function getSubmitButtonLabel()
     {
-        return $this->translate->_($this->translate->_('Save'));
+        return $this->_('Save');
     }
 
     /**
      * Returns a user
      *
-     * @return Gems_User_User
+     * @return \Gems_User_User
      */
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    public function hasRuleEnforcement()
+    {
+        return $this->forceRules;
+    }
+
+    /**
+     * Function that checks the setup of this class/traight
+     *
+     * This function is not needed if the variables have been defined correctly in the
+     * source for this object and theose variables have been applied.
+     *
+     * return @void
+     */
+    protected function initTranslateable()
+    {
+        if ($this->translateAdapter instanceof \Zend_Translate_Adapter) {
+            // OK
+            return;
+        }
+
+        if ($this->translate instanceof \Zend_Translate) {
+            // Just one step
+            $this->translateAdapter = $this->translate->getAdapter();
+            return;
+        }
+
+        if ($this->translate instanceof \Zend_Translate_Adapter) {
+            // It does happen and if it is all we have
+            $this->translateAdapter = $this->translate;
+            return;
+        }
+
+        // Make sure there always is an adapter, even if it is fake.
+        $this->translateAdapter = new \MUtil_Translate_Adapter_Potemkin();
     }
 
     /**
@@ -374,7 +497,7 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract i
     public function isValid($data, $disableTranslateValidators = null)
     {
         $valid = parent::isValid($data, $disableTranslateValidators);
-        
+
         if ($valid === false && $this->forceRules === false) {
             $messages = $this->getMessages();
             // If we don't enforce password rules, we pass validation but leave error messages in place.
@@ -385,11 +508,11 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract i
 
         if ($valid) {
             $this->user->setPassword($data['new_password']);
-            
+
         } else {
             if ($this ->getAskOld() && isset($data['old_password'])) {
                 if ($data['old_password'] === strtoupper($data['old_password'])) {
-                    $this->addError($this->translate->_('Caps Lock seems to be on!'));
+                    $this->addError($this->_('Caps Lock seems to be on!'));
                 }
             }
             $this->populate($data);
@@ -401,7 +524,7 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract i
     /**
      * The function that determines the element load order
      *
-     * @return Gems_User_Form_LoginForm (continuation pattern)
+     * @return \Gems_User_Form_LoginForm (continuation pattern)
      */
     public function loadDefaultElements()
     {
@@ -416,14 +539,19 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract i
         $this->getRepeatPasswordElement();
         $this->getSubmitButton();
 
+        if (! $this->forceRules) {
+            $this->getReportNoEnforcementElement();
+        }
+
         if ($this->reportRules) {
             $this->getReportRulesElement();
         }
+
         if ($this->useTableLayout) {
             /****************
              * Display form *
              ****************/
-            $this->_table = new MUtil_Html_TableElement(array('class' => 'formTable'));
+            $this->_table = new \MUtil_Html_TableElement(array('class' => 'formTable'));
             $this->_table->setAsFormLayout($this, true, true);
             $this->_table['tbody'][0][0]->class = 'label';  // Is only one row with formLayout, so all in output fields get class.
         }
@@ -432,12 +560,32 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract i
     }
 
     /**
+     * Copy from \Zend_Translate_Adapter
+     *
+     * Translates the given string using plural notations
+     * Returns the translated string
+     *
+     * @see \Zend_Locale
+     * @param  string             $singular Singular translation string
+     * @param  string             $plural   Plural translation string
+     * @param  integer            $number   Number for detecting the correct plural
+     * @param  string|\Zend_Locale $locale   (Optional) Locale/Language to use, identical with
+     *                                      locale identifier, @see \Zend_Locale for more information
+     * @return string
+     */
+    public function plural($singular, $plural, $number, $locale = null)
+    {
+        $args = func_get_args();
+        return call_user_func_array(array($this->translateAdapter, 'plural'), $args);
+    }
+
+    /**
      * Should a user specific check question be asked?
      *
-     * Enables loading of parameter through Zend_Form::__construct()
+     * Enables loading of parameter through \Zend_Form::__construct()
      *
      * @param boolean $askCheck
-     * @return Gems_User_Form_ChangePasswordForm (continuation pattern)
+     * @return \Gems_User_Form_ChangePasswordForm (continuation pattern)
      */
     public function setAskCheck($askCheck = true)
     {
@@ -449,10 +597,10 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract i
     /**
      * Should the form ask for an old password
      *
-     * Enables loading of parameter through Zend_Form::__construct()
+     * Enables loading of parameter through \Zend_Form::__construct()
      *
      * @param boolean $askOld
-     * @return Gems_User_Form_ChangePasswordForm (continuation pattern)
+     * @return \Gems_User_Form_ChangePasswordForm (continuation pattern)
      */
     public function setAskOld($askOld = true)
     {
@@ -464,10 +612,10 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract i
     /**
      * Set optional user specific check question to be asked when getAskCheck() is on.
      *
-     * Enables loading of parameter through Zend_Form::__construct()
+     * Enables loading of parameter through \Zend_Form::__construct()
      *
-     * @param array $checkFields Of 'label name' => 'required values' or Zend_Form_Element elements
-     * @return Gems_User_Form_ChangePasswordForm (continuation pattern)
+     * @param array $checkFields Of 'label name' => 'required values' or \Zend_Form_Element elements
+     * @return \Gems_User_Form_ChangePasswordForm (continuation pattern)
      */
     public function setCheckFields(array $checkFields)
     {
@@ -475,14 +623,14 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract i
 
         return $this;
     }
-    
+
     /**
      * Should the form report the password rules
      *
-     * Enables loading of parameter through Zend_Form::__construct()
+     * Enables loading of parameter through \Zend_Form::__construct()
      *
      * @param boolean $reportRules
-     * @return Gems_User_Form_ChangePasswordForm (continuation pattern)
+     * @return \Gems_User_Form_ChangePasswordForm (continuation pattern)
      */
     public function setReportRules($reportRules = true)
     {
@@ -494,10 +642,10 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract i
     /**
      * Should the form enforce the password rules
      *
-     * Enables loading of parameter through Zend_Form::__construct()
+     * Enables loading of parameter through \Zend_Form::__construct()
      *
      * @param boolean $forceRules
-     * @return Gems_User_Form_ChangePasswordForm (continuation pattern)
+     * @return \Gems_User_Form_ChangePasswordForm (continuation pattern)
      */
     public function setForceRules($forceRules = true)
     {
@@ -509,12 +657,12 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract i
     /**
      * The user to change the password for
      *
-     * Enables loading of parameter through Zend_Form::__construct()
+     * Enables loading of parameter through \Zend_Form::__construct()
      *
-     * @param Gems_User_User $user
-     * @return Gems_User_Form_ChangePasswordForm (continuation pattern)
+     * @param \Gems_User_User $user
+     * @return \Gems_User_Form_ChangePasswordForm (continuation pattern)
      */
-    public function setUser(Gems_User_User $user)
+    public function setUser(\Gems_User_User $user)
     {
         $this->user = $user;
 
@@ -524,10 +672,10 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract i
     /**
      * Should the form report use the default form table layout
      *
-     * Enables loading of parameter through Zend_Form::__construct()
+     * Enables loading of parameter through \Zend_Form::__construct()
      *
      * @param boolean $useTableLayout
-     * @return Gems_User_Form_ChangePasswordForm (continuation pattern)
+     * @return \Gems_User_Form_ChangePasswordForm (continuation pattern)
      */
     public function setUseTableLayout($useTableLayout = true)
     {

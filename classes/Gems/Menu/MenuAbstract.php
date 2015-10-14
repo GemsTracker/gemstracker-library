@@ -686,31 +686,39 @@ abstract class Gems_Menu_MenuAbstract
      */
     public function addStaffPage($label, array $other = array())
     {
+        if ($this->user->hasPrivilege('pr.staff.edit.all')) {
+            $filter = $this->escort->getUtil()->getDbLookup()->getOrganizations();
+        } else {
+            $filter = array_keys($this->user->getAllowedOrganizations());
+        }
+
         $page = $this->addPage($label, 'pr.staff', 'staff', 'index', $other);
         $page->addAutofilterAction();
         $createPage = $page->addCreateAction();
         $showPage = $page->addShowAction();
+
         $pages[] = $showPage->addEditAction();
         $pages[] = $showPage->addAction($this->_('Reset password'), 'pr.staff.edit', 'reset')
                 ->setModelParameters(1)
                 ->addParameterFilter('gsf_active', 1);
-        $pages[] = $showPage->addAction($this->_('Send Mail'), 'pr.staff.edit', 'mail')
+        $showPage->addAction($this->_('Send Mail'), 'pr.staff.edit', 'mail')
                 ->setModelParameters(1)
-                ->addParameterFilter('can_mail', 1, 'gsf_active', 1);
-        $pages[] = $showPage->addDeReactivateAction('gsf_active', 1, 0);
-        $pages[] = $page->addExcelAction();
-        $pages[] = $page->addImportAction();
+                ->addParameterFilter('can_mail', 1, 'gsf_active', 1, 'gsf_id_organization', $filter);
+
+        $pages = $pages + $showPage->addDeReactivateAction('gsf_active', 1, 0);
 
         // LOG CONTROLLER
-        $logPage = $showPage->addPage($this->_('Activity overview'), 'pr.staff-log', 'staff-log', 'index');
-        $logPage->setModelParameters(1);
+        $logPage = $showPage->addPage($this->_('Activity overview'), 'pr.staff-log', 'staff-log', 'index')
+                ->setModelParameters(1);
         $logPage->addAutofilterAction();
         $logPage->addShowAction()->setModelParameters(1)->addNamedParameters('log', 'gla_id');
 
         $pages[] = $logPage;
 
+        $page->addExcelAction();
+        $page->addImportAction();
+
         if (! $this->user->hasPrivilege('pr.staff.edit.all')) {
-            $filter = array_keys($this->user->getAllowedOrganizations());
             foreach ($pages as $sub_page) {
                 $sub_page->addParameterFilter('gsf_id_organization', $filter, 'accessible_role', 1);
             }
