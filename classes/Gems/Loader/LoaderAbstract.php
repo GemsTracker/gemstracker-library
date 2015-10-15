@@ -218,7 +218,8 @@ class Gems_Loader_LoaderAbstract extends \MUtil_Registry_Source
      * @param boolean $prepend Put path at the beginning of the stack (has no effect when prefix / dir already set)
      * @return \Gems_Loader_LoaderAbstract (continuation pattern)
      */
-    public function addPrefixPath($prefix, $path, $prepend = true) {
+    public function addPrefixPath($prefix, $path, $prepend = true)
+    {
         if ($this->cascade) {
             $newPrefix = $prefix . '_' . $this->cascade;
             $newPath = $path . '/' . strtr($this->cascade, '_', '/');

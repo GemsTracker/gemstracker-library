@@ -83,7 +83,6 @@ class MUtil_Snippets_SnippetLoader implements \MUtil_Snippets_SnippetLoaderInter
         $this->setSource($source);
         $this->loader = new \MUtil_Loader_PluginLoader($dirs);
         $this->loader->addPrefixPath('MUtil_Snippets_Standard', dirname(__FILE__) . '/Standard');
-        $this->loader->addPrefixPath('', dirname(__FILE__) . '/Standard');
     }
 
     /**

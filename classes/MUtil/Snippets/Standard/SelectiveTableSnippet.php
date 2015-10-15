@@ -34,6 +34,8 @@
  * @version    $Id$
  */
 
+namespace MUtil\Snippets\Standard;
+
 /**
  * Extends the TableSnippet so we can select which fields from the data we want to show
  * and what labels to use instead of using the column name as a label
@@ -50,7 +52,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.3
  */
-class MUtil_Snippets_Standard_SelectiveTableSnippet extends \MUtil_Snippets_TableSnippetAbstract
+class SelectiveTableSnippet extends \MUtil_Snippets_TableSnippetAbstract
 {
     /**
      *

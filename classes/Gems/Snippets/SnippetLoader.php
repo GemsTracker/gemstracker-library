@@ -48,7 +48,8 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.5
  */
-class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract implements MUtil_Snippets_SnippetLoaderInterface
+class Gems_Snippets_SnippetLoader extends \Gems_Loader_TargetLoaderAbstract
+    implements \MUtil_Snippets_SnippetLoaderInterface
 {
     /**
      * Static variable for debuggging purposes. Toggles the echoing of what snippets
@@ -59,7 +60,7 @@ class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract imple
      * is including the full prefix (if any).
      *
      * Use:
-     *     Gems_Snippets_SnippetLoader::$verbose = true;
+     *     \Gems_Snippets_SnippetLoader::$verbose = true;
      * to enable.
      *
      * @var boolean $verbose If true echo information about snippet loading.
@@ -67,7 +68,7 @@ class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract imple
     public static $verbose = false;
 
     /**
-     * Allows sub classes of Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
+     * Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
@@ -76,27 +77,21 @@ class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract imple
     /**
      * Sets the source of variables and the first directory for snippets
      *
-     * @param mixed $source Something that is or can be made into MUtil_Registry_SourceInterface, otheriwse Zend_Registry is used.
+     * @param mixed $source Something that is or can be made into \MUtil_Registry_SourceInterface, otherwise
+     * \Zend_Registry is used.
      * @param array $dirs prefix => pathname The inital paths to load from
      */
     public function __construct($source = null, array $dirs = array())
     {
-        // Add the standard snippets diractor as first dir (so it is loaded at the last try)
-        $standardDirs['MUtil_Snippets_Standard'] = GEMS_LIBRARY_DIR . '/classes/MUtil/Snippets/Standard';
+        parent::__construct($source, $dirs);
 
-        parent::__construct($source, $standardDirs + $dirs);
-
-        // Old standard dir loading
-        // $this->addPrefixPath('MUtil_Snippets_Standard', GEMS_LIBRARY_DIR . '/classes/MUtil/Snippets/Standard');
+        $this->addPrefixPath('MUtil_Snippets_Standard', GEMS_LIBRARY_DIR . '/classes/MUtil/Snippets/Standard', false);
 
         $noPrefixDirs = array(
-            GEMS_LIBRARY_DIR . '/classes/MUtil/Snippets/Standard',
             GEMS_LIBRARY_DIR . '/snippets',
             GEMS_ROOT_DIR . '/application/snippets',
         );
         $this->_loader->addPrefixPath('', $noPrefixDirs, false);
-        // $this->_loader->addFallBackPath(); // Enable to allow full class name specification
-
     }
 
     /**
@@ -104,10 +99,17 @@ class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract imple
      *
      * @param string $prefix
      * @param string $path
-     * @return MUtil_Snippets_SnippetLoaderInterface
+     * @param boolean $prepend
+     * @return \MUtil_Snippets_SnippetLoaderInterface
      */
     public function addPrefixPath($prefix, $path, $prepend = true)
     {
+        if ($prepend) {
+            $this->_dirs = array($prefix => $path) + $this->_dirs;
+        } else {
+            $this->_dirs[$prefix] = $path;
+        }
+
         $this->_loader->addPrefixPath($prefix, $path, $prepend);
 
         return $this;
@@ -119,7 +121,7 @@ class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract imple
      *
      * @param string $filename The name of the snippet
      * @param array $extraSourceParameters name/value pairs to add to the source for this snippet
-     * @return MUtil_Snippets_SnippetInterface The snippet
+     * @return \MUtil_Snippets_SnippetInterface The snippet
      */
     public function getSnippet($filename, array $extraSourceParameters = null)
     {
@@ -128,11 +130,11 @@ class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract imple
             $snippet = $this->_loadClass($filename, true);
             $this->removeRegistryContainer('tmpContainer');
             if (self::$verbose) {
-                MUtil_Echo::r('Loading snippet ' . $filename . '<br/>' . 'Using snippet: ' . get_class($snippet));
+                \MUtil_Echo::r('Loading snippet ' . $filename . '<br/>' . 'Using snippet: ' . get_class($snippet));
                }
-        } catch (Exception $exc) {
+        } catch (\Exception $exc) {
             if (self::$verbose) {
-                MUtil_Echo::r($exc->getMessage(), __CLASS__ . '->' .  __FUNCTION__ . '(' . $filename . ')');
+                \MUtil_Echo::r($exc->getMessage(), __CLASS__ . '->' .  __FUNCTION__ . '(' . $filename . ')');
             }
             throw $exc;
         }
@@ -143,7 +145,7 @@ class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract imple
     /**
      * Returns a source of values for snippets.
      *
-     * @return MUtil_Registry_SourceInterface
+     * @return \MUtil_Registry_SourceInterface
      */
     public function getSource()
     {
@@ -155,7 +157,7 @@ class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract imple
      *
      * @param string $prefix
      * @param string $path OPTIONAL
-     * @return MUtil_Snippets_SnippetLoaderInterface
+     * @return \MUtil_Snippets_SnippetLoaderInterface
      */
     public function removePrefixPath($prefix, $path = null)
     {
@@ -167,11 +169,11 @@ class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract imple
     /**
      * Sets the source of variables for snippets
      *
-     * @param MUtil_Registry_SourceInterface $source
-     * @return MUtil_Snippets_SnippetLoader (continuation pattern)
+     * @param \MUtil_Registry_SourceInterface $source
+     * @return \MUtil_Snippets_SnippetLoader (continuation pattern)
      */
-    public function setSource(MUtil_Registry_SourceInterface $source)
+    public function setSource(\MUtil_Registry_SourceInterface $source)
     {
-        throw new Gems_Exception_Coding('Cannot set source for ' . __CLASS__);
+        throw new \Gems_Exception_Coding('Cannot set source for ' . __CLASS__);
     }
 }

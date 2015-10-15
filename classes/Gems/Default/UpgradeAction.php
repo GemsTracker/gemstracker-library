@@ -177,7 +177,8 @@ class Gems_Default_UpgradeAction extends \Gems_Controller_Action
                                 'level'    => $this->_('Level'));
 
         foreach($this->_upgrades->getUpgradesInfo() as $row) {
-            if ($menuItem = $this->menu->find(array('controller' => $this->_getParam('controller'), 'action' => 'show', 'allowed' => true))) {
+            $menuItem = $this->menu->findAllowedController($this->_getParam('controller'), 'show');
+            if ($menuItem) {
                 $row['link'] = $menuItem->toActionLinkLower($this->getRequest(), $row);
             }
             $data[] = $row;
