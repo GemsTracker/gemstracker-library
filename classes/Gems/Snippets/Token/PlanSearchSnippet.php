@@ -28,7 +28,7 @@
  *
  *
  * @package    Gems
- * @subpackage Snippets_Token
+ * @subpackage Snippets\Token
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
@@ -43,7 +43,7 @@ use Gems\Snippets\AutosearchInRespondentSnippet;
  *
  *
  * @package    Gems
- * @subpackage Snippets_Token
+ * @subpackage Snippets\Token
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.7.1 22-apr-2015 17:15:53
@@ -61,6 +61,13 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
      * @var boolean
      */
     protected $multiTracks = true;
+
+    /**
+     * Display the period selector
+     *
+     * @var boolean
+     */
+    protected $periodSelector = true;
 
     /**
      *
@@ -85,19 +92,21 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
             $elements[] = null; // break into separate spans
         }
 
-        $dates = array(
-            '_gto_valid_from gto_valid_until'
-                                  => $this->_('Is valid during'),
-            '-gto_valid_from gto_valid_until'
-                                  => $this->_('Is valid within'),
-            'gto_valid_from'      => $this->_('Valid from'),
-            'gto_valid_until'     => $this->_('Valid until'),
-            'gto_mail_sent_date'  => $this->_('E-Mailed on'),
-            'gto_completion_time' => $this->_('Completion date'),
-            );
-        $this->_addPeriodSelectors($elements, $dates);
+        if ($this->periodSelector) {
+            $dates = array(
+                '_gto_valid_from gto_valid_until'
+                                      => $this->_('Is valid during'),
+                '-gto_valid_from gto_valid_until'
+                                      => $this->_('Is valid within'),
+                'gto_valid_from'      => $this->_('Valid from'),
+                'gto_valid_until'     => $this->_('Valid until'),
+                'gto_mail_sent_date'  => $this->_('E-Mailed on'),
+                'gto_completion_time' => $this->_('Completion date'),
+                );
+            $this->_addPeriodSelectors($elements, $dates);
 
-        $elements[] = null; // break into separate spans
+            $elements[] = null; // break into separate spans
+        }
 
         $allowedOrgs = $this->getOrganizationList($data);
         $orgWhere    = "(INSTR(gtr_organizations, '|" .

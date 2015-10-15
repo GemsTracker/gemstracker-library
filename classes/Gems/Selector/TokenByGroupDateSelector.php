@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class Gems_Selector_TokenByGroupDateSelector extends Gems_Selector_DateSelectorAbstract
+class Gems_Selector_TokenByGroupDateSelector extends \Gems_Selector_DateSelectorAbstract
 {
     /**
      * The name of the database table to use as the main table.
@@ -62,7 +62,7 @@ class Gems_Selector_TokenByGroupDateSelector extends Gems_Selector_DateSelectorA
     /**
      *
      * @param string $name
-     * @return Gems_Selector_SelectorField
+     * @return \Gems_Selector_SelectorField
      */
     public function addSubField($name)
     {
@@ -157,15 +157,15 @@ class Gems_Selector_TokenByGroupDateSelector extends Gems_Selector_DateSelectorA
     /**
      * Stud function to allow extension of standard one table select.
      *
-     * @param Zend_Db_Select $select
+     * @param \Zend_Db_Select $select
      */
-    protected function processSelect(Zend_Db_Select $select)
+    protected function processSelect(\Zend_Db_Select $select)
     {
         $select->join('gems__surveys', 'gto_id_survey = gsu_id_survey');
         $select->join('gems__groups', 'gsu_id_primary_group = ggp_id_group');
     }
 
-    protected function setTableBody(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Lazy_RepeatableInterface $repeater, $columnClass)
+    protected function setTableBody(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Lazy_RepeatableInterface $repeater, $columnClass)
     {
         $bridge->setAlternateRowClass('even', 'odd', 'odd');
 

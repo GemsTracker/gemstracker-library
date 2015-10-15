@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -45,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAbstract
+abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_TranslateableAbstract
 {
     const DATE_FACTOR = 'df';
     const DATE_GROUP  = 'dg';
@@ -76,14 +75,14 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
     /**
      * The date the current period ends
      *
-     * @var MUtil_Date
+     * @var \MUtil_Date
      */
     protected $dateCurrentEnd;
 
     /**
      * The date the current period starts
      *
-     * @var MUtil_Date
+     * @var \MUtil_Date
      */
     protected $dateCurrentStart;
 
@@ -134,42 +133,24 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
     /**
      *
-     * @var Zend_Translate
-     */
-    protected $translate;
-
-    /**
-     *
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     protected $util;
 
     /**
-     * Translate stub
-     *
-     * @param string $text
-     * @param mixed $locale
-     * @return string
-     */
-    protected function _($text, $locale = null)
-    {
-        return $this->translate->_($text, $locale);
-    }
-
-    /**
      *
      * @param string $name
-     * @return Gems_Selector_SelectorField
+     * @return \Gems_Selector_SelectorField
      */
     protected function addField($name)
     {
-        $field = new Gems_Selector_SelectorField($name);
+        $field = new \Gems_Selector_SelectorField($name);
 
         $this->_fields[$name] = $field;
 
@@ -179,18 +160,18 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
     /**
      * Creates the base model.
      *
-     * @return MUtil_Model_Transform_RequiredRowsTransformer
+     * @return \MUtil_Model_Transform_RequiredRowsTransformer
      */
     protected function createModel()
     {
-        $groupby['period_1'] = new Zend_Db_Expr("YEAR($this->dateFrom)");
+        $groupby['period_1'] = new \Zend_Db_Expr("YEAR($this->dateFrom)");
 
-        $date = new MUtil_Date();
+        $date = new \MUtil_Date();
 
         switch ($this->dateType) {
             case 'D':
                 $keyCount = 1;
-                $groupby['period_1'] = new Zend_Db_Expr("CONVERT($this->dateFrom, DATE)");
+                $groupby['period_1'] = new \Zend_Db_Expr("CONVERT($this->dateFrom, DATE)");
 
                 $date->setTime(0);
                 $date->addDay($this->dateFactor - $this->dateRange);
@@ -217,9 +198,9 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
                 $keyCount = 2;
 
                 // Use MONDAY as start of week
-                $groupby['period_1'] = new Zend_Db_Expr("substr(YEARWEEK(gto_valid_from, 3),1,4)");
-                //$groupby['period_1'] = new Zend_Db_Expr("YEAR($this->dateFrom) - CASE WHEN WEEK($this->dateFrom, 1) = 0 THEN 1 ELSE 0 END");
-                $groupby['period_2'] = new Zend_Db_Expr("WEEK($this->dateFrom, 3)");
+                $groupby['period_1'] = new \Zend_Db_Expr("substr(YEARWEEK(gto_valid_from, 3),1,4)");
+                //$groupby['period_1'] = new \Zend_Db_Expr("YEAR($this->dateFrom) - CASE WHEN WEEK($this->dateFrom, 1) = 0 THEN 1 ELSE 0 END");
+                $groupby['period_2'] = new \Zend_Db_Expr("WEEK($this->dateFrom, 3)");
 
                 $date->setWeekday(1);
                 $date->setTime(0);
@@ -234,10 +215,10 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
                     }
 
                     $values = array();
-                    $values['period_1'] = $date->get(Zend_Date::YEAR);
-                    $values['period_2'] = $date->get(Zend_Date::WEEK);
+                    $values['period_1'] = $date->get(\Zend_Date::YEAR);
+                    $values['period_2'] = $date->get(\Zend_Date::WEEK);
                     // When monday is in the previous year, add one to the year
-                    if ($date->get(Zend_Date::DAY_OF_YEAR)>14 && $date->get(Zend_Date::WEEK) == 1) {
+                    if ($date->get(\Zend_Date::DAY_OF_YEAR)>14 && $date->get(\Zend_Date::WEEK) == 1) {
                         $values['period_1'] =  $values['period_1'] + 1;
                     }
                     $values['range']    = $i;
@@ -250,7 +231,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
 
             case 'M':
                 $keyCount = 2;
-                $groupby['period_2'] = new Zend_Db_Expr("MONTH($this->dateFrom)");
+                $groupby['period_2'] = new \Zend_Db_Expr("MONTH($this->dateFrom)");
 
                 $date->setDay(1);
                 $date->setTime(0);
@@ -265,8 +246,8 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
                     }
 
                     $values = array();
-                    $values['period_1'] = $date->get(Zend_Date::YEAR);
-                    $values['period_2'] = $date->get(Zend_Date::MONTH);
+                    $values['period_1'] = $date->get(\Zend_Date::YEAR);
+                    $values['period_2'] = $date->get(\Zend_Date::MONTH);
                     $values['range']    = $i;
                     $requiredRows[$i]   = $values;
                     $date->addMonth(1);
@@ -290,7 +271,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
                     }
 
                     $values = array();
-                    $values['period_1'] = $date->get(Zend_Date::YEAR);
+                    $values['period_1'] = $date->get(\Zend_Date::YEAR);
                     $values['range']    = $i;
                     $requiredRows[$i]   = $values;
                     $date->addYear(1);
@@ -300,7 +281,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
                 break;
 
             default:
-                throw new Gems_Exception_Coding('Incorrect date_type value: ' . $this->dateType);
+                throw new \Gems_Exception_Coding('Incorrect date_type value: ' . $this->dateType);
         }
         $where = "$this->dateFrom BETWEEN '$start' AND '$end'";
 
@@ -326,7 +307,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
         }
 
         if ($this->dateFactor) {
-            $today = new MUtil_Date();
+            $today = new \MUtil_Date();
             $this->dateFactorChanges['D'] = $this->dateCurrentStart->diffDays($today);
             $this->dateFactorChanges['W'] = $this->dateCurrentStart->diffWeeks($today);
             $this->dateFactorChanges['M'] = $this->dateCurrentStart->diffMonths($today);
@@ -334,24 +315,24 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
         } else {
             $this->dateFactorChanges = array_fill_keys(array('D', 'W', 'M', 'Y'), 0);
         }
-        // MUtil_Echo::track($requiredRows);
-        // MUtil_Echo::rs($start, $end, $where);
+        // \MUtil_Echo::track($requiredRows);
+        // \MUtil_Echo::rs($start, $end, $where);
 
-        $select = new Zend_Db_Select($this->db);
+        $select = new \Zend_Db_Select($this->db);
         $select->from($this->dataTableName, $groupby + $this->getDbFields());
         $select->where($where);
         $select->group($groupby);
 
         $this->processSelect($select);
 
-        // MUtil_Echo::r((string) $select);
+        // \MUtil_Echo::r((string) $select);
 
-        $model = new MUtil_Model_SelectModel($select, $this->dataTableName);
+        $model = new \MUtil_Model_SelectModel($select, $this->dataTableName);
 
         // Display by column cannot use formatFunction as it is a simple repeater
         // $model->set('duration_avg', 'formatFunction', $this->util->getLocalized()->formatNumber);
 
-        $transformer = new MUtil_Model_Transform_RequiredRowsTransformer();
+        $transformer = new \MUtil_Model_Transform_RequiredRowsTransformer();
         $transformer->setDefaultRow($this->getDefaultRow());
         $transformer->setRequiredRows($requiredRows);
         $transformer->setKeyItemCount($keyCount);
@@ -392,7 +373,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
     /**
      * Returns defaults for all field values. Can be overruled.
      *
-     * @return array An array with appropriate default values for use in MUtil_Model_Transform_RequiredRowsTransformer
+     * @return array An array with appropriate default values for use in \MUtil_Model_Transform_RequiredRowsTransformer
      */
     protected function getDefaultRow()
     {
@@ -425,19 +406,27 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
         return $this->_fields;
     }
 
-    public function getFilter(Zend_Controller_Request_Abstract $request, array $filter = array(), $dateField = null)
+    /**
+     * Prcesses the filter for the date selector and return the filter to use instead
+     * 
+     * @param \Zend_Controller_Request_Abstract $request
+     * @param array $filter
+     * @param string $dateField
+     * @return array The new complete filter to use
+     */
+    public function getFilter(\Zend_Controller_Request_Abstract $request, array $filter = array(), $dateField = null)
     {
         $this->_actionKey = $request->getActionKey();
 
-        // MUtil_Echo::r($filter, __CLASS__ . '->' . __FUNCTION__ .' 1');
+        // \MUtil_Echo::r($filter, __CLASS__ . '->' . __FUNCTION__ .' 1');
         $filter = $this->processFilter($request, $filter);
 
         if ($filter) {
             $model = $this->getModel();
             $model->addFilter($filter);
         }
-        // MUtil_Echo::r($filter, __CLASS__ . '->' . __FUNCTION__ . ' 2');
-        $newfilter = array();
+        // \MUtil_Echo::r($filter, __CLASS__ . '->' . __FUNCTION__ . ' 2');
+        $newfilter = $filter;
 
         if ($this->dateCurrentStart && $this->dateCurrentEnd) {
             if (null === $dateField) {
@@ -473,8 +462,8 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
                 }
             }
         }
-        // MUtil_Echo::r($results);
-        // MUtil_Model::$verbose = true;
+        // \MUtil_Echo::r($results);
+        // \MUtil_Model::$verbose = true;
 
         return $results;
     } */
@@ -482,7 +471,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
     /**
      * Returns the base model.
      *
-     * @return MUtil_Model_Transform_RequiredRowsTransformer
+     * @return \MUtil_Model_Transform_RequiredRowsTransformer
      */
     public function getModel()
     {
@@ -501,7 +490,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
 
         $bridge->setBaseUrl(array($this->_actionKey => 'index', 'reset' => null) + $baseurl); // + $model->getFilter();
 
-        $columnClass = MUtil_Lazy::iff($repeater->range, null, 'selectedColumn');
+        $columnClass = \MUtil_Lazy::iff($repeater->range, null, 'selectedColumn');
 
         $this->setTableHeader($bridge, $repeater, $columnClass);
         $this->setTableBody(  $bridge, $repeater, $columnClass);
@@ -518,11 +507,11 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
     /**
      * Processing of filter, can be overriden.
      *
-     * @param Zend_Controller_Request_Abstract $request
+     * @param \Zend_Controller_Request_Abstract $request
      * @param array $filter
      * @return array
      */
-    protected function processFilter(Zend_Controller_Request_Abstract $request, array $filter)
+    protected function processFilter(\Zend_Controller_Request_Abstract $request, array $filter)
     {
         $defaults = $this->getDefaultSearchData();
 
@@ -537,7 +526,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
         return $filter;
     }
 
-    protected function processFilterName($name, Zend_Controller_Request_Abstract $request, array $filter, array $defaults = null)
+    protected function processFilterName($name, \Zend_Controller_Request_Abstract $request, array $filter, array $defaults = null)
     {
         if (isset($filter[$name])) {
             return $filter[$name];
@@ -557,12 +546,12 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
     /**
      * Stub function to allow extension of standard one table select.
      *
-     * @param Zend_Db_Select $select
+     * @param \Zend_Db_Select $select
      */
-    protected function processSelect(Zend_Db_Select $select)
+    protected function processSelect(\Zend_Db_Select $select)
     {  }
 
-    protected function setTableBody(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Lazy_RepeatableInterface $repeater, $columnClass)
+    protected function setTableBody(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Lazy_RepeatableInterface $repeater, $columnClass)
     {
         $baseurl = $bridge->getBaseUrl();
         $onEmpty = $this->_('-');
@@ -586,7 +575,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
         }
     }
 
-    protected function setTableFooter(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Lazy_RepeatableInterface $repeater, $columnClass)
+    protected function setTableFooter(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Lazy_RepeatableInterface $repeater, $columnClass)
     {
         $baseurl = $bridge->getBaseUrl();
 
@@ -608,7 +597,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
         $tf->setRepeatTags(true);
     }
 
-    protected function setTableHeader(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Lazy_RepeatableInterface $repeater, $columnClass)
+    protected function setTableHeader(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Lazy_RepeatableInterface $repeater, $columnClass)
     {
         $baseurl = $bridge->getBaseUrl();
 
@@ -640,12 +629,12 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
                 break;
 
             case 'W':
-                $header = array($repeater->period_1, MUtil_Html::create()->br(),
-                    MUtil_Lazy::call('sprintf', $this->_('week %s'), $repeater->period_2));
+                $header = array($repeater->period_1, \MUtil_Html::create()->br(),
+                    \MUtil_Lazy::call('sprintf', $this->_('week %s'), $repeater->period_2));
                 break;
 
             case 'M':
-                $header = array($repeater->period_1, MUtil_Html::create()->br(),
+                $header = array($repeater->period_1, \MUtil_Html::create()->br(),
                     $repeater->period_2->call($this->util->getLocalized()->getMonthName));
                 break;
 
@@ -654,7 +643,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
                 break;
 
             default:
-                throw new Gems_Exception_Coding('Incorrect date_type value: ' . $this->dateType); //  $this->_getParam('date_type', 'W'));
+                throw new \Gems_Exception_Coding('Incorrect date_type value: ' . $this->dateType); //  $this->_getParam('date_type', 'W'));
         }
         $th = $bridge->th();
         $th->class = array($this->dataCellClass, $columnClass);
@@ -664,8 +653,8 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
         $th->setRepeater($repeater);
         $th->setRepeatTags(true);
 
-        $baseurl[Gems_Selector_DateSelectorAbstract::DATE_FACTOR] = $repeater->date_factor;
-        $baseurl[Gems_Selector_DateSelectorAbstract::DATE_GROUP]  = null;
-        $th->onclick = array('location.href=\'', new MUtil_Html_HrefArrayAttribute($baseurl), '\';');
+        $baseurl[\Gems_Selector_DateSelectorAbstract::DATE_FACTOR] = $repeater->date_factor;
+        $baseurl[\Gems_Selector_DateSelectorAbstract::DATE_GROUP]  = null;
+        $th->onclick = array('location.href=\'', new \MUtil_Html_HrefArrayAttribute($baseurl), '\';');
     }
 }

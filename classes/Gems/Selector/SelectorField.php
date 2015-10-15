@@ -73,12 +73,12 @@ class Gems_Selector_SelectorField
         return $this->filter;
     }
 
-    public function getHRef(MUtil_Lazy_RepeatableInterface $repeater, array $url = array())
+    public function getHRef(\MUtil_Lazy_RepeatableInterface $repeater, array $url = array())
     {
         $url[\Gems_Selector_DateSelectorAbstract::DATE_FACTOR] = $repeater->date_factor;
         $url[\Gems_Selector_DateSelectorAbstract::DATE_GROUP]  = $this->name;
         $url[\MUtil_Model::AUTOSEARCH_RESET]                   = null;
-        return new MUtil_Html_HrefArrayAttribute($url);
+        return new \MUtil_Html_HrefArrayAttribute($url);
     }
 
     public function getLabel()
@@ -99,7 +99,7 @@ class Gems_Selector_SelectorField
     /**
      *
      * @param string $class
-     * @return Gems_Selector_SelectorField
+     * @return \Gems_Selector_SelectorField
      */
     public function setClass($class)
     {
@@ -118,7 +118,7 @@ class Gems_Selector_SelectorField
     /**
      *
      * @param string $label
-     * @return Gems_Selector_SelectorField
+     * @return \Gems_Selector_SelectorField
      */
     public function setLabel($label)
     {
@@ -130,7 +130,7 @@ class Gems_Selector_SelectorField
     /**
      *
      * @param string $class
-     * @return Gems_Selector_SelectorField
+     * @return \Gems_Selector_SelectorField
      */
     public function setLabelClass($class)
     {
@@ -141,8 +141,8 @@ class Gems_Selector_SelectorField
 
     /**
      *
-     * @param string|Zend_Db_Expr $sql
-     * @return Gems_Selector_SelectorField
+     * @param string|\Zend_Db_Expr $sql
+     * @return \Gems_Selector_SelectorField
      */
     public function setSQL($sql)
     {
@@ -156,7 +156,7 @@ class Gems_Selector_SelectorField
      * @param string $function
      * @param string $calculation
      * @param string $round
-     * @return Gems_Selector_SelectorField
+     * @return \Gems_Selector_SelectorField
      */
     public function setSQLFunction($function, $calculation, $round = null, $default = null)
     {
@@ -166,7 +166,7 @@ class Gems_Selector_SelectorField
         if (null !== $round) {
             $sql = "ROUND($sql, $round)";
         }
-        return $this->setSQL(new Zend_Db_Expr($sql));
+        return $this->setSQL(new \Zend_Db_Expr($sql));
     }
 
     /**
@@ -174,7 +174,7 @@ class Gems_Selector_SelectorField
      * @param string $calculation
      * @param integer|null $round
      * @param mixed $default
-     * @return Gems_Selector_SelectorField
+     * @return \Gems_Selector_SelectorField
      */
     public function setToAverage($calculation, $round = null, $default = null)
     {
@@ -185,7 +185,7 @@ class Gems_Selector_SelectorField
      *
      * @param string $calculation
      * @param mixed $default
-     * @return Gems_Selector_SelectorField
+     * @return \Gems_Selector_SelectorField
      */
     public function setToCount($calculation = '*', $default = 0)
     {
@@ -197,7 +197,7 @@ class Gems_Selector_SelectorField
      * @param string $calculation
      * @param integer|null $round
      * @param mixed $default
-     * @return Gems_Selector_SelectorField
+     * @return \Gems_Selector_SelectorField
      */
     public function setToMaximum($calculation, $round = null, $default = null)
     {
@@ -209,7 +209,7 @@ class Gems_Selector_SelectorField
      * @param string $calculation
      * @param integer|null $round
      * @param mixed $default
-     * @return Gems_Selector_SelectorField
+     * @return \Gems_Selector_SelectorField
      */
     public function setToMinimum($calculation, $round = null, $default = null)
     {
@@ -221,7 +221,7 @@ class Gems_Selector_SelectorField
      * @param string $calculation
      * @param integer|null $round
      * @param mixed $default
-     * @return Gems_Selector_SelectorField
+     * @return \Gems_Selector_SelectorField
      */
     public function setToSum($calculation, $round = null, $default = 0)
     {
@@ -234,7 +234,7 @@ class Gems_Selector_SelectorField
      * @param mixed $field The field or constant to add to the sum when $condition is true.
      * @param integer|null $round
      * @param mixed $default
-     * @return Gems_Selector_SelectorField
+     * @return \Gems_Selector_SelectorField
      */
     public function setToSumWhen($condition, $field = 1, $round = null, $default = 0)
     {

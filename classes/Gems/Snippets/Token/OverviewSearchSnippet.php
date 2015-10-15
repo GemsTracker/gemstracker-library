@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Copyright (c) 2011, Erasmus MC
+ * Copyright (c) 2015, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,77 +14,64 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
- * 
+ *
+ *
  * @package    Gems
- * @subpackage Snippets
+ * @subpackage Snippets\Token
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: OverviewSearchSnippet.php 2493 2015-04-15 16:29:48Z matijsdejong $
  */
+
+namespace Gems\Snippets\Token;
 
 /**
- * Displays a dateSelector
  *
  *
  * @package    Gems
- * @subpackage Snippets
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @subpackage Snippets\Token
+ * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.2
+ * @since      Class available since version 1.7.2 15-okt-2015 17:31:50
  */
-class TokenDateSelectorSnippet extends MUtil_Snippets_SnippetAbstract
+class OverviewSearchSnippet extends PlanSearchSnippet
 {
     /**
+     * Display the period selector
      *
-     * @var Gems_Selector_DateSelectorAbstract
+     * @var boolean
      */
-    protected $dateSelector;
+    protected $periodSelector = false;
 
     /**
+     * Returns a text element for autosearch. Can be overruled.
      *
-     * @var Gems_Util_RequestCache
+     * The form / html elements to search on. Elements can be grouped by inserting null's between them.
+     * That creates a distinct group of elements
+     *
+     * @param array $data The $form field values (can be usefull, but no need to set them)
+     * @return array Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.
      */
-    public $requestCache;
+    protected function getAutoSearchElements(array $data)
+    {
+        $elements = parent::getAutoSearchElements($data);
 
-    /**
-     * Create the snippets content
-     *
-     * This is a stub function either override getHtmlOutput() or override render()
-     *
-     * @param Zend_View_Abstract $view Just in case it is needed here
-     * @return MUtil_Html_HtmlInterface Something that can be rendered
-     */
-    public function getHtmlOutput(Zend_View_Abstract $view)
-    {
-        return $this->dateSelector->getTable($this->requestCache->getBaseUrl());
-    }
-    
-    /**
-     * The place to check if the data set in the snippet is valid
-     * to generate the snippet.
-     *
-     * When invalid data should result in an error, you can throw it
-     * here but you can also perform the check in the
-     * checkRegistryRequestsAnswers() function from the
-     * {@see MUtil_Registry_TargetInterface}.
-     *
-     * @return boolean
-     */
-    public function hasHtmlOutput()
-    {
-        return (boolean) $this->dateSelector;
+        $elements[] = new \Zend_Form_Element_Hidden(\Gems_Selector_DateSelectorAbstract::DATE_FACTOR);
+        $elements[] = new \Zend_Form_Element_Hidden(\Gems_Selector_DateSelectorAbstract::DATE_GROUP);
+        $elements[] = new \Zend_Form_Element_Hidden(\Gems_Selector_DateSelectorAbstract::DATE_TYPE);
+
+        return $elements;
     }
 }

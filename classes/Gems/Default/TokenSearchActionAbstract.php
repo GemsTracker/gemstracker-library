@@ -57,7 +57,7 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
      * @var array Mixed key => value array for snippet initialization
      */
     protected $autofilterParameters = array(
-        'multiTracks'  => 'getMultiTracks',
+        'multiTracks'  => 'isMultiTracks',
         'surveyReturn' => 'setSurveyReturn',
         );
 
@@ -67,6 +67,19 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
      * @var mixed String or array of snippets name
      */
     protected $autofilterSnippets = 'Token\\PlanTokenSnippet';
+
+    /**
+     * En/disable the checking for answers on load.
+     *
+     * @var boolean
+     */
+    protected $checkForAnswersOnLoad = true;
+
+    /**
+     *
+     * @var \Zend_Db_Adapter_Abstract
+     */
+    public $db;
 
     /**
      *
@@ -102,6 +115,42 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
     }
 
     /**
+     * Bulk email action
+     */
+    public function emailAction()
+    {
+        $model   = $this->getModel();
+
+        $model->setFilter($this->getSearchFilter());
+
+        $sort = array(
+            'grs_email'          => SORT_ASC,
+            'grs_first_name'     => SORT_ASC,
+            'grs_surname_prefix' => SORT_ASC,
+            'grs_last_name'      => SORT_ASC,
+            'gto_valid_from'     => SORT_ASC,
+            'gto_round_order'    => SORT_ASC,
+            'gsu_survey_name'    => SORT_ASC,
+        );
+
+        if ($tokensData = $model->load(true, $sort)) {
+            $params['mailTarget']           = 'token';
+            $params['menu']                 = $this->menu;
+            $params['model']                = $model;
+            $params['identifier']           = $this->_getIdParam();
+            $params['view']                 = $this->view;
+            $params['routeAction']          = array($this->getRequest()->getActionName() => 'index');
+            $params['formTitle']            = sprintf($this->_('Send mail to: %s'), $this->getTopic());
+            $params['templateOnly']         = ! $this->loader->getCurrentUser()->hasPrivilege('pr.token.mail.freetext');
+            $params['multipleTokenData']    = $tokensData;
+
+            $this->addSnippet('Mail_TokenBulkMailFormSnippet', $params);
+        } else {
+            $this->addMessage($this->_('No tokens found.'));
+        }
+    }
+
+    /**
      * Is multi tracks enabled in this project
      *
      * @return boolean
@@ -123,12 +172,13 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
         if (! $this->defaultSearchData) {
             $inFormat = \MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
             $now      = new \MUtil_Date();
+            $today    = $now->toString($inFormat);
 
             $this->defaultSearchData = array(
-                'datefrom'            => $now->toString($inFormat),
-                'dateused'            => '_gto_valid_from gto_valid_until',
-                'dateuntil'           => $now->toString($inFormat),
-                'main_filter'         => 'all',
+                'datefrom'    => $today,
+                'dateused'    => '_gto_valid_from gto_valid_until',
+                'dateuntil'   => $today,
+                'main_filter' => 'all',
             );
         }
 
@@ -144,27 +194,16 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
     {
         $filter = parent::getSearchFilter();
 
-        if (isset($filter[\Gems_Snippets_AutosearchFormSnippet::PERIOD_DATE_USED])) {
-            $where = \Gems_Snippets_AutosearchFormSnippet::getPeriodFilter(
-                $filter,
-                $this->db,
-                \MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat'),
-                'yyyy-MM-dd HH:mm:ss');
-
-            if ($where) {
-                $filter[] = $where;
-            }
-
-            unset($filter[\Gems_Snippets_AutosearchFormSnippet::PERIOD_DATE_USED],
-                    $filter['datefrom'], $filter['dateuntil']);
+        $where = \Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($filter, $this->db, null, 'yyyy-MM-dd HH:mm:ss');
+        if ($where) {
+            $filter[] = $where;
         }
 
         if (! isset($filter['gto_id_organization'])) {
             $filter['gto_id_organization'] = $this->loader->getCurrentUser()->getRespondentOrgFilter();
         }
-        $filter['gtr_active']  = 1;
         $filter['gsu_active']  = 1;
-        $filter['grc_success'] = 1;
+        $filter['grc_success'] = 1; // Overruled with success
 
         if (isset($filter['main_filter'])) {
             switch ($filter['main_filter']) {
@@ -242,6 +281,44 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
         }
 
         return $filter;
+    }
+
+    /**
+     * Helper function to allow generalized statements about the items in the model.
+     *
+     * @param int $count
+     * @return $string
+     */
+    public function getTopic($count = 1)
+    {
+        return $this->plural('token', 'tokens', $count);
+    }
+
+    /**
+     * Default overview action
+     */
+    public function indexAction()
+    {
+        if ($this->checkForAnswersOnLoad) {
+            $user = $this->loader->getCurrentUser();
+            $this->loader->getTracker()->processCompletedTokens(
+                    null,
+                    $user->getUserId(),
+                    $user->getCurrentOrganizationId(),
+                    true
+                    );
+        }
+
+        parent::indexAction();
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    protected function isMultiTracks()
+    {
+        return ! $this->escort instanceof \Gems_Project_Tracks_SingleTrackInterface;
     }
 
     /**

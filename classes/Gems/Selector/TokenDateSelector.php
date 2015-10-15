@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-class Gems_Selector_TokenDateSelector extends Gems_Selector_DateSelectorAbstract
+class Gems_Selector_TokenDateSelector extends \Gems_Selector_DateSelectorAbstract
 {
     /**
      * The name of the database table to use as the main table.
@@ -62,7 +62,7 @@ class Gems_Selector_TokenDateSelector extends Gems_Selector_DateSelectorAbstract
     /**
      *
      * @param string $name
-     * @return Gems_Selector_SelectorField
+     * @return \Gems_Selector_SelectorField
      */
     public function addSubField($name)
     {
@@ -115,25 +115,32 @@ class Gems_Selector_TokenDateSelector extends Gems_Selector_DateSelectorAbstract
     /**
      * Processing of filter, can be overriden.
      *
-     * @param Zend_Controller_Request_Abstract $request
+     * @param \Zend_Controller_Request_Abstract $request
      * @param array $filter
      * @return array
      */
-    protected function processFilter(Zend_Controller_Request_Abstract $request, array $filter)
+    protected function processFilter(\Zend_Controller_Request_Abstract $request, array $filter)
     {
-        // MUtil_Echo::r($filter, __CLASS__ . '->' . __FUNCTION__);
+        // \MUtil_Echo::r($filter, __CLASS__ . '->' . __FUNCTION__);
 
+        $mainFilter = isset($filter['main_filter']) ? $filter['main_filter'] : null;
         unset($filter['main_filter']);
 
-        return parent::processFilter($request, $filter);
+        $output = parent::processFilter($request, $filter);
+
+        if ($mainFilter) {
+            $output['main_filter'] = $mainFilter;
+        }
+
+        return $output;
     }
 
     /**
      * Stub function to allow extension of standard one table select.
      *
-     * @param Zend_Db_Select $select
+     * @param \Zend_Db_Select $select
      */
-    protected function processSelect(Zend_Db_Select $select)
+    protected function processSelect(\Zend_Db_Select $select)
     {
         $select->joinLeft('gems__rounds',      'gto_id_round = gro_id_round', array());
         $select->join('gems__tracks',          'gto_id_track = gtr_id_track', array());
@@ -144,7 +151,7 @@ class Gems_Selector_TokenDateSelector extends Gems_Selector_DateSelectorAbstract
         $select->join('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', array());
     }
 
-    protected function setTableBody(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Lazy_RepeatableInterface $repeater, $columnClass)
+    protected function setTableBody(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Lazy_RepeatableInterface $repeater, $columnClass)
     {
         // $bridge->setAlternateRowClass('even', 'even', 'odd');
 

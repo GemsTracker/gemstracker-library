@@ -43,9 +43,30 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class Gems_Default_OverviewPlanAction extends \Gems_Default_TokenPlanAction
+class Gems_Default_OverviewPlanAction extends \Gems_Default_TokenSearchActionAbstract
 {
-    public $tableSnippets = array('TokenDateSelectorSnippet', 'SelectedTokensTitleSnippet');
+    /**
+     * The parameters used for the autofilter action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $autofilterParameters = array(
+        'dateSelector' => 'getDateSelector',
+        'multiTracks'  => 'isMultiTracks',
+        'surveyReturn' => 'setSurveyReturn',
+        );
+
+    /**
+     * The snippets used for the autofilter action.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $autofilterSnippets = array('Token\\TokenDateSelectorSnippet', 'Token\\PlanTokenSnippet');
 
     /**
      *
@@ -53,43 +74,12 @@ class Gems_Default_OverviewPlanAction extends \Gems_Default_TokenPlanAction
      */
     public $dateSelector;
 
-    public $sortKey = array();
-
-    public $useKeyboardSelector = false;
-
-    protected function _createTable()
-    {
-        $this->getDateSelector();
-
-        return parent::_createTable();
-    }
     /**
-     * Returns overview specific autosearch fields. Can be overruled.
+     * The snippets used for the index action, before those in autofilter
      *
-     * The form / html elements to search on. Elements can be grouped by inserting null's between them.
-     * That creates a distinct group of elements
-     *
-     * @param \MUtil_Model_ModelAbstract $model
-     * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return array Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.
+     * @var mixed String or array of snippets name
      */
-    protected function getAutoSearchElements(\MUtil_Model_ModelAbstract $model, array $data)
-    {
-        $elements[] = new \Zend_Form_Element_Hidden(\Gems_Selector_DateSelectorAbstract::DATE_FACTOR);
-        $elements[] = new \Zend_Form_Element_Hidden(\Gems_Selector_DateSelectorAbstract::DATE_GROUP);
-        $elements[] = new \Zend_Form_Element_Hidden(\Gems_Selector_DateSelectorAbstract::DATE_TYPE);
-
-        return array_merge($elements, $this->getAutoSearchSelectElements());
-    }
-
-    protected function getDataFilter(array $data)
-    {
-        // \MUtil_Echo::r($data, __FUNCTION__);
-        $parent = parent::getDataFilter($data);
-
-        $selector = $this->getDateSelector();
-        return array_merge($parent, $selector->getFilter($this->request, $parent + $data));
-    }
+    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Token\\OverviewSearchSnippet');
 
     /**
      *
@@ -104,19 +94,47 @@ class Gems_Default_OverviewPlanAction extends \Gems_Default_TokenPlanAction
         return $this->dateSelector;
     }
 
-    public function getDefaultSearchData()
-    {
-        return $this->getDateSelector()->getDefaultSearchData();
-    }
-
-    public function getTopic($count = 1)
-    {
-        return $this->plural('survey', 'surveys', $count);
-    }
-
-    public function getTopicTitle()
+    /**
+     * Helper function to get the title for the index action.
+     *
+     * @return $string
+     */
+    public function getIndexTitle()
     {
         return $this->_('Planning overview');
+    }
+
+    /**
+     * Function to allow the creation of search defaults in code
+     *
+     * @see getSearchFilter()
+     *
+     * @return array
+     */
+    public function getSearchDefaults()
+    {
+        if (! $this->defaultSearchData) {
+            $this->defaultSearchData = $this->getDateSelector()->getDefaultSearchData();
+        }
+
+        return $this->defaultSearchData;
+    }
+
+    /**
+     * Get the filter to use with the model for searching
+     *
+     * @return array or false
+     */
+    public function getSearchFilter()
+    {
+        $filter = parent::getSearchFilter();
+
+        $selector = $this->getDateSelector();
+        $output = $selector->getFilter($this->request, $filter);
+
+        // \MUtil_Echo::track($filter, $output);
+
+        return $output;
     }
 }
 

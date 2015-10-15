@@ -56,10 +56,11 @@ class PlanTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
      * @var array
      */
     protected $_fixedSort = array(
-            'calc_used_date'  => SORT_ASC,
-            'gtr_track_name'  => SORT_ASC,
-            'gto_round_order' => SORT_ASC,
-            'gto_created'     => SORT_ASC);
+        'calc_used_date'  => SORT_ASC,
+        'gtr_track_name'  => SORT_ASC,
+        'gto_round_order' => SORT_ASC,
+        'gto_created'     => SORT_ASC,
+        );
 
     /**
      * Sets pagination on or off.

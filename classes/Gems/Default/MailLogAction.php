@@ -148,13 +148,9 @@ class Gems_Default_MailLogAction extends \Gems_Controller_ModelSnippetActionAbst
     {
         $filter = parent::getSearchFilter();
 
-        if (isset($filter[\Gems_Snippets_AutosearchFormSnippet::PERIOD_DATE_USED])) {
-            $where = \Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($filter, $this->db);
-            if ($where) {
-                $filter[] = $where;
-            }
-
-            unset($filter[\Gems_Snippets_AutosearchFormSnippet::PERIOD_DATE_USED], $filter['datefrom'], $filter['dateuntil']);
+        $where = \Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($filter, $this->db);
+        if ($where) {
+            $filter[] = $where;
         }
 
         return $filter;
