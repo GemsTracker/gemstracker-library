@@ -82,6 +82,13 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
     public $db;
 
     /**
+     * The snippets used for the index action, before those in autofilter
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Token\\PlanSearchSnippet');
+
+    /**
      *
      * @var \Gems_Loader
      */

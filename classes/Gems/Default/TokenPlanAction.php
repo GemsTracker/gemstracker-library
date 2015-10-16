@@ -46,13 +46,6 @@
 class Gems_Default_TokenPlanAction extends \Gems_Default_TokenSearchActionAbstract
 {
     /**
-     * The snippets used for the index action, before those in autofilter
-     *
-     * @var mixed String or array of snippets name
-     */
-    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Token\\PlanSearchSnippet');
-
-    /**
      * Helper function to get the title for the index action.
      *
      * @return $string

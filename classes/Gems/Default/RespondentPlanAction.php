@@ -46,20 +46,11 @@
 class Gems_Default_RespondentPlanAction extends \Gems_Default_TokenSearchActionAbstract
 {
     /**
-     * The snippets used for the index action, before those in autofilter
+     * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Token\\PlanSearchSnippet');
-
-    public $sortKey = array(
-        'respondent_name'       => SORT_ASC,
-        'gr2o_patient_nr'       => SORT_ASC,
-        'gtr_track_name'        => SORT_ASC,
-        'gtr_track_info'        => SORT_ASC,
-        'gr2t_track_info'       => SORT_ASC,
-        'gto_round_description' => SORT_ASC,
-        );
+    protected $autofilterSnippets = 'Token\\PlanRespondentSnippet';
 
     /**
      * Adds columns from the model to the bridge that creates the browse table.

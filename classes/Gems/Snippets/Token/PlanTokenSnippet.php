@@ -28,7 +28,7 @@
  *
  *
  * @package    Gems
- * @subpackage Snippets_Token
+ * @subpackage Snippets\Token
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
@@ -41,7 +41,7 @@ namespace Gems\Snippets\Token;
  * Snippet for showing the all tokens for a single respondent.
  *
  * @package    Gems
- * @subpackage Snippets_Token
+ * @subpackage Snippets\Token
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.1
@@ -68,13 +68,6 @@ class PlanTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
      * @var boolean
      */
     public $browse = true;
-
-    /**
-     * The token model
-     *
-     * @var \MUtil_Model_ModelAbstract
-     */
-    protected $model;
 
     /**
      *
@@ -162,6 +155,12 @@ class PlanTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
         return $buttons;
     }
 
+    /**
+     * Returns a '+' token button
+     *
+     * @param \MUtil_Model_Bridge_TableBridge $bridge
+     * @return \MUtil_Html_AElement
+     */
     protected function createShowTokenButton(\MUtil_Model_Bridge_TableBridge $bridge)
     {
         // Get the token buttons
