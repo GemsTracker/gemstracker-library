@@ -35,7 +35,7 @@
  */
 
 /**
- * Extends a \Zend_Form with automatic Dojo and JQuery activation,
+ * Extends a \Zend_Form with automatic JQuery activation,
  * \MUtil_Html rendering integration and non-css stylesheet per
  * form (possibly automatically calculated) fixed label widths.
  *
@@ -97,13 +97,6 @@ class MUtil_Form extends \Zend_Form implements \MUtil_Registry_TargetInterface
     protected $_labelWidthFactor;
 
     /**
-     * Is Dojo activated for this form?
-     *
-     * @var boolean
-     */
-    protected $_no_dojo = true;
-
-    /**
      * Is Bootstrap activated for this form?
      *
      * @var boolean
@@ -159,28 +152,6 @@ class MUtil_Form extends \Zend_Form implements \MUtil_Registry_TargetInterface
 
 
     /**
-     * Activate Dojo for the view
-     *
-     * @param \Zend_View_Interface $view
-     * @return void
-     */
-    protected function _activateDojoView(\Zend_View_Interface $view = null)
-    {
-        if ($this->_no_dojo) {
-            return;
-        }
-
-        if (null === $view) {
-            $view = $this->getView();
-            if (null === $view) {
-                return;
-            }
-        }
-
-        \Zend_Dojo::enableView($view);
-    }
-
-    /**
      * Activate JQuery for the view
      *
      * @param \Zend_View_Interface $view
@@ -204,24 +175,6 @@ class MUtil_Form extends \Zend_Form implements \MUtil_Registry_TargetInterface
         if (false === $view->getPluginLoader('helper')->getPaths('MUtil_JQuery_View_Helper')) {
             $view->addHelperPath('MUtil/JQuery/View/Helper', 'MUtil_JQuery_View_Helper');
         }
-    }
-
-    /**
-     * Activate Dojo for this form
-     *
-     * @return \MUtil_Form (continuation pattern)
-     */
-    public function activateDojo()
-    {
-        if ($this->_no_dojo) {
-            \Zend_Dojo::enableForm($this);
-
-            $this->_activateDojoView();
-
-            $this->_no_dojo = false;
-        }
-
-        return $this;
     }
 
     /**
@@ -283,9 +236,6 @@ class MUtil_Form extends \Zend_Form implements \MUtil_Registry_TargetInterface
             $name = $element->getName();
         } else {
             $element = $this->getElement($name);
-        }
-        if ($this->_no_dojo && ($element instanceof \Zend_Dojo_Form_Element_Dijit)) {
-            $this->activateDojo();
         }
         if ($this->_no_jquery && ($element instanceof \ZendX_JQuery_Form_Element_UiWidget)) {
             $this->activateJQuery();
@@ -731,9 +681,6 @@ class MUtil_Form extends \Zend_Form implements \MUtil_Registry_TargetInterface
     public function setView(\Zend_View_Interface $view = null)
     {
         if ($view) {
-            if (! $this->_no_dojo) {
-                $this->_activateDojoView($view);
-            }
             if (! $this->_no_jquery) {
                 $this->_activateJQueryView($view);
             }

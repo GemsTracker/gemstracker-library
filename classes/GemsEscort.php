@@ -866,35 +866,6 @@ class GemsEscort extends \MUtil_Application_Escort
      * @return mixed If null nothing is set, otherwise the name of
      * the function is used as \Zend_View variable name.
      */
-    protected function _layoutDojoTheme()
-    {
-        // DOJO
-        if (\MUtil_Dojo::usesDojo($this->view)) {
-            $dojo = $this->view->dojo();
-            if ($dojo->isEnabled()) {
-                $dojo->setDjConfigOption('locale', $this->translate->getLocale());
-                // $dojo->dojo()->setDjConfigOption('isDebug', true);
-
-                // Include dojo library
-                $dojo->setCdnBase(\Zend_Dojo::CDN_BASE_GOOGLE);
-                // $dojo->setLocalPath($this->basepath->getBasePath() . '/dojo/dojo/dojo.js');
-
-                // Use dojo theme tundra
-                $dojoTheme = $this->project->dijit_css_theme ? $this->project->dijit_css_theme : 'tundra';
-                $dojo->addStyleSheetModule('dijit.themes.' . $dojoTheme);
-
-                return $dojoTheme;
-            }
-        }
-    }
-
-    /**
-     * Function called if specified in the Project.ini layoutPrepare section before
-     * the layout is drawn, but after the rest of the program has run it's course.
-     *
-     * @return mixed If null nothing is set, otherwise the name of
-     * the function is used as \Zend_View variable name.
-     */
     protected function _layoutFavicon()
     {
         // FAVICON

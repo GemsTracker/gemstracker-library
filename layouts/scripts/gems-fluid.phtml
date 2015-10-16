@@ -17,15 +17,9 @@
         }
         </script>";*/
     }
-
-    // Check if dojo library is needed
-    if ($this->dojoTheme) {
-        // Echo out the dojo <script> tags
-        echo $this->dojo();
-    }
     ?>
     </head>
-<body<?php if (isset($this->dojoTheme)) { echo " class='" . $this->dojoTheme . "' "; } ?>>
+<body>
     <div id="all">
         <div id="header"><?php if ($this->header) { echo $this->header->render($this); }?></div>
         <div id="header_bar"><?php if ($this->header_bar) { echo $this->header_bar->render($this); } ?></div>
