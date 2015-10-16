@@ -119,11 +119,12 @@ class Gems_Default_TokenAction extends \Gems_Default_TokenSearchActionAbstract
      *
      * @see getSearchFilter()
      *
+     * @param boolean $useRequest Use the request as source (when false, the session is used)
      * @return array
      */
-    public function getSearchData()
+    public function getSearchData($useRequest = true)
     {
-        $data = parent::getSearchData();
+        $data = parent::getSearchData($useRequest);
 
         // Survey action data
         $data['gto_id_respondent']   = $this->getRespondentId();

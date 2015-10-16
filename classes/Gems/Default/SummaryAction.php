@@ -122,7 +122,7 @@ class Gems_Default_SummaryAction extends \Gems_Controller_ModelSnippetActionAbst
         $model->set('gsu_id_primary_group',  'label', $this->_('Filler'),
                 'multiOptions', $this->util->getDbLookup()->getGroups());
 
-        $filter = $this->getSearchFilter();
+        $filter = $this->getSearchFilter($action !== 'excel');
         if (! (isset($filter['gto_id_organization']) && $filter['gto_id_organization'])) {
             $model->addFilter(array('gto_id_organization' => $this->loader->getCurrentUser()->getRespondentOrgFilter()));
         }

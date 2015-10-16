@@ -248,11 +248,12 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
     /**
      * Get the filter to use with the model for searching including model sorts, etc..
      *
+     * @param boolean $useRequest Use the request as source (when false, the session is used)
      * @return array or false
      */
-    public function getSearchFilter()
+    public function getSearchFilter($useRequest = true)
     {
-        $filter = parent::getSearchFilter();
+        $filter = parent::getSearchFilter($useRequest);
 
         if (isset($filter['org']) && strlen($filter['org'])) {
             $filter[] = 'gtr_organizations LIKE "%|' . $filter['org'] . '|%"';

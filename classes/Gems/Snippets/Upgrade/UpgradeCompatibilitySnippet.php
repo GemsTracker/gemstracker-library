@@ -188,6 +188,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
                     'ProjectSurveysController'    => 57,
                     'ProjectTracksController'     => 57,
                     'ReceptionController'         => 57,
+                    'RespondentPlanAction'        => 58,
                     'RoleController'              => 57,
                     'StaffController'             => 58,
                     'SurveyMaintenanceController' => 57,

@@ -1759,6 +1759,7 @@ class GemsEscort extends \MUtil_Application_Escort
             // We expect JQuery to be loaded in the master page, since the call is probably made using JQuery
             if ($request instanceof \Zend_Controller_Request_Http && $request->isXmlHttpRequest()) {
                 $response = \Zend_Controller_Front::getInstance()->getResponse();
+                \MUtil_JQuery::enableView($this->view);
                 $scripts = $this->view->jQuery()->getOnLoadActions();
                 $content = '';
                 foreach($scripts as $script) {

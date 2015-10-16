@@ -142,11 +142,12 @@ class Gems_Default_MailLogAction extends \Gems_Controller_ModelSnippetActionAbst
     /**
      * Get the filter to use with the model for searching
      *
+     * @param boolean $useRequest Use the request as source (when false, the session is used)
      * @return array or false
      */
-    public function getSearchFilter()
+    public function getSearchFilter($useRequest = true)
     {
-        $filter = parent::getSearchFilter();
+        $filter = parent::getSearchFilter($useRequest);
 
         $where = \Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($filter, $this->db);
         if ($where) {

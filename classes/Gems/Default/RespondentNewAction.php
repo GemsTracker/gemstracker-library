@@ -253,13 +253,12 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
         $phonesep = \MUtil_Html::raw('&#9743; '); // $bridge->itemIf($bridge->grs_phone_1, \MUtil_Html::raw('&#9743; '));
         $citysep  = \MUtil_Html::raw('&nbsp;&nbsp;'); // $bridge->itemIf($bridge->grs_zipcode, \MUtil_Html::raw('&nbsp;&nbsp;'));
 
-        $filter = $this->getSearchFilter();
+        $filter = $this->getSearchFilter(true);
         if (isset($filter[\MUtil_Model::REQUEST_ID2])) {
             $column2 = 'gr2o_opened';
         } else {
             $column2 = 'gr2o_id_organization';
         }
-        $filter = $this->getSearchFilter();
         if (isset($filter['grc_success']) && (! $filter['grc_success'])) {
             $model->set('grc_description', 'label', $this->_('Rejection code'));
             $column2 = 'grc_description';
@@ -396,11 +395,12 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
     /**
      * Get the filter to use with the model for searching including model sorts, etc..
      *
+     * @param boolean $useRequest Use the request as source (when false, the session is used)
      * @return array or false
      */
-    public function getSearchFilter()
+    public function getSearchFilter($useRequest = true)
     {
-        $filter = parent::getSearchFilter();
+        $filter = parent::getSearchFilter($useRequest);
 
         $with    = isset($filter['show_with_track']) ? $filter['show_with_track'] : false;
         $without = isset($filter['show_without_track']) ? $filter['show_without_track'] : false;

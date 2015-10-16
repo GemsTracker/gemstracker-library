@@ -625,20 +625,14 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends \MUtil_Contro
      *
      * @see getSearchFilter()
      *
+     * @param boolean $useRequest Use the request as source (when false, the session is used)
      * @return array
      */
-    public function getSearchData()
+    public function getSearchData($useRequest = true)
     {
-        if ($this->_searchData) {
+        if (is_array($this->_searchData)) {
             return $this->_searchData;
         }
-
-        $data = $this->request->getParams();
-
-        // remove controler/action/module
-        unset($data[$this->request->getModuleKey()],
-                $data[$this->request->getControllerKey()],
-                $data[$this->request->getActionKey()]);
 
         if ($this->searchSessionId) {
             $sessionId = $this->searchSessionId;
@@ -655,21 +649,32 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends \MUtil_Contro
             $sessionData = array();
         }
 
-        if (isset($data[\MUtil_Model::AUTOSEARCH_RESET]) && $data[\MUtil_Model::AUTOSEARCH_RESET]) {
-            // Clean up values
-            $sessionData = array();
+        if ($useRequest) {
+            $data = $this->request->getParams();
 
-            $this->request->setParam(\MUtil_Model::AUTOSEARCH_RESET, null);
+            // remove controler/action/module
+            unset($data[$this->request->getModuleKey()],
+                    $data[$this->request->getControllerKey()],
+                    $data[$this->request->getActionKey()]);
+
+            if (isset($data[\MUtil_Model::AUTOSEARCH_RESET]) && $data[\MUtil_Model::AUTOSEARCH_RESET]) {
+                // Clean up values
+                $sessionData = array();
+
+                $this->request->setParam(\MUtil_Model::AUTOSEARCH_RESET, null);
+            } else {
+                $data = $data + $sessionData;
+            }
+
+            // Always remove
+            unset($data[\MUtil_Model::AUTOSEARCH_RESET]);
+
+            // Store cleaned values in session (we do not store the defaults as they may change
+            // depending on the request and this way the filter data responds to that).
+            $searchSession->$sessionId = array_filter($data, function($i) { return is_array($i) || strlen($i); });
         } else {
-            $data = $data + $sessionData;
+            $data = $sessionData;
         }
-
-        // Always remove
-        unset($data[\MUtil_Model::AUTOSEARCH_RESET]);
-
-        // Store cleaned values in session (we do not store the defaults as they may change
-        // depending on the request and this way the filter data responds to that).
-        $searchSession->$sessionId = array_filter($data, function($i) { return is_array($i) || strlen($i); });
 
         // Add defaults to data without cleanup
         $defaults = $this->getSearchDefaults();
@@ -705,15 +710,16 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends \MUtil_Contro
     /**
      * Get the filter to use with the model for searching including model sorts, etc..
      *
+     * @param boolean $useRequest Use the request as source (when false, the session is used)
      * @return array or false
      */
-    public function getSearchFilter()
+    public function getSearchFilter($useRequest = true)
     {
         if (false !== $this->_searchFilter) {
             return $this->_searchFilter;
         }
 
-        $filter = $this->getSearchData();
+        $filter = $this->getSearchData($useRequest);
         $this->_searchFilter = array();
 
         foreach ($filter as $field => $value) {

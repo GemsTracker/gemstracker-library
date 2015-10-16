@@ -123,11 +123,12 @@ class Gems_Default_OverviewPlanAction extends \Gems_Default_TokenSearchActionAbs
     /**
      * Get the filter to use with the model for searching
      *
+     * @param boolean $useRequest Use the request as source (when false, the session is used)
      * @return array or false
      */
-    public function getSearchFilter()
+    public function getSearchFilter($useRequest = true)
     {
-        $filter = parent::getSearchFilter();
+        $filter = parent::getSearchFilter($useRequest);
 
         $selector = $this->getDateSelector();
         $output = $selector->getFilter($this->request, $filter);

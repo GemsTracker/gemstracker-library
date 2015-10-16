@@ -43,8 +43,15 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class Gems_Default_RespondentPlanAction extends \Gems_Default_TokenPlanAction
+class Gems_Default_RespondentPlanAction extends \Gems_Default_TokenSearchActionAbstract
 {
+    /**
+     * The snippets used for the index action, before those in autofilter
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Token\\PlanSearchSnippet');
+
     public $sortKey = array(
         'respondent_name'       => SORT_ASC,
         'gr2o_patient_nr'       => SORT_ASC,
@@ -147,7 +154,12 @@ class Gems_Default_RespondentPlanAction extends \Gems_Default_TokenPlanAction
         return $model;
     }
 
-     public function getTopicTitle()
+    /**
+     * Helper function to get the title for the index action.
+     *
+     * @return $string
+     */
+    public function getIndexTitle()
     {
         return $this->_('Respondent planning');
     }

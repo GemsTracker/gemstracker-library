@@ -82,7 +82,7 @@ class Gems_Default_FieldOverviewAction extends \Gems_Controller_ModelSnippetActi
         $model->set('gr2t_start_date', 'label', $this->_('Start date'), 'dateFormat', 'dd-MM-yyyy');
         $model->set('gr2t_end_date',   'label', $this->_('End date'), 'dateFormat', 'dd-MM-yyyy');
 
-        $filter = $this->getSearchFilter();
+        $filter = $this->getSearchFilter($action !== 'excel');
         if (! (isset($filter['gr2t_id_organization']) && $filter['gr2t_id_organization'])) {
             $model->addFilter(array('gr2t_id_organization' => $this->loader->getCurrentUser()->getRespondentOrgFilter()));
         }

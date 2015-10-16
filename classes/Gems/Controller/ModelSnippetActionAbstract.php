@@ -294,7 +294,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
             $model->setSortParamDesc($this->autofilterParameters['sortParamDesc']);
         }
 
-        $model->applyParameters($this->getSearchFilter(), true);
+        $model->applyParameters($this->getSearchFilter(false), true);
 
         // Add any defaults.
         if (isset($this->autofilterParameters['extraFilter'])) {

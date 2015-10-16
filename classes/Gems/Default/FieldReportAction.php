@@ -116,7 +116,7 @@ class Gems_Default_FieldReportAction extends \Gems_Controller_ModelSnippetAction
      */
     public function createModel($detailed, $action)
     {
-        $filter = $this->getSearchFilter();
+        $filter = $this->getSearchFilter($action !== 'excel');
 
         // Return empty model when no track sel;ected
         if (! (isset($filter['gtf_id_track']) && $filter['gtf_id_track'])) {
@@ -286,7 +286,7 @@ class Gems_Default_FieldReportAction extends \Gems_Controller_ModelSnippetAction
      */
     public function getBrowseColumns()
     {
-        $filter = $this->getSearchFilter();
+        $filter = $this->getSearchFilter(true);
         if (! (isset($filter['gtf_id_track']) && $filter['gtf_id_track'])) {
             return array(
                 array('gtf_field_name'),

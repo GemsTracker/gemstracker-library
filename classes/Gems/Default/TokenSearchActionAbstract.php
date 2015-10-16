@@ -121,7 +121,7 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
     {
         $model   = $this->getModel();
 
-        $model->setFilter($this->getSearchFilter());
+        $model->setFilter($this->getSearchFilter(false));
 
         $sort = array(
             'grs_email'          => SORT_ASC,
@@ -188,11 +188,12 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
     /**
      * Get the filter to use with the model for searching
      *
+     * @param boolean $useRequest Use the request as source (when false, the session is used)
      * @return array or false
      */
-    public function getSearchFilter()
+    public function getSearchFilter($useRequest = true)
     {
-        $filter = parent::getSearchFilter();
+        $filter = parent::getSearchFilter($useRequest);
 
         $where = \Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($filter, $this->db, null, 'yyyy-MM-dd HH:mm:ss');
         if ($where) {
