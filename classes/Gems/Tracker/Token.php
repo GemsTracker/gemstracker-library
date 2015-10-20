@@ -877,6 +877,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                 ->forGroupId($this->getSurvey()->getGroupId())
                 ->onlySucces()
                 ->onlyValid()
+                ->forWhere('gsu_active = 1')
                 ->order(array('gto_valid_from', 'gto_round_order'));
 
         if ($tokenData = $tokenSelect->fetchRow()) {

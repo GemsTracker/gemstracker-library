@@ -56,6 +56,12 @@ class Track_Token_RedirectUntilGoodbyeSnippet extends Gems_Tracker_Snippets_Show
     protected $currentToken;
 
     /**
+     *
+     * @var \Gems_Loader
+     */
+    protected $loader;
+
+    /**
      * Create the snippets content
      *
      * This is a stub function either override getHtmlOutput() or override render()
@@ -65,10 +71,19 @@ class Track_Token_RedirectUntilGoodbyeSnippet extends Gems_Tracker_Snippets_Show
      */
     public function getHtmlOutput(Zend_View_Abstract $view)
     {
+        $messages = false;
+
         if ($this->wasAnswered) {
             $this->currentToken = $this->token->getNextUnansweredToken();
         } else {
-            $this->currentToken = $this->token;
+            $validator = $this->loader->getTracker()->getTokenValidator();
+
+            if ($validator->isValid($this->token->getTokenId())) {
+                $this->currentToken = $this->token;
+            } else {
+                $messages = $validator->getMessages();
+                $this->currentToken = $this->token->getNextUnansweredToken();
+            }
         }
 
         if ($this->currentToken instanceof Gems_Tracker_Token) {
@@ -80,6 +95,10 @@ class Track_Token_RedirectUntilGoodbyeSnippet extends Gems_Tracker_Snippets_Show
             exit();
         }
 
+        if ($messages) {
+            $this->addMessage($messages);
+        }
+        
         $org  = $this->token->getOrganization();
         $html = $this->getHtmlSequence();
 
