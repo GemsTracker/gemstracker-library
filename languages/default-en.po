@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.8.5\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: classes/GemsEscort.php:298 classes/MUtil/Log.php:105
@@ -588,8 +588,7 @@ msgstr "Changelog"
 msgid "Respondent nr"
 msgstr "Patient nr"
 
-#: classes/Gems/Model.php:308
-#: classes/Gems/Default/AgendaActivityAction.php:139
+#: classes/Gems/Model.php:308 classes/Gems/Default/AgendaActivityAction.php:139
 #: classes/Gems/Default/AgendaProcedureAction.php:139
 #: classes/Gems/Default/AgendaStaffAction.php:140
 #: classes/Gems/Default/CommJobAction.php:133
@@ -765,8 +764,7 @@ msgstr "City"
 msgid "Phone"
 msgstr "Phone"
 
-#: classes/Gems/Model.php:343
-#: classes/Gems/Default/RespondentPlanAction.php:141
+#: classes/Gems/Model.php:343 classes/Gems/Default/RespondentPlanAction.php:141
 #: classes/Gems/Model/RespondentModel.php:275
 #: classes/Gems/Model/RespondentModel.php:343
 #: classes/Gems/Model/RespondentRelationModel.php:52
@@ -1643,7 +1641,7 @@ msgstr "Days between reminders"
 
 #: classes/Gems/Default/CommJobAction.php:128
 msgid "1 day means the reminder is send the next day"
-msgstr "1 day means the reminder is send the next day"
+msgstr "1 day means the reminder is sent the next day"
 
 #: classes/Gems/Default/CommJobAction.php:130
 msgid "Maximum reminders"
@@ -1651,7 +1649,7 @@ msgstr "Maximum reminders"
 
 #: classes/Gems/Default/CommJobAction.php:131
 msgid "1 means only one reminder will be send"
-msgstr "1 means only one reminder will be send"
+msgstr "1 means only one reminder will be sent"
 
 #: classes/Gems/Default/CommJobAction.php:148
 msgid "First mail"
@@ -2542,8 +2540,8 @@ msgid ""
 "\n"
 "\n"
 "A new password was requested for your [b]{organization}[/b] account on the "
-"[b]{project}[/b] site, please click within {reset_in_hours} hours on [url="
-"{reset_url}]this link[/url] to enter the password of your choice.\n"
+"[b]{project}[/b] site, please click within {reset_in_hours} hours on "
+"[url={reset_url}]this link[/url] to enter the password of your choice.\n"
 "\n"
 "\n"
 "{organization_signature}\n"
@@ -2554,8 +2552,8 @@ msgstr ""
 "\n"
 "\n"
 "A new password was requested for your [b]{organization}[/b] account on the "
-"[b]{project}[/b] site, please click within {reset_in_hours} hours on [url="
-"{reset_url}]this link[/url] to enter the password of your choice.\n"
+"[b]{project}[/b] site, please click within {reset_in_hours} hours on "
+"[url={reset_url}]this link[/url] to enter the password of your choice.\n"
 "\n"
 "\n"
 "{organization_signature}\n"
