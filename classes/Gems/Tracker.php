@@ -671,7 +671,7 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
 
     /**
      *
-     * @return \Gems_Tracker_TokenFilter
+     * @return \Gems_Tracker_Token_TokenValidator
      */
     public function getTokenValidator()
     {

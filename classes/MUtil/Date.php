@@ -295,13 +295,14 @@ class MUtil_Date extends \Zend_Date
     }
 
     /**
-     * Returns if the given date or datepart is earlier or equal
-     * For example:
-     * 15.May.2000 <-> 13.June.1999 will return true for day, year and date, but not for month
+     * Returns if the given $date is earlier or equal than this date object (for the datepart)
      *
-     * @param  string|integer|array|\Zend_Date  $date    Date or datepart to compare with
+     * For example:
+     * $date = 15.May.2000 <-> $this = 13.June.1999 will return true for day, year and date, but not for month
+     *
+     * @param  string|integer|array|\Zend_Date $date    Date or datepart that should be earlier or equal
      * @param  string                          $part    OPTIONAL Part of the date to compare, if null the timestamp is used
-     * @param  string|\Zend_Locale              $locale  OPTIONAL Locale for parsing input
+     * @param  string|\Zend_Locale             $locale  OPTIONAL Locale for parsing input
      * @return boolean
      * @throws \Zend_Date_Exception
      */
@@ -313,14 +314,14 @@ class MUtil_Date extends \Zend_Date
     }
 
     /**
-     * Returns if the given date or datepart is later or equal
-     * For example:
-     * 15.May.2000 <-> 13.June.1999 will return true for month but false for day, year and date
-     * Returns if the given date is later
+     * Returns if the given $date is later or equal than this date object (for the datepart)
      *
-     * @param  string|integer|array|\Zend_Date  $date    Date or datepart to compare with
+     * For example:
+     * $date 15.May.2000 <-> $this 13.June.1999 will return true for month but false for day, year and date
+     *
+     * @param  string|integer|array|\Zend_Date $date    Date or datepart that should be later or equal
      * @param  string                          $part    OPTIONAL Part of the date to compare, if null the timestamp is used
-     * @param  string|\Zend_Locale              $locale  OPTIONAL Locale for parsing input
+     * @param  string|\Zend_Locale             $locale  OPTIONAL Locale for parsing input
      * @return boolean
      * @throws \Zend_Date_Exception
      */

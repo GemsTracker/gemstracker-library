@@ -28,12 +28,14 @@
  *
  *
  * @package    Gems
- * @subpackage Tracker\Snippets
+ * @subpackage Snippets\Ask
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
  * @version    $Id: ShowFirstOpenSnippet.php 203 2012-01-01t 12:51:32Z matijs $
  */
+
+namespace Gems\Snippets\Ask;
 
 /**
  * Show a single button for an unanswered survey or nothing.
@@ -41,24 +43,24 @@
  * Works using $project->getAskDelay()
  *
  * @package    Gems
- * @subpackage Tracker\Snippets
+ * @subpackage Snippets\Ask
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.5.3
  */
-class Track_Token_ShowFirstOpenSnippet extends Gems_Tracker_Snippets_ShowTokenLoopAbstract
+class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
 {
     /**
      * Required
      *
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     protected $project;
 
     /**
      * Optional, calculated from $token
      *
-     * @var Gems_Tracker_Token
+     * @var \Gems_Tracker_Token
      */
     protected $showToken;
 
@@ -71,21 +73,21 @@ class Track_Token_ShowFirstOpenSnippet extends Gems_Tracker_Snippets_ShowTokenLo
     public function checkRegistryRequestsAnswers()
     {
         if (parent::checkRegistryRequestsAnswers()) {
-            return $this->project instanceof Gems_Project_ProjectSettings;
+            return $this->project instanceof \Gems_Project_ProjectSettings;
         } else {
             return false;
         }
     }
-    
+
     /**
      * Create the snippets content
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param Zend_View_Abstract $view Just in case it is needed here
-     * @return MUtil_Html_HtmlInterface Something that can be rendered
+     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @return \MUtil_Html_HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view)
     {
         $delay = $this->project->getAskDelay($this->request, $this->wasAnswered);
         $href  = $this->getTokenHref($this->showToken);
@@ -115,7 +117,7 @@ class Track_Token_ShowFirstOpenSnippet extends Gems_Tracker_Snippets_ShowTokenLo
             $html->pInfo($this->_('Please click the button below to answer the next survey.'));
         } else {
             if ($welcome = $org->getWelcome()) {
-                $html->pInfo()->raw(MUtil_Markup::render($this->_($welcome), 'Bbcode', 'Html'));
+                $html->pInfo()->raw(\MUtil_Markup::render($this->_($welcome), 'Bbcode', 'Html'));
             }
             $html->pInfo(sprintf($this->_('Please click the button below to answer the survey for token %s.'), strtoupper($this->showToken->getTokenId())));
         }
@@ -141,7 +143,7 @@ class Track_Token_ShowFirstOpenSnippet extends Gems_Tracker_Snippets_ShowTokenLo
                 $next), $next));
         }
         if ($sig = $org->getSignature()) {
-            $html->pInfo()->raw(MUtil_Markup::render($this->_($sig), 'Bbcode', 'Html'));
+            $html->pInfo()->raw(\MUtil_Markup::render($this->_($sig), 'Bbcode', 'Html'));
         }
         return $html;
     }
@@ -153,7 +155,7 @@ class Track_Token_ShowFirstOpenSnippet extends Gems_Tracker_Snippets_ShowTokenLo
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see MUtil_Registry_TargetInterface}.
+     * {@see \MUtil_Registry_TargetInterface}.
      *
      * @return boolean
      */
@@ -165,6 +167,6 @@ class Track_Token_ShowFirstOpenSnippet extends Gems_Tracker_Snippets_ShowTokenLo
             $this->showToken = $this->token;
         }
 
-        return ($this->showToken instanceof Gems_Tracker_Token) && $this->showToken->exists;
+        return ($this->showToken instanceof \Gems_Tracker_Token) && $this->showToken->exists;
     }
 }

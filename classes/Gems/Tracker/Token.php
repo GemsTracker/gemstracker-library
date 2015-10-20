@@ -877,6 +877,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                 ->forGroupId($this->getSurvey()->getGroupId())
                 ->onlySucces()
                 ->onlyValid()
+                ->forWhere('gsu_active = 1')
                 ->order(array('gto_valid_from', 'gto_round_order'));
 
         if ($tokenData = $tokenSelect->fetchRow()) {
@@ -1532,6 +1533,53 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     public function isCompleted()
     {
         return isset($this->_gemsData['gto_completion_time']) && $this->_gemsData['gto_completion_time'];
+    }
+
+    /**
+     * True when the valid from is set and in the past and the valid until is not set or is in the future
+     *
+     * @return boolean
+     */
+    public function isCurrentlyValid()
+    {
+        if ($this->isNotYetValid()) {
+            return false;
+        }
+        if ($this->isExpired()) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * True when the valid until is set and is in the past
+     * @return boolean
+     */
+    public function isExpired()
+    {
+        $date = $this->getValidFrom();
+
+        if ($date instanceof \MUtil_Date) {
+            return $date->isEarlierOrEqual(time());
+        }
+
+        return false;
+    }
+
+    /**
+     * True when the valid from is in the future or not yet set
+     *
+     * @return boolean
+     */
+    public function isNotYetValid()
+    {
+        $date = $this->getValidFrom();
+
+        if ($date instanceof \MUtil_Date) {
+            return $date->isEarlierOrEqual(time());
+        }
+
+        return true;
     }
 
     /**

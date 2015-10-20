@@ -28,33 +28,35 @@
  *
  *
  * @package    Gems
- * @subpackage Tracker\Snippets
+ * @subpackage Snippets\Ask
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
  * @version    $Id: ShowAllOpenSnippet.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
+namespace Gems\Snippets\Ask;
+
 /**
  *
  *
  * @package    Gems
- * @subpackage Tracker\Snippets
+ * @subpackage Snippets\Ask
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.5.4
  */
-class Track_Token_ShowAllOpenSnippet extends Gems_Tracker_Snippets_ShowTokenLoopAbstract
+class ShowAllOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
 {
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
@@ -67,7 +69,7 @@ class Track_Token_ShowAllOpenSnippet extends Gems_Tracker_Snippets_ShowTokenLoop
 
     /**
      *
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     protected $util;
 
@@ -76,10 +78,10 @@ class Track_Token_ShowAllOpenSnippet extends Gems_Tracker_Snippets_ShowTokenLoop
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param Zend_View_Abstract $view Just in case it is needed here
-     * @return MUtil_Html_HtmlInterface Something that can be rendered
+     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @return \MUtil_Html_HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view)
     {
         $html    = $this->getHtmlSequence();
         $org     = $this->token->getOrganization();
@@ -95,7 +97,7 @@ class Track_Token_ShowAllOpenSnippet extends Gems_Tracker_Snippets_ShowTokenLoop
             // $html->pInfo($this->_('Please click the button below to answer the next survey.'));
         } else {
             if ($welcome = $org->getWelcome()) {
-                $html->pInfo()->raw(MUtil_Markup::render($this->_($welcome), 'Bbcode', 'Html'));
+                $html->pInfo()->raw(\MUtil_Markup::render($this->_($welcome), 'Bbcode', 'Html'));
             }
             // $html->pInfo(sprintf($this->_('Please click the button below to answer the survey for token %s.'), strtoupper($this->token->getTokenId())));
         }
@@ -105,7 +107,7 @@ class Track_Token_ShowAllOpenSnippet extends Gems_Tracker_Snippets_ShowTokenLoop
 
         // Do we always look back
         if ($this->lookbackInHours) {
-            $where .= $this->db->quoteInto("OR DATE_ADD(gto_completion_time, INTERVAL ? HOUR) >= CURRENT_TIMESTAMP", $this->lookbackInHours, Zend_Db::INT_TYPE);
+            $where .= $this->db->quoteInto("OR DATE_ADD(gto_completion_time, INTERVAL ? HOUR) >= CURRENT_TIMESTAMP", $this->lookbackInHours, \Zend_Db::INT_TYPE);
         }
 
         // We always look back from the entered token
@@ -184,7 +186,7 @@ class Track_Token_ShowAllOpenSnippet extends Gems_Tracker_Snippets_ShowTokenLoop
         if ($sig = $org->getSignature()) {
             $p = $html->pInfo();
             $p->br();
-            $p->raw(MUtil_Markup::render($this->_($sig), 'Bbcode', 'Html'));
+            $p->raw(\MUtil_Markup::render($this->_($sig), 'Bbcode', 'Html'));
         }
         return $html;
     }

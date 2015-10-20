@@ -75,6 +75,30 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
     protected $loader;
 
     /**
+     * The snippets that have moved
+     * @var array
+     */
+    protected $movedSnippets = array(
+            'AddTracksSnippet'                        => 'Tracker\\AddTracksSnippet',
+            'EditRoundStepSnippet'                    => 'Tracker\\Rounds\\EditRoundStepSnippet',
+            'ShowRoundStepSnippet'                    => 'Tracker\\Rounds\\ShowRoundStepSnippet',
+            'DeleteInSourceTrackSnippet'              => 'Tracker\\DeleteTrackSnippet',
+            'DeleteTrackTokenSnippet'                 => 'Tracker\\DeleteTrackTokenSnippet',
+            'EditTrackEngineSnippet'                  => 'Tracker\\EditTrackEngineSnippet',
+            'EditTrackSnippet'                        => 'Tracker\\EditTrackSnippet',
+            'EditTrackTokenSnippet'                   => 'Token\\EditTrackTokenSnippet',
+            'ShowTrackTokenSnippet'                   => 'Token\\ShowTrackTokenSnippet',
+            'SurveyQuestionsSnippet'                  => 'Survey\\SurveyQuestionsSnippet',
+            'TokenDateSelectorSnippet'                => 'Token\\TokenDateSelectorSnippet',
+            'TrackSurveyOverviewSnippet'              => 'Tracker\\TrackSurveyOverviewSnippet',
+            'TrackTokenOverviewSnippet'               => 'Tracker\\TrackTokenOverviewSnippet',
+            'TrackUsageTextDetailsSnippet'            => 'Tracker\\TrackUsageTextDetailsSnippet',
+            'Track_Token_RedirectUntilGoodbyeSnippet' => 'Ask\\RedirectUntilGoodbyeSnippet',
+            'Track_Token_ShowAllOpenSnippet'          => 'Ask\\ShowAllOpenSnippet',
+            'Track_Token_ShowFirstOpenSnippet'        => 'Ask\\ShowFirstOpenSnippet',
+            );
+
+    /**
      *
      * @var \Gems_Project_ProjectSettings
      */
@@ -161,7 +185,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             case 'MailTemplateController':
             case 'SurveyController.php':
                 $messages[] = "You can delete this file. This controller is no longer in use.";
-                break;
+                return;
 
             case 'RespondentController.php':
                 if (preg_match(
@@ -206,6 +230,11 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
                     }
                 }
         }
+        foreach ($this->movedSnippets as $old => $new) {
+            if (preg_match('/[\'"]' . $old . '[\'"]/', $content)) {
+                $messages[] = "This controller appears to use the '$old' snippet, that was changed to the '$new' snippet.";
+            }
+        }
     }
 
     /**
@@ -218,24 +247,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
     {
         $filePathName = $fileinfo->getPathname();
 
-        $movedSnippets = array(
-            'AddTracksSnippet'             => 'Tracker\\AddTracksSnippet',
-            'EditRoundStepSnippet'         => 'Tracker\\Rounds\\EditRoundStepSnippet',
-            'ShowRoundStepSnippet'         => 'Tracker\\Rounds\\ShowRoundStepSnippet',
-            'DeleteInSourceTrackSnippet'   => 'Tracker\\DeleteTrackSnippet',
-            'DeleteTrackTokenSnippet'      => 'Tracker\\DeleteTrackTokenSnippet',
-            'EditTrackEngineSnippet'       => 'Tracker\\EditTrackEngineSnippet',
-            'EditTrackSnippet'             => 'Tracker\\EditTrackSnippet',
-            'EditTrackTokenSnippet'        => 'Token\\EditTrackTokenSnippet',
-            'ShowTrackTokenSnippet'        => 'Token\\ShowTrackTokenSnippet',
-            'SurveyQuestionsSnippet'       => 'Survey\\SurveyQuestionsSnippet',
-            'TokenDateSelectorSnippet'     => 'Token\\TokenDateSelectorSnippet',
-            'TrackSurveyOverviewSnippet'   => 'Tracker\\TrackSurveyOverviewSnippet',
-            'TrackTokenOverviewSnippet'    => 'Tracker\\TrackTokenOverviewSnippet',
-            'TrackUsageTextDetailsSnippet' => 'Tracker\\TrackUsageTextDetailsSnippet',
-            );
-
-        foreach ($movedSnippets as $oldSnippet => $newSnippet) {
+        foreach ($this->movedSnippets as $oldSnippet => $newSnippet) {
             if (\MUtil_String::endsWith($filePathName, $oldSnippet . '.php') &&
                     (! \MUtil_String::endsWith($filePathName, $newSnippet . '.php'))) {
 

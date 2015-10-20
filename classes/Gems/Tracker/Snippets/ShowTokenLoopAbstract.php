@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends MUtil_Snippets_SnippetAbstract
+class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_SnippetAbstract
 {
     /**
      * General date format
@@ -55,7 +55,7 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends MUtil_Snippets_Snippet
     /**
      * Required
      *
-     * @var Zend_Controller_Request_Abstract
+     * @var \Zend_Controller_Request_Abstract
      */
     protected $request;
 
@@ -69,14 +69,14 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends MUtil_Snippets_Snippet
     /**
      * Required, the current token, possibly already answered
      *
-     * @var Gems_Tracker_Token
+     * @var \Gems_Tracker_Token
      */
     protected $token;
 
     /**
      * Required
      *
-     * @var Zend_View
+     * @var \Zend_View
      */
     protected $view;
 
@@ -95,12 +95,12 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends MUtil_Snippets_Snippet
      */
     public function checkRegistryRequestsAnswers()
     {
-        if ($this->token instanceof Gems_Tracker_Token) {
+        if ($this->token instanceof \Gems_Tracker_Token) {
 
             $this->wasAnswered = $this->token->isCompleted();
 
-            return ($this->request instanceof Zend_Controller_Request_Abstract) &&
-                    ($this->view instanceof Zend_View) &&
+            return ($this->request instanceof \Zend_Controller_Request_Abstract) &&
+                    ($this->view instanceof \Zend_View) &&
                     parent::checkRegistryRequestsAnswers();
         } else {
             return false;
@@ -110,10 +110,10 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends MUtil_Snippets_Snippet
     /**
      * Formats an completion date for this display
      *
-     * @param MUtil_Date $dateTime
+     * @param \MUtil_Date $dateTime
      * @return string
      */
-    public function formatCompletion(MUtil_Date $dateTime)
+    public function formatCompletion(\MUtil_Date $dateTime)
     {
         $days = abs($dateTime->diffDays());
 
@@ -151,10 +151,10 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends MUtil_Snippets_Snippet
     /**
      * Formats an until date for this display
      *
-     * @param MUtil_Date $dateTime
+     * @param \MUtil_Date $dateTime
      * @return string
      */
-    public function formatUntil(MUtil_Date $dateTime = null)
+    public function formatUntil(\MUtil_Date $dateTime = null)
     {
         if (null === $dateTime) {
             return $this->_('Survey has no time limit.');
@@ -165,14 +165,14 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends MUtil_Snippets_Snippet
         switch ($days) {
             case 0:
                 return array(
-                    MUtil_Html::create('strong', $this->_('Warning!!!')),
+                    \MUtil_Html::create('strong', $this->_('Warning!!!')),
                     ' ',
                     $this->_('This survey must be answered today!')
                     );
 
             case 1:
                 return array(
-                    MUtil_Html::create('strong', $this->_('Warning!!')),
+                    \MUtil_Html::create('strong', $this->_('Warning!!')),
                     ' ',
                     $this->_('This survey can only be answered until tomorrow!')
                     );
@@ -196,20 +196,20 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends MUtil_Snippets_Snippet
     /**
      * Get the href for a token
      *
-     * @param Gems_Tracker_Token $token
-     * @return MUtil_Html_HrefArrayAttribute
+     * @param \Gems_Tracker_Token $token
+     * @return \MUtil_Html_HrefArrayAttribute
      */
-    protected function getTokenHref(Gems_Tracker_Token $token)
+    protected function getTokenHref(\Gems_Tracker_Token $token)
     {
         /***************
          * Get the url *
          ***************/
         $params = array(
             $this->request->getActionKey() => 'to-survey',
-            MUtil_Model::REQUEST_ID        => $token->getTokenId(),
+            \MUtil_Model::REQUEST_ID        => $token->getTokenId(),
             'RouteReset'                   => false,
             );
 
-        return new MUtil_Html_HrefArrayAttribute($params);
+        return new \MUtil_Html_HrefArrayAttribute($params);
     }
 }
