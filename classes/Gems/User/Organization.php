@@ -137,6 +137,17 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
     }
 
     /**
+     * Does the code attribute contain this code (with multiple codes seperated by a space)
+     *
+     * @param string $checkCode
+     * @return boolean
+     */
+    public function containsCode($checkCode)
+    {
+        return stripos(' ' . $this->_get('gor_code') . ' ', ' ' . $checkCode . ' ') !== false;
+    }
+
+    /**
      * Returns true if this is an existing organization
      *
      * @return boolean

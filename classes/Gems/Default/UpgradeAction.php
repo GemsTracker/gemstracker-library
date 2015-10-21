@@ -86,14 +86,6 @@ class Gems_Default_UpgradeAction extends \Gems_Controller_Action
         $this->addSnippet('Upgrade\\UpgradeCompatibilitySnippet', 'escort', $this->escort);
     }
 
-    public function init()
-    {
-        parent::init();
-
-        $this->_upgrades = $this->loader->getUpgrades();
-
-    }
-
     /**
      * Executes the upgrades for a certain context
      *
@@ -164,6 +156,14 @@ class Gems_Default_UpgradeAction extends \Gems_Controller_Action
         $this->executeAction();
     }
 
+    public function init()
+    {
+        parent::init();
+
+        $this->_upgrades = $this->loader->getUpgrades();
+
+    }
+
     /**
      * Overview of available contexts, max upgrade level and achieved upgrade level
      */
@@ -184,6 +184,8 @@ class Gems_Default_UpgradeAction extends \Gems_Controller_Action
             $data[] = $row;
         }
         $this->addSnippet('SelectiveTableSnippet', 'data', $data, 'class', 'browser table', 'columns', $displayColumns);
+        $this->html->br();
+        $this->compatibilityReportAction();
     }
 
     /**

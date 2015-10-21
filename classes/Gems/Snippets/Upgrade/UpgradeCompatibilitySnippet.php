@@ -230,6 +230,11 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
                     }
                 }
         }
+        if (preg_match('/\\sextends\\s+\\\\?Gems_Controller_BrowseEditAction\\s/', $content)) {
+            $messages[] = "This controller extends from the deprecated Gems_Controller_BrowseEditAction.";
+            $messages[] = \MUtil_Html::create('strong', "Rewrite the controller!");
+        }
+
         foreach ($this->movedSnippets as $old => $new) {
             if (preg_match('/[\'"]' . $old . '[\'"]/', $content)) {
                 $messages[] = "This controller appears to use the '$old' snippet, that was changed to the '$new' snippet.";

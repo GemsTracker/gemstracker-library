@@ -87,8 +87,6 @@ class PlanTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
      */
     protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
-        $HTML  = \MUtil_Html::create();
-
         $model->set('gto_id_token', 'formatFunction', 'strtoupper');
 
         $bridge->setDefaultRowClass(\MUtil_Html_TableElement::createAlternateRowClass('even', 'even', 'odd', 'odd'));
@@ -103,7 +101,7 @@ class PlanTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
         $bridge->addSortable('gto_id_token');
         // $bridge->addSortable('gto_mail_sent_num', $this->_('Contact moments'))->rowspan = 2;
 
-        $bridge->addMultiSort('gr2o_patient_nr', $HTML->raw('; '), 'respondent_name');
+        $this->addRespondentCell($bridge, $model);
         $bridge->addMultiSort('ggp_name', array($this->createActionButtons($bridge)));
 
         $tr2 = $bridge->tr();
@@ -118,14 +116,31 @@ class PlanTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
             $model->set('gto_round_description', 'tableDisplay', 'smallData');
             $bridge->addMultiSort(
                 'gtr_track_name', 'gr2t_track_info',
-                array($bridge->gtr_track_name->if($HTML->raw(' &raquo; ')), ' '),
+                array($bridge->gtr_track_name->if(\MUtil_Html::raw(' &raquo; ')), ' '),
                 'gsu_survey_name', 'gto_round_description');
         } else {
-            $bridge->addMultiSort('gto_round_description', $HTML->raw('; '), 'gsu_survey_name');
+            $bridge->addMultiSort('gto_round_description', \MUtil_Html::raw('; '), 'gsu_survey_name');
         }
         $bridge->addSortable('assigned_by');
     }
 
+    /**
+     * As this is a common cell setting, this function allows you to overrule it.
+     *
+     * @param \MUtil_Model_Bridge_TableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
+     */
+    protected function addRespondentCell(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    {
+        $bridge->addMultiSort('gr2o_patient_nr', \MUtil_Html::raw('; '), 'respondent_name');
+    }
+
+    /**
+     * Return a list of possible action buttons for the token
+     *
+     * @param \MUtil_Model_Bridge_TableBridge $bridge
+     * @return array of HtmlElements
+     */
     public function createActionButtons(\MUtil_Model_Bridge_TableBridge $bridge)
     {
         // Get the other token buttons

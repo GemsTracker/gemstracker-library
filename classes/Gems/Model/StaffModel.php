@@ -265,10 +265,12 @@ class Gems_Model_StaffModel extends Gems_Model_JoinModel
             $this->set('gul_can_login',        'label', $this->_('Can login'),
                     'default', 1,
                     'description', $this->_('Users can only login when this box is checked.'),
+                    'elementClass', 'Checkbox',
                     'multiOptions', $yesNo
                     );
             $this->set('gsf_logout_on_survey', 'label', $this->_('Logout on survey'),
                     'description', $this->_('If checked the user will logoff when answering a survey.'),
+                    'elementClass', 'Checkbox',
                     'multiOptions', $yesNo
                     );
         }
