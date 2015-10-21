@@ -51,7 +51,7 @@ class Gems_Default_OrganizationAction extends \Gems_Controller_ModelSnippetActio
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = 'Organization_OrganizationTableSnippet';
+    protected $autofilterSnippets = 'Organization\\OrganizationTableSnippet';
 
     /**
      * Variable to set tags for cache cleanup after changes
@@ -65,7 +65,7 @@ class Gems_Default_OrganizationAction extends \Gems_Controller_ModelSnippetActio
      *
      * @var mixed String or array of snippets name
      */
-    protected $createEditSnippets = 'Organization_OrganizationEditSnippet';
+    protected $createEditSnippets = 'Organization\\OrganizationEditSnippet';
 
     /**
      *

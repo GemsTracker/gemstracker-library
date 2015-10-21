@@ -35,6 +35,8 @@
  * @version    $Id: Sample.php 203 2011-07-07 12:51:32Z matijs $
  */
 
+namespace Gems\Snippets\Organization;
+
 /**
  *
  *
@@ -44,19 +46,19 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Organization_ChooseOrganizationSnippet extends MUtil_Snippets_SnippetAbstract
+class ChooseOrganizationSnippet extends \MUtil_Snippets_SnippetAbstract
 {
     /**
      * Required
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
     /**
      * Required
      *
-     * @var Zend_Controller_Request_Abstract
+     * @var \Zend_Controller_Request_Abstract
      */
     protected $request;
 
@@ -76,10 +78,10 @@ class Organization_ChooseOrganizationSnippet extends MUtil_Snippets_SnippetAbstr
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param Zend_View_Abstract $view Just in case it is needed here
-     * @return MUtil_Html_HtmlInterface Something that can be rendered
+     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @return \MUtil_Html_HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view)
     {
         $html = $this->getHtmlSequence();
 
@@ -95,7 +97,7 @@ class Organization_ChooseOrganizationSnippet extends MUtil_Snippets_SnippetAbstr
             foreach ($orgs as $orgId => $name) {
                 $url['org'] = $orgId;
 
-                $html->pInfo()->actionLink($url, $name)->appendAttrib('class', 'larger'); 
+                $html->pInfo()->actionLink($url, $name)->appendAttrib('class', 'larger');
             }
         } else {
             $html->pInfo($this->_('This organization cannot have any respondents.'));

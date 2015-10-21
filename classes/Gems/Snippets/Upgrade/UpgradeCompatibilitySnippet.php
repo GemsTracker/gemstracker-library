@@ -79,24 +79,27 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
      * @var array
      */
     protected $movedSnippets = array(
-            'AddTracksSnippet'                        => 'Tracker\\AddTracksSnippet',
-            'EditRoundStepSnippet'                    => 'Tracker\\Rounds\\EditRoundStepSnippet',
-            'ShowRoundStepSnippet'                    => 'Tracker\\Rounds\\ShowRoundStepSnippet',
-            'DeleteInSourceTrackSnippet'              => 'Tracker\\DeleteTrackSnippet',
-            'DeleteTrackTokenSnippet'                 => 'Tracker\\DeleteTrackTokenSnippet',
-            'EditTrackEngineSnippet'                  => 'Tracker\\EditTrackEngineSnippet',
-            'EditTrackSnippet'                        => 'Tracker\\EditTrackSnippet',
-            'EditTrackTokenSnippet'                   => 'Token\\EditTrackTokenSnippet',
-            'ShowTrackTokenSnippet'                   => 'Token\\ShowTrackTokenSnippet',
-            'SurveyQuestionsSnippet'                  => 'Survey\\SurveyQuestionsSnippet',
-            'TokenDateSelectorSnippet'                => 'Token\\TokenDateSelectorSnippet',
-            'TrackSurveyOverviewSnippet'              => 'Tracker\\TrackSurveyOverviewSnippet',
-            'TrackTokenOverviewSnippet'               => 'Tracker\\TrackTokenOverviewSnippet',
-            'TrackUsageTextDetailsSnippet'            => 'Tracker\\TrackUsageTextDetailsSnippet',
-            'Track_Token_RedirectUntilGoodbyeSnippet' => 'Ask\\RedirectUntilGoodbyeSnippet',
-            'Track_Token_ShowAllOpenSnippet'          => 'Ask\\ShowAllOpenSnippet',
-            'Track_Token_ShowFirstOpenSnippet'        => 'Ask\\ShowFirstOpenSnippet',
-            );
+        'AddTracksSnippet'                        => 'Tracker\\AddTracksSnippet',
+        'EditRoundStepSnippet'                    => 'Tracker\\Rounds\\EditRoundStepSnippet',
+        'ShowRoundStepSnippet'                    => 'Tracker\\Rounds\\ShowRoundStepSnippet',
+        'DeleteInSourceTrackSnippet'              => 'Tracker\\DeleteTrackSnippet',
+        'DeleteTrackTokenSnippet'                 => 'Tracker\\DeleteTrackTokenSnippet',
+        'EditTrackEngineSnippet'                  => 'Tracker\\EditTrackEngineSnippet',
+        'EditTrackSnippet'                        => 'Tracker\\EditTrackSnippet',
+        'EditTrackTokenSnippet'                   => 'Token\\EditTrackTokenSnippet',
+        'Organization_ChooseOrganizationSnippet'  => 'Organization\\ChooseOrganizationSnippet',
+        'Organization_OrganizationEditSnippet'    => 'Organization\\OrganizationEditSnippet',
+        'Organization_OrganizationTableSnippet'   => 'Organization\\OrganizationTableSnippet',
+        'ShowTrackTokenSnippet'                   => 'Token\\ShowTrackTokenSnippet',
+        'SurveyQuestionsSnippet'                  => 'Survey\\SurveyQuestionsSnippet',
+        'TokenDateSelectorSnippet'                => 'Token\\TokenDateSelectorSnippet',
+        'TrackSurveyOverviewSnippet'              => 'Tracker\\TrackSurveyOverviewSnippet',
+        'TrackTokenOverviewSnippet'               => 'Tracker\\TrackTokenOverviewSnippet',
+        'TrackUsageTextDetailsSnippet'            => 'Tracker\\TrackUsageTextDetailsSnippet',
+        'Track_Token_RedirectUntilGoodbyeSnippet' => 'Ask\\RedirectUntilGoodbyeSnippet',
+        'Track_Token_ShowAllOpenSnippet'          => 'Ask\\ShowAllOpenSnippet',
+        'Track_Token_ShowFirstOpenSnippet'        => 'Ask\\ShowFirstOpenSnippet',
+        );
 
     /**
      *
@@ -169,6 +172,12 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
                 $messages[] = "The code in this file contains a not namespace proof reference to '$className', prefix a \\.";
             }
         }
+
+        foreach ($this->movedSnippets as $old => $new) {
+            if (preg_match('/[\'"]' . $old . '[\'"]/', $content)) {
+                $messages[] = "This controller appears to use the '$old' snippet, that was changed to the '$new' snippet.";
+            }
+        }
     }
 
     /**
@@ -233,12 +242,6 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
         if (preg_match('/\\sextends\\s+\\\\?Gems_Controller_BrowseEditAction\\s/', $content)) {
             $messages[] = "This controller extends from the deprecated Gems_Controller_BrowseEditAction.";
             $messages[] = \MUtil_Html::create('strong', "Rewrite the controller!");
-        }
-
-        foreach ($this->movedSnippets as $old => $new) {
-            if (preg_match('/[\'"]' . $old . '[\'"]/', $content)) {
-                $messages[] = "This controller appears to use the '$old' snippet, that was changed to the '$new' snippet.";
-            }
         }
     }
 

@@ -501,7 +501,7 @@ abstract class Gems_Default_RespondentAction extends \Gems_Controller_BrowseEdit
         if ($user->hasPrivilege('pr.respondent.multiorg') || $user->getCurrentOrganization()->canHaveRespondents()) {
             parent::indexAction();
         } else {
-            $this->addSnippet('Organization_ChooseOrganizationSnippet');
+            $this->addSnippet('Organization\\ChooseOrganizationSnippet');
         }
     }
 

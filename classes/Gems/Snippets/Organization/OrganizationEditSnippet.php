@@ -35,6 +35,8 @@
  * @version    $Id: OrganizationEditSnippet.php 203 2011-07-07 12:51:32Z matijs $
  */
 
+namespace Gems\Snippets\Organization;
+
 /**
  *
  *
@@ -44,11 +46,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Organization_OrganizationEditSnippet extends Gems_Snippets_ModelTabFormSnippetGeneric
+class OrganizationEditSnippet extends \Gems_Snippets_ModelTabFormSnippetGeneric
 {
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
@@ -91,7 +93,7 @@ class Organization_OrganizationEditSnippet extends Gems_Snippets_ModelTabFormSni
             unset($allowedOrgs[$this->formData['gor_id_organization']]);
             $display = join(', ', $allowedOrgs);
             if (! $display) {
-                $display = MUtil_Html::create('em', $this->_('No access to other organizations.'));
+                $display = \MUtil_Html::create('em', $this->_('No access to other organizations.'));
             }
 
             $model->set('allowed', 'value', $display);

@@ -448,7 +448,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
         if ($user->hasPrivilege('pr.respondent.multiorg') || $user->getCurrentOrganization()->canHaveRespondents()) {
             parent::indexAction();
         } else {
-            $this->addSnippet('Organization_ChooseOrganizationSnippet');
+            $this->addSnippet('Organization\\ChooseOrganizationSnippet');
         }
     }
 
