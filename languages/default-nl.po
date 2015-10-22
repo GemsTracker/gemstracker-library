@@ -7473,7 +7473,7 @@ msgstr "Maanden"
 
 #: classes/Gems/Util/TrackData.php:231 classes/Gems/Util/Translated.php:365
 msgid "Quarters"
-msgstr "Kwartieren"
+msgstr "Kwartalen"
 
 #: classes/Gems/Util/TrackData.php:232 classes/Gems/Util/Translated.php:366
 msgid "Years"
