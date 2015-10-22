@@ -79,6 +79,20 @@ abstract class DependencyAbstract extends \MUtil_Translate_TranslateableAbstract
     protected $_effecteds = array();
 
     /**
+     * Set to false to disable automatically setting the onchange code
+     *
+     * @var boolean
+     */
+    protected $applyOnChange = true;
+
+    /**
+     * Set to false to disable automatically setting the onchange code
+     *
+     * @var boolean
+     */
+    protected $onChangeJs = 'this.form.submit();';
+
+    /**
      * Constructor checks any subclass set variables
      */
     public function __construct()
@@ -157,6 +171,22 @@ abstract class DependencyAbstract extends \MUtil_Translate_TranslateableAbstract
         }
 
         return $this;
+    }
+
+    /**
+     * Use this function for a default application of this dependency to the model
+     *
+     * @param \MUtil_Model_ModelAbstract $model Try not to store the model as variabe in the dependency (keep it simple)
+     */
+    public function applyToModel(\MUtil_Model_ModelAbstract $model)
+    {
+        if ($this->applyOnChange) {
+            foreach ($this->getDependsOn() as $name) {
+                if (! $model->has($name, 'onchange')) {
+                    $model->set($name, 'onchange', $this->onChangeJs);
+                }
+            }
+        }
     }
 
     /**

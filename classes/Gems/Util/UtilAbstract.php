@@ -70,13 +70,13 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
      * Returns a callable if a method is called as a variable
      *
      * @param string $name
-     * @return Callable
+     * @return \MUtil_Lazy_Call
      */
     public function __get($name)
     {
         if (method_exists($this, $name)) {
             // Return a callable
-            return array($this, $name);
+            return \MUtil_Lazy::call(array($this, $name));
         }
 
         throw new \Gems_Exception_Coding("Unknown method '$name' requested as callable.");

@@ -35,6 +35,8 @@
  * @version    $Id$
  */
 
+use Gems\Util\UtilAbstract;
+
 /**
  * Class for general track utility functions
  *
@@ -44,7 +46,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Util_TrackData extends \Gems_Registry_TargetAbstract
+class Gems_Util_TrackData extends UtilAbstract
 {
     /**
      * When displaying tokens for a respondent only those of
@@ -71,18 +73,6 @@ class Gems_Util_TrackData extends \Gems_Registry_TargetAbstract
      * @var int One of the self::SEE_ constants
      */
     public $accessMode = self::SEE_CURRENT_ONLY;
-
-    /**
-     *
-     * @var \Zend_Cache_Core
-     */
-    protected $cache;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
 
     /**
      *
@@ -128,20 +118,12 @@ class Gems_Util_TrackData extends \Gems_Registry_TargetAbstract
      */
     public function getAllRounds()
     {
-        $cacheId = __CLASS__ . '_' . __FUNCTION__;
-
-        if ($results = $this->cache->load($cacheId)) {
-            return $results;
-        }
-
-        $select = "SELECT gro_id_round,
+        $sql = "SELECT gro_id_round,
                         CONCAT(gro_id_order, ' - ', SUBSTR(gsu_survey_name, 1, 80)) AS name
                     FROM gems__rounds INNER JOIN gems__surveys ON gro_id_survey = gsu_id_survey
                     ORDER BY gro_id_order";
 
-        $results = $this->db->fetchPairs($select);
-        $this->cache->save($results, $cacheId, array('rounds', 'surveys'));
-        return $results;
+        return $this->_getSelectPairsCached(__FUNCTION__, $sql, array(), 'tracks');
     }
 
     /**
@@ -151,17 +133,9 @@ class Gems_Util_TrackData extends \Gems_Registry_TargetAbstract
      */
     public function getAllSurveys()
     {
-        $cacheId = __CLASS__ . '_' . __FUNCTION__;
+        $sql = "SELECT gsu_id_survey, gsu_survey_name FROM gems__surveys ORDER BY gsu_survey_name";
 
-        if ($results = $this->cache->load($cacheId)) {
-            return $results;
-        }
-
-        $select = "SELECT gsu_id_survey, gsu_survey_name FROM gems__surveys ORDER BY gsu_survey_name";
-
-        $results = $this->db->fetchPairs($select);
-        $this->cache->save($results, $cacheId, array('surveys'));
-        return $results;
+        return $this->_getSelectPairsCached(__FUNCTION__, $sql, array(), 'surveys');
     }
 
     /**
@@ -304,6 +278,23 @@ class Gems_Util_TrackData extends \Gems_Registry_TargetAbstract
     }
 
     /**
+     * Get the Rounds that use this survey
+     *
+     * @param int $surveyId
+     * @return array
+     */
+    public function getSurveyRounds($surveyId)
+    {
+        $sql = "SELECT gro.gro_id_round,
+                CONCAT(gtr.gtr_track_name, ' (', gro.gro_id_order, ') - ', gro.gro_round_description)
+            FROM gems__rounds AS gro, gems__tracks AS gtr
+            WHERE gro.gro_id_track = gtr.gtr_id_track AND gro.gro_id_survey = ?
+            ORDER BY gtr.gtr_track_name, gro.gro_id_order";
+
+        return $this->_getSelectPairsCached(__FUNCTION__. '_' . $surveyId, $sql, $surveyId, 'surveys');
+    }
+
+    /**
      * Get all the surveys for a certain code
      *
      * @param string $code
@@ -326,6 +317,29 @@ class Gems_Util_TrackData extends \Gems_Registry_TargetAbstract
         $results = $this->db->fetchPairs($select);
         $this->cache->save($results, $cacheId, array('surveys'));
         return $results;
+    }
+
+    /**
+     * Get all the surveys for a certain organization id
+     *
+     * @param int $organizationId
+     * @return array survey id => survey name
+     */
+    public function getSurveysFor($organizationId)
+    {
+        if ($organizationId !== null) {
+            $where = "AND EXISTS (SELECT 1 FROM gems__rounds
+                INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
+                WHERE gro_id_survey = gsu_id_survey AND
+                gtr_organizations LIKE '%|" . (int) $organizationId . "|%')";
+        } else {
+            $where = "";
+        }
+
+        $sql = "SELECT gsu_id_survey, gsu_survey_name FROM gems__surveys WHERE gsu_active = 1 " .
+            $where . " ORDER BY gsu_survey_name ASC";
+
+        return $this->_getSelectPairsCached(__FUNCTION__. '_' . $organizationId, $sql, array(), 'surveys');
     }
 
     /**

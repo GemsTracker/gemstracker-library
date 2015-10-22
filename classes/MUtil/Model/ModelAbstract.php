@@ -108,6 +108,13 @@ abstract class MUtil_Model_ModelAbstract extends \MUtil_Registry_TargetAbstract
     private $_model = array();
 
     /**
+     * Do we use the dependencies?
+     *
+     * @var boolean
+     */
+    private $_model_enable_dependencies = true;
+
+    /**
      * Contains the settings for the model as a whole
      *
      * @var array
@@ -280,6 +287,27 @@ abstract class MUtil_Model_ModelAbstract extends \MUtil_Registry_TargetAbstract
     }
 
     /**
+     * Create a single row of new data
+     *
+     * @return array
+     */
+    protected function _createNew()
+    {
+        $empty = array();
+        foreach ($this->getItemNames() as $name) {
+            $value = $this->get($name, 'default');
+
+            // Load 'Value' if set
+            if (null === $value) {
+                $value = $this->get($name, 'value');
+            }
+            $empty[$name] = $value;
+        }
+
+        return $empty;
+    }
+
+    /**
      * Processes empty strings, filters items that should not be saved
      * according to setSaveWhen() and changes values that have a setOnSave()
      * function.
@@ -397,7 +425,7 @@ abstract class MUtil_Model_ModelAbstract extends \MUtil_Registry_TargetAbstract
              }
         }
 
-        if ($this->_model_dependencies) {
+        if ($this->_model_dependencies && $this->_model_enable_dependencies) {
             $newRow = $this->processDependencies($newRow, $new);
         }
 
@@ -466,6 +494,8 @@ abstract class MUtil_Model_ModelAbstract extends \MUtil_Registry_TargetAbstract
 
             $key = ($keys ? max($keys) : 0) + 10;
         }
+
+        $dependency->applyToModel($this);
 
         $this->_model_dependencies[$key] = $dependency;
 
@@ -1603,19 +1633,7 @@ abstract class MUtil_Model_ModelAbstract extends \MUtil_Registry_TargetAbstract
      */
     public function loadAllNew()
     {
-        $empty = array();
-        foreach ($this->getItemNames() as $name) {
-            $value = $this->get($name, 'default');
-            
-            // Load 'Value' if set
-            if (null === $value) {
-                $value = $this->get($name, 'value');
-            }
-            $empty[$name] = $value;
-        }
-        $data = $this->processAfterLoad(array($empty), true);
-
-        return $data;
+        return $this->processAfterLoad(array($this->_createNew()), true);
     }
 
     /**
@@ -1654,7 +1672,7 @@ abstract class MUtil_Model_ModelAbstract extends \MUtil_Registry_TargetAbstract
      */
     public function loadNew($count = null)
     {
-        $data = $this->loadAllNew();
+        $data  = $this->loadAllNew();
         $empty = reset($data);
 
         // Return only a single row when no count is specified
@@ -1695,6 +1713,34 @@ abstract class MUtil_Model_ModelAbstract extends \MUtil_Registry_TargetAbstract
     }
 
     /**
+     * Processes and returns an array of post data
+     *
+     * @param array $postData
+     * @param boolean $create
+     * @param mixed $filter True to use the stored filter, array to specify a different filter
+     * @param mixed $sort True to use the stored sort, array to specify a different sort
+     * @return array
+     */
+    public function loadPostData(array $postData, $create = false, $filter = true, $sort = true)
+    {
+        $this->_model_enable_dependencies = false;
+        if ($create) {
+            $modelData = $this->loadNew();
+        } else {
+            $modelData = $this->loadFirst($filter, $sort);
+
+            if (! is_array($modelData)) {
+                $modelData = array();
+            }
+        }
+        $this->_model_enable_dependencies = true;
+
+        // 1 - When posting, posted data is used as a value first
+        // 2 - Then we use any values already set
+        return $this->processOneRowAfterLoad($postData + $modelData, $create, true);
+    }
+
+    /**
      * Returns a \MUtil_Lazy_RepeatableInterface for the items in the model
      *
      * @param mixed $filter True to use the stored filter, array to specify a different filter
@@ -1728,21 +1774,11 @@ abstract class MUtil_Model_ModelAbstract extends \MUtil_Registry_TargetAbstract
             $data = $transformer->transformLoad($this, $data, $new, $isPostData);
         }
 
-        if ($isPostData) {
-            // Create an array to add a null for any missing multiOptions value
-            $extraPostData = array_fill_keys($this->getColNames('multiOptions'), null);
-        }
-
         if ($this->getMeta(self::LOAD_TRANSFORMER) || $this->hasDependencies()) {
             // Create empty array, will be filled after first row to speed up performance
             $transformColumns = array();
 
             foreach ($data as $key => $row) {
-                if ($isPostData) {
-                    // Add a null for any missing multiOptions value
-                    $row = $row + $extraPostData;
-                }
-
                 $data[$key] = $this->_processRowAfterLoad($row, $new, $isPostData, $transformColumns);
             }
         }
@@ -1843,6 +1879,21 @@ abstract class MUtil_Model_ModelAbstract extends \MUtil_Registry_TargetAbstract
         // \MUtil_Echo::track($data);
 
         return $data;
+    }
+
+    /**
+     * Helper function that procesess a single row of raw data after a load.
+     *
+     * @param array $row array containing row
+     * @param boolean $new True when it is a new item
+     * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
+     * @return array Row
+     */
+    public function processOneRowAfterLoad(array $row, $new = false, $isPostData = false)
+    {
+        $output = $this->processAfterLoad(array($row), $new, $isPostData);
+
+        return reset($output);
     }
 
     /**
