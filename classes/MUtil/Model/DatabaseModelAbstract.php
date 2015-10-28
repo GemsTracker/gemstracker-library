@@ -118,6 +118,13 @@ abstract class MUtil_Model_DatabaseModelAbstract extends \MUtil_Model_ModelAbstr
     public $keyCopier = self::KEY_COPIER;
 
     /**
+     * When true all rows are fetched in one statement, even when selecting an iterator
+     *
+     * @var boolean
+     */
+    public $prefetchIterator = false;
+
+    /**
      * Get a select statement using a filter and sort
      *
      * @param array $filter Filter array, num keys contain fixed expresions, text keys are equal or one of filters
@@ -126,7 +133,7 @@ abstract class MUtil_Model_DatabaseModelAbstract extends \MUtil_Model_ModelAbstr
      */
     protected function _createSelect(array $filter, array $sort)
     {
-        $select  = $this->getSelect();
+        $select = $this->getSelect();
 
         if ($this->hasItemsUsed()) {
             // Add expression columns by default
@@ -1023,16 +1030,22 @@ abstract class MUtil_Model_DatabaseModelAbstract extends \MUtil_Model_ModelAbstr
      */
     public function loadIterator($filter = true, $sort = true)
     {
-        $iter = new \MUtil_Db_Iterator_SelectIterator($this->_createSelect(
+        $select = $this->_createSelect(
                 $this->_checkFilterUsed($filter),
                 $this->_checkSortUsed($sort)
-                ));
+                );
 
-        if ($iter) {
-            $data = $this->processAfterLoad($iter);
+        if ($this->prefetchIterator) {
+            $iter = new \ArrayIterator($select->query()->fetchAll());
+        } else {
+            $iter = new \MUtil_Db_Iterator_SelectIterator($select);
         }
 
-        return $data;
+        if ($iter) {
+            return $this->processAfterLoad($iter);
+        }
+
+        return array();
 
     }
 

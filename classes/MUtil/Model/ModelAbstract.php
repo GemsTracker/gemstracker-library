@@ -35,6 +35,7 @@
  * @version    $Id$
  */
 
+use MUtil\Iterator\ItemCallbackIterator;
 use MUtil\Model\Dependency\DependencyInterface;
 
 /**
@@ -403,7 +404,7 @@ abstract class MUtil_Model_ModelAbstract extends \MUtil_Registry_TargetAbstract
      * @param array $transformColumns ignore:: cache to prevent repeated call's top getCol
      * @return array The possibly adapted array of values
      */
-    protected function _processRowAfterLoad(array $row, $new = false, $isPost = false, &$transformColumns = array())
+    public function _processRowAfterLoad(array $row, $new = false, $isPost = false, &$transformColumns = array())
     {
         $newRow = $row;
 
@@ -1765,7 +1766,7 @@ abstract class MUtil_Model_ModelAbstract extends \MUtil_Registry_TargetAbstract
      */
     public function processAfterLoad($data, $new = false, $isPostData = false)
     {
-        if (($this->_transformers || $isPostData || $this->getMeta(self::LOAD_TRANSFORMER)) &&
+        if (($this->_transformers || $isPostData) &&
                 ($data instanceof \Traversable)) {
             $data = iterator_to_array($data, true);
         }
@@ -1775,11 +1776,15 @@ abstract class MUtil_Model_ModelAbstract extends \MUtil_Registry_TargetAbstract
         }
 
         if ($this->getMeta(self::LOAD_TRANSFORMER) || $this->hasDependencies()) {
-            // Create empty array, will be filled after first row to speed up performance
-            $transformColumns = array();
+            if ($data instanceof \Traversable) {
+                return new ItemCallbackIterator($data, array($this, '_processRowAfterLoad'));
+            } else {
+                // Create empty array, will be filled after first row to speed up performance
+                $transformColumns = array();
 
-            foreach ($data as $key => $row) {
-                $data[$key] = $this->_processRowAfterLoad($row, $new, $isPostData, $transformColumns);
+                foreach ($data as $key => $row) {
+                    $data[$key] = $this->_processRowAfterLoad($row, $new, $isPostData, $transformColumns);
+                }
             }
         }
 

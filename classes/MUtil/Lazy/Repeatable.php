@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * 
+ *
  * @package    MUtil
  * @subpackage Lazy
  * @author     Matijs de Jong <mjong@magnafacta.nl>
@@ -221,12 +221,10 @@ class MUtil_Lazy_Repeatable implements \MUtil_Lazy_RepeatableInterface
 
         $this->_currentItem = null;
 
-        if ($this->_arrayMode || $this->_repeater instanceof \Countable) {
-            reset($this->_repeater);
+        if ($this->_arrayMode) {
             return (boolean) count($this->_repeater);
 
         } else {
-            $this->_repeater->rewind();
             return $this->_repeater->valid();
         }
     }
