@@ -266,6 +266,15 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends \MUtil_Contro
     protected $editParameters = array();
 
     /**
+     * Array of the actions that use the model in form version.
+     *
+     * This determines the value of forForm().
+     *
+     * @var array $formActions Array of the actions that use the model with a form.
+     */
+    public $formActions = array('create', 'delete', 'edit', 'import');
+
+    /**
      * The parameters used for the import action
      *
      * When the value is a function name of that object, then that functions is executed
@@ -545,6 +554,16 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends \MUtil_Contro
     }
 
     /**
+     *
+     * @param string $action The current action.
+     * @return boolean True when this actions uses a form
+     */
+    public function forForm($action)
+    {
+        return in_array($action, $this->formActions);
+    }
+
+    /**
      * Set column usage to use for the browser.
      *
      * Must be an array of arrays containing the input for TableBridge->setMultisort()
@@ -604,7 +623,13 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends \MUtil_Contro
 
         // Only get new model if there is no model or the model was for a different action
         if (! ($this->_model && $this->_model->isMeta('action', $action))) {
-            $detailed = ! in_array($action, $this->summarizedActions);
+            $detailed = ! $this->isSummarized($action);
+
+            \MUtil_Model::getSource()->addRegistryContainer(array(
+                'action'   => $action,
+                'detailed' => $detailed,
+                'forForm'  => $this->forForm($action),
+                ), 'actionVariables');
 
             $this->_model = $this->createModel($detailed, $action);
             $this->_model->setMeta('action', $action);
@@ -767,6 +792,16 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends \MUtil_Contro
         if ($this->indexStopSnippets) {
             $this->addSnippets($this->indexStopSnippets, $params);
         }
+    }
+
+    /**
+     *
+     * @param string $action The current action.
+     * @return boolean True when this actions uses only summary data
+     */
+    public function isSummarized($action)
+    {
+        return in_array($action, $this->summarizedActions);
     }
 
     /**

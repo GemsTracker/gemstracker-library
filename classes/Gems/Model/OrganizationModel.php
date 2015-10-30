@@ -45,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Model_OrganizationModel extends Gems_Model_JoinModel
+class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
 {
     /**
      *
@@ -54,19 +54,19 @@ class Gems_Model_OrganizationModel extends Gems_Model_JoinModel
     protected $_styles;
 
     /**
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
     /**
      *
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     protected $project;
 
     /**
      *
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     protected $util;
 
@@ -84,7 +84,7 @@ class Gems_Model_OrganizationModel extends Gems_Model_JoinModel
         $this->setDeleteValues('gor_active', 0, 'gor_add_respondents', 0);
         $this->addColumn("CASE WHEN gor_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
 
-        Gems_Model::setChangeFieldsByPrefix($this, 'gor');
+        \Gems_Model::setChangeFieldsByPrefix($this, 'gor');
     }
 
     /**
@@ -156,7 +156,7 @@ class Gems_Model_OrganizationModel extends Gems_Model_JoinModel
                 'description', $this->_('Checked organizations see this organizations respondents.'),
                 'multiOptions', $dbLookup->getOrganizations()
                 );
-        $tp = new MUtil_Model_Type_ConcatenatedRow(':', ', ');
+        $tp = new \MUtil_Model_Type_ConcatenatedRow(':', ', ');
         $tp->apply($this, 'gor_accessible_by');
 
         $this->setIfExists('gor_allowed_ip_ranges');
@@ -200,7 +200,7 @@ class Gems_Model_OrganizationModel extends Gems_Model_JoinModel
         $this->setIfExists('gor_allowed_ip_ranges', 'label', $this->_('Allowed IP Ranges'),
             'description', $this->_('Separate with | example: 10.0.0.0-10.0.0.255 (subnet masks are not supported)'),
             'size', 50,
-            'validator', new Gems_Validate_IPRanges(),
+            'validator', new \Gems_Validate_IPRanges(),
             'maxlength', 500
             );
 
@@ -303,7 +303,7 @@ class Gems_Model_OrganizationModel extends Gems_Model_JoinModel
 
         $this->setIfExists('gor_allowed_ip_ranges', 'tab', 'access',
                 'size', 50,
-                'validator', new Gems_Validate_IPRanges(),
+                'validator', new \Gems_Validate_IPRanges(),
                 'maxlength', 500
                 );
         $this->setIfExists('gor_user_class',        'tab', 'access');
@@ -343,25 +343,25 @@ class Gems_Model_OrganizationModel extends Gems_Model_JoinModel
     /**
      * Helper function that procesess the raw data after a load.
      *
-     * @see MUtil_Model_SelectModelPaginator
+     * @see \MUtil_Model_SelectModelPaginator
      *
-     * @param array $data Nested array containing rows or iterator
+     * @param mxied $data Nested array or Traversable containing rows or iterator
      * @param boolean $new True when it is a new item
      * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
-     * @return array Nested
+     * @return array or Traversable Nested
      */
     public function processAfterLoad($data, $new = false, $isPostData = false)
     {
         $data = parent::processAfterLoad($data, $new, $isPostData);
 
-        if ($data instanceof Iterator) {
+        if ($data instanceof \Traversable) {
             $data = iterator_to_array($data);
         }
         foreach ($data as &$row) {
             if (isset($row['gor_user_class']) && !empty($row['gor_user_class'])) {
                 $definition = $this->loader->getUserLoader()->getUserDefinition($row['gor_user_class']);
 
-                if ($definition instanceof Gems_User_UserDefinitionConfigurableInterface && $definition->hasConfig()) {
+                if ($definition instanceof \Gems_User_UserDefinitionConfigurableInterface && $definition->hasConfig()) {
                     $definition->addConfigFields($this);
                     $row = $row + $definition->loadConfig($row);
                 }
@@ -392,7 +392,7 @@ class Gems_Model_OrganizationModel extends Gems_Model_JoinModel
         if (isset($newValues['gor_user_class']) && !empty($newValues['gor_user_class'])) {
             $definition = $this->loader->getUserLoader()->getUserDefinition($newValues['gor_user_class']);
 
-            if ($definition instanceof Gems_User_UserDefinitionConfigurableInterface && $definition->hasConfig()) {
+            if ($definition instanceof \Gems_User_UserDefinitionConfigurableInterface && $definition->hasConfig()) {
                 $savedValues = $definition->saveConfig($savedValues, $newValues);
 
                 if ($definition->getConfigChanged()>0 && $this->getChanged()<1) {

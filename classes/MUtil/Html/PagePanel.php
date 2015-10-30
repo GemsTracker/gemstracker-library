@@ -225,6 +225,7 @@ class MUtil_Html_PagePanel extends \MUtil_Html_Sequence implements \MUtil_Lazy_P
                     $this->getItemCount();
                 }
                 // Recently found trick, can save a complicated database query
+                // Fetch the items first and get the count in the same query
                 $adapter = $this->_paginator->getAdapter();
                 if ($adapter instanceof \MUtil_Paginator_Adapter_PrefetchInterface) {
                     $offset = ($this->_currentPage -1) * $this->_itemCount; // Calculate correct offset

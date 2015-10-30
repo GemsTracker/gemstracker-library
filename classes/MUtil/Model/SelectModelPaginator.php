@@ -66,9 +66,9 @@ class MUtil_Model_SelectModelPaginator implements \MUtil_Paginator_Adapter_Prefe
     protected $_lastItemCount = null;
 
     /**
-     * Last offset
+     * Last items for last offset
      *
-     * @var int
+     * @var \Traversable
      */
     protected $_lastItems = null;
 
@@ -136,7 +136,10 @@ class MUtil_Model_SelectModelPaginator implements \MUtil_Paginator_Adapter_Prefe
         $offset = (int) $offset;
         $itemCountPerPage = (int) $itemCountPerPage;
 
-        if (($this->_lastOffset === $offset) && ($this->_lastItemCount === $itemCountPerPage)) {
+        if (($this->_lastOffset === $offset) &&
+                ($this->_lastItemCount === $itemCountPerPage) &&
+                (null !== $this->_lastItems)) {
+
             return $this->_lastItems;
         }
         $this->_lastOffset    = $offset;
@@ -145,7 +148,7 @@ class MUtil_Model_SelectModelPaginator implements \MUtil_Paginator_Adapter_Prefe
         // Optimization: by using the MySQL feature SQL_CALC_FOUND_ROWS
         // we can get the count and the results in a single query.
         $db = $this->_select->getAdapter();
-        if ($db instanceof \Zend_Db_Adapter_Mysqli) {
+        if ((null === $this->_count) && ($db instanceof \Zend_Db_Adapter_Mysqli)) {
 
             $this->_select->limit($itemCountPerPage, $offset);
             $sql = $this->_select->__toString();
@@ -162,11 +165,13 @@ class MUtil_Model_SelectModelPaginator implements \MUtil_Paginator_Adapter_Prefe
             $this->_lastItems = $this->_selectAdapter->getItems($offset, $itemCountPerPage);
         }
 
-        // \MUtil_Echo::track($this->_lastItems);
         if (is_array($this->_lastItems)) {
-            $this->_lastItems = $this->_model->processAfterLoad($this->_lastItems);
+            if (isset($this->_model->prefetchIterator) && $this->_model->prefetchIterator) {
+                $this->_lastItems = new \ArrayIterator($this->_lastItems);
+            }
+
+            $this->_lastItems = $this->_model->processAfterLoad($this->_lastItems, false, false);
         }
-        // \MUtil_Echo::track($this->_lastItems);
 
         return $this->_lastItems;
     }

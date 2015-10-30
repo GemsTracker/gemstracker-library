@@ -1036,6 +1036,8 @@ abstract class MUtil_Model_DatabaseModelAbstract extends \MUtil_Model_ModelAbstr
                 );
 
         if ($this->prefetchIterator) {
+            // Create an array iterator to enabled dependency and onload
+            // checking per row.
             $iter = new \ArrayIterator($select->query()->fetchAll());
         } else {
             $iter = new \MUtil_Db_Iterator_SelectIterator($select);

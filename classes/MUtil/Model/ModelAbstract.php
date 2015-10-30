@@ -1759,10 +1759,10 @@ abstract class MUtil_Model_ModelAbstract extends \MUtil_Registry_TargetAbstract
      *
      * @see \MUtil_Model_SelectModelPaginator
      *
-     * @param array $data Nested array containing rows or iterator
+     * @param mxied $data Nested array or Traversable containing rows or iterator
      * @param boolean $new True when it is a new item
      * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
-     * @return array Nested
+     * @return array or Traversable Nested
      */
     public function processAfterLoad($data, $new = false, $isPostData = false)
     {

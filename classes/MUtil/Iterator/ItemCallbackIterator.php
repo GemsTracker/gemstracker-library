@@ -46,7 +46,7 @@ namespace MUtil\Iterator;
  * @license    New BSD License
  * @since      Class available since MUtil version 1.7.2 28-okt-2015 17:34:25
  */
-class ItemCallbackIterator implements \OuterIterator
+class ItemCallbackIterator implements \OuterIterator, \Countable
 {
     /**
      *
@@ -73,6 +73,24 @@ class ItemCallbackIterator implements \OuterIterator
         }
 
         $this->_callback = $callback;
+    }
+
+    /**
+     * Count elements of an object
+     *
+     * Rewinding version of count 
+     *
+     * @return int
+     */
+    public function count()
+    {
+        if ($this->_iterator instanceof \Countable) {
+            return $this->_iterator->count();
+        }
+
+        $count = iterator_count($this->_iterator);
+        $this->_iterator->rewind();
+        return $count;
     }
 
     /**

@@ -255,9 +255,7 @@ class MUtil_Model
             }
             $loader->addFallBackPath();
 
-            if (self::$_source instanceof \MUtil_Registry_SourceInterface) {
-                $loader->setSource(self::$_source);
-            }
+            $loader->setSource(self::getSource());
 
             self::$_loaders[$prefix] = $loader;
         }
