@@ -881,7 +881,11 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
 
     public function setCurrent(\Gems_Menu_SubMenuItem $item)
     {
-        $this->_currentMenuItem = $item;
+        if ('autofilter' == $item->get('action')) {
+            $this->_currentMenuItem = $item->getParent();
+        } else {
+            $this->_currentMenuItem = $item;
+        }
     }
 
     public function setOnlyActiveBranchVisible($value = true)

@@ -47,26 +47,91 @@ namespace Gems\Snippets\Generic;
  * @license    New BSD License
  * @since      Class available since version 1.7.2
  */
-class CurrentSiblingsButtonRowSnippet extends ButtonRowSnippet
+class ButtonRowSnippet extends \MUtil_Snippets_SnippetAbstract
 {
     /**
      * Add the children of the current menu item
      *
      * @var boolean
      */
-    protected $addCurrentChildren = true;
+    protected $addCurrentChildren = false;
 
     /**
      * Add the parent of the current menu item
      *
      * @var boolean
      */
-    protected $addCurrentParent = true;
+    protected $addCurrentParent = false;
 
     /**
      * Add the siblings of the current menu item
      *
      * @var boolean
      */
-    protected $addCurrentSiblings = true;
+    protected $addCurrentSiblings = false;
+
+    /**
+     * Add siblings of the current menu item with any paramters.
+     *
+     * Add only those with the same when false.
+     *
+     * @var boolean
+     */
+    protected $anyParameterSiblings = false;
+
+    /**
+     * Required
+     *
+     * @var \Gems_Menu
+     */
+    protected $menu;
+
+    /**
+     * Required
+     *
+     * @var \Zend_Controller_Request_Abstract
+     */
+    protected $request;
+
+    /**
+     * Set the menu items (allows for overruling in subclasses)
+     *
+     * @param \Gems_Menu_MenuList $menuList
+     */
+    protected function addButtons(\Gems_Menu_MenuList $menuList)
+    {
+        if ($this->addCurrentParent) {
+            $menuList->addCurrentParent($this->_('Cancel'));
+        }
+        if ($this->addCurrentSiblings) {
+            $menuList->addCurrentSiblings($this->anyParameterSiblings);
+        }
+        if ($this->addCurrentChildren) {
+            $menuList->addCurrentChildren();
+        }
+        // \MUtil_Echo::track($this->addCurrentParent, $this->addCurrentSiblings, $this->addCurrentChildren);
+    }
+
+    /**
+     * Create the snippets content
+     *
+     * This is a stub function either override getHtmlOutput() or override render()
+     *
+     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     */
+    public function getHtmlOutput(\Zend_View_Abstract $view)
+    {
+        $menuList = $this->menu->getMenuList();
+
+        $menuList->addParameterSources($this->request, $this->menu->getParameterSource());
+
+        // \MUtil_Echo::track($this->request->getParams(), $this->menu->getParameterSource()->getArrayCopy());
+
+        $this->addButtons($menuList);
+
+        if ($menuList->render($view)) {
+            return \MUtil_Html::create('div', array('class' => 'buttons', 'renderClosingTag' => true), $menuList);
+        }
+    }
 }

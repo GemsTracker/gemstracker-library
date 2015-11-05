@@ -47,51 +47,26 @@ namespace Gems\Snippets\Generic;
  * @license    New BSD License
  * @since      Class available since version 1.4.2
  */
-class CurrentButtonRowSnippet extends \MUtil_Snippets_SnippetAbstract
+class CurrentButtonRowSnippet extends ButtonRowSnippet
 {
     /**
-     * Required
+     * Add the children of the current menu item
      *
-     * @var \Gems_Menu
+     * @var boolean
      */
-    protected $menu;
+    protected $addCurrentChildren = false;
 
     /**
-     * Required
+     * Add the parent of the current menu item
      *
-     * @var \Zend_Controller_Request_Abstract
+     * @var boolean
      */
-    protected $request;
+    protected $addCurrentParent = true;
 
     /**
-     * Set the menu items (allows for overruling in subclasses)
+     * Add the siblings of the current menu item
      *
-     * @param \Gems_Menu_MenuList $menuList
+     * @var boolean
      */
-    protected function addButtons(\Gems_Menu_MenuList $menuList)
-    {
-        $menuList->addCurrentParent($this->_('Cancel'))
-                ->addCurrentChildren();
-    }
-
-    /**
-     * Create the snippets content
-     *
-     * This is a stub function either override getHtmlOutput() or override render()
-     *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
-     */
-    public function getHtmlOutput(\Zend_View_Abstract $view)
-    {
-        $menuList = $this->menu->getMenuList();
-
-        $menuList->addParameterSources($this->request, $this->menu->getParameterSource());
-
-        $this->addButtons($menuList);
-
-        if ($menuList->render($view)) {
-            return \MUtil_Html::create('div', array('class' => 'buttons', 'renderClosingTag' => true), $menuList);
-        }
-    }
+    protected $addCurrentSiblings = true;
 }

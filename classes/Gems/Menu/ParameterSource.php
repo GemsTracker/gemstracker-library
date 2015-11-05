@@ -119,6 +119,13 @@ class Gems_Menu_ParameterSource extends \ArrayObject implements \Gems_Menu_Param
         return $this;
     }
 
+    public function setSurveyId($surveyId)
+    {
+        $this->_setMulti($surveyId, \Gems_Model::SURVEY_ID);
+
+        return $this;
+    }
+
     public function setTokenId($tokenId)
     {
         $this->_setMulti($tokenId, \MUtil_Model::REQUEST_ID, 'gto_id_token');
