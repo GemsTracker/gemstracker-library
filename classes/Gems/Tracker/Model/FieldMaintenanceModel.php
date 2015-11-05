@@ -188,7 +188,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
      * @param array $transformColumns
      * @return array The possibly adapted array of values
      */
-    protected function _processRowAfterLoad(array $row, $new = false, $isPost = false, &$transformColumns = array())
+    public function _processRowAfterLoad(array $row, $new = false, $isPost = false, &$transformColumns = array())
     {
         if ($this->_addLoadDependency) {
             // Display of data field

@@ -80,19 +80,27 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
      */
     protected $movedSnippets = array(
         'AddTracksSnippet'                        => 'Tracker\\AddTracksSnippet',
-        'EditRoundStepSnippet'                    => 'Tracker\\Rounds\\EditRoundStepSnippet',
-        'ShowRoundStepSnippet'                    => 'Tracker\\Rounds\\ShowRoundStepSnippet',
         'DeleteInSourceTrackSnippet'              => 'Tracker\\DeleteTrackSnippet',
         'DeleteTrackTokenSnippet'                 => 'Tracker\\DeleteTrackTokenSnippet',
+        'EditRoundSnippet'                        => 'Tracker\\Rounds\\EditRoundStepSnippet',
+        'EditRoundStepSnippet'                    => 'Tracker\\Rounds\\EditRoundStepSnippet',
         'EditTrackEngineSnippet'                  => 'Tracker\\EditTrackEngineSnippet',
         'EditTrackSnippet'                        => 'Tracker\\EditTrackSnippet',
         'EditTrackTokenSnippet'                   => 'Token\\EditTrackTokenSnippet',
         'Organization_ChooseOrganizationSnippet'  => 'Organization\\ChooseOrganizationSnippet',
         'Organization_OrganizationEditSnippet'    => 'Organization\\OrganizationEditSnippet',
         'Organization_OrganizationTableSnippet'   => 'Organization\\OrganizationTableSnippet',
+        'RespondentDetailsSnippet'                => 'Respondent\\RespondentDetailsSnippet',
+        'RespondentDetailsWithAssignmentsSnippet' => 'Respondent\\DetailsWithAssignmentsSnippet',
+        'RespondentTokenTabsSnippet'              => 'Token\\TokenTabsSnippet',
+        'SelectedTokensTitleSnippet'              => null,
+        'ShowRoundSnippet'                        => 'Tracker\\Rounds\\ShowRoundStepSnippet',
+        'ShowRoundStepSnippet'                    => 'Tracker\\Rounds\\ShowRoundStepSnippet',
         'ShowTrackTokenSnippet'                   => 'Token\\ShowTrackTokenSnippet',
+        'ShowTrackUsageSnippet'                   => 'Tracker\\ShowTrackUsageSnippet',
         'SurveyQuestionsSnippet'                  => 'Survey\\SurveyQuestionsSnippet',
         'TokenDateSelectorSnippet'                => 'Token\\TokenDateSelectorSnippet',
+        'TokenNotFoundSnippet'                    => 'Token\\TokenNotFoundSnippet',
         'TrackSurveyOverviewSnippet'              => 'Tracker\\TrackSurveyOverviewSnippet',
         'TrackTokenOverviewSnippet'               => 'Tracker\\TrackTokenOverviewSnippet',
         'TrackUsageTextDetailsSnippet'            => 'Tracker\\TrackUsageTextDetailsSnippet',
@@ -175,7 +183,11 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
 
         foreach ($this->movedSnippets as $old => $new) {
             if (preg_match('/[\'"]' . $old . '[\'"]/', $content)) {
-                $messages[] = "This controller appears to use the '$old' snippet, that was changed to the '$new' snippet.";
+                if ($new) {
+                    $messages[] = "This file appears to use the '$old' snippet, that was changed to the '$new' snippet.";
+                } else {
+                    $messages[] = "This file appears to use the '$old' snippet, that is no longer in use.";
+                }
             }
         }
     }
@@ -259,7 +271,11 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             if (\MUtil_String::endsWith($filePathName, $oldSnippet . '.php') &&
                     (! \MUtil_String::endsWith($filePathName, $newSnippet . '.php'))) {
 
-                $messages[] = "This snippet is moved to $newSnippet.";
+                if ($newSnippet) {
+                    $messages[] = "This snippet is moved to $newSnippet.";
+                } else {
+                    $messages[] = "This snippet is no longer in use.";
+                }
                 break;
             }
         }

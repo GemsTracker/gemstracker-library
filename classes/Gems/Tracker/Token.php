@@ -686,7 +686,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
             return $this->getTrackEngine()->getAnswerSnippetNames();
         } else {
-            return 'TokenNotFoundSnippet';
+            return 'Token\\TokenNotFoundSnippet';
         }
     }
 
@@ -787,7 +787,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         if ($this->exists) {
             return $this->getTrackEngine()->getTokenDeleteSnippetNames($this);
         } else {
-            return 'TokenNotFoundSnippet';
+            return 'Token\\TokenNotFoundSnippet';
         }
     }
 
@@ -801,7 +801,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         if ($this->exists) {
             return $this->getTrackEngine()->getTokenEditSnippetNames($this);
         } else {
-            return 'TokenNotFoundSnippet';
+            return 'Token\\TokenNotFoundSnippet';
         }
     }
 
@@ -1169,7 +1169,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         if ($this->exists) {
             return $this->getTrackEngine()->getTokenShowSnippetNames($this);
         } else {
-            return 'TokenNotFoundSnippet';
+            return 'Token\\TokenNotFoundSnippet';
         }
     }
 

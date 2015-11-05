@@ -308,7 +308,10 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
             $model->setIfExists('gor_name', 'label', $this->translate->_('Organization'));
         }
         $model->setIfExists('gr2o_opened',        'label', $this->translate->_('Opened'), 'formatFunction', $translated->formatDateTime);
-        $model->setIfExists('gr2o_consent',       'label', $this->translate->_('Consent'), 'multiOptions', \MUtil_Lazy::call($this->util->getDbLookup()->getUserConsents), 'default', $this->util->getDefaultConsent());
+        $model->setIfExists('gr2o_consent',       'label', $this->translate->_('Consent'),
+                'multiOptions', $this->util->getDbLookup()->getUserConsents,
+                'default', $this->util->getDefaultConsent()
+                );
 
         $model->setIfExists('grs_email',          'label', $this->translate->_('E-Mail'));
         $model->setIfExists('gr2o_mailable',

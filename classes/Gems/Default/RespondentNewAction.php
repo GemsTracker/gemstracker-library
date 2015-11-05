@@ -112,14 +112,14 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      *
      * @var mixed String or array of snippets name
      */
-    public $deleteSnippets = array('RespondentDetailsSnippet', 'Respondent\\DeleteRespondentSnippet');
+    public $deleteSnippets = array('Respondent\\RespondentDetailsSnippet', 'Respondent\\DeleteRespondentSnippet');
 
     /**
      * The snippets used for the export action.
      *
      * @var mixed String or array of snippets name
      */
-    public $exportSnippets = array('RespondentDetailsSnippet');
+    public $exportSnippets = array('Respondent\\RespondentDetailsSnippet');
 
     /**
      * The snippets used for the index action, before those in autofilter
@@ -159,9 +159,9 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      */
     protected $showSnippets = array(
         'Generic\\ContentTitleSnippet',
-        'RespondentDetailsSnippet',
+        'Respondent\\RespondentDetailsSnippet',
     	'Tracker\\AddTracksSnippet',
-        'RespondentTokenTabsSnippet',
+        'Token\\TokenTabsSnippet',
         'RespondentTokenSnippet',
     );
 

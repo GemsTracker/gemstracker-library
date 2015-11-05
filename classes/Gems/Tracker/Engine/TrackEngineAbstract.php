@@ -809,7 +809,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
      */
     public function getRoundEditSnippetNames()
     {
-        return array('EditRoundSnippet');
+        return array('Tracker\\Rounds\\EditRoundStepSnippet');
     }
 
     /**
@@ -830,7 +830,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
         if ($detailed) {
             $model->set('gro_id_track',      'label', $this->_('Track'),
                     'elementClass', 'exhibitor',
-                    'multiOptions', \MUtil_Lazy::call($this->util->getTrackData()->getAllTracks)
+                    'multiOptions', $this->util->getTrackData()->getAllTracks
                     );
         }
 

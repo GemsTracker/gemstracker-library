@@ -461,16 +461,6 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
     }
 
     /**
-     * An array of snippet names for editing a round.
-     *
-     * @return array of string snippet names
-     */
-    public function getRoundEditSnippetNames()
-    {
-        return array('Tracker\\Rounds\\EditRoundStepSnippet');
-    }
-
-    /**
      * Returns a model that can be used to retrieve or save the data.
      *
      * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
@@ -762,7 +752,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
     public function getTrackCreateSnippetNames()
     {
         return array(
-            'ShowTrackUsageSnippet',
+            'Tracker\\ShowTrackUsageSnippet',
             'EditTrackSnippet',
             'Tracker\\TrackUsageTextDetailsSnippet',
             'Tracker\\TrackSurveyOverviewSnippet',
@@ -779,7 +769,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
     public function getTrackEditSnippetNames(\Gems_Tracker_RespondentTrack $respTrack)
     {
         return array(
-            'ShowTrackUsageSnippet',
+            'Tracker\\ShowTrackUsageSnippet',
             'EditTrackSnippet',
             'Tracker\\TrackUsageTextDetailsSnippet',
             'Tracker\\TrackSurveyOverviewSnippet',

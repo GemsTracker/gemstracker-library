@@ -53,16 +53,16 @@ abstract class Gems_Default_RespondentAction extends \Gems_Controller_BrowseEdit
      */
     public $accesslog;
 
-    public $deleteSnippets = array('RespondentDetailsSnippet');
+    public $deleteSnippets = array('Respondent\\RespondentDetailsSnippet');
 
-    public $exportSnippets = array('RespondentDetailsSnippet');
+    public $exportSnippets = array('Respondent\\RespondentDetailsSnippet');
 
     public $filterStandard = array('grc_success' => 1);
 
     public $showSnippets = array(
-        'RespondentDetailsSnippet',
+        'Respondent\\RespondentDetailsSnippet',
     	'Tracker\\AddTracksSnippet',
-        'RespondentTokenTabsSnippet',
+        'Token\\TokenTabsSnippet',
         'RespondentTokenSnippet',
     );
 
