@@ -71,6 +71,13 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
         );
 
     /**
+     * Tags for cache cleanup after changes, passed to snippets
+     *
+     * @var array
+     */
+    public $cacheTags = array('surveys', 'tracks');
+
+    /**
      * The parameters used for the create and edit actions.
      *
      * When the value is a function name of that object, then that functions is executed
@@ -81,7 +88,6 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
      * @var array Mixed key => value array for snippet initialization
      */
     protected $createEditParameters = array(
-        'cacheTags'       => array('surveys', 'tracks'),
         'surveyId'        => 'getSurveyId',
         );
 

@@ -81,6 +81,19 @@ abstract class FormSnippetAbstract extends \MUtil_Snippets_SnippetAbstract
     protected $buttonClass = 'button btn btn-sm btn-primary';
 
     /**
+     *
+     * @var \Zend_Cache_Core
+     */
+    protected $cache;
+
+    /**
+     * Variable to set tags for cache cleanup after changes
+     *
+     * @var array
+     */
+    protected $cacheTags;
+
+    /**
      * True when the form should edit a new model item.
      *
      * @var boolean
@@ -252,7 +265,14 @@ abstract class FormSnippetAbstract extends \MUtil_Snippets_SnippetAbstract
      * @param int $changed The number of changed rows (0 or 1 usually, but can be more)
      */
     protected function afterSave($changed)
-    { }
+    {
+        if ($changed) {
+            // Clean cache on changes
+            if ($this->cacheTags && ($this->cache instanceof \Zend_Cache_Core)) {
+                $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, (array) $this->cacheTags);
+            }
+        }
+    }
 
     /**
      * Perform some actions on the form, right before it is displayed but already populated

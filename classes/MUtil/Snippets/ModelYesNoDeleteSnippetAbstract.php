@@ -86,6 +86,19 @@ abstract class MUtil_Snippets_ModelYesNoDeleteSnippetAbstract extends \MUtil_Sni
     protected $buttonYesClass;
 
     /**
+     *
+     * @var \Zend_Cache_Core
+     */
+    protected $cache;
+
+    /**
+     * Variable to set tags for cache cleanup after changes
+     *
+     * @var array
+     */
+    public $cacheTags;
+
+    /**
      * The request parameter used to store the confirmation
      *
      * @var string Required
@@ -200,6 +213,10 @@ abstract class MUtil_Snippets_ModelYesNoDeleteSnippetAbstract extends \MUtil_Sni
         $model->delete();
 
         $this->setAfterDeleteRoute();
+
+        if ($this->cacheTags && ($this->cache instanceof \Zend_Cache_Core)) {
+            $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, (array) $this->cacheTags);
+        }
     }
 
     /**

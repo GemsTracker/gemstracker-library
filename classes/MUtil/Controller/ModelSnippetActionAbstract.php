@@ -116,6 +116,7 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends \MUtil_Contro
      * @var array
      */
     private $_defaultParameters = array(
+        'cacheTags'             => 'getCacheTags',
         'includeNumericFilters' => 'getIncludeNumericFilters',
         'model'                 => 'getModel',
         'request'               => 'getRequest',
@@ -160,6 +161,13 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends \MUtil_Contro
      * @var mixed String or array of snippets name
      */
     protected $autofilterSnippets = 'ModelTableSnippet';
+
+    /**
+     * Tags for cache cleanup after changes, passed to snippets
+     *
+     * @var array
+     */
+    public $cacheTags = array('consent', 'consents');
 
     /**
      * The parameters used for the create and edit actions.
@@ -573,6 +581,16 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends \MUtil_Contro
     public function getBrowseColumns()
     {
         return false;
+    }
+
+    /**
+     * Get the cache tags for this model (if any)
+     *
+     * @return array
+     */
+    public function getCacheTags()
+    {
+        return (array) $this->cacheTags;
     }
 
     /**

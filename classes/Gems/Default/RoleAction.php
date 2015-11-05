@@ -69,6 +69,13 @@ class Gems_Default_RoleAction extends \Gems_Controller_ModelSnippetActionAbstrac
         );
 
     /**
+     * Tags for cache cleanup after changes, passed to snippets
+     *
+     * @var array
+     */
+    public $cacheTags = array('gems_acl', 'roles');
+
+    /**
      * The parameters used for the create and edit actions.
      *
      * When the value is a function name of that object, then that functions is executed
@@ -79,7 +86,6 @@ class Gems_Default_RoleAction extends \Gems_Controller_ModelSnippetActionAbstrac
      * @var array Mixed key => value array for snippet initialization
      */
     protected $createEditParameters = array(
-        'cacheTags'      => array('roles'),
         'usedPrivileges' => 'getUsedPrivileges',
     );
 

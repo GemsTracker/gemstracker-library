@@ -63,18 +63,11 @@ class Gems_Default_ReceptionAction extends \Gems_Controller_ModelSnippetActionAb
         );
 
     /**
-     * The parameters used for the create and edit actions.
+     * Tags for cache cleanup after changes, passed to snippets
      *
-     * When the value is a function name of that object, then that functions is executed
-     * with the array key as single parameter and the return value is set as the used value
-     * - unless the key is an integer in which case the code is executed but the return value
-     * is not stored.
-     *
-     * @var array Mixed key => value array for snippet initialization
+     * @var array
      */
-    protected $createEditParameters = array(
-        'cacheTags' => array('receptionCode', 'receptionCodes'),
-    );
+    public $cacheTags = array('receptionCode', 'receptionCodes');
 
     /**
      * Creates a model for getModel(). Called only for each new $action.

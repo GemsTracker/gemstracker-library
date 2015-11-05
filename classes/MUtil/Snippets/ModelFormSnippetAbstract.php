@@ -99,6 +99,19 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_M
     protected $buttonClass = 'button btn btn-sm btn-primary';
 
     /**
+     *
+     * @var \Zend_Cache_Core
+     */
+    protected $cache;
+
+    /**
+     * Variable to set tags for cache cleanup after changes
+     *
+     * @var array
+     */
+    protected $cacheTags;
+
+    /**
      * True when the form should edit a new model item.
      *
      * @var boolean
@@ -305,6 +318,11 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_M
     {
         // Communicate to user
         if ($changed) {
+            // Clean cache on changes
+            if ($this->cacheTags && ($this->cache instanceof \Zend_Cache_Core)) {
+                $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, (array) $this->cacheTags);
+            }
+
             $this->addMessage(sprintf($this->_('%2$u %1$s saved'), $this->getTopic($changed), $changed));
         } else {
             $this->addMessage($this->_('No changes to save!'));

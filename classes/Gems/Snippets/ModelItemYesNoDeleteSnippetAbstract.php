@@ -49,19 +49,6 @@
 abstract class Gems_Snippets_ModelItemYesNoDeleteSnippetAbstract extends \MUtil_Snippets_ModelYesNoDeleteSnippetAbstract
 {
     /**
-     *
-     * @var \Zend_Cache_Core
-     */
-    protected $cache;
-
-    /**
-     * Variable to set tags for cache cleanup after changes
-     *
-     * @var array
-     */
-    public $cacheTags;
-
-    /**
      * Shortfix to add class attribute
      *
      * @var string
@@ -168,19 +155,6 @@ abstract class Gems_Snippets_ModelItemYesNoDeleteSnippetAbstract extends \MUtil_
         return $this->displayTitle;
     }
 
-    /**
-     * Overrule this function if you want to perform a different
-     * action than deleting when the user choose 'yes'.
-     */
-    protected function performAction()
-    {
-        parent::performAction();
-
-        if ($this->cacheTags && ($this->cache instanceof \Zend_Cache_Core)) {
-            $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, (array) $this->cacheTags);
-        }
-    }
-    
     /**
      * Set the footer of the browse table.
      *

@@ -63,19 +63,6 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
     protected $accesslog;
 
     /**
-     *
-     * @var \Zend_Cache_Core
-     */
-    protected $cache;
-
-    /**
-     * Variable to set tags for cache cleanup after changes
-     *
-     * @var array
-     */
-    protected $cacheTags;
-
-    /**
      * Shortfix to add class attribute
      *
      * @var string
@@ -252,10 +239,6 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
 
         if ($changed) {
             $this->accesslog->logChange($this->request, null, $this->formData);
-        }
-
-        if ($this->cacheTags && ($this->cache instanceof \Zend_Cache_Core)) {
-            $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, (array) $this->cacheTags);
         }
     }
 
