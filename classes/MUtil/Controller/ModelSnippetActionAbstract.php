@@ -116,6 +116,7 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends \MUtil_Contro
      * @var array
      */
     private $_defaultParameters = array(
+        'cacheTags'             => 'getCacheTags',
         'includeNumericFilters' => 'getIncludeNumericFilters',
         'model'                 => 'getModel',
         'request'               => 'getRequest',
@@ -504,6 +505,16 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends \MUtil_Contro
     public function getBrowseColumns()
     {
         return false;
+    }
+
+    /**
+     * Get the cache tags for this model (if any)
+     *
+     * @return array
+     */
+    public function getCacheTags()
+    {
+        return (array) $this->cacheTags;
     }
 
     /**
