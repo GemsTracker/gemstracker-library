@@ -101,8 +101,11 @@ class MUtil_Validate_Date_DateAfter extends \MUtil_Validate_Date_DateAbstract
             }
 
             $after = new \Zend_Date($context[$this->_afterDate], $this->getDateFormat());
+        } elseif (\Zend_Date::isDate($this->_afterDate, $this->getDateFormat())) {
+            $after = new \Zend_Date($this->_afterDate, $this->getDateFormat());
         } else {
-            $after = new \Zend_Date($this->_afterDate);
+            // No date specified, return true
+            return true;
         }
         $this->_afterValue = $after->toString($this->getDateFormat());
 

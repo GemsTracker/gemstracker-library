@@ -163,6 +163,13 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends \MUtil_Contro
     protected $autofilterSnippets = 'ModelTableSnippet';
 
     /**
+     * Tags for cache cleanup after changes, passed to snippets
+     *
+     * @var array
+     */
+    public $cacheTags = array();
+
+    /**
      * The parameters used for the create and edit actions.
      *
      * When the value is a function name of that object, then that functions is executed

@@ -1,3 +1,10 @@
+Changes in 1.7.1p4
+============================================================
+  - Fixed bug: changed cache data often not updated after data change
+  - Fixed bug: patients could answer tokens after they where no longer valid
+  - Fixed bug: crash when using manual valid until for a token without manual valid from
+  - Changed:   updated translations
+
 Changes in 1.7.1p3
 ============================================================
  - Fixed bug: New respondent now uses the project default locale
@@ -7,7 +14,7 @@ Changes in 1.7.1p3
  - Changed  : Added ordering to chartconfig lookup lists
  - Extension: Information on default choice during insert survey in track
  - Extension: Show respondent relation fieldname and name of the person in answer display
- - Extension:Changes to answer import allowing skip of tokens already answered or not-existing
+ - Extension: Changes to answer import allowing skip of tokens already answered or not-existing
 
 Changes in 1.7.1p2
 ============================================================
@@ -15,15 +22,15 @@ Changes in 1.7.1p2
  - Fixed bug where having a previouly calculated unique appointment field would cause a crash
  - Fixed bug where recalculating a track would overwrite all inserted rounds
  - LimeSurvey equation questions now use help text for question or question code when empty
- 
+
 Changes in 1.7.1p1
 ============================================================
  - Surveys not active in a source can no longer be activated
  - Track field values are deleted when their definition is deleted
  - UnionModel change tracking bug prevented correct change counts
  - Translation and display issues
- 
- 
+
+
 Important changes from 1.7.0 => 1.7.1
 ============================================================
 ABOUT THE UPGRADE
