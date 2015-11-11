@@ -167,7 +167,7 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends \MUtil_Contro
      *
      * @var array
      */
-    public $cacheTags = array('consent', 'consents');
+    public $cacheTags = array();
 
     /**
      * The parameters used for the create and edit actions.
