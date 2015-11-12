@@ -72,11 +72,6 @@ abstract class MUtil_Registry_TargetAbstract implements \MUtil_Registry_TargetIn
      */
     public function answerRegistryRequest($name, $resource)
     {
-        if (\MUtil_Registry_Source::$verbose) {
-            \MUtil_Echo::r('Resource set: ' . get_class($this) . '->' . __FUNCTION__ .
-                    '("' . $name . '", ' .
-                    (is_object($resource) ? get_class($resource) : gettype($resource)) . ')');
-        }
         $this->$name = $resource;
 
         return true;

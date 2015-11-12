@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_User extends \MUtil_Registry_TargetAbstract
+class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
 {
     /**
      *
@@ -127,12 +127,6 @@ class Gems_User_User extends \MUtil_Registry_TargetAbstract
      * @var \Zend_Session_Namespace
      */
     protected $session;
-
-    /**
-     *
-     * @var \Zend_Translate
-     */
-    protected $translate;
 
     /**
      * Required
@@ -425,7 +419,7 @@ class Gems_User_User extends \MUtil_Registry_TargetAbstract
                     $minutes = intval($block / 60) + 1;
 
                     // Report all is not well
-                    return sprintf($this->translate->plural('Your account is temporarily blocked, please wait a minute.', 'Your account is temporarily blocked, please wait %d minutes.', $minutes), $minutes);
+                    return sprintf($this->plural('Your account is temporarily blocked, please wait a minute.', 'Your account is temporarily blocked, please wait %d minutes.', $minutes), $minutes);
 
                 } else {
                     // Clean the block once it's past
@@ -459,7 +453,7 @@ class Gems_User_User extends \MUtil_Registry_TargetAbstract
     protected function authorizeIp()
     {
         //In unit test REMOTE_ADDR is not available and will return null
-        $request = \Zend_Controller_Front::getInstance()->getRequest();
+        $request = $this->getRequest();
 
         // E.g. command line user
         if (! $request instanceof \Zend_Controller_Request_Http) {
@@ -471,7 +465,7 @@ class Gems_User_User extends \MUtil_Registry_TargetAbstract
             return true;
         }
 
-        return $this->translate->_('You are not allowed to login from this location.');
+        return $this->_('You are not allowed to login from this location.');
     }
 
     /**
@@ -491,7 +485,7 @@ class Gems_User_User extends \MUtil_Registry_TargetAbstract
         }
 
         //In unit test REMOTE_ADDR is not available and will return null
-        $request = \Zend_Controller_Front::getInstance()->getRequest();
+        $request = $this->getRequest();
 
         // E.g. command line user
         if (! $request instanceof \Zend_Controller_Request_Http) {
@@ -503,7 +497,7 @@ class Gems_User_User extends \MUtil_Registry_TargetAbstract
             return true;
         }
 
-        return $this->translate->_('You are not allowed to login from this location.');
+        return $this->_('You are not allowed to login from this location.');
     }
 
     /**
@@ -1051,7 +1045,7 @@ class Gems_User_User extends \MUtil_Registry_TargetAbstract
      */
     public function getUserId()
     {
-        return $this->_getVar('user_id');
+        return (int) $this->_getVar('user_id');
     }
 
     /**
@@ -1326,7 +1320,7 @@ class Gems_User_User extends \MUtil_Registry_TargetAbstract
         // CHECK ON SOMEONES BIRTHDAY
         // Birthdays are usually not defined for staff but the do exist for respondents
         if ($value = $this->_getVar('user_birthday')) {
-            $label    = $this->translate->_('Your birthday');
+            $label    = $this->_('Your birthday');
 
             $birthdayElem = new \Gems_JQuery_Form_Element_DatePicker('birthday');
             $birthdayElem->setLabel($label)
@@ -1340,12 +1334,12 @@ class Gems_User_User extends \MUtil_Registry_TargetAbstract
             }
 
             $validator = new \Zend_Validate_Identical($valueFormatted);
-            $validator->setMessage(sprintf($this->translate->_('%s is not correct.'), $label), \Zend_Validate_Identical::NOT_SAME);
+            $validator->setMessage(sprintf($this->_('%s is not correct.'), $label), \Zend_Validate_Identical::NOT_SAME);
             $birthdayElem->addValidator($validator);
 
             return array($birthdayElem);
         } // */
-        return array($this->translate->_('Username') => $this->getLoginName());
+        return array($this->_('Username') => $this->getLoginName());
     }
 
     /**
@@ -1457,7 +1451,7 @@ class Gems_User_User extends \MUtil_Registry_TargetAbstract
     public function sendMail($subjectTemplate, $bbBodyTemplate, $useResetFields = false, $locale = null)
     {
         if ($useResetFields && (! $this->canResetPassword())) {
-            return $this->translate->_('Trying to send a password reset to a user that cannot be reset.');
+            return $this->_('Trying to send a password reset to a user that cannot be reset.');
         }
 
         $mail = new \Gems_Mail();
@@ -1485,7 +1479,7 @@ class Gems_User_User extends \MUtil_Registry_TargetAbstract
 
         } catch (Exception $e) {
             return array(
-                $this->translate->_('Unable to send e-mail.'),
+                $this->_('Unable to send e-mail.'),
                 $e->getMessage());
         }
     }

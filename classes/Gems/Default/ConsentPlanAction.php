@@ -48,6 +48,12 @@ class Gems_Default_ConsentPlanAction extends \Gems_Controller_ModelSnippetAction
 {
     /**
      *
+     * @var \Gems_User_User
+     */
+    public $currentUser;
+
+    /**
+     *
      * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
@@ -171,7 +177,7 @@ class Gems_Default_ConsentPlanAction extends \Gems_Controller_ModelSnippetAction
         }
 
         // Only show organisations the user is allowed to see
-        $allowed = $this->loader->getCurrentUser()->getAllowedOrganizations();
+        $allowed = $this->currentUser->getAllowedOrganizations();
         $model->setFilter(array('gr2o_id_organization'=>array_keys($allowed)));
 
         // \MUtil_Model::$verbose = true;

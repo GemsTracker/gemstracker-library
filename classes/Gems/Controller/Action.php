@@ -60,16 +60,15 @@ class Gems_Controller_Action extends \MUtil_Controller_Action
 
     /**
      *
-     * @var \Gems_Util
-     */
-    public $util;
-
-    /**
-     *
      * @var \Zend_Controller_Action_Helper_FlashMessenger
      */
     public $messenger;
 
+    /**
+     *
+     * @var \Gems_Util
+     */
+    public $util;
 
     /**
      * Adds one or more messages to the session based message store.

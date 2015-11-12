@@ -93,7 +93,7 @@ class Gems_Loader_TargetLoaderAbstract extends \Gems_Loader_LoaderAbstract imple
      */
     protected function filterRequestNames($name)
     {
-        return '_' !== $name[0];
+        return ('_' !== $name[0]) && ('cascade' !== $name);
     }
 
     /**

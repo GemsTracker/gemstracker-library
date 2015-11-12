@@ -67,6 +67,12 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
 
     /**
      *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
+    /**
+     *
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
@@ -425,7 +431,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
     {
         $tokenChanges = 0;
         $tracker      = $this->loader->getTracker();
-        $userId       = $this->loader->getCurrentUser()->getUserId();
+        $userId       = $this->currentUser->getUserId();
 
         // Find all the fields that use this agenda item
         $select = $this->db->select();

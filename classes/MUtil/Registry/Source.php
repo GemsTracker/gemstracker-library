@@ -98,7 +98,13 @@ class MUtil_Registry_Source implements \MUtil_Registry_SourceInterface
     {
         foreach ($this->_containers as $container) {
             if (isset($container->$name)) {
-                if ($target->answerRegistryRequest($name, $container->$name)) {
+                $resource = $container->$name;
+                if ($target->answerRegistryRequest($name, $resource)) {
+                    if (self::$verbose) {
+                        \MUtil_Echo::r('Resource set: ' . get_class($target) . '->' . $name .
+                                ' type "' . (is_object($resource) ? get_class($resource) : gettype($resource)) .
+                                '" from ' . get_class($container));
+                    }
                     return true;
                 }
             }
@@ -147,7 +153,7 @@ class MUtil_Registry_Source implements \MUtil_Registry_SourceInterface
         foreach ($target->getRegistryRequests() as $name) {
             if (! $this->_applySourceContainers($target, $name)) {
                 if (self::$verbose) {
-                    \MUtil_Echo::r('Missed resource: ' . $name, __CLASS__ . '->' .  __FUNCTION__);
+                    \MUtil_Echo::r('Missed resource: ' . get_class($target) . '->' . $name);
                 } /* else {
                 echo '<br/>missed ' . $name . "\n";
                 } // */

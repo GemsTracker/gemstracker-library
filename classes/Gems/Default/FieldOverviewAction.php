@@ -33,14 +33,10 @@ class Gems_Default_FieldOverviewAction extends \Gems_Controller_ModelSnippetActi
     protected $autofilterParameters = array('menuShowActions' => array('track' => 'show-track'));
 
     /**
-     * The snippets used for the index action, before those in autofilter
      *
-     * @var mixed String or array of snippets name
+     * @var \Gems_User_User
      */
-    protected $indexStartSnippets = array(
-        'Generic\\ContentTitleSnippet',
-        'Tracker_Compliance_ComplianceSearchFormSnippet'
-        );
+    public $currentUser;
 
     /**
      *
@@ -49,10 +45,14 @@ class Gems_Default_FieldOverviewAction extends \Gems_Controller_ModelSnippetActi
     public $db;
 
     /**
+     * The snippets used for the index action, before those in autofilter
      *
-     * @var \Gems_Loader
+     * @var mixed String or array of snippets name
      */
-    public $loader;
+    protected $indexStartSnippets = array(
+        'Generic\\ContentTitleSnippet',
+        'Tracker_Compliance_ComplianceSearchFormSnippet'
+        );
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -84,7 +84,7 @@ class Gems_Default_FieldOverviewAction extends \Gems_Controller_ModelSnippetActi
 
         $filter = $this->getSearchFilter($action !== 'excel');
         if (! (isset($filter['gr2t_id_organization']) && $filter['gr2t_id_organization'])) {
-            $model->addFilter(array('gr2t_id_organization' => $this->loader->getCurrentUser()->getRespondentOrgFilter()));
+            $model->addFilter(array('gr2t_id_organization' => $this->currentUser->getRespondentOrgFilter()));
         }
         if (! (isset($filter['gr2t_id_track']) && $filter['gr2t_id_track'])) {
             $model->setFilter(array('1=0'));

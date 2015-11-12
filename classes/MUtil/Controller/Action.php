@@ -58,6 +58,15 @@
 abstract class MUtil_Controller_Action extends \Zend_Controller_Action
 {
     /**
+     * A ssession based message store.
+     *
+     * Standard the flash messenger for storing messages
+     *
+     * @var \Zend_Controller_Action_Helper_FlashMessenger
+     */
+    private $_messenger;
+
+    /**
      * Created when $useHtmlView is true or initHtml() is run.
      *
      * Allows you to create html using e.g. $this->html->p();
@@ -93,6 +102,16 @@ abstract class MUtil_Controller_Action extends \Zend_Controller_Action
     public $translate;
 
     /**
+     * Set in init() from \Zend_Registry::get('Zend_Translate'), unless set already.
+     *
+     * The code will use a Potemkin Translate adapter when \Zend_Translate is not set in the registry, so
+     * the code will still work, it just will not translate.
+     *
+     * @var \Zend_Translate_Adapter
+     */
+    public $translateAdapter;
+
+    /**
      * Set to true in child class for automatic creation of $this->html.
      *
      * To initiate the use of $this->html from the code call $this->initHtml()
@@ -117,15 +136,6 @@ abstract class MUtil_Controller_Action extends \Zend_Controller_Action
     public $useRawOutput = false;
 
     /**
-     * A ssession based message store.
-     *
-     * Standard the flash messenger for storing messages
-     *
-     * @var \Zend_Controller_Action_Helper_FlashMessenger
-     */
-    private $_messenger;
-
-    /**
      * Copy from \Zend_Translate_Adapter
      *
      * Translates the given string
@@ -138,7 +148,7 @@ abstract class MUtil_Controller_Action extends \Zend_Controller_Action
      */
     public function _($text, $locale = null)
     {
-        return $this->translate->getAdapter()->_($text, $locale);
+        return $this->translateAdapter->_($text, $locale);
     }
 
     /**
@@ -379,6 +389,9 @@ abstract class MUtil_Controller_Action extends \Zend_Controller_Action
 
             $this->setTranslate($translate);
         }
+        if (! $this->translateAdapter) {
+            $this->translateAdapter = $this->translate->getAdapter();
+        }
 
         return $this->translate;
     }
@@ -399,7 +412,7 @@ abstract class MUtil_Controller_Action extends \Zend_Controller_Action
      */
     public function init()
     {
-        if (! $this->translate) {
+        if (! ($this->translate && $this->translateAdapter)) {
             $this->getTranslate();
         }
 
@@ -480,7 +493,7 @@ abstract class MUtil_Controller_Action extends \Zend_Controller_Action
     public function plural($singular, $plural, $number, $locale = null)
     {
         $args = func_get_args();
-        return call_user_func_array(array($this->translate->getAdapter(), 'plural'), $args);
+        return call_user_func_array(array($this->translateAdapter, 'plural'), $args);
     }
 
      /* currently not in use
@@ -526,6 +539,7 @@ abstract class MUtil_Controller_Action extends \Zend_Controller_Action
     public function setTranslate(\Zend_Translate $translate)
     {
         $this->translate = $translate;
+        $this->translateAdapter = $translate->getAdapter();
 
         return $this;
     }

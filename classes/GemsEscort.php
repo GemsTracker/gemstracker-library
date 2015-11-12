@@ -207,7 +207,7 @@ class GemsEscort extends \MUtil_Application_Escort
             // Locale is fixed by request.
             $this->setException(new \Gems_Exception_Coding('Requested translation before request was made available.'));
         }
-        return $this->translate->getAdapter()->_($text, $locale);
+        return $this->translateAdapter->_($text, $locale);
     }
 
     /**
@@ -294,8 +294,8 @@ class GemsEscort extends \MUtil_Application_Escort
                 \MUtil_File::ensureDir($logPath);
                 $writer = new \Zend_Log_Writer_Stream($logPath . '/errors.log');
             } catch (Exception $exc) {
-                $this->bootstrap(array('locale', 'translate'));
-                die(sprintf($this->translate->_('Path %s not writable'), $logPath));
+                $this->bootstrap(array('locale', 'translate', 'translateAdapter'));
+                die(sprintf($this->translateAdapter->_('Path %s not writable'), $logPath));
             }
         }
 
@@ -618,11 +618,32 @@ class GemsEscort extends \MUtil_Application_Escort
     }
 
     /**
+     * Initialize the translateAdapter component.
+     *
+     * Scans the application and project dirs for available translations
+     *
+     * Use $this->translateAdapter to access afterwards
+     *
+     * @return \Zend_Translate
+     */
+    protected function _initTranslateAdapter()
+    {
+        $this->bootstrap(array('translate'));
+
+        // Fix for _init resourcea being case insensitive
+        $container = $this->getContainer();
+        $adapter   = $container->translate->getAdapter();
+        $container->translateAdapter = $adapter;
+
+        return $adapter;
+    }
+
+    /**
      * Initialize the OpenRosa survey source
      */
     protected function _initOpenRosa()
     {
-        $this->bootstrap(array('loader', 'translate'));
+        $this->bootstrap(array('loader', 'translate', 'translateAdapter'));
 
         if ($this->getOption('useOpenRosa')) {
             // First handle dependencies
@@ -692,6 +713,66 @@ class GemsEscort extends \MUtil_Application_Escort
 
         // Return it, so that it can be stored by the bootstrap
         return $view;
+    }
+
+    /**
+     * Initialize the currentUser component.
+     *
+     * You can overrule this function to specify your own project translation method / file.
+     *
+     * Use $this->currentUser to access afterwards
+     *
+     * @return \Gems_User_User
+     */
+    protected function _initCurrentUser()
+    {
+        $this->bootstrap(array('acl', 'basepath', 'cache', 'db', 'loader', 'project', 'session',
+            'translate', 'translateAdapter', 'util'));
+
+        // Fix for _init resourcea being case insensitive
+        $container = $this->getContainer();
+        $user      = $this->loader->getCurrentUser();
+        $container->currentUser = $user;
+
+        return $user;
+    }
+
+    /**
+     * Initialize the currentOrganization component.
+     *
+     * You can overrule this function to specify your own project translation method / file.
+     *
+     * Use $this->currentOrganization to access afterwards
+     *
+     * @return \Gems_User_Organization
+     */
+    protected function _initCurrentOrganization()
+    {
+        $this->bootstrap(array('basepath', 'cache', 'currentUser', 'db', 'loader', 'project', 'session',
+            'translate', 'translateAdapter', 'util'));
+
+        // Fix for _init resourcea being case insensitive
+        $container = $this->getContainer();
+        $org       = $container->currentUser->getCurrentOrganization();
+        $container->currentOrganization = $org;
+
+        return $org;
+    }
+
+    /**
+     * Initialize the loader as source component.
+     *
+     * You can overrule this function to specify your own project translation method / file.
+     *
+     * Use $this->source to access afterwards
+     *
+     * @return \Gems_User_Organization
+     */
+    protected function _initSource()
+    {
+        $this->bootstrap(array('loader'));
+
+        return $this->getLoader();
     }
 
     /**
@@ -954,15 +1035,13 @@ class GemsEscort extends \MUtil_Application_Escort
      */
     protected function _layoutLogin(array $args = null)
     {
-        $user = $this->getLoader()->getCurrentUser();
-
         // During error reporting the user or menu are not always known.
-        if ($user && $this->menu) {
+        if ($this->currentUser && $this->menu) {
             $div = \MUtil_Html::create('div', array('id' => 'login'), $args);
 
             $p = $div->p();
-            if ($user->isActive()) {
-                $p->append(sprintf($this->_('You are logged in as %s'), $user->getFullName()));
+            if ($this->currentUser->isActive()) {
+                $p->append(sprintf($this->_('You are logged in as %s'), $this->currentUser->getFullName()));
                 $item = $this->menu->findController('index', 'logoff');
                 $p->a($item->toHRefAttribute(), $this->_('Logoff'), array('class' => 'logout'));
             } else {
@@ -1088,12 +1167,11 @@ class GemsEscort extends \MUtil_Application_Escort
      */
     protected function _layoutOrganizationSwitcher(array $args = null)
     {
-        $user = $this->getLoader()->getCurrentUser();
-        if ($user->isActive() && ($orgs = $user->getAllowedOrganizations())) {
+        if ($this->currentUser->isActive() && ($orgs = $this->currentUser->getAllowedOrganizations())) {
             if (count($orgs) > 1) {
                 // Organization switcher
                 $orgSwitch  = \MUtil_Html::create('div', $args, array('id' => 'organizations'));
-                $currentId  = $user->getCurrentOrganizationId();
+                $currentId  = $this->currentUser->getCurrentOrganizationId();
                 $params     = $this->request->getparams();
                 unset($params['error_handler']);    // If present, this is an object and causes a warning
                 unset($params[\MUtil_Model::AUTOSEARCH_RESET]);
@@ -1191,11 +1269,9 @@ class GemsEscort extends \MUtil_Application_Escort
      */
     protected function _layoutUser(array $args = null)
     {
-        $user = $this->getLoader()->getCurrentUser();
-
-        if ($user->isActive()) {
+        if ($this->currentUser->isActive()) {
             return \MUtil_Html::create()->div(
-                sprintf($this->_('User: %s'), $user->getFullName()),
+                sprintf($this->_('User: %s'), $this->currentUser->getFullName()),
                 $args,
                 array('id' => 'username')
                 );
@@ -1220,7 +1296,7 @@ class GemsEscort extends \MUtil_Application_Escort
             $link = $version;
         }
 
-        $div->spaced($this->project->description, $this->translate->_('version'), $link);
+        $div->spaced($this->project->description, $this->translateAdapter->_('version'), $link);
 
         return $div;
     }
@@ -1426,21 +1502,21 @@ class GemsEscort extends \MUtil_Application_Escort
     /**
      *
      * @return int The current active organization id or 0 when not known
+     * @deprecated Since 1.7.2 Replaced by $this->currentOrganization->getId();
      */
     public function getCurrentOrganization()
     {
-        return $this->getLoader()->getCurrentUser()->getCurrentOrganizationId();
+        return $this->currentOrganization->getId();
     }
 
     /**
      *
      * @return int The current user id or 0 when not known.
+     * @deprecated Since 1.7.2 Replaced by $this->currentUser->getUserId();
      */
     public function getCurrentUserId()
     {
-        $id = $this->getLoader()->getCurrentUser()->getUserId();
-
-        return $id ? $id : 0;
+        return $this->currentUser->getUserId();
     }
 
     /**
@@ -1546,7 +1622,7 @@ class GemsEscort extends \MUtil_Application_Escort
      * @param string $privilege
      * @param string $role
      * @return bool
-     * @deprecated Since 1.7.2 Replaced by $this->getLoader->getCurrentUser()->hasPrivilege();
+     * @deprecated Since 1.7.2 Replaced by $this->currentUser->hasPrivilege();
      */
     public function hasPrivilege($privilege, $role = null)
     {
@@ -1765,7 +1841,7 @@ class GemsEscort extends \MUtil_Application_Escort
     public function plural($singular, $plural, $number, $locale = null)
     {
         $args = func_get_args();
-        return call_user_func_array(array($this->translate->getAdapter(), 'plural'), $args);
+        return call_user_func_array(array($this->translateAdapter, 'plural'), $args);
     }
 
     /**
@@ -1883,6 +1959,7 @@ class GemsEscort extends \MUtil_Application_Escort
                         }
                     }
                     $this->translate->setLocale($localeId);
+                    $this->translateAdapter = $this->translate->getAdapter();
                 }
             }
         }
@@ -1958,7 +2035,6 @@ class GemsEscort extends \MUtil_Application_Escort
     public function routeShutdown(\Zend_Controller_Request_Abstract $request)
     {
         $loader = $this->getLoader();
-        $user   = $loader->getCurrentUser();
 
         // Load the menu. As building the menu can depend on all resources and the request, we do it here.
         //
@@ -1978,7 +2054,8 @@ class GemsEscort extends \MUtil_Application_Escort
          * directory with the name lock.txt
          */
         if ($this->getUtil()->getMaintenanceLock()->isLocked()) {
-            if ($user->isActive() && (!$user->hasPrivilege('pr.maintenance.maintenance-mode'))) {
+            if ($this->currentUser->isActive() &&
+                    (! $this->currentUser->hasPrivilege('pr.maintenance.maintenance-mode'))) {
                 //Still allow logoff so we can relogin as master
                 if (!('index' == $request->getControllerName() && 'logoff' == $request->getActionName())) {
                     $this->setError(
@@ -1986,7 +2063,7 @@ class GemsEscort extends \MUtil_Application_Escort
                             401,
                             $this->_('System is in maintenance mode'));
                 }
-                $user->unsetAsCurrentUser();
+                $this->currentUser->unsetAsCurrentUser();
             } else {
                 $this->addMessage($this->_('System is in maintenance mode'));
                 \MUtil_Echo::r($this->_('System is in maintenance mode'));
@@ -1996,9 +2073,9 @@ class GemsEscort extends \MUtil_Application_Escort
         // Gems does not use index/index
         $action = $request->getActionName();
         if (('index' == $request->getControllerName()) &&
-                (('index' == $action) || ($user->isActive() && ('login' == $action)))) {
+                (('index' == $action) || ($this->currentUser->isActive() && ('login' == $action)))) {
             // Instead Gems routes to the first available menu item when this is the request target
-            if (! $user->gotoStartPage($this->menu, $request)) {
+            if (! $this->currentUser->gotoStartPage($this->menu, $request)) {
                 $this->setError(
                         $this->_('No access to site.'),
                         401,
@@ -2015,14 +2092,14 @@ class GemsEscort extends \MUtil_Application_Escort
             // Display error when not having the right priviliges
             if (! ($menuItem && $menuItem->get('allowed'))) {
                 // When logged in
-                if ($user->getUserId()) {
+                if ($this->currentUser->getUserId()) {
                     $this->setError(
                             $this->_('No access to page'),
                             403,
                             sprintf($this->_('Access to the %s/%s page is not allowed for current role: %s.'),
                                     $request->getControllerName(),
                                     $request->getActionName(),
-                                    $user->getRole()),
+                                    $this->currentUser->getRole()),
                             true);
 
                 } else { // No longer logged in

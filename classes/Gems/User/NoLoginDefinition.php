@@ -68,6 +68,7 @@ class Gems_User_NoLoginDefinition extends Gems_User_UserDefinitionAbstract
     public static function getNoLoginDataFor($login_name, $organization)
     {
         return array(
+            'user_id'          => 0,
             'user_login'       => $login_name,
             'user_name'        => $login_name,
             'user_base_org_id' => $organization,

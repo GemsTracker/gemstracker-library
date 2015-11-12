@@ -47,17 +47,23 @@
 class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
-     *
-     * @var \Gems_Project_ProjectSettings
-     */
-    public $project;
-
-    /**
      * The snippets used for the create and edit actions.
      *
      * @var mixed String or array of snippets name
      */
     protected $createEditSnippets = 'ModelFormVariableFieldSnippet';
+
+    /**
+     *
+     * @var \Gems_User_User
+     */
+    public $currentUser;
+
+    /**
+     *
+     * @var \Gems_Project_ProjectSettings
+     */
+    public $project;
 
     /**
      * Query to get the round descriptions for options
@@ -90,7 +96,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
 
         $model->set('gcj_id_message',          'label', $this->_('Template'), 'multiOptions', $unselected + $dbLookup->getCommTemplates('token'));
         $model->set('gcj_id_user_as',          'label', $this->_('By staff member'),
-                'multiOptions', $unselected + $dbLookup->getActiveStaff(), 'default', $this->escort->getCurrentUserId(),
+                'multiOptions', $unselected + $dbLookup->getActiveStaff(), 'default', $this->currentUser->getUserId(),
                 'description', $this->_('Used for logging and possibly from address.'));
         $model->set('gcj_active',              'label', $this->_('Active'),
                 'multiOptions', $translated->getYesNo(), 'elementClass', 'Checkbox', 'required', true,

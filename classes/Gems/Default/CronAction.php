@@ -48,6 +48,12 @@ class Gems_Default_CronAction extends \Gems_Controller_Action
 {
     /**
      *
+     * @var \Gems_User_User
+     */
+    public $currentUser;
+
+    /**
+     *
      * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
@@ -69,12 +75,6 @@ class Gems_Default_CronAction extends \Gems_Controller_Action
      * @var \Gems_Menu
      */
     public $menu;
-
-    /**
-     *
-     * @var \Zend_Session_Namespace
-     */
-    public $session;
 
     /**
      * Set to true in child class for automatic creation of $this->html.
@@ -109,8 +109,6 @@ class Gems_Default_CronAction extends \Gems_Controller_Action
 
         $dbLookup   = $this->util->getDbLookup();
         $mailLoader = $this->loader->getMailLoader();
-        $userLoader = $this->loader->getUserLoader();
-        $user       = $userLoader->getCurrentUser();
         $tracker    = $this->loader->getTracker();
         $model      = $tracker->getTokenModel();
 
@@ -120,7 +118,7 @@ class Gems_Default_CronAction extends \Gems_Controller_Action
         $model->setSort(array('gto_valid_from' => SORT_ASC, 'gto_round_order' => SORT_ASC));
 
         // Check for unprocessed tokens
-        $tracker->processCompletedTokens(null, $user->getUserId());
+        $tracker->processCompletedTokens(null, $this->currentUser->getUserId());
 
         $sql = "SELECT *
             FROM gems__comm_jobs INNER JOIN
@@ -161,7 +159,7 @@ class Gems_Default_CronAction extends \Gems_Controller_Action
                                 $from = $organization->getEmail();//$organization->getName() . ' <' . $organization->getEmail() . '>';
                                 $mailer->setFrom($from);
                             } elseif ($job['gcj_from_method'] == 'U') {
-                                $from = $sendByMail;//$user->getFullName() . ' <' . $user->getEmailAddress() . '>';
+                                $from = $sendByMail;
                                 $mailer->setFrom($from);
                             } elseif ($job['gcj_from_method'] == 'F') {
                                 $mailer->setFrom($job['gcj_from_fixed']);

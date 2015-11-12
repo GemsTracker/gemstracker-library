@@ -63,13 +63,6 @@ class Gems_Snippets_Tracker_Fields_FieldReportSearchSnippet extends \Gems_Snippe
                 $this->_('(select a track)')
                 );
 
-        /*
-        $orgs = $this->loader->getCurrentUser()->getRespondentOrganizations();
-        if (count($orgs) > 1) {
-            $elements[] = $this->_createSelectElement('org_id', $orgs, $this->_('(all organizations)'));
-        }
-        // */
-
         return $elements;
     }
 }

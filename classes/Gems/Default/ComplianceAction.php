@@ -54,6 +54,12 @@ class Gems_Default_ComplianceAction extends \Gems_Controller_ModelSnippetActionA
     protected $autofilterSnippets = 'Tracker_Compliance_ComplianceTableSnippet';
 
     /**
+     *
+     * @var \Gems_User_User
+     */
+    public $currentUser;
+
+    /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
@@ -96,7 +102,7 @@ class Gems_Default_ComplianceAction extends \Gems_Controller_ModelSnippetActionA
 
         $filter = $this->getSearchFilter($action !== 'excel');
         if (! (isset($filter['gr2t_id_organization']) && $filter['gr2t_id_organization'])) {
-            $model->addFilter(array('gr2t_id_organization' => $this->loader->getCurrentUser()->getRespondentOrgFilter()));
+            $model->addFilter(array('gr2t_id_organization' => $this->currentUser->getRespondentOrgFilter()));
         }
         if (! (isset($filter['gr2t_id_track']) && $filter['gr2t_id_track'])) {
             $model->setFilter(array('1=0'));

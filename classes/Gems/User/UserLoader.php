@@ -143,13 +143,6 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     protected static $currentUser;
 
     /**
-     * Session storage of loaded organizations.
-     *
-     * @var Zend_Session_Namespace
-     */
-    protected static $organizationStore;
-
-    /**
      * Should be called after answering the request to allow the Target
      * to check if all required registry values have been set correctly.
      *

@@ -57,6 +57,12 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
 
     /**
      *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
+    /**
+     *
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
@@ -176,7 +182,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
      */
     protected function createModel()
     {
-        $model = $this->loader->getTracker()->getTokenModel();
+        $model = $this->tracker->getTokenModel();
 
         if ($model instanceof \Gems_Tracker_Model_StandardTokenModel) {
             $model->addEditTracking();
@@ -185,7 +191,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
                 $model->applyInsertionFormatting();
             }
         }
-        
+
         // Valid from can not be calculated for inserted rounds, and should always be manual
         $model->set('gto_valid_from_manual', 'elementClass', 'Hidden', 'default', '1');
 
@@ -529,7 +535,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     {
         $model = $this->getModel();
 
-        $userId     = $this->loader->getCurrentUser()->getUserId();
+        $userId     = $this->currentUser->getUserId();
         $tokenData  = array();
         $copyFields = array(
             'gto_id_round',

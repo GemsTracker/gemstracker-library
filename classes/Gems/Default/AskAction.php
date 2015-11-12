@@ -46,6 +46,12 @@
 class Gems_Default_AskAction extends \Gems_Controller_Action
 {
     /**
+     *
+     * @var \Gems_User_User
+     */
+    public $currentUser;
+
+    /**
      * Usually a child of \Gems_Tracker_Snippets_ShowTokenLoopAbstract,
      * Track_Token_ShowAllOpenSnippet or Track_Token_ShowFirstOpenSnippet or
      * a project specific one.
@@ -133,13 +139,13 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
             return false;
         }
 
-        if (! ($this->loader->getCurrentUser()->isActive() || $this->token->getSurvey()->isTakenByStaff())) {
+        if (! ($this->currentUser->isActive() || $this->token->getSurvey()->isTakenByStaff())) {
             $tokenLang = strtolower($this->token->getRespondentLanguage());
             // \MUtil_Echo::track($tokenLang, $this->locale->getLanguage());
             if ($tokenLang != $this->locale->getLanguage()) {
                 $this->locale->setLocale($tokenLang);
-                $this->translate->getAdapter()->setLocale($this->locale);
-                $this->session->user_locale = $tokenLang;
+                $this->translateAdapter->setLocale($this->locale);
+                $this->currentUser->setLocale($tokenLang);
                 \Gems_Cookies::setLocale($tokenLang, $this->basepath->getBasePath());
             }
 
@@ -162,15 +168,13 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
      */
     protected function displayTokenForm(\Gems_Tracker_Form_AskTokenForm $form)
     {
-        $user = $this->loader->getCurrentUser();
-
         $form->setDescription(sprintf($this->_('Enter your %s token'), $this->project->name));
         $this->html->h3($form->getDescription());
         $this->html[] = $form;
         $this->html->pInfo($this->_('Tokens identify a survey that was assigned to you personally.') . ' ' . $this->_('Entering the token and pressing OK will open that survey.'));
 
-        if ($user->isActive()) {
-            if ($user->isLogoutOnSurvey()) {
+        if ($this->currentUser->isActive()) {
+            if ($this->currentUser->isLogoutOnSurvey()) {
                 $this->html->pInfo($this->_('After answering the survey you will be logged off automatically.'));
             }
         }
@@ -286,18 +290,16 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
         }
 
         // No return? Check for old style user based return
-        $user = $this->loader->getCurrentUser();
-
-        if (! $user->isActive()) {
+        if (! $this->currentUser->isActive()) {
             $this->_forward('forward');
             return;
         }
 
         // Check for completed tokens
-        $this->tracker->processCompletedTokens($this->token->getRespondentId(), $user->getUserId());
+        $this->tracker->processCompletedTokens($this->token->getRespondentId(), $this->currentUser->getUserId());
 
         // Get return route parameters
-        $parameters = $user->getSurveyReturn();
+        $parameters = $this->currentUser->getSurveyReturn();
         if (! $parameters) {
             // Default fallback for the fallback
             $request = $this->getRequest();
@@ -337,19 +339,18 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
         }
 
         $language = $this->locale->getLanguage();
-        $user     = $this->loader->getCurrentUser();
 
         try {
             $url  = $this->token->getUrl(
                     $language,
-                    $user->getUserId() ? $user->getUserId() : $this->token->getRespondentId()
+                    $this->currentUser->getUserId() ? $this->currentUser->getUserId() : $this->token->getRespondentId()
                     );
 
             /************************
              * Optional user logout *
              ************************/
-            if ($user->isLogoutOnSurvey()) {
-                $user->unsetAsCurrentUser();
+            if ($this->currentUser->isLogoutOnSurvey()) {
+                $this->currentUser->unsetAsCurrentUser();
             }
 
             // Redirect at once

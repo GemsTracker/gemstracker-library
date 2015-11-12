@@ -48,9 +48,9 @@ class Gems_Snippets_Group_GroupDeleteSnippet extends Gems_Snippets_ModelItemYesN
 {
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_User_User
      */
-    protected $loader;
+    protected $currentUser;
 
     /**
      *
@@ -83,8 +83,7 @@ class Gems_Snippets_Group_GroupDeleteSnippet extends Gems_Snippets_ModelItemYesN
     {
         $model = $this->getModel();
         $data  = $model->loadFirst();
-        $user  = $this->loader->getCurrentUser();
-        $roles = $user->getAllowedRoles();
+        $roles = $this->currentUser->getAllowedRoles();
 
         //MUtil_Echo::track($data);
 

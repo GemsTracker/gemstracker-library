@@ -48,9 +48,9 @@ class Gems_Snippets_Group_GroupFormSnippet extends Gems_Snippets_ModelFormSnippe
 {
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_User_User
      */
-    protected $loader;
+    protected $currentUser;
 
     /**
      *
@@ -118,8 +118,7 @@ class Gems_Snippets_Group_GroupFormSnippet extends Gems_Snippets_ModelFormSnippe
 
             $model     = $this->getModel();
             $roles     = $model->get('ggp_role', 'multiOptions');
-            $user      = $this->loader->getCurrentUser();
-            $userRoles = $user->getAllowedRoles();
+            $userRoles = $this->currentUser->getAllowedRoles();
 
             // MUtil_Echo::track($userRoles, $roles);
             // Make sure we get the roles as they are labeled

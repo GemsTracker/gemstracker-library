@@ -48,6 +48,12 @@ class Gems_Snippets_Agenda_CalendarSearchSnippet extends Gems_Snippets_Autosearc
 {
     /**
      *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
+    /**
+     *
      * @var Gems_Loader
      */
     protected $loader;
@@ -65,7 +71,7 @@ class Gems_Snippets_Agenda_CalendarSearchSnippet extends Gems_Snippets_Autosearc
     {
         $elements = parent::getAutoSearchElements($data);
 
-        $orgs = $this->loader->getCurrentUser()->getRespondentOrganizations();
+        $orgs = $this->currentUser->getRespondentOrganizations();
         if (count($orgs) > 1) {
             $elements[] = $this->_createSelectElement('gap_id_organization', $orgs, $this->_('(all organizations)'));
         }

@@ -69,6 +69,12 @@ class Gems_Default_CalendarAction extends \Gems_Controller_ModelSnippetActionAbs
 
     /**
      *
+     * @var \Gems_User_Organization
+     */
+    public $currentOrganization;
+    
+    /**
+     *
      * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
@@ -125,7 +131,7 @@ class Gems_Default_CalendarAction extends \Gems_Controller_ModelSnippetActionAbs
     public function getSearchDefaults()
     {
         if (! $this->defaultSearchData) {
-            $org = $this->loader->getCurrentUser()->getCurrentOrganization();
+            $org = $this->currentOrganization;
             $this->defaultSearchData = array(
                 'gap_id_organization' => $org->canHaveRespondents() ? $org->getId() : null,
                 'dateused'            => 'gap_admission_time',

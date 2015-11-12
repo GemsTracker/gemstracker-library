@@ -83,6 +83,12 @@ class Gems_Default_AppointmentAction extends \Gems_Default_RespondentChildAction
      * @var mixed String or array of snippets name
      */
     protected $createEditSnippets = 'Agenda_AppointmentFormSnippet';
+    /**
+     *
+     * @var \Gems_User_User
+     */
+    public $currentUser;
+
 
     /**
      *
@@ -294,7 +300,7 @@ class Gems_Default_AppointmentAction extends \Gems_Default_RespondentChildAction
         if (! $this->respondentId) {
             throw new \Gems_Exception($this->_('Requested agenda data not available!'));
         } else {
-            $orgs = $this->loader->getCurrentUser()->getAllowedOrganizations();
+            $orgs = $this->currentUser->getAllowedOrganizations();
 
             if (! isset($orgs[$this->organizationId])) {
                 $org = $this->loader->getOrganization($this->organizationId);
