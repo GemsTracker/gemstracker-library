@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: LogShowSnippet.php 2493 2015-04-15 16:29:48Z matijsdejong $
+ * @version    $Id: LogShowSnippet.php 0002 2015-04-15 16:29:48Z matijsdejong $
  */
 
 namespace Gems\Snippets\Log;
@@ -63,7 +63,7 @@ class LogShowSnippet extends \Gems_Snippets_ModelItemTableSnippetAbstract
 
     /**
      *
-     * @var MUtil_Model_ModelAbstract
+     * @var \MUtil_Model_ModelAbstract
      */
     protected $model;
 
@@ -76,7 +76,7 @@ class LogShowSnippet extends \Gems_Snippets_ModelItemTableSnippetAbstract
     /**
      * Creates the model
      *
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function createModel()
     {

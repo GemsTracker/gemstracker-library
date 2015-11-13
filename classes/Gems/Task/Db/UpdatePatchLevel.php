@@ -44,10 +44,10 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Task_Db_UpdatePatchLevel extends MUtil_Task_TaskAbstract
+class Gems_Task_Db_UpdatePatchLevel extends \MUtil_Task_TaskAbstract
 {
     /**
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 

@@ -42,10 +42,10 @@
  * @since      Class available since version 1.5.3
  * @deprecated since 1.6.4 No longer in use
  */
-class Gems_Task_Tracker_SourceCommand extends MUtil_Task_TaskAbstract
+class Gems_Task_Tracker_SourceCommand extends \MUtil_Task_TaskAbstract
 {
     /**
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     public $loader;
 

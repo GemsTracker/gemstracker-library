@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-class Gems_Util_TokenData extends MUtil_Translate_TranslateableAbstract
+class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
 {
     /**
      * Returns a status code => decription array
@@ -116,11 +116,11 @@ class Gems_Util_TokenData extends MUtil_Translate_TranslateableAbstract
     /**
      * An expression for calculating the token status
      * 
-     * @return Zend_Db_Expr
+     * @return \Zend_Db_Expr
      */
     public function getStatusExpression()
     {
-        return new Zend_Db_Expr("
+        return new \Zend_Db_Expr("
             CASE
             WHEN gto_id_token IS NULL OR grc_success = 0 THEN 'D'
             WHEN gto_completion_time IS NOT NULL         THEN 'A'

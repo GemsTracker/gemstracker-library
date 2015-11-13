@@ -67,7 +67,7 @@ class LogTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
 
     /**
      *
-     * @var MUtil_Model_ModelAbstract
+     * @var \MUtil_Model_ModelAbstract
      */
     protected $model;
 
@@ -98,7 +98,7 @@ class LogTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
     /**
      * Creates the model
      *
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function createModel()
     {

@@ -41,14 +41,14 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.5
  */
-class Gems_Snippets_Export_ReportFooterSnippet extends MUtil_Snippets_SnippetAbstract
+class Gems_Snippets_Export_ReportFooterSnippet extends \MUtil_Snippets_SnippetAbstract
 {
     /**
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     public $loader;
 
-    public function getHtmlOutput(Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view)
     {
         $html = $this->getHtmlSequence();
 

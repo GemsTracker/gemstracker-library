@@ -45,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_SourceAbstract
+class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_SourceAbstract
 {
     const CACHE_TOKEN_INFO = 'tokenInfo';
 
@@ -80,7 +80,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
 
     /**
      *
-     * @var array of Gems_Tracker_Source_LimeSurvey1m9FieldMap
+     * @var array of \Gems_Tracker_Source_LimeSurvey1m9FieldMap
      */
     private $_fieldMaps;
 
@@ -99,31 +99,31 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
 
     /**
      *
-     * @var Zend_Locale
+     * @var \Zend_Locale
      */
     protected $locale;
 
     /**
      *
-     * @var Gems_Log
+     * @var \Gems_Log
      */
     protected $logger;
 
     /**
      *
-     * @var Zend_Controller_Request_Abstract
+     * @var \Zend_Controller_Request_Abstract
      */
     protected $request;
 
     /**
      *
-     * @var Zend_Translate
+     * @var \Zend_Translate
      */
     protected $translate;
 
     /**
      *
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     protected $util;
 
@@ -136,7 +136,8 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
      * @param \Gems_Tracker_Survey $survey
      * @param array $messages
      */
-    protected function _checkReturnURI($sourceSurveyId, \Gems_Tracker_Survey $survey, array &$messages) {
+    protected function _checkReturnURI($sourceSurveyId, \Gems_Tracker_Survey $survey, array &$messages)
+    {
         $lsSurvLang = $this->_getSurveyLanguagesTableName();
         $sql = 'SELECT surveyls_language FROM ' . $lsSurvLang . ' WHERE surveyls_survey_id = ?';
 
@@ -216,10 +217,10 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
     /**
      * Returns a list of field names that should be set in a newly inserted token.
      *
-     * @param Gems_Tracker_Token $token
+     * @param \Gems_Tracker_Token $token
      * @return array Of fieldname => value type
      */
-    protected function _fillAttributeMap(Gems_Tracker_Token $token)
+    protected function _fillAttributeMap(\Gems_Tracker_Token $token)
     {
         $values[$this->_attributeMap['respondentid']]   =
                 substr($token->getRespondentId(), 0, $this->attributeSize);
@@ -260,15 +261,15 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
      *
      * @param int $sourceSurveyId Survey ID
      * @param string $language      Optional (ISO) Language, uses default language for survey when null
-     * @return Gems_Tracker_Source_LimeSurvey1m9FieldMap
+     * @return \Gems_Tracker_Source_LimeSurvey1m9FieldMap
      */
     protected function _getFieldMap($sourceSurveyId, $language = null)
     {
         $language = $this->_getLanguage($sourceSurveyId, $language);
-        // MUtil_Echo::track($language, $sourceSurveyId);
+        // \MUtil_Echo::track($language, $sourceSurveyId);
 
         if (! isset($this->_fieldMaps[$sourceSurveyId][$language])) {
-            $this->_fieldMaps[$sourceSurveyId][$language] = new Gems_Tracker_Source_LimeSurvey1m9FieldMap(
+            $this->_fieldMaps[$sourceSurveyId][$language] = new \Gems_Tracker_Source_LimeSurvey1m9FieldMap(
                     $sourceSurveyId,
                     $language,
                     $this->getSourceDatabase(),
@@ -318,7 +319,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
      */
     protected function _getReturnURI()
     {
-        return $this->util->getCurrentURI('ask/return/' . MUtil_Model::REQUEST_ID . '/{TOKEN}');
+        return $this->util->getCurrentURI('ask/return/' . \MUtil_Model::REQUEST_ID . '/{TOKEN}');
     }
 
     /**
@@ -460,7 +461,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
 
         $values['gso_active'] = $active ? 1 : 0;
         $values['gso_status'] = $active ? 'Active' : 'Inactive';
-        $values['gso_last_synch'] = new MUtil_Db_Expr_CurrentTimestamp();
+        $values['gso_last_synch'] = new \MUtil_Db_Expr_CurrentTimestamp();
 
         $this->_updateSource($values, $userId);
 
@@ -503,7 +504,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                     ->where('sid = ?', $sourceSurveyId);
             $lsSurvey = $lsDb->fetchRow($select);
 
-            $surveyor_title = substr(MUtil_Html::removeMarkup($lsSurvey['surveyls_title']), 0, 100);
+            $surveyor_title = substr(\MUtil_Html::removeMarkup($lsSurvey['surveyls_title']), 0, 100);
             $surveyor_status = '';
 
             // ANONIMIZATION
@@ -538,7 +539,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
             if ($lsSurvey['active'] == 'Y') {
                 try {
                     $tokenTable = $lsDb->fetchAssoc('SHOW COLUMNS FROM ' . $this->_getTokenTableName($sourceSurveyId));
-                } catch (Zend_Exception $e) {
+                } catch (\Zend_Exception $e) {
                     $tokenTable = false;
                 }
 
@@ -548,11 +549,11 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                     if ($missingFields) {
                         $sql    = "ALTER TABLE " . $this->_getTokenTableName($sourceSurveyId) . " " . implode(', ', $missingFields);
                         $fields = implode($this->_(', '), array_keys($missingFields));
-                        // MUtil_Echo::track($missingFields, $sql);
+                        // \MUtil_Echo::track($missingFields, $sql);
                         try {
                             $lsDb->query($sql);
                             $messages[] = sprintf($this->_("Added to token table '%s' the field(s): %s"), $surveyor_title, $fields);
-                        } catch (Zend_Exception $e) {
+                        } catch (\Zend_Exception $e) {
                             $surveyor_status .= 'Token attributes could not be created. ';
                             $surveyor_status .= $e->getMessage() . ' ';
 
@@ -561,8 +562,8 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                             $messages[] = $e->getMessage();
 
                             // Maximum reporting for this case
-                            MUtil_Echo::r($missingFields, 'Missing fields for ' . $surveyor_title);
-                            MUtil_Echo::r($e);
+                            \MUtil_Echo::r($missingFields, 'Missing fields for ' . $surveyor_title);
+                            \MUtil_Echo::r($e);
                         }
                     }
                 } else {
@@ -619,7 +620,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
 
                 $messages[] = sprintf($this->_('Imported the \'%s\' survey.'), $surveyor_title);
             }
-            $values['gsu_survey_description'] = strtr(substr(MUtil_Html::removeMarkup($lsSurvey['surveyls_description']), 0, 100), "\xA0\xC2", '  ');
+            $values['gsu_survey_description'] = strtr(substr(\MUtil_Html::removeMarkup($lsSurvey['surveyls_description']), 0, 100), "\xA0\xC2", '  ');
             $survey->saveSurvey($values, $userId);
         }
 
@@ -629,14 +630,14 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
     /**
      * Inserts the token in the source (if needed) and sets those attributes the source wants to set.
      *
-     * @param Gems_Tracker_Token $token
+     * @param \Gems_Tracker_Token $token
      * @param string $language
      * @param int $surveyId Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return int 1 of the token was inserted or changed, 0 otherwise
-     * @throws Gems_Tracker_Source_SurveyNotFoundException
+     * @throws \Gems_Tracker_Source_SurveyNotFoundException
      */
-    public function copyTokenToSource(Gems_Tracker_Token $token, $language, $surveyId, $sourceSurveyId = null)
+    public function copyTokenToSource(\Gems_Tracker_Token $token, $language, $surveyId, $sourceSurveyId = null)
     {
         if (null === $sourceSurveyId) {
             $sourceSurveyId = $this->_getSid($surveyId);
@@ -665,14 +666,14 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
 
         // No field was returned
         if (false === $currentUrl) {
-            throw new Gems_Tracker_Source_SurveyNotFoundException(sprintf('The survey with id %d for token %s does not exist.', $surveyId, $tokenId), sprintf('The Lime Survey id is %s', $sourceSurveyId));
+            throw new \Gems_Tracker_Source_SurveyNotFoundException(sprintf('The survey with id %d for token %s does not exist.', $surveyId, $tokenId), sprintf('The Lime Survey id is %s', $sourceSurveyId));
         }
 
         /*****************************
          * Set the end_of_survey uri *
          *****************************/
 
-        if (!MUtil_Console::isConsole()) {
+        if (!\MUtil_Console::isConsole()) {
             $newUrl = $this->_getReturnURI();
 
             // Make sure the url is set correctly in surveyor.
@@ -688,8 +689,8 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                         'surveyls_language = ?' =>  $language
                         ));
 
-                if (Gems_Tracker::$verbose) {
-                    MUtil_Echo::r("From $currentUrl\n to $newUrl", "Changed return url for $language version of $surveyId.");
+                if (\Gems_Tracker::$verbose) {
+                    \MUtil_Echo::r("From $currentUrl\n to $newUrl", "Changed return url for $language version of $surveyId.");
                 }
             }
         }
@@ -711,19 +712,19 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
         if ($oldValues = $lsDb->fetchRow("SELECT * FROM $lsTokens WHERE token = ? LIMIT 1", $tokenId)) {
 
             if ($this->tracker->filterChangesOnly($oldValues, $values)) {
-                if (Gems_Tracker::$verbose) {
+                if (\Gems_Tracker::$verbose) {
                     $echo = '';
                     foreach ($values as $key => $val) {
                         $echo .= $key . ': ' . $oldValues[$key] . ' => ' . $val . "\n";
                     }
-                    MUtil_Echo::r($echo, "Updated limesurvey values for $tokenId");
+                    \MUtil_Echo::r($echo, "Updated limesurvey values for $tokenId");
                 }
 
                 $result = $lsDb->update($lsTokens, $values, array('token = ?' => $tokenId));
             }
         } else {
-            if (Gems_Tracker::$verbose) {
-                MUtil_Echo::r($values, "Inserted $tokenId into limesurvey");
+            if (\Gems_Tracker::$verbose) {
+                \MUtil_Echo::r($values, "Inserted $tokenId into limesurvey");
             }
             $values['token'] = $tokenId;
 
@@ -744,24 +745,24 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
      * A seperate function as only the source knows what format the date/time value has.
      *
      * @param string $fieldName Name of answer field
-     * @param Gems_Tracker_Token  $token Gems token object
+     * @param \Gems_Tracker_Token  $token Gems token object
      * @param int $surveyId Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
-     * @return MUtil_Date date time or null
+     * @return \MUtil_Date date time or null
      */
-    public function getAnswerDateTime($fieldName, Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null)
+    public function getAnswerDateTime($fieldName, \Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null)
     {
         $answers = $token->getRawAnswers();
 
         if (isset($answers[$fieldName]) && $answers[$fieldName]) {
-            if (Zend_Date::isDate($answers[$fieldName], self::LS_DB_DATETIME_FORMAT)) {
-                return new MUtil_Date($answers[$fieldName], self::LS_DB_DATETIME_FORMAT);
+            if (\Zend_Date::isDate($answers[$fieldName], self::LS_DB_DATETIME_FORMAT)) {
+                return new \MUtil_Date($answers[$fieldName], self::LS_DB_DATETIME_FORMAT);
             }
-            if (Zend_Date::isDate($answers[$fieldName], self::LS_DB_DATE_FORMAT)) {
-                return new MUtil_Date($answers[$fieldName], self::LS_DB_DATE_FORMAT);
+            if (\Zend_Date::isDate($answers[$fieldName], self::LS_DB_DATE_FORMAT)) {
+                return new \MUtil_Date($answers[$fieldName], self::LS_DB_DATE_FORMAT);
             }
-            if (Gems_Tracker::$verbose)  {
-                MUtil_Echo::r($answers[$fieldName], 'Missed answer date value:');
+            if (\Gems_Tracker::$verbose)  {
+                \MUtil_Echo::r($answers[$fieldName], 'Missed answer date value:');
             }
         }
     }
@@ -775,15 +776,15 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
      * Gets the time the survey was completed according to the source
      *
      * A source always return null when it does not know this time (or does not know
-     * it well enough). In the case Gems_Tracker_Token will do it's best to keep
+     * it well enough). In the case \Gems_Tracker_Token will do it's best to keep
      * track by itself.
      *
-     * @param Gems_Tracker_Token $token Gems token object
+     * @param \Gems_Tracker_Token $token Gems token object
      * @param int $surveyId Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
-     * @return MUtil_Date date time or null
+     * @return \MUtil_Date date time or null
      */
-    public function getCompletionTime(Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null)
+    public function getCompletionTime(\Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null)
     {
         if ($token->cacheHas('submitdate')) {
             // Use cached value when it exists
@@ -816,8 +817,8 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                     $submitDate = $lsDb->fetchOne("SELECT submitdate FROM $lsSurvey WHERE token = ? LIMIT 1", $tokenId);
 
                     if ($submitDate) {
-                        if (Zend_Date::isDate($submitDate, self::LS_DB_DATETIME_FORMAT)) {
-                            $submitDate = new MUtil_Date($submitDate, self::LS_DB_DATETIME_FORMAT);
+                        if (\Zend_Date::isDate($submitDate, self::LS_DB_DATETIME_FORMAT)) {
+                            $submitDate = new \MUtil_Date($submitDate, self::LS_DB_DATETIME_FORMAT);
                         } else {
                             $submitDate = false; // Null does not trigger cacheHas()
                         }
@@ -829,7 +830,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
             $token->cacheSet('submitdate', $submitDate);
         }
 
-        return $submitDate instanceof MUtil_Date ? $submitDate : null;
+        return $submitDate instanceof \MUtil_Date ? $submitDate : null;
     }
 
     /**
@@ -897,7 +898,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
         // Prevent html output in date lists
         foreach($results as $key => &$value)
         {
-            $value = MUtil_Html::raw($value);
+            $value = \MUtil_Html::raw($value);
         }
 
         return $results;
@@ -970,7 +971,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
             // Order by ID desc to get the same answers used as in the row retrieved by
             // getRawTokenAnswerRows() in case of double rows
             $values = $lsDb->fetchRow("SELECT * FROM $lsTab WHERE token = ? ORDER BY id DESC", $token);
-        } catch (Zend_Db_Statement_Exception $exception) {
+        } catch (\Zend_Db_Statement_Exception $exception) {
             $this->logger->logError($exception, $this->request);
             $values = false;
         }
@@ -1015,7 +1016,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
             }
         }
 
-        $rows = $select->query()->fetchAll(Zend_Db::FETCH_ASSOC);
+        $rows = $select->query()->fetchAll(\Zend_Db::FETCH_ASSOC);
         $results = array();
         //@@TODO: check if we really need this, or can just change the 'token' field to have the 'original'
         //        this way other sources that don't perform changes on the token field don't have to loop
@@ -1051,7 +1052,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
     public function getRawTokenAnswerRowsCount(array $filter, $surveyId, $sourceSurveyId = null) {
         $select = $this->getRawTokenAnswerRowsSelect($filter, $surveyId, $sourceSurveyId);
 
-        $p = new Zend_Paginator_Adapter_DbSelect($select);
+        $p = new \Zend_Paginator_Adapter_DbSelect($select);
         $count = $p->getCountSelect()->query()->fetchColumn();
 
         return $count;
@@ -1063,7 +1064,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
      * @param array $filter
      * @param type $surveyId
      * @param type $sourceSurveyId
-     * @return Zend_Db_Select
+     * @return \Zend_Db_Select
      */
     public function getRawTokenAnswerRowsSelect(array $filter, $surveyId, $sourceSurveyId = null) {
         if (null === $sourceSurveyId) {
@@ -1115,8 +1116,8 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
             }
         }
 
-        if (Gems_Tracker::$verbose) {
-            MUtil_Echo::r($select->__toString(), 'Select');
+        if (\Gems_Tracker::$verbose) {
+            \MUtil_Echo::r($select->__toString(), 'Select');
         }
 
         return $select;
@@ -1126,15 +1127,15 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
      * Gets the time the survey was started according to the source
      *
      * A source always return null when it does not know this time (or does not know
-     * it well enough). In the case Gems_Tracker_Token will do it's best to keep
+     * it well enough). In the case \Gems_Tracker_Token will do it's best to keep
      * track by itself.
      *
-     * @param Gems_Tracker_Token $token Gems token object
+     * @param \Gems_Tracker_Token $token Gems token object
      * @param int $surveyId Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
-     * @return MUtil_Date date time or null
+     * @return \MUtil_Date date time or null
      */
-    public function getStartTime(Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null)
+    public function getStartTime(\Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null)
     {
         // Always return null!
         // The 'startdate' field is the time of the first save, not the time the user started
@@ -1145,12 +1146,12 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
     /**
      * Returns a model for the survey answers
      *
-     * @param Gems_Tracker_Survey $survey
+     * @param \Gems_Tracker_Survey $survey
      * @param string $language Optional (ISO) language string
      * @param string $sourceSurveyId Optional Survey Id used by source
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
-    public function getSurveyAnswerModel(Gems_Tracker_Survey $survey, $language = null, $sourceSurveyId = null)
+    public function getSurveyAnswerModel(\Gems_Tracker_Survey $survey, $language = null, $sourceSurveyId = null)
  {
         static $cache = array();        // working with 'real' cache produces out of memory error
 
@@ -1172,13 +1173,13 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
     /**
      * Retrieve all fields stored in the token table, and store them in the tokencache
      *
-     * @param Gems_Tracker_Token $token
+     * @param \Gems_Tracker_Token $token
      * @param type $surveyId
      * @param type $sourceSurveyId
      * @param array $fields
      * @return type
      */
-    public function getTokenInfo(Gems_Tracker_Token $token, $surveyId, $sourceSurveyId, array $fields = null)
+    public function getTokenInfo(\Gems_Tracker_Token $token, $surveyId, $sourceSurveyId, array $fields = null)
     {
         if (! $token->cacheHas(self::CACHE_TOKEN_INFO)) {
             if (null === $sourceSurveyId) {
@@ -1194,7 +1195,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
 
             try {
                 $result = $this->getSourceDatabase()->fetchRow($sql, $tokenId);
-            } catch (Zend_Db_Statement_Exception $exception) {
+            } catch (\Zend_Db_Statement_Exception $exception) {
                 $this->logger->logError($exception, $this->request);
                 $result = false;
             }
@@ -1212,13 +1213,13 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
     /**
      * Returns the url that (should) start the survey for this token
      *
-     * @param Gems_Tracker_Token $token Gems token object
+     * @param \Gems_Tracker_Token $token Gems token object
      * @param string $language
      * @param int $surveyId Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return string The url to start the survey
      */
-    public function getTokenUrl(Gems_Tracker_Token $token, $language, $surveyId, $sourceSurveyId)
+    public function getTokenUrl(\Gems_Tracker_Token $token, $language, $surveyId, $sourceSurveyId)
     {
         if (null === $sourceSurveyId) {
             $sourceSurveyId = $this->_getSid($surveyId);
@@ -1240,12 +1241,12 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
     /**
      * Checks whether the token is in the source.
      *
-     * @param Gems_Tracker_Token $token Gems token object
+     * @param \Gems_Tracker_Token $token Gems token object
      * @param int $surveyId Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return boolean
      */
-    public function inSource(Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null)
+    public function inSource(\Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null)
     {
         $tokenInfo = $this->getTokenInfo($token, $surveyId, $sourceSurveyId);
         return (boolean) $tokenInfo;
@@ -1254,13 +1255,13 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
     /**
      * Returns true if the survey was completed according to the source
      *
-     * @param Gems_Tracker_Token $token Gems token object
+     * @param \Gems_Tracker_Token $token Gems token object
      * @param int $surveyId Gems Survey Id
      * @param $answers array Field => Value array, can be empty
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return boolean True if the token has completed
      */
-    public function isCompleted(Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null)
+    public function isCompleted(\Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null)
     {
         $tokenInfo = $this->getTokenInfo($token, $surveyId, $sourceSurveyId);
         if (isset($tokenInfo['completed']) && $tokenInfo['completed'] != 'N') {
@@ -1273,13 +1274,13 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
     /**
      * Sets the answers passed on.
      *
-     * @param Gems_Tracker_Token $token Gems token object
+     * @param \Gems_Tracker_Token $token Gems token object
      * @param array $answers Field => Value array
      * @param int $surveyId Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return true When answers changed
      */
-    public function setRawTokenAnswers(Gems_Tracker_Token $token, array $answers, $surveyId, $sourceSurveyId = null)
+    public function setRawTokenAnswers(\Gems_Tracker_Token $token, array $answers, $surveyId, $sourceSurveyId = null)
     {
         if (null === $sourceSurveyId) {
             $sourceSurveyId = $this->_getSid($surveyId);
@@ -1289,18 +1290,18 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
         $lsTab     = $this->_getSurveyTableName($sourceSurveyId);
         $lsTokenId = $this->_getToken($token->getTokenId());
 
-        // MUtil_Echo::track($answers);
+        // \MUtil_Echo::track($answers);
 
         $answers = $this->_getFieldMap($sourceSurveyId)->mapTitlesToKeys($answers);
         $answers = $this->_filterAnswersOnly($sourceSurveyId, $answers);
 
-        // MUtil_Echo::track($answers);
+        // \MUtil_Echo::track($answers);
 
         if ($lsDb->fetchOne("SELECT token FROM $lsTab WHERE token = ?", $lsTokenId)) {
             $where = $lsDb->quoteInto("token = ?", $lsTokenId);
             return $lsDb->update($lsTab, $answers, $where);
         } else {
-            $current = new MUtil_Db_Expr_CurrentTimestamp();
+            $current = new \MUtil_Db_Expr_CurrentTimestamp();
 
             $answers['token']         = $lsTokenId;
             $answers['startlanguage'] = $this->locale->getLanguage();
@@ -1316,12 +1317,12 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
     /**
      * Sets the completion time.
      *
-     * @param Gems_Tracker_Token $token Gems token object
-     * @param Zend_Date|null $completionTime Zend_Date or null
+     * @param \Gems_Tracker_Token $token Gems token object
+     * @param \Zend_Date|null $completionTime \Zend_Date or null
      * @param int $surveyId Gems Survey Id (actually required)
      * @param string $sourceSurveyId Optional Survey Id used by source
      */
-    public function setTokenCompletionTime(Gems_Tracker_Token $token, $completionTime, $surveyId, $sourceSurveyId = null)
+    public function setTokenCompletionTime(\Gems_Tracker_Token $token, $completionTime, $surveyId, $sourceSurveyId = null)
     {
         if (null === $sourceSurveyId) {
             $sourceSurveyId = $this->_getSid($surveyId);
@@ -1332,9 +1333,9 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
         $lsTabTok  = $this->_getTokenTableName($sourceSurveyId);
         $lsTokenId = $this->_getToken($token->getTokenId());
         $where     = $lsDb->quoteInto("token = ?", $lsTokenId);
-        $current   = new MUtil_Db_Expr_CurrentTimestamp();
+        $current   = new \MUtil_Db_Expr_CurrentTimestamp();
 
-        if ($completionTime instanceof Zend_Date) {
+        if ($completionTime instanceof \Zend_Date) {
             $answers['submitdate']  = $completionTime->toString(self::LS_DB_DATETIME_FORMAT);
             $tokenData['completed'] = $completionTime->toString(self::LS_DB_COMPLETION_FORMAT);
         } else {
@@ -1346,7 +1347,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
         if ($lsDb->fetchOne("SELECT token FROM $lsTabSurv WHERE token = ?", $lsTokenId)) {
             $lsDb->update($lsTabSurv, $answers, $where);
 
-        } elseif ($completionTime instanceof Zend_Date) {
+        } elseif ($completionTime instanceof \Zend_Date) {
             $answers['token']         = $lsTokenId;
             $answers['startlanguage'] = $this->locale->getLanguage();
             $answers['datestamp']     = $current;
@@ -1359,7 +1360,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
         if ($lsDb->fetchOne("SELECT token FROM $lsTabTok WHERE token = ?", $lsTokenId)) {
             $lsDb->update($lsTabTok, $tokenData, $where);
 
-        } elseif ($completionTime instanceof Zend_Date) {
+        } elseif ($completionTime instanceof \Zend_Date) {
 
             $tokenData['token'] = $lsTokenId;
             $tokenData = $tokenData + $this->_fillAttributeMap($token);
@@ -1480,7 +1481,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                 // and we might have responses with the same timestamp.
                 $update = "UPDATE " . $this->_getSurveysTableName() . " SET `" . $this->_anonymizedField . "` = 'N' WHERE sid = " . $sid . ';';
                 $update .= "ALTER TABLE " . $this->_getSurveyTableName($sid) . " ADD `token` varchar(36) default NULL;";
-                MUtil_Echo::r($update);
+                \MUtil_Echo::r($update);
             }
             if ($surveyor_survey['datestamp'] == 'N') {
                 $surveyor_status .= 'Not date stamped. ';
@@ -1542,13 +1543,13 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                         }
                         if ($missingFields) {
                             $sql = "ALTER TABLE " . $this->_getTokenTableName($sid) . " " . implode(', ', $missingFields);
-                            // MUtil_Echo::track($sql);
+                            // \MUtil_Echo::track($sql);
                             try {
                                 $lsDb->query($sql);
-                            } catch (Zend_Exception $e) {
+                            } catch (\Zend_Exception $e) {
                                 $surveyor_status .= 'Token attributes could not be created. ';
                                 $surveyor_status .= $e->getMessage() . ' ';
-                                // MUtil_Echo::track($e);
+                                // \MUtil_Echo::track($e);
                             }
                         }
                         /*
@@ -1584,18 +1585,18 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                             ' WHERE ' . $this->_getTokenFromSqlWhere($from, 'token');
 
                         $sql = 'UPDATE ' . $this->_getTokenTableName($sid) . $sqlTail;
-                        // MUtil_Echo::pre($sql);
+                        // \MUtil_Echo::pre($sql);
 
                         if ($count = $lsDb->query($sql)->rowCount()) {
                             // Only update surveys table if there were tokens
                             $sql = 'UPDATE ' . $this->_getSurveyTableName($sid) . $sqlTail;
                             $lsDb->query($sql);
-                            // MUtil_Echo::pre($sql);
+                            // \MUtil_Echo::pre($sql);
 
                             $messages[] = sprintf($this->plural('Updated %d token to new token definition in survey \'%s\'.', 'Updated %d tokens to new token definition in survey \'%s\'.', $count), $count, $survey->getName());
                         }
                     }
-                } catch (Zend_Exception $e) {
+                } catch (\Zend_Exception $e) {
                     $surveyor_status .= 'No token table created. ';
                 }
 
@@ -1624,7 +1625,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                         $values['gsu_status'] = substr($surveyor_status,  0,  127);
                         $messages[] = sprintf($this->_('The status of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $values['gsu_status']);
                     } else {
-                        $values['gsu_status'] = new Zend_Db_Expr('NULL');
+                        $values['gsu_status'] = new \Zend_Db_Expr('NULL');
                         $messages[] = sprintf($this->_('The status warning for the \'%s\' survey was removed.'), $survey->getName());
                     }
                 }
@@ -1654,13 +1655,13 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
     /**
      * Updates the consent code of the the token in the source (if needed)
      *
-     * @param Gems_Tracker_Token $token
+     * @param \Gems_Tracker_Token $token
      * @param int $surveyId Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @param string $consentCode Optional consent code, otherwise code from token is used.
      * @return int 1 of the token was inserted or changed, 0 otherwise
      */
-    public function updateConsent(Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null, $consentCode = null)
+    public function updateConsent(\Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null, $consentCode = null)
     {
         if (null === $sourceSurveyId) {
             $sourceSurveyId = $this->_getSid($surveyId);
@@ -1678,12 +1679,12 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
         if ($oldValues = $lsDb->fetchRow("SELECT * FROM $lsTokens WHERE token = ? LIMIT 1", $tokenId)) {
 
             if ($this->tracker->filterChangesOnly($oldValues, $values)) {
-                if (Gems_Tracker::$verbose) {
+                if (\Gems_Tracker::$verbose) {
                     $echo = '';
                     foreach ($values as $key => $val) {
                         $echo .= $key . ': ' . $oldValues[$key] . ' => ' . $val . "\n";
                     }
-                    MUtil_Echo::r($echo, "Updated limesurvey values for $tokenId");
+                    \MUtil_Echo::r($echo, "Updated limesurvey values for $tokenId");
                 }
 
                 $result = $lsDb->update($lsTokens, $values, array('token = ?' => $tokenId));

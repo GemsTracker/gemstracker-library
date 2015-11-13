@@ -85,7 +85,7 @@ class RoundDeleteSnippet extends \Gems_Snippets_ModelItemYesNoDeleteSnippetAbstr
     /**
      * Creates the model
      *
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function createModel()
     {

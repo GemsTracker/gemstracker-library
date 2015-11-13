@@ -174,7 +174,7 @@ class Gems_Model_DbaModel extends \MUtil_Model_ArrayModelAbstract
      * An ArrayModel assumes that (usually) all data needs to be loaded before any load
      * action, this is done using the iterator returned by this function.
      *
-     * @return Traversable Return an iterator over or an array of all the rows in this object
+     * @return \Traversable Return an iterator over or an array of all the rows in this object
      */
     protected function _loadAllTraversable()
     {
@@ -192,13 +192,13 @@ class Gems_Model_DbaModel extends \MUtil_Model_ArrayModelAbstract
 
 
             if (is_dir($mainDirectory)) {
-                foreach (new DirectoryIterator($mainDirectory) as $directory) {
+                foreach (new \DirectoryIterator($mainDirectory) as $directory) {
                     $type = $this->_getType($directory->getFilename());
 
                     if ($directory->isDir() && (! $directory->isDot())) {
                         $path = $directory->getPathname();
 
-                        foreach (new DirectoryIterator($path) as $file) {
+                        foreach (new \DirectoryIterator($path) as $file) {
 
                             $fileName = $file->getFilename();
                             //$fileName = strtolower($fileName);

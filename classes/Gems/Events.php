@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Events extends Gems_Loader_TargetLoaderAbstract
+class Gems_Events extends \Gems_Loader_TargetLoaderAbstract
 {
     const TRACK_CALCULATION_EVENT       = 'Track/Calculate';
     const TRACK_COMPLETION_EVENT        = 'Track/Completed';
@@ -58,7 +58,7 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
      * Each event type must implement an event class or interface derived
      * from EventInterface specified in this array.
      *
-     * @see Gems_Event_EventInterface
+     * @see \Gems_Event_EventInterface
      *
      * @var array containing eventType => eventClass for all event classes
      */
@@ -74,7 +74,7 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     protected $util;
 
@@ -82,7 +82,7 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
      * Lookup event class for an event type. This class or interfce should at the very least
      * implement the EventInterface.
      *
-     * @see Gems_Event_EventInterface
+     * @see \Gems_Event_EventInterface
      *
      * @param string $eventType The type (i.e. lookup directory) to find the associated class for
      * @return string Class/interface name associated with the type
@@ -92,7 +92,7 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
         if (isset($this->_eventClasses[$eventType])) {
             return $this->_eventClasses[$eventType];
         } else {
-            throw new Gems_Exception_Coding("No event class exists for event type '$eventType'.");
+            throw new \Gems_Exception_Coding("No event class exists for event type '$eventType'.");
         }
     }
 
@@ -110,7 +110,7 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
             $paths[$prefix] = $dir . DIRECTORY_SEPARATOR . 'Event' . DIRECTORY_SEPARATOR . $eventType;
         }
         $paths[''] = APPLICATION_PATH . '/events/' . strtolower($eventType);
-        // MUtil_Echo::track($paths);
+        // \MUtil_Echo::track($paths);
 
         return $paths;
     }
@@ -119,7 +119,7 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
      * Returns a list of selectable events with an empty element as the first option.
      *
      * @param string $eventType The type (i.e. lookup directory with an associated class) of the events to list
-     * @return Gems_tracker_TrackerEventInterface or more specific a $eventClass type object
+     * @return \Gems_tracker_TrackerEventInterface or more specific a $eventClass type object
      */
     protected function _listEvents($eventType)
     {
@@ -152,13 +152,13 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
                             $event = new $eventName();
 
                             if ($event instanceof $eventClass) {
-                                if ($event instanceof MUtil_Registry_TargetInterface) {
+                                if ($event instanceof \MUtil_Registry_TargetInterface) {
                                     $this->applySource($event);
                                 }
 
                                 $results[$eventName] = trim($event->getEventName()) . $name;
                             }
-                            // MUtil_Echo::track($eventName);
+                            // \MUtil_Echo::track($eventName);
                         }
                     }
                 }
@@ -166,7 +166,7 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
         }
         natcasesort($results);
         $results = $this->util->getTranslated()->getEmptyDropdownArray() + $results;
-        // MUtil_Echo::track($paths, $results);
+        // \MUtil_Echo::track($paths, $results);
         return $results;
     }
 
@@ -175,22 +175,22 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
      *
      * @param string $eventName The class name of the individual event to load
      * @param string $eventType The type (i.e. lookup directory with an associated class) of the event
-     * @return Gems_tracker_TrackerEventInterface or more specific a $eventClass type object
+     * @return \Gems_tracker_TrackerEventInterface or more specific a $eventClass type object
      */
     protected function _loadEvent($eventName, $eventType)
     {
         $eventClass = $this->_getEventClass($eventType);
 
-        // MUtil_Echo::track($eventName);
+        // \MUtil_Echo::track($eventName);
         if (! class_exists($eventName, true)) {
             // Autoload is used for Zend standard defined classnames,
             // so if the class is not autoloaded, define the path here.
             $filename = APPLICATION_PATH . '/events/' . strtolower($eventType) . '/' . $eventName . '.php';
 
             if (! file_exists($filename)) {
-                throw new Gems_Exception_Coding("The event '$eventName' of type '$eventType' does not exist at location: $filename.");
+                throw new \Gems_Exception_Coding("The event '$eventName' of type '$eventType' does not exist at location: $filename.");
             }
-            // MUtil_Echo::track($filename);
+            // \MUtil_Echo::track($filename);
 
             include($filename);
         }
@@ -198,10 +198,10 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
         $event = new $eventName();
 
         if (! $event instanceof $eventClass) {
-            throw new Gems_Exception_Coding("The event '$eventName' of type '$eventType' is not an instance of '$eventClass'.");
+            throw new \Gems_Exception_Coding("The event '$eventName' of type '$eventType' is not an instance of '$eventClass'.");
         }
 
-        if ($event instanceof MUtil_Registry_TargetInterface) {
+        if ($event instanceof \MUtil_Registry_TargetInterface) {
             $this->applySource($event);
         }
 
@@ -274,7 +274,7 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
     /**
      *
      * @param string $eventName
-     * @return Gems_Event_RoundChangedEventInterface
+     * @return \Gems_Event_RoundChangedEventInterface
      */
     public function loadRoundChangedEvent($eventName)
     {
@@ -284,7 +284,7 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
     /**
      *
      * @param string $eventName
-     * @return Gems_Event_SurveyBeforeAnsweringEventInterface
+     * @return \Gems_Event_SurveyBeforeAnsweringEventInterface
      */
     public function loadSurveyBeforeAnsweringEvent($eventName)
     {
@@ -294,7 +294,7 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
     /**
      *
      * @param string $eventName
-     * @return Gems_Event_SurveyCompletedEventInterface
+     * @return \Gems_Event_SurveyCompletedEventInterface
      */
     public function loadSurveyCompletionEvent($eventName)
     {
@@ -305,7 +305,7 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
     /**
      *
      * @param string $eventName
-     * @return Gems_Event_SurveyDisplayEventInterface
+     * @return \Gems_Event_SurveyDisplayEventInterface
      */
     public function loadSurveyDisplayEvent($eventName)
     {
@@ -315,7 +315,7 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
     /**
      *
      * @param string $eventName
-     * @return Gems_Event_TrackCalculationEventInterface
+     * @return \Gems_Event_TrackCalculationEventInterface
      */
     public function loadTrackCalculationEvent($eventName)
     {

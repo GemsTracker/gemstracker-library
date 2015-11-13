@@ -94,7 +94,7 @@ class Gems_Validate_OneOf extends \Zend_Validate_Abstract
     }
 
     /**
-     * Defined by Zend_Validate_Interface
+     * Defined by \Zend_Validate_Interface
      *
      * Returns true if and only if a token has been set and the provided value
      * matches that token.

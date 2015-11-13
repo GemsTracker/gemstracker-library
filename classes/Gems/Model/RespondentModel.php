@@ -121,7 +121,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
 
         $this->setOnSave('gr2o_opened', new \MUtil_Db_Expr_CurrentTimestamp());
         $this->setSaveOnChange('gr2o_opened');
-        $this->setOnSave('gr2o_opened_by', GemsEscort::getInstance()->session->user_id);
+        $this->setOnSave('gr2o_opened_by', \GemsEscort::getInstance()->session->user_id);
         $this->setSaveOnChange('gr2o_opened_by');
 
         $this->addColumn(new \Zend_Db_Expr("CASE WHEN grc_success = 1 THEN '' ELSE 'deleted' END"), 'row_class');

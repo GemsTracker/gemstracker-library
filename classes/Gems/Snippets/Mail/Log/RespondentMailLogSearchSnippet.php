@@ -52,7 +52,7 @@ class RespondentMailLogSearchSnippet extends AutosearchInRespondentSnippet
 {
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     public $loader;
 
@@ -60,7 +60,7 @@ class RespondentMailLogSearchSnippet extends AutosearchInRespondentSnippet
      * Creates the form itself
      *
      * @param array $options
-     * @return Gems_Form
+     * @return \Gems_Form
      */
     protected function createForm($options = null)
     {
@@ -78,7 +78,7 @@ class RespondentMailLogSearchSnippet extends AutosearchInRespondentSnippet
      * That creates a distinct group of elements
      *
      * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return array Of Zend_Form_Element's or static tekst to add to the html or null for group breaks.
+     * @return array Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.
      */
     protected function getAutoSearchElements(array $data)
     {
@@ -123,7 +123,7 @@ class RespondentMailLogSearchSnippet extends AutosearchInRespondentSnippet
                     $this->request->getParam(\MUtil_Model::REQUEST_ID2)
                 )
         );
-        // MUtil_Echo::track($surveyNames);
+        // \MUtil_Echo::track($surveyNames);
         return $surveyNames;
     }
 
@@ -139,7 +139,7 @@ class RespondentMailLogSearchSnippet extends AutosearchInRespondentSnippet
                     $this->request->getParam(\MUtil_Model::REQUEST_ID2)
                 )
         );
-        // MUtil_Echo::track($trackNames);
+        // \MUtil_Echo::track($trackNames);
         return $trackNames;
     }
 }

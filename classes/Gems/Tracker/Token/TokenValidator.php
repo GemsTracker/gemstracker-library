@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Tracker_Token_TokenValidator extends MUtil_Registry_TargetAbstract implements Zend_Validate_Interface
+class Gems_Tracker_Token_TokenValidator extends \MUtil_Registry_TargetAbstract implements \Zend_Validate_Interface
 {
     /**
      *
@@ -54,39 +54,39 @@ class Gems_Tracker_Token_TokenValidator extends MUtil_Registry_TargetAbstract im
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
     /**
      *
-     * @var Gems_Log
+     * @var \Gems_Log
      */
     protected $logger;
 
     /**
      * Optional
      *
-     * @var Zend_Controller_Request_Abstract
+     * @var \Zend_Controller_Request_Abstract
      */
     protected $request;
 
     /**
      * Required
      *
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     protected $project;
 
     /**
      *
-     * @var Gems_Tracker_TrackerInterface
+     * @var \Gems_Tracker_TrackerInterface
      */
     protected $tracker;
 
     /**
      *
-     * @var Zend_Translate
+     * @var \Zend_Translate
      */
     protected $translate;
 
@@ -98,11 +98,11 @@ class Gems_Tracker_Token_TokenValidator extends MUtil_Registry_TargetAbstract im
      */
     public function checkRegistryRequestsAnswers()
     {
-        return $this->db instanceof Zend_Db_Adapter_Abstract &&
-                $this->logger instanceof Gems_Log &&
-                $this->project instanceof Gems_Project_ProjectSettings &&
-                $this->tracker instanceof Gems_Tracker_TrackerInterface &&
-                $this->translate instanceof Zend_Translate;
+        return $this->db instanceof \Zend_Db_Adapter_Abstract &&
+                $this->logger instanceof \Gems_Log &&
+                $this->project instanceof \Gems_Project_ProjectSettings &&
+                $this->tracker instanceof \Gems_Tracker_TrackerInterface &&
+                $this->translate instanceof \Zend_Translate;
     }
 
     /**
@@ -123,7 +123,7 @@ class Gems_Tracker_Token_TokenValidator extends MUtil_Registry_TargetAbstract im
     protected function getRequest()
     {
         if (! $this->request) {
-            $this->request = Zend_Controller_Front::getInstance()->getRequest();
+            $this->request = \Zend_Controller_Front::getInstance()->getRequest();
         }
 
         return $this->request;
@@ -138,7 +138,7 @@ class Gems_Tracker_Token_TokenValidator extends MUtil_Registry_TargetAbstract im
      *
      * @param  mixed $value
      * @return boolean
-     * @throws Zend_Valid_Exception If validation of $value is impossible
+     * @throws \Zend_Valid_Exception If validation of $value is impossible
      */
     public function isValid($value)
     {
@@ -151,8 +151,8 @@ class Gems_Tracker_Token_TokenValidator extends MUtil_Registry_TargetAbstract im
             // Retrieve the number of failed attempts that occurred within the specified window
             $select = $this->db->select();
             $select->from('gems__token_attempts', array(
-                new Zend_Db_Expr('COUNT(*) AS attempts'),
-                new Zend_Db_Expr('UNIX_TIMESTAMP(MAX(gta_datetime)) - UNIX_TIMESTAMP() AS last'),
+                new \Zend_Db_Expr('COUNT(*) AS attempts'),
+                new \Zend_Db_Expr('UNIX_TIMESTAMP(MAX(gta_datetime)) - UNIX_TIMESTAMP() AS last'),
                 ))
                     ->where('gta_datetime > DATE_SUB(NOW(), INTERVAL ? second)', $throttleSettings['period']);
             $attemptData = $this->db->fetchRow($select);
@@ -160,9 +160,9 @@ class Gems_Tracker_Token_TokenValidator extends MUtil_Registry_TargetAbstract im
             $remainingDelay = ($attemptData['last'] + $throttleSettings['delay']);
 
 
-            // MUtil_Echo::track($throttleSettings, $attemptData, $remainingDelay);
+            // \MUtil_Echo::track($throttleSettings, $attemptData, $remainingDelay);
             if ($attemptData['attempts'] > $throttleSettings['threshold'] && $remainingDelay > 0) {
-                $this->logger->log("Possible token brute force attack, throttling for $remainingDelay seconds", Zend_Log::ERR);
+                $this->logger->log("Possible token brute force attack, throttling for $remainingDelay seconds", \Zend_Log::ERR);
 
                 $this->_messages = $this->translate->_('The server is currently busy, please wait a while and try again.');
                 return false;
@@ -205,7 +205,7 @@ class Gems_Tracker_Token_TokenValidator extends MUtil_Registry_TargetAbstract im
 
         $token = $this->tracker->getToken($value);
         if ($token && $token->exists) {
-            $currentDate = new MUtil_Date();
+            $currentDate = new \MUtil_Date();
 
             if ($completionTime = $token->getCompletionTime()) {
                 // Reuse means a user can use an old token to check for new surveys

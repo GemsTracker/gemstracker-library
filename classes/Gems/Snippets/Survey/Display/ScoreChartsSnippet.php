@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Snippets_Survey_Display_ScoreChartsSnippet extends Gems_Snippets_Tracker_Answers_TrackAnswersModelSnippet  {
+class Gems_Snippets_Survey_Display_ScoreChartsSnippet extends \Gems_Snippets_Tracker_Answers_TrackAnswersModelSnippet  {
 
     /**
      * Copied from parent, but insert chart instead of table after commented out part
@@ -51,7 +51,8 @@ class Gems_Snippets_Survey_Display_ScoreChartsSnippet extends Gems_Snippets_Trac
      * @param \Zend_View_Abstract $view
      * @return type
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view) {
+    public function getHtmlOutput(\Zend_View_Abstract $view)
+    {
         $snippets = array();
 
         $data = $this->getModel()->load();
@@ -66,7 +67,7 @@ class Gems_Snippets_Survey_Display_ScoreChartsSnippet extends Gems_Snippets_Trac
         }
 
         // Some spacing with previous elements
-        $snippets[] = MUtil_Html::create()->p(MUtil_Html::raw('&nbsp;'), array('style'=>'clear:both;'));
+        $snippets[] = \MUtil_Html::create()->p(\MUtil_Html::raw('&nbsp;'), array('style'=>'clear:both;'));
 
         $config = $this->getConfig($token);
         // Fallback to all score elements in one chart when no config found
@@ -94,7 +95,7 @@ class Gems_Snippets_Survey_Display_ScoreChartsSnippet extends Gems_Snippets_Trac
         }
 
         // Clear the floats
-        $snippets[] = MUtil_Html::create()->p(array('class'=>'chartfooter'));
+        $snippets[] = \MUtil_Html::create()->p(array('class'=>'chartfooter'));
 
         return $snippets;
     }
@@ -104,7 +105,7 @@ class Gems_Snippets_Survey_Display_ScoreChartsSnippet extends Gems_Snippets_Trac
      *
      * Order of reading is track/round, survey, survey code
      *
-     * @param Gems_Tracker_Token $token
+     * @param \Gems_Tracker_Token $token
      */
     public function getConfig($token)
     {
@@ -112,14 +113,14 @@ class Gems_Snippets_Survey_Display_ScoreChartsSnippet extends Gems_Snippets_Trac
             $trackId = $token->getTrackId();
             $roundId = $token->getRoundId();
 
-            $db = Zend_Db_Table::getDefaultAdapter();
+            $db = \Zend_Db_Table::getDefaultAdapter();
 
             $select = $db->select()->from('gems__chart_config')
                     ->where('gcc_tid = ?', $trackId)
                     ->where('gcc_rid = ?', $roundId);
 
             if ($result = $select->query()->fetch()) {
-                $config = Zend_Json::decode($result['gcc_config']);
+                $config = \Zend_Json::decode($result['gcc_config']);
                 return $config;
             }
 
@@ -128,7 +129,7 @@ class Gems_Snippets_Survey_Display_ScoreChartsSnippet extends Gems_Snippets_Trac
                 ->where('gcc_sid = ?', $surveyId);
 
             if ($result = $select->query()->fetch()) {
-                $config = Zend_Json::decode($result['gcc_config']);
+                $config = \Zend_Json::decode($result['gcc_config']);
                 return $config;
             }
 
@@ -138,12 +139,12 @@ class Gems_Snippets_Survey_Display_ScoreChartsSnippet extends Gems_Snippets_Trac
 
             $config = $select->query()->fetch();
             if ($config !== false) {
-                $config = Zend_Json::decode($config['gcc_config']);
+                $config = \Zend_Json::decode($config['gcc_config']);
             }
 
             return $config;
 
-        } catch (Exception $exc) {
+        } catch (\Exception $exc) {
             // Just ignore...
         }
 

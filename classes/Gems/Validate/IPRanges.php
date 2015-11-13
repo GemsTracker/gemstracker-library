@@ -67,7 +67,6 @@ class Gems_Validate_IPRanges extends \Zend_Validate_Abstract
      *
      * @param  mixed $value
      * @return boolean
-     * @throws Zend_Valid_Exception If validation of $value is impossible
      * @todo ip2long is broken on Windows, find a replacement
      */
     public function isValid($value, $context = array())

@@ -53,7 +53,7 @@ class Gems_Model_Type_EncryptedField
 
     /**
      *
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     protected $project;
 
@@ -64,7 +64,7 @@ class Gems_Model_Type_EncryptedField
      */
     protected $valueMask;
 
-    public function __construct(Gems_Project_ProjectSettings $project, $valueMask = true)
+    public function __construct(\Gems_Project_ProjectSettings $project, $valueMask = true)
     {
         $this->project   = $project;
         $this->valueMask = $valueMask;
@@ -73,12 +73,12 @@ class Gems_Model_Type_EncryptedField
     /**
      * Use this function for a default application of this type to the model
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      * @param string $valueField The field containing the value to be encrypted
      * #param string $methodField the field storing the method of encryption
-     * @return Gems_Model_Type_EncryptedField (continuation pattern)
+     * @return \Gems_Model_Type_EncryptedField (continuation pattern)
      */
-    public function apply(MUtil_Model_ModelAbstract $model, $valueField, $methodField)
+    public function apply(\MUtil_Model_ModelAbstract $model, $valueField, $methodField)
     {
         $this->findValue[$methodField] = $valueField;
 
@@ -92,7 +92,7 @@ class Gems_Model_Type_EncryptedField
         $model->setSaveWhen($methodField, array($this, 'whenEncryption'));
         $model->setOnSave($methodField, array($this, 'saveEncryption'));
 
-        if ($model instanceof MUtil_Model_DatabaseModelAbstract) {
+        if ($model instanceof \MUtil_Model_DatabaseModelAbstract) {
             $model->setOnTextFilter($valueField, false);
             $model->setOnTextFilter($methodField, false);
         }
@@ -102,19 +102,19 @@ class Gems_Model_Type_EncryptedField
 
     /**
      * A ModelAbstract->setOnLoad() function that takes care of transforming a
-     * dateformat read from the database to a Zend_Date format
+     * dateformat read from the database to a \Zend_Date format
      *
-     * If empty or Zend_Db_Expression (after save) it will return just the value
+     * If empty or \Zend_Db_Expression (after save) it will return just the value
      * currently there are no checks for a valid date format.
      *
-     * @see MUtil_Model_ModelAbstract
+     * @see \MUtil_Model_ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
      * @param boolean $isPost True when passing on post data
-     * @return MUtil_Date|Zend_Db_Expr|string
+     * @return \MUtil_Date|\Zend_Db_Expr|string
      */
     public function loadValue($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {
@@ -136,13 +136,13 @@ class Gems_Model_Type_EncryptedField
      * A ModelAbstract->setOnSave() function that returns the input
      * date as a valid date.
      *
-     * @see MUtil_Model_ModelAbstract
+     * @see \MUtil_Model_ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
-     * @return Zend_Date
+     * @return \Zend_Date
      */
     public function saveEncryption($value, $isNew = false, $name = null, array $context = array())
     {
@@ -157,18 +157,18 @@ class Gems_Model_Type_EncryptedField
      * A ModelAbstract->setOnSave() function that returns the input
      * date as a valid date.
      *
-     * @see MUtil_Model_ModelAbstract
+     * @see \MUtil_Model_ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
-     * @return Zend_Date
+     * @return \Zend_Date
      */
     public function saveValue($value, $isNew = false, $name = null, array $context = array())
     {
         if ($value) {
-            // MUtil_Echo::track($value);
+            // \MUtil_Echo::track($value);
             return $this->project->encrypt($value, 'default');
         }
     }
@@ -177,17 +177,17 @@ class Gems_Model_Type_EncryptedField
      * A ModelAbstract->setOnSave() function that returns the input
      * date as a valid date.
      *
-     * @see MUtil_Model_ModelAbstract
+     * @see \MUtil_Model_ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
-     * @return Zend_Date
+     * @return \Zend_Date
      */
     public function whenEncryption($value, $isNew = false, $name = null, array $context = array())
     {
-        // MUtil_Echo::track($value);
+        // \MUtil_Echo::track($value);
         $valueField = $this->findValue[$name];
         return isset($context[$valueField]) && $context[$valueField];
     }

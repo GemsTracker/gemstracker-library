@@ -118,7 +118,7 @@ class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstr
      */
     public function getOKString()
     {
-        return GemsEscort::RECEPTION_OK;
+        return \GemsEscort::RECEPTION_OK;
     }
 
 

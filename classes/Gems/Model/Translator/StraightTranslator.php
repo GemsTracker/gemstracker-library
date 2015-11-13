@@ -115,7 +115,7 @@ class Gems_Model_Translator_StraightTranslator extends \MUtil_Model_Translator_S
     /**
      * Perform any translations necessary for the code to work
      *
-     * @param mixed $row array or Traversable row
+     * @param mixed $row array or \Traversable row
      * @param scalar $key
      * @return mixed Row array or false when errors occurred
      */

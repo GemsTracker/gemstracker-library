@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class Gems_Model_Bridge_ThreeColumnTableBridge extends MUtil_Model_Bridge_VerticalTableBridge
+class Gems_Model_Bridge_ThreeColumnTableBridge extends \MUtil_Model_Bridge_VerticalTableBridge
 {
     public function addMarkerRow()
     {

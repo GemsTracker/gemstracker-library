@@ -44,26 +44,26 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.3
  */
-class Gems_Mail extends MUtil_Mail
+class Gems_Mail extends \MUtil_Mail
 {
     const MAIL_NO_ENCRYPT = 0;
     const MAIL_SSL = 1;
     const MAIL_TLS = 2;
 
     /**
-     * @var GemsEscort
+     * @var \GemsEscort
      */
     public $escort = null;
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
     /**
      *
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     protected $project;
 
@@ -77,9 +77,10 @@ class Gems_Mail extends MUtil_Mail
 
     protected static $mailServers = array();
 
-    public function __construct($charset = null) {
+    public function __construct($charset = null)
+    {
         parent::__construct($charset);
-        $this->escort  = GemsEscort::getInstance();
+        $this->escort  = \GemsEscort::getInstance();
         $this->project = $this->escort->project;
     }
 
@@ -89,7 +90,7 @@ class Gems_Mail extends MUtil_Mail
      * @param string|array $email
      * @param string $name
      * @param boolean $bounce When true the e-mail is bounced to the from address, when omitted bounce is read from project settings
-     * @return Zend_Mail Provides fluent interface
+     * @return \Zend_Mail Provides fluent interface
      */
     public function addTo($email, $name = '', $bounce = null)
     {
@@ -106,7 +107,7 @@ class Gems_Mail extends MUtil_Mail
             }
             $email = $this->getFrom();
             if (! $email) {
-                throw new Gems_Exception_Coding('Adding bounce To address while From is not set.');
+                throw new \Gems_Exception_Coding('Adding bounce To address while From is not set.');
             }
         }
         return parent::addTo($email, $name);
@@ -123,11 +124,11 @@ class Gems_Mail extends MUtil_Mail
     }
 
     /**
-     * Returns Zend_Mail_Transport_Abstract when something else than the default mail protocol should be used.
+     * Returns \Zend_Mail_Transport_Abstract when something else than the default mail protocol should be used.
      *
      * @staticvar array $mailServers
      * @param email address $from
-     * @return Zend_Mail_Transport_Abstract or null
+     * @return \Zend_Mail_Transport_Abstract or null
      */
     public function checkTransport($from)
     {
@@ -137,7 +138,7 @@ class Gems_Mail extends MUtil_Mail
             // Always set cache, se we know when not to check for this row.
             $serverData = $this->escort->db->fetchRow($sql, $from);
 
-            // MUtil_Echo::track($serverData);
+            // \MUtil_Echo::track($serverData);
 
             if (isset($serverData['gms_server'])) {
                 $options = array();
@@ -168,7 +169,7 @@ class Gems_Mail extends MUtil_Mail
                     }
                 }
 
-                self::$mailServers[$from] = new Zend_Mail_Transport_Smtp($serverData['gms_server'], $options);
+                self::$mailServers[$from] = new \Zend_Mail_Transport_Smtp($serverData['gms_server'], $options);
             } else {
                 self::$mailServers[$from] = $this->getDefaultTransport();
             }
@@ -195,7 +196,7 @@ class Gems_Mail extends MUtil_Mail
      * Set the template using style as basis
      *
      * @param string $style
-     * @return MUtil_Mail (continuation pattern)
+     * @return \MUtil_Mail (continuation pattern)
      */
     public function setTemplateStyle($style = null)
     {
@@ -208,7 +209,7 @@ class Gems_Mail extends MUtil_Mail
     }
 
     public function send($transport = null) {
-        // Before we forward to the Zend_Mail send method, first perfom a bounce check
+        // Before we forward to the \Zend_Mail send method, first perfom a bounce check
         if (is_null($transport)) {
             $transport = $this->checkTransport($this->getFrom());
         }

@@ -33,7 +33,16 @@
  * @license    New BSD License
  * @version    $Id$
  */
-class Gems_Model_TemplateModel extends MUtil_Model_ArrayModelAbstract {
+
+/**
+ *
+ * @package    Gems
+ * @subpackage Model
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.6.4
+ */
+class Gems_Model_TemplateModel extends \MUtil_Model_ArrayModelAbstract {
 
     protected $_modelFields = array('name', 'path');
     protected $_templates = array();
@@ -42,13 +51,13 @@ class Gems_Model_TemplateModel extends MUtil_Model_ArrayModelAbstract {
     protected $_path = '';
 
     /**
-     * @var Zend_Translate_Adapter
+     * @var \Zend_Translate_Adapter
      */
     protected $translate;
 
     /**
      *
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     protected $_project;
 
@@ -57,7 +66,7 @@ class Gems_Model_TemplateModel extends MUtil_Model_ArrayModelAbstract {
     /**
      *
      * @param string $modelName
-     * @param Gems_Project_ProjectSettings $project
+     * @param \Gems_Project_ProjectSettings $project
      */
     public function __construct($modelName, $project)
     {
@@ -73,8 +82,8 @@ class Gems_Model_TemplateModel extends MUtil_Model_ArrayModelAbstract {
      * proxy for easy access to translations
      *
      * @param  string             $messageId Translation string
-     * @param  string|Zend_Locale $locale    (optional) Locale/Language to use, identical with locale
-     *                                       identifier, @see Zend_Locale for more information
+     * @param  string|\Zend_Locale $locale    (optional) Locale/Language to use, identical with locale
+     *                                       identifier, @see \Zend_Locale for more information
      * @return string
      */
     private function _($messageId, $locale = null)
@@ -137,13 +146,13 @@ class Gems_Model_TemplateModel extends MUtil_Model_ArrayModelAbstract {
     /**
      *
      * @param type $path
-     * @return Zend_Config_Ini
+     * @return \Zend_Config_Ini
      */
     protected function _loadConfig($path) {
         if (file_exists($path . '/template.ini')) {
-            $config = new Zend_Config_Ini($path . '/template.ini', null, array('allowModifications' => true));
+            $config = new \Zend_Config_Ini($path . '/template.ini', null, array('allowModifications' => true));
             if (file_exists($path . '/template-local.ini')) {
-                $config->merge(new Zend_Config_Ini($path . '/template-local.ini', null, array('allowModifications' => true)));
+                $config->merge(new \Zend_Config_Ini($path . '/template-local.ini', null, array('allowModifications' => true)));
             }
             return $config;
         }
@@ -158,29 +167,29 @@ class Gems_Model_TemplateModel extends MUtil_Model_ArrayModelAbstract {
             }
         }
     }
-    
+
     /**
      * Reset a template to it's default values by deleteing template-local.ini
-     * 
+     *
      * @param string $id
      * @return boolean true on success
      */
     public function reset($id) {
         $template = $this->load(array('name'=>$id));
-        
+
         $result = false;
         if (count($template) == 1) {
             if (unlink($this->_path . '/template-local.ini')) {
                 // Now force recompile
                 $this->_templates = false;
                 $this->_template = '';
-                
+
                 $template = $this->load(array('name'=>$id));
                 $this->saveTemplate($id, $template[$id]);
                 $result = true;
             }
         }
-        
+
         return $result;
     }
 
@@ -231,7 +240,7 @@ class Gems_Model_TemplateModel extends MUtil_Model_ArrayModelAbstract {
         }
 
         if($changed || true) {  // Maybe shut off later, for now always recompile
-            $writer = new Zend_Config_Writer_Ini();
+            $writer = new \Zend_Config_Writer_Ini();
             unset($config->config);
             $writer->write($this->_path . '/template-local.ini', $config);
 
@@ -248,12 +257,12 @@ class Gems_Model_TemplateModel extends MUtil_Model_ArrayModelAbstract {
             // Force recompile of less files
             $compiled = 0;
 
-            $view = Zend_Layout::getMvcInstance()->getView();
+            $view = \Zend_Layout::getMvcInstance()->getView();
             $headlink = $view->headLink();
 
-            if ($headlink instanceof MUtil_Less_View_Helper_HeadLink) {
+            if ($headlink instanceof \MUtil_Less_View_Helper_HeadLink) {
                 foreach($data['sheets'] as $url) {
-                    if (MUtil_String::endsWith($url, '.less', true)) {
+                    if (\MUtil_String::endsWith($url, '.less', true)) {
                         $result = $headlink->compile($view, $url, true);
 
                         if ($result) {
@@ -263,10 +272,10 @@ class Gems_Model_TemplateModel extends MUtil_Model_ArrayModelAbstract {
                 }
             }
 
-            Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage(
+            \Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage(
                         sprintf($this->_('Compiled %s file(s)'), $compiled));
         }
 
         return $changed;
-    }  
+    }
 }

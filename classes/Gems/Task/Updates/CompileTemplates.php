@@ -43,10 +43,10 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.4  05-jun-2014
  */
-class Gems_Task_Updates_CompileTemplates extends MUtil_Task_TaskAbstract
+class Gems_Task_Updates_CompileTemplates extends \MUtil_Task_TaskAbstract
 {
     /**
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     public $project;
     
@@ -58,7 +58,7 @@ class Gems_Task_Updates_CompileTemplates extends MUtil_Task_TaskAbstract
      */
     public function execute()
     {
-        $model = new Gems_Model_TemplateModel('templates', $this->project);
+        $model = new \Gems_Model_TemplateModel('templates', $this->project);
         $templates = $model->load();
         foreach ($templates as $name => $data) {
             // Now load individual template

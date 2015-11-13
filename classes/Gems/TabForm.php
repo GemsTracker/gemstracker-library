@@ -25,11 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @version    $Id$
  * @package    Gems
  * @subpackage Form
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
@@ -40,7 +40,7 @@
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
-class Gems_TabForm extends Gems_Form
+class Gems_TabForm extends \Gems_Form
 {
     /**
      * Group ID for elements below form
@@ -50,7 +50,7 @@ class Gems_TabForm extends Gems_Form
     /**
      * Holds the last tab we added information to
      *
-     * @var Gems_Form_TabSubForm
+     * @var \Gems_Form_TabSubForm
      */
     private $currentTab = null;
 
@@ -74,14 +74,14 @@ class Gems_TabForm extends Gems_Form
         /**
          * Now we add a hidden element to hold the selected tab
          */
-        $this->addElement(new Zend_Form_Element_Hidden('tab'));
+        $this->addElement(new \Zend_Form_Element_Hidden('tab'));
 
         $jquery = $this->getView()->jQuery();
         /**
          * This script handles saving the tab to our hidden input when a new tab is showed
          */
 
-        //if (MUtil_Bootstrap::enabled()) {
+        //if (\MUtil_Bootstrap::enabled()) {
             $js = sprintf('
                 var listItem = %1$s(".active");
                 var tabContainer = %1$s("#tabContainer");
@@ -95,7 +95,7 @@ class Gems_TabForm extends Gems_Form
                     var activeTab = tabs.index(listItem);
                     %1$s("#%2$s #tab").val(activeTab);
                 });',
-                ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(),
+                \ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(),
                 $this->getAttrib('id')
             );
         $jquery->addOnLoad($js);
@@ -105,11 +105,11 @@ class Gems_TabForm extends Gems_Form
      * Add an element to the form, when a tab (subform) had been added, it will return
      * the subform instead of the form, keep this in mind when chaining methods
      *
-     * @param  string|Zend_Form_Element $element
+     * @param  string|\Zend_Form_Element $element
      * @param  string $name
-     * @param  array|Zend_Config $options
-     * @throws Zend_Form_Exception on invalid element
-     * @return Gems_TabForm|Gems_Form_TabSubForm
+     * @param  array|\Zend_Config $options
+     * @throws \Zend_Form_Exception on invalid element
+     * @return \Gems_TabForm|\Gems_Form_TabSubForm
      */
     public function addElement($element, $name = null, $options = null)
     {
@@ -123,24 +123,24 @@ class Gems_TabForm extends Gems_Form
             }
 
             //$this->addToOtherGroup($element); // Causes duplicate links on old browse edit
-            
-            if ($element instanceof Zend_Form_Element_Hidden) {
+
+            if ($element instanceof \Zend_Form_Element_Hidden) {
                 //Remove decorators
                 $element->removeDecorator('HtmlTag');
                 $element->removeDecorator('Label');
                 $element->removeDecorator('DtDdWrapper');
 
-            } elseif ($element instanceof Zend_Form_Element) {
+            } elseif ($element instanceof \Zend_Form_Element) {
 
                 $element->removeDecorator('DtDdWrapper');
-                
-                if ($element instanceof MUtil_Form_Element_Html) {
+
+                if ($element instanceof \MUtil_Form_Element_Html) {
                     $element->removeDecorator('HtmlTag');
                     $element->removeDecorator('Label');
                 }
 
                 $error = $element->getDecorator('Errors');
-                if ($error instanceof Zend_Form_Decorator_Errors) {
+                if ($error instanceof \Zend_Form_Decorator_Errors) {
                     $element->removeDecorator('Errors');
                     $element->addDecorator($error);
                 }
@@ -154,14 +154,14 @@ class Gems_TabForm extends Gems_Form
      *
      * @param string $name
      * @param string $title
-     * @return Gems_Form_TabSubForm
+     * @return \Gems_Form_TabSubForm
      */
     public function addTab($name, $title)
     {
-        if ($title instanceof MUtil_Html_HtmlInterface) {
+        if ($title instanceof \MUtil_Html_HtmlInterface) {
             $title = $title->render($this->getView());
         }
-        $tab = new Gems_Form_TabSubForm(array('name' => $name, 'title' => strip_tags($title)));
+        $tab = new \Gems_Form_TabSubForm(array('name' => $name, 'title' => strip_tags($title)));
         $this->currentTab = $tab;
         $this->addSubForm($tab, $name);
         return $tab;
@@ -175,7 +175,7 @@ class Gems_TabForm extends Gems_Form
      */
     public function addToOtherGroup($element)
     {
-        if ($element instanceof Zend_Form_Element) {
+        if ($element instanceof \Zend_Form_Element) {
             if ($group = $this->getDisplayGroup(self::GROUP_OTHER)) {
                 $group->addElement($element);
             } else  {
@@ -191,9 +191,9 @@ class Gems_TabForm extends Gems_Form
      *
      * @param  array $elements
      * @param  string $name
-     * @param  array|Zend_Config $options
-     * @return Gems_TabForm|Gems_Form_TabSubForm
-     * @throws Zend_Form_Exception if no valid elements provided
+     * @param  array|\Zend_Config $options
+     * @return \Gems_TabForm|\Gems_Form_TabSubForm
+     * @throws \Zend_Form_Exception if no valid elements provided
      */
     public function addDisplayGroup(array $elements, $name, $options = null) {
         if ($this->currentTab) {
@@ -216,7 +216,7 @@ class Gems_TabForm extends Gems_Form
      * with tabs
      *
      * @param  string $name
-     * @return Zend_Form_DisplayGroup|null
+     * @return \Zend_Form_DisplayGroup|null
      */
     public function getDisplayGroup($name)
     {
@@ -238,7 +238,7 @@ class Gems_TabForm extends Gems_Form
      * with tabs
      *
      * @param  string $name
-     * @return Zend_Form_Element|null
+     * @return \Zend_Form_Element|null
      */
     public function getElement($name)
     {
@@ -259,7 +259,7 @@ class Gems_TabForm extends Gems_Form
      * Retrieve a named tab (subform) and set the active tab to this one
      *
      * @param string $name
-     * @return Gems_Form_TabSubForm
+     * @return \Gems_Form_TabSubForm
      */
     public function getTab($name)
     {
@@ -290,7 +290,7 @@ class Gems_TabForm extends Gems_Form
             ));
         }
     }
-    
+
     /**
      * Reset the currentTab to be the main form again
      *
@@ -310,11 +310,11 @@ class Gems_TabForm extends Gems_Form
         $this->getElement('tab')->setValue($tabIdx);
         $this->setAttrib('selected', $tabIdx);
     }
-    
+
     /**
      * Set the form to be verbose, showing above the form what tabs have errors and
      * possibly add custom (sub)formlevel error messages
-     * 
+     *
      * @param boolean $bool
      */
     public function setVerbose($bool)
@@ -328,10 +328,10 @@ class Gems_TabForm extends Gems_Form
     /**
      * Set the view object
      *
-     * @param Zend_View_Interface $view
-     * @return Gems_TabForm
+     * @param \Zend_View_Interface $view
+     * @return \Gems_TabForm
      */
-    public function setView(Zend_View_Interface $view = null) {
+    public function setView(\Zend_View_Interface $view = null) {
         /**
          * If the form is populated... and we have a tab set... select it
          */

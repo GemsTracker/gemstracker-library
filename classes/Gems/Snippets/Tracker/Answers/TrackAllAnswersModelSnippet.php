@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class Gems_Snippets_Tracker_Answers_TrackAllAnswersModelSnippet extends Gems_Tracker_Snippets_AnswerModelSnippetGeneric
+class Gems_Snippets_Tracker_Answers_TrackAllAnswersModelSnippet extends \Gems_Tracker_Snippets_AnswerModelSnippetGeneric
 {
     /**
      * Use compact view and show all tokens of the same surveyId in
@@ -56,7 +56,7 @@ class Gems_Snippets_Tracker_Answers_TrackAllAnswersModelSnippet extends Gems_Tra
     /**
      * Creates the model
      *
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function createModel()
     {
@@ -74,9 +74,9 @@ class Gems_Snippets_Tracker_Answers_TrackAllAnswersModelSnippet extends Gems_Tra
     /**
      * Overrule to implement snippet specific filtering and sorting.
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      */
-    protected function processFilterAndSort(MUtil_Model_ModelAbstract $model)
+    protected function processFilterAndSort(\MUtil_Model_ModelAbstract $model)
     {
         if ($this->request) {
             $this->processSortOnly($model);

@@ -44,25 +44,25 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Tracker_Form_AskTokenForm extends Gems_Form_AutoLoadFormAbstract
+class Gems_Tracker_Form_AskTokenForm extends \Gems_Form_AutoLoadFormAbstract
 {
     /**
      * The field name for the token element.
      *
      * @var string
      */
-    protected $_tokenFieldName = MUtil_Model::REQUEST_ID;
+    protected $_tokenFieldName = \MUtil_Model::REQUEST_ID;
 
     /**
      *
-     * @var Gems_Tracker
+     * @var \Gems_Tracker
      */
     protected $tracker;
 
     /**
      * Returns/sets a password element.
      *
-     * @return Zend_Form_Element_Password
+     * @return \Zend_Form_Element_Password
      */
     public function getTokenElement()
     {
@@ -73,7 +73,7 @@ class Gems_Tracker_Form_AskTokenForm extends Gems_Form_AutoLoadFormAbstract
             $max_length = $tokenLib->getLength();
 
             // Veld token
-            $element = new Zend_Form_Element_Text($this->_tokenFieldName);
+            $element = new \Zend_Form_Element_Text($this->_tokenFieldName);
             $element->setLabel($this->translate->_('Token'));
             $element->setDescription(sprintf($this->translate->_('Enter tokens as %s.'), $tokenLib->getFormat()));
             $element->setAttrib('size', $max_length + 2);
@@ -101,7 +101,7 @@ class Gems_Tracker_Form_AskTokenForm extends Gems_Form_AutoLoadFormAbstract
     /**
      * The function loads the elements for this form
      *
-     * @return Gems_Form_AutoLoadFormAbstract (continuation pattern)
+     * @return \Gems_Form_AutoLoadFormAbstract (continuation pattern)
      */
     public function loadDefaultElements()
     {

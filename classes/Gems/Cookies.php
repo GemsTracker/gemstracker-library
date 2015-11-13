@@ -52,12 +52,12 @@ class Gems_Cookies
     /**
      * Get a specific cookie from the request.
      *
-     * @param Zend_Controller_Request_Abstract $request
+     * @param \Zend_Controller_Request_Abstract $request
      * @param string $name
      * @param mixed $default
      * @return mixed Cookie value
      */
-    public static function get(Zend_Controller_Request_Abstract $request, $name, $default = null)
+    public static function get(\Zend_Controller_Request_Abstract $request, $name, $default = null)
     {
         return $request->getCookie($name, $default);
     }
@@ -65,10 +65,10 @@ class Gems_Cookies
     /**
      * Get the current locale from the cookie.
      *
-     * @param Zend_Controller_Request_Abstract $request
+     * @param \Zend_Controller_Request_Abstract $request
      * @return string The current locale
      */
-    public static function getLocale(Zend_Controller_Request_Abstract $request)
+    public static function getLocale(\Zend_Controller_Request_Abstract $request)
     {
         return self::get($request, self::LOCALE_COOKIE);
     }
@@ -76,10 +76,10 @@ class Gems_Cookies
     /**
      * Get the current organization from the cookie.
      *
-     * @param Zend_Controller_Request_Abstract $request
+     * @param \Zend_Controller_Request_Abstract $request
      * @return int The current organization
      */
-    public static function getOrganization(Zend_Controller_Request_Abstract $request)
+    public static function getOrganization(\Zend_Controller_Request_Abstract $request)
     {
         return intval(self::get($request, self::ORGANIZATION_COOKIE));
     }
@@ -101,7 +101,7 @@ class Gems_Cookies
             $basepath = '/';
         }
 
-        if (!Zend_Session::$_unitTestEnabled) {
+        if (!\Zend_Session::$_unitTestEnabled) {
             // Set the cookie for 30 days
             return setcookie($name, $value, time() + ($days * 86400), $basepath, '', (APPLICATION_ENV == 'production'), true);
         }

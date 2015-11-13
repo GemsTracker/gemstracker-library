@@ -44,9 +44,10 @@
  * @license    New BSD License
  * @version    $Id$
  */
-class Gems_View_Helper_FormCKEditor extends Zend_View_Helper_FormTextarea{
+class Gems_View_Helper_FormCKEditor extends \Zend_View_Helper_FormTextarea
+{
     public $config = array();
-    
+
     /**
      * Default basedir for CKEditor. Can be overwritten through the Decorator options.
      * @var string
@@ -57,7 +58,7 @@ class Gems_View_Helper_FormCKEditor extends Zend_View_Helper_FormTextarea{
 
     public function __construct($options = null)
     {
-        //MUtil_Echo::track('test');
+        //\MUtil_Echo::track('test');
         // If basepath not set, try a default
         if ($options) {
             if (is_array($options)) {
@@ -81,21 +82,21 @@ class Gems_View_Helper_FormCKEditor extends Zend_View_Helper_FormTextarea{
             }
         }
 
-        $baseUrl = GemsEscort::getInstance()->basepath->getBasePath() . '/';
+        $baseUrl = \GemsEscort::getInstance()->basepath->getBasePath() . '/';
 
         $this->view->headScript()->appendFile($baseUrl . $this->_basedir . '/' . 'ckeditor.js');
         $this->view->headScript()->prependScript("
-            CKEditorConfig = ".Zend_Json::encode($this->config).";
+            CKEditorConfig = ".\Zend_Json::encode($this->config).";
             ");
 
-        //MUtil_Echo::track($baseUrl);
-        //MUtil_Echo::track('test');
+        //\MUtil_Echo::track($baseUrl);
+        //\MUtil_Echo::track('test');
         //
         //$markup = sprintf($this->_format, $id, $name, $value);
 
         $output = $this->formTextarea($name, $value, $attribs); // Get regular textarea output
         $output = sprintf('<div class="ckeditor">%s</div>', $output); // Wrap in a div
-        
+
         $id = $name;
 
         $this->view->inlineScript()->appendScript("
@@ -107,7 +108,7 @@ class Gems_View_Helper_FormCKEditor extends Zend_View_Helper_FormTextarea{
 
         return $output;
     }
-    
+
     public function setBasePath($basePath) {
         $this->basePath = $basePath;
     }

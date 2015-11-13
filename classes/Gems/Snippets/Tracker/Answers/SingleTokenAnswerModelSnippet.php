@@ -44,14 +44,14 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.7
  */
-class Gems_Snippets_Tracker_Answers_SingleTokenAnswerModelSnippet extends Gems_Tracker_Snippets_AnswerModelSnippetGeneric
+class Gems_Snippets_Tracker_Answers_SingleTokenAnswerModelSnippet extends \Gems_Tracker_Snippets_AnswerModelSnippetGeneric
 {
     /**
      * Overrule to implement snippet specific filtering and sorting.
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      */
-    protected function processFilterAndSort(MUtil_Model_ModelAbstract $model)
+    protected function processFilterAndSort(\MUtil_Model_ModelAbstract $model)
     {
         if ($this->request) {
             $this->processSortOnly($model);

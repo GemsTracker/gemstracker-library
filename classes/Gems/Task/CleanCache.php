@@ -47,11 +47,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.2
  */
-class Gems_Task_CleanCache extends MUtil_Task_TaskAbstract
+class Gems_Task_CleanCache extends \MUtil_Task_TaskAbstract
 {
     /**
      *
-     * @var Zend_Cache_Core
+     * @var \Zend_Cache_Core
      */
     protected $cache;
 
@@ -63,8 +63,8 @@ class Gems_Task_CleanCache extends MUtil_Task_TaskAbstract
      */
     public function execute($text = null)
     {
-        if ($this->cache instanceof Zend_Cache_Core) {
-            $this->cache->clean(Zend_Cache::CLEANING_MODE_ALL);
+        if ($this->cache instanceof \Zend_Cache_Core) {
+            $this->cache->clean(\Zend_Cache::CLEANING_MODE_ALL);
             $this->getBatch()->addMessage($this->_('Cache cleaned'));
         }
     }

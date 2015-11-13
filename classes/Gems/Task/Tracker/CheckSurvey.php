@@ -43,10 +43,10 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class Gems_Task_Tracker_CheckSurvey extends MUtil_Task_TaskAbstract
+class Gems_Task_Tracker_CheckSurvey extends \MUtil_Task_TaskAbstract
 {
     /**
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 

@@ -42,10 +42,10 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.2
  */
-class Gems_Task_Tracker_RefreshTokenAttributes extends MUtil_Task_TaskAbstract
+class Gems_Task_Tracker_RefreshTokenAttributes extends \MUtil_Task_TaskAbstract
 {
     /**
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     public $loader;
 

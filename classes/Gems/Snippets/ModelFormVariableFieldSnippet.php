@@ -60,7 +60,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class Gems_Snippets_ModelFormVariableFieldSnippet extends Gems_Snippets_ModelFormSnippetGeneric
+class Gems_Snippets_ModelFormVariableFieldSnippet extends \Gems_Snippets_ModelFormSnippetGeneric
 {
 	protected $ajaxEvents;
 
@@ -68,7 +68,7 @@ class Gems_Snippets_ModelFormVariableFieldSnippet extends Gems_Snippets_ModelFor
 
 	protected $util;
 
-    protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addFormElements(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
     {
         parent::addFormElements($bridge, $model);
 
@@ -121,7 +121,7 @@ class Gems_Snippets_ModelFormVariableFieldSnippet extends Gems_Snippets_ModelFor
     protected function addAjaxEvent($target, $selectOptions)
     {
     	if (isset($selectOptions['ajax'])) {
-    		$queryUrl = Zend_Controller_Front::getInstance()->getBaseUrl() . '/' . $selectOptions['ajax']['controller'] . '/' . $selectOptions['ajax']['action'];
+    		$queryUrl = \Zend_Controller_Front::getInstance()->getBaseUrl() . '/' . $selectOptions['ajax']['controller'] . '/' . $selectOptions['ajax']['action'];
     		$source = $selectOptions['source'];
 			$script = '
 			$("#'.$target.'").getSelectOptions(
@@ -165,15 +165,15 @@ class Gems_Snippets_ModelFormVariableFieldSnippet extends Gems_Snippets_ModelFor
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param Zend_View_Abstract $view Just in case it is needed here
-     * @return MUtil_Html_HtmlInterface Something that can be rendered
+     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @return \MUtil_Html_HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view)
     {
 
     	if ($script = $this->getAjaxEventScript()) {
-            MUtil_JQuery::enableView($view);
-	    	$view->headScript()->appendFile(Zend_Controller_Front::getInstance()->getBaseUrl()  .  '/gems/js/jquery.getSelectOptions.js');
+            \MUtil_JQuery::enableView($view);
+	    	$view->headScript()->appendFile(\Zend_Controller_Front::getInstance()->getBaseUrl()  .  '/gems/js/jquery.getSelectOptions.js');
 	        $view->inlineScript()->appendScript($script);
 	    }
 

@@ -55,13 +55,13 @@ class Gems_Model_Translator_StaffTranslator extends \Gems_Model_Translator_Strai
     
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
     
     /**
      *
-     * @var Gems_User_Organization
+     * @var \Gems_User_Organization
      */
     protected $_organization;
         
@@ -75,7 +75,7 @@ class Gems_Model_Translator_StaffTranslator extends \Gems_Model_Translator_Strai
     /**
      * Add organization id and gul_user_class when needed
      *
-     * @param mixed $row array or Traversable row
+     * @param mixed $row array or \Traversable row
      * @param scalar $key
      * @return mixed Row array or false when errors occurred
      */

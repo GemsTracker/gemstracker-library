@@ -52,7 +52,7 @@
  * @license    New BSD License
  * @version    $Id$
  */
-class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_SnippetAbstract {
+class Gems_Snippets_Survey_Display_BarChartSnippet extends \MUtil_Snippets_SnippetAbstract {
 
     /**
      * Switch to put the display of the cancel and print buttons.
@@ -105,12 +105,12 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
 
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     public $loader;
 
     /**
-     * @var Zend_Controller_Request_Abstract
+     * @var \Zend_Controller_Request_Abstract
      */
     public $request;
 
@@ -136,13 +136,13 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
 
     /**
      *
-     * @var Gems_Tracker_Token
+     * @var \Gems_Tracker_Token
      */
     public $token;
 
     protected function doRulers($chart)
     {
-        $html = MUtil_Html::create();
+        $html = \MUtil_Html::create();
 
         if ($this->grid) {
             $rulers = array_merge(
@@ -213,7 +213,7 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
             $question = $this->question_text;
         }
 
-        $html = MUtil_Html::create();
+        $html = \MUtil_Html::create();
         $wrapper = $html->div(null, array('class'=>'barchart-wrapper'));
         $wrapper->div('', array('class'=>'header'))
                 ->append($surveyName)
@@ -254,7 +254,7 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
                             'class' => 'bar col'.(($idx % $maxcols) + 1),
                             'style' => sprintf('height: %s%%;', $height),
                             // onclick can be usability issue for touch devices
-                            'onclick' => 'location.href=\'' . new MUtil_Html_HrefArrayAttribute(array('controller'=>'track', 'action'=>'answer', MUtil_Model::REQUEST_ID => $token->getTokenId() )) . '\';'
+                            'onclick' => 'location.href=\'' . new \MUtil_Html_HrefArrayAttribute(array('controller'=>'track', 'action'=>'answer', \MUtil_Model::REQUEST_ID => $token->getTokenId() )) . '\';'
                             ));
                         $date = $token->getCompletionTime()->get('dd-MM-yyyy HH:mm');
                         $info = $html->div($date, array('class'=>'info'));
@@ -281,7 +281,7 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
                             $value = 'N/A';
                         }
                         // Link the value to the answer view in a new window (not the bar to avoid usability issues on touch devices)
-                        //$valueBar[] = $html->a(array('controller'=>'track', 'action'=>'answer', MUtil_Model::REQUEST_ID => $token->getTokenId()), array('target'=>'_blank'), $html->div($value, array('class'=>'value')));
+                        //$valueBar[] = $html->a(array('controller'=>'track', 'action'=>'answer', \MUtil_Model::REQUEST_ID => $token->getTokenId()), array('target'=>'_blank'), $html->div($value, array('class'=>'value')));
                         $valueBar[] = $info;
 
                         $chart[] = $valueBar;
@@ -308,9 +308,9 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
      * @return type
      */
     public function getHtmlOutput(\Zend_View_Abstract $view) {
-        //$view->headLink()->prependStylesheet($view->serverUrl() . GemsEscort::getInstance()->basepath->getBasePath() . '/gems/css/barchart.less', 'screen,print');
+        //$view->headLink()->prependStylesheet($view->serverUrl() . \GemsEscort::getInstance()->basepath->getBasePath() . '/gems/css/barchart.less', 'screen,print');
 
-        $htmlDiv   = MUtil_Html::create()->div(' ', array('class'=>'barchartcontainer'));
+        $htmlDiv   = \MUtil_Html::create()->div(' ', array('class'=>'barchartcontainer'));
 
         if ($this->showHeaders) {
             if (isset($this->token)) {
@@ -338,10 +338,10 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
         }
 
         // Make vertically resizable
-        $view = Zend_Layout::getMvcInstance()->getView();
+        $view = \Zend_Layout::getMvcInstance()->getView();
         /*$jquery = $view->jQuery();
         $jquery->enable();*/
-        MUtil_JQuery::enableView($view);
+        \MUtil_JQuery::enableView($view);
 
         // We need width 100% otherwise it will look strange in print output
         $view->jQuery()->addOnLoad("$('.barchart').resizable({
@@ -356,8 +356,8 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
     public function afterRegistry() {
         parent::afterRegistry();
 
-        $orgId     = $this->request->getParam(MUtil_Model::REQUEST_ID2);
-        $patientNr = $this->request->getParam(MUtil_Model::REQUEST_ID1);
+        $orgId     = $this->request->getParam(\MUtil_Model::REQUEST_ID2);
+        $patientNr = $this->request->getParam(\MUtil_Model::REQUEST_ID1);
 
         if (! $this->data) {
             $data = $this->loader->getTracker()->getTokenSelect()

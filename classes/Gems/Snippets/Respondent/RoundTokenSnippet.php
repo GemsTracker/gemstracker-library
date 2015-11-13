@@ -194,7 +194,7 @@ class Gems_Snippets_Respondent_RoundTokenSnippet extends \Gems_Snippets_Responde
                             ->addParameterSources($this->request);
                     $this->onEmpty = $list->getActionLink('track', 'show-track');
                 } else {
-                    $this->onEmpty = MUtil_Html::create('em', $this->_('No valid tokens found'));
+                    $this->onEmpty = \MUtil_Html::create('em', $this->_('No valid tokens found'));
                 }
             }
         }

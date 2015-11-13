@@ -28,11 +28,11 @@
  *
  *
  * @package    Gems
- * @subpackage Snippets_Agenda
+ * @subpackage Snippets\Agenda
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: AppointmentCleanupSnippet.php $
+ * @version    $Id: AppointmentCleanupSnippet.php  2532 2015-04-30 16:33:05Z matijsdejong $
  */
 
 namespace Gems\Snippets\Agenda;
@@ -41,7 +41,7 @@ namespace Gems\Snippets\Agenda;
  *
  *
  * @package    Gems
- * @subpackage Snippets_Agenda
+ * @subpackage Snippets\Agenda
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.6.5 13-mrt-2015 11:11:12
@@ -58,7 +58,7 @@ class AppointmentCleanupSnippet extends \Gems_Snippets_ModelItemTableSnippetGene
     protected $abortAction = 'show';
 
     /**
-     * @see Zend_Controller_Action_Helper_Redirector
+     * @see \Zend_Controller_Action_Helper_Redirector
      *
      * @var mixed Nothing or either an array or a string that is acceptable for Redector->gotoRoute()
      */
@@ -73,7 +73,7 @@ class AppointmentCleanupSnippet extends \Gems_Snippets_ModelItemTableSnippetGene
 
     /**
      *
-     * @var Zend_Cache_Core
+     * @var \Zend_Cache_Core
      */
     protected $cache;
 
@@ -124,7 +124,7 @@ class AppointmentCleanupSnippet extends \Gems_Snippets_ModelItemTableSnippetGene
      *
      * When hasHtmlOutput() is true this functions should not be called.
      *
-     * @see Zend_Controller_Action_Helper_Redirector
+     * @see \Zend_Controller_Action_Helper_Redirector
      *
      * @return mixed Nothing or either an array or a string that is acceptable for Redector->gotoRoute()
      */
@@ -153,7 +153,7 @@ class AppointmentCleanupSnippet extends \Gems_Snippets_ModelItemTableSnippetGene
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see MUtil_Registry_TargetInterface}.
+     * {@see \MUtil_Registry_TargetInterface}.
      *
      * @return boolean
      */

@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class Gems_Snippets_Mail_CommTemplateShowSnippet extends Gems_Snippets_ModelItemTableSnippetGeneric
+class Gems_Snippets_Mail_CommTemplateShowSnippet extends \Gems_Snippets_ModelItemTableSnippetGeneric
 {
     protected $subTitleItem = 'gctt_lang';
 
@@ -55,15 +55,15 @@ class Gems_Snippets_Mail_CommTemplateShowSnippet extends Gems_Snippets_ModelItem
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_VerticalTableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @return void
      */
-    protected function addShowTableRows(MUtil_Model_Bridge_VerticalTableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addShowTableRows(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
         $items = $model->getItemsOrdered();
         foreach($items as $name) {
-            if ($model->get($name, 'type') === MUtil_Model::TYPE_CHILD_MODEL) {
+            if ($model->get($name, 'type') === \MUtil_Model::TYPE_CHILD_MODEL) {
                 $this->submodel = $model->get($name, 'model');
                 $subitems = $this->submodel->getItemsOrdered();
             }
@@ -126,10 +126,10 @@ class Gems_Snippets_Mail_CommTemplateShowSnippet extends Gems_Snippets_ModelItem
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param Zend_View_Abstract $view Just in case it is needed here
-     * @return MUtil_Html_HtmlInterface Something that can be rendered
+     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @return \MUtil_Html_HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view)
     {
         $model = $this->getModel();
         if ($this->trackUsage) {
@@ -173,7 +173,7 @@ class Gems_Snippets_Mail_CommTemplateShowSnippet extends Gems_Snippets_ModelItem
 
             $storageFormat = $model->get($name, 'storageFormat');
 
-            $result = MUtil_Date::format($result, $dateFormat, $storageFormat);
+            $result = \MUtil_Date::format($result, $dateFormat, $storageFormat);
         }
 
         if ($itemDisplay = $model->get($name, 'itemDisplay')) {
@@ -183,7 +183,7 @@ class Gems_Snippets_Mail_CommTemplateShowSnippet extends Gems_Snippets_ModelItem
 
             } elseif (is_object($itemDisplay)) {
 
-                if (($itemDisplay instanceof MUtil_Html_ElementInterface)
+                if (($itemDisplay instanceof \MUtil_Html_ElementInterface)
                     || method_exists($itemDisplay, 'append')) {
 
                     $object = clone $itemDisplay;
@@ -194,7 +194,7 @@ class Gems_Snippets_Mail_CommTemplateShowSnippet extends Gems_Snippets_ModelItem
             } elseif (is_string($itemDisplay)) {
                 // Assume it is a html tag when a string
 
-                $result = MUtil_Html::create($itemDisplay, $result);
+                $result = \MUtil_Html::create($itemDisplay, $result);
             }
         }
         return $result;

@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Snippets_Tracker_Summary_SummaryTableSnippet extends Gems_Snippets_ModelTableSnippetGeneric
+class Gems_Snippets_Tracker_Summary_SummaryTableSnippet extends \Gems_Snippets_ModelTableSnippetGeneric
 {
     /**
      * Adds columns from the model to the bridge that creates the browse table.
@@ -52,15 +52,15 @@ class Gems_Snippets_Tracker_Summary_SummaryTableSnippet extends Gems_Snippets_Mo
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_TableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_TableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
         // $bridge->getTable()->setAlternateRowClass('odd', 'odd', 'even', 'even');
 
-        // MUtil_Model::$verbose = true;
+        // \MUtil_Model::$verbose = true;
 
         $bridge->add(
                 'gro_round_description',
@@ -92,11 +92,11 @@ class Gems_Snippets_Tracker_Summary_SummaryTableSnippet extends Gems_Snippets_Mo
         $bridge->addColumn(
                 array(
                     $bridge->gsu_survey_name,
-                    MUtil_Html::create('em', ' - ', $bridge->gsu_id_primary_group)
+                    \MUtil_Html::create('em', ' - ', $bridge->gsu_id_primary_group)
                     ),
                 array(
                     $model->get('gsu_survey_name', 'label'),
-                    MUtil_Html::create('em', ' - ', $model->get('gsu_id_primary_group', 'label'))
+                    \MUtil_Html::create('em', ' - ', $model->get('gsu_id_primary_group', 'label'))
                     )
                 )->colspan = 7;
         $bridge->add('removed');
@@ -105,13 +105,13 @@ class Gems_Snippets_Tracker_Summary_SummaryTableSnippet extends Gems_Snippets_Mo
 
     /**
      *
-     * @param MUtil_Lazy_LazyInterface $part
-     * @param MUtil_Lazy_LazyInterface $total
-     * @return MUtil_Lazy_Call
+     * @param \MUtil_Lazy_LazyInterface $part
+     * @param \MUtil_Lazy_LazyInterface $total
+     * @return \MUtil_Lazy_Call
      */
     public function percentageLazy($part, $total)
     {
-        return MUtil_Lazy::method($this, 'showPercentage', $part, $total);
+        return \MUtil_Lazy::method($this, 'showPercentage', $part, $total);
     }
 
     /**

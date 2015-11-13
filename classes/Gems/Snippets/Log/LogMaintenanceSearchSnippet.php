@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: LogSearchSnippet.php $
+ * @version    $Id: LogSearchSnippet.php 2532 2015-04-30 16:33:05Z matijsdejong $
  */
 
 namespace Gems\Snippets\Log;
@@ -55,7 +55,7 @@ class LogMaintenanceSearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
      * That creates a distinct group of elements
      *
      * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return array Of Zend_Form_Element's or static tekst to add to the html or null for group breaks.
+     * @return array Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.
      */
     protected function getAutoSearchElements(array $data)
     {

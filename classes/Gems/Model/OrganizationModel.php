@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -29,6 +30,7 @@
  *
  * @package    Gems
  * @subpackage Model
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @version    $Id$
@@ -345,10 +347,10 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
      *
      * @see \MUtil_Model_SelectModelPaginator
      *
-     * @param mxied $data Nested array or Traversable containing rows or iterator
+     * @param mixed $data Nested array or \Traversable containing rows or iterator
      * @param boolean $new True when it is a new item
      * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
-     * @return array or Traversable Nested
+     * @return array or \Traversable Nested
      */
     public function processAfterLoad($data, $new = false, $isPostData = false)
     {

@@ -118,7 +118,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
         $this->lsDb           = $lsDb;
         $this->translate      = $translate;
         $this->tablePrefix    = $tablePrefix;
-        $this->cache          = GemsEscort::getInstance()->cache;   //Load the cache from escort
+        $this->cache          = \GemsEscort::getInstance()->cache;   //Load the cache from escort
     }
 
     /**

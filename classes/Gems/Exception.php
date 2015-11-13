@@ -27,7 +27,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * Gems Base Exception class
+ * Gems Base \Exception class
  *
  * @package    Gems
  * @subpackage Exception
@@ -38,7 +38,7 @@
  */
 
 /**
- * Gems Base Exception class
+ * Gems Base \Exception class
  *
  * @package    Gems
  * @subpackage Exception
@@ -59,7 +59,7 @@ class Gems_Exception extends \Zend_Exception
      *
      * @param String $msg The message
      * @param int $code the HttpResponseCode for this exception
-     * @param Exception $previous
+     * @param \Exception $previous
      * @param string $info Optional extra information on the exception
      */
     public function __construct($msg = '', $code = 200, \Exception $previous = null, $info = null)

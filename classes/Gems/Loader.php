@@ -193,7 +193,7 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return Gems_Export
+     * @return \Gems_Export
      */
     public function getExportModelSource($exportModelSourceName)
     {
@@ -202,7 +202,7 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return Gems_Export
+     * @return \Gems_Export
      */
     public function getTestExport()
     {
@@ -250,6 +250,10 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
         return $this->_getClass('importLoader', 'Import_ImportLoader');
     }
 
+    /**
+     *
+     * @return \Zend_Controller_Action_Helper_FlashMessenger
+     */
     public function getMessenger()
     {
         return $this->_getClass('flashMessenger', 'Controller_Action_Helper_FlashMessenger');
@@ -316,7 +320,7 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
      * @param GemsEscort $escort
      * @return \Gems_Roles
      */
-    public function getRoles(GemsEscort $escort)
+    public function getRoles(\GemsEscort $escort)
     {
         return $this->_getClass('roles', null, array($escort));
     }

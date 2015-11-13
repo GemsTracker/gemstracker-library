@@ -32,6 +32,7 @@
  * @author     Jasper van Gestel <jappie@dse.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
@@ -43,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-Class Gems_Model_CommtemplateModel extends Gems_Model_JoinModel
+class Gems_Model_CommtemplateModel extends \Gems_Model_JoinModel
 {
     protected $locale;
 
@@ -70,7 +71,7 @@ Class Gems_Model_CommtemplateModel extends Gems_Model_JoinModel
             'gems__comm_template_translations',
             array(
                 'gct_id_template' => 'gctt_id_template',
-                'gctt_lang' => new Zend_Db_Expr("'".$currentLanguage."'")
+                'gctt_lang' => new \Zend_Db_Expr("'".$currentLanguage."'")
             ),
             'gctt');
 

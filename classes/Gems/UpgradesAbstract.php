@@ -82,11 +82,6 @@ class Gems_UpgradesAbstract extends \Gems_Loader_TargetLoaderAbstract
     public $db;
 
     /**
-     * @var GemsEscort
-     */
-    public $escort;
-
-    /**
      * @var \Gems_Loader
      */
     public $loader;
@@ -103,9 +98,6 @@ class Gems_UpgradesAbstract extends \Gems_Loader_TargetLoaderAbstract
 
     public function __construct()
     {
-        //First get a GemsEscort instance, as we might need that a lot (and it can not be injected)
-        $this->escort = GemsEscort::getInstance();
-
         $this->originalFile = GEMS_ROOT_DIR . str_replace('/', DIRECTORY_SEPARATOR , '/var/settings/upgrades.ini');
         $this->upgradeFile = GEMS_ROOT_DIR . str_replace('/', DIRECTORY_SEPARATOR , '/var/settings/upgrades_' . APPLICATION_ENV . '.ini');
         if(!file_exists($this->originalFile)) {

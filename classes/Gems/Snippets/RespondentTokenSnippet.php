@@ -135,7 +135,7 @@ class Gems_Snippets_RespondentTokenSnippet extends \Gems_Snippets_TokenModelSnip
         $bridge->addSortable('calc_used_date', null, $HTML->if($bridge->is_completed, 'disabled date', 'enabled date'));
         $bridge->addSortable('gto_changed');
         $bridge->addSortable('assigned_by', $this->_('Assigned by'));
-        $project = GemsEscort::getInstance()->project;
+        $project = \GemsEscort::getInstance()->project;
 
         // If we are allowed to see the result of the survey, show them
         $user = $this->loader->getCurrentUser();

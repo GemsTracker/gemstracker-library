@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Task_Db_AddPatches extends Gems_Task_Db_PatchAbstract
+class Gems_Task_Db_AddPatches extends \Gems_Task_Db_PatchAbstract
 {
     /**
      * Should handle execution of the task, taking as much (optional) parameters as needed

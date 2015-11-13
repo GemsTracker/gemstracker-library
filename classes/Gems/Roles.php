@@ -53,7 +53,7 @@ class Gems_Roles
 {
     /**
      *
-     * @var Zend_Cache_Core
+     * @var \Zend_Cache_Core
      */
     protected $_cache = null;
 
@@ -66,13 +66,13 @@ class Gems_Roles
 
     /**
      *
-     * @var MUtil_Acl
+     * @var \MUtil_Acl
      */
     protected $_acl;
 
     /**
      *
-     * @var Gems_Roles
+     * @var \Gems_Roles
      */
     private static $_instanceOfSelf;
 
@@ -84,7 +84,7 @@ class Gems_Roles
     private $_roleTranslations = array();
 
     /**
-     * Pass any strange call to MUtil_Acl
+     * Pass any strange call to \MUtil_Acl
      *
      * @param stringethod
      * @param mixed $args
@@ -92,14 +92,14 @@ class Gems_Roles
      */
     public function __call($method, $args)
     {
-        if ($this->_acl instanceof Zend_Acl && method_exists($this->_acl, $method)) {
+        if ($this->_acl instanceof \Zend_Acl && method_exists($this->_acl, $method)) {
             return call_user_func_array(array($this->_acl, $method), $args);
         }
     }
 
     /**
      *
-     * @param mixed $cache Zend_Cache_Core or GemsEscort
+     * @param mixed $cache \Zend_Cache_Core or \GemsEscort
      */
     public function __construct($cache = null)
     {
@@ -115,14 +115,14 @@ class Gems_Roles
     private function _deleteCache()
     {
         $cache = $this->_cache;
-        if ($this->_cache instanceof Zend_Cache_Core) {
+        if ($this->_cache instanceof \Zend_Cache_Core) {
             $cache->remove($this->_cacheid);
             $cache->remove($this->_cacheid . 'trans');
         }
     }
 
     /**
-     * Recursively expands roles into Zend_Acl_Role objects
+     * Recursively expands roles into \Zend_Acl_Role objects
      *
      * @param array  $roleList
      * @param string $roleName
@@ -137,7 +137,7 @@ class Gems_Roles
 
         // possible circular reference!
         if ($depth > 5) {
-            throw new Exception("Possible circular reference detected while expanding role '{$roleName}'");
+            throw new \Exception("Possible circular reference detected while expanding role '{$roleName}'");
         }
 
         if (!empty($role['grl_parents'])) {
@@ -150,7 +150,7 @@ class Gems_Roles
             $parents = array();
         }
 
-        $this->_acl->addRole(new Zend_Acl_Role($role['grl_name']), $parents);
+        $this->_acl->addRole(new \Zend_Acl_Role($role['grl_name']), $parents);
 
         $privileges = array_filter(array_map('trim', explode(",", $role['grl_privileges'])));
         $this->_acl->addPrivilege($role['grl_name'], $privileges);
@@ -163,22 +163,22 @@ class Gems_Roles
      */
     private function _initAcl()
     {
-        $this->_acl = new MUtil_Acl();
+        $this->_acl = new \MUtil_Acl();
 
         if (get_class(self::$_instanceOfSelf)!=='Gems_Roles') {
-            throw new Gems_Exception_Coding("Don't use project specific roles file anymore, you can now do so by using the gems_roles tabel and setup->roles from the interface.");
+            throw new \Gems_Exception_Coding("Don't use project specific roles file anymore, you can now do so by using the gems_roles tabel and setup->roles from the interface.");
         }
         // Probeer eerst uit db in te lezen met fallback als dat niet lukt
         try {
             $this->loadDbAcl();
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
-            Gems_Log::getLogger()->logError($e);
+            \Gems_Log::getLogger()->logError($e);
 
             // Reset all roles
             unset($this->_acl);
-            $this->_acl = new MUtil_Acl();
+            $this->_acl = new \MUtil_Acl();
 
             //Voeg standaard rollen en privileges in
             $this->loadDefaultRoles();
@@ -198,16 +198,16 @@ class Gems_Roles
     /**
      * Save to cache
      *
-     * @throws Gems_Exception
+     * @throws \Gems_Exception
      */
     private function _save()
     {
-        if ($this->_cache instanceof Zend_Cache_Core) {
+        if ($this->_cache instanceof \Zend_Cache_Core) {
             if (! (
                     $this->_cache->save($this->_acl, $this->_cacheid, array('roles'), null) &&
                     $this->_cache->save($this->_roleTranslations, $this->_cacheid . 'trans', array('roles'), null)
                     )) {
-                throw new Gems_Exception('Failed to save acl to cache');
+                throw new \Gems_Exception('Failed to save acl to cache');
             }
         }
     }
@@ -226,7 +226,7 @@ class Gems_Roles
 
     /**
      *
-     * @return MUtil_Acl
+     * @return \MUtil_Acl
      */
     public function getAcl()
     {
@@ -236,7 +236,7 @@ class Gems_Roles
     /**
      * Static acces function
      *
-     * @return Gems_Roles
+     * @return \Gems_Roles
      */
     public static function getInstance()
     {
@@ -252,7 +252,7 @@ class Gems_Roles
      */
     public function load()
     {
-        if ($this->_cache instanceof Zend_Cache_Core) {
+        if ($this->_cache instanceof \Zend_Cache_Core) {
             $cache = $this->_cache;
             if (! ($cache->test($this->_cacheid) && $cache->test($this->_cacheid . 'trans'))) {
                 // cache miss
@@ -269,18 +269,18 @@ class Gems_Roles
 
     /**
      * Load access control list from db
-     * @throws Exception
+     * @throws \Exception
      */
     public function loadDbAcl()
     {
-        $db = Zend_Registry::get('db');
+        $db = \Zend_Registry::get('db');
 
         $sql = "SELECT grl_id_role, grl_name, grl_privileges, grl_parents FROM gems__roles";
 
         $roles = $db->fetchAll($sql);
 
         if (empty($roles)) {
-            throw new Exception("No roles stored in db");
+            throw new \Exception("No roles stored in db");
         }
 
         // Set role id to name tranlations
@@ -313,7 +313,7 @@ class Gems_Roles
         /**
          * Only add the nologin role, as the others should come from the database when it is initialized
          */
-        $this->_acl->addRole(new Zend_Acl_Role('nologin'));
+        $this->_acl->addRole(new \Zend_Acl_Role('nologin'));
     }
 
     /**
@@ -322,7 +322,7 @@ class Gems_Roles
      */
     public function setCache($cache)
     {
-        if ($cache instanceof Zend_Cache_Core) {
+        if ($cache instanceof \Zend_Cache_Core) {
             $this->_cache = $cache;
         } elseif ($cache instanceof GemsEscort) {
             $this->_cache = $cache->cache;

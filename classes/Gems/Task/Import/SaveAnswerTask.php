@@ -43,29 +43,29 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class Gems_Task_Import_SaveAnswerTask extends MUtil_Task_TaskAbstract
+class Gems_Task_Import_SaveAnswerTask extends \MUtil_Task_TaskAbstract
 {
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
     /**
      *
-     * @var Zend_Locale
+     * @var \Zend_Locale
      */
     protected $locale;
 
     /**
      *
-     * @var MUtil_Model_ModelAbstract
+     * @var \MUtil_Model_ModelAbstract
      */
     protected $targetModel;
 
     /**
      *
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     protected $util;
 
@@ -77,7 +77,7 @@ class Gems_Task_Import_SaveAnswerTask extends MUtil_Task_TaskAbstract
      */
     public function checkRegistryRequestsAnswers()
     {
-        return ($this->targetModel instanceof MUtil_Model_ModelAbstract) &&
+        return ($this->targetModel instanceof \MUtil_Model_ModelAbstract) &&
             parent::checkRegistryRequestsAnswers();
     }
 
@@ -90,10 +90,10 @@ class Gems_Task_Import_SaveAnswerTask extends MUtil_Task_TaskAbstract
      * @param array $row Row to save
      */
     public function execute($row = null,
-            $noToken = Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_ERROR,
-            $tokenCompletion = Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_ERROR)
+            $noToken = \Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_ERROR,
+            $tokenCompletion = \Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_ERROR)
     {
-        // MUtil_Echo::track($row);
+        // \MUtil_Echo::track($row);
         if ($row) {
             $answers = $row;
             $double  = false;
@@ -101,7 +101,7 @@ class Gems_Task_Import_SaveAnswerTask extends MUtil_Task_TaskAbstract
             $tracker = $this->loader->getTracker();
             $userId  = $this->loader->getCurrentUser()->getUserId();
 
-            // Gems_Tracker::$verbose = true;
+            // \Gems_Tracker::$verbose = true;
 
             $batch   = $this->getBatch();
             $batch->addToCounter('imported');
@@ -113,7 +113,7 @@ class Gems_Task_Import_SaveAnswerTask extends MUtil_Task_TaskAbstract
             if (isset($row['survey_id'])) {
                 $model = $tracker->getSurvey($row['survey_id'])->getAnswerModel('en');
                 foreach ($answers as $key => &$value) {
-                    if ($value instanceof Zend_Date) {
+                    if ($value instanceof \Zend_Date) {
                         $value = $value->toString($model->getWithDefault($key, 'storageFormat', 'yyyy-MM-dd HH:mm:ss'));
                     }
                 }
@@ -125,7 +125,7 @@ class Gems_Task_Import_SaveAnswerTask extends MUtil_Task_TaskAbstract
                 if ($token->exists && $token->isCompleted() && $token->getReceptionCode()->isSuccess()) {
                     $currentAnswers = $token->getRawAnswers();
                     $usedAnswers    = array_intersect_key($answers, $currentAnswers);
-                    // MUtil_Echo::track($currentAnswers, $answers, $usedAnswers);
+                    // \MUtil_Echo::track($currentAnswers, $answers, $usedAnswers);
 
                     if ($usedAnswers) {
                         foreach ($usedAnswers as $name => $value) {
@@ -151,7 +151,7 @@ class Gems_Task_Import_SaveAnswerTask extends MUtil_Task_TaskAbstract
 
             if ($answers) {
                 if ($double) {
-                    if (Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_OVERWRITE == $tokenCompletion) {
+                    if (\Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_OVERWRITE == $tokenCompletion) {
                         $code = $this->util->getReceptionCode('redo');
 
                         $oldComment = "";
@@ -228,7 +228,7 @@ class Gems_Task_Import_SaveAnswerTask extends MUtil_Task_TaskAbstract
                 if (isset($row['completion_date']) && $row['completion_date']) {
                     $token->setCompletionTime($row['completion_date'], $userId);
                 } elseif (! $token->isCompleted()) {
-                    $token->setCompletionTime(new MUtil_Date(), $userId);
+                    $token->setCompletionTime(new \MUtil_Date(), $userId);
                 }
                 $token->getRespondentTrack()->checkTrackTokens($userId, $token);
 

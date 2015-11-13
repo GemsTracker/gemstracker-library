@@ -49,7 +49,7 @@ class EditRoundStepSnippet extends \Gems_Tracker_Snippets_EditRoundSnippetAbstra
 {
     /**
      *
-     * @var Zend_Locale
+     * @var \Zend_Locale
      */
     protected $locale;
 

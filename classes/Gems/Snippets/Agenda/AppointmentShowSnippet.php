@@ -28,7 +28,7 @@
  *
  *
  * @package    Gems
- * @subpackage AppointmentShowSnippet
+ * @subpackage Snippets\Agenda
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
@@ -39,16 +39,16 @@
  *
  *
  * @package    Gems
- * @subpackage AppointmentShowSnippet
+ * @subpackage Snippets\Agenda
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Snippets_Agenda_AppointmentShowSnippet extends Gems_Snippets_ModelItemTableSnippetAbstract
+class Gems_Snippets_Agenda_AppointmentShowSnippet extends \Gems_Snippets_ModelItemTableSnippetAbstract
 {
     /**
      *
-     * @var MUtil_Model_ModelAbstract
+     * @var \MUtil_Model_ModelAbstract
      */
     protected $model;
 
@@ -58,11 +58,11 @@ class Gems_Snippets_Agenda_AppointmentShowSnippet extends Gems_Snippets_ModelIte
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_VerticalTableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @return void
      * /
-    protected function addShowTableRows(MUtil_Model_Bridge_VerticalTableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addShowTableRows(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
         parent::addShowTableRows($bridge, $model);
     }
@@ -70,11 +70,11 @@ class Gems_Snippets_Agenda_AppointmentShowSnippet extends Gems_Snippets_ModelIte
     /**
      * Creates the model
      *
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function createModel()
     {
-        if (! $this->model instanceof Gems_Model_AppointmentModel) {
+        if (! $this->model instanceof \Gems_Model_AppointmentModel) {
             $this->model = $this->loader->getModels()->createAppointmentModel();
             $this->model->applyDetailSettings();
         }
@@ -86,20 +86,20 @@ class Gems_Snippets_Agenda_AppointmentShowSnippet extends Gems_Snippets_ModelIte
 
     public function displayDate($date)
     {
-        if (! $date instanceof Zend_Date) {
+        if (! $date instanceof \Zend_Date) {
             return $date;
         }
-        $div = MUtil_Html::create('div');
+        $div = \MUtil_Html::create('div');
         $div->class = 'calendar';
         if (0 < $date->getYear()->getTimestamp()) {
             $div->span(ucfirst($date->toString(
-                    Zend_Date::WEEKDAY . ' ' . Zend_Date::DAY_SHORT . ' ' .
-                    Zend_Date::MONTH_NAME . ' ' . Zend_Date::YEAR
+                    \Zend_Date::WEEKDAY . ' ' . \Zend_Date::DAY_SHORT . ' ' .
+                    \Zend_Date::MONTH_NAME . ' ' . \Zend_Date::YEAR
                     )))->class = 'date';
         }
         // $div->strong($date->toString());
         // $div->br();
-        $td = $div->span($date->toString(Zend_Date::TIME_SHORT));
+        $td = $div->span($date->toString(\Zend_Date::TIME_SHORT));
         $td->class = 'time middleAlign';
         $td->append(' ');
         $td->img()->src = 'stopwatch.png';

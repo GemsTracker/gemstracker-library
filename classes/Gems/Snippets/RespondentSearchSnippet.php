@@ -44,17 +44,17 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Snippets_RespondentSearchSnippet extends Gems_Snippets_AutosearchFormSnippet
+class Gems_Snippets_RespondentSearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
 {
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
     /**
      *
-     * @var MUtil_Model_ModelAbstract
+     * @var \MUtil_Model_ModelAbstract
      */
     protected $model;
 
@@ -65,7 +65,7 @@ class Gems_Snippets_RespondentSearchSnippet extends Gems_Snippets_AutosearchForm
      * That creates a distinct group of elements
      *
      * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return array Of Zend_Form_Element's or static tekst to add to the html or null for group breaks.
+     * @return array Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.
      */
     protected function getAutoSearchElements(array $data)
     {
@@ -86,7 +86,7 @@ class Gems_Snippets_RespondentSearchSnippet extends Gems_Snippets_AutosearchForm
 
         if ($this->model->isMultiOrganization()) {
             $element = $this->_createSelectElement(
-                    MUtil_Model::REQUEST_ID2,
+                    \MUtil_Model::REQUEST_ID2,
                     $user->getRespondentOrganizations(),
                     $this->_('(all organizations)')
                     );

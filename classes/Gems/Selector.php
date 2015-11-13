@@ -45,10 +45,10 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class Gems_Selector extends Gems_Loader_TargetLoaderAbstract
+class Gems_Selector extends \Gems_Loader_TargetLoaderAbstract
 {
     /**
-     * Allows sub classes of Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
+     * Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
@@ -57,7 +57,7 @@ class Gems_Selector extends Gems_Loader_TargetLoaderAbstract
     /**
      * Load project specific model or general Gems model otherwise
      *
-     * @return Gems_Selector_TokenDateSelector
+     * @return \Gems_Selector_TokenDateSelector
      */
     public function getTokenDateSelector()
     {

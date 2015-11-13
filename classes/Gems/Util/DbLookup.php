@@ -335,7 +335,7 @@ class Gems_Util_DbLookup extends UtilAbstract
         
         try {
             $organizations = $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'organizations', 'natsort');    
-        } catch (Exception $exc) {
+        } catch (\Exception $exc) {
             // Intentional fallthrough when no db present
             $organizations = array();
         }        

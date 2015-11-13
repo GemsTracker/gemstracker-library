@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.7.2 9-sep-2015 18:46:19
  */
-abstract class Gems_Default_TrackMaintenanceWithEngineActionAbstract extends Gems_Controller_ModelSnippetActionAbstract
+abstract class Gems_Default_TrackMaintenanceWithEngineActionAbstract extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
      * Model level parameters used for all actions, overruled by any values set in any other

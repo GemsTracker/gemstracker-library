@@ -168,7 +168,7 @@ class Gems_Util_RequestCache extends \Gems_Registry_TargetAbstract
     protected function getMenu()
     {
         if (! $this->menu) {
-            $escort = GemsEscort::getInstance();
+            $escort = \GemsEscort::getInstance();
             $this->setMenu($escort->menu);
         }
 

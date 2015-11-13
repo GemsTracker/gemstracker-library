@@ -44,10 +44,10 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.2
  */
-class Gems_Task_Tracker_CheckTokenCompletion extends MUtil_Task_TaskAbstract
+class Gems_Task_Tracker_CheckTokenCompletion extends \MUtil_Task_TaskAbstract
 {
     /**
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     public $loader;
 
@@ -66,14 +66,14 @@ class Gems_Task_Tracker_CheckTokenCompletion extends MUtil_Task_TaskAbstract
         $token = $tracker->getToken($tokenData);
 
         if ($result = $token->checkTokenCompletion($userId)) {
-            if ($result & Gems_Tracker_Token::COMPLETION_DATACHANGE) {
+            if ($result & \Gems_Tracker_Token::COMPLETION_DATACHANGE) {
                 $i = $batch->addToCounter('resultDataChanges');
                 $batch->setMessage('resultDataChanges', sprintf(
                         $this->_('Results and timing changed for %d tokens.'),
                         $i
                         ));
             }
-            if ($result & Gems_Tracker_Token::COMPLETION_EVENTCHANGE) {
+            if ($result & \Gems_Tracker_Token::COMPLETION_EVENTCHANGE) {
                 $i = $batch->addToCounter('surveyCompletionChanges');
                 $batch->setMessage('surveyCompletionChanges', sprintf(
                         $this->_('Answers changed by survey completion event for %d tokens.'),

@@ -200,7 +200,7 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
         if ($name && $label) {
             $element = $this->form->createElement('checkbox', $name);
             $element->setLabel($label);
-            $element->getDecorator('Label')->setOption('placement', Zend_Form_Decorator_Abstract::APPEND);
+            $element->getDecorator('Label')->setOption('placement', \Zend_Form_Decorator_Abstract::APPEND);
 
             return $element;
         }

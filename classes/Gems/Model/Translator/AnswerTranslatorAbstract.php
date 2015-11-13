@@ -374,7 +374,7 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends \Gems_Mode
     /**
      * Perform any translations necessary for the code to work
      *
-     * @param mixed $row array or Traversable row
+     * @param mixed $row array or \Traversable row
      * @param scalar $key
      * @return mixed Row array or false when errors occurred
      */

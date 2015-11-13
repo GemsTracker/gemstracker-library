@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: RespondentFormSnippet.php$
+ * @version    $Id$
  */
 
 /**
@@ -44,17 +44,17 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Snippets_RespondentFormSnippet extends Gems_Snippets_ModelFormSnippetGeneric
+class Gems_Snippets_RespondentFormSnippet extends \Gems_Snippets_ModelFormSnippetGeneric
 {
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
@@ -97,8 +97,8 @@ class Gems_Snippets_RespondentFormSnippet extends Gems_Snippets_ModelFormSnippet
                     $data = $this->model->loadFirst($filter, $order);
 
                     if ($data && (! isset($this->formData[$this->saveButtonId]))) {
-                        // MUtil_Echo::track($this->formData);
-                        // MUtil_Echo::track($data);
+                        // \MUtil_Echo::track($this->formData);
+                        // \MUtil_Echo::track($data);
                         // Do not use this value
                         unset($data['grs_ssn']);
 

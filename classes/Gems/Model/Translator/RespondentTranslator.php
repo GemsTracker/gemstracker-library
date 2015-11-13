@@ -103,7 +103,7 @@ class Gems_Model_Translator_RespondentTranslator extends \Gems_Model_Translator_
     /**
      * Perform any translations necessary for the code to work
      *
-     * @param mixed $row array or Traversable row
+     * @param mixed $row array or \Traversable row
      * @param scalar $key
      * @return mixed Row array or false when errors occurred
      */

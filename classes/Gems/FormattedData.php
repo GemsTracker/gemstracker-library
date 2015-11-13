@@ -39,15 +39,15 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_FormattedData extends IteratorIterator
+class Gems_FormattedData extends \IteratorIterator
 {
     /**
-     * @var MUtil_Model_ModelAbstract
+     * @var \MUtil_Model_ModelAbstract
      */
     private $model;
 
     /**
-     * @var ArrayObject
+     * @var \ArrayObject
      */
     private $data;
 
@@ -60,8 +60,16 @@ class Gems_FormattedData extends IteratorIterator
      */
     protected $_options = array();
 
-    public function __construct($data, MUtil_Model_ModelAbstract $model, $formatted = true) {
-        $this->data  = parent::__construct(new ArrayObject($data));
+    /**
+     *
+     * @param array $data
+     * @param \MUtil_Model_ModelAbstract $model
+     * @param boolean $formatted
+     * @return \Gems_FormattedData
+     */
+    public function __construct($data, \MUtil_Model_ModelAbstract $model, $formatted = true)
+    {
+        $this->data  = parent::__construct(new \ArrayObject($data));
         $this->model = $model;
         $this->setFormatted($formatted);
         return $this;
@@ -83,7 +91,7 @@ class Gems_FormattedData extends IteratorIterator
      * rowset, use the class and iterate
      *
      * @param array $row
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      * @return array The formatted array
      */
     public function format($row, $model) {
@@ -98,7 +106,7 @@ class Gems_FormattedData extends IteratorIterator
      *
      * @param type $name
      * @param type $result
-      *@param MUtil_Model_ModelAbstract $model
+      *@param \MUtil_Model_ModelAbstract $model
      * @return type
      */
     private function _format($name, $result, $model)
@@ -153,7 +161,7 @@ class Gems_FormattedData extends IteratorIterator
 
                     $dateFormat = $value;
                     $storageFormat = $model->get($name, 'storageFormat');
-                    $result = MUtil_Date::format($result, $dateFormat, $storageFormat);
+                    $result = \MUtil_Date::format($result, $dateFormat, $storageFormat);
                     break;
 
                 case 'itemDisplay':
@@ -161,14 +169,14 @@ class Gems_FormattedData extends IteratorIterator
                     if (is_callable($function)) {
                         $result = call_user_func($function, $result);
                     } elseif (is_object($function)) {
-                        if (($function instanceof MUtil_Html_ElementInterface)
+                        if (($function instanceof \MUtil_Html_ElementInterface)
                             || method_exists($function, 'append')) {
                             $object = clone $function;
                             $result = $object->append($result);
                         }
                     } elseif (is_string($function)) {
                         // Assume it is a html tag when a string
-                        $result = MUtil_Html::create($function, $result);
+                        $result = \MUtil_Html::create($function, $result);
                     }
 
                 default:
@@ -178,15 +186,15 @@ class Gems_FormattedData extends IteratorIterator
 
         if (is_object($result)) {
             // If it is Lazy, execute it
-            if ($result instanceof MUtil_Lazy_LazyInterface) {
-                $result = MUtil_Lazy::rise($result);
+            if ($result instanceof \MUtil_Lazy_LazyInterface) {
+                $result = \MUtil_Lazy::rise($result);
             }
 
             // If it is Html, render it
-            if ($result instanceof MUtil_Html_HtmlInterface) {
+            if ($result instanceof \MUtil_Html_HtmlInterface) {
 
                 if (is_null($view)) {
-                    $viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
+                    $viewRenderer = \Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
                     if (null === $viewRenderer->view) {
                         $viewRenderer->initView();
                     }

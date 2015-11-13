@@ -150,7 +150,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
     protected function _getAvailableIcons()
     {
         $icons = array();
-        $iterator = new DirectoryIterator(realpath(GEMS_WEB_DIR . '/gems/icons'));
+        $iterator = new \DirectoryIterator(realpath(GEMS_WEB_DIR . '/gems/icons'));
 
         foreach ($iterator as $fileinfo) {
             if ($fileinfo->isFile()) {
@@ -510,10 +510,10 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
             $numRounds = 0;
         }
 
-        //MUtil_Echo::track($track, $copy);
-        //MUtil_Echo::track($rounds, $newRounds);
-        //MUtil_Echo::track($fields, $newFields);
-        Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage(sprintf($this->_('Copied track, including %s round(s) and %s field(s).'), $numRounds, $numFields));
+        //\MUtil_Echo::track($track, $copy);
+        //\MUtil_Echo::track($rounds, $newRounds);
+        //\MUtil_Echo::track($fields, $newFields);
+        \Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage(sprintf($this->_('Copied track, including %s round(s) and %s field(s).'), $numRounds, $numFields));
 
         return $newTrackId;
     }

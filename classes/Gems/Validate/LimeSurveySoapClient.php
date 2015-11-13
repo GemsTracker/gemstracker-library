@@ -59,7 +59,7 @@ class LimeSurveySoapClient extends \MUtil_Validate_Url
      *
      * @param  mixed $value
      * @return boolean
-     * @throws Zend_Valid_Exception If validation of $value is impossible
+     * @throws \Zend_Valid_Exception If validation of $value is impossible
      */
     public function isValid($value, $context = array())
     {

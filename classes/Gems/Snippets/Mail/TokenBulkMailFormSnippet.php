@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends Gems_Snippets_Mail_MailFormSnippet
+class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends \Gems_Snippets_Mail_MailFormSnippet
 {
     protected $identifier;
 
@@ -57,7 +57,7 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends Gems_Snippets_Mail_Mai
     public function afterRegistry()
     {
 
-        //MUtil_Echo::track($this->multipleTokenData);
+        //\MUtil_Echo::track($this->multipleTokenData);
         $this->identifier = $this->getSingleTokenData();
 
         parent::afterRegistry();
@@ -69,10 +69,10 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends Gems_Snippets_Mail_Mai
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      */
-    protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addFormElements(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
     {
         $bridge->addElement($this->createToElement());
         $bridge->addElement($this->mailElements->createMethodElement());
@@ -99,7 +99,7 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends Gems_Snippets_Mail_Mai
             $options[$tokenData['gto_id_token']] = $this->createToText($tokenData, $disabled);
         }
 
-        $element = new Zend_Form_Element_MultiCheckbox('token_select', array(
+        $element = new \Zend_Form_Element_MultiCheckbox('token_select', array(
             'disable'      => $invalid,
             'escape'       => (! $this->view),
             'label'        => $this->_('To'),
@@ -136,7 +136,7 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends Gems_Snippets_Mail_Mai
         }
 
         $mailer = $this->loader->getMailLoader()->getMailer($this->mailTarget, $tokenData);
-        /* @var $mailer Gems_Mail_TokenMailer */
+        /* @var $mailer \Gems_Mail_TokenMailer */
         $token = $mailer->getToken();
 
         return $this->createMultiOption($tokenData,
@@ -201,7 +201,7 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends Gems_Snippets_Mail_Mai
         foreach($this->multipleTokenData as $tokenData) {
             if (in_array($tokenData['gto_id_token'], $this->formData['token_select'])) {
                 $mailer = $this->loader->getMailLoader()->getMailer($this->mailTarget, $tokenData);
-                /* @var $mailer Gems_Mail_TokenMailer */
+                /* @var $mailer \Gems_Mail_TokenMailer */
                 $token = $mailer->getToken();
                 $email = $token->getEmail();
 
@@ -218,7 +218,7 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends Gems_Snippets_Mail_Mai
                             $mails++;
                             $updates++;
                             
-                        } catch (Zend_Mail_Transport_Exception $exc) {
+                        } catch (\Zend_Mail_Transport_Exception $exc) {
                             // Sending failed
                             $this->addMessage(sprintf($this->_('Sending failed for token %s with reason: %s.'), $token->getTokenId(), $exc->getMessage()));
                         }
@@ -236,7 +236,7 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends Gems_Snippets_Mail_Mai
 
                             $sentMailAddresses[$email] = true;
                             
-                        } catch (Zend_Mail_Transport_Exception $exc) {
+                        } catch (\Zend_Mail_Transport_Exception $exc) {
                             // Sending failed
                             $this->addMessage(sprintf($this->_('Sending failed for token %s with reason: %s.'), $token->getTokenId(), $exc->getMessage()));
                         }

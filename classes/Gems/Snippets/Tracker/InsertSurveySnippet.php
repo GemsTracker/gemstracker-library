@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: InsertSurveySnippet.php 2493 2015-04-15 16:29:48Z matijsdejong $
+ * @version    $Id: InsertSurveySnippet.php 0000 2015-04-15 16:29:48Z matijsdejong $
  */
 
 namespace Gems\Snippets\Tracker;
@@ -105,7 +105,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     /**
      * Required
      *
-     * @var Gems_Tracker_RespondentTrack Respondent Track
+     * @var \Gems_Tracker_RespondentTrack Respondent Track
      */
     protected $respondentTrack;
 
@@ -131,7 +131,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     /**
      * The newly create token
      *
-     * @var Gems_Tracker_Token
+     * @var \Gems_Tracker_Token
      */
     protected $token;
 

@@ -64,12 +64,12 @@ class Gems_Util_LockFile
     /**
      * Last time the lock was set.
      *
-     * @return MUtil_Date or null when not locked.
+     * @return \MUtil_Date or null when not locked.
      */
     public function getLockTime()
     {
         if ($this->isLocked()) {
-            return new MUtil_Date(filectime($this->lockFileName));
+            return new \MUtil_Date(filectime($this->lockFileName));
         }
     }
 
@@ -86,7 +86,7 @@ class Gems_Util_LockFile
     /**
      * Lock this file and updates lock time.
      *
-     * @return Gems_Util_LockFile (continuation pattern)
+     * @return \Gems_Util_LockFile (continuation pattern)
      */
     public function lock()
     {
@@ -97,7 +97,7 @@ class Gems_Util_LockFile
     /**
      * Switches from lock to unlocked state.
      *
-     * @return Gems_Util_LockFile (continuation pattern)
+     * @return \Gems_Util_LockFile (continuation pattern)
      */
     public function reverse()
     {
@@ -112,7 +112,7 @@ class Gems_Util_LockFile
     /**
      * Unlocks this lock file  by deleting it
      *
-     * @return Gems_Util_LockFile (continuation pattern)
+     * @return \Gems_Util_LockFile (continuation pattern)
      */
     public function unlock()
     {

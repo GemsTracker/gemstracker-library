@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: PasswordResetSnippet.php 2430 2015-02-18 15:26:24Z matijsdejong $
+ * @version    $Id: PasswordResetSnippet.php 2431 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Snippets\User;
@@ -71,7 +71,7 @@ class PasswordResetSnippet extends FormSnippetAbstract
      *
      * Default is asking for the username but you can e.g. ask for someones birthday.
      *
-     * @return array Of 'label name' => 'required values' or Zend_Form_Element elements Not set when null
+     * @return array Of 'label name' => 'required values' or \Zend_Form_Element elements Not set when null
      */
     protected $checkFields = null;
 
@@ -187,7 +187,7 @@ class PasswordResetSnippet extends FormSnippetAbstract
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see MUtil_Registry_TargetInterface}.
+     * {@see \MUtil_Registry_TargetInterface}.
      *
      * @return boolean
      */

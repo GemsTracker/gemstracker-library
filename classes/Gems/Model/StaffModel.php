@@ -30,6 +30,7 @@
  *
  * @package    Gems
  * @subpackage Model
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @version    $Id$
@@ -46,7 +47,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Model_StaffModel extends Gems_Model_JoinModel
+class Gems_Model_StaffModel extends \Gems_Model_JoinModel
 {
     /**
      * One of the user classes available to the user loader
@@ -111,12 +112,12 @@ class Gems_Model_StaffModel extends Gems_Model_JoinModel
 
         $allowedGroups = $this->loader->getCurrentUser()->getAllowedStaffGroups();
         if ($allowedGroups) {
-            $expr = new Zend_Db_Expr(sprintf(
+            $expr = new \Zend_Db_Expr(sprintf(
                     "CASE WHEN gsf_id_primary_group IN (%s) THEN 1 ELSE 0 END",
                     implode(", ", array_keys($allowedGroups))
                     ));
         } else {
-            $expr = new Zend_Db_Expr('0');
+            $expr = new \Zend_Db_Expr('0');
         }
         $this->addColumn($expr, 'accessible_role');
         $this->set('accessible_role', 'default', 1);

@@ -28,7 +28,7 @@
  */
 
 /**
- * Outputs an array of arrays (or a Zend_Db_Table_Rowset) as a table
+ * Outputs an array of arrays (or a \Zend_Db_Table_Rowset) as a table
  *
  * The first 'record' is rendered bold, being the header for the table
  *
@@ -39,26 +39,26 @@
  * @author      175780
  * @version     $Id$
  */
-class Gems_View_Helper_Excel extends Zend_View_Helper_Abstract
+class Gems_View_Helper_Excel extends \Zend_View_Helper_Abstract
 
 {
     public function excel ($rowset = null)
     {
         try {
             //disable de ZFDebug class indien nodig.
-            Zend_Controller_Front::getInstance()->unregisterPlugin('ZFDebug_Controller_Plugin_Debug');
-        } catch (Exception $e) {
+            \Zend_Controller_Front::getInstance()->unregisterPlugin('ZFDebug_Controller_Plugin_Debug');
+        } catch (\Exception $e) {
         }
 
         $this->view->layout()->setLayout('excel');
 
-        if ($rowset instanceof Gems_FormattedData) {
+        if ($rowset instanceof \Gems_FormattedData) {
             $formatted = $rowset->getFormatted();
             $rowset->setFormatted(false);
         }
         $rowcnt = 0;
         foreach ($rowset as $row) {
-            if ($row instanceof Zend_Db_Table_Row) {
+            if ($row instanceof \Zend_Db_Table_Row) {
                 $row = $row->toArray();
             }
             if (!is_array($row)) {
@@ -76,7 +76,7 @@ class Gems_View_Helper_Excel extends Zend_View_Helper_Abstract
                 $output .= "\t\t</tr>\r\n";
                 $output .= "\t</thead>\r\n";
                 $output .= "\t<tbody>\r\n";
-                if ($rowset instanceof Gems_FormattedData) {
+                if ($rowset instanceof \Gems_FormattedData) {
                     $rowset->setFormatted($formatted);
                 }
             } else {

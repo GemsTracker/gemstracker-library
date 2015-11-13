@@ -44,11 +44,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Pdf extends Gems_Registry_TargetAbstract
+class Gems_Pdf extends \Gems_Registry_TargetAbstract
 {
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
@@ -63,7 +63,7 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
      *
      * @var string
      */
-    protected $pageFont = Zend_Pdf_Font::FONT_COURIER;
+    protected $pageFont = \Zend_Pdf_Font::FONT_COURIER;
 
     /**
      * Font size for token
@@ -102,13 +102,13 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     protected $project;
 
     /**
      *
-     * @var Zend_Translate
+     * @var \Zend_Translate
      */
     protected $translate;
 
@@ -131,11 +131,11 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
     /**
      * Add the token to every page of a pdf
      *
-     * @param Zend_Pdf $pdf
+     * @param \Zend_Pdf $pdf
      * @param string $tokenId
      * @param int $surveyId
      */
-    protected function addTokenToDocument(Zend_Pdf $pdf, $tokenId, $surveyId)
+    protected function addTokenToDocument(\Zend_Pdf $pdf, $tokenId, $surveyId)
     {
         $token = strtoupper($tokenId);
 
@@ -154,14 +154,14 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
     /**
      * Add the token to a pdf page
      *
-     * @param Zend_Pdf_Page $page
+     * @param \Zend_Pdf_Page $page
      * @param string $tokenId
      */
-    protected function addTokenToPage(Zend_Pdf_Page $page, $tokenId)
+    protected function addTokenToPage(\Zend_Pdf_Page $page, $tokenId)
     {
         // Set $this->pageFont to false to prevent drawing of tokens on page.
         if ($this->pageFont) {
-            $font = Zend_Pdf_Font::fontWithName($this->pageFont);
+            $font = \Zend_Pdf_Font::fontWithName($this->pageFont);
 
             if ($this->pageXfromLeft) {
                 $x = $this->pageX;
@@ -185,12 +185,12 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
      * When download is true the file is returned as a download link,
      * otherwise the pdf is shown in the browser.
      *
-     * @param Zend_Pdf $pdf
+     * @param \Zend_Pdf $pdf
      * @param string $filename
      * @param boolean $download
      * @param boolean $exit Should the application stop running after output
      */
-    protected function echoPdf(Zend_Pdf $pdf, $filename, $download = false, $exit = true)
+    protected function echoPdf(\Zend_Pdf $pdf, $filename, $download = false, $exit = true)
     {
         $content = $pdf->render();
 
@@ -211,7 +211,7 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
      */
     public function echoPdfContent($content, $filename, $download = false)
     {
-        // MUtil_Echo::track($filename);
+        // \MUtil_Echo::track($filename);
         if ($download) {
             // Download & save
 			header('Content-Type: application/x-download');
@@ -263,7 +263,7 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
     /**
      *
      * @param integer $surveyId
-     * @return Zend_Pdf
+     * @return \Zend_Pdf
      */
     protected function getSurveyPdf($surveyId)
     {
@@ -276,11 +276,11 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
         $filepath = $this->getSurveysDir() . '/' . $filename;
 
         if (! file_exists($filepath)) {
-            // MUtil_Echo::r($filepath);
+            // \MUtil_Echo::r($filepath);
             $this->throwLastError(sprintf($this->translate->_("PDF Source File '%s' not found!"), $filename));
         }
 
-        return Zend_Pdf::load($filepath);
+        return \Zend_Pdf::load($filepath);
     }
 
     /**
@@ -361,10 +361,10 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
 
     protected function throwLastError($msg)
     {
-        if ($last = MUtil_Error::getLastPhpErrorMessage()) {
+        if ($last = \MUtil_Error::getLastPhpErrorMessage()) {
             $msg .= sprintf($this->translate->_(' The error message is: %s'), $last);
         }
-        throw new Gems_Exception_Coding($msg);
+        throw new \Gems_Exception_Coding($msg);
     }
 
     /**
@@ -372,7 +372,7 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
      *
      * @param  string $content The HTML source
      * @return string The converted PDF file
-     * @throws Exception
+     * @throws \Exception
      */
     public function convertFromHtml($content)
     {
@@ -382,7 +382,7 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
         file_put_contents($tempInputFilename, $content);
 
         if (!file_exists($tempInputFilename)) {
-            throw new Exception("Unable to create temporary file '{$tempInputFilename}'");
+            throw new \Exception("Unable to create temporary file '{$tempInputFilename}'");
         }
 
         $command = sprintf($this->_pdfExportCommand, escapeshellarg($tempInputFilename),
@@ -394,7 +394,7 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
             @unlink($tempInputFilename);
             @unlink($tempOutputFilename);
 
-            throw new Exception(sprintf($this->translate->_('Unable to run PDF conversion (%s): "%s"'), $command, $lastLine));
+            throw new \Exception(sprintf($this->translate->_('Unable to run PDF conversion (%s): "%s"'), $command, $lastLine));
         }
 
         $pdfContents = file_get_contents($tempOutputFilename);
@@ -402,7 +402,7 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
         @unlink($tempOutputFilename);
 
         if ($pdfContents == '') {
-            throw new Exception(sprintf($this->translate->_('Unable to run PDF conversion (%s): "%s"'), $command, $lastLine));
+            throw new \Exception(sprintf($this->translate->_('Unable to run PDF conversion (%s): "%s"'), $command, $lastLine));
         }
 
         return $pdfContents;

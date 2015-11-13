@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: SurveyMaintenanceSearchSnippet.php $
+ * @version    $Id: SurveyMaintenanceSearchSnippet.php 2532 2015-04-30 16:33:05Z matijsdejong $
  */
 
 namespace Gems\Snippets\Survey;
@@ -55,7 +55,7 @@ class SurveyMaintenanceSearchSnippet extends \Gems_Snippets_AutosearchFormSnippe
      * That creates a distinct group of elements
      *
      * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return array Of Zend_Form_Element's or static tekst to add to the html or null for group breaks.
+     * @return array Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.
      */
     protected function getAutoSearchElements(array $data)
     {
@@ -70,7 +70,7 @@ class SurveyMaintenanceSearchSnippet extends \Gems_Snippets_AutosearchFormSnippe
             'nok' => $this->_('Blocked in source'),
         );
         $elements[] = $this->_createSelectElement('status', $states, $this->_('(every state)'));
-        
+
         $elements[] = \MUtil_Html::create('br');
 
         $yesNo      = $this->util->getTranslated()->getYesNo();

@@ -45,9 +45,14 @@
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-//abstract class MUtil_Snippets_TabSnippetAbstract extends MUtil_Snippets_SnippetAbstract
-abstract class Gems_Snippets_HorizontalScrollMenuSnippetAbstract extends MUtil_Snippets_TabSnippetAbstract
+abstract class Gems_Snippets_HorizontalScrollMenuSnippetAbstract extends \MUtil_Snippets_TabSnippetAbstract
 {
+    /**
+     *
+     * @var \Gems_Util_BasePath
+     */
+    protected $basepath;
+
     /**
      * Shortfix to add class attribute
      *
@@ -59,17 +64,13 @@ abstract class Gems_Snippets_HorizontalScrollMenuSnippetAbstract extends MUtil_S
      *
      * @var string Label of the next button
      */
-
     protected $nextLabel = '>';
-
 
     /**
      *
      * @var string Label of the previous button
      */
-
     protected $prevLabel = '<';
-
 
     /**
      *
@@ -91,7 +92,7 @@ abstract class Gems_Snippets_HorizontalScrollMenuSnippetAbstract extends MUtil_S
 
     /**
      *
-     * @var Zend_View
+     * @var \Zend_View
      */
     protected $view;
 
@@ -100,10 +101,10 @@ abstract class Gems_Snippets_HorizontalScrollMenuSnippetAbstract extends MUtil_S
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param Zend_View_Abstract $view Just in case it is needed here
-     * @return MUtil_Html_HtmlInterface Something that can be rendered
+     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @return \MUtil_Html_HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view)
     {
         $tabs = $this->getTabs();
 
@@ -111,7 +112,7 @@ abstract class Gems_Snippets_HorizontalScrollMenuSnippetAbstract extends MUtil_S
 
         if ($tabs && ($this->displaySingleTab || $tabCount > 1)) {
             // Is there a better helper to include JS?
-            $view->headScript()->appendFile(Zend_Controller_Front::getInstance()->getBaseUrl()  .  '/gems/js/jquery.horizontalScrollMenu.js');
+            $view->headScript()->appendFile($this->basepath->getBasePath()  .  '/gems/js/jquery.horizontalScrollMenu.js');
 
             $script = '(function($) {$(".'.$this->class.'").horizontalScrollMenu();}(jQuery));';
 
@@ -120,8 +121,8 @@ abstract class Gems_Snippets_HorizontalScrollMenuSnippetAbstract extends MUtil_S
             // Set the correct parameters
             $this->getCurrentTab();
 
-            
-            $scrollContainer = MUtil_Html::create()->div();
+
+            $scrollContainer = \MUtil_Html::create()->div();
 
             if ($tabCount > $this->scrollFromSize) {
                 $scrollContainer->a('#', $this->prevLabel, array('class' => 'prev'));

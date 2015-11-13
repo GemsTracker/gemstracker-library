@@ -43,15 +43,15 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.2
  */
-class Gems_Task_Db_CreateNewTable extends Gems_Task_TaskAbstract
+class Gems_Task_Db_CreateNewTable extends \Gems_Task_TaskAbstract
 {
     /**
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
 
     /**
-     * @var Gems_Model_DbaModel
+     * @var \Gems_Model_DbaModel
      */
     public $dbaModel;
 
@@ -61,7 +61,7 @@ class Gems_Task_Db_CreateNewTable extends Gems_Task_TaskAbstract
     public $escort;
 
     /**
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     public $project;
 
@@ -89,10 +89,10 @@ class Gems_Task_Db_CreateNewTable extends Gems_Task_TaskAbstract
      */
     public function checkRegistryRequestsAnswers()
     {
-        $this->escort = GemsEscort::getInstance();
+        $this->escort = \GemsEscort::getInstance();
 
         //Load the dbaModel
-        $model = new Gems_Model_DbaModel($this->db, $this->escort->getDatabasePaths());
+        $model = new \Gems_Model_DbaModel($this->db, $this->escort->getDatabasePaths());
         if ($this->project->databaseFileEncoding) {
             $model->setFileEncoding($this->project->databaseFileEncoding);
         }

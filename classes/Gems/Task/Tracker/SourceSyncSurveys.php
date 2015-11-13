@@ -44,7 +44,7 @@
 class Gems_Task_Tracker_SourceSyncSurveys extends \MUtil_Task_TaskAbstract
 {
     /**
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     public $loader;
 

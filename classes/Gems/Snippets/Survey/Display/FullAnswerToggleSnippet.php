@@ -43,21 +43,22 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.1
  */
-class Gems_Snippets_Survey_Display_FullAnswerToggleSnippet extends MUtil_Snippets_SnippetAbstract {
-    
+class Gems_Snippets_Survey_Display_FullAnswerToggleSnippet extends \MUtil_Snippets_SnippetAbstract {
+
     /**
      *
-     * @var Zend_Controller_Request_Http
+     * @var \Zend_Controller_Request_Http
      */
     protected $request;
-    
+
     /**
      *
-     * @var Gems_Menu
+     * @var \Gems_Menu
      */
     public $menu;
-    
-    public function getHtmlOutput(\Zend_View_Abstract $view) {
+
+    public function getHtmlOutput(\Zend_View_Abstract $view)
+    {
         $html = $this->getHtmlSequence();
 
         $request = $this->request;
@@ -70,7 +71,7 @@ class Gems_Snippets_Survey_Display_FullAnswerToggleSnippet extends MUtil_Snippet
         } else {
             $params['fullanswers'] = 1;
         }
-        
+
         $url = array('controller' => $request->getControllerName(),
             'action' => $request->getActionName(),
             'routereset' => true) + $params;
@@ -80,19 +81,19 @@ class Gems_Snippets_Survey_Display_FullAnswerToggleSnippet extends MUtil_Snippet
         $menuList = $this->menu->getMenuList();
         $menuList->addParameterSources($this->menu->getParameterSource())
                  ->addCurrentChildren();
-        
+
         $html[] = $menuList;
-        $html->hr(array('class'=>'noprint'));       
+        $html->hr(array('class'=>'noprint'));
 
         return $html;
     }
-    
+
     public function hasHtmlOutput() {
         // Only show toggle for individual answer display
         if ($this->request->getActionName() !== 'answer') {
             return false;
         }
-        
+
         return true;
     }
 }

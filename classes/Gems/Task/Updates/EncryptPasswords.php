@@ -44,15 +44,15 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.5 3-okt-2014 17:21:55
  */
-class Gems_Task_Updates_EncryptPasswords extends MUtil_Task_TaskAbstract
+class Gems_Task_Updates_EncryptPasswords extends \MUtil_Task_TaskAbstract
 {
     /**
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
     /**
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     public $project;
 

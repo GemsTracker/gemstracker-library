@@ -46,7 +46,7 @@ use Gems\Tracker\Model\AddAnswersTransformer;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Tracker_SurveyModel extends Gems_Model_JoinModel
+class Gems_Tracker_SurveyModel extends \Gems_Model_JoinModel
 {
     /**
      * Constant containing css classname for main questions
@@ -60,13 +60,13 @@ class Gems_Tracker_SurveyModel extends Gems_Model_JoinModel
 
     /**
      *
-     * @var Gems_Tracker_Source_SourceInterface
+     * @var \Gems_Tracker_Source_SourceInterface
      */
     protected $source;
 
     /**
      *
-     * @var Gems_Tracker_Survey
+     * @var \Gems_Tracker_Survey
      */
     protected $survey;
 
@@ -75,7 +75,7 @@ class Gems_Tracker_SurveyModel extends Gems_Model_JoinModel
         return $this->survey;
     }
 
-    public function __construct(Gems_Tracker_Survey $survey, Gems_Tracker_Source_SourceInterface $source)
+    public function __construct(\Gems_Tracker_Survey $survey, \Gems_Tracker_Source_SourceInterface $source)
     {
         parent::__construct($survey->getName(), 'gems__tokens', 'gto');
         $this->addTable('gems__reception_codes',  array('gto_reception_code' => 'grc_id_reception_code'));
@@ -166,11 +166,11 @@ class Gems_Tracker_SurveyModel extends Gems_Model_JoinModel
     }*/
 
     /**
-     * Returns a Traversable spewing out arrays containing the items requested.
+     * Returns a \Traversable spewing out arrays containing the items requested.
      *
      * @param mixed $filter True to use the stored filter, array to specify a different filter
      * @param mixed $sort True to use the stored sort, array to specify a different sort
-     * @return Traversable
+     * @return \Traversable
      */
     /*public function loadIterator($filter = true, $sort = true)
     {
@@ -178,15 +178,15 @@ class Gems_Tracker_SurveyModel extends Gems_Model_JoinModel
     }*/
 
     /**
-     * Returns a Zend_Paginator for the items in the model
+     * Returns a \Zend_Paginator for the items in the model
      *
      * @param mixed $filter True to use the stored filter, array to specify a different filter
      * @param mixed $sort True to use the stored sort, array to specify a different sort
-     * @return Zend_Paginator
+     * @return \Zend_Paginator
      */
     /*public function loadPaginator($filter = true, $sort = true)
     {
         // Do not use a select paginator for the moment, till we can add addAnswers()
-        return Zend_Paginator::factory($this->load($filter, $sort));
+        return \Zend_Paginator::factory($this->load($filter, $sort));
     }*/
 }

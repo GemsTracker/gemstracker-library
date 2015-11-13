@@ -36,10 +36,10 @@
 /**
  * Handles running tasks independent on the kind of task
  *
- * Continues on the MUtil_Batch_BatchAbstract, exposing some methods to allow the task
+ * Continues on the \MUtil_Batch_BatchAbstract, exposing some methods to allow the task
  * to interact with the batch queue.
  *
- * Tasks added to the queue should be loadable via Gems_Loader and implement the Gems_Task_TaskInterface
+ * Tasks added to the queue should be loadable via \Gems_Loader and implement the \MUtil_Task_TaskInterface
  *
  * @package    Gems
  * @subpackage Task
@@ -47,7 +47,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.2
  */
-class Gems_Task_TaskRunnerBatch extends MUtil_Task_TaskBatch
+class Gems_Task_TaskRunnerBatch extends \MUtil_Task_TaskBatch
 {
     /**
      * The number of bytes to pad during push communication in Kilobytes.

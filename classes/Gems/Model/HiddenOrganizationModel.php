@@ -147,7 +147,7 @@ class Gems_Model_HiddenOrganizationModel extends \Gems_Model_JoinModel
      * basically transforms the fieldnames ointo oan IDn => value array
      *
      * @param mixed $forData Array value to vilter on
-     * @param array $href Or ArrayObject
+     * @param array $href Or \ArrayObject
      * @return array That can by used as href
      */
     public function getKeyRef($forData, $href = array(), $organizationInKey = null)

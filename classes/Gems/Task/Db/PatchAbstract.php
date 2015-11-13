@@ -44,16 +44,16 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-abstract class Gems_Task_Db_PatchAbstract extends MUtil_Task_TaskAbstract
+abstract class Gems_Task_Db_PatchAbstract extends \MUtil_Task_TaskAbstract
 {
     /**
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
     /**
      *
-     * @var Gems_Util_DatabasePatcher
+     * @var \Gems_Util_DatabasePatcher
      */
     protected $patcher;
 
@@ -64,10 +64,10 @@ abstract class Gems_Task_Db_PatchAbstract extends MUtil_Task_TaskAbstract
      */
     public function checkRegistryRequestsAnswers()
     {
-        $escort = GemsEscort::getInstance();
+        $escort = \GemsEscort::getInstance();
 
         //As an upgrade almost always includes executing db patches, make a DatabasePatcher object available
-        $this->patcher = new Gems_Util_DatabasePatcher($this->db, 'patches.sql', $escort->getDatabasePaths());
+        $this->patcher = new \Gems_Util_DatabasePatcher($this->db, 'patches.sql', $escort->getDatabasePaths());
 
         return parent::checkRegistryRequestsAnswers();
     }

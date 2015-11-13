@@ -53,7 +53,7 @@ class Gems_Snippets_ModelTableSnippetGeneric extends \Gems_Snippets_ModelTableSn
 {
     /**
      *
-     * @var MUtil_Model_ModelAbstract
+     * @var \MUtil_Model_ModelAbstract
      */
     protected $model;
 

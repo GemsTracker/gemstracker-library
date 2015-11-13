@@ -58,7 +58,7 @@ class Gems_Tracker_ChangeTracker
     public $tokenDateCauses         = 0;
     public $tokenDateChanges        = 0;
 
-    public function getMessages(Zend_Translate $t)
+    public function getMessages(\Zend_Translate $t)
     {
         if ($this->checkedRespondentTracks) {
             $messages[] = sprintf($t->_('Checked %d tracks.'), $this->checkedRespondentTracks);

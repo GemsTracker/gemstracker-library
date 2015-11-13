@@ -261,7 +261,7 @@ interface Gems_Tracker_TrackerInterface
 
     /**
      *
-     * @return \Gems_Tracker_TokenFilter
+     * @return \Gems_Tracker_Token_TokenValidator
      */
     public function getTokenValidator();
 

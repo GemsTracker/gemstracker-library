@@ -45,11 +45,12 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.5
  */
-class Gems_View_Helper_HeadLink extends MUtil_Less_View_Helper_HeadLink {
-    
-    public function __construct() {
+class Gems_View_Helper_HeadLink extends \MUtil_Less_View_Helper_HeadLink
+{
+    public function __construct()
+    {
         parent::__construct();
         $this->_webroot = GEMS_WEB_DIR;
     }
-    
+
 }

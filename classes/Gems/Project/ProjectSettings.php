@@ -96,7 +96,7 @@ class Gems_Project_ProjectSettings extends \ArrayObject
         // Convert to array when needed
         if ($array instanceof \Zend_Config) {
             $array = $array->toArray();
-        } elseif ($array instanceof ArrayObject) {
+        } elseif ($array instanceof \ArrayObject) {
             $array = $array->getArrayCopy();
         } elseif (! is_array($array)) {
             $array = (array) $array;
@@ -105,7 +105,7 @@ class Gems_Project_ProjectSettings extends \ArrayObject
         // Now load default values for (new) keys and merge them with the ones provided by project.ini
         $projectValues = $array + $this->_getDefaultValues();
 
-        parent::__construct($projectValues, ArrayObject::ARRAY_AS_PROPS);
+        parent::__construct($projectValues, \ArrayObject::ARRAY_AS_PROPS);
 
         if (! ($this->offsetExists('name') && $this->offsetGet('name'))) {
             $this->offsetSet('name', GEMS_PROJECT_NAME);
