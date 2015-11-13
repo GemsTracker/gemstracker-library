@@ -64,6 +64,18 @@ class Gems_Import_ImportLoader extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
+     * @var \Gems_User_Organization
+     */
+    protected $currentOrganization;
+
+    /**
+     *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
+    /**
+     *
      * @var \Gems_Loader
      */
     protected $loader;
@@ -236,10 +248,9 @@ class Gems_Import_ImportLoader extends \Gems_Loader_TargetLoaderAbstract
     public function getOrganizationCode()
     {
         if (! $this->_orgCode) {
-            $user = $this->loader->getCurrentUser();
-            $this->_orgCode = $user->getCurrentOrganization()->getCode();
+            $this->_orgCode = $this->currentOrganization->getCode();
             if (! $this->_orgCode) {
-                $this->_orgCode = \MUtil_File::cleanupName($user->getCurrentOrganization()->getName());
+                $this->_orgCode = \MUtil_File::cleanupName($this->currentOrganization->getName());
             }
 
         }
@@ -255,12 +266,11 @@ class Gems_Import_ImportLoader extends \Gems_Loader_TargetLoaderAbstract
      */
     public function getLongtermFileName($controller)
     {
-        $user   = $this->loader->getCurrentUser();
         $date   = new \MUtil_Date();
 
         $name[] = $controller;
         $name[] = $date->toString('YYYY-MM-ddTHH-mm-ss');
-        $name[] = preg_replace('/[^a-zA-Z0-9_]/', '', $user->getLoginName());
+        $name[] = preg_replace('/[^a-zA-Z0-9_]/', '', $this->currentUser->getLoginName());
         $name[] = $this->getOrganizationCode();
 
         return implode('.', array_filter($name));
@@ -329,15 +339,15 @@ class Gems_Import_ImportLoader extends \Gems_Loader_TargetLoaderAbstract
                         $translator->_('Link by patient id and completion date')
                         );
                 break;
-            
+
             case 'calendar':
                 $output['default'] = new \Gems_Model_Translator_AppointmentTranslator($translator->_('Direct import'));
                 break;
-            
+
             case 'respondent':
                 $output['default'] = new \Gems_Model_Translator_RespondentTranslator($translator->_('Direct import'));
                 break;
-            
+
             case 'staff':
                 $output['default'] = new \Gems_Model_Translator_StaffTranslator($translator->_('Direct import'));
                 break;
