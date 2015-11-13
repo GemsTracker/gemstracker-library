@@ -10,8 +10,8 @@
             </fileset>
             <filterchain>
                 <replaceregexp>
-                    <regexp pattern="([^\\'&quot;])(MUtil|Zend|ZendX|Gems|Booth|Desk|Pulse|Depar)_" replace="\1\\\2_" />
-                    <regexp pattern="class \\(MUtil|Zend|ZendX|Gems|Booth|Desk|Pulse|Depar)_" replace="class \1_" />
+                    <regexp pattern="([^\\'&quot;_])(MUtil|Zend|ZendX|Gems|Booth|Desk|Pulse|Depar|PHPUnit)_" replace="\1\\\2_" />
+                    <regexp pattern="class \\(MUtil|Zend|ZendX|Gems|Booth|Desk|Pulse|Depar|PHPUnit)_" replace="class \1_" />
                     <regexp pattern="interface \\(MUtil|Zend|ZendX|Gems|Booth|Desk|Pulse|Depar)_" replace="interface \1_" />
                     <regexp pattern="([^\\'&quot;])(GemsEscort::)" replace="\1\\\2" />
                     <regexp pattern="\(GemsEscort " replace="(\\GemsEscort " />

@@ -44,20 +44,20 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_Validate_UserPasswordValidator extends Gems_User_Validate_PasswordValidatorAbstract
+class Gems_User_Validate_UserPasswordValidator extends \Gems_User_Validate_PasswordValidatorAbstract
 {
     /**
      *
-     * @var Gems_User_User
+     * @var \Gems_User_User
      */
     private $_user;
 
     /**
      *
-     * @param Gems_User_User $user The user to check
+     * @param \Gems_User_User $user The user to check
      * @param string $message Default message for standard login fail.
      */
-    public function __construct(Gems_User_User $user, $message)
+    public function __construct(\Gems_User_User $user, $message)
     {
         $this->_user = $user;
 
@@ -74,7 +74,7 @@ class Gems_User_Validate_UserPasswordValidator extends Gems_User_Validate_Passwo
      * @param  mixed $value
      * @param  mixed $content
      * @return boolean
-     * @throws Zend_Validate_Exception If validation of $value is impossible
+     * @throws \Zend_Validate_Exception If validation of $value is impossible
      */
     public function isValid($value, $context = array())
     {

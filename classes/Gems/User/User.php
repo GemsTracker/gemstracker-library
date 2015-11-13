@@ -54,7 +54,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
 
     /**
      *
-     * @var ArrayObject or \Zend_Session_Namespace
+     * @var \ArrayObject or \Zend_Session_Namespace
      */
     private $_vars;
 
@@ -144,14 +144,14 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     /**
      * Creates the class for this user.
      *
-     * @param mixed $settings Array, \Zend_Session_Namespace or ArrayObject for this user.
+     * @param mixed $settings Array, \Zend_Session_Namespace or \ArrayObject for this user.
      * @param \Gems_User_UserDefinitionInterface $definition The user class definition.
      */
     public function __construct($settings, \Gems_User_UserDefinitionInterface $definition)
     {
         if (is_array($settings)) {
-            $this->_vars = new ArrayObject($settings);
-            $this->_vars->setFlags(ArrayObject::STD_PROP_LIST);
+            $this->_vars = new \ArrayObject($settings);
+            $this->_vars->setFlags(\ArrayObject::STD_PROP_LIST);
         } else {
             $this->_vars = $settings;
         }
@@ -184,7 +184,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     /**
      * The store currently used.
      *
-     * @return ArrayObject or \Zend_Session_Namespace
+     * @return \ArrayObject or \Zend_Session_Namespace
      */
     private function _getVariableStore()
     {
@@ -713,7 +713,13 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
 
         //If not set, read it from the cookie
         if ($this->isCurrentUser() && (null === $orgId)) {
-            $orgId = \Gems_Cookies::getOrganization($this->getRequest());
+            $request = $this->getRequest();
+            if ($request) {
+                $orgId = \Gems_Cookies::getOrganization($this->getRequest());
+            }
+            if (! $orgId) {
+                $orgId = 0;
+            }
         }
         return $orgId;
     }
@@ -1120,12 +1126,11 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      */
     public function hasAllowedRole()
     {
-        if (! $this->isStaff()) {
+        if ($this->isCurrentUser() || (! $this->isStaff())) {
             // Always allow editing of non-staff user
             // for the time being
             return true;
         }
-
         $dbLookup = $this->util->getDbLookup();
         $groups   = $dbLookup->getActiveStaffGroups();
         $group    = $this->getGroup();
@@ -1216,7 +1221,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     {
         $orgs = $this->getAllowedOrganizations();
 
-        return isset($orgs[$organizationId]);
+        return isset($orgs[$organizationId]) || (\Gems_User_UserLoader::SYSTEM_NO_ORG == $organizationId);
     }
 
     /**
@@ -1477,7 +1482,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
             $mail->send();
             return null;
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return array(
                 $this->_('Unable to send e-mail.'),
                 $e->getMessage());
@@ -1675,8 +1680,8 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
             // Get the current variables
             $oldStore = $this->_vars;
 
-            $this->_vars = new ArrayObject();
-            $this->_vars->setFlags(ArrayObject::STD_PROP_LIST);
+            $this->_vars = new \ArrayObject();
+            $this->_vars->setFlags(\ArrayObject::STD_PROP_LIST);
 
             foreach ($oldStore as $name => $value) {
                 $this->_vars->offsetSet($name, $value);

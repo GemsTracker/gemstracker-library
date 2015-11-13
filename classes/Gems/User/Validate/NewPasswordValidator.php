@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_Validate_NewPasswordValidator implements Zend_Validate_Interface
+class Gems_User_Validate_NewPasswordValidator implements \Zend_Validate_Interface
 {
     /**
      * The reported problems with the password.
@@ -55,15 +55,15 @@ class Gems_User_Validate_NewPasswordValidator implements Zend_Validate_Interface
 
     /**
      *
-     * @var Gems_User_User
+     * @var \Gems_User_User
      */
     private $_user;
 
     /**
      *
-     * @param Gems_User_User $user The user to check
+     * @param \Gems_User_User $user The user to check
      */
-    public function __construct(Gems_User_User $user)
+    public function __construct(\Gems_User_User $user)
     {
         $this->_user = $user;
     }
@@ -78,7 +78,7 @@ class Gems_User_Validate_NewPasswordValidator implements Zend_Validate_Interface
      * @param  mixed $value
      * @param  mixed $content
      * @return boolean
-     * @throws Zend_Validate_Exception If validation of $value is impossible
+     * @throws \Zend_Validate_Exception If validation of $value is impossible
      */
     public function isValid($value, $context = array())
     {
@@ -88,7 +88,7 @@ class Gems_User_Validate_NewPasswordValidator implements Zend_Validate_Interface
             $report = ucfirst($report) . '.';
         }
 
-        // MUtil_Echo::track($value, $this->_report);
+        // \MUtil_Echo::track($value, $this->_report);
 
         return ! (boolean) $this->_report;
     }

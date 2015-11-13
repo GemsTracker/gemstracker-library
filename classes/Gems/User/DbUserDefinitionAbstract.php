@@ -44,11 +44,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-abstract class Gems_User_DbUserDefinitionAbstract extends Gems_User_UserDefinitionAbstract
+abstract class Gems_User_DbUserDefinitionAbstract extends \Gems_User_UserDefinitionAbstract
 {
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
@@ -61,7 +61,7 @@ abstract class Gems_User_DbUserDefinitionAbstract extends Gems_User_UserDefiniti
 
     /**
      *
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     protected $project;
 
@@ -71,10 +71,10 @@ abstract class Gems_User_DbUserDefinitionAbstract extends Gems_User_UserDefiniti
      * Returns the setting for the definition whan no user is passed, otherwise
      * returns the answer for this specific user.
      *
-     * @param Gems_User_User $user Optional, the user whose password might change
+     * @param \Gems_User_User $user Optional, the user whose password might change
      * @return boolean
      */
-    public function canResetPassword(Gems_User_User $user = null)
+    public function canResetPassword(\Gems_User_User $user = null)
     {
         if ($user) {
             // Depends on the user.
@@ -97,24 +97,24 @@ abstract class Gems_User_DbUserDefinitionAbstract extends Gems_User_UserDefiniti
      * Returns the setting for the definition whan no user is passed, otherwise
      * returns the answer for this specific user.
      *
-     * @param Gems_User_User $user Optional, the user whose password might change
+     * @param \Gems_User_User $user Optional, the user whose password might change
      * @return boolean
      */
-    public function canSetPassword(Gems_User_User $user = null)
+    public function canSetPassword(\Gems_User_User $user = null)
     {
         return true;
     }
 
     /**
-     * Returns an initialized Zend_Auth_Adapter_Interface
+     * Returns an initialized \Zend_Auth_Adapter_Interface
      *
-     * @param Gems_User_User $user
+     * @param \Gems_User_User $user
      * @param string $password
-     * @return Zend_Auth_Adapter_Interface
+     * @return \Zend_Auth_Adapter_Interface
      */
-    public function getAuthAdapter(Gems_User_User $user, $password)
+    public function getAuthAdapter(\Gems_User_User $user, $password)
     {
-        $adapter = new Zend_Auth_Adapter_DbTable($this->db, 'gems__user_passwords', 'gul_login', 'gup_password');
+        $adapter = new \Zend_Auth_Adapter_DbTable($this->db, 'gems__user_passwords', 'gul_login', 'gup_password');
 
         $pwd_hash = $this->hashPassword($password);
 
@@ -132,13 +132,13 @@ abstract class Gems_User_DbUserDefinitionAbstract extends Gems_User_UserDefiniti
     /**
      * Return a password reset key
      *
-     * @param Gems_User_User $user The user to create a key for.
+     * @param \Gems_User_User $user The user to create a key for.
      * @return string
      */
-    public function getPasswordResetKey(Gems_User_User $user)
+    public function getPasswordResetKey(\Gems_User_User $user)
     {
-        $model = new MUtil_Model_TableModel('gems__user_passwords');
-        Gems_Model::setChangeFieldsByPrefix($model, 'gup', $user->getUserId());
+        $model = new \MUtil_Model_TableModel('gems__user_passwords');
+        \Gems_Model::setChangeFieldsByPrefix($model, 'gup', $user->getUserId());
 
         $data['gup_id_user'] = $user->getUserLoginId();
 
@@ -149,7 +149,7 @@ abstract class Gems_User_DbUserDefinitionAbstract extends Gems_User_UserDefiniti
         } else {
             $data['gup_reset_key'] = $this->hashPassword(time() . $user->getEmailAddress());
         }
-        $data['gup_reset_requested'] = new MUtil_Db_Expr_CurrentTimestamp();
+        $data['gup_reset_requested'] = new \MUtil_Db_Expr_CurrentTimestamp();
 
         // Loop for case when hash is not unique
         while (true) {
@@ -158,7 +158,7 @@ abstract class Gems_User_DbUserDefinitionAbstract extends Gems_User_UserDefiniti
 
                 return $data['gup_reset_key'];
 
-            } catch (Zend_Db_Exception $zde) {
+            } catch (\Zend_Db_Exception $zde) {
                 $data['gup_reset_key'] = $this->hashPassword(time() . $user->getEmailAddress());
             }
         }
@@ -176,16 +176,16 @@ abstract class Gems_User_DbUserDefinitionAbstract extends Gems_User_UserDefiniti
         $select = $this->getUserSelect($login_name, $organization);
 
         try {
-            $result = $this->db->fetchRow($select, array($login_name, $organization), Zend_Db::FETCH_ASSOC);
-        } catch (Zend_Db_Statement_Exception $e) {
-            // MUtil_Echo::track($e->getMessage());
+            $result = $this->db->fetchRow($select, array($login_name, $organization), \Zend_Db::FETCH_ASSOC);
+        } catch (\Zend_Db_Statement_Exception $e) {
+            // \MUtil_Echo::track($e->getMessage());
             
             // Yeah ugly. Can be removed when all projects have been oatched to 1.6.2
             $sql = $select->__toString();
             $sql = str_replace('gup_last_pwd_change', 'gup_changed', $sql);
 
             // Next try
-            $result = $this->db->fetchRow($sql, array($login_name, $organization), Zend_Db::FETCH_ASSOC);
+            $result = $this->db->fetchRow($sql, array($login_name, $organization), \Zend_Db::FETCH_ASSOC);
         }
 
 
@@ -194,7 +194,7 @@ abstract class Gems_User_DbUserDefinitionAbstract extends Gems_User_UserDefiniti
          * if you want some kind of auto-register you should change this
          */
         if ($result == false) {
-            $result = Gems_User_NoLoginDefinition::getNoLoginDataFor($login_name, $organization);
+            $result = \Gems_User_NoLoginDefinition::getNoLoginDataFor($login_name, $organization);
         }
 
         return $result;
@@ -205,7 +205,7 @@ abstract class Gems_User_DbUserDefinitionAbstract extends Gems_User_UserDefiniti
      *
      * @param string $login_name
      * @param int $organization
-     * @return Zend_Db_Select
+     * @return \Zend_Db_Select
      */
     abstract protected function getUserSelect($login_name, $organization);
 
@@ -223,10 +223,10 @@ abstract class Gems_User_DbUserDefinitionAbstract extends Gems_User_UserDefiniti
     /**
      * Return true if the user has a password.
      *
-     * @param Gems_User_User $user The user to check
+     * @param \Gems_User_User $user The user to check
      * @return boolean
      */
-    public function hasPassword(Gems_User_User $user)
+    public function hasPassword(\Gems_User_User $user)
     {
         $sql = "SELECT CASE WHEN gup_password IS NULL THEN 0 ELSE 1 END FROM gems__user_passwords WHERE gup_id_user = ?";
 
@@ -236,11 +236,11 @@ abstract class Gems_User_DbUserDefinitionAbstract extends Gems_User_UserDefiniti
     /**
      * Set the password, if allowed for this user type.
      *
-     * @param Gems_User_User $user The user whose password to change
+     * @param \Gems_User_User $user The user whose password to change
      * @param string $password
-     * @return Gems_User_UserDefinitionInterface (continuation pattern)
+     * @return \Gems_User_UserDefinitionInterface (continuation pattern)
      */
-    public function setPassword(Gems_User_User $user, $password)
+    public function setPassword(\Gems_User_User $user, $password)
     {
         $data['gup_id_user']         = $user->getUserLoginId();
         $data['gup_reset_key']       = null;
@@ -252,10 +252,10 @@ abstract class Gems_User_DbUserDefinitionAbstract extends Gems_User_UserDefiniti
         } else {
             $data['gup_password'] = $this->hashPassword($password);
         }
-        $data['gup_last_pwd_change'] = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+        $data['gup_last_pwd_change'] = new \Zend_Db_Expr('CURRENT_TIMESTAMP');
 
-        $model = new MUtil_Model_TableModel('gems__user_passwords');
-        Gems_Model::setChangeFieldsByPrefix($model, 'gup', $user->getUserId());
+        $model = new \MUtil_Model_TableModel('gems__user_passwords');
+        \Gems_Model::setChangeFieldsByPrefix($model, 'gup', $user->getUserId());
 
         $model->save($data);
 

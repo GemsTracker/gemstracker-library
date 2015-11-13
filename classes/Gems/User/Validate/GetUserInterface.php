@@ -49,7 +49,7 @@ interface Gems_User_Validate_GetUserInterface
     /**
      * Returns a user
      *
-     * @return Gems_User_User
+     * @return \Gems_User_User
      */
     public function getUser();
 }

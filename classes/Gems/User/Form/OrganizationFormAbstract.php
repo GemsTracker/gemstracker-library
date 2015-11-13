@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.3
  */
-abstract class Gems_User_Form_OrganizationFormAbstract extends Gems_Form_AutoLoadFormAbstract implements Gems_User_Validate_GetUserInterface
+abstract class Gems_User_Form_OrganizationFormAbstract extends \Gems_Form_AutoLoadFormAbstract implements \Gems_User_Validate_GetUserInterface
 {
     /**
      * When true the organization was derived from the the url
@@ -55,13 +55,13 @@ abstract class Gems_User_Form_OrganizationFormAbstract extends Gems_Form_AutoLoa
 
     /**
      *
-     * @var Gems_User_User
+     * @var \Gems_User_User
      */
     protected $_user;
 
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
@@ -83,7 +83,7 @@ abstract class Gems_User_Form_OrganizationFormAbstract extends Gems_Form_AutoLoa
 
     /**
      *
-     * @var Zend_Controller_Request_Abstract
+     * @var \Zend_Controller_Request_Abstract
      */
     protected $request;
 
@@ -96,7 +96,7 @@ abstract class Gems_User_Form_OrganizationFormAbstract extends Gems_Form_AutoLoa
 
     /**
      *
-     * @var Zend_Util
+     * @var \Zend_Util
      */
     protected $util;
 
@@ -139,7 +139,7 @@ abstract class Gems_User_Form_OrganizationFormAbstract extends Gems_Form_AutoLoa
     /**
      * Returns/sets an element for determining / selecting the organization.
      *
-     * @return Zend_Form_Element_Xhtml
+     * @return \Zend_Form_Element_Xhtml
      */
     public function getOrganizationElement()
     {
@@ -149,8 +149,8 @@ abstract class Gems_User_Form_OrganizationFormAbstract extends Gems_Form_AutoLoa
         $hidden  = $this->_organizationFromUrl || (count($orgs) < 2);
 
         if ($hidden) {
-            if (! $element instanceof Zend_Form_Element_Hidden) {
-                $element = new Zend_Form_Element_Hidden($this->organizationFieldName);
+            if (! $element instanceof \Zend_Form_Element_Hidden) {
+                $element = new \Zend_Form_Element_Hidden($this->organizationFieldName);
                 $this->addElement($element);
             }
 
@@ -161,7 +161,7 @@ abstract class Gems_User_Form_OrganizationFormAbstract extends Gems_Form_AutoLoa
 
             $element->setValue($orgId);
 
-        } elseif (! $element instanceof Zend_Form_Element_Select) {
+        } elseif (! $element instanceof \Zend_Form_Element_Select) {
             $element = $this->createElement('select', $this->organizationFieldName);
             $element->setLabel($this->translate->_('Organization'));
             $element->setRegisterInArrayValidator(true);
@@ -186,18 +186,18 @@ abstract class Gems_User_Form_OrganizationFormAbstract extends Gems_Form_AutoLoa
      */
     public function getOrganizationIsVisible()
     {
-        return ! $this->getOrganizationElement() instanceof Zend_Form_Element_Hidden;
+        return ! $this->getOrganizationElement() instanceof \Zend_Form_Element_Hidden;
     }
 
     /**
      * Return the Request object
      *
-     * @return Zend_Controller_Request_Abstract
+     * @return \Zend_Controller_Request_Abstract
      */
     public function getRequest()
     {
         if (! $this->request) {
-            $this->request = Zend_Controller_Front::getInstance()->getRequest();
+            $this->request = \Zend_Controller_Front::getInstance()->getRequest();
         }
         return $this->request;
     }
@@ -205,7 +205,7 @@ abstract class Gems_User_Form_OrganizationFormAbstract extends Gems_Form_AutoLoa
     /**
      * Returns a user
      *
-     * @return Gems_User_User
+     * @return \Gems_User_User
      */
     public function getUser()
     {
@@ -220,7 +220,7 @@ abstract class Gems_User_Form_OrganizationFormAbstract extends Gems_Form_AutoLoa
     /**
      * Returns/sets a login name element.
      *
-     * @return Zend_Form_Element_Text
+     * @return \Zend_Form_Element_Text
      */
     public function getUserNameElement()
     {
@@ -267,10 +267,10 @@ abstract class Gems_User_Form_OrganizationFormAbstract extends Gems_Form_AutoLoa
      * setting handles how many lines will display at once. Use 1 for the normal
      * dropdown selectbox
      *
-     * Enables loading of parameter through Zend_Form::__construct()
+     * Enables loading of parameter through \Zend_Form::__construct()
      *
      * @param int $organizationMaxLines
-     * @return Gems_User_Form_LoginForm (continuation pattern)
+     * @return \Gems_User_Form_LoginForm (continuation pattern)
      */
     public function setOrganizationMaxLines($organizationMaxLines)
     {

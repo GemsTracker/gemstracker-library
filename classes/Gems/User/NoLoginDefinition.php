@@ -44,16 +44,16 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_NoLoginDefinition extends Gems_User_UserDefinitionAbstract
+class Gems_User_NoLoginDefinition extends \Gems_User_UserDefinitionAbstract
 {
     /**
-     * Returns an initialized Zend_Auth_Adapter_Interface
+     * Returns an initialized \Zend_Auth_Adapter_Interface
      *
-     * @param Gems_User_User $user
+     * @param \Gems_User_User $user
      * @param string $password
-     * @return Zend_Auth_Adapter_Interface
+     * @return \Zend_Auth_Adapter_Interface
      */
-    public function getAuthAdapter(Gems_User_User $user, $password)
+    public function getAuthAdapter(\Gems_User_User $user, $password)
     {
         return false;
     }

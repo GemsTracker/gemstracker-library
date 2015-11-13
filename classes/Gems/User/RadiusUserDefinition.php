@@ -47,35 +47,35 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition implements Gems_User_UserDefinitionConfigurableInterface
+class Gems_User_RadiusUserDefinition extends \Gems_User_StaffUserDefinition implements \Gems_User_UserDefinitionConfigurableInterface
 {
     /**
-     * @var Gems_Model_JoinModel
+     * @var \Gems_Model_JoinModel
      */
     protected $_configModel;
 
     /**
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
     /**
      *
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     protected $project;
 
     /**
-     * @var Zend_Translate_Adapter
+     * @var \Zend_Translate_Adapter
      */
     protected $translate;
 
     /**
      * Appends the needed fields for this config to the $bridge
      *
-     * @param MUtil_Model_ModelAbstract $orgModel
+     * @param \MUtil_Model_ModelAbstract $orgModel
      */
-    public function addConfigFields(MUtil_Model_ModelAbstract $orgModel)
+    public function addConfigFields(\MUtil_Model_ModelAbstract $orgModel)
     {
         $configModel = $this->getConfigModel(true);
         $order       = $orgModel->getOrder('gor_user_class') + 1;
@@ -92,10 +92,10 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
      * Returns the setting for the definition whan no user is passed, otherwise
      * returns the answer for this specific user.
      *
-     * @param Gems_User_User $user Optional, the user whose password might change
+     * @param \Gems_User_User $user Optional, the user whose password might change
      * @return boolean
      */
-    public function canResetPassword(Gems_User_User $user = null)
+    public function canResetPassword(\Gems_User_User $user = null)
     {
         return false;
     }
@@ -106,22 +106,22 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
      * Returns the setting for the definition whan no user is passed, otherwise
      * returns the answer for this specific user.
      *
-     * @param Gems_User_User $user Optional, the user whose password might change
+     * @param \Gems_User_User $user Optional, the user whose password might change
      * @return boolean
      */
-    public function canSetPassword(Gems_User_User $user = null)
+    public function canSetPassword(\Gems_User_User $user = null)
     {
         return false;
     }
 
     /**
-     * Returns an initialized Zend_Auth_Adapter_Interface
+     * Returns an initialized \Zend_Auth_Adapter_Interface
      *
-     * @param Gems_User_User $user
+     * @param \Gems_User_User $user
      * @param string $password
-     * @return Zend_Auth_Adapter_Interface
+     * @return \Zend_Auth_Adapter_Interface
      */
-    public function getAuthAdapter(Gems_User_User $user, $password)
+    public function getAuthAdapter(\Gems_User_User $user, $password)
     {
         //Ok hardcoded for now this needs to be read from the userdefinition
         $configData = $this->loadConfig(array('gor_id_organization' => $user->getBaseOrganizationId()));
@@ -136,7 +136,7 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
                 unset($config[$key]);
             }
         }
-        $adapter = new Gems_User_Adapter_Radius($config);
+        $adapter = new \Gems_User_Adapter_Radius($config);
 
         $adapter->setIdentity($user->getLoginName())
                 ->setCredential($password);
@@ -156,13 +156,13 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
      * Get a model to store the config
      *
      * @param boolean $valueMask MAsk the password or if false decrypt it
-     * @return Gems_Model_JoinModel
+     * @return \Gems_Model_JoinModel
      */
     protected function getConfigModel($valueMask = true)
     {
         if (!$this->_configModel) {
-            $model = new MUtil_Model_TableModel('gems__radius_config', 'config');
-            // $model = new Gems_Model_JoinModel('config', 'gems__radius_config', 'grcfg');
+            $model = new \MUtil_Model_TableModel('gems__radius_config', 'config');
+            // $model = new \Gems_Model_JoinModel('config', 'gems__radius_config', 'grcfg');
 
             $model->setIfExists('grcfg_ip', 'label', $this->translate->_('IP address'), 'required', true);
             $model->setIfExists('grcfg_port', 'label', $this->translate->_('Port'), 'required', true);
@@ -174,7 +174,7 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
                     'repeatLabel', $this->translate->_('Repeat password')
                     );
 
-            $type = new Gems_Model_Type_EncryptedField($this->project, $valueMask);
+            $type = new \Gems_Model_Type_EncryptedField($this->project, $valueMask);
             $type->apply($model, 'grcfg_secret', 'grcfg_encryption');
 
             $this->_configModel = $model;
@@ -186,20 +186,20 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
     /**
      * Return a password reset key, never reached as we can not reset the password
      *
-     * @param Gems_User_User $user The user to create a key for.
+     * @param \Gems_User_User $user The user to create a key for.
      * @return string
      */
-    public function getPasswordResetKey(Gems_User_User $user)
+    public function getPasswordResetKey(\Gems_User_User $user)
     {
         return null;
     }
 
     /**
-     * Copied from Gems_User_StaffUserDefinition but left out the password link
+     * Copied from \Gems_User_StaffUserDefinition but left out the password link
      *
      * @param type $login_name
      * @param type $organization
-     * @return Zend_Db_Select
+     * @return \Zend_Db_Select
      */
     protected function getUserSelect($login_name, $organization)
     {
@@ -207,7 +207,7 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
          * Read the needed parameters from the different tables, lots of renames
          * for compatibility accross implementations.
          */
-        $select = new Zend_Db_Select($this->db);
+        $select = new \Zend_Db_Select($this->db);
         $select->from('gems__user_logins', array(
                     'user_login_id' => 'gul_id_user',
                     ))
@@ -260,10 +260,10 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
      *
      * Seems to be only used on changing a password, so will probably never be reached
      *
-     * @param Gems_User_User $user The user to check
+     * @param \Gems_User_User $user The user to check
      * @return boolean
      */
-    public function hasPassword(Gems_User_User $user)
+    public function hasPassword(\Gems_User_User $user)
     {
        return true;
     }
@@ -306,11 +306,11 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
     /**
      * Set the password, if allowed for this user type.
      *
-     * @param Gems_User_User $user The user whose password to change
+     * @param \Gems_User_User $user The user whose password to change
      * @param string $password
-     * @return Gems_User_UserDefinitionInterface (continuation pattern)
+     * @return \Gems_User_UserDefinitionInterface (continuation pattern)
      */
-    public function setPassword(Gems_User_User $user, $password)
+    public function setPassword(\Gems_User_User $user, $password)
     {
         return $this;
     }

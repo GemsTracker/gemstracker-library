@@ -44,8 +44,13 @@
  * @license    New BSD License
  * @since      Class available since version 1.4.4
  */
-class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
+class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
 {
+    /**
+     * The org ID for no organization
+     */
+    const SYSTEM_NO_ORG  = -1;
+
     /**
      * The user id used for the project user
      */
@@ -95,12 +100,12 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @var Zend_Cache_Core
+     * @var \Zend_Cache_Core
      */
     protected $cache;
 
     /**
-     * Allows sub classes of Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
+     * Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
@@ -108,37 +113,37 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
     /**
      *
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     protected $project;
 
     /**
      *
-     * @var Zend_Session_Namespace
+     * @var \Zend_Session_Namespace
      */
     protected $session;
 
     /**
-     * @var Zend_Translate_Adapter
+     * @var \Zend_Translate_Adapter
      */
     protected $translate;
 
     /**
      *
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     protected $util;
 
     /**
      * There can be only one, current user that is.
      *
-     * @var Gems_User_User
+     * @var \Gems_User_User
      */
     protected static $currentUser;
 
@@ -150,13 +155,13 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      */
     public function checkRegistryRequestsAnswers()
     {
-        // Make sure Gems_User_User gets userLoader variable.
+        // Make sure \Gems_User_User gets userLoader variable.
         $extras['userLoader'] = $this;
 
         // Make sure that this code keeps working when _initSession
         // is removed from GemsEscort
-        if (! $this->session instanceof Zend_Session_Namespace) {
-            $this->session = new Zend_Session_Namespace('gems.' . GEMS_PROJECT_NAME . '.session');
+        if (! $this->session instanceof \Zend_Session_Namespace) {
+            $this->session = new \Zend_Session_Namespace('gems.' . GEMS_PROJECT_NAME . '.session');
 
             $idleTimeout = $this->project->getSessionTimeout();
 
@@ -175,11 +180,11 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      * @param int $organization
      * @param string $userClassName
      * @param int $userId The person creating the user.
-     * @return Gems_User_User Newly created
+     * @return \Gems_User_User Newly created
      */
     public function createUser($login_name, $organization, $userClassName, $userId)
     {
-        $now = new MUtil_Db_Expr_CurrentTimestamp();;
+        $now = new \MUtil_Db_Expr_CurrentTimestamp();;
 
         $values['gul_user_class'] = $userClassName;
         $values['gul_can_login']  = 1;
@@ -194,7 +199,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
 
         // Update class definition if it already exists
         if ($login_id = $this->db->fetchOne($select)) {
-            $where = implode(' ', $select->getPart(Zend_Db_Select::WHERE));
+            $where = implode(' ', $select->getPart(\Zend_Db_Select::WHERE));
             $this->db->update('gems__user_logins', $values, $where);
 
         } else {
@@ -213,11 +218,11 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      * Makes sure default values are set for a user
      *
      * @param array $values
-     * @param Gems_User_UserDefinitionInterface $definition
+     * @param \Gems_User_UserDefinitionInterface $definition
      * @param string $defName Optional
      * @return array
      */
-    public function ensureDefaultUserValues(array $values, Gems_User_UserDefinitionInterface $definition, $defName = null)
+    public function ensureDefaultUserValues(array $values, \Gems_User_UserDefinitionInterface $definition, $defName = null)
     {
         if (! isset($values['user_active'])) {
             $values['user_active'] = true;
@@ -268,13 +273,13 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     /**
      * Returns a change password form for this user
      *
-     * @param Gems_user_User $user
-     * @param mixed $args_array MUtil_Ra::args array for LoginForm initiation.
-     * @return Gems_User_Form_ChangePasswordForm
+     * @param \Gems_user_User $user
+     * @param mixed $args_array \MUtil_Ra::args array for LoginForm initiation.
+     * @return \Gems_User_Form_ChangePasswordForm
      */
     public function getChangePasswordForm($user, $args_array = null)
     {
-        $args = MUtil_Ra::args(func_get_args(), array('user' => 'Gems_User_User'));
+        $args = \MUtil_Ra::args(func_get_args(), array('user' => 'Gems_User_User'));
 
         $form = $this->_loadClass('Form_ChangePasswordForm', true, array($args));
 
@@ -284,7 +289,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     /**
      * Get the currently loggin in user
      *
-     * @return Gems_User_User
+     * @return \Gems_User_User
      */
     public final function getCurrentUser()
     {
@@ -300,16 +305,16 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
                 self::$currentUser = $this->_loadClass('User', true, array($this->session, $this->_getClass($defName)));
 
             } else {
-                if (MUtil_Console::isConsole()) {
+                if (\MUtil_Console::isConsole()) {
                     if (! $this->project->isConsoleAllowed()) {
                         echo "Accessing " . GEMS_PROJECT_NAME . " from the command line is not allowed.\n";
                         exit;
                     }
 
 
-                    $request = Zend_Controller_Front::getInstance()->getRequest();
+                    $request = \Zend_Controller_Front::getInstance()->getRequest();
 
-                    if (($request instanceof MUtil_Controller_Request_Cli) && $request->hasUserLogin()) {
+                    if (($request instanceof \MUtil_Controller_Request_Cli) && $request->hasUserLogin()) {
                         $user = $this->getUser($request->getUserName(), $request->getUserOrganization());
 
                         $authResult = $user->authenticate($request->getUserPassword());
@@ -321,13 +326,13 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
                         self::$currentUser = $user;
 
                     } elseif ($this->project->getConsoleRole()) {
-                        // MUtil_Echo::track($this->request->getUserName(), $this->request->getUserOrganization());
+                        // \MUtil_Echo::track($this->request->getUserName(), $this->request->getUserOrganization());
                         self::$currentUser = $this->loadUser(self::USER_CONSOLE, 0, '(system)');
                     }
 
                 }
                 if (! self::$currentUser) {
-                    self::$currentUser = $this->getUser(null, null);
+                    self::$currentUser = $this->getUser(null, self::SYSTEM_NO_ORG);
                 }
                 self::$currentUser->setAsCurrentUser();
            }
@@ -340,12 +345,12 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      * Returns a layered login form where user first selects a top organization and then a
      * child organization
      *
-     * @param mixed $args_array MUtil_Ra::args array for LoginForm initiation.
-     * @return Gems_User_Form_LayeredLoginForm
+     * @param mixed $args_array \MUtil_Ra::args array for LoginForm initiation.
+     * @return \Gems_User_Form_LayeredLoginForm
      */
     public function getLayeredLoginForm($args_array = null)
     {
-        $args = MUtil_Ra::args(func_get_args());
+        $args = \MUtil_Ra::args(func_get_args());
 
         return $this->_loadClass('Form_LayeredLoginForm', true, array($args));
     }
@@ -353,12 +358,12 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     /**
      * Returns a login form
      *
-     * @param mixed $args_array MUtil_Ra::args array for LoginForm initiation.
-     * @return Gems_User_Form_LoginForm
+     * @param mixed $args_array \MUtil_Ra::args array for LoginForm initiation.
+     * @return \Gems_User_Form_LoginForm
      */
     public function getLoginForm($args_array = null)
     {
-        $args = MUtil_Ra::args(func_get_args());
+        $args = \MUtil_Ra::args(func_get_args());
 
         return $this->_loadClass('Form_LoginForm', true, array($args));
     }
@@ -368,7 +373,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      * self::$_noOrganization when the database does not yet exist.
      *
      * @param int $organizationId Optional, uses current user or url when empty
-     * @return Gems_User_Organization
+     * @return \Gems_User_Organization
      */
     public function getOrganization($organizationId = null)
     {
@@ -418,7 +423,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
                 $urls = array();
                 try {
                     $data = $this->db->fetchPairs("SELECT gor_id_organization, gor_url_base FROM gems__organizations WHERE gor_active=1 AND gor_url_base IS NOT NULL");
-                } catch (Zend_Db_Exception $zde) {
+                } catch (\Zend_Db_Exception $zde) {
                     // Table might not be filled
                     $data = array();
                 }
@@ -434,7 +439,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
                     $this->cache->save($urls, $cacheId, array('organization', 'organizations'));
                 }
             }
-            // MUtil_Echo::track($urls);
+            // \MUtil_Echo::track($urls);
         }
 
         $current = $this->util->getCurrentURI();
@@ -447,7 +452,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     /**
      * Get password weakness checker.
      *
-     * @return Gems_User_PasswordChecker
+     * @return \Gems_User_PasswordChecker
      */
     public function getPasswordChecker()
     {
@@ -457,12 +462,12 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     /**
      * Returns a reset form for handling both the incoming request and the outgoing reset request
      *
-     * @param mixed $args_array MUtil_Ra::args array for LoginForm initiation.
-     * @return Gems_User_Form_ResetRequestForm
+     * @param mixed $args_array \MUtil_Ra::args array for LoginForm initiation.
+     * @return \Gems_User_Form_ResetRequestForm
      */
     public function getResetRequestForm($args_array = null)
     {
-        $args = MUtil_Ra::args(func_get_args());
+        $args = \MUtil_Ra::args(func_get_args());
 
         return $this->_loadClass('Form_ResetRequestForm', true, array($args));
     }
@@ -472,7 +477,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      *
      * @param string $login_name
      * @param int $currentOrganization
-     * @return Gems_User_User But ! ->isActive when the user does not exist
+     * @return \Gems_User_User But ! ->isActive when the user does not exist
      */
     public function getUser($login_name, $currentOrganization)
     {
@@ -496,7 +501,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      * Get the user having the reset key specified
      *
      * @param string $resetKey
-     * @return Gems_User_User But ! ->isActive when the user does not exist
+     * @return \Gems_User_User But ! ->isActive when the user does not exist
      */
     public function getUserByResetKey($resetKey)
     {
@@ -507,15 +512,15 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
         $select = $this->db->select();
         if ('os' == substr($resetKey, 0, 2)) {
             // Oldstaff reset key!
-            $select->from('gems__staff', array(new Zend_Db_Expr("'" . self::USER_OLD_STAFF . "' AS user_class"), 'gsf_id_organization', 'gsf_login'))
+            $select->from('gems__staff', array(new \Zend_Db_Expr("'" . self::USER_OLD_STAFF . "' AS user_class"), 'gsf_id_organization', 'gsf_login'))
                     ->where('gsf_reset_key = ?', substr($resetKey, 2));
         } else {
             $select->from('gems__user_passwords', array())
                     ->joinLeft('gems__user_logins', 'gup_id_user = gul_id_user', array("gul_user_class", 'gul_id_organization', 'gul_login'))
                     ->where('gup_reset_key = ?', $resetKey);
         }
-        if ($row = $this->db->fetchRow($select, null, Zend_Db::FETCH_NUM)) {
-            // MUtil_Echo::track($row);
+        if ($row = $this->db->fetchRow($select, null, \Zend_Db::FETCH_NUM)) {
+            // \MUtil_Echo::track($row);
             return $this->loadUser($row[0], $row[1], $row[2]);
         }
 
@@ -526,13 +531,13 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      * Get a staff user using the $staff_id
      *
      * @param int $staff_id
-     * @return Gems_User_User But ! ->isActive when the user does not exist
+     * @return \Gems_User_User But ! ->isActive when the user does not exist
      */
     public function getUserByStaffId($staff_id)
     {
         $data = $this->db->fetchRow("SELECT gsf_login, gsf_id_organization FROM gems__staff WHERE gsf_id_user = ?", $staff_id);
 
-        // MUtil_Echo::track($data);
+        // \MUtil_Echo::track($data);
         if (false == $data) {
             $data = array('gsf_login' => null, 'gsf_id_organization' => null);
         }
@@ -545,7 +550,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      *
      * @param string $login_name
      * @param int $organization
-     * @return Gems_User_User But ! ->isActive when the user does not exist
+     * @return \Gems_User_User But ! ->isActive when the user does not exist
      */
     protected function getUserClass($login_name, $organization)
     {
@@ -568,14 +573,14 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
         try {
             $select = $this->getUserClassSelect($login_name, $organization);
 
-            if ($row = $this->db->fetchRow($select, null, Zend_Db::FETCH_NUM)) {
+            if ($row = $this->db->fetchRow($select, null, \Zend_Db::FETCH_NUM)) {
                 if ($row[3] == 1 || $this->allowLoginOnOtherOrganization === true) {
-                    // MUtil_Echo::track($row);
+                    // \MUtil_Echo::track($row);
                     return $this->loadUser($row[0], $row[1], $row[2]);
                 }
             }
 
-        } catch (Zend_Db_Exception $e) {
+        } catch (\Zend_Db_Exception $e) {
             // Intentional fall through
         }
 
@@ -596,16 +601,16 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
             $values['gul_id_organization'] = $organization;
             $values['gul_user_class']      = self::USER_OLD_STAFF; // Old staff as password is still in gems__staff
             $values['gul_can_login']       = 1;
-            $values['gul_changed']         = new MUtil_Db_Expr_CurrentTimestamp();
+            $values['gul_changed']         = new \MUtil_Db_Expr_CurrentTimestamp();
             $values['gul_changed_by']      = $user_id;
             $values['gul_created']         = $values['gul_changed'];
             $values['gul_created_by']      = $user_id;
 
             try {
                 $this->db->insert('gems__user_logins', $values);
-            } catch (Zend_Db_Exception $e) {
+            } catch (\Zend_Db_Exception $e) {
                 // Fall through as this does not work if the database upgrade did not run
-                // MUtil_Echo::r($e);
+                // \MUtil_Echo::r($e);
             }
 
             return $this->loadUser(self::USER_OLD_STAFF, $organization, $login_name);
@@ -619,7 +624,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      *
      * @param string $login_name
      * @param int $organization
-     * @return Zend_Db_Select
+     * @return \Zend_Db_Select
      */
     protected function getUserClassSelect($login_name, $organization)
     {
@@ -636,10 +641,10 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
                 ->where('gul_can_login = 1');
 
         if ($this->allowLoginOnWithoutOrganization && !$organization) {
-            $select->columns(new Zend_Db_Expr('1 AS tolerance'));
+            $select->columns(new \Zend_Db_Expr('1 AS tolerance'));
         } else {
             $select->from('gems__organizations', array())
-                ->columns(new Zend_Db_Expr(
+                ->columns(new \Zend_Db_Expr(
                         "CASE
                             WHEN gor_id_organization = gul_id_organization THEN 1
                             WHEN gor_accessible_by LIKE CONCAT('%:', gul_id_organization, ':%') THEN 2
@@ -650,7 +655,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
                 ->order('tolerance');
         }
         $wheres[] = $this->db->quoteInto('gul_login = ?', $login_name);
-        $isEmail  = MUtil_String::contains($login_name, '@');
+        $isEmail  = \MUtil_String::contains($login_name, '@');
 
         if ($isEmail && $this->allowStaffEmailLogin) {
             $rows = $this->db->fetchAll(
@@ -678,8 +683,8 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
             }
         }
         // Add search fields
-        $select->where(new Zend_Db_Expr('(' . implode(') OR (', $wheres) . ')'));
-        // MUtil_Echo::track($select->__toString());
+        $select->where(new \Zend_Db_Expr('(' . implode(') OR (', $wheres) . ')'));
+        // \MUtil_Echo::track($select->__toString());
 
         return $select;
     }
@@ -689,7 +694,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      * instantiating a user.
      *
      * @param string $userClassName
-     * @return Gems_User_UserDefinitionInterface
+     * @return \Gems_User_UserDefinitionInterface
      */
     public function getUserDefinition($userClassName)
     {
@@ -716,17 +721,17 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      * @param string $defName
      * @param int $userOrganization
      * @param string $userName
-     * @return Gems_User_User But ! ->isActive when the user does not exist
+     * @return \Gems_User_User But ! ->isActive when the user does not exist
      */
     protected function loadUser($defName, $userOrganization, $userName)
     {
         $definition = $this->getUserDefinition($defName);
 
         $values = $definition->getUserData($userName, $userOrganization);
-        // MUtil_Echo::track($defName, $login_name, $userOrganization, $values);
+        // \MUtil_Echo::track($defName, $login_name, $userOrganization, $values);
 
         $values = $this->ensureDefaultUserValues($values, $definition, $defName);
-        // MUtil_Echo::track($values, $userName, $userOrganization, $defName);
+        // \MUtil_Echo::track($values, $userName, $userOrganization, $defName);
 
         return $this->_loadClass('User', true, array($values, $definition));
     }
@@ -734,11 +739,11 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     /**
      * Check for password weakness.
      *
-     * @param Gems_User_User $user The user for e.g. name checks
+     * @param \Gems_User_User $user The user for e.g. name checks
      * @param string $password Or null when you want a report on all the rules for this password.
      * @return mixed String or array of strings containing warning messages
      */
-    public function reportPasswordWeakness(Gems_User_User $user, $password = null)
+    public function reportPasswordWeakness(\Gems_User_User $user, $password = null)
     {
         return $user->reportPasswordWeakness($password);
     }
@@ -746,10 +751,10 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     /**
      * Sets a new user as the current user.
      *
-     * @param Gems_User_User $user
-     * @return Gems_User_UserLoader (continuation pattern)
+     * @param \Gems_User_User $user
+     * @return \Gems_User_UserLoader (continuation pattern)
      */
-    public function setCurrentUser(Gems_User_User $user)
+    public function setCurrentUser(\Gems_User_User $user)
     {
         if ($user !== self::$currentUser) {
             $this->unsetCurrentUser();
@@ -768,12 +773,12 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     /**
      * Removes the current user
      *
-     * @return Gems_User_UserLoader (continuation pattern)
+     * @return \Gems_User_UserLoader (continuation pattern)
      */
     public function unsetCurrentUser()
     {
         // Remove if the currentUser still sees itself as the current user.
-        if ((self::$currentUser instanceof Gems_User_User) && self::$currentUser->isCurrentUser()) {
+        if ((self::$currentUser instanceof \Gems_User_User) && self::$currentUser->isCurrentUser()) {
             self::$currentUser->unsetAsCurrentUser(false);
         }
         self::$currentUser = null;

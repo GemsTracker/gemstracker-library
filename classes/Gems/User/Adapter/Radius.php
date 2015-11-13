@@ -50,7 +50,7 @@ include_once 'Radius/radius.class.php';
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_Adapter_Radius implements Zend_Auth_Adapter_Interface
+class Gems_User_Adapter_Radius implements \Zend_Auth_Adapter_Interface
 {
 	/**
 	 * $_identity - Identity value
@@ -147,7 +147,7 @@ class Gems_User_Adapter_Radius implements Zend_Auth_Adapter_Interface
 	 */
 	public function __construct($config = array())
 	{
-		if ($config instanceof Zend_Config) {
+		if ($config instanceof \Zend_Config) {
 			$config = $config->toArray();
 		}
 
@@ -155,9 +155,9 @@ class Gems_User_Adapter_Radius implements Zend_Auth_Adapter_Interface
 			$exception = "Constructor should be passed and array with at least ip and sharedsecret.";
 
 			/**
-			 * @see Zend_Auth_Adapter_Exception
+			 * @see \Zend_Auth_Adapter_Exception
 			 */
-			throw new Zend_Auth_Adapter_Exception($exception);
+			throw new \Zend_Auth_Adapter_Exception($exception);
 		}
 
 		foreach ($config as $key => $value) {
@@ -191,7 +191,7 @@ class Gems_User_Adapter_Radius implements Zend_Auth_Adapter_Interface
 	 * setIdentity() - set the value to be used as the identity
 	 *
 	 * @param  string $value
-	 * @return Gems_User_Adapter_Radius Provides a fluent interface
+	 * @return \Gems_User_Adapter_Radius Provides a fluent interface
 	 */
 	public function setIdentity($value)
 	{
@@ -203,7 +203,7 @@ class Gems_User_Adapter_Radius implements Zend_Auth_Adapter_Interface
 	 * setCredential() - set the credential value to be used
 	 *
 	 * @param  string $credential
-	 * @return Gems_User_Adapter_Radius Provides a fluent interface
+	 * @return \Gems_User_Adapter_Radius Provides a fluent interface
 	 */
 	public function setCredential($credential)
 	{
@@ -212,23 +212,23 @@ class Gems_User_Adapter_Radius implements Zend_Auth_Adapter_Interface
 	}
 
 	/**
-	 * authenticate() - defined by Zend_Auth_Adapter_Interface.  This method is called to
+	 * authenticate() - defined by \Zend_Auth_Adapter_Interface.  This method is called to
 	 * attempt an authenication.  Previous to this call, this adapter would have already
 	 * been configured with all necessary information to successfully connect to a Radius
 	 * server and attempt to find a record matching the provided identity.
 	 *
-	 * @throws Zend_Auth_Adapter_Exception if answering the authentication query is impossible
-	 * @return Zend_Auth_Result
+	 * @throws \Zend_Auth_Adapter_Exception if answering the authentication query is impossible
+	 * @return \Zend_Auth_Result
 	 */
 	public function authenticate()
 	{
 		$this->_authenticateSetup();
 
 		if ($this->_radius->AccessRequest($this->_identity,$this->_credential)) {
-			$this->_authenticateResultInfo['code'] = Zend_Auth_Result::SUCCESS;
+			$this->_authenticateResultInfo['code'] = \Zend_Auth_Result::SUCCESS;
 			$this->_authenticateResultInfo['messages'][] = 'Authentication successful.';
 		} else {
-			$this->_authenticateResultInfo['code'] = Zend_Auth_Result::FAILURE;
+			$this->_authenticateResultInfo['code'] = \Zend_Auth_Result::FAILURE;
 			$this->_authenticateResultInfo['messages'][] = 'Authentication failed.';
 		}
 
@@ -240,7 +240,7 @@ class Gems_User_Adapter_Radius implements Zend_Auth_Adapter_Interface
 	 * _authenticateSetup() - This method abstracts the steps involved with making sure
 	 * that this adapter was indeed setup properly with all required peices of information.
 	 *
-	 * @throws Gems_Exception_Coding - in the event that setup was not done properly
+	 * @throws \Gems_Exception_Coding - in the event that setup was not done properly
 	 * @return true
 	 */
 	protected function _authenticateSetup()
@@ -248,24 +248,24 @@ class Gems_User_Adapter_Radius implements Zend_Auth_Adapter_Interface
 		$exception = null;
 
 		if ($this->_ip === null) {
-			$exception = 'An ip address must be specified for use with the Gems_User_Adapter_Radius authentication adapter.';
+			$exception = 'An ip address must be specified for use with the \Gems_User_Adapter_Radius authentication adapter.';
 		} elseif ($this->_sharedSecret === null) {
-			$exception = 'A shared secret must be specified for use with the Gems_User_Adapter_Radius authentication adapter.';
+			$exception = 'A shared secret must be specified for use with the \Gems_User_Adapter_Radius authentication adapter.';
 		} elseif ($this->_identity == '') {
-			$exception = 'A value for the identity was not provided prior to authentication with Gems_User_Adapter_Radius.';
+			$exception = 'A value for the identity was not provided prior to authentication with \Gems_User_Adapter_Radius.';
 		} elseif ($this->_credential === null) {
-			$exception = 'A credential value was not provided prior to authentication with Gems_User_Adapter_Radius.';
+			$exception = 'A credential value was not provided prior to authentication with \Gems_User_Adapter_Radius.';
 		}
 
 		if (null !== $exception) {
 			/**
-			 * @see Gems_Exception_Coding
+			 * @see \Gems_Exception_Coding
 			 */
-			throw new Gems_Exception_Coding($exception);
+			throw new \Gems_Exception_Coding($exception);
 		}
 
 		$this->_authenticateResultInfo = array(
-            'code'     => Zend_Auth_Result::FAILURE,
+            'code'     => \Zend_Auth_Result::FAILURE,
             'identity' => $this->_identity,
             'messages' => array()
 		);
@@ -276,14 +276,14 @@ class Gems_User_Adapter_Radius implements Zend_Auth_Adapter_Interface
 	}
 
 	/**
-	 * _authenticateCreateAuthResult() - This method creates a Zend_Auth_Result object
+	 * _authenticateCreateAuthResult() - This method creates a \Zend_Auth_Result object
 	 * from the information that has been collected during the authenticate() attempt.
 	 *
-	 * @return Zend_Auth_Result
+	 * @return \Zend_Auth_Result
 	 */
 	protected function _authenticateCreateAuthResult()
 	{
-		return new Zend_Auth_Result(
+		return new \Zend_Auth_Result(
 		$this->_authenticateResultInfo['code'],
 		$this->_authenticateResultInfo['identity'],
 		$this->_authenticateResultInfo['messages']

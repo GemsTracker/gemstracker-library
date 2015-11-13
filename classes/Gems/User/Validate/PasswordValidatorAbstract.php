@@ -44,11 +44,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-abstract class Gems_User_Validate_PasswordValidatorAbstract implements Zend_Validate_Interface
+abstract class Gems_User_Validate_PasswordValidatorAbstract implements \Zend_Validate_Interface
 {
     /**
      *
-     * @var Zend_Auth_Result
+     * @var \Zend_Auth_Result
      */
     private $_authResult = null;
 
@@ -110,10 +110,10 @@ abstract class Gems_User_Validate_PasswordValidatorAbstract implements Zend_Vali
     /**
      * Set the result for this validator
      *
-     * @param Zend_Auth_Result $result
+     * @param \Zend_Auth_Result $result
      * @return boolean True when valid
      */
-    protected function setAuthResult(Zend_Auth_Result $result)
+    protected function setAuthResult(\Zend_Auth_Result $result)
     {
         $this->_authResult = $result;
 

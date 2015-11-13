@@ -46,7 +46,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-abstract class Gems_User_UserDefinitionAbstract extends MUtil_Registry_TargetAbstract implements Gems_User_UserDefinitionInterface
+abstract class Gems_User_UserDefinitionAbstract extends \MUtil_Registry_TargetAbstract implements \Gems_User_UserDefinitionInterface
 {
     /**
      * The time period in hours a reset key is valid for this definition.
@@ -61,10 +61,10 @@ abstract class Gems_User_UserDefinitionAbstract extends MUtil_Registry_TargetAbs
      * Returns the setting for the definition whan no user is passed, otherwise
      * returns the answer for this specific user.
      *
-     * @param Gems_User_User $user Optional, the user whose password might change
+     * @param \Gems_User_User $user Optional, the user whose password might change
      * @return boolean
      */
-    public function canResetPassword(Gems_User_User $user = null)
+    public function canResetPassword(\Gems_User_User $user = null)
     {
         return false;
     }
@@ -75,10 +75,10 @@ abstract class Gems_User_UserDefinitionAbstract extends MUtil_Registry_TargetAbs
      * Returns the setting for the definition whan no user is passed, otherwise
      * returns the answer for this specific user.
      *
-     * @param Gems_User_User $user Optional, the user whose password might change
+     * @param \Gems_User_User $user Optional, the user whose password might change
      * @return boolean
      */
-    public function canSetPassword(Gems_User_User $user = null)
+    public function canSetPassword(\Gems_User_User $user = null)
     {
         return false;
     }
@@ -86,12 +86,12 @@ abstract class Gems_User_UserDefinitionAbstract extends MUtil_Registry_TargetAbs
     /**
      * Return a password reset key
      *
-     * @param Gems_User_User $user The user to create a key for.
+     * @param \Gems_User_User $user The user to create a key for.
      * @return string
      */
-    public function getPasswordResetKey(Gems_User_User $user)
+    public function getPasswordResetKey(\Gems_User_User $user)
     {
-        throw new Gems_Exception_Coding(sprintf('A password reset key cannot be issued for %s users.', get_class($this)));
+        throw new \Gems_Exception_Coding(sprintf('A password reset key cannot be issued for %s users.', get_class($this)));
     }
 
     /**
@@ -119,10 +119,10 @@ abstract class Gems_User_UserDefinitionAbstract extends MUtil_Registry_TargetAbs
     /**
      * Return true if the user has a password.
      *
-     * @param Gems_User_User $user The user to check
+     * @param \Gems_User_User $user The user to check
      * @return boolean
      */
-    public function hasPassword(Gems_User_User $user)
+    public function hasPassword(\Gems_User_User $user)
     {
         return false;
     }
@@ -130,13 +130,13 @@ abstract class Gems_User_UserDefinitionAbstract extends MUtil_Registry_TargetAbs
     /**
      * Set the password, if allowed for this user type.
      *
-     * @param Gems_User_User $user The user whose password to change
+     * @param \Gems_User_User $user The user whose password to change
      * @param string $password
-     * @return Gems_User_UserDefinitionInterface (continuation pattern)
+     * @return \Gems_User_UserDefinitionInterface (continuation pattern)
      */
-    public function setPassword(Gems_User_User $user, $password)
+    public function setPassword(\Gems_User_User $user, $password)
     {
-        throw new Gems_Exception_Coding(sprintf('The password cannot be set for %s users.', get_class($this)));
+        throw new \Gems_Exception_Coding(sprintf('The password cannot be set for %s users.', get_class($this)));
         return $this;
     }
 }

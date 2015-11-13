@@ -352,11 +352,15 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
      */
     protected function loadData($id)
     {
-        try {
-            $sql = "SELECT * FROM gems__organizations WHERE gor_id_organization = ? LIMIT 1";
-            $data = $this->db->fetchRow($sql, intval($id));
-        } catch (Exception $e) {
+        if (\Gems_User_UserLoader::SYSTEM_NO_ORG === $id) {
             $data = false;
+        } else {
+            try {
+                $sql = "SELECT * FROM gems__organizations WHERE gor_id_organization = ? LIMIT 1";
+                $data = $this->db->fetchRow($sql, intval($id));
+            } catch (\Exception $e) {
+                $data = false;
+            }
         }
 
         if ($data) {
@@ -372,7 +376,7 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
                     ORDER BY gor_name";
                 $data['can_access'] = $this->db->fetchPairs($sql);
                 natsort($data['can_access']);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $data['can_access'] = array();
             }
 
@@ -409,10 +413,10 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
         $organizationId = $this->getId();
 
         if ($organizationId && (! \Gems_Cookies::setOrganization($organizationId, $this->basepath->getBasePath()))) {
-            throw new Exception('Cookies must be enabled for this site.');
+            throw new \Exception('Cookies must be enabled for this site.');
         }
 
-        $escort = GemsEscort::getInstance();
+        $escort = \GemsEscort::getInstance();
         if ($escort instanceof \Gems_Project_Layout_MultiLayoutInterface) {
             $escort->layoutSwitch($this->getStyle());
         }

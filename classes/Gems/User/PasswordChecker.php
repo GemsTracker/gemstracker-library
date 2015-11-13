@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_PasswordChecker extends MUtil_Registry_TargetAbstract
+class Gems_User_PasswordChecker extends \MUtil_Registry_TargetAbstract
 {
     /**
      *
@@ -54,24 +54,24 @@ class Gems_User_PasswordChecker extends MUtil_Registry_TargetAbstract
 
     /**
      *
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     protected $project;
 
     /**
-     * @var Zend_Cache
+     * @var \Zend_Cache
      */
     protected $cache;
 
     /**
      *
-     * @var Zend_Translate
+     * @var \Zend_Translate
      */
     protected $translate;
 
     /**
      *
-     * @var Gems_User_User $user
+     * @var \Gems_User_User $user
      */
     protected $user;
 
@@ -123,7 +123,7 @@ class Gems_User_PasswordChecker extends MUtil_Registry_TargetAbstract
             $filename = APPLICATION_PATH . '/' . ltrim($parameter, '/');;
 
             if (! file_exists($filename)) {
-                throw new Gems_Exception("Unable to load password list '{$filename}'");
+                throw new \Gems_Exception("Unable to load password list '{$filename}'");
             }
 
             $passwordList = explode("\n", file_get_contents($filename));
@@ -278,25 +278,25 @@ class Gems_User_PasswordChecker extends MUtil_Registry_TargetAbstract
     /**
      * Check for password weakness.
      *
-     * @param Gems_User_User $user
+     * @param \Gems_User_User $user
      * @param string $password Or null when you want a report on all the rules for this password.
      * @param array  $codes An array of code names that identify rules that should be used only for those codes.
      * @return mixed String or array of strings containing warning messages
      */
-    public function reportPasswordWeakness(Gems_User_User $user, $password, array $codes)
+    public function reportPasswordWeakness(\Gems_User_User $user, $password, array $codes)
     {
         $this->user = $user;
         $this->_errors = array();
 
         $rules = $this->project->getPasswordRules($codes);
 
-        // MUtil_Echo::track($rules);
+        // \MUtil_Echo::track($rules);
         foreach ($rules as $rule => $parameter) {
             if (method_exists($this, $rule)) {
                 $this->$rule($parameter, $password);
             }
         }
-        // MUtil_Echo::track($this->_errors);
+        // \MUtil_Echo::track($this->_errors);
 
         return $this->_errors;
     }

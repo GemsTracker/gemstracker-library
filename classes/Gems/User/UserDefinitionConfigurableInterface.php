@@ -48,9 +48,9 @@ interface Gems_User_UserDefinitionConfigurableInterface
     /**
      * Appends the needed fields for this config to the $bridge
      *
-     * @param MUtil_Model_ModelAbstract $orgModel
+     * @param \MUtil_Model_ModelAbstract $orgModel
      */
-    public function addConfigFields(MUtil_Model_ModelAbstract $orgModel);
+    public function addConfigFields(\MUtil_Model_ModelAbstract $orgModel);
 
     /**
      * Should return the number of changed records for the save performed

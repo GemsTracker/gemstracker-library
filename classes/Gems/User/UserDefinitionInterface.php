@@ -52,10 +52,10 @@ interface Gems_User_UserDefinitionInterface
      * Returns the setting for the definition whan no user is passed, otherwise
      * returns the answer for this specific user.
      *
-     * @param Gems_User_User $user Optional, the user whose password might change
+     * @param \Gems_User_User $user Optional, the user whose password might change
      * @return boolean
      */
-    public function canResetPassword(Gems_User_User $user = null);
+    public function canResetPassword(\Gems_User_User $user = null);
 
     /**
      * Return true if the password can be set.
@@ -63,26 +63,26 @@ interface Gems_User_UserDefinitionInterface
      * Returns the setting for the definition whan no user is passed, otherwise
      * returns the answer for this specific user.
      *
-     * @param Gems_User_User $user Optional, the user whose password might change
+     * @param \Gems_User_User $user Optional, the user whose password might change
      * @return boolean
      */
-    public function canSetPassword(Gems_User_User $user = null);
+    public function canSetPassword(\Gems_User_User $user = null);
 
     /**
-     * Returns an initialized Zend_Auth_Adapter_Interface
+     * Returns an initialized \Zend_Auth_Adapter_Interface
      *
-     * @param Gems_User_User $user
-     * @return Zend_Auth_Adapter_Interface
+     * @param \Gems_User_User $user
+     * @return \Zend_Auth_Adapter_Interface
      */
-    public function getAuthAdapter(Gems_User_User $user, $password);
+    public function getAuthAdapter(\Gems_User_User $user, $password);
 
     /**
      * Return a password reset key
      *
-     * @param Gems_User_User $user The user to create a key for.
+     * @param \Gems_User_User $user The user to create a key for.
      * @return string
      */
-    public function getPasswordResetKey(Gems_User_User $user);
+    public function getPasswordResetKey(\Gems_User_User $user);
 
     /**
      * Returns the number of hours a reset key remains valud
@@ -112,17 +112,17 @@ interface Gems_User_UserDefinitionInterface
     /**
      * Return true if the user has a password.
      *
-     * @param Gems_User_User $user The user to check
+     * @param \Gems_User_User $user The user to check
      * @return boolean
      */
-    public function hasPassword(Gems_User_User $user);
+    public function hasPassword(\Gems_User_User $user);
 
     /**
      * Set the password, if allowed for this user type.
      *
-     * @param Gems_User_User $user The user whose password to change
+     * @param \Gems_User_User $user The user whose password to change
      * @param string $password
-     * @return Gems_User_UserDefinitionInterface (continuation pattern)
+     * @return \Gems_User_UserDefinitionInterface (continuation pattern)
      */
-    public function setPassword(Gems_User_User $user, $password);
+    public function setPassword(\Gems_User_User $user, $password);
 }

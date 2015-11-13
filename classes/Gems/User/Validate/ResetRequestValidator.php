@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.3
  */
-class Gems_User_Validate_ResetRequestValidator implements Zend_Validate_Interface
+class Gems_User_Validate_ResetRequestValidator implements \Zend_Validate_Interface
 {
     /**
      * The error message
@@ -55,22 +55,22 @@ class Gems_User_Validate_ResetRequestValidator implements Zend_Validate_Interfac
 
     /**
      *
-     * @var Gems_User_Validate_GetUserInterface
+     * @var \Gems_User_Validate_GetUserInterface
      */
     private $_userSource;
 
     /**
      *
-     * @var Zend_Translate
+     * @var \Zend_Translate
      */
     private $translate;
 
     /**
      *
-     * @param Gems_User_Validate_GetUserInterface $userSource The source for the user
-     * @param Zend_Translate $translate
+     * @param \Gems_User_Validate_GetUserInterface $userSource The source for the user
+     * @param \Zend_Translate $translate
      */
-    public function __construct(Gems_User_Validate_GetUserInterface $userSource, Zend_Translate $translate)
+    public function __construct(\Gems_User_Validate_GetUserInterface $userSource, \Zend_Translate $translate)
     {
         $this->_userSource = $userSource;
         $this->translate   = $translate;
@@ -95,7 +95,7 @@ class Gems_User_Validate_ResetRequestValidator implements Zend_Validate_Interfac
      * @param  mixed $value
      * @param  mixed $content
      * @return boolean
-     * @throws Zend_Validate_Exception If validation of $value is impossible
+     * @throws \Zend_Validate_Exception If validation of $value is impossible
      */
     public function isValid($value, $context = array())
     {

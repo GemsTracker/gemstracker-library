@@ -45,11 +45,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
+class Gems_User_OldStaffUserDefinition extends \Gems_User_UserDefinitionAbstract
 {
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
@@ -62,7 +62,7 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
 
     /**
      *
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     protected $project;
 
@@ -72,10 +72,10 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
      * Returns the setting for the definition whan no user is passed, otherwise
      * returns the answer for this specific user.
      *
-     * @param Gems_User_User $user Optional, the user whose password might change
+     * @param \Gems_User_User $user Optional, the user whose password might change
      * @return boolean
      */
-    public function canResetPassword(Gems_User_User $user = null)
+    public function canResetPassword(\Gems_User_User $user = null)
     {
         if ($user) {
             // Depends on the user.
@@ -98,22 +98,22 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
      * Returns the setting for the definition whan no user is passed, otherwise
      * returns the answer for this specific user.
      *
-     * @param Gems_User_User $user Optional, the user whose password might change
+     * @param \Gems_User_User $user Optional, the user whose password might change
      * @return boolean
      */
-    public function canSetPassword(Gems_User_User $user = null)
+    public function canSetPassword(\Gems_User_User $user = null)
     {
         return true;
     }
 
     /**
-     * Returns an initialized Zend_Auth_Adapter_Interface
+     * Returns an initialized \Zend_Auth_Adapter_Interface
      *
-     * @param Gems_User_User $user
+     * @param \Gems_User_User $user
      * @param string $password
-     * @return Zend_Auth_Adapter_Interface
+     * @return \Zend_Auth_Adapter_Interface
      */
-    public function getAuthAdapter(Gems_User_User $user, $password)
+    public function getAuthAdapter(\Gems_User_User $user, $password)
     {
         $pwd_hash = $this->hashPassword($password);
 
@@ -128,7 +128,7 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
         }
 
         /*
-        $adapter = new Zend_Auth_Adapter_DbTable(null, 'gems__staff', 'gsf_login', 'gsf_password');
+        $adapter = new \Zend_Auth_Adapter_DbTable(null, 'gems__staff', 'gsf_login', 'gsf_password');
 
         $pwd_hash = $this->hashPassword($password);
 
@@ -146,13 +146,13 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
     /**
      * Return a password reset key
      *
-     * @param Gems_User_User $user The user to create a key for.
+     * @param \Gems_User_User $user The user to create a key for.
      * @return string
      */
-    public function getPasswordResetKey(Gems_User_User $user)
+    public function getPasswordResetKey(\Gems_User_User $user)
     {
-        $model = new MUtil_Model_TableModel('gems__staff');
-        Gems_Model::setChangeFieldsByPrefix($model, 'gsf', $user->getUserId());
+        $model = new \MUtil_Model_TableModel('gems__staff');
+        \Gems_Model::setChangeFieldsByPrefix($model, 'gsf', $user->getUserId());
 
         $data['gsf_id_user'] = $user->getUserId();
 
@@ -163,7 +163,7 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
         } else {
             $data['gsf_reset_key'] = $this->hashPassword(time() . $user->getEmailAddress());
         }
-        $data['gsf_reset_req'] = new MUtil_Db_Expr_CurrentTimestamp();
+        $data['gsf_reset_req'] = new \MUtil_Db_Expr_CurrentTimestamp();
 
         // Loop for case when hash is not unique
         while (true) {
@@ -173,7 +173,7 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
                 // Old staff keys can by recognized because they start with 'os'
                 return 'os' . $data['gsf_reset_key'];
 
-            } catch (Zend_Db_Exception $zde) {
+            } catch (\Zend_Db_Exception $zde) {
                 $data['gsf_reset_key'] = $this->hashPassword(time() . $user->getEmailAddress());
             }
         }
@@ -197,11 +197,11 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
 
         try {
             // Fails before patch has run...
-            return $this->db->fetchRow($select2, array($login_name), Zend_Db::FETCH_ASSOC);
+            return $this->db->fetchRow($select2, array($login_name), \Zend_Db::FETCH_ASSOC);
 
-        } catch (Zend_Db_Exception $e) {
+        } catch (\Zend_Db_Exception $e) {
             // So then we try the old method
-            return $this->db->fetchRow($select, array($login_name), Zend_Db::FETCH_ASSOC);
+            return $this->db->fetchRow($select, array($login_name), \Zend_Db::FETCH_ASSOC);
         }
     }
 
@@ -210,7 +210,7 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
      *
      * @param string $login_name
      * @param int $organization
-     * @return Zend_Db_Select
+     * @return \Zend_Db_Select
      */
     protected function getUserSelect($login_name, $organization)
     {
@@ -218,7 +218,7 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
          * Read the needed parameters from the different tables, lots of renames
          * for compatibility accross implementations.
          */
-        $select = new Zend_Db_Select($this->db);
+        $select = new \Zend_Db_Select($this->db);
         $select->from('gems__staff', array(
                     'user_id'             => 'gsf_id_user',
                     'user_login'          => 'gsf_login',
@@ -231,7 +231,7 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
                     'user_locale'         => 'gsf_iso_lang',
                     'user_logout'         => 'gsf_logout_on_survey',
                     'user_base_org_id'    => 'gsf_id_organization',
-                    'user_resetkey_valid' => new Zend_Db_Expr('CASE WHEN DATE_ADD(gsf_reset_req, INTERVAL ' . $this->hoursResetKeyIsValid . ' HOUR) >= CURRENT_TIMESTAMP THEN 1 ELSE 0 END'),
+                    'user_resetkey_valid' => new \Zend_Db_Expr('CASE WHEN DATE_ADD(gsf_reset_req, INTERVAL ' . $this->hoursResetKeyIsValid . ' HOUR) >= CURRENT_TIMESTAMP THEN 1 ELSE 0 END'),
                     ))
                ->join('gems__groups', 'gsf_id_primary_group = ggp_id_group', array(
                    'user_role'            => 'ggp_role',
@@ -269,10 +269,10 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
     /**
      * Sets the user up as a new staff user
      *
-     * @param Gems_User_User $user
+     * @param \Gems_User_User $user
      * @param string $password
      */
-    protected function makeNewStaffUser(Gems_User_User $user, $password)
+    protected function makeNewStaffUser(\Gems_User_User $user, $password)
     {
         $staff_id = $user->getUserId();
         $sql      = 'SELECT gul_id_user FROM gems__user_logins WHERE gul_can_login = 1 AND gul_login = ? AND gul_id_organization = ?';
@@ -280,7 +280,7 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
         try {
             $user_id = $this->db->fetchOne($sql, array($user->getLoginName(), $user->getBaseOrganizationId()));
 
-            $currentTimestamp = new MUtil_Db_Expr_CurrentTimestamp();
+            $currentTimestamp = new \MUtil_Db_Expr_CurrentTimestamp();
 
             // Move to USER_STAFF
             $values['gup_id_user']         = $user_id;
@@ -297,7 +297,7 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
 
             // Update user class
             $values = array();
-            $values['gul_user_class']    = Gems_User_UserLoader::USER_STAFF;
+            $values['gul_user_class']    = \Gems_User_UserLoader::USER_STAFF;
             $values['gul_changed']       = $currentTimestamp ;
             $values['gul_changed_by']    = $staff_id;
             $this->db->update('gems__user_logins', $values, $this->db->quoteInto('gul_id_user = ?', $user_id));
@@ -310,12 +310,12 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
 
             $this->db->update('gems__staff', $values, $this->db->quoteInto('gsf_id_user = ?', $staff_id));
 
-            $user->refresh(Gems_User_UserLoader::USER_STAFF);
+            $user->refresh(\Gems_User_UserLoader::USER_STAFF);
 
-        } catch (Zend_Db_Exception $e) {
-            GemsEscort::getInstance()->logger->log($e->getMessage(), Zend_Log::ERR);
+        } catch (\Zend_Db_Exception $e) {
+            \GemsEscort::getInstance()->logger->log($e->getMessage(), \Zend_Log::ERR);
             // Fall through as this does not work if the database upgrade did not run
-            // MUtil_Echo::r($e);
+            // \MUtil_Echo::r($e);
 
         }
     }
@@ -323,11 +323,11 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
     /**
      * Set the password, if allowed for this user type.
      *
-     * @param Gems_User_User $user The user whose password to change
+     * @param \Gems_User_User $user The user whose password to change
      * @param string $password
-     * @return Gems_User_UserDefinitionInterface (continuation pattern)
+     * @return \Gems_User_UserDefinitionInterface (continuation pattern)
      */
-    public function setPassword(Gems_User_User $user, $password)
+    public function setPassword(\Gems_User_User $user, $password)
     {
         $this->makeNewStaffUser($user, $password);
 

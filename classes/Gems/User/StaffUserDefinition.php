@@ -44,14 +44,14 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_StaffUserDefinition extends Gems_User_DbUserDefinitionAbstract
+class Gems_User_StaffUserDefinition extends \Gems_User_DbUserDefinitionAbstract
 {
     /**
      * A select used by subclasses to add fields to the select.
      *
      * @param string $login_name
      * @param int $organization
-     * @return Zend_Db_Select
+     * @return \Zend_Db_Select
      */
     protected function getUserSelect($login_name, $organization)
     {
@@ -59,7 +59,7 @@ class Gems_User_StaffUserDefinition extends Gems_User_DbUserDefinitionAbstract
          * Read the needed parameters from the different tables, lots of renames
          * for compatibility accross implementations.
          */
-        $select = new Zend_Db_Select($this->db);
+        $select = new \Zend_Db_Select($this->db);
         $select->from('gems__user_logins', array(
                     'user_login_id' => 'gul_id_user',
                     ))
@@ -82,7 +82,7 @@ class Gems_User_StaffUserDefinition extends Gems_User_DbUserDefinitionAbstract
                    ))
                ->joinLeft('gems__user_passwords', 'gul_id_user = gup_id_user', array(
                    'user_password_reset' => 'gup_reset_required',
-                   'user_resetkey_valid' => new Zend_Db_Expr('CASE WHEN DATE_ADD(gup_reset_requested, INTERVAL ' .
+                   'user_resetkey_valid' => new \Zend_Db_Expr('CASE WHEN DATE_ADD(gup_reset_requested, INTERVAL ' .
                         $this->hoursResetKeyIsValid .
                         ' HOUR) >= CURRENT_TIMESTAMP THEN 1 ELSE 0 END'),
                    'user_password_last_changed' => 'gup_last_pwd_change',
@@ -95,7 +95,7 @@ class Gems_User_StaffUserDefinition extends Gems_User_DbUserDefinitionAbstract
                ->where('gul_id_organization = ?')
                ->limit(1);
 
-        // MUtil_Echo::track($select->__toString());
+        // \MUtil_Echo::track($select->__toString());
 
         return $select;
     }

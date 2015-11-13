@@ -294,7 +294,7 @@ class GemsEscort extends \MUtil_Application_Escort
                 \MUtil_File::ensureDir($logPath);
                 $writer = new \Zend_Log_Writer_Stream($logPath . '/errors.log');
             } catch (Exception $exc) {
-                $this->bootstrap(array('locale', 'translate', 'translateAdapter'));
+                $this->bootstrap(array('locale', 'translate'));
                 die(sprintf($this->translateAdapter->_('Path %s not writable'), $logPath));
             }
         }
@@ -568,11 +568,36 @@ class GemsEscort extends \MUtil_Application_Escort
     }
 
     /**
+     * Initialize the OpenRosa survey source
+     */
+    protected function _initOpenRosa()
+    {
+        $this->bootstrap(array('loader', 'translate'));
+
+        if ($this->getOption('useOpenRosa')) {
+            // First handle dependencies
+            $this->bootstrap(array('db', 'loader', 'util'));
+
+            $this->getLoader()->addPrefixPath('OpenRosa', GEMS_LIBRARY_DIR . '/classes/OpenRosa', true);
+
+            $autoloader = \Zend_Loader_Autoloader::getInstance();
+            $autoloader->registerNamespace('OpenRosa_');
+
+            /**
+             * Add Source for OpenRosa
+             */
+            $tracker = $this->loader->getTracker();
+            $tracker->addSourceClasses(array('OpenRosa'=>'OpenRosa form'));
+        }
+    }
+
+    /**
      * Initialize the translate component.
      *
      * Scans the application and project dirs for available translations
      *
      * Use $this->translate to access afterwards
+     * Also sets $this->translateAdapter to access afterwards
      *
      * @return \Zend_Translate
      */
@@ -614,52 +639,13 @@ class GemsEscort extends \MUtil_Application_Escort
         $translate->setLocale($language);
         \Zend_Registry::set('Zend_Translate', $translate);
 
-        return $translate;
-    }
-
-    /**
-     * Initialize the translateAdapter component.
-     *
-     * Scans the application and project dirs for available translations
-     *
-     * Use $this->translateAdapter to access afterwards
-     *
-     * @return \Zend_Translate
-     */
-    protected function _initTranslateAdapter()
-    {
-        $this->bootstrap(array('translate'));
-
         // Fix for _init resourcea being case insensitive
         $container = $this->getContainer();
-        $adapter   = $container->translate->getAdapter();
+        $adapter   = $translate->getAdapter();
         $container->translateAdapter = $adapter;
+        $this->translateAdapter      = $adapter;
 
-        return $adapter;
-    }
-
-    /**
-     * Initialize the OpenRosa survey source
-     */
-    protected function _initOpenRosa()
-    {
-        $this->bootstrap(array('loader', 'translate', 'translateAdapter'));
-
-        if ($this->getOption('useOpenRosa')) {
-            // First handle dependencies
-            $this->bootstrap(array('db', 'loader', 'util'));
-
-            $this->getLoader()->addPrefixPath('OpenRosa', GEMS_LIBRARY_DIR . '/classes/OpenRosa', true);
-
-            $autoloader = \Zend_Loader_Autoloader::getInstance();
-            $autoloader->registerNamespace('OpenRosa_');
-
-            /**
-             * Add Source for OpenRosa
-             */
-            $tracker = $this->loader->getTracker();
-            $tracker->addSourceClasses(array('OpenRosa'=>'OpenRosa form'));
-        }
+        return $translate;
     }
 
     /**
@@ -721,42 +707,21 @@ class GemsEscort extends \MUtil_Application_Escort
      * You can overrule this function to specify your own project translation method / file.
      *
      * Use $this->currentUser to access afterwards
+     * Also sets $this->currentOrganization to access afterwards
      *
      * @return \Gems_User_User
      */
     protected function _initCurrentUser()
     {
-        $this->bootstrap(array('acl', 'basepath', 'cache', 'db', 'loader', 'project', 'session',
-            'translate', 'translateAdapter', 'util'));
+        $this->bootstrap(array('acl', 'basepath', 'cache', 'db', 'loader', 'project', 'session', 'translate', 'util'));
 
         // Fix for _init resourcea being case insensitive
         $container = $this->getContainer();
         $user      = $this->loader->getCurrentUser();
-        $container->currentUser = $user;
+        $container->currentUser         = $user;
+        $container->currentOrganization = $user->getCurrentOrganization();
 
         return $user;
-    }
-
-    /**
-     * Initialize the currentOrganization component.
-     *
-     * You can overrule this function to specify your own project translation method / file.
-     *
-     * Use $this->currentOrganization to access afterwards
-     *
-     * @return \Gems_User_Organization
-     */
-    protected function _initCurrentOrganization()
-    {
-        $this->bootstrap(array('basepath', 'cache', 'currentUser', 'db', 'loader', 'project', 'session',
-            'translate', 'translateAdapter', 'util'));
-
-        // Fix for _init resourcea being case insensitive
-        $container = $this->getContainer();
-        $org       = $container->currentUser->getCurrentOrganization();
-        $container->currentOrganization = $org;
-
-        return $org;
     }
 
     /**
