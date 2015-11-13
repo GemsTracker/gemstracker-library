@@ -69,6 +69,12 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
 
     /**
      *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
+    /**
+     *
      * @var \GemsEscort
      */
     protected $escort;
@@ -389,10 +395,9 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
             $respondentId = $respondentId['gr2o_patient_nr'];
         } else {
             // Or accept to find in current organization
-            $filter['gr2o_id_organization'] = $this->loader->getCurrentUser()->getCurrentOrganizationId();
-            // Or use any organization?
-            // $allowedOrgs = $this->loader->getCurrentUser()->getAllowedOrganizations();
-            // $filter[] = sprintf('%s IN(%s)', $this->db->quoteIdentifier('gto_id_organization'), array_keys($allowedOrgs));
+            // $filter['gr2o_id_organization'] = $this->currentUser->getCurrentOrganizationId();
+            // Or use any allowed organization?
+            $filter['gr2o_id_organization'] = array_keys($this->currentUser->getAllowedOrganizations());
         }
         $filter['gr2o_patient_nr'] = $respondentId;
 

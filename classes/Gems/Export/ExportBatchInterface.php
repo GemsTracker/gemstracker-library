@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.1
  */
-interface Gems_Export_ExportBatchInterface extends Gems_Export_ExportInterface
+interface Gems_Export_ExportBatchInterface extends \Gems_Export_ExportInterface
 {
     /**
      * This method handles setting up all needed steps for the batch export
@@ -68,7 +68,7 @@ interface Gems_Export_ExportBatchInterface extends Gems_Export_ExportInterface
      *
      * Use $this->hasBatch to check for existence
      *
-     * @param Gems_Task_TaskRunnerBatch $batch
+     * @param \Gems_Task_TaskRunnerBatch $batch
      */
-    public function setBatch(Gems_Task_TaskRunnerBatch $batch);
+    public function setBatch(\Gems_Task_TaskRunnerBatch $batch);
 }

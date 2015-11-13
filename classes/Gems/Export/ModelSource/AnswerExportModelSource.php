@@ -54,34 +54,40 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
     const NoRound = '-1';
 
     /**
+     *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
+    /**
      * @var \Zend_Db_Adapter_Abstract
      */
-    public $db;
+    protected $db;
 
     protected $filter;
 
     /**
      * @var \Gems_Loader
      */
-	public $loader;
+	protected $loader;
 
     /**
      * @var \Zend_Locale
      */
-	public $locale;
+	protected $locale;
 
-    public $model;
+    protected $model;
 
 	/**
      *
      * @var \Gems_Project_ProjectSettings
      */
-    public $project;
+    protected $project;
 
     /**
      * @var \Gems_Util
      */
-	public $util;
+	protected $util;
 
 
     /**
@@ -223,7 +229,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
         $dateOptions = array();
         \MUtil_Model_Bridge_FormBridge::applyFixedOptions('date', $dateOptions);
 
-        $organizations = $this->loader->getCurrentUser()->getRespondentOrganizations();
+        $organizations = $this->currentUser->getRespondentOrganizations();
 
         $tracks        = $empty + $this->util->getTrackData()->getAllTracks();
     	$rounds        = $empty + $noRound + $dbLookup->getRoundsForExport(
@@ -433,7 +439,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
 
             $model->set('respondentid',        'label', $this->_('Respondent ID'), 'type', \MUtil_Model::TYPE_NUMERIC);
             $model->set('organizationid',      'label', $this->_('Organization'), 'type', \MUtil_Model::TYPE_NUMERIC,
-                                                    'multiOptions', $this->loader->getCurrentUser()->getAllowedOrganizations()
+                                                    'multiOptions', $this->currentUser->getAllowedOrganizations()
             );
             // Add Consent
             $model->set('consentcode',              'label', $this->_('Consent'), 'type', \MUtil_Model::TYPE_STRING);

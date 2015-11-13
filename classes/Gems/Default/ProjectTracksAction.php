@@ -66,6 +66,12 @@ class Gems_Default_ProjectTracksAction extends \Gems_Controller_ModelSnippetActi
 
     /**
      *
+     * @var \Gems_User_Organization
+     */
+    public $currentOrganization;
+
+    /**
+     *
      * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
@@ -149,7 +155,7 @@ class Gems_Default_ProjectTracksAction extends \Gems_Controller_ModelSnippetActi
     public function getSearchDefaults()
     {
         if (! $this->defaultSearchData) {
-            $orgId = $this->loader->getCurrentUser()->getCurrentOrganizationId();
+            $orgId = $this->currentOrganization->getId();
             $this->defaultSearchData[-1] = "gtr_organizations LIKE '%|$orgId|%'";
         }
 

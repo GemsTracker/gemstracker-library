@@ -53,6 +53,12 @@ class Gems_Default_OptionAction extends \Gems_Controller_ModelSnippetActionAbstr
     public $cacheTags = array('staff');
 
     /**
+     *
+     * @var \Gems_User_User
+     */
+    public $currentUser;
+
+    /**
      * The parameters used for the reset action.
      *
      * @var array Mixed key => value array for snippet initialization
@@ -178,7 +184,7 @@ class Gems_Default_OptionAction extends \Gems_Controller_ModelSnippetActionAbstr
      */
     public function getCurrentUser()
     {
-        return $this->loader->getCurrentUser();
+        return $this->currentUser;
     }
 
     /**
@@ -214,7 +220,7 @@ class Gems_Default_OptionAction extends \Gems_Controller_ModelSnippetActionAbstr
      */
     public function getShowLogOverviewFilter()
     {
-        return array('gla_by' => $this->loader->getCurrentUser()->getUserId());
+        return array('gla_by' => $this->currentUser->getUserId());
     }
 
     /**

@@ -128,6 +128,12 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
         );
 
     /**
+     *
+     * @var \Gems_User_User
+     */
+    public $currentUser;
+
+    /**
      * The default parameters used for any token action like answers or sho0w
      *
      * When the value is a function name of that object, then that functions is executed
@@ -938,7 +944,7 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
 
         if (in_array($request->getActionName(), $this->tokenReturnActions)) {
             // Tell the system where to return to after a survey has been taken
-            $this->loader->getCurrentUser()->setSurveyReturn($request);
+            $this->currentUser->setSurveyReturn($request);
         }
     }
 
@@ -969,7 +975,7 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
      */
     protected function isTemplateOnly()
     {
-        return ! $this->loader->getCurrentUser()->hasPrivilege('pr.token.mail.freetext');
+        return ! $this->currentUser->hasPrivilege('pr.token.mail.freetext');
     }
 
     /**

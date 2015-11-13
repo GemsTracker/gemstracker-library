@@ -51,7 +51,7 @@ interface Gems_Export_ExportInterface
      *
      * @param type $form
      * @param type $data
-     * @return array of Zend_Form_Element
+     * @return array of \Zend_Form_Element
      */
     public function getFormElements(&$form, &$data);
 
@@ -78,9 +78,9 @@ interface Gems_Export_ExportInterface
      * access the controller object.
      *
      * @param array                     $data        The formdata
-     * @param Gems_Tracker_Survey       $survey      The survey object we are exporting
+     * @param \Gems_Tracker_Survey       $survey      The survey object we are exporting
      * @param array                     $answers     The array of answers
-     * @param MUtil_Model_ModelAbstract $answerModel The modified answermodel that includes info about extra attributes
+     * @param \MUtil_Model_ModelAbstract $answerModel The modified answermodel that includes info about extra attributes
      * @param string                    $language    The language used / to use for the export
      */
     public function handleExport($data, $survey, $answers, $answerModel, $language);

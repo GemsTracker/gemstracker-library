@@ -59,6 +59,12 @@ class Gems_Default_StaffLogAction extends \Gems_Default_LogAction
     protected $autofilterParameters = array('extraFilter' => 'getStaffFilter');
 
     /**
+     *
+     * @var \Gems_User_User
+     */
+    public $currentUser;
+
+    /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
@@ -82,10 +88,8 @@ class Gems_Default_StaffLogAction extends \Gems_Default_LogAction
         $user = $this->getSelectedUser();
 
         if ($user) {
-            $current = $this->loader->getCurrentUser();
-
-            if (! ($current->hasPrivilege('pr.staff.see.all') ||
-                    $current->isAllowedOrganization($user->getBaseOrganizationId()))) {
+            if (! ($this->currentUser->hasPrivilege('pr.staff.see.all') ||
+                    $this->currentUser->isAllowedOrganization($user->getBaseOrganizationId()))) {
                 throw new \Gems_Exception($this->_('No access to page'), 403, null, sprintf(
                         $this->_('You have no right to access users from the organization %s.'),
                         $user->getBaseOrganization()->getName()

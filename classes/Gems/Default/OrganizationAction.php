@@ -69,6 +69,12 @@ class Gems_Default_OrganizationAction extends \Gems_Controller_ModelSnippetActio
 
     /**
      *
+     * @var \Gems_User_User
+     */
+    public $currentUser;
+
+    /**
+     *
      * @var \Gems_Loader
      */
     public $loader;
@@ -78,20 +84,19 @@ class Gems_Default_OrganizationAction extends \Gems_Controller_ModelSnippetActio
      */
     public function changeUiAction()
     {
-        $user     = $this->loader->getCurrentUser();
         $request  = $this->getRequest();
         $orgId    = urldecode($request->getParam('org'));
-        $oldOrg   = $user->getCurrentOrganizationId();
+        $oldOrg   = $this->currentUser->getCurrentOrganizationId();
         $origUrl  = base64_decode($request->getParam('current_uri'));
 
-        $allowedOrganizations = $user->getAllowedOrganizations();
+        $allowedOrganizations = $this->currentUser->getAllowedOrganizations();
         if (isset($allowedOrganizations[$orgId])) {
-            $user->setCurrentOrganization($orgId);
+            $this->currentUser->setCurrentOrganization($orgId);
 
             if ($origUrl) {
                 // Check for organisation id in url, but not when a patient id is stated
                 if (strpos($origUrl, '/' . \MUtil_Model::REQUEST_ID1 . '/') === false) {
-                    foreach ($user->possibleOrgIds as $key) {
+                    foreach ($this->currentUser->possibleOrgIds as $key) {
                         $finds[]    = '/' . $key. '/' . $oldOrg;
                         $replaces[] = '/' . $key. '/' . $orgId;
                     }
@@ -102,7 +107,7 @@ class Gems_Default_OrganizationAction extends \Gems_Controller_ModelSnippetActio
                 // \MUtil_Echo::track($origUrl, $correctUrl);
                 $this->getResponse()->setRedirect($correctUrl);
             } else {
-                $user->gotoStartPage($this->menu, $request);
+                $this->currentUser->gotoStartPage($this->menu, $request);
             }
             return;
         }
@@ -110,7 +115,11 @@ class Gems_Default_OrganizationAction extends \Gems_Controller_ModelSnippetActio
         throw new \Gems_Exception(
                 $this->_('Inaccessible or unknown organization'),
                 403, null,
-                sprintf($this->_('Access to this page is not allowed for current role: %s.'), $this->loader->getCurrentUser()->getRole()));
+                sprintf(
+                        $this->_('Access to this page is not allowed for current role: %s.'),
+                        $this->currentUser->getRole()
+                        )
+                );
     }
 
     /**

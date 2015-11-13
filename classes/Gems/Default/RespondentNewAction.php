@@ -83,6 +83,18 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
     protected $createEditSnippets = 'RespondentFormSnippet';
 
     /**
+     *
+     * @var \Gems_User_Organization
+     */
+    public $currentOrganization;
+
+    /**
+     *
+     * @var \Gems_User_User
+     */
+    public $currentUser;
+
+    /**
      * The default search data to use.
      *
      * @var array()
@@ -329,7 +341,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
         // return true;
 
         // Return the organisations the user is allowed to see.
-        // return array_keys($this->loader->getCurrentUser()->getAllowedOrganizations());
+        // return array_keys($this->currentUser->getAllowedOrganizations());
     }
 
     /**
@@ -341,15 +353,6 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
     public function getRespondentData()
     {
         return $this->getRespondent()->getArrayCopy();
-//        $orgId  = $this->_getParam(\MUtil_Model::REQUEST_ID2);
-//        $respId = $this->getRespondentId();
-//        $userId = $this->loader->getCurrentUser()->getUserId();
-//
-//        // Check for completed tokens
-//        $this->loader->getTracker()->processCompletedTokens($respId, $userId, $orgId);
-//
-//        $model = $this->getModel();
-//        return $model->applyRequest($this->getRequest(), true)->loadFirst();
     }
 
     /**
@@ -378,12 +381,11 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
     public function getSearchDefaults()
     {
         if (! isset($this->defaultSearchData[\MUtil_Model::REQUEST_ID2])) {
-            $user = $this->loader->getCurrentUser();
-
-            if ($user->hasPrivilege('pr.respondent.multiorg') && (!$user->getCurrentOrganization()->canHaveRespondents())) {
+            if ($this->currentUser->hasPrivilege('pr.respondent.multiorg') &&
+                    (! $this->currentOrganization->canHaveRespondents())) {
                 $this->defaultSearchData[\MUtil_Model::REQUEST_ID2] = '';
             } else {
-                $this->defaultSearchData[\MUtil_Model::REQUEST_ID2] = $user->getCurrentOrganizationId();
+                $this->defaultSearchData[\MUtil_Model::REQUEST_ID2] = $this->currentOrganization->getId();
             }
             $this->defaultSearchData['show_with_track']    = 1;
             $this->defaultSearchData['show_without_track'] = 1;
@@ -443,9 +445,8 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      */
     public function indexAction()
     {
-        $user = $this->loader->getCurrentUser();
-
-        if ($user->hasPrivilege('pr.respondent.multiorg') || $user->getCurrentOrganization()->canHaveRespondents()) {
+        if ($this->currentUser->hasPrivilege('pr.respondent.multiorg') ||
+                $this->currentOrganization->canHaveRespondents()) {
             parent::indexAction();
         } else {
             $this->addSnippet('Organization\\ChooseOrganizationSnippet');
@@ -464,7 +465,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
         parent::init();
 
         // Tell the system where to return to after a survey has been taken
-        $this->loader->getCurrentUser()->setSurveyReturn($this->getRequest());
+        $this->currentUser->setSurveyReturn($this->getRequest());
     }
 
     /**
@@ -477,13 +478,11 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
         $patientNr = $this->_getParam(\MUtil_Model::REQUEST_ID1);
 
         if ($patientNr && $orgId) {
-            $user = $this->loader->getCurrentUser();
-
             $where['gr2o_patient_nr = ?']      = $patientNr;
             $where['gr2o_id_organization = ?'] = $orgId;
 
             $values['gr2o_opened']             = new \MUtil_Db_Expr_CurrentTimestamp();
-            $values['gr2o_opened_by']          = $user->getUserId();
+            $values['gr2o_opened_by']          = $this->currentUser->getUserId();
 
             $this->db->update('gems__respondent2org', $values, $where);
         }

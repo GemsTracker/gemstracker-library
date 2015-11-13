@@ -53,6 +53,12 @@ class Gems_Default_IndexAction extends \Gems_Controller_Action
     public $accesslog;
 
     /**
+     *
+     * @var \Gems_User_User
+     */
+    public $currentUser;
+
+    /**
      * The width factor for the label elements.
      *
      * Width = (max(characters in labels) * labelWidthFactor) . 'em'
@@ -317,11 +323,9 @@ class Gems_Default_IndexAction extends \Gems_Controller_Action
      */
     public function logoffAction()
     {
-        $user = $this->loader->getCurrentUser();
-
-        $this->addMessage(sprintf($this->_('Good bye: %s.'), $user->getFullName()));
+        $this->addMessage(sprintf($this->_('Good bye: %s.'), $this->currentUser->getFullName()));
         $this->accesslog->logChange($this->getRequest());
-        $user->unsetAsCurrentUser();
+        $this->currentUser->unsetAsCurrentUser();
         \Zend_Session::destroy();
         $this->_reroute(array('action' => 'index'), true);
     }
@@ -408,7 +412,7 @@ class Gems_Default_IndexAction extends \Gems_Controller_Action
 
                     if ($this->returnToLoginAfterReset) {
                         $this->setCurrentOrganizationTo($user);
-                        $this->loader->getCurrentUser()->gotoStartPage($this->menu, $request);
+                        $this->currentUser->gotoStartPage($this->menu, $request);
                     }
                 }
 
@@ -456,10 +460,8 @@ class Gems_Default_IndexAction extends \Gems_Controller_Action
      */
     protected function setCurrentOrganizationTo(\Gems_User_User $user)
     {
-        $current = $this->loader->getCurrentUser();
-
-        if ($current !== $user) {
-            $current->setCurrentOrganization($user->getCurrentOrganization());
+        if ($this->currentUser !== $user) {
+            $this->currentUser->setCurrentOrganization($user->getCurrentOrganization());
         }
     }
 }

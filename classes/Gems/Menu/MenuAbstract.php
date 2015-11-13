@@ -687,7 +687,7 @@ abstract class Gems_Menu_MenuAbstract
     public function addStaffPage($label, array $other = array())
     {
         if ($this->user->hasPrivilege('pr.staff.edit.all')) {
-            $filter = $this->escort->getUtil()->getDbLookup()->getOrganizations();
+            $filter = array_keys($this->escort->getUtil()->getDbLookup()->getOrganizations());
         } else {
             $filter = array_keys($this->user->getAllowedOrganizations());
         }

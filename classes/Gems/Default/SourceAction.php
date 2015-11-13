@@ -62,6 +62,12 @@ class Gems_Default_SourceAction extends \Gems_Controller_ModelSnippetActionAbstr
         );
 
     /**
+     *
+     * @var \Gems_User_User
+     */
+    public $currentUser;
+
+    /**
      * Array of the actions that use a summarized version of the model.
      *
      * This determines the value of $detailed in createAction(). As it is usually
@@ -140,7 +146,7 @@ class Gems_Default_SourceAction extends \Gems_Controller_ModelSnippetActionAbstr
         $sourceId = $this->getSourceId();
         $where    = $this->db->quoteInto('gto_id_survey IN (SELECT gsu_id_survey FROM gems__surveys WHERE gsu_id_source = ?)', $sourceId);
 
-        $batch = $this->loader->getTracker()->recalculateTokens('sourceCheck' . $sourceId, $this->loader->getCurrentUser()->getUserId(), $where);
+        $batch = $this->loader->getTracker()->recalculateTokens('sourceCheck' . $sourceId, $this->currentUser->getUserId(), $where);
 
         $title = sprintf($this->_('Checking survey results for %s source.'),
                     $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
@@ -154,7 +160,7 @@ class Gems_Default_SourceAction extends \Gems_Controller_ModelSnippetActionAbstr
      */
     public function checkAllAction()
     {
-        $batch = $this->loader->getTracker()->recalculateTokens('surveyCheckAll', $this->loader->getCurrentUser()->getUserId());
+        $batch = $this->loader->getTracker()->recalculateTokens('surveyCheckAll', $this->currentUser->getUserId());
 
         $title = $this->_('Checking survey results for all sources.');
         $this->_helper->batchRunner($batch, $title, $this->accesslog);
@@ -321,7 +327,7 @@ class Gems_Default_SourceAction extends \Gems_Controller_ModelSnippetActionAbstr
     {
         $source = $this->getSourceById();
 
-        if ($source->checkSourceActive($this->loader->getCurrentUser()->getUserId())) {
+        if ($source->checkSourceActive($this->currentUser->getUserId())) {
             $this->addMessage($this->_('This installation is active.'));
         } else {
             $this->addMessage($this->_('Inactive installation.'));
@@ -337,7 +343,7 @@ class Gems_Default_SourceAction extends \Gems_Controller_ModelSnippetActionAbstr
     {
         $sourceId = $this->getSourceId();
 
-        $batch = $this->loader->getTracker()->synchronizeSources($sourceId, $this->loader->getCurrentUser()->getUserId());
+        $batch = $this->loader->getTracker()->synchronizeSources($sourceId, $this->currentUser->getUserId());
 
         $title = sprintf($this->_('Synchronize the %s source.'),
                     $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
@@ -351,8 +357,7 @@ class Gems_Default_SourceAction extends \Gems_Controller_ModelSnippetActionAbstr
      */
     public function synchronizeAllAction()
     {
-        //*
-        $batch = $this->loader->getTracker()->synchronizeSources(null, $this->loader->getCurrentUser()->getUserId());
+        $batch = $this->loader->getTracker()->synchronizeSources(null, $this->currentUser->getUserId());
         $batch->minimalStepDurationMs = 3000;
 
         $title = $this->_('Synchronize all sources.');

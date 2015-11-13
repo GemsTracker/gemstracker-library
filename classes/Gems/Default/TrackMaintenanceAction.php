@@ -89,6 +89,12 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
     );
 
     /**
+     *
+     * @var \Gems_User_User
+     */
+    public $currentUser;
+
+    /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
@@ -177,7 +183,7 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
      */
     public function checkAllAction()
     {
-        $batch = $this->loader->getTracker()->checkTrackRounds('trackCheckRoundsAll', $this->loader->getCurrentUser()->getUserId());
+        $batch = $this->loader->getTracker()->checkTrackRounds('trackCheckRoundsAll', $this->currentUser->getUserId());
         $this->_helper->BatchRunner($batch, $this->_('Checking round assignments for all tracks.'), $this->accesslog);
 
         $this->addCheckInformation();
@@ -193,7 +199,7 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
         $where = $this->db->quoteInto('gr2t_id_track = ?', $id);
         $batch = $this->loader->getTracker()->checkTrackRounds(
                 'trackCheckRounds' . $id,
-                $this->loader->getCurrentUser()->getUserId(),
+                $this->currentUser->getUserId(),
                 $where
                 );
 
@@ -281,7 +287,7 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
     {
         $batch = $this->loader->getTracker()->recalcTrackFields(
                 'trackRecalcAllFields',
-                $this->loader->getCurrentUser()->getUserId()
+                $this->currentUser->getUserId()
                 );
         $this->_helper->BatchRunner($batch, $this->_('Recalculating fields for all tracks.'), $this->accesslog);
 
@@ -298,7 +304,7 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
         $where = $this->db->quoteInto('gr2t_id_track = ?', $id);
         $batch = $this->loader->getTracker()->recalcTrackFields(
                 'trackRecalcFields' . $id,
-                $this->loader->getCurrentUser()->getUserId(),
+                $this->currentUser->getUserId(),
                 $where
                 );
 

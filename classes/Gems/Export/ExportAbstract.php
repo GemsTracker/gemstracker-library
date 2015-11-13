@@ -44,7 +44,7 @@
 abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_TranslateableAbstract
 {
     /**
-     * @var Gems_Task_TaskRunnerBatch   The batch object if one is set
+     * @var \Gems_Task_TaskRunnerBatch   The batch object if one is set
      */
     protected $batch;
 
@@ -124,7 +124,7 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
     protected $rowsPerBatch = 500;
 
     /**
-     * @var Zend_Session    Session used for non-batch exports
+     * @var \Zend_Session    Session used for non-batch exports
      */
     protected $session;
 
@@ -333,7 +333,7 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
 
                             $dateFormat = $optionValue;
                             $storageFormat = $this->model->get($columnName, 'storageFormat');
-                            $result = MUtil_Date::format($result, $dateFormat, $storageFormat);
+                            $result = \MUtil_Date::format($result, $dateFormat, $storageFormat);
                             break;
 
                         case 'itemDisplay':

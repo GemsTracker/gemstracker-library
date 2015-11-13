@@ -53,6 +53,18 @@ abstract class Gems_Default_RespondentAction extends \Gems_Controller_BrowseEdit
      */
     public $accesslog;
 
+    /**
+     *
+     * @var \Gems_User_Organization
+     */
+    public $currentOrganization;
+
+    /**
+     *
+     * @var \Gems_User_User
+     */
+    public $currentUser;
+
     public $deleteSnippets = array('Respondent\\RespondentDetailsSnippet');
 
     public $exportSnippets = array('Respondent\\RespondentDetailsSnippet');
@@ -97,7 +109,7 @@ abstract class Gems_Default_RespondentAction extends \Gems_Controller_BrowseEdit
         $phonesep = $bridge->itemIf($bridge->grs_phone_1, \MUtil_Html::raw('&#9743; '));
         $citysep  = $bridge->itemIf($bridge->grs_zipcode, \MUtil_Html::raw('&nbsp;&nbsp;'));
 
-        if ($this->loader->getCurrentUser()->hasPrivilege('pr.respondent.multiorg')) {
+        if ($this->currentUser->hasPrivilege('pr.respondent.multiorg')) {
             $bridge->addMultiSort('gr2o_patient_nr', $br, 'gor_name'); //, \MUtil_Html::raw(' '), 'gr2o_opened');
         } else {
             $bridge->addMultiSort('gr2o_patient_nr', $br, 'gr2o_opened');
@@ -383,7 +395,7 @@ abstract class Gems_Default_RespondentAction extends \Gems_Controller_BrowseEdit
         $elements = parent::getAutoSearchElements($model, $data);
 
         if ($model->isMultiOrganization()) {
-            $options = $this->loader->getCurrentUser()->getRespondentOrganizations();
+            $options = $this->currentUser->getRespondentOrganizations();
 
             $elements[] = $this->_createSelectElement(\MUtil_Model::REQUEST_ID2, $options, $this->_('(all organizations)'));
         }
@@ -401,10 +413,8 @@ abstract class Gems_Default_RespondentAction extends \Gems_Controller_BrowseEdit
     public function getDefaultSearchData()
     {
         if ($this->getModel()->isMultiOrganization()) {
-            $user = $this->loader->getCurrentUser();
-
-            $orgId = $user->getCurrentOrganizationId();
-            $orgs  = $user->getRespondentOrganizations();
+            $orgId = $this->currentUser->getCurrentOrganizationId();
+            $orgs  = $this->currentUser->getRespondentOrganizations();
 
             if (isset($orgs[$orgId])) {
                 return array(\MUtil_Model::REQUEST_ID2 => $orgId);
@@ -429,7 +439,7 @@ abstract class Gems_Default_RespondentAction extends \Gems_Controller_BrowseEdit
             return $data[\MUtil_Model::REQUEST_ID2];
         }
 
-        return $this->loader->getCurrentUser()->getCurrentOrganizationId();
+        return $this->currentOrganization->getId();
     }
 
     public function getMenuParameter($name, $default)
@@ -496,9 +506,8 @@ abstract class Gems_Default_RespondentAction extends \Gems_Controller_BrowseEdit
      */
     public function indexAction()
     {
-        $user = $this->loader->getCurrentUser();
-
-        if ($user->hasPrivilege('pr.respondent.multiorg') || $user->getCurrentOrganization()->canHaveRespondents()) {
+        if ($this->currentUser->hasPrivilege('pr.respondent.multiorg') ||
+                $this->currentOrganization->canHaveRespondents()) {
             parent::indexAction();
         } else {
             $this->addSnippet('Organization\\ChooseOrganizationSnippet');
@@ -517,7 +526,7 @@ abstract class Gems_Default_RespondentAction extends \Gems_Controller_BrowseEdit
         parent::init();
 
         // Tell the system where to return to after a survey has been taken
-        $this->loader->getCurrentUser()->setSurveyReturn($this->getRequest());
+        $this->currentUser->setSurveyReturn($this->getRequest());
     }
 
     /**
@@ -529,13 +538,11 @@ abstract class Gems_Default_RespondentAction extends \Gems_Controller_BrowseEdit
     protected function openedRespondent($patientId, $orgId)
     {
         if ($patientId && $orgId) {
-            $user = $this->loader->getCurrentUser();
-
             $where['gr2o_patient_nr = ?']      = $patientId;
             $where['gr2o_id_organization = ?'] = $orgId;
 
             $values['gr2o_opened']             = new \MUtil_Db_Expr_CurrentTimestamp();
-            $values['gr2o_opened_by']          = $user->getUserId();
+            $values['gr2o_opened_by']          = $this->currentUser->getUserId();
 
             $this->db->update('gems__respondent2org', $values, $where);
         }
@@ -548,8 +555,7 @@ abstract class Gems_Default_RespondentAction extends \Gems_Controller_BrowseEdit
         $orgId     = $this->_getParam(\MUtil_Model::REQUEST_ID2);
         $patientNr = $this->_getParam(\MUtil_Model::REQUEST_ID1);
         $respId    = $this->util->getDbLookup()->getRespondentId($patientNr, $orgId);
-        $user      = $this->loader->getCurrentUser();
-        $userId    = $user->getUserId();
+        $userId    = $this->currentUser->getUserId();
 
         // Updated gr20_opened
         $this->openedRespondent($patientNr, $orgId, $respId);

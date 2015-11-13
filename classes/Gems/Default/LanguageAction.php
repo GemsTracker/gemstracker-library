@@ -45,6 +45,12 @@
  */
 class Gems_Default_LanguageAction extends \Gems_Controller_Action
 {
+    /**
+     *
+     * @var \Gems_User_User
+     */
+    public $currentUser;
+
     public function changeUiAction()
     {
         $request = $this->getRequest();
@@ -58,13 +64,13 @@ class Gems_Default_LanguageAction extends \Gems_Controller_Action
 
         if (in_array($lang, $this->view->project->locales)) {
 
-            $this->loader->getCurrentUser()->setLocale($lang);
+            $this->currentUser->setLocale($lang);
 
             if (\Gems_Cookies::setLocale($lang, $this->basepath->getBasePath())) {
                 if ($url) {
                     $this->getResponse()->setRedirect($url);
                 } else {
-                    $this->loader->getCurrentUser()->gotoStartPage($this->menu, $this->getRequest());
+                    $this->currentUser->gotoStartPage($this->menu, $this->getRequest());
                 }
                 return;
             }

@@ -247,7 +247,7 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
     public function indexAction()
     {
         // Make sure to return to the forward screen
-        $this->loader->getCurrentUser()->setSurveyReturn();
+        $this->currentUser->setSurveyReturn();
 
         $request = $this->getRequest();
         $tracker = $this->loader->getTracker();

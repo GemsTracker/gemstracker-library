@@ -59,6 +59,12 @@ class Gems_Default_StaffAction extends \Gems_Controller_ModelSnippetActionAbstra
     public $cacheTags = array('staff');
 
     /**
+     *
+     * @var \Gems_User_User
+     */
+    public $currentUser;
+
+    /**
      * The parameters used for the deactivate action.
      *
      * When the value is a function name of that object, then that functions is executed
@@ -149,10 +155,8 @@ class Gems_Default_StaffAction extends \Gems_Controller_ModelSnippetActionAbstra
             $user = $this->getSelectedUser();
 
             if ($user) {
-                $current = $this->loader->getCurrentUser();
-
-                if (! ($current->hasPrivilege('pr.staff.see.all') ||
-                        $current->isAllowedOrganization($user->getBaseOrganizationId()))) {
+                if (! ($this->currentUser->hasPrivilege('pr.staff.see.all') ||
+                        $this->currentUser->isAllowedOrganization($user->getBaseOrganizationId()))) {
                     throw new \Gems_Exception($this->_('No access to page'), 403, null, sprintf(
                             $this->_('You have no right to access users from the organization %s.'),
                             $user->getBaseOrganization()->getName()
@@ -169,7 +173,7 @@ class Gems_Default_StaffAction extends \Gems_Controller_ModelSnippetActionAbstra
                         if (! $user->hasAllowedRole()) {
                             throw new \Gems_Exception($this->_('No access to page'), 403, null, sprintf(
                                     $this->_('As %s user you have no right to access users with the role %s.'),
-                                    $current->getRole(),
+                                    $this->currentUser->getRole(),
                                     $user->getRole()
                                     ));
                         }
@@ -219,7 +223,7 @@ class Gems_Default_StaffAction extends \Gems_Controller_ModelSnippetActionAbstra
         $filter = parent::getSearchFilter($useRequest);
 
         if (! (isset($filter['gsf_id_organization']) && $filter['gsf_id_organization'])) {
-            $filter['gsf_id_organization'] = array_keys($this->loader->getCurrentUser()->getAllowedOrganizations());
+            $filter['gsf_id_organization'] = array_keys($this->currentUser->getAllowedOrganizations());
         }
 
         return $filter;

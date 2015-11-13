@@ -77,6 +77,12 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
 
     /**
      *
+     * @var \Gems_User_User
+     */
+    public $currentUser;
+
+    /**
+     *
      * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
@@ -148,7 +154,7 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
             $params['view']                 = $this->view;
             $params['routeAction']          = array($this->getRequest()->getActionName() => 'index');
             $params['formTitle']            = sprintf($this->_('Send mail to: %s'), $this->getTopic());
-            $params['templateOnly']         = ! $this->loader->getCurrentUser()->hasPrivilege('pr.token.mail.freetext');
+            $params['templateOnly']         = ! $this->currentUser->hasPrivilege('pr.token.mail.freetext');
             $params['multipleTokenData']    = $tokensData;
 
             $this->addSnippet('Mail_TokenBulkMailFormSnippet', $params);
@@ -208,7 +214,7 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
         }
 
         if (! isset($filter['gto_id_organization'])) {
-            $filter['gto_id_organization'] = $this->loader->getCurrentUser()->getRespondentOrgFilter();
+            $filter['gto_id_organization'] = $this->currentUser->getRespondentOrgFilter();
         }
         $filter['gsu_active']  = 1;
         $filter['grc_success'] = 1; // Overruled with success
@@ -308,11 +314,10 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
     public function indexAction()
     {
         if ($this->checkForAnswersOnLoad) {
-            $user = $this->loader->getCurrentUser();
             $this->loader->getTracker()->processCompletedTokens(
                     null,
-                    $user->getUserId(),
-                    $user->getCurrentOrganizationId(),
+                    $this->currentUser->getUserId(),
+                    $this->currentUser->getCurrentOrganizationId(),
                     true
                     );
         }
@@ -336,6 +341,6 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
      */
     public function setSurveyReturn()
     {
-        $this->loader->getCurrentUser()->setSurveyReturn($this->getRequest());
+        $this->currentUser->setSurveyReturn($this->getRequest());
     }
 }

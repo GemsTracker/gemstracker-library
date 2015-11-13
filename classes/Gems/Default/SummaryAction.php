@@ -70,6 +70,12 @@ class Gems_Default_SummaryAction extends \Gems_Controller_ModelSnippetActionAbst
 
     /**
      *
+     * @var \Gems_User_User
+     */
+    public $currentUser;
+
+    /**
+     *
      * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
@@ -124,7 +130,7 @@ class Gems_Default_SummaryAction extends \Gems_Controller_ModelSnippetActionAbst
 
         $filter = $this->getSearchFilter($action !== 'excel');
         if (! (isset($filter['gto_id_organization']) && $filter['gto_id_organization'])) {
-            $model->addFilter(array('gto_id_organization' => $this->loader->getCurrentUser()->getRespondentOrgFilter()));
+            $model->addFilter(array('gto_id_organization' => $this->currentUser->getRespondentOrgFilter()));
         }
 
         if (isset($filter['gto_id_track']) && $filter['gto_id_track']) {

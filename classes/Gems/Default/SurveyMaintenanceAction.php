@@ -100,6 +100,12 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
 
     /**
      *
+     * @var \Gems_User_User
+     */
+    public $currentUser;
+
+    /**
+     *
      * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
@@ -335,7 +341,7 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
         $surveyId = $this->getSurveyId();
         $where    = $this->db->quoteInto('gto_id_survey = ?', $surveyId);
 
-        $batch = $this->loader->getTracker()->recalculateTokens('surveyCheck' . $surveyId, $this->loader->getCurrentUser()->getUserId(), $where);
+        $batch = $this->loader->getTracker()->recalculateTokens('surveyCheck' . $surveyId, $this->currentUser->getUserId(), $where);
 
         $title = sprintf($this->_('Checking survey results for the %s survey.'),
                 $this->db->fetchOne("SELECT gsu_survey_name FROM gems__surveys WHERE gsu_id_survey = ?", $surveyId));
@@ -349,7 +355,7 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
      */
     public function checkAllAction()
     {
-        $batch = $this->loader->getTracker()->recalculateTokens('surveyCheckAll', $this->loader->getCurrentUser()->getUserId());
+        $batch = $this->loader->getTracker()->recalculateTokens('surveyCheckAll', $this->currentUser->getUserId());
 
         $title = $this->_('Checking survey results for all surveys.');
         $this->_helper->BatchRunner($batch, $title, $this->accesslog);
@@ -615,11 +621,12 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
      /**
      * Get the filter to use with the model for searching including model sorts, etc..
      *
+     * @param boolean $useRequest Use the request as source (when false, the session is used)
      * @return array or false
      */
-    public function getSearchFilter()
+    public function getSearchFilter($useRequest = true)
     {
-        $filter = parent::getSearchFilter();
+        $filter = parent::getSearchFilter($useRequest);
 
         if (array_key_exists('status', $filter)) {
             switch ($filter['status']) {
