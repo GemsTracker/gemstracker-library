@@ -92,13 +92,6 @@ class GemsEscort extends \MUtil_Application_Escort
     private $_startFirebird;
 
     /**
-     * The menu variable
-     *
-     * @var \Gems_Menu
-     */
-    public $menu;
-
-    /**
      * Set to true for bootstrap projects. Needs html5 set to true as well
      * @var boolean
      */
@@ -707,7 +700,6 @@ class GemsEscort extends \MUtil_Application_Escort
      * You can overrule this function to specify your own project translation method / file.
      *
      * Use $this->currentUser to access afterwards
-     * Also sets $this->currentOrganization to access afterwards
      *
      * @return \Gems_User_User
      */
@@ -718,8 +710,7 @@ class GemsEscort extends \MUtil_Application_Escort
         // Fix for _init resourcea being case insensitive
         $container = $this->getContainer();
         $user      = $this->loader->getCurrentUser();
-        $container->currentUser         = $user;
-        $container->currentOrganization = $user->getCurrentOrganization();
+        $container->currentUser = $user;
 
         return $user;
     }
@@ -1285,7 +1276,7 @@ class GemsEscort extends \MUtil_Application_Escort
 
             foreach ($this->_copyDestinations as $object) {
                 foreach ($names as $key) {
-                    $object->$key = $this->$key;
+                    $object->$key = $this->_container->$key;
                 }
             }
         }
@@ -1994,6 +1985,8 @@ class GemsEscort extends \MUtil_Application_Escort
      * Actions after: nothing, but the route consisting of controller, action and module should now be fixed
      * Next hook: dispatchLoopStartup()
      *
+     * Also sets $this->currentOrganization and $this->menu to access afterwards
+     *
      * @param  \Zend_Controller_Request_Abstract $request
      * @return void
      */
@@ -2004,23 +1997,29 @@ class GemsEscort extends \MUtil_Application_Escort
         // Load the menu. As building the menu can depend on all resources and the request, we do it here.
         //
         // PS: The REQUEST is needed because otherwise the locale for translate is not certain.
-        $this->menu = $loader->createMenu($this);
-        $this->_updateVariable('menu');
+        $menu   = $loader->createMenu($this);
+        $source = $menu->getParameterSource();
+        $user   = $this->_container->currentUser;
+        $user->setRequest($request);
+
+        $organization = $user->getCurrentOrganization();
+        $organization->applyToMenuSource($source);
+
+        $this->_container->currentOrganization = $organization;
+        $this->_container->menu = $menu;
+        $this->_updateVariable(array('currentOrganization', 'menu'));
 
         // Now is a good time to check for required values
         // Moved down here to prevent unit test from failing on missing salt
         $this->project->checkRequiredValues();
-
-        $source = $this->menu->getParameterSource();
-        $this->getLoader()->getOrganization()->applyToMenuSource($source);
 
         /**
          * Check if we are in maintenance mode or not. This is triggeren by a file in the var/settings
          * directory with the name lock.txt
          */
         if ($this->getUtil()->getMaintenanceLock()->isLocked()) {
-            if ($this->currentUser->isActive() &&
-                    (! $this->currentUser->hasPrivilege('pr.maintenance.maintenance-mode'))) {
+            if ($user->isActive() &&
+                    (! $user->hasPrivilege('pr.maintenance.maintenance-mode'))) {
                 //Still allow logoff so we can relogin as master
                 if (!('index' == $request->getControllerName() && 'logoff' == $request->getActionName())) {
                     $this->setError(
@@ -2028,7 +2027,7 @@ class GemsEscort extends \MUtil_Application_Escort
                             401,
                             $this->_('System is in maintenance mode'));
                 }
-                $this->currentUser->unsetAsCurrentUser();
+                $user->unsetAsCurrentUser();
             } else {
                 $this->addMessage($this->_('System is in maintenance mode'));
                 \MUtil_Echo::r($this->_('System is in maintenance mode'));
@@ -2038,9 +2037,9 @@ class GemsEscort extends \MUtil_Application_Escort
         // Gems does not use index/index
         $action = $request->getActionName();
         if (('index' == $request->getControllerName()) &&
-                (('index' == $action) || ($this->currentUser->isActive() && ('login' == $action)))) {
+                (('index' == $action) || ($user->isActive() && ('login' == $action)))) {
             // Instead Gems routes to the first available menu item when this is the request target
-            if (! $this->currentUser->gotoStartPage($this->menu, $request)) {
+            if (! $user->gotoStartPage($menu, $request)) {
                 $this->setError(
                         $this->_('No access to site.'),
                         401,
@@ -2051,20 +2050,22 @@ class GemsEscort extends \MUtil_Application_Escort
 
         } else {
             //find first allowed item in the menu
-            $menuItem = $this->menu->find(array('action'       => $request->getActionName(),
-                                                'controller'   => $request->getControllerName()));
+            $menuItem = $menu->find(array(
+                'action'       => $request->getActionName(),
+                'controller'   => $request->getControllerName(),
+                ));
 
             // Display error when not having the right priviliges
             if (! ($menuItem && $menuItem->get('allowed'))) {
                 // When logged in
-                if ($this->currentUser->getUserId()) {
+                if ($user->getUserId()) {
                     $this->setError(
                             $this->_('No access to page'),
                             403,
                             sprintf($this->_('Access to the %s/%s page is not allowed for current role: %s.'),
                                     $request->getControllerName(),
                                     $request->getActionName(),
-                                    $this->currentUser->getRole()),
+                                    $user->getRole()),
                             true);
 
                 } else { // No longer logged in
@@ -2083,9 +2084,9 @@ class GemsEscort extends \MUtil_Application_Escort
                     if ($request->getActionName() == 'autofilter') {
                         // Throw an exception + HTTP 401 when an autofilter is called
                         throw new \Gems_Exception("Session expired", 401);
-                        return;
                     }
-                    if ($menuItem = $this->menu->findFirst(array('allowed' => true, 'visible' => true))) {
+                    $menuItem = $menu->findFirst(array('allowed' => true, 'visible' => true));
+                    if ($menuItem) {
                         // Do not store previous request & show message when the intended action is logoff
                         if (! ($request->getControllerName() == 'index' && $request->getActionName() == 'logoff')) {
                             $this->addMessage($this->_('You are no longer logged in.'));
@@ -2116,7 +2117,7 @@ class GemsEscort extends \MUtil_Application_Escort
 
         if (isset($menuItem)) {
             $menuItem->applyHiddenParameters($request, $source);
-            $this->menu->setCurrent($menuItem);
+            $menu->setCurrent($menuItem);
         }
     }
 

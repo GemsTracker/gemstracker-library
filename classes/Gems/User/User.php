@@ -712,7 +712,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         $orgId = $this->_getVar('user_organization_id');
 
         //If not set, read it from the cookie
-        if ($this->isCurrentUser() && (null === $orgId)) {
+        if ($this->isCurrentUser() && ((null === $orgId) || (\Gems_User_UserLoader::SYSTEM_NO_ORG === $orgId))) {
             $request = $this->getRequest();
             if ($request) {
                 $orgId = \Gems_Cookies::getOrganization($this->getRequest());
@@ -720,6 +720,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
             if (! $orgId) {
                 $orgId = 0;
             }
+            $this->_setVar('user_organization_id', $orgId);
         }
         return $orgId;
     }
@@ -1547,12 +1548,6 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         if ($organizationId) {
             if ($organizationId != $oldOrganizationId) {
                 $this->_setVar('user_organization_id', $organizationId);
-
-                // Depreciation warning: the settings will be removed in
-                // version 1.6 at the latest.
-                $this->_setVar('user_organization_name', $organization->getName());
-                $this->_setVar('user_style', $organization->getStyle());
-                // End depreciation warning
             }
             if ($this->isCurrentUser()) {
                 $this->getCurrentOrganization()->setAsCurrentOrganization();
@@ -1632,6 +1627,19 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     public function setPasswordResetRequired($reset = true)
     {
         $this->_setVar('user_password_reset', (boolean) $reset);
+        return $this;
+    }
+
+    /**
+     * Set the Request object
+     *
+     * @param \Zend_Controller_Request_Abstract $request
+     * @return \Gems_User_User
+     */
+    public function setRequest(\Zend_Controller_Request_Abstract $request)
+    {
+        $this->request = $request;
+
         return $this;
     }
 
