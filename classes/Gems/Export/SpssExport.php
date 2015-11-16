@@ -142,6 +142,10 @@ class Gems_Export_SpssExport extends \Gems_Export_ExportAbstract
         //first output our script
         fwrite($file,
             "SET UNICODE=ON.
+SHOW LOCALE.
+PRESERVE LOCALE.
+SET LOCALE='en_UK'.
+
 GET DATA
  /TYPE=TXT
  /FILE=\"" . $filenameDat . "\"
@@ -236,6 +240,8 @@ GET DATA
                 fwrite($file, ".\n\n");
             }
         }
+        
+        fwrite($file, "PRESERVE LOCALE.\n");
 
         fclose($file);
     }
