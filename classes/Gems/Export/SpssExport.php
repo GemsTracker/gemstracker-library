@@ -241,7 +241,7 @@ GET DATA
             }
         }
         
-        fwrite($file, "PRESERVE LOCALE.\n");
+        fwrite($file, "RESTORE LOCALE.\n");
 
         fclose($file);
     }
