@@ -229,7 +229,7 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
 
                     $href = $menuItem->toHRefAttribute($paramSource);
                     if ($href) {
-                        \MUtil_Echo::track($oldToken);
+                        // \MUtil_Echo::track($oldToken);
                         $link = \MUtil_Html::create('a', $href, $oldToken);
 
                         $oldToken = $link->setView($this->view);
