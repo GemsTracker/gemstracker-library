@@ -4,7 +4,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-10-07 13:58+0100\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
+"Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
 "Language: nl_NL\n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 1.8.5\n"
+"X-Generator: Poedit 1.8.6\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: classes/GemsEscort.php:298 classes/MUtil/Log.php:105
@@ -7945,7 +7945,7 @@ msgstr "Bestand %s niet gevonden"
 #: classes/OpenRosa/Tracker/Source/OpenRosa/Form.php:705
 #, php-format
 msgid "Could not read form definition for form %s"
-msgstr "Kond de formulierdefinitie van formulier %s niet inlezen"
+msgstr "Kon de formulierdefinitie van formulier %s niet inlezen"
 
 #: classes/OpenRosa/Tracker/Source/OpenRosa/Form.php:544
 msgid "Date received"
