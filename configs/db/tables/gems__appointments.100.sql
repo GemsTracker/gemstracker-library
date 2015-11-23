@@ -41,7 +41,12 @@ CREATE TABLE if not exists gems__appointments (
         INDEX (gap_id_user, gap_id_organization),
         INDEX (gap_admission_time),
         INDEX (gap_code),
-        INDEX (gap_status)
+        INDEX (gap_status),
+        INDEX (gap_id_attended_by),
+        INDEX (gap_id_referred_by),
+        INDEX (gap_id_activity),
+        INDEX (gap_id_procedure),
+        INDEX (gap_id_location)
     )
     ENGINE=InnoDB
     auto_increment = 2000000

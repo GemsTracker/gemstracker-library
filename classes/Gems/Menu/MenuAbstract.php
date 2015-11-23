@@ -505,6 +505,32 @@ abstract class Gems_Menu_MenuAbstract
     }
 
     /**
+     * Add the log menu items
+     */
+    public function addLogControllers()
+    {
+        // LOG SETUP CONTROLLER
+        $this->addBrowsePage($this->_('Log Setup'), 'pr.log.maintenance', 'log-maintenance');
+
+        // LOG CONTROLLER
+        $page = $this->addPage($this->_('Log'), 'pr.log', 'log', 'index');
+        $page->addAutofilterAction();
+        $page->addExcelAction();
+        $page->addShowAction()
+                ->setNamedParameters(\Gems_Model::LOG_ITEM_ID, 'gla_id');
+
+        // LOG CONTROLLER
+        $page = $this->addPage($this->_('Log'), 'pr.log', 'log', 'index');
+        $page->addAutofilterAction();
+        $page->addExcelAction();
+        $page->addShowAction()
+                ->setNamedParameters(\Gems_Model::LOG_ITEM_ID, 'gla_id');
+
+        // LOG FILES CONTROLLER
+        $this->addFilePage($this->_('Log files'), 'pr.log.files', 'log-file');
+    }
+
+    /**
      * Add a page to the menu
      *
      * @param string $label         The label to display for the menu item, null for access without display

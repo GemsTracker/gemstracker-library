@@ -32,7 +32,8 @@ CREATE TABLE if not exists gems__respondent2org (
         INDEX (gr2o_opened),
         INDEX (gr2o_reception_code),
         INDEX (gr2o_opened_by),
-        INDEX (gr2o_changed_by)
+        INDEX (gr2o_changed_by),
+        INDEX (gr2o_consent)
     )
     ENGINE=InnoDB
     CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';

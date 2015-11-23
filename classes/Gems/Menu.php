@@ -212,15 +212,8 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         // MAIL CONTAINER
         $setup->addCommSetupMenu($this->_('Communication'));
 
-        // LOG SETUP CONTROLLER
-        $setup->addBrowsePage($this->_('Log Setup'), 'pr.log.maintenance', 'log-maintenance');
-
         // LOG CONTROLLER
-        $page = $setup->addPage($this->_('Log'), 'pr.log', 'log', 'index');
-        $page->addAutofilterAction();
-        $page->addExcelAction();
-        $page->addShowAction()
-                ->setNamedParameters(\Gems_Model::LOG_ITEM_ID, 'gla_id');
+        $setup->addLogControllers();
 
         // OpenRosa
         $this->addOpenRosaContainer($this->_('OpenRosa'), $setup);

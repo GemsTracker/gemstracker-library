@@ -61,7 +61,9 @@ CREATE TABLE if not exists gems__tokens (
         INDEX (gto_id_respondent_track, gto_round_order),
         INDEX (gto_valid_from, gto_valid_until),
         INDEX (gto_completion_time),
-        INDEX(`gto_by`)
+        INDEX (gto_by),
+        INDEX (gto_round_order),
+        INDEX (gto_created)
     )
     ENGINE=InnoDB
     CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';

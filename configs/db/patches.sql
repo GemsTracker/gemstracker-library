@@ -1047,3 +1047,35 @@ UPDATE gems__roles
 -- PATCH: Old database structures cleanup
 ALTER IGNORE TABLE gems__staff DROP KEY gsf_reset_key;
 
+-- PATCH: Speedup of queries
+ALTER IGNORE TABLE gems__surveys ADD INDEX (gsu_id_primary_group);
+ALTER IGNORE TABLE gems__surveys DROP INDEX gsu_id_primary_group_2; -- Undo double creation
+
+ALTER IGNORE TABLE gems__tokens ADD INDEX (gto_round_order);
+ALTER IGNORE TABLE gems__tokens DROP INDEX gto_round_order_2; -- Undo double creation
+
+ALTER IGNORE TABLE gems__tokens ADD INDEX (gto_created);
+ALTER IGNORE TABLE gems__tokens DROP INDEX gto_created_2; -- Undo double creation
+
+ALTER IGNORE TABLE gems__appointments ADD INDEX (gap_id_attended_by);
+ALTER IGNORE TABLE gems__appointments DROP INDEX gap_id_attended_by_2;  -- Undo double creation
+
+ALTER IGNORE TABLE gems__appointments ADD INDEX (gap_id_referred_by);
+ALTER IGNORE TABLE gems__appointments DROP INDEX gap_id_referred_by_2;  -- Undo double creation
+
+ALTER IGNORE TABLE gems__appointments ADD INDEX (gap_id_activity);
+ALTER IGNORE TABLE gems__appointments DROP INDEX gap_id_activity_2;  -- Undo double creation
+
+ALTER IGNORE TABLE gems__appointments ADD INDEX (gap_id_procedure);
+ALTER IGNORE TABLE gems__appointments DROP INDEX gap_id_procedure_2;  -- Undo double creation
+
+ALTER IGNORE TABLE gems__appointments ADD INDEX (gap_id_location);
+ALTER IGNORE TABLE gems__appointments DROP INDEX gap_id_location_2;  -- Undo double creation
+
+ALTER IGNORE TABLE gems__respondent2org ADD INDEX (gr2o_consent);
+ALTER IGNORE TABLE gems__respondent2org DROP INDEX gr2o_consent_2;  -- Undo double creation
+
+-- PATCH: Log file access
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.log.files,pr.log.files.download')
+    WHERE grl_name = 'super'
+        AND grl_privileges NOT LIKE '%,pr.log.files%';

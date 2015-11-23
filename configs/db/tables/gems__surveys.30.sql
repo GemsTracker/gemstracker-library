@@ -38,7 +38,8 @@ CREATE TABLE if not exists gems__surveys (
         PRIMARY KEY(gsu_id_survey),
         INDEX (gsu_active),
         INDEX (gsu_surveyor_active),
-        INDEX (gsu_code)
+        INDEX (gsu_code),
+        INDEX (gsu_id_primary_group)
     )
     ENGINE=InnoDB
     auto_increment = 500
