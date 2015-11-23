@@ -48,6 +48,13 @@
 abstract class Gems_Snippets_ModelItemTableSnippetAbstract extends \MUtil_Snippets_ModelVerticalTableSnippetAbstract
 {
     /**
+     * Edit the item when it is clicked (provided the user has the right)
+     *
+     * @var boolean
+     */
+    protected $addOnclickEdit = true;
+
+    /**
      * Shortfix to add class attribute
      *
      * @var string
@@ -108,9 +115,12 @@ abstract class Gems_Snippets_ModelItemTableSnippetAbstract extends \MUtil_Snippe
      */
     protected function addShowTableRows(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
-        if ($menuItem = $this->getEditMenuItem()) {
-            // Add click to edit
-            $bridge->tbody()->onclick = array('location.href=\'', $menuItem->toHRefAttribute($this->request), '\';');
+        if ($this->addOnclickEdit) {
+            $menuItem = $this->getEditMenuItem();
+            if ($menuItem) {
+                // Add click to edit
+                $bridge->tbody()->onclick = array('location.href=\'', $menuItem->toHRefAttribute($this->request), '\';');
+            }
         }
 
         parent::addShowTableRows($bridge, $model);

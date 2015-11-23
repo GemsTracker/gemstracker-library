@@ -96,10 +96,10 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
         $this->addTable(    'gems__groups',           array('gsu_id_primary_group' => 'ggp_id_group'));
         $this->addTable(    'gems__respondents',      array('gto_id_respondent' => 'grs_id_user'));
         $this->addTable(    'gems__respondent2org',   array('gto_id_organization' => 'gr2o_id_organization', 'gto_id_respondent' => 'gr2o_id_user'));
-        $this->addTable(    'gems__respondent2track', array('gr2t_id_respondent_track' => 'gto_id_respondent_track'), $this->saveRespondentTracks);
+        $this->addTable(    'gems__respondent2track', array('gto_id_respondent_track' => 'gr2t_id_respondent_track'), $this->saveRespondentTracks);
         $this->addTable(    'gems__organizations',    array('gto_id_organization' => 'gor_id_organization'));
         $this->addTable(    'gems__reception_codes',  array('gto_reception_code' => 'grc_id_reception_code'));
-        $this->addLeftTable('gems__rounds',           array('gto_id_round' => 'gro_id_round'));
+        $this->addTable(    'gems__rounds',           array('gto_id_round' => 'gro_id_round'));
         $this->addLeftTable('gems__staff',            array('gr2t_created_by' => 'gems__staff.gsf_id_user'));
 
         $this->addColumn(
@@ -220,7 +220,7 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
         $this->addDependency(new OffOnElementsDependency('gto_valid_from_manual',  'gto_valid_from', 'readonly', $this));
         $this->addDependency(new OffOnElementsDependency('gto_valid_until_manual', 'gto_valid_until', 'readonly', $this));
 
-        $this->set('gto_valid_until', 'validators[dateAfter]',            
+        $this->set('gto_valid_until', 'validators[dateAfter]',
               new \MUtil_Validate_Date_DateAfter('gto_valid_from')
               );
 

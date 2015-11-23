@@ -54,6 +54,15 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends \Gems_Snippets_Model
     private $_dateStorageFormat;
 
     /**
+     * Set a fixed model sort.
+     *
+     * Leading _ means not overwritten by sources.
+     *
+     * @var array
+     */
+    protected $_fixedSort = array('gap_admission_time' => SORT_DESC);
+
+    /**
      * Image for time display
      *
      * @var \MUtil_Html_HtmlElement

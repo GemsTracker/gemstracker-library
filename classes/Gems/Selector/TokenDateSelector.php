@@ -60,6 +60,13 @@ class Gems_Selector_TokenDateSelector extends \Gems_Selector_DateSelectorAbstrac
     protected $dateFrom = 'gto_valid_from';
 
     /**
+     * The base filter to search with
+     *
+     * @var array
+     */
+    protected $searchFilter;
+
+    /**
      *
      * @param string $name
      * @return \Gems_Selector_SelectorField
@@ -142,8 +149,8 @@ class Gems_Selector_TokenDateSelector extends \Gems_Selector_DateSelectorAbstrac
      */
     protected function processSelect(\Zend_Db_Select $select)
     {
-        $select->joinLeft('gems__rounds',      'gto_id_round = gro_id_round', array());
-        $select->join('gems__tracks',          'gto_id_track = gtr_id_track', array());
+        // $select->joinLeft('gems__rounds',      'gto_id_round = gro_id_round', array());
+        // $select->join('gems__tracks',          'gto_id_track = gtr_id_track', array());
         $select->join('gems__surveys',         'gto_id_survey = gsu_id_survey', array());
         $select->join('gems__groups',          'gsu_id_primary_group = ggp_id_group', array());
         $select->join('gems__respondents',     'gto_id_respondent = grs_id_user', array());

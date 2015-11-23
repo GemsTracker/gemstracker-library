@@ -189,9 +189,10 @@ class Gems_Tracker_Token_TokenSelect
      * @param boolean $groupBy Optional, add these fields to group by statement
      * @return \Gems_Tracker_Token_TokenSelect
      */
-    public function andTracks($fields = '*', $groupBy = false) {
+    public function andTracks($fields = '*', $groupBy = false)
+    {
         $this->sql_select->join('gems__tracks',
-                'gr2t_id_track = gtr_id_track',
+                'gto_id_track = gtr_id_track',
                 $fields);
 
         if ($groupBy && is_array($fields)) {
@@ -250,7 +251,8 @@ class Gems_Tracker_Token_TokenSelect
      * @param string|array $fields
      * @return \Gems_Tracker_Token_TokenSelect
      */
-    public function forNextTokenId($tokenId) {
+    public function forNextTokenId($tokenId)
+    {
         $this->sql_select->join('gems__tokens as ct',
                 'gems__tokens.gto_id_respondent_track = ct.gto_id_respondent_track AND
                     gems__tokens.gto_id_token != ct.gto_id_token AND

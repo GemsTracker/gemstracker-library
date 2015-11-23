@@ -208,6 +208,8 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
     {
         $filter = parent::getSearchFilter($useRequest);
 
+        unset($filter['AUTO_SEARCH_TEXT_BUTTON']);
+
         $where = \Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($filter, $this->db, null, 'yyyy-MM-dd HH:mm:ss');
         if ($where) {
             $filter[] = $where;
