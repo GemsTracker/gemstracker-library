@@ -64,6 +64,13 @@ abstract class MUtil_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_
     public $baseUrl;
 
     /**
+     * One of the \MUtil_Model_Bridge_BridgeAbstract MODE constants
+     *
+     * @var int
+     */
+    protected $bridgeMode = \MUtil_Model_Bridge_BridgeAbstract::MODE_LAZY;
+
+    /**
      * Sets pagination on or off.
      *
      * @var boolean
@@ -210,8 +217,12 @@ abstract class MUtil_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_
                 $paginator = $model->loadPaginator();
                 $table->setRepeater($paginator);
                 $this->addPaginator($table, $paginator);
-            } else {
+            } elseif ($this->bridgeMode === \MUtil_Model_Bridge_BridgeAbstract::MODE_LAZY) {
                 $table->setRepeater($model->loadRepeatable());
+            } elseif ($this->bridgeMode === \MUtil_Model_Bridge_BridgeAbstract::MODE_SINGLE_ROW) {
+                $table->setRepeater(array($model->loadFirst()));
+            } else {
+                $table->setRepeater($model->load());
             }
         }
 
