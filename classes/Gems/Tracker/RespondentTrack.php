@@ -194,21 +194,23 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     private function _ensureFieldData($reload = false)
     {
         if ($this->_respTrackData && (null === $this->_fieldData) || $reload) {
-            $engine    = $this->getTrackEngine();
-            $fieldData = $engine->getFieldsData($this->_respTrackId);
-            $fieldMap  = $engine->getFields();
-            // \MUtil_Echo::track($fieldData, $fieldMap);
-
-            // Map the fielddata to the fieldcode
-            foreach($fieldData as $key => $value) {
-                if (isset($fieldMap[$key])) {
-                    // The old name remains in the data set of course,
-                    // using the code is a second occurence
-                    $fieldData[$fieldMap[$key]] = $value;
-                }
-            }
-
-            $this->_fieldData = $fieldData;
+            $this->_fieldData = $this->getTrackEngine()->getFieldsData($this->_respTrackId);
+            $this->_fixFieldData();
+        }
+    }
+    
+    /**
+     * Adds the code fields to the fieldData array
+     */
+    public function _fixFieldData() {
+        $fieldMap  = $this->getTrackEngine()->getFields();
+        
+        foreach ($this->_fieldData as $key => $value) {
+            if (isset($fieldMap[$key])) {
+                // The old name remains in the data set of course,
+                // using the code is a second occurence
+                $this->_fieldData[$fieldMap[$key]] = $value;
+            }        
         }
     }
 
@@ -1109,6 +1111,8 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
 
         $this->_fieldData = $fieldDef->processBeforeSave($this->_fieldData, $this->_respTrackData);
         $fieldsChanged    = $fieldDef->changed;
+        
+        $this->_fixFieldData();
 
         if (! $fieldsChanged) {
             return 0;
@@ -1208,6 +1212,8 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
 
         $this->_fieldData = $fieldDef->processBeforeSave($fieldData, $this->_respTrackData);
         $changes          = $fieldDef->saveFields($this->_respTrackId, $this->_fieldData);
+
+        $this->_fixFieldData();
 
         if ($userId && $changes) {
             $this->handleFieldUpdate($userId);
