@@ -215,7 +215,7 @@ class ZFDebug_Controller_Plugin_Debug extends Zend_Controller_Plugin_Abstract
         }
 
         $contentType = $this->getRequest()->getHeader('Content-Type');
-		if (false !== $contentType && false === strpos($contentType, 'html')) {
+		if ((false !== $contentType) && (false === strpos($contentType, 'html')) && ($contentType !== '')) {
 	    	return;
 		}
 
