@@ -763,11 +763,12 @@ class GemsEscort extends \MUtil_Application_Escort
         $options = array(
             'plugins' => array('Variables',
                 'Database' => array('adapter' => $db->getDbAdapter()),
-                'File'     => array('basePath' => '/path/to/project'),
+                'File'     => array('basePath' => GEMS_ROOT_DIR),
                 'Cache'    => array('backend' => $cache->getBackend()),
                 'Exception')
         );
-        $debug = new ZFDebug_Controller_Plugin_Debug($options);
+
+        $debug = new \ZFDebug_Controller_Plugin_Debug($options);
 
         $this->bootstrap('frontController');
         $frontController = $this->getResource('frontController');
