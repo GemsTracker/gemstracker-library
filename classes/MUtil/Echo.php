@@ -203,16 +203,22 @@ class MUtil_Echo
     public static function out()
     {
         $session = self::getSession();
+        $content = '';
+        if (isset($session->timings)) {
+            $content .= "<h6>Timer results</h6>\n\n";
+            foreach ($session->timings as $name => $data) {
+                $content .= '<b>' . $name . '</b> total time ' . $data['sum'] . ' in ' . $data['cnt'] .  " times<br/>\n";
+            }
+        }
         if (isset($session->content)) {
             $content = $session->content;
-            $session->unsetAll();
-
-            if ($content) {
-                $content = "\n<div class='zend_echo'>\n" . $content . "\n</div>\n";
-            }
-
-            return $content;
         }
+        $session->unsetAll();
+        if ($content) {
+            $content = "\n<div class='zend_echo'>\n" . $content . "\n</div>\n";
+        }
+
+        return $content;
     }
 
     /**
@@ -269,6 +275,27 @@ class MUtil_Echo
     {
         foreach (func_get_args() as $var) {
             self::r($var);
+        }
+    }
+
+    public static function timeFunctionStart($name)
+    {
+        $session = self::getSession();
+
+        $session->timings[$name]['start'] = microtime(true);
+        if (! isset($session->timings[$name]['sum'])) {
+            $session->timings[$name]['cnt'] = 0;
+            $session->timings[$name]['sum'] = 0;
+        }
+    }
+
+    public static function timeFunctionStop($name)
+    {
+        $session = self::getSession();
+
+        if (isset($session->timings[$name]['start'])) {
+            $session->timings[$name]['cnt']++;
+            $session->timings[$name]['sum'] += (microtime(true) - $session->timings[$name]['start']);
         }
     }
 
