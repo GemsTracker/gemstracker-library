@@ -172,7 +172,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         }
 
         if ($values['gr2t_count'] == $values['gr2t_completed']) {
-            if (null === $values['gr2t_end_date']) {
+            if (null === $this->_respTrackData['gr2t_end_date']) {
                 $now =  new \MUtil_Date();
                 $values['gr2t_end_date'] = $now->toString(\Gems_Tracker::DB_DATETIME_FORMAT);
             }
