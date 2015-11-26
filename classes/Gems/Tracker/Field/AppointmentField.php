@@ -196,7 +196,8 @@ class AppointmentField extends FieldAbstract
 
                 if ($fromDate instanceof \MUtil_Date) {
                     $select = $agenda->createAppointmentSelect(array('gap_id_appointment'));
-                    $select->forFilterId($this->_fieldDefinition['gtf_filter_id'])
+                    $select->onlyActive()
+                            ->forFilterId($this->_fieldDefinition['gtf_filter_id'])
                             ->forRespondent($trackData['gr2t_id_user'], $trackData['gr2t_id_organization']);
 
                     $minDate = Period::applyPeriod(
