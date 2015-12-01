@@ -4,7 +4,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-10-07 13:58+0100\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
+"Last-Translator: Roel Faber <r dot faber at erasmusmc dot nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
 "Language: nl_NL\n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 1.8.6\n"
+"X-Generator: Poedit 1.8.5\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: classes/GemsEscort.php:298 classes/MUtil/Log.php:105
@@ -5789,14 +5789,14 @@ msgstr "Herstelt trajecten met dezelfde code als de patiënt."
 
 #: classes/Gems/Snippets/Respondent/DeleteRespondentSnippet.php:224
 msgid "Respondent restored."
-msgstr "Patiënt herstelt."
+msgstr "Patiënt hersteld."
 
 #: classes/Gems/Snippets/Respondent/DeleteRespondentSnippet.php:241
 #, php-format
 msgid "Restored %d track."
 msgid_plural "Restored %d tracks."
-msgstr[0] "%d traject herstelt."
-msgstr[1] "%d trajecten herstelt."
+msgstr[0] "%d traject hersteld."
+msgstr[1] "%d trajecten hersteld."
 
 #: classes/Gems/Snippets/Respondent/DeleteRespondentSnippet.php:253
 #, php-format
@@ -5981,12 +5981,12 @@ msgstr "Toon kenmerk"
 #: classes/Gems/Snippets/Token/DeleteTrackTokenSnippet.php:208
 #, php-format
 msgid "Token %s restored."
-msgstr "Kenmerk %s gerstelt"
+msgstr "Kenmerk %s hersteld"
 
 #: classes/Gems/Snippets/Token/DeleteTrackTokenSnippet.php:210
 #, php-format
 msgid "Token %s deleted."
-msgstr "Kenmerk %s verwijdert"
+msgstr "Kenmerk %s verwijderd"
 
 #: classes/Gems/Snippets/Token/DeleteTrackTokenSnippet.php:213
 #, php-format
@@ -6045,14 +6045,14 @@ msgstr "Wijzig traject"
 
 #: classes/Gems/Snippets/Tracker/DeleteTrackSnippet.php:209
 msgid "Track restored."
-msgstr "Traject herstelt."
+msgstr "Traject hersteld."
 
 #: classes/Gems/Snippets/Tracker/DeleteTrackSnippet.php:221
 #, php-format
 msgid "%d token reception codes restored."
 msgid_plural "%d tokens reception codes restored."
-msgstr[0] "%d kenmerk ontvangstcode herstelt."
-msgstr[1] "%d kenmerk ontvangstcodes herstelt."
+msgstr[0] "%d kenmerk ontvangstcode hersteld."
+msgstr[1] "%d kenmerk ontvangstcodes hersteld."
 
 #: classes/Gems/Snippets/Tracker/DeleteTrackSnippet.php:228
 msgid "Track stopped."
