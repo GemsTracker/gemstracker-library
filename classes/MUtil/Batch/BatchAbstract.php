@@ -837,7 +837,7 @@ abstract class MUtil_Batch_BatchAbstract extends \MUtil_Registry_TargetAbstract 
     public function reset()
     {
         $this->_session->unsetAll();
-        
+
         $this->_session->count      = 0;
         $this->_session->counters   = array();
         $this->_session->exceptions = array();
@@ -1154,6 +1154,7 @@ abstract class MUtil_Batch_BatchAbstract extends \MUtil_Registry_TargetAbstract 
      */
     protected function step()
     {
+        \MUtil_Echo::timeFunctionStart(__CLASS__ . '->' . __FUNCTION__);
         if ($this->stack->hasNext()) {
 
             try {
@@ -1184,8 +1185,10 @@ abstract class MUtil_Batch_BatchAbstract extends \MUtil_Registry_TargetAbstract 
 
                 //\MUtil_Echo::track($e);
             }
+            \MUtil_Echo::timeFunctionStop(__CLASS__ . '->' . __FUNCTION__);
             return true;
         } else {
+            \MUtil_Echo::timeFunctionStop(__CLASS__ . '->' . __FUNCTION__);
             return false;
         }
     }

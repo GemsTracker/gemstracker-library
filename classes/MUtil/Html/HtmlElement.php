@@ -802,11 +802,29 @@ class MUtil_Html_HtmlElement extends \Zend_View_Helper_HtmlElement
      */
     private function _renderAttributes(\Zend_View_Abstract $view)
     {
+        \MUtil_Echo::timeFunctionStart(__CLASS__ . '->' . __FUNCTION__);
         $results = array();
 
-        $renderer = \MUtil_Html::getRenderer();
         foreach ($this->_attribs as $key => $value) {
-            $value = $renderer->renderAny($view, $value);
+            if ($value instanceof \MUtil_Lazy_LazyInterface) {
+                $value = \MUtil_Lazy::rise($value);
+            }
+
+            if (null === $value) {
+                continue;
+            }
+
+            if ($value instanceof \MUtil_Html_AttributeAbstract) {
+                $value->view = $view;
+                $value = $value->get();
+            } elseif ($value instanceof \MUtil_Html_HtmlInterface) {
+                $value = $value->render($view);
+            } elseif (! is_scalar($value)) {
+                \MUtil_Echo::timeFunctionStart(__CLASS__ . '->' . __FUNCTION__ . '->nonScalar');
+                \MUtil_Echo::classToName($value);
+                $value = \MUtil_Html::getRenderer()->renderAny($view, $value);
+                \MUtil_Echo::timeFunctionStop(__CLASS__ . '->' . __FUNCTION__ . '->nonScalar');
+            }
 
             if (null !== $value) {
                 $results[$key] = $value;
@@ -814,6 +832,7 @@ class MUtil_Html_HtmlElement extends \Zend_View_Helper_HtmlElement
             }
         }
 
+        \MUtil_Echo::timeFunctionStop(__CLASS__ . '->' . __FUNCTION__);
         return $results;
     }
 
@@ -1185,6 +1204,8 @@ class MUtil_Html_HtmlElement extends \Zend_View_Helper_HtmlElement
     {
         $this->setView($view);
 
+        \MUtil_Echo::timeFunctionStart(__CLASS__);
+        \MUtil_Echo::timeFunctionStart(get_class($this) . '->' . $this->tagName);
         if ($this->_repeater &&
                 $this->_repeatTags &&
                 $this->_repeater->__start()) {
@@ -1194,11 +1215,12 @@ class MUtil_Html_HtmlElement extends \Zend_View_Helper_HtmlElement
                 $html .= $this->renderElement($view);
             }
 
-            return $html;
-
         } else {
-            return $this->renderElement($view);
+            $html = $this->renderElement($view);
         }
+        \MUtil_Echo::timeFunctionStop(get_class($this) . '->' . $this->tagName);
+        \MUtil_Echo::timeFunctionStop(__CLASS__);
+        return $html;
     }
 
     /**
@@ -1215,18 +1237,65 @@ class MUtil_Html_HtmlElement extends \Zend_View_Helper_HtmlElement
         if ($this->_content) {
             if ($this->_repeater && (! $this->_repeatTags)) {
                 if ($this->_repeater->__start()) {
-                    $html = null;
+                    $html = '';
                     while ($this->_repeater->__next()) {
-                        $html .= $renderer->renderAny($view, $this->_content);
+                        foreach ($this->_content as $value) {
+                            if ($value instanceof \MUtil_Lazy_LazyInterface) {
+                                $value = \MUtil_Lazy::rise($value);
+                            }
+
+                            if (null === $value) {
+                                continue;
+                            }
+
+                            if ($value instanceof \MUtil_Html_HtmlInterface) {
+                                $value = $value->render($view);
+                            } elseif (! is_scalar($value)) {
+                                \MUtil_Echo::timeFunctionStart(__CLASS__ . '->' . __FUNCTION__ . '->nonScalar');
+                                \MUtil_Echo::classToName($value);
+                                $value = \MUtil_Html::getRenderer()->renderAny($view, $value);
+                                \MUtil_Echo::timeFunctionStop(__CLASS__ . '->' . __FUNCTION__ . '->nonScalar');
+                            }
+
+                            if (null !== $value) {
+                                $html .= $value;
+                                // \MUtil_Echo::r($key . '=' . $value);
+                            }
+                        }
+                        // $html .= $renderer->renderAny($view, $this->_content);
                     }
 
                     return $html;
                 }
 
             } else {
-                $content = $renderer->renderAny($view, $this->_content);
-                if (strlen($content)) {
-                    return $content;
+                $html = '';
+                foreach ($this->_content as $value) {
+                    if ($value instanceof \MUtil_Lazy_LazyInterface) {
+                        $value = \MUtil_Lazy::rise($value);
+                    }
+
+                    if (null === $value) {
+                        continue;
+                    }
+
+                    if ($value instanceof \MUtil_Html_HtmlInterface) {
+                        $value = $value->render($view);
+                    } elseif (! is_scalar($value)) {
+                        \MUtil_Echo::timeFunctionStart(__CLASS__ . '->' . __FUNCTION__ . '->nonScalar');
+                        // \MUtil_Echo::classToName($value);
+                        $value = \MUtil_Html::getRenderer()->renderAny($view, $value);
+                        \MUtil_Echo::timeFunctionStop(__CLASS__ . '->' . __FUNCTION__ . '->nonScalar');
+                    }
+
+                    if (null !== $value) {
+                        $html .= $value;
+                        // \MUtil_Echo::r($key . '=' . $value);
+                    }
+                }
+                // $html = $renderer->renderAny($view, $this->_content);
+                if (strlen($html)) {
+                    return $html;
                 }
             }
         }
@@ -1258,21 +1327,23 @@ class MUtil_Html_HtmlElement extends \Zend_View_Helper_HtmlElement
             $html = '<' . $this->tagName;
 
             if ($this->_attribs) {
+                \MUtil_Echo::timeFunctionStart(__CLASS__ . '->' . __FUNCTION__ . '->attr');
                 $html .= $this->_htmlAttribs($this->_renderAttributes($view));
+                \MUtil_Echo::timeFunctionStop(__CLASS__ . '->' . __FUNCTION__ . '->attr');
             }
 
             if ($has_content || $this->renderClosingTag) {
-                $html .= '>';
-
-                $html .= $content;
-
-                $html .= '</' . $this->tagName . '>';
+                $html .= '>' . $content . '</' . $this->tagName . '>';
 
             } else {
                 $html .= $this->getClosingBracket();
             }
 
-            return $this->_prependString . $html . $this->_appendString;
+            if ($this->_prependString || $this->_appendString) {
+                return $this->_prependString . $html . $this->_appendString;
+            }
+
+            return $html;
         }
     }
 
