@@ -123,12 +123,7 @@ class MUtil_Html_ArrayAttribute extends \MUtil_Html_AttributeAbstract
                 continue;
             }
 
-            if ($value instanceof \MUtil_Html_AttributeAbstract) {
-                //\MUtil_Echo::classToName($this);
-                \MUtil_Echo::classToName($value);
-                $value->view = $view;
-                $value = $value->get();
-            } elseif ($value instanceof \MUtil_Html_HtmlInterface) {
+            if ($value instanceof \MUtil_Html_HtmlInterface) {
                 \MUtil_Echo::classToName($value);
                 $value = $value->render($view);
             } elseif (! is_scalar($value)) {

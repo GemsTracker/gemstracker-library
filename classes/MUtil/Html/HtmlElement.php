@@ -814,10 +814,7 @@ class MUtil_Html_HtmlElement extends \Zend_View_Helper_HtmlElement
                 continue;
             }
 
-            if ($value instanceof \MUtil_Html_AttributeAbstract) {
-                $value->view = $view;
-                $value = $value->get();
-            } elseif ($value instanceof \MUtil_Html_HtmlInterface) {
+            if ($value instanceof \MUtil_Html_HtmlInterface) {
                 $value = $value->render($view);
             } elseif (! is_scalar($value)) {
                 \MUtil_Echo::timeFunctionStart(__CLASS__ . '->' . __FUNCTION__ . '->nonScalar');
