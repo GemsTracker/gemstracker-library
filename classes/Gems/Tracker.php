@@ -826,7 +826,6 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
      */
     public function processCompletedTokens($respondentId, $userId = null, $orgId = null, $quickCheck = false)
     {
-        \MUtil_Echo::timeFunctionStart(__CLASS__ . '->' . __FUNCTION__);
         $userId = $this->_checkUserId($userId);
         $tokenSelect = $this->getTokenSelect(array('gto_id_token'));
         $tokenSelect->onlyActive($quickCheck)
@@ -877,7 +876,6 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
         }
 
         $batch->reset();
-        \MUtil_Echo::timeFunctionStop(__CLASS__ . '->' . __FUNCTION__);
         return $changed;
     }
 

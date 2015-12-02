@@ -128,7 +128,6 @@ class MUtil_Lazy_ParallelRepeater implements \MUtil_Lazy_RepeatableInterface
      */
     public function __next()
     {
-        \MUtil_Echo::timeFunctionStart(__CLASS__ . '->' . __FUNCTION__);
         $results = array();
         foreach ($this->repeatables as $id => $repeater) {
             if ($result = $repeater->__next()) {
@@ -136,7 +135,6 @@ class MUtil_Lazy_ParallelRepeater implements \MUtil_Lazy_RepeatableInterface
             }
         }
         // \MUtil_Echo::r($results, 'Parallel next');
-        \MUtil_Echo::timeFunctionStop(__CLASS__ . '->' . __FUNCTION__);
         return $results;
     }
 
@@ -157,14 +155,12 @@ class MUtil_Lazy_ParallelRepeater implements \MUtil_Lazy_RepeatableInterface
      */
     public function __start()
     {
-        \MUtil_Echo::timeFunctionStart(__CLASS__ . '->' . __FUNCTION__);
         $result = false;
         foreach ($this->repeatables as $repeater) {
             $result = $repeater->__start() || $result;
         }
         // \MUtil_Echo::r(array_keys($this->repeatables), 'Parallel start');
         // \MUtil_Echo::r($result, 'Parallel start');
-        \MUtil_Echo::timeFunctionStop(__CLASS__ . '->' . __FUNCTION__);
         return $result;
     }
 

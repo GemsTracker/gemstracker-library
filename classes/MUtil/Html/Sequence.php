@@ -243,39 +243,26 @@ class MUtil_Html_Sequence extends \MUtil_ArrayString implements \MUtil_Html_Elem
      */
     public function render(\Zend_View_Abstract $view)
     {
-        \MUtil_Echo::timeFunctionStart(get_class($this) . '->' . __FUNCTION__);
+        $html = '';
+        $glue = $this->getGlue();
+        if ($glue instanceof \MUtil_Html_HtmlInterface) {
+            $glue = $glue->render($view);
+        }
 
         if (null !== $view) {
             $this->setView($view);
-        } else {
-            $view = $this->getView();
         }
         // \MUtil_Echo::r($this->count(), $glue);
 
-        $html     = array();
+        $view = $this->getView();
+
         $renderer = \MUtil_Html::getRenderer();
-        foreach ($this as $item) {
-            $val = $renderer->renderAny($view, $item);
-            if (strlen($val)) {
-                $html[] = $val;
-            }
+        foreach ($this->getIterator() as $item) {
+            $html .= $glue;
+            $html .= $renderer->renderAny($view, $item);
         }
 
-        // $html = substr($html, strlen($glue));
-        if (isset($html[1])) {
-            $glue = $this->getGlue();
-            if ($glue instanceof \MUtil_Html_HtmlInterface) {
-                $glue = $glue->render($view);
-            }
-
-            $output = implode($glue, $html);
-        } else {
-            $output = reset($html);
-        }
-
-
-        \MUtil_Echo::timeFunctionStop(get_class($this) . '->' . __FUNCTION__);
-        return $output;
+        return substr($html, strlen($glue));
     }
 
     /**

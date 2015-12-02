@@ -108,38 +108,14 @@ class MUtil_Html_ArrayAttribute extends \MUtil_Html_AttributeAbstract
      */
     protected function _getArrayRendered()
     {
-        \MUtil_Echo::timeFunctionStart(__CLASS__ . '->' . __FUNCTION__);
         $results = array();
 
         $view = $this->getView();
         $renderer = \MUtil_Html::getRenderer();
         foreach ($this->getArray() as $key => $value) {
-            if ($value instanceof \MUtil_Lazy_LazyInterface) {
-                // \MUtil_Echo::classToName($value);
-                $value = \MUtil_Lazy::rise($value);
-            }
-
-            if (null === $value) {
-                continue;
-            }
-
-            if ($value instanceof \MUtil_Html_HtmlInterface) {
-                \MUtil_Echo::classToName($value);
-                $value = $value->render($view);
-            } elseif (! is_scalar($value)) {
-                \MUtil_Echo::timeFunctionStart(__CLASS__ . '->' . __FUNCTION__ . '->nonScalar');
-                \MUtil_Echo::classToName($value);
-                $value = \MUtil_Html::getRenderer()->renderAny($view, $value);
-                \MUtil_Echo::timeFunctionStop(__CLASS__ . '->' . __FUNCTION__ . '->nonScalar');
-            }
-
-            if (null !== $value) {
-                $results[$key] = $value;
-                // \MUtil_Echo::r($key . '=' . $value);
-            }
+            $results[$key] = $renderer->renderAny($view, $value);
         }
 
-        \MUtil_Echo::timeFunctionStop(__CLASS__ . '->' . __FUNCTION__);
         return $results;
     }
 
