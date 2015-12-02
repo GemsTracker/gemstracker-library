@@ -134,7 +134,7 @@ class MUtil_Html_LabelElement extends \MUtil_Html_HtmlElement
                     } else {
                         $label = $value->getLabel();
                     }
-                    $class = $this->class ? \MUtil_Html::renderAny($this->class) . ' ' : '';
+                    $class = $this->class ? \MUtil_Html::renderAny($view, $this->class) . ' ' : '';
                     if ($value->isRequired()) {
                         $class .= $this->getRequiredClass();
                         $this->_currentContent[$key] = array($this->getRequiredPrefix(), $label, $this->getRequiredPostfix());

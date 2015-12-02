@@ -143,6 +143,22 @@ class MUtil_Echo
     }
 
     /**
+     * Put the function with a name where you want to start counting
+     *
+     * @param string $name Id of
+     */
+    public static function countOccurences($name)
+    {
+        $session = self::getSession();
+
+        if (! isset($session->counts, $session->counts[$name])) {
+            $session->counts[$name] = 1;
+        } else {
+            $session->counts[$name]++;
+        }
+    }
+
+    /**
      * Returns any information to output.
      *
      * @return mixed
@@ -204,6 +220,12 @@ class MUtil_Echo
     {
         $session = self::getSession();
         $content = '';
+        if (isset($session->counts)) {
+            $content .= "<h6>Count results</h6>\n\n";
+            foreach ($session->counts as $name => $count) {
+                $content .= "<b>$name</b> triggered $count times<br/>\n";
+            }
+        }
         if (isset($session->timings)) {
             $content .= "<h6>Timer results</h6>\n\n";
             ksort($session->timings);
@@ -285,6 +307,11 @@ class MUtil_Echo
         }
     }
 
+    /**
+     * Put the function with a name where you want to start timing
+     *
+     * @param string $name Id of
+     */
     public static function timeFunctionStart($name)
     {
         $session = self::getSession();
@@ -306,6 +333,12 @@ class MUtil_Echo
         $session->timings[$name]['level']++;
     }
 
+    /**
+     * Put the function with a name where you want to stop timing,
+     * must match calls timeFunctionStart() exactly
+     *
+     * @param string $name Id of
+     */
     public static function timeFunctionStop($name)
     {
         $session = self::getSession();
