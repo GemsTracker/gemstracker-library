@@ -222,6 +222,7 @@ class MUtil_Echo
         $content = '';
         if (isset($session->counts)) {
             $content .= "<h6>Count results</h6>\n\n";
+            ksort($session->counts);
             foreach ($session->counts as $name => $count) {
                 $content .= "<b>$name</b> triggered $count times<br/>\n";
             }
