@@ -172,7 +172,7 @@ class Gems_Roles
         try {
             $this->loadDbAcl();
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
             Gems_Log::getLogger()->logError($e);
 
