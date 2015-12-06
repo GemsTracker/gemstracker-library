@@ -192,13 +192,15 @@ class Gems_Util_Translated extends \MUtil_Translate_TranslateableAbstract
         // TODO: Timezone seems to screw this one up
         //$days = floor($dateTime / 86400) - floor(time() / 86400); // 86400 = 24*60*60
         if ($dateTimeValue instanceof \MUtil_Date) {
-            $dateTime = clone $dateTimeValue;
-        } elseif (\MUtil_Date::isDate($dateTimeValue, \Zend_Date::ISO_8601)) {
-            $dateTime = new \MUtil_Date($dateTimeValue, \Zend_Date::ISO_8601);
-        } elseif (\MUtil_Date::isDate($dateTimeValue, 'YYYY-MM-DD')) {
-            $dateTime = new \MUtil_Date($dateTimeValue, 'YYYY-MM-DD');
-        } else {
-            return null;
+            $dateTime = $dateTimeValue;
+        } else{
+            $dateTime = \MUtil_Date::ifDate(
+                    $dateTimeValue,
+                    array(\Gems_Tracker::DB_DATETIME_FORMAT, \Gems_Tracker::DB_DATE_FORMAT, \Zend_Date::ISO_8601)
+                    );
+            if (! $dateTime) {
+                return null;
+            }
         }
         $days = $dateTime->diffDays();
 

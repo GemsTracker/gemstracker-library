@@ -358,7 +358,7 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends \MUtil_Translate_Tran
                 $this->dateLocale = new \Zend_Locale($this->dateLocale);
             }
 
-            if ($format && \MUtil_Date::isDate($value, $format, $this->dateLocale)) {
+            if ($format && \Zend_Date::isDate($value, $format, $this->dateLocale)) {
                 $value = new \MUtil_Date($value, $format, $this->dateLocale);
                 return;
             }

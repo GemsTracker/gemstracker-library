@@ -49,6 +49,67 @@ class MUtil_Date extends \Zend_Date
     const WEEK_SECONDS = 604800;    // 7 * 24 * 60 * 60
 
     /**
+     * You can add your project specfic dates to this array
+     *
+     * @var array Zend DateTime Format => PHP DateTime Format
+     */
+    public static $zendToPhpFormats = array(
+        'yyyy-MM-dd HH:mm:ss' => 'Y-m-d H:i:s',
+        'yyyy-MM-dd'          => 'Y-m-d',
+        'c'                   => \DateTime::ISO8601,
+        'dd-MM-yyyy'          => 'd-m-Y',
+        'dd-MM-yyyy HH:mm'    => 'd-m-Y H:i',
+        'dd-MM-yyyy HH:mm:ss' => 'd-m-Y H:i:s',
+        'HH:mm:ss'            => 'H:i:s',
+        'HH:mm'               => 'H:i',
+    );
+
+    /**
+     * Generates the standard date object, could be a unix timestamp, localized date,
+     * string, integer, array and so on. Also parts of dates or time are supported
+     * Always set the default timezone: http://php.net/date_default_timezone_set
+     * For example, in your bootstrap: date_default_timezone_set('America/Los_Angeles');
+     * For detailed instructions please look in the docu.
+     *
+     * @param  string|integer|Zend_Date|array  $date    OPTIONAL Date value or value of date part to set
+     *                                                 ,depending on $part. If null the actual time is set
+     * @param  string                          $part    OPTIONAL Defines the input format of $date
+     * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
+     * @return Zend_Date
+     * @throws Zend_Date_Exception
+     */
+    public function __construct($date = null, $part = null, $locale = null)
+    {
+        $notset = true;
+        if (null == $locale) {
+            if (is_string($date) && is_string($part) && isset(self::$zendToPhpFormats[$part])) {
+                $phpDate = \DateTime::createFromFormat(self::$zendToPhpFormats[$part], $date);
+                if ($phpDate) {
+                    $date = $phpDate;
+                }
+
+            } elseif ((null == $date) && (null == $part)) {
+                $this->setLocale();
+
+                $zone = @date_default_timezone_get();
+                $this->setTimezone($zone);
+                $this->setUnixTimestamp(time());
+                $notset = false;
+
+            }
+        }
+        if ($date instanceof \DateTime) {
+            $this->setLocale();
+            $this->setTimezone($date->getTimezone()->getName());
+            $this->setUnixTimestamp($date->getTimestamp());
+            $notset = false;
+        }
+        if ($notset) {
+            parent::__construct($date, $part, $locale);
+        }
+    }
+
+    /**
      * The number of days in $date subtracted from $this.
      *
      * Zero when both date/times occur on the same day.
@@ -61,19 +122,15 @@ class MUtil_Date extends \Zend_Date
      */
     public function diffDays(\Zend_Date $date = null, $locale = null)
     {
-        $day1 = clone $this;
-        $day1->setTime(0);
-        $val1 = intval($day1->getUnixTimestamp() / self::DAY_SECONDS);
+        $val1 = (int) ($this->getUnixTimestamp() / self::DAY_SECONDS);
 
         if (null === $date) {
             // We must use date objects as unix timestamps do not take
             // account of leap seconds.
-            $day2 = new \MUtil_Date();
+            $val2 = (int) (time() / self::DAY_SECONDS);
         } else {
-            $day2 = clone $date;
+            $val2 = (int) ($date->getUnixTimestamp() / self::DAY_SECONDS);
         }
-        $day2->setTime(0);
-        $val2 = intval($day2->getUnixTimestamp() / self::DAY_SECONDS);
 
         return $val1 - $val2;
     }
@@ -239,15 +296,74 @@ class MUtil_Date extends \Zend_Date
      */
     public static function format($date, $outFormat, $inFormat = null, $localeOut = null)
     {
-        if (! $date) {
-            return null;
-        }
-
+        // \MUtil_Echo::timeFunctionStart(__CLASS__ . '->' . __FUNCTION__);
         if (! $date instanceof \Zend_Date) {
-            $date = new self($date, $inFormat);
+            $date = self::ifDate($date, array($inFormat));
+
+            if (! $date) {
+                // \MUtil_Echo::timeFunctionStop(__CLASS__ . '->' . __FUNCTION__);
+                return null;
+            }
         }
 
         return $date->toString($outFormat, null, $localeOut);
+    }
+
+    /**
+     *
+     * @param string $date
+     * @param array $formats
+     * @return \MUtil_Date or null if not a date
+     */
+    public static function ifDate($date, $formats)
+    {
+        if (is_string($date)) {
+            if (('0' === $date[0]) && ('0' === $date[1])) {
+                // Check for empty string dates from the database e.g.: 0000-00-00 00:00:00 or 00-00-0000
+                // Yes, this means we cannot use the year 0, but then that does not exists, only -1 AD
+                if ((('0' == $date[2]) && ('0' == $date[3])) || ('-' == $date[2])) {
+                    return null;
+                }
+            }
+            foreach ((array) $formats as $format) {
+                try {
+                    if (isset(self::$zendToPhpFormats[$format])) {
+                        $phpDate = \DateTime::createFromFormat(self::$zendToPhpFormats[$format], $date);
+                        if ($phpDate) {
+                            return new self($phpDate);
+                        }
+                    }
+                    if ($format && \Zend_Date::isDate($date, $format)) {
+                        return new self($date, $format);
+                    }
+
+                } catch (\Exception $ex) {
+                    // Ignore on purpose
+                }
+            }
+
+        } elseif (null === $date) {
+            return null;
+
+        } elseif ($date instanceof \DateTime) {
+            return new self($date);
+
+        } elseif ($date instanceof \Zend_Date) {
+            return $date;
+
+        } else {
+            foreach ((array) $formats as $format) {
+                try {
+                    if (\Zend_Date::isDate($date, $format)) {
+                        return new self($date, $format);
+                    }
+                } catch (\Exception $ex) {
+                    // Ignore on purpose
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -351,4 +467,47 @@ class MUtil_Date extends \Zend_Date
     {
         return $this->setTime('00:00:00', 'hh:mm:ss');
     }
+
+    /**
+     * Returns a string representation of the object
+     * Supported format tokens are:
+     * G - era, y - year, Y - ISO year, M - month, w - week of year, D - day of year, d - day of month
+     * E - day of week, e - number of weekday (1-7), h - hour 1-12, H - hour 0-23, m - minute, s - second
+     * A - milliseconds of day, z - timezone, Z - timezone offset, S - fractional second, a - period of day
+     *
+     * Additionally format tokens but non ISO conform are:
+     * SS - day suffix, eee - php number of weekday(0-6), ddd - number of days per month
+     * l - Leap year, B - swatch internet time, I - daylight saving time, X - timezone offset in seconds
+     * r - RFC2822 format, U - unix timestamp
+     *
+     * Not supported ISO tokens are
+     * u - extended year, Q - quarter, q - quarter, L - stand alone month, W - week of month
+     * F - day of week of month, g - modified julian, c - stand alone weekday, k - hour 0-11, K - hour 1-24
+     * v - wall zone
+     *
+     * @param  string              $format  OPTIONAL Rule for formatting output. If null the default date format is used
+     * @param  string              $type    OPTIONAL Type for the format string which overrides the standard setting
+     * @param  string|Zend_Locale  $locale  OPTIONAL Locale for parsing input
+     * @return string
+     * /
+    public function toString($format = null, $type = null, $locale = null)
+    {
+        // DOES NOT WORK
+        //
+        // date() returns an english version
+        // strftime() depends on an instable setlocale()
+        //
+        // DID NOT YET TRY the PHP IntlDateFormatter extension
+        \MUtil_Echo::timeFunctionStart(__CLASS__ . '->' . __FUNCTION__);
+        if ((null === $locale) && (null == $type) && is_string($format ) && isset(self::$zendToPhpFormats[$format])) {
+            \MUtil_Echo::countOccurences('date()');
+            $out = date(self::$zendToPhpFormats[$format], $this->getUnixTimestamp());
+        } else {
+            \MUtil_Echo::countOccurences('toString()');
+            \MUtil_Echo::countOccurences($format);
+            $out = parent::toString($format, $type, $locale);
+        }
+        \MUtil_Echo::timeFunctionStop(__CLASS__ . '->' . __FUNCTION__);
+        return $out;
+    } // */
 }

@@ -56,7 +56,7 @@ class Gems_Snippets_TokenModelSnippetAbstract extends \Gems_Snippets_ModelTableS
 
     /**
      * A model, not necessarily the token model
-     * 
+     *
      * @var \MUtil_Model_ModelAbstract
      */
     protected $model;
@@ -70,7 +70,6 @@ class Gems_Snippets_TokenModelSnippetAbstract extends \Gems_Snippets_ModelTableS
         $title = \MUtil_Html::create()->strong($this->_('+'));
 
         $showLinks[]   = $this->createMenuLink($bridge, 'track',  'show', $title);
-        $showLinks[]   = $this->createMenuLink($bridge, 'survey', 'show', $title);
 
         // Remove nulls
         $showLinks   = array_filter($showLinks);

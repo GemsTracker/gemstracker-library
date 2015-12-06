@@ -777,61 +777,32 @@ abstract class MUtil_Model_DatabaseModelAbstract extends \MUtil_Model_ModelAbstr
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
      * @param boolean $isPost True when passing on post data
-     * @return \MUtil_Date|\Zend_Db_Expr|string
+     * @return \MUtil_Date|\Zend_Db_Expr|null
      */
     public function formatLoadDate($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {
+        static $formats;
+
         // If not empty or zend_db_expression and not already a zend date, we
-        // transform to a \Zend_Date using the ISO_8601 format
-        if (empty($value) || $value instanceof \Zend_Date || $value instanceof \Zend_Db_Expr) {
+        // transform to a \Zend_Date using the stored formats
+        if ((null === $value) || ($value instanceof \Zend_Date) || ($value instanceof \Zend_Db_Expr)) {
             return $value;
         }
 
-        $formats = array('storageFormat');
-        if ($isPost) {
-            // Formbridge uses a different format... quick & dirty fix is to duplicate that here:
-            $formats['time'] = 'time';
-            $formats['datetime'] = 'datetime';
-            $formats['date'] ='date';
-
-            // When posting try fixed formats first
-            $formats = array_reverse($formats);
-        }
-
-        foreach ($formats as $key => $formatName)
-        {
-            if (is_numeric($key)) {
-                // Get from the model
-                $format = $this->_getKeyValue($name, $formatName);
-            } else {
-                // We use the fixed format
-                $format = \MUtil_Model_Bridge_FormBridge::getFixedOption($key, 'dateFormat');
-            }
-
-            if ($format) {
-                try {
-                    $date = new \MUtil_Date($value, $format);
-                    // When string representation of the created date is the same as the input we accept it
-                    // This helps fix reversed day/month problems where month 13 will be 1st month of the next year
-                    if ($date->get($format) === $value) {
-                        return $date;
-                    }
-                } catch (\Exception $exc) {
-                    // Silently fail and try next one
+        if (! isset($formats[$name][$isPost])) {
+            // Stored the used formats (as they are usually used often within a model)
+            if ($isPost) {
+                $dateFormat = $this->_getKeyValue($name, 'dateFormat');
+                if ($dateFormat) {
+                    $formats[$name][$isPost][] = $dateFormat;
+                } else {
+                    $formats[$name][$isPost][] = \MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
                 }
             }
+            $formats[$name][$isPost][] = $this->_getKeyValue($name, 'storageFormat');
         }
 
-        try {
-            // Last try
-            $tmpDate = new \MUtil_Date($value, \Zend_Date::ISO_8601);
-
-        } catch (\Exception $exc) {
-            // On failure, we use the input value
-            $tmpDate = $value;
-        }
-
-        return $tmpDate;
+        return \MUtil_Date::ifDate($value, $formats[$name][$isPost]);
     }
 
     /**

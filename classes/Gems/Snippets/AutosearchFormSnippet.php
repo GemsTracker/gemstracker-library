@@ -462,12 +462,12 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
             $inFormat  = \MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
         }
 
-        if ($from && \MUtil_Date::isDate($from,  $inFormat)) {
+        if ($from && \Zend_Date::isDate($from,  $inFormat)) {
             $datefrom = $db->quote(\MUtil_Date::format($from, $outFormat, $inFormat));
         } else {
             $datefrom = null;
         }
-        if ($until && \MUtil_Date::isDate($until,  $inFormat)) {
+        if ($until && \Zend_Date::isDate($until,  $inFormat)) {
             $dateuntil = $db->quote(\MUtil_Date::format($until, $outFormat, $inFormat));
         } else {
             $dateuntil = null;

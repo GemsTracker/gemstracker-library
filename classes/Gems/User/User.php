@@ -918,9 +918,11 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      */
     public function getPasswordAge()
     {
-        $date = $this->_getVar('user_password_last_changed');
-        if (\MUtil_Date::isDate($date, \Zend_Date::ISO_8601)) {
-            $date = new \MUtil_Date($date, \Zend_Date::ISO_8601);
+        $date = \MUtil_Date::ifDate(
+                $this->_getVar('user_password_last_changed'),
+                array(\Gems_Tracker::DB_DATETIME_FORMAT, \Gems_Tracker::DB_DATE_FORMAT, \Zend_Date::ISO_8601)
+                );
+        if ($date instanceof \MUtil_Date) {
             return abs($date->diffDays());
         } else {
             return 0;

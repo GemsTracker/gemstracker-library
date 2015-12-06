@@ -755,15 +755,10 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
         $answers = $token->getRawAnswers();
 
         if (isset($answers[$fieldName]) && $answers[$fieldName]) {
-            if (\Zend_Date::isDate($answers[$fieldName], self::LS_DB_DATETIME_FORMAT)) {
-                return new \MUtil_Date($answers[$fieldName], self::LS_DB_DATETIME_FORMAT);
-            }
-            if (\Zend_Date::isDate($answers[$fieldName], self::LS_DB_DATE_FORMAT)) {
-                return new \MUtil_Date($answers[$fieldName], self::LS_DB_DATE_FORMAT);
-            }
-            if (\Gems_Tracker::$verbose)  {
-                \MUtil_Echo::r($answers[$fieldName], 'Missed answer date value:');
-            }
+            return \MUtil_Date::ifDate(
+                    $answers[$fieldName],
+                    array(self::LS_DB_DATETIME_FORMAT, self::LS_DB_DATE_FORMAT)
+                    );
         }
     }
 
@@ -817,9 +812,8 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
                     $submitDate = $lsDb->fetchOne("SELECT submitdate FROM $lsSurvey WHERE token = ? LIMIT 1", $tokenId);
 
                     if ($submitDate) {
-                        if (\Zend_Date::isDate($submitDate, self::LS_DB_DATETIME_FORMAT)) {
-                            $submitDate = new \MUtil_Date($submitDate, self::LS_DB_DATETIME_FORMAT);
-                        } else {
+                        $submitDate = \MUtil_Date::ifDate($submitDate, self::LS_DB_DATETIME_FORMAT);
+                        if (null === $submitDate) {
                             $submitDate = false; // Null does not trigger cacheHas()
                         }
                     }

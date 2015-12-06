@@ -198,19 +198,19 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
             $this->_fixFieldData();
         }
     }
-    
+
     /**
      * Adds the code fields to the fieldData array
      */
     public function _fixFieldData() {
         $fieldMap  = $this->getTrackEngine()->getFields();
-        
+
         foreach ($this->_fieldData as $key => $value) {
             if (isset($fieldMap[$key])) {
                 // The old name remains in the data set of course,
                 // using the code is a second occurence
                 $this->_fieldData[$fieldMap[$key]] = $value;
-            }        
+            }
         }
     }
 
@@ -675,19 +675,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         }
 
         if ($date) {
-            if ($date instanceof \MUtil_Date) {
-                return $date;
-            }
-
-            if (\Zend_Date::isDate($date, \Gems_Tracker::DB_DATETIME_FORMAT)) {
-                return new \MUtil_Date($date, \Gems_Tracker::DB_DATETIME_FORMAT);
-            }
-            if (\Zend_Date::isDate($date, \Gems_Tracker::DB_DATE_FORMAT)) {
-                return new \MUtil_Date($date, \Gems_Tracker::DB_DATE_FORMAT);
-            }
-            if (\Gems_Tracker::$verbose)  {
-                \MUtil_Echo::r($date, 'Missed track date value:');
-            }
+            return \MUtil_Date::ifDate($date, array(\Gems_Tracker::DB_DATETIME_FORMAT, \Gems_Tracker::DB_DATE_FORMAT));
         }
     }
 
@@ -1111,7 +1099,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
 
         $this->_fieldData = $fieldDef->processBeforeSave($this->_fieldData, $this->_respTrackData);
         $fieldsChanged    = $fieldDef->changed;
-        
+
         $this->_fixFieldData();
 
         if (! $fieldsChanged) {

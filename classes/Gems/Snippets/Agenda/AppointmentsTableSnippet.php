@@ -223,7 +223,7 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends \Gems_Snippets_Model
                 \MUtil_Date::format(
                         $value,
                         \Zend_Date::DAY_SHORT . ' ' . \Zend_Date::MONTH_NAME_SHORT . ' ' . \Zend_Date::YEAR,
-                        $this->_dateStorageFormat
+                        'yyyy-MM-dd'
                         )
                 );
     }
@@ -237,9 +237,10 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends \Gems_Snippets_Model
     {
         return \MUtil_Html::create(
                 'span',
+                ' ',
                 // array('class' => 'time'),
                 // $this->_timeImg,
-                \MUtil_Date::format($value, ' HH:mm ' . \Zend_Date::WEEKDAY_SHORT, $this->_dateStorageFormat)
+                \MUtil_Date::format($value, 'HH:mm ' . \Zend_Date::WEEKDAY_SHORT, $this->_dateStorageFormat)
                 );
     }
 }

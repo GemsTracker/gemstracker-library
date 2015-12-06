@@ -765,15 +765,10 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                 return $this->_gemsData[$fieldName];
             }
 
-            if (\Zend_Date::isDate($this->_gemsData[$fieldName], \Gems_Tracker::DB_DATETIME_FORMAT)) {
-                return new \MUtil_Date($this->_gemsData[$fieldName], \Gems_Tracker::DB_DATETIME_FORMAT);
-            }
-            if (\Zend_Date::isDate($this->_gemsData[$fieldName], \Gems_Tracker::DB_DATE_FORMAT)) {
-                return new \MUtil_Date($this->_gemsData[$fieldName], \Gems_Tracker::DB_DATE_FORMAT);
-            }
-            if (\Gems_Tracker::$verbose)  {
-                \MUtil_Echo::r($this->_gemsData[$fieldName], 'Missed token date value:');
-            }
+            return \MUtil_Date::ifDate(
+                    $this->_gemsData[$fieldName],
+                    array(\Gems_Tracker::DB_DATETIME_FORMAT, \Gems_Tracker::DB_DATE_FORMAT)
+                    );
         }
     }
 
@@ -1638,18 +1633,17 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
      */
     public function setCompletionTime($completionTime, $userId)
     {
-        if (null !== $completionTime) {
+        if (null === $completionTime) {
+            $values['gto_completion_time'] = null;
+        } else {
             if (! $completionTime instanceof \Zend_Date) {
-                if (\MUtil_Date::isDate($completionTime, \Gems_Tracker::DB_DATETIME_FORMAT)) {
-                    $completionTime = new \MUtil_Date($completionTime, \Gems_Tracker::DB_DATETIME_FORMAT);
-                } elseif (\MUtil_Date::isDate($completionTime, \Gems_Tracker::DB_DATE_FORMAT)) {
-                    $completionTime = new \MUtil_Date($completionTime, \Gems_Tracker::DB_DATE_FORMAT);
-                } else {
-                    $completionTime = new \MUtil_Date($completionTime);
-                }
+                $completionTime = \MUtil_Date::ifDate(
+                        $completionTime,
+                        array(\Gems_Tracker::DB_DATETIME_FORMAT, \Gems_Tracker::DB_DATE_FORMAT, null)
+                        );
             }
+            $values['gto_completion_time'] = $completionTime->toString(\Gems_Tracker::DB_DATETIME_FORMAT);
         }
-        $values['gto_completion_time'] = $completionTime->toString(\Gems_Tracker::DB_DATETIME_FORMAT);
         $changed = $this->_updateToken($values, $userId);
 
         $survey = $this->getSurvey();
