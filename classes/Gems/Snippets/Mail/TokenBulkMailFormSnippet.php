@@ -121,7 +121,7 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends \Gems_Snippets_Mail_Ma
         if ($disabled) {
             if ($tokenData['gto_completion_time']) {
                 $title = $this->_('Survey has been taken.');
-                $menuFind = array('controller' => array('track', 'survey'), 'action' => 'answer');
+                $menuFind = array('controller' => 'track', 'action' => 'answer');
             } elseif (! $tokenData['grs_email']) {
                 $title = $this->_('Respondent does not have an e-mail address.');
                 $menuFind = array('controller' => 'respondent', 'action' => 'edit');
@@ -129,7 +129,7 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends \Gems_Snippets_Mail_Ma
                 $title = $this->_('Survey cannot be taken by a respondent.');
             } else {
                 $title = $this->_('Survey cannot be taken at this moment.');
-                $menuFind = array('controller' => array('track', 'survey'), 'action' => 'edit');
+                $menuFind = array('controller' => 'track', 'action' => 'edit');
             }
         } else {
             $title = null;
@@ -211,36 +211,36 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends \Gems_Snippets_Mail_Ma
                         $mailer->setSubject($this->formData['subject']);
                         $mailer->setBody(htmlspecialchars_decode($this->formData['body']));
                         $mailer->setTemplateId($this->formData['select_template']);
-                        
+
                         try {
                             $mailer->send();
 
                             $mails++;
                             $updates++;
-                            
+
                         } catch (\Zend_Mail_Transport_Exception $exc) {
                             // Sending failed
                             $this->addMessage(sprintf($this->_('Sending failed for token %s with reason: %s.'), $token->getTokenId(), $exc->getMessage()));
                         }
-                        
+
                     } elseif (!isset($sentMailAddresses[$email])) {
                         $mailer->setFrom($this->fromOptions[$this->formData['from']]);
                         $mailer->setSubject($this->formData['subject']);
                         $mailer->setBody(htmlspecialchars_decode($this->formData['body']));
                         $mailer->setTemplateId($this->formData['select_template']);
-                        
+
                         try {
                             $mailer->send();
                             $mails++;
                             $updates++;
 
                             $sentMailAddresses[$email] = true;
-                            
+
                         } catch (\Zend_Mail_Transport_Exception $exc) {
                             // Sending failed
                             $this->addMessage(sprintf($this->_('Sending failed for token %s with reason: %s.'), $token->getTokenId(), $exc->getMessage()));
                         }
-                        
+
                     } elseif ($this->formData['multi_method'] == 'O') {
                         $this->mailer->updateToken($tokenData['gto_id_token']);
                         $updates++;

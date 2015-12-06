@@ -146,7 +146,6 @@ class Gems_Snippets_RespondentTokenSnippet extends \Gems_Snippets_TokenModelSnip
         $bridge->useRowHref = false;
 
         $actionLinks[] = $this->createMenuLink($bridge, 'track',  'answer');
-        $actionLinks[] = $this->createMenuLink($bridge, 'survey', 'answer');
         $actionLinks[] = array(
             $bridge->ggp_staff_members->if($this->createMenuLink($bridge, 'ask', 'take'), $bridge->calc_id_token->strtoupper()),
             'class' => $bridge->ggp_staff_members->if(null, $bridge->calc_id_token->if('token')));

@@ -100,7 +100,7 @@ class Gems_Snippets_TokenPlanTableSnippet extends \Gems_Snippets_ModelTableSnipp
     public function getActionLinks(\MUtil_Model_Bridge_TableBridge $bridge)
     {
         // Get the other token buttons
-        if ($menuItems = $this->menu->findAll(array('controller' => array('track', 'survey'), 'action' => array('email', 'answer'), 'allowed' => true))) {
+        if ($menuItems = $this->menu->findAll(array('controller' => 'track', 'action' => array('email', 'answer'), 'allowed' => true))) {
             $buttons = $menuItems->toActionLink($this->request, $bridge);
             $buttons->appendAttrib('class', 'rightFloat');
         } else {
@@ -125,7 +125,7 @@ class Gems_Snippets_TokenPlanTableSnippet extends \Gems_Snippets_ModelTableSnipp
     public function getTokenLinks(\MUtil_Model_Bridge_TableBridge $bridge)
     {
         // Get the token buttons
-        if ($menuItems = $this->menu->findAll(array('controller' => array('track', 'survey'), 'action' => 'show', 'allowed' => true))) {
+        if ($menuItems = $this->menu->findAll(array('controller' => 'track', 'action' => 'show', 'allowed' => true))) {
             $buttons = $menuItems->toActionLink($this->request, $bridge, $this->_('+'));
             $buttons->title = $bridge->gto_id_token->strtoupper();
 

@@ -111,7 +111,6 @@ class TrackTokenOverviewSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
         $title = \MUtil_Html::create()->strong($this->_('+'));
 
         $showLinks[] = $this->createMenuLink($bridge, 'track',  'show', $title);
-        $showLinks[] = $this->createMenuLink($bridge, 'survey', 'show', $title);
         // Remove nulls
         $showLinks   = array_filter($showLinks);
 
