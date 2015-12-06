@@ -117,7 +117,7 @@ class MUtil_Html_LabelElement extends \MUtil_Html_HtmlElement
 
         // If the label was assigned an element lazy,
         // now is the time to get it's value.
-        foreach ($this as $key => $value) {
+        foreach ($this->_content as $key => $value) {
             if ($value instanceof \MUtil_Lazy_LazyInterface) {
                 $value = \MUtil_Lazy::rise($value);
             }

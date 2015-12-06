@@ -176,17 +176,13 @@ class MUtil_Html_Sprintf extends \ArrayObject implements \MUtil_Html_ElementInte
      */
     public function render(\Zend_View_Abstract $view)
     {
-        if (null !== $view) {
+        if (null === $view) {
+            $view = $this->getView();
+        } else {
             $this->setView($view);
         }
 
-        $view = $this->getView();
-
-        $renderer = \MUtil_Html::getRenderer();
-        $params   = array();
-        foreach ($this->getIterator() as $item) {
-            $params[] = $renderer->renderAny($view, $item);
-        }
+        $params = \MUtil_Html::getRenderer()->renderArray($view, $this->getIterator(), false);
 
         if ($params) {
             return call_user_func_array('sprintf', $params);

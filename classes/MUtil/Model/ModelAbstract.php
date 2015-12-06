@@ -897,7 +897,11 @@ abstract class MUtil_Model_ModelAbstract extends \MUtil_Registry_TargetAbstract
         switch (count($args)) {
             case 0:
                 if (isset($this->_model[$name])) {
-                    $result = \MUtil_Lazy::rise($this->_model[$name]);
+                    if ($this->_model[$name] instanceof \MUtil_Lazy_LazyInterface) {
+                        $result = \MUtil_Lazy::rise($this->_model[$name]);
+                    } else {
+                        $result = $this->_model[$name];
+                    }
                     if ($alias = $this->getAlias($name)) {
                         $result = $result + $this->get($alias);
                     }

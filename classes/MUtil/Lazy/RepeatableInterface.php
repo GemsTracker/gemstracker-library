@@ -53,13 +53,6 @@
 interface MUtil_Lazy_RepeatableInterface extends \ArrayAccess
 {
     /**
-     * Return a lazy version of the call
-     *
-     * @return \MUtil_Lazy_LazyInterface
-     */
-    public function __call($name, array $arguments);
-
-    /**
      * Returns the current item. Starts the loop when needed.
      *
      * return mixed The current item

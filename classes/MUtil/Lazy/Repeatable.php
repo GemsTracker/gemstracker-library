@@ -35,6 +35,8 @@
  * @version    $Id$
  */
 
+use MUtil\Lazy\GetRepeatableLazy;
+
 /**
  *
  * @package    MUtil
@@ -60,13 +62,6 @@ class MUtil_Lazy_Repeatable implements \MUtil_Lazy_RepeatableInterface
     protected $_currentItem;
 
     /**
-     * Static lazy object used to for all Lazy call's and get's for data
-     *
-     * @var \MUtil_Lazy_Call
-     */
-    protected $_currentLazy;
-
-    /**
      *
      * @var mixed The actual array or \Iterator or \IteratorAggregate or other item to repeat
      */
@@ -79,22 +74,11 @@ class MUtil_Lazy_Repeatable implements \MUtil_Lazy_RepeatableInterface
     protected $_repeater = null;
 
     /**
-     * Return a lazy version of the call
-     *
-     * @return \MUtil_Lazy_Call
-     */
-    public function __call($name, array $arguments)
-    {
-        return new \MUtil_Lazy_Call(array($this->_currentLazy, $name), $arguments);
-    }
-
-    /**
      *
      * @param mixed $repeatable The array or \Iterator or \IteratorAggregate or other item to repeat
      */
     public function __construct($repeatable)
     {
-        $this->_currentLazy = new \MUtil_Lazy_Call(array($this, '__current'));
         $this->_repeatable  = $repeatable;
     }
 
@@ -119,7 +103,9 @@ class MUtil_Lazy_Repeatable implements \MUtil_Lazy_RepeatableInterface
      */
     public function __get($name)
     {
-        return new \MUtil_Lazy_Property($this->_currentLazy, $name);
+        $this->$name = new GetRepeatableLazy($this, $name);
+
+        return $this->$name;
     }
 
     /**
@@ -178,16 +164,6 @@ class MUtil_Lazy_Repeatable implements \MUtil_Lazy_RepeatableInterface
     }
 
     /**
-     * Return a lazy version of the property retrieval
-     *
-     * @return \MUtil_Lazy_Property
-     */
-    public function __set($name, $value)
-    {
-        throw new \MUtil_Lazy_LazyException('You cannot set a Lazy object.');
-    }
-
-    /**
      * The functions that starts the loop from the beginning
      *
      * @return mixed True if there is data.
@@ -236,7 +212,7 @@ class MUtil_Lazy_Repeatable implements \MUtil_Lazy_RepeatableInterface
 
     public function offsetGet($offset)
     {
-        return new \MUtil_Lazy_ArrayAccessor($this->_currentLazy, $offset);
+        return $this->$offset;
     }
 
     public function offsetSet($offset, $value)

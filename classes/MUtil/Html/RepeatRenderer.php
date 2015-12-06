@@ -175,7 +175,7 @@ class MUtil_Html_RepeatRenderer implements \MUtil_Html_ElementInterface
             if ($data->__start()) {
                 $html = array();
                 while ($data->__next()) {
-                    $html[] = $renderer->renderAny($view, $this->_content);
+                    $html[] = $renderer->renderArray($view, $this->_content);
                 }
 
                 if ($html) {

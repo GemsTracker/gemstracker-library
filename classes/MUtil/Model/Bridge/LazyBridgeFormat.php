@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2014, Erasmus MC
+ * Copyright (c) 2015, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -18,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL MAGNAFACTA BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -28,67 +28,76 @@
  *
  *
  * @package    MUtil
- * @subpackage Lazy_Stack
+ * @subpackage Model\Bridge
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2014 Erasmus MC
+ * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: RepeatableStack.php $
+ * @version    $Id: LazyBridgeFormat.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
-namespace MUtil\Lazy\Stack;
+namespace MUtil\Model\Bridge;
 
 /**
  *
  *
  * @package    MUtil
- * @subpackage Lazy_Stack
- * @copyright  Copyright (c) 2014 Erasmus MC
+ * @subpackage Model\Bridge
+ * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @since      Class available since MUtil version 1.4 17-jan-2015 14:30:59
+ * @since      Class available since version 1.7.2 Dec 4, 2015 3:00:44 PM
  */
-class RepeatableStack implements \MUtil_Lazy_StackInterface
+class LazyBridgeFormat extends \MUtil_Lazy_LazyAbstract
 {
     /**
-     * The object to get properties from
      *
-     * @var \MUtil_Lazy_Repeatable
+     * @var \MUtil_Model_Bridge_BridgeAbstract
      */
-    protected $_object;
+    protected $bridge;
 
     /**
      *
-     * @param \MUtil_Lazy_Repeatable $object
+     * @var string
      */
-    public function __construct(\MUtil_Lazy_Repeatable $object)
+    protected $fieldName;
+
+    /**
+     *
+     * @var \MUtil_Lazy_RepeatableInterface
+     */
+    protected $repeater;
+
+    /**
+     *
+     * @param \MUtil_Model_Bridge_BridgeInterface $bridge
+     * @param string $fieldName
+     */
+    public function __construct(\MUtil_Model_Bridge_BridgeAbstract $bridge, $fieldName)
     {
-        $this->_object = $object;
+        $this->bridge    = $bridge;
+        $this->fieldName = $fieldName;
     }
 
     /**
-     * Returns a value for $name
+     * The functions that fixes and returns a value.
      *
-     * @param string $name A name indentifying a value in this stack.
-     * @return A value for $name
+     * Be warned: this function may return a lazy value.
+     *
+     * @param \MUtil_Lazy_StackInterface $stack A \MUtil_Lazy_StackInterface object providing variable data
+     * @return mixed
      */
-    public function lazyGet($name)
+    public function __toValue(\MUtil_Lazy_StackInterface $stack)
     {
-        // \MUtil_Echo::track($name, isset($this->_object->$name), \MUtil_Lazy::rise($this->_object->$name), $this->_object->getLazyValue($name));
-        $value = $this->_object->__get($name);
-        if ($value instanceof \MUtil_Lazy_LazyInterface) {
-            return \MUtil_Lazy::rise($value);
+        if (! $this->repeater) {
+            $this->repeater = $this->bridge->getRepeater();
         }
-        return $value;
-    }
 
-    /**
-     * Set this stack to throw an exception
-     *
-     * @param mixed $throw boolean
-     * @return \MUtil_ArrayStack (continuation pattern_
-     */
-    public function setThrowOnMiss($throw = true)
-    {
-        $this->_throwOnMiss = $throw;
-        return $this;
-    }
+        $out     = null;
+        $current = $this->repeater->__current();
+        if ($current) {
+            if (isset($current->{$this->fieldName})) {
+                $out = $current->{$this->fieldName};
+            }
+        }
+        return $this->bridge->format($this->fieldName, $out);
+     }
 }

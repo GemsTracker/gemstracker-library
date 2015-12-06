@@ -56,14 +56,14 @@ class MUtil_Lazy_Call extends \MUtil_Lazy_LazyAbstract
     }
 
     /**
-     * The functions that returns the value.
-     *
-     * Returning an instance of \MUtil_Lazy_LazyInterface is allowed.
-     *
-     * @param \MUtil_Lazy_StackInterface $stack A \MUtil_Lazy_StackInterface object providing variable data
-     * @return mixed
-     */
-    protected function _getLazyValue(\MUtil_Lazy_StackInterface $stack)
+    * The functions that fixes and returns a value.
+    *
+    * Be warned: this function may return a lazy value.
+    *
+    * @param \MUtil_Lazy_StackInterface $stack A \MUtil_Lazy_StackInterface object providing variable data
+    * @return mixed
+    */
+    public function __toValue(\MUtil_Lazy_StackInterface $stack)
     {
         $params = $this->_params;
 
@@ -95,11 +95,11 @@ class MUtil_Lazy_Call extends \MUtil_Lazy_LazyAbstract
         }
 
         if (is_callable($callable)) {
-            $params = \MUtil_Lazy::rise($params, $stack);
+            $params = \MUtil_Lazy::riseRa($params, $stack);
             /* if ('_' == $method) {
                 \MUtil_Echo::r($params);
             } */
-
+            
             return call_user_func_array($callable, $params);
         }
 

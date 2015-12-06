@@ -72,17 +72,24 @@ class MUtil_Lazy_ArrayAccessor extends \MUtil_Lazy_LazyAbstract
     }
 
     /**
-     * The functions that returns the value.
-     *
-     * Returning an instance of \MUtil_Lazy_LazyInterface is allowed.
-     *
-     * @param \MUtil_Lazy_StackInterface $stack A \MUtil_Lazy_StackInterface object providing variable data
-     * @return mixed
-     */
-    protected function _getLazyValue(\MUtil_Lazy_StackInterface $stack)
+    * The functions that fixes and returns a value.
+    *
+    * Be warned: this function may return a lazy value.
+    *
+    * @param \MUtil_Lazy_StackInterface $stack A \MUtil_Lazy_StackInterface object providing variable data
+    * @return mixed
+    */
+    public function __toValue(\MUtil_Lazy_StackInterface $stack)
     {
-        $array  = \MUtil_Lazy::rise($this->_array);
-        $offset = \MUtil_Lazy::rise($this->_offset);
+        $array  = $this->_array;
+        $offset = $this->_offset;
+
+        while ($offset instanceof \MUtil_Lazy_LazyInterface) {
+            $offset = $offset->__toValue($stack);
+        }
+        while ($array instanceof \MUtil_Lazy_LazyInterface) {
+            $array = $array->__toValue($stack);
+        }
 
         if (\MUtil_Lazy::$verbose) {
             \MUtil_Echo::header('Lazy offset get for offset: <em>' . $offset . '</em>');
@@ -91,20 +98,30 @@ class MUtil_Lazy_ArrayAccessor extends \MUtil_Lazy_LazyAbstract
 
         if (null === $offset) {
             if (isset($array[''])) {
-                return $array[''];
+                $value = $array[''];
+            } else {
+                $value = null;
             }
         } elseif (is_array($offset)) {
             // When the offset is itself an array, return an
             // array of values applied to this offset.
-            $results = array();
-            foreach ($offset as $key => $value) {
-                if (isset($array[$value])) {
-                    $results[$key] = $array[$value];
+            $value = array();
+            foreach (\MUtil_Lazy::riseRa($offset, $stack) as $key => $val) {
+                if (isset($array[$val])) {
+                    $value[$key] = $val;
                 }
             }
-            return $results;
         } elseif (isset($array[$offset])) {
-            return $array[$offset];
+            $value = $array[$offset];
         }
+
+        while ($value instanceof \MUtil_Lazy_LazyInterface) {
+            $value = $value->__toValue($stack);
+        }
+        if (is_array($value)) {
+            $value = \MUtil_Lazy::riseRa($value, $stack);
+        }
+        return $value;
     }
+
 }

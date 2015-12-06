@@ -258,7 +258,11 @@ class MUtil_Html_ImgElement extends \MUtil_Html_HtmlElement
     protected function renderElement(\Zend_View_Abstract $view)
     {
         if (isset($this->_attribs['src'])) {
-            $src = \MUtil_Html::getRenderer()->renderAny($view, $this->_attribs['src']);
+            if (is_scalar($this->_attribs['src'])) {
+                $src = $this->_attribs['src'];
+            } else {
+                $src = \MUtil_Html::getRenderer()->renderArray($view, array($this->_attribs['src']));
+            }
         } else {
             $src = false;
         }

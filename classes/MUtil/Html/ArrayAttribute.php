@@ -108,15 +108,7 @@ class MUtil_Html_ArrayAttribute extends \MUtil_Html_AttributeAbstract
      */
     protected function _getArrayRendered()
     {
-        $results = array();
-
-        $view = $this->getView();
-        $renderer = \MUtil_Html::getRenderer();
-        foreach ($this->getArray() as $key => $value) {
-            $results[$key] = $renderer->renderAny($view, $value);
-        }
-
-        return $results;
+        return \MUtil_Html::getRenderer()->renderArray($this->getView(), $this->getArray(), false);
     }
 
     /**

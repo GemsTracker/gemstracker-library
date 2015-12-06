@@ -243,26 +243,19 @@ class MUtil_Html_Sequence extends \MUtil_ArrayString implements \MUtil_Html_Elem
      */
     public function render(\Zend_View_Abstract $view)
     {
-        $html = '';
-        $glue = $this->getGlue();
-        if ($glue instanceof \MUtil_Html_HtmlInterface) {
-            $glue = $glue->render($view);
-        }
-
-        if (null !== $view) {
+        //*
+        if (null === $view) {
+            $view = $this->getView();
+        } else {
             $this->setView($view);
         }
         // \MUtil_Echo::r($this->count(), $glue);
 
-        $view = $this->getView();
-
-        $renderer = \MUtil_Html::getRenderer();
-        foreach ($this->getIterator() as $item) {
-            $html .= $glue;
-            $html .= $renderer->renderAny($view, $item);
+        $glue = $this->getGlue();
+        if ($glue instanceof \MUtil_Html_HtmlInterface) {
+            $glue = $glue->render($view);
         }
-
-        return substr($html, strlen($glue));
+        return \MUtil_Html::getRenderer()->renderArray($view, $this->getIterator(), $glue);
     }
 
     /**

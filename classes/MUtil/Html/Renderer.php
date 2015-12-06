@@ -166,55 +166,145 @@ class MUtil_Html_Renderer
      */
     public function renderAny(\Zend_View_Abstract $view, $content)
     {
+        $stack = null;
+
         // Resolve first as this function as recursion heavy enough as it is.
         if ($content instanceof \MUtil_Lazy_LazyInterface) {
-            $content = \MUtil_Lazy::rise($content);
+            // Resolve first as this function as recursion heavy enough as it is.
+            if ($value instanceof \MUtil_Lazy_LazyInterface) {
+                $stack = \MUtil_Lazy::getStack();
+                // \MUtil_Echo::countOccurences('lazyIf');
+                while ($value instanceof \MUtil_Lazy_LazyInterface) {
+                    // \MUtil_Echo::countOccurences('lazyWhile');
+                    $value = $value->__toValue($stack);
+                }
+            }
         }
 
         if ($content) {
-            if ($content instanceof \MUtil_Html_HtmlInterface) {
-                $new_content = $content->render($view);
+            if (is_scalar($content)) {
+                $output = $view->escape((string) $content);
 
-            } elseif (is_array($content) && (! is_object($content))) {
+            } elseif ($content instanceof \MUtil_Html_HtmlInterface) {
+                $output = $content->render($view);
 
-                // Again, skip on the recursion count
-                foreach ($content as $key => $item) {
-                    $new_content[] = $this->renderAny($view, $item);
+            } elseif (is_object($content)) {
+                if ($function = $this->_classRenderFunctions->get($content)) {
+                    \MUtil_Echo::track($function);
+                    $output = call_user_func($function, $view, $content);
+                } elseif (method_exists($content, '__toString')) {
+                    $output = $view->escape($content->__toString());
+                } else {
+                    throw new \MUtil_Html_HtmlException('WARNING: Object of type ' . get_class($content) . ' cannot be converted to string.');
                 }
 
-                return implode('', $new_content);
+            } elseif (is_array($content)) {
+                $output = $this->renderArray($view, $content, '', $stack);
 
             } else {
-                if (is_object($content)) {
-                    if ($function = $this->_classRenderFunctions->get($content)) {
-                        return call_user_func($function, $view, $content);
-                    }
-
-                    if (method_exists($content, '__toString')) {
-                        $new_content = $content->__toString();
-                    } else {
-                        // $new_content = 'WARNING: Object of type ' . get_class($content) . ' cannot be converted to string.';
-                        throw new \MUtil_Html_HtmlException('WARNING: Object of type ' . get_class($content) . ' cannot be converted to string.');
-                    }
-                    
-                } elseif ($content instanceof __PHP_Incomplete_Class) {
+                 if ($content instanceof __PHP_Incomplete_Class) {
                     \MUtil_Echo::r($content, __CLASS__ . '->' .  __FUNCTION__);
-                    return '';
+                    $output = '';
 
                 } else {
-                    $new_content = (string) $content;
+                    $output = (string) $view->escape($content);
                 }
+            }
+        } elseif (is_array($content)) { // I.e. empty array
+            $output = '';
+        } else {
+            $output = (string) $content;  // Returns 0 (zero) and '' when that is the value of $content
+        }
 
-                $new_content = $view->escape($new_content);
+        return $output;
+    }
+
+    /**
+     * Renders the $content so that it can be used as output for the $view,
+     * including output escaping and encoding correction.
+     *
+     * This functions handles \MUtil_Html_HtmlInterface and \MUtil_Lazy_LazyInterface
+     * objects natively, as well as array, scalar values and objects with a
+     * __toString function.
+     *
+     * Other objects a definition should have a render function in getClassRenderList().
+     *
+     * All Lazy variabables are raised.
+     *
+     * @param \Zend_View_Abstract $view
+     * @param mixed $content Anything HtmlInterface, number, string, array, object with __toString
+     *                      or an object that has a defined render function in getClassRenderList().
+     * @return string Output to echo to the user
+     */
+    public function renderArray(\Zend_View_Abstract $view, $content, $glue = '', $stack = null)
+    {
+        // \MUtil_Echo::timeFunctionStart(__FUNCTION__);
+
+        $output = array();
+
+        // \MUtil_Echo::countOccurences('render');
+        foreach ($content as $key => $value) {
+            // Resolve first as this function as recursion heavy enough as it is.
+            if ($value instanceof \MUtil_Lazy_LazyInterface) {
+                if (! $stack) {
+                    $stack = \MUtil_Lazy::getStack();
+                }
+                // \MUtil_Echo::countOccurences('lazyIf');
+                while ($value instanceof \MUtil_Lazy_LazyInterface) {
+                    // \MUtil_Echo::countOccurences('lazyWhile');
+                    $value = $value->__toValue($stack);
+                }
             }
 
-            return $new_content;
+            if (is_scalar($value)) {
+                // \MUtil_Echo::countOccurences('scalar');
+                // \MUtil_Echo::timeFunctionStart('escape2');
+                $output[$key] = $view->escape((string) $value);
+                // \MUtil_Echo::timeFunctionStop('escape2');
 
+            } elseif ($value instanceof \MUtil_Html_HtmlInterface) {
+                // \MUtil_Echo::countOccurences('interface');
+                $output[$key] = $value->render($view);
+
+            } elseif (null === $value) {
+                // \MUtil_Echo::countOccurences('null');
+
+            } elseif (is_array($value)) {
+                // \MUtil_Echo::countOccurences('array');
+                $output[$key] = self::renderAny($view, $value, '', $stack);
+
+            } elseif (is_object($value)) {
+                $function = $this->_classRenderFunctions->get($value);
+
+                if ($function) {
+                    // \MUtil_Echo::countOccurences('function');
+                    $output[$key] = call_user_func($function, $view, $value);
+                } elseif (method_exists($value, '__toString')) {
+                    // \MUtil_Echo::countOccurences('toString');
+                    // \MUtil_Echo::countOccurences('toString.' . get_class($value));
+                    $output[$key] = $view->escape($value->__toString());
+                } else {
+                    // $output[$key] = 'WARNING: Object of type ' . get_class($value) . ' cannot be converted to string.';
+                    throw new \MUtil_Html_HtmlException('WARNING: Object of type ' . get_class($value) . ' cannot be converted to string.');
+                }
+
+            } elseif ($value instanceof \__PHP_Incomplete_Class) {
+                \MUtil_Echo::r($value, __CLASS__ . '->' .  __FUNCTION__);
+                $output[$key] = '';
+
+            } else { // Mop up, should not occur
+                // \MUtil_Echo::countOccurences('scalar else');
+                $output[$key] = $view->escape((string) $value);
+            }
         }
 
-        if (! is_array($content)) { // Skip empty array
-            return $content;  // Returns 0 (zero) and '' when that is the value of $content
+        if ((false === $glue) || (null === $glue)) {
+            // \MUtil_Echo::timeFunctionStop(__FUNCTION__);
+            return $output;
         }
+        $output = implode($glue, $output);
+        // \MUtil_Echo::timeFunctionStop(__FUNCTION__);
+        return $output;
     }
 
     /**

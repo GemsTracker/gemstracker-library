@@ -244,7 +244,7 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
                 }
             }
         }
-        
+
         $this->addButtons($bridge);
         $this->addOnClick($bridge);
 
@@ -267,7 +267,7 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
     public function hasHtmlOutput()
     {
         if ($this->model) {
-            $this->model->setIfExists('grs_email', 'itemDisplay', 'MUtil_Html_AElement::ifmail');
+            $this->model->setIfExists('grs_email', 'itemDisplay', array('MUtil_Html_AElement', 'ifmail'));
             $this->model->setIfExists('gr2o_comments', 'rowspan', 2);
 
             if ($this->showConsentWarning && $this->model->has('gr2o_consent')) {

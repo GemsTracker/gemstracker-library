@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2014, Erasmus MC
+ * Copyright (c) 2015, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,67 +28,64 @@
  *
  *
  * @package    MUtil
- * @subpackage Lazy_Stack
+ * @subpackage Lazy
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2014 Erasmus MC
+ * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: RepeatableStack.php $
+ * @version    $Id: GetRepeatableLazy.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
-namespace MUtil\Lazy\Stack;
+namespace MUtil\Lazy;
 
 /**
  *
  *
  * @package    MUtil
- * @subpackage Lazy_Stack
- * @copyright  Copyright (c) 2014 Erasmus MC
+ * @subpackage Lazy
+ * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @since      Class available since MUtil version 1.4 17-jan-2015 14:30:59
+ * @since      Class available since MUtil version 1.7.2 Dec 4, 2015 4:28:32 PM
  */
-class RepeatableStack implements \MUtil_Lazy_StackInterface
+class GetRepeatableLazy extends \MUtil_Lazy_LazyAbstract
 {
     /**
-     * The object to get properties from
      *
-     * @var \MUtil_Lazy_Repeatable
+     * @var string
      */
-    protected $_object;
+    protected $fieldName;
 
     /**
      *
-     * @param \MUtil_Lazy_Repeatable $object
+     * @var \MUtil_Lazy_RepeatableInterface
      */
-    public function __construct(\MUtil_Lazy_Repeatable $object)
+    protected $repeater;
+
+    /**
+     *
+     * @param \MUtil_Lazy_RepeatableInterface $bridge
+     * @param string $fieldName
+     */
+    public function __construct(\MUtil_Lazy_RepeatableInterface $repeater, $fieldName)
     {
-        $this->_object = $object;
+        $this->repeater  = $repeater;
+        $this->fieldName = $fieldName;
     }
 
     /**
-     * Returns a value for $name
+     * The functions that fixes and returns a value.
      *
-     * @param string $name A name indentifying a value in this stack.
-     * @return A value for $name
+     * Be warned: this function may return a lazy value.
+     *
+     * @param \MUtil_Lazy_StackInterface $stack A \MUtil_Lazy_StackInterface object providing variable data
+     * @return mixed
      */
-    public function lazyGet($name)
+    public function __toValue(\MUtil_Lazy_StackInterface $stack)
     {
-        // \MUtil_Echo::track($name, isset($this->_object->$name), \MUtil_Lazy::rise($this->_object->$name), $this->_object->getLazyValue($name));
-        $value = $this->_object->__get($name);
-        if ($value instanceof \MUtil_Lazy_LazyInterface) {
-            return \MUtil_Lazy::rise($value);
+        $current = $this->repeater->__current();
+        if ($current) {
+            if (isset($current->{$this->fieldName})) {
+                return $current->{$this->fieldName};
+            }
         }
-        return $value;
-    }
-
-    /**
-     * Set this stack to throw an exception
-     *
-     * @param mixed $throw boolean
-     * @return \MUtil_ArrayStack (continuation pattern_
-     */
-    public function setThrowOnMiss($throw = true)
-    {
-        $this->_throwOnMiss = $throw;
-        return $this;
     }
 }

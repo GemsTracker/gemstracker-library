@@ -802,19 +802,7 @@ class MUtil_Html_HtmlElement extends \Zend_View_Helper_HtmlElement
      */
     private function _renderAttributes(\Zend_View_Abstract $view)
     {
-        $results = array();
-
-        $renderer = \MUtil_Html::getRenderer();
-        foreach ($this->_attribs as $key => $value) {
-            $value = $renderer->renderAny($view, $value);
-
-            if (null !== $value) {
-                $results[$key] = $value;
-                // \MUtil_Echo::r($key . '=' . $value);
-            }
-        }
-
-        return $results;
+        return \MUtil_Html::getRenderer()->renderArray($view, $this->_attribs, false);
     }
 
     /**
@@ -1215,16 +1203,16 @@ class MUtil_Html_HtmlElement extends \Zend_View_Helper_HtmlElement
         if ($this->_content) {
             if ($this->_repeater && (! $this->_repeatTags)) {
                 if ($this->_repeater->__start()) {
-                    $html = null;
+                    $html = '';
                     while ($this->_repeater->__next()) {
-                        $html .= $renderer->renderAny($view, $this->_content);
+                        $html .= $renderer->renderArray($view, $this->_content);
                     }
 
                     return $html;
                 }
 
             } else {
-                $content = $renderer->renderAny($view, $this->_content);
+                $content = $renderer->renderArray($view, $this->_content);
                 if (strlen($content)) {
                     return $content;
                 }
@@ -1232,7 +1220,7 @@ class MUtil_Html_HtmlElement extends \Zend_View_Helper_HtmlElement
         }
 
         if ($this->_onEmptyContent) {
-            return $renderer->renderAny($view, $this->_onEmptyContent);
+            return $renderer->renderArray($view, $this->_onEmptyContent);
         }
 
         return null;

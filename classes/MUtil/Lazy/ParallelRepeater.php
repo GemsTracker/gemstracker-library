@@ -47,22 +47,6 @@ class MUtil_Lazy_ParallelRepeater implements \MUtil_Lazy_RepeatableInterface
 {
     protected $repeatables = array();
 
-    /**
-     * Return a lazy version of the call
-     *
-     * @return \MUtil_Lazy_LazyInterface
-     */
-    public function __call($name, array $arguments)
-    {
-        $results = array();
-        foreach ($this->repeatables as $id => $repeater) {
-            if ($result = call_user_func_array(array($repeater, $name), $arguments)) {
-                $results[$id] = $result;
-            }
-        }
-        return $results;
-    }
-
     public function __construct($repeatable_args = null)
     {
         $args = \MUtil_Ra::args(func_get_args());

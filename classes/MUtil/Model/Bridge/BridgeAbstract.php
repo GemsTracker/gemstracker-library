@@ -35,6 +35,8 @@
  * @version    $id: HtmlFormatter.php 203 2013-01-01t 12:51:32Z matijs $
  */
 
+use MUtil\Model\Bridge\LazyBridgeFormat;
+
 /**
  *
  *
@@ -176,7 +178,7 @@ abstract class MUtil_Model_Bridge_BridgeAbstract extends \MUtil_Translate_Transl
      */
     public function format($name, $value)
     {
-        if (!array_key_exists($name, $this->_compilations)) {
+        if (! array_key_exists($name, $this->_compilations)) {
             if ($this->_chainedBridge) {
                 $this->_compilations[$name] = array_merge(
                         $this->_chainedBridge->_compile($name),
@@ -188,7 +190,7 @@ abstract class MUtil_Model_Bridge_BridgeAbstract extends \MUtil_Translate_Transl
         }
 
         foreach ($this->_compilations[$name] as $function) {
-            $value = call_user_func($function, $value);
+            $value = $function($value);
         }
 
         return $value;
@@ -216,7 +218,7 @@ abstract class MUtil_Model_Bridge_BridgeAbstract extends \MUtil_Translate_Transl
         if ((self::MODE_SINGLE_ROW === $this->mode) && isset($this->_data[$fieldName])) {
             $this->$name = $this->format($fieldName, $this->_data[$fieldName]);
         } else {
-            $this->$name = \MUtil_Lazy::call(array($this, 'format'), $fieldName, $this->getLazy($fieldName));
+            $this->$name = new LazyBridgeFormat($this, $fieldName);
         }
         if ($fieldName !== $name) {
             $this->model->get($name);
@@ -252,8 +254,8 @@ abstract class MUtil_Model_Bridge_BridgeAbstract extends \MUtil_Translate_Transl
         }
 
         $current = $this->_repeater->__current();
-        if ($current && isset($current->$name)) {
-            return $current->$name;
+        if ($current && isset($current[$name])) {
+            return $current[$name];
         }
     }
 

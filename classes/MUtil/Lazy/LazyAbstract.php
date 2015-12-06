@@ -123,31 +123,7 @@ abstract class MUtil_Lazy_LazyAbstract implements \MUtil_Lazy_LazyInterface
             return $e->getMessage();
         }
     }
-
-    /**
-    * The functions that fixes and returns a value.
-    *
-    * Be warned: this function may return a lazy value.
-    *
-    * @param \MUtil_Lazy_StackInterface $stack A \MUtil_Lazy_StackInterface object providing variable data
-    * @return mixed
-    */
-    public function __toValue(\MUtil_Lazy_StackInterface $stack)
-    {
-        return $this->_getLazyValue($stack);
-    }
-
-    /**
-     * The functions that returns the value.
-     *
-     * Returning an instance of \MUtil_Lazy_LazyInterface is allowed.
-     *
-     * @param \MUtil_Lazy_StackInterface $stack A \MUtil_Lazy_StackInterface object providing variable data
-     * @return mixed
-     */
-    abstract protected function _getLazyValue(\MUtil_Lazy_StackInterface $stack);
-
-
+    
     /**
      * Returns a lazy call where this object is the first parameter
      *

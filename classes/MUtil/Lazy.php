@@ -72,26 +72,6 @@ class MUtil_Lazy
     public static $verbose = false;
 
     /**
-     * Turns any input into a \MUtil_Lazy_StackInterface object.
-     *
-     * @param mixed $stack Value to be turned into stack for evaluation
-     * @param string A string describing where the stack was created.
-     * @return \MUtil_Lazy_StackInterface A usable stack
-     */
-    private static function _checkStack($stack, $source)
-    {
-        if ($stack instanceof \MUtil_Lazy_StackInterface) {
-            return $stack;
-        }
-
-        if (! self::$_stack instanceof \MUtil_Lazy_StackInterface) {
-            self::$_stack = new \MUtil_Lazy_Stack_EmptyStack($source);
-        }
-
-        return self::$_stack;
-    }
-
-    /**
      * Returns a lazy object that alternates through all the parameters used
      * to call this function. (At least two , but more is allowed.)
      *
@@ -285,8 +265,16 @@ class MUtil_Lazy
      */
     public static function raise($object, $stack = null)
     {
+        //\MUtil_Echo::countOccurences(__FUNCTION__);
         if ($object instanceof \MUtil_Lazy_LazyInterface) {
-            return $object->__toValue(self::_checkStack($stack, __FUNCTION__));
+            if (! $stack instanceof \MUtil_Lazy_StackInterface) {
+                if (self::$_stack instanceof \MUtil_Lazy_StackInterface) {
+                    $stack = self::$_stack;
+                } else {
+                    $stack = self::getStack();
+                }
+            }
+            return $object->__toValue($stack);
         } else {
             return $object;
         }
@@ -316,32 +304,50 @@ class MUtil_Lazy
      */
     public static function rise($object, $stack = null)
     {
-        $raised = false;
-        $stack  = self::_checkStack($stack, __FUNCTION__);
+        // \MUtil_Echo::countOccurences(__FUNCTION__);
+        // \MUtil_Echo::timeFunctionStart(__FUNCTION__);
+        if ($object instanceof \MUtil_Lazy_LazyInterface || is_array($object)) {
+            if (! $stack instanceof \MUtil_Lazy_StackInterface) {
+                if (self::$_stack instanceof \MUtil_Lazy_StackInterface) {
+                    $stack = self::$_stack;
+                } else {
+                    $stack = self::getStack();
+                }
+            }
+            if (is_array($object)) {
+                $object = self::riseRa($object, $stack);
+            } else {
+                while ($object instanceof \MUtil_Lazy_LazyInterface) {
+                    $object = $object->__toValue($stack);
+                }
+            }
+        }
+        // \MUtil_Echo::timeFunctionStop(__FUNCTION__);
+        return $object;
+    }
 
-        // Resolving when \MUtil_Lazy_LazyInterface.
+    public static function riseObject(\MUtil_Lazy_LazyInterface $object, \MUtil_Lazy_StackInterface $stack)
+    {
         while ($object instanceof \MUtil_Lazy_LazyInterface) {
             $object = $object->__toValue($stack);
-            $raised = true;
         }
 
         if ($object && is_array($object)) {
-            $result = array();
-
-            foreach ($object as $key => $val) {
-                $result[$key] = self::rise($val, $stack);
-                $raised = true;
-            }
-
-            if ($raised && \MUtil_Lazy::$verbose) {
-                \MUtil_Echo::header('Lazy array rise');
-                \MUtil_Echo::classToName($result);
-            }
-            return $result;
+            return self::riseRa($object, $stack);
         }
-        if ($raised && \MUtil_Lazy::$verbose) {
-            \MUtil_Echo::header('Lazy rise');
-            \MUtil_Echo::classToName($object);
+
+        return $object;
+    }
+
+    public static function riseRa(array $object, \MUtil_Lazy_StackInterface $stack)
+    {
+        foreach ($object as $key => &$val) {
+            while ($val instanceof \MUtil_Lazy_LazyInterface) {
+                $val = $val->__toValue($stack);
+            }
+            if (is_array($val)) {
+                $val = self::riseRa($val, $stack);
+            }
         }
 
         return $object;

@@ -138,7 +138,9 @@ class MUtil_Html_InputRenderer implements \MUtil_Html_HtmlInterface
 
     private static function _checkElement($element, $function)
     {
-        $element = \MUtil_Lazy::rise($element);
+        if ($element instanceof \MUtil_Lazy_LazyInterface) {
+            $element = \MUtil_Lazy::rise($element);
+        }
 
         if (($element instanceof \Zend_Form_Element) ||
             ($element instanceof \Zend_Form_DisplayGroup) ||

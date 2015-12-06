@@ -103,8 +103,8 @@ class MUtil_Lazy_RepeatableFormElements extends \MUtil_Lazy_Repeatable
         // $this->element and $this->label.
         //
         // The other access method is: $this->{name of element renderer}
-        $this->element = $this->_currentLazy;
-        $this->label   = \MUtil_Html::create('label', $this->_currentLazy);
+        $this->element =  new \MUtil_Lazy_Call(array($this, '__current'));
+        $this->label   = \MUtil_Html::create('label', $this->element);
     }
 
     /**
