@@ -190,7 +190,7 @@ class MUtil_Html_Renderer
 
             } elseif (is_object($content)) {
                 if ($function = $this->_classRenderFunctions->get($content)) {
-                    \MUtil_Echo::track($function);
+                    // \MUtil_Echo::track($function);
                     $output = call_user_func($function, $view, $content);
                 } elseif (method_exists($content, '__toString')) {
                     $output = $view->escape($content->__toString());

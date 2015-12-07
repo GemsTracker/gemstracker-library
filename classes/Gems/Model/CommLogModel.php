@@ -149,9 +149,9 @@ class CommLogModel extends \Gems_Model_JoinModel
         }
         $this->set('gr2o_patient_nr', 'label', $this->_('Respondent nr'));
         $this->set('respondent_name', 'label', $this->_('Receiver'));
-        $this->set('grco_address',    'label', $this->_('To address'), 'itemDisplay', 'MUtil_Html_AElement::ifmail');
+        $this->set('grco_address',    'label', $this->_('To address'), 'itemDisplay', array('MUtil_Html_AElement', 'ifmail'));
         $this->set('assigned_by',     'label', $this->_('Sender'));
-        $this->set('grco_sender',     'label', $this->_('From address'), 'itemDisplay', 'MUtil_Html_AElement::ifmail');
+        $this->set('grco_sender',     'label', $this->_('From address'), 'itemDisplay', array('MUtil_Html_AElement', 'ifmail'));
         $this->set('grco_id_token',   'label', $this->_('Token'), 'itemDisplay', array($this, 'displayToken'));
         $this->set('grco_topic',      'label', $this->_('Subject'));
         $this->set('gtr_track_name',  'label', $this->_('Track'));

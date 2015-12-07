@@ -256,7 +256,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
         $model = $this->getModel();
 
         $model->setIfExists('gr2o_opened', 'tableDisplay', 'small');
-        $model->setIfExists('grs_email',   'formatFunction', 'MUtil_Html_AElement::ifmail');
+        $model->setIfExists('grs_email',   'formatFunction', array('MUtil_Html_AElement', 'ifmail'));
 
         // Newline placeholder
         $br = \MUtil_Html::create('br');

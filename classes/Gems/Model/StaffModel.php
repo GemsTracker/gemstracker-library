@@ -232,7 +232,7 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
                 'separator', ' '
                 );
         $this->set('gsf_email',                'label', $this->_('E-Mail'),
-                'itemDisplay', 'MUtil_Html_AElement::ifmail',
+                'itemDisplay', array('MUtil_Html_AElement', 'ifmail'),
                 'size', 30,
                 'validators[email]', 'SimpleEmail'
                 );

@@ -96,7 +96,7 @@ abstract class Gems_Default_RespondentAction extends \Gems_Controller_BrowseEdit
     protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
         $model->setIfExists('gr2o_opened', 'tableDisplay', 'small');
-        $model->setIfExists('grs_email',   'formatFunction', 'MUtil_Html_AElement::ifmail');
+        $model->setIfExists('grs_email',   'formatFunction', array('MUtil_Html_AElement', 'ifmail'));
 
         if ($menuItem = $this->findAllowedMenuItem('show')) {
             $bridge->addItemLink($menuItem->toActionLinkLower($this->getRequest(), $bridge));
