@@ -317,8 +317,8 @@ class MUtil_Date extends \Zend_Date
      */
     public static function ifDate($date, $formats)
     {
-        if (is_string($date)) {
-            if (('0' === $date[0]) && ('0' === $date[1])) {
+        if (is_string($date) && ($date !== '')) {
+            if ((strlen($date) > 3) && ('0' === $date[0]) && ('0' === $date[1])) {
                 // Check for empty string dates from the database e.g.: 0000-00-00 00:00:00 or 00-00-0000
                 // Yes, this means we cannot use the year 0, but then that does not exists, only -1 AD
                 if ((('0' == $date[2]) && ('0' == $date[3])) || ('-' == $date[2])) {
@@ -342,7 +342,7 @@ class MUtil_Date extends \Zend_Date
                 }
             }
 
-        } elseif (null === $date) {
+        } elseif ((null === $date) || ('' === $date)) {
             return null;
 
         } elseif ($date instanceof \DateTime) {
