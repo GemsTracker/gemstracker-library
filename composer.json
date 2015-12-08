@@ -1,0 +1,55 @@
+{
+    "name": "gemstracker/gemstracker",
+    "description": "GemsTracker",
+    "license": "BSD-3-Clause",
+    "type": "library",
+    "homepage": "https://gemtracker.org",
+    "authors": [
+        {
+            "name": "Matijs de Jong",
+            "email": "mjong@magnafacta.nl"
+        },
+        {
+            "name": "Menno Dekker",
+            "email": "menno.dekker@erasmusmc.nl"
+        },
+        {
+            "name": "Jasper van Gestel",
+            "email": "jvangestel@gmail.com"
+        },
+        {
+            "name": "Frank Santegoets",
+            "email": "f.santegoets@erasmusmc.nl"
+        },
+        {
+            "name": "Roel Faber",
+            "email": "r.faber@erasmusmc.nl"
+        },
+        {
+            "name": "Michiel Rook",
+            "email": "mrook@php.net"
+        }
+    ],
+    "autoload": {
+        "classmap": ["classes/GemsEscort.php"],
+        "psr-0": {
+            "Gems_": "classes"
+        }
+    },
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=5.3.9",
+        "ext-mcrypt": "*",
+        "zendframework/zendframework1": "^1.12",
+        "zendframework/zf1-extras": "^1.12"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.7",
+        "phing/phing": "^2.11",
+        "phpunit/dbunit": "^1.4",
+        "jokkedk/zfdebug": "1.6.2"
+    },
+    "config": {
+        "bin-dir": "bin"
+    }
+}

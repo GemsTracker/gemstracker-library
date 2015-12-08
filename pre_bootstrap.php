@@ -34,7 +34,7 @@
  *
  * @author Matijs de Jong <mjong@magnafacta.nl>
  * @since 1.0
- * @version $Id$
+ * @version $Id: pre_bootstrap.php 2659 2015-07-30 16:10:15Z jvangestel $
  * @package Gems
  * @subpackage Project
  */
@@ -44,34 +44,25 @@ defined('APPLICATION_ENCODING') || define('APPLICATION_ENCODING', 'UTF-8');
 
 mb_internal_encoding(APPLICATION_ENCODING);
 
-// ZEND FRAMEWORK STARTS HERE
-
 /**
  *  Define path to application directory and UC project name if it does not yet exist
  */
 defined('APPLICATION_PATH') || define('APPLICATION_PATH', GEMS_ROOT_DIR . '/application');
 defined('GEMS_PROJECT_NAME_UC') || define('GEMS_PROJECT_NAME_UC', ucfirst(GEMS_PROJECT_NAME));
 
+
 /**
- * Set path to Zend Framework
  * then to project directory
  * then to Gems application directory
+ * then to MUtil application directory
  */
 set_include_path(
     APPLICATION_PATH . '/classes' . PATH_SEPARATOR .
     GEMS_LIBRARY_DIR . '/classes' . PATH_SEPARATOR .
-    (defined('ZEND_LIBRARY_DIR') ? ZEND_LIBRARY_DIR . PATH_SEPARATOR : '') .
-    get_include_path()
+    MUTIL_LIBRARY_DIR . PATH_SEPARATOR
     );
 
-// Set up autoload for MUtil
-require_once 'Zend/Loader/Autoloader.php';
-$autoloader = Zend_Loader_Autoloader::getInstance();
-$autoloader->registerNamespace('MUtil_');
-
-// Start using cached Loader
-// $cachedloader = MUtil_Loader_CachedLoader::getInstance(GEMS_ROOT_DIR . '/var/cache');
-// $autoloader->setDefaultAutoloader(array($cachedloader, 'autoload'));
+require (VENDOR_DIR . '/autoload.php');
 
 // Create application, bootstrap, and run
 $application = new Zend_Application(
