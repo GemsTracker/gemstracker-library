@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<dataset>
+    <gems__tokens gto_id_token="1" gto_id_respondent_track="1" gto_id_round="0" gto_id_respondent="1234"
+        gto_id_organization="1" gto_id_track="1" gto_id_survey="1" gto_round_order="1" gto_round_description=""
+        gto_valid_from="NULL" gto_valid_from_manual="0" gto_valid_until="NULL" gto_valid_until_manual="0"
+        gto_mail_sent_date="NULL" gto_mail_sent_num="0" gto_start_time="NULL" gto_completion_time="NULL"
+        gto_duration_in_sec="NULL" gto_result="NULL" gto_comment="NULL" gto_reception_code="OK"
+        gto_return_url="NULL" gto_in_source="1" gto_by="1" gto_changed="2012-03-29 13:50:22"
+        gto_changed_by="1" gto_created="2012-03-29 10:55:55" gto_created_by="1" />
+    <gems__reception_codes grc_id_reception_code="OK" grc_description="Ok code" grc_changed_by="1"
+        grc_created="2012-09-07" grc_created_by="1"/>
+    <gems__respondents grs_id_user="1234" grs_changed_by="1" grs_created="2012-09-07" grs_created_by="1"/>
+    <gems__respondent2org gr2o_id_user="1234" gr2o_id_organization="1" gr2o_consent="ok" gr2o_patient_nr="abc"
+        gr2o_opened_by="1" gr2o_changed="2012-09-07" gr2o_changed_by="1" gr2o_created="2012-09-07" gr2o_created_by="1"/>
+    <gems__consents gco_description="informed" gco_changed_by="1" gco_created="2012-09-07" gco_created_by="1"/>
+</dataset>

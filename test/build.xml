@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+
+<project name="Gems Unit Tests" default="test">
+    <property name="tests.codecoverage" value="false"/>
+
+    <target name="clean">
+        <delete dir="reports"/>
+    </target>
+
+    <target name="prepare">
+        <mkdir dir="reports/coverage"/>
+        <mkdir dir="reports/tests"/>
+    </target>
+
+    <target name="test" depends="clean, prepare">
+        <if>
+            <equals arg1="${tests.codecoverage}" arg2="true"/>
+            <then>
+                <coverage-setup database="reports/coverage.db">
+                    <fileset dir="../library/classes">
+                        <include name="**/*.php"/>
+                    </fileset>
+                </coverage-setup>
+            </then>
+        </if>
+        <phpunit codecoverage="${tests.codecoverage}" haltonerror="true" haltonfailure="true"
+                 bootstrap="bootstrap.php" printsummary="true">
+            <formatter type="xml" usefile="true"
+                       todir="reports" outfile="test-results.xml" />
+            <formatter type="plain" usefile="false"/>
+            <batchtest>
+                <fileset dir="classes">
+                    <include name="**/*Test.php"/>
+                </fileset>
+            </batchtest>
+            <formatter type="clover"  usefile="true"
+                       todir="reports" outfile="clover.xml" />
+        </phpunit>
+    </target>
+
+</project>

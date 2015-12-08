@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<phpunit backupGlobals="false"
+         backupStaticAttributes="false"
+         bootstrap="bootstrap.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="false"
+         processIsolation="false"
+         stopOnFailure="false"
+         syntaxCheck="false"
+         verbose="true"
+         strict="true">
+    <testsuite>
+        <directory>classes</directory>
+    </testsuite>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">../library/classes/Gems</directory>
+            <directory suffix=".php">../library/classes/MUtil</directory>
+        </whitelist>
+    </filter>
+    <!--
+    <logging>
+    	<log type="coverage-clover" target="reports/coverage.xml"/>
+    </logging>
+    -->      
+</phpunit>
