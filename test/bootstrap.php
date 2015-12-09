@@ -65,7 +65,11 @@ set_include_path(
     get_include_path());
 
 // Set up autoload.
-require_once "Zend/Loader/Autoloader.php";
+if (file_exists(dirname(__FILE__) . '/../vendor/autoload.php')) {
+    require_once dirname(__FILE__) . '/../vendor/autoload.php';
+} else {
+     require_once "Zend/Loader/Autoloader.php";
+}
 $autoloader = Zend_Loader_Autoloader::getInstance();
 $autoloader->registerNamespace('MUtil_');
 $autoloader->registerNamespace('Gems_');
