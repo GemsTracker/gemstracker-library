@@ -9,12 +9,12 @@ class containerStub {
     }
 }       
 
-include_once 'Gems/Tracker/Engine/FieldsDefinition.php';
-include_once 'Gems/Tracker/Field/FieldInterface.php';
-include_once 'Gems/Tracker/Field/FieldAbstract.php';
-include_once 'Gems/Tracker/Field/TextField.php';
+//include_once 'Gems/Tracker/Engine/FieldsDefinition.php';
+//include_once 'Gems/Tracker/Field/FieldInterface.php';
+//include_once 'Gems/Tracker/Field/FieldAbstract.php';
+//include_once 'Gems/Tracker/Field/TextField.php';
 
-class_alias('Gems\\Tracker\\Engine\\FieldsDefinition', 'FieldsDefinitionAlias');
+//use Gems\Tracker\Engine\FieldsDefinition as FieldsDefinitionAlias;
 
 class Gems_Tracker_RespondentTrackTest extends PHPUnit_Framework_TestCase
 {
@@ -33,8 +33,8 @@ class Gems_Tracker_RespondentTrackTest extends PHPUnit_Framework_TestCase
         
         $fieldsData = array('f__1' => 'test');        
         $fieldsArray = array('f__1' => 'codename');
-             
-        $fieldsDefStub = $this->getMock('FieldsDefinitionAlias',
+        $s = new \Gems\Tracker\Engine\FieldsDefinition(1);
+        $fieldsDefStub = $this->getMock('Gems\\Tracker\\Engine\\FieldsDefinition',
              array('getFieldCodes', 'saveFields'),
              array(1),
              'MockFieldsDef',

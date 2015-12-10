@@ -41,11 +41,14 @@ date_default_timezone_set('Europe/Amsterdam');
 define('GEMS_TEST_DIR', realpath(dirname(__FILE__)));
 define('GEMS_WEB_DIR', realpath(dirname(__FILE__) . '/../new_project/htdocs'));
 define('GEMS_ROOT_DIR', realpath(dirname(__FILE__) . '/../new_project'));
-define('GEMS_LIBRARY_DIR', realpath(dirname(__FILE__) . '/../library'));
+define('GEMS_LIBRARY_DIR', realpath(dirname(__FILE__) . '/../classes'));
 define('GEMS_PROJECT_NAME', 'newProject');
 define('GEMS_PROJECT_NAME_UC', ucfirst(GEMS_PROJECT_NAME));
 define('APPLICATION_ENV', 'development');
 define('APPLICATION_PATH', GEMS_ROOT_DIR . '/application');
+
+defined('VENDOR_DIR') || define('VENDOR_DIR', realpath(GEMS_TEST_DIR . '/../vendor/'));
+defined('MUTIL_LIBRARY_DIR') || define('MUTIL_LIBRARY_DIR', realpath(VENDOR_DIR . '/magnafacta'));
 
 // Make sure session save path is writable for current user (needed for Jenkins)
 if (!is_writable( session_save_path())) {
@@ -71,9 +74,6 @@ if (file_exists(dirname(__FILE__) . '/../vendor/autoload.php')) {
      require_once "Zend/Loader/Autoloader.php";
 }
 $autoloader = Zend_Loader_Autoloader::getInstance();
-$autoloader->registerNamespace('MUtil_');
 $autoloader->registerNamespace('Gems_');
-$autoloader->registerNameSpace('NewProject_');
-$autoloader->registerNameSpace('ZFDebug_');
 
 Zend_Session::start();

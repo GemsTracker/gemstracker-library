@@ -16,8 +16,7 @@
     </testsuite>
     <filter>
         <whitelist>
-            <directory suffix=".php">../library/classes/Gems</directory>
-            <directory suffix=".php">../library/classes/MUtil</directory>
+            <directory suffix=".php">../classes/Gems</directory>
         </whitelist>
     </filter>
     <!--

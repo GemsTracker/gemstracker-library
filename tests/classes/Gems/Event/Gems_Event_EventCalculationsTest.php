@@ -17,6 +17,7 @@ class Gems_Event_EventCalculationsTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
+        MUtil_Echo::track('hier');
         $this->object = new Gems_Event_EventCalculations();
     }
 

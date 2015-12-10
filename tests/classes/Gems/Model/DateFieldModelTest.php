@@ -40,7 +40,7 @@
  * @license    New BSD License
  * @version    $Id$
  */
-class Gems_Model_DateFieldModelTest  extends MUtil_Model_AbstractModelTest
+class Gems_Model_DateFieldModelTest extends MUtil_Model_AbstractModelTest
 {
     /**
      *
