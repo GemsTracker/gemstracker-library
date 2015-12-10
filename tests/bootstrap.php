@@ -39,13 +39,12 @@ date_default_timezone_set('Europe/Amsterdam');
  * Setup environment
  */
 define('GEMS_TEST_DIR', realpath(dirname(__FILE__)));
-define('GEMS_WEB_DIR', realpath(dirname(__FILE__) . '/../new_project/htdocs'));
-define('GEMS_ROOT_DIR', realpath(dirname(__FILE__) . '/../new_project'));
-define('GEMS_LIBRARY_DIR', realpath(dirname(__FILE__) . '/../classes'));
-define('GEMS_PROJECT_NAME', 'newProject');
-define('GEMS_PROJECT_NAME_UC', ucfirst(GEMS_PROJECT_NAME));
-define('APPLICATION_ENV', 'development');
-define('APPLICATION_PATH', GEMS_ROOT_DIR . '/application');
+define('GEMS_ROOT_DIR', realpath(dirname(__FILE__) . '/../'));
+define('GEMS_LIBRARY_DIR', realpath(dirname(__FILE__) . '/../'));
+define('APPLICATION_ENV', 'testing');
+define('GEMS_PROJECT_NAME', 'Gems');
+define('GEMS_PROJECT_NAME_UC', 'Gems');
+define('APPLICATION_PATH', GEMS_LIBRARY_DIR);
 
 defined('VENDOR_DIR') || define('VENDOR_DIR', realpath(GEMS_TEST_DIR . '/../vendor/'));
 defined('MUTIL_LIBRARY_DIR') || define('MUTIL_LIBRARY_DIR', realpath(VENDOR_DIR . '/magnafacta'));
@@ -58,13 +57,10 @@ if (!is_writable( session_save_path())) {
 /**
  * Setup include path
  */
-$path = realpath(dirname(__FILE__) . '/../');
-
 set_include_path(
     GEMS_TEST_DIR . '/classes' . PATH_SEPARATOR .
     GEMS_TEST_DIR . '/library' . PATH_SEPARATOR .
-    $path . '/library/classes' . PATH_SEPARATOR .
-    GEMS_ROOT_DIR . '/application/classes' . PATH_SEPARATOR .
+    GEMS_ROOT_DIR . '/classes' . PATH_SEPARATOR .
     get_include_path());
 
 // Set up autoload.
@@ -73,7 +69,6 @@ if (file_exists(dirname(__FILE__) . '/../vendor/autoload.php')) {
 } else {
      require_once "Zend/Loader/Autoloader.php";
 }
-$autoloader = Zend_Loader_Autoloader::getInstance();
-$autoloader->registerNamespace('Gems_');
 
 Zend_Session::start();
+Zend_Session::$_unitTestEnabled = true;

@@ -58,7 +58,7 @@ class EncryptedFieldTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $model   = new MUtil_Model_NestedArrayModel('text', array());
-        $settings = new Zend_Config_Ini(GEMS_ROOT_DIR . '/application/configs/project.ini', APPLICATION_ENV);
+        $settings = new Zend_Config_Ini(GEMS_ROOT_DIR . '/configs/project.example.ini', APPLICATION_ENV);
         $project = new Gems_Project_ProjectSettings($settings);
 
         $this->maskedType   = new Gems_Model_Type_EncryptedField($project, true);

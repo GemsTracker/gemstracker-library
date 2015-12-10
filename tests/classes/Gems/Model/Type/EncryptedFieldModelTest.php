@@ -18,7 +18,7 @@ class Gems_Model_EncryptedFieldModelTest extends MUtil_Model_AbstractModelTest
         if (! $this->_model) {
             $this->_model = new MUtil_Model_TableModel('t1');
 
-            $settings = new Zend_Config_Ini(GEMS_ROOT_DIR . '/application/configs/project.ini', APPLICATION_ENV);
+            $settings = new Zend_Config_Ini(GEMS_ROOT_DIR . '/configs/project.example.ini', APPLICATION_ENV);
             $settings = $settings->toArray();
             $settings['salt'] = 'vadf2646fakjndkjn24656452vqk';
             $project = new Gems_Project_ProjectSettings($settings);

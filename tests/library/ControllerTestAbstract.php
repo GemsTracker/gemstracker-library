@@ -9,7 +9,7 @@ class ControllerTestAbstract extends \Zend_Test_PHPUnit_ControllerTestCase
         // Create application, bootstrap, and run
         $application = new \Zend_Application(
             APPLICATION_ENV,
-            APPLICATION_PATH . '/configs/application.ini'
+            GEMS_ROOT_DIR . '/configs/application.example.ini'
         );
 
         $this->bootstrap = $application;
