@@ -120,7 +120,7 @@ class Gems_User_PasswordChecker extends \MUtil_Registry_TargetAbstract
         }
 
         if (empty($passwordList)) {
-            $filename = APPLICATION_PATH . '/' . ltrim($parameter, '/');;
+            $filename = __DIR__ . '/../../../doc/' . ltrim($parameter, '/');;
 
             if (! file_exists($filename)) {
                 throw new \Gems_Exception("Unable to load password list '{$filename}'");
