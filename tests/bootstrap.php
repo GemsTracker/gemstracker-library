@@ -51,7 +51,7 @@ defined('MUTIL_LIBRARY_DIR') || define('MUTIL_LIBRARY_DIR', realpath(VENDOR_DIR 
 
 // Make sure session save path is writable for current user (needed for Jenkins)
 if (!is_writable( session_save_path())) {
-     session_save_path(GEMS_ROOT_DIR . '/var/tmp');
+     session_save_path(GEMS_TEST_DIR . '/tmp');
 }
 
 /**
