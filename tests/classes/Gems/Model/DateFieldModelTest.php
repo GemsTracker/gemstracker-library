@@ -1,8 +1,7 @@
 <?php
 
 /*
- * Copyright (c) Error: on line 4, column 33 in Templates/Licenses/license-bsd_1.txt
-  The string doesn't match the expected date/time format. The string to parse was: "Sep 30, 2014". The expected format was: "d-MMM-yyyy"., Erasmus MC
+ * Copyright (c) 2015, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

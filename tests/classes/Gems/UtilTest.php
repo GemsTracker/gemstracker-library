@@ -48,22 +48,30 @@ require_once 'ControllerTestAbstract.php';
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_UtilTest extends ControllerTestAbstract
+class Gems_UtilTest extends Gems_Test_TestAbstract
 {
     /**
      * @var Gems_Util
      */
     protected $object;
+    
+    /**
+     * @var Gems_Project_ProjectSettings
+     */
+    protected $project;
 
     public function setUp()
     {
         parent::setUp();
 
-        //Fix errors in the default config
-        $this->_fixSetup();
-
         //Now load the object we are going to test
-        $this->object = GemsEscort::getInstance()->loader->getUtil();
+        $settings = new Zend_Config_Ini(GEMS_ROOT_DIR . '/configs/project.example.ini', APPLICATION_ENV);
+        $settings = $settings->toArray();
+        $settings['salt'] = 'vadf2646fakjndkjn24656452vqk';
+        $project = new Gems_Project_ProjectSettings($settings);
+        $this->project = $project;
+        $this->loader->addRegistryContainer(array('project' => $project));
+        $this->object = $this->loader->getUtil();
     }
 
     /**
@@ -90,7 +98,7 @@ class Gems_UtilTest extends ControllerTestAbstract
         $this->assertEquals($expected, $actual);
 
         //Check if we can read from an altered ini file
-        $project  = GemsEscort::getInstance()->project;
+        $project  = $this->project;
         $project->consentTypes = 'test|test2|test3';
         $expected = array(
             'test'  => 'test',
@@ -118,7 +126,7 @@ class Gems_UtilTest extends ControllerTestAbstract
         $this->assertEquals($expected, $actual);
 
         //Check if we can read from an altered ini file
-        $project  = GemsEscort::getInstance()->project;
+        $project  = $this->project;
         $expected = 'test';
         $project->consentRejected = $expected;
         $actual   = $this->object->getConsentRejected();
