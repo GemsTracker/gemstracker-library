@@ -120,7 +120,7 @@ class Gems_User_PasswordChecker extends \MUtil_Registry_TargetAbstract
         }
 
         if (empty($passwordList)) {
-            $filename = __DIR__ . '/../../../doc/' . ltrim($parameter, '/');;
+            $filename = __DIR__ . '/../../../docs/' . ltrim($parameter, '/');;
 
             if (! file_exists($filename)) {
                 throw new \Gems_Exception("Unable to load password list '{$filename}'");
@@ -156,7 +156,7 @@ class Gems_User_PasswordChecker extends \MUtil_Registry_TargetAbstract
                     $len));
         }
     }
-    
+
     /**
      * Test the password for maximum age (in days).
      *
@@ -166,7 +166,7 @@ class Gems_User_PasswordChecker extends \MUtil_Registry_TargetAbstract
     protected function maxAge($parameter, $password)
     {
         $age = intval($parameter);
-        
+
         if (is_null($password)) {
             // We return the description of this rule
             $this->_addError(sprintf($this->translate->_('should be changed at least every %d days'), $age));
