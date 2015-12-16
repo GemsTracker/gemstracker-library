@@ -477,6 +477,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             $output = $this->addFileReport($filename) || $output;
         }
         if ($this->appNamespaceError) {
+            $sCode->h2('Code change issues found');
             $sCode->pInfo('The application code has code change issues. You can try to fix them by running this phing script:');
             $sCode->pre(
                     'cd ' . APPLICATION_PATH . "\n" .

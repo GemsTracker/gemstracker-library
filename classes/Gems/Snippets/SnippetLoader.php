@@ -85,7 +85,7 @@ class Gems_Snippets_SnippetLoader extends \Gems_Loader_TargetLoaderAbstract
     {
         parent::__construct($source, $dirs);
 
-        $this->addPrefixPath('MUtil_Snippets_Standard', GEMS_LIBRARY_DIR . '/classes/MUtil/Snippets/Standard', false);
+        $this->addPrefixPath('MUtil_Snippets_Standard', MUTIL_LIBRARY_DIR . '/MUtil/Snippets/Standard', false);
     }
 
     /**
