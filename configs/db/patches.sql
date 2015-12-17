@@ -1075,6 +1075,18 @@ ALTER IGNORE TABLE gems__appointments DROP INDEX gap_id_location_2;  -- Undo dou
 ALTER IGNORE TABLE gems__respondent2org ADD INDEX (gr2o_consent);
 ALTER IGNORE TABLE gems__respondent2org DROP INDEX gr2o_consent_2;  -- Undo double creation
 
+ALTER IGNORE TABLE gems__rounds ADD INDEX (gro_id_order);
+ALTER IGNORE TABLE gems__rounds DROP INDEX gro_id_order_2;  -- Undo double creation
+
+ALTER IGNORE TABLE gems__rounds ADD INDEX (gro_id_survey);
+ALTER IGNORE TABLE gems__rounds DROP INDEX gro_id_survey_2;  -- Undo double creation
+
+ALTER IGNORE TABLE gems__track_fields ADD INDEX (gtf_id_track);
+ALTER IGNORE TABLE gems__track_fields DROP INDEX gtf_id_track_2;  -- Undo double creation
+
+ALTER IGNORE TABLE gems__track_fields ADD INDEX (gtf_id_order);
+ALTER IGNORE TABLE gems__track_fields DROP INDEX gtf_id_order_2;  -- Undo double creation
+
 -- PATCH: Log file access
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.log.files,pr.log.files.download')
     WHERE grl_name = 'super'

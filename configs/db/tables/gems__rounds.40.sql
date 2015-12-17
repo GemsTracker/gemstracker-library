@@ -44,7 +44,9 @@ CREATE TABLE if not exists gems__rounds (
         gro_created_by         bigint unsigned not null,
 
         PRIMARY KEY (gro_id_round),
-        INDEX (gro_id_track, gro_id_order)
+        INDEX (gro_id_track, gro_id_order),
+        INDEX (gro_id_order),
+        INDEX (gro_id_survey)
     )
     ENGINE=InnoDB
     auto_increment = 40000
