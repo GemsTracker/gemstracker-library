@@ -1253,6 +1253,8 @@ class GemsEscort extends \MUtil_Application_Escort
             $link = $version;
         }
 
+        $this->view->currentVersion = $this->loader->getVersions()->getProjectVersion();
+
         $div->spaced($this->project->description, $this->translateAdapter->_('version'), $link);
 
         return $div;
