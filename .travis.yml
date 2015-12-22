@@ -10,7 +10,7 @@ php:
 install: composer install --dev
 
 # omitting "script:" will default to phpunit
-script: phpunit --configuration tests/phpunit.xml
+script: phpunit --configuration tests/phpunit.xml --coverage-clover build/logs/clover.xml
 
 after_script:
   - bin/test-reporter
