@@ -5,6 +5,10 @@ php:
   - 5.4
   - 5.5
   - 5.6
+  
+addons:
+  code_climate:
+      repo_token: 5bb4e82286c8da4f0a9ddcc1586cf17eae482cdefcd2d211ad8041df79493748
 
 # Commands to be run before your environment runs.
 before_script:
@@ -12,4 +16,7 @@ before_script:
   - composer install --prefer-source --no-interaction --dev
 
 # omitting "script:" will default to phpunit
-script: phpunit --configuration tests/phpunit.xml --coverage-text
+script: phpunit --configuration tests/phpunit.xml --coverage-clover build/logs/clover.xml
+
+after_script:
+  - vendor/bin/test-reporter
