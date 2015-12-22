@@ -1183,7 +1183,10 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     {
         $fieldDef  = $this->getTrackEngine()->getFieldsDefinition();
         $fieldMap  = $fieldDef->getFieldCodes();
-        $fieldData = array();
+        $fieldData = $this->getFieldData(); // To preserve old values
+        
+        // Get only the real fieldnames, strip the extra code entries
+        $fieldData = array_intersect_key($fieldData, $fieldMap);
 
         // Use values on code fields if oiginal does not exist
         foreach ($data as $key => $value)
@@ -1201,9 +1204,11 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         $this->_fieldData = $fieldDef->processBeforeSave($fieldData, $this->_respTrackData);
         $changes          = $fieldDef->saveFields($this->_respTrackId, $this->_fieldData);
 
-        $this->_fixFieldData();
-
-        if ($userId && $changes) {
+        if ($changes) {
+            $this->_ensureFieldData(true);
+        }
+        
+        if ($userId && $changes) {            
             $this->handleFieldUpdate($userId);
 
             $info = $fieldDef->calculateFieldsInfo($this->_fieldData);
