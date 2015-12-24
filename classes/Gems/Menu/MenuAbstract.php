@@ -519,13 +519,6 @@ abstract class Gems_Menu_MenuAbstract
         $page->addShowAction()
                 ->setNamedParameters(\Gems_Model::LOG_ITEM_ID, 'gla_id');
 
-        // LOG CONTROLLER
-        $page = $this->addPage($this->_('Log'), 'pr.log', 'log', 'index');
-        $page->addAutofilterAction();
-        $page->addExcelAction();
-        $page->addShowAction()
-                ->setNamedParameters(\Gems_Model::LOG_ITEM_ID, 'gla_id');
-
         // LOG FILES CONTROLLER
         $this->addFilePage($this->_('Log files'), 'pr.log.files', 'log-file');
     }
