@@ -10,10 +10,10 @@ php:
 install: composer install --dev
 
 # omitting "script:" will default to phpunit
-script: phpunit --configuration tests/phpunit.xml
+script: phpunit --configuration tests/phpunit.xml --coverage-clover build/logs/clover.xml
 
 after_script:
-  - vendor/bin/test-reporter
+  - bin/test-reporter
 addons:
     code_climate:
         repo_token: 5bb4e82286c8da4f0a9ddcc1586cf17eae482cdefcd2d211ad8041df79493748
