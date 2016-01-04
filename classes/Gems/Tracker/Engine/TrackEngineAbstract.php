@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: TrackEngineAbstract.php 2836 2015-12-31 16:15:40Z matijsdejong $
  */
 
 use Gems\Tracker\Model\AddTrackFieldsTransformer;
@@ -150,7 +150,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
     protected function _getAvailableIcons()
     {
         $icons = array();
-        $iterator = new \DirectoryIterator(realpath(GEMS_WEB_DIR . '/gems/icons'));
+        $iterator = new DirectoryIterator(realpath(GEMS_WEB_DIR . '/gems/icons'));
 
         foreach ($iterator as $fileinfo) {
             if ($fileinfo->isFile()) {
@@ -256,6 +256,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
 
         $newRounds = $this->db->fetchAll($sql, array($this->_trackId, $respTrackId, $orgId));
 
+        $this->db->beginTransaction();
         foreach ($newRounds as $round) {
 
             $values = array();
@@ -276,7 +277,8 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
 
             $this->tracker->createToken($values, $userId);
         }
-
+        $this->db->commit();
+        
         return count($newRounds);
     }
 
@@ -510,10 +512,10 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
             $numRounds = 0;
         }
 
-        //\MUtil_Echo::track($track, $copy);
-        //\MUtil_Echo::track($rounds, $newRounds);
-        //\MUtil_Echo::track($fields, $newFields);
-        \Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage(sprintf($this->_('Copied track, including %s round(s) and %s field(s).'), $numRounds, $numFields));
+        //MUtil_Echo::track($track, $copy);
+        //MUtil_Echo::track($rounds, $newRounds);
+        //MUtil_Echo::track($fields, $newFields);
+        Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage(sprintf($this->_('Copied track, including %s round(s) and %s field(s).'), $numRounds, $numFields));
 
         return $newTrackId;
     }
@@ -809,7 +811,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
      */
     public function getRoundEditSnippetNames()
     {
-        return array('Tracker\\Rounds\\EditRoundStepSnippet');
+        return array('EditRoundSnippet');
     }
 
     /**
@@ -830,7 +832,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
         if ($detailed) {
             $model->set('gro_id_track',      'label', $this->_('Track'),
                     'elementClass', 'exhibitor',
-                    'multiOptions', $this->util->getTrackData()->getAllTracks
+                    'multiOptions', \MUtil_Lazy::call($this->util->getTrackData()->getAllTracks)
                     );
         }
 

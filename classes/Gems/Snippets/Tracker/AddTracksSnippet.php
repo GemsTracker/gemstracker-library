@@ -147,6 +147,7 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
                             gsu_active = 1 AND
                             ggp_group_active = 1 AND
                             ggp_respondent_members = 1 AND
+                            gsu_insertable = 1 AND
                             gsu_insert_organizations LIKE '%|$orgId|%'
                         ORDER BY gsu_survey_name";
                     break;
@@ -158,6 +159,7 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
                             gsu_active = 1 AND
                             ggp_group_active = 1 AND
                             ggp_staff_members = 1 AND
+                            gsu_insertable = 1 AND
                             gsu_insert_organizations LIKE '%|$orgId|%'
                         ORDER BY gsu_survey_name";
                     break;

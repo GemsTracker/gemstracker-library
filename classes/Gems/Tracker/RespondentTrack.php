@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: RespondentTrack.php 2836 2015-12-31 16:15:40Z matijsdejong $
  */
 
 /**
@@ -472,14 +472,18 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
 
         $engine = $this->getTrackEngine();
 
+        $this->db->beginTransaction();
         // Check for validFrom and validUntil dates that have changed.
         if ($fromToken) {
-            return $count + $engine->checkTokensFrom($this, $fromToken, $userId, $skipToken);
+            $count += $engine->checkTokensFrom($this, $fromToken, $userId, $skipToken);
         } elseif ($this->_checkStart) {
-            return $count + $engine->checkTokensFrom($this, $this->_checkStart, $userId);
+            $count += $engine->checkTokensFrom($this, $this->_checkStart, $userId);
         } else {
-            return $count + $engine->checkTokensFromStart($this, $userId);
+            $count += $engine->checkTokensFromStart($this, $userId);
         }
+        $this->db->commit();
+        
+        return $count;
     }
 
     /**
@@ -1183,10 +1187,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     {
         $fieldDef  = $this->getTrackEngine()->getFieldsDefinition();
         $fieldMap  = $fieldDef->getFieldCodes();
-        $fieldData = $this->getFieldData(); // To preserve old values
-        
-        // Get only the real fieldnames, strip the extra code entries
-        $fieldData = array_intersect_key($fieldData, $fieldMap);
+        $fieldData = array();
 
         // Use values on code fields if oiginal does not exist
         foreach ($data as $key => $value)
@@ -1204,11 +1205,9 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         $this->_fieldData = $fieldDef->processBeforeSave($fieldData, $this->_respTrackData);
         $changes          = $fieldDef->saveFields($this->_respTrackId, $this->_fieldData);
 
-        if ($changes) {
-            $this->_ensureFieldData(true);
-        }
-        
-        if ($userId && $changes) {            
+        $this->_fixFieldData();
+
+        if ($userId && $changes) {
             $this->handleFieldUpdate($userId);
 
             $info = $fieldDef->calculateFieldsInfo($this->_fieldData);
