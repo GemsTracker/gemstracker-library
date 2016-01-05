@@ -137,7 +137,7 @@ class Gems_Tracker_RespondentTrackTest extends Gems_Test_DbTestAbstract
             'f__2' => $date,
             'datecode' => $date
             );
-        $this->assertEquals($expected, $respondentTrack->setFieldData(array('code' => 'newvalue', 'datecode' => $date->toString('yyy-MM-dd'))));
+        $this->assertEquals($expected, $respondentTrack->setFieldData(array('code' => 'newvalue', 'datecode' => $date->toString('yyyy-MM-dd'))));
     }
     
     /**
