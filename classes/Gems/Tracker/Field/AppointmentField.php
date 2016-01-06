@@ -348,10 +348,16 @@ class AppointmentField extends FieldAbstract
             }
             $menuItem = $this->menu->findAllowedController('appointment', 'show');
             if ($menuItem) {
+                if (! $this->request) {
+                    $this->request = \Zend_Controller_Front::getInstance()->getRequest();
+                }
                 $href = $menuItem->toHRefAttribute(
-                        array('gap_id_appointment' => $appointment->getId())
+                        array('gap_id_appointment' => $appointment->getId()),
+                        $this->request
                         );
-                return \MUtil_Html::create('a', $href, $appointment->getDisplayString());
+                if ($href) {
+                    return \MUtil_Html::create('a', $href, $appointment->getDisplayString());
+                }
             }
             return $appointment->getDisplayString();
         }

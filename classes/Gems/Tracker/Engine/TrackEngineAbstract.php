@@ -278,7 +278,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
             $this->tracker->createToken($values, $userId);
         }
         $this->db->commit();
-        
+
         return count($newRounds);
     }
 
@@ -802,6 +802,23 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
         } else {
             return '';
         }
+    }
+
+    /**
+     * The round descriptions for this track
+     *
+     * @return array roundId => string
+     */
+    public function getRoundDescriptions()
+    {
+        $this->_ensureRounds();
+
+        $output = array();
+        foreach ($this->_rounds as $roundId => $roundData) {
+            $output[$roundId] = $this->getRoundDescription($roundData);
+        }
+
+        return $output;
     }
 
     /**

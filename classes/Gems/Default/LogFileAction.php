@@ -129,6 +129,37 @@ class Gems_Default_LogFileAction extends \Gems_Controller_ModelSnippetActionAbst
         return $model;
     }
 
+    /**
+     * Confirm has been moved to javascript
+     */
+    public function deleteAction()
+    {
+        $model = $this->getModel();
+        $model->applyRequest($this->getRequest());
+
+        $model->delete();
+        $this->_reroute(array($this->getRequest()->getActionKey() => 'index', MUTil_Model::REQUEST_ID => null));
+    }
+
+    /**
+     * Action for downloading the file
+     */
+    public function downloadAction()
+    {
+        $model = $this->getModel();
+        $model->applyRequest($this->getRequest());
+
+        $fileData = $model->loadFirst();
+
+        header('Content-Type: application/x-download');
+        header('Content-Length: '.$fileData['size']);
+        header('Content-Disposition: inline; filename="'.$fileData['filename'].'"');
+        header('Pragma: public');
+
+        echo $fileData['content'];
+        exit();
+    }
+
     /*
     public function getLogDirs()
     {
@@ -140,4 +171,15 @@ class Gems_Default_LogFileAction extends \Gems_Controller_ModelSnippetActionAbst
             $log = ini_get('error_log');
         }
     } // */
+
+    /**
+     * Helper function to allow generalized statements about the items in the model.
+     *
+     * @param int $count
+     * @return $string
+     */
+    public function getTopic($count = 1)
+    {
+        return $this->plural('log file', 'log files', $count);
+    }
 }

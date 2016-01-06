@@ -276,6 +276,13 @@ interface Gems_Tracker_Engine_TrackEngineInterface
     public function getRoundDefaults();
 
     /**
+     * The round descriptions for this track
+     *
+     * @return array roundId => string
+     */
+    public function getRoundDescriptions();
+    
+    /**
      * An array of snippet names for editing a round.
      *
      * @return array of string snippet names

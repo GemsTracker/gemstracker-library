@@ -482,7 +482,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
             $count += $engine->checkTokensFromStart($this, $userId);
         }
         $this->db->commit();
-        
+
         return $count;
     }
 
@@ -1106,16 +1106,16 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
 
         $this->_fixFieldData();
 
-        if (! $fieldsChanged) {
-            return 0;
-        }
+//        if (! $fieldsChanged) {
+//            return 0;
+//        }
 
         $changes       = $fieldDef->saveFields($this->_respTrackId, $this->_fieldData);
         $fieldsChanged = (boolean) $changes;
 
-        if (! $fieldsChanged) {
-            return 0;
-        }
+//        if (! $fieldsChanged) {
+//            return 0;
+//        }
 
         if (! $userId) {
             return 0;

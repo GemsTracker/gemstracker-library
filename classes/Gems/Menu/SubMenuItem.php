@@ -1033,7 +1033,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
                     if ($this->has($name)) {
                         $value = $this->get($name);
 
-                        if (isset($href[$value])) {
+                        if (is_scalar($value) && isset($href[$value])) {
                             $value = $href[$value];
                         }
 

@@ -95,6 +95,25 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
     public $currentUser;
 
     /**
+     * The parameters used for the export action
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $exportParameters = array();
+
+    /**
+     * The snippets used for the export action
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $exportSnippets = 'Tracker\Export\ExportTrackSnippetGeneric';
+
+    /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
@@ -249,6 +268,18 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
         $this->createEditSnippets = $this->loader->getTracker()->getTrackEngineEditSnippets();
 
         parent::editAction();
+    }
+
+    /**
+     * Generic model based export action
+     */
+    public function exportAction()
+    {
+        if ($this->exportSnippets) {
+            $params = $this->_processParameters($this->exportParameters);
+
+            $this->addSnippets($this->exportSnippets, $params);
+        }
     }
 
     /**
