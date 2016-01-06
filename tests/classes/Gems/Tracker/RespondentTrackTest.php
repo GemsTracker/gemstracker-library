@@ -66,6 +66,32 @@ class Gems_Tracker_RespondentTrackTest extends Gems_Test_DbTestAbstract
     }
     
     /**
+     * Assert that two arrays match and allow a diff in seconds for the date(time) elements and another one for the others
+     * 
+     * @param mixed   $expected
+     * @param mixed   $actual
+     * @param string  $message
+     * @param integer $deltaSeconds
+     * @param integer $deltaGlobal
+     */
+    protected function assertArrayWithDateMatch($expected, $actual, $message, $deltaSeconds = 0, $deltaGlobal = 0) 
+    {
+        // First sort both arrays and see if the keys match
+        ksort($expected);
+        ksort($actual);
+        $this->assertEquals(array_keys($expected), array_keys($actual), $message);
+
+        // If this worked, we can check all elements and make sure we allow a delta in seconds if provided
+        foreach ($expected as $key => $value) {
+            if ($value instanceof Zend_Date) {
+                $this->assertEquals(0, $expected[$key]->diffSeconds($actual[$key]), $message, $deltaSeconds);
+            } else {
+                $this->assertEquals($expected[$key], $actual[$key], $message, $deltaGlobal);
+            }
+        }
+    }
+
+    /**
      * Returns the test dataset.
      *
      * @return PHPUnit_Extensions_Database_DataSet_IDataSet
@@ -110,7 +136,7 @@ class Gems_Tracker_RespondentTrackTest extends Gems_Test_DbTestAbstract
         $trackData = array('gr2t_id_respondent_track' => 1, 'gr2t_id_track' => 1);
         $respondentTrack = new Gems_Tracker_RespondentTrack($trackData);
         $respondentTrack->answerRegistryRequest('tracker', $this->tracker);
-        $expected = $respondentTrack->getFieldData();
+        
         $date = new MUtil_Date('2010-11-09', 'yyyy-MM-dd');
         $expected = array(
             'f__1' => 'newvalue',
@@ -118,7 +144,9 @@ class Gems_Tracker_RespondentTrackTest extends Gems_Test_DbTestAbstract
             'f__2' => $date,
             'datecode' => $date
             );
-        $this->assertEquals($expected, $respondentTrack->setFieldData(array('code' => 'newvalue', 'datecode' => $date)));
+        $actual = $respondentTrack->setFieldData(array('code' => 'newvalue', 'datecode' => $date));
+        
+        $this->assertArrayWithDateMatch($expected, $actual, '', 1, 0);
     }
     
     /**
@@ -137,7 +165,9 @@ class Gems_Tracker_RespondentTrackTest extends Gems_Test_DbTestAbstract
             'f__2' => $date,
             'datecode' => $date
             );
-        $this->assertEquals($expected, $respondentTrack->setFieldData(array('code' => 'newvalue', 'datecode' => $date->toString('yyyy-MM-dd'))));
+        $actual = $respondentTrack->setFieldData(array('code' => 'newvalue', 'datecode' => $date->toString('yyyy-MM-dd')));
+        
+        $this->assertArrayWithDateMatch($expected, $actual, '', 1, 0);
     }
     
     /**
