@@ -119,7 +119,7 @@ class Gems_Model_DateFieldModelTest extends MUtil_Model_AbstractModelTest
         $row = $model->loadFirst();
 
         $rowsaved = $model->save($row);
-        $this->assertEquals($row['grs_birthday'], $rowsaved['grs_birthday']);
+        $this->assertEquals($row['grs_birthday']->get('yyyy-MM-dd'), $rowsaved['grs_birthday']->get('yyyy-MM-dd'));
     }
 
     /**
