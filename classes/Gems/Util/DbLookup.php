@@ -294,8 +294,15 @@ class Gems_Util_DbLookup extends UtilAbstract
                     FROM gems__organizations
                     WHERE gor_active = 1
                     ORDER BY gor_name";
+        
+        try {
+            $organizations = $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'organizations', 'natsort');    
+        } catch (\Exception $exc) {
+            // Intentional fallthrough when no db present
+            $organizations = array();
+        }     
 
-        return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'organizations', 'natsort');
+        return $organizations;
     }
 
     /**
