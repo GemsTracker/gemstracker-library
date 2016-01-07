@@ -125,7 +125,9 @@ class Gems_Tracker_RespondentTrackTest extends Gems_Test_DbTestAbstract
             'f__2' => $date,
             'datecode' => $date
             );
-        $this->assertEquals($expected, $respondentTrack->getFieldData());
+        $actual = $respondentTrack->getFieldData();
+        
+        $this->assertArrayWithDateMatch($expected, $actual, '', 1, 0);
     }
     
     /**
@@ -180,6 +182,8 @@ class Gems_Tracker_RespondentTrackTest extends Gems_Test_DbTestAbstract
         $respondentTrack->answerRegistryRequest('tracker', $this->tracker);
         $expected = $respondentTrack->getFieldData();
         $expected['f__1'] = $expected['code'] = 'newvalue';
-        $this->assertEquals($expected, $respondentTrack->setFieldData(array('code' => 'newvalue')));
+        $actual = $respondentTrack->setFieldData(array('code' => 'newvalue'));
+        
+        $this->assertArrayWithDateMatch($expected, $actual, '', 1, 0);
     }
 }
