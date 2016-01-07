@@ -56,6 +56,12 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
 
     /**
      *
+     * @var \Gems_Loader
+     */
+    protected $loader;
+
+    /**
+     *
      * @var \Gems_Tracker_Engine_TrackEngineInterface
      */
     protected $trackEngine;
@@ -65,6 +71,17 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
      * @var \Gems_Util
      */
     protected $util;
+
+    /**
+     * Add the elements from the model to the bridge for the current step
+     *
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_ModelAbstract $model
+     */
+    protected function addStepDownloadExportFile(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
+    {
+        // $this->addItems($bridge);
+    }
 
     /**
      * Add the elements from the model to the bridge for the current step
@@ -110,18 +127,20 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
      */
     protected function addStepExportCodes(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
     {
-        $rounds = $this->formData['rounds'];
-    }
+        $this->displayHeader($bridge, $this->_('Set the survey export codes'), 'h3');
 
-    /**
-     * Add the elements from the model to the bridge for the current step
-     *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
-     */
-    protected function addStepDownloadExportFile(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
-    {
-        // $this->addItems($bridge);
+        $rounds      = $this->formData['rounds'];
+        $surveyCodes = array();
+        // $validator   = $this->loader->getTracker()->createTrackClass($className, $surveyCodes, $rounds)
+
+        foreach ($rounds as $roundId) {
+           $round = $this->trackEngine->getRound($roundId);
+           $name  = 'survey__' . $round->getSurveyId();
+
+           $surveyCodes[$name] = $name;
+        }
+
+        $this->addItems($bridge, $surveyCodes);
     }
 
     /**
@@ -132,6 +151,8 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
      */
     protected function addStepExportSettings(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
     {
+        $this->displayHeader($bridge, $this->_('Select what to export'), 'h3');
+
         $this->addItems($bridge, 'orgs', 'fields', 'rounds');
     }
 
@@ -184,8 +205,30 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
             $rounds = $this->trackEngine->getRoundDescriptions();
             $model->set('rounds', 'label', $this->_('Round export'));
             if ($rounds) {
+                $defaultRounds = array();
+                foreach ($rounds as $roundId => &$roundDescription) {
+                    $round = $this->trackEngine->getRound($roundId);
+                    if ($round && $round->isActive()) {
+                        $defaultRounds[] = $roundId;
+                    } else {
+                        $roundDescription = sprintf($this->_('%s (inactive)'), $roundDescription);
+                    }
+
+                    $survey = $round->getSurvey();
+                    if ($survey) {
+                        $model->set('survey__' . $survey->getSurveyId(),
+                                'label', $survey->getName(),
+                                'default', $survey->getExportCode(),
+                                'description', $this->_('A unique code indentifying this survey during import'),
+                                'required', true,
+                                'size', 20,
+                                'survey', true,
+                                'maxlength', 64
+                                );
+                    }
+                }
                 $model->set('rounds',
-                        'default', array_keys($rounds),
+                        'default', $defaultRounds,
                         'description', $this->_('Check the rounds to export'),
                         'elementClass', 'MultiCheckbox',
                         'multiOptions', $rounds
@@ -212,7 +255,11 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
      */
     protected function displayHeader(\MUtil_Model_Bridge_FormBridgeInterface $bridge, $header, $tagName = 'h2')
     {
-        $element = $bridge->getForm()->createElement('html', 'step_header');
+        static $count = 0;
+
+        $count += 1;
+        \MUtil_Echo::track($count);
+        $element = $bridge->getForm()->createElement('html', 'step_header_' . $count);
         $element->$tagName($header);
 
         $bridge->addElement($element);

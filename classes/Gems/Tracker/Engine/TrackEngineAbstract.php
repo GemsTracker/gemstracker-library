@@ -59,6 +59,12 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
 
     /**
      *
+     * @var array of rounds objects, initiated at need
+     */
+    protected $_roundObjects;
+
+    /**
+     *
      * @var array of rounds data
      */
     protected $_rounds;
@@ -715,6 +721,25 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
     }
 
     /**
+     * Get the round object
+     *
+     * @param int $roundId  Gems round id
+     * @return \Gems\Tracker\Round
+     */
+    public function getRound($roundId)
+    {
+        $this->_ensureRounds();
+
+        if (! isset($this->_rounds[$roundId])) {
+            return null;
+        }
+        if (! isset($this->_roundObjects[$roundId])) {
+            $this->_roundObjects[$roundId] = $this->tracker->createTrackClass('Round', $this->_rounds[$roundId]);
+        }
+        return $this->_roundObjects[$roundId];
+    }
+
+    /**
      * Returns a snippet name that can be used to display the answers to the token or nothing.
      *
      * @param \Gems_Tracker_Token $token
@@ -828,7 +853,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
      */
     public function getRoundEditSnippetNames()
     {
-        return array('EditRoundSnippet');
+        return array('Tracker\\Rounds\\EditRoundStepSnippet');
     }
 
     /**
@@ -849,7 +874,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
         if ($detailed) {
             $model->set('gro_id_track',      'label', $this->_('Track'),
                     'elementClass', 'exhibitor',
-                    'multiOptions', \MUtil_Lazy::call($this->util->getTrackData()->getAllTracks)
+                    'multiOptions', $this->util->getTrackData()->getAllTracks
                     );
         }
 
