@@ -51,6 +51,9 @@ _("One or more IPs are illegal.");
 // Gems_Validate_OneOf
 _("Either '%description%' or '%fieldDescription%' must be entered.");
 
+// Gems\Validate\ValidateSurveyExportCode
+_('A duplicate export code matching \'%value%\' was found.');
+
 // MUtil_Validate_Date_DateAfter
 _("Date should be '%dateAfter%' or later.");
 _("Should be empty if valid from date is not set.");

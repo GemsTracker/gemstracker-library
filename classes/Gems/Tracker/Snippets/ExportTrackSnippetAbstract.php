@@ -50,6 +50,24 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
 {
     /**
      *
+     * @var \Gems_Task_TaskRunnerBatch
+     */
+    private $_batch;
+
+    /**
+     *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
+    /**
+     *
+     * @var \Zend_Db_Adapter_Abstract
+     */
+    protected $db;
+
+    /**
+     *
      * @var \MUtil_Model_ModelAbstract
      */
     protected $exportModel;
@@ -59,6 +77,21 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
      * @var \Gems_Loader
      */
     protected $loader;
+
+    /**
+     * The name of the action to forward to after form completion
+     *
+     * @var string
+     */
+    protected $routeAction = 'show';
+
+    /**
+     * Variable to either keep or throw away the request data
+     * not specified in the route.
+     *
+     * @var boolean True then the route is reset
+     */
+    public $resetRoute = true;
 
     /**
      *
@@ -73,15 +106,10 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
     protected $util;
 
     /**
-     * Add the elements from the model to the bridge for the current step
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @var \Zend_View
      */
-    protected function addStepDownloadExportFile(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
-    {
-        // $this->addItems($bridge);
-    }
+    protected $view;
 
     /**
      * Add the elements from the model to the bridge for the current step
@@ -99,11 +127,6 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
                 $this->getStepCount()), 'h1');
 
         switch ($step) {
-            case 0:
-            case 1:
-                $this->addStepExportSettings($bridge, $model);
-                break;
-
             case 2:
                 $this->addStepExportCodes($bridge, $model);
                 break;
@@ -113,7 +136,7 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
                 break;
 
             default:
-                $this->addStepDownloadExportFile($bridge, $model);
+                $this->addStepExportSettings($bridge, $model);
                 break;
 
         }
@@ -131,15 +154,15 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
 
         $rounds      = $this->formData['rounds'];
         $surveyCodes = array();
-        // $validator   = $this->loader->getTracker()->createTrackClass($className, $surveyCodes, $rounds)
 
         foreach ($rounds as $roundId) {
-           $round = $this->trackEngine->getRound($roundId);
-           $name  = 'survey__' . $round->getSurveyId();
+            $round = $this->trackEngine->getRound($roundId);
+            $sid   = $round->getSurveyId();
+            $name  = 'survey__' . $sid;
 
-           $surveyCodes[$name] = $name;
+            $surveyCodes[$name] = $name;
+            $model->set($name, 'validator', array('ValidateSurveyExportCode', true, array($sid, $this->db)));
         }
-
         $this->addItems($bridge, $surveyCodes);
     }
 
@@ -164,7 +187,120 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
      */
     protected function addStepGenerateExportFile(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
     {
-        // $this->addItems($bridge);
+        // Things go really wrong (at the session level) if we run this code
+        // while the finish button was pressed
+        if (isset($this->formData[$this->finishButtonId]) && $this->formData[$this->finishButtonId]) {
+            return;
+        }
+        $this->displayHeader($bridge, $this->_('Creating the export file'), 'h3');
+
+        $this->nextDisabled = true;
+
+        $batch = $this->getExportBatch();
+        $form  = $bridge->getForm();
+
+        $batch->setFormId($form->getId());
+        $batch->autoStart = true;
+
+        // \MUtil_Registry_Source::$verbose = true;
+        if ($batch->run($this->request)) {
+            exit;
+        }
+
+        $element = $form->createElement('html', $batch->getId());
+
+        if ($batch->isFinished()) {
+            $this->nextDisabled = $batch->getCounter('export_errors');
+            $batch->autoStart   = false;
+
+            // Keep the filename after $batch->getMessages(true) cleared the previous
+            $filename = $batch->getSessionVariable('filename');
+            $this->addMessage($batch->getMessages(true));
+            $batch->setSessionVariable('filename', $filename);
+
+            if ($this->nextDisabled) {
+                $element->pInfo($this->_('Export errors occurred.'));
+            } else {
+                $p = $element->pInfo($this->_('Export file generated: '));
+
+                $name = \MUtil_File::cleanupName($this->trackEngine->getTrackName()) . '.track.txt';
+
+                $p->a(array('file' => 'go', $this->stepFieldName => 'download'), $name, array('type' => 'application/download'));
+            }
+
+        } else {
+            $element->setValue($batch->getPanel($this->view, $batch->getProgressPercentage() . '%'));
+
+        }
+        $form->activateJQuery();
+        $form->addElement($element);
+    }
+
+    /**
+     * Overrule this function for any activities you want to take place
+     * after the form has successfully been validated, but before any
+     * buttons are processed.
+     *
+     * @param int $step The current step
+     */
+    protected function afterFormValidationFor($step)
+    {
+        if (2 == $step) {
+            $model = $this->getModel();
+            $saves = array();
+            foreach ($model->getCol('surveyId') as $name => $sid) {
+                if (isset($this->formData[$name]) && $this->formData[$name]) {
+                    $saves[] = array('gsu_id_survey' => $sid, 'gsu_export_code' => $this->formData[$name]);
+                }
+            }
+
+            $sModel = new \MUtil_Model_TableModel('gems__surveys');
+            \Gems_Model::setChangeFieldsByPrefix($sModel, 'gus', $this->currentUser->getUserId());
+            $sModel->saveAll($saves);
+
+            $count = $sModel->getChanged();
+
+            if ($count == 0) {
+                $this->addMessage($this->_('No export code changed'));
+            } else {
+                $this->addMessage(sprintf(
+                        $this->plural('%d export code changed', '%d export codes changed', $count),
+                        $count
+                        ));
+            }
+        }
+    }
+
+    /**
+     * Hook that allows actions when data was saved
+     *
+     * When not rerouted, the form will be populated afterwards
+     *
+     * @param int $changed The number of changed rows (0 or 1 usually, but can be more)
+     */
+    protected function afterSave($changed)
+    {
+        $this->addMessage($this->_('Track export finished'));
+    }
+
+    /**
+     * Creates an empty form. Allows overruling in sub-classes.
+     *
+     * @param mixed $options
+     * @return \Zend_Form
+     */
+    protected function createForm($options = null)
+    {
+        if (\MUtil_Bootstrap::enabled()) {
+            if (!isset($options['class'])) {
+                $options['class'] = 'form-horizontal';
+            }
+
+            if (!isset($options['role'])) {
+                $options['role'] = 'form';
+            }
+        }
+        return new \Gems_Form($options);
     }
 
     /**
@@ -219,11 +355,11 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
                         $model->set('survey__' . $survey->getSurveyId(),
                                 'label', $survey->getName(),
                                 'default', $survey->getExportCode(),
-                                'description', $this->_('A unique code indentifying this survey during import'),
+                                'description', $this->_('A unique code indentifying this survey during track import'),
+                                'maxlength', 64,
                                 'required', true,
                                 'size', 20,
-                                'survey', true,
-                                'maxlength', 64
+                                'surveyId', $survey->getSurveyId()
                                 );
                     }
                 }
@@ -258,11 +394,90 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
         static $count = 0;
 
         $count += 1;
-        \MUtil_Echo::track($count);
         $element = $bridge->getForm()->createElement('html', 'step_header_' . $count);
         $element->$tagName($header);
 
         $bridge->addElement($element);
+    }
+
+    /**
+     * Performs actual download
+     *
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_ModelAbstract $model
+     */
+    protected function downloadExportFile()
+    {
+        $this->view->layout()->disableLayout();
+        \Zend_Controller_Action_HelperBroker::getExistingHelper('viewRenderer')->setNoRender(true);
+
+        $filename     = $this->getExportBatch(false)->getSessionVariable('filename');
+        $downloadName = \MUtil_File::cleanupName($this->trackEngine->getTrackName()) . '.track.txt';
+
+        header("Content-Type: application/download");
+        header("Content-Disposition: attachment; filename=\"$downloadName\"");
+        header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
+        header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+        header("Pragma: cache");                          // HTTP/1.0
+        readfile($filename);
+        exit();
+    }
+
+    /**
+     *
+     * @return \Gems_Task_TaskRunnerBatch
+     */
+    protected function getExportBatch($load = true)
+    {
+        if ($this->_batch) {
+            return $this->_batch;
+        }
+
+        $this->_batch = $this->loader->getTaskRunnerBatch('track_export_' . $this->trackEngine->getTrackId());
+
+        if ((! $load) || $this->_batch->isFinished()) {
+            return $this->_batch;
+        }
+
+        if (! $this->_batch->isLoaded()) {
+            $filename = \MUtil_File::createTemporaryIn(GEMS_ROOT_DIR . '/var/tmp/export/track');
+            $this->_batch->setSessionVariable('filename', $filename);
+
+            $this->_batch->addTask(
+                    'Tracker\\Export\\MainTrackExportTask',
+                    $this->trackEngine->getTrackId(),
+                    $this->formData['orgs']
+                    );
+
+            foreach ($this->formData['fields'] as $fieldId) {
+
+            }
+
+            foreach ($this->formData['rounds'] as $roundId) {
+                $this->_batch->addTask(
+                        'Tracker\\Export\\TrackRoundExportTask',
+                        $roundId
+                        );
+            }
+
+        } else {
+            $filename = $this->_batch->getSessionVariable('filename');
+        }
+
+        $this->_batch->setVariable('file', fopen($filename, 'a'));
+
+        return $this->_batch;
+    }
+
+    /**
+     * The number of steps in this form
+     *
+     * @return int
+     */
+    protected function getStepCount()
+    {
+        return 3;
     }
 
     /**
@@ -277,21 +492,41 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
         if ($this->request->isPost()) {
             $this->formData = $model->loadPostData($this->request->getPost() + $this->formData, true);
 
+        } elseif ('download' == $this->request->getParam($this->stepFieldName)) {
+            $this->formData = $this->request->getParams();
+            $this->downloadExportFile();
+
         } else {
             // Assume that if formData is set it is the correct formData
             if (! $this->formData)  {
                 $this->formData = $model->loadNew();
             }
         }
+        // \MUtil_Echo::track($this->formData);
     }
 
     /**
-     * The number of steps in this form
+     * Set what to do when the form is 'finished'.
      *
-     * @return int
+     * @return \MUtil_Snippets_Standard_ModelImportSnippet
      */
-    protected function getStepCount()
+    protected function setAfterSaveRoute()
     {
-        return 4;
+        $filename = $this->getExportBatch(false)->getSessionVariable('filename');
+        if ($filename) {
+            // Now is a good moment to remove the temporary file
+            @unlink($filename);
+        }
+
+       // Default is just go to the index
+        if ($this->routeAction && ($this->request->getActionName() !== $this->routeAction)) {
+            $this->afterSaveRouteUrl = array(
+                $this->request->getControllerKey() => $this->request->getControllerName(),
+                $this->request->getActionKey()     => $this->routeAction,
+                \MUtil_Model::REQUEST_ID           => $this->request->getParam(\MUtil_Model::REQUEST_ID),
+                );
+        }
+
+        return $this;
     }
 }
