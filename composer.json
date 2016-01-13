@@ -41,6 +41,9 @@
             "Gems\\": "classes/Gems"
         }
     },
+    "include-path": [
+        "classes/"
+    ],
     "minimum-stability": "stable",
     "require": {
         "php": ">=5.3.9",
