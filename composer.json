@@ -33,7 +33,9 @@
     "autoload": {
         "classmap": ["classes/GemsEscort.php"],
         "psr-0": {
-            "Gems_": "classes"
+            "Gems_": "classes",
+            "Zend_": "classes",
+            "OpenRosa_" : "classes"
         },
         "psr-4": {
             "Gems\\": "classes/Gems"
