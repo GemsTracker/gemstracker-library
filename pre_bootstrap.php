@@ -51,18 +51,17 @@ defined('APPLICATION_PATH') || define('APPLICATION_PATH', GEMS_ROOT_DIR . '/appl
 defined('GEMS_PROJECT_NAME_UC') || define('GEMS_PROJECT_NAME_UC', ucfirst(GEMS_PROJECT_NAME));
 
 
-/**
- * then to project directory
- * then to Gems application directory
- * then to MUtil application directory
- */
 set_include_path(
-    APPLICATION_PATH . '/classes' . PATH_SEPARATOR .
-    GEMS_LIBRARY_DIR . '/classes' . PATH_SEPARATOR .
-    MUTIL_LIBRARY_DIR . PATH_SEPARATOR
+    APPLICATION_PATH . '/classes' . PATH_SEPARATOR .    // Shouldn't we leave the responsability to the project?
+    get_include_path()
     );
 
-require (VENDOR_DIR . '/autoload.php');
+/**
+ * Use the composer autoloader, since we store this variable in global scope, projects can interact with it when needed.
+ * 
+ * Composer autoloader takes care of adding to the include path
+ */
+$composer_autoloader = require (VENDOR_DIR . '/autoload.php');
 
 // Create application, bootstrap, and run
 $application = new Zend_Application(
