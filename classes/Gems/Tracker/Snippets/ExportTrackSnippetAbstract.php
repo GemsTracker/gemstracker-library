@@ -442,6 +442,7 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
 
         if (! $this->_batch->isLoaded()) {
             $filename = \MUtil_File::createTemporaryIn(GEMS_ROOT_DIR . '/var/tmp/export/track');
+            $trackId  = $this->trackEngine->getTrackId();
             $this->_batch->setSessionVariable('filename', $filename);
 
             $this->_batch->addTask(
@@ -450,13 +451,19 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
                     $this->formData['orgs']
                     );
 
+            \MUtil_Echo::track($this->formData['fields']);
             foreach ($this->formData['fields'] as $fieldId) {
-
+                $this->_batch->addTask(
+                        'Tracker\\Export\\TrackFieldExportTask',
+                        $trackId,
+                        $fieldId
+                        );
             }
 
             foreach ($this->formData['rounds'] as $roundId) {
                 $this->_batch->addTask(
                         'Tracker\\Export\\TrackRoundExportTask',
+                        $trackId,
                         $roundId
                         );
             }

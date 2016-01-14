@@ -46,27 +46,15 @@ namespace Gems\Task\Tracker\Export;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 Jan 12, 2016 5:31:00 PM
  */
-class TrackRoundExportTask extends \MUtil_Task_TaskAbstract
+class TrackRoundExportTask extends TrackExportAbstract
 {
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
-     *
-     * @var \Gems_Loader
-     */
-    protected $loader;
-
     /**
      * Should handle execution of the task, taking as much (optional) parameters as needed
      *
      * The parameters should be optional and failing to provide them should be handled by
      * the task
      */
-    public function execute($roundId = null)
+    public function execute($trackId = null, $roundId = null)
     {
         $batch = $this->getBatch();
         $select = $this->db->select();
@@ -87,27 +75,41 @@ class TrackRoundExportTask extends \MUtil_Task_TaskAbstract
                      'valid_for' => 'vf.gro_id_order',
                     )) // gro_valid_for_id
                 ->where('gems__rounds.gro_id_round = ?', $roundId);
-        \MUtil_Echo::track($select->__toString(), $roundId);
+        // \MUtil_Echo::track($select->__toString(), $roundId);
+
         $data = $this->db->fetchRow($select);
-        \MUtil_Echo::track($data);
+        // \MUtil_Echo::track($data);
+
         if ($data) {
+            $fields = $this->loader->getTracker()->getTrackEngine($trackId)->getFieldsDefinition();
+            $tests  = array(
+                \Gems_Tracker_Engine_StepEngineAbstract::APPOINTMENT_TABLE,
+                \Gems_Tracker_Engine_StepEngineAbstract::RESPONDENT_TRACK_TABLE,
+                );
+            if (isset($data['gro_valid_after_source'], $data['gro_valid_after_field']) &&
+                    in_array($data['gro_valid_after_source'], $tests)) {
+                // Translate field to {order}
+                $data['gro_valid_after_field'] = $this->translateFieldCode($fields, $data['gro_valid_after_field']);
+            }
+            if (isset($data['gro_valid_for_source'], $data['gro_valid_for_field']) &&
+                    in_array($data['gro_valid_for_source'], $tests)) {
+                // Translate field to {order}
+                $data['gro_valid_for_field'] = $this->translateFieldCode($fields, $data['gro_valid_for_field']);
+            }
+
             $count = $batch->addToCounter('rounds_exported');
-            $file  = $batch->getVariable('file');
 
             if ($count == 1) {
-                // Round data
-                fwrite($file, "\r\n");
-                fwrite($file, "rounds\r\n");
-                fwrite($file, implode("\t", array_keys($data)) . "\r\n");
+                $this->exportTypeHeader('rounds');
+                $this->exportFieldHeaders($data);
             }
-            fwrite($file, implode("\t", $data) . "\r\n");
+            $this->exportFieldData($data);
+            $this->exportFlush();
 
             $batch->setMessage('rounds_export', sprintf(
                     $this->plural('%d round exported', '%d rounds exported', $count),
                     $count
                     ));
-
-            fflush($file);
         }
     }
 }

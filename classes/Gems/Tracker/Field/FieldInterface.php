@@ -154,6 +154,12 @@ interface FieldInterface
 
     /**
      *
+     * @return int The field order
+     */
+    public function getOrder();
+
+    /**
+     *
      * @return The track field sub (model) value
      */
     public function getFieldSub();

@@ -265,6 +265,16 @@ abstract class FieldAbstract extends \MUtil_Translate_TranslateableAbstract impl
 
     /**
      *
+     * @return int The field order
+     */
+    public function getOrder()
+    {
+        return $this->_fieldDefinition['gtf_id_order'];
+    }
+
+
+    /**
+     *
      * @return The track field sub (model) value
      */
     public function getFieldSub()

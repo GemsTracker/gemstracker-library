@@ -308,6 +308,19 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * Get a specific field
+     *
+     * @param string $key
+     * @return \Gems\Tracker\Field\FieldInterface
+     */
+    public function getField($key)
+    {
+        if (isset($this->_fields[$key])) {
+            return $this->_fields[$key];
+        }
+    }
+
+    /**
      * Returns an array of the fields in this track
      * key / value are id / code
      *
@@ -603,5 +616,22 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
         $model->saveAll($saves);
 
         return $model->getChanged();
+    }
+
+    /**
+     * Split an external field key in component parts
+     *
+     * @param string $sub
+     * @param int $fieldId
+     * @return array 'sub' => suIdb, 'gtf_id_field; => fieldId
+     */
+    public static function splitKey($key)
+    {
+        if (strpos($key, self::FIELD_KEY_SEPARATOR) === false) {
+            return null;
+        }
+        list($sub, $fieldId) = explode(self::FIELD_KEY_SEPARATOR, $key, 2);
+
+        return array('sub' => $sub, 'gtf_id_field' => $fieldId);
     }
 }
