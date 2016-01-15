@@ -470,7 +470,7 @@ class Gems_Default_ExportAction extends \Gems_Controller_Action
 
             $this->html->raw($form->render($this->view));
 
-            /* DISABLED THIS CODE BLOCK AS IT IS NO LONGER NEEDED, ADDED THE 
+            /* DISABLED THIS CODE BLOCK AS IT IS NO LONGER NEEDED, ADDED THE
              * BOTTOM TWO LINES TO SHOW HOW IT CAN STILL WORK WHEN LEFT IN PLACE
             //Now add all onload actions to make the form still work
             $actions = $this->view->jQuery()->getOnLoadActions();

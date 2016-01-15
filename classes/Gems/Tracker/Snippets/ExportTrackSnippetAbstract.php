@@ -451,7 +451,7 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
                     $this->formData['orgs']
                     );
 
-            \MUtil_Echo::track($this->formData['fields']);
+            // \MUtil_Echo::track($this->formData['fields']);
             foreach ($this->formData['fields'] as $fieldId) {
                 $this->_batch->addTask(
                         'Tracker\\Export\\TrackFieldExportTask',
