@@ -118,7 +118,7 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
             $this->importModel = $model;
         }
 
-        return $this->exportModel;
+        return $this->importModel;
     }
 
 

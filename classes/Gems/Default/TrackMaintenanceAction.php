@@ -114,6 +114,28 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
     protected $exportSnippets = 'Tracker\Export\ExportTrackSnippetGeneric';
 
     /**
+     * The parameters used for the import action
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $importParameters = array(
+        'trackEngine' => null,
+        'trackId'     => null,
+    );
+
+    /**
+     * The snippets used for the import action
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $importSnippets = 'Tracker\\Import\\ImportTrackSnippetGeneric';
+
+    /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name

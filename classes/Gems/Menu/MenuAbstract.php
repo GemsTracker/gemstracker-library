@@ -810,9 +810,6 @@ abstract class Gems_Menu_MenuAbstract
         // TRACK MAINTENANCE CONTROLLER
         $page = $setup->addBrowsePage($this->_('Tracks'), 'pr.track-maintenance', 'track-maintenance');
 
-        $createPage = $this->findItem(array('controller' => 'track-maintenance', 'action' => 'create'));
-        $createPage->addAction($this->_('Import new'), 'pr.track-maintenance.import', 'import');
-
         $showPage = $this->findItem(array('controller' => 'track-maintenance', 'action' => 'show'));
         $showPage->addButtonOnly($this->_('Copy'),  'pr.track-maintenance.copy', 'track-maintenance', 'copy')
                 ->setModelParameters(1);
