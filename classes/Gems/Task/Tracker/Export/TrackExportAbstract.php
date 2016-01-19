@@ -144,7 +144,7 @@ abstract class TrackExportAbstract extends \MUtil_Task_TaskAbstract
     {
         $field = $fields->getField($fieldId);
         if ($field instanceof FieldInterface) {
-            return  '{' . $field->getOrder() . '}';
+            return  '{f' . $field->getOrder() . '}';
         }
 
         return $fieldId;

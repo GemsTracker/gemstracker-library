@@ -189,7 +189,7 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
     {
         // Things go really wrong (at the session level) if we run this code
         // while the finish button was pressed
-        if (isset($this->formData[$this->finishButtonId]) && $this->formData[$this->finishButtonId]) {
+        if ($this->clickedFinished()) {
             return;
         }
         $this->displayHeader($bridge, $this->_('Creating the export file'), 'h3');
@@ -457,6 +457,15 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
                         'Tracker\\Export\\TrackFieldExportTask',
                         $trackId,
                         $fieldId
+                        );
+            }
+
+            $model = $this->getModel();
+            foreach ($model->getCol('surveyId') as $surveyId) {
+                $this->_batch->addTask(
+                        'Tracker\\Export\\TrackSurveyExportTask',
+                        $trackId,
+                        $surveyId
                         );
             }
 
