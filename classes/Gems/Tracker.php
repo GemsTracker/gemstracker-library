@@ -373,16 +373,21 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
      */
     public function getAllCodeFields()
     {
-        $fields = array();
-        $model  = $this->createTrackClass('Model_FieldMaintenanceModel');
-        $rows   = $model->load(array('gtf_field_code IS NOT NULL'), array('gtf_field_code' => SORT_ASC));
+        static $fields = false; // Using static so it will be refreshed once per request
+        
+        if ($fields === false) {
+            $fields = array();
+            $model  = $this->createTrackClass('Model_FieldMaintenanceModel');
+            $rows   = $model->load(array('gtf_field_code IS NOT NULL'), array('gtf_field_code' => SORT_ASC));
 
-        if ($rows) {
-            foreach ($rows as $row) {
-                $key = FieldsDefinition::makeKey($row['sub'], $row['gtf_id_field']);
-                $fields[$key] = $row['gtf_field_code'];
+            if ($rows) {
+                foreach ($rows as $row) {
+                    $key = FieldsDefinition::makeKey($row['sub'], $row['gtf_id_field']);
+                    $fields[$key] = $row['gtf_field_code'];
+                }
             }
         }
+        
         return $fields;
     }
 
