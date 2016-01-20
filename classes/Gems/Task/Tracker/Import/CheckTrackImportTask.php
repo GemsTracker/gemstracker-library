@@ -76,11 +76,19 @@ class CheckTrackImportTask extends \MUtil_Task_TaskAbstract
                 $trackData = reset($tracksData);
                 $lineNr    = key($tracksData);
 
+                $defaults  = array('gtr_track_name', 'gtr_track_info', 'gtr_code', 'gtr_date_start', 'gtr_date_until');
                 $events    = $this->loader->getEvents();
                 $import    = $batch->getVariable('import');
                 $tracker   = $this->loader->getTracker();
 
                 $import['trackData'] = $trackData;
+
+                foreach ($defaults as $name) {
+                    if (isset($trackData[$name])) {
+                        $import['formDefaults'][$name] = $trackData[$name];
+                        $import['modelSettings'][$name]['respondentData'] = true;
+                    }
+                }
 
                 if (isset($trackData['gtr_track_class']) && $trackData['gtr_track_class']) {
                     $trackEngines = $tracker->getTrackEngineClasses();

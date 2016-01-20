@@ -56,6 +56,19 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
 
     /**
      *
+     * @var \Zend_Cache_Core
+     */
+    protected $cache;
+
+
+    /**
+     *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
+    /**
+     *
      * @var \MUtil_Model_ModelAbstract
      */
     protected $importModel;
@@ -73,6 +86,32 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
     public $view;
 
     /**
+     * Add the settings from the transformed import data to the formData and the model
+     *
+     * @param \ArrayObject $import
+     */
+    public function addImportToModelData(\ArrayObject $import)
+    {
+        if (isset($import['formDefaults']) && $import['formDefaults']) {
+            foreach ($import['formDefaults'] as $name => $default) {
+                if (! (isset($this->formData[$name]) && $this->formData[$name])) {
+                    $this->formData[$name] = $default;
+                }
+            }
+        }
+
+        // \MUtil_Echo::track($this->formData);
+
+        if (isset($import['modelSettings']) && $import['modelSettings']) {
+            $model = $this->getModel();
+            foreach ($import['modelSettings'] as $name => $settings) {
+                // \MUtil_Echo::track($name, $settings);
+                $model->set($name, $settings);
+            }
+        }
+    }
+
+    /**
      * Add the elements from the model to the bridge for file check step
      *
      * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
@@ -83,7 +122,7 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
         $this->displayHeader($bridge, $this->_('Change track information.'), 'h3');
 
         // Always add organization select, even when they were not exported
-        $this->addItems($bridge, 'gtr_track_name', 'gtr_organizations');
+        $this->addItems($bridge, $model->getColNames('respondentData'));
 
         $import = $this->loadImportData();
 
@@ -94,25 +133,71 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
 
         $form = $bridge->getForm();
 
-        $surveyHeader = $form->createElement('Html', 'sheader');
-        $surveyHeader->h4($this->_('Linked surveys'));
+        $surveyHeader = $form->createElement('Html', 'sheader1');
+        $surveyHeader->h2($this->_('Survey export code links'));
         $form->addElement($surveyHeader);
 
-        foreach ($import['surveys'] as $surveyData) {
-            $surveyCode = $surveyData['gsu_export_code'];
-            $name = 'survey__' . $surveyCode;
-            if (isset($import['surveyCodes'][$surveyCode]) && $import['surveyCodes'][$surveyCode]) {
-                $element = $form->createElement('Exhibitor', $name, array('multiOptions' => $all));
-            } else {
-                $element = $form->createElement('Select', $name);
-                $element->setMultiOptions($available);
-            }
-            $element->setLabel($surveyData['gsu_survey_name']);
-            $element->setDescription(sprintf($this->_('Export code is: "%s".'), $surveyCode));
-            $form->addElement($element);
-        }
+        $surveySubHeader = $form->createElement('Html', 'sheader2');
+        $surveySubHeader->strong($this->_('Linked survey name'));
+        $surveySubHeader->setLabel($this->_('Import survey name'))
+                ->setDescription(sprintf($this->_('[%s]'), $this->_('export code')))
+                ->setRequired(true);
+        $form->addElement($surveySubHeader);
+
+        $this->addItems($bridge, $model->getColNames('isSurvey'));
 
         // \MUtil_Echo::track($this->_session->uploadFileName, $import->getArrayCopy());
+    }
+
+    /**
+     * Add the elements from the model to the bridge for file check step
+     *
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_ModelAbstract $model
+     */
+    protected function addStepCreateTrack(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
+    {
+        // Things go really wrong (at the session level) if we run this code
+        // while the finish button was pressed
+        if ($this->isFinishedClicked()) {
+            return;
+        }
+
+        $this->nextDisabled = true;
+
+        $this->displayHeader($bridge, $this->_('Creating the track.'), 'h3');
+
+        $batch = $this->getImportCreateBatch();
+        $form  = $bridge->getForm();
+
+        $batch->setFormId($form->getId());
+        $batch->autoStart = true;
+
+        // \MUtil_Registry_Source::$verbose = true;
+        if ($batch->run($this->request)) {
+            exit;
+        }
+
+        $element = $form->createElement('html', $batch->getId());
+
+        if ($batch->isFinished()) {
+            $this->nextDisabled = $batch->getCounter('create_errors');
+            $batch->autoStart   = false;
+
+            // Keep the filename after $batch->getMessages(true) cleared the previous
+            $this->addMessage($batch->getMessages(true));
+            if ($this->nextDisabled) {
+                $element->pInfo($this->_('Create errors occurred!'));
+            } else {
+                $element->h2($this->_('Track created successfully OK!'));
+                $element->pInfo($this->_('Click the "Finish" button to see the track.'));
+            }
+        } else {
+            $element->setValue($batch->getPanel($this->view, $batch->getProgressPercentage() . '%'));
+        }
+
+        $form->activateJQuery();
+        $form->addElement($element);
     }
 
     /**
@@ -136,6 +221,10 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
 
             case 3:
                 $this->addStepChangeTrack($bridge, $model);
+                break;
+
+            case 4:
+                $this->addStepCreateTrack($bridge, $model);
                 break;
 
             default:
@@ -184,22 +273,6 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
             } else {
                 $element->h2($this->_('Import checks OK!'));
                 $element->pInfo($this->_('Click the "Next" button to continue.'));
-
-                $import = $this->loadImportData();
-                $this->formData['gtr_track_name'] = $import['trackData']['gtr_track_name'];
-                if ($import['organizations']) {
-                    $this->formData['gtr_organizations'] = array_filter($import['organizationIds']);
-                }
-                foreach ($import['surveys'] as $surveyData) {
-                    $surveyCode = $surveyData['gsu_export_code'];
-
-                    if (isset($import['surveyCodes'][$surveyCode]) && $import['surveyCodes'][$surveyCode]) {
-                        $name = 'survey__' . $surveyCode;
-                        $this->formData[$name] = $import['surveyCodes'][$surveyCode];
-                        $form->addElement('Hidden', $name);
-                    }
-                }
-                \MUtil_Echo::track($this->formData);
             }
         } else {
             $element->setValue($batch->getPanel($this->view, $batch->getProgressPercentage() . '%'));
@@ -256,6 +329,47 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
     }
 
     /**
+     * Overrule this function for any activities you want to take place
+     * after the form has successfully been validated, but before any
+     * buttons are processed.
+     *
+     * @param int $step The current step
+     */
+    protected function afterFormValidationFor($step)
+    {
+        if (3 == $step) {
+            $import = $this->loadImportData();
+            $model  = $this->getModel();
+            $saves  = array();
+
+            foreach ($model->getCol('exportCode') as $name => $exportCode) {
+                if (isset($this->formData[$name]) && $this->formData[$name]) {
+                    $saves[] = array('gsu_id_survey' => $this->formData[$name], 'gsu_export_code' => $exportCode);
+
+                    $import['surveyCodes'][$exportCode] = $this->formData[$name];
+                }
+            }
+            if ($saves) {
+                $sModel = new \MUtil_Model_TableModel('gems__surveys');
+                \Gems_Model::setChangeFieldsByPrefix($sModel, 'gus', $this->currentUser->getUserId());
+                $sModel->saveAll($saves);
+
+                $count = $sModel->getChanged();
+
+                if ($count == 0) {
+                    $this->addMessage($this->_('No export code changed'));
+                } else {
+                    $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('surveys'));
+                    $this->addMessage(sprintf(
+                            $this->plural('%d export code changed', '%d export codes changed', $count),
+                            $count
+                            ));
+                }
+            }
+        }
+    }
+
+    /**
      * Creates the model
      *
      * @return \MUtil_Model_ModelAbstract
@@ -278,8 +392,8 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
 
             $trackModel = $this->loader->getTracker()->getTrackModel();
             $trackModel->applyFormatting(true, true);
-            $model->set('gtr_track_name', $trackModel->get('gtr_track_name'));
-            $model->set('gtr_organizations', $trackModel->get('gtr_organizations'));
+            $model->set('gtr_track_name', $trackModel->get('gtr_track_name') + array('respondentData' => true));
+            $model->set('gtr_organizations', $trackModel->get('gtr_organizations') + array('respondentData' => true));
 
             $this->importModel = $model;
         }
@@ -312,7 +426,7 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
      */
     protected function getImportCheckBatch()
     {
-        $batch  = $this->loader->getTaskRunnerBatch('track_import_' . $this->formData['import_id']);
+        $batch  = $this->loader->getTaskRunnerBatch('track_import_check_' . $this->formData['import_id']);
         $import = $this->loadImportData();
 
         $batch->setVariable('import', $import);
@@ -363,6 +477,62 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
                     'Tracker\\Import\\CheckTrackImportErrorsTask',
                     $import['errors']
                     );
+        }
+
+        return $batch;
+    }
+
+    /**
+     *
+     * @return \Gems_Task_TaskRunnerBatch
+     */
+    protected function getImportCreateBatch()
+    {
+        $batch  = $this->loader->getTaskRunnerBatch('track_import_create_' . $this->formData['import_id']);
+        $import = $this->loadImportData();
+
+        $batch->setVariable('import', $import);
+
+        if ($batch->isFinished()) {
+            return $batch;
+        }
+
+        if (! $batch->isLoaded()) {
+            $batch->addTask(
+                    'Tracker\\Import\\CreateTrackImportTask',
+                    $this->formData
+                    );
+
+            /*
+            foreach ($import['fields'] as $lineNr => $fieldData) {
+                $batch->addTask(
+                        'Tracker\\Import\\CheckTrackFieldImportTask',
+                        $lineNr,
+                        $fieldData
+                        );
+            }
+
+            foreach ($import['surveys'] as $lineNr => $surveyData) {
+                $batch->addTask(
+                        'Tracker\\Import\\CheckTrackSurveyImportTask',
+                        $lineNr,
+                        $surveyData
+                        );
+            }
+
+            foreach ($import['rounds'] as $lineNr => $roundData) {
+                $batch->addTask(
+                        'Tracker\\Import\\CheckTrackRoundImportTask',
+                        $lineNr,
+                        $roundData
+                        );
+            }
+
+            $batch->addTask(
+                    'Tracker\\Import\\CheckTrackImportErrorsTask',
+                    $import['errors']
+                    );
+            // */
         }
 
         return $batch;
@@ -452,6 +622,9 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
     protected function loadImportData()
     {
         if (isset($this->_session->importData) && ($this->_session->importData instanceof \ArrayObject)) {
+            // No need to run this after initial load, but we need to
+            // run this every time afterwards.
+            $this->addImportToModelData($this->_session->importData);
             return $this->_session->importData;
         }
 

@@ -343,6 +343,22 @@ class Gems_Util_TrackData extends UtilAbstract
     }
 
     /**
+     * Get surveys that do not have export codes
+     *
+     * @param int $surveyId
+     * @return array
+     */
+    public function getSurveysWithoutExportCode()
+    {
+        $sql = "SELECT gsu_id_survey, gsu_survey_name
+            FROM gems__surveys
+            WHERE gsu_export_code IS NULL OR gsu_export_code = ''
+            ORDER BY gsu_survey_name";
+
+        return $this->_getSelectPairsCached(__FUNCTION__, $sql, array(), 'surveys');
+    }
+
+    /**
      * Returns array (id => name) of the track date fields for this track, sorted by order
      *
      * @param int $trackId

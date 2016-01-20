@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: CheckTrackOrganizationImportTask.php 2430 2015-02-18 15:26:24Z matijsdejong $
+ * @version    $Id: CreateTrackImportTask.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Task\Tracker\Import;
@@ -44,60 +44,44 @@ namespace Gems\Task\Tracker\Import;
  * @subpackage Task\Tracker
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.7.2 Jan 19, 2016 6:26:42 PM
+ * @since      Class available since version 1.7.2 Jan 20, 2016 1:23:22 PM
  */
-class CheckTrackOrganizationImportTask extends \MUtil_Task_TaskAbstract
+class CreateTrackImportTask extends \MUtil_Task_TaskAbstract
 {
     /**
      *
-     * @var \Zend_Db_Adapter_Abstract
+     * @var \Gems_Loader
      */
-    protected $db;
+    protected $loader;
 
     /**
      * Should handle execution of the task, taking as much (optional) parameters as needed
      *
      * The parameters should be optional and failing to provide them should be handled by
      * the task
+     *
+     * @param array $trackData Nested array of trackdata
      */
-    public function execute($lineNr = null, $organizationData = null)
+    public function execute($formData = null)
     {
-        $batch  = $this->getBatch();
-        $import = $batch->getVariable('import');
+        $batch   = $this->getBatch();
+        $import  = $batch->getVariable('import');
+        $tracker = $this->loader->getTracker();
 
-        if (isset($organizationData['gor_id_organization']) && $organizationData['gor_id_organization']) {
+        $model = $tracker->getTrackModel();
 
-            $oldId = $organizationData['gor_id_organization'];
+        $trackData = $import['trackData'];
+        $trackData['gtr_track_name'] = $formData['gtr_track_name'];
+        $trackData['gtr_organizations'] = $formData['gtr_organizations'];
 
-        } else {
-            $oldId = false;
-            $batch->addToCounter('import_errors');
-            $batch->addMessage(sprintf(
-                    $this->_('No gor_id_organization not specified for organization at line %d.'),
-                    $lineNr
-                    ));
+        \MUtil_Echo::track($trackData);
+        if ($trackData['gtr_date_start'] && (! $trackData['gtr_date_start'] instanceof \Zend_Date)) {
+            $trackData['gtr_date_start'] = new \MUtil_Date($trackData['gtr_date_start'], 'yyyy-MM-dd');
         }
+        $output = $model->save($trackData);
 
-        if (isset($organizationData['gor_name']) && $organizationData['gor_name']) {
-            if ($oldId) {
-                $orgId = $this->db->fetchOne(
-                        "SELECT gor_id_organization FROM gems__organizations WHERE gor_name = ?",
-                        $organizationData['gor_name']
-                        );
-                if ($orgId) {
-                    $import['organizationIds'][$oldId] = $orgId;
-                    $import['formDefaults']['gtr_organizations'][] = $orgId;
-                } else {
-                    $import['organizationIds'][$oldId] = false;
-                }
-            }
-        } else {
-            $orgId = false;
-            $batch->addToCounter('import_errors');
-            $batch->addMessage(sprintf(
-                    $this->_('No gor_name not specified for organization at line %d.'),
-                    $lineNr
-                    ));
-        }
+        $import['trackId'] = $output['gtr_id_track'];
+
+        $batch->addMessage(sprintf($this->_('Created track with id %d'), $output['gtr_id_track']));
     }
 }

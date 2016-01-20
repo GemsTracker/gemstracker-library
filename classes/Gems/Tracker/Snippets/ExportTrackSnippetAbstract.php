@@ -56,6 +56,12 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
 
     /**
      *
+     * @var \Zend_Cache_Core
+     */
+    protected $cache;
+
+    /**
+     *
      * @var \Gems_User_User
      */
     protected $currentUser;
@@ -189,7 +195,7 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
     {
         // Things go really wrong (at the session level) if we run this code
         // while the finish button was pressed
-        if ($this->clickedFinished()) {
+        if ($this->isFinishedClicked()) {
             return;
         }
         $this->displayHeader($bridge, $this->_('Creating the export file'), 'h3');
@@ -254,19 +260,22 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
                 }
             }
 
-            $sModel = new \MUtil_Model_TableModel('gems__surveys');
-            \Gems_Model::setChangeFieldsByPrefix($sModel, 'gus', $this->currentUser->getUserId());
-            $sModel->saveAll($saves);
+            if ($saves) {
+                $sModel = new \MUtil_Model_TableModel('gems__surveys');
+                \Gems_Model::setChangeFieldsByPrefix($sModel, 'gus', $this->currentUser->getUserId());
+                $sModel->saveAll($saves);
 
-            $count = $sModel->getChanged();
+                $count = $sModel->getChanged();
 
-            if ($count == 0) {
-                $this->addMessage($this->_('No export code changed'));
-            } else {
-                $this->addMessage(sprintf(
-                        $this->plural('%d export code changed', '%d export codes changed', $count),
-                        $count
-                        ));
+                if ($count == 0) {
+                    $this->addMessage($this->_('No export code changed'));
+                } else {
+                    $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('surveys'));
+                    $this->addMessage(sprintf(
+                            $this->plural('%d export code changed', '%d export codes changed', $count),
+                            $count
+                            ));
+                }
             }
         }
     }
