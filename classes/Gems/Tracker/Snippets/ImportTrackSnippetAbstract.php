@@ -543,7 +543,7 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
      * Set what to do when the form is 'finished'.
      *
      * @return \MUtil_Snippets_Standard_ModelImportSnippet
-     * /
+     */
     protected function setAfterSaveRoute()
     {
         $filename = $this->getExportBatch(false)->getSessionVariable('filename');
@@ -568,7 +568,7 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
      * Performs the validation.
      *
      * @return boolean True if validation was OK and data should be saved.
-     * /
+     */
     protected function validateForm()
     {
         if (2 == $this->currentStep) {
