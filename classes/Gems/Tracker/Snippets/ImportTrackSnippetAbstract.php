@@ -60,7 +60,6 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
      */
     protected $cache;
 
-
     /**
      *
      * @var \Gems_User_User
@@ -189,7 +188,7 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
             if ($this->nextDisabled) {
                 $element->pInfo($this->_('Create errors occurred!'));
             } else {
-                $element->h2($this->_('Track created successfully OK!'));
+                $element->h2($this->_('Track created successfully!'));
                 $element->pInfo($this->_('Click the "Finish" button to see the track.'));
             }
         } else {
@@ -198,6 +197,8 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
 
         $form->activateJQuery();
         $form->addElement($element);
+
+        // \MUtil_Echo::track($this->loadImportData()->getArrayCopy());
     }
 
     /**
@@ -370,6 +371,18 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
     }
 
     /**
+     * Hook that allows actions when data was saved
+     *
+     * When not rerouted, the form will be populated afterwards
+     *
+     * @param int $changed The number of changed rows (0 or 1 usually, but can be more)
+     */
+    protected function afterSave($changed)
+    {
+        $this->addMessage($this->_('Track import finished'));
+    }
+
+    /**
      * Creates the model
      *
      * @return \MUtil_Model_ModelAbstract
@@ -503,36 +516,26 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
                     $this->formData
                     );
 
-            /*
             foreach ($import['fields'] as $lineNr => $fieldData) {
                 $batch->addTask(
-                        'Tracker\\Import\\CheckTrackFieldImportTask',
+                        'Tracker\\Import\\CreateTrackFieldImportTask',
                         $lineNr,
                         $fieldData
                         );
             }
 
-            foreach ($import['surveys'] as $lineNr => $surveyData) {
-                $batch->addTask(
-                        'Tracker\\Import\\CheckTrackSurveyImportTask',
-                        $lineNr,
-                        $surveyData
-                        );
-            }
-
             foreach ($import['rounds'] as $lineNr => $roundData) {
                 $batch->addTask(
-                        'Tracker\\Import\\CheckTrackRoundImportTask',
+                        'Tracker\\Import\\CreateTrackRoundImportTask',
                         $lineNr,
                         $roundData
                         );
             }
 
             $batch->addTask(
-                    'Tracker\\Import\\CheckTrackImportErrorsTask',
-                    $import['errors']
+                    'AddTask',
+                    'Tracker\\Import\\FinishTrackImport'
                     );
-            // */
         }
 
         return $batch;
@@ -719,23 +722,32 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
      */
     protected function setAfterSaveRoute()
     {
-        $filename = $this->getExportBatch(false)->getSessionVariable('filename');
-        if ($filename) {
+        if ($this->_session->localfile && file_exists($this->_session->localfile)) {
             // Now is a good moment to remove the temporary file
-            @unlink($filename);
+            @unlink($this->_session->localfile);
         }
 
-       // Default is just go to the index
+        $import = $this->loadImportData();
+
+        if (isset($import['trackId']) && $import['trackId']) {
+            $trackId = $import['trackId'];
+            $this->routeAction = 'show';
+        } else {
+            $trackId = null;
+        }
+
+
+        // Default is just go to the index
         if ($this->routeAction && ($this->request->getActionName() !== $this->routeAction)) {
             $this->afterSaveRouteUrl = array(
                 $this->request->getControllerKey() => $this->request->getControllerName(),
                 $this->request->getActionKey()     => $this->routeAction,
-                \MUtil_Model::REQUEST_ID           => $this->request->getParam(\MUtil_Model::REQUEST_ID),
+                \MUtil_Model::REQUEST_ID           => $trackId,
                 );
         }
 
         return $this;
-    } // */
+    }
 
     /**
      * Performs the validation.

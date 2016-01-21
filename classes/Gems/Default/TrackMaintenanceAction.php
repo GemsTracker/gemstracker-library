@@ -64,6 +64,7 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
     protected $autofilterParameters = array(
         'extraSort'   => array('gtr_track_name' => SORT_ASC),
         'trackEngine' => null,
+        'trackId'     => null,
         );
 
     /**

@@ -166,8 +166,13 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
     protected function _ensureTrackFields()
     {
         if (! is_array($this->_fields)) {
-            $model  = $this->getMaintenanceModel();
-            $fields = $model->load(array('gtf_id_track' => $this->_trackId), array('gtf_id_order' => SORT_ASC));
+            // Check for cases where the track id is zero, but there is a field for track 0 in the db
+            if ($this->_trackId) {
+                $model  = $this->getMaintenanceModel();
+                $fields = $model->load(array('gtf_id_track' => $this->_trackId), array('gtf_id_order' => SORT_ASC));
+            } else {
+                $fields = false;
+            }
 
             $this->_fields      = array();
             $this->_trackFields = array();

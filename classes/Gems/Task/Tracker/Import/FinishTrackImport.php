@@ -18,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL MAGNAFACTA BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: CreateTrackImportTask.php 2430 2015-02-18 15:26:24Z matijsdejong $
+ * @version    $Id: FinishTrackImport.php 2493 2015-04-15 16:29:48Z matijsdejong $
  */
 
 namespace Gems\Task\Tracker\Import;
@@ -44,10 +44,16 @@ namespace Gems\Task\Tracker\Import;
  * @subpackage Task\Tracker
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.7.2 Jan 20, 2016 1:23:22 PM
+ * @since      Class available since version 1.7.2 Jan 21, 2016 2:09:59 PM
  */
-class CreateTrackImportTask extends \MUtil_Task_TaskAbstract
+class FinishTrackImport extends \MUtil_Task_TaskAbstract
 {
+    /**
+     *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
     /**
      *
      * @var \Gems_Loader
@@ -59,31 +65,19 @@ class CreateTrackImportTask extends \MUtil_Task_TaskAbstract
      *
      * The parameters should be optional and failing to provide them should be handled by
      * the task
-     *
-     * @param array $trackData Nested array of trackdata
      */
-    public function execute($formData = null)
+    public function execute()
     {
-        $batch   = $this->getBatch();
-        $import  = $batch->getVariable('import');
-        $tracker = $this->loader->getTracker();
+        $batch  = $this->getBatch();
+        $import = $batch->getVariable('import');
 
-        $model = $tracker->getTrackModel();
-        $model->applyFormatting(true, true);
-
-        $trackData = $import['trackData'];
-        $trackData['gtr_track_name'] = $formData['gtr_track_name'];
-        $trackData['gtr_organizations'] = $formData['gtr_organizations'];
-
-        // \MUtil_Echo::track($trackData);
-        if ($trackData['gtr_date_start'] && (! $trackData['gtr_date_start'] instanceof \Zend_Date)) {
-            $trackData['gtr_date_start'] = new \MUtil_Date($trackData['gtr_date_start'], 'yyyy-MM-dd');
+        if (! (isset($import['trackId']) && $import['trackId'])) {
+            // Do nothing
+            return;
         }
-        $output = $model->save($trackData);
 
-        $import['trackId'] = $output['gtr_id_track'];
-        $import['trackData']['gtr_id_track'] = $output['gtr_id_track'];
-
-        $batch->addMessage(sprintf($this->_('Created track with id %d'), $output['gtr_id_track']));
+        $tracker     = $this->loader->getTracker();
+        $trackEngine = $tracker->getTrackEngine($import['trackId']);
+        $trackEngine->updateRoundCount($this->currentUser->getUserLoginId());
     }
 }

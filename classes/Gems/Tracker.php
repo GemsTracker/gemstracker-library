@@ -374,7 +374,7 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
     public function getAllCodeFields()
     {
         static $fields = false; // Using static so it will be refreshed once per request
-        
+
         if ($fields === false) {
             $fields = array();
             $model  = $this->createTrackClass('Model_FieldMaintenanceModel');
@@ -387,7 +387,7 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
                 }
             }
         }
-        
+
         return $fields;
     }
 
@@ -748,7 +748,7 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
             $dummyTrackData['gtr_id_track'] = 0;
 
             foreach ($this->getTrackEngineClassNames() as $className) {
-                $dummyClasses[$className] = $this->_loadClass('engine_' . $className, true, array($dummyTrackData));
+                $dummyClasses[$className] = $this->_loadClass('Engine_' . $className, true, array($dummyTrackData));
             }
         }
 

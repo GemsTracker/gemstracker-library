@@ -125,7 +125,7 @@ class Gems_Default_TrackRoundsAction extends \Gems_Default_TrackMaintenanceWithE
      */
     protected $showParameters = array(
         'roundId'     => 'getRoundId',
-        'surveyId'    => 'getSurveyid',
+        'surveyId'    => 'getSurveyId',
     );
 
     /**
