@@ -178,6 +178,52 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
         }
         return $this->_applyOptions($model, 'gro_valid_for_field', $dateOptions, $itemData);
     }
+    
+    /**
+     * Apply respondent relation settings to the round model
+     * 
+     * For respondent surveys, we allow to set a relation, with possible choices:
+     * 
+     *  null => the respondent
+     *  0    => undefined (specifiy when assigning)
+     *  >0   => the id of the track field of type relation to use
+     * 
+     * @param \MUtil_Model_ModelAbstract $model The round model
+     * @param array $itemData    The current items data
+     * 
+     * @return boolean True if the update changed values (usually by changed selection lists).
+     */
+    protected function applyRespondentRelation(\MUtil_Model_ModelAbstract $model, array &$itemData)
+    {      
+        $model->set('gro_id_survey', 'onchange', 'this.form.submit();');
+        if (!empty($itemData['gro_id_survey']) && $model->has('gro_id_relationfield')) {
+            $forStaff = $this->tracker->getSurvey($itemData['gro_id_survey'])->isTakenByStaff();
+            if (!$forStaff) {
+                $empty = array('-1' => $this->_('Patient'));
+
+                $relations = $this->getRespondentRelationFields();
+                if (!empty($relations)) {
+                    $relations = $empty + $relations;
+                    $model->set('gro_id_relationfield', 'label', $this->_('Fill out by'), 'multiOptions', $relations, 'order', 25);
+                }
+                $model->del('ggp_name');
+            } else {
+                $model->set('ggp_name', 'label', $this->translateAdapter->_('Fill out by'), 'elementClass', 'Exhibitor', 'order', 25);
+                $model->set('gro_id_relationfield', 'elementClass', 'hidden');
+                
+                $itemData['ggp_name'] = $this->db->fetchOne('select ggp_name from gems__groups join gems__surveys on ggp_id_group = gsu_id_primary_group and gsu_id_survey = ?', $itemData['gro_id_survey']);
+                if (!is_null($itemData['gro_id_relationfield'])) {
+                    $itemData['gro_id_relationfield'] = null;                    
+                }                
+            }
+        } else {
+            $model->del('gro_id_relationfield', 'label');
+            $model->del('ggp_name');
+            if ($model->has('gro_id_relationfield')) {
+                $itemData['gro_id_relationfield'] = null;
+            }
+        }
+    }
 
     /**
      * Set the surveys to be listed as valid after choices for this item and the way they are displayed (if at all)
@@ -459,6 +505,30 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
 
         }
     }
+    
+    /**
+     * Get all respondent relation fields
+     * 
+     * Returns an array of field id => field name
+     * 
+     * @return array
+     */
+    public function getRespondentRelationFields() {
+        $fields = array();
+        $relationFields = $this->getFieldsOfType('relation');
+        
+        if (!emtpy($relationFields)) {
+            $fieldNames = $this->getFieldNames();                
+            $fieldPrefix = FieldMaintenanceModel::FIELDS_NAME . FieldsDefinition::FIELD_KEY_SEPARATOR;
+            foreach ($this->getFieldsOfType('relation') as $key => $field)
+            {
+                $id = str_replace($fieldPrefix, '', $key);
+                $fields[$id] = $fieldNames[$key];
+            }
+        }
+
+        return $fields;
+    }
 
     /**
      * Returns a model that can be used to retrieve or save the data.
@@ -474,6 +544,9 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
         // Add information about surveys and groups
         $model->addLeftTable('gems__surveys', array('gro_id_survey' => 'gsu_id_survey'));
         $model->addLeftTable('gems__groups', array('gsu_id_primary_group' => 'ggp_id_group'));
+        $model->addLeftTable('gems__track_fields', array('gro_id_relationfield = gtf_id_field'), 'gtf', false);
+        
+        $model->addColumn(new \Zend_Db_Expr('COALESCE(gtf_field_name, ggp_name)', 'ggp_name'));
 
         // Reset display order to class specific order
         $model->resetOrder();
@@ -592,6 +665,8 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
                     'label', $this->_('Add to date unit'),
                     'multiOptions', $periodUnits
                     );
+            
+            $model->set('ggp_name', 'label', $this->_('Group'));
 
             // Continue with last round level items
             $model->set('gro_active');
@@ -908,6 +983,9 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
 
         // Set the for date fields that can be chosen for the current values
         $result = $this->applyDatesValidFor($model, $itemData, $language) || $result;
+        
+        // Apply respondent relation settings
+        $result = $this->applyRespondentRelation($model, $itemData) || $result;        
 
         return $result;
     }

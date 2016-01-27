@@ -102,6 +102,22 @@ class Gems_Tracker_RespondentTrackTest extends Gems_Test_DbTestAbstract
         $classFile =  str_replace('.php', '.xml', __FILE__);
         return $this->createFlatXMLDataSet($classFile);
     }
+    
+    public function testGetCodeFields()
+    {
+        $trackData = array('gr2t_id_respondent_track' => 1, 'gr2t_id_track' => 1);
+        $respondentTrack = new Gems_Tracker_RespondentTrack($trackData);
+        $respondentTrack->answerRegistryRequest('tracker', $this->tracker);
+        
+        $expected = array(
+            'f__1' => 'code',
+            'f__2' => 'datecode'
+            );
+        
+        $result = $respondentTrack->getCodeFields();
+        
+        $this->assertEquals($expected, $result);
+    }
    
     public function testGetFieldCodes()
     {

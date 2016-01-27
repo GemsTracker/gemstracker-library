@@ -375,6 +375,53 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
 
         return $this;
     }
+    
+    /**
+     * Assign the tokens to the correct relation
+     * 
+     * Only surveys that have not yet been answered will be assigned to the correct relation.
+     * 
+     * @return int Number of changes tokens
+     */
+    public function assignTokensToRelations()
+    {
+        // Find out if we have relation fields and return when none exists in this track
+        $relationFields = $this->getTrackEngine()->getFieldsOfType('relation');
+        if (empty($relationFields)) {
+            return 0;
+        }
+        
+        // Check if we have a respondent relation id (grr_id) in the track fields
+        // and assign the token to the correct relation or leave open when no
+        // relation is defined.       
+        $this->_ensureRounds();
+        $relationFields = $this->getFieldData();        
+        $fieldPrefix = \Gems\Tracker\Model\FieldMaintenanceModel::FIELDS_NAME . \Gems\Tracker\Engine\FieldsDefinition::FIELD_KEY_SEPARATOR;
+        $changes = 0;
+        foreach ($this->getTokens() as $token) {
+            /* @var $token Gems_Tracker_Token */
+            if (!$token->isCompleted() && $token->getReceptionCode()->isSuccess()) {
+                $relationFieldId = $token->getRelationFieldId();
+                
+                if ($relationFieldId>0) {
+                    $fieldKey = $fieldPrefix . $relationFieldId;
+                    if (isset($relationFields[$fieldKey])) {
+                        $relationId = (int) $relationFields[$fieldKey];
+                    } else {
+                        $relationId = -1 * $relationFieldId;
+                    }
+                }
+
+                $changes = $changes + $token->assignTo($relationId, $relationFieldId);
+            }
+        }
+
+        if (MUtil_Model::$verbose && $changes > 0) {
+            MUtil_Echo::r(sprintf('%s tokens changed due to changes in respondent relation assignments.', $changes));
+        }
+        
+        return $changes;
+    }
 
     /**
      * Calculates the track end date
@@ -1028,6 +1075,8 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     {
         // Process any events
         $trackEngine = $this->getTrackEngine();
+        
+        $this->assignTokensToRelations();
 
         if ($event = $trackEngine->getFieldUpdateEvent()) {
             return $event->processFieldUpdate($this, $userId);

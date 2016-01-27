@@ -91,16 +91,18 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
             $this->saveRespondentTracks = 'gr2t';
         }
 
-        $this->addTable(    'gems__tracks',           array('gto_id_track' => 'gtr_id_track'));
-        $this->addTable(    'gems__surveys',          array('gto_id_survey' => 'gsu_id_survey'));
-        $this->addTable(    'gems__groups',           array('gsu_id_primary_group' => 'ggp_id_group'));
-        $this->addTable(    'gems__respondents',      array('gto_id_respondent' => 'grs_id_user'));
-        $this->addTable(    'gems__respondent2org',   array('gto_id_organization' => 'gr2o_id_organization', 'gto_id_respondent' => 'gr2o_id_user'));
-        $this->addTable(    'gems__respondent2track', array('gto_id_respondent_track' => 'gr2t_id_respondent_track'), $this->saveRespondentTracks);
-        $this->addTable(    'gems__organizations',    array('gto_id_organization' => 'gor_id_organization'));
-        $this->addTable(    'gems__reception_codes',  array('gto_reception_code' => 'grc_id_reception_code'));
-        $this->addTable(    'gems__rounds',           array('gto_id_round' => 'gro_id_round'));
-        $this->addLeftTable('gems__staff',            array('gr2t_created_by' => 'gems__staff.gsf_id_user'));
+        $this->addTable(    'gems__tracks',               array('gto_id_track' => 'gtr_id_track'));
+        $this->addTable(    'gems__surveys',              array('gto_id_survey' => 'gsu_id_survey'));
+        $this->addTable(    'gems__groups',               array('gsu_id_primary_group' => 'ggp_id_group'));
+        $this->addTable(    'gems__respondents',          array('gto_id_respondent' => 'grs_id_user'));
+        $this->addTable(    'gems__respondent2org',       array('gto_id_organization' => 'gr2o_id_organization', 'gto_id_respondent' => 'gr2o_id_user'));
+        $this->addTable(    'gems__respondent2track',     array('gto_id_respondent_track' => 'gr2t_id_respondent_track'), $this->saveRespondentTracks);
+        $this->addTable(    'gems__organizations',        array('gto_id_organization' => 'gor_id_organization'));
+        $this->addTable(    'gems__reception_codes',      array('gto_reception_code' => 'grc_id_reception_code'));
+        $this->addTable(    'gems__rounds',               array('gto_id_round' => 'gro_id_round'));
+        $this->addLeftTable('gems__staff',                array('gr2t_created_by' => 'gems__staff.gsf_id_user'));
+        $this->addLeftTable('gems__track_fields',         array('gto_id_relationfield' => 'gtf_id_field', 'gtf_field_type = "relation"'));       // Add relation fields
+        $this->addLeftTable('gems__respondent_relations', array('gto_id_relation' => 'grr_id', 'gto_id_respondent' => 'grr_id_respondent')); // Add relation
 
         $this->addColumn(
             "CASE WHEN CHAR_LENGTH(gsu_survey_name) > 30 THEN CONCAT(SUBSTRING(gsu_survey_name, 1, 28), '...') ELSE gsu_survey_name END",
@@ -120,7 +122,7 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
             "CASE WHEN grc_success = 1 THEN '' ELSE 'deleted' END",
             'row_class');
         $this->addColumn(
-            "CASE WHEN grc_success = 1 AND grs_email IS NOT NULL AND grs_email != '' AND ggp_respondent_members = 1 AND gto_valid_from <= CURRENT_TIMESTAMP AND gto_completion_time IS NULL AND (gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP) AND gr2o_mailable = 1 AND gr2t_mailable = 1 THEN 1 ELSE 0 END",
+            "CASE WHEN grc_success = 1 AND ((grs_email IS NOT NULL AND grs_email != '' and gto_id_relationfield IS NULL) OR (grr_email IS NOT NULL AND grr_email != '' and gto_id_relationfield IS NOT NULL)) AND ggp_respondent_members = 1 AND gto_valid_from <= CURRENT_TIMESTAMP AND gto_completion_time IS NULL AND (gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP) AND gr2o_mailable = 1 AND gr2t_mailable = 1 THEN 1 ELSE 0 END",
             'can_email');
 
         $this->addColumn(
@@ -240,15 +242,17 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
         //If we are allowed to see who filled out a survey, modify the model accordingly
         if ($this->user->hasPrivilege('pr.respondent.who')) {
             $this->addLeftTable('gems__staff', array('gto_by' => 'gems__staff_2.gsf_id_user'));
-            $this->addColumn('CASE
-                WHEN gems__staff_2.gsf_id_user IS NULL THEN ggp_name
+            $this->addColumn(new \Zend_Db_Expr('CASE
+                WHEN gems__staff_2.gsf_id_user IS NULL THEN COALESCE(gems__track_fields.gtf_field_name, gems__groups.ggp_name)
                 ELSE COALESCE(CONCAT_WS(
                     " ",
                     CONCAT(COALESCE(gems__staff_2.gsf_last_name, "-"), ","),
                     gems__staff_2.gsf_first_name,
                     gems__staff_2.gsf_surname_prefix
                     ))
-                END', 'ggp_name');
+                END', 'ggp_name'));
+        } else {
+            $this->set('ggp_name', 'column_expression', new \Zend_Db_Expr('COALESCE(gems__track_fields.gtf_field_name, gems__groups.ggp_name)'));
         }
         if ($this->user->hasPrivilege('pr.respondent.result')) {
             $this->addColumn('gto_result', 'calc_result', 'gto_result');

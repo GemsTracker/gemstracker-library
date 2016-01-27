@@ -82,6 +82,9 @@ class CommLogModel extends \Gems_Model_JoinModel
 
         $this->addLeftTable('gems__groups', array('gsu_id_primary_group' => 'ggp_id_group'));
         $this->addLeftTable(array('gems__staff', 'staff_by'),  array('gto_by' => 'staff_by.gsf_id_user'));
+        $this->addLeftTable('gems__track_fields',         array('gto_id_relationfield' => 'gtf_id_field', 'gtf_field_type = "relation"'));       // Add relation fields
+        $this->addLeftTable('gems__respondent_relations', array('gto_id_relation' => 'grr_id', 'gto_id_respondent' => 'grr_id_respondent')); // Add relation
+        
         $this->addColumn(
             "TRIM(CONCAT(
                 COALESCE(CONCAT(grs_last_name, ', '), '-, '),
@@ -103,7 +106,7 @@ class CommLogModel extends \Gems_Model_JoinModel
             'assigned_by');
 
         $this->addColumn('CASE WHEN staff_by.gsf_id_user IS NULL THEN
-                    ggp_name
+                    COALESCE(gems__track_fields.gtf_field_name, ggp_name)
                     ELSE CONCAT_WS(
                         " ",
                         staff_by.gsf_first_name,

@@ -199,15 +199,33 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
     {
         return $this->_loadClass('Export_ModelSource_' . $exportModelSourceName, true);
     }
-
+    
+    /**
+     * Returns an instance (row) of the the model, this allows for easy loading of instances
+     *
+     * Best usage would be to load from within the model, so return type can be
+     * fixed there and code completion would work like desired
+     * 
+     * @param string $name
+     * @param MUtil_Model_ModelAbstract $model
+     * @param array $data
+     * @return mixed
+     */
+    public function getInstance($name, $model, $data)
+    {
+        $instance = $this->_loadClass($name, true, array($model, $data));
+        
+        return $instance;
+    }
+    
     /**
      *
-     * @return \Gems_Export
+     * @return \Gems_Import_ImportLoader
      */
-    public function getTestExport()
+    public function getImportLoader()
     {
-        return $this->_getClass('excelExport', 'Export_ExcelExport');
-    }
+        return $this->_getClass('importLoader', 'Import_ImportLoader');
+    }    
 
     /**
      * @return \Gems_Mail
@@ -239,15 +257,6 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
     public function getMenu()
     {
         return $this->menu;
-    }
-
-    /**
-     *
-     * @return \Gems_Import_ImportLoader
-     */
-    public function getImportLoader()
-    {
-        return $this->_getClass('importLoader', 'Import_ImportLoader');
     }
 
     /**
@@ -373,6 +382,15 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
         }
 
         return $taskBatch;
+    }
+    
+    /**
+     *
+     * @return \Gems_Export
+     */
+    public function getTestExport()
+    {
+        return $this->_getClass('excelExport', 'Export_ExcelExport');
     }
 
     /**

@@ -88,7 +88,13 @@ class ShowAllOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
         $tracker = $this->loader->getTracker();
 
         $html->h3($this->_('Token'));
-        $p = $html->pInfo(sprintf($this->_('Welcome %s,'), $this->token->getRespondentName()));
+        if ($this->token->hasRelation()) {
+            $p = $html->pInfo(sprintf($this->_('Welcome %s,'), $this->token->getRelation()->getName()));    
+            
+            $html->pInfo(sprintf($this->_('We kindly ask you to answer a survey about %s.'), $this->token->getRespondent()->getName()));            
+        } else {
+            $p = $html->pInfo(sprintf($this->_('Welcome %s,'), $this->token->getRespondentName()));    
+        }
         $p->br();
         $p->br();
 
