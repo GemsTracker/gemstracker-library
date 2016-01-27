@@ -3,8 +3,6 @@
     <gems__tracks gtr_id_track="1" gtr_track_class="AnyStepEngine" gtr_track_name="Test Track" gtr_date_start="2000-01-01 00:00:00" gtr_changed_by="1" gtr_created="2012-09-07" gtr_created_by="1"/>
     <gems__track_fields gtf_id_field = "1" gtf_id_track="1" gtf_field_name="Name" gtf_field_code="code" gtf_field_type="text" gtf_changed_by="1" gtf_created="2012-09-07" gtf_created_by="1"/>
     <gems__track_fields gtf_id_field = "2" gtf_id_track="1" gtf_field_name="DateName" gtf_field_code="datecode" gtf_field_type="date" gtf_changed_by="1" gtf_created="2012-09-07" gtf_created_by="1"/>
-    <gems__track_fields gtf_id_field = "3" gtf_id_track="1" gtf_field_name="NoCode" gtf_field_type="text" gtf_changed_by="1" gtf_created="2012-09-07" gtf_created_by="1"/>
-    <gems__track_fields gtf_id_field = "4" gtf_id_track="2" gtf_field_name="Code" gtf_field_code="code"  gtf_field_type="text" gtf_changed_by="1" gtf_created="2012-09-07" gtf_created_by="1"/>
     <gems__respondent2track gr2t_id_respondent_track="1" gr2t_id_track="1" gr2t_id_user="1234" gr2t_id_organization="1" gr2t_changed_by="1" gr2t_created="2012-09-07" gr2t_created_by="1"/>
     <gems__respondent2track2field gr2t2f_id_respondent_track="1" gr2t2f_id_field="1" gr2t2f_value="test" gr2t2f_changed_by="1" gr2t2f_created="2012-09-07" gr2t2f_created_by="1"/>
     <gems__respondent2track2field gr2t2f_id_respondent_track="1" gr2t2f_id_field="2" gr2t2f_value="2010-10-08" gr2t2f_changed_by="1" gr2t2f_created="2012-09-07" gr2t2f_created_by="1"/>
