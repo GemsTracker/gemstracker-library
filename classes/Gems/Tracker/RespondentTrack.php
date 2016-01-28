@@ -399,9 +399,28 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         $fieldPrefix = \Gems\Tracker\Model\FieldMaintenanceModel::FIELDS_NAME . \Gems\Tracker\Engine\FieldsDefinition::FIELD_KEY_SEPARATOR;
         $changes = 0;
         foreach ($this->getTokens() as $token) {
-            /* @var $token Gems_Tracker_Token */
+            /* @var $token Gems_Tracker_Token */            
             if (!$token->isCompleted() && $token->getReceptionCode()->isSuccess()) {
-                $relationFieldId = $token->getRelationFieldId();
+                $roundId = $token->getRoundId();
+                if (!array_key_exists($roundId, $this->_rounds)) {
+                    // If not a current round for this track, do check the round when it still exists
+                    $round = $this->getTrackEngine()->getRoundModel(true, 'index')->loadFirst(array('gro_id_round' => $roundId));
+                } else {
+                    $round = $this->_rounds[$roundId];
+                }
+
+                $relationFieldId = null;
+                $relationId      = null;
+
+                // Read from the round
+                if (!empty($round) && $round['gro_id_track'] == $this->getTrackId() && $round['gro_active'] == 1) {
+                    if ($round['gro_id_relationfield'] > 0) {
+                        $relationFieldId = $round['gro_id_relationfield'];
+                    }
+                } else {
+                    // Try to read from token, as this is a token without a round
+                    $relationFieldId = $token->getRelationFieldId();
+                }
                 
                 if ($relationFieldId>0) {
                     $fieldKey = $fieldPrefix . $relationFieldId;
@@ -411,7 +430,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
                         $relationId = -1 * $relationFieldId;
                     }
                 }
-
+                
                 $changes = $changes + $token->assignTo($relationId, $relationFieldId);
             }
         }
@@ -1076,8 +1095,6 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         // Process any events
         $trackEngine = $this->getTrackEngine();
         
-        $this->assignTokensToRelations();
-
         if ($event = $trackEngine->getFieldUpdateEvent()) {
             return $event->processFieldUpdate($this, $userId);
         }
@@ -1094,6 +1111,9 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     {
         // Process any events
         $trackEngine = $this->getTrackEngine();
+        
+        // Places here instead of only in handle field update so it will run on new tracks too
+        $this->assignTokensToRelations();
 
         if ($event = $trackEngine->getTrackCalculationEvent()) {
             return $event->processTrackCalculation($this, $userId);

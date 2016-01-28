@@ -96,7 +96,6 @@ class ShowRoundStepSnippet extends \Gems_Tracker_Snippets_ShowRoundSnippetAbstra
         $this->_roundData = $bridge->getRow();
 
         if ($this->trackEngine instanceof \Gems_Tracker_Engine_StepEngineAbstract) {
-
             $this->trackEngine->updateRoundModelToItem($model, $this->_roundData, $this->locale->getLanguage());
         }
 
@@ -105,6 +104,12 @@ class ShowRoundStepSnippet extends \Gems_Tracker_Snippets_ShowRoundSnippetAbstra
         $bridge->addItem('gro_round_description');
         $bridge->addItem('gro_id_order');
         $bridge->addItem('gro_icon_file');
+        
+        if ($model->has('ggp_name')) {
+            $bridge->addItem('ggp_name');
+        } elseif ($model->has('gro_id_relationfield')) {
+            $bridge->addItem('gro_id_relationfield');
+        }
 
         $bridge->addItem($model->get('valid_after', 'value'));
         $this->_addIf(array('gro_valid_after_source', 'gro_valid_after_id', 'gro_valid_after_field'), $bridge, $model);

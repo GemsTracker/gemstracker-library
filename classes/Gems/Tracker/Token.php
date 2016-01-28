@@ -379,6 +379,8 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
      */
     public function assignTo($respondentRelationId, $relationFieldId)
     {
+        if ($this->getRelationFieldId() == $relationFieldId && $this->getRelationId() == $respondentRelationId) return 0;
+        
         return $this->_updateToken(array(
             'gto_id_relation'=>$respondentRelationId,
             'gto_id_relationfield'=>$relationFieldId

@@ -238,7 +238,7 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
     public function afterRegistry()
     {
         parent::afterRegistry();
-
+        
         //If we are allowed to see who filled out a survey, modify the model accordingly
         if ($this->user->hasPrivilege('pr.respondent.who')) {
             $this->addLeftTable('gems__staff', array('gto_by' => 'gems__staff_2.gsf_id_user'));
@@ -250,7 +250,7 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
                     gems__staff_2.gsf_first_name,
                     gems__staff_2.gsf_surname_prefix
                     ))
-                END', 'ggp_name'));
+                END'), 'ggp_name');
         } else {
             $this->set('ggp_name', 'column_expression', new \Zend_Db_Expr('COALESCE(gems__track_fields.gtf_field_name, gems__groups.ggp_name)'));
         }

@@ -37,6 +37,7 @@
 
 use Gems\Date\Period;
 use Gems\Tracker\Engine\FieldsDefinition;
+use Gems\Tracker\Model\FieldMaintenanceModel;
 
 /**
  * Parent class for all engines that calculate dates using information
@@ -204,11 +205,11 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
                 $relations = $this->getRespondentRelationFields();
                 if (!empty($relations)) {
                     $relations = $empty + $relations;
-                    $model->set('gro_id_relationfield', 'label', $this->_('Fill out by'), 'multiOptions', $relations, 'order', 25);
+                    $model->set('gro_id_relationfield', 'label', $this->_('Assigned to'), 'multiOptions', $relations, 'order', 25);
                 }
                 $model->del('ggp_name');
             } else {
-                $model->set('ggp_name', 'label', $this->translateAdapter->_('Fill out by'), 'elementClass', 'Exhibitor', 'order', 25);
+                $model->set('ggp_name', 'label', $this->translateAdapter->_('Assigned to'), 'elementClass', 'Exhibitor', 'order', 25);
                 $model->set('gro_id_relationfield', 'elementClass', 'hidden');
                 
                 $itemData['ggp_name'] = $this->db->fetchOne('select ggp_name from gems__groups join gems__surveys on ggp_id_group = gsu_id_primary_group and gsu_id_survey = ?', $itemData['gro_id_survey']);
@@ -517,7 +518,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
         $fields = array();
         $relationFields = $this->getFieldsOfType('relation');
         
-        if (!emtpy($relationFields)) {
+        if (!empty($relationFields)) {
             $fieldNames = $this->getFieldNames();                
             $fieldPrefix = FieldMaintenanceModel::FIELDS_NAME . FieldsDefinition::FIELD_KEY_SEPARATOR;
             foreach ($this->getFieldsOfType('relation') as $key => $field)
@@ -546,7 +547,8 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
         $model->addLeftTable('gems__groups', array('gsu_id_primary_group' => 'ggp_id_group'));
         $model->addLeftTable('gems__track_fields', array('gro_id_relationfield = gtf_id_field'), 'gtf', false);
         
-        $model->addColumn(new \Zend_Db_Expr('COALESCE(gtf_field_name, ggp_name)', 'ggp_name'));
+        $model->addColumn(new \Zend_Db_Expr('COALESCE(gtf_field_name, ggp_name)'), 'ggp_name');
+        $model->set('ggp_name', 'label', $this->_('Assigned to'));
 
         // Reset display order to class specific order
         $model->resetOrder();
@@ -664,9 +666,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
             $model->set('gro_valid_for_unit',
                     'label', $this->_('Add to date unit'),
                     'multiOptions', $periodUnits
-                    );
-            
-            $model->set('ggp_name', 'label', $this->_('Group'));
+                    );            
 
             // Continue with last round level items
             $model->set('gro_active');
