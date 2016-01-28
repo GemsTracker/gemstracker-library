@@ -149,6 +149,12 @@ class GemsEscort extends \MUtil_Application_Escort
         // \MUtil_Echo::track($dirs);
         $this->_loaderDirs = array_reverse($dirs);
 
+        foreach ($this->_loaderDirs as $prefix => $path) {
+            if ($prefix) {
+                \MUtil_Model::addNameSpace($prefix);
+            }
+        }
+
         // PROJECT LOADER
         $this->_projectLoader = new \MUtil_Loader_PluginLoader($this->_loaderDirs);
 
