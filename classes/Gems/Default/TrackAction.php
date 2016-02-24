@@ -336,7 +336,7 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
      * @var array $summarizedActions Array of the actions that use a
      * summarized version of the model.
      */
-    public $summarizedActions = array('index', 'autofilter', 'create', 'view');
+    public $summarizedActions = array('index', 'autofilter', 'create', 'view', 'view-survey');
 
     /**
      * The actions that should result in the survey return being set.
