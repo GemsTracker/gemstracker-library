@@ -106,7 +106,11 @@ class TrackTokenOverviewSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
         $bridge->gr2t_id_respondent_track;
         $bridge->gr2o_patient_nr;
 
-        $bridge->tr()->appendAttrib('class', $bridge->row_class);
+        $bridge->tr()->appendAttrib('class', \MUtil_Lazy::iif(
+                        $bridge->gro_id_round,
+                        $bridge->row_class,
+                        array($bridge->row_class , ' inserted')
+                        ));
 
         $title = \MUtil_Html::create()->strong($this->_('+'));
 
