@@ -174,7 +174,6 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
         $menuIndex  = $this->menu->findController('track', 'index');
 
         if ($tracks) {
-            $menuView   = $this->menu->findController('track', 'view');
             $menuCreate = $this->menu->findController('track', $action);
 
             if (! $menuCreate->isAllowed()) {
@@ -191,7 +190,14 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
             }
 
             $data   = new \MUtil_Lazy_RepeatableByKeyValue($tracks);
-            $params = array('gtr_id_track' => $data->key, 'gsu_id_survey' => $data->key);
+            
+            if ($trackType == 'tracks') {
+                $menuView   = $this->menu->findController('track', 'view');
+                $params = array('gtr_id_track' => $data->key);
+            } else {
+                $menuView   = $this->menu->findController('track', 'view-survey');
+                $params = array('gsu_id_survey' => $data->key);
+            }
 
             if (\MUtil_Bootstrap::enabled()) {
                 if (count($tracks) > $this->scrollTreshold) {

@@ -310,6 +310,11 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $page->addEditAction('pr.respondent.edit')
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
+        
+        $page->addPage($this->_('View survey'), 'pr.track.insert', 'track', 'view-survey', array('button_only' => true))
+                    ->setNamedParameters($params)
+                    ->addNamedParameters(\Gems_Model::SURVEY_ID, 'gsu_id_survey')
+                    ->setHiddenOrgId($orgId);
 
         // Add "appointments"
         $appParams = array(\Gems_Model::APPOINTMENT_ID => 'gap_id_appointment'); // + $params;

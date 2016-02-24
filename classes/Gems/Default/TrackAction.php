@@ -379,6 +379,22 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
         'Tracker\\Buttons\\TrackActionButtonRow',
         'Tracker\\TrackSurveyOverviewSnippet',
         );
+    
+    /**
+     * The parameters used for the viewSurveys action.
+     */
+    protected $viewSurveyParameters = array(
+        'surveyId' => 'getSurveyId',
+    );
+    
+    /**
+     * Snippets used for showing survey questions
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $viewSurveySnippets = array(
+        'Survey\\SurveyQuestionsSnippet'
+        );
 
     /**
      * Pops the answers to a survey in a separate window
@@ -995,6 +1011,11 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
      */
     public function questionsAction()
     {
+        if (!$this->getTokenId()) {
+            $params = $this->_processParameters($this->questionsParameters);
+        } else {
+            $params = $this->_processParameters($this->questionsParameters + $this->defaultTokenParameters);
+        }
         if ($this->questionsSnippets) {
             $params = $this->_processParameters($this->questionsParameters + $this->defaultTokenParameters);
 
@@ -1058,5 +1079,14 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
 
             $this->addSnippets($this->viewSnippets, $params);
         }
+    }
+    
+    /**
+     * Used in AddTracksSnippet to show a preview for an insertable survey
+     */
+    public function viewSurveyAction()
+    {
+        $params = $this->_processParameters($this->viewSurveyParameters);
+        $this->addSnippets($this->viewSurveySnippets, $params);
     }
 }
