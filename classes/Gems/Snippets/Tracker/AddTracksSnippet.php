@@ -229,8 +229,8 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
         } else {
             if (\MUtil_Bootstrap::enabled()) {
                 $div->button($trackTypeDescription,
-                    array('class' => 'toolanchor disabled', 'data-toggle' => 'dropdown', 'type' => 'button'));
-                $dropdownButton = $div->button(array('class' => 'disabled dropdown-toggle', 'data-toggle' => 'dropdown', 'type' => 'button'));
+                    array('class' => 'toolanchor btn disabled', 'data-toggle' => 'dropdown', 'type' => 'button'));
+                $dropdownButton = $div->button(array('class' => 'disabled btn dropdown-toggle', 'data-toggle' => 'dropdown', 'type' => 'button'));
                 $dropdownButton->span(array('class' => 'caret', 'renderClosingTag' => true));
                 $options = array('class' => 'dropdown-menu disabled', 'role' => 'menu');
             } else {
