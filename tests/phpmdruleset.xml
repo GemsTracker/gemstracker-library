@@ -16,8 +16,15 @@
     <rule ref="rulesets/unusedcode.xml" />
     <rule ref="rulesets/controversial.xml">
         <exclude name="CamelCasePropertyName"/>
+        <exclude name="CamelCaseMethodName"/>
     </rule>    
+    
     <rule ref="rulesets/controversial.xml/CamelCasePropertyName">
+        <properties>
+            <property name="allow-underscore" value="true" />
+        </properties>
+    </rule>
+    <rule ref="rulesets/controversial.xml/CamelCaseMethodName">
         <properties>
             <property name="allow-underscore" value="true" />
         </properties>
