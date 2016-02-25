@@ -3,6 +3,9 @@ engines:
     enabled: true
   phpmd:
     enabled: true
+    checks:
+      Controversial/CamelCasePropertyName:
+        allow-underscore: true
 ratings:
   paths:
   - "**.php"
