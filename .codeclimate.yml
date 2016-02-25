@@ -3,9 +3,8 @@ engines:
     enabled: true
   phpmd:
     enabled: true
-    checks:
-      Controversial/CamelCasePropertyName:
-        allow-underscore: true
+    config:
+      rulesets: tests/phpmdruleset.xml
 ratings:
   paths:
   - "**.php"
