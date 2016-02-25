@@ -9,15 +9,14 @@
     <description>
         Configures some rules to have different tresholds or less strict checks
     </description>
-
     <rule ref="rulesets/cleancode.xml" />
     <rule ref="rulesets/codesize.xml" />
     <rule ref="rulesets/design.xml" />
     <rule ref="rulesets/naming.xml" />
     <rule ref="rulesets/unusedcode.xml" />
-    <rule ref="rulesets/controversial.xml>
+    <rule ref="rulesets/controversial.xml">
         <exclude name="CamelCasePropertyName"/>
-    </rule>
+    </rule>    
     <rule ref="rulesets/controversial.xml/CamelCasePropertyName">
         <properties>
             <property name="allow-underscore" value="true" />
