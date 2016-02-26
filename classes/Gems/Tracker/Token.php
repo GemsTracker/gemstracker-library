@@ -221,30 +221,6 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     }
 
     /**
-     * Makes sure the receptioncode data is part of the $this->_gemsData
-     *
-     * @param boolean $reload Optional parameter to force reload or an array with the new values.
-     */
-    private function _ensureReceptionCode($reload = false)
-    {
-        if ($reload || (! isset($this->_gemsData['grc_success']))) {
-            if (is_array($reload)) {
-                $this->_gemsData = $reload + $this->_gemsData;
-            } else {
-                $sql  = "SELECT * FROM gems__reception_codes WHERE grc_id_reception_code = ?";
-                $code = $this->_gemsData['gto_reception_code'];
-
-                if ($row = $this->db->fetchRow($sql, $code)) {
-                    $this->_gemsData = $row + $this->_gemsData;
-                } else {
-                    $token = $this->_tokenId;
-                    throw new \Gems_Exception("Reception code $code is missing for token $token.");
-                }
-            }
-        }
-    }
-
-    /**
      * Makes sure the respondent data is part of the $this->_gemsData
      */
     protected function _ensureRespondentData()
@@ -342,19 +318,16 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
             if (! isset($this->_gemsData['gr2o_patient_nr'])) {
                 $this->_ensureRespondentData();
             }
-            if (! isset($this->_gemsData['grc_success'])) {
-                $this->_ensureReceptionCode();
-            }
 
             $source->setTokenId($this->_tokenId);
             $this->getRespondentTrack()->applyToMenuSource($source);
 
             $source->offsetSet('gsu_id_survey', $this->_gemsData['gto_id_survey']);
-            $source->offsetSet('grc_success', $this->_gemsData['grc_success'] ? 1 : 0);
+            $source->offsetSet('grc_success', $this->getReceptionCode()->isSuccess() ? 1 : 0);
             $source->offsetSet('is_completed', $this->_gemsData['gto_completion_time'] ? 1 : 0);
             $source->offsetSet('show_answers', $this->_gemsData['gto_completion_time'] ? 1 : 0);
 
-            if ($this->_gemsData['grc_success'] &&
+            if ($this->getReceptionCode()->isSuccess() &&
                     (! $this->_gemsData['gto_completion_time']) &&
                     ($validFrom = $this->getValidFrom())) {
 
@@ -1611,12 +1584,6 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     public function hasRedoCode()
     {
         return $this->getReceptionCode()->hasRedoCode();
-        /*if (! isset($this->_gemsData['grc_redo_survey'])) {
-            $this->_ensureReceptionCode();
-        }
-
-        return (boolean) $this->_gemsData['grc_redo_survey'];
-         */
     }
 
     /**
@@ -1628,13 +1595,6 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     public function hasRedoCopyCode()
     {
         return $this->getReceptionCode()->hasRedoCopyCode();
-        /*
-        if (! isset($this->_gemsData['grc_redo_survey'])) {
-            $this->_ensureReceptionCode();
-        }
-
-        return \Gems_Util_ReceptionCodeLibrary::REDO_COPY == $this->_gemsData['grc_redo_survey'];
-         */
     }
 
     /**
@@ -1645,13 +1605,6 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     public function hasSuccesCode()
     {
         return $this->getReceptionCode()->isSuccess();
-        /*
-        if (! isset($this->_gemsData['grc_success'])) {
-            $this->_ensureReceptionCode();
-        }
-
-        return $this->_gemsData['grc_success'];
-         */
     }
 
     /**
@@ -1865,9 +1818,6 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         $changed = $this->_updateToken($values, $userId);
 
         if ($changed) {
-            // Reload reception code values
-            $this->_ensureReceptionCode($code->getAllData());
-
             if ($code->isOverwriter() || (! $code->isSuccess())) {
                 $survey = $this->getSurvey();
 

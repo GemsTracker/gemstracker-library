@@ -9,6 +9,9 @@
         gto_changed_by="1" gto_created="2012-03-29 10:55:55" gto_created_by="1" />
     <gems__reception_codes grc_id_reception_code="OK" grc_description="Ok code" grc_changed_by="1"
         grc_created="2012-09-07" grc_created_by="1"/>
+    <gems__reception_codes grc_id_reception_code="STOP" grc_description="Stop code" grc_changed_by="1"
+        grc_created="2012-09-07" grc_created_by="1"/>
+
     <gems__respondents grs_id_user="1234" grs_changed_by="1" grs_created="2012-09-07" grs_created_by="1"/>
     <gems__respondent2org gr2o_id_user="1234" gr2o_id_organization="1" gr2o_consent="ok" gr2o_patient_nr="abc"
         gr2o_opened_by="1" gr2o_changed="2012-09-07" gr2o_changed_by="1" gr2o_created="2012-09-07" gr2o_created_by="1"/>

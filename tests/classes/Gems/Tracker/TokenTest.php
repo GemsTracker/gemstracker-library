@@ -67,6 +67,8 @@ class Gems_Tracker_TokenTest extends Gems_Test_DbTestAbstract
     {
         parent::setUp();
 
+        $util = $this->loader->getUtil();
+        Zend_Registry::getInstance()->set('util', $util);
         $this->tracker = $this->loader->getTracker();
         
         $this->token = $this->tracker->getToken(array('gto_id_token' => 500));
@@ -375,14 +377,15 @@ class Gems_Tracker_TokenTest extends Gems_Test_DbTestAbstract
 
     /**
      * @covers Gems_Tracker_Token::getReceptionCode
-     * @todo   Implement testGetReceptionCode().
      */
     public function testGetReceptionCode()
     {
+        $token = $this->tracker->getToken(1);
+        
+        $receptionCode = $this->loader->getUtil()->getReceptionCode('OK');        
+        
         // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertEquals($receptionCode, $token->getReceptionCode());
     }
 
     /**
@@ -826,10 +829,22 @@ class Gems_Tracker_TokenTest extends Gems_Test_DbTestAbstract
      */
     public function testSetReceptionCode()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $token = $this->tracker->getToken(1);
+        $receptionCode = 'STOP';
+        
+        // Create a stub for the survey class, it should be tested on it's own
+        $survey = $this->getMockBuilder('Gems_Tracker_Survey')
+                      ->disableOriginalConstructor()
+                      ->getMock();
+        $survey->expects($this->any())
+              ->method('inSource')
+              ->will($this->returnValue(false));
+        
+        // Assign survey stub
+        $token->answerRegistryRequest('survey', $survey);
+        
+        $token->setReceptionCode($receptionCode, 'Test', 2);
+        $this->assertEquals($receptionCode, $token->getReceptionCode()->getCode());
     }
 
     /**
