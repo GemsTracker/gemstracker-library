@@ -73,6 +73,23 @@ class Gems_Snippets_Export_AnswerAutosearchFormSnippet extends \Gems_Snippets_Au
 
         $elements[] = null;
 
+        $element = $this->form->createElement('checkbox', 'column_identifiers');
+        $element->setLabel($this->_('Column Identifiers'));
+        $element->setDescription($this->_('Prefix the column labels with an identifier. (A) Answers, (TF) Trackfields, (D) Description'));
+        $elements[] = $element;
+
+        $element = $this->form->createElement('checkbox', 'show_parent');
+        $element->setLabel($this->_('Show parent'));
+        $element->setDescription($this->_('Show the parent column even if it doesn\'t have answers'));
+        $elements[] = $element;
+
+        $element = $this->form->createElement('checkbox', 'prefix_child');
+        $element->setLabel($this->_('Prefix child'));
+        $element->setDescription($this->_('Prefix the child column labels with parent question label'));
+        $elements[] = $element;
+
+        $elements[] = null;
+
         return $elements;
     }
 }

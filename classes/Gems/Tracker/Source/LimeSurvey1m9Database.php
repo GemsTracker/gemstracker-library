@@ -913,6 +913,30 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return array Nested array
      */
+    public function getFullQuestionList($language, $surveyId, $sourceSurveyId = null)
+    {
+        if (null === $sourceSurveyId) {
+            $sourceSurveyId = $this->_getSid($surveyId);
+        }
+
+        return $this->_getFieldMap($sourceSurveyId, $language)->getFullQuestionList();
+    }
+
+    /**
+     * Returns an array of arrays with the structure:
+     *      question => string,
+     *      class    => question|question_sub
+     *      group    => is for grouping
+     *      type     => (optional) source specific type
+     *      answers  => string for single types,
+     *                  array for selection of,
+     *                  nothing for no answer
+     *
+     * @param string $language   (ISO) language string
+     * @param int $surveyId Gems Survey Id
+     * @param string $sourceSurveyId Optional Survey Id used by source
+     * @return array Nested array
+     */
     public function getQuestionInformation($language, $surveyId, $sourceSurveyId = null)
     {
         if (null === $sourceSurveyId) {

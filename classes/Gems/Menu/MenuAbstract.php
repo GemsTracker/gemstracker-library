@@ -413,7 +413,9 @@ abstract class Gems_Menu_MenuAbstract
         $export = $this->addContainer($label);
 
         // EXPORT
-        $export->addPage($this->_('Survey answers'), 'pr.export', 'export', 'index');
+        $surveyExport = $export->addPage($this->_('Survey answers'), 'pr.export', 'export', 'index');
+        $surveyExport->addAutofilterAction();
+
         $export->addButtonOnly('', 'pr.export', 'export', 'handle-export');
         $export->addButtonOnly('', 'pr.export', 'export', 'download');
 
