@@ -157,21 +157,16 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
         $this->files = $this->getFiles();
         $this->filter = $filter;
         $this->data = $data;
-
         $this->modelSourceName = $exportModelSourceName;
         if ($model = $this->getModel()) {
-    
             // check if there are items in the model to export
-            if (! $this->firstRow = $model->loadFirst($filter)) {
+            if (! $this->firstRow = $model->loadFirst()) {
                 return;
             } else {
                 
                 $totalRows = $this->getModelCount($filter);
-
                 $this->addFile();
-
                 $this->addHeader($this->tempFilename.$this->fileExtension);
-
                 $currentRow = 0;
                 do {
                     $filter['limit']  = array($this->rowsPerBatch, $currentRow);
@@ -201,15 +196,8 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
     protected function addFile()
     {
         $tempFilename = GEMS_ROOT_DIR . '/var/tmp/export-' . md5(time() . rand());
-        \MUtil_File::ensureDir(dirname($tempFilename));
-
         $this->tempFilename = $tempFilename;
-
-        if ($basename = $this->getExportModelSource()->getFileName($this->filter)) {
-            $basename = $this->cleanupName($basename);
-        } else {
-            $basename = $this->cleanupName($this->model->getName());
-        }
+        $basename = $this->cleanupName($this->model->getName());
         $filename = $basename;
         $i=1;
         while (isset($this->files[$filename.$this->fileExtension])) {
@@ -240,12 +228,14 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
      */
     public function addRows($exportModelSourceName, $filter, $data, $tempFilename)
     {
-        $this->filter = $filter;
         $this->data = $data;
         $this->modelSourceName = $exportModelSourceName;
         $this->model = $this->getModel($this->modelSourceName);
 
-        $rows = $this->model->load($filter);
+        $currentFilter = array_replace($this->model->getFilter(), $filter);
+        $this->model->setFilter($currentFilter);
+
+        $rows = $this->model->load();
         $file = fopen($tempFilename . $this->fileExtension, 'a');
         foreach($rows as $row) {
             $this->addRow($row, $file);
@@ -471,20 +461,7 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
      */
     protected function getModel()
     {
-        if ($this->model && $this->model instanceof \MUtil_Model_ModelAbstract && $this->modelFilter === $this->filter) {
-            return $this->model;
-        } else {
-            $this->modelFilter = $this->filter;
-            if ($this->modelSourceName instanceof \MUtil_Model_ModelAbstract) {
-                $this->model = $this->modelSourceName;
-                $this->modelSourceName = $this->defaultExportModelSource;
-            } else {
-                $exportModelSource = $this->getExportModelSource($this->modelSourceName);
-                $this->model = $exportModelSource->getModel($this->filter, $this->data);
-            }
-            $this->preprocessModel();
-        }
-
+        $this->model = $this->batch->getVariable('model');
         return $this->model;
     }
 
@@ -496,7 +473,7 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
     protected function getModelCount($filter=true)
     {
         if ($this->model && $this->model instanceof \MUtil_Model_ModelAbstract) {
-            $totalCount = $this->model->loadPaginator($filter)->getTotalItemCount();
+            $totalCount = $this->model->loadPaginator()->getTotalItemCount();
             return $totalCount;
         }
         return 0;

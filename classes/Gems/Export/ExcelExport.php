@@ -69,7 +69,7 @@ class Gems_Export_ExcelExport extends \Gems_Export_ExportAbstract
                 'formatVariable' => $this->_('Export questions instead of variable names'),
                 'formatAnswer' => $this->_('Format answers')
             ));
-        $elements[] = $element;
+        $elements['format'] = $element;
 
         return $elements;
     }

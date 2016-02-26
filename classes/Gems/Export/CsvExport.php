@@ -76,12 +76,12 @@ class Gems_Export_CsvExport extends \Gems_Export_ExportAbstract
                 'formatVariable' => $this->_('Export questions instead of variable names'),
                 'formatAnswer' => $this->_('Format answers')
             ));
-        $elements[] = $element;
+        $elements['format'] = $element;
 
         $element = $form->createElement('select', 'delimiter');
         $element->setLabel($this->_('Delimiter'))
             ->setMultiOptions(array(',' => ',', ';' => ';'));
-        $elements[] = $element;
+        $elements['delimiter'] = $element;
 
         return $elements;
     }
