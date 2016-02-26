@@ -34,13 +34,20 @@ class Gems_Snippets_Export_AnswerAutosearchFormSnippet extends \Gems_Snippets_Au
     	$empty         = $translated->getEmptyDropdownArray();
     	$rounds        = $empty + $noRound + $dbLookup->getRoundsForExport();
 
+        $surveys       = $dbLookup->getSurveysForExport();
+
+
+        $elements[] = $this->_createSelectElement(
+            'gto_id_survey',
+            $surveys,
+            $this->_('(Select a survey)')
+            );
+
         $elements[] = $this->_createSelectElement(
                 'gto_id_track',
                 $this->util->getTrackData()->getAllTracks(),
                 $this->_('(select a track)')
                 );
-
-
 
        	$elements[] = $this->_createSelectElement(
                 'gto_round_description',
@@ -63,8 +70,6 @@ class Gems_Snippets_Export_AnswerAutosearchFormSnippet extends \Gems_Snippets_Au
             );
         // $dates = 'gto_valid_from';
         $this->_addPeriodSelectors($elements, $dates, 'gto_valid_from');
-
-        $elements[] = $this->form->createElement('hidden', 'survey');
 
         $elements[] = null;
 
