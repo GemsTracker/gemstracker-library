@@ -1098,7 +1098,10 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.track-mainte
         AND grl_privileges NOT LIKE '%,pr.track-maintenance.export%';
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.track-maintenance.import')
     WHERE grl_name = 'super'
-        AND grl_privileges NOT LIKE '%,pr.track-maintenance.imexport%';
+        AND grl_privileges NOT LIKE '%,pr.track-maintenance.import%';
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.track-maintenance.merge')
+    WHERE grl_name = 'super'
+        AND grl_privileges NOT LIKE '%,pr.track-maintenance.merge%';
 
 ALTER TABLE gems__surveys
     ADD gsu_export_code varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER gsu_code;

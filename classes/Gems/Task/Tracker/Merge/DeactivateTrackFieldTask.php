@@ -18,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL MAGNAFACTA BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -32,10 +32,10 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: UpdateFieldCalculationTask.php 2493 2015-04-15 16:29:48Z matijsdejong $
+ * @version    $Id: DeactivateTrackFieldTask.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
-namespace Gems\Task\Tracker\Import;
+namespace Gems\Task\Tracker\Merge;
 
 /**
  *
@@ -44,9 +44,9 @@ namespace Gems\Task\Tracker\Import;
  * @subpackage Task\Tracker
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.7.2 Jan 21, 2016 2:14:29 PM
+ * @since      Class available since version 1.7.2 Mar 1, 2016 7:52:13 PM
  */
-class UpdateFieldCalculationTask extends \MUtil_Task_TaskAbstract
+class DeactivateTrackFieldTask extends \MUtil_Task_TaskAbstract
 {
     /**
      *
@@ -60,48 +60,25 @@ class UpdateFieldCalculationTask extends \MUtil_Task_TaskAbstract
      * The parameters should be optional and failing to provide them should be handled by
      * the task
      */
-    public function execute($lineNr = null, $fieldId = null, $fieldSub = null, $fieldCalc = null)
+    public function execute($roundId = null, $roundDescription = null)
     {
         $batch  = $this->getBatch();
-        $import = $batch->getVariable('import');
 
-        if (! (isset($import['trackId']) && $import['trackId'] && $fieldId)) {
-            // Do nothing
-            return;
-        }
+        if ($batch->hasVariable('trackEngine')) {
+            $trackEngine = $batch->getVariable('trackEngine');
+            if ($trackEngine instanceof \Gems_Tracker_Engine_TrackEngineInterface) {
 
-        $tracker     = $this->loader->getTracker();
-        $trackEngine = $tracker->getTrackEngine($import['trackId']);
-        $fieldCodes  = $import['fieldCodes'];
-        $fieldModel  = $trackEngine->getFieldsMaintenanceModel(true, 'edit');
-        $roundOrders = $import['roundOrders'];
+                $model = $trackEngine->getRoundModel(true, 'delete');
 
-        $saveData['gtf_id_field'] = $fieldId;
-        $saveData['sub']          = $fieldSub;
-        $saveData['gtf_id_track'] = $import['trackId'];
-        $calcFields = is_array($fieldCalc) ? $fieldCalc : explode('|', trim($fieldCalc, '|'));
+                $roundData['gro_id_round'] = $roundId;
+                $roundData['gro_active']   = 0;
+                $roundData = $model->save($roundData);
 
-        if (! $calcFields) {
-            return;
-        }
-
-        foreach ($calcFields as $field) {
-            if (isset($fieldCodes[$field]) && $fieldCodes[$field]) {
-                $saveData['gtf_calculate_using'][] = $fieldCodes[$field];
-            } else {
-                // Actually this code currently is PULSE specific
-                if (\MUtil_String::startsWith($field, '{r')) {
-                    $roundOrder = substr($field, 2, -1);
-
-                    if (isset($roundOrders[$roundOrder]) && $roundOrders[$roundOrder]) {
-                        $saveData['gtf_calculate_using'][] = $roundOrders[$roundOrder];
-                    } else {
-                        $saveData['gtf_calculate_using'][] = $field;
-                    }
-                }
+                $batch->addMessage(sprintf(
+                        $this->_('Deactivated round %s.'),
+                        ($roundDescription ? $roundDescription : $roundId)
+                        ));
             }
         }
-        \MUtil_Echo::track($saveData, $fieldId);
-        $fieldModel->save($saveData);
     }
 }

@@ -66,9 +66,13 @@ set_include_path(
 // Set up autoload.
 if (file_exists(dirname(__FILE__) . '/../vendor/autoload.php')) {
     require_once dirname(__FILE__) . '/../vendor/autoload.php';
+} elseif (dirname(__FILE__) . '/../../../autoload.php') {
+    require_once dirname(__FILE__) . '/../../../autoload.php';
 } else {
      require_once "Zend/Loader/Autoloader.php";
 }
 
 Zend_Session::start();
 Zend_Session::$_unitTestEnabled = true;
+
+print_r(get_include_path());

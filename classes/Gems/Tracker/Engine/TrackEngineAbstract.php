@@ -37,6 +37,7 @@
 
 use Gems\Tracker\Model\AddTrackFieldsTransformer;
 use Gems\Tracker\Model\RoundModel;
+use Gems\Tracker\Round;
 use MUtil\Model\Dependency\DependencyInterface;
 
 /**
@@ -795,41 +796,6 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
     }
 
     /**
-     * A generic helper function for generating a round description.
-     *
-     * @param array $roundData Contents of the round
-     * @return string
-     */
-    protected function getRoundDescription(array $roundData)
-    {
-        $surveys = $this->util->getTrackData()->getAllSurveys();
-
-        $hasOrder  = $roundData['gro_id_order'];
-        $hasDescr  = strlen(trim($roundData['gro_round_description']));
-        $hasSurvey = isset($surveys[$roundData['gro_id_survey']]);
-
-        if ($hasOrder && $hasDescr && $hasSurvey) {
-            return sprintf($this->_('%d: %s - %s'),
-                $roundData['gro_id_order'], $roundData['gro_round_description'], $surveys[$roundData['gro_id_survey']]);
-        } elseif ($hasOrder && $hasDescr) {
-            return sprintf($this->_('%d: %s'),
-                $roundData['gro_id_order'], $roundData['gro_round_description']);
-        } elseif ($hasOrder && $hasSurvey) {
-            return sprintf($this->_('%d: %s'),
-                $roundData['gro_id_order'], $surveys[$roundData['gro_id_survey']]);
-        } elseif ($hasDescr && $hasSurvey) {
-            return sprintf($this->_('%s - %s'),
-                $roundData['gro_round_description'], $surveys[$roundData['gro_id_survey']]);
-        } elseif ($hasDescr) {
-            return $roundData['gro_round_description'];
-        } elseif ($hasSurvey) {
-            return $surveys[$roundData['gro_id_survey']];
-        } else {
-            return '';
-        }
-    }
-
-    /**
      * The round descriptions for this track
      *
      * @return array roundId => string
@@ -839,8 +805,10 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
         $this->_ensureRounds();
 
         $output = array();
-        foreach ($this->_rounds as $roundId => $roundData) {
-            $output[$roundId] = $this->getRoundDescription($roundData);
+        foreach ($this->getRounds() as $roundId => $round) {
+            if ($round instanceof Round) {
+                $output[$roundId] = $round->getFullDescription();
+            }
         }
 
         return $output;
@@ -956,6 +924,23 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
         }
 
         return $model;
+    }
+
+    /**
+     * Get all the round objects
+     *
+     * @return array of roundId => \Gems\Tracker\Round
+     */
+    public function getRounds()
+    {
+        $this->_ensureRounds();
+
+        foreach ($this->_rounds as $roundId => $roundData) {
+            if (! isset($this->_roundObjects[$roundId])) {
+                $this->_roundObjects[$roundId] = $this->tracker->createTrackClass('Round', $roundData);
+            }
+        }
+        return $this->_roundObjects;
     }
 
     /**

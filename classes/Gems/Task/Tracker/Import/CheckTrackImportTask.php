@@ -89,6 +89,17 @@ class CheckTrackImportTask extends \MUtil_Task_TaskAbstract
                         $import['modelSettings'][$name]['respondentData'] = true;
                     }
                 }
+                if ($batch->hasVariable('trackEngine') && isset($trackData['gtr_track_name'])) {
+                    $trackEngine = $batch->getVariable('trackEngine');
+                    if ($trackEngine->getTrackName() == $trackData['gtr_track_name']) {
+                        $import['modelSettings']['gtr_track_name']['elementClass'] = 'Exhibitor';
+                    } else {
+                        $import['modelSettings']['gtr_track_name']['description'] = sprintf(
+                                $this->_('Current track name is "%s".'),
+                                $trackEngine->getTrackName()
+                                );
+                    }
+                }
 
                 if (isset($trackData['gtr_track_class']) && $trackData['gtr_track_class']) {
                     $trackEngines = $tracker->getTrackEngineClasses();

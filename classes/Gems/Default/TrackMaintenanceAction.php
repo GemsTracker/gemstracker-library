@@ -147,6 +147,25 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
         );
 
     /**
+     * The parameters used for the merge action
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $mergeParameters = array();
+
+    /**
+     * The snippets used for the merge action
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $mergeSnippets = 'Tracker\Import\MergeTrackSnippetGeneric';
+
+    /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
@@ -332,6 +351,18 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
     public function getTopic($count = 1)
     {
         return $this->plural('track', 'tracks', $count);
+    }
+
+    /**
+     * Controller specific track merge action
+     */
+    public function mergeAction()
+    {
+        if ($this->mergeSnippets) {
+            $params = $this->_processParameters($this->mergeParameters);
+
+            $this->addSnippets($this->mergeSnippets, $params);
+        }
     }
 
     /**

@@ -842,8 +842,8 @@ abstract class Gems_Menu_MenuAbstract
 
         $showPage->addAction($this->_('Export'), 'pr.track-maintenance.export', 'export')
                 ->addParameters(\MUtil_Model::REQUEST_ID);
-//        $showPage->addAction($this->_('Merge Import'), 'pr.track-maintenance.import', 'merge')
-//                ->addParameters(\MUtil_Model::REQUEST_ID);
+        $showPage->addAction($this->_('Merge Import'), 'pr.track-maintenance.merge', 'merge')
+                ->addParameters(\MUtil_Model::REQUEST_ID);
         $showPage->addAction($this->_('Check assignments'), 'pr.track-maintenance.check', 'check-track')
                 ->addParameters(\MUtil_Model::REQUEST_ID);
         $showPage->addAction($this->_('Recalculate fields'), 'pr.track-maintenance.check', 'recalc-fields')

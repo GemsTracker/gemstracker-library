@@ -96,7 +96,7 @@ interface FieldInterface
 
     /**
      *
-     * @return The field code
+     * @return string The field code
      */
     public function getCode();
 
@@ -142,13 +142,13 @@ interface FieldInterface
 
     /**
      *
-     * @return The track field id
+     * @return int The track field id
      */
     public function getFieldId();
 
     /**
      *
-     * @return The track field key as used by the union model
+     * @return string The track field key as used by the union model
      */
     public function getFieldKey();
 
@@ -160,13 +160,19 @@ interface FieldInterface
 
     /**
      *
-     * @return The track field sub (model) value
+     * @return string The track field sub (model) value
      */
     public function getFieldSub();
 
     /**
      *
-     * @return The field label
+     * @return string The field type
+     */
+    public function getFieldType();
+    
+    /**
+     *
+     * @return string The field label
      */
     public function getLabel();
 

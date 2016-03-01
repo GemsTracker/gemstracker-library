@@ -504,6 +504,9 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
         if (isset($row['gtf_field_type']) && ('appointment' === $row['gtf_field_type'])) {
             return self::APPOINTMENTS_NAME;
         }
+        if ((! isset($row['gtf_field_type'])) && isset($row[$this->_modelField]) && $row[$this->_modelField]) {
+            return $row[$this->_modelField];
+        }
         return self::FIELDS_NAME;
     }
 

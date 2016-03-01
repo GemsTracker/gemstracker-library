@@ -52,6 +52,12 @@ class Round extends RaObject
 {
     /**
      *
+     * @var string
+     */
+    protected $_description;
+
+    /**
+     *
      * @var \Gems_Tracker_Survey
      */
     protected $_survey = false;
@@ -63,9 +69,84 @@ class Round extends RaObject
     protected $tracker;
 
     /**
-     * Get the survey id for this round
+     * Get a round description with order number and survey name
+     *
+     * @return string
+     */
+    public function getFullDescription()
+    {
+        if ($this->_description) {
+            return $this->_description;
+        }
+
+        $descr    = $this->getRoundDescription();
+        $hasDescr = strlen(trim($descr));
+        $order    = $this->getRoundOrder();
+        $survey   = $this->getSurvey();
+
+        if ($order) {
+            if ($hasDescr) {
+                if ($survey) {
+                    $this->_description = sprintf($this->_('%d: %s - %s'), $order, $descr, $survey->getName());
+                } else {
+                    $this->_description = sprintf($this->_('%d: %s'), $order, $descr);
+                }
+            } elseif ($survey) {
+                $this->_description = sprintf($this->_('%d: %s'), $order, $survey->getName());
+            } else {
+                $this->_description = $order;
+            }
+        } elseif ($hasDescr) {
+            if ($survey) {
+                $this->_description = sprintf($this->_('%s - %s'), $descr, $survey->getName());
+            } else {
+                $this->_description = $descr;
+            }
+        } else {
+            if ($survey) {
+                $this->_description = $survey->getName();
+            } else {
+                $this->_description = '';
+            }
+        }
+
+        return $this->_description;
+    }
+
+    /**
+     * Get the round description for this round
+     *
+     * @return string
+     */
+    public function getRoundDescription()
+    {
+        return $this->offsetDefault('gro_round_description');
+    }
+
+    /**
+     * Get the round id for this round
      *
      * @return int
+     */
+    public function getRoundId()
+    {
+        return $this->offsetDefault('gro_id_round');
+    }
+
+    /**
+     * Get the round order for this round
+     *
+     * @return int
+     */
+    public function getRoundOrder()
+    {
+        return $this->offsetDefault('gro_id_order');
+    }
+
+    /**
+     * Get the survey id for this round
+     *
+     * @return \Gems_Tracker_Survey
      */
     public function getSurvey()
     {

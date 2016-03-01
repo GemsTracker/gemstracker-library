@@ -326,6 +326,25 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * Get a specific field by field order
+     *
+     * @param int $order
+     * @return \Gems\Tracker\Field\FieldInterface
+     */
+    public function getFieldByOrder($order)
+    {
+        foreach ($this->_fields as $field) {
+            if ($field instanceof FieldInterface) {
+                if ($field->getOrder() == $order) {
+                    return $field;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Returns an array of the fields in this track
      * key / value are id / code
      *

@@ -37,6 +37,7 @@
 
 namespace Gems\Task\Tracker\Import;
 
+use Gems\Tracker\Field\FieldInterface;
 use Gems\Tracker\Model\FieldMaintenanceModel;
 
 /**
@@ -71,6 +72,31 @@ class CheckTrackFieldImportTask extends \MUtil_Task_TaskAbstract
 
         if (isset($fieldData['gtf_id_order']) && $fieldData['gtf_id_order']) {
             $import['fieldOrder'][$fieldData['gtf_id_order']] = false;
+
+            if ($batch->hasVariable('trackEngine') &&
+                    isset($fieldData['gtf_field_type']) &&
+                    $fieldData['gtf_field_type']) {
+
+                $trackEngine = $batch->getVariable('trackEngine');
+                if ($trackEngine instanceof \Gems_Tracker_Engine_TrackEngineInterface) {
+                    $fieldDef = $trackEngine->getFieldsDefinition();
+                    $field    = $fieldDef->getFieldByOrder($fieldData['gtf_id_order']);
+
+                    if ($field instanceof FieldInterface) {
+                        if ($field->getFieldType() != $fieldData['gtf_field_type']) {
+                            $batch->addToCounter('import_errors');
+                            $batch->addMessage(sprintf(
+                                    $this->_('Conflicting field types "%s" and "%s" for field orders %d specified on line %d.'),
+                                    $field->getFieldType(),
+                                    $fieldData['gtf_field_type'],
+                                    $fieldData['gtf_id_order'],
+                                    $lineNr
+                                    ));
+                        }
+                    }
+                }
+            }
+
         } else {
             $batch->addToCounter('import_errors');
             $batch->addMessage(sprintf(
@@ -81,17 +107,15 @@ class CheckTrackFieldImportTask extends \MUtil_Task_TaskAbstract
         if (isset($fieldData['gtf_field_type']) && $fieldData['gtf_field_type']) {
             $model = $this->loader->getTracker()->createTrackClass('Model\\FieldMaintenanceModel');
 
-            if ($model instanceof \Pulse\Tracker\Model\FieldMaintenanceModel) {
-                $fields = $model->getFieldTypes();
+            $fields = $model->getFieldTypes();
 
-                if (! isset($fields[$fieldData['gtf_field_type']])) {
-                        $batch->addToCounter('import_errors');
-                        $batch->addMessage(sprintf(
-                                $this->_('Unknown field type "%s" specified on line %d.'),
-                                $fieldData['gtf_field_type'],
-                                $lineNr
-                                ));
-                }
+            if (! isset($fields[$fieldData['gtf_field_type']])) {
+                    $batch->addToCounter('import_errors');
+                    $batch->addMessage(sprintf(
+                            $this->_('Unknown field type "%s" specified on line %d.'),
+                            $fieldData['gtf_field_type'],
+                            $lineNr
+                            ));
             }
 
         } else {

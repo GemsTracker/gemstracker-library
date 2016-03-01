@@ -307,6 +307,13 @@ interface Gems_Tracker_Engine_TrackEngineInterface
     public function getRoundModel($detailed, $action);
 
     /**
+     * Get all the round objects
+     *
+     * @return array of roundId => \Gems\Tracker\Round
+     */
+    public function getRounds();
+
+    /**
      * An array of snippet names for editing a round.
      *
      * @return array of string snippet names
