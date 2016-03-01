@@ -198,7 +198,7 @@ class Gems_Snippets_RespondentTokenSnippet extends \Gems_Snippets_TokenModelSnip
         // no round 
         // or 
         // token is success and completed
-        $filter[] = 'gro_active = 1 OR gro_active IS NULL (grc_success=1 AND gto_completion_time IS NOT NULL)';
+        $filter[] = 'gro_active = 1 OR gro_active IS NULL OR (grc_success=1 AND gto_completion_time IS NOT NULL)';
         $filter['gsu_active']  = 1;
 
         // NOTE! $this->model does not need to be the token model, but $model is a token model

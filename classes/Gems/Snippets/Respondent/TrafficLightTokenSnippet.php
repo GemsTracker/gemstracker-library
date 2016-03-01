@@ -479,7 +479,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems_Snippets_R
         // no round 
         // or 
         // token is success and completed
-        $filter[] = 'gro_active = 1 OR gro_active IS NULL (grc_success=1 AND gto_completion_time IS NOT NULL)';
+        $filter[] = 'gro_active = 1 OR gro_active IS NULL OR (grc_success=1 AND gto_completion_time IS NOT NULL)';
         $filter['gsu_active']  = 1;
 
         /* if ($tabFilter = $this->model->getMeta('tab_filter')) {
