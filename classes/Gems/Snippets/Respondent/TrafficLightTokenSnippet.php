@@ -474,7 +474,12 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems_Snippets_R
         // Filter for valid track reception codes
         $filter[]              = 'gr2t_reception_code IN (SELECT grc_id_reception_code FROM gems__reception_codes WHERE grc_success = 1)';
         $filter['grc_success'] = 1;
-        $filter['gro_active']  = 1;
+        // Active round 
+        // or 
+        // no round 
+        // or 
+        // token is success and completed
+        $filter[] = 'gro_active = 1 OR gro_active IS NULL (grc_success=1 AND gto_completion_time IS NOT NULL)';
         $filter['gsu_active']  = 1;
 
         /* if ($tabFilter = $this->model->getMeta('tab_filter')) {
