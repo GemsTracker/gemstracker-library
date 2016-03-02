@@ -50,17 +50,22 @@ mb_internal_encoding(APPLICATION_ENCODING);
 defined('APPLICATION_PATH') || define('APPLICATION_PATH', GEMS_ROOT_DIR . '/application');
 defined('GEMS_PROJECT_NAME_UC') || define('GEMS_PROJECT_NAME_UC', ucfirst(GEMS_PROJECT_NAME));
 
-
-set_include_path(
-    APPLICATION_PATH . '/classes' // Shouldn't we leave the responsability to the project?
-    );
-
 /**
  * Use the composer autoloader, since we store this variable in global scope, projects can interact with it when needed.
  *
  * Composer autoloader takes care of adding to the include path
  */
 $composer_autoloader = require (VENDOR_DIR . '/autoload.php');
+
+/**
+ * Just in case the project forget to add it's own path to the include path, we
+ * add it here for backward compatibility
+ */
+set_include_path(
+        APPLICATION_PATH . '/classes' . PATH_SEPARATOR .
+        get_include_path()
+);
+
 
 // Create application, bootstrap, and run
 $application = new Zend_Application(
