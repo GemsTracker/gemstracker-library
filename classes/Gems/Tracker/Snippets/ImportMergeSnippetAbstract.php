@@ -538,7 +538,7 @@ abstract class ImportMergeSnippetAbstract extends \MUtil_Snippets_WizardFormSnip
                         $fieldsReset = $sections[$key];
                     } else {
                         $this->_session->importData['errors'][] = sprintf(
-                                $this->_('Unknown data type identifier "%s" found at line %.'),
+                                $this->_('Unknown data type identifier "%s" found at line %s.'),
                                 trim($line),
                                 $lineNr
                                 );

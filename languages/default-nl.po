@@ -14,8 +14,10 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 1.8.5\n"
+"X-Generator: Poedit 1.8.7\n"
 "X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: vendor/magnafacta/mutil/src/MUtil\n"
+"X-Poedit-SearchPathExcluded-0: vendor\n"
 
 #: classes/GemsEscort.php:298 classes/MUtil/Log.php:105
 #, php-format
