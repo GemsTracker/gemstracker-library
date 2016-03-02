@@ -58,6 +58,51 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
     public $menu;
 
     public $useHtmlView = true;
+    
+    /**
+     * Returns the data to show in the index action
+     * 
+     * Allows to easily add or modifiy the information at project level
+     * 
+     * @return array
+     */
+    protected function _getData()
+    {
+        $versions = $this->loader->getVersions();
+
+        $data[$this->_('Project name')]            = $this->project->name;
+        $data[$this->_('Project version')]         = $versions->getProjectVersion();
+        $data[$this->_('Gems version')]            = $versions->getGemsVersion();
+        $data[$this->_('Gems build')]              = $versions->getBuild();
+        $data[$this->_('Gems project')]            = GEMS_PROJECT_NAME;
+        $data[$this->_('Gems web directory')]      = $this->getDirInfo(GEMS_WEB_DIR);
+        $data[$this->_('Gems root directory')]     = $this->getDirInfo(GEMS_ROOT_DIR);
+        $data[$this->_('Gems code directory')]     = $this->getDirInfo(GEMS_LIBRARY_DIR);
+        $data[$this->_('Gems variable directory')] = $this->getDirInfo(GEMS_ROOT_DIR . '/var');
+        $data[$this->_('MUtil version')]           = \MUtil_Version::get();
+        $data[$this->_('Zend version')]            = \Zend_Version::VERSION;
+        $data[$this->_('Application environment')] = APPLICATION_ENV;
+        $data[$this->_('Application baseuri')]     = $this->loader->getUtil()->getCurrentURI();
+        $data[$this->_('Application directory')]   = $this->getDirInfo(APPLICATION_PATH);
+        $data[$this->_('Application encoding')]    = APPLICATION_ENCODING;
+        $data[$this->_('PHP version')]             = phpversion();
+        $data[$this->_('Server Hostname')]         = php_uname('n');
+        $data[$this->_('Server OS')]               = php_uname('s');
+        $data[$this->_('Time on server')]          = date('r');
+
+        $driveVars = array(
+            $this->_('Session directory') => \Zend_Session::getOptions('save_path'),
+            $this->_('Temporary files directory') => realpath(getenv('TMP')),
+        );
+        if ($system =  getenv('SystemDrive')) {
+            $driveVars[$this->_('System Drive')] = realpath($system);
+        }
+        foreach ($driveVars as $name => $drive) {
+            $data[$name] = $this->getDirInfo($drive);
+        }
+        
+        return $data;
+    }
 
     protected function _showTable($caption, $data, $nested = false)
     {
@@ -174,38 +219,7 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
     {
         $this->html->h2($this->_('Project information'));
 
-        $versions = $this->loader->getVersions();
-
-        $data[$this->_('Project name')]            = $this->project->name;
-        $data[$this->_('Project version')]         = $versions->getProjectVersion();
-        $data[$this->_('Gems version')]            = $versions->getGemsVersion();
-        $data[$this->_('Gems build')]              = $versions->getBuild();
-        $data[$this->_('Gems project')]            = GEMS_PROJECT_NAME;
-        $data[$this->_('Gems web directory')]      = $this->getDirInfo(GEMS_WEB_DIR);
-        $data[$this->_('Gems root directory')]     = $this->getDirInfo(GEMS_ROOT_DIR);
-        $data[$this->_('Gems code directory')]     = $this->getDirInfo(GEMS_LIBRARY_DIR);
-        $data[$this->_('Gems variable directory')] = $this->getDirInfo(GEMS_ROOT_DIR . '/var');
-        $data[$this->_('MUtil version')]           = \MUtil_Version::get();
-        $data[$this->_('Zend version')]            = \Zend_Version::VERSION;
-        $data[$this->_('Application environment')] = APPLICATION_ENV;
-        $data[$this->_('Application baseuri')]     = $this->loader->getUtil()->getCurrentURI();
-        $data[$this->_('Application directory')]   = $this->getDirInfo(APPLICATION_PATH);
-        $data[$this->_('Application encoding')]    = APPLICATION_ENCODING;
-        $data[$this->_('PHP version')]             = phpversion();
-        $data[$this->_('Server Hostname')]         = php_uname('n');
-        $data[$this->_('Server OS')]               = php_uname('s');
-        $data[$this->_('Time on server')]          = date('r');
-
-        $driveVars = array(
-            $this->_('Session directory') => \Zend_Session::getOptions('save_path'),
-            $this->_('Temporary files directory') => realpath(getenv('TMP')),
-        );
-        if ($system =  getenv('SystemDrive')) {
-            $driveVars[$this->_('System Drive')] = realpath($system);
-        }
-        foreach ($driveVars as $name => $drive) {
-            $data[$name] = $this->getDirInfo($drive);
-        }
+        $data = $this->_getData();        
 
         $lock = $this->util->getMaintenanceLock();
         if ($lock->isLocked()) {
