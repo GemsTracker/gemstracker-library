@@ -87,8 +87,15 @@ class CreateTrackRoundImportTask extends \MUtil_Task_TaskAbstract
         $trackEngine = $tracker->getTrackEngine($import['trackId']);
         $model       = $trackEngine->getRoundModel(true, 'create');
 
-        $roundData['gro_id_track']  = $import['trackId'];
-        $roundData['gro_id_survey'] = $import['surveyCodes'][$roundData['survey_export_code']];
+        $roundData['gro_id_track']    = $import['trackId'];
+        $roundData['gro_id_survey']   = $import['surveyCodes'][$roundData['survey_export_code']];
+
+        $survey = $tracker->getSurvey($roundData['gro_id_survey']);
+        if ($survey) {
+            $roundData['gro_survey_name'] = $survey->getName();
+        } else {
+            $roundData['gro_survey_name'] = '';
+        }
 
         if (isset($roundData['valid_after']) && $roundData['valid_after']) {
             if (isset($roundOrders[$roundData['valid_after']]) && $roundOrders[$roundData['valid_after']]) {

@@ -62,7 +62,7 @@ class Gems_Tracker_Engine_NextStepEngine extends \Gems_Tracker_Engine_StepEngine
 
         if ($previous) {
             $itemData['gro_valid_after_id'] = $previous;
-            $rounds[$previous] = $this->getRoundDescription($this->_rounds[$previous]);
+            $rounds[$previous] = $this->getRound($previous)->getFullDescription();
 
         } else {
             $itemData['gro_valid_after_id'] = null;

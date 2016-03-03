@@ -124,24 +124,27 @@ class MergeTrackSnippetAbstract extends ImportMergeSnippetAbstract
                         'roundId', $roundId
                         );
                 if (isset($importRounds[$order])) {
+                    if ($round->getFullDescription() == $importRounds[$order]) {
+                        $options = array(
+                            self::ROUND_LEAVE => $this->_('Leave current round'),
+                            $order => $this->_('Replace with import round'),
+                            );
+                    } else {
+                        $options = array(
+                            self::ROUND_LEAVE => $this->_('Leave current round'),
+                            $order => sprintf(
+                                    $this->_('Replace with import round %s'),
+                                    $importRounds[$order]
+                                    ),
+                            );
+                    }
                     $model->set($name,
                             'label', sprintf(
                                     $this->_('Matching round %s'),
                                     $round->getFullDescription()
                                     ),
                             'elementClass', 'Radio',
-                            'multiOptions', array(
-                                self::ROUND_LEAVE => sprintf(
-                                        $this->_('Leave current round %d unchanged, do not import round %s'),
-                                        $order,
-                                        $importRounds[$order]
-                                        ),
-                                $order => sprintf(
-                                        $this->_('Replace current round %d with import round %s'),
-                                        $order,
-                                        $importRounds[$order]
-                                        ),
-                                )
+                            'multiOptions', $options
                             );
                     $value = $order;
                 } else {
