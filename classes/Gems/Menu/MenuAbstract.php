@@ -422,6 +422,15 @@ abstract class Gems_Menu_MenuAbstract
         // EXPORT TO HTML
         $export->addPage($this->_('Respondent archives'), 'pr.export-html', 'respondent-export', 'index');
 
+        $batchExport = $export->addPage(
+                $this->_('Batch survey export'),
+                'pr.export',
+                'batch-export',
+                'index'
+                );
+
+        $batchExport->addAutofilterAction();
+
         return $export;
     }
 
