@@ -1,6 +1,8 @@
 <?php
 
-class Gems_Snippets_Export_ExportSnippet extends \MUtil_Snippets_SnippetAbstract
+namespace Gems\Snippets\Export;
+
+class ExportSnippet extends \MUtil_Snippets_SnippetAbstract
 {
     public $filter;
 
@@ -23,8 +25,8 @@ class Gems_Snippets_Export_ExportSnippet extends \MUtil_Snippets_SnippetAbstract
         //$view->headScript()->appendScript('var filter = '.json_encode($this->filter));
         $view->headScript()->appendScript("var exportUrl = '{$url}';");
         
-        $view->headScript()->appendFile(\Zend_Controller_Front::getInstance()->getBaseUrl()  .  '/jquery.serialize-object.js');
-        $view->headScript()->appendFile(\Zend_Controller_Front::getInstance()->getBaseUrl()  .  '/jquery.exportModel.js');
+        $view->headScript()->appendFile(\Zend_Controller_Front::getInstance()->getBaseUrl()  .  '/gems/js/jquery.serialize-object.js');
+        $view->headScript()->appendFile(\Zend_Controller_Front::getInstance()->getBaseUrl()  .  '/gems/js/jquery.exportModel.js');
 
         return $container;
     }

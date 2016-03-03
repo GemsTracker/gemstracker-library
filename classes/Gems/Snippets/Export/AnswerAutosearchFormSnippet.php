@@ -1,6 +1,8 @@
 <?php
 
-class Gems_Snippets_Export_AnswerAutosearchFormSnippet extends \Gems_Snippets_AutosearchFormSnippet
+namespace Gems\Snippets\Export;
+
+class AnswerAutosearchFormSnippet extends \Gems_Snippets_AutosearchFormSnippet
 {
 
 	/**

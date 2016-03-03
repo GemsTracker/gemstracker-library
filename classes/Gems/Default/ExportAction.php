@@ -9,14 +9,14 @@ class Gems_Default_ExportAction extends \Gems_Controller_ModelSnippetActionAbstr
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Gems_Snippets_Export_AnswerAutosearchFormSnippet');
+    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Export\\AnswerAutosearchFormSnippet');
 
     /**
      * The snippets used for the index action, after those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStopSnippets = array('Generic\\CurrentButtonRowSnippet', 'Gems_Snippets_Export_ExportSnippet');
+    protected $indexStopSnippets = array('Generic\\CurrentButtonRowSnippet', 'Export\\ExportSnippet');
 
     protected $exportModelSource = 'AnswerExportModelSource';
 
