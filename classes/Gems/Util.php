@@ -73,6 +73,12 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
+     * @var \Gems\Util\Monitor
+     */
+    protected $monitor;
+
+    /**
+     *
      * @var \Gems_Project_ProjectSettings
      */
     protected $project;
@@ -255,6 +261,16 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
     public function getMaintenanceLock()
     {
         return $this->_loadClass('lockFile', true, array(GEMS_ROOT_DIR . '/var/settings/lock.txt'));
+    }
+
+    /**
+     * Returns the job monitor
+     *
+     * @return \Gems\Util\Monitor
+     */
+    public function getMonitor()
+    {
+        return $this->_loadClass('Monitor', true);
     }
 
     /**

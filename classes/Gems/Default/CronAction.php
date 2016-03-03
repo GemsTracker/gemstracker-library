@@ -270,10 +270,21 @@ class Gems_Default_CronAction extends \Gems_Controller_Action
     public function indexAction()
     {
         $this->initHtml();
-        if ($this->util->getCronJobLock()->isLocked()) {
-            $this->html->append($this->_('Cron jobs turned off.'));
+        if ($this->util->getMaintenanceLock()->isLocked()) {
+            $this->addMessage($this->_('Cannot run cron job in maintenance mode.'));
+        } elseif ($this->util->getCronJobLock()->isLocked()) {
+            $this->addMessage($this->_('Cron jobs turned off.'));
         } else {
             $this->commJob();
         }
+        $this->util->getMonitor()->startCronMailMonitor();
+    }
+
+    /**
+     * Check job monitors
+     */
+    public function monitorAction()
+    {
+        $this->addMessage($this->util->getMonitor()->checkMonitors());
     }
 }

@@ -315,6 +315,8 @@ class Gems_Default_IndexAction extends \Gems_Controller_Action
             }
         }
 
+        // Check job monitors
+        $this->util->getMonitor()->checkMonitors();
         $this->displayLoginForm($form);
     }
 

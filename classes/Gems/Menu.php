@@ -310,7 +310,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $page->addEditAction('pr.respondent.edit')
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
-        
+
         $page->addPage($this->_('View survey'), 'pr.track.insert', 'track', 'view-survey', array('button_only' => true))
                     ->setNamedParameters($params)
                     ->addNamedParameters(\Gems_Model::SURVEY_ID, 'gsu_id_survey')
@@ -756,6 +756,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $this->addButtonOnly($this->_('Changelog'),  'pr.project-information.changelog', 'project-information','changelog');
 
         $this->addPage(null, 'pr.cron.job', 'cron', 'index');
+        $this->addPage(null, 'pr.cron.job', 'cron', 'monitor');
         $this->addPage(null, 'pr.cron.job', 'cron', 'test');
 
         $this->addPage(null, null, 'email', 'index');

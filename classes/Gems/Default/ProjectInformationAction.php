@@ -58,12 +58,12 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
     public $menu;
 
     public $useHtmlView = true;
-    
+
     /**
      * Returns the data to show in the index action
-     * 
+     *
      * Allows to easily add or modifiy the information at project level
-     * 
+     *
      * @return array
      */
     protected function _getData()
@@ -100,7 +100,7 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
         foreach ($driveVars as $name => $drive) {
             $data[$name] = $this->getDirInfo($drive);
         }
-        
+
         return $data;
     }
 
@@ -219,7 +219,7 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
     {
         $this->html->h2($this->_('Project information'));
 
-        $data = $this->_getData();        
+        $data = $this->_getData();
 
         $lock = $this->util->getMaintenanceLock();
         if ($lock->isLocked()) {
@@ -246,7 +246,7 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
     public function maintenanceAction()
     {
         // Switch lock
-        $this->util->getMaintenanceLock()->reverse();
+        $this->util->getMonitor()->reverseMaintenanceMonitor();
 
         // Dump the existing maintenance mode messages.
         $this->escort->getMessenger()->clearCurrentMessages();
