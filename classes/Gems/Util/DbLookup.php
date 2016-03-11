@@ -228,6 +228,7 @@ class Gems_Util_DbLookup extends UtilAbstract
             'gtr_active'          => 1,
             'gsu_active'          => 1,
             'grc_success'         => 1,
+            'gr2o_reception_code' => 'OK',
         	'gto_completion_time' => NULL,
         	'gto_valid_from <= CURRENT_DATE',
             '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)'
