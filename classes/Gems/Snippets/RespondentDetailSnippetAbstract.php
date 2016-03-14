@@ -73,7 +73,7 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
     protected $onclick;
 
     /**
-     * Optional: repaeter respondentData
+     * Optional: repeater respondent data
      *
      * @var \MUtil_Lazy_RepeatableInterface
      */
@@ -87,11 +87,11 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
     protected $request;
 
     /**
-     * Optional: not always filled, use repeater
+     * Optional
      *
-     * @var array
+     * @var \Gems_Tracker_Respondent
      */
-    protected $respondentData;
+    protected $respondent;
 
     /**
      * Optional: set display of buttons on or off
@@ -275,15 +275,10 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
             }
 
             if (! $this->repeater) {
-                if (! $this->respondentData) {
+                if (! $this->respondent) {
                     $this->repeater = $this->model->loadRepeatable();
                 } else {
-                    // In case a single array of values was passed: make nested
-                    if (is_array(reset($this->respondentData))) {
-                        $data = $this->respondentData;
-                    } else {
-                        $data = array($this->respondentData);
-                    }
+                    $data = array($this->respondent->getArrayCopy());
 
                     $this->repeater = \MUtil_Lazy::repeat($data);
                 }

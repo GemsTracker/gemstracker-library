@@ -103,7 +103,8 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems_Snippets_R
      *
      * @param \Zend_View $view
      */
-    protected function _initView($view) {
+    protected function _initView($view)
+    {
         $baseUrl = \GemsEscort::getInstance()->basepath->getBasePath();
 
         // Make sure we can use jQuery
@@ -233,11 +234,13 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems_Snippets_R
      * @param array $tokenData
      * @return boolean
      */
-    protected function _isCompleted($tokenData) {
+    protected function _isCompleted($tokenData)
+    {
         return isset($tokenData['gto_completion_time']) && $tokenData['gto_completion_time'];
     }
 
-    public function addToken($tokenData) {
+    public function addToken($tokenData)
+    {
         // We add all data we need so no database calls needed to load the token
         $tokenDiv = $this->creator->div(array('class' => 'zpitem', 'renderClosingTag' => true));
 
@@ -278,7 +281,8 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems_Snippets_R
         return $tokenDiv;
     }
 
-    public function afterRegistry() {
+    public function afterRegistry()
+    {
         parent::afterRegistry();
 
         // Load the display dateformat
@@ -299,7 +303,8 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems_Snippets_R
      * @param type $menuItem
      * @return type
      */
-    public function createMenuLink($parameterSource, $controller, $action = 'index', $label = null, $menuItem = null) {
+    public function createMenuLink($parameterSource, $controller, $action = 'index', $label = null, $menuItem = null)
+    {
         if (!is_null($menuItem) || $menuItem = $this->findMenuItem($controller, $action)) {
             $item = $menuItem->toActionLinkLower($this->request, $parameterSource, $label);
             if (is_object($item)) {
@@ -309,7 +314,8 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems_Snippets_R
         }
     }
 
-    public function createModel() {
+    public function createModel()
+    {
         $model = parent::createModel();
 
         if (!$model->has('forgroup')) {
@@ -319,7 +325,8 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems_Snippets_R
         return $model;
     }
 
-    public function getHtmlOutput(\Zend_View_Abstract $view) {
+    public function getHtmlOutput(\Zend_View_Abstract $view)
+    {
         $this->_initView($view);
 
         $main = $this->creator->div(array('id'=>'wrapper' , 'renderClosingTag' => true));
@@ -437,7 +444,8 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems_Snippets_R
         return $main;
     }
 
-    protected function finishGroup($progressDiv) {
+    protected function finishGroup($progressDiv)
+    {
         $total = $this->_completed + $this->_open + $this->_missed;
         if (!is_null($progressDiv)) {
             if (! $this->_completed == 0) {
@@ -464,20 +472,20 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems_Snippets_R
      */
     protected function processFilterAndSort(\MUtil_Model_ModelAbstract $model) {
         $model->setFilter($this->_fixedFilter);
-        $filter['gto_id_respondent'] = $this->respondentData['grs_id_user'];
+        $filter['gto_id_respondent'] = $this->respondent->getId();
         if (is_array($this->forOtherOrgs)) {
             $filter['gto_id_organization'] = $this->forOtherOrgs;
         } elseif (true !== $this->forOtherOrgs) {
-            $filter['gto_id_organization'] = $this->respondentData['gr2o_id_organization'];
+            $filter['gto_id_organization'] = $this->respondent->getOrganizationId();
         }
 
         // Filter for valid track reception codes
         $filter[]              = 'gr2t_reception_code IN (SELECT grc_id_reception_code FROM gems__reception_codes WHERE grc_success = 1)';
         $filter['grc_success'] = 1;
-        // Active round 
-        // or 
-        // no round 
-        // or 
+        // Active round
+        // or
+        // no round
+        // or
         // token is success and completed
         $filter[] = 'gro_active = 1 OR gro_active IS NULL OR (grc_success=1 AND gto_completion_time IS NOT NULL)';
         $filter['gsu_active']  = 1;

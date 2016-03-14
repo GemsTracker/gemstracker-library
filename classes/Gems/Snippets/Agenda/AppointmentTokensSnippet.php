@@ -28,25 +28,28 @@
  *
  *
  * @package    Gems
- * @subpackage Snippets\Track
+ * @subpackage AppointmentTokensSnippet
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TracksForAppointment.php 2430 2015-02-18 15:26:24Z matijsdejong $
+ * @version    $Id: AppointmentTokensSnippet.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
-namespace Gems\Snippets\Track;
+namespace Gems\Snippets\Agenda;
+
+use Gems\Tracker\Engine\FieldsDefinition;
+use Gems\Tracker\Model\FieldMaintenanceModel;
 
 /**
  *
  *
  * @package    Gems
- * @subpackage Snippets\Track
+ * @subpackage AppointmentTokensSnippet
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.7.2 Mar 10, 2016 6:17:20 PM
+ * @since      Class available since version 1.7.2 Mar 14, 2016 3:19:57 PM
  */
-class TracksForAppointment extends TracksSnippet
+class AppointmentTokensSnippet extends \Gems_Snippets_RespondentTokenSnippet
 {
     /**
      *
@@ -62,8 +65,8 @@ class TracksForAppointment extends TracksSnippet
      */
     public function afterRegistry()
     {
-        $this->caption = $this->_("Tracks using this appointment");
-        $this->onEmpty = $this->_("No tracks use this appointment");
+        $this->caption = $this->_("Tokens set by this appointment");
+        $this->onEmpty = $this->_("No tokens are set by this appointment");
     }
 
     /**
@@ -73,17 +76,32 @@ class TracksForAppointment extends TracksSnippet
      */
     protected function processFilterAndSort(\MUtil_Model_ModelAbstract $model)
     {
-        $filter[] = $this->db->quoteInto(
-                "gr2t_id_respondent_track IN (
-                    SELECT gr2t2a_id_respondent_track
-                    FROM gems__respondent2track2appointment
-                    WHERE gr2t2a_id_appointment = ?)",
-                $this->request->getParam(\Gems_Model::APPOINTMENT_ID)
-                );
+        parent::processFilterAndSort($model);
 
-        // \MUtil_Model::$verbose = true;
+        $appId = $this->request->getParam(\Gems_Model::APPOINTMENT_ID);
 
-        $model->setFilter($filter);
-        $this->processSortOnly($model);
+        if ($appId) {
+            $appKeyPrefix = $this->db->quote(FieldsDefinition::makeKey(FieldMaintenanceModel::APPOINTMENTS_NAME, ''));
+            $appSource    = $this->db->quote(\Gems_Tracker_Engine_StepEngineAbstract::APPOINTMENT_TABLE);
+
+            $or[] = $this->db->quoteInto(
+                    "gro_valid_after_source = $appSource AND
+                        (gto_id_respondent_track, gro_valid_after_field) IN
+                            (SELECT gr2t2a_id_respondent_track, CONCAT($appKeyPrefix, gr2t2a_id_app_field)
+                                FROM gems__respondent2track2appointment
+                                WHERE gr2t2a_id_appointment = ?)",
+                    $appId
+                    );
+            $or[] = $this->db->quoteInto(
+                    "gro_valid_for_source = $appSource AND
+                        (gto_id_respondent_track, gro_valid_for_field) IN
+                            (SELECT gr2t2a_id_respondent_track, CONCAT($appKeyPrefix, gr2t2a_id_app_field)
+                                FROM gems__respondent2track2appointment
+                                WHERE gr2t2a_id_appointment = ?)",
+                    $appId
+                    );
+        }
+
+        $model->addFilter(array('(' . implode(') OR (', $or) . ')'));
     }
 }

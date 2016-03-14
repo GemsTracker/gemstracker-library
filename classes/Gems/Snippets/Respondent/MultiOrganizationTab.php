@@ -73,9 +73,9 @@ class MultiOrganizationTab extends \MUtil_Snippets_TabSnippetAbstract
     /**
      * Required
      *
-     * @var array
+     * @var \Gems_Tracker_Respondent
      */
-    protected $respondentData;
+    protected $respondent;
 
     /**
      * Return the parameters that should be used for this tabId
@@ -103,7 +103,7 @@ class MultiOrganizationTab extends \MUtil_Snippets_TabSnippetAbstract
         $this->currentTab = $this->request->getParam(\MUtil_Model::REQUEST_ID2);
 
         $allowedOrgs  = $user->getRespondentOrganizations();
-        $existingOrgs = $this->db->fetchPairs($sql, $this->respondentData['grs_id_user']);
+        $existingOrgs = $this->db->fetchPairs($sql, $this->respondent->getId());
 
         foreach ($allowedOrgs as $orgId => $name) {
             if (isset($existingOrgs[$orgId])) {

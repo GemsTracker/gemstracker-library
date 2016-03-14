@@ -115,7 +115,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
         'baseUrl'        => 'getItemUrlArray',
         'forOtherOrgs'   => 'getOtherOrgs',
         'onclick'        => 'getEditLink',
-        'respondentData' => 'getRespondentData',
+        // 'respondentData' => 'getRespondentData',
         'showButtons'    => false,
         );
 
@@ -160,7 +160,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
         'baseUrl'        => 'getItemUrlArray',
         'forOtherOrgs'   => 'getOtherOrgs',
         'onclick'        => 'getEditLink',
-        'respondentData' => 'getRespondentData',
+        // 'respondentData' => 'getRespondentData',
         '-run-once'      => 'openedRespondent',
     );
 

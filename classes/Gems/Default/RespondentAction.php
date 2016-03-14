@@ -578,6 +578,7 @@ abstract class Gems_Default_RespondentAction extends \Gems_Controller_BrowseEdit
         $params['baseUrl'] = array(\MUtil_Model::REQUEST_ID1 => $this->_getParam(\MUtil_Model::REQUEST_ID1), \MUtil_Model::REQUEST_ID2 => $this->_getParam(\MUtil_Model::REQUEST_ID2));
         $params['buttons'] = $this->createMenuLinks();
         $params['onclick'] = $this->findAllowedMenuItem('edit');
+        $params['respondent'] = $this->loader->getRespondent($patientNr, $orgId, $respId);
         if ($params['onclick']) {
             $params['onclick'] = $params['onclick']->toHRefAttribute($this->getRequest());
         }

@@ -167,7 +167,7 @@ class Gems_Snippets_Respondent_RoundTokenSnippet extends \Gems_Snippets_Responde
         if ($this->menu) {
             $default = $this->project->getDefaultTrackId();
             if ($default) {
-                if ($this->respondentData['grc_success']) {
+                if ($this->respondent->getReceptionCode()->isSuccess()) {
                     $track = $this->loader->getTracker()->getTrackEngine($default);
 
                     if ($track->isUserCreatable()) {
@@ -188,7 +188,7 @@ class Gems_Snippets_Respondent_RoundTokenSnippet extends \Gems_Snippets_Responde
                 }
             }
             if (! $this->onEmpty) {
-                if ($this->respondentData['grc_success']) {
+                if ($this->respondent->getReceptionCode()->isSuccess()) {
                     $list = $this->menu->getMenuList()
                             ->addByController('track', 'show-track', $this->_('Add a track to this respondent'))
                             ->addParameterSources($this->request);

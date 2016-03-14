@@ -76,19 +76,7 @@ class Gems_Snippets_Respondent_RoundsTabsSnippet extends \MUtil_Snippets_TabSnip
     protected $model;
 
     /**
-     * The fields in respondentData that can contain an organization id.
-     *
-     * @var array
-     */
-    protected $organizationFields = array(
-        'gr2o_id_organization',
-        'gr2t_id_organization',
-        'gto_id_organization',
-        'gor_id_organization',
-        );
-
-    /**
-     * Required, can be derived from request or respondentData
+     * Required, can be derived from request or respondent
      *
      * @var array
      */
@@ -97,25 +85,13 @@ class Gems_Snippets_Respondent_RoundsTabsSnippet extends \MUtil_Snippets_TabSnip
     /**
      * Required
      *
-     * @var array
+     * @var \Gems_Tracker_Respondent
      */
-    protected $respondentData;
+    protected $respondent;
 
 
     /**
-     * The fields in respondentData that can contain a respondent id.
-     *
-     * @var array
-     */
-    protected $respondentFields = array(
-        'grs_id_user',
-        'gr2o_id_user',
-        'gr2t_id_user',
-        'gto_id_respondent',
-        );
-
-    /**
-     * Required, can be derived from request or respondentData
+     * Required, can be derived from request or respondent
      *
      * @var array
      */
@@ -137,13 +113,8 @@ class Gems_Snippets_Respondent_RoundsTabsSnippet extends \MUtil_Snippets_TabSnip
     {
 
         if (! $this->organizationId) {
-            if (isset($this->respondentData)) {
-                foreach ($this->organizationFields as $field) {
-                    if (isset($this->respondentData[$field]) && $this->respondentData[$field]) {
-                        $this->organizationId = $this->respondentData[$field];
-                        break;
-                    }
-                }
+            if ($this->respondent) {
+                $this->organizationId = $this->respondent->getOrganizationId();
             }
             if (! $this->organizationId) {
                 $this->organizationId = $this->request->getParam(\MUtil_Model::REQUEST_ID2);
@@ -151,13 +122,8 @@ class Gems_Snippets_Respondent_RoundsTabsSnippet extends \MUtil_Snippets_TabSnip
         }
 
         if ($this->organizationId && (! $this->respondentId)) {
-            if (isset($this->respondentData)) {
-                foreach ($this->respondentFields as $field) {
-                    if (isset($this->respondentData[$field]) && $this->respondentData[$field]) {
-                        $this->respondentId = $this->respondentData[$field];
-                        break;
-                    }
-                }
+            if ($this->respondent) {
+                $this->respondentId = $this->respondent->getId();
             }
             if (! $this->respondentId) {
                 $this->respondentId = $this->util->getDbLookup()->getRespondentId(

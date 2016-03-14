@@ -137,6 +137,7 @@ class Gems_Default_AppointmentAction extends \Gems_Default_RespondentChildAction
         'Generic\\ContentTitleSnippet',
         'Agenda_AppointmentShowSnippet',
         'Track\\TracksForAppointment',
+        'Agenda\\AppointmentTokensSnippet',
         );
 
     /**
