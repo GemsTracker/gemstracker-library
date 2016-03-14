@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-02 13:33+0100\n"
+"POT-Creation-Date: 2016-03-14 17:08+0100\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
+"Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
 "Language: en_GB\n"
 "MIME-Version: 1.0\n"
@@ -748,16 +748,16 @@ msgid_plural "healthcare staff"
 msgstr[0] "healthcare staff"
 msgstr[1] "healthcare staff"
 
-#: classes/Gems/Default/AppointmentAction.php:212
+#: classes/Gems/Default/AppointmentAction.php:217
 #, php-format
 msgid "Appointments for respondent number %s: %s"
 msgstr "Appointments for patient number %s: %s"
 
-#: classes/Gems/Default/AppointmentAction.php:224 classes/Gems/Menu.php:321
+#: classes/Gems/Default/AppointmentAction.php:229 classes/Gems/Menu.php:321
 msgid "Appointments"
 msgstr "Appointments"
 
-#: classes/Gems/Default/AppointmentAction.php:241
+#: classes/Gems/Default/AppointmentAction.php:246
 #: classes/Gems/Default/RespondentChildActionAbstract.php:104
 #: classes/Gems/Default/RespondentLogAction.php:77
 #: classes/Gems/Default/RespondentMailLogAction.php:188
@@ -765,22 +765,22 @@ msgstr "Appointments"
 msgid "Unknown respondent."
 msgstr "Unknown patient."
 
-#: classes/Gems/Default/AppointmentAction.php:260
+#: classes/Gems/Default/AppointmentAction.php:265
 msgid "appointment"
 msgid_plural "appointments"
 msgstr[0] "appointment"
 msgstr[1] "appointments"
 
-#: classes/Gems/Default/AppointmentAction.php:301
+#: classes/Gems/Default/AppointmentAction.php:306
 msgid "Requested agenda data not available!"
 msgstr "Requested agenda data not available!"
 
-#: classes/Gems/Default/AppointmentAction.php:310
+#: classes/Gems/Default/AppointmentAction.php:315
 #, php-format
 msgid "You have no access to %s appointments!"
 msgstr "You have no access to %s appointments!"
 
-#: classes/Gems/Default/AppointmentAction.php:313
+#: classes/Gems/Default/AppointmentAction.php:318
 msgid "Organization does not exist."
 msgstr "Organization does not exist."
 
@@ -852,6 +852,7 @@ msgstr "The survey for token %s is no longer active."
 #: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:142
 #: classes/Gems/Snippets/Mail/TokenMailFormSnippet.php:64
 #: classes/Gems/Snippets/Survey/AnswerImportSnippet.php:155
+#: classes/Gems/Snippets/Track/TracksSnippet.php:113
 #: classes/Gems/Snippets/Tracker/AvailableTracksSnippet.php:130
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:734
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:843
@@ -906,6 +907,7 @@ msgstr "Survey code"
 #: classes/Gems/Default/SurveyMaintenanceAction.php:418
 #: classes/Gems/Default/UpgradeAction.php:229
 #: classes/Gems/Export/RespondentExport.php:350
+#: classes/Gems/Snippets/Track/TracksSnippet.php:114
 #: classes/Gems/Snippets/Tracker/TrackSurveyOverviewSnippet.php:123
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:857
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:333
@@ -1090,7 +1092,7 @@ msgstr "Patient nr"
 #: classes/Gems/Default/ComplianceAction.php:100
 #: classes/Gems/Default/FieldOverviewAction.php:82
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:452
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:394
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:401
 #: classes/OpenRosa/Tracker/Source/OpenRosa/Form.php:586
 msgid "Start date"
 msgstr "Start date"
@@ -1332,6 +1334,10 @@ msgid "No mails sent."
 msgstr "No mails sent."
 
 #: classes/Gems/Default/CronAction.php:274
+msgid "Cannot run cron job in maintenance mode."
+msgstr "Cannot run cron job in maintenance mode."
+
+#: classes/Gems/Default/CronAction.php:276
 msgid "Cron jobs turned off."
 msgstr "Cron jobs turned off."
 
@@ -1894,51 +1900,51 @@ msgstr "Your password must be changed."
 msgid "Login successful, welcome %s."
 msgstr "Login successful, welcome %s."
 
-#: classes/Gems/Default/IndexAction.php:326
+#: classes/Gems/Default/IndexAction.php:328
 #, php-format
 msgid "Good bye: %s."
 msgstr "Good bye: %s."
 
-#: classes/Gems/Default/IndexAction.php:351
+#: classes/Gems/Default/IndexAction.php:353
 msgid "For that reason you cannot reset your password."
 msgstr "For that reason you cannot reset your password."
 
-#: classes/Gems/Default/IndexAction.php:368
-msgid ""
-"Your password reset request is no longer valid, please request a new link."
-msgstr ""
-"Your password reset request is no longer valid, please request a new link."
-
 #: classes/Gems/Default/IndexAction.php:370
 msgid ""
+"Your password reset request is no longer valid, please request a new link."
+msgstr ""
+"Your password reset request is no longer valid, please request a new link."
+
+#: classes/Gems/Default/IndexAction.php:372
+msgid ""
 "Your password input request is no longer valid, please request a new link."
 msgstr ""
 "Your password input request is no longer valid, please request a new link."
 
-#: classes/Gems/Default/IndexAction.php:389
+#: classes/Gems/Default/IndexAction.php:391
 msgid "For that reason you cannot request a password reset."
 msgstr "For that reason you cannot request a password reset."
 
-#: classes/Gems/Default/IndexAction.php:408
+#: classes/Gems/Default/IndexAction.php:410
 msgid ""
 "We sent you an e-mail with a reset link. Click on the link in the e-mail."
 msgstr ""
 "We sent you an e-mail with a reset link. Click on the link in the e-mail."
 
-#: classes/Gems/Default/IndexAction.php:420
+#: classes/Gems/Default/IndexAction.php:422
 #: classes/Gems/Snippets/User/PasswordResetSnippet.php:215
 msgid "New password is active."
 msgstr "New password is active."
 
-#: classes/Gems/Default/IndexAction.php:428
+#: classes/Gems/Default/IndexAction.php:430
 msgid "User logged in through reset password."
 msgstr "User logged in through reset password."
 
-#: classes/Gems/Default/IndexAction.php:447
+#: classes/Gems/Default/IndexAction.php:449
 msgid "Password reset requested"
 msgstr "Password reset requested"
 
-#: classes/Gems/Default/IndexAction.php:450
+#: classes/Gems/Default/IndexAction.php:452
 msgid ""
 "Dear {greeting},\n"
 "\n"
@@ -2692,7 +2698,7 @@ msgid "Delete respondent"
 msgstr "Delete patient"
 
 #: classes/Gems/Default/RespondentAction.php:310
-#: classes/Gems/Snippets/Respondent/DeleteRespondentSnippet.php:247
+#: classes/Gems/Snippets/Respondent/DeleteRespondentSnippet.php:238
 msgid "Respondent deleted."
 msgstr "Patient deleted"
 
@@ -2788,12 +2794,14 @@ msgid "Birthday"
 msgstr "Birthday"
 
 #: classes/Gems/Default/RespondentPlanAction.php:142
+#: classes/Gems/Snippets/Track/TracksSnippet.php:110
 #: classes/Gems/Snippets/Tracker/ShowTrackUsageSnippet.php:104
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:165
 msgid " of "
 msgstr " of "
 
 #: classes/Gems/Default/RespondentPlanAction.php:143
+#: classes/Gems/Snippets/Track/TracksSnippet.php:119
 #: classes/Gems/Snippets/Tracker/ShowTrackUsageSnippet.php:105
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:166
 msgid "Progress"
@@ -3078,7 +3086,7 @@ msgstr[1] "staff members"
 
 #: classes/Gems/Default/SummaryAction.php:117
 #: classes/Gems/Selector/TokenByGroupDateSelector.php:137
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:247
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:250
 #: classes/Gems/Snippets/Token/PlanSearchSnippet.php:148
 #: classes/Gems/Util/TokenData.php:67
 msgid "Answered"
@@ -3086,7 +3094,7 @@ msgstr "Answered"
 
 #: classes/Gems/Default/SummaryAction.php:118
 #: classes/Gems/Selector/TokenByGroupDateSelector.php:127
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:272
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:275
 #: classes/Gems/Snippets/Token/PlanSearchSnippet.php:149
 #: classes/Gems/Snippets/Token/TokenTabsSnippet.php:95
 #: classes/Gems/Tracker/Token.php:1293
@@ -3823,6 +3831,7 @@ msgstr "Enter the particulars concerning the assignment to this patient."
 #: classes/Gems/Export/RespondentExport.php:352
 #: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:106
 #: classes/Gems/Snippets/RespondentTokenSnippet.php:137
+#: classes/Gems/Snippets/Track/TracksSnippet.php:120
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:154
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:199
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:364
@@ -3831,6 +3840,7 @@ msgid "Assigned by"
 msgstr "Assigned by"
 
 #: classes/Gems/Export/RespondentExport.php:353
+#: classes/Gems/Snippets/Track/TracksSnippet.php:115
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:155
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:200
 #: classes/Gems/Tracker/Snippets/ShowTrackUsageAbstract.php:157
@@ -4097,7 +4107,7 @@ msgid "Export track"
 msgstr "Export track"
 
 #: classes/Gems/Menu.php:439
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:251
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:254
 msgid "Fill in"
 msgstr "Fill in"
 
@@ -5120,6 +5130,14 @@ msgid_plural "%d tokens changed"
 msgstr[0] "%d token changed"
 msgstr[1] "%d tokens changed"
 
+#: classes/Gems/Snippets/Agenda/AppointmentTokensSnippet.php:68
+msgid "Tokens set by this appointment"
+msgstr "Tokens set by this appointment"
+
+#: classes/Gems/Snippets/Agenda/AppointmentTokensSnippet.php:69
+msgid "No tokens are set by this appointment"
+msgstr "No tokens are set by this appointment"
+
 #: classes/Gems/Snippets/Agenda/AppointmentsTableSnippet.php:113
 #: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:75
 msgid "Show appointment"
@@ -5516,26 +5534,26 @@ msgstr "Already set to this reception code."
 msgid "Reception code %s does not exist."
 msgstr "Reception code %s does not exist."
 
-#: classes/Gems/Snippets/Respondent/DeleteRespondentSnippet.php:178
+#: classes/Gems/Snippets/Respondent/DeleteRespondentSnippet.php:169
 msgid "Restore tracks"
 msgstr "Restore tracks"
 
-#: classes/Gems/Snippets/Respondent/DeleteRespondentSnippet.php:179
+#: classes/Gems/Snippets/Respondent/DeleteRespondentSnippet.php:170
 msgid "Restores tracks with the same code as the respondent."
 msgstr "Restores tracks with the same code as the patient."
 
-#: classes/Gems/Snippets/Respondent/DeleteRespondentSnippet.php:224
+#: classes/Gems/Snippets/Respondent/DeleteRespondentSnippet.php:215
 msgid "Respondent restored."
 msgstr "Patient restored."
 
-#: classes/Gems/Snippets/Respondent/DeleteRespondentSnippet.php:241
+#: classes/Gems/Snippets/Respondent/DeleteRespondentSnippet.php:232
 #, php-format
 msgid "Restored %d track."
 msgid_plural "Restored %d tracks."
 msgstr[0] "Restored %d track."
 msgstr[1] "Restored %d tracks."
 
-#: classes/Gems/Snippets/Respondent/DeleteRespondentSnippet.php:253
+#: classes/Gems/Snippets/Respondent/DeleteRespondentSnippet.php:244
 #, php-format
 msgid "Stopped %d track."
 msgid_plural "Stopped %d tracks."
@@ -5579,11 +5597,11 @@ msgstr "Add a track to this patient"
 msgid "No valid tokens found"
 msgstr "No valid tokens found"
 
-#: classes/Gems/Snippets/Respondent/RoundsTabsSnippet.php:251
+#: classes/Gems/Snippets/Respondent/RoundsTabsSnippet.php:217
 msgid "empty"
 msgstr "empty"
 
-#: classes/Gems/Snippets/Respondent/RoundsTabsSnippet.php:253
+#: classes/Gems/Snippets/Respondent/RoundsTabsSnippet.php:219
 #, php-format
 msgid "%s (%d open)"
 msgstr "%s (%d open)"
@@ -5909,6 +5927,14 @@ msgstr "Done"
 #: classes/Gems/Snippets/Token/TokenTabsSnippet.php:96
 msgid "All"
 msgstr "All"
+
+#: classes/Gems/Snippets/Track/TracksForAppointment.php:65
+msgid "Tracks using this appointment"
+msgstr "Tracks using this appointment"
+
+#: classes/Gems/Snippets/Track/TracksForAppointment.php:66
+msgid "No tracks use this appointment"
+msgstr "No tracks use this appointment"
 
 #: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:227
 msgid "info"
@@ -7226,64 +7252,68 @@ msgid "Set round to round %s"
 msgstr "Set round to round %s"
 
 #: classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:129
+#: classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:134
+msgid "Leave current round"
+msgstr "Leave current round"
+
+#: classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:130
+msgid "Replace with import round"
+msgstr "Replace with import round"
+
+#: classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:136
+#, php-format
+msgid "Replace with import round %s"
+msgstr "Replace with import round %s"
+
+#: classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:143
 #, php-format
 msgid "Matching round %s"
 msgstr "Matching round %s"
 
-#: classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:135
-#, php-format
-msgid "Leave current round %d unchanged, do not import round %s"
-msgstr "Leave current round %d unchanged, do not import round %s"
-
-#: classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:140
-#, php-format
-msgid "Replace current round %d with import round %s"
-msgstr "Replace current round %d with import round %s"
-
-#: classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:150
+#: classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:153
 #, php-format
 msgid "Round not in import %s"
 msgstr "Round not in import %s"
 
-#: classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:155
+#: classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:158
 #, php-format
 msgid "Leave current round %d unchanged"
 msgstr "Leave current round %d unchanged"
 
-#: classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:156
+#: classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:159
 #, php-format
 msgid "Deactivate current round %d"
 msgstr "Deactivate current round %d"
 
-#: classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:225
+#: classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:228
 msgid "Merging the tracks."
 msgstr "Merging the tracks."
 
-#: classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:247
+#: classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:250
 msgid "Merge errors occurred!"
 msgstr "Merge errors occurred!"
 
-#: classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:249
+#: classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:252
 msgid "Tracks mergeded successfully!"
 msgstr "Tracks mergeded successfully!"
 
-#: classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:250
+#: classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:253
 msgid "Click the \"Finish\" button to see the merged track."
 msgstr "Click the \"Finish\" button to see the merged track."
 
-#: classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:268
+#: classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:271
 msgid "Match the current track rounds to import rounds."
 msgstr "Match the current track rounds to import rounds."
 
-#: classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:280
+#: classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:283
 msgid "No rounds in current track."
 msgstr "No rounds in current track."
 
-#: classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:340
+#: classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:343
 msgid "Track merge finished"
 msgstr "Track merge finished"
 
-#: classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:382
+#: classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:385
 #, php-format
 msgid "Merge import into \"%s\" track. Step %d of %d."
 msgstr "Merge import into \"%s\" track. Step %d of %d."
@@ -8211,6 +8241,12 @@ msgstr "Only %extension% files are accepted."
 #: languages/FakeTranslations.php:117
 msgid "'%value%' is not greater than '%min%'"
 msgstr "'%value%' is not greater than '%min%'"
+
+#~ msgid "Leave current round %d unchanged, do not import round %s"
+#~ msgstr "Leave current round %d unchanged, do not import round %s"
+
+#~ msgid "Replace current round %d with import round %s"
+#~ msgstr "Replace current round %d with import round %s"
 
 #~ msgid "Item"
 #~ msgstr "Item"
