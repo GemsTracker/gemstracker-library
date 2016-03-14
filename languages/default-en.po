@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-14 17:08+0100\n"
+"POT-Creation-Date: 2016-03-14 18:33+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -7114,8 +7114,8 @@ msgid "Organization export"
 msgstr "Organization export"
 
 #: classes/Gems/Tracker/Snippets/ExportTrackSnippetAbstract.php:329
-msgid "Export the organzations for which the track is active"
-msgstr "Export the organzations for which the track is active"
+msgid "Export the organizations for which the track is active"
+msgstr "Export the organizations for which the track is active"
 
 #: classes/Gems/Tracker/Snippets/ExportTrackSnippetAbstract.php:334
 msgid "Field export"
@@ -7226,8 +7226,8 @@ msgid "Creating the track."
 msgstr "Creating the track."
 
 #: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:89
-msgid "Create errors occurred!"
-msgstr "Create errors occurred!"
+msgid "Errors occurred during import!"
+msgstr "Errors occurred during import!"
 
 #: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:91
 msgid "Track created successfully!"
@@ -7272,8 +7272,8 @@ msgstr "Matching round %s"
 
 #: classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:153
 #, php-format
-msgid "Round not in import %s"
-msgstr "Round not in import %s"
+msgid "Round not in import: %s"
+msgstr "Round not in import: %s"
 
 #: classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:158
 #, php-format
@@ -8241,6 +8241,15 @@ msgstr "Only %extension% files are accepted."
 #: languages/FakeTranslations.php:117
 msgid "'%value%' is not greater than '%min%'"
 msgstr "'%value%' is not greater than '%min%'"
+
+#~ msgid "Export the organzations for which the track is active"
+#~ msgstr "Export the organzations for which the track is active"
+
+#~ msgid "Create errors occurred!"
+#~ msgstr "Create errors occurred!"
+
+#~ msgid "Round not in import %s"
+#~ msgstr "Round not in import %s"
 
 #~ msgid "Leave current round %d unchanged, do not import round %s"
 #~ msgstr "Leave current round %d unchanged, do not import round %s"

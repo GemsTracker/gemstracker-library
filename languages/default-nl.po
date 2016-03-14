@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-14 17:37+0100\n"
+"POT-Creation-Date: 2016-03-14 18:32+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -2178,8 +2178,8 @@ msgstr[1] "log"
 #: gemstracker/gemstracker/classes/Gems/Default/LogFileAction.php:183
 msgid "log file"
 msgid_plural "log files"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "logbestand"
+msgstr[1] "logbestanden"
 
 #: gemstracker/gemstracker/classes/Gems/Default/LogMaintenanceAction.php:98
 #: gemstracker/gemstracker/classes/Gems/Default/UpgradeAction.php:230
@@ -3338,7 +3338,7 @@ msgstr "Optionele code naam om de vragenlijst aan programmacode te koppelen."
 
 #: gemstracker/gemstracker/classes/Gems/Default/SurveyMaintenanceAction.php:525
 msgid "Survey export code"
-msgstr ""
+msgstr "Vragenlijstexportcode"
 
 #: gemstracker/gemstracker/classes/Gems/Default/SurveyMaintenanceAction.php:526
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ExportTrackSnippetAbstract.php:367
@@ -4076,7 +4076,7 @@ msgstr[1] "%d vragenlijsten"
 
 #: gemstracker/gemstracker/classes/Gems/Mail/TokenMailer.php:345
 msgid "Undefined relation"
-msgstr ""
+msgstr "Ongedefinieerde relatie"
 
 #: gemstracker/gemstracker/classes/Gems/Mail/TokenMailer.php:353
 #: gemstracker/gemstracker/classes/Gems/Mail/TokenMailer.php:376
@@ -4429,7 +4429,7 @@ msgstr "Logboek"
 
 #: gemstracker/gemstracker/classes/Gems/Menu/MenuAbstract.php:529
 msgid "Log files"
-msgstr ""
+msgstr "Logbestanden"
 
 #: gemstracker/gemstracker/classes/Gems/Menu/MenuAbstract.php:565
 msgid "Track Summary"
@@ -4573,7 +4573,7 @@ msgstr "Kopieer"
 
 #: gemstracker/gemstracker/classes/Gems/Menu/MenuAbstract.php:845
 msgid "Merge Import"
-msgstr ""
+msgstr "Fusie Import "
 
 #: gemstracker/gemstracker/classes/Gems/Menu/MenuAbstract.php:847
 msgid "Check assignments"
@@ -5282,11 +5282,11 @@ msgstr[1] "%d  kenmerken veranderd"
 
 #: gemstracker/gemstracker/classes/Gems/Snippets/Agenda/AppointmentTokensSnippet.php:68
 msgid "Tokens set by this appointment"
-msgstr ""
+msgstr "Kenmerken met deze afspraak"
 
 #: gemstracker/gemstracker/classes/Gems/Snippets/Agenda/AppointmentTokensSnippet.php:69
 msgid "No tokens are set by this appointment"
-msgstr ""
+msgstr "Geen kenmerk gebruikt deze afspraak "
 
 #: gemstracker/gemstracker/classes/Gems/Snippets/Agenda/AppointmentsTableSnippet.php:113
 #: gemstracker/gemstracker/classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:75
@@ -5321,11 +5321,11 @@ msgstr "Dank u voor het beantwoorden van onze vragen."
 
 #: gemstracker/gemstracker/classes/Gems/Snippets/Ask/RedirectUntilGoodbyeSnippet.php:120
 msgid "This survey has expired. You can no longer answer it."
-msgstr ""
+msgstr "Deze vragenlijst kan niet meer worden ingevuld!"
 
 #: gemstracker/gemstracker/classes/Gems/Snippets/Ask/RedirectUntilGoodbyeSnippet.php:122
 msgid "This survey is no longer valid."
-msgstr ""
+msgstr "Deze vragenlijst is niet meer geldig!"
 
 #: gemstracker/gemstracker/classes/Gems/Snippets/Ask/RedirectUntilGoodbyeSnippet.php:125
 msgid "We have no further questions for you at the moment."
@@ -6083,11 +6083,11 @@ msgstr "Alles"
 
 #: gemstracker/gemstracker/classes/Gems/Snippets/Track/TracksForAppointment.php:65
 msgid "Tracks using this appointment"
-msgstr ""
+msgstr "Trajecten met deze afspraak"
 
 #: gemstracker/gemstracker/classes/Gems/Snippets/Track/TracksForAppointment.php:66
 msgid "No tracks use this appointment"
-msgstr ""
+msgstr "Geen traject gebruikt deze afspraak"
 
 #: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/AddTracksSnippet.php:227
 msgid "info"
@@ -6367,7 +6367,7 @@ msgstr "Verander het wachtwoord voor: %s"
 
 #: gemstracker/gemstracker/classes/Gems/Snippets/User/AdminPasswordResetSnippet.php:114
 msgid "Create account mail sent"
-msgstr ""
+msgstr "Nieuwe medewerker email"
 
 #: gemstracker/gemstracker/classes/Gems/Snippets/User/AdminPasswordResetSnippet.php:117
 msgid "No default Create Account mail template set in organization or project"
@@ -6377,7 +6377,7 @@ msgstr ""
 
 #: gemstracker/gemstracker/classes/Gems/Snippets/User/AdminPasswordResetSnippet.php:127
 msgid "Reset password mail sent"
-msgstr ""
+msgstr "Wijzig wachtwoord email verzonden"
 
 #: gemstracker/gemstracker/classes/Gems/Snippets/User/AdminPasswordResetSnippet.php:130
 msgid "No default Reset Password mail template set in organization or project"
@@ -6387,7 +6387,7 @@ msgstr ""
 
 #: gemstracker/gemstracker/classes/Gems/Snippets/User/OwnAccountEditSnippet.php:92
 msgid "Saved your setup data"
-msgstr ""
+msgstr "Uw instellingen zijn opgeslagen"
 
 #: gemstracker/gemstracker/classes/Gems/Snippets/User/OwnAccountEditSnippet.php:94
 #: magnafacta/mutil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:328
@@ -6491,11 +6491,11 @@ msgstr "%d trajecten gecontroleerd."
 
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Export/MainTrackExportTask.php:84
 msgid "Trackdata exported with organizations."
-msgstr ""
+msgstr "Trajectgegevens geëxporteerd met organisaties."
 
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Export/MainTrackExportTask.php:86
 msgid "Trackdata exported without organizations."
-msgstr ""
+msgstr "Trajectgegevens geëxporteerd zonder organisaties."
 
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Export/TrackFieldExportTask.php:96
 #, php-format
@@ -6524,56 +6524,59 @@ msgid ""
 "Conflicting field types \"%s\" and \"%s\" for field orders %d specified on "
 "line %d."
 msgstr ""
+"Conflicterende veldtypen \"%s\" en \"%s\" voor volgorde %d gespecificeerd op "
+"regel %d."
 
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Import/CheckTrackFieldImportTask.php:103
 #, php-format
 msgid "No gtf_id_order specified for field at line %d."
-msgstr ""
+msgstr "Geen gtf_id_order opgegeven voor de organisaite op regel %d."
 
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Import/CheckTrackFieldImportTask.php:115
 #, php-format
 msgid "Unknown field type \"%s\" specified on line %d."
-msgstr ""
+msgstr "Onbekend veldtype \"%s\" specified op regel %d."
 
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Import/CheckTrackFieldImportTask.php:124
 #, php-format
 msgid "No field type specified on line %d."
-msgstr ""
+msgstr "Geen veldtype opgegeven op regel %d."
 
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Import/CheckTrackImportTask.php:72
 msgid "No \"track\" data found in import file."
-msgstr ""
+msgstr "Geen \"track\" (traject) gegevens in het import bestand."
 
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Import/CheckTrackImportTask.php:98
 #, php-format
 msgid "Current track name is \"%s\"."
-msgstr ""
+msgstr "De huidige traject naam is \"%s\"."
 
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Import/CheckTrackImportTask.php:109
 #, php-format
 msgid "Unknown track engine \"%s\" specified on line %d."
-msgstr ""
+msgstr "Onbekend trajecttype \"%s\" op regel %d."
 
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Import/CheckTrackImportTask.php:117
 #, php-format
 msgid "No track engine specified on line %d."
-msgstr ""
+msgstr "Geen traject track type opgegeven op regel %d."
 
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Import/CheckTrackImportTask.php:127
 #, php-format
 msgid "Unknown or invalid track calculation event \"%s\" specified on line %d."
 msgstr ""
+"Onbekende of ongeldige voor traject (her)calculatiecode \"%s\" op regel %d."
 
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Import/CheckTrackImportTask.php:139
 #, php-format
 msgid "Unknown or invalid track completion event \"%s\" specified on line %d."
-msgstr ""
+msgstr "Onbekende of ongeldige trajectafrondingscode \"%s\" op regel %d."
 
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Import/CheckTrackImportTask.php:151
 #, php-format
 msgid ""
 "Unknown or invalid track field update event \"%s\" specified on line %d."
-msgstr ""
+msgstr "Onbekende of ongeldige trajectveldherberekingscode \"%s\" op regel %d."
 
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Import/CheckTrackImportTask.php:162
 #, php-format
@@ -6588,37 +6591,37 @@ msgstr "\"traject\" gegevens gevonden op regel %d."
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Import/CheckTrackOrganizationImportTask.php:76
 #, php-format
 msgid "No gor_id_organization not specified for organization at line %d."
-msgstr ""
+msgstr "Geen gor_id_organization opgegeven voor de organisaite op regel %d."
 
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Import/CheckTrackOrganizationImportTask.php:98
 #, php-format
 msgid "No gor_name not specified for organization at line %d."
-msgstr ""
+msgstr "Geen gor_name opgegeven voor de organisaite op regel %d."
 
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Import/CheckTrackRoundImportTask.php:74
 #, php-format
 msgid "No gro_id_order specified for round at line %d."
-msgstr ""
+msgstr "Geen gro_id_order opgegeven voor de organisaite op regel %d."
 
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Import/CheckTrackRoundImportTask.php:83
 #, php-format
 msgid "Unknown survey export code \"%s\" specified for round on line %d."
-msgstr ""
+msgstr "Onbekende vragenlijstexportcode \"%s\" voor de ronde op regel %d."
 
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Import/CheckTrackRoundImportTask.php:91
 #, php-format
 msgid "No survey export code specified for round on line %d."
-msgstr ""
+msgstr "Geen vragenlijstexportcode opgegeven voor de ronde op regel %d."
 
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Import/CheckTrackRoundImportTask.php:101
 #, php-format
 msgid "Unknown or invalid round changed event \"%s\" specified on line %d."
-msgstr ""
+msgstr "Onbekende of ongeldige ronde veranderingscode \"%s\" op regel %d."
 
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Import/CheckTrackRoundImportTask.php:113
 #, php-format
 msgid "Unknown or invalid round display event \"%s\" specified on line %d."
-msgstr ""
+msgstr "Onbekende of ongeldige antwoordweergavecode \"%s\" op regel %d."
 
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Import/CheckTrackSurveyImportTask.php:145
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ImportMergeSnippetAbstract.php:145
@@ -6638,21 +6641,21 @@ msgstr "(sla rondes over)"
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Import/CheckTrackSurveyImportTask.php:201
 #, php-format
 msgid "No gsu_export_code specified for survey at line %d."
-msgstr ""
+msgstr "Geen gsu_export_code opgegeven voor de organisaite op regel %d."
 
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Import/CreateTrackImportTask.php:87
 #, php-format
 msgid "Created track with id %d"
-msgstr ""
+msgstr "Traject aangemaakt met id %d"
 
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Merge/DeactivateTrackFieldTask.php:78
 #, php-format
 msgid "Deactivated round %s."
-msgstr ""
+msgstr "Ronde %s is gedeactiveerd"
 
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Merge/MergeTrackImportTask.php:94
 msgid "Merged track data"
-msgstr ""
+msgstr "Trajectgegevens gefuseerd"
 
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/ProcessTokenCompletion.php:72
 #: gemstracker/gemstracker/classes/Gems/Tracker/ChangeTracker.php:78
@@ -7244,28 +7247,28 @@ msgstr "%s traject export. Stap %d van %d."
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ExportTrackSnippetAbstract.php:159
 msgid "Set the survey export codes"
-msgstr ""
+msgstr "Vragenlijstexportcodes instellen"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ExportTrackSnippetAbstract.php:183
 msgid "Select what to export"
-msgstr ""
+msgstr "Selecteer wat te exporteren"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ExportTrackSnippetAbstract.php:201
 msgid "Creating the export file"
-msgstr ""
+msgstr "Aanmaak exportbestand "
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ExportTrackSnippetAbstract.php:228
 msgid "Export errors occurred."
-msgstr ""
+msgstr "Fourmeldingen tijdens de export"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ExportTrackSnippetAbstract.php:230
 msgid "Export file generated: "
-msgstr ""
+msgstr "Het exportbestand staat klaar:"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ExportTrackSnippetAbstract.php:271
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ImportMergeSnippetAbstract.php:279
 msgid "No export code changed"
-msgstr ""
+msgstr "Geen vragenlijstexportcodes veranderd"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ExportTrackSnippetAbstract.php:275
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ImportMergeSnippetAbstract.php:283
@@ -7277,19 +7280,19 @@ msgstr[1] "%d exportcodes veranderd"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ExportTrackSnippetAbstract.php:292
 msgid "Track export finished"
-msgstr ""
+msgstr "Traject export klaar"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ExportTrackSnippetAbstract.php:327
 msgid "Organization export"
-msgstr ""
+msgstr "Export van organisaties"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ExportTrackSnippetAbstract.php:329
-msgid "Export the organzations for which the track is active"
-msgstr ""
+msgid "Export the organizations for which the track is active"
+msgstr "Exporteer de organisaties waarvoor het traject actief is"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ExportTrackSnippetAbstract.php:334
 msgid "Field export"
-msgstr ""
+msgstr "Veld export"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ExportTrackSnippetAbstract.php:339
 msgid "Check the fields to export"
@@ -7297,11 +7300,11 @@ msgstr "Vink de velden aan die geëxporteerd moeten worden"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ExportTrackSnippetAbstract.php:346
 msgid "No fields to export"
-msgstr ""
+msgstr "Geen velden om te exporteren"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ExportTrackSnippetAbstract.php:351
 msgid "Round export"
-msgstr ""
+msgstr "Ronde export"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ExportTrackSnippetAbstract.php:359
 #, php-format
@@ -7314,7 +7317,7 @@ msgstr "Vink de rondes aan die geëxporteerd moeten worden"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ExportTrackSnippetAbstract.php:384
 msgid "No rounds to export"
-msgstr ""
+msgstr "Geen rondes om te exporteren"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ImportMergeSnippetAbstract.php:123
 msgid "Change track information."
@@ -7322,19 +7325,19 @@ msgstr "Traject informatie aanpassen"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ImportMergeSnippetAbstract.php:139
 msgid "Survey export code links"
-msgstr ""
+msgstr "Vragenlijstexportcode koppelingen"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ImportMergeSnippetAbstract.php:143
 msgid "Linked survey name"
-msgstr ""
+msgstr "Naam gekoppelde vragenlijst"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ImportMergeSnippetAbstract.php:144
 msgid "Import survey name"
-msgstr ""
+msgstr "Naam import vragenlijst"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ImportMergeSnippetAbstract.php:145
 msgid "export code"
-msgstr ""
+msgstr "exportcode"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ImportMergeSnippetAbstract.php:167
 msgid "Checking the content of the file."
@@ -7342,15 +7345,15 @@ msgstr "Het bestand wordt gecontroleerd"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ImportMergeSnippetAbstract.php:189
 msgid "Import errors occurred!"
-msgstr ""
+msgstr "Fouten tijdens de import!"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ImportMergeSnippetAbstract.php:191
 msgid "Import checks OK!"
-msgstr ""
+msgstr "De import is in orde!"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ImportMergeSnippetAbstract.php:192
 msgid "Click the \"Next\" button to continue."
-msgstr ""
+msgstr "Klik op \"Verder\" voor de volgende stap."
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ImportMergeSnippetAbstract.php:213
 msgid "Upload a track definition file."
@@ -7369,124 +7372,124 @@ msgstr "Een .track.txt bestand"
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ImportMergeSnippetAbstract.php:306
 msgid ""
 "Import an exported track using a file with the extension \".track.txt\"."
-msgstr ""
+msgstr "Importeer trajectexportbestand met de extensie \".track.txt\"."
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ImportMergeSnippetAbstract.php:506
 #, php-format
 msgid "The import file \"%s\" seems to be missing."
-msgstr ""
+msgstr "Het importbestand \"%s\" lijkt te ontbreken."
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ImportMergeSnippetAbstract.php:516
 #, php-format
 msgid "The import file \"%s\" is empty."
-msgstr ""
+msgstr "Het importbestand \"%s\" is leeg."
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ImportMergeSnippetAbstract.php:541
 #, php-format
 msgid "Unknown data type identifier \"%s\" found at line %s."
-msgstr ""
+msgstr "Onbekende gegevenstypeidentificatie \"%s\" op regel %s."
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ImportMergeSnippetAbstract.php:557
 #, php-format
 msgid "Incorrect number of fields at line %d. Found %d while %d expected."
-msgstr ""
+msgstr "Incorrect aantal velden op regel %d. %d gevonden, maar %d verwacht."
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:67
 msgid "Creating the track."
-msgstr ""
+msgstr "Het traject wordt gemaakt."
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:89
-msgid "Create errors occurred!"
-msgstr ""
+msgid "Errors occurred during import!"
+msgstr "Fouten tijdens de import!"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:91
 msgid "Track created successfully!"
-msgstr ""
+msgstr "Traject aanmaken gelukt!"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:92
 msgid "Click the \"Finish\" button to see the track."
-msgstr ""
+msgstr "Klik op \"Klaar\" om het traject te bekijken."
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:144
 msgid "Track import finished"
-msgstr ""
+msgstr "Traject import klaar"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:156
 #, php-format
 msgid "New track import. Step %d of %d."
-msgstr ""
+msgstr "Import van een nieuw traject. Stap %d van %d."
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:95
 #, php-format
 msgid "Set round to round %s"
-msgstr ""
+msgstr "Gebruik voor deze ronde de importronde %s "
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:129
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:134
 msgid "Leave current round"
-msgstr ""
+msgstr "Huidige ronde niet veranderen"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:130
 msgid "Replace with import round"
-msgstr ""
+msgstr "Vervangen door de import ronde"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:136
 #, php-format
 msgid "Replace with import round %s"
-msgstr ""
+msgstr "Vervangen door de import ronde %s"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:143
 #, php-format
 msgid "Matching round %s"
-msgstr ""
+msgstr "Koppel ronde %s"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:153
 #, php-format
-msgid "Round not in import %s"
-msgstr ""
+msgid "Round not in import: %s"
+msgstr "Ronde bestaat niet in de import: %s"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:158
 #, php-format
 msgid "Leave current round %d unchanged"
-msgstr ""
+msgstr "Huidige ronde %d niet veranderen"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:159
 #, php-format
 msgid "Deactivate current round %d"
-msgstr ""
+msgstr "Deactiveer de huidige ronde %d"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:228
 msgid "Merging the tracks."
-msgstr ""
+msgstr "Trajecten worden gefuseerd."
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:250
 msgid "Merge errors occurred!"
-msgstr ""
+msgstr "Fouten tijdens het samenvoegen!"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:252
 msgid "Tracks mergeded successfully!"
-msgstr ""
+msgstr "Trajectfusie geslaagd!"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:253
 msgid "Click the \"Finish\" button to see the merged track."
-msgstr "Klik op de knop \"Klaar\" om het samengevoegde traject te bekijken."
+msgstr "Klik op \"Klaar\" om het samengevoegde traject te bekijken."
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:271
 msgid "Match the current track rounds to import rounds."
-msgstr ""
+msgstr "Koppel de huidige trajectrondes aan de rondes in de import"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:283
 msgid "No rounds in current track."
-msgstr ""
+msgstr "Het huidige traject bevat geen rondes."
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:343
 msgid "Track merge finished"
-msgstr ""
+msgstr "Trajectfusie klaar"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/MergeTrackSnippetAbstract.php:385
 #, php-format
 msgid "Merge import into \"%s\" track. Step %d of %d."
-msgstr ""
+msgstr "Fuseer importbestand met \"%s\" traject. Stap %d of %d."
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ShowRoundSnippetAbstract.php:146
 #, php-format
@@ -7812,7 +7815,7 @@ msgstr "Verkeerd wachtwoord."
 
 #: gemstracker/gemstracker/classes/Gems/User/Form/ChangePasswordForm.php:381
 msgid "Rule enforcement"
-msgstr ""
+msgstr "Afdwingen passwordregels"
 
 #: gemstracker/gemstracker/classes/Gems/User/Form/ChangePasswordForm.php:383
 msgid "Choose a non-compliant password to force a password change at login."

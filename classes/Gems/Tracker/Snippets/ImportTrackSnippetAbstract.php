@@ -86,7 +86,7 @@ class ImportTrackSnippetAbstract extends ImportMergeSnippetAbstract
             // Keep the filename after $batch->getMessages(true) cleared the previous
             $this->addMessage($batch->getMessages(true));
             if ($this->nextDisabled) {
-                $element->pInfo($this->_('Create errors occurred!'));
+                $element->pInfo($this->_('Errors occurred during import!'));
             } else {
                 $element->h2($this->_('Track created successfully!'));
                 $element->pInfo($this->_('Click the "Finish" button to see the track.'));

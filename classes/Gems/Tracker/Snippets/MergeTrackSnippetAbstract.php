@@ -150,7 +150,7 @@ class MergeTrackSnippetAbstract extends ImportMergeSnippetAbstract
                 } else {
                     $model->set($name,
                             'label', sprintf(
-                                    $this->_('Round not in import %s'),
+                                    $this->_('Round not in import: %s'),
                                     $round->getFullDescription()
                                     ),
                             'elementClass', 'Select',

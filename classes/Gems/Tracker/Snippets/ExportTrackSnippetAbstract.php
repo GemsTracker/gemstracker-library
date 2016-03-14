@@ -326,7 +326,7 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
 
             $model->set('orgs', 'label', $this->_('Organization export'),
                     'default', 1,
-                    'description', $this->_('Export the organzations for which the track is active'),
+                    'description', $this->_('Export the organizations for which the track is active'),
                     'multiOptions', $yesNo,
                     'required', true,
                     'elementClass', 'Checkbox');
