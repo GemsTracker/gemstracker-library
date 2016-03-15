@@ -189,7 +189,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
             } else {
                 $attrLength = $this->_extractFieldLength($tokenTable[$field]['Type']);
                 if ($attrLength < $this->attributeSize) {
-                    $missingFields[$field] = "CHANGE COLUMN `$field` `$attrLength` varchar(" .
+                    $missingFields[$field] = "CHANGE COLUMN `$field` `$field` varchar(" .
                             $this->attributeSize .
                             ") CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL";
                 }
@@ -211,7 +211,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
             return $lengths[1];
         }
 
-        return 0;
+        return $this->attributeSize;    // When type is text there is no size
     }
 
     /**

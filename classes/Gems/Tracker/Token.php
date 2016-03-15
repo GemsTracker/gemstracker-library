@@ -80,6 +80,13 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
      * @var \Gems_Tracker_Token
      */
     private $_previousToken = null;
+    
+    /**
+     * Holds the relation (if any) for this token
+     *
+     * @var array
+     */
+    protected $_relation = null;
 
     /**
      *
@@ -197,28 +204,19 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
             // loading occurs in checkRegistryRequestAnswers
         }
     }
-
+    
     /**
-     * Makes sure the receptioncode data is part of the $this->_gemsData
+     * Add relation to the select statement
      *
-     * @param boolean $reload Optional parameter to force reload or an array with the new values.
+     * @param Gems_Tracker_Token_TokenSelect $select
      */
-    private function _ensureReceptionCode($reload = false)
+    protected function _addRelation($select)
     {
-        if ($reload || (! isset($this->_gemsData['grc_success']))) {
-            if (is_array($reload)) {
-                $this->_gemsData = $reload + $this->_gemsData;
-            } else {
-                $sql  = "SELECT * FROM gems__reception_codes WHERE grc_id_reception_code = ?";
-                $code = $this->_gemsData['gto_reception_code'];
-
-                if ($row = $this->db->fetchRow($sql, $code)) {
-                    $this->_gemsData = $row + $this->_gemsData;
-                } else {
-                    $token = $this->_tokenId;
-                    throw new \Gems_Exception("Reception code $code is missing for token $token.");
-                }
-            }
+        // now add a left join with the round table so we have all tokens, also the ones without rounds
+        if (!is_null($this->_gemsData['gto_id_relation'])) {
+            $select->forWhere('gto_id_relation = ?', $this->_gemsData['gto_id_relation']);
+        } else {
+            $select->forWhere('gto_id_relation IS NULL');
         }
     }
 
@@ -320,19 +318,16 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
             if (! isset($this->_gemsData['gr2o_patient_nr'])) {
                 $this->_ensureRespondentData();
             }
-            if (! isset($this->_gemsData['grc_success'])) {
-                $this->_ensureReceptionCode();
-            }
 
             $source->setTokenId($this->_tokenId);
             $this->getRespondentTrack()->applyToMenuSource($source);
 
             $source->offsetSet('gsu_id_survey', $this->_gemsData['gto_id_survey']);
-            $source->offsetSet('grc_success', $this->_gemsData['grc_success'] ? 1 : 0);
+            $source->offsetSet('grc_success', $this->getReceptionCode()->isSuccess() ? 1 : 0);
             $source->offsetSet('is_completed', $this->_gemsData['gto_completion_time'] ? 1 : 0);
             $source->offsetSet('show_answers', $this->_gemsData['gto_completion_time'] ? 1 : 0);
 
-            if ($this->_gemsData['grc_success'] &&
+            if ($this->getReceptionCode()->isSuccess() &&
                     (! $this->_gemsData['gto_completion_time']) &&
                     ($validFrom = $this->getValidFrom())) {
 
@@ -347,7 +342,23 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         }
         return $this;
     }
-
+    
+    /**
+     * Assign this token to a specific relation
+     * 
+     * @param int $respondentRelationId
+     * @param int $relationFieldId
+     * @return int 1 if data changed, 0 otherwise
+     */
+    public function assignTo($respondentRelationId, $relationFieldId)
+    {
+        if ($this->getRelationFieldId() == $relationFieldId && $this->getRelationId() == $respondentRelationId) return 0;
+        
+        return $this->_updateToken(array(
+            'gto_id_relation'=>$respondentRelationId,
+            'gto_id_relationfield'=>$relationFieldId
+            ), $this->loader->getCurrentUser()->getUserId());
+    }
 
     /**
      * Retrieve a certain $key from the local cache
@@ -638,6 +649,8 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                 ->order('gr2t_track_info')
                 ->order('gto_valid_until')
                 ->order('gto_valid_from');
+        
+        $this->_addRelation($select);
 
         if (!empty($where)) {
             $select->forWhere($where);
@@ -809,11 +822,31 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
      */
     public function getEmail()
     {
-        if (!$this->getSurvey()->isTakenByStaff()) {
-            return $this->getRespondent()->getEmailAddress();
+        // If staff, return null, we don't know who to email
+        if ($this->getSurvey()->isTakenByStaff()) {
+            return null;
         }
-
-        return null;
+        
+        // If we have a relation, return that address
+        if ($this->hasRelation()) {
+            if ($relation = $this->getRelation()) {
+                return $this->getRelation()->getEmail();
+            }
+            
+            return null;
+        }
+        
+        // It can only be the respondent
+        return $this->getRespondent()->getEmailAddress();
+    }
+    
+    /**
+     *
+     * @return string Last mail sent date
+     */
+    public function getMailSentDate()
+    {
+        return $this->_gemsData['gto_mail_sent_date'];
     }
 
     /**
@@ -874,6 +907,8 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                 ->onlyValid()
                 ->forWhere('gsu_active = 1')
                 ->order(array('gto_valid_from', 'gto_round_order'));
+        
+        $this->_addRelation($tokenSelect);
 
         if ($tokenData = $tokenSelect->fetchRow()) {
             return $this->tracker->getToken($tokenData);
@@ -975,6 +1010,61 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     {
         return $this->util->getReceptionCode($this->_gemsData['gto_reception_code']);
     }
+    
+    /**
+     * Get the relation object if any
+     * 
+     * @return Gems_Model_RespondentRelationInstance
+     */
+    public function getRelation() {       
+        if (is_null($this->_relation) || $this->_relation->getRelationId() !== $this->getRelationId()) {            
+            $model = $this->loader->getModels()->getRespondentRelationModel();
+            $relationObject = $model->getRelation($this->getRespondentId(), $this->getRelationId());
+            $this->_relation = $relationObject;
+        }
+
+        return $this->_relation;
+    }
+    
+    /**
+     * Return the id of the relation field
+     * 
+     * This is not the id of the relation, but the id of the trackfield that defines
+     * the relation.
+     * 
+     * @return int
+     */
+    public function getRelationFieldId()
+    {
+        return $this->hasRelation() ? (int) $this->_gemsData['gto_id_relationfield'] : null;
+    }
+    
+    /**
+     * Get the name of the relationfield for this token
+     * 
+     * @return string
+     */
+    public function getRelationFieldName() {
+        if ($relationFieldId = $this->getRelationFieldId()) {
+            $names = $this->getRespondentTrack()->getTrackEngine()->getFieldNames();
+            $fieldPrefix = \Gems\Tracker\Model\FieldMaintenanceModel::FIELDS_NAME . \Gems\Tracker\Engine\FieldsDefinition::FIELD_KEY_SEPARATOR;
+            $key = $fieldPrefix . $relationFieldId;
+            
+            return array_key_exists($key, $names) ? lcfirst($names[$key]) : null;            
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Return the id of the relation currently assigned to this token
+     * 
+     * @return int
+     */
+    public function getRelationId()
+    {
+        return $this->hasRelation() ? $this->_gemsData['gto_id_relation'] : null;
+    }
 
     /**
      * Get the respondent linked to this token
@@ -1062,11 +1152,22 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     }
 
     /**
-     *
+     * Get the name of the person answering this token
+     * 
+     * Could be the patient or the relation when assigned to one
+     * 
      * @return string
      */
     public function getRespondentName()
     {
+        if ($this->hasRelation()) {
+            if ($relation = $this->getRelation()) {
+                return $relation->getName();
+            } else {
+                return null;
+            }
+        }
+        
         return $this->getRespondent()->getName();
     }
 
@@ -1146,12 +1247,15 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     }
 
     /**
-     *
-     * @return string Last mail sent date
+     * Return the name of the respondent
+     * 
+     * To be used when there is a relation and you need to know the name of the respondent
+     * 
+     * @return string
      */
-    public function getMailSentDate()
+    public function getSubjectname()
     {
-        return $this->_gemsData['gto_mail_sent_date'];
+        return $this->getRespondent()->getName();
     }
 
     /**
@@ -1259,6 +1363,8 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                 ->onlySucces()
                 ->onlyValid()
                 ->withoutToken($this->_tokenId);
+        
+        $this->_addRelation($tokenSelect);
 
         return $tokenSelect->fetchOne();
     }
@@ -1374,6 +1480,22 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     {
         return (boolean) $this->_sourceDataRaw;
     }
+    
+    /**
+     * Is this token linked to a relation?
+     *
+     * @return boolean
+     */
+    public function hasRelation()
+    {
+        if (array_key_exists('gto_id_relationfield', $this->_gemsData) && $this->_gemsData['gto_id_relationfield'] > 0) {
+            // We have a relation
+            return true;
+        } 
+        
+        // no relation
+        return false;
+    }
 
     /**
      *
@@ -1462,12 +1584,6 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     public function hasRedoCode()
     {
         return $this->getReceptionCode()->hasRedoCode();
-        /*if (! isset($this->_gemsData['grc_redo_survey'])) {
-            $this->_ensureReceptionCode();
-        }
-
-        return (boolean) $this->_gemsData['grc_redo_survey'];
-         */
     }
 
     /**
@@ -1479,13 +1595,6 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     public function hasRedoCopyCode()
     {
         return $this->getReceptionCode()->hasRedoCopyCode();
-        /*
-        if (! isset($this->_gemsData['grc_redo_survey'])) {
-            $this->_ensureReceptionCode();
-        }
-
-        return \Gems_Util_ReceptionCodeLibrary::REDO_COPY == $this->_gemsData['grc_redo_survey'];
-         */
     }
 
     /**
@@ -1496,13 +1605,6 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     public function hasSuccesCode()
     {
         return $this->getReceptionCode()->isSuccess();
-        /*
-        if (! isset($this->_gemsData['grc_success'])) {
-            $this->_ensureReceptionCode();
-        }
-
-        return $this->_gemsData['grc_success'];
-         */
     }
 
     /**
@@ -1716,9 +1818,6 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         $changed = $this->_updateToken($values, $userId);
 
         if ($changed) {
-            // Reload reception code values
-            $this->_ensureReceptionCode($code->getAllData());
-
             if ($code->isOverwriter() || (! $code->isSuccess())) {
                 $survey = $this->getSurvey();
 

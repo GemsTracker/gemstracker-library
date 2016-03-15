@@ -125,6 +125,7 @@ class RoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
         $this->columns[20] = array('gro_id_survey');
         $this->columns[30] = array('gro_round_description');
         $this->columns[40] = array('gro_icon_file');
+        $this->columns[45] = array('ggp_name');
         $this->columns[50] = array('gro_valid_after_field', $sp, 'gro_valid_after_source', $sp, 'gro_valid_after_id');
         $this->columns[60] = array('gro_valid_for_field', $sp, 'gro_valid_for_source', $sp, 'gro_valid_for_id');
         $this->columns[70] = array('gro_active');

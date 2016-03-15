@@ -199,14 +199,15 @@ class DateField extends FieldAbstract
         } else {
             $displayFormat = \MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
 
-            try {
-                return \MUtil_Date::format($currentValue, $saveFormat, $displayFormat);
-            } catch (\Zend_Exception $e) {
+            $returnDate = \MUtil_Date::format($currentValue, $saveFormat, $displayFormat);
+            
+            if (is_null($returnDate)) {
                 if (\Zend_Date::isDate($currentValue, $saveFormat)) {
                     return $currentValue;
                 }
-                throw $e;
             }
+            
+            return $returnDate;
         }
 
         return (string) $currentValue;

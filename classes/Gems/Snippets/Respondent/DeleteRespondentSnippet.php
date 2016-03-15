@@ -91,13 +91,6 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
     protected $respondent;
 
     /**
-     * Optional: not always filled, use repeater
-     *
-     * @var array
-     */
-    protected $respondentData;
-
-    /**
      * Optional right to check for undeleting
      *
      * @var string
@@ -162,9 +155,7 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
     protected function loadFormData()
     {
         if (! $this->request->isPost()) {
-            if ($this->respondentData) {
-                $this->formData = $this->respondentData;
-            } elseif ($this->respondent instanceof \Gems_Tracker_Respondent) {
+            if ($this->respondent instanceof \Gems_Tracker_Respondent) {
                 $this->formData = $this->respondent->getArrayCopy();
             }
         }

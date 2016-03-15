@@ -328,6 +328,15 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
 
     /**
      *
+     * @return string Export code of the survey
+     */
+    public function getExportCode()
+    {
+        return $this->_gemsSurvey['gsu_export_code'];
+    }
+
+    /**
+     *
      * @return int Gems group id for survey
      */
     public function getGroupId()

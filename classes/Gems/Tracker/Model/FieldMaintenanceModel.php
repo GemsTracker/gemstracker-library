@@ -504,6 +504,9 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
         if (isset($row['gtf_field_type']) && ('appointment' === $row['gtf_field_type'])) {
             return self::APPOINTMENTS_NAME;
         }
+        if ((! isset($row['gtf_field_type'])) && isset($row[$this->_modelField]) && $row[$this->_modelField]) {
+            return $row[$this->_modelField];
+        }
         return self::FIELDS_NAME;
     }
 
@@ -590,7 +593,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
         }
 
         if (isset($context['gtf_calculate_using']) && $context['gtf_calculate_using']) {
-            $count = substr_count($value, '|') + 1;
+            $count = substr_count($context['gtf_calculate_using'], '|') + 1;
             return sprintf($this->plural('%d field', '%d fields', $count), $count);
         }
 

@@ -166,8 +166,13 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
     protected function _ensureTrackFields()
     {
         if (! is_array($this->_fields)) {
-            $model  = $this->getMaintenanceModel();
-            $fields = $model->load(array('gtf_id_track' => $this->_trackId), array('gtf_id_order' => SORT_ASC));
+            // Check for cases where the track id is zero, but there is a field for track 0 in the db
+            if ($this->_trackId) {
+                $model  = $this->getMaintenanceModel();
+                $fields = $model->load(array('gtf_id_track' => $this->_trackId), array('gtf_id_order' => SORT_ASC));
+            } else {
+                $fields = false;
+            }
 
             $this->_fields      = array();
             $this->_trackFields = array();
@@ -305,6 +310,38 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
         }
 
         return $this->_dataModel;
+    }
+
+    /**
+     * Get a specific field
+     *
+     * @param string $key
+     * @return \Gems\Tracker\Field\FieldInterface
+     */
+    public function getField($key)
+    {
+        if (isset($this->_fields[$key])) {
+            return $this->_fields[$key];
+        }
+    }
+
+    /**
+     * Get a specific field by field order
+     *
+     * @param int $order
+     * @return \Gems\Tracker\Field\FieldInterface
+     */
+    public function getFieldByOrder($order)
+    {
+        foreach ($this->_fields as $field) {
+            if ($field instanceof FieldInterface) {
+                if ($field->getOrder() == $order) {
+                    return $field;
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -603,5 +640,22 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
         $model->saveAll($saves);
 
         return $model->getChanged();
+    }
+
+    /**
+     * Split an external field key in component parts
+     *
+     * @param string $sub
+     * @param int $fieldId
+     * @return array 'sub' => suIdb, 'gtf_id_field; => fieldId
+     */
+    public static function splitKey($key)
+    {
+        if (strpos($key, self::FIELD_KEY_SEPARATOR) === false) {
+            return null;
+        }
+        list($sub, $fieldId) = explode(self::FIELD_KEY_SEPARATOR, $key, 2);
+
+        return array('sub' => $sub, 'gtf_id_field' => $fieldId);
     }
 }

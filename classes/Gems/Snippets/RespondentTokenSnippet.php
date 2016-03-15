@@ -83,9 +83,9 @@ class Gems_Snippets_RespondentTokenSnippet extends \Gems_Snippets_TokenModelSnip
     /**
      * Required
      *
-     * @var array
+     * @var \Gems_Tracker_Respondent
      */
-    protected $respondentData;
+    protected $respondent;
 
     /**
      * Require
@@ -156,7 +156,7 @@ class Gems_Snippets_RespondentTokenSnippet extends \Gems_Snippets_TokenModelSnip
         if ($actionLinks) {
             $bridge->addItemLink($actionLinks);
         }
-
+        
         $this->addTokenLinks($bridge);
     }
 
@@ -173,7 +173,7 @@ class Gems_Snippets_RespondentTokenSnippet extends \Gems_Snippets_TokenModelSnip
      */
     public function hasHtmlOutput()
     {
-        return $this->respondentData && $this->request && parent::hasHtmlOutput();
+        return $this->respondent && $this->request && parent::hasHtmlOutput();
     }
 
     /**
@@ -183,17 +183,22 @@ class Gems_Snippets_RespondentTokenSnippet extends \Gems_Snippets_TokenModelSnip
      */
     protected function processFilterAndSort(\MUtil_Model_ModelAbstract $model)
     {
-        $filter['gto_id_respondent']   = $this->respondentData['grs_id_user'];
+        $filter['gto_id_respondent']   = $this->respondent->getId();
         if (is_array($this->forOtherOrgs)) {
             $filter['gto_id_organization'] = $this->forOtherOrgs;
         } elseif (true !== $this->forOtherOrgs) {
-            $filter['gto_id_organization'] = $this->respondentData['gr2o_id_organization'];
+            $filter['gto_id_organization'] = $this->respondent->getOrganizationId();
         }
 
         // Filter for valid track reception codes
         $filter[] = 'gr2t_reception_code IN (SELECT grc_id_reception_code FROM gems__reception_codes WHERE grc_success = 1)';
         $filter['grc_success'] = 1;
-        $filter[] = 'gro_active = 1 OR gro_active IS NULL';
+        // Active round
+        // or
+        // no round
+        // or
+        // token is success and completed
+        $filter[] = 'gro_active = 1 OR gro_active IS NULL OR (grc_success=1 AND gto_completion_time IS NOT NULL)';
         $filter['gsu_active']  = 1;
 
         // NOTE! $this->model does not need to be the token model, but $model is a token model

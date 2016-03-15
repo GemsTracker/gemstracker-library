@@ -155,7 +155,13 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
             $ct = new \MUtil_Model_Type_ConcatenatedRow('|', $translator->_(', '));
             $ct->apply($this, 'gtr_organizations');
         }
-
+        if ($edit) {
+            $this->set('gtr_track_name',
+                    'minlength', 4,
+                    'size', 30,
+                    'validators[unique]', $this->createUniqueValidator('gtr_track_name')
+                    );
+        }
         return $this;
     }
 

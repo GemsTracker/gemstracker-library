@@ -19,9 +19,4 @@
             <directory suffix=".php">../classes/Gems</directory>
         </whitelist>
     </filter>
-    <!--
-    <logging>
-    	<log type="coverage-clover" target="reports/coverage.xml"/>
-    </logging>
-    -->      
 </phpunit>

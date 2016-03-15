@@ -228,7 +228,6 @@ class Gems_Util_DbLookup extends UtilAbstract
             'gtr_active'          => 1,
             'gsu_active'          => 1,
             'grc_success'         => 1,
-            'gr2o_reception_code' => 'OK',
         	'gto_completion_time' => NULL,
         	'gto_valid_from <= CURRENT_DATE',
             '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)'
@@ -296,7 +295,14 @@ class Gems_Util_DbLookup extends UtilAbstract
                     WHERE gor_active = 1
                     ORDER BY gor_name";
 
-        return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'organizations', 'natsort');
+        try {
+            $organizations = $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'organizations', 'natsort');
+        } catch (\Exception $exc) {
+            // Intentional fallthrough when no db present
+            $organizations = array();
+        }
+
+        return $organizations;
     }
 
     /**
@@ -319,7 +325,7 @@ class Gems_Util_DbLookup extends UtilAbstract
                     FROM gems__organizations
                     WHERE gor_active = 1 and gor_code = ?
                     ORDER BY gor_name";
-        return $this->_getSelectPairsCached(__FUNCTION__ . '_' , $code, $sql, $code, 'organizations', 'natsort');
+        return $this->_getSelectPairsCached(__FUNCTION__ . '_' . $code, $sql, $code, 'organizations', 'natsort');
     }
 
     /**
@@ -333,14 +339,14 @@ class Gems_Util_DbLookup extends UtilAbstract
             FROM gems__organizations
             WHERE gor_active = 1 AND gor_has_login = 1
             ORDER BY gor_name";
-        
+
         try {
-            $organizations = $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'organizations', 'natsort');    
+            $organizations = $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'organizations', 'natsort');
         } catch (\Exception $exc) {
             // Intentional fallthrough when no db present
             $organizations = array();
-        }        
-        
+        }
+
         return $organizations;
     }
 

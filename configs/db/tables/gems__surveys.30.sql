@@ -29,6 +29,7 @@ CREATE TABLE if not exists gems__surveys (
         gsu_duration                varchar(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
         gsu_code                    varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gsu_export_code             varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
         gsu_changed                 timestamp not null default current_timestamp on update current_timestamp,
         gsu_changed_by              bigint unsigned not null,

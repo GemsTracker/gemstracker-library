@@ -276,11 +276,26 @@ interface Gems_Tracker_Engine_TrackEngineInterface
     public function getRoundDefaults();
 
     /**
+     * The round descriptions for this track
+     *
+     * @return array roundId => string
+     */
+    public function getRoundDescriptions();
+
+    /**
      * An array of snippet names for editing a round.
      *
      * @return array of string snippet names
      */
     public function getRoundEditSnippetNames();
+
+    /**
+     * Get the round object
+     *
+     * @param int $roundId  Gems round id
+     * @return \Gems\Tracker\Round
+     */
+    public function getRound($roundId);
 
     /**
      * Returns a model that can be used to retrieve or save the data.
@@ -290,6 +305,13 @@ interface Gems_Tracker_Engine_TrackEngineInterface
      * @return \Gems_Model_JoinModel
      */
     public function getRoundModel($detailed, $action);
+
+    /**
+     * Get all the round objects
+     *
+     * @return array of roundId => \Gems\Tracker\Round
+     */
+    public function getRounds();
 
     /**
      * An array of snippet names for editing a round.

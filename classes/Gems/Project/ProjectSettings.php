@@ -673,6 +673,79 @@ class Gems_Project_ProjectSettings extends \ArrayObject
     }
 
     /**
+     * Get the form address for monitor messages
+     *
+     * @param string $name Optional section name
+     * @return string
+     */
+    public function getMonitorFrom($name = null)
+    {
+        if ($name) {
+            if (isset($this['monitor'], $this['monitor'][$name], $this['monitor'][$name]['from']) &&
+                    trim($this['monitor'][$name]['from'])) {
+                return $this['monitor'][$name]['from'];
+            }
+        }
+        if (isset($this['monitor'], $this['monitor']['default'], $this['monitor']['default']['from']) &&
+                trim($this['monitor']['default']['from'])) {
+            return $this['monitor']['default']['from'];
+        }
+
+        $email = $this->getSiteEmail();
+        if ($email) {
+            return $email;
+        }
+
+        return 'noreply@gemstracker.org';
+    }
+
+    /**
+     * Get the period for monitor messages, optionally for a name
+     *
+     * @param string $name Optional section name
+     * @return string
+     */
+    public function getMonitorPeriod($name = null)
+    {
+        if ($name) {
+            if (isset($this['monitor'], $this['monitor'][$name], $this['monitor'][$name]['period']) &&
+                    trim($this['monitor'][$name]['period'])) {
+                return $this['monitor'][$name]['period'];
+            }
+        }
+
+        if (isset($this['monitor'], $this['monitor']['default'], $this['monitor']['default']['period']) &&
+                trim($this['monitor']['default']['period'])) {
+            return $this['monitor']['default']['period'];
+        }
+
+        return '25h';
+    }
+
+    /**
+     * Get the to addresses for monitor messages, optionally for a name
+     *
+     * @param string $name Optional section name
+     * @return string
+     */
+    public function getMonitorTo($name = null)
+    {
+        if ($name) {
+            if (isset($this['monitor'], $this['monitor'][$name], $this['monitor'][$name]['to']) &&
+                    trim($this['monitor'][$name]['to'])) {
+                return $this['monitor'][$name]['to'];
+            }
+        }
+
+        if (isset($this['monitor'], $this['monitor']['default'], $this['monitor']['default']['to']) &&
+                trim($this['monitor']['default']['to'])) {
+            return $this['monitor']['default']['to'];
+        }
+
+        return null;
+    }
+
+    /**
      * Returns the public name of this project.
      *
      * @return string

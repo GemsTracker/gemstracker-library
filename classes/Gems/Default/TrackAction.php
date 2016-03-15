@@ -336,7 +336,7 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
      * @var array $summarizedActions Array of the actions that use a
      * summarized version of the model.
      */
-    public $summarizedActions = array('index', 'autofilter', 'create', 'view');
+    public $summarizedActions = array('index', 'autofilter', 'create', 'view', 'view-survey');
 
     /**
      * The actions that should result in the survey return being set.
@@ -378,6 +378,22 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
         'Tracker\\TrackUsageOverviewSnippet',
         'Tracker\\Buttons\\TrackActionButtonRow',
         'Tracker\\TrackSurveyOverviewSnippet',
+        );
+    
+    /**
+     * The parameters used for the viewSurveys action.
+     */
+    protected $viewSurveyParameters = array(
+        'surveyId' => 'getSurveyId',
+    );
+    
+    /**
+     * Snippets used for showing survey questions
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $viewSurveySnippets = array(
+        'Survey\\SurveyQuestionsSnippet'
         );
 
     /**
@@ -995,6 +1011,11 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
      */
     public function questionsAction()
     {
+        if (!$this->getTokenId()) {
+            $params = $this->_processParameters($this->questionsParameters);
+        } else {
+            $params = $this->_processParameters($this->questionsParameters + $this->defaultTokenParameters);
+        }
         if ($this->questionsSnippets) {
             $params = $this->_processParameters($this->questionsParameters + $this->defaultTokenParameters);
 
@@ -1058,5 +1079,14 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
 
             $this->addSnippets($this->viewSnippets, $params);
         }
+    }
+    
+    /**
+     * Used in AddTracksSnippet to show a preview for an insertable survey
+     */
+    public function viewSurveyAction()
+    {
+        $params = $this->_processParameters($this->viewSurveyParameters);
+        $this->addSnippets($this->viewSurveySnippets, $params);
     }
 }

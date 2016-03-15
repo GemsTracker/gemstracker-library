@@ -1091,3 +1091,17 @@ ALTER IGNORE TABLE gems__track_fields DROP INDEX gtf_id_order_2;  -- Undo double
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.log.files,pr.log.files.download')
     WHERE grl_name = 'super'
         AND grl_privileges NOT LIKE '%,pr.log.files%';
+
+-- PATCH: New rights and fields for track im- & export
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.track-maintenance.export')
+    WHERE grl_name = 'super'
+        AND grl_privileges NOT LIKE '%,pr.track-maintenance.export%';
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.track-maintenance.import')
+    WHERE grl_name = 'super'
+        AND grl_privileges NOT LIKE '%,pr.track-maintenance.import%';
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.track-maintenance.merge')
+    WHERE grl_name = 'super'
+        AND grl_privileges NOT LIKE '%,pr.track-maintenance.merge%';
+
+ALTER TABLE gems__surveys
+    ADD gsu_export_code varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER gsu_code;

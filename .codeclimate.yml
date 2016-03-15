@@ -1,0 +1,14 @@
+engines:
+  fixme:
+    enabled: true
+  phpmd:
+    enabled: true
+    config:
+      rulesets: tests/phpmdruleset.xml
+ratings:
+  paths:
+  - "**.php"
+  - "**.module"
+  - "**.inc"
+exclude_paths:
+- tests/**/*

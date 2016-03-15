@@ -74,6 +74,7 @@ abstract class Gems_Test_DbTestAbstract extends \Zend_Test_PHPUnit_DatabaseTestC
         $this->db = $this->getConnection()->getConnection();
 
         \Zend_Registry::set('db', $this->db);
+        \Zend_Db_Table::setDefaultAdapter($this->db);
 
         $settings = new \Zend_Config_Ini(GEMS_ROOT_DIR . '/configs/application.example.ini', APPLICATION_ENV);
         $sa = $settings->toArray();

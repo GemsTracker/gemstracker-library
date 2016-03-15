@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: RespondentTrack.php 2836 2015-12-31 16:15:40Z matijsdejong $
  */
 
 /**
@@ -375,6 +375,72 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
 
         return $this;
     }
+    
+    /**
+     * Assign the tokens to the correct relation
+     * 
+     * Only surveys that have not yet been answered will be assigned to the correct relation.
+     * 
+     * @return int Number of changes tokens
+     */
+    public function assignTokensToRelations()
+    {
+        // Find out if we have relation fields and return when none exists in this track
+        $relationFields = $this->getTrackEngine()->getFieldsOfType('relation');
+        if (empty($relationFields)) {
+            return 0;
+        }
+        
+        // Check if we have a respondent relation id (grr_id) in the track fields
+        // and assign the token to the correct relation or leave open when no
+        // relation is defined.       
+        $this->_ensureRounds();
+        $relationFields = $this->getFieldData();        
+        $fieldPrefix = \Gems\Tracker\Model\FieldMaintenanceModel::FIELDS_NAME . \Gems\Tracker\Engine\FieldsDefinition::FIELD_KEY_SEPARATOR;
+        $changes = 0;
+        foreach ($this->getTokens() as $token) {
+            /* @var $token Gems_Tracker_Token */            
+            if (!$token->isCompleted() && $token->getReceptionCode()->isSuccess()) {
+                $roundId = $token->getRoundId();
+                if (!array_key_exists($roundId, $this->_rounds)) {
+                    // If not a current round for this track, do check the round when it still exists
+                    $round = $this->getTrackEngine()->getRoundModel(true, 'index')->loadFirst(array('gro_id_round' => $roundId));
+                } else {
+                    $round = $this->_rounds[$roundId];
+                }
+
+                $relationFieldId = null;
+                $relationId      = null;
+
+                // Read from the round
+                if (!empty($round) && $round['gro_id_track'] == $this->getTrackId() && $round['gro_active'] == 1) {
+                    if ($round['gro_id_relationfield'] > 0) {
+                        $relationFieldId = $round['gro_id_relationfield'];
+                    }
+                } else {
+                    // Try to read from token, as this is a token without a round
+                    $relationFieldId = $token->getRelationFieldId();
+                }
+                
+                if ($relationFieldId>0) {
+                    $fieldKey = $fieldPrefix . $relationFieldId;
+                    if (isset($relationFields[$fieldKey])) {
+                        $relationId = (int) $relationFields[$fieldKey];
+                    } else {
+                        $relationId = -1 * $relationFieldId;
+                    }
+                }
+                
+                $changes = $changes + $token->assignTo($relationId, $relationFieldId);
+            }
+        }
+
+        if (MUtil_Model::$verbose && $changes > 0) {
+            MUtil_Echo::r(sprintf('%s tokens changed due to changes in respondent relation assignments.', $changes));
+        }
+        
+        return $changes;
+    }
 
     /**
      * Calculates the track end date
@@ -472,14 +538,18 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
 
         $engine = $this->getTrackEngine();
 
+        $this->db->beginTransaction();
         // Check for validFrom and validUntil dates that have changed.
         if ($fromToken) {
-            return $count + $engine->checkTokensFrom($this, $fromToken, $userId, $skipToken);
+            $count += $engine->checkTokensFrom($this, $fromToken, $userId, $skipToken);
         } elseif ($this->_checkStart) {
-            return $count + $engine->checkTokensFrom($this, $this->_checkStart, $userId);
+            $count += $engine->checkTokensFrom($this, $this->_checkStart, $userId);
         } else {
-            return $count + $engine->checkTokensFromStart($this, $userId);
+            $count += $engine->checkTokensFromStart($this, $userId);
         }
+        $this->db->commit();
+
+        return $count;
     }
 
     /**
@@ -1024,7 +1094,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     {
         // Process any events
         $trackEngine = $this->getTrackEngine();
-
+        
         if ($event = $trackEngine->getFieldUpdateEvent()) {
             return $event->processFieldUpdate($this, $userId);
         }
@@ -1041,6 +1111,9 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     {
         // Process any events
         $trackEngine = $this->getTrackEngine();
+        
+        // Places here instead of only in handle field update so it will run on new tracks too
+        $this->assignTokensToRelations();
 
         if ($event = $trackEngine->getTrackCalculationEvent()) {
             return $event->processTrackCalculation($this, $userId);
@@ -1102,16 +1175,16 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
 
         $this->_fixFieldData();
 
-        if (! $fieldsChanged) {
-            return 0;
-        }
+//        if (! $fieldsChanged) {
+//            return 0;
+//        }
 
         $changes       = $fieldDef->saveFields($this->_respTrackId, $this->_fieldData);
         $fieldsChanged = (boolean) $changes;
 
-        if (! $fieldsChanged) {
-            return 0;
-        }
+//        if (! $fieldsChanged) {
+//            return 0;
+//        }
 
         if (! $userId) {
             return 0;
@@ -1183,7 +1256,10 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     {
         $fieldDef  = $this->getTrackEngine()->getFieldsDefinition();
         $fieldMap  = $fieldDef->getFieldCodes();
-        $fieldData = array();
+        $fieldData = $this->getFieldData(); // To preserve old values
+
+        // Get only the real fieldnames, strip the extra code entries		
+        $fieldData = array_intersect_key($fieldData, $fieldMap);
 
         // Use values on code fields if oiginal does not exist
         foreach ($data as $key => $value)
@@ -1201,7 +1277,11 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         $this->_fieldData = $fieldDef->processBeforeSave($fieldData, $this->_respTrackData);
         $changes          = $fieldDef->saveFields($this->_respTrackId, $this->_fieldData);
 
-        $this->_fixFieldData();
+        if ($changes) {
+            $this->_ensureFieldData(true);
+        } else {
+            $this->_fixFieldData();
+        }
 
         if ($userId && $changes) {
             $this->handleFieldUpdate($userId);

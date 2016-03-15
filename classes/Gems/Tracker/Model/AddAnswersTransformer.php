@@ -95,12 +95,12 @@ class AddAnswersTransformer extends \MUtil_Model_ModelTransformerAbstract
     public function transformLoad(\MUtil_Model_ModelAbstract $model, array $data, $new = false, $isPostData = false)
     {
         // get tokens
-        
+
         $tokens = \MUtil_Ra::column('gto_id_token', $data);
 
         $answerRows = $this->source->getRawTokenAnswerRows(array('token' => $tokens), $this->survey->getSurveyId());
         $resultRows = array();
-        
+
         $emptyRow = array_fill_keys($model->getItemNames(), null);
 
         foreach ($data as $row) {
@@ -131,14 +131,13 @@ class AddAnswersTransformer extends \MUtil_Model_ModelTransformerAbstract
      */
     public function transformRowAfterSave(\MUtil_Model_ModelAbstract $model, array $row)
     {
-
         $token = $this->source->getToken($row['gto_id_token']);
         $answers = $row;
         $surveyId = $this->survey->getSurveyId();
         if ($this->source->setRawTokenAnswers($token, $answers, $surveyId)) {
             $this->changed++;
         }
-        
+
         // No changes
         return $row;
     }

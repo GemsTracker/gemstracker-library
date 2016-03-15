@@ -96,8 +96,8 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
         $this->logRespondentCommunication();
     }
 
-	public function afterRegistry()
-	{
+    public function afterRegistry()
+    {
         if ($this->tokenIdentifier) {
             $this->token = $this->loader->getTracker()->getToken($this->tokenIdentifier);
             if ($this->token->exists) {
@@ -108,8 +108,13 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
             $this->loadDefault();
         }
 
-		parent::afterRegistry();
-	}
+        parent::afterRegistry();
+        
+        if ($this->token && $this->token->hasRelation()) {
+            // If we have a token with a relation, remove the respondent and use relation in to field
+            array_pop($this->to);
+        }
+    }
 
     public function getDataLoaded()
     {
@@ -202,7 +207,7 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
     protected function loadMailFields()
     {
         parent::loadMailFields();
-        $this->addMailFields($this->tokenMailFields());
+        $this->mailFields = $this->tokenMailFields() + $this->mailFields;   // Prefer out fields over the ones from the super class
     }
 
     /**
@@ -316,22 +321,64 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
                 }
                 $result[$key] = $data;
             }
+            
+            if ($this->token->hasRelation()) {
+                $allFields = $this->getMailFields(false);
+                // Set about to patient name
+                $results['relation_about'] = $allFields['name'];
+                $results['relation_about_first_name'] = $allFields['first_name'];
+                $results['relation_about_full_name'] = $allFields['full_name'];
+                $results['relation_about_greeting'] = $allFields['greeting'];
+                $results['relation_about_last_name'] = $allFields['last_name'];
+                $results['relation_field_name'] = $this->token->getRelationFieldName();
+
+                if ($relation = $this->token->getRelation()) {
+                    // Now update all respondent fields to be of the relation
+                    $results['name']       = $relation->getName();
+                    $results['first_name'] = $relation->getFirstName();
+                    $results['last_name']  = $relation->getLastName();
+                    $results['full_name']  = $relation->getHello($locale);
+                    $results['greeting']   = $relation->getGreeting($locale);
+                    $results['to']         = $relation->getEmail();
+                    $this->addTo($results['to'], $results['name']);
+                } else {
+                    $results['name']       = $this->translate->getAdapter()->_('Undefined relation');
+                    $results['first_name'] = '';
+                    $results['last_name']  = '';
+                    $results['full_name']  = '';
+                    $results['greeting']   = '';
+                    $results['to']         = '';
+                }
+            } else {
+                $results['relation_about'] = $this->translate->getAdapter()->_('yourself', $this->token->getRespondentLanguage());
+                $results['relation_about_first_name'] = '';
+                $results['relation_about_full_name'] = '';
+                $results['relation_about_greeting'] = '';
+                $results['relation_about_last_name'] = '';
+                $results['relation_field_name'] = '';
+            }
 
         } else {
-            $result['round']            = '';
-            $result['site_ask_url']     = '';
-            $result['survey']           = '';
-            $result['todo_all']         = '';
-            $result['todo_all_count']   = '';
-            $result['todo_track']       = '';
-            $result['todo_track_count'] = '';
-            $result['token']            = '';
-            $result['token_from']       = '';
-            $result['token_link']       = '';
-            $result['token_until']      = '';
-            $result['token_url']        = '';
-            $result['token_url_input']  = '';
-            $result['track']            = '';
+            $result['round']                     = '';
+            $result['site_ask_url']              = '';
+            $result['survey']                    = '';
+            $result['todo_all']                  = '';
+            $result['todo_all_count']            = '';
+            $result['todo_track']                = '';
+            $result['todo_track_count']          = '';
+            $result['token']                     = '';
+            $result['token_from']                = '';
+            $result['token_link']                = '';
+            $result['token_until']               = '';
+            $result['token_url']                 = '';
+            $result['token_url_input']           = '';
+            $result['track']                     = '';
+            $result['relation_about']            = $this->translate->getAdapter()->_('yourself');
+            $result['relation_about_first_name'] = '';
+            $result['relation_about_full_name']  = '';
+            $result['relation_about_greeting']   = '';
+            $result['relation_about_last_name']  = '';
+            $result['relation_field_name']       = '';
         }
 
         return $result;

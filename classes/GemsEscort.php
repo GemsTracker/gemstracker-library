@@ -149,21 +149,8 @@ class GemsEscort extends \MUtil_Application_Escort
         // \MUtil_Echo::track($dirs);
         $this->_loaderDirs = array_reverse($dirs);
 
-        // NAMESPACES
-        $autoloader = \Zend_Loader_Autoloader::getInstance();
-
-        //*
-        $nsLoader = function($className) {
-            $className = str_replace('\\', '_', $className);
-            \Zend_Loader_Autoloader::autoload($className);
-        };
-        $autoloader->pushAutoloader($nsLoader, 'MUtil\\');
-        // */
-
         foreach ($this->_loaderDirs as $prefix => $path) {
             if ($prefix) {
-                $autoloader->registerNamespace($prefix . '_');
-                $autoloader->pushAutoloader($nsLoader, $prefix . '\\');
                 \MUtil_Model::addNameSpace($prefix);
             }
         }
@@ -573,9 +560,6 @@ class GemsEscort extends \MUtil_Application_Escort
 
             $this->getLoader()->addPrefixPath('OpenRosa', GEMS_LIBRARY_DIR . '/classes/OpenRosa', true);
 
-            $autoloader = \Zend_Loader_Autoloader::getInstance();
-            $autoloader->registerNamespace('OpenRosa_');
-
             /**
              * Add Source for OpenRosa
              */
@@ -749,9 +733,6 @@ class GemsEscort extends \MUtil_Application_Escort
             // Only turn on when activated
             return;
         }
-
-        $autoloader = \Zend_Loader_Autoloader::getInstance();
-        $autoloader->registerNamespace('ZFDebug');
 
         # Instantiate the database adapter and cache
         $this->bootstrap('db');

@@ -452,7 +452,13 @@ abstract class Gems_Menu_MenuAbstract
         // $page->addExcelAction();
         $page = $page->addShowAction();
         $page->addEditAction();
-        $page->addDeleteAction();
+
+        $onDelete = new \MUtil_Html_OnClickArrayAttribute();
+        $onDelete->addConfirm($this->_("Are you sure you want to delete this file?"));
+        $page->addButtonOnly($this->_('Delete'), $privilege . '.delete', $controller, 'delete', array(
+            'onclick' => $onDelete,
+            ));
+
         $page->addButtonOnly($this->_('Download'), $privilege . '.download', $controller, 'download')
                 ->setModelParameters(1);
 
@@ -522,13 +528,6 @@ abstract class Gems_Menu_MenuAbstract
     {
         // LOG SETUP CONTROLLER
         $this->addBrowsePage($this->_('Log Setup'), 'pr.log.maintenance', 'log-maintenance');
-
-        // LOG CONTROLLER
-        $page = $this->addPage($this->_('Log'), 'pr.log', 'log', 'index');
-        $page->addAutofilterAction();
-        $page->addExcelAction();
-        $page->addShowAction()
-                ->setNamedParameters(\Gems_Model::LOG_ITEM_ID, 'gla_id');
 
         // LOG CONTROLLER
         $page = $this->addPage($this->_('Log'), 'pr.log', 'log', 'index');
@@ -821,7 +820,8 @@ abstract class Gems_Menu_MenuAbstract
 
         // TRACK MAINTENANCE CONTROLLER
         $page = $setup->addBrowsePage($this->_('Tracks'), 'pr.track-maintenance', 'track-maintenance');
-        $showPage = $this->findItem(array('controller'=>'track-maintenance', 'action'=>'show'));
+
+        $showPage = $this->findItem(array('controller' => 'track-maintenance', 'action' => 'show'));
         $showPage->addButtonOnly($this->_('Copy'),  'pr.track-maintenance.copy', 'track-maintenance', 'copy')
                 ->setModelParameters(1);
 
@@ -851,6 +851,10 @@ abstract class Gems_Menu_MenuAbstract
         $spage->addDeleteAction('pr.track-maintenance.delete')
                 ->addNamedParameters(\Gems_Model::ROUND_ID, 'gro_id_round', \MUtil_Model::REQUEST_ID, 'gro_id_track');
 
+        $showPage->addAction($this->_('Export'), 'pr.track-maintenance.export', 'export')
+                ->addParameters(\MUtil_Model::REQUEST_ID);
+        $showPage->addAction($this->_('Merge Import'), 'pr.track-maintenance.merge', 'merge')
+                ->addParameters(\MUtil_Model::REQUEST_ID);
         $showPage->addAction($this->_('Check assignments'), 'pr.track-maintenance.check', 'check-track')
                 ->addParameters(\MUtil_Model::REQUEST_ID);
         $showPage->addAction($this->_('Recalculate fields'), 'pr.track-maintenance.check', 'recalc-fields')

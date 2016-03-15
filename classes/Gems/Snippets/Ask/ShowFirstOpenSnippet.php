@@ -110,7 +110,13 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
         }
 
         $html->h3($this->_('Token'));
-        $html->pInfo(sprintf($this->_('Welcome %s,'), $this->showToken->getRespondentName()));
+        if ($this->token->hasRelation()) {
+            $p = $html->pInfo(sprintf($this->_('Welcome %s,'), $this->showToken->getRelation()->getName()));    
+            
+            $html->pInfo(sprintf($this->_('We kindly ask you to answer a survey about %s.'), $this->showToken->getRespondent()->getName()));
+        } else {
+            $p = $html->pInfo(sprintf($this->_('Welcome %s,'), $this->showToken->getRespondentName()));    
+        }
 
         if ($this->wasAnswered) {
             $html->pInfo(sprintf($this->_('Thank you for answering the "%s" survey.'), $this->token->getSurveyName()));

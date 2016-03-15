@@ -72,7 +72,7 @@ class Gems_Tracker_Engine_AnyStepEngine extends \Gems_Tracker_Engine_StepEngineA
             $rounds = $this->_rounds;
         }
         foreach ($rounds as $roundId => $round) {
-            $rounds[$roundId] = $this->getRoundDescription($round);
+            $rounds[$roundId] = $this->getRound($roundId)->getFullDescription();
         }
         return $this->_applyOptions($model, 'gro_valid_after_id', $rounds, $itemData);
     }
@@ -90,7 +90,7 @@ class Gems_Tracker_Engine_AnyStepEngine extends \Gems_Tracker_Engine_StepEngineA
 
         $rounds = array();
         foreach ($this->_rounds as $roundId => $round) {
-            $rounds[$roundId] = $this->getRoundDescription($round);
+            $rounds[$roundId] = $this->getRound($roundId)->getFullDescription();
         }
 
         if (!empty($itemData['gro_id_round'])) {

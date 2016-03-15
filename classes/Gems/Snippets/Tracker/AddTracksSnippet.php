@@ -147,6 +147,7 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
                             gsu_active = 1 AND
                             ggp_group_active = 1 AND
                             ggp_respondent_members = 1 AND
+                            gsu_insertable = 1 AND
                             gsu_insert_organizations LIKE '%|$orgId|%'
                         ORDER BY gsu_survey_name";
                     break;
@@ -158,6 +159,7 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
                             gsu_active = 1 AND
                             ggp_group_active = 1 AND
                             ggp_staff_members = 1 AND
+                            gsu_insertable = 1 AND
                             gsu_insert_organizations LIKE '%|$orgId|%'
                         ORDER BY gsu_survey_name";
                     break;
@@ -172,7 +174,6 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
         $menuIndex  = $this->menu->findController('track', 'index');
 
         if ($tracks) {
-            $menuView   = $this->menu->findController('track', 'view');
             $menuCreate = $this->menu->findController('track', $action);
 
             if (! $menuCreate->isAllowed()) {
@@ -189,7 +190,14 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
             }
 
             $data   = new \MUtil_Lazy_RepeatableByKeyValue($tracks);
-            $params = array('gtr_id_track' => $data->key, 'gsu_id_survey' => $data->key);
+            
+            if ($trackType == 'tracks') {
+                $menuView   = $this->menu->findController('track', 'view');
+                $params = array('gtr_id_track' => $data->key);
+            } else {
+                $menuView   = $this->menu->findController('track', 'view-survey');
+                $params = array('gsu_id_survey' => $data->key);
+            }
 
             if (\MUtil_Bootstrap::enabled()) {
                 if (count($tracks) > $this->scrollTreshold) {
@@ -227,8 +235,8 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
         } else {
             if (\MUtil_Bootstrap::enabled()) {
                 $div->button($trackTypeDescription,
-                    array('class' => 'toolanchor disabled', 'data-toggle' => 'dropdown', 'type' => 'button'));
-                $dropdownButton = $div->button(array('class' => 'disabled dropdown-toggle', 'data-toggle' => 'dropdown', 'type' => 'button'));
+                    array('class' => 'toolanchor btn disabled', 'data-toggle' => 'dropdown', 'type' => 'button'));
+                $dropdownButton = $div->button(array('class' => 'disabled btn dropdown-toggle', 'data-toggle' => 'dropdown', 'type' => 'button'));
                 $dropdownButton->span(array('class' => 'caret', 'renderClosingTag' => true));
                 $options = array('class' => 'dropdown-menu disabled', 'role' => 'menu');
             } else {

@@ -197,7 +197,7 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
         $this->setIfExists('gapr_name',             'label', $this->_('Procedures'));
         $this->setIfExists('glo_name',              'label', $this->_('Location'));
         $this->setIfExists('gor_name',              'label', $this->_('Organization'));
-        $this->setIfExists('gap_subject',           'label', $this->_('Comment'));
+        $this->setIfExists('gap_subject',           'label', $this->_('Subject'));
 
         $dels = $this->loader->getAgenda()->getStatusKeysInactiveDbQuoted();
         if ($dels) {

@@ -145,15 +145,6 @@ abstract class FieldAbstract extends \MUtil_Translate_TranslateableAbstract impl
     }
 
     /**
-     *
-     * @return The field code
-     */
-    public function getCode()
-    {
-        return $this->_fieldDefinition['gtf_field_code'];
-    }
-
-    /**
      * Get the fields that should be used for calculation,
      * first field to use first.
      *
@@ -180,6 +171,15 @@ abstract class FieldAbstract extends \MUtil_Translate_TranslateableAbstract impl
             }
         }
         return array_reverse($output, true);
+    }
+
+    /**
+     *
+     * @return string The field code
+     */
+    public function getCode()
+    {
+        return $this->_fieldDefinition['gtf_field_code'];
     }
 
     /**
@@ -247,7 +247,7 @@ abstract class FieldAbstract extends \MUtil_Translate_TranslateableAbstract impl
 
     /**
      *
-     * @return The track field id
+     * @return int The track field id
      */
     public function getFieldId()
     {
@@ -256,7 +256,7 @@ abstract class FieldAbstract extends \MUtil_Translate_TranslateableAbstract impl
 
     /**
      *
-     * @return The track field key as used by the union model
+     * @return string The track field key as used by the union model
      */
     public function getFieldKey()
     {
@@ -265,7 +265,26 @@ abstract class FieldAbstract extends \MUtil_Translate_TranslateableAbstract impl
 
     /**
      *
-     * @return The track field sub (model) value
+     * @return string The field type
+     */
+    public function getFieldType()
+    {
+        return $this->_fieldDefinition['gtf_field_type'];
+    }
+
+    /**
+     *
+     * @return int The field order
+     */
+    public function getOrder()
+    {
+        return $this->_fieldDefinition['gtf_id_order'];
+    }
+
+
+    /**
+     *
+     * @return string The track field sub (model) value
      */
     public function getFieldSub()
     {
@@ -274,7 +293,7 @@ abstract class FieldAbstract extends \MUtil_Translate_TranslateableAbstract impl
 
     /**
      *
-     * @return The field label
+     * @return string The field label
      */
     public function getLabel()
     {

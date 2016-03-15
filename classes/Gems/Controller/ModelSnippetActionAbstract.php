@@ -195,7 +195,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStopSnippets = 'Generic\\CurrentButtonRowSnippet';
+    protected $indexStopSnippets = 'Generic\\CurrentSiblingsButtonRowSnippet';
 
     /**
      * The snippets used for the show action

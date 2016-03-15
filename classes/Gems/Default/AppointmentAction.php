@@ -133,7 +133,12 @@ class Gems_Default_AppointmentAction extends \Gems_Default_RespondentChildAction
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = array('Generic\\ContentTitleSnippet', 'Agenda_AppointmentShowSnippet');
+    protected $showSnippets = array(
+        'Generic\\ContentTitleSnippet',
+        'Agenda_AppointmentShowSnippet',
+        'Track\\TracksForAppointment',
+        'Agenda\\AppointmentTokensSnippet',
+        );
 
     /**
      * Creates a model for getModel(). Called only for each new $action.

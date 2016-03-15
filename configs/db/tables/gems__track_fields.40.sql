@@ -25,7 +25,7 @@ CREATE TABLE if not exists gems__track_fields (
         gtf_created_by          bigint unsigned not null,
 
         PRIMARY KEY (gtf_id_field),
-        INDEX (gtf_id_track)
+        INDEX (gtf_id_track),
         INDEX (gtf_id_order)
     )
     ENGINE=InnoDB

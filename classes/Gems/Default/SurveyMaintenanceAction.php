@@ -522,6 +522,10 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
                 'description', $this->_('Optional code name to link the survey to program code.'),
                 'size', 10);
 
+        $model->set('gsu_export_code',               'label', $this->_('Survey export code'),
+                'description', $this->_('A unique code indentifying this survey during track import'),
+                'size', 20);
+
         if ($detailed) {
             $events = $this->loader->getEvents();
             $beforeOptions = $events->listSurveyBeforeAnsweringEvents();
@@ -601,9 +605,9 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
 
         $output[10] = array('gsu_survey_name', $br, 'gsu_survey_description');
         $output[20] = array('gsu_surveyor_active', \MUtil_Html::raw($this->_(' [')), 'gso_source_name',
-            \MUtil_Html::raw($this->_(']')), $br, 'gsu_status_show');
+            \MUtil_Html::raw($this->_(']')), $br, 'gsu_status_show', $br, 'gsu_insertable');
         $output[30] = array('gsu_active', \MUtil_Html::raw(' '), 'track_count', $br, 'gsu_id_primary_group');
-        $output[40] = array('gsu_insertable', $br, 'gsu_code');
+        $output[40] = array('gsu_code', $br, 'gsu_export_code');
 
         return $output;
     }

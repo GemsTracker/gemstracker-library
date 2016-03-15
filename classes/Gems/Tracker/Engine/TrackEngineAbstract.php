@@ -32,11 +32,12 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: TrackEngineAbstract.php 2836 2015-12-31 16:15:40Z matijsdejong $
  */
 
 use Gems\Tracker\Model\AddTrackFieldsTransformer;
 use Gems\Tracker\Model\RoundModel;
+use Gems\Tracker\Round;
 use MUtil\Model\Dependency\DependencyInterface;
 
 /**
@@ -56,6 +57,12 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
      * @var \Gems\Tracker\Engine\FieldsDefinition;
      */
     protected $_fieldsDefinition;
+
+    /**
+     *
+     * @var array of rounds objects, initiated at need
+     */
+    protected $_roundObjects;
 
     /**
      *
@@ -150,7 +157,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
     protected function _getAvailableIcons()
     {
         $icons = array();
-        $iterator = new \DirectoryIterator(realpath(GEMS_WEB_DIR . '/gems/icons'));
+        $iterator = new DirectoryIterator(realpath(GEMS_WEB_DIR . '/gems/icons'));
 
         foreach ($iterator as $fileinfo) {
             if ($fileinfo->isFile()) {
@@ -256,6 +263,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
 
         $newRounds = $this->db->fetchAll($sql, array($this->_trackId, $respTrackId, $orgId));
 
+        $this->db->beginTransaction();
         foreach ($newRounds as $round) {
 
             $values = array();
@@ -276,6 +284,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
 
             $this->tracker->createToken($values, $userId);
         }
+        $this->db->commit();
 
         return count($newRounds);
     }
@@ -510,10 +519,10 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
             $numRounds = 0;
         }
 
-        //\MUtil_Echo::track($track, $copy);
-        //\MUtil_Echo::track($rounds, $newRounds);
-        //\MUtil_Echo::track($fields, $newFields);
-        \Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage(sprintf($this->_('Copied track, including %s round(s) and %s field(s).'), $numRounds, $numFields));
+        //MUtil_Echo::track($track, $copy);
+        //MUtil_Echo::track($rounds, $newRounds);
+        //MUtil_Echo::track($fields, $newFields);
+        Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage(sprintf($this->_('Copied track, including %s round(s) and %s field(s).'), $numRounds, $numFields));
 
         return $newTrackId;
     }
@@ -713,6 +722,25 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
     }
 
     /**
+     * Get the round object
+     *
+     * @param int $roundId  Gems round id
+     * @return \Gems\Tracker\Round
+     */
+    public function getRound($roundId)
+    {
+        $this->_ensureRounds();
+
+        if (! isset($this->_rounds[$roundId])) {
+            return null;
+        }
+        if (! isset($this->_roundObjects[$roundId])) {
+            $this->_roundObjects[$roundId] = $this->tracker->createTrackClass('Round', $this->_rounds[$roundId]);
+        }
+        return $this->_roundObjects[$roundId];
+    }
+
+    /**
      * Returns a snippet name that can be used to display the answers to the token or nothing.
      *
      * @param \Gems_Tracker_Token $token
@@ -768,38 +796,22 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
     }
 
     /**
-     * A generic helper function for generating a round description.
+     * The round descriptions for this track
      *
-     * @param array $roundData Contents of the round
-     * @return string
+     * @return array roundId => string
      */
-    protected function getRoundDescription(array $roundData)
+    public function getRoundDescriptions()
     {
-        $surveys = $this->util->getTrackData()->getAllSurveys();
+        $this->_ensureRounds();
 
-        $hasOrder  = $roundData['gro_id_order'];
-        $hasDescr  = strlen(trim($roundData['gro_round_description']));
-        $hasSurvey = isset($surveys[$roundData['gro_id_survey']]);
-
-        if ($hasOrder && $hasDescr && $hasSurvey) {
-            return sprintf($this->_('%d: %s - %s'),
-                $roundData['gro_id_order'], $roundData['gro_round_description'], $surveys[$roundData['gro_id_survey']]);
-        } elseif ($hasOrder && $hasDescr) {
-            return sprintf($this->_('%d: %s'),
-                $roundData['gro_id_order'], $roundData['gro_round_description']);
-        } elseif ($hasOrder && $hasSurvey) {
-            return sprintf($this->_('%d: %s'),
-                $roundData['gro_id_order'], $surveys[$roundData['gro_id_survey']]);
-        } elseif ($hasDescr && $hasSurvey) {
-            return sprintf($this->_('%s - %s'),
-                $roundData['gro_round_description'], $surveys[$roundData['gro_id_survey']]);
-        } elseif ($hasDescr) {
-            return $roundData['gro_round_description'];
-        } elseif ($hasSurvey) {
-            return $surveys[$roundData['gro_id_survey']];
-        } else {
-            return '';
+        $output = array();
+        foreach ($this->getRounds() as $roundId => $round) {
+            if ($round instanceof Round) {
+                $output[$roundId] = $round->getFullDescription();
+            }
         }
+
+        return $output;
     }
 
     /**
@@ -912,6 +924,23 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
         }
 
         return $model;
+    }
+
+    /**
+     * Get all the round objects
+     *
+     * @return array of roundId => \Gems\Tracker\Round
+     */
+    public function getRounds()
+    {
+        $this->_ensureRounds();
+
+        foreach ($this->_rounds as $roundId => $roundData) {
+            if (! isset($this->_roundObjects[$roundId])) {
+                $this->_roundObjects[$roundId] = $this->tracker->createTrackClass('Round', $roundData);
+            }
+        }
+        return $this->_roundObjects;
     }
 
     /**
