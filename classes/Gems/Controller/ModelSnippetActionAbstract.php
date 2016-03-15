@@ -286,7 +286,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         // Make sure we have all the parameters used by the model
         $this->autofilterParameters = $this->autofilterParameters + $this->_autofilterExtraParameters;
 
-        $model = $this->getModel();
+        $model = $this->getExportModel();
 
         // Set any defaults.
         if (isset($this->autofilterParameters['sortParamAsc'])) {
@@ -326,7 +326,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
 
         $this->autofilterParameters = $this->autofilterParameters + $this->_autofilterExtraParameters;
 
-        $model = $this->getModel();
+        $model = $this->getExportModel();
         
         if (isset($this->autofilterParameters['sortParamAsc'])) {
             $model->setSortParamAsc($this->autofilterParameters['sortParamAsc']);
@@ -536,6 +536,20 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         } else {
             return array($emptyMsg);
         }
+    }
+
+    /** 
+     * Get the model for export and have the option to change it before using for export
+     * @return 
+     */
+    protected function getExportModel()
+    {
+        $model = $this->getModel();
+        $noExportColumns = $model->getColNames('noExport');
+        foreach($labeledColumns as $colName) {
+            $model->remove($colName, 'label');
+        }
+        return $model;
     }
 
     /**

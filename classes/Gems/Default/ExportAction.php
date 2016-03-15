@@ -30,10 +30,23 @@ class Gems_Default_ExportAction extends \Gems_Controller_ModelSnippetActionAbstr
             $exportModelSource = $this->loader->getExportModelSource($this->exportModelSource);         
             $model = $exportModelSource->getModel($this->_searchFilter, $this->data);
             //\MUtil_Echo::track($model->loadFirst($filter));
+            
+            $model->set('gto_id_token', 'noExport', true);
         } else {
-
             $basicArray = array('gto_id_survey', 'gto_id_track', 'gto_round_description', 'gto_id_organization', 'gto_start_date', 'gto_end_date', 'gto_valid_from', 'gto_valid_until');
             $model = new \Gems_Model_PlaceholderModel($basicArray);
+        }
+
+        return $model;
+    }
+
+    public function getModel()
+    {
+        $model = parent::getModel();
+
+        $noExportColumns = $model->getColNames('noExport');
+        foreach($labeledColumns as $colName) {
+            $model->remove($colName, 'label');
         }
 
         return $model;
