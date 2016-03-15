@@ -193,19 +193,23 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
         $model = $this->loader->getModels()->createRespondentModel();
 
         if (! $detailed) {
-            return $model->applyBrowseSettings();
+            $model->applyBrowseSettings();
+        } else {
+            switch ($action) {
+                case 'create':
+                case 'edit':
+                case 'import':
+                    $model->applyEditSettings($action == 'create');
+                    break;
+
+                case 'delete':
+                default:
+                    $model->applyDetailSettings();
+                    break;
+            }
         }
 
-        switch ($action) {
-            case 'create':
-            case 'edit':
-            case 'import':
-                return $model->applyEditSettings();
-
-            case 'delete':
-            default:
-                return $model->applyDetailSettings();
-        }
+        return $model;
     }
 
     /**

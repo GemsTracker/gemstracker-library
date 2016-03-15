@@ -166,7 +166,7 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
                 $tab++;
             }
 
-            if ($model->has($name, 'label')) {
+            if ($model->has($name, 'label') || $model->has($name, 'elementClass')) {
                 $bridge->add($name);
 
                 if ($theName = $model->get($name, 'startGroup')) {

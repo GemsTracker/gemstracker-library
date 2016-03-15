@@ -291,61 +291,21 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
      */
     public function getRespondentModel($detailed)
     {
+        static $isDetailed;
         static $model;
-        static $is_detailed;
 
-        if ($model && ($is_detailed === $detailed)) {
+        if ($model && ($isDetailed === $detailed)) {
             return $model;
         }
 
+        $isDetailed = $detailed;
         $model      = $this->createRespondentModel();
 
-        $translated = $this->util->getTranslated();
-
-        $model->setIfExists('gr2o_patient_nr',    'label', $this->translate->_('Respondent nr'));
-        if ((! $detailed) && $model->isMultiOrganization()) {
-            $model->addTable('gems__organizations', array('gr2o_id_organization' => 'gor_id_organization'));
-            $model->setIfExists('gor_name', 'label', $this->translate->_('Organization'));
-        }
-        $model->setIfExists('gr2o_opened',        'label', $this->translate->_('Opened'), 'formatFunction', $translated->formatDateTime);
-        $model->setIfExists('gr2o_consent',       'label', $this->translate->_('Consent'),
-                'multiOptions', $this->util->getDbLookup()->getUserConsents,
-                'default', $this->util->getDefaultConsent()
-                );
-
-        $model->setIfExists('grs_email',          'label', $this->translate->_('E-Mail'));
-        $model->setIfExists('gr2o_mailable',
-                'label', $this->translate->_('May be mailed'),
-                'elementClass', 'radio',
-                'separator', ' ',
-                'multiOptions', array(
-                        '1' => $this->translate->_('Yes'),
-                        '0' => $this->translate->_('No'),
-                    )
-                );
-
         if ($detailed) {
-            $model->copyKeys(); // The user can edit the keys.
-
-            $model->setIfExists('grs_gender',         'label', $this->translate->_('Gender'), 'multiOptions', $translated->getGenderHello());
-            $model->setIfExists('grs_first_name',     'label', $this->translate->_('First name'));
-            $model->setIfExists('grs_surname_prefix', 'label', $this->translate->_('Surname prefix'));
-            $model->setIfExists('grs_last_name',      'label', $this->translate->_('Last name'));
+            $model->applyDetailSettings();
+        } else {
+            $model->applyBrowseSettings();
         }
-        $model->set('name',                       'label', $this->translate->_('Name'),
-            'column_expression', new \Zend_Db_Expr("CONCAT(COALESCE(CONCAT(grs_last_name, ', '), '-, '), COALESCE(CONCAT(grs_first_name, ' '), ''), COALESCE(grs_surname_prefix, ''))"),
-            'fieldlist', array('grs_last_name', 'grs_first_name', 'grs_surname_prefix'));
-
-        $model->setIfExists('grs_address_1',      'label', $this->translate->_('Street'));
-        $model->setIfExists('grs_address_2',      'label', ' ');
-        $model->setIfExists('grs_zipcode',        'label', $this->translate->_('Zipcode'));
-        $model->setIfExists('grs_city',           'label', $this->translate->_('City'));
-
-        $model->setIfExists('grs_phone_1',        'label', $this->translate->_('Phone'));
-
-        $model->setIfExists('grs_birthday',       'label', $this->translate->_('Birthday'), 'dateFormat', \Zend_Date::DATE_MEDIUM);
-
-        $model->setIfExists('grs_iso_lang',       'default', 'nl');
 
         return $model;
     }

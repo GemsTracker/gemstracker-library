@@ -51,7 +51,7 @@ class Gems_Model_RespondentNlModel extends \Gems_Model_RespondentModel
     /**
      * Set those settings needed for the detailed display
      *
-     * @return \Gems_Model_RespondentModel
+     * @return \Gems_Model_RespondentNlModel
      */
     public function applyDetailSettings()
     {
@@ -66,14 +66,16 @@ class Gems_Model_RespondentNlModel extends \Gems_Model_RespondentModel
     /**
      * Set those values needed for editing
      *
+     * @param boolean $create True when creating
      * @return \Gems_Model_RespondentModel
      */
-    public function applyEditSettings()
+    public function applyEditSettings($create = false)
     {
-        parent::applyEditSettings();
+        parent::applyEditSettings($create);
+
         $translator = $this->getTranslateAdapter();
 
-        if ($this->hashSsn !== \Gems_Model_RespondentModel::SSN_HIDE) {
+        if ($this->hashSsn !== parent::SSN_HIDE) {
             self::setDutchSsn($this, $translator);
         }
 

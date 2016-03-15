@@ -49,30 +49,9 @@ class Gems_Model_HiddenOrganizationModel extends \Gems_Model_JoinModel
 {
     /**
      *
-     * @var \Gems_Loader
-     */
-    protected $loader;
-
-    /**
-     *
      * @var \Gems_User_User
      */
-    protected $user;
-
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-
-        if (! $this->user) {
-            $this->user = $this->loader->getCurrentUser();
-        }
-    }
+    protected $currentUser;
 
     /**
      * Stores the fields that can be used for sorting or filtering in the
@@ -104,14 +83,14 @@ class Gems_Model_HiddenOrganizationModel extends \Gems_Model_JoinModel
             }
 
             if (isset($parameters[\MUtil_Model::REQUEST_ID2]) &&
-                (! array_key_exists($parameters[\MUtil_Model::REQUEST_ID2], $this->user->getAllowedOrganizations()))) {
+                (! array_key_exists($parameters[\MUtil_Model::REQUEST_ID2], $this->currentUser->getAllowedOrganizations()))) {
 
                 $this->initTranslateable();
 
                 throw new \Gems_Exception(
                         $this->_('Inaccessible or unknown organization'),
                         403, null,
-                        sprintf($this->_('Access to this page is not allowed for current role: %s.'), $this->user->getRole()));
+                        sprintf($this->_('Access to this page is not allowed for current role: %s.'), $this->currentUser->getRole()));
             }
 
             return parent::applyParameters($parameters, $includeNumericFilters);
@@ -128,7 +107,7 @@ class Gems_Model_HiddenOrganizationModel extends \Gems_Model_JoinModel
      */
     public function checkRegistryRequestsAnswers()
     {
-        return ($this->loader instanceof \Gems_Loader);
+        return ($this->currentUser instanceof \Gems_User_User);
     }
 
     /**
@@ -138,7 +117,7 @@ class Gems_Model_HiddenOrganizationModel extends \Gems_Model_JoinModel
      */
     public function getCurrentOrganization()
     {
-        return $this->user->getCurrentOrganizationId();
+        return $this->currentUser->getCurrentOrganizationId();
     }
 
     /**
