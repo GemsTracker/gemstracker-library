@@ -546,7 +546,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
     {
         $model = $this->getModel();
         $noExportColumns = $model->getColNames('noExport');
-        foreach($labeledColumns as $colName) {
+        foreach($noExportColumns as $colName) {
             $model->remove($colName, 'label');
         }
         return $model;

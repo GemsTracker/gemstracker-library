@@ -45,7 +45,7 @@ class Gems_Default_ExportAction extends \Gems_Controller_ModelSnippetActionAbstr
         $model = parent::getModel();
 
         $noExportColumns = $model->getColNames('noExport');
-        foreach($labeledColumns as $colName) {
+        foreach($noExportColumns as $colName) {
             $model->remove($colName, 'label');
         }
 
