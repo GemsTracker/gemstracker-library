@@ -65,6 +65,7 @@ abstract class Gems_Default_RespondentChildActionAbstract extends \Gems_Controll
      * @var array Mixed key => value array for snippet initialization
      */
     protected $defaultParameters = array(
+        'multiTracks' => 'isMultiTracks',
         'respondent' => 'getRespondent',
     );
 
@@ -121,5 +122,14 @@ abstract class Gems_Default_RespondentChildActionAbstract extends \Gems_Controll
         if ($this->_getParam(\MUtil_Model::REQUEST_ID1)) {
             return $this->getRespondent()->getId();
         }
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    protected function isMultiTracks()
+    {
+        return ! $this->escort instanceof \Gems_Project_Tracks_SingleTrackInterface;
     }
 }

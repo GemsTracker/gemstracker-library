@@ -48,6 +48,12 @@ class Gems_Snippets_RespondentSearchSnippet extends \Gems_Snippets_AutosearchFor
 {
     /**
      *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
+    /**
+     *
      * @var \Gems_Loader
      */
     protected $loader;
@@ -73,8 +79,21 @@ class Gems_Snippets_RespondentSearchSnippet extends \Gems_Snippets_AutosearchFor
 
         $user = $this->loader->getCurrentUser();
         if ($user->hasPrivilege('pr.respondent.select-on-track')) {
-            $elements[] = $this->_createCheckboxElement('show_with_track',    $this->_('Has track'));
-            $elements[] = $this->_createCheckboxElement('show_without_track', $this->_('No track'));
+            $tracks = $this->searchData['__active_tracks'];
+
+            $masks['show_all']           = $this->_('(all)');
+            $masks['show_without_track'] = $this->_('(no track)');
+            if (count($tracks) > 1) {
+                $masks['show_with_track']    = $this->_('(with track)');
+            }
+
+            if (count($tracks) > 1) {
+                $elements[] = $this->_createSelectElement('gr2t_id_track', $masks + $tracks);
+            } else {
+                $element = $this->_createRadioElement('gr2t_id_track', $masks + $tracks);
+                $element->setSeparator(' ');
+                $elements[] = $element;
+            }
             $lineBreak = true;
         } else {
             $lineBreak = false;
@@ -92,7 +111,8 @@ class Gems_Snippets_RespondentSearchSnippet extends \Gems_Snippets_AutosearchFor
                     );
 
             if ($lineBreak) {
-                $element->setLabel($this->_('Organization'));
+                $element->setLabel($this->_('Organization'))
+                        ->setAttrib('onchange', 'this.form.submit();');
                 $elements[] = \MUtil_Html::create('br');
             }
             $elements[] = $element;

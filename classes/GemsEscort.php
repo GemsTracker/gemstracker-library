@@ -706,7 +706,7 @@ class GemsEscort extends \MUtil_Application_Escort
      *
      * Use $this->source to access afterwards
      *
-     * @return \Gems_User_Organization
+     * @return \Gems_Loader
      */
     protected function _initSource()
     {

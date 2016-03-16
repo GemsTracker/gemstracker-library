@@ -176,7 +176,7 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
     /**
      * Set those settings needed for the browse display
      *
-     * @return \Gems_Model_RespondentModel
+     * @return \Gems_Model_AppointmentModel
      */
     public function applyBrowseSettings()
     {
@@ -215,7 +215,7 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
      *
      * @param mixed $locale The locale for the settings
      * @param boolean $setMulti When false organization dependent multi options are nor filled.
-     * @return \Gems_Model_RespondentModel
+     * @return \Gems_Model_AppointmentModel
      */
     public function applyDetailSettings($locale = null, $setMulti = true)
     {
@@ -263,7 +263,7 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
      *
      * @param int $orgId The id of the current organization
      * @param mixed $locale The locale for the settings
-     * @return \Gems_Model_RespondentModel
+     * @return \Gems_Model_AppointmentModel
      */
     public function applyEditSettings($orgId, $locale = null)
     {

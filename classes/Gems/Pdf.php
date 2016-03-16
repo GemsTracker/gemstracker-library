@@ -148,7 +148,9 @@ class Gems_Pdf extends \Gems_Registry_TargetAbstract
             $pdf->properties[$name] = $value;
         }
         // Acrobat defined date format D:YYYYMMDDHHmmSSOHH'mm
-        $pdf->properties['ModDate'] = 'D:' . str_replace(':', "'", date('YmdHisP')) . "'";
+        $pdf->properties['ModDate']  = 'D:' . str_replace(':', "'", date('YmdHisP')) . "'";
+        $pdf->properties['Producer'] = $this->project->getName();       // Avoid warning on Word with a (R) symbol
+        $pdf->properties['Creator']  = $this->project->getName();       // Avoid warning on Word with a (R) symbol
     }
 
     /**

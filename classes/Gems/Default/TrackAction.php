@@ -379,14 +379,14 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
         'Tracker\\Buttons\\TrackActionButtonRow',
         'Tracker\\TrackSurveyOverviewSnippet',
         );
-    
+
     /**
      * The parameters used for the viewSurveys action.
      */
     protected $viewSurveyParameters = array(
         'surveyId' => 'getSurveyId',
     );
-    
+
     /**
      * Snippets used for showing survey questions
      *
@@ -980,15 +980,6 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
      *
      * @return boolean
      */
-    protected function isMultiTracks()
-    {
-        return ! $this->escort instanceof \Gems_Project_Tracks_SingleTrackInterface;
-    }
-
-    /**
-     *
-     * @return boolean
-     */
     protected function isTemplateOnly()
     {
         return ! $this->currentUser->hasPrivilege('pr.token.mail.freetext');
@@ -1080,7 +1071,7 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
             $this->addSnippets($this->viewSnippets, $params);
         }
     }
-    
+
     /**
      * Used in AddTracksSnippet to show a preview for an insertable survey
      */
