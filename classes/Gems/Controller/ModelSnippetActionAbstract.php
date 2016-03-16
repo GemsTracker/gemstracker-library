@@ -162,6 +162,8 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
      */
     public $escort;
 
+    protected $exportFormSnippets = 'Gems_Snippets_Export_ExportFormSnippet';
+
     /**
      * Should Excel output contain formatted data (date fields, select lists)
      *
@@ -284,7 +286,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         // Make sure we have all the parameters used by the model
         $this->autofilterParameters = $this->autofilterParameters + $this->_autofilterExtraParameters;
 
-        $model = $this->getModel();
+        $model = $this->getExportModel();
 
         // Set any defaults.
         if (isset($this->autofilterParameters['sortParamAsc'])) {
@@ -316,6 +318,101 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
 
         $this->render('excel', null, true);
     }
+
+    public function exportAction()
+    {
+        $step = $this->request->getParam('step');
+        $post = $this->request->getPost();
+
+        $this->autofilterParameters = $this->autofilterParameters + $this->_autofilterExtraParameters;
+
+        $model = $this->getExportModel();
+        
+        if (isset($this->autofilterParameters['sortParamAsc'])) {
+            $model->setSortParamAsc($this->autofilterParameters['sortParamAsc']);
+        }
+        if (isset($this->autofilterParameters['sortParamDesc'])) {
+            $model->setSortParamDesc($this->autofilterParameters['sortParamDesc']);
+        }
+
+        $model->applyParameters($this->getSearchFilter(false), true);
+
+        // Add any defaults.
+        if (isset($this->autofilterParameters['extraFilter'])) {
+            $model->addFilter($this->autofilterParameters['extraFilter']);
+        }
+        if (isset($this->autofilterParameters['extraSort'])) {
+            $model->addSort($this->autofilterParameters['extraSort']);
+        }
+
+        if ((!$step) || ($post && $step == 'form')) {
+            $this->addSnippet($this->exportFormSnippets);
+            $batch = $this->loader->getTaskRunnerBatch('export_data');
+            $batch->reset();
+        } elseif ($step == 'batch') {
+            $batch = $this->loader->getTaskRunnerBatch('export_data');
+            
+            
+            $batch->setVariable('model', $model);
+            if (!$batch->count()) {
+                $batch->minimalStepDurationMs = 2000;
+                $batch->finishUrl = $this->view->url(array('step' => 'download'));
+
+                $batch->setSessionVariable('files', array());
+
+                $batch->addTask('Export_ExportCommand', $post['type'], 'addExport', $post);
+                $batch->addTask('addTask', 'Export_ExportCommand', $post['type'], 'finalizeFiles');
+
+                $batch->autoStart = true;
+            }
+
+                        
+
+            if ($batch->run($this->request)) {
+                exit;
+            } else {
+                $controller = $this;
+
+                if ($batch->isFinished()) {
+                    /*\MUtil_Echo::track('finished');
+                    $file = $batch->getSessionVariable('file');
+                    if ((!empty($file)) && isset($file['file']) && file_exists($file['file'])) {
+                        // Forward to download action
+                        $this->_session->exportFile = $file;
+                    }*/
+                } else {
+                    if ($batch->count()) {
+                        $controller->html->append($batch->getPanel($controller->view, $batch->getProgressPercentage() . '%'));
+                    } else {
+                        $controller->html->pInfo($controller->_('Nothing to do.'));
+                    }
+                    $controller->html->pInfo()->a(
+                            \MUtil_Html_UrlArrayAttribute::rerouteUrl($this->getRequest(), array('action'=>'index', 'step' => false)),
+                            array('class'=>'actionlink'),
+                            $this->_('Back')
+                            );
+                }
+            }
+        } elseif ($step == 'download') {
+            $this->view->layout()->disableLayout();
+            $this->_helper->viewRenderer->setNoRender(true);
+            $batch = $this->loader->getTaskRunnerBatch('export_data');
+            $file = $batch->getSessionVariable('file');
+            print_r($file);
+            foreach($file['headers'] as $header) {
+                header($header);
+            }
+            while (ob_get_level()) {
+                ob_end_clean();
+            }
+            readfile($file['file']);
+            // Now clean up the file
+            unlink($file['file']);
+
+            exit;
+        }
+    }
+
 
     /**
      * Finds the first item with one of the actions specified as parameter and using the current controller
@@ -445,6 +542,20 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         } else {
             return array($emptyMsg);
         }
+    }
+
+    /** 
+     * Get the model for export and have the option to change it before using for export
+     * @return 
+     */
+    protected function getExportModel()
+    {
+        $model = $this->getModel();
+        $noExportColumns = $model->getColNames('noExport');
+        foreach($noExportColumns as $colName) {
+            $model->remove($colName, 'label');
+        }
+        return $model;
     }
 
     /**

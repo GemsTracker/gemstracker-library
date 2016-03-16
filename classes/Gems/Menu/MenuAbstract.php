@@ -270,7 +270,7 @@ abstract class Gems_Menu_MenuAbstract
         $page = $this->addPage($label, $privilege, $controller, 'index', $other);
         $page->addAutofilterAction();
         $page->addCreateAction();
-        $page->addExcelAction();
+        $page->addExportAction();
         $page->addImportAction();
         $show = $page->addShowAction();
         $show->addEditAction();
@@ -296,7 +296,7 @@ abstract class Gems_Menu_MenuAbstract
         $page = $this->addPage($label, $privilege, $controller, 'index', $other);
         $page->addAutofilterAction();
         $page->addCreateAction();
-        $page->addExcelAction();
+        $page->addExportAction();
         $page->addImportAction();
         $show = $page->addShowAction();
         $show->addEditAction();
@@ -367,7 +367,7 @@ abstract class Gems_Menu_MenuAbstract
         //$setup->addBrowsePage();
         $page = $setup->addPage($this->_('Communication log'), 'pr.mail.log', 'mail-log');
         $page->addAutofilterAction();
-        $page->addExcelAction();
+        $page->addExportAction();
         $page->addShowAction();
 
         return $setup;
@@ -413,12 +413,27 @@ abstract class Gems_Menu_MenuAbstract
         $export = $this->addContainer($label);
 
         // EXPORT
-        $export->addPage($this->_('Survey answers'), 'pr.export', 'export', 'index');
-        $export->addButtonOnly('', 'pr.export', 'export', 'handle-export');
-        $export->addButtonOnly('', 'pr.export', 'export', 'download');
+        $surveyExport = $export->addPage($this->_('Survey answers'), 'pr.export', 'export', 'index');
+        $surveyExport->addAutofilterAction();
+
+        $surveyExport->addExportAction();
+
+        //$export->addButtonOnly('', 'pr.export', 'export', 'handle-export');
+        //$export->addButtonOnly('', 'pr.export', 'export', 'download');
+
+        
+        $batchExport = $export->addPage(
+                $this->_('Batch survey export'),
+                'pr.export',
+                'batch-export',
+                'index'
+                );
+
+        $batchExport->addAutofilterAction();
 
         // EXPORT TO HTML
         $export->addPage($this->_('Respondent archives'), 'pr.export-html', 'respondent-export', 'index');
+
 
         return $export;
     }
@@ -521,7 +536,7 @@ abstract class Gems_Menu_MenuAbstract
         // LOG CONTROLLER
         $page = $this->addPage($this->_('Log'), 'pr.log', 'log', 'index');
         $page->addAutofilterAction();
-        $page->addExcelAction();
+        $page->addExportAction();
         $page->addShowAction()
                 ->setNamedParameters(\Gems_Model::LOG_ITEM_ID, 'gla_id');
 
@@ -564,11 +579,11 @@ abstract class Gems_Menu_MenuAbstract
 
         $page = $infoPage->addPage($this->_('Track Summary'), 'pr.plan.summary', 'summary', 'index');
         $page->addAutofilterAction();
-        $page->addExcelAction();
+        $page->addExportAction();
 
         $page = $infoPage->addPage($this->_('Track Compliance'), 'pr.plan.compliance', 'compliance', 'index');
         $page->addAutofilterAction();
-        $page->addExcelAction();
+        $page->addExportAction();
 
         $page = $infoPage->addPage($this->_('Track Field Utilization'), 'pr.plan.fields', 'field-report', 'index');
         $page->addAutofilterAction();
@@ -576,7 +591,7 @@ abstract class Gems_Menu_MenuAbstract
 
         $page = $infoPage->addPage($this->_('Track Field Content'), 'pr.plan.fields', 'field-overview', 'index');
         $page->addAutofilterAction();
-        $page->addExcelAction();
+        $page->addExportAction();
 
         $plans[] = $infoPage->addPage($this->_('By period'), 'pr.plan.overview', 'overview-plan', 'index');
         $plans[] = $infoPage->addPage($this->_('By token'), 'pr.plan.token', 'token-plan', 'index');
@@ -585,12 +600,12 @@ abstract class Gems_Menu_MenuAbstract
         foreach ($plans as $plan) {
             $plan->addAutofilterAction();
             $plan->addAction($this->_('Bulk mail'), 'pr.token.bulkmail', 'email', array('routeReset' => false));
-            $plan->addExcelAction();
+            $plan->addExportAction();
         }
 
         $page = $infoPage->addPage($this->_('Respondent status'), 'pr.plan.consent', 'consent-plan', 'index');
         $page->addShowAction();
-        $page->addExcelAction();
+        $page->addExportAction();
 
         return $infoPage;
     }
@@ -739,7 +754,7 @@ abstract class Gems_Menu_MenuAbstract
         $logPage->addAutofilterAction();
         $logPage->addShowAction()->setModelParameters(1)->addNamedParameters('log', 'gla_id');
 
-        $page->addExcelAction();
+        $page->addExportAction();
         $page->addImportAction();
 
         if (! $this->user->hasPrivilege('pr.staff.edit.all')) {
@@ -766,7 +781,7 @@ abstract class Gems_Menu_MenuAbstract
         $page = $setup->addPage($this->_('Survey Sources'), 'pr.source', 'source');
         $page->addAutofilterAction();
         $page->addCreateAction();
-        $page->addExcelAction();
+        $page->addExportAction();
         $page->addImportAction();
         $show = $page->addShowAction();
         $show->addEditAction();
@@ -791,7 +806,7 @@ abstract class Gems_Menu_MenuAbstract
         // SURVEY MAINTENANCE CONTROLLER
         $page = $setup->addPage($this->_('Surveys'), 'pr.survey-maintenance', 'survey-maintenance');
         $page->addAutofilterAction();
-        $page->addExcelAction();
+        $page->addExportAction();
         $showPage = $page->addShowAction();
         $showPage->addEditAction();
         $showPage->addAction($this->_('Check is answered'), 'pr.survey-maintenance.check', 'check')
@@ -850,7 +865,7 @@ abstract class Gems_Menu_MenuAbstract
                 ->addParameters(\MUtil_Model::REQUEST_ID);
 
         $overviewPage = $page->addPage($this->_('Tracks per org'), 'pr.track-maintenance.trackperorg', 'track-overview', 'index');
-        $overviewPage->addExcelAction();
+        $overviewPage->addExportAction();
         $overviewPage->addAutofilterAction();
 
         $page->addAction($this->_('Check all assignments'), 'pr.track-maintenance.check-all', 'check-all');

@@ -85,14 +85,12 @@ class Gems_Export_SpssExport extends \Gems_Export_ExportAbstract
 
     /**
      * Add an export command with specific details. Can be batched.
-     * Adds spss file to the export
-     * @param string $exportModelSourceName     name of the current export model source
-     * @param array $filter                     Model filters for export             
-     * @param array $data                       Data submitted by export form
+     * @param array $data    Data submitted by export form
+     * @param array $modelId Model Id when multiple models are passed
      */
-    public function addExport($exportModelName, $filter, $data)
+    public function addExport($data, $modelId=false)
     {
-        parent::addExport($exportModelName, $filter, $data);
+        parent::addExport($data, $modelId=false);
         if ($model = $this->getModel()) {
             $this->addSpssFile();
 
@@ -130,7 +128,7 @@ class Gems_Export_SpssExport extends \Gems_Export_ExportAbstract
      */
     protected function addSpssFile()
     {
-        $model = $this->getModel($this->modelSourceName);
+        $model = $this->model;
 
         $this->files[$this->filename.'.sps'] = $this->tempFilename . '.sps';
         $this->addHeader($this->tempFilename . '.sps');

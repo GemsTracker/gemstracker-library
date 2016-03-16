@@ -551,7 +551,7 @@ class Gems_Util_DbLookup extends UtilAbstract
      * @param int $trackId Optional track id
      * @return array
      */
-    public function getSurveysForExport($trackId = null, $roundDescription = null)
+    public function getSurveysForExport($trackId = null, $roundDescription = null, $flat = false)
     {
         // Read some data from tables, initialize defaults...
         $select = $this->db->select();
@@ -588,8 +588,12 @@ class Gems_Util_DbLookup extends UtilAbstract
                 $name = $survey['gsu_survey_name'];
                 if ($survey['gsu_surveyor_active'] == 0) {
                     // Inactive in the source, for LimeSurvey this is a problem!
-                    if (!strpos($survey['gso_ls_class'], 'LimeSurvey')) {
-                        $surveys[$sourceInactive][$id] = $name;
+                    if (strpos($survey['gso_ls_class'], 'LimeSurvey') === false) {
+                        if (!$flat) {
+                            $surveys[$sourceInactive][$id] = $name;
+                        } else {
+                            $surveys[$id] = $name . " ($sourceInactive) ";
+                        }
                     }
                 } elseif ($survey['gsu_active'] == 0) {
                     // Inactive in GemsTracker

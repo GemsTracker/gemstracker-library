@@ -67,11 +67,4 @@ abstract class Gems_Export_ModelSource_ExportModelSourceAbstract extends \MUtil_
      * @return \MUtil_Model_ModelAbstract
      */
 	abstract public function getModel($filter = array(), $data = array());
-
-	/**
-     * Get the proposed filename for the export of a model with specific filter options
-     * @param  array  $filter Filter for the model
-     * @return string   proposed filename
-     */
-	abstract public function getFileName($filter);
 }

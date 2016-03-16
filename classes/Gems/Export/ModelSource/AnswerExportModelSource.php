@@ -45,24 +45,11 @@
  */
 class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_ModelSource_ExportModelSourceAbstract
 {
-
-	/**
-     * Defines the value used for 'no round description'
-     *
-     * It this value collides with a used round description, change it to something else
-     */
-    const NoRound = '-1';
-
     /**
      *
      * @var \Gems_User_User
      */
     protected $currentUser;
-
-    /**
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
 
     protected $filter;
 
@@ -77,319 +64,6 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
 	protected $locale;
 
     protected $model;
-
-	/**
-     *
-     * @var \Gems_Project_ProjectSettings
-     */
-    protected $project;
-
-    /**
-     * @var \Gems_Util
-     */
-	protected $util;
-
-
-    /**
-     * Translate the set form options to a valid filter for the model for the Response Database
-     * @param  array data existing options set in the form
-     * @param  array Filter for the model already set in getFilters()
-     * @return array Filter for the model
-     */
-	protected function getResponseDatabaseFilter($data, &$filter)
-    {
-        if (isset($data['filter_answer']) &&
-                (!empty($data['filter_answer'])) &&
-                isset($data['filter_value']) &&
-                $data['filter_value'] !== '') {
-
-            $select = $this->db->select()
-                    ->from('gemsdata__responses', array(''))
-                    ->join('gems__tokens', 'gto_id_token = gdr_id_token', array(''))
-                    ->where('gdr_answer_id = ?', $data['filter_answer']);
-
-            if (is_array($data['filter_value'])) {
-                $select->where('gdr_response IN (?)', $data['filter_value']);
-            } else {
-                $select->where('gdr_response = ?', $data['filter_value']);
-            }
-
-            $select->distinct()
-                   ->columns('gto_id_respondent', 'gems__tokens');
-
-            $result = $select->query()->fetchAll(\Zend_Db::FETCH_COLUMN);
-
-            if (!empty($result)) {
-                $filter['respondentid'] = $result;
-            } else {
-                $filter['respondentid'] = -1;
-            }
-        }
-    }
-
-    /**
-     * Translate the set form options to a valid filter for the model
-     * @param  array data existing options set in the form
-     * @return array Filter for the model
-     */
-	public function getFilters($data)
-	{
-		$filters = array();
-
-        $dateOutFormat = 'yyyy-MM-dd';
-        $dateInFormat  = \MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
-
-		if (isset($data['sid']) && is_array($data['sid'])) {
-			foreach($data['sid'] as $surveyId) {
-				if ($surveyId) {
-					$filter = array();
-			        if (isset($data['ids'])) {
-			            $idStrings = $data['ids'];
-
-			            $idArray = preg_split('/[\s,;]+/', $idStrings, -1, PREG_SPLIT_NO_EMPTY);
-
-			            if ($idArray) {
-			                // Make sure output is OK
-			                // $idArray = array_map(array($this->db, 'quote'), $idArray);
-
-			                $filter['gto_id_respondent'] = $idArray;
-			            }
-			        }
-
-			        if ($this->project->hasResponseDatabase()) {
-            			$this->getResponseDatabaseFilter($data, $filter);
-        			}
-
-			        /*if ($this->project->hasResponseDatabase()) {
-			            $this->_getResponseDatabaseFilter($data, $filter);
-			        }*/
-
-			        if (isset($data['tid']) && !empty($data['tid'])) {
-			            $filter['gto_id_track'] = $data['tid'];
-			        }
-
-			        if (isset($data['sid'])) {
-			        	$filter['gto_id_survey'] = $surveyId;
-			        }
-
-			        if (isset($data['rounds']) && !empty($data['rounds'])) {
-			        	$filter['gto_round_description'] = $data['rounds'];
-			        }
-
-			        if (isset($data['oid'])) {
-			            $filter['gto_id_organization'] = $data['oid'];
-			        } else {
-			            //Invalid id so when nothing selected... we get nothing
-			            // $filter['organizationid'] = '-1';
-			        }
-
-                    if (isset($data['valid_from']) && !empty($data['valid_from'])) {
-                        $filter[] = "gto_valid_from >= ".$this->db->quote(\MUtil_Date::format($data['valid_from'],  $dateOutFormat, $dateInFormat))."";
-                    }
-                    if (isset($data['valid_until']) && !empty($data['valid_until'])) {
-                        $filter[] = "gto_valid_until >= ".$this->db->quote(\MUtil_Date::format($data['valid_until'],  $dateOutFormat, $dateInFormat))."";
-                    }
-
-                    /*if (isset($data['valid_until'])) {
-                        $filter[] = 'gto_valid_until >= ' . $data['valid_until'];
-                    }*/
-
-			        $filter['grc_success'] = 1;
-                    $filter[] = "gto_completion_time IS NOT NULL";
-			        // Consent codes
-			        /*$filter['consentcode'] = array_diff(
-			                (array) $this->util->getConsentTypes(),
-			                (array) $this->util->getConsentRejected()
-			                );
-					*/
-			        $filters[] = $filter;
-			    }
-		    }
-		}
-
-        // \Gems_Tracker::$verbose = true;
-        return $filters;
-	}
-
-	/**
-     * Get form elements for the specific Export
-     * @param  \Gems_Form $form existing form type
-     * @param  array data existing options set in the form
-     * @return array of form elements
-     */
-	public function getFormElements(\Gems_Form $form, &$data)
-	{
-
-        $form->activateJQuery();
-		$dbLookup      = $this->util->getDbLookup();
-		$translated    = $this->util->getTranslated();
-		$noRound       = array(self::NoRound => $this->_('No round description'));
-        $empty         = $translated->getEmptyDropdownArray();
-
-        $dateOptions = array();
-        \MUtil_Model_Bridge_FormBridge::applyFixedOptions('date', $dateOptions);
-
-        $organizations = $this->currentUser->getRespondentOrganizations();
-
-        $tracks        = $empty + $this->util->getTrackData()->getAllTracks();
-    	$rounds        = $empty + $noRound + $dbLookup->getRoundsForExport(
-                isset($data['tid']) ? $data['tid'] : null
-            );
-
-        $surveys       = $dbLookup->getSurveysForExport(isset($data['tid']) ? $data['tid'] : null, isset($data['rounds']) ? $data['rounds'] : null);
-
-        $yesNo         = $translated->getYesNo();
-		$elements = array();
-
-		$element = $form->createElement('textarea', 'ids');
-        $element->setLabel($this->_('Respondent id\'s'))
-                ->setAttrib('cols', 60)
-                ->setAttrib('rows', 4)
-                ->setDescription($this->_('Not respondent nr, but respondent id as exported here.'));
-        $elements[] = $element;
-
-        $element = $form->createElement('select', 'tid');
-        $element->setLabel($this->_('Tracks'))
-            ->setMultiOptions($tracks);
-        $elements[] = $element;
-
-        if (isset($data['tid']) && $data['tid']) {
-            $element = $form->createElement('radio', 'tid_fields');
-            $element->setLabel($this->_('Export fields'))
-                ->setMultiOptions($yesNo);
-            $elements[] = $element;
-
-            if (!array_key_exists('tid_fields', $data)) {
-                $data['tid_fields'] = 1;
-            }
-        }
-
-        $element = $form->createElement('select', 'rounds');
-        $element->setLabel($this->_('Round description'))
-            ->setMultiOptions($rounds);
-        $elements[] = $element;
-
-        $element = $form->createElement('multiselect', 'sid');
-        $element->setLabel($this->_('Survey'))
-            ->setMultiOptions($surveys)
-            ->setDescription($this->_('Use CTRL or Shift to select more'));
-        $elements[] = $element;
-
-        $element = $form->createElement('multiCheckbox', 'oid');
-        $element->setLabel($this->_('Organization'))
-                ->setMultiOptions($organizations);
-        $elements[] = $element;
-
-        if (\MUtil_Bootstrap::enabled()) {
-            $element = new \MUtil_Bootstrap_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=oid]'));
-        } else {
-            $element = new \Gems_JQuery_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=oid]'));
-        }
-
-        $element->setLabel($this->_('Toggle'));
-        $elements[] = $element;
-
-        $element = $form->createElement('datePicker', 'valid_from', $dateOptions);
-        $element->setLabel($this->_('Valid from'));
-
-        $elements[] = $element;
-
-        $element = $form->createElement('datePicker', 'valid_until', $dateOptions);
-        $element->setLabel($this->_('Valid until'));
-        $elements[] = $element;
-
-        if (\MUtil_Bootstrap::enabled()) {
-            $element = new \MUtil_Bootstrap_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=oid]'));
-        } else {
-            $element = new \Gems_JQuery_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=oid]'));
-        }
-
-        $element = $form->createElement('checkbox', 'column_identifiers');
-        $element->setLabel($this->_('Column Identifiers'));
-        $element->setDescription($this->_('Prefix the column labels with an identifier. (A) Answers, (TF) Trackfields, (D) Description'));
-        $elements[] = $element;
-
-
-        //unset($data['records']);
-        if (!empty($data['sid'])) {
-        	$filters   = $this->getFilters($data);
-        	foreach($filters as $key => $filter) {
-        		unset($data['records_'.$key]);
-        		$model = $this->getModel($filter, $data);
-	            $survey   = $this->loader->getTracker()->getSurvey(intval($filter['gto_id_survey']));
-
-	           	$recordCount = $model->loadPaginator($filter)->getTotalItemCount();
-	            $element = $form->createElement('exhibitor', 'records_'.$key);
-	            $element->setValue($survey->getName() . ': ' . sprintf($this->_('%s records found.'), $recordCount));
-	            //$element->setValue($survey->getName());
-	            $elements[] = $element;
-	        }
-        }
-
-        if ($this->project->hasResponseDatabase()) {
-            $this->addResponseDatabaseForm($form, $data, $elements);
-        }
-
-		return $elements;
-	}
-
-    /**
-     * Add form elements when a responseDatabase is present
-     * @param  \Gems_Form $form existing form type
-     * @param  array data existing options set in the form
-     * @return array of form elements
-     */
-    protected function addResponseDatabaseForm($form, &$data, &$elements)
-    {
-        if (isset($data['tid']) && (!empty($data['tid']))) {
-            // If we have a responsedatabase and a track id, try something cool ;-)
-            $responseDb = $this->project->getResponseDatabase();
-            if ($this->db === $responseDb) {
-                // We are in the same database, now put that to use by allowing to filter respondents based on an answer in any survey
-                $empty      = $this->util->getTranslated()->getEmptyDropdownArray();
-                $allSurveys = $empty + $this->util->getDbLookup()->getSurveysForExport();
-
-                $element = new \Zend_Form_Element_Select('filter_sid');
-                $element->setLabel($this->_('Survey'))
-                        ->setMultiOptions($allSurveys);
-
-                $groupElements = array($element);
-
-                if (isset($data['filter_sid']) && !empty($data['filter_sid'])) {
-                    $filterSurvey    = $this->loader->getTracker()->getSurvey($data['filter_sid']);
-                    $filterQuestions = $empty + $filterSurvey->getQuestionList($this->locale->getLanguage());
-
-                    $element = new \Zend_Form_Element_Select('filter_answer');
-                    $element->setLabel($this->_('Question'))
-                            ->setMultiOptions($filterQuestions);
-                    $groupElements[] = $element;
-                }
-
-                if (isset($filterSurvey) && isset($data['filter_answer']) && !empty($data['filter_answer'])) {
-                    $questionInfo = $filterSurvey->getQuestionInformation($this->locale->getLanguage());
-
-                    if (array_key_exists($data['filter_answer'], $questionInfo)) {
-                        $questionInfo = $questionInfo[$data['filter_answer']];
-                    } else {
-                        $questionInfo = array();
-                    }
-
-                    if (array_key_exists('answers', $questionInfo) && is_array($questionInfo['answers']) && count($questionInfo['answers']) > 1) {
-                        $element = new \Zend_Form_Element_Multiselect('filter_value');
-                        $element->setMultiOptions($empty + $questionInfo['answers']);
-                        $element->setAttrib('size', count($questionInfo['answers']) + 1);
-                    } else {
-                        $element = new \Zend_Form_Element_Text('filter_value');
-                    }
-                    $element->setLabel($this->_('Value'));
-                    $groupElements[] = $element;
-                }
-
-                $form->addDisplayGroup($groupElements, 'filter', array('showLabels'  => true, 'Description' => $this->_('Filter')));
-                array_shift($elements);
-            }
-        }
-    }
 
     /**
      * Get the model to export
@@ -409,13 +83,38 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
             $survey      = $this->loader->getTracker()->getSurvey($surveyId);
             $model = $survey->getAnswerModel($language);
 
-            $questions = $survey->getQuestionList($language);
+            $source = $survey->getSource();
+            $questions = $source->getFullQuestionList($language, $surveyId, $survey->getSourceSurveyId());
             foreach($questions as $questionName => $label ) {
                 if ($parent = $model->get($questionName, 'parent_question')) {
                     if ($model->get($parent, 'type') === \MUtil_Model::TYPE_NOVALUE) {
-                        $model->remove($parent, 'label');
-                        $model->set($questionName, 'label', $label);
+                        if (isset($data['prefix_child']) && $data['prefix_child'] == 1) {
+                            $cleanLabel = strip_tags($label);
+                            $model->set($questionName, 'label', $cleanLabel);
+                        }
+                        if (isset($data['show_parent']) && $data['show_parent'] == 1) {
+                            $model->remove($parent, 'label');
+                        }
                     }
+                }
+
+                if ($question = $model->get($questionName, 'survey_question') && $model->get($questionName, 'label') == null) {
+                    $model->set($questionName, 'label', $questionName);
+                }
+
+            }
+
+            // Set labels in the main model for the submodel fields
+            if ($model->getMeta('nested', false)) {
+                $nestedNames = $model->getMeta('nestedNames');
+                foreach($nestedNames as $nestedName) {
+                    $nestedModel = $model->get($nestedName, 'model');
+                    $nestedLabels = $nestedModel->getcolNames('label');
+                    foreach($nestedLabels as $colName) {
+                        $label = $nestedModel->get($colName, 'label');
+                        $model->set($colName, 'label', $label);
+                    }
+                    $model->remove($nestedName, 'label');
                 }
             }
 
@@ -423,11 +122,17 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
 
             $prefixes['A'] = array_keys($questions);
 
-            $source = $survey->getSource();
             $attributes = $source->getAttributes();
 
             foreach($attributes as $attribute) {
                 $model->set($attribute, 'label', $attribute);
+            }
+
+            if (!$model->checkJoinExists('gems__respondent2org.gr2o_id_user', 'gems__tokens.gto_id_respondent')) {                        
+                $model->addTable('gems__respondent2org', array(
+                    'gems__respondent2org.gr2o_id_user' => 'gems__tokens.gto_id_respondent',
+                    'gems__respondent2org.gr2o_id_organization' => 'gems__tokens.gto_id_organization'), 'gr2o'
+                );
             }
 
             if (!$model->checkJoinExists('gems__respondent2track.gr2t_id_respondent_track', 'gems__tokens.gto_id_respondent_track')) {
@@ -483,18 +188,5 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
         }
 
 		return $this->model;
-	}
-
-    /**
-     * Get the proposed filename for the export of a model with specific filter options
-     * @param  array  $filter Filter for the model
-     * @return string   proposed filename
-     */
-	public function getFileName($filter)
-	{
-		$surveyId = $filter['gto_id_survey'];
-		$survey      = $this->loader->getTracker()->getSurvey($surveyId);
-
-		return $survey->getName();
-	}
+}
 }
