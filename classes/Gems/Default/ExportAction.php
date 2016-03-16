@@ -11,13 +11,6 @@ class Gems_Default_ExportAction extends \Gems_Controller_ModelSnippetActionAbstr
      */
     protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Export\\AnswerAutosearchFormSnippet');
 
-    /**
-     * The snippets used for the index action, after those in autofilter
-     *
-     * @var mixed String or array of snippets name
-     */
-    protected $indexStopSnippets = array('Generic\\CurrentButtonRowSnippet', 'Export\\ExportSnippet');
-
     protected $exportModelSource = 'AnswerExportModelSource';
 
     protected function createModel($detailed, $action)

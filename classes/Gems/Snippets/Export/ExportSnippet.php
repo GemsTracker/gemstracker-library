@@ -22,12 +22,6 @@ class ExportSnippet extends \MUtil_Snippets_SnippetAbstract
 
         $button = $container->button(array($this->_('Export'), 'id' => 'modelExport'));
 
-        //$view->headScript()->appendScript('var filter = '.json_encode($this->filter));
-        $view->headScript()->appendScript("var exportUrl = '{$url}';");
-        
-        $view->headScript()->appendFile(\Zend_Controller_Front::getInstance()->getBaseUrl()  .  '/gems/js/jquery.serialize-object.js');
-        $view->headScript()->appendFile(\Zend_Controller_Front::getInstance()->getBaseUrl()  .  '/gems/js/jquery.exportModel.js');
-
         return $container;
     }
 }

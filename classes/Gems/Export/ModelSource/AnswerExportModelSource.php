@@ -83,6 +83,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
             $survey      = $this->loader->getTracker()->getSurvey($surveyId);
             $model = $survey->getAnswerModel($language);
 
+            $source = $survey->getSource();
             $questions = $source->getFullQuestionList($language, $surveyId, $survey->getSourceSurveyId());
             foreach($questions as $questionName => $label ) {
                 if ($parent = $model->get($questionName, 'parent_question')) {
@@ -121,7 +122,6 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
 
             $prefixes['A'] = array_keys($questions);
 
-            $source = $survey->getSource();
             $attributes = $source->getAttributes();
 
             foreach($attributes as $attribute) {

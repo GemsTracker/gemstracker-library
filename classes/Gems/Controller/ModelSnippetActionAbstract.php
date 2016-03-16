@@ -345,19 +345,25 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
             $model->addSort($this->autofilterParameters['extraSort']);
         }
 
-        if ($step == 'form' && $post) {
+        if ((!$step) || ($post && $step == 'form')) {
             $this->addSnippet($this->exportFormSnippets);
+            $batch = $this->loader->getTaskRunnerBatch('export_data');
+            $batch->reset();
         } elseif ($step == 'batch') {
             $batch = $this->loader->getTaskRunnerBatch('export_data');
-            $batch->minimalStepDurationMs = 2000;
-            $batch->finishUrl = $this->view->url(array('step' => 'download'));
+            
             
             $batch->setVariable('model', $model);
-
             if (!$batch->count()) {
+                $batch->minimalStepDurationMs = 2000;
+                $batch->finishUrl = $this->view->url(array('step' => 'download'));
+
                 $batch->setSessionVariable('files', array());
-                $batch->addTask('Export_ExportCommand', $post['type'], 'addExport', 'test', array(), $post);
+
+                $batch->addTask('Export_ExportCommand', $post['type'], 'addExport', $post);
                 $batch->addTask('addTask', 'Export_ExportCommand', $post['type'], 'finalizeFiles');
+
+                $batch->autoStart = true;
             }
 
                         
@@ -381,7 +387,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
                         $controller->html->pInfo($controller->_('Nothing to do.'));
                     }
                     $controller->html->pInfo()->a(
-                            \MUtil_Html_UrlArrayAttribute::rerouteUrl($this->getRequest(), array('action'=>'index')),
+                            \MUtil_Html_UrlArrayAttribute::rerouteUrl($this->getRequest(), array('action'=>'index', 'step' => false)),
                             array('class'=>'actionlink'),
                             $this->_('Back')
                             );

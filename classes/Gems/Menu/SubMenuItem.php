@@ -523,6 +523,22 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
     }
 
     /**
+     * Add a standard edit action to the current menu item
+     *
+     * @return \Gems_Menu_SubmenuItem
+     */
+    public function addExportAction()
+    {
+        $options = array(
+            'class'  => 'model-export',
+            'target' => null,
+            'title'  => $this->_('Export the current data set'),
+        );
+
+        return $this->addActionButton($this->_('Export'), $this->get('privilege'), 'export', $options);
+    }
+
+    /**
      * Add parameter values that should not show in the url but that
      * must be added to the request when this menu item is current.
      *

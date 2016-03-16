@@ -54,21 +54,6 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
     protected $data;
 
     /**
-     * @var string  Default export model source, for when no model source exists
-     */
-    protected $defaultExportModelSource = 'DefaultExportModelSource';
-
-    /**
-     * @var \Gems_Export_ModelSource_ExportModelsourceAbstract  Current Export model source
-     */
-    protected $exportModelSource;
-
-    /**
-     * @var string  Name of the current export model source
-     */ 
-    protected $modelSourceName;
-
-    /**
      * @var string  The temporary filename while the file is being written
      */
     protected $tempFilename;
@@ -102,6 +87,12 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
      * @var array   Array with the filter options that should be used for this exporter
      */
     protected $modelFilterAttributes = array('multiOptions', 'formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay');
+
+    /**
+     * 
+     * @var integer Model Id for when multiple models are passed
+     */
+    protected $modelId;
 
     /**
      * @var \Gems_Loader
@@ -148,45 +139,39 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
 
     /**
      * Add an export command with specific details. Can be batched.
-     * @param string $exportModelSourceName     name of the current export model source
-     * @param array $filter                     Model filters for export             
-     * @param array $data                       Data submitted by export form
+     * @param array $data    Data submitted by export form
+     * @param array $modelId Model Id when multiple models are passed
      */
-    public function addExport($exportModelSourceName, $filter, $data) {
+    public function addExport($data, $modelId=false)
+    {
         
         $this->files = $this->getFiles();
-        $this->filter = $filter;
         $this->data = $data;
-        $this->modelSourceName = $exportModelSourceName;
-        if ($model = $this->getModel()) {
-            // check if there are items in the model to export
-            if (! $this->firstRow = $model->loadFirst()) {
-                return;
-            } else {
-                
-                $totalRows = $this->getModelCount($filter);
-                $this->addFile();
-                $this->addHeader($this->tempFilename.$this->fileExtension);
-                $currentRow = 0;
-                do {
-                    $filter['limit']  = array($this->rowsPerBatch, $currentRow);
-                    if ($this->batch) {
-                        $this->batch->addTask('Export_ExportCommand', $data['type'], 'addRows', $exportModelSourceName, $filter, $data, $this->tempFilename);
-                    } else {
-                        $this->addRows($exportModelSourceName, $filter, $data, $this->tempFilename);
-                    }
-                    $currentRow = $currentRow + $this->rowsPerBatch;
-                } while ($currentRow < $totalRows);
+        $this->modelId = $modelId;
 
+        if ($model = $this->getModel()) {                
+            $totalRows = $this->getModelCount();
+            $this->addFile();
+            $this->addHeader($this->tempFilename.$this->fileExtension);
+            $currentRow = 0;
+            do {
+                $filter['limit']  = array($this->rowsPerBatch, $currentRow);
                 if ($this->batch) {
-                    $this->batch->addTask('Export_ExportCommand', $data['type'], 'addFooter', $this->tempFilename.$this->fileExtension);
-                    $this->batch->setSessionVariable('files', $this->files);
+                    $this->batch->addTask('Export_ExportCommand', $data['type'], 'addRows', $data, $modelId, $this->tempFilename);
                 } else {
-                    $this->addFooter($this->tempFilename.$this->fileExtension);
-                    $this->session = new \Zend_Session_Namespace(__CLASS__);
-                    $this->session->files = $this->files;
+                    $this->addRows($data, $modelId, $this->tempFilename);
                 }
-            }            
+                $currentRow = $currentRow + $this->rowsPerBatch;
+            } while ($currentRow < $totalRows);
+
+            if ($this->batch) {
+                $this->batch->addTask('Export_ExportCommand', $data['type'], 'addFooter', $this->tempFilename.$this->fileExtension);
+                $this->batch->setSessionVariable('files', $this->files);
+            } else {
+                $this->addFooter($this->tempFilename.$this->fileExtension);
+                $this->session = new \Zend_Session_Namespace(__CLASS__);
+                $this->session->files = $this->files;
+            }         
         }
     }
 
@@ -209,6 +194,7 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
         $this->files[$filename.$this->fileExtension] = $tempFilename . $this->fileExtension;
 
         $file = fopen($tempFilename . $this->fileExtension, 'w');
+
         fclose($file);
     }
 
@@ -221,26 +207,24 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
 
     /**
      * Add model rows to file. Can be batched
-     * @param string $exportModelSourceName     name of the current export model source
-     * @param array $filter                     Model filters for export             
      * @param array $data                       Data submitted by export form
+     * @param array $modelId                    Model Id when multiple models are passed
      * @param string $tempFilename              The temporary filename while the file is being written
      */
-    public function addRows($exportModelSourceName, $filter, $data, $tempFilename)
+    public function addRows($data, $modelId, $tempFilename)
     {
         $this->data = $data;
-        $this->modelSourceName = $exportModelSourceName;
-        $this->model = $this->getModel($this->modelSourceName);
+        $this->modelId = $modelId;
+        $this->model = $this->getModel();
 
-        $currentFilter = array_replace($this->model->getFilter(), $filter);
-        $this->model->setFilter($currentFilter);
-
-        $rows = $this->model->load();
-        $file = fopen($tempFilename . $this->fileExtension, 'a');
-        foreach($rows as $row) {
-            $this->addRow($row, $file);
+        if ($this->model) {
+            $rows = $this->model->load();
+            $file = fopen($tempFilename . $this->fileExtension, 'a');
+            foreach($rows as $row) {
+                $this->addRow($row, $file);
+            }
+            fclose($file);
         }
-        fclose($file);
     }
 
     /**
@@ -422,19 +406,6 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
     }
 
     /**
-     * Load the ExportModelSource
-     * @return \Gems_Export_ModelSource_ExportModelSourceAbstract
-     */
-    protected function getExportModelSource()
-    {
-        if (!$this->exportModelSource && $this->modelSourceName) {
-            $this->exportModelSource = $this->loader->getExportModelSource($this->modelSourceName);
-        }
-
-        return $this->exportModelSource;
-    }
-
-    /**
      * Returns the files array. It might be stored in the batch session or normal session.
      * @return array Files array
      */
@@ -461,8 +432,16 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
      */
     protected function getModel()
     {
-        $this->model = $this->batch->getVariable('model');
-        return $this->model;
+        $model = $this->batch->getVariable('model');
+        if (is_array($model)) {
+            if ($this->modelId && isset($model[$this->modelId])) {
+                $model = $model[$this->modelId];
+            } else {
+                $model = false;
+            }
+        }
+
+        return $this->model = $model;
     }
 
     /**

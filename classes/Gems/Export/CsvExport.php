@@ -71,16 +71,18 @@ class Gems_Export_CsvExport extends \Gems_Export_ExportAbstract
     {
         $element = $form->createElement('multiCheckbox', 'format');
         $element->setLabel($this->_('CSV options'))
-            ->setMultiOptions(array(
-                'addHeader' => $this->_('Add headers with column names'),
-                'formatVariable' => $this->_('Export questions instead of variable names'),
-                'formatAnswer' => $this->_('Format answers')
-            ));
+                ->setMultiOptions(array(
+                    'addHeader' => $this->_('Add headers with column names'),
+                    'formatVariable' => $this->_('Export labels instead of field names'),
+                    'formatAnswer' => $this->_('Format answers')
+                ))
+                ->setBelongsTo($this->getName());
         $elements['format'] = $element;
 
         $element = $form->createElement('select', 'delimiter');
         $element->setLabel($this->_('Delimiter'))
-            ->setMultiOptions(array(',' => ',', ';' => ';'));
+                ->setMultiOptions(array(',' => ',', ';' => ';'))
+                ->setBelongsTo($this->getName());
         $elements['delimiter'] = $element;
 
         return $elements;
@@ -129,12 +131,11 @@ class Gems_Export_CsvExport extends \Gems_Export_ExportAbstract
 
     /**
      * Add model rows to file. Can be batched
-     * @param string $exportModelSourceName     name of the current export model source
-     * @param array $filter                     Model filters for export             
      * @param array $data                       Data submitted by export form
+     * @param array $modelId                    Model Id when multiple models are passed
      * @param string $tempFilename              The temporary filename while the file is being written
      */
-    public function addRows($exportModelSourceName, $filter, $data, $tempFilename)
+    public function addRows($data, $modelId, $tempFilename)
     {
         $name = $this->getName();
         if (isset($data[$name]) && isset($data[$name]['delimiter'])) {
@@ -143,7 +144,7 @@ class Gems_Export_CsvExport extends \Gems_Export_ExportAbstract
         if (!(isset($data[$name]) && isset($data[$name]['format']) && in_array('formatAnswer', $data[$name]['format']))) {
             $this->modelFilterAttributes = array('formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay');
         }
-        parent::addRows($exportModelSourceName, $filter, $data, $tempFilename);
+        parent::addRows($data, $modelId, $tempFilename);
     }
 
     /**
