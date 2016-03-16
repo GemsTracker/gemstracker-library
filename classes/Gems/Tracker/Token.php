@@ -80,7 +80,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
      * @var \Gems_Tracker_Token
      */
     private $_previousToken = null;
-    
+
     /**
      * Holds the relation (if any) for this token
      *
@@ -204,7 +204,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
             // loading occurs in checkRegistryRequestAnswers
         }
     }
-    
+
     /**
      * Add relation to the select statement
      *
@@ -342,10 +342,10 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         }
         return $this;
     }
-    
+
     /**
      * Assign this token to a specific relation
-     * 
+     *
      * @param int $respondentRelationId
      * @param int $relationFieldId
      * @return int 1 if data changed, 0 otherwise
@@ -353,7 +353,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     public function assignTo($respondentRelationId, $relationFieldId)
     {
         if ($this->getRelationFieldId() == $relationFieldId && $this->getRelationId() == $respondentRelationId) return 0;
-        
+
         return $this->_updateToken(array(
             'gto_id_relation'=>$respondentRelationId,
             'gto_id_relationfield'=>$relationFieldId
@@ -649,7 +649,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                 ->order('gr2t_track_info')
                 ->order('gto_valid_until')
                 ->order('gto_valid_from');
-        
+
         $this->_addRelation($select);
 
         if (!empty($where)) {
@@ -826,20 +826,20 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         if ($this->getSurvey()->isTakenByStaff()) {
             return null;
         }
-        
+
         // If we have a relation, return that address
         if ($this->hasRelation()) {
             if ($relation = $this->getRelation()) {
                 return $this->getRelation()->getEmail();
             }
-            
+
             return null;
         }
-        
+
         // It can only be the respondent
         return $this->getRespondent()->getEmailAddress();
     }
-    
+
     /**
      *
      * @return string Last mail sent date
@@ -907,7 +907,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                 ->onlyValid()
                 ->forWhere('gsu_active = 1')
                 ->order(array('gto_valid_from', 'gto_round_order'));
-        
+
         $this->_addRelation($tokenSelect);
 
         if ($tokenData = $tokenSelect->fetchRow()) {
@@ -1010,14 +1010,14 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     {
         return $this->util->getReceptionCode($this->_gemsData['gto_reception_code']);
     }
-    
+
     /**
      * Get the relation object if any
-     * 
+     *
      * @return Gems_Model_RespondentRelationInstance
      */
-    public function getRelation() {       
-        if (is_null($this->_relation) || $this->_relation->getRelationId() !== $this->getRelationId()) {            
+    public function getRelation() {
+        if (is_null($this->_relation) || $this->_relation->getRelationId() !== $this->getRelationId()) {
             $model = $this->loader->getModels()->getRespondentRelationModel();
             $relationObject = $model->getRelation($this->getRespondentId(), $this->getRelationId());
             $this->_relation = $relationObject;
@@ -1025,23 +1025,23 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
         return $this->_relation;
     }
-    
+
     /**
      * Return the id of the relation field
-     * 
+     *
      * This is not the id of the relation, but the id of the trackfield that defines
      * the relation.
-     * 
+     *
      * @return int
      */
     public function getRelationFieldId()
     {
         return $this->hasRelation() ? (int) $this->_gemsData['gto_id_relationfield'] : null;
     }
-    
+
     /**
      * Get the name of the relationfield for this token
-     * 
+     *
      * @return string
      */
     public function getRelationFieldName() {
@@ -1049,16 +1049,16 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
             $names = $this->getRespondentTrack()->getTrackEngine()->getFieldNames();
             $fieldPrefix = \Gems\Tracker\Model\FieldMaintenanceModel::FIELDS_NAME . \Gems\Tracker\Engine\FieldsDefinition::FIELD_KEY_SEPARATOR;
             $key = $fieldPrefix . $relationFieldId;
-            
-            return array_key_exists($key, $names) ? lcfirst($names[$key]) : null;            
+
+            return array_key_exists($key, $names) ? lcfirst($names[$key]) : null;
         }
-        
+
         return null;
     }
-    
+
     /**
      * Return the id of the relation currently assigned to this token
-     * 
+     *
      * @return int
      */
     public function getRelationId()
@@ -1153,9 +1153,9 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
     /**
      * Get the name of the person answering this token
-     * 
+     *
      * Could be the patient or the relation when assigned to one
-     * 
+     *
      * @return string
      */
     public function getRespondentName()
@@ -1167,7 +1167,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                 return null;
             }
         }
-        
+
         return $this->getRespondent()->getName();
     }
 
@@ -1248,9 +1248,9 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
     /**
      * Return the name of the respondent
-     * 
+     *
      * To be used when there is a relation and you need to know the name of the respondent
-     * 
+     *
      * @return string
      */
     public function getSubjectname()
@@ -1363,7 +1363,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                 ->onlySucces()
                 ->onlyValid()
                 ->withoutToken($this->_tokenId);
-        
+
         $this->_addRelation($tokenSelect);
 
         return $tokenSelect->fetchOne();
@@ -1480,7 +1480,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     {
         return (boolean) $this->_sourceDataRaw;
     }
-    
+
     /**
      * Is this token linked to a relation?
      *
@@ -1491,8 +1491,8 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         if (array_key_exists('gto_id_relationfield', $this->_gemsData) && $this->_gemsData['gto_id_relationfield'] > 0) {
             // We have a relation
             return true;
-        } 
-        
+        }
+
         // no relation
         return false;
     }
@@ -1927,12 +1927,12 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         // Prepare sql
         $sql = "UPDATE gemsdata__responses
             SET `gdr_response` = ?, `gdr_changed` = ?, `gdr_changed_by` = ?
-            WHERE gdr_id_token = ? AND gdr_answer_id = ?";
+            WHERE gdr_id_token = ? AND gdr_answer_id = ? AND gdr_answer_row = 1";
         $stmt = $db->prepare($sql);
 
         $inserts = array();
         foreach ($responses as $fieldName => $response) {
-            $rValues['gdr_answer_id'] = $fieldName;
+            $rValues['gdr_answer_id']  = $fieldName;
             if (is_array($response)) {
                 $response = join('|', $response);
             }
