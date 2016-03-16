@@ -189,7 +189,7 @@ class Gems_Form extends \MUtil_Form
      * @param mixed $submitUrl Url as \MUtil_Html_UrlArrayAttribute, array or string
      * @param mixed $targetId Id of html element whose content is replaced by the submit result: \MUtil_Html_ElementInterface or string
      */
-    public function setAutoSubmit($submitUrl, $targetId) {
+    public function setAutoSubmit($submitUrl, $targetId, $selective=false) {
         // Filter out elements passed by type
         $args = \MUtil_Ra::args(func_get_args(),
             array(
@@ -208,6 +208,10 @@ class Gems_Form extends \MUtil_Form
         } else {
             $args['targetId'] = '#' . $args['targetId'];
         }
+        if ($selective) {
+            $args['selective'] = true;
+        }
+
         $this->_autosubmit = $args;
         $this->_enableAutoSubmitElement($this);
         $this->activateJQuery();
