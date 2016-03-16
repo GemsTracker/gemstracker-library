@@ -112,6 +112,39 @@ class Gems_Util_TrackData extends UtilAbstract
     }
 
     /**
+     * Retrieve an array of key/value pairs for gsu_id_survey and gsu_survey_name
+     * that are active
+     *
+     * @param mixed $orgs Either an array of org ids or an organization id or an sql select where statement
+     * @return array
+     */
+    public function getActiveTracks($orgs = '1=1')
+    {
+        if (is_array($orgs) || is_int($orgs)) {
+            $cacheId  = __CLASS__ . '_' . __FUNCTION__ . '_o' .  parent::cleanupForCacheId(implode('_', (array) $orgs));
+            $orgWhere = "(INSTR(gtr_organizations, '|" .
+                implode("|') > 0 OR INSTR(gtr_organizations, '|", (array) $orgs) .
+                "|') > 0)";
+        } else {
+            $orgWhere = $orgs ? $orgs : '1=1';
+            $cacheId  = __CLASS__ . '_' . __FUNCTION__ . '_' . parent::cleanupForCacheId($orgWhere);
+        }
+
+        if ($results = $this->cache->load($cacheId)) {
+            return $results;
+        }
+
+        $select = "SELECT gtr_id_track, gtr_track_name
+                    FROM gems__tracks
+                    WHERE gtr_active=1 AND $orgWhere
+                    ORDER BY gtr_track_name";
+
+        $results = $this->db->fetchPairs($select);
+        $this->cache->save($results, $cacheId, array('tracks'));
+        return $results;
+    }
+
+    /**
      * Returns array (id => name) of all ronds in all tracks, sorted by order
      *
      * @return array

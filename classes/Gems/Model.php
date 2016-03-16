@@ -32,7 +32,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -153,7 +152,9 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
      */
     public static function addUserPassword(\Gems_Model_JoinModel $model)
     {
-        $model->addLeftTable('gems__user_passwords', array('gul_id_user' => 'gup_id_user'), 'gup');
+        if (! $model->hasAlias('gems__user_passwords')) {
+            $model->addLeftTable('gems__user_passwords', array('gul_id_user' => 'gup_id_user'), 'gup');
+        }
     }
 
     /**
@@ -179,30 +180,30 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
      */
     public function createGemsUserId($value, $isNew = false, $name = null, array $context = array())
     {
-        if ($isNew || (null === $value)) {
-            $creationTime = new \MUtil_Db_Expr_CurrentTimestamp();
-
-            do {
-                $out = mt_rand(1, 9);
-                for ($i = 1; $i < $this->userIdLen; $i++) {
-                    $out .= mt_rand(0, 9);
-                }
-                // Make it a number
-                $out = intval($out);
-
-                try {
-                    if (0 === $this->db->insert('gems__user_ids', array('gui_id_user' => $out, 'gui_created' => $creationTime))) {
-                        $out = null;
-                    }
-                } catch (\Zend_Db_Exception $e) {
-                    $out = null;
-                }
-            } while (null === $out);
-
-            return $out;
+        if ($value) {
+            return $value;
         }
 
-        return $value;
+        $creationTime = new \MUtil_Db_Expr_CurrentTimestamp();
+
+        do {
+            $out = mt_rand(1, 9);
+            for ($i = 1; $i < $this->userIdLen; $i++) {
+                $out .= mt_rand(0, 9);
+            }
+            // Make it a number
+            $out = intval($out);
+
+            try {
+                if (0 === $this->db->insert('gems__user_ids', array('gui_id_user' => $out, 'gui_created' => $creationTime))) {
+                    $out = null;
+                }
+            } catch (\Zend_Db_Exception $e) {
+                $out = null;
+            }
+        } while (null === $out);
+
+        return $out;
     }
 
     /**
@@ -224,7 +225,6 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
     {
         $model = $this->_loadClass('RespondentModel', true);
 
-        // $this->addUserLogin($model, $this->respondentLoginIdField, 'gr2o_id_organization');
         $this->setAsGemsUserId($model, 'grs_id_user');
 
         return $model;

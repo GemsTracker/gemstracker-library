@@ -64,6 +64,13 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
         );
 
     /**
+     * The snippets used for the autofilter action.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $autofilterSnippets = 'Respondent\\RespondentTableSnippet';
+
+    /**
      * The parameters used for the create and edit actions.
      *
      * When the value is a function name of that object, then that functions is executed
@@ -249,45 +256,6 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
     }
 
     /**
-     * Set column usage to use for the browser.
-     *
-     * Must be an array of arrays containing the input for TableBridge->setMultisort()
-     *
-     * @return array or false
-     */
-    public function getBrowseColumns()
-    {
-        $model = $this->getModel();
-
-        $model->setIfExists('gr2o_opened', 'tableDisplay', 'small');
-        $model->setIfExists('grs_email',   'formatFunction', array('MUtil_Html_AElement', 'ifmail'));
-
-        // Newline placeholder
-        $br = \MUtil_Html::create('br');
-
-        // Display separator and phone sign only if phone exist.
-        $phonesep = \MUtil_Html::raw('&#9743; '); // $bridge->itemIf($bridge->grs_phone_1, \MUtil_Html::raw('&#9743; '));
-        $citysep  = \MUtil_Html::raw('&nbsp;&nbsp;'); // $bridge->itemIf($bridge->grs_zipcode, \MUtil_Html::raw('&nbsp;&nbsp;'));
-
-        $filter = $this->getSearchFilter(true);
-        if (isset($filter[\MUtil_Model::REQUEST_ID2])) {
-            $column2 = 'gr2o_opened';
-        } else {
-            $column2 = 'gr2o_id_organization';
-        }
-        if (isset($filter['grc_success']) && (! $filter['grc_success'])) {
-            $model->set('grc_description', 'label', $this->_('Rejection code'));
-            $column2 = 'grc_description';
-        }
-        $columns[10] = array('gr2o_patient_nr', $br, $column2);
-        $columns[20] = array('name',            $br, 'grs_email');
-        $columns[30] = array('grs_address_1',   $br, 'grs_zipcode', $citysep, 'grs_city');
-        $columns[40] = array('grs_birthday',    $br, $phonesep, 'grs_phone_1');
-
-        return $columns;
-    }
-
-    /**
      * Get the link to edit respondent
      *
      * @return \MUtil_Html_HrefArrayAttribute
@@ -376,6 +344,47 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
     }
 
     /**
+     * Get the data to use for searching: the values passed in the request + any defaults
+     * used in the search form (or any other search request mechanism).
+     *
+     * It does not return the actual filter used in the query.
+     *
+     * @see getSearchFilter()
+     *
+     * @param boolean $useRequest Use the request as source (when false, the session is used)
+     * @return array
+     */
+    public function getSearchData($useRequest = true)
+    {
+        $data = parent::getSearchData($useRequest);
+
+        if (isset($data[\MUtil_Model::REQUEST_ID2])) {
+            $orgs = intval($data[\MUtil_Model::REQUEST_ID2]);
+        } else {
+            $orgs = $this->currentUser->getRespondentOrgFilter();
+        }
+
+        $activeTracks = $this->util->getTrackData()->getActiveTracks($orgs);
+
+        if (isset($data['gr2t_id_track']) && $data['gr2t_id_track']) {
+            switch ($data['gr2t_id_track']) {
+                case 'show_without_track':
+                case 'show_all':
+                case 'show_with_track':
+                    break;
+
+                default:
+                    if (! isset($activeTracks[$data['gr2t_id_track']])) {
+                        $data['gr2t_id_track'] = 'show_with_track';
+                    }
+            }
+        }
+        $data['__active_tracks'] = $activeTracks;
+
+        return $data;
+    }
+
+    /**
      * Function to allow the creation of search defaults in code
      *
      * @see getSearchFilter()
@@ -391,10 +400,8 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
             } else {
                 $this->defaultSearchData[\MUtil_Model::REQUEST_ID2] = $this->currentOrganization->getId();
             }
-            $this->defaultSearchData['show_with_track']    = 1;
-            $this->defaultSearchData['show_without_track'] = 1;
-
         }
+        $this->defaultSearchData['gr2t_id_track'] = 'show_all';
         return parent::getSearchDefaults();
     }
 
@@ -408,26 +415,39 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
     {
         $filter = parent::getSearchFilter($useRequest);
 
-        $with    = isset($filter['show_with_track']) ? $filter['show_with_track'] : false;
-        $without = isset($filter['show_without_track']) ? $filter['show_without_track'] : false;
+        if (isset($filter['gr2t_id_track']) && $filter['gr2t_id_track']) {
+            switch ($filter['gr2t_id_track']) {
+                case 'show_without_track':
+                    $filter[] = "NOT EXISTS (SELECT * FROM gems__respondent2track
+                           WHERE gr2o_id_user = gr2t_id_user AND gr2o_id_organization = gr2t_id_organization)";
+                    // Intentional fall through
+                case 'show_all':
+                    unset($filter['gr2t_id_track']);
+                    break;
 
-        if ($with) {
-            if (! $without) {
-                $filter[] = "EXISTS (SELECT * FROM gems__respondent2track
-                       WHERE gr2o_id_user = gr2t_id_user AND gr2o_id_organization = gr2t_id_organization)";
+                case 'show_with_track':
+                    unset($filter['gr2t_id_track']);
+                    // Intentional fall through
+                default:
+                    $model = $this->getModel();
+                    if (! $model->hasAlias('gems__respondent2track')) {
+                        $model->addTable(
+                                'gems__respondent2track',
+                                array('gr2o_id_user' => 'gr2t_id_user', 'gr2o_id_organization' => 'gr2t_id_organization')
+                                );
+                    }
+                    if (! $model->hasAlias('gems__tracks')) {
+                        $model->addTable('gems__tracks', array('gr2t_id_track' => 'gtr_id_track'));
+                    }
+
             }
-        } elseif ($without) {
-            $filter[] = "NOT EXISTS (SELECT * FROM gems__respondent2track
-                   WHERE gr2o_id_user = gr2t_id_user AND gr2o_id_organization = gr2t_id_organization)";
-        } else {
-            $filter[] = '1=0';
         }
 
         if (! isset($filter['show_with_track'])) {
             $filter['show_with_track'] = 1;
         }
 
-        unset($filter['show_with_track'], $filter['show_without_track']);
+        unset($filter['__active_tracks']);
 
         return $filter;
     }

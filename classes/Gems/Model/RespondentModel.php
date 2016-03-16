@@ -32,7 +32,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -185,13 +184,15 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
      */
     public function addLoginCheck()
     {
-        $this->addLeftTable(
-                'gems__user_logins',
-                array('gr2o_patient_nr' => 'gul_login', 'gr2o_id_organization' => 'gul_id_organization'),
-                'gul',
-                \MUtil_Model_DatabaseModelAbstract::SAVE_MODE_UPDATE |
-                    \MUtil_Model_DatabaseModelAbstract::SAVE_MODE_DELETE);
-
+        if (! $this->hasAlias('gems__user_logins')) {
+            $this->addLeftTable(
+                    'gems__user_logins',
+                    array('gr2o_patient_nr' => 'gul_login', 'gr2o_id_organization' => 'gul_id_organization'),
+                    'gul',
+                    \MUtil_Model_DatabaseModelAbstract::SAVE_MODE_UPDATE |
+                        \MUtil_Model_DatabaseModelAbstract::SAVE_MODE_DELETE);
+        }
+        
         $this->addColumn(
                 "CASE WHEN gul_id_user IS NULL OR gul_user_class = 'NoLogin' OR gul_can_login = 0 THEN 0 ELSE 1 END",
                 'has_login');
@@ -327,17 +328,15 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         }
         $this->resetOrder();
         if ($this->has('gr2o_id_organization')) {
-            $user = $this->loader->getCurrentUser();
-
             $this->set('gr2o_id_organization',
                     'label', $this->_('Organization'),
                     'tab', $this->_('Identification'),
-                    'multiOptions', $user->getRespondentOrganizations()
+                    'multiOptions', $this->currentUser->getRespondentOrganizations()
                     );
 
-            $this->set('gr2o_id_organization', 'default', $user->getCurrentOrganizationId());
+            $this->set('gr2o_id_organization', 'default', $this->currentUser->getCurrentOrganizationId());
 
-            if (count($user->getAllowedOrganizations()) == 1) {
+            if (count($this->currentUser->getAllowedOrganizations()) == 1) {
                 $this->set('gr2o_id_organization', 'elementClass', 'Exhibitor');
             }
         }
@@ -715,7 +714,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
     {
         // If the respondent id is not set, check using the
         // patient number and then the ssn
-        if (! isset($newValues['grs_id_user'])) {
+        if (! (isset($newValues['grs_id_user']) && $newValues['grs_id_user'])) {
             $id = false;
 
             if (isset($newValues['gr2o_patient_nr'], $newValues['gr2o_id_organization'])) {
@@ -760,6 +759,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                 $newValues['grs_id_user']  = $id;
                 $newValues['gr2o_id_user'] = $id;
             }
+            // If empty, then set by Gems_Model->createGemsUserId()
         }
 
         $result = parent::save($newValues, $filter, $saveTables);
@@ -768,7 +768,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
             // Tell the organization it has at least one user
             $org = $this->loader->getOrganization($result['gr2o_id_organization']);
             if ($org) {
-                $org->setHasRespondents($this->loader->getCurrentUser()->getUserId());
+                $org->setHasRespondents($this->currentUser->getUserId());
             }
         }
 
@@ -810,7 +810,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         } else {
             $code    = $this->util->getReceptionCode($newCode);
         }
-        $userId = $this->loader->getCurrentUser()->getUserId();
+        $userId = $this->currentUser->getUserId();
 
         // Perform actual save, but not for simple stop codes.
         if ($code->isForRespondents()) {
