@@ -32,7 +32,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -90,6 +89,13 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
     public $hashSsn = self::SSN_HASH;
 
     /**
+     * Should the logincheck be added automatically
+     *
+     * @var boolean
+     */
+    protected $loginCheck = false;
+
+    /**
      *
      * @var \Gems_Project_ProjectSettings
      */
@@ -118,11 +124,6 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         $this->addTable('gems__reception_codes', array('gr2o_reception_code' => 'grc_id_reception_code'));
 
         $this->setKeys($this->_getKeysFor('gems__respondent2org'));
-
-        $this->setOnSave('gr2o_opened', new \MUtil_Db_Expr_CurrentTimestamp());
-        $this->setSaveOnChange('gr2o_opened');
-        $this->setOnSave('gr2o_opened_by', \GemsEscort::getInstance()->session->user_id);
-        $this->setSaveOnChange('gr2o_opened_by');
 
         $this->addColumn(new \Zend_Db_Expr("CASE WHEN grc_success = 1 THEN '' ELSE 'deleted' END"), 'row_class');
         $this->addColumn(new \Zend_Db_Expr("CASE WHEN grc_success = 1 THEN 0 ELSE 1 END"), 'resp_deleted');
@@ -158,7 +159,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         } else {
             // Add the correct filter
             if ($this->isMultiOrganization() && !isset($filter['gr2o_patient_nr'])) {
-                $allowed = $this->user->getAllowedOrganizations();
+                $allowed = $this->currentUser->getAllowedOrganizations();
 
                 // If we are not looking for a specific patient, we can look at all patients
                 $filter['gr2o_id_organization'] = array_keys($allowed);
@@ -183,13 +184,15 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
      */
     public function addLoginCheck()
     {
-        $this->addLeftTable(
-                'gems__user_logins',
-                array('gr2o_patient_nr' => 'gul_login', 'gr2o_id_organization' => 'gul_id_organization'),
-                'gul',
-                \MUtil_Model_DatabaseModelAbstract::SAVE_MODE_UPDATE |
-                    \MUtil_Model_DatabaseModelAbstract::SAVE_MODE_DELETE);
-
+        if (! $this->hasAlias('gems__user_logins')) {
+            $this->addLeftTable(
+                    'gems__user_logins',
+                    array('gr2o_patient_nr' => 'gul_login', 'gr2o_id_organization' => 'gul_id_organization'),
+                    'gul',
+                    \MUtil_Model_DatabaseModelAbstract::SAVE_MODE_UPDATE |
+                        \MUtil_Model_DatabaseModelAbstract::SAVE_MODE_DELETE);
+        }
+        
         $this->addColumn(
                 "CASE WHEN gul_id_user IS NULL OR gul_user_class = 'NoLogin' OR gul_can_login = 0 THEN 0 ELSE 1 END",
                 'has_login');
@@ -241,6 +244,22 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
    }
 
     /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    {
+        parent::afterRegistry();
+
+        $this->setOnSave('gr2o_opened', new \MUtil_Db_Expr_CurrentTimestamp());
+        $this->setSaveOnChange('gr2o_opened');
+        $this->setOnSave('gr2o_opened_by', $this->currentUser->getUserId());
+        $this->setSaveOnChange('gr2o_opened_by');
+    }
+
+    /**
      * Set those settings needed for the browse display
      *
      * @return \Gems_Model_RespondentModel
@@ -253,6 +272,11 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         $this->resetOrder();
 
         if ($this->has('gr2o_id_organization') && $this->isMultiOrganization()) {
+            // Add for sorting
+            $this->addTable('gems__organizations', array('gr2o_id_organization' => 'gor_id_organization'));
+
+            $this->setIfExists('gor_name', 'label', $this->translate->_('Organization'));
+
             $this->set('gr2o_id_organization',
                     'label', $this->_('Organization'),
                     'multiOptions', $dbLookup->getOrganizationsWithRespondents()
@@ -264,6 +288,9 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         self::addNameToModel($this, $this->_('Name'));
 
         $this->setIfExists('grs_email',       'label', $this->_('E-Mail'));
+        $this->setIfExists('gr2o_mailable',   'label', $this->_('May be mailed'),
+                'multiOptions', $translated->getYesNo()
+                );
 
         $this->setIfExists('grs_address_1',   'label', $this->_('Street'));
         $this->setIfExists('grs_zipcode',     'label', $this->_('Zipcode'));
@@ -271,8 +298,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
 
         $this->setIfExists('grs_phone_1',     'label', $this->_('Phone'));
 
-        $this->setIfExists('grs_birthday',
-                'label', $this->_('Birthday'),
+        $this->setIfExists('grs_birthday',    'label', $this->_('Birthday'),
                 'dateFormat', \Zend_Date::DATE_MEDIUM);
 
         $this->setIfExists('gr2o_opened',
@@ -297,25 +323,26 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         $localized  = $this->util->getLocalized();
         $translated = $this->util->getTranslated();
 
+        if ($this->loginCheck) {
+            $this->addLoginCheck();
+        }
         $this->resetOrder();
         if ($this->has('gr2o_id_organization')) {
-            $user = $this->loader->getCurrentUser();
-
             $this->set('gr2o_id_organization',
                     'label', $this->_('Organization'),
                     'tab', $this->_('Identification'),
-                    'multiOptions', $user->getRespondentOrganizations()
+                    'multiOptions', $this->currentUser->getRespondentOrganizations()
                     );
 
-            $this->set('gr2o_id_organization', 'default', $user->getCurrentOrganizationId());
+            $this->set('gr2o_id_organization', 'default', $this->currentUser->getCurrentOrganizationId());
 
-            if (count($user->getAllowedOrganizations()) == 1) {
+            if (count($this->currentUser->getAllowedOrganizations()) == 1) {
                 $this->set('gr2o_id_organization', 'elementClass', 'Exhibitor');
             }
         }
 
         // The SSN
-        if ($this->hashSsn !== \Gems_Model_RespondentModel::SSN_HIDE) {
+        if ($this->hashSsn !== self::SSN_HIDE) {
             $this->set('grs_ssn', 'label', $this->_('SSN'),
                     'tab', $this->_('Identification'));
         }
@@ -334,25 +361,27 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                 'description', $this->_('de, ibn, Le, Mac, von, etc...'));
         $this->setIfExists('grs_partner_last_name',   'label', $this->_('Partner last name'));
 
-        $this->setIfExists('grs_gender',
-                'label', $this->_('Gender'),
+        $this->setIfExists('grs_gender',      'label', $this->_('Gender'),
                 'multiOptions', $translated->getGenderHello()
                 );
 
-        $this->setIfExists('grs_birthday',
-                'label', $this->_('Birthday'),
+        $this->setIfExists('grs_birthday',    'label', $this->_('Birthday'),
                 'dateFormat', \Zend_Date::DATE_MEDIUM
                 );
 
-        $this->setIfExists('gr2o_treatment',          'label', $this->_('Treatment'));
-        $this->setIfExists('gr2o_comments',           'label', $this->_('Comments'));
-
         $this->setIfExists('grs_email',       'label', $this->_('E-Mail'),
                 'tab', $this->_('Contact information'));
-        $this->setIfExists('gr2o_mailable',     'label', $this->_('May be mailed'));
+        $this->setIfExists('gr2o_mailable',   'label', $this->_('May be mailed'),
+                'elementClass', 'radio',
+                'separator', ' ',
+                'multiOptions', $translated->getYesNo()
+                );
+
+        $this->setIfExists('gr2o_treatment',  'label', $this->_('Treatment'));
+        $this->setIfExists('gr2o_comments',   'label', $this->_('Comments'));
 
         $this->setIfExists('grs_address_1',   'label', $this->_('Street'));
-        $this->setIfExists('grs_address_2',   'label', '&nbsp;');
+        $this->setIfExists('grs_address_2',   'label', ' ');
 
         // \MUtil_Echo::track($this->getItemsOrdered(), $this->getOrder('grs_email'));
 
@@ -371,19 +400,39 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                 'tab', $this->_('Settings'), 'default', $this->project->getLocaleDefault());
 
         $this->setIfExists('gr2o_consent',    'label', $this->_('Consent'),
+                'default', $this->util->getDefaultConsent(),
                 'description', $this->_('Has the respondent signed the informed consent letter?'),
                 'multiOptions', $dbLookup->getUserConsents()
                 );
 
+        $changers = $this->getChangersList();
+
         $this->setIfExists('gr2o_opened',     'label', $this->_('Opened'),
-                'formatFunction', $translated->formatDateTime
+                'dateFormat', \Zend_Date::DATE_MEDIUM,
+                'default', '',
+                'elementClass', 'None',  // Has little use to show: is usually editor
+                'formatFunction', array($translated, 'formatDateTime')
                 );
-
+        $this->setIfExists('gr2o_opened_by',  'label', $this->_('Opened'),
+                'elementClass', 'None',  // Has little use to show: is usually editor
+                'multiOptions', $changers
+                );
         $this->setIfExists('gr2o_changed',    'label', $this->_('Changed on'),
-                'formatFunction', $translated->formatDateTime);
-
+                'dateFormat', \Zend_Date::DATE_MEDIUM,
+                'default', '',
+                'formatFunction', array($translated, 'formatDateTime')
+                );
         $this->setIfExists('gr2o_changed_by', 'label', $this->_('Changed by'),
-                'multiOptions', $this->util->getDbLookup()->getStaff());
+                'multiOptions', $changers
+                );
+        $this->setIfExists('gr2o_created',    'label', $this->_('Creation date'),
+                'dateFormat', \Zend_Date::DATE_MEDIUM,
+                'default', '',
+                'formatFunction', array($translated, 'formatDateTime')
+                );
+        $this->setIfExists('gr2o_created_by', 'label', $this->_('Creation by'),
+                'multiOptions', $changers
+                );
 
         return $this;
     }
@@ -391,9 +440,10 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
     /**
      * Set those values needed for editing
      *
+     * @param boolean $create True when creating
      * @return \Gems_Model_RespondentModel
      */
-    public function applyEditSettings()
+    public function applyEditSettings($create = false)
     {
         $this->applyDetailSettings();
         $this->copyKeys(); // The user can edit the keys.
@@ -401,7 +451,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         $translated = $this->util->getTranslated();
         $ucfirst    = new \Zend_Filter_Callback('ucfirst');
 
-        if ($this->hashSsn !== \Gems_Model_RespondentModel::SSN_HIDE) {
+        if ($this->hashSsn !== self::SSN_HIDE) {
             $onblur = new \MUtil_Html_JavascriptArrayAttribute('onblur');
             $onblur->addSubmitOnChange('this.value');
 
@@ -411,6 +461,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                     );
         }
 
+        $this->set('gr2o_id_organization', 'default', $this->currentUser->getCurrentOrganizationId());
         $this->setIfExists('gr2o_patient_nr',
                 'size', 15,
                 'minlength', 4,
@@ -441,11 +492,8 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         $this->set('gr2o_mailable',
                 'label', $this->_('May be mailed'),
                 'elementClass', 'radio',
-                'separator', ' ',
-                'multiOptions', array(
-                        '1' => $this->_('Yes'),
-                        '0' => $this->_('No'),
-                    )
+                'multiOptions', $translated->getYesNo(),
+                'separator', ' '
                 );
 
         $this->setIfExists('grs_first_name', 'filter', $ucfirst);
@@ -462,7 +510,8 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         $this->setIfExists('grs_birthday',
                 'jQueryParams', array('defaultDate' => '-30y', 'maxDate' => 0, 'yearRange' => 'c-130:c0'),
                 'elementClass', 'Date',
-                'validator', new \MUtil_Validate_Date_DateBefore());
+                'validator', new \MUtil_Validate_Date_DateBefore()
+                );
 
         $this->setIfExists('gr2o_treatment', 'size', 30);
         $this->setIfExists('gr2o_comments',  'elementClass', 'Textarea', 'rows', 4, 'cols', 60);
@@ -479,17 +528,26 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         $this->setIfExists('grs_phone_3', 'size', 15);
         $this->setIfExists('grs_phone_4', 'size', 15);
 
-        $this->setIfExists('gr2o_opened',     'elementClass', 'hidden'); // Has little use to show: is usually editor
-        $this->setIfExists('gr2o_changed',    'elementClass', 'Exhibitor');
-        $this->setIfExists('gr2o_changed_by', 'elementClass', 'Exhibitor');
-
         $this->setIfExists('gr2o_consent',
                 'default', $this->util->getDefaultConsent(),
                 'elementClass', 'Radio',
-                'separator', '',
+                'separator', ' ',
                 'required', true);
 
-        $this->setIfExists('name', 'elementClass', 'hidden');
+        $this->setMulti(array('name', 'row_class', 'resp_deleted'), 'elementClass', 'None');
+        $this->setMulti($this->getItemsFor('table', 'gems__reception_codes'), 'elementClass', 'None');
+
+        if ($create) {
+            $this->setIfExists('gr2o_changed',    'elementClass', 'None');
+            $this->setIfExists('gr2o_changed_by', 'elementClass', 'None');
+            $this->setIfExists('gr2o_created',    'elementClass', 'None');
+            $this->setIfExists('gr2o_created_by', 'elementClass', 'None');
+        } else {
+            $this->setIfExists('gr2o_changed',    'elementClass', 'Exhibitor');
+            $this->setIfExists('gr2o_changed_by', 'elementClass', 'Exhibitor');
+            $this->setIfExists('gr2o_created',    'elementClass', 'Exhibitor');
+            $this->setIfExists('gr2o_created_by', 'elementClass', 'Exhibitor');
+        }
 
         return $this;
     }
@@ -551,6 +609,16 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         }
 
         return $db->fetchOne($select);
+    }
+
+    /**
+     * Return a list of those who could be on the created_by, changed_by or opened_by fields
+     *
+     * @return array id => name
+     */
+    protected function getChangersList()
+    {
+        return $this->util->getDbLookup()->getStaff();
     }
 
     /**
@@ -631,8 +699,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
      */
     public function isMultiOrganization()
     {
-        // return ($this->user->hasPrivilege('pr.respondent.multiorg') && (! $this->user->getCurrentOrganization()->canHaveRespondents()));
-        return $this->user->hasPrivilege('pr.respondent.multiorg');
+        return $this->currentUser->hasPrivilege('pr.respondent.multiorg');
     }
 
     /**
@@ -647,7 +714,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
     {
         // If the respondent id is not set, check using the
         // patient number and then the ssn
-        if (! isset($newValues['grs_id_user'])) {
+        if (! (isset($newValues['grs_id_user']) && $newValues['grs_id_user'])) {
             $id = false;
 
             if (isset($newValues['gr2o_patient_nr'], $newValues['gr2o_id_organization'])) {
@@ -660,9 +727,9 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
 
             if ((!$id) &&
                     isset($newValues['grs_ssn']) &&
-                    ($this->hashSsn !== \Gems_Model_RespondentModel::SSN_HIDE)) {
+                    ($this->hashSsn !== self::SSN_HIDE)) {
 
-                if (\Gems_Model_RespondentModel::SSN_HASH === $this->hashSsn) {
+                if (self::SSN_HASH === $this->hashSsn) {
                     $search = $this->saveSSN($newValues['grs_ssn']);
                 } else {
                     $search = $newValues['grs_ssn'];
@@ -692,6 +759,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                 $newValues['grs_id_user']  = $id;
                 $newValues['gr2o_id_user'] = $id;
             }
+            // If empty, then set by Gems_Model->createGemsUserId()
         }
 
         $result = parent::save($newValues, $filter, $saveTables);
@@ -700,7 +768,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
             // Tell the organization it has at least one user
             $org = $this->loader->getOrganization($result['gr2o_id_organization']);
             if ($org) {
-                $org->setHasRespondents($this->loader->getCurrentUser()->getUserId());
+                $org->setHasRespondents($this->currentUser->getUserId());
             }
         }
 
@@ -742,7 +810,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         } else {
             $code    = $this->util->getReceptionCode($newCode);
         }
-        $userId = $this->loader->getCurrentUser()->getUserId();
+        $userId = $this->currentUser->getUserId();
 
         // Perform actual save, but not for simple stop codes.
         if ($code->isForRespondents()) {

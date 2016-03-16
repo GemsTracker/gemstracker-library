@@ -32,7 +32,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -74,7 +73,7 @@ class Gems_Snippets_RespondentFormSnippet extends \Gems_Snippets_ModelFormSnippe
     {
         parent::loadFormData();
 
-        if ($this->request->isPost()) {
+        if ($this->request->isPost() && (! isset($this->formData[$this->saveButtonId]))) {
             if ((! $this->_saveButton) || (! $this->_saveButton->isChecked())) {
                 if (isset($this->formData['grs_ssn']) && $this->formData['grs_ssn'])  {
                     $filter = array(
@@ -96,7 +95,19 @@ class Gems_Snippets_RespondentFormSnippet extends \Gems_Snippets_ModelFormSnippe
 
                     $data = $this->model->loadFirst($filter, $order);
 
-                    if ($data && (! isset($this->formData[$this->saveButtonId]))) {
+                    // Fallback for when just a respondent row was saved but no resp2org exists
+                    if (! $data) {
+                        $data = $this->db->fetchRow(
+                                "SELECT * FROM gems__respondents WHERE grs_ssn = ?",
+                                $this->formData['grs_ssn']
+                                );
+
+                        if ($data) {
+                            $data['gr2o_id_organization'] = false;
+                        }
+                    }
+
+                    if ($data) {
                         // \MUtil_Echo::track($this->formData);
                         // \MUtil_Echo::track($data);
                         // Do not use this value
@@ -121,18 +132,24 @@ class Gems_Snippets_RespondentFormSnippet extends \Gems_Snippets_ModelFormSnippe
                                 }
                             } // */
                         } else {
-                            $org = $this->loader->getOrganization($data['gr2o_id_organization']);
-                            $this->addMessage(sprintf(
-                                    $this->_('Respondent data retrieved from %s.'),
-                                    $org->getName()
-                                    ));
+                            if ($data['gr2o_id_organization']) {
+                                $org = $this->loader->getOrganization($data['gr2o_id_organization']);
+                                $this->addMessage(sprintf(
+                                        $this->_('Respondent data retrieved from %s.'),
+                                        $org->getName()
+                                        ));
+                            } else {
+                                $this->addMessage($this->_('Respondent data found.'));
+                            }
 
                             foreach ($data as $name => $value) {
                                 if ((substr($name, 0, 4) == 'grs_') && array_key_exists($name, $this->formData)) {
                                     $this->formData[$name] = $value;
                                 }
+                                $this->formData['gr2o_id_user'] = $data['grs_id_user'];
                             }
                         }
+
                     }
                 }
             }

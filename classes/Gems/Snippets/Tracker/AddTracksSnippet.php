@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -31,7 +32,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: AddTracksSnippet.php 2308 2014-12-10 14:50:33Z mennodekker $
  */
 
 namespace Gems\Snippets\Tracker;
@@ -183,14 +183,18 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
             if (\MUtil_Bootstrap::enabled()) {
                 $div->button($trackTypeDescription,
                     array('class' => 'toolanchor btn', 'data-toggle' => 'dropdown', 'type' => 'button'));
-                $dropdownButton = $div->button(array('class' => 'btn dropdown-toggle', 'data-toggle' => 'dropdown', 'type' => 'button'));
+                $dropdownButton = $div->button(array(
+                    'class' => 'btn dropdown-toggle',
+                    'data-toggle' => 'dropdown',
+                    'type' => 'button',
+                    ));
                 $dropdownButton->span(array('class' => 'caret', 'renderClosingTag' => true));
             } else {
                 $div->a($menuIndex->toHRefAttribute($this->request), $trackTypeDescription, array('class' => 'toolanchor'));
             }
 
             $data   = new \MUtil_Lazy_RepeatableByKeyValue($tracks);
-            
+
             if ($trackType == 'tracks') {
                 $menuView   = $this->menu->findController('track', 'view');
                 $params = array('gtr_id_track' => $data->key);
@@ -236,13 +240,18 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
             if (\MUtil_Bootstrap::enabled()) {
                 $div->button($trackTypeDescription,
                     array('class' => 'toolanchor btn disabled', 'data-toggle' => 'dropdown', 'type' => 'button'));
-                $dropdownButton = $div->button(array('class' => 'disabled btn dropdown-toggle', 'data-toggle' => 'dropdown', 'type' => 'button'));
+                $dropdownButton = $div->button(array(
+                    'class' => 'disabled btn dropdown-toggle',
+                    'data-toggle' => 'dropdown',
+                    'type' => 'button',
+                    ));
                 $dropdownButton->span(array('class' => 'caret', 'renderClosingTag' => true));
                 $options = array('class' => 'dropdown-menu disabled', 'role' => 'menu');
             } else {
                 $div->a($menuIndex->toHRefAttribute($this->request),
                         $trackTypeDescription,
-                        array('class' => 'toolanchor disabled'));
+                        array('class' => 'toolanchor disabled')
+                        );
 
                 $options = array('class' => 'disabled');
             }

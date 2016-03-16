@@ -134,7 +134,7 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
     /**
      * Set those settings needed for the browse display
      *
-     * @return \Gems_Model_RespondentModel
+     * @return \Gems_Model_RespondentTrackModel
      */
     public function applyBrowseSettings()
     {
@@ -173,7 +173,7 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
      *
      * @param \Gems_Tracker_Engine_TrackEngineInterface $trackEngine
      * @param boolean $edit When true the fields are added in edit mode
-     * @return \Gems_Model_RespondentModel
+     * @return \Gems_Model_RespondentTrackModel
      */
     public function applyDetailSettings(\Gems_Tracker_Engine_TrackEngineInterface $trackEngine, $edit = false)
     {
@@ -223,7 +223,7 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
      * Set those values needed for editing
      *
      * @param \Gems_Tracker_Engine_TrackEngineInterface $trackEngine
-     * @return \Gems_Model_RespondentModel
+     * @return \Gems_Model_RespondentTrackModel
      */
     public function applyEditSettings(\Gems_Tracker_Engine_TrackEngineInterface $trackEngine)
     {

@@ -52,9 +52,9 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
 {
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems_User_User
      */
-    protected $loader;
+    protected $currentUser;
 
     /**
      *
@@ -245,10 +245,7 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
      */
     protected function getAllTrackTypes($orgWhere, array $data)
     {
-        return "SELECT gtr_id_track, gtr_track_name
-                    FROM gems__tracks
-                    WHERE gtr_active=1 AND $orgWhere
-                    ORDER BY gtr_track_name";
+        return $this->util->getTrackData()->getActiveTracks($orgWhere);
     }
 
     /**
@@ -276,8 +273,6 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
      */
     protected function getOrganizationList(array $data)
     {
-        $user = $this->loader->getCurrentUser();
-
-        return $user->getRespondentOrganizations();
+        return $this->currentUser->getRespondentOrganizations();
     }
 }
