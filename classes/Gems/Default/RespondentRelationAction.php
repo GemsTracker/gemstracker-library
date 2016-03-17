@@ -60,7 +60,7 @@ class Gems_Default_RespondentRelationAction extends \Gems_Controller_ModelSnippe
 
     protected $deleteSnippets = 'Respondent_Relation_YesNoDeleteSnippet';
 
-    protected $indexStopSnippets = 'Generic\\CurrentButtonRowSnippet';
+    protected $indexStopSnippets = 'Generic\\CurrentSiblingsButtonRowSnippet';
 
     protected function createModel($detailed, $action)
     {
