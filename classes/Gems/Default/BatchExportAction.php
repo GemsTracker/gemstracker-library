@@ -4,7 +4,7 @@ class Gems_Default_BatchExportAction extends \MUtil_Controller_Action
 {
     public $db;
 
-    protected $exportFormSnippets = 'Gems\Snippets\Export\BatchExportFormSnippet';
+    protected $exportFormSnippets = 'Export\\BatchExportFormSnippet';
 
     protected $exportModelSource = 'AnswerExportModelSource';
 
