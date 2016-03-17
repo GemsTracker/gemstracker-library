@@ -162,7 +162,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
      */
     public $escort;
 
-    protected $exportFormSnippets = 'Gems_Snippets_Export_ExportFormSnippet';
+    protected $exportFormSnippets = 'Gems\Snippets\Export\ExportFormSnippet';
 
     /**
      * Should Excel output contain formatted data (date fields, select lists)
