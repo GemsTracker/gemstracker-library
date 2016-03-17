@@ -86,16 +86,30 @@ class Gems_Snippets_Tracker_Summary_SummarySearchFormSnippet extends \Gems_Snipp
         $this->_addPeriodSelectors($elements, $dates, 'gto_valid_from');
 
         $elements[] = null;
+        if (isset($data['gto_id_track']) && !empty($data['gto_id_track'])) {
+            $trackId = $data['gto_id_track'];
+        } else {
+            $trackId = -1;
+        }
+        $sql = "SELECT ggp_name, ggp_name as label FROM (
+                    SELECT DISTINCT ggp_name
+                        FROM gems__groups INNER JOIN gems__surveys ON ggp_id_group = gsu_id_primary_group
+                            INNER JOIN gems__rounds ON gsu_id_survey = gro_id_survey
+                            INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
+                        WHERE ggp_group_active = 1 AND
+                            gro_active=1 AND
+                            gtr_active=1 AND
+                            gtr_id_track = $trackId
 
-        $sql = "SELECT DISTINCT ggp_id_group, ggp_name
-                    FROM gems__groups INNER JOIN gems__surveys ON ggp_id_group = gsu_id_primary_group
-                        INNER JOIN gems__rounds ON gsu_id_survey = gro_id_survey
-                        INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
-                    WHERE ggp_group_active = 1 AND
-                        gro_active=1 AND
-                        gtr_active=1
-                    ORDER BY ggp_name";
-        $elements[] = $this->_createSelectElement('gsu_id_primary_group', $sql, $this->_('(all fillers)'));
+                UNION ALL
+
+                    SELECT DISTINCT gtf_field_name as ggp_name
+                        FROM gems__track_fields
+                        WHERE gtf_field_type = 'relation' AND
+                            gtf_id_track = $trackId
+                ) AS tmpTable
+                ORDER BY ggp_name";
+        $elements[] = $this->_createSelectElement('ggp_name', $sql, $this->_('(all fillers)'));
 
         return $elements;
     }

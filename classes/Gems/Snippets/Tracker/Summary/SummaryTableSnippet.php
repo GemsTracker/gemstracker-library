@@ -83,7 +83,7 @@ class Gems_Snippets_Tracker_Summary_SummaryTableSnippet extends \Gems_Snippets_M
         // $bridge->add('unknown');
         $bridge->addColumn(array('=', 'class' => 'centerAlign'));
         $bridge->addSortable('total');
-        $bridge->addSortable('gsu_id_primary_group');
+        $bridge->addSortable('ggp_name');
         // $bridge->tr();
         // $bridge->add('gsu_survey_name')->colspan = 4;
         // $bridge->add('gsu_id_primary_group')->colspan = 2;

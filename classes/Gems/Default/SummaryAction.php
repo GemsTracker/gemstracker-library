@@ -107,7 +107,6 @@ class Gems_Default_SummaryAction extends \Gems_Controller_ModelSnippetActionAbst
 
         // Make sure of filter and sort for these fields
         $model->set('gro_id_order');
-        $model->set('gsu_id_primary_group');
         $model->set('gto_id_track');
         $model->set('gto_id_organization');
 
@@ -125,8 +124,7 @@ class Gems_Default_SummaryAction extends \Gems_Controller_ModelSnippetActionAbst
         // $model->set('removed',  'label', $this->_('Removed'),  'tdClass', 'deleted centerAlign',
         //         'thClass', 'centerAlign');
 
-        $model->set('gsu_id_primary_group',  'label', $this->_('Filler'),
-                'multiOptions', $this->util->getDbLookup()->getGroups());
+        $model->set('ggp_name',  'label', $this->_('Filler'), 'column_expression', new \Zend_Db_Expr('COALESCE(gems__track_fields.gtf_field_name, gems__groups.ggp_name)'));
 
         $filter = $this->getSearchFilter($action !== 'excel');
         if (! (isset($filter['gto_id_organization']) && $filter['gto_id_organization'])) {
@@ -215,14 +213,18 @@ class Gems_Default_SummaryAction extends \Gems_Controller_ModelSnippetActionAbst
             )');
         // */
 
+        $fields['ggp_name'] = new \Zend_Db_Expr('COALESCE(gems__track_fields.gtf_field_name, gems__groups.ggp_name)');
+
         $select = $this->db->select();
         $select->from('gems__tokens', $fields)
                 ->joinInner('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', array())
                 ->joinInner('gems__rounds', 'gto_id_round = gro_id_round',
                         array('gro_round_description', 'gro_id_survey'))
                 ->joinInner('gems__surveys', 'gro_id_survey = gsu_id_survey',
-                        array('gsu_survey_name', 'gsu_id_primary_group'))
-                ->group(array('gro_id_order', 'gro_round_description', 'gsu_survey_name', 'gsu_id_primary_group'));
+                        array('gsu_survey_name'))
+                ->joinInner('gems__groups', 'gsu_id_primary_group =  ggp_id_group', array())
+                ->joinLeft('gems__track_fields',  'gto_id_relationfield = gtf_id_field AND gtf_field_type = "relation"', array())
+                ->group(array('gro_id_order', 'gro_round_description', 'gsu_survey_name', 'ggp_name'));
 
         return $select;
     }
