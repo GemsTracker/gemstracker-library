@@ -33,6 +33,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Export;
+
 /**
  *
  * @package    Gems
@@ -41,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.7.1
  */
-abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_TranslateableAbstract
+abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
 {
     /**
      * @var \Gems_Task_TaskRunnerBatch   The batch object if one is set
@@ -192,6 +194,8 @@ abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_Translateable
         $this->filename = $filename;
         
         $this->files[$filename.$this->fileExtension] = $tempFilename . $this->fileExtension;
+
+        \MUtil_Echo::track($this->files);
 
         $file = fopen($tempFilename . $this->fileExtension, 'w');
 

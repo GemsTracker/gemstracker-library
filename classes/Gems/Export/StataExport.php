@@ -1,6 +1,10 @@
 <?php
 
-class Gems_Export_StataExport extends \Gems_Export_ExportAbstract
+namespace Gems\Export;
+
+use DomDocument;
+
+class StataExport extends ExportAbstract
 {
 
     protected $stataFileVersion = 117;

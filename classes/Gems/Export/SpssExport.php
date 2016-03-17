@@ -33,6 +33,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Export;
+
 /**
  *
  * @package    Gems
@@ -41,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.7.1
  */
-class Gems_Export_SpssExport extends \Gems_Export_ExportAbstract
+class SpssExport extends ExportAbstract
 {
 
     /**
