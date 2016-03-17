@@ -89,6 +89,12 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
     public $hashSsn = self::SSN_HASH;
 
     /**
+     *
+     * @var \Gems_Loader
+     */
+    protected $loader;
+
+    /**
      * Should the logincheck be added automatically
      *
      * @var boolean
@@ -192,7 +198,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                     \MUtil_Model_DatabaseModelAbstract::SAVE_MODE_UPDATE |
                         \MUtil_Model_DatabaseModelAbstract::SAVE_MODE_DELETE);
         }
-        
+
         $this->addColumn(
                 "CASE WHEN gul_id_user IS NULL OR gul_user_class = 'NoLogin' OR gul_can_login = 0 THEN 0 ELSE 1 END",
                 'has_login');

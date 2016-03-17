@@ -33,6 +33,12 @@
  * @license    New BSD License
  */
 
+namespace Gems\Export;
+
+use PHPExcel;
+use PHPExcel_IOFactory;
+use PHPExcel_Cell;
+
 /**
  *
  * @package    Gems
@@ -41,12 +47,12 @@
  * @license    New BSD License
  * @since      Class available since version 1.7.1
  */
-class Gems_Export_ExcelExport extends \Gems_Export_ExportAbstract
+class ExcelExport extends ExportAbstract
 {
     /**
      * @var string  Current used file extension
      */
-    protected $fileExtension = '.xls';
+    protected $fileExtension = '.xlsx';
 
     /**
      * @return string name of the specific export
@@ -89,76 +95,30 @@ class Gems_Export_ExcelExport extends \Gems_Export_ExportAbstract
      */
     protected function addheader($filename)
     {
-        $file = fopen($filename, 'w');
-        fwrite($file, '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
-<head>
-<meta http-equiv=Content-Type content="text/html; charset=UTF-8">
-<meta name=ProgId content=Excel.Sheet>
-<meta name=Generator content="Microsoft Excel 11">
-<style>
-    /* Default styles for tables */
+        $excelObject = PHPExcel_IOFactory::load($filename);
+        //$excelObject = new PHPExcel();
+        $excelObject->getProperties()
+            ->setCreator("Gemstracker")
+            ->setLastModifiedBy("Gemstracker")
+            ->setTitle($this->model->getName());      
 
-    table {
-        border-collapse: collapse;
-        border: .5pt solid #000000;
-    }
+        $columnHeaders = $this->getColumnHeaders();
+        $row = 1;
 
-    tr th {
-        font-weight: bold;
-        padding: 3px 8px;
-        border: .5pt solid #000000;
-        background: #c0c0c0;
-    }
-    tr td {
-        padding: 3px 8px;
-        border: .5pt solid #000000;
-    }
-    td {
-        mso-number-format:"\@";
-    }
-    td.number {
-        mso-number-format:"\#\,\#\#0\.##############";
-    }
-    td.date {
-        mso-number-format:"yyyy\-mm\-dd";
-    }
-    td.datetime {
-        mso-number-format:"dd\-mm\-yyyy hh\:mm\:ss";
-    }
-    td.time {
-        mso-number-format:"hh\:mm\:ss";
-    }
-</style>
-</head>
-<body>');
-
-        //Only for the first row: output headers
-        $labeledCols = $this->model->getColNames('label');
-        $output = "<table>\r\n";
-        $output .= "\t<thead>\r\n";
-        $output .= "\t\t<tr>\r\n";
-
-        if (isset($this->data[$this->getName()]) && isset($this->data[$this->getName()]['format']) && in_array('formatVariable', $this->data[$this->getName()]['format'])) {
-            foreach ($labeledCols as $columnName) {
-                if ($label = $this->model->get($columnName, 'label')) {
-
-                    $output .= "\t\t\t<th>" . $label. "</th>\r\n";
-                }
-            }
-        } else {
-            foreach ($labeledCols as $columnName) {
-                if ($label = $this->model->get($columnName, 'label')) {
-
-                    $output .= "\t\t\t<th>" . $columnName. "</th>\r\n";
-                }
-            }
+        $i=0;
+        foreach($columnHeaders as $columnHeader) {
+            $column = $this->getColumn($i);
+            $cell = $column . $row;
+            $excelObject->getActiveSheet()->setCellValue($cell, $columnHeader);
+            $excelObject->getActiveSheet()->setCellValue($cell, $columnHeader);
+            $excelObject->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
+            $i++;
         }
-        $output .= "\t\t</tr>\r\n";
-        $output .= "\t</thead>\r\n";
-        $output .= "\t<tbody>\r\n";
 
-        fwrite($file, $output);
-        fclose($file);
+        $excelObject->getActiveSheet()->getStyle("A1:$cell")->getFont()->setBold(true);
+
+        $objWriter = PHPExcel_IOFactory::createWriter($excelObject, "Excel2007");
+        $objWriter->save($filename);
     }
 
     /**
@@ -169,11 +129,59 @@ class Gems_Export_ExcelExport extends \Gems_Export_ExportAbstract
      */
     public function addRows($data, $modelId, $tempFilename)
     {
-        $name = $this->getName();
-        if (!(isset($data[$name]) && isset($data[$name]['format']) && in_array('formatAnswer', $data[$name]['format']))) {
-            $this->modelFilterAttributes = array('formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay');
+        $filename = $tempFilename . $this->fileExtension;
+        $this->data = $data;
+        $this->modelId = $modelId;
+        $this->model = $this->getModel();
+        if ($this->model) {
+
+            if ($this->batch) {
+                $rowNumber = $this->batch->getSessionVariable('rowNumber');
+            } else {
+                $this->session = new \Zend_Session_Namespace(__CLASS__);
+                $rowNumber = $this->session->rowNumber;
+            }
+
+            if (empty($rowNumber)) {
+                $rowNumber = 2;
+            }
+
+            $rows = $this->model->load();
+
+            $excelObject = PHPExcel_IOFactory::load($filename);
+            foreach($rows as $row) {
+                $this->addRowWithCount($row, $excelObject, $rowNumber);
+                $rowNumber++;
+            }
         }
-        parent::addRows($data, $modelId, $tempFilename);
+
+        $objWriter = PHPExcel_IOFactory::createWriter($excelObject, "Excel2007");
+        $objWriter->save($filename);
+        
+        if ($this->batch) {
+            $this->batch->setSessionVariable('rowNumber', $rowNumber);
+        } else {
+            $this->session->rowNumber = $rowNumber;
+        }
+    }
+
+    /**
+     * Add a separate row to a file
+     * @param array $row a row in the model
+     * @param file $file The already opened file
+     */
+    public function addRowWithCount($row, $excelObject, $rowNumber)
+    {
+        $i=0;
+
+        $exportRow = $this->filterRow($row);
+
+        $labeledCols = $this->getColumnHeaders();
+        foreach($labeledCols as $colName=>$label) {
+            $cell = $this->getColumn($i) . $rowNumber;
+            $excelObject->getActiveSheet()->setCellValue($cell, $exportRow[$colName]);
+            $i++;
+        }
     }
 
     /**
@@ -182,44 +190,7 @@ class Gems_Export_ExcelExport extends \Gems_Export_ExportAbstract
      * @param file $file The already opened file
      */
     public function addRow($row, $file)
-    {
-        fwrite($file, "\t\t<tr>\r\n");
-        $exportRow = $this->filterRow($row);
-        $labeledCols = $this->model->getColNames('label');
-        foreach($labeledCols as $columnName) {
-            $result = $exportRow[$columnName];
-            $type = $this->model->get($columnName, 'type');
-            switch ($type) {
-                case \MUtil_Model::TYPE_DATE:
-                    $output = '<td class="date">'.$result.'</td>';
-                    break;
-
-                case \MUtil_Model::TYPE_DATETIME:
-                    $output = '<td class="datetime">'.$result.'</td>';
-                    break;
-
-                case \MUtil_Model::TYPE_TIME:
-                    $output = '<td class="time">'.$result.'</td>';
-                    break;
-
-                case \MUtil_Model::TYPE_NUMERIC:
-                    if (isset($options['multiOptions']) && (is_numeric(array_shift($options['multiOptions'])))) {
-                        $output = '<td>'.$result.'</td>';
-                    } else {
-                        $output = '<td class="number">'.$result.'</td>';
-                    }
-                    break;
-
-                //When no type set... assume string
-                case \MUtil_Model::TYPE_STRING:
-                default:
-                    $output = '<td>'.$result.'</td>';
-                    break;
-            }
-            fwrite($file, $output);
-        }
-        fwrite($file, "\t\t</tr>\r\n");
-    }
+    { }
 
     /**
      * Add a footer to a specific file
@@ -227,12 +198,35 @@ class Gems_Export_ExcelExport extends \Gems_Export_ExportAbstract
      */
     public function addFooter($filename)
     {
-        $file = fopen($filename, 'a');
-        fwrite($file, '            </tbody>
-        </table>
-    </body>
-</html>');
-        fclose($file);
+    }
+
+    /*protected function getCol($num) {
+        $alphabet = range('A', 'Z');
+        $numeric = ($num - 1) % 26;
+        $letter = $alphabet[$numeric];
+        $num2 = intval(($num - 1) / 26);
+        if ($num2 > 0) {
+            return getNameFromNumber($num2) . $letter;
+        } else {
+            return $letter;
+        }
+    }*/
+
+    protected function getColumn($x)
+    {
+        return PHPExcel_Cell::stringFromColumnIndex($x);
+    }
+
+    protected function getColumnHeaders()
+    {
+        $labeledCols = $this->model->getColNames('label');
+
+        $columnHeaders = array();
+        foreach($labeledCols as $colName) {
+            $columnHeaders[$colName] = $this->model->get($colName, 'label');
+        }
+
+        return $columnHeaders;
     }
 
     /**
@@ -240,39 +234,5 @@ class Gems_Export_ExcelExport extends \Gems_Export_ExportAbstract
      */
     protected function preprocessModel()
     {
-        //print_r(get_class($this->model));
-        $labeledCols = $this->model->getColNames('label');
-        foreach($labeledCols as $columnName) {
-            $options = array();
-            $type = $this->model->get($columnName, 'type');
-            switch ($type) {
-                case \MUtil_Model::TYPE_DATE:
-                    $options['storageFormat'] = 'yyyy-MM-dd';
-                    $options['dateFormat']    = 'yyyy-MM-dd';
-                    break;
-
-                case \MUtil_Model::TYPE_DATETIME:
-                    $options['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
-                    $options['dateFormat']    = 'dd-MM-yyyy HH:mm:ss';
-                    break;
-
-                case \MUtil_Model::TYPE_TIME:
-                    $options['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
-                    $options['dateFormat']    = 'HH:mm:ss';
-                    break;
-
-                case \MUtil_Model::TYPE_NUMERIC:
-                    break;
-
-                //When no type set... assume string
-                case \MUtil_Model::TYPE_STRING:
-                default:
-                    //$type                      = \MUtil_Model::TYPE_STRING;
-                    //$options['formatFunction'] = 'formatString';
-                    break;
-            }
-            $options['type']           = $type;
-            $this->model->set($columnName, $options);
-        }
     }
 }
