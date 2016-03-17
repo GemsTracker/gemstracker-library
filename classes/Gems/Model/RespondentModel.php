@@ -97,6 +97,12 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
 
     /**
      *
+     * @var \Gems_Loader
+     */
+    public $loader;
+
+    /**
+     *
      * @var \Gems_Project_ProjectSettings
      */
     protected $project;
