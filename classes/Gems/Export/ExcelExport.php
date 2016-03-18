@@ -100,7 +100,7 @@ class ExcelExport extends ExportAbstract
         $excelObject->getProperties()
             ->setCreator("Gemstracker")
             ->setLastModifiedBy("Gemstracker")
-            ->setTitle($this->model->getName());      
+            ->setTitle($this->model->getName());
 
         $columnHeaders = $this->getColumnHeaders();
         $row = 1;
@@ -138,8 +138,8 @@ class ExcelExport extends ExportAbstract
             if ($this->batch) {
                 $rowNumber = $this->batch->getSessionVariable('rowNumber');
             } else {
-                $this->session = new \Zend_Session_Namespace(__CLASS__);
-                $rowNumber = $this->session->rowNumber;
+                $this->_session = new \Zend_Session_Namespace(__CLASS__);
+                $rowNumber = $this->_session->rowNumber;
             }
 
             if (empty($rowNumber)) {
@@ -157,11 +157,11 @@ class ExcelExport extends ExportAbstract
 
         $objWriter = PHPExcel_IOFactory::createWriter($excelObject, "Excel2007");
         $objWriter->save($filename);
-        
+
         if ($this->batch) {
             $this->batch->setSessionVariable('rowNumber', $rowNumber);
         } else {
-            $this->session->rowNumber = $rowNumber;
+            $this->_session->rowNumber = $rowNumber;
         }
     }
 

@@ -39,10 +39,10 @@
  * Marker interface for Pulse Projects using only a single track
  *
  * These projects will autmatically be an instance of
- * Gems_Project_Tracks_TracksOnlyInterface (we assume until
+ * \Gems_Project_Tracks_TracksOnlyInterface (we assume until
  * proven wrong)
  *
- * @see Gems_Project_Tracks_MultiTracksInterface
+ * @see \Gems_Project_Tracks_MultiTracksInterface
  *
  * @package    Gems
  * @subpackage Project

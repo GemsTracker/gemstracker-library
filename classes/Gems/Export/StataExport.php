@@ -51,8 +51,8 @@ class StataExport extends ExportAbstract
         if ($this->batch) {
             $rowNumber = $this->batch->getSessionVariable('rowNumber');
         } else {
-            $this->session = new \Zend_Session_Namespace(__CLASS__);
-            $rowNumber = $this->session->rowNumber;
+            $this->_session = new \Zend_Session_Namespace(__CLASS__);
+            $rowNumber = $this->_session->rowNumber;
         }
 
         $nobs->item(0)->nodeValue = $rowNumber;
@@ -60,7 +60,7 @@ class StataExport extends ExportAbstract
         if ($this->batch) {
             $stringSizes = $this->batch->getSessionVariable('stringSizes');
         } else {
-            $stringSizes = $this->session->stringSizes;
+            $stringSizes = $this->_session->stringSizes;
         }
 
         if (count($typelist)) {
@@ -98,7 +98,7 @@ class StataExport extends ExportAbstract
         if ($this->batch) {
             $this->batch->setSessionVariable('rowNumber', 0);
         } else {
-            $this->session->rowNumber = 0;
+            $this->_session->rowNumber = 0;
         }
     }
 
@@ -279,8 +279,8 @@ class StataExport extends ExportAbstract
         if ($this->batch) {
             $rowNumber = $this->batch->getSessionVariable('rowNumber');
         } else {
-            $this->session = new \Zend_Session_Namespace(__CLASS__);
-            $rowNumber = $this->session->rowNumber;
+            $this->_session = new \Zend_Session_Namespace(__CLASS__);
+            $rowNumber = $this->_session->rowNumber;
         }
 
         if (empty($rowNumber)) {
@@ -309,7 +309,7 @@ class StataExport extends ExportAbstract
         if ($this->batch) {
             $this->batch->setSessionVariable('rowNumber', $rowNumber);
         } else {
-            $this->session->rowNumber = $rowNumber;
+            $this->_session->rowNumber = $rowNumber;
         }
 
     }
@@ -334,7 +334,7 @@ class StataExport extends ExportAbstract
         if ($this->batch) {
             $stringSizes = $this->batch->getSessionVariable('stringSizes');
         } else {
-            $stringSizes = $this->session->stringSizes;
+            $stringSizes = $this->_session->stringSizes;
         }
 
         foreach($labeledCols as $columnName) {
@@ -344,7 +344,7 @@ class StataExport extends ExportAbstract
 
             if (($type == \MUtil_Model::TYPE_DATE || $type == \MUtil_Model::TYPE_DATETIME) && $exportRow[$columnName] !== null) {
 
-                if ($exportRow[$columnName] instanceof Zend_Date) {
+                if ($exportRow[$columnName] instanceof \Zend_Date) {
                     $exportRow[$columnName] = $exportRow[$columnName]->getTimestamp() * 1000 + 315619200000;
                 } else {
                     $exportRow[$columnName] = strtotime($exportRow[$columnName] . ' GMT') * 1000 + 315619200000;
@@ -358,7 +358,7 @@ class StataExport extends ExportAbstract
                     if ($this->batch) {
                         $this->batch->setSessionVariable('stringSizes', $stringSizes);
                     } else {
-                        $this->session->stringSizes = $stringSizes;
+                        $this->_session->stringSizes = $stringSizes;
                     }
                 }
             }
@@ -473,7 +473,7 @@ class StataExport extends ExportAbstract
         if ($this->batch) {
             $this->batch->setSessionVariable('stringSizes', $stringSizes);
         } else {
-            $this->session->stringSizes = $stringSizes;
+            $this->_session->stringSizes = $stringSizes;
         }
 
         return $columnHeaders;
@@ -489,7 +489,7 @@ class StataExport extends ExportAbstract
         parent::finalizeFiles();
 
         if (!$this->batch) {
-            $this->session->rowNumber = 0;
+            $this->_session->rowNumber = 0;
         }
     }
 
@@ -563,7 +563,7 @@ class StataExport extends ExportAbstract
                     break;
 
                 case \MUtil_Model::TYPE_DATETIME:
-                    
+
                     break;
 
                 case \MUtil_Model::TYPE_TIME:

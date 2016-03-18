@@ -39,8 +39,8 @@
  * Marker interface for Pulse Projects that use tracks that cannot be assigned by the user
  * (but are assigned by the system instead).
  *
- * @see Gems_Project_Tracks_MultiTracksInterface
- * @see Gems_Project_Tracks_SingleTrackInterface
+ * @see \Gems_Project_Tracks_MultiTracksInterface
+ * @see \Gems_Project_Tracks_SingleTrackInterface
  *
  * @package    Gems
  * @subpackage Project

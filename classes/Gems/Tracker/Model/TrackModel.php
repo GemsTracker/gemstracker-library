@@ -149,13 +149,17 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
             }
             $this->setIfExists('gtr_organizations', 'label', $translator->_('Organizations'),
                     'elementClass', 'MultiCheckbox',
-                    'multiOptions', $this->util->getDbLookup()->getOrganizations(),
+                    'multiOptions', $this->util->getDbLookup()->getOrganizationsWithRespondents(),
                     'required', true
                     );
             $ct = new \MUtil_Model_Type_ConcatenatedRow('|', $translator->_(', '));
             $ct->apply($this, 'gtr_organizations');
         }
         if ($edit) {
+            $this->set('toggleOrg',
+                    'elementClass', 'ToggleCheckboxes',
+                    'selectorName', 'gtr_organizations'
+                    );
             $this->set('gtr_track_name',
                     'minlength', 4,
                     'size', 30,

@@ -46,6 +46,11 @@ namespace Gems\Export;
 abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
 {
     /**
+     * @var \Zend_Session_Namespace    Own session used for non-batch exports
+     */
+    protected $_session;
+
+    /**
      * @var \Gems_Task_TaskRunnerBatch   The batch object if one is set
      */
     protected $batch;
@@ -91,7 +96,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
     protected $modelFilterAttributes = array('multiOptions', 'formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay');
 
     /**
-     * 
+     *
      * @var integer Model Id for when multiple models are passed
      */
     protected $modelId;
@@ -115,11 +120,6 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
      * @var integer     How many rows the batch will do in one go
      */
     protected $rowsPerBatch = 500;
-
-    /**
-     * @var \Zend_Session    Session used for non-batch exports
-     */
-    protected $session;
 
     /**
      * @return string name of the specific export
@@ -146,12 +146,12 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
      */
     public function addExport($data, $modelId=false)
     {
-        
+
         $this->files = $this->getFiles();
         $this->data = $data;
         $this->modelId = $modelId;
 
-        if ($model = $this->getModel()) {                
+        if ($model = $this->getModel()) {
             $totalRows = $this->getModelCount();
             $this->addFile();
             $this->addHeader($this->tempFilename.$this->fileExtension);
@@ -171,9 +171,9 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
                 $this->batch->setSessionVariable('files', $this->files);
             } else {
                 $this->addFooter($this->tempFilename.$this->fileExtension);
-                $this->session = new \Zend_Session_Namespace(__CLASS__);
-                $this->session->files = $this->files;
-            }         
+                $this->_session = new \Zend_Session_Namespace(__CLASS__);
+                $this->_session->files = $this->files;
+            }
         }
     }
 
@@ -192,7 +192,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
             $i++;
         }
         $this->filename = $filename;
-        
+
         $this->files[$filename.$this->fileExtension] = $tempFilename . $this->fileExtension;
 
         \MUtil_Echo::track($this->files);
@@ -269,7 +269,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
         foreach($row as $columnName=>$result) {
             if ($this->model->get($columnName, 'label')) {
                 $options = $this->model->get($columnName, $this->modelFilterAttributes);
-                
+
 
                 foreach($options as $optionName => $optionValue) {
                     switch ($optionName) {
@@ -349,7 +349,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
-     * Finalizes the files stored in $this->files. 
+     * Finalizes the files stored in $this->files.
      * If it has 1 file, it will return that file, if it has more, it will return a zip containing all the files, named as the first file in the array.
      * @return File with download headers
      */
@@ -364,11 +364,11 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
 
         if (count($this->files) === 1) {
             $firstFile = $this->files[$firstName];
-            
+
             $file['file']      = $firstFile;
             $file['headers'][] = "Content-Type: application/download";
             $file['headers'][] = "Content-Disposition: attachment; filename=\"" . $firstName . "\"";
-            
+
 
         } elseif (count($this->files) >= 1) {
             $nameArray = explode('.', $firstName);
@@ -402,11 +402,11 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
         $file['headers'][] = "Pragma: cache";                          // HTTP/1.0
 
         if ($this->batch) {
-            $this->batch->setSessionVariable('file', $file);    
+            $this->batch->setSessionVariable('file', $file);
         } else {
             return $file;
         }
-        
+
     }
 
     /**
@@ -420,7 +420,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
             if ($this->batch) {
                 $files = $this->batch->getSessionVariable('files');
             } else {
-                $files = $this->session->files;
+                $files = $this->_session->files;
             }
             if (!is_array($files)) {
                 $files = array();

@@ -38,7 +38,7 @@
 /**
  * Marker interface for Pulse Projects using only a single layout
  *
- * @see Gems_Project_Layout_MultiLayoutInterface
+ * @see \Gems_Project_Layout_MultiLayoutInterface
  *
  * @package    Gems
  * @subpackage Project

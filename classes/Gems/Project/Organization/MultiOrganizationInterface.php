@@ -42,10 +42,10 @@
  * Use this interface only when the respondents are stored
  * in multiple organizations. Multiple organizations can also
  * used for staff in
- * Gems_Project_Organization_SingleOrganizationInterface
+ * \Gems_Project_Organization_SingleOrganizationInterface
  * projects.
  *
- * @see Gems_Project_Organization_SingleOrganizationInterface
+ * @see \Gems_Project_Organization_SingleOrganizationInterface
  *
  * @package    Gems
  * @subpackage Project

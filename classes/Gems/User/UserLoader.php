@@ -411,7 +411,7 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
 
         if (! is_array($urls)) {
             if ($this->cache) {
-                $cacheId = GEMS_PROJECT_NAME . '__' . get_class($this) . '__organizations_url';
+                $cacheId = GEMS_PROJECT_NAME . '__' . strtr(get_class($this), '\\/', '__') . '__organizations_url';
                 $urls = $this->cache->load($cacheId);
             } else {
                 $cacheId = false;

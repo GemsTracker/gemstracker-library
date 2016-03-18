@@ -765,7 +765,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                 $newValues['grs_id_user']  = $id;
                 $newValues['gr2o_id_user'] = $id;
             }
-            // If empty, then set by Gems_Model->createGemsUserId()
+            // If empty, then set by \Gems_Model->createGemsUserId()
         }
 
         $result = parent::save($newValues, $filter, $saveTables);

@@ -470,17 +470,19 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
             $ct = new \MUtil_Model_Type_ConcatenatedRow('|', $this->_(', '));
             $ct->apply($model, 'gsu_insert_organizations');
 
-//            if ('edit' == $action) {
-//                $element = new \Gems_JQuery_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=gtr_organizations]'));
-//                $element->setLabel($this->_('Toggle'));
-//                $model->set('toggleOrg', 'elementClass', $element);
-//            }
+            if (($action == 'create') || ($action == 'edit')) {
+                $model->set('toggleOrg',
+                        'elementClass', 'ToggleCheckboxes',
+                        'selectorName', 'gsu_insert_organizations'
+                        );
+            }
 
             $switches = array(
                 0 => array(
                     'gsu_valid_for_length'     => array('elementClass' => 'Hidden', 'label' => null),
                     'gsu_valid_for_unit'       => array('elementClass' => 'Hidden', 'label' => null),
                     'gsu_insert_organizations' => array('elementClass' => 'Hidden', 'label' => null),
+                    'toggleOrg'                => array('elementClass' => 'Hidden', 'label' => null),
                 ),
             );
             $model->addDependency(array('ValueSwitchDependency', $switches), 'gsu_insertable');

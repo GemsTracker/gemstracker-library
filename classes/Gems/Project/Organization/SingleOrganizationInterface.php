@@ -42,7 +42,7 @@
  * Multiple organizations can be used to create staff,
  * but all respondents will be stored in this organization.
  *
- * @see Gems_Project_Organization_MultiOrganizationInterface
+ * @see \Gems_Project_Organization_MultiOrganizationInterface
  *
  * @package    Gems
  * @subpackage Project

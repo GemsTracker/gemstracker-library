@@ -38,11 +38,11 @@
 /**
  * Marker interface for Pulse Projects using only multi layout
  *
- * But Gems_Project_Layout_MultiLayoutAbstract implements the functionality to use these functions.
+ * But \Gems_Project_Layout_MultiLayoutAbstract implements the functionality to use these functions.
  *
- * @see Gems_Project_Layout_MultiLayoutAbstract
+ * @see \Gems_Project_Layout_MultiLayoutAbstract
  *
- * @see Gems_Project_Layout_SingleLayoutInterface
+ * @see \Gems_Project_Layout_SingleLayoutInterface
  *
  * @package    Gems
  * @subpackage Project

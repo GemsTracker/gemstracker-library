@@ -190,6 +190,20 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
                 }
             }
         }
+
+        $obsVariables = array(
+            '$this->respondentData' => '$this->respondent->getArrayCopy()',
+            '$this->session' => '$this->currentUser',
+        );
+        foreach ($obsVariables as $varName => $replacement) {
+            if (preg_match(sprintf('/%s/', preg_quote($varName)), $content)) {
+                if ($replacement) {
+                    $messages[] = "The code in this file uses the obsolete class variable '$varName'. Use '$replacement' instead.";
+                } else {
+                    $messages[] = "The code in this file uses the obsolete class variable '$varName'.";
+                }
+            }
+        }
     }
 
     /**

@@ -50,6 +50,12 @@ class Gems_Snippets_Mail_MailFormSnippet extends \MUtil_Snippets_ModelSnippetAbs
 
     /**
      *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
+    /**
+     *
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
@@ -297,9 +303,9 @@ class Gems_Snippets_Mail_MailFormSnippet extends \MUtil_Snippets_ModelSnippetAbs
 
         // The user
         $key = 'user';
-        $name  = $this->session->user_name;
+        $name  = $this->currentUser-> session->getFullName();
         $extra = null;
-        if ($email = $this->session->user_email) {
+        if ($email = $this->currentUser->getEmailAddress()) {
             $title     = false;
             $valid[]   = $key;
         } else {

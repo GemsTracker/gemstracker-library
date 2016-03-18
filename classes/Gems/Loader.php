@@ -207,7 +207,7 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
      * fixed there and code completion would work like desired
      * 
      * @param string $name
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      * @param array $data
      * @return mixed
      */

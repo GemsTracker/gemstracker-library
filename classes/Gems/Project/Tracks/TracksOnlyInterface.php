@@ -37,10 +37,10 @@
 
 /**
  * Marker interface for Pulse Projects NOT allowing the single survey tracks
- * allowed by Gems_Project_Tracks_StandAloneSurveysInterface (a nd that are just
+ * allowed by \Gems_Project_Tracks_StandAloneSurveysInterface (a nd that are just
  * shells for assinging a single survey).
  *
- * @see Gems_Project_Tracks_StandAloneSurveysInterface
+ * @see \Gems_Project_Tracks_StandAloneSurveysInterface
  *
  * @package    Gems
  * @subpackage Project
