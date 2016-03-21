@@ -581,7 +581,7 @@ class Gems_Util_DbLookup extends UtilAbstract
             // And transform to have inactive surveys in gems and source in a
             // different group at the bottom
             $surveys = array();
-            $Inactive = $this->_('inactive');
+            $inactive = $this->_('inactive');
             $sourceInactive = $this->_('source inactive');
             foreach ($result as $survey) {
                 $id   = $survey['gsu_id_survey'];
@@ -589,15 +589,18 @@ class Gems_Util_DbLookup extends UtilAbstract
                 if ($survey['gsu_surveyor_active'] == 0) {
                     // Inactive in the source, for LimeSurvey this is a problem!
                     if (strpos($survey['gso_ls_class'], 'LimeSurvey') === false) {
-                        if (!$flat) {
-                            $surveys[$sourceInactive][$id] = $name;
-                        } else {
+                        if ($flat) {
                             $surveys[$id] = $name . " ($sourceInactive) ";
+                        } else {
+                            $surveys[$sourceInactive][$id] = $name;
                         }
                     }
                 } elseif ($survey['gsu_active'] == 0) {
-                    // Inactive in GemsTracker
-                    $surveys[$Inactive][$id] = $name;
+                    if ($flat) {
+                        $surveys[$id] = $name . " ($inactive) ";
+                    } else {
+                        $surveys[$inactive][$id] = $name;
+                    }
                 } else {
                     $surveys[$id] = $name;
                 }
