@@ -104,7 +104,7 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
         $yesNo       = $this->util->getTranslated()->getYesNo();
 
         $this->resetOrder();
-        $this->set('gor_name',                  'label', $this->_('Name'));
+        $this->set('gor_name',                  'label', $this->_('Name'), 'tab', $this->_('General'));
         $this->set('gor_location',              'label', $this->_('Location'));
         $this->set('gor_task',                  'label', $this->_('Task'),
                 'description', sprintf($this->_('Task in %s project'), $projectName)
@@ -226,89 +226,77 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
         $this->resetOrder();
 
         // GENERAL TAB
-        $this->set('general',               'tab', 'general',
-                'elementClass', 'Tab',
-                'value', $this->_('General')
-                );
-        $this->set('gor_name',              'tab', 'general',
+        $this->set('gor_name',
                 'size', 25,
                 'validator', $this->createUniqueValidator('gor_name')
                 );
-        $this->set('gor_location',          'tab', 'general',
+        $this->set('gor_location',
                 'size', 50,
                 'maxlength', 255
                 );
-        $this->set('gor_task',              'tab', 'general',
+        $this->set('gor_task',
                 'size', 25);
-        $this->set('gor_url',               'tab', 'general',
+        $this->set('gor_url',
                 'size', 50
                 );
-        $this->setIfExists('gor_url_base',  'tab', 'general',
+        $this->setIfExists('gor_url_base',
                 'size', 50,
                 'filter', 'TrailingSlash'
                 );
-        $this->setIfExists('gor_code',      'tab', 'general',
+        $this->setIfExists('gor_code',
                 'size', 10
                 );
-        $this->set('gor_provider_id',       'tab', 'general');
-        $this->setIfExists('gor_active',    'tab', 'general',
+        $this->set('gor_provider_id');
+        $this->setIfExists('gor_active',
                 'elementClass', 'Checkbox'
                 );
 
         // EMAIL TAB
-        $this->set('email',                         'tab', 'email',
-                'elementClass', 'Tab',
+        $this->set('gor_contact_name',              'tab', $this->_('Email') . ' & ' . $this->_('Token'),
                 'order', $this->getOrder('gor_active') + 1000,
-                'value', $this->_('Email') . ' & ' . $this->_('Token')
-                );
-        $this->set('gor_contact_name',              'tab', 'email',
                 'size', 25
                 );
-        $this->set('gor_contact_email',             'tab', 'email',
+        $this->set('gor_contact_email',
                 'size', 50,
                 'validator', 'SimpleEmail'
                 );
-        $this->set('gor_welcome',                   'tab', 'email',
+        $this->set('gor_welcome',
                 'elementClass', 'Textarea',
                 'rows', 5
                 );
-        $this->set('gor_signature',                 'tab', 'email',
+        $this->set('gor_signature',
                 'elementClass', 'Textarea',
                 'rows', 5
                 );
-        $this->set('gor_create_account_template',   'tab', 'email');
-        $this->set('gor_reset_pass_template',       'tab', 'email');
+        $this->set('gor_create_account_template');
+        $this->set('gor_reset_pass_template');
 
         // ACCESS TAB
-        $this->set('access',                         'tab', 'access',
-                'elementClass', 'Tab',
+        $this->set('gor_has_login',                 'tab', $this->_('Access'),
                 'order', $this->getOrder('gor_reset_pass_template') + 1000,
-                'value', $this->_('Access')
-                );
-        $this->set('gor_has_login',                 'tab', 'access',
                 'elementClass', 'CheckBox'
                 );
-        $this->set('gor_add_respondents',           'tab', 'access',
+        $this->set('gor_add_respondents',
                 'elementClass', 'CheckBox'
                 );
-        $this->set('gor_has_respondents',           'tab', 'access',
+        $this->set('gor_has_respondents',
                 'elementClass', 'Exhibitor'
                 );
-        $this->set('gor_respondent_group',          'tab', 'access');
-        $this->set('gor_accessible_by',             'tab', 'access',
+        $this->set('gor_respondent_group');
+        $this->set('gor_accessible_by',
                 'elementClass', 'MultiCheckbox'
                 );
-        $this->set('allowed',                       'tab', 'access',
+        $this->set('allowed',
                 'label', $this->_('Can access'),
                 'elementClass', 'Html'
                 );
 
-        $this->setIfExists('gor_allowed_ip_ranges', 'tab', 'access',
+        $this->setIfExists('gor_allowed_ip_ranges',
                 'size', 50,
                 'validator', new \Gems_Validate_IPRanges(),
                 'maxlength', 500
                 );
-        $this->setIfExists('gor_user_class',        'tab', 'access');
+        $this->setIfExists('gor_user_class');
 
         $definitions = $this->get('gor_user_class', 'multiOptions');
         if ($definitions && (count($definitions) > 1)) {
@@ -317,16 +305,12 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
         }
 
         // OTHER TAB
-        $this->set('other',                        'tab', 'other',
-                'elementClass', 'Tab',
+        $this->setIfExists('gor_iso_lang',  'tab', $this->_('Other'),
                 'order', $this->getOrder('gor_user_class') + 1000,
-                'value', $this->_('Other')
-                );
-        $this->setIfExists('gor_iso_lang',  'tab', 'other',
                 'default', $this->project->getLocaleDefault()
                 );
         if ($this->_styles) {
-            $this->setIfExists('gor_style', 'tab', 'other');
+            $this->setIfExists('gor_style');
         }
         return $this;
     }
