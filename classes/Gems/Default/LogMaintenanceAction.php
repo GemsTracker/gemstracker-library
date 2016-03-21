@@ -96,7 +96,7 @@ class Gems_Default_LogMaintenanceAction extends \Gems_Controller_ModelSnippetAct
     {
         $model = new \Gems_Model_JoinModel('log_maint', 'gems__log_setup', 'gls', true);
         $model->set('gls_name', 'label', $this->_('Action'),
-                'elementClass', 'Exhibitor',
+                'elementClass', ('create' == $action) ? 'Text' : 'Exhibitor',
                 'validators[unique]', $model->createUniqueValidator('gls_name'));
 
         $model->set('gls_when_no_user', 'label', $this->_('Log when no user'),

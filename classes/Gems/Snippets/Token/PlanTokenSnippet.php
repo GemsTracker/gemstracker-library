@@ -87,6 +87,26 @@ class PlanTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
      */
     protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
+        // Add link to patient to overview
+        $menuItems = $this->findMenuItems('respondent', 'show');
+        if ($menuItems) {
+            $menuItem = reset($menuItems);
+            if ($menuItem instanceof \Gems_Menu_SubMenuItem) {
+                $href = $menuItem->toHRefAttribute($bridge);
+
+                if ($href) {
+                    $aElem = new \MUtil_Html_AElement($href);
+                    $aElem->setOnEmpty('');
+
+                    // Make sure org is known
+                    $model->get('gr2o_id_organization');
+
+                    $model->set('gr2o_patient_nr', 'itemDisplay', $aElem);
+                    $model->set('respondent_name', 'itemDisplay', $aElem);
+                }
+            }
+        }
+
         $model->set('gto_id_token', 'formatFunction', 'strtoupper');
 
         $bridge->setDefaultRowClass(\MUtil_Html_TableElement::createAlternateRowClass('even', 'even', 'odd', 'odd'));
