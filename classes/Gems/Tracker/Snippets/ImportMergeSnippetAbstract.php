@@ -576,7 +576,7 @@ abstract class ImportMergeSnippetAbstract extends \MUtil_Snippets_WizardFormSnip
     /**
      * Set what to do when the form is 'finished'.
      *
-     * @return \MUtil_Snippets_Standard_ModelImportSnippet
+     * @return \Gems\Tracker\Snippets\ImportMergeSnippetAbstract
      */
     protected function setAfterSaveRoute()
     {

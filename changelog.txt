@@ -1,6 +1,7 @@
 Important changes from 1.7.1 => 1.7.2
 ============================================================
 Searching for respondents by track or lack of track
+Customize respondents screen using Snippets\Respondent\RespondentTableSnippet
 Track structure can be exported, imported and merged with an existing track
 When using responsedata, views will be created for each survey
 Fixed survey activation when survey not active in source

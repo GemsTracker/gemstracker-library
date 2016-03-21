@@ -533,7 +533,7 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
     /**
      * Set what to do when the form is 'finished'.
      *
-     * @return \MUtil_Snippets_Standard_ModelImportSnippet
+     * @return \Gems\Tracker\Snippets\ExportTrackSnippetAbstract
      */
     protected function setAfterSaveRoute()
     {

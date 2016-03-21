@@ -199,6 +199,10 @@ class RespondentTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
      */
     protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
+        if ($this->columns) {
+            parent::addBrowseTableColumns($bridge, $model);
+            return;
+        }
         if ($model->has('row_class')) {
             $bridge->getTable()->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);
         }

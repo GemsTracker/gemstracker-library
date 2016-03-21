@@ -60,6 +60,13 @@ class RoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
     protected $_fixedSort = array('gro_id_order' => SORT_ASC);
 
     /**
+     * One of the \MUtil_Model_Bridge_BridgeAbstract MODE constants
+     *
+     * @var int
+     */
+    protected $bridgeMode = \MUtil_Model_Bridge_BridgeAbstract::MODE_ROWS;
+
+    /**
      * The default controller for menu actions, if null the current controller is used.
      *
      * @var array (int/controller => action)
