@@ -704,6 +704,16 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     }
 
     /**
+     * A copy of the data array
+     * 
+     * @return array
+     */
+    public function getArrayCopy()
+    {
+        return $this->_gemsData;
+    }
+
+    /**
      * Returns the staff or respondent id of the person
      * who last changed this token.
      *

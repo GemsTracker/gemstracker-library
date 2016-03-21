@@ -1113,3 +1113,11 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.track.answer
     WHERE grl_privileges NOT LIKE '%,pr.track.answers%' AND grl_privileges LIKE '%,pr.survey-maintenance.check%';
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.token.answers')
     WHERE grl_privileges NOT LIKE '%,pr.token.answers%' AND grl_privileges LIKE '%,pr.survey-maintenance.check%';
+
+-- PATCH: Log answered tokens
+INSERT ignore INTO gems__log_setup (gls_name, gls_when_no_user, gls_on_action, gls_on_post, gls_on_change,
+        gls_changed, gls_changed_by, gls_created, gls_created_by)
+    VALUES
+        ('file-import.answers-import',          1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('token.answered',                      1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('token.data-changed',                  1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);

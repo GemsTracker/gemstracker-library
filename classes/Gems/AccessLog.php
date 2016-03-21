@@ -227,87 +227,11 @@ class Gems_AccessLog
      * @param mixed $data
      * @param int $respondentId
      * @return boolean True when a log entry was stored
+     * @deprecated Since 1.7.2
      */
     public function _logEntry(\Zend_Controller_Request_Abstract $request, $actionId, $changed, $message, $data, $respondentId)
     {
-        $action      = $this->getAction($actionId);
-        $currentUser = $this->_loader->getCurrentUser();
-
-        if ($respondentId) {
-            $this->_respondentId = $respondentId;
-        }
-
-        // Exit when the user is not logged in and we should only track for logged in users
-        if (! $currentUser->isActive()) {
-            if (! $action['gls_when_no_user']) {
-                return false;
-            }
-        }
-
-        if ($request instanceof \Zend_Controller_Request_Http) {
-            $post = $request->isPost();
-            $ip   = $request->getClientIp();
-
-            if ($post && (null === $data)) {
-                $data = $request->getPost();
-            }
-        } else {
-            $post = false;
-            $ip   = '';
-        }
-        if (null === $message) {
-            $message = $this->getMessages();
-        }
-
-        if (! $respondentId) {
-            // FallBack in case nothing is in $data
-            $respondentId = $this->_respondentId;
-            if (is_array($data)) {
-                foreach ($this->_respondentIdFields as $field) {
-                    if (isset($data[$field]) && $data[$field]) {
-                        $respondentId = $data[$field];
-                        break;
-                    }
-                }
-            }
-        }
-
-        $orgId = $currentUser->getCurrentOrganizationId() ? $currentUser->getCurrentOrganizationId() : 0;
-        if (is_array($data)) {
-            foreach ($this->_organizationIdFields as $field) {
-                if (isset($data[$field]) && $data[$field]) {
-                    $orgId = $data[$field];
-                    break;
-                }
-            }
-        }
-
-        // Get type for second exit check
-        if ($changed) {
-            $checkKey = 'gls_on_change';
-        } elseif ($post) {
-            $checkKey = 'gls_on_post';
-        } else {
-            $checkKey = 'gls_on_action';
-        }
-        if (! $action[$checkKey]) {
-            return false;
-        }
-
-        $values['gla_action']        = $action['gls_id_action'];
-        $values['gla_respondent_id'] = $respondentId;
-
-        $values['gla_by']            = $currentUser->getUserId();
-        $values['gla_organization']  = $orgId;
-        $values['gla_role']          = $currentUser->getRole() ? $currentUser->getRole() : '--not set--';
-
-        $values['gla_changed']       = $changed ? 1 : 0;
-        $values['gla_message']       = $this->_toJson($message);
-        $values['gla_data']          = $this->_toJson($data);
-        $values['gla_method']        = $post ? 'POST' : 'GET';
-        $values['gla_remote_ip']     = $ip;
-
-        return $this->_storeLogEntry($request, $values, $changed);
+        return $this->logEntry($request, $actionId, $changed, $message, $data, $respondentId);
     }
 
     /**
@@ -446,7 +370,7 @@ class Gems_AccessLog
         $values['gls_when_no_user'] = 0;
         $values['gls_on_action']    = 0;
         $values['gls_on_post']      = 0; // preg_match('/(create|edit)/', $action);
-        $values['gls_on_change']    = preg_match('/(create|edit|delete|deactivate|reactivate)/', $action);
+        $values['gls_on_change']    = preg_match('/(create|edit|delete|deactivate|reactivate|import|export)/', $action);
 
         $values['gls_changed']      = $values['gls_created']    = new \MUtil_Db_Expr_CurrentTimestamp();
         $values['gls_changed_by']   = $values['gls_created_by'] = \Gems_User_UserLoader::SYSTEM_USER_ID;
@@ -535,7 +459,99 @@ class Gems_AccessLog
     public function logChange(\Zend_Controller_Request_Abstract $request, $message = null, $data = null, $respondentId = null)
     {
         $action = $request->getControllerName() . '.' . $request->getActionName();
-        return $this->_logEntry($request, $action, true, $message, $data, $respondentId);
+        return $this->logEntry($request, $action, true, $message, $data, $respondentId);
+    }
+
+    /**
+     *
+     * @param \Zend_Controller_Request_Abstract $request
+     * @param string $actionId
+     * @param boolean $changed
+     * @param mixed $message
+     * @param mixed $data
+     * @param int $respondentId
+     * @return boolean True when a log entry was stored
+     */
+    public function logEntry(\Zend_Controller_Request_Abstract $request, $actionId, $changed, $message, $data, $respondentId)
+    {
+        $action      = $this->getAction($actionId);
+        $currentUser = $this->_loader->getCurrentUser();
+
+        if ($respondentId) {
+            $this->_respondentId = $respondentId;
+        }
+
+        // Exit when the user is not logged in and we should only track for logged in users
+        if (! $currentUser->isActive()) {
+            if (! $action['gls_when_no_user']) {
+                return false;
+            }
+        }
+
+        if ($request instanceof \Zend_Controller_Request_Http) {
+            $post = $request->isPost();
+            $ip   = $request->getClientIp();
+
+            if ($post && (null === $data)) {
+                $data = $request->getPost();
+            }
+        } else {
+            $post = false;
+            $ip   = '';
+        }
+        if (null === $message) {
+            $message = $this->getMessages();
+        }
+
+        if (! $respondentId) {
+            // FallBack in case nothing is in $data
+            $respondentId = $this->_respondentId;
+            if (is_array($data)) {
+                foreach ($this->_respondentIdFields as $field) {
+                    if (isset($data[$field]) && $data[$field]) {
+                        $respondentId = $data[$field];
+                        break;
+                    }
+                }
+            }
+        }
+
+        $orgId = $currentUser->getCurrentOrganizationId() ? $currentUser->getCurrentOrganizationId() : 0;
+        if (is_array($data)) {
+            foreach ($this->_organizationIdFields as $field) {
+                if (isset($data[$field]) && $data[$field]) {
+                    $orgId = $data[$field];
+                    break;
+                }
+            }
+        }
+
+        // Get type for second exit check
+        if ($changed) {
+            $checkKey = 'gls_on_change';
+        } elseif ($post) {
+            $checkKey = 'gls_on_post';
+        } else {
+            $checkKey = 'gls_on_action';
+        }
+        if (! $action[$checkKey]) {
+            return false;
+        }
+
+        $values['gla_action']        = $action['gls_id_action'];
+        $values['gla_respondent_id'] = $respondentId;
+
+        $values['gla_by']            = $currentUser->getUserId();
+        $values['gla_organization']  = $orgId;
+        $values['gla_role']          = $currentUser->getRole() ? $currentUser->getRole() : '--not set--';
+
+        $values['gla_changed']       = $changed ? 1 : 0;
+        $values['gla_message']       = $this->_toJson($message);
+        $values['gla_data']          = $this->_toJson($data);
+        $values['gla_method']        = $post ? 'POST' : 'GET';
+        $values['gla_remote_ip']     = $ip;
+
+        return $this->_storeLogEntry($request, $values, $changed);
     }
 
     /**
@@ -550,6 +566,6 @@ class Gems_AccessLog
     public function logRequest(\Zend_Controller_Request_Abstract $request, $message = null, $data = null, $respondentId = null)
     {
         $action = $request->getControllerName() . '.' . $request->getActionName();
-        return $this->_logEntry($request, $action, false, $message, $data, $respondentId);
+        return $this->logEntry($request, $action, false, $message, $data, $respondentId);
     }
 }

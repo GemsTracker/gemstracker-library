@@ -35,6 +35,8 @@
  * @version    $Id$
  */
 
+use Gems\Snippets\ModelImportSnippet;
+
 /**
  *
  *
@@ -44,7 +46,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3 17-apr-2014 17:12:39
  */
-class Gems_Snippets_Survey_AnswerImportSnippet extends \MUtil_Snippets_Standard_ModelImportSnippet
+class Gems_Snippets_Survey_AnswerImportSnippet extends ModelImportSnippet
 {
     /**
      *

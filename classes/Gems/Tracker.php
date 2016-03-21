@@ -125,6 +125,12 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
 
     /**
      *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
+    /**
+     *
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
@@ -183,7 +189,10 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
      */
     private function _checkUserId($userId = null) {
         if (empty($userId)) {
-            $userId = isset($this->session->user_id) ? $this->session->user_id : 0;
+            $userId = $this->currentUser->getUserId();
+            if (0 === $userId) {
+                $userId = null;
+            }
         }
         return $userId;
     }
@@ -833,21 +842,21 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
      */
     public function processCompletedTokens($respondentId, $userId = null, $orgId = null, $quickCheck = false)
     {
-        $userId = $this->_checkUserId($userId);
-        $tokenSelect = $this->getTokenSelect(array('gto_id_token'));
-        $tokenSelect->onlyActive($quickCheck)
-                    ->forRespondent($respondentId)
-                    ->andSurveys(array('gsu_surveyor_id'))
-                    ->forWhere('gsu_surveyor_active = 1')
-                    ->order('gsu_surveyor_id');
-
-        if (null !== $orgId) {
-            $tokenSelect->forWhere('gto_id_organization = ?', $orgId);
-        }
-
         $batch = $this->loader->getTaskRunnerBatch('completed');
 
         if (! $batch->isLoaded()) {
+            $userId = $this->_checkUserId($userId);
+            $tokenSelect = $this->getTokenSelect(array('gto_id_token'));
+            $tokenSelect->onlyActive($quickCheck)
+                        ->forRespondent($respondentId)
+                        ->andSurveys(array('gsu_surveyor_id'))
+                        ->forWhere('gsu_surveyor_active = 1')
+                        ->order('gsu_surveyor_id');
+
+            if (null !== $orgId) {
+                $tokenSelect->forWhere('gto_id_organization = ?', $orgId);
+            }
+
             $statement = $tokenSelect->getSelect()->query();
             //Process one row at a time to prevent out of memory errors for really big resultsets
             $tokens = array();

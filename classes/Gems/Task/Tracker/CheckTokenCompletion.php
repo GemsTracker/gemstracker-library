@@ -47,9 +47,27 @@
 class Gems_Task_Tracker_CheckTokenCompletion extends \MUtil_Task_TaskAbstract
 {
     /**
+     *
+     * @var \Gems_AccessLog
+     */
+    protected $accesslog;
+
+    /**
+     *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
+    /**
      * @var \Gems_Loader
      */
-    public $loader;
+    protected $loader;
+
+    /**
+     *
+     * @var \Zend_Controller_Request_Abstract
+     */
+    protected $request;
 
     /**
      * Should handle execution of the task, taking as much (optional) parameters as needed
@@ -65,6 +83,8 @@ class Gems_Task_Tracker_CheckTokenCompletion extends \MUtil_Task_TaskAbstract
         $batch->addToCounter('checkedTokens');
         $token = $tracker->getToken($tokenData);
 
+        $wasAnswered = $token->isCompleted();
+
         if ($result = $token->checkTokenCompletion($userId)) {
             if ($result & \Gems_Tracker_Token::COMPLETION_DATACHANGE) {
                 $i = $batch->addToCounter('resultDataChanges');
@@ -72,6 +92,26 @@ class Gems_Task_Tracker_CheckTokenCompletion extends \MUtil_Task_TaskAbstract
                         $this->_('Results and timing changed for %d tokens.'),
                         $i
                         ));
+
+                if ($wasAnswered) {
+                    $action  = 'token.data-changed';
+                    $message = sprintf($this->_("Token '%s' data has changed."), $token->getTokenId());
+                } else {
+                    $action  = 'token.answered';
+                    $message = sprintf($this->_("Token '%s' was answered."), $token->getTokenId());
+                }
+                if (! $this->request instanceof \Zend_Controller_Request_Abstract) {
+                    $this->request = \Zend_Controller_Front::getInstance()->getRequest();
+                }
+                $this->accesslog->logEntry(
+                        $this->request,
+                        $action,
+                        true,
+                        $message,
+                        $token->getArrayCopy(),
+                        $token->getRespondentId()
+                        );
+
             }
             if ($result & \Gems_Tracker_Token::COMPLETION_EVENTCHANGE) {
                 $i = $batch->addToCounter('surveyCompletionChanges');
