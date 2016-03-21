@@ -49,6 +49,11 @@ class Gems_Task_Tracker_AddRefreshQuestions extends \MUtil_Task_TaskAbstract
      * @var \Gems_Loader
      */
     protected $loader;
+    
+    /**
+     * @var Gems_Project_ProjectSettings
+     */
+    protected $project;
 
     /**
      * Should handle execution of the task, taking as much (optional) parameters as needed
