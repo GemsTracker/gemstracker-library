@@ -823,11 +823,27 @@ abstract class Gems_Menu_MenuAbstract
         $page->addAction($this->_('Import answers'), 'pr.survey-maintenance.answer-import', 'answer-imports');
 
         // TRACK MAINTENANCE CONTROLLER
-        $page = $setup->addBrowsePage($this->_('Tracks'), 'pr.track-maintenance', 'track-maintenance');
-
-        $showPage = $this->findItem(array('controller' => 'track-maintenance', 'action' => 'show'));
+        $page = $setup->addPage($this->_('Tracks'), 'pr.track-maintenance', 'track-maintenance', 'index');
+        $page->addAutofilterAction();
+        $page->addCreateAction();
+        //$page->addExportAction();
+        $page->addImportAction();
+        $showPage = $page->addShowAction();
+        $showPage->addEditAction();
+        $showPage->addDeleteAction();
         $showPage->addButtonOnly($this->_('Copy'),  'pr.track-maintenance.copy', 'track-maintenance', 'copy')
                 ->setModelParameters(1);
+        
+        $showPage->addAction($this->_('Export'), 'pr.track-maintenance.export', 'export')
+                 ->addParameters(\MUtil_Model::REQUEST_ID);
+        $showPage->addAction($this->_('Merge Import'), 'pr.track-maintenance.merge', 'merge')
+                ->addParameters(\MUtil_Model::REQUEST_ID);
+        $showPage->addAction($this->_('Check rounds'), 'pr.track-maintenance.check', 'check-track')
+                ->addParameters(\MUtil_Model::REQUEST_ID)
+                ->setParameterFilter('gtr_active', 1);
+        $showPage->addAction($this->_('Recalculate fields'), 'pr.track-maintenance.check', 'recalc-fields')
+                ->addParameters(\MUtil_Model::REQUEST_ID)
+                ->setParameterFilter('gtr_active', 1);
 
         // Fields
         $fpage = $showPage->addPage($this->_('Fields'), 'pr.track-maintenance', 'track-fields')
@@ -854,17 +870,6 @@ abstract class Gems_Menu_MenuAbstract
                 ->addNamedParameters(\Gems_Model::ROUND_ID, 'gro_id_round', \MUtil_Model::REQUEST_ID, 'gro_id_track');
         $spage->addDeleteAction('pr.track-maintenance.delete')
                 ->addNamedParameters(\Gems_Model::ROUND_ID, 'gro_id_round', \MUtil_Model::REQUEST_ID, 'gro_id_track');
-
-        $showPage->addAction($this->_('Export'), 'pr.track-maintenance.export', 'export')
-                ->addParameters(\MUtil_Model::REQUEST_ID);
-        $showPage->addAction($this->_('Merge Import'), 'pr.track-maintenance.merge', 'merge')
-                ->addParameters(\MUtil_Model::REQUEST_ID);
-        $showPage->addAction($this->_('Check rounds'), 'pr.track-maintenance.check', 'check-track')
-                ->addParameters(\MUtil_Model::REQUEST_ID)
-                ->setParameterFilter('gtr_active', 1);
-        $showPage->addAction($this->_('Recalculate fields'), 'pr.track-maintenance.check', 'recalc-fields')
-                ->addParameters(\MUtil_Model::REQUEST_ID)
-                ->setParameterFilter('gtr_active', 1);
 
         $overviewPage = $page->addPage($this->_('Tracks per org'), 'pr.track-maintenance.trackperorg', 'track-overview', 'index');
         $overviewPage->addExportAction();
