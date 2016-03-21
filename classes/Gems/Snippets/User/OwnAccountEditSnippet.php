@@ -56,6 +56,12 @@ class OwnAccountEditSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
 
     /**
      *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
+    /**
+     *
      * @var \Gems_Loader
      */
     protected $loader;
@@ -79,7 +85,7 @@ class OwnAccountEditSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
             $this->accesslog->logChange($this->request, null, $this->formData);
 
             // Reload the current user data
-            $user       = $this->loader->getCurrentUser();
+            $user       = $this->currentUser;
             $currentOrg = $user->getCurrentOrganizationId();
 
             $this->loader->getUserLoader()->unsetCurrentUser();
@@ -88,7 +94,7 @@ class OwnAccountEditSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
 
             // In case locale has changed, set it in a cookie
             \Gems_Cookies::setLocale($this->formData['gsf_iso_lang'], $this->basepath);
-            
+
             $this->addMessage($this->_('Saved your setup data', $this->formData['gsf_iso_lang']));
         } else {
             $this->addMessage($this->_('No changes to save!'));
@@ -109,7 +115,7 @@ class OwnAccountEditSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
         parent::cleanFormData();
 
         // You can only save data for the current user
-        $this->formData['gsf_id_user'] = $this->loader->getCurrentUser()->getUserId();
+        $this->formData['gsf_id_user'] = $this->currentUser->getUserId();
     }
 
     /**
@@ -125,6 +131,31 @@ class OwnAccountEditSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
         }
 
         return $this->model;
+    }
+
+    /**
+     * The message to display when the change is not allowed
+     *
+     * @return string
+     */
+    protected function getNotAllowedMessage()
+    {
+        return $this->_('System account can not be changed.');
+    }
+
+    /**
+     * If the current user is the system user, present a message and don't allow to edit
+     *
+     * @return boolean
+     */
+    public function hasHtmlOutput()
+    {
+        if ($this->currentUser->getUserId() == \Gems_User_UserLoader::SYSTEM_USER_ID) {
+            $this->addMessage($this->getNotAllowedMessage());
+            return false;
+        }
+
+        return parent::hasHtmlOutput();
     }
 
     /**
