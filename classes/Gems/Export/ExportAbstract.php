@@ -376,8 +376,8 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
             $filename = join('.',$nameArray) . '.zip';
             $zipFile     = dirname($this->files[$firstName]) . '/export-' . md5(time() . rand()) . '.zip';
 
-            $zipArchive = new ZipArchive();
-            $zipArchive->open(   $zipFile, ZipArchive::CREATE);
+            $zipArchive = new \ZipArchive();
+            $zipArchive->open(   $zipFile, \ZipArchive::CREATE);
 
             foreach($this->files as $newName => $tempName) {
                 $zipArchive->addFile($tempName, $newName);
