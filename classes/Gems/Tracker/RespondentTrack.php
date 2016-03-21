@@ -367,6 +367,10 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     public function applyToMenuSource(\Gems_Menu_ParameterSource $source)
     {
         $source->setRespondentTrackId($this->_respTrackId);
+        $source->offsetSet(
+                'gr2t_active',
+                (isset($this->_respTrackData['gr2t_active']) ? $this->_respTrackData['gr2t_active'] : 0)
+                );
         $source->offsetSet('can_edit', $this->hasSuccesCode() ? 1 : 0);
         $source->offsetSet('track_can_be_created', 0);
 
@@ -375,12 +379,12 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
 
         return $this;
     }
-    
+
     /**
      * Assign the tokens to the correct relation
-     * 
+     *
      * Only surveys that have not yet been answered will be assigned to the correct relation.
-     * 
+     *
      * @return int Number of changes tokens
      */
     public function assignTokensToRelations()
@@ -390,16 +394,16 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         if (empty($relationFields)) {
             return 0;
         }
-        
+
         // Check if we have a respondent relation id (grr_id) in the track fields
         // and assign the token to the correct relation or leave open when no
-        // relation is defined.       
+        // relation is defined.
         $this->_ensureRounds();
-        $relationFields = $this->getFieldData();        
+        $relationFields = $this->getFieldData();
         $fieldPrefix = \Gems\Tracker\Model\FieldMaintenanceModel::FIELDS_NAME . \Gems\Tracker\Engine\FieldsDefinition::FIELD_KEY_SEPARATOR;
         $changes = 0;
         foreach ($this->getTokens() as $token) {
-            /* @var $token Gems_Tracker_Token */            
+            /* @var $token Gems_Tracker_Token */
             if (!$token->isCompleted() && $token->getReceptionCode()->isSuccess()) {
                 $roundId = $token->getRoundId();
                 if (!array_key_exists($roundId, $this->_rounds)) {
@@ -421,7 +425,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
                     // Try to read from token, as this is a token without a round
                     $relationFieldId = $token->getRelationFieldId();
                 }
-                
+
                 if ($relationFieldId>0) {
                     $fieldKey = $fieldPrefix . $relationFieldId;
                     if (isset($relationFields[$fieldKey])) {
@@ -430,7 +434,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
                         $relationId = -1 * $relationFieldId;
                     }
                 }
-                
+
                 $changes = $changes + $token->assignTo($relationId, $relationFieldId);
             }
         }
@@ -438,7 +442,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         if (MUtil_Model::$verbose && $changes > 0) {
             MUtil_Echo::r(sprintf('%s tokens changed due to changes in respondent relation assignments.', $changes));
         }
-        
+
         return $changes;
     }
 
@@ -1094,7 +1098,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     {
         // Process any events
         $trackEngine = $this->getTrackEngine();
-        
+
         if ($event = $trackEngine->getFieldUpdateEvent()) {
             return $event->processFieldUpdate($this, $userId);
         }
@@ -1111,7 +1115,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     {
         // Process any events
         $trackEngine = $this->getTrackEngine();
-        
+
         // Places here instead of only in handle field update so it will run on new tracks too
         $this->assignTokensToRelations();
 
@@ -1258,7 +1262,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         $fieldMap  = $fieldDef->getFieldCodes();
         $fieldData = $this->getFieldData(); // To preserve old values
 
-        // Get only the real fieldnames, strip the extra code entries		
+        // Get only the real fieldnames, strip the extra code entries
         $fieldData = array_intersect_key($fieldData, $fieldMap);
 
         // Use values on code fields if oiginal does not exist

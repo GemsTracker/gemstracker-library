@@ -211,28 +211,30 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
     public function checkTrackRounds($batchId, $userId = null, $cond = null)
     {
         $userId = $this->_checkUserId($userId);
-        $respTrackSelect = $this->db->select();
-        $respTrackSelect->from('gems__respondent2track', array('gr2t_id_respondent_track'));
-        $respTrackSelect->join('gems__reception_codes', 'gr2t_reception_code = grc_id_reception_code', array());
-        $respTrackSelect->join('gems__tracks', 'gr2t_id_track = gtr_id_track', array());
-
-        if ($cond) {
-            $respTrackSelect->where($cond);
-        }
-        $respTrackSelect->where('gr2t_active = 1');
-        $respTrackSelect->where('grc_success = 1');
-        $respTrackSelect->where('gtr_active = 1');
-        // Also recaclulate when track was completed: there may be new rounds!
-        // $respTrackSelect->where('gr2t_count != gr2t_completed');
 
         $batch = $this->loader->getTaskRunnerBatch($batchId);
         //Now set the step duration
         $batch->minimalStepDurationMs = 3000;
 
         if (! $batch->isLoaded()) {
+            $respTrackSelect = $this->db->select();
+            $respTrackSelect->from('gems__respondent2track', array('gr2t_id_respondent_track'));
+            $respTrackSelect->join('gems__reception_codes', 'gr2t_reception_code = grc_id_reception_code', array());
+            $respTrackSelect->join('gems__tracks', 'gr2t_id_track = gtr_id_track', array());
+
+            if ($cond) {
+                $respTrackSelect->where($cond);
+            }
+            $respTrackSelect->where('gr2t_active = 1');
+            $respTrackSelect->where('grc_success = 1');
+            $respTrackSelect->where('gtr_active = 1');
+            // Also recaclulate when track was completed: there may be new rounds!
+            // $respTrackSelect->where('gr2t_count != gr2t_completed');
+
             $statement = $respTrackSelect->query();
+
             //Process one item at a time to prevent out of memory errors for really big resultsets
-            while ($respTrackData  = $statement->fetch()) {
+            while ($respTrackData = $statement->fetch()) {
                 $respTrackId = $respTrackData['gr2t_id_respondent_track'];
                 $batch->setTask('Tracker_CheckTrackRounds', 'trkchk-' . $respTrackId, $respTrackId, $userId);
                 $batch->addToCounter('resptracks');

@@ -98,6 +98,12 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
         );
 
     /**
+     *
+     * @var \Zend_Db_Adapter_Abstract
+     */
+    public $db;
+
+    /**
      * The parameters used for the edit actions, overrules any values in
      * $this->createEditParameters.
      *
@@ -426,6 +432,56 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
 
             $this->addSnippets($this->answerExportSnippets, $params);
         }
+    }
+
+    /**
+     * Action for checking all assigned rounds for this respondent using a batch
+     */
+    public function checkAllTracksAction()
+    {
+        $respondent = $this->getRespondent();
+        $where      = $this->db->quoteInto('gr2t_id_user = ?', $respondent->getId());
+
+        $batch = $this->loader->getTracker()->checkTrackRounds(
+                'trackCheckRoundsResp_' . $respondent->getId(),
+                $this->currentUser->getUserId(),
+                $where
+                );
+
+        $title = sprintf(
+                $this->_('Checking round assignments for all tracks of respondent %s, %s.'),
+                $respondent->getPatientNumber(),
+                $respondent->getFullName()
+                );
+        $this->_helper->BatchRunner($batch, $title, $this->accesslog);
+
+        $this->addSnippet('Track\\CheckInformation');
+    }
+
+    /**
+     * Action for checking all assigned rounds for a single respondent track using a batch
+     */
+    public function checkTrackAction()
+    {
+        $respondent  = $this->getRespondent();
+        $respTrackId = $this->getRespondentTrackId();
+        $trackEngine = $this->getTrackEngine();
+        $where       = $this->db->quoteInto('gr2t_id_respondent_track = ?', $respTrackId);
+        $batch = $this->loader->getTracker()->checkTrackRounds(
+                'trackCheckRoundsFor_' . $respTrackId,
+                $this->currentUser->getUserId(),
+                $where
+                );
+
+        $title = sprintf(
+                $this->_("Checking round assignments for track '%s' of respondent %s, %s."),
+                $trackEngine->getTrackName(),
+                $respondent->getPatientNumber(),
+                $respondent->getFullName()
+                );
+        $this->_helper->BatchRunner($batch, $title, $this->accesslog);
+
+        $this->addSnippet('Track\\CheckInformation');
     }
 
     /**
@@ -1014,7 +1070,57 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
         }
     }
 
+     /**
+     * Action for checking all assigned rounds using a batch
+     */
+    public function recalcAllFieldsAction()
+    {
+        $respondent = $this->getRespondent();
+        $where      = $this->db->quoteInto('gr2t_id_user = ?', $respondent->getId());
+
+        $batch = $this->loader->getTracker()->recalcTrackFields(
+                'trackRecalcFieldsResp_' . $respondent->getId(),
+                $this->currentUser->getUserId(),
+                $where
+                );
+
+        $title = sprintf(
+                $this->_('Recalculating fields for all tracks of respondent %s, %s.'),
+                $respondent->getPatientNumber(),
+                $respondent->getFullName()
+                );
+        $this->_helper->BatchRunner($batch, $title, $this->accesslog);
+
+        $this->addSnippet('Track\\RecalcInformation');
+    }
+
     /**
+     * Action for checking all assigned rounds for a single track using a batch
+     */
+    public function recalcFieldsAction()
+    {
+        $respondent  = $this->getRespondent();
+        $respTrackId = $this->getRespondentTrackId();
+        $trackEngine = $this->getTrackEngine();
+        $where       = $this->db->quoteInto('gr2t_id_respondent_track = ?', $respTrackId);
+        $batch = $this->loader->getTracker()->recalcTrackFields(
+                'trackRecalcFieldsFor_' . $respTrackId,
+                $this->currentUser->getUserId(),
+                $where
+                );
+
+        $title = sprintf(
+                $this->_("Recalculating fields for track '%s' of respondent %s, %s."),
+                $trackEngine->getTrackName(),
+                $respondent->getPatientNumber(),
+                $respondent->getFullName()
+                );
+        $this->_helper->BatchRunner($batch, $title, $this->accesslog);
+
+        $this->addSnippet('Track\\RecalcInformation');
+    }
+
+   /**
      * Show a single token, mind you: it can be a SingleSurveyTrack
      */
     public function showAction()

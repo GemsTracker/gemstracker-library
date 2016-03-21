@@ -1105,3 +1105,8 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.track-mainte
 
 ALTER TABLE gems__surveys
     ADD gsu_export_code varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER gsu_code;
+
+-- PATCH: New rights and fields repsondent level track checks
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.track.check')
+    WHERE grl_privileges NOT LIKE '%,pr.track.check%' AND grl_privileges LIKE '%,pr.track-maintenance.check%';
+

@@ -311,6 +311,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
     public function applyToMenuSource(\Gems_Menu_ParameterSource $source)
     {
         $source->setTrackId($this->_trackId);
+        $source->offsetSet('gtr_active', isset($this->_trackData['gtr_active']) ? $this->_trackData['gtr_active'] : 0);
         return $this;
     }
 

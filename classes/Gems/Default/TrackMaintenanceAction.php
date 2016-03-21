@@ -195,39 +195,6 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
     public $summarizedActions = array('index', 'autofilter', 'check-all', 'recalc-all-fields');
 
     /**
-     * Displays a textual explanation what check tracking does on the page.
-     */
-    protected function addCheckInformation()
-    {
-        $this->html->h2($this->_('Checks'));
-        $ul = $this->html->ul();
-        $ul->li($this->_('Updates existing token description and order to the current round description and order.'));
-        $ul->li($this->_('Updates the survey of unanswered tokens when the round survey was changed.'));
-        $ul->li($this->_('Removes unanswered tokens when the round is no longer active.'));
-        $ul->li($this->_('Creates new tokens for new rounds.'));
-        $ul->li($this->_('Checks the validity dates and times of unanswered tokens, using the current round settings.'));
-
-        $this->html->pInfo($this->_('Run this code when a track has changed or when the code has changed and the track must be adjusted.'));
-        $this->html->pInfo($this->_('If you do not run this code after changing a track, then the old tracks remain as they were and only newly created tracks will reflect the changes.'));
-    }
-
-    /**
-     * Displays a textual explanation what recalculating does on the page.
-     */
-    protected function addRecalcInformation()
-    {
-        $this->html->h2($this->_('Track field recalculation'));
-        $ul = $this->html->ul();
-        $ul->li($this->_('Recalculates the values the fields should have.'));
-        $ul->li($this->_('Couple existing appointments to tracks where an appointment field is not filled.'));
-        $ul->li($this->_('Overwrite existing appointments to tracks e.g. when the filters have changed.'));
-        $ul->li($this->_('Checks the validity dates and times of unanswered tokens, using the current round settings.'));
-
-        $this->html->pInfo($this->_('Run this code when automatically calculated track fields have changed, when the appointment filters used by this track have changed or when the code has changed and the track must be adjusted.'));
-        $this->html->pInfo($this->_('If you do not run this code after changing track fields, then the old fields values remain as they were and only newly changed and newly created tracks will reflect the changes.'));
-    }
-
-    /**
      * Action for making a copy of a track
      */
     public function copyAction()
@@ -247,7 +214,7 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
         $batch = $this->loader->getTracker()->checkTrackRounds('trackCheckRoundsAll', $this->currentUser->getUserId());
         $this->_helper->BatchRunner($batch, $this->_('Checking round assignments for all tracks.'), $this->accesslog);
 
-        $this->addCheckInformation();
+        $this->addSnippet('Track\\CheckInformation');
     }
 
     /**
@@ -267,7 +234,7 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
         $title = sprintf($this->_("Checking round assignments for track '%s'."), $track->getTrackName());
         $this->_helper->BatchRunner($batch, $title, $this->accesslog);
 
-        $this->addCheckInformation();
+        $this->addSnippet('Track\\CheckInformation');
     }
 
     /**
@@ -376,7 +343,7 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
                 );
         $this->_helper->BatchRunner($batch, $this->_('Recalculating fields for all tracks.'), $this->accesslog);
 
-        $this->addRecalcInformation();
+        $this->addSnippet('Track\\RecalcInformation');
     }
 
     /**
@@ -396,6 +363,6 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
         $title = sprintf($this->_("Recalculating fields for track '%s'."), $track->getTrackName(), $this->accesslog);
         $this->_helper->BatchRunner($batch, $title, $this->accesslog);
 
-        $this->addRecalcInformation();
+        $this->addSnippet('Track\\RecalcInformation');
     }
 }

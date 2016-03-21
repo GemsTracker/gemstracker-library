@@ -408,6 +408,17 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
                     ->setHiddenOrgId($orgId)
                     ->setParameterFilter('can_edit', 0);
 
+            $itemPage->addAction($this->_('Check assignments'), 'pr.track.check', 'check-track')
+                    ->setNamedParameters($params)
+                    ->addNamedParameters(\Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
+                    ->setHiddenOrgId($orgId)
+                    ->setParameterFilter('can_edit', 1, 'gtr_active', 1, 'gr2t_active', 1);
+            $itemPage->addAction($this->_('Recalculate fields'), 'pr.track.check', 'recalc-fields')
+                    ->setNamedParameters($params)
+                    ->addNamedParameters(\Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
+                    ->setHiddenOrgId($orgId)
+                    ->setParameterFilter('can_edit', 1, 'gtr_active', 1, 'gr2t_active', 1);
+
             $itemPage->addAction($this->_('Export track'), 'pr.track', 'export-track')
                     ->setNamedParameters($params)
                     ->addNamedParameters(\Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
@@ -417,6 +428,13 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
             $tkPage = $itemPage->addAction($this->_('Token'), 'pr.token', 'show')
                     ->setNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
                     ->setParameterFilter(\Gems_Model::ID_TYPE, 'token');
+
+            $trPage->addAction($this->_('Check all assignments'), 'pr.track.check', 'check-all-tracks')
+                    ->setNamedParameters($params)
+                    ->setHiddenOrgId($orgId);
+            $trPage->addAction($this->_('Recalculate all fields'), 'pr.track.check', 'recalc-all-fields')
+                    ->setNamedParameters($params)
+                    ->setHiddenOrgId($orgId);
 
             $trPage = $page->addPage($this->_('Surveys'), 'pr.survey', 'token');
 
