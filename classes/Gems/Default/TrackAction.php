@@ -47,6 +47,12 @@
 class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstract
 {
     /**
+     *
+     * @var \Gems_AccessLog
+     */
+    public $accesslog;
+
+    /**
      * The parameters used for the answer export action.
      *
      * @var array Mixed key => value array for snippet initialization
@@ -435,6 +441,32 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
     }
 
     /**
+     * Check the tokens for a single respondent
+     */
+    public function checkAllAnswersAction()
+    {
+        $respondent = $this->getRespondent();
+        $where      = $this->db->quoteInto('gto_id_respondent = ?', $respondent->getId());
+
+        $batch = $this->loader->getTracker()->recalculateTokens(
+                'answersCheckAllResp_' . $respondent->getId(),
+                $this->currentUser->getUserId(),
+                $where
+                );
+
+        $title = sprintf(
+                $this->_('Checking all surveys of respondent %s, %s for answers.'),
+                $respondent->getPatientNumber(),
+                $respondent->getFullName()
+                );
+        $this->_helper->BatchRunner($batch, $title, $this->accesslog);
+
+        $this->addSnippet('Survey\\CheckAnswersInformation',
+                'itemDescription', $this->_('This task (re)checks all tokens of this respondent for answers.')
+                );
+    }
+
+    /**
      * Action for checking all assigned rounds for this respondent using a batch
      */
     public function checkAllTracksAction()
@@ -455,7 +487,32 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
                 );
         $this->_helper->BatchRunner($batch, $title, $this->accesslog);
 
-        $this->addSnippet('Track\\CheckInformation');
+        $this->addSnippet('Track\\CheckRoundsInformation');
+    }
+
+    /**
+     * Check the tokens for a single token
+     */
+    public function checkTokenAnswersAction()
+    {
+        $token       = $this->getToken();
+        $where       = $this->db->quoteInto('gto_id_token = ?', $token->getTokenId());
+        $batch = $this->loader->getTracker()->recalculateTokens(
+                'answersCheckToken__' . $token->getTokenId(),
+                $this->currentUser->getUserId(),
+                $where
+                );
+        $batch->autoStart = true;
+
+        $title = sprintf(
+                $this->_("Checking the token %s for answers."),
+                $token->getTokenId()
+                );
+        $this->_helper->BatchRunner($batch, $title, $this->accesslog);
+
+        $this->addSnippet('Survey\\CheckAnswersInformation',
+                'itemDescription', $this->_('This task checks one token for answers.')
+                );
     }
 
     /**
@@ -481,7 +538,35 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
                 );
         $this->_helper->BatchRunner($batch, $title, $this->accesslog);
 
-        $this->addSnippet('Track\\CheckInformation');
+        $this->addSnippet('Track\\CheckRoundsInformation');
+    }
+
+    /**
+     * Check the tokens for a single track
+     */
+    public function checkTrackAnswersAction()
+    {
+        $respondent  = $this->getRespondent();
+        $respTrackId = $this->getRespondentTrackId();
+        $trackEngine = $this->getTrackEngine();
+        $where       = $this->db->quoteInto('gto_id_respondent_track = ?', $respTrackId);
+        $batch = $this->loader->getTracker()->recalculateTokens(
+                'answersCheckAllFor__' . $respTrackId,
+                $this->currentUser->getUserId(),
+                $where
+                );
+
+        $title = sprintf(
+                $this->_("Checking the surveys in track '%s' of respondent %s, %s for answers."),
+                $trackEngine->getTrackName(),
+                $respondent->getPatientNumber(),
+                $respondent->getFullName()
+                );
+        $this->_helper->BatchRunner($batch, $title, $this->accesslog);
+
+        $this->addSnippet('Survey\\CheckAnswersInformation',
+                'itemDescription', $this->_('This task checks all tokens for this track for this respondent for answers.')
+                );
     }
 
     /**
@@ -1091,7 +1176,7 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
                 );
         $this->_helper->BatchRunner($batch, $title, $this->accesslog);
 
-        $this->addSnippet('Track\\RecalcInformation');
+        $this->addSnippet('Track\\RecalcFieldsInformation');
     }
 
     /**
@@ -1117,7 +1202,7 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
                 );
         $this->_helper->BatchRunner($batch, $title, $this->accesslog);
 
-        $this->addSnippet('Track\\RecalcInformation');
+        $this->addSnippet('Track\\RecalcFieldsInformation');
     }
 
    /**

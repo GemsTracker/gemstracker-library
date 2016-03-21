@@ -81,27 +81,16 @@ class Gems_Default_SourceAction extends \Gems_Controller_ModelSnippetActionAbstr
     public $summarizedActions = array('index', 'autofilter', 'check-all', 'attributes-all', 'synchronize-all');
 
     /**
-     * Displays textual information what checking tokens does
-     *
-     * @param \MUtil_Html_Sequence $html
-     * @param \Zend_Translate $translate
-     * @param string $itemDescription Describe which tokens will be checked
-     */
-    public static function addCheckInformation(\MUtil_Html_Sequence $html, \Zend_Translate $translate, $itemDescription)
-    {
-        $html->pInfo($translate->_('Check tokens for being answered or not, reruns survey and round event code on completed tokens and recalculates the start and end times of all tokens in tracks that have completed tokens.'));
-        $html->pInfo($translate->_('Run this code when survey result fields, survey or round events or the event code has changed or after bulk changes in a survey source.'));
-        $html->pInfo($itemDescription);
-    }
-
-
-    /**
      * Displays a textual explanation what synchronization does on the page.
      */
     protected function addSynchronizationInformation()
     {
-        $this->html->pInfo($this->_('Check source for new surveys, changes in survey status and survey deletion. Can also perform maintenance on some sources, e.g. by changing the number of attributes.'));
-        $this->html->pInfo($this->_('Run this code when the status of a survey in a source has changed or when the code has changed and the source must be adapted.'));
+        $this->html->pInfo($this->_(
+                'Check source for new surveys, changes in survey status and survey deletion. Can also perform maintenance on some sources, e.g. by changing the number of attributes.'
+                ));
+        $this->html->pInfo($this->_(
+                'Run this code when the status of a survey in a source has changed or when the code has changed and the source must be adapted.'
+                ));
     }
 
     /**
@@ -148,11 +137,13 @@ class Gems_Default_SourceAction extends \Gems_Controller_ModelSnippetActionAbstr
 
         $batch = $this->loader->getTracker()->recalculateTokens('sourceCheck' . $sourceId, $this->currentUser->getUserId(), $where);
 
-        $title = sprintf($this->_('Checking survey results for %s source.'),
+        $title = sprintf($this->_('Checking all surveys in the %s source for answers.'),
                     $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
         $this->_helper->batchRunner($batch, $title, $this->accesslog);
 
-        self::addCheckInformation($this->html, $this->translate, $this->_('This task checks all tokens in this source.'));
+        $this->addSnippet('Survey\\CheckAnswersInformation',
+                'itemDescription', $this->_('This task checks all tokens using this source for answers .')
+                );
     }
 
     /**
@@ -162,10 +153,12 @@ class Gems_Default_SourceAction extends \Gems_Controller_ModelSnippetActionAbstr
     {
         $batch = $this->loader->getTracker()->recalculateTokens('surveyCheckAll', $this->currentUser->getUserId());
 
-        $title = $this->_('Checking survey results for all sources.');
+        $title = $this->_('Checking all surveys for all sources for answers.');
         $this->_helper->batchRunner($batch, $title, $this->accesslog);
 
-        self::addCheckInformation($this->html, $this->translate, $this->_('This task checks all tokens in all sources.'));
+        $this->addSnippet('Survey\\CheckAnswersInformation',
+                'itemDescription', $this->_('This task checks all tokens in all sources for answers.')
+                );
     }
 
     /**

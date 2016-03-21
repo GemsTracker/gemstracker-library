@@ -1109,4 +1109,7 @@ ALTER TABLE gems__surveys
 -- PATCH: New rights and fields repsondent level track checks
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.track.check')
     WHERE grl_privileges NOT LIKE '%,pr.track.check%' AND grl_privileges LIKE '%,pr.track-maintenance.check%';
-
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.track.answers')
+    WHERE grl_privileges NOT LIKE '%,pr.track.answers%' AND grl_privileges LIKE '%,pr.survey-maintenance.check%';
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.token.answers')
+    WHERE grl_privileges NOT LIKE '%,pr.token.answers%' AND grl_privileges LIKE '%,pr.survey-maintenance.check%';

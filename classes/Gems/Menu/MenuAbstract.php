@@ -413,7 +413,7 @@ abstract class Gems_Menu_MenuAbstract
         $export = $this->addContainer($label);
 
         // EXPORT
-        $surveyExport = $export->addPage($this->_('Survey answers'), 'pr.export', 'export', 'index');
+        $surveyExport = $export->addPage($this->_('Single survey answers'), 'pr.export', 'export', 'index');
         $surveyExport->addAutofilterAction();
 
         $surveyExport->addExportAction();
@@ -421,9 +421,9 @@ abstract class Gems_Menu_MenuAbstract
         //$export->addButtonOnly('', 'pr.export', 'export', 'handle-export');
         //$export->addButtonOnly('', 'pr.export', 'export', 'download');
 
-        
+
         $batchExport = $export->addPage(
-                $this->_('Batch survey export'),
+                $this->_('Multiple surveys answers'),
                 'pr.export',
                 'batch-export',
                 'index'
@@ -859,16 +859,18 @@ abstract class Gems_Menu_MenuAbstract
                 ->addParameters(\MUtil_Model::REQUEST_ID);
         $showPage->addAction($this->_('Merge Import'), 'pr.track-maintenance.merge', 'merge')
                 ->addParameters(\MUtil_Model::REQUEST_ID);
-        $showPage->addAction($this->_('Check assignments'), 'pr.track-maintenance.check', 'check-track')
-                ->addParameters(\MUtil_Model::REQUEST_ID);
+        $showPage->addAction($this->_('Check rounds'), 'pr.track-maintenance.check', 'check-track')
+                ->addParameters(\MUtil_Model::REQUEST_ID)
+                ->setParameterFilter('gtr_active', 1);
         $showPage->addAction($this->_('Recalculate fields'), 'pr.track-maintenance.check', 'recalc-fields')
-                ->addParameters(\MUtil_Model::REQUEST_ID);
+                ->addParameters(\MUtil_Model::REQUEST_ID)
+                ->setParameterFilter('gtr_active', 1);
 
         $overviewPage = $page->addPage($this->_('Tracks per org'), 'pr.track-maintenance.trackperorg', 'track-overview', 'index');
         $overviewPage->addExportAction();
         $overviewPage->addAutofilterAction();
 
-        $page->addAction($this->_('Check all assignments'), 'pr.track-maintenance.check-all', 'check-all');
+        $page->addAction($this->_('Check all rounds'), 'pr.track-maintenance.check-all', 'check-all');
         $page->addAction($this->_('Recalculate all fields'), 'pr.track-maintenance.check-all', 'recalc-all-fields');
 
         return $setup;

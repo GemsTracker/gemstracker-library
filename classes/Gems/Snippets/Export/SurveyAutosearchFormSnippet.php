@@ -40,7 +40,7 @@ class Gems_Snippets_Export_SurveyAutosearchFormSnippet extends \Gems_Snippets_Au
         $elements[] = $this->_createSelectElement(
             'gto_id_survey',
             $surveys,
-            $this->_('(Select a survey)')
+            $this->_('(select a survey)')
             );
 
         $elements[] = $this->_createSelectElement(

@@ -343,11 +343,13 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
 
         $batch = $this->loader->getTracker()->recalculateTokens('surveyCheck' . $surveyId, $this->currentUser->getUserId(), $where);
 
-        $title = sprintf($this->_('Checking survey results for the %s survey.'),
+        $title = sprintf($this->_('Checking for the %s survey for answers .'),
                 $this->db->fetchOne("SELECT gsu_survey_name FROM gems__surveys WHERE gsu_id_survey = ?", $surveyId));
         $this->_helper->BatchRunner($batch, $title, $this->accesslog);
 
-        \Gems_Default_SourceAction::addCheckInformation($this->html, $this->translate, $this->_('This task checks all tokens for this survey.'));
+        $this->addSnippet('Survey\\CheckAnswersInformation',
+                'itemDescription', $this->_('This task checks all tokens using this survey for answers.')
+                );
     }
 
     /**
@@ -357,10 +359,12 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
     {
         $batch = $this->loader->getTracker()->recalculateTokens('surveyCheckAll', $this->currentUser->getUserId());
 
-        $title = $this->_('Checking survey results for all surveys.');
+        $title = $this->_('Checking for all surveys for answers .');
         $this->_helper->BatchRunner($batch, $title, $this->accesslog);
 
-        \Gems_Default_SourceAction::addCheckInformation($this->html, $this->translate, $this->_('This task checks all tokens for all surveys.'));
+        $this->addSnippet('Survey\\CheckAnswersInformation',
+                'itemDescription', $this->_('This task checks all tokens for all surveys for answers.')
+                );
     }
 
     /**

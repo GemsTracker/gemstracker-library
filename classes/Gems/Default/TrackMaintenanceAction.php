@@ -214,7 +214,7 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
         $batch = $this->loader->getTracker()->checkTrackRounds('trackCheckRoundsAll', $this->currentUser->getUserId());
         $this->_helper->BatchRunner($batch, $this->_('Checking round assignments for all tracks.'), $this->accesslog);
 
-        $this->addSnippet('Track\\CheckInformation');
+        $this->addSnippet('Track\\CheckRoundsInformation');
     }
 
     /**
@@ -234,7 +234,7 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
         $title = sprintf($this->_("Checking round assignments for track '%s'."), $track->getTrackName());
         $this->_helper->BatchRunner($batch, $title, $this->accesslog);
 
-        $this->addSnippet('Track\\CheckInformation');
+        $this->addSnippet('Track\\CheckRoundsInformation');
     }
 
     /**
@@ -343,7 +343,7 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
                 );
         $this->_helper->BatchRunner($batch, $this->_('Recalculating fields for all tracks.'), $this->accesslog);
 
-        $this->addSnippet('Track\\RecalcInformation');
+        $this->addSnippet('Track\\RecalcFieldsInformation');
     }
 
     /**
@@ -363,6 +363,6 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
         $title = sprintf($this->_("Recalculating fields for track '%s'."), $track->getTrackName(), $this->accesslog);
         $this->_helper->BatchRunner($batch, $title, $this->accesslog);
 
-        $this->addSnippet('Track\\RecalcInformation');
+        $this->addSnippet('Track\\RecalcFieldsInformation');
     }
 }

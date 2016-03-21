@@ -34,7 +34,7 @@
  * @license    New BSD License
  */
 
-namespace Gems\Snippets\Track;
+namespace Gems\Snippets\Survey;
 
 /**
  *
@@ -45,8 +45,14 @@ namespace Gems\Snippets\Track;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 Mar 21, 2016 12:17:12 PM
  */
-class RecalcInformation extends \MUtil_Snippets_SnippetAbstract
+class CheckAnswersInformation extends \MUtil_Snippets_SnippetAbstract
 {
+    /**
+     *
+     * @var Describe which tokens will be checked
+     */
+    protected $itemDescription;
+
     /**
      * Create the snippets content
      *
@@ -59,22 +65,18 @@ class RecalcInformation extends \MUtil_Snippets_SnippetAbstract
     {
         $seq = $this->getHtmlSequence();
 
-        $seq->h2($this->_('Track field recalculation'));
-
-        $ul = $seq->ul();
-        $ul->li($this->_('Recalculates the values the fields should have.'));
-        $ul->li($this->_('Couple existing appointments to tracks where an appointment field is not filled.'));
-        $ul->li($this->_('Overwrite existing appointments to tracks e.g. when the filters have changed.'));
-        $ul->li($this->_(
-                'Checks the validity dates and times of unanswered tokens, using the current round settings.'
-                ));
+        $seq->h2($this->_('Checks'));
 
         $seq->pInfo($this->_(
-                'Run this code when automatically calculated track fields have changed, when the appointment filters used by this track have changed or when the code has changed and the track must be adjusted.'
+                'Check tokens for being answered or not, reruns survey and round event code on completed tokens and recalculates the start and end times of all tokens in tracks that have completed tokens.'
                 ));
         $seq->pInfo($this->_(
-                'If you do not run this code after changing track fields, then the old fields values remain as they were and only newly changed and newly created tracks will reflect the changes.'
+                'Run this code when survey result fields, survey or round events or the event code has changed or after bulk changes in a survey source.'
                 ));
+
+        if ($this->itemDescription) {
+            $seq->pInfo($this->itemDescription);
+        }
 
         return $seq;
     }

@@ -45,7 +45,7 @@ namespace Gems\Snippets\Track;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 Mar 21, 2016 12:17:12 PM
  */
-class CheckInformation extends \MUtil_Snippets_SnippetAbstract
+class CheckRoundsInformation extends \MUtil_Snippets_SnippetAbstract
 {
     /**
      * Create the snippets content
@@ -76,7 +76,7 @@ class CheckInformation extends \MUtil_Snippets_SnippetAbstract
         $seq->pInfo($this->_(
                 'If you do not run this code after changing a track, then the old tracks remain as they were and only newly created tracks will reflect the changes.'
                 ));
-        
+
         return $seq;
     }
 }

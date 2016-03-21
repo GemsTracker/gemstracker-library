@@ -363,6 +363,25 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
                     ->addOptionalParameters(\Gems_Model::SURVEY_ID, 'gsu_id_survey')
                     ->setHiddenOrgId($orgId);
 
+            $subPage->addAction($this->_('Check answers'), 'pr.track.answers', 'check-track-answers')
+                    ->setNamedParameters($params)
+                    ->addNamedParameters(\Gems_Model::TRACK_ID, 'gtr_id_track')
+                    ->setHiddenOrgId($orgId)
+                    ->setParameterFilter('track_can_be_created', 0)
+                    ->addHiddenParameter('track_can_be_created', 0);
+            $subPage->addAction($this->_('Check rounds'), 'pr.track.check', 'check-track')
+                    ->setNamedParameters($params)
+                    ->addNamedParameters(\Gems_Model::TRACK_ID, 'gtr_id_track')
+                    ->setHiddenOrgId($orgId)
+                    ->setParameterFilter('track_can_be_created', 0, 'gtr_active', 1, 'gr2t_active', 1)
+                    ->addHiddenParameter('track_can_be_created', 0);
+            $subPage->addAction($this->_('Recalculate fields'), 'pr.track.check', 'recalc-fields')
+                    ->setNamedParameters($params)
+                    ->addNamedParameters(\Gems_Model::TRACK_ID, 'gtr_id_track')
+                    ->setHiddenOrgId($orgId)
+                    ->setParameterFilter('track_can_be_created', 0, 'gtr_active', 1, 'gr2t_active', 1)
+                    ->addHiddenParameter('track_can_be_created', 0);
+
         } else {
 
             $trPage = $page->addPage($this->_('Tracks'), 'pr.track', 'track');
@@ -408,7 +427,11 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
                     ->setHiddenOrgId($orgId)
                     ->setParameterFilter('can_edit', 0);
 
-            $itemPage->addAction($this->_('Check assignments'), 'pr.track.check', 'check-track')
+            $itemPage->addAction($this->_('Check answers'), 'pr.track.answers', 'check-track-answers')
+                    ->setNamedParameters($params)
+                    ->addNamedParameters(\Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
+                    ->setHiddenOrgId($orgId);
+            $itemPage->addAction($this->_('Check rounds'), 'pr.track.check', 'check-track')
                     ->setNamedParameters($params)
                     ->addNamedParameters(\Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
                     ->setHiddenOrgId($orgId)
@@ -429,7 +452,10 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
                     ->setNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
                     ->setParameterFilter(\Gems_Model::ID_TYPE, 'token');
 
-            $trPage->addAction($this->_('Check all assignments'), 'pr.track.check', 'check-all-tracks')
+            $trPage->addAction($this->_('Check all answers'), 'pr.track.answers', 'check-all-answers')
+                    ->setNamedParameters($params)
+                    ->setHiddenOrgId($orgId);
+            $trPage->addAction($this->_('Check all rounds'), 'pr.track.check', 'check-all-tracks')
                     ->setNamedParameters($params)
                     ->setHiddenOrgId($orgId);
             $trPage->addAction($this->_('Recalculate all fields'), 'pr.track.check', 'recalc-all-fields')
@@ -471,6 +497,9 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
                 ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
                 ->setParameterFilter('is_completed', 1, \Gems_Model::ID_TYPE, 'token')
                 ->set('target', \MUtil_Model::REQUEST_ID);
+        $tkPage->addAction($this->_('(Re)check answers'), 'pr.token.answers', 'check-token-answers')
+                ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
+                ->setParameterFilter(\Gems_Model::ID_TYPE, 'token');
         $tkPage->addActionButton($this->_('Export answers'), 'pr.token.answers', 'answer-export')
                 ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
                 ->setParameterFilter('is_completed', 1, \Gems_Model::ID_TYPE, 'token');
