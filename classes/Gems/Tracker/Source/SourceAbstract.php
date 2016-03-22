@@ -305,7 +305,7 @@ abstract class Gems_Tracker_Source_SourceAbstract extends \MUtil_Translate_Trans
      *
      * @return \Zend_Db_Adapter_Abstract
      */
-    protected function getSourceDatabase()
+    public function getSourceDatabase()
     {
         if (! $this->_sourceDb) {
 

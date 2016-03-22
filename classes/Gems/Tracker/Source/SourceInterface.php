@@ -204,6 +204,13 @@ interface Gems_Tracker_Source_SourceInterface extends \MUtil_Registry_TargetInte
      * @return int
      */
     public function getRawTokenAnswerRowsCount(array $filter, $surveyId, $sourceSurveyId = null);
+    
+    /**
+     * Get the db adapter for this source
+     *
+     * @return \Zend_Db_Adapter_Abstract
+     */
+    public function getSourceDatabase();
 
     /**
      * Gets the time the survey was started according to the source.
