@@ -197,16 +197,18 @@ class Gems_Form extends \MUtil_Form
                 'targetId'  => array('MUtil_Html_ElementInterface', 'is_string'),
                 ), null, \MUtil_Ra::STRICT);
 
-        if ($args['targetId'] instanceof \MUtil_Html_ElementInterface) {
-            if (isset($args['targetId']->id)) {
-                $args['targetId'] = '#' . $args['targetId']->id;
-            } elseif (isset($args['targetId']->class)) {
-                $args['targetId'] = '.' . $args['targetId']->class;
+        if (isset($args['targetId'])) {
+            if ($args['targetId'] instanceof \MUtil_Html_ElementInterface) {
+                if (isset($args['targetId']->id)) {
+                    $args['targetId'] = '#' . $args['targetId']->id;
+                } elseif (isset($args['targetId']->class)) {
+                    $args['targetId'] = '.' . $args['targetId']->class;
+                } else {
+                    $args['targetId'] = $args['targetId']->getTagName();
+                }
             } else {
-                $args['targetId'] = $args['targetId']->getTagName();
+                $args['targetId'] = '#' . $args['targetId'];
             }
-        } else {
-            $args['targetId'] = '#' . $args['targetId'];
         }
         if ($selective) {
             $args['selective'] = true;

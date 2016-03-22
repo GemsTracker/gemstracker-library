@@ -60,6 +60,25 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
     protected $autofilterParameters = array(
         'extraSort' => array('group' => SORT_ASC, 'type' => SORT_ASC, 'name' => SORT_ASC),
         );
+
+    /**
+     *
+     * @var \Zend_Db_Adapter_Abstract
+     */
+    public $db;
+
+    /**
+     * Required
+     *
+     * @var \Zend_Controller_Request_Abstract
+     */
+    public $request;
+
+    /**
+     * Tradition way of setting default sort (still in use)
+     *
+     * @var array
+     */
     public $sortKey = array('group' => SORT_ASC, 'type' => SORT_ASC, 'name' => SORT_ASC);
 
     /**
@@ -478,7 +497,7 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
                     'SELECT gpa_id_patch AS `%s`, gpa_level AS `%s`, gpa_location AS `%s`, gpa_name AS `%s`, gpa_sql AS `%s`, gpa_executed AS `%s`, gpa_completed AS `%s`, gpa_result AS `%s`, gpa_changed AS `%s` FROM gems__patches WHERE gpa_level = ? ORDER BY gpa_level, gpa_changed DESC, gpa_location, gpa_name, gpa_order',
                     $this->_('Patch'),
                     $this->_('Level'),
-                    $this->_('Subtype'),
+                    $this->_('Group'),
                     $this->_('Name'),
                     $this->_('Query'),
                     $this->_('Executed'),
@@ -744,6 +763,30 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
         }
 
         parent::showAction();
+    }
+
+    /**
+     * Show the changes in the database
+     */
+    public function showChangesAction()
+    {
+        $patchLevels = $this->db->fetchPairs('SELECT DISTINCT gpa_level, gpa_level FROM gems__patches ORDER BY gpa_level DESC');
+
+        $searchData['gpa_level'] = reset($patchLevels);
+
+        if ($this->request instanceof \Zend_Controller_Request_Abstract) {
+            $searchData = $this->request->getParams() + $searchData;
+        }
+
+        $snippet = $this->addSnippet(
+                'Database\\StructuralChanges',
+                'patchLevels', $patchLevels,
+                'searchData', $searchData
+                );
+
+        if (1 == $this->request->getParam('download')) {
+            $snippet->outputText($this->view, $this->_helper);
+        }
     }
 
     public function viewAction()

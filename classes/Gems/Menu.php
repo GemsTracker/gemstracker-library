@@ -183,6 +183,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
             ->setParameterFilter('exists', true);
         $page->addAction($this->_('Patches'), 'pr.database.patches', 'patch');
         $page->addAction($this->_('Execute new'), 'pr.database.create', 'run-all');
+        $page->addAction($this->_('Show structure changes'), 'pr.database', 'show-changes');
         if (isset($this->escort->project->databaseTranslations)) {
             $page->addAction($this->_('Refresh translateables'), 'pr.database', 'refresh-translations');
         }
