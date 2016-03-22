@@ -126,6 +126,7 @@ class Gems_Default_LogAction extends \Gems_Controller_ModelSnippetActionAbstract
             $this->defaultSearchData = array(
                 'datefrom'         => $from,
                 'dateuntil'        => $until,
+                'dateused'         => 'gla_created',
                 );
         }
 
@@ -143,6 +144,7 @@ class Gems_Default_LogAction extends \Gems_Controller_ModelSnippetActionAbstract
         $filter = parent::getSearchFilter($useRequest);
 
         $where = \Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($filter, $this->db);
+        
         if ($where) {
             $filter[] = $where;
         }
