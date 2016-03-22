@@ -709,13 +709,13 @@ class Gems_Project_ProjectSettings extends \ArrayObject
     {
         if ($name) {
             if (isset($this['monitor'], $this['monitor'][$name], $this['monitor'][$name]['period']) &&
-                    trim($this['monitor'][$name]['period'])) {
+                    strlen(trim($this['monitor'][$name]['period']))) {
                 return $this['monitor'][$name]['period'];
             }
         }
 
         if (isset($this['monitor'], $this['monitor']['default'], $this['monitor']['default']['period']) &&
-                trim($this['monitor']['default']['period'])) {
+                strlen(trim($this['monitor']['default']['period']))) {
             return $this['monitor']['default']['period'];
         }
 

@@ -165,6 +165,15 @@ class Monitor extends UtilAbstract
 
         switch ($this->project->getLocaleDefault()) {
             case 'nl':
+                $initSubject = "{name} is aangezet";
+                $initBbText = "L.S.,
+
+De [b]{name}[/b] is op {setTime} aangezet.
+
+Zolang dit aan blijft staan kan u regelmatig waarschuwingen krijgen.
+
+Dit is een automatisch bericht.";
+
                 $subject = "{name} staat al meer dan {periodHours} uur aan";
                 $messageBbText = "L.S.,
 
@@ -176,6 +185,15 @@ Dit is een automatische waarschuwing.";
                 break;
 
             default:
+                $initSubject = "{name} has been turned on";
+                $initBbText = "L.S.,
+
+The [b]{name}[/b] was activated at {setTime}.
+
+As long as maintenance mode is active the system may send you warning messages.
+
+This messages was send automatically.";
+
                 $subject = "{name} has been active for over {periodHours} hours";
                 $messageBbText = "L.S.,
 
@@ -192,8 +210,11 @@ This messages was send automatically.";
                 ->setMessage($messageBbText)
                 ->setPeriod($this->project->getMonitorPeriod('maintenancemode'))
                 ->setSubject($subject)
-                ->setTo($to)
-                ->start();
+                ->setTo($to);
+
+        if ($job->start()) {
+            $job->sendOtherMail($initSubject, $initBbText);
+        }
 
         return true;
     }
@@ -206,7 +227,7 @@ This messages was send automatically.";
     public function startCronMailMonitor()
     {
         $to = $this->_getMailTo('cronmail', 'gsf_mail_watcher = 1');
-        
+
         if (! $to) {
             return false;
         }
