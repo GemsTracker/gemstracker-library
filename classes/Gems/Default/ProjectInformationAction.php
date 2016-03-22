@@ -46,6 +46,12 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
 {
     /**
      *
+     * @var \Gems_AccessLog
+     */
+    public $accesslog;
+
+    /**
+     *
      * @var GemsEscort
      */
     public $escort;
@@ -261,12 +267,16 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
     public function maintenanceAction()
     {
         // Switch lock
-        $this->util->getMonitor()->reverseMaintenanceMonitor();
+        if ($this->util->getMonitor()->reverseMaintenanceMonitor()) {
+            $this->accesslog->logChange($this->getRequest(), $this->_('Maintenance mode set ON'));
+        } else {
+            $this->accesslog->logChange($this->getRequest(), $this->_('Maintenance mode set OFF'));
 
-        // Dump the existing maintenance mode messages.
-        $this->escort->getMessenger()->clearCurrentMessages();
-        $this->escort->getMessenger()->clearMessages();
-        \MUtil_Echo::out();
+            // Dump the existing maintenance mode messages.
+            $this->escort->getMessenger()->clearCurrentMessages();
+            $this->escort->getMessenger()->clearMessages();
+            \MUtil_Echo::out();
+        }
 
         // Redirect
         $request = $this->getRequest();

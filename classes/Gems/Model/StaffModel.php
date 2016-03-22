@@ -274,6 +274,11 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
                     'elementClass', 'Checkbox',
                     'multiOptions', $yesNo
                     );
+            $this->set('gsf_mail_watcher', 'label', $this->_('Check cron job mail'),
+                    'description', $this->_('If checked the user will be mailed when the cron job does not run on time.'),
+                    'elementClass', 'Checkbox',
+                    'multiOptions', $yesNo
+                    );
         }
 
         $this->set('gsf_active', 'label', $this->_('Active'),

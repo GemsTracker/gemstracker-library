@@ -1119,6 +1119,7 @@ INSERT ignore INTO gems__log_setup (gls_name, gls_when_no_user, gls_on_action, g
         gls_changed, gls_changed_by, gls_created, gls_created_by)
     VALUES
         ('file-import.answers-import',          1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+		('project-information.maintenance',     1, 1, 1, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('token.answered',                      1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('token.data-changed',                  1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
 		('track.check-all-answers',             1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
@@ -1130,3 +1131,7 @@ INSERT ignore INTO gems__log_setup (gls_name, gls_when_no_user, gls_on_action, g
 		('track.recalc-fields',                 1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
 		('track-maintenance.export',            1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
 		('track-maintenance.import',            1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
+
+-- PATCH: Log answered tokens
+ALTER TABLE gems__staff
+	ADD gsf_mail_watcher boolean not null default 0 AFTER gsf_logout_on_survey;

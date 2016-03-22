@@ -68,6 +68,37 @@ class Monitor extends UtilAbstract
      */
     protected $util;
 
+
+    /**
+     * Get the mail addresses for a monitor
+     *
+     * @param string $monitorName ProjectSettings name
+     * @param string $where Optional, a gems__staff SQL WHERE statement
+     * @return boolean
+     */
+    protected function _getMailTo($monitorName, $where = null)
+    {
+        $projTo = $this->project->getMonitorTo($monitorName);
+
+        if ($where) {
+            $dbTo = $this->db->fetchCol(
+                    "SELECT DISTINCT gsf_email FROM gems__staff WHERE LENGTH(gsf_email) > 5 AND $where"
+                    );
+
+            if ($dbTo) {
+                if ($projTo) {
+                    return array_unique(array_merge($dbTo, array_filter(array_map('trim', explode(',', $projTo)))));
+                }
+                return $dbTo;
+            }
+        }
+        if ($projTo) {
+            return $projTo;
+        }
+
+        return false;
+    }
+
     /**
      * Called after the check that all required registry values
      * have been set correctly has run.
@@ -91,6 +122,16 @@ class Monitor extends UtilAbstract
     }
 
     /**
+     * Return cron mail monitor
+     *
+     * @return MonitorJob
+     */
+    public function getCronMailMonitor()
+    {
+        return new MonitorJob($this->project->getName() . ' cron mail');
+    }
+
+    /**
      * Start the cron mail monitor
      *
      * @return boolean True when the job was started
@@ -103,15 +144,23 @@ class Monitor extends UtilAbstract
         if ($lock->isLocked()) {
             $job->stop();
             $lock->unlock();
-            return;
+            return false;
         }
 
         $lock->lock();
 
-        $to = $this->project->getMonitorTo('maintenancemode');
+        $roles = $this->util->getDbLookup()->getRolesByPrivilege('pr.maintenance.maintenance-mode');
+        if ($roles) {
+            $where = 'gsf_id_primary_group IN (SELECT ggp_id_group FROM gems__groups WHERE ggp_role IN (' .
+                    implode(', ', array_map(array($this->db, 'quote'), array_keys($roles))) .
+                    '))';
+        } else {
+            $where = null;
+        }
+        $to = $this->_getMailTo('maintenancemode', $where);
 
         if (! $to) {
-            return false;
+            return true;
         }
 
         switch ($this->project->getLocaleDefault()) {
@@ -156,17 +205,17 @@ This messages was send automatically.";
      */
     public function startCronMailMonitor()
     {
-        $to = $this->project->getMonitorTo('cronmail');
-
+        $to = $this->_getMailTo('cronmail', 'gsf_mail_watcher = 1');
+        
         if (! $to) {
             return false;
         }
 
-        $job = new MonitorJob($this->project->getName() . ' cron mail');
+        $job = $this->getCronMailMonitor();
 
         switch ($this->project->getLocaleDefault()) {
             case 'nl':
-                $subject = "{name} opdracht draait al meer dan {periodHours} uur";
+                $subject = "{name} opdracht draait al meer dan {periodHours} uur niet";
                 $messageBbText = "L.S.,
 
 De [b]{name}[/b] opdracht heeft op {setTime} voor het laatst gedraait en zou voor {firstCheck} opnieuw gedraait moeten hebben.
@@ -186,7 +235,6 @@ This is notice number {mailCount}. Please check what went wrong.
 
 This messages was send automatically.";
                 break;
-
         }
 
         $job->setFrom($this->project->getMonitorFrom('cronmail'))

@@ -473,6 +473,27 @@ class Gems_Util_DbLookup extends UtilAbstract
     }
 
     /**
+     * Returns the roles in the acl with the privilege
+     *
+     * @return array roleId => ucfirst(roleId)
+     */
+    public function getRolesByPrivilege($privilege)
+    {
+        $roles = array();
+
+        if ($this->acl) {
+            foreach ($this->acl->getRoles() as $role) {
+                if ($this->acl->isAllowed($role, null, $privilege)) {
+                    //Do not translate, only make first one uppercase
+                    $roles[$role] = ucfirst($role);
+                }
+            }
+        }
+
+        return $roles;
+    }
+
+    /**
      * Get all round descriptions for exported
      *
      * @param int $trackId Optional track id
