@@ -67,7 +67,7 @@ class ModelImportSnippet extends \MUtil_Snippets_Standard_ModelImportSnippet
         $data = $this->formData;
 
         // Remove unuseful data
-        unset($data['button_spacer'], $data['current_step']);
+        unset($data['button_spacer'], $data['current_step'], $data[$this->csrfId]);
 
         // Add useful data
         $data['localfile']        = basename($this->_session->localfile);

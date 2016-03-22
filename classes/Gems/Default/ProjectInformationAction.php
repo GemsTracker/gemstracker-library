@@ -32,7 +32,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -57,6 +56,22 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
      */
     public $menu;
 
+    /**
+     *
+     * @var \Gems_Project_ProjectSettings
+     */
+    public $project;
+
+    /**
+     * Set to true in child class for automatic creation of $this->html.
+     *
+     * To initiate the use of $this->html from the code call $this->initHtml()
+     *
+     * Overrules $useRawOutput.
+     *
+     * @see $useRawOutput
+     * @var boolean $useHtmlView
+     */
     public $useHtmlView = true;
 
     /**
@@ -70,7 +85,7 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
     {
         $versions = $this->loader->getVersions();
 
-        $data[$this->_('Project name')]            = $this->project->name;
+        $data[$this->_('Project name')]            = $this->project->getName();
         $data[$this->_('Project version')]         = $versions->getProjectVersion();
         $data[$this->_('Gems version')]            = $versions->getGemsVersion();
         $data[$this->_('Gems build')]              = $versions->getBuild();

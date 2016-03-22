@@ -32,7 +32,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ImportMergeSnippetAbstract.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Tracker\Snippets;
@@ -364,6 +363,11 @@ abstract class ImportMergeSnippetAbstract extends \MUtil_Snippets_WizardFormSnip
 
         if (! $batch->isLoaded()) {
             $batch->addTask(
+                    'Tracker\\Import\\CheckVersionImportTask',
+                    $import['version']
+                    );
+
+            $batch->addTask(
                     'Tracker\\Import\\CheckTrackImportTask',
                     $import['track']
                     );
@@ -400,10 +404,12 @@ abstract class ImportMergeSnippetAbstract extends \MUtil_Snippets_WizardFormSnip
                         );
             }
 
-            $batch->addTask(
-                    'Tracker\\Import\\CheckTrackImportErrorsTask',
-                    $import['errors']
-                    );
+            if (isset($import['errors']) && $import['errors']) {
+                $batch->addTask(
+                        'Tracker\\Import\\CheckTrackImportErrorsTask',
+                        $import['errors']
+                        );
+            }
         }
 
         return $batch;
@@ -420,11 +426,12 @@ abstract class ImportMergeSnippetAbstract extends \MUtil_Snippets_WizardFormSnip
     public function getImportSections()
     {
         return array(
-            'track'  => false,
+            'version'       => false,
+            'track'         => false,
             'organizations' => false,
-            'fields' => true,
-            'surveys' => false,
-            'rounds' => false,
+            'fields'        => true,
+            'surveys'       => false,
+            'rounds'        => false,
             );
     }
 
@@ -489,15 +496,13 @@ abstract class ImportMergeSnippetAbstract extends \MUtil_Snippets_WizardFormSnip
             return $this->_session->importData;
         }
 
-        // Array object to avoid passing by reference
-        $this->_session->importData = new \ArrayObject(array(
-            'track' => array(),
-            'organizations' => array(),
-            'fields' => array(),
-            'surveys' => array(),
-            'rounds' => array(),
-            'errors' => array(),
-            ));
+        $sections = $this->getImportSections();
+
+        // Array object to have automatic passing by reference
+        $this->_session->importData = new \ArrayObject(array_fill_keys(
+                array_keys($sections) + array('errors'),
+                array()
+                ));
 
         $file = $this->_session->localfile;
 
@@ -524,7 +529,6 @@ abstract class ImportMergeSnippetAbstract extends \MUtil_Snippets_WizardFormSnip
         $fieldsReset = false;
         $key         = false;
         $lineNr      = 0;
-        $sections    = $this->getImportSections();
 
         foreach (explode("\r\n", $content) as $line) {
             $lineNr++;

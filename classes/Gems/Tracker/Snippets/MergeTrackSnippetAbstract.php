@@ -40,6 +40,8 @@ namespace Gems\Tracker\Snippets;
 use Gems\Tracker\Field\FieldInterface;
 use Gems\Tracker\Round;
 
+use MUtil\Validate\NotEqualExcept;
+
 /**
  *
  *
@@ -111,6 +113,7 @@ class MergeTrackSnippetAbstract extends ImportMergeSnippetAbstract
             }
         }
 
+        $except     = array(self::ROUND_LEAVE, self::ROUND_DEACTIVATE);
         $notEqualTo = array();  // Make sure no round is imported twice
         foreach ($currentRounds as $roundId => $round) {
 
@@ -163,7 +166,8 @@ class MergeTrackSnippetAbstract extends ImportMergeSnippetAbstract
                     $value = null;
 
                     if ($notEqualTo) {
-                        $model->set($name, 'validators[notequal]', new \MUtil_Validate_NotEqualTo($notEqualTo));
+                        $notEqualVal = new NotEqualExcept($notEqualTo, $except);
+                        $model->set($name, 'validators[notequal]', $notEqualVal);
                     }
                     $notEqualTo[] = $name;
                 }

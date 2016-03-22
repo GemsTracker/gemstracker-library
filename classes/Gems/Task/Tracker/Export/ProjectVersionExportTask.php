@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2015, Erasmus MC
+ * Copyright (c) 2016, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
  * @package    Gems
  * @subpackage Task\Tracker
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2015 Erasmus MC
+ * @copyright  Copyright (c) 2016 Erasmus MC
  * @license    New BSD License
  */
 
@@ -41,12 +41,24 @@ namespace Gems\Task\Tracker\Export;
  *
  * @package    Gems
  * @subpackage Task\Tracker
- * @copyright  Copyright (c) 2015 Erasmus MC
+ * @copyright  Copyright (c) 2016 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.7.2 Jan 12, 2016 2:53:09 PM
+ * @since      Class available since version 1.7.2 Mar 22, 2016 1:57:25 PM
  */
-class MainTrackExportTask extends TrackExportAbstract
+class ProjectVersionExportTask  extends TrackExportAbstract
 {
+    /**
+     *
+     * @var \Gems_Project_ProjectSettings
+     */
+    protected $project;
+
+    /**
+     *
+     * @var \Gems_Util
+     */
+    protected $util;
+
     /**
      * Should handle execution of the task, taking as much (optional) parameters as needed
      *
@@ -55,36 +67,20 @@ class MainTrackExportTask extends TrackExportAbstract
      */
     public function execute($trackId = null, $exportOrganizations = false)
     {
-        $batch = $this->getBatch();
-        $data  = $this->db->fetchRow("SELECT * FROM gems__tracks WHERE gtr_id_track = ?", $trackId);
-        $orgs  = $exportOrganizations ? $data['gtr_organizations'] : false;
+        $versions = $this->loader->getVersions();
 
-        unset($data['gtr_id_track'], $data['gtr_track_type'], $data['gtr_active'], $data['gtr_survey_rounds'], $data['gtr_organizations'],
-                $data['gtr_changed'],
-                $data['gtr_changed_by'], $data['gtr_created'], $data['gtr_created_by']);
+        $data = array(
+            'gems_version'    => $versions->getGemsVersion(),
+            'project'         => $this->project->getName(),
+            'project_env'     => APPLICATION_ENV,
+            'project_url'     => $this->util->getCurrentURI(), 
+            'project_version' => $versions->getProjectVersion(),
+        );
 
-        // Main track data
-        $this->exportTypeHeader('track');
+        // Main version data
+        $this->exportTypeHeader('version', false);
         $this->exportFieldHeaders($data);
         $this->exportFieldData($data);
-
-        if ($orgs) {
-            // Organizations
-            $this->exportTypeHeader('organizations');
-            $this->exportFieldHeaders(array('gor_id_organization' => null, 'gor_name' => null));
-            foreach (explode('|', $orgs) as $orgId) {
-                if ($orgId) {
-                    $org = $this->loader->getOrganization($orgId);
-                    if ($org) {
-                        $this->exportFieldData(array($orgId, $org->getName()));
-                    }
-                }
-            }
-            $batch->addMessage($this->_('Trackdata exported with organizations.'));
-        } else {
-            $batch->addMessage($this->_('Trackdata exported without organizations.'));
-        }
-
         $this->exportFlush();
     }
 }

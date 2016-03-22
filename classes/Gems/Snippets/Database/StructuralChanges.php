@@ -130,7 +130,8 @@ class StructuralChanges extends \MUtil_Snippets_SnippetAbstract
         $div->pInfo($this->_('Download: '))
                 ->a(
                         array('download' => 1, 'gpa_level' => $patchLevel),
-                        sprintf($this->_('patchlevel.%d.sql'), $patchLevel)
+                        sprintf($this->_('patchlevel.%d.sql'), $patchLevel),
+                        array('type' => 'application/download')
                         );
 
         $lastLocation = '';
@@ -235,6 +236,10 @@ class StructuralChanges extends \MUtil_Snippets_SnippetAbstract
 
         header("Content-Type: application/download");
         header(sprintf('Content-Disposition: attachment; filename="patchlevel.%d.sql"', $this->getPatchLevel()));
+        header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
+        header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+        header("Pragma: cache");                          // HTTP/1.0
 
         echo $this->getTextOutput();
 

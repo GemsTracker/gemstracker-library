@@ -81,7 +81,7 @@ class CreateTrackRoundImportTask extends \MUtil_Task_TaskAbstract
             return;
         }
 
-        $fieldCodes  = $import['fieldCodes'];
+        $fieldCodes  = isset($import['fieldCodes'])  ? $import['fieldCodes']  : array();
         $roundOrders = isset($import['roundOrders']) ? $import['roundOrders'] : array();
         $tracker     = $this->loader->getTracker();
         $trackEngine = $tracker->getTrackEngine($import['trackId']);

@@ -32,7 +32,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ExportTrackSnippetAbstract.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Tracker\Snippets;
@@ -56,6 +55,12 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
 
     /**
      *
+     * @var \Gems_AccessLog
+     */
+    protected $accesslog;
+
+    /**
+     *
      * @var \Zend_Cache_Core
      */
     protected $cache;
@@ -71,6 +76,13 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
+
+    /**
+     * The number of seconds to wait before the file download starts
+     *
+     * @var int
+     */
+    protected $downloadWaitSeconds = 1;
 
     /**
      *
@@ -220,18 +232,46 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
             $batch->autoStart   = false;
 
             // Keep the filename after $batch->getMessages(true) cleared the previous
-            $filename = $batch->getSessionVariable('filename');
+            $downloadName  = \MUtil_File::cleanupName($this->trackEngine->getTrackName()) . '.track.txt';
+            $localFilename = $batch->getSessionVariable('filename');
+
             $this->addMessage($batch->getMessages(true));
-            $batch->setSessionVariable('filename', $filename);
+            $batch->setSessionVariable('downloadname', $downloadName);
+            $batch->setSessionVariable('filename', $localFilename);
+
+            // Log Export
+            $data = $this->formData;
+            // Remove unuseful data
+            unset($data['button_spacer'], $data['current_step'], $data[$this->csrfId]);
+            // Add useful data
+            $data['localfile']    = '...' . substr($localFilename, -30);
+            $data['downloadname'] = $downloadName;
+            ksort($data);
+            $this->accesslog->logChange($this->request, null, array_filter($data));
 
             if ($this->nextDisabled) {
                 $element->pInfo($this->_('Export errors occurred.'));
             } else {
-                $p = $element->pInfo($this->_('Export file generated: '));
+                $p = $element->pInfo($this->_('Export file generated.'), ' ');
+                $p->sprintf(
+                        $this->plural(
+                                'Click here if the download does not start automatically in %d second:',
+                                'Click here if the download does not start automatically in %d seconds:',
+                                $this->downloadWaitSeconds
+                                ),
+                        $this->downloadWaitSeconds
+                        );
+                $p->append(' ');
 
-                $name = \MUtil_File::cleanupName($this->trackEngine->getTrackName()) . '.track.txt';
+                $href = new \MUtil_Html_HrefArrayAttribute(array('file' => 'go', $this->stepFieldName => 'download'));
+                $p->a(
+                        $href,
+                        $downloadName,
+                        array('type' => 'application/download')
+                        );
 
-                $p->a(array('file' => 'go', $this->stepFieldName => 'download'), $name, array('type' => 'application/download'));
+                $metaContent = sprintf('%d;url=%s', $this->downloadWaitSeconds, $href->render($this->view));
+                $this->view->headMeta($metaContent, 'refresh', 'http-equiv');
             }
 
         } else {
@@ -420,8 +460,9 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
         $this->view->layout()->disableLayout();
         \Zend_Controller_Action_HelperBroker::getExistingHelper('viewRenderer')->setNoRender(true);
 
-        $filename     = $this->getExportBatch(false)->getSessionVariable('filename');
-        $downloadName = \MUtil_File::cleanupName($this->trackEngine->getTrackName()) . '.track.txt';
+        $batch          = $this->getExportBatch(false);
+        $downloadName  = $batch->getSessionVariable('downloadname');
+        $localFilename = $batch->getSessionVariable('filename');
 
         header("Content-Type: application/download");
         header("Content-Disposition: attachment; filename=\"$downloadName\"");
@@ -429,7 +470,7 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
         header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
         header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
         header("Pragma: cache");                          // HTTP/1.0
-        readfile($filename);
+        readfile($localFilename);
         exit();
     }
 
@@ -454,19 +495,23 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
             $trackId  = $this->trackEngine->getTrackId();
             $this->_batch->setSessionVariable('filename', $filename);
 
+            $this->_batch->addTask('Tracker\\Export\\ProjectVersionExportTask');
+
             $this->_batch->addTask(
                     'Tracker\\Export\\MainTrackExportTask',
                     $this->trackEngine->getTrackId(),
                     $this->formData['orgs']
                     );
 
-            // \MUtil_Echo::track($this->formData['fields']);
-            foreach ($this->formData['fields'] as $fieldId) {
-                $this->_batch->addTask(
-                        'Tracker\\Export\\TrackFieldExportTask',
-                        $trackId,
-                        $fieldId
-                        );
+            if (isset($this->formData['fields']) && is_array($this->formData['fields'])) {
+                // \MUtil_Echo::track($this->formData['fields']);
+                foreach ($this->formData['fields'] as $fieldId) {
+                    $this->_batch->addTask(
+                            'Tracker\\Export\\TrackFieldExportTask',
+                            $trackId,
+                            $fieldId
+                            );
+                }
             }
 
             $model = $this->getModel();
@@ -478,14 +523,15 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
                         );
             }
 
-            foreach ($this->formData['rounds'] as $roundId) {
-                $this->_batch->addTask(
-                        'Tracker\\Export\\TrackRoundExportTask',
-                        $trackId,
-                        $roundId
-                        );
+            if (isset($this->formData['rounds']) && is_array($this->formData['rounds'])) {
+                foreach ($this->formData['rounds'] as $roundId) {
+                    $this->_batch->addTask(
+                            'Tracker\\Export\\TrackRoundExportTask',
+                            $trackId,
+                            $roundId
+                            );
+                }
             }
-
         } else {
             $filename = $this->_batch->getSessionVariable('filename');
         }
