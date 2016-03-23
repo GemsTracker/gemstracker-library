@@ -133,11 +133,15 @@ class RoleEditFormSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
                         \MUtil_Html::create('small', $this->_('this role'), $this->view);
             }
         }
+        // Add this for validator to allow empty list
+        $possibleParents[''] = '';
+
         $bridge->addMultiCheckbox('grl_parents', 'multiOptions', $possibleParents,
                 'disable', $disabled,
                 'escape', false,
                 'required', false,
-                'onchange', 'this.form.submit();');
+                'onchange', 'this.form.submit();'
+                );
 
         $allPrivileges       = $this->usedPrivileges;
         $rolePrivileges      = $this->acl->getRolePrivileges();
@@ -162,6 +166,29 @@ class RoleEditFormSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
                     'disabled', 'disabled');
             $checkbox->setAttrib('escape', false); //Don't use escaping, so the line breaks work
             $checkbox->setValue(array_keys($inheritedPrivileges)); //To check the boxes
+        }
+    }
+
+    /**
+     * Perform some actions on the form, right before it is displayed but already populated
+     *
+     * Here we add the table display to the form.
+     *
+     * @return \Zend_Form
+     */
+    public function beforeDisplay()
+    {
+        parent::beforeDisplay();
+
+        $element = $this->_form->getElement('grl_parents');
+
+        if ($element instanceof \Zend_Form_Element_MultiCheckbox) {
+            $options = $element->getMultiOptions();
+
+            // Remove this as validator with allowed empty list has occured
+            unset($options['']);
+
+            $element->setMultiOptions($options);
         }
     }
 

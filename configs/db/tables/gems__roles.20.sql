@@ -81,7 +81,7 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
         grl_changed, grl_changed_by, grl_created, grl_created_by)
     VALUES
     (805, 'physician', 'physician', '804',
-    '',  
+    '',
     CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
 INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_parents,
@@ -153,5 +153,6 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     ,pr.staff.edit.all,
     ,pr.survey-maintenance.edit,
     ,pr.templates,
-    ,pr.track-maintenance.delete',
+    ,pr.track-maintenance.delete,
+    ,pr.upgrade,pr.upgrade.all,pr.upgrade.one,pr.upgrade.from,pr.upgrade.to',
     CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
