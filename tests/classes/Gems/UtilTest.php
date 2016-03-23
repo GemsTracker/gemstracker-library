@@ -48,15 +48,15 @@ require_once 'ControllerTestAbstract.php';
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_UtilTest extends Gems_Test_TestAbstract
+class Gems_UtilTest extends \Gems_Test_TestAbstract
 {
     /**
      * @var Gems_Util
      */
     protected $object;
-    
+
     /**
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     protected $project;
 
@@ -65,10 +65,10 @@ class Gems_UtilTest extends Gems_Test_TestAbstract
         parent::setUp();
 
         //Now load the object we are going to test
-        $settings = new Zend_Config_Ini(GEMS_ROOT_DIR . '/configs/project.example.ini', APPLICATION_ENV);
+        $settings = new \Zend_Config_Ini(GEMS_ROOT_DIR . '/configs/project.example.ini', APPLICATION_ENV);
         $settings = $settings->toArray();
         $settings['salt'] = 'vadf2646fakjndkjn24656452vqk';
-        $project = new Gems_Project_ProjectSettings($settings);
+        $project = new \Gems_Project_ProjectSettings($settings);
         $this->project = $project;
         $this->loader->addRegistryContainer(array('project' => $project));
         $this->object = $this->loader->getUtil();
@@ -81,7 +81,7 @@ class Gems_UtilTest extends Gems_Test_TestAbstract
     {
         $this->assertEquals($result, $this->object->isAllowedIP($ip, $ranges));
     }
-            
+
     public function testAllowedIPEmptyRange()
     {
         $this->assertTrue($this->object->isAllowedIP('127.0.0.1', ''));
@@ -155,7 +155,7 @@ class Gems_UtilTest extends Gems_Test_TestAbstract
     {
 
     }
-    
+
     public function ipTestDataProvider()
     {
         return array(
@@ -165,7 +165,7 @@ class Gems_UtilTest extends Gems_Test_TestAbstract
             array(true, '127.0.0.1', '127.0.0.1'),
             array(false, '127.0.0.1', '192.168.0.1'),
             array(true, '127.0.0.1', '192.168.0.1|127.0.0.1'),
-            
+
             // New tests
             array(true, '10.0.1.0', '10.0.1.0'),
             array(true, '10.0.2.15', '10.0.1.0-10.0.3.255'),
