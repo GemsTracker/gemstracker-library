@@ -135,7 +135,7 @@ class StructuralChanges extends \MUtil_Snippets_SnippetAbstract
         $div->pInfo($this->_('Download: '))
                 ->a(
                         array('download' => 1, 'gpa_level' => $patchLevel),
-                        sprintf($this->_('patchlevel.%d.sql'), $patchLevel),
+                        sprintf('patchlevel.%d.sql', $patchLevel),
                         array('type' => 'application/download')
                         );
 
