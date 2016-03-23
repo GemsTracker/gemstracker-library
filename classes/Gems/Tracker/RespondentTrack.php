@@ -102,12 +102,6 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var \Gems_User_User
-     */
-    protected $currentUser;
-
-    /**
-     *
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
@@ -1294,7 +1288,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
 
         if ($changes) {
             if (! $userId) {
-                $userId = $this->currentUser->getUserId();
+                $userId = $this->loader->getCurrentUser()->getUserId();
             }
             $this->handleFieldUpdate($userId);
 
