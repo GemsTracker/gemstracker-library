@@ -1286,10 +1286,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
             $this->_fixFieldData();
         }
 
-        if ($changes) {
-            if (! $userId) {
-                $userId = $this->loader->getCurrentUser()->getUserId();
-            }
+        if ($userId && $changes) {
             $this->handleFieldUpdate($userId);
 
             $info = $fieldDef->calculateFieldsInfo($this->_fieldData);
