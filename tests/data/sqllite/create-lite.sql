@@ -150,7 +150,7 @@ CREATE TABLE "gems__chart_config" (
 
   PRIMARY KEY ("gcc_id")
 
-) ;
+)  ;
 CREATE TABLE gems__comm_jobs (
         gcj_id_job bigint not null ,
 
@@ -769,11 +769,11 @@ CREATE TABLE gems__respondent_relations (
         grr_created                 TEXT not null,
         grr_created_by              bigint not null,
 
-        PRIMARY KEY (grr_id),
-        KEY grr_id_respondent (grr_id_respondent,grr_id_staff)
+        PRIMARY KEY (grr_id)
     )
-    utf8 utf8_unicode_ci
+    
     ;
+
 CREATE TABLE gems__roles (
       grl_id_role bigint not null ,
       grl_name varchar(30) not null,

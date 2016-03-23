@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS gems__respondent_relations (
         grr_created_by              bigint unsigned not null,
 
         PRIMARY KEY (grr_id),
-        KEY grr_id_respondent (grr_id_respondent,grr_id_staff)
+        INDEX grr_id_respondent (grr_id_respondent,grr_id_staff)
     )
     ENGINE=InnoDB
     DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci

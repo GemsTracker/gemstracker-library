@@ -98,7 +98,8 @@ abstract class Gems_Test_DbTestAbstract extends \Zend_Test_PHPUnit_DatabaseTestC
                     $sql  = file_get_contents($file);
                     $statements = explode(';', $sql);
                     foreach($statements as $sql) {
-                        if (!strpos(strtoupper($sql), 'INSERT INTO') && !strpos(strtoupper($sql), 'INSERT IGNORE')) {
+                        if (!strpos(strtoupper($sql), 'INSERT INTO') && !strpos(strtoupper($sql), 'INSERT IGNORE')
+                                && !strpos(strtoupper($sql), 'UPDATE ')) {
                             $stmt = $connection->query($sql);
                         }
                     }

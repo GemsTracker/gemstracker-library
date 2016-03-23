@@ -37,11 +37,13 @@
 					<regexp pattern="AUTOINCREMENT" replace="" ignoreCase="true"/>
                     <regexp pattern="(\sUNIQUE)\s+KEY(\s+|,|\()" replace="\1\2" ignoreCase="true"/>
                     <regexp pattern="(\sUNIQUE\s)\s*[^\s(]+\s+\(" replace="\1(" ignoreCase="true"/>
-                    <regexp pattern=",\s*INDEX\s*\([^)]+\)" replace="" ignoreCase="true"/>
+                    <regexp pattern=",\s*(INDEX|KEY)\s*\([^)]+\)" replace="" ignoreCase="true"/>
+                    <regexp pattern=",\s*(INDEX|KEY)\s+\w+\s*\([^)]+\)" replace="" ignoreCase="true"/>
 					<regexp pattern=",\s*[^PRIMARY]\sKEY\s*\([^)]+\)" replace="" multiline="true" ignoreCase="true"/>
 					<regexp pattern="/\*.*\*/" replace="" multiline="true" ignoreCase="true"/>
                     <regexp pattern="(\s)BOOLEAN(\s)" replace="\1TINYINT(1)\2" ignoreCase="true"/>
                     <regexp pattern="ENGINE=[^\s,;]+\s*" replace="" ignoreCase="true"/>
+                    <regexp pattern="DEFAULT\s+CHARSET\s*=\s*[^\s,;]+\s+COLLATE\s*=\s*[^\s,;]+" replace="" ignoreCase="true"/>
                     <regexp pattern="DEFAULT\s+CHARACTER\s+SET\s*" replace="CHARACTER SET " ignoreCase="true"/>
                     <regexp pattern="DEFAULT\s+CHARSET\s*" replace="CHARACTER SET " ignoreCase="true"/>
                     <regexp pattern="CHARACTER\s+SET\s*[^\s,;]+\s*" replace="" ignoreCase="true"/>

@@ -867,11 +867,12 @@ CREATE TABLE IF NOT EXISTS gems__respondent_relations (
         grr_created_by              bigint unsigned not null,
 
         PRIMARY KEY (grr_id),
-        KEY grr_id_respondent (grr_id_respondent,grr_id_staff)
+        INDEX grr_id_respondent (grr_id_respondent,grr_id_staff)
     )
     ENGINE=InnoDB
     DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci
     AUTO_INCREMENT = 10001;
+
 CREATE TABLE if not exists gems__roles (
       grl_id_role bigint unsigned not null auto_increment,
       grl_name varchar(30) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
