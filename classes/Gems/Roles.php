@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -30,7 +31,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -104,9 +104,10 @@ class Gems_Roles
     public function __construct($cache = null)
     {
         self::$_instanceOfSelf = $this;
+
         $this->setCache($cache);
-        if (!is_null($cache))
-            $this->load();
+
+        $this->load();
     }
 
     /**
@@ -114,10 +115,9 @@ class Gems_Roles
      */
     private function _deleteCache()
     {
-        $cache = $this->_cache;
         if ($this->_cache instanceof \Zend_Cache_Core) {
-            $cache->remove($this->_cacheid);
-            $cache->remove($this->_cacheid . 'trans');
+            $this->_cache->remove($this->_cacheid);
+            $this->_cache->remove($this->_cacheid . 'trans');
         }
     }
 
@@ -153,7 +153,9 @@ class Gems_Roles
         $this->_acl->addRole(new \Zend_Acl_Role($role['grl_name']), $parents);
 
         $privileges = array_filter(array_map('trim', explode(",", $role['grl_privileges'])));
-        $this->_acl->addPrivilege($role['grl_name'], $privileges);
+        if ($privileges) {
+            $this->_acl->addPrivilege($role['grl_name'], $privileges);
+        }
 
         $roleList[$roleName]['marked'] = true;
     }
@@ -324,7 +326,7 @@ class Gems_Roles
     {
         if ($cache instanceof \Zend_Cache_Core) {
             $this->_cache = $cache;
-        } elseif ($cache instanceof GemsEscort) {
+        } elseif ($cache instanceof \GemsEscort) {
             $this->_cache = $cache->cache;
         }
     }

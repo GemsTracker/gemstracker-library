@@ -119,6 +119,11 @@ class StructuralChanges extends \MUtil_Snippets_SnippetAbstract
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
+        if (! $this->patchLevels) {
+            $this->addMessage($this->_('This new project has no structural changes to show.'));
+            return;
+        }
+
         $patchLevel = $this->getPatchLevel();
 
         $seq = $this->getHtmlSequence();

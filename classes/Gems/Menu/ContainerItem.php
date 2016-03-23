@@ -32,7 +32,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -141,7 +140,7 @@ class Gems_Menu_ContainerItem extends \Gems_Menu_SubMenuItem
      * @param string $userRole
      * @return \Gems_Menu_MenuAbstract (continuation pattern)
      */
-    protected function applyAcl(\Zend_Acl $acl, $userRole)
+    protected function applyAcl(\MUtil_Acl $acl, $userRole)
     {
         parent::applyAcl($acl, $userRole);
 

@@ -32,7 +32,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -535,7 +534,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
             'title'  => $this->_('Export the current data set'),
         );
 
-        return $this->addActionButton($this->_('Export'), $this->get('privilege'), 'export', $options);
+        return $this->addActionButton($this->_('Export'), $this->get('privilege') . '.export', 'export', $options);
     }
 
     /**

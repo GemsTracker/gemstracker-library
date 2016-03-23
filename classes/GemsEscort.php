@@ -36,10 +36,6 @@
  * @version    $Id$
  */
 
-// $autoloader->registerNamespace has not yet run!!
-include_once('MUtil/Application/Escort.php');
-include_once('MUtil/Loader/CachedLoader.php');
-
 /**
  * Project Application Core code
  *
@@ -982,11 +978,11 @@ class GemsEscort extends \MUtil_Application_Escort
                 $p->append(sprintf($this->_('You are logged in as %s'), $this->currentUser->getFullName()));
                 $item = $this->menu->findController('index', 'logoff');
                 $p->a($item->toHRefAttribute(), $this->_('Logoff'), array('class' => 'logout'));
+                $item->set('visible', false);
             } else {
                 $item = $this->menu->findController('index', 'login');
                 $p->a($item->toHRefAttribute(), $this->_('You are not logged in'), array('class' => 'logout'));
             }
-            $item->set('visible', false);
 
             return $div;
         }

@@ -1036,7 +1036,7 @@ ALTER TABLE gems__tokens ADD
 -- PATCH: New rights for respondent comm log
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.respondent-commlog')
     WHERE grl_privileges LIKE '%pr.respondent%'
-        AND grl_name != 'guest'
+        AND grl_name = 'staff'
         AND grl_privileges NOT LIKE '%,pr.respondent-commlog%';
 
 -- PATCH: New right for deactivation and reactivation
@@ -1132,6 +1132,28 @@ INSERT ignore INTO gems__log_setup (gls_name, gls_when_no_user, gls_on_action, g
 		('track-maintenance.export',            1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
 		('track-maintenance.import',            1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
--- PATCH: Log answered tokens
+-- PATCH: Mail monitor staff patch
 ALTER TABLE gems__staff
 	ADD gsf_mail_watcher boolean not null default 0 AFTER gsf_logout_on_survey;
+
+-- PATCH: Updates of roles to 2016
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.respondent.select-on-track')
+    WHERE grl_name = 'staff' AND grl_privileges NOT LIKE '%,pr.respondent.select-on-track%';
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.export,pr.export-html,')
+    WHERE grl_name IN ('admin', 'researcher') AND grl_privileges NOT LIKE '%,pr.export%';
+UPDATE gems__roles SET grl_privileges = 'pr.log,pr.log.files,pr.log.files.download,pr.log.maintenance,
+    ,pr.log.maintenance.edit,pr.mail.log,
+    ,pr.option.edit,pr.option.password,
+    ,pr.respondent.show-deleted,pr.respondent.who,pr.respondent-commlog,pr.respondent-log,
+    ,pr.staff,pr.staff.see.all,pr.staff-log'
+    WHERE grl_name = 'security' AND (grl_privileges = '' OR grl_privileges IS NULL);
+UPDATE gems__roles SET grl_parents = null,
+        grl_privileges = 'pr.contact.bugs,pr.contact.gems,pr.contact.support,
+    ,pr.cron.job,
+    ,pr.export,
+    ,pr.islogin,
+    ,pr.plan.consent,pr.plan.consent.excel,
+	,pr.project-information.changelog,pr.contact,pr.export,pr.islogin,
+    ,pr.option.password,pr.option.edit,pr.organization-switch,
+	,pr.plan,pr.plan.compliance,pr.plan.consent,pr.plan.overview,pr.plan.respondent,pr.plan.summary,pr.plan.token'
+    WHERE grl_name = 'researcher' and grl_parents = '801' and grl_changed = grl_created AND grl_changed_by = 1;

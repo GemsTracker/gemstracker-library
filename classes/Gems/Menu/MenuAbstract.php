@@ -32,7 +32,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -833,7 +832,7 @@ abstract class Gems_Menu_MenuAbstract
         $showPage->addDeleteAction();
         $showPage->addButtonOnly($this->_('Copy'),  'pr.track-maintenance.copy', 'track-maintenance', 'copy')
                 ->setModelParameters(1);
-        
+
         $showPage->addAction($this->_('Export'), 'pr.track-maintenance.export', 'export')
                  ->addParameters(\MUtil_Model::REQUEST_ID);
         $showPage->addAction($this->_('Merge Import'), 'pr.track-maintenance.merge', 'merge')
@@ -889,11 +888,9 @@ abstract class Gems_Menu_MenuAbstract
      * @param string $userRole
      * @return \Gems_Menu_MenuAbstract (continuation pattern)
      */
-    protected function applyAcl(\Zend_Acl $acl, $userRole)
+    protected function applyAcl(\MUtil_Acl $acl, $userRole)
     {
         if ($this->_subItems) {
-            $anyVisible = false;
-
             foreach ($this->_subItems as $item) {
 
                 $allowed = $item->get('allowed', true);
@@ -904,7 +901,6 @@ abstract class Gems_Menu_MenuAbstract
 
                 if ($allowed) {
                     $item->applyAcl($acl, $userRole);
-                    $anyVisible = true;
                 } else {
                     // As an item can be invisible but allowed,
                     // but not disallowed but visible we need to
@@ -915,13 +911,6 @@ abstract class Gems_Menu_MenuAbstract
                     $item->setForChildren('visible', false);
                 }
             }
-
-            /*/ Do not show a 'container' menu item (that depends for controller
-            // on it's children) when no sub item is allowed.
-            if ((! $anyVisible) && $this->notSet('controller', 'action')) {
-                $this->set('allowed', false);
-                $this->set('visible', false);
-            } // */
         }
 
         return $this;

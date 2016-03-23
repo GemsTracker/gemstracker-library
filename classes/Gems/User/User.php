@@ -587,9 +587,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      */
     public function getAllowedStaffGroups()
     {
-        if (! $this->_hasVar('__allowedStaffGroups')) {
-            $this->refreshAllowedStaffGroups();
-        }
+        $this->refreshAllowedStaffGroups();
 
         return $this->_getVar('__allowedStaffGroups');
     }
