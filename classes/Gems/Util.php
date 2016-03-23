@@ -32,7 +32,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -241,7 +240,7 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
 
     public function getImageUri($imageFile)
     {
-        return $this->basepath->getBasePath() . '/' . $this->project->imagedir . '/' . $imageFile;
+        return $this->basepath->getBasePath() . '/' . $this->project->getImageDir() . '/' . $imageFile;
     }
 
     /**

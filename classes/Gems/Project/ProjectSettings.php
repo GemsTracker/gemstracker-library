@@ -32,7 +32,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -542,6 +541,20 @@ class Gems_Project_ProjectSettings extends \ArrayObject
     public function getFrom()
     {
         return $this->getSiteEmail();
+    }
+
+    /**
+     * Returns the from address
+     *
+     * @return string E-Mail address
+     */
+    public function getImageDir()
+    {
+        if (isset($this['imagedir']) && $this['imagedir']) {
+            return $this['imagedir'];
+        }
+
+        return 'gems/images';
     }
 
     /**

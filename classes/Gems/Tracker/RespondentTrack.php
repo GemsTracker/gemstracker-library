@@ -32,7 +32,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: RespondentTrack.php 2836 2015-12-31 16:15:40Z matijsdejong $
  */
 
 /**
@@ -100,6 +99,12 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
      * @var array of \Gems_Tracker_Token
      */
     protected $_tokens;
+
+    /**
+     *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
 
     /**
      *
@@ -1260,10 +1265,10 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     {
         $fieldDef  = $this->getTrackEngine()->getFieldsDefinition();
         $fieldMap  = $fieldDef->getFieldCodes();
-        $fieldData = $this->getFieldData(); // To preserve old values
+        $fieldsRaw = $this->getFieldData(); // To preserve old values
 
         // Get only the real fieldnames, strip the extra code entries
-        $fieldData = array_intersect_key($fieldData, $fieldMap);
+        $fieldData = array_intersect_key($fieldsRaw, $fieldMap);
 
         // Use values on code fields if oiginal does not exist
         foreach ($data as $key => $value)
@@ -1287,7 +1292,10 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
             $this->_fixFieldData();
         }
 
-        if ($userId && $changes) {
+        if ($changes) {
+            if (! $userId) {
+                $userId = $this->currentUser->getUserId();
+            }
             $this->handleFieldUpdate($userId);
 
             $info = $fieldDef->calculateFieldsInfo($this->_fieldData);
