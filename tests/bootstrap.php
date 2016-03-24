@@ -66,13 +66,30 @@ set_include_path(
 // Set up autoload.
 if (file_exists(dirname(__FILE__) . '/../vendor/autoload.php')) {
     require_once dirname(__FILE__) . '/../vendor/autoload.php';
-} elseif (dirname(__FILE__) . '/../../../autoload.php') {
-    require_once dirname(__FILE__) . '/../../../autoload.php';
 } else {
-     require_once "Zend/Loader/Autoloader.php";
+    // Try to set the correct include path (if needed)
+    $paths = array(
+        'magnafacta/mutil/src',
+        'magnafacta/mutil/tests',
+        'zendframework/zendframework1/library',
+        'zendframework/zf1-extras/library',
+    );
+    $start = realpath(dirname(__FILE__) . '/../../../') . '/';
+    foreach ($paths as $path) {
+        $dir = realpath($start . $path);
+
+        if (file_exists($dir) && (false===strpos(get_include_path(), $dir))) {
+            set_include_path($dir . PATH_SEPARATOR . get_include_path());
+        }
+    }
+    require_once "Zend/Loader/Autoloader.php";
+
+    $autoloader = \Zend_Loader_Autoloader::getInstance();
+    $autoloader->registerNamespace('MUtil_');
+    $autoloader->registerNamespace('Gems_');
 }
 
-Zend_Session::start();
-Zend_Session::$_unitTestEnabled = true;
+\Zend_Session::start();
+\Zend_Session::$_unitTestEnabled = true;
 
-print_r(get_include_path());
+// print_r(explode(PATH_SEPARATOR, get_include_path()));
