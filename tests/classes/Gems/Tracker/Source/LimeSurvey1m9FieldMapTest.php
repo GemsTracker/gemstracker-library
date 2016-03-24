@@ -65,8 +65,8 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMapTest extends \Gems_Test_DbTestAbs
 	}
 
 	/**
-     * @param string $originalString String to be sluggified
-     * @param string $expectedResult What we expect our slug result to be
+     * @param string $fieldName the name of the field in the model
+     * @param string $expectedStorageFormat the Expected storageFormat value
      *
      * @dataProvider providerTestSurveyModelDateStorageFormat
      */
