@@ -1,0 +1,192 @@
+groups:
+  -
+    gid: 1
+    sid: 1
+    group_name: "test"
+    group_order: "0"
+    description: "" 
+    language: "en"
+    randomization_group: ""
+    grelevance: ""
+
+questions:
+  -
+    qid: 1
+    parent_qid: 0
+    sid: 1
+    gid: 1
+    type: "D"
+    title: "date01"
+    question: "Limesurvey 2.0 default date"
+    preg: ""
+    help: ""
+    other: "N"
+    mandatory: "N"
+    question_order: 1
+    language: "en"
+    scale_id: 0
+    same_default: 0
+    relevance: 1
+  -
+    qid: 2
+    parent_qid: 0
+    sid: 1
+    gid: 1
+    type: "D"
+    title: "date02"
+    question: "Limesurvey legacy date"
+    preg: ""
+    help: ""
+    other: "N"
+    mandatory: "N"
+    question_order: 2
+    language: "en"
+    scale_id: 0
+    same_default: 0
+    relevance: 1
+  -
+    qid: 3
+    parent_qid: 0
+    sid: 1
+    gid: 1
+    type: "D"
+    title: "date03"
+    question: "Limesurvey 2.0 date with no time in Date Format"
+    preg: ""
+    help: ""
+    other: "N"
+    mandatory: "N"
+    question_order: 3
+    language: "en"
+    scale_id: 0
+    same_default: 0
+    relevance: 1
+  -
+    qid: 4
+    parent_qid: 0
+    sid: 1
+    gid: 1
+    type: "D"
+    title: "date04"
+    question: "Limesurvey 2.0 date with only time in Date Format"
+    preg: ""
+    help: ""
+    other: "N"
+    mandatory: "N"
+    question_order: 4
+    language: "en"
+    scale_id: 0
+    same_default: 0
+    relevance: 1
+
+question_attributes:
+  -
+    qaid: 1
+    qid: 2
+    attribute: "dropdown_dates"
+    value: 0
+    language:
+  -
+    qaid: 1
+    qid: 2
+    attribute: "date_max"
+    value: ""
+    language:
+  -
+    qaid: 1
+    qid: 2
+    attribute: "date_min"
+    value: ""
+    language:
+  -
+    qaid: 1
+    qid: 2
+    attribute: "hidden"
+    value: 0
+    language:
+  -
+    qaid: 1
+    qid: 2
+    attribute: "hide_tip"
+    value: 0
+    language:
+  -
+    qaid: 1
+    qid: 2
+    attribute: "page_break"
+    value: 0
+    language:
+  -
+    qaid: 1
+    qid: 2
+    attribute: "random_group"
+    value: ""
+    language:
+  -
+    qaid: 1
+    qid: 2
+    attribute: "reverse"
+    value: 0
+    language:
+  -
+    qaid: 1
+    qid: 3
+    attribute: "date_format"
+    value: "dd-mm-yyyy"
+    language:
+  -
+    qaid: 1
+    qid: 4
+    attribute: "date_format"
+    value: "HH:MM"
+    language:
+
+surveys:
+  -
+    sid: 1
+    owner_id: 1
+    admin: "Administrator"
+    active: "N"
+    adminemail: "your-email@example.net"
+    anonymized: "N"
+    faxto: ""
+    format: "G"
+    savetimings: "N"
+    template: "default"
+    language: "en"
+    additional_languages: ""
+    datestamp: "N"
+    usecookie: "N"
+    allowregister: "N"
+    allowsave: "Y"
+    autonumber_start: 0
+    autoredirect: "N"
+    allowprev: "N"
+    printanswers: "N"
+    ipaddr: "N"
+    refurl: "N"
+    datecreated: "2016-03-23"
+    publicstatistics: "N"
+    publicgraphs: "N"
+    listpublic: "N"
+    htmlemail: "N"
+    sendconfirmation: "Y"
+    tokenanswerspersistence: "N"
+    assessments: "N"
+    usecaptcha: "N"
+    usetokens: "N"
+    bounce_email: "your-email@example.net"
+    emailresponseto: ""
+    emailnotificationto: ""
+    tokenlength: 15
+    showxquestions: "Y"
+    showgroupinfo: "B"
+    shownoanswer: "Y"
+    showqnumcode: "X"
+    bounceprocessing: "N"
+    showwelcome: "Y"
+    showprogress: "Y"
+    questionindex: 0
+    navigationdelay: 0
+    nokeyboard: "N"
+    alloweditaftercompletion: "N"
