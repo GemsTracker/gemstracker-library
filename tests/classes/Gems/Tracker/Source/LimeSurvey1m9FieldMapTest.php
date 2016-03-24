@@ -78,10 +78,10 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMapTest extends \Gems_Test_DbTestAbs
 	public function providerTestSurveyModelDateStorageFormat()
 	{
 		return array(
-			array('1X1X1', 'yyyy-MM-dd HH:mm:ss'), 	// Limesurvey 2.0 default date
-			array('1X1X2', 'yyyy-MM-dd'),			// Limesurvey legacy date
-			array('1X1X3', 'yyyy-MM-dd HH:mm:ss'),	// Limesurvey 2.0 date with no time in Date Format
-			array('1X1X4', 'yyyy-MM-dd HH:mm:ss'),	// Limesurvey 2.0 date with only time in Date Format
+			array('date01', 'yyyy-MM-dd HH:mm:ss'), 	// Limesurvey 2.0 default date
+			array('date02', 'yyyy-MM-dd'),			// Limesurvey legacy date
+			array('date03', 'yyyy-MM-dd HH:mm:ss'),	// Limesurvey 2.0 date with no time in Date Format
+			array('date04', 'yyyy-MM-dd HH:mm:ss'),	// Limesurvey 2.0 date with only time in Date Format
 		);
 	}
 
