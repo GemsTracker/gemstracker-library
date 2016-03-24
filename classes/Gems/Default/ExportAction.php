@@ -2,6 +2,8 @@
 
 class Gems_Default_ExportAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
+    protected $autofilterParameters = array('extraSort' => 'gto_start_time ASC');
+
     public $request;
 
     /**
@@ -22,9 +24,6 @@ class Gems_Default_ExportAction extends \Gems_Controller_ModelSnippetActionAbstr
             // Surveys have been selected       
             $exportModelSource = $this->loader->getExportModelSource($this->exportModelSource);         
             $model = $exportModelSource->getModel($this->_searchFilter, $this->data);
-            //\MUtil_Echo::track($model->loadFirst($filter));
-            
-            $model->set('gto_id_token', 'noExport', true);
         } else {
             $basicArray = array('gto_id_survey', 'gto_id_track', 'gto_round_description', 'gto_id_organization', 'gto_start_date', 'gto_end_date', 'gto_valid_from', 'gto_valid_until');
             $model = new \Gems_Model_PlaceholderModel($basicArray);
@@ -58,8 +57,9 @@ class Gems_Default_ExportAction extends \Gems_Controller_ModelSnippetActionAbstr
         $this->_searchFilter = parent::getSearchFilter($useRequest);
 
         $this->_searchFilter[] = 'gto_start_time IS NOT NULL';
-        $this->_searchFilter[] = "gr2o_reception_code IN ('OK', 'manual', 'dead', 'refusing', 'losttofollowup', 'movedoutside', 'moved')";
-        $this->_searchFilter[] = "gto_reception_code IN ('OK', 'manual', 'dead', 'refusing', 'losttofollowup', 'movedoutside')";
+        $this->_searchFilter['gco_code'] = 'consent given';
+        $this->_searchFilter['gr2o_reception_code'] = 'OK';
+        $this->_searchFilter['grc_success'] = 1;
 
         return $this->_searchFilter;
     }

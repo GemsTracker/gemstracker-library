@@ -141,6 +141,9 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
             if (!$model->checkJoinExists('gems__tracks.gtr_id_track', 'gems__tokens.gto_id_track')) {
                 $model->addTable('gems__tracks', array('gems__tracks.gtr_id_track' => 'gems__tokens.gto_id_track'), 'gtr');
             }
+            if (!$model->checkJoinExists('gems__consents.gco_description', 'gems__respondent2org.gr2o_consent')) {
+                $model->addTable('gems__consents', array('gems__consents.gco_description' => 'gems__respondent2org.gr2o_consent'), 'gco');
+            }
 
             $model->set('respondentid',        'label', $this->_('Respondent ID'), 'type', \MUtil_Model::TYPE_NUMERIC);
             $model->set('organizationid',      'label', $this->_('Organization'), 'type', \MUtil_Model::TYPE_NUMERIC,

@@ -8,11 +8,11 @@ class Gems_Default_ExportSurveysAction extends \MUtil_Controller_Action
 
     protected $exportModelSource = 'AnswerExportModelSource';
 
+    protected $exportDefaultSorts = array('gto_start_time');
+
     protected function exportBatch()
     {
         $filter = $this->getFilter($this->data);
-
-        \MUtil_Echo::track($this->data);
 
         if ($this->data) {
 
@@ -58,8 +58,6 @@ class Gems_Default_ExportSurveysAction extends \MUtil_Controller_Action
                             );
                 }
             }
-        } else {
-            \MUtil_Echo::backtrace();
         }
     }
 
@@ -67,9 +65,8 @@ class Gems_Default_ExportSurveysAction extends \MUtil_Controller_Action
     {
         $this->view->layout()->disableLayout();
         $this->_helper->viewRenderer->setNoRender(true);
-        $batch = $this->loader->getTaskRunnerBatch('batch_export_data');
+        $batch = $this->loader->getTaskRunnerBatch('export_surveys');
         $file = $batch->getSessionVariable('file');
-        print_r($file);
         foreach($file['headers'] as $header) {
             header($header);
         }
@@ -101,6 +98,12 @@ class Gems_Default_ExportSurveysAction extends \MUtil_Controller_Action
                 $filter[] = $where;
             }
         }
+
+        $filter[] = 'gto_start_time IS NOT NULL';
+        $filter['gco_code'] = 'consent given';
+        $filter['gr2o_reception_code'] = 'OK';
+        $filter['grc_success'] = 1;
+
         return $filter;
     }
 
@@ -143,6 +146,8 @@ class Gems_Default_ExportSurveysAction extends \MUtil_Controller_Action
             $model->remove($colName, 'label');
         }
         $model->applyParameters($filter, true);
+
+        $model->addSort($this->exportDefaultSorts);
 
         return $model;
     }
