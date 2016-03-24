@@ -26,6 +26,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-class BatchExportController extends Gems_Default_BatchExportAction 
+class ExportSurveysController extends Gems_Default_ExportSurveysAction 
 {
 }

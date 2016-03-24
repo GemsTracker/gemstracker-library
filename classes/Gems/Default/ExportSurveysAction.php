@@ -1,10 +1,10 @@
 <?php
 
-class Gems_Default_BatchExportAction extends \MUtil_Controller_Action
+class Gems_Default_ExportSurveysAction extends \MUtil_Controller_Action
 {
     public $db;
 
-    protected $exportFormSnippets = 'Export\\BatchExportFormSnippet';
+    protected $exportFormSnippets = 'Export\\ExportSurveysFormSnippet';
 
     protected $exportModelSource = 'AnswerExportModelSource';
 
@@ -16,7 +16,7 @@ class Gems_Default_BatchExportAction extends \MUtil_Controller_Action
 
         if ($this->data) {
 
-            $batch = $this->loader->getTaskRunnerBatch('batch_export_data');
+            $batch = $this->loader->getTaskRunnerBatch('export_surveys');
 
             $models = $this->getExportModels($this->data['gto_id_survey'], $filter);
 
@@ -289,7 +289,7 @@ class Gems_Default_BatchExportAction extends \MUtil_Controller_Action
 
         if (!$step || $this->data && $step == 'form') {
             $this->addSnippet($this->exportFormSnippets);
-            $batch = $this->loader->getTaskRunnerBatch('batch_export_data');
+            $batch = $this->loader->getTaskRunnerBatch('export_surveys');
             $batch->reset();
         } elseif ($step == 'batch') {
             $this->exportBatch();

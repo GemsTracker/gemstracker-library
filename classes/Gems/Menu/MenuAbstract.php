@@ -424,7 +424,7 @@ abstract class Gems_Menu_MenuAbstract
         $batchExport = $export->addPage(
                 $this->_('Multiple surveys answers'),
                 'pr.export',
-                'batch-export',
+                'export-surveys',
                 'index'
                 );
 

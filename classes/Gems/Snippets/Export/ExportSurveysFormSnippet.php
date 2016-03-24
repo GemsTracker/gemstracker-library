@@ -4,7 +4,7 @@ namespace Gems\Snippets\Export;
 
 use MUtil\Snippets\SnippetAbstract;
 
-class BatchExportFormSnippet extends \MUtil_Snippets_SnippetAbstract
+class ExportSurveysFormSnippet extends \MUtil_Snippets_SnippetAbstract
 {
     /**
      * Optional string format for date
@@ -153,10 +153,10 @@ class BatchExportFormSnippet extends \MUtil_Snippets_SnippetAbstract
             $this->form->populate($post);
         }
 
-        $container = \MUtil_Html::div(array('id' => 'batch-export-form'));
+        $container = \MUtil_Html::div(array('id' => 'export-surveys-form'));
         $container->append($this->form);
         $this->form->setAttrib('id', 'autosubmit');
-        $this->form->setAutoSubmit(\MUtil_Html::attrib('href', array('action' => 'index', 'RouteReset' => true)), 'batch-export-form', true);
+        $this->form->setAutoSubmit(\MUtil_Html::attrib('href', array('action' => 'index', 'RouteReset' => true)), 'export-surveys-form', true);
 
         return $container;
     }
