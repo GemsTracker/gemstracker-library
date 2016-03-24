@@ -39,7 +39,7 @@ CREATE TABLE question_attributes (
 	value text,
 	language varchar(20) DEFAULT NULL,
 
-	PRIMARY KEY (qaid)
+	PRIMARY KEY (qaid, language)
 );
 
 CREATE TABLE surveys (
