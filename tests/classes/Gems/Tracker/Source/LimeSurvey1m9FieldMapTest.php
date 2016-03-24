@@ -33,15 +33,6 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMapTest extends \Gems_Test_DbTestAbs
 		$lsDb = $this->db;
 		$translate = $this->getTranslate();
 		$tablePrefix = '';
-        
-        // Mock maken voor lsDb
-        $outputArray = array(array());
-        $lsDb = $this->getMockBuilder('Zend_Db_Adapter_Pdo_Sqlite')
-                      ->disableOriginalConstructor()
-                      ->getMock();
-        $lsDb->expects($this->any())
-              ->method('fetchAll')
-              ->will($this->returnValue($outputArray));
 
 		$this->fieldmap = new \Gems_Tracker_Source_LimeSurvey1m9FieldMap($sourceSurveyId, $language, $lsDb, $translate, $tablePrefix);
     }

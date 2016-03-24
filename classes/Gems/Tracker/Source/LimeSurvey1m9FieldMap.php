@@ -220,7 +220,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             $qTable = $this->_getQuestionsTableName();
 
             $sql    = "
-                SELECT CONCAT(q.sid, 'X', q.gid, 'X', q.qid) AS sgq, q.type, q.qid, q.gid, q.question, q.title, q.help,
+                SELECT q.sid, q.type, q.qid, q.gid, q.question, q.title, q.help,
                     q.other, q.question_order,
                     g.group_order, g.group_name, g.description,
                     sq.title AS sq_title, sq.question_order, sq.question AS sq_question, sq.scale_id
@@ -237,6 +237,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             $map = array();
             for ($i = 0; $i < $rowscount; $i++) {
                 $row = $rows[$i];
+                $row['sgq'] = $row['sid'] . 'X' . $row['gid'] . 'X' . $row['qid'];
 
                 $other = ($row['other'] == 'Y');
 
