@@ -135,9 +135,7 @@ class Gems_Tracker_RespondentTrackTest extends Gems_Test_DbTestAbstract
      */
     public function testSetFields()
     {
-        $trackData = array('gr2t_id_respondent_track' => 1, 'gr2t_id_track' => 1);
-        $respondentTrack = new Gems_Tracker_RespondentTrack($trackData);
-        $respondentTrack->answerRegistryRequest('tracker', $this->tracker);
+        $respondentTrack = $this->loader->getTracker()->getRespondentTrack(1);
 
         $date = new MUtil_Date('2010-11-09', 'yyyy-MM-dd');
         $expected = array(
@@ -146,7 +144,7 @@ class Gems_Tracker_RespondentTrackTest extends Gems_Test_DbTestAbstract
             'f__2' => $date,
             'datecode' => $date
             );
-        $actual = $respondentTrack->setFieldData(array('code' => 'newvalue', 'datecode' => $date), 1);
+        $actual = $respondentTrack->setFieldData(array('code' => 'newvalue', 'datecode' => $date));
 
         $this->assertArrayWithDateMatch($expected, $actual, '', 1, 0);
     }
@@ -156,9 +154,8 @@ class Gems_Tracker_RespondentTrackTest extends Gems_Test_DbTestAbstract
      */
     public function testSetDateFields()
     {
-        $trackData = array('gr2t_id_respondent_track' => 1, 'gr2t_id_track' => 1);
-        $respondentTrack = new Gems_Tracker_RespondentTrack($trackData);
-        $respondentTrack->answerRegistryRequest('tracker', $this->tracker);
+        $respondentTrack = $this->loader->getTracker()->getRespondentTrack(1);
+        
         $expected = $respondentTrack->getFieldData();
         $date = new MUtil_Date('2010-11-09', 'yyyy-MM-dd');
         $expected = array(
@@ -167,7 +164,7 @@ class Gems_Tracker_RespondentTrackTest extends Gems_Test_DbTestAbstract
             'f__2' => $date,
             'datecode' => $date
             );
-        $actual = $respondentTrack->setFieldData(array('code' => 'newvalue', 'datecode' => $date->toString('yyyy-MM-dd')), 1);
+        $actual = $respondentTrack->setFieldData(array('code' => 'newvalue', 'datecode' => $date->toString('yyyy-MM-dd')));
 
         $this->assertArrayWithDateMatch($expected, $actual, '', 1, 0);
     }
@@ -177,12 +174,11 @@ class Gems_Tracker_RespondentTrackTest extends Gems_Test_DbTestAbstract
      */
     public function testSetFieldsPartial()
     {
-        $trackData = array('gr2t_id_respondent_track' => 1, 'gr2t_id_track' => 1);
-        $respondentTrack = new Gems_Tracker_RespondentTrack($trackData);
-        $respondentTrack->answerRegistryRequest('tracker', $this->tracker);
+        $respondentTrack = $this->loader->getTracker()->getRespondentTrack(1);
+        
         $expected = $respondentTrack->getFieldData();
         $expected['f__1'] = $expected['code'] = 'newvalue';
-        $actual = $respondentTrack->setFieldData(array('code' => 'newvalue'), 1);
+        $actual = $respondentTrack->setFieldData(array('code' => 'newvalue'));
 
         $this->assertArrayWithDateMatch($expected, $actual, '', 1, 0);
     }
