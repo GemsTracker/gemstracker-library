@@ -89,6 +89,17 @@ class ExportSurveysFormSnippet extends \MUtil_Snippets_SnippetAbstract
             'gto_id_survey',
             array('label' => $this->_('Survey'), 'multiOptions' => $surveys)
             );
+        $elements['gto_id_survey']->setRequired(true);
+
+        if (\MUtil_Bootstrap::enabled()) {
+            $element = new \MUtil_Bootstrap_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=gto_id_survey]'));
+        } else {
+            $element = new \Gems_JQuery_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=gto_id_survey]'));
+        }
+
+        $element->setLabel($this->_('Toggle'));
+        $elements[] = $element;
+
 
         if (count($organizations) > 1) {
             $elements['gto_id_organization'] = $this->form->createElement('multiCheckbox',
