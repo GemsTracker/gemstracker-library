@@ -158,15 +158,19 @@ class Gems_Util_TrackData extends UtilAbstract
 
         return $this->_getSelectPairsCached(__FUNCTION__, $sql, array(), 'tracks');
     }
-
+    
     /**
      * Retrieve an array of key/value pairs for gsu_id_survey and gsu_survey_name
-     *
-     * @return array
+     * @param  boolean $active Only show active surveys Default: False
+     * @return array of survey Id and survey name pairs
      */
-    public function getAllSurveys()
+    public function getAllSurveys($active=false)
     {
-        $sql = "SELECT gsu_id_survey, gsu_survey_name FROM gems__surveys ORDER BY gsu_survey_name";
+        if ($active) {
+            $sql = "SELECT gsu_id_survey, gsu_survey_name FROM gems__surveys WHERE gsu_active = 1 ORDER BY gsu_survey_name";
+        } else {
+            $sql = "SELECT gsu_id_survey, gsu_survey_name FROM gems__surveys ORDER BY gsu_survey_name";
+        }
 
         return $this->_getSelectPairsCached(__FUNCTION__, $sql, array(), 'surveys');
     }

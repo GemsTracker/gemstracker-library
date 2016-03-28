@@ -127,7 +127,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
                         'defaultValues' => $defaultRounds,
                     ));
 
-        $model->set('gcj_id_survey',       'label', $this->_('Survey'), 'multiOptions', $empty + $dbTracks->getAllSurveys());
+        $model->set('gcj_id_survey',       'label', $this->_('Survey'), 'multiOptions', $empty + $dbTracks->getAllSurveys(true));
 
         if ($detailed) {
             $model->set('gcj_filter_days_between', 'label', $this->_('Days between reminders'),
