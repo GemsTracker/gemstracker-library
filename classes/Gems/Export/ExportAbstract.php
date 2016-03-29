@@ -195,8 +195,6 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
 
         $this->files[$filename.$this->fileExtension] = $tempFilename . $this->fileExtension;
 
-        //\MUtil_Echo::track($this->files);
-
         $file = fopen($tempFilename . $this->fileExtension, 'w');
 
         fclose($file);
@@ -445,7 +443,14 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
             }
         }
 
-        return $this->model = $model;
+        $this->model = $model;
+
+        if ($this->model->getMeta('exportPreprocess') === null) {
+            $this->preprocessModel();
+            $this->model->setMeta('exportPreprocess', true);
+        }
+
+        return $this->model;
     }
 
     /**

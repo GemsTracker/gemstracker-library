@@ -387,7 +387,7 @@ class ExcelExport extends ExportAbstract
 
         $columnHeaders = array();
         foreach($labeledCols as $columnName) {
-            $columnHeaders[$colName] = strip_tags($this->model->get($columnName, 'label'));
+            $columnHeaders[$columnName] = strip_tags($this->model->get($columnName, 'label'));
         }
 
         return $columnHeaders;
