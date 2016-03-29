@@ -310,7 +310,16 @@ class Gems_Default_ExportSurveysAction extends \MUtil_Controller_Action
             $batch = $this->loader->getTaskRunnerBatch('export_surveys');
             $batch->reset();
         } elseif ($step == 'batch') {
-            $this->exportBatch();
+            if ($this->data) {
+                if (!isset($this->data['gto_id_survey']) || empty($this->data['gto_id_survey'])) {
+                    $this->addMessage($this->_('Please select a survey to start the export'), 'danger');
+                    $this->addSnippet($this->exportFormSnippets);
+                } else {
+                    $this->exportBatch();
+                }
+            } else {
+                $this->exportBatch();
+            }
         } elseif ($step == 'download') {
             $this->exportDownload();
         }
