@@ -195,7 +195,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
 
         $this->files[$filename.$this->fileExtension] = $tempFilename . $this->fileExtension;
 
-        \MUtil_Echo::track($this->files);
+        //\MUtil_Echo::track($this->files);
 
         $file = fopen($tempFilename . $this->fileExtension, 'w');
 

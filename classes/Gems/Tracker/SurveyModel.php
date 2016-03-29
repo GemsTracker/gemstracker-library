@@ -79,6 +79,11 @@ class Gems_Tracker_SurveyModel extends \Gems_Model_JoinModel
     {
         parent::__construct($survey->getName(), 'gems__tokens', 'gto');
         $this->addTable('gems__reception_codes',  array('gto_reception_code' => 'grc_id_reception_code'));
+        
+        // Add relations
+        $this->addLeftTable('gems__track_fields',         array('gto_id_relationfield' => 'gtf_id_field', 'gtf_field_type = "relation"'));       // Add relation fields
+        $this->addLeftTable('gems__respondent_relations', array('gto_id_relation' => 'grr_id', 'gto_id_respondent' => 'grr_id_respondent')); // Add relation
+        $this->set('grr_name', 'column_expression', new Zend_Db_Expr('CONCAT_WS(" ", gems__respondent_relations.grr_first_name, gems__respondent_relations.grr_last_name)'));
 
         $this->addColumn(
             'CASE WHEN grc_success = 1 AND gto_valid_from <= CURRENT_TIMESTAMP AND gto_completion_time IS NULL AND (gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP) THEN 1 ELSE 0 END',
