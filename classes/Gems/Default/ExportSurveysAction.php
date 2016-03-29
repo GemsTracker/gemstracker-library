@@ -104,6 +104,19 @@ class Gems_Default_ExportSurveysAction extends \MUtil_Controller_Action
         $filter['gr2o_reception_code'] = 'OK';
         $filter['grc_success'] = 1;
 
+        if (isset($data['ids'])) {
+            $idStrings = $data['ids'];
+
+            $idArray = preg_split('/[\s,;]+/', $idStrings, -1, PREG_SPLIT_NO_EMPTY);
+
+            if ($idArray) {
+                // Make sure output is OK
+                // $idArray = array_map(array($this->db, 'quote'), $idArray);
+
+                $filter['gto_id_respondent'] = $idArray;
+            }
+        }
+
         return $filter;
     }
 

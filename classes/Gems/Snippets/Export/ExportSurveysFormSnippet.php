@@ -140,6 +140,13 @@ class ExportSurveysFormSnippet extends \MUtil_Snippets_SnippetAbstract
 
         $elements += $periodElements;
 
+        $element = $this->form->createElement('textarea', 'ids');
+        $element->setLabel($this->_('Respondent id\'s'))
+                ->setAttrib('cols', 60)
+                ->setAttrib('rows', 4)
+                ->setDescription($this->_("Not respondent nr, but respondent id as exported here. Separate multiple id's with , or ;"));
+        $elements[] = $element;
+
         $element = $this->form->createElement('checkbox', 'column_identifiers');
         $element->setLabel($this->_('Column Identifiers'));
         $element->setDescription($this->_('Prefix the column labels with an identifier. (A) Answers, (TF) Trackfields, (D) Description'));
