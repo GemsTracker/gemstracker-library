@@ -168,8 +168,9 @@ class ExportSurveysFormSnippet extends \MUtil_Snippets_SnippetAbstract
 
         $exportClass = $export->getExport($currentType);
         $exportName = $exportClass->getName();
-        $exportFormElements = $exportClass->getFormElements($this->form, $data);
         $exportFormElements['firstCheck'] = $this->form->createElement('hidden', $currentType);
+        $exportFormElements = $exportClass->getFormElements($this->form, $data);
+        
         $this->form->addElements($exportFormElements);
 
         if (!isset($post[$currentType])) {
