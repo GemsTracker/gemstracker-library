@@ -103,3 +103,19 @@ CREATE TABLE surveys (
 	googleanalyticsapikey varchar(25) DEFAULT NULL,
 	PRIMARY KEY (sid)
 );
+
+CREATE TABLE survey_1 (
+	`id` int(11) NOT NULL,
+	`submitdate` datetime DEFAULT NULL,
+	`lastpage` int(11) DEFAULT NULL,
+	`startlanguage` varchar(20) NOT NULL,
+	`token` varchar(36) DEFAULT NULL,
+	`datestamp` datetime NOT NULL,
+	`startdate` datetime NOT NULL,
+	`ipaddr` text,
+	`1X1X1` datetime DEFAULT NULL,
+	`1X1X2` date DEFAULT NULL,
+	`1X1X3` datetime DEFAULT NULL,
+	`1X1X4` datetime DEFAULT NULL,
+	PRIMARY KEY (`id`)
+);

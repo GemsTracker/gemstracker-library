@@ -82,6 +82,8 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
      */
     protected $ldDb;
 
+    protected $tableMetaData;
+
     /**
      * Prefix to add to standard table name
      *
@@ -601,6 +603,16 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
     }
 
     /**
+     * There exists a survey table for each active survey. The table contains the answers to the survey
+     *
+     * @return string Name of survey table for this survey
+     */
+    protected function _getSurveyTableName()
+    {
+        return $this->tablePrefix . \Gems_Tracker_Source_LimeSurvey1m9Database::SURVEY_TABLE . $this->sourceSurveyId;
+    }
+
+    /**
      * Returns a map of databasecode => questioncode
      *
      * @return array
@@ -703,22 +715,10 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             $tmpres['type']            = $this->_getType($field);
             $tmpres['survey_question'] = true;
 
-            if ($tmpres['type'] === \MUtil_Model::TYPE_DATE) {
-                $tmpres['storageFormat'] = 'yyyy-MM-dd';
-                $tmpres['dateFormat']    = 'dd MMMM yyyy';
-                // $tmpres['formatFunction']
-            }
-
-            if ($tmpres['type'] === \MUtil_Model::TYPE_DATETIME) {
-                $tmpres['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
-                $tmpres['dateFormat']    = 'dd MMMM yyyy HH:mm';
-                // $tmpres['formatFunction']
-            }
-
-            if ($tmpres['type'] === \MUtil_Model::TYPE_TIME) {
-                $tmpres['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
-                $tmpres['dateFormat']    = 'HH:mm:ss';
-                // $tmpres['formatFunction']
+            if ($tmpres['type'] === \MUtil_Model::TYPE_DATETIME || $tmpres['type'] === \MUtil_Model::TYPE_DATE || $tmpres['type'] === \MUtil_Model::TYPE_TIME) {
+                if ($dateFormats = $this->getDateFormats($name, $tmpres['type'])) {
+                    $tmpres = $tmpres + $dateFormats;
+                }
             }
 
             // \MUtil_Echo::track($field);
@@ -771,6 +771,47 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
 
             $oldfld = $field;
         }
+    }
+
+    protected function getDateFormats($fieldname, $type)
+    {
+        if ($dataType = $this->getFieldTableDataType($fieldname)) {
+            if ($dataType == 'datetime' || $dataType == 'timestamp') {
+                $tmpres['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
+            } elseif ($dataType == 'date') {
+                $tmpres['storageFormat'] = 'yyyy-MM-dd';
+            }
+        } else {
+            if ($type === \MUtil_Model::TYPE_DATETIME) {
+                $tmpres['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
+            } elseif ($type === \MUtil_Model::TYPE_DATE) {
+                $tmpres['storageFormat'] = 'yyyy-MM-dd';
+            } elseif ($type === \MUtil_Model::TYPE_TIME) {
+                $tmpres['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
+            }
+        }
+
+        if ($type === \MUtil_Model::TYPE_DATETIME) {
+            $tmpres['dateFormat']    = 'dd MMMM yyyy HH:mm';
+        } elseif ($type === \MUtil_Model::TYPE_DATE) {
+            $tmpres['dateFormat']    = 'dd MMMM yyyy';
+        } elseif ($type === \MUtil_Model::TYPE_TIME) {
+            $tmpres['dateFormat']    = 'HH:mm:ss';
+        }
+
+    }
+
+    protected function getFieldTableDataType($fieldname)
+    {
+        if (!$this->tableMetaData) {
+            $this->loadTableMetaData();
+        }
+
+        if (isset($this->tableMetaData[$fieldname])) {
+            return $this->tableMetaData[$fieldname]['DATA_TYPE'];
+        }
+
+        return false;
     }
 
     /**
@@ -946,6 +987,17 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
         // \MUtil_Echo::track($results);
 
         return $results;
+    }
+
+    protected function loadTableMetaData()
+    {
+        $tableName = $this->_getSurveyTableName();
+        $table = new \Zend_DB_Table($tableName);
+        $info = $table->info();
+
+        $this->tableMetaData = $info['metadata'];
+
+        return $this->tableMetaData;
     }
 
     /**
