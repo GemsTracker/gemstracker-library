@@ -174,7 +174,7 @@ class RelationField extends FieldAbstract
     }
 
     /**
-     * Dispaly an appoitment as text
+     * Display a relation as text
      *
      * @param value $value
      * @return string
@@ -182,7 +182,11 @@ class RelationField extends FieldAbstract
     public function showRelation($value)
     {
         // Display nicer
+        $display = $this->calculateFieldInfo($value, array());
+        if ($value == $display) {
+            $display = $this->_('-');
+        }
 
-        return $value;
+        return $display;
     }
 }
