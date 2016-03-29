@@ -38,6 +38,7 @@ namespace Gems\Export;
 use PHPExcel;
 use PHPExcel_IOFactory;
 use PHPExcel_Cell;
+use PHPExcel_Shared_Date;
 
 /**
  *
@@ -102,20 +103,26 @@ class ExcelExport extends ExportAbstract
             ->setLastModifiedBy("Gemstracker")
             ->setTitle($this->model->getName());
 
+        $activeSheet = $excelObject->getActiveSheet();
+
         $columnHeaders = $this->getColumnHeaders();
         $row = 1;
 
         $i=0;
-        foreach($columnHeaders as $columnHeader) {
+        foreach($columnHeaders as $columnName=>$columnHeader) {
             $column = $this->getColumn($i);
             $cell = $column . $row;
-            $excelObject->getActiveSheet()->setCellValue($cell, $columnHeader);
-            $excelObject->getActiveSheet()->setCellValue($cell, $columnHeader);
-            $excelObject->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
+            $activeSheet->setCellValue($cell, $columnHeader);
+            $activeSheet->setCellValue($cell, $columnHeader);
+            if ($excelCellSize = $this->model->get($columnName, 'excelCellSize')) {
+                $activeSheet->getColumnDimension($column)->setWidth($excelCellSize);
+            } else {
+                $activeSheet->getColumnDimension($column)->setAutoSize(true);
+            }
             $i++;
         }
 
-        $excelObject->getActiveSheet()->getStyle("A1:$cell")->getFont()->setBold(true);
+        $activeSheet->getStyle("A1:$cell")->getFont()->setBold(true);
 
         $objWriter = PHPExcel_IOFactory::createWriter($excelObject, "Excel2007");
         $objWriter->save($filename);
@@ -176,10 +183,18 @@ class ExcelExport extends ExportAbstract
 
         $exportRow = $this->filterRow($row);
 
+        $activeSheet = $excelObject->getActiveSheet();
+
         $labeledCols = $this->getColumnHeaders();
-        foreach($labeledCols as $colName=>$label) {
+        foreach($labeledCols as $columnName=>$label) {
             $cell = $this->getColumn($i) . $rowNumber;
-            $excelObject->getActiveSheet()->setCellValue($cell, $exportRow[$colName]);
+
+            $activeSheet->setCellValue($cell, $exportRow[$columnName]);
+
+            if ($excelDateFormat = $this->model->get($columnName, 'excelDateFormat')) {
+                $activeSheet->getStyle($cell)->getNumberFormat()->setFormatCode($excelDateFormat);
+            }
+
             $i++;
         }
     }
@@ -212,6 +227,155 @@ class ExcelExport extends ExportAbstract
         }
     }*/
 
+    protected function filterMultiOptions($result, $multiOptions)
+    {
+        if (is_array($multiOptions)) {
+            /*
+             *  Sometimes a field is an array and will be formatted later on using the
+             *  formatFunction -> handle each element in the array.
+             */
+            if (is_array($result)) {
+                foreach($result as $key => $value) {
+                    if (array_key_exists($value, $multiOptions)) {
+                        $result[$key] = $multiOptions[$value];
+                    }
+                }
+            } else {
+                if (array_key_exists($result, $multiOptions)) {
+                    $result = $multiOptions[$result];
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    protected function filterFormatFunction($value, $functionName)
+    {
+        if (!is_array($functionName) && method_exists($this, $functionName)) {
+            return call_user_func(array($this, $functionName), $value);
+        } else {
+            return call_user_func($functionName, $value);
+        }
+    }
+
+    /*protected function filterDateFormat($value, $dateFormat, $columnName)
+    {
+        $storageFormat = $this->model->get($columnName, 'storageFormat');
+        return \MUtil_Date::format($result, $dateFormat, $storageFormat);
+    }*/
+
+    protected function filterDateFormat($value, $dateFormat, $columnName)
+    {
+        
+
+        if ($value instanceof \Zend_Date) {
+            $year = \MUtil_Date::format($value, 'yyyy');
+            $month = \MUtil_Date::format($value, 'MM');
+            $day = \MUtil_Date::format($value, 'dd');
+            $hours = \MUtil_Date::format($value, 'HH');
+            $minutes = \MUtil_Date::format($value, 'mm');
+            $seconds = \MUtil_Date::format($value, 'ss');
+        } else {
+            $time = strtotime($value);
+
+            $year = Date('Y', $time);
+            $month = Date('m', $time);
+            $day = Date('d', $time);
+            $hours = Date('H', $time);
+            $minutes = Date('i', $time);
+            $seconds = Date('s', $time);
+        }
+
+        return PHPExcel_Shared_Date::FormattedPHPToExcel($year, $month, $day, $hours, $minutes, $seconds);
+    }
+
+    protected function filterItemDisplay($value, $functionName)
+    {
+        if (is_callable($functionName)) {
+            $result = call_user_func($functionName, $value);
+        } elseif (is_object($function)) {
+            if (($function instanceof \MUtil_Html_ElementInterface)
+                || method_exists($function, 'append')) {
+                $object = clone $function;
+                $result = $object->append($value);
+            }
+        } elseif (is_string($function)) {
+            // Assume it is a html tag when a string
+            $result = \MUtil_Html::create($function, $value);
+        }
+
+        return $result;
+    }
+
+    protected function filterHtml($result)
+    {
+        if ($result instanceof \MUtil_Html_ElementInterface) {
+            if ($result->count() > 0) {
+                $result = $result[0];
+            } elseif ($result instanceof \MUtil_Html_AElement) {
+                $href = $result->href;
+                $result = $href[0];
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Filter the data in a row so that correct values are being used
+     * @param  array $row a row in the model
+     * @return array The filtered row
+     */
+    protected function filterRow($row)
+    {
+        $exportRow = array();
+        foreach($row as $columnName=>$result) {
+            if ($this->model->get($columnName, 'label')) {
+                $options = $this->model->get($columnName, $this->modelFilterAttributes);
+
+
+                foreach($options as $optionName => $optionValue) {
+                    switch ($optionName) {
+                        case 'multiOptions':
+                            $result = $this->filterMultiOptions($result, $optionValue);
+                            
+                            break;
+
+                        case 'formatFunction':
+                            $result = $this->filterFormatFunction($result, $optionValue);
+                            
+                            break;
+
+                        case 'dateFormat':
+
+                            // if there is a formatFunction skip the date formatting
+                            if (array_key_exists('formatFunction', $options)) {
+                                continue;
+                            }
+
+                            $result = $this->filterDateFormat($result, $optionValue, $columnName);
+                            
+                            break;
+
+                        case 'itemDisplay':
+
+                            $result = $this->filterItemDisplay($result, $optionValue);
+
+                        default:
+                            break;
+                    }
+                }
+
+                $result = $this->filterHtml($result);
+
+                $exportRow[$columnName] = $result;
+            }
+        }
+        return $exportRow;
+    }
+
+
     protected function getColumn($x)
     {
         return PHPExcel_Cell::stringFromColumnIndex($x);
@@ -222,8 +386,8 @@ class ExcelExport extends ExportAbstract
         $labeledCols = $this->model->getColNames('label');
 
         $columnHeaders = array();
-        foreach($labeledCols as $colName) {
-            $columnHeaders[$colName] = $this->model->get($colName, 'label');
+        foreach($labeledCols as $columnName) {
+            $columnHeaders[$colName] = strip_tags($this->model->get($columnName, 'label'));
         }
 
         return $columnHeaders;
@@ -234,5 +398,36 @@ class ExcelExport extends ExportAbstract
      */
     protected function preprocessModel()
     {
+        $labeledCols = $this->model->getColNames('label');
+        foreach($labeledCols as $columnName) {
+            $options = array();
+            $type = $this->model->get($columnName, 'type');
+            switch ($type) {
+                case \MUtil_Model::TYPE_DATE:
+                    $options['excelDateFormat'] = 'dd-mm-yyyy';
+                    break;
+
+                case \MUtil_Model::TYPE_DATETIME:
+                    $options['excelDateFormat'] = 'dd-mm-yyyy hh:mm:ss';
+                    $options['excelCellSize'] = 20;
+                    break;
+
+                case \MUtil_Model::TYPE_TIME:
+                    $options['excelDateFormat'] = 'hh:mm:ss';
+                    break;
+
+                case \MUtil_Model::TYPE_NUMERIC:
+                    break;
+
+                //When no type set... assume string
+                case \MUtil_Model::TYPE_STRING:
+                default:
+                    //$type                      = \MUtil_Model::TYPE_STRING;
+                    //$options['formatFunction'] = 'formatString';
+                    break;
+            }
+            $options['type']           = $type;
+            $this->model->set($columnName, $options);
+        }
     }
 }
