@@ -75,6 +75,13 @@ class AnswerAutosearchFormSnippet extends \Gems_Snippets_AutosearchFormSnippet
 
         $elements[] = null;
 
+        $element = $this->form->createElement('checkbox', 'tid_fields');
+        $element->setLabel($this->_('Track fields'));
+        $element->setDescription($this->_('Add track fields to export'));
+        $elements['tid_fields'] = $element;
+        
+        $elements[] = null;
+
         $element = $this->form->createElement('checkbox', 'column_identifiers');
         $element->setLabel($this->_('Column Identifiers'));
         $element->setDescription($this->_('Prefix the column labels with an identifier. (A) Answers, (TF) Trackfields, (D) Description'));

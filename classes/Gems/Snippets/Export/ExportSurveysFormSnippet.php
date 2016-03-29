@@ -80,6 +80,18 @@ class ExportSurveysFormSnippet extends \MUtil_Snippets_SnippetAbstract
             array('label' => $this->_('Track'), 'multiOptions' => $tracks, 'class' => 'autosubmit')
             );
 
+        if (isset($post['gto_id_track']) && $post['gto_id_track']) {
+            $element = $this->form->createElement('checkbox', 'add_track_fields');
+            $element->setLabel($this->_('Track fields'));
+            $element->setDescription($this->_('Add track fields to export'));
+            $elements['add_track_fields'] = $element;
+
+            if (!array_key_exists('add_track_fields', $post)) {
+                $post['add_track_fields'] = 1;
+            }
+        }
+
+
         $elements['gto_round_description'] = $this->form->createElement('select',
             'gto_round_description',
             array('label' => $this->_('Round'), 'multiOptions' => $rounds, 'class' => 'autosubmit')
