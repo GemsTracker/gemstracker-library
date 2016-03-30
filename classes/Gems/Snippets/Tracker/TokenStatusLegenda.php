@@ -70,10 +70,12 @@ class Gems_Snippets_Tracker_TokenStatusLegenda extends \MUtil_Snippets_SnippetAb
         $table->setRepeater($repeater);
 
         $table->throw($this->_('Legend'));
-        $table->td($repeater->key)->class = array(
+        $cell = $table->td();
+        $cell->class = array(
             'round',
             \MUtil_Lazy::method($tUtil, 'getStatusClass', $repeater->key)
             );
+        $cell->span($repeater->key);
         $table->td($repeater->value);
 
         return $table;
