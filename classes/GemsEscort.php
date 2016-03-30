@@ -938,7 +938,7 @@ class GemsEscort extends \MUtil_Application_Escort
         if (isset($this->project->locales)) {
             foreach ($this->project->locales as $locale) {
                 if ($locale == $this->view->locale) {
-                    $localeDiv->span(strtoupper($locale));
+                    $localeDiv->span(strtoupper($locale), array('class' => 'language ' . $locale));
                 } else {
                     $localeDiv->a(
                             array(
@@ -948,7 +948,8 @@ class GemsEscort extends \MUtil_Application_Escort
                                 'current_uri' => $currentUri,
                                 'class' => ''
                             ),
-                            strtoupper($locale)
+                            strtoupper($locale),
+                            array('class' => 'language ' . $locale)
                         );
                 }
                 $localeDiv[] = ' ';
