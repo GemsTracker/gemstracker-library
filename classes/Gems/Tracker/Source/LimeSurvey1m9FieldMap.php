@@ -798,7 +798,8 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
         } elseif ($type === \MUtil_Model::TYPE_TIME) {
             $tmpres['dateFormat']    = 'HH:mm:ss';
         }
-
+        
+        return $tmpres;
     }
 
     protected function getFieldTableDataType($fieldname)

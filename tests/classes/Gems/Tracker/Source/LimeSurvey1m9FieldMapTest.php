@@ -98,6 +98,6 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMapTest extends \Gems_Test_DbTestAbs
 		$model = new \Gems_Model_PlaceholderModel($array); 
 		$this->fieldmap->applyToModel($model);
 		
-		$this->assertEquals($model->get($fieldName, 'storageFormat'), $expectedStorageFormat);
+		$this->assertEquals($expectedStorageFormat, $model->get($fieldName, 'storageFormat'));
 	}
 }
