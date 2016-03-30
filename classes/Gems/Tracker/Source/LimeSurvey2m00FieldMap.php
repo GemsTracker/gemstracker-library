@@ -66,22 +66,10 @@ class Gems_Tracker_Source_LimeSurvey2m00FieldMap extends \Gems_Tracker_Source_Li
             $tmpres['type']            = $this->_getType($field);
             $tmpres['survey_question'] = true;
 
-            if ($tmpres['type'] === \MUtil_Model::TYPE_DATE) {
-                $tmpres['storageFormat'] = 'yyyy-MM-dd';
-                $tmpres['dateFormat']    = 'dd MMMM yyyy';
-                // $tmpres['formatFunction']
-            }
-
-            if ($tmpres['type'] === \MUtil_Model::TYPE_DATETIME) {
-                $tmpres['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
-                $tmpres['dateFormat']    = 'dd MMMM yyyy HH:mm';
-                // $tmpres['formatFunction']
-            }
-
-            if ($tmpres['type'] === \MUtil_Model::TYPE_TIME) {
-                $tmpres['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
-                $tmpres['dateFormat']    = 'HH:mm:ss';
-                // $tmpres['formatFunction']
+            if ($tmpres['type'] === \MUtil_Model::TYPE_DATETIME || $tmpres['type'] === \MUtil_Model::TYPE_DATE || $tmpres['type'] === \MUtil_Model::TYPE_TIME) {
+                if ($dateFormats = $this->getDateFormats($name, $tmpres['type'])) {
+                    $tmpres = $tmpres + $dateFormats;
+                }
             }
 
             if ($tmpres['type'] === \MUtil_Model::TYPE_NUMERIC) {
