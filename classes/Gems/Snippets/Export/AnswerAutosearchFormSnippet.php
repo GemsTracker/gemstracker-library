@@ -77,6 +77,7 @@ class AnswerAutosearchFormSnippet extends \Gems_Snippets_AutosearchFormSnippet
 
         $element = $this->form->createElement('checkbox', 'tid_fields');
         $element->setLabel($this->_('Track fields'));
+        $element->getDecorator('Label')->setOption('placement', \Zend_Form_Decorator_Abstract::APPEND);
         $element->setDescription($this->_('Add track fields to export'));
         $elements['tid_fields'] = $element;
         
@@ -84,16 +85,19 @@ class AnswerAutosearchFormSnippet extends \Gems_Snippets_AutosearchFormSnippet
 
         $element = $this->form->createElement('checkbox', 'column_identifiers');
         $element->setLabel($this->_('Column Identifiers'));
+        $element->getDecorator('Label')->setOption('placement', \Zend_Form_Decorator_Abstract::APPEND);
         $element->setDescription($this->_('Prefix the column labels with an identifier. (A) Answers, (TF) Trackfields, (D) Description'));
         $elements[] = $element;
 
         $element = $this->form->createElement('checkbox', 'show_parent');
         $element->setLabel($this->_('Show parent'));
+        $element->getDecorator('Label')->setOption('placement', \Zend_Form_Decorator_Abstract::APPEND);
         $element->setDescription($this->_('Show the parent column even if it doesn\'t have answers'));
         $elements[] = $element;
 
         $element = $this->form->createElement('checkbox', 'prefix_child');
         $element->setLabel($this->_('Prefix child'));
+        $element->getDecorator('Label')->setOption('placement', \Zend_Form_Decorator_Abstract::APPEND);
         $element->setDescription($this->_('Prefix the child column labels with parent question label'));
         $elements[] = $element;
 
