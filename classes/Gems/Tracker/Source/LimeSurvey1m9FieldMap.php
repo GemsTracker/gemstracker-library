@@ -240,7 +240,6 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             for ($i = 0; $i < $rowscount; $i++) {
                 $row = $rows[$i];
                 $row['sgq'] = $row['sid'] . 'X' . $row['gid'] . 'X' . $row['qid'];
-
                 $other = ($row['other'] == 'Y');
 
                 switch ($row['type']) {
@@ -279,6 +278,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                     case 'P':    //Multiple options with other and comment
                         do {
                             $row = $rows[$i];
+                            $row['sgq'] = $row['sid'] . 'X' . $row['gid'] . 'X' . $row['qid'];
                             $row['sgq'] .= $row['sq_title'];
                             if ($rows[$i]['type'] === 'O') {    // List, only one answer don't add _
                                 $row['code'] = $row['title'];
@@ -300,6 +300,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                         $i--;
                         if ($other) {
                             $row = $rows[$i];
+                            $row['sgq'] = $row['sid'] . 'X' . $row['gid'] . 'X' . $row['qid'];
                             $row['sgq'] .= 'other';
                             $row['sq_title'] = 'other';
                             $row['code'] = $row['title'] . '_' . $row['sq_title'];
