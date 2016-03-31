@@ -112,8 +112,11 @@ class ExcelExport extends ExportAbstract
         foreach($columnHeaders as $columnName=>$columnHeader) {
             $column = $this->getColumn($i);
             $cell = $column . $row;
-            $activeSheet->setCellValue($cell, $columnHeader);
-            $activeSheet->setCellValue($cell, $columnHeader);
+            if (isset($this->data[$this->getName()]) && isset($this->data[$this->getName()]['format']) && in_array('formatVariable', $this->data[$this->getName()]['format'])) {
+                $activeSheet->setCellValue($cell, $columnHeader);
+            } else {
+                $activeSheet->setCellValue($cell, $columnName);
+            }
             if ($excelCellSize = $this->model->get($columnName, 'excelCellSize')) {
                 $activeSheet->getColumnDimension($column)->setWidth($excelCellSize);
             } else {
@@ -154,6 +157,10 @@ class ExcelExport extends ExportAbstract
             }
 
             $rows = $this->model->load();
+
+            if (!(isset($data[$name]) && isset($data[$name]['format']) && in_array('formatAnswer', $data[$name]['format']))) {
+               $this->modelFilterAttributes = array('formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay');
+            }
 
             $excelObject = PHPExcel_IOFactory::load($filename);
             foreach($rows as $row) {
