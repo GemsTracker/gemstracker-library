@@ -1,0 +1,123 @@
+<?php echo $this->doctype(); ?>
+
+<html <?php echo 'xmlns="http://www.w3.org/1999/xhtml" xml:lang="'.$this->locale.'"' ?> lang="<?php echo $this->locale; ?>">
+<head>
+    <meta charset="utf-8">
+    <?php echo $this->headMeta(); ?>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <?php 
+    echo $this->headTitle();
+    if ($this->jQuery) {
+        echo $this->jQuery()->renderStylesheets();
+    } 
+    if (MUtil_Bootstrap::enabled()) {
+        echo MUtil_Bootstrap::bootstrap()->renderStylesheets();
+    }
+    echo $this->headLink();   
+    echo $this->headStyle(); 
+    ?>
+
+</head>
+<body>
+    <div id="container" class="container-fluid">
+        <header>
+            <div class="logo"></div>
+            <div class="description"><?php if ($this->header) { echo $this->header->render($this); }?></div>
+            <div class="tools">
+                <div class="login-status">
+                <?php if ($this->login_status) { echo $this->login_status->render($this); } ?>
+                </div>
+                <div class="language-select">
+                <?php if ($this->language) { echo $this->language->render($this); } ?>
+                </div>
+                <div class="organization-switcher">
+                <?php if ($this->organization) { echo $this->organization->render($this); } ?>
+                </div>
+            </div>
+
+            <div class="main-menu">
+                <?php if ($this->top_menu) { echo $this->top_menu->render($this); } ?>
+            </div>
+            <div id="menu-toggle"><i class="fa fa-bars fa-2x"></i></div>
+            <div id="menu-collapse" class="hidden">
+                <?php
+                echo $this->menuHtml; ?>
+            </div>
+            <div id="menu-collapse-backdrop" class="hidden"></div>
+        </header>
+    
+<?php
+    
+?>
+        <div class="content">
+            <?php if ($this->navigation || $this->menuHtml || $this->subnav) { ?>
+            <div id="main-container" class="include-menu">
+            <?php } else { ?>
+            <div id="main-container">
+            <?php } ?>
+                <div id="main" class="container-fluid">
+            <?php
+
+                    if ($this->main) {
+                        echo $this->main->render($this);
+                    }
+                    echo $this->layout()->content; ?>
+                </div>
+            </div>
+            <?php if ($this->navigation || $this->menuHtml || $this->subnav ) { ?>
+            <div id="menu" role="navigation">
+                <?php if ($this->subnav) { 
+                    echo $this->subnav->render($this); 
+                } elseif ($this->menuHtml) { 
+                    echo $this->menuHtml;
+                } ?>
+            </div>
+            <?php } ?>
+        </div>
+
+
+        <footer><?php
+        if ($this->footer) {
+            echo $this->footer->render($this);
+        }
+        ?>
+        </footer>
+    </div>
+
+
+<?php if ($this->jQuery) {
+        //echo 
+        echo $this->jQuery()->renderJavascript();
+    }
+    if (MUtil_Bootstrap::enabled()) {
+        echo MUtil_Bootstrap::bootstrap()->renderJavascript();
+    }
+?>
+<script type="text/javascript">
+$(function() {
+
+    $('#menu-toggle').on('click', function() {
+        var menuCollapse = $('#menu-collapse');
+        menuCollapse.toggleClass('active').removeClass('hidden');
+        $('#menu-collapse-backdrop').toggleClass('active').removeClass('hidden');
+
+        var menuHeight = window.innerHeight - menu.offsetTop;
+        menuCollapse.css('height', menuHeight+'px');
+    });
+
+    $('#menu-collapse-backdrop').on('click', function(e) {
+        $('#menu-collapse').removeClass('active');
+        $('#menu-collapse-backdrop').removeClass('active');
+    });
+
+});
+
+</script>
+<?php
+echo MUtil_Echo::out();
+echo $this->headScript();
+echo $this->inlineScript();
+?>
+</body>
+</html>
