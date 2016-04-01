@@ -236,45 +236,4 @@ class ExcelHtmlExport extends ExportAbstract
 </html>');
         fclose($file);
     }
-
-    /**
-     * Preprocess the model to add specific options
-     */
-    protected function preprocessModel()
-    {
-        //print_r(get_class($this->model));
-        $labeledCols = $this->model->getColNames('label');
-        foreach($labeledCols as $columnName) {
-            $options = array();
-            $type = $this->model->get($columnName, 'type');
-            switch ($type) {
-                case \MUtil_Model::TYPE_DATE:
-                    $options['storageFormat'] = 'yyyy-MM-dd';
-                    $options['dateFormat']    = 'yyyy-MM-dd';
-                    break;
-
-                case \MUtil_Model::TYPE_DATETIME:
-                    $options['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
-                    $options['dateFormat']    = 'dd-MM-yyyy HH:mm:ss';
-                    break;
-
-                case \MUtil_Model::TYPE_TIME:
-                    $options['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
-                    $options['dateFormat']    = 'HH:mm:ss';
-                    break;
-
-                case \MUtil_Model::TYPE_NUMERIC:
-                    break;
-
-                //When no type set... assume string
-                case \MUtil_Model::TYPE_STRING:
-                default:
-                    //$type                      = \MUtil_Model::TYPE_STRING;
-                    //$options['formatFunction'] = 'formatString';
-                    break;
-            }
-            $options['type']           = $type;
-            $this->model->set($columnName, $options);
-        }
-    }
 }
