@@ -160,7 +160,7 @@ class ExcelExport extends ExportAbstract
 
             $rows = $this->model->load();
 
-            //$exportName = $this->getName();
+            $exportName = $this->getName();
 
             if (isset($this->data[$exportName]) && isset($this->data[$exportName]['format']) && in_array('formatVariable', $this->data[$exportName]['format'])) {
                $this->modelFilterAttributes = array('formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay');
