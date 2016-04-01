@@ -108,11 +108,13 @@ class ExcelExport extends ExportAbstract
         $columnHeaders = $this->getColumnHeaders();
         $row = 1;
 
+        $exportName = $this->getName();
+
         $i=0;
         foreach($columnHeaders as $columnName=>$columnHeader) {
             $column = $this->getColumn($i);
             $cell = $column . $row;
-            if (isset($this->data[$this->getName()]) && isset($this->data[$this->getName()]['format']) && in_array('formatVariable', $this->data[$this->getName()]['format'])) {
+            if (isset($this->data[$exportName]) && isset($this->data[$exportName]['format']) && in_array('formatVariable', $this->data[$exportName]['format'])) {
                 $activeSheet->setCellValue($cell, $columnHeader);
             } else {
                 $activeSheet->setCellValue($cell, $columnName);
@@ -158,7 +160,9 @@ class ExcelExport extends ExportAbstract
 
             $rows = $this->model->load();
 
-            if (!(isset($data[$name]) && isset($data[$name]['format']) && in_array('formatAnswer', $data[$name]['format']))) {
+            //$exportName = $this->getName();
+
+            if (isset($this->data[$exportName]) && isset($this->data[$exportName]['format']) && in_array('formatVariable', $this->data[$exportName]['format'])) {
                $this->modelFilterAttributes = array('formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay');
             }
 
