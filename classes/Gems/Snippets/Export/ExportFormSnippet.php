@@ -44,7 +44,9 @@ class ExportFormSnippet extends \MUtil_Snippets_SnippetAbstract
         $exportFormElements['firstCheck'] = $form->createElement('hidden', $currentType);
         $exportFormElements = $exportClass->getFormElements($form, $data);
         
-        $form->addElements($exportFormElements);
+        if ($exportFormElements) {
+            $form->addElements($exportFormElements);
+        }
 
         if (!isset($post[$currentType])) {
             $post[$exportName] = $exportClass->getDefaultFormValues();
