@@ -994,7 +994,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
     protected function loadTableMetaData()
     {
         $tableName = $this->_getSurveyTableName();
-        $table = new \Zend_DB_Table($tableName);
+        $table = new \Zend_DB_Table(array('name' => $tableName, 'db' => $this->lsDb));
         $info = $table->info();
 
         $this->tableMetaData = $info['metadata'];
