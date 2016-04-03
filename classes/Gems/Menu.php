@@ -301,8 +301,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $page = $this->addPage($label, 'pr.respondent', 'respondent');
         $page->addAutofilterAction();
         $page->addCreateAction('pr.respondent.create')->setParameterFilter('can_add_respondents', true);
-        //$page->addExcelAction()->setNamedParameters($params)->setHiddenOrgId($orgId);
-        $page->addExportAction()->setNamedParameters($params)->setHiddenOrgId($orgId);
+        $page->addExportAction();
         $page->addImportAction();
 
         $page = $page->addShowAction()
