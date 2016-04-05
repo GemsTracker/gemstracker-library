@@ -126,7 +126,7 @@ class Gems_Default_SummaryAction extends \Gems_Controller_ModelSnippetActionAbst
 
         $model->set('ggp_name',  'label', $this->_('Filler'), 'column_expression', new \Zend_Db_Expr('COALESCE(gems__track_fields.gtf_field_name, gems__groups.ggp_name)'));
 
-        $filter = $this->getSearchFilter($action !== 'excel');
+        $filter = $this->getSearchFilter($action !== 'export');
         if (! (isset($filter['gto_id_organization']) && $filter['gto_id_organization'])) {
             $model->addFilter(array('gto_id_organization' => $this->currentUser->getRespondentOrgFilter()));
         }

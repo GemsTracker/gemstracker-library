@@ -100,7 +100,7 @@ class Gems_Default_ComplianceAction extends \Gems_Controller_ModelSnippetActionA
         $model->set('gr2t_start_date', 'label', $this->_('Start date'), 'dateFormat', 'dd-MM-yyyy');
         $model->set('gr2t_end_date',   'label', $this->_('End date'), 'dateFormat', 'dd-MM-yyyy');
 
-        $filter = $this->getSearchFilter($action !== 'excel');
+        $filter = $this->getSearchFilter($action !== 'export');
         if (! (isset($filter['gr2t_id_organization']) && $filter['gr2t_id_organization'])) {
             $model->addFilter(array('gr2t_id_organization' => $this->currentUser->getRespondentOrgFilter()));
         }

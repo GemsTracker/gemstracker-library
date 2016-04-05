@@ -104,7 +104,7 @@ class Gems_Default_TrackOverviewAction extends \Gems_Controller_ModelSnippetActi
     {
         $fields = array();
         // Export all
-        if ('excel' === $action) {
+        if ('export' === $action) {
             $detailed = true;
         }
 
@@ -142,7 +142,7 @@ class Gems_Default_TrackOverviewAction extends \Gems_Controller_ModelSnippetActi
 
             $model->setOnTextFilter('O' . $orgId, array($this, 'noTextFilter'));
 
-            if ($action !== 'excel') {
+            if ($action !== 'export') {
                 $model->set('O'. $orgId, 'formatFunction', array($this, 'formatCheckmark'));
             }
         }

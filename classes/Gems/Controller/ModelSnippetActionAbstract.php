@@ -319,6 +319,9 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         $this->render('excel', null, true);
     }
 
+    /**
+     * Export model data
+     */
     public function exportAction()
     {
         $step = $this->request->getParam('step');
@@ -327,7 +330,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         $this->autofilterParameters = $this->autofilterParameters + $this->_autofilterExtraParameters;
 
         $model = $this->getExportModel();
-        
+
         if (isset($this->autofilterParameters['sortParamAsc'])) {
             $model->setSortParamAsc($this->autofilterParameters['sortParamAsc']);
         }
@@ -351,8 +354,8 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
             $batch->reset();
         } elseif ($step == 'batch') {
             $batch = $this->loader->getTaskRunnerBatch('export_data');
-            
-            
+
+
             $batch->setVariable('model', $model);
             if (!$batch->count()) {
                 $batch->minimalStepDurationMs = 2000;
@@ -366,7 +369,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
                 $batch->autoStart = true;
             }
 
-                        
+
 
             if ($batch->run($this->request)) {
                 exit;
@@ -544,9 +547,9 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         }
     }
 
-    /** 
+    /**
      * Get the model for export and have the option to change it before using for export
-     * @return 
+     * @return
      */
     protected function getExportModel()
     {

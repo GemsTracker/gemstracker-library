@@ -65,6 +65,12 @@ class Gems_Default_FieldReportAction extends \Gems_Controller_ModelSnippetAction
 
     /**
      *
+     * @var \Gems_User_User
+     */
+    public $currentUser;
+
+    /**
+     *
      * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
@@ -81,6 +87,13 @@ class Gems_Default_FieldReportAction extends \Gems_Controller_ModelSnippetAction
      * @var mixed String or array of snippets name
      */
     protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Tracker_Fields_FieldReportSearchSnippet');
+
+    /**
+     * Where statement filtering out organisations
+     *
+     * @var string
+     */
+    protected $orgWhere;
 
     /**
      * The number of instances of the currently selected track id
@@ -116,7 +129,7 @@ class Gems_Default_FieldReportAction extends \Gems_Controller_ModelSnippetAction
      */
     public function createModel($detailed, $action)
     {
-        $filter = $this->getSearchFilter($action !== 'excel');
+        $filter = $this->getSearchFilter($action !== 'export');
 
         // Return empty model when no track sel;ected
         if (! (isset($filter['gtf_id_track']) && $filter['gtf_id_track'])) {
@@ -133,9 +146,13 @@ class Gems_Default_FieldReportAction extends \Gems_Controller_ModelSnippetAction
         $tracker      = $this->loader->getTracker();
         $this->engine = $tracker->getTrackEngine($this->trackId);
 
+        $orgs           = $this->currentUser->getRespondentOrgFilter();
+        $this->orgWhere = " AND gr2t_id_organization IN (" . implode(", ", $orgs) . ")";
+
         $sql     = "SELECT COUNT(*)
             FROM gems__respondent2track INNER JOIN gems__reception_codes ON gr2t_reception_code = grc_id_reception_code
-            WHERE gr2t_id_track = ? AND grc_success = 1";
+            WHERE gr2t_id_track = ? AND grc_success = 1" . $this->orgWhere;
+
         $this->trackCount = $this->db->fetchOne($sql, $this->trackId);
 
         $model = $this->engine->getFieldsMaintenanceModel();
@@ -213,7 +230,7 @@ class Gems_Default_FieldReportAction extends \Gems_Controller_ModelSnippetAction
         $sql = sprintf("SELECT COUNT(*)
             FROM %s INNER JOIN gems__respondent2track ON %s = gr2t_id_respondent_track
                 INNER JOIN gems__reception_codes ON gr2t_reception_code = grc_id_reception_code
-            WHERE %s = %s AND %s IS NOT NULL AND gr2t_id_track = %d AND grc_success = 1",
+            WHERE %s = %s AND %s IS NOT NULL AND gr2t_id_track = %d AND grc_success = 1" . $this->orgWhere,
                 $model->getTableName($subName),
                 $model->getFieldName('gr2t2f_id_respondent_track', $subName),
                 $model->getFieldName('gr2t2f_id_field', $subName),
@@ -261,7 +278,7 @@ class Gems_Default_FieldReportAction extends \Gems_Controller_ModelSnippetAction
         $sql = sprintf("SELECT COUNT(DISTINCT %s)
             FROM %s INNER JOIN gems__respondent2track ON %s = gr2t_id_respondent_track
                 INNER JOIN gems__reception_codes ON gr2t_reception_code = grc_id_reception_code
-            WHERE %s = %s AND %s IS NOT NULL AND gr2t_id_track = %d AND grc_success = 1",
+            WHERE %s = %s AND %s IS NOT NULL AND gr2t_id_track = %d AND grc_success = 1" . $this->orgWhere,
                 $model->getFieldName('gr2t2f_value', $subName),
                 $model->getTableName($subName),
                 $model->getFieldName('gr2t2f_id_respondent_track', $subName),

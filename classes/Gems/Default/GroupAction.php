@@ -83,7 +83,7 @@ class Gems_Default_GroupAction extends \Gems_Controller_ModelSnippetActionAbstra
         $model = new \MUtil_Model_TableModel('gems__groups');
 
         // Add id for excel export
-        if ($action == 'excel') {
+        if ($action == 'export') {
             $model->set('ggp_id_group', 'label', 'id');
         }
 

@@ -109,7 +109,7 @@ class Gems_Default_ConsentPlanAction extends \Gems_Controller_ModelSnippetAction
     protected function createModel($detailed, $action)
     {
         // Export all
-        if ('excel' === $action) {
+        if ('export' === $action) {
             $detailed = true;
         }
 

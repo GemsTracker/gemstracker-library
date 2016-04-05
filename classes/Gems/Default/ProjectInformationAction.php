@@ -138,36 +138,40 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
      * Helper function to show content of a text file
      *
      * @param string $caption
-     * @param string $log_file
-     * @param string $empty_label
+     * @param string $logFile
+     * @param string $emptyLabel
      */
-    protected function _showText($caption, $log_file, $empty_label = null)
+    protected function _showText($caption, $logFile, $emptyLabel = null)
     {
         $this->html->h2($caption);
 
-        if ($empty_label && (1 == $this->_getParam(\MUtil_Model::REQUEST_ID)) && file_exists($log_file)) {
-            unlink($log_file);
+        if ($emptyLabel && (1 == $this->_getParam(\MUtil_Model::REQUEST_ID)) && file_exists($logFile)) {
+            unlink($logFile);
         }
 
-        if (file_exists($log_file)) {
-            $content = trim(file_get_contents($log_file));
+        if (file_exists($logFile)) {
+            if (is_readable($logFile)) {
+                $content = trim(file_get_contents($logFile));
 
-            if ($content) {
-                $error = false;
+                if ($content) {
+                    $error = false;
+                } else {
+                    $error = $this->_('empty file');
+                }
             } else {
-                $error = $this->_('empty file');
+                $error = $this->_('file content not readable');
             }
         } else {
             $content = null;
             $error   = $this->_('file not found');
         }
 
-        if ($empty_label) {
+        if ($emptyLabel) {
             $buttons = $this->html->buttonDiv();
             if ($error) {
-                $buttons->actionDisabled($empty_label);
+                $buttons->actionDisabled($emptyLabel);
             } else {
-                $buttons->actionLink(array(\MUtil_Model::REQUEST_ID => 1), $empty_label);
+                $buttons->actionLink(array(\MUtil_Model::REQUEST_ID => 1), $emptyLabel);
             }
         }
 
@@ -177,7 +181,7 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
             $this->html->pre($content, array('class' => 'logFile'));
         }
 
-        if ($empty_label) {
+        if ($emptyLabel) {
             // Buttons at both bottom and top.
             $this->html[] = $buttons;
         }
@@ -304,7 +308,7 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
 
     public function phpErrorsAction()
     {
-        $this->_showText($this->_('Logged PHP errors'), ini_get('error_log'), $this->_('Empty PHP errorfile'));
+        $this->_showText($this->_('Logged PHP errors'), ini_get('error_log'), $this->_('Empty PHP error file'));
     }
 
     public function projectAction()
