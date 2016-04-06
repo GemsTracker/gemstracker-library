@@ -48,7 +48,7 @@
     "require": {
         "php": ">=5.3.9",
         "ext-mcrypt": "*",
-        "magnafacta/mutil": "dev-master",
+        "magnafacta/mutil": "1.7.2",
         "phpoffice/phpexcel": "1.8.1"
     },
     "require-dev": {
