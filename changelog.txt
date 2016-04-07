@@ -6,6 +6,7 @@ Track structure can be exported, imported and merged with an existing track
 Tracks answers, fields and rounds can be checked at the respondent and respondent track level
 (Re)checking for answers now possible at the single token level
 When using the gemsdata__responses table, views will be created for each survey
+A new after completion event allows the setting of the informed consent through a survey
 Fixed survey activation when survey not active in source
 LimeSurvey equation questions now use help text for question or question code when empty
 A new cron job checks whether the mail cron job has finished correctly
