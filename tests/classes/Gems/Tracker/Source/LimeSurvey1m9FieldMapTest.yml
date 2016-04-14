@@ -78,6 +78,74 @@ questions:
     scale_id: 0
     same_default: 0
     relevance: 1
+  -
+    qid: 5
+    parent_qid: 0
+    sid: 1
+    gid: 1
+    type: ";"
+    title: "num"
+    question: "Limesurvey multi numeric"
+    preg: ""
+    help: ""
+    other: "N"
+    mandatory: "N"
+    question_order: 5
+    language: "en"
+    scale_id: 0
+    same_default: 0
+    relevance: 1
+  -
+    qid: 6
+    parent_qid: 5
+    sid: 1
+    gid: 1
+    type: ";"
+    title: "sub1"
+    question: "Subquestion 1"
+    preg: ""
+    help: ""
+    other: "N"
+    mandatory: "N"
+    question_order: 1
+    language: "en"
+    scale_id: 1
+    same_default: 0
+    relevance: 1
+  -
+    qid: 7
+    parent_qid: 5
+    sid: 1
+    gid: 1
+    type: ";"
+    title: "sub2"
+    question: "Subquestion 2"
+    preg: ""
+    help: ""
+    other: "N"
+    mandatory: "N"
+    question_order: 2
+    language: "en"
+    scale_id: 1
+    same_default: 0
+    relevance: 1
+  -
+    qid: 8
+    parent_qid: 5
+    sid: 1
+    gid: 1
+    type: ";"
+    title: "main1"
+    question: "Main 1"
+    preg: ""
+    help: ""
+    other: "N"
+    mandatory: "N"
+    question_order: 1
+    language: "en"
+    scale_id: 0
+    same_default: 0
+    relevance: 1
 
 question_attributes:
   -
