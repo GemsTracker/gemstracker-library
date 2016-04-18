@@ -303,7 +303,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends \MUtil_Snippets_ModelSnippetAbs
 
         // The user
         $key = 'user';
-        $name  = $this->currentUser-> session->getFullName();
+        $name  = $this->currentUser->getFullName();
         $extra = null;
         if ($email = $this->currentUser->getEmailAddress()) {
             $title     = false;
