@@ -177,7 +177,7 @@ class Gems_Mail extends \MUtil_Mail
 
         return self::$mailServers[$from];
     }
-
+    
     /**
      * Returns the the current template
      *
@@ -209,7 +209,11 @@ class Gems_Mail extends \MUtil_Mail
     }
 
     public function send($transport = null) {
-        // Before we forward to the \Zend_Mail send method, first perfom a bounce check
+        if (!empty($this->getFrom())) {
+            throw new \Gems_Exception('No sender email set!');
+        }
+        
+        // Get the transport method when it was not set
         if (is_null($transport)) {
             $transport = $this->checkTransport($this->getFrom());
         }
