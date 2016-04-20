@@ -424,4 +424,21 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
     public function setLocale($locale) {
         $this->respondentLanguage = $locale;
     }
+    /**
+     * Set the reception code for a respondent and cascade non-success codes to the
+     * tracks / surveys.
+     *
+     * @param string $newCode     String or \Gems_Util_ReceptionCode
+     * @return \Gems_Util_ReceptionCode The new code reception code object for further processing
+     */
+    public function setReceptionCode($newCode)
+    {
+        return $this->model->setReceptionCode(
+                $this->getPatientNumber(),
+                $this->getOrganizationId(),
+                $newCode,
+                $this->getId(),
+                $this->getReceptionCode()
+                );
+    }
 }

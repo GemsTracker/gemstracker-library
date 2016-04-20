@@ -74,6 +74,20 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_Ta
     protected $cache;
 
     /**
+     * Does this data item exist?
+     *
+     * @var boolean
+     */
+    public $exists = false;
+
+    /**
+     * Return false on checkRegistryRequestsAnswers when the anser is not an array
+     *
+     * @var boolean
+     */
+    protected $requireArray = true;
+
+    /**
      * Creates the object.
      *
      * @param mixed $id Whatever identifies this object.
@@ -161,7 +175,9 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_Ta
         }
         // \MUtil_Echo::track($this->_data);
 
-        return is_array($this->_data) && parent::checkRegistryRequestsAnswers();
+        $this->exists = is_array($this->_data);
+
+        return ($this->exists || (! $this->requireArray)) && parent::checkRegistryRequestsAnswers();
     }
 
     /**

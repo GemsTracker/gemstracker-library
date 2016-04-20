@@ -62,6 +62,13 @@ class ConsentCode extends \Gems_Registry_CachedArrayTargetAbstract
     protected $db;
 
     /**
+     * Return false on checkRegistryRequestsAnswers when the anser is not an array
+     *
+     * @var boolean
+     */
+    protected $requireArray = false;
+
+    /**
      *
      * @var \Gems_Util
      */

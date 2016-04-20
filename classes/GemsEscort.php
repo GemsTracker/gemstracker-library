@@ -542,6 +542,19 @@ class GemsEscort extends \MUtil_Application_Escort
 
         return $locale;
     }
+    
+    /**
+     * Set the default mailtransport to our own sendmail version
+     * 
+     * This is needed to make sure a correct sender is set when using sendmail. 
+     * Feel free to set a different default transport method in your project 
+     * when needed.
+     */
+    public function _initMailTransport()
+    {
+        $transport = new \Gems_Mail_Transport_SendMail();
+        \Zend_Mail::setDefaultTransport($transport);
+    }
 
     /**
      * Initialize the OpenRosa survey source

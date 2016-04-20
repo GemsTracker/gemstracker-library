@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-05 12:56+0200\n"
+"POT-Creation-Date: 2016-04-06 13:39+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -3654,6 +3654,11 @@ msgstr "BMI berekening"
 #: gemstracker/gemstracker/classes/Gems/Event/Survey/Completed/DisplayVars.php:60
 msgid "Echo the survey answers for testing"
 msgstr "Echo de antwoorden voor tests"
+
+#: gemstracker/gemstracker/classes/Gems/Event/Survey/Completed/SetInformedConsent.php:70
+msgid "Use the 'informedconsent' answer to set the informed consent."
+msgstr ""
+"Gebruik het 'informedconsent' antwoord om de toestemming in te stellen."
 
 #: gemstracker/gemstracker/classes/Gems/Event/Survey/Display/AllOfSurvey.php:68
 msgid "Show all answers for this survey type"
