@@ -86,6 +86,10 @@ class TrackRoundExportTask extends TrackExportAbstract
                 \Gems_Tracker_Engine_StepEngineAbstract::APPOINTMENT_TABLE,
                 \Gems_Tracker_Engine_StepEngineAbstract::RESPONDENT_TRACK_TABLE,
                 );
+            if (isset($data['gro_id_relationfield']) && $data['gro_id_relationfield']) {
+                $data['gro_id_relationfield'] = $this->translateFieldCode($fields, $data['gro_id_relationfield']);
+            }
+
             if (isset($data['gro_valid_after_source'], $data['gro_valid_after_field']) &&
                     in_array($data['gro_valid_after_source'], $tests)) {
                 // Translate field to {order}

@@ -97,6 +97,9 @@ class CreateTrackRoundImportTask extends \MUtil_Task_TaskAbstract
             $roundData['gro_survey_name'] = '';
         }
 
+        if (isset($roundData['gro_id_relationfield']) && $roundData['gro_id_relationfield']) {
+            $fieldData['gro_id_relationfield'] = $fieldCodes[$fieldData['gro_id_relationfield']];
+        }
         if (isset($roundData['valid_after']) && $roundData['valid_after']) {
             if (isset($roundOrders[$roundData['valid_after']]) && $roundOrders[$roundData['valid_after']]) {
                 $roundData['gro_valid_after_id'] = $roundOrders[$roundData['valid_after']];
