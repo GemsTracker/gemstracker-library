@@ -43,6 +43,7 @@
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.0
+ * @deprecated Since 1.7.2
  */
 abstract class Gems_Default_RespondentAction extends \Gems_Controller_BrowseEditAction
         implements \Gems_Menu_ParameterSourceInterface

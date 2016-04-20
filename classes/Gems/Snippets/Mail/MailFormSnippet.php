@@ -122,12 +122,6 @@ class Gems_Snippets_Mail_MailFormSnippet extends \MUtil_Snippets_ModelSnippetAbs
     protected $routeAction = 'index';
 
     /**
-     *
-     * @var \Zend_Session
-     */
-    protected $session;
-
-    /**
      * Is it only allowed to select a template, or can you edit the text after.
      * @var boolean
      */
