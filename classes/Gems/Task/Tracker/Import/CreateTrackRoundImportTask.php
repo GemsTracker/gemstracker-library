@@ -116,8 +116,8 @@ class CreateTrackRoundImportTask extends \MUtil_Task_TaskAbstract
         }
         if (isset($roundData['gro_valid_after_source'], $roundData['gro_valid_after_field'])) {
             switch ($roundData['gro_valid_after_source']) {
-                case self::APPOINTMENT_TABLE:
-                case self::RESPONDENT_TRACK_TABLE:
+                case \Gems_Tracker_Engine_StepEngineAbstract::APPOINTMENT_TABLE:
+                case \Gems_Tracker_Engine_StepEngineAbstract::RESPONDENT_TRACK_TABLE:
                     if (isset($fieldCodes[$roundData['gro_valid_after_field']])) {
                         $roundData['gro_valid_after_field'] = $fieldCodes[$roundData['gro_valid_after_field']];
                     }
@@ -138,8 +138,8 @@ class CreateTrackRoundImportTask extends \MUtil_Task_TaskAbstract
         }
         if (isset($roundData['gro_valid_for_source'], $roundData['gro_valid_for_field'])) {
             switch ($roundData['gro_valid_for_source']) {
-                case self::APPOINTMENT_TABLE:
-                case self::RESPONDENT_TRACK_TABLE:
+                case \Gems_Tracker_Engine_StepEngineAbstract::APPOINTMENT_TABLE:
+                case \Gems_Tracker_Engine_StepEngineAbstract::RESPONDENT_TRACK_TABLE:
                     if (isset($fieldCodes[$roundData['gro_valid_for_field']])) {
                         $roundData['gro_valid_for_field'] = $fieldCodes[$roundData['gro_valid_for_field']];
                     }

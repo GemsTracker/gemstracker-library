@@ -123,11 +123,24 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
             $sql  = "SELECT * FROM gems__groups WHERE ggp_id_group = ?";
             $code = $this->_gemsSurvey['gsu_id_primary_group'];
 
-            if ($row = $this->db->fetchRow($sql, $code)) {
+            if ($code) {
+                $row = $this->db->fetchRow($sql, $code);
+            } else {
+                $row = false;
+            }
+
+            if ($row) {
                 $this->_gemsSurvey = $row + $this->_gemsSurvey;
             } else {
-                $name = $this->getName();
-                throw new \Gems_Exception("Group code $code is missing for survey '$name'.");
+                // Add default empty row
+                $this->_gemsSurvey = array(
+                    'ggp_id_group' => false,
+                    'ggp_name' => '',
+                    'ggp_description' => '',
+                    'ggp_role' => 'respondent',
+                    'ggp_group_active' => 0,
+                    'ggp_respondent_members' => 1,
+                    'ggp_staff_members' => 0) + $this->_gemsSurvey;
             }
         }
     }
