@@ -97,8 +97,9 @@ class CreateTrackRoundImportTask extends \MUtil_Task_TaskAbstract
             $roundData['gro_survey_name'] = '';
         }
 
-        if (isset($roundData['gro_id_relationfield']) && $roundData['gro_id_relationfield']) {
-            $fieldData['gro_id_relationfield'] = $fieldCodes[$fieldData['gro_id_relationfield']];
+        if (isset($roundData['gro_id_relationfield'], $fieldCodes[$roundData['gro_id_relationfield']]) &&
+                $roundData['gro_id_relationfield']) {
+            $roundData['gro_id_relationfield'] = $fieldCodes[$roundData['gro_id_relationfield']];
         }
         if (isset($roundData['valid_after']) && $roundData['valid_after']) {
             if (isset($roundOrders[$roundData['valid_after']]) && $roundOrders[$roundData['valid_after']]) {
@@ -113,12 +114,12 @@ class CreateTrackRoundImportTask extends \MUtil_Task_TaskAbstract
                         );
             }
         }
-        if (isset($roundData['gro_valid_after_source'], $fieldData['gro_valid_after_field'])) {
+        if (isset($roundData['gro_valid_after_source'], $roundData['gro_valid_after_field'])) {
             switch ($roundData['gro_valid_after_source']) {
                 case self::APPOINTMENT_TABLE:
                 case self::RESPONDENT_TRACK_TABLE:
-                    if (isset($fieldCodes[$fieldData['gro_valid_after_field']])) {
-                        $fieldData['gro_valid_after_field'] = $fieldCodes[$fieldData['gro_valid_after_field']];
+                    if (isset($fieldCodes[$roundData['gro_valid_after_field']])) {
+                        $roundData['gro_valid_after_field'] = $fieldCodes[$roundData['gro_valid_after_field']];
                     }
             }
         }
@@ -135,12 +136,12 @@ class CreateTrackRoundImportTask extends \MUtil_Task_TaskAbstract
                         );
             }
         }
-        if (isset($roundData['gro_valid_for_source'], $fieldData['gro_valid_for_field'])) {
+        if (isset($roundData['gro_valid_for_source'], $roundData['gro_valid_for_field'])) {
             switch ($roundData['gro_valid_for_source']) {
                 case self::APPOINTMENT_TABLE:
                 case self::RESPONDENT_TRACK_TABLE:
-                    if (isset($fieldCodes[$fieldData['gro_valid_for_field']])) {
-                        $fieldData['gro_valid_for_field'] = $fieldCodes[$fieldData['gro_valid_for_field']];
+                    if (isset($fieldCodes[$roundData['gro_valid_for_field']])) {
+                        $roundData['gro_valid_for_field'] = $fieldCodes[$roundData['gro_valid_for_field']];
                     }
             }
         }
