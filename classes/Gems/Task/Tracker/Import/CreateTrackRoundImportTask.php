@@ -37,6 +37,8 @@
 
 namespace Gems\Task\Tracker\Import;
 
+use Gems\Tracker\Engine\FieldsDefinition;
+
 /**
  *
  *
@@ -97,6 +99,17 @@ class CreateTrackRoundImportTask extends \MUtil_Task_TaskAbstract
             $roundData['gro_survey_name'] = '';
         }
 
+        if (isset($roundData['gro_id_relationfield'], $fieldCodes[$roundData['gro_id_relationfield']]) &&
+                $roundData['gro_id_relationfield']) {
+            if (! (is_integer($roundData['gro_id_relationfield']) && $roundData['gro_id_relationfield'] < 0)) {
+                // -1 means the respondent itself, also gro_id_relationfield stores a "bare"
+                // field id, not one with a table prefix
+                $keys = FieldsDefinition::splitKey($fieldCodes[$roundData['gro_id_relationfield']]);
+                if (isset($keys['gtf_id_field'])) {
+                    $roundData['gro_id_relationfield'] = $keys['gtf_id_field'];
+                }
+            }
+        }
         if (isset($roundData['valid_after']) && $roundData['valid_after']) {
             if (isset($roundOrders[$roundData['valid_after']]) && $roundOrders[$roundData['valid_after']]) {
                 $roundData['gro_valid_after_id'] = $roundOrders[$roundData['valid_after']];
@@ -110,12 +123,12 @@ class CreateTrackRoundImportTask extends \MUtil_Task_TaskAbstract
                         );
             }
         }
-        if (isset($roundData['gro_valid_after_source'], $fieldData['gro_valid_after_field'])) {
+        if (isset($roundData['gro_valid_after_source'], $roundData['gro_valid_after_field'])) {
             switch ($roundData['gro_valid_after_source']) {
-                case self::APPOINTMENT_TABLE:
-                case self::RESPONDENT_TRACK_TABLE:
-                    if (isset($fieldCodes[$fieldData['gro_valid_after_field']])) {
-                        $fieldData['gro_valid_after_field'] = $fieldCodes[$fieldData['gro_valid_after_field']];
+                case \Gems_Tracker_Engine_StepEngineAbstract::APPOINTMENT_TABLE:
+                case \Gems_Tracker_Engine_StepEngineAbstract::RESPONDENT_TRACK_TABLE:
+                    if (isset($fieldCodes[$roundData['gro_valid_after_field']])) {
+                        $roundData['gro_valid_after_field'] = $fieldCodes[$roundData['gro_valid_after_field']];
                     }
             }
         }
@@ -132,12 +145,12 @@ class CreateTrackRoundImportTask extends \MUtil_Task_TaskAbstract
                         );
             }
         }
-        if (isset($roundData['gro_valid_for_source'], $fieldData['gro_valid_for_field'])) {
+        if (isset($roundData['gro_valid_for_source'], $roundData['gro_valid_for_field'])) {
             switch ($roundData['gro_valid_for_source']) {
-                case self::APPOINTMENT_TABLE:
-                case self::RESPONDENT_TRACK_TABLE:
-                    if (isset($fieldCodes[$fieldData['gro_valid_for_field']])) {
-                        $fieldData['gro_valid_for_field'] = $fieldCodes[$fieldData['gro_valid_for_field']];
+                case \Gems_Tracker_Engine_StepEngineAbstract::APPOINTMENT_TABLE:
+                case \Gems_Tracker_Engine_StepEngineAbstract::RESPONDENT_TRACK_TABLE:
+                    if (isset($fieldCodes[$roundData['gro_valid_for_field']])) {
+                        $roundData['gro_valid_for_field'] = $fieldCodes[$roundData['gro_valid_for_field']];
                     }
             }
         }

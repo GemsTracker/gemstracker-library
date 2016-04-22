@@ -335,7 +335,8 @@ class Gems_TabForm extends \Gems_Form
         /**
          * If the form is populated... and we have a tab set... select it
          */
-        if ($tab = $this->getValue('tab')) {
+        $tab = $this->getValue('tab');
+        if ($tab > 0) {
             $this->selectTab($tab);
         }
 
