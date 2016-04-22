@@ -37,6 +37,8 @@
 
 namespace Gems\Task\Tracker\Import;
 
+use Gems\Tracker\Engine\FieldsDefinition;
+
 /**
  *
  *
@@ -99,7 +101,14 @@ class CreateTrackRoundImportTask extends \MUtil_Task_TaskAbstract
 
         if (isset($roundData['gro_id_relationfield'], $fieldCodes[$roundData['gro_id_relationfield']]) &&
                 $roundData['gro_id_relationfield']) {
-            $roundData['gro_id_relationfield'] = $fieldCodes[$roundData['gro_id_relationfield']];
+            if (! (is_integer($roundData['gro_id_relationfield']) && $roundData['gro_id_relationfield'] < 0)) {
+                // -1 means the respondent itself, also gro_id_relationfield stores a "bare"
+                // field id, not one with a table prefix
+                $keys = FieldsDefinition::splitKey($fieldCodes[$roundData['gro_id_relationfield']]);
+                if (isset($keys['gtf_id_field'])) {
+                    $roundData['gro_id_relationfield'] = $keys['gtf_id_field'];
+                }
+            }
         }
         if (isset($roundData['valid_after']) && $roundData['valid_after']) {
             if (isset($roundOrders[$roundData['valid_after']]) && $roundOrders[$roundData['valid_after']]) {

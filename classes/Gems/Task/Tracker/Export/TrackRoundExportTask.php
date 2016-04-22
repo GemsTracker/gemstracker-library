@@ -37,6 +37,9 @@
 
 namespace Gems\Task\Tracker\Export;
 
+use Gems\Tracker\Engine\FieldsDefinition;
+use Gems\Tracker\Model\FieldMaintenanceModel;
+
 /**
  *
  *
@@ -87,7 +90,14 @@ class TrackRoundExportTask extends TrackExportAbstract
                 \Gems_Tracker_Engine_StepEngineAbstract::RESPONDENT_TRACK_TABLE,
                 );
             if (isset($data['gro_id_relationfield']) && $data['gro_id_relationfield']) {
-                $data['gro_id_relationfield'] = $this->translateFieldCode($fields, $data['gro_id_relationfield']);
+                // -1 means the respondent itself, also gro_id_relationfield stores a "bare"
+                // field id, not one with a table prefix
+                if ($data['gro_id_relationfield'] >= 0) {
+                    $data['gro_id_relationfield'] = $this->translateFieldCode(
+                            $fields,
+                            FieldsDefinition::makeKey(FieldMaintenanceModel::FIELDS_NAME, $data['gro_id_relationfield'])
+                            );
+                }
             }
 
             if (isset($data['gro_valid_after_source'], $data['gro_valid_after_field']) &&
