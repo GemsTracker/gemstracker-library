@@ -209,7 +209,7 @@ class Gems_Mail extends \MUtil_Mail
     }
 
     public function send($transport = null) {
-        if (!empty($this->getFrom())) {
+        if (empty($this->getFrom())) {
             throw new \Gems_Exception('No sender email set!');
         }
         
