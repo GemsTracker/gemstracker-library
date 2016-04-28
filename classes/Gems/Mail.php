@@ -80,8 +80,6 @@ class Gems_Mail extends \MUtil_Mail
     public function __construct($charset = null)
     {
         parent::__construct($charset);
-        $this->escort  = \GemsEscort::getInstance();
-        $this->project = $this->escort->project;
     }
 
     /**
@@ -136,7 +134,7 @@ class Gems_Mail extends \MUtil_Mail
             $sql = 'SELECT * FROM gems__mail_servers WHERE ? LIKE gms_from ORDER BY LENGTH(gms_from) DESC LIMIT 1';
 
             // Always set cache, se we know when not to check for this row.
-            $serverData = $this->escort->db->fetchRow($sql, $from);
+            $serverData = $this->db->fetchRow($sql, $from);
 
             // \MUtil_Echo::track($serverData);
 
@@ -209,7 +207,8 @@ class Gems_Mail extends \MUtil_Mail
     }
 
     public function send($transport = null) {
-        if (empty($this->getFrom())) {
+        $from = $this->getFrom();
+        if (empty($from)) {
             throw new \Gems_Exception('No sender email set!');
         }
         
