@@ -639,17 +639,19 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         $select = $this->tracker->getTokenSelect();
         $select->andReceptionCodes()
                 ->andRespondentTracks()
-                ->andRounds()
-                ->andSurveys()
+                ->andRounds(array())
+                ->andSurveys(array())
                 ->andTracks()
                 ->forGroupId($this->getSurvey()->getGroupId())
                 ->forRespondent($this->getRespondentId(), $this->getOrganizationId())
                 ->onlySucces()
+                ->forWhere('gsu_active = 1')
+                ->forWhere('gro_active = 1 OR gro_active IS NULL')
                 ->order('gtr_track_name')
                 ->order('gr2t_track_info')
                 ->order('gto_valid_until')
                 ->order('gto_valid_from');
-
+        
         $this->_addRelation($select);
 
         if (!empty($where)) {
@@ -910,12 +912,14 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                 // ->andRespondents()
                 // ->andRespondentOrganizations()
                 // ->andConsents
+                ->andRounds(array())
                 ->andSurveys(array())
                 ->forRespondent($this->getRespondentId())
                 ->forGroupId($this->getSurvey()->getGroupId())
                 ->onlySucces()
                 ->onlyValid()
                 ->forWhere('gsu_active = 1')
+                ->forWhere('gro_active = 1 OR gro_active IS NULL')
                 ->order(array('gto_valid_from', 'gto_round_order'));
 
         $this->_addRelation($tokenSelect);
@@ -1368,10 +1372,13 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         $tokenSelect
                 ->andReceptionCodes(array())
                 ->andSurveys(array())
+                ->andRounds(array())
                 ->forRespondent($this->getRespondentId())
                 ->forGroupId($this->getSurvey()->getGroupId())
                 ->onlySucces()
                 ->onlyValid()
+                ->forWhere('gsu_active = 1')
+                ->forWhere('gro_active = 1 OR gro_active IS NULL')
                 ->withoutToken($this->_tokenId);
 
         $this->_addRelation($tokenSelect);
