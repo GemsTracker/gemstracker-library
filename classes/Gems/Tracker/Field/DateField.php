@@ -197,7 +197,7 @@ class DateField extends FieldAbstract
             return $currentValue->toString($saveFormat);
 
         } else {
-            $displayFormat = \MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
+            $displayFormat = $this->getDateFormat();
 
             $returnDate = \MUtil_Date::format($currentValue, $saveFormat, $displayFormat);
             
