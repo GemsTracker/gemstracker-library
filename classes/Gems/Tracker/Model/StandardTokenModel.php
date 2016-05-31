@@ -122,7 +122,7 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
             "CASE WHEN grc_success = 1 THEN '' ELSE 'deleted' END",
             'row_class');
         $this->addColumn(
-            "CASE WHEN grc_success = 1 AND ((grs_email IS NOT NULL AND grs_email != '' and (gto_id_relationfield IS NULL OR gto_id_relationfield < 1)) OR (grr_email IS NOT NULL AND grr_email != '' and (gto_id_relationfield IS NOT NULL OR gto_id_relationfield > 0))) AND ggp_respondent_members = 1 AND gto_valid_from <= CURRENT_TIMESTAMP AND gto_completion_time IS NULL AND (gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP) AND gr2o_mailable = 1 AND gr2t_mailable = 1 THEN 1 ELSE 0 END",
+            "CASE WHEN grc_success = 1 AND ((grs_email IS NOT NULL AND grs_email != '' and (gto_id_relationfield IS NULL OR gto_id_relationfield < 1)) OR (grr_email IS NOT NULL AND grr_email != '' and (gto_id_relationfield > 0))) AND ggp_respondent_members = 1 AND gto_valid_from <= CURRENT_TIMESTAMP AND gto_completion_time IS NULL AND (gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP) AND gr2o_mailable = 1 AND gr2t_mailable = 1 THEN 1 ELSE 0 END",
             'can_email');
 
         $this->addColumn(
