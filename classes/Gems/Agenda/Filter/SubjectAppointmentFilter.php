@@ -73,6 +73,8 @@ class SubjectAppointmentFilter extends AppointmentFilterAbstract
      */
     public function matchAppointment(\Gems_Agenda_Appointment $appointment)
     {
-        return \MUtil_String::contains($appointment->getSubject(), $this->_data['gaf_filter_text1']);
+        $regex = '/' . str_replace(array('%', '_'), array('.*', '.{1,1}'),$this->_data['gaf_filter_text1']) . '/i';
+
+        return (boolean) preg_match($regex, $appointment->getSubject());
     }
 }
