@@ -83,18 +83,25 @@ class Gems_Default_AppointmentAction extends \Gems_Default_RespondentChildAction
      * @var mixed String or array of snippets name
      */
     protected $createEditSnippets = 'Agenda_AppointmentFormSnippet';
+	
     /**
      *
      * @var \Gems_User_User
      */
     public $currentUser;
 
-
     /**
      *
      * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
+
+    /**
+     * The snippets used for the delete action.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $deleteSnippets = 'Agenda\\YesNoAppointmentDeleteSnippet';
 
     /**
      * The parameters used for the index action minus those in autofilter.

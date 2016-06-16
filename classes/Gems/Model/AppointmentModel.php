@@ -170,6 +170,19 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
                         "') THEN 'deleted' ELSE '' END",
                     'row_class'
                     );
+					
+            $codes = $agenda->getStatusCodesInactive();
+            if (isset($codes['CA'])) {
+                $cancelCode = 'CA';
+            } elseif ($codes) {
+                reset($codes);
+                $cancelCode = key($codes);
+            } else {
+                $cancelCode = null;
+            }
+            if ($cancelCode) {
+                $this->setDeleteValues('gap_status', $cancelCode);
+            }
         }
     }
 
