@@ -133,8 +133,13 @@ class RoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
         $this->columns[30] = array('gro_round_description');
         $this->columns[40] = array('gro_icon_file');
         $this->columns[45] = array('ggp_name');
-        $this->columns[50] = array('gro_valid_after_field', $sp, 'gro_valid_after_source', $sp, 'gro_valid_after_id');
-        $this->columns[60] = array('gro_valid_for_field', $sp, 'gro_valid_for_source', $sp, 'gro_valid_for_id');
+        $fromHeader = array(
+            '', // No content
+            array($this->_('Valid from'), $br)  // Force break in the header
+        );
+        $untilHeader = array('', array($this->_('Valid until'), $br));
+        $this->columns[50] = array($fromHeader,'gro_valid_after_field', $sp, 'gro_valid_after_source', $sp, 'gro_valid_after_id');
+        $this->columns[60] = array($untilHeader, 'gro_valid_for_field', $sp, 'gro_valid_for_source', $sp, 'gro_valid_for_id');
         $this->columns[70] = array('gro_active');
         if ($label = $model->get('gro_changed_event', 'label')) {
             $this->columns[80] = array('gro_changed_event');
