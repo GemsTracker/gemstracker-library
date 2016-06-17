@@ -505,7 +505,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
                 ->setParameterFilter('is_completed', 1, \Gems_Model::ID_TYPE, 'token');
 
 
-        $page->addAction($this->_('Export archive'), 'pr.respondent.export-html', 'export')
+        $page->addAction($this->_('Export archive'), 'pr.respondent.export-html', 'export-archive')
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
 

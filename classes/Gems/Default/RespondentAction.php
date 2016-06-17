@@ -344,7 +344,7 @@ abstract class Gems_Default_RespondentAction extends \Gems_Controller_BrowseEdit
         $this->html[] = $form;
     }
 
-    public function exportAction()
+    public function exportArchiveAction()
     {
         //First show the respondent snippet
         $model = $this->getModel();

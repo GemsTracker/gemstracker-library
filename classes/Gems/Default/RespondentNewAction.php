@@ -232,10 +232,9 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
     /**
      * Action for dossier export
      */
-    public function exportAction()
+    public function exportArchiveAction()
     {
         $params = $this->_processParameters($this->showParameters);
-        $data   = $params['respondentData'];
 
         $this->addSnippets($this->exportSnippets, $params);
 
@@ -251,7 +250,14 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
         $form->populate($request->getParams());
 
         if ($request->isPost()) {
-            $export->render((array) $data['gr2o_patient_nr'], $this->getRequest()->getParam('group'), $this->getRequest()->getParam('format'));
+            $respondent = $this->getRespondent();
+            $patients   = array(
+                array(
+                    'gr2o_id_organization' => $respondent->getOrganizationId(),
+                    'gr2o_patient_nr'      => $respondent->getPatientNumber()
+                    )
+                );
+            $export->render($patients, $this->getRequest()->getParam('group'), $this->getRequest()->getParam('format'));
         }
     }
 
