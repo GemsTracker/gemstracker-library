@@ -76,7 +76,7 @@ class Gems_Model_RespondentRelationInstance extends \Gems_Registry_TargetAbstrac
 
     public function __construct($model, $data) {
         // Sanity check:
-        if (!($model instanceof EMC_Model_RespondentRelationModel)) {
+        if (!($model instanceof Gems_Model_RespondentRelationModel)) {
             throw new \Gems_Exception_Coding('Please provide the correct type of model');
         }
 

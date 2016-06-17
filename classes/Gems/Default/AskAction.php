@@ -53,13 +53,14 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
 
     /**
      * Usually a child of \Gems_Tracker_Snippets_ShowTokenLoopAbstract,
-     * Track_Token_ShowAllOpenSnippet or Track_Token_ShowFirstOpenSnippet or
+     * Ask_ShowAllOpenSnippet or Ask_ShowFirstOpenSnippet or
      * a project specific one.
      *
      * @var array Or string of snippet names, presumably \Gems_Tracker_Snippets_ShowTokenLoopAbstract snippets
      */
-    // protected $forwardSnippets = 'Track_Token_ShowAllOpenSnippet';
-    protected $forwardSnippets = 'Ask_ShowFirstOpenSnippet';
+    // protected $forwardSnippets = 'Ask\\ShowAllOpenSnippet';
+    // protected $forwardSnippets = 'Ask\\RedirectUntilGoodbyeSnippet';
+    protected $forwardSnippets = 'Ask\\ShowFirstOpenSnippet';
 
     /**
      * The width factor for the label elements.

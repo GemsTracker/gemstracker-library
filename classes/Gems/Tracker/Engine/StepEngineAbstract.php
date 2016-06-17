@@ -815,7 +815,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
      */
     public function getTrackDeleteSnippetNames(\Gems_Tracker_RespondentTrack $respTrack)
     {
-        return array('DeleteInSourceTrackSnippet', 'TrackTokenOverviewSnippet');
+        return array('Tracker\\DeleteTrackSnippet', 'Tracker\\TrackTokenOverviewSnippet');
     }
 
     /**
@@ -828,7 +828,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
     {
         return array(
             'Tracker\\ShowTrackUsageSnippet',
-            'EditTrackSnippet',
+            'Tracker\\EditTrackSnippet',
             'Tracker\\TrackUsageTextDetailsSnippet',
             'Tracker\\TrackSurveyOverviewSnippet',
             );
@@ -845,7 +845,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
     {
         return array(
             'Tracker\\ShowTrackUsageSnippet',
-            'EditTrackSnippet',
+            'Tracker\\EditTrackSnippet',
             'Tracker\\TrackUsageTextDetailsSnippet',
             'Tracker\\TrackSurveyOverviewSnippet',
             );
