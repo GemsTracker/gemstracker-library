@@ -199,15 +199,10 @@ class DateField extends FieldAbstract
         } else {
             $displayFormat = $this->getDateFormat();
 
-            $returnDate = \MUtil_Date::format($currentValue, $saveFormat, $displayFormat);
-            
-            if (is_null($returnDate)) {
-                if (\Zend_Date::isDate($currentValue, $saveFormat)) {
-                    return $currentValue;
-                }
+            $saveDate = \MUtil_Date::ifDate($currentValue, array($displayFormat, $saveFormat, \Gems_Tracker::DB_DATETIME_FORMAT));
+            if ($saveDate instanceof \Zend_Date) {
+                return $saveDate->toString($saveFormat);
             }
-            
-            return $returnDate;
         }
 
         return (string) $currentValue;
