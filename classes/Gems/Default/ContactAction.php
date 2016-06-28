@@ -55,7 +55,7 @@ class Gems_Default_ContactAction extends \Gems_Controller_Action
      *
      * @return \MUtil_Html_HtmlElement
      */
-    private function _getOrganizationsList()
+    protected function _getOrganizationsList()
     {
         $html = new \MUtil_Html_Sequence();
         $sql = '

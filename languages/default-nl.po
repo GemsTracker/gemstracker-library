@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ../../..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 1.8.7\n"
+"X-Generator: Poedit 1.8.8\n"
 "X-Poedit-SearchPath-0: gemstracker/gemstracker\n"
 "X-Poedit-SearchPath-1: magnafacta/mutil/src/MUtil\n"
 "X-Poedit-SearchPathExcluded-0: gemstracker/gemstracker/vendor\n"
@@ -1239,7 +1239,7 @@ msgstr "%s is de organisatie om contact mee op te nemen met vragen over %s."
 #: gemstracker/gemstracker/classes/Gems/Default/ContactAction.php:95
 #, php-format
 msgid "%s is a collaboration of these organizations:"
-msgstr "Deze organisaties werken samen voor het %s project:"
+msgstr "Deze organisaties werken samen aan het %s project:"
 
 #: gemstracker/gemstracker/classes/Gems/Default/ContactAction.php:108
 #, php-format
@@ -1312,7 +1312,7 @@ msgstr "Ondersteuning"
 #: gemstracker/gemstracker/classes/Gems/Default/ContactAction.php:193
 #, php-format
 msgid "There is more than one way to get support for %s."
-msgstr "U kan op meerdere manieren ondersteuning krijgen voor %s."
+msgstr "U kan op meerdere manieren ondersteuning krijgen bij %s."
 
 #: gemstracker/gemstracker/classes/Gems/Default/ContactAction.php:198
 msgid "Documentation"
