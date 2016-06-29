@@ -152,7 +152,7 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
             $params['model']                = $model;
             $params['identifier']           = $this->_getIdParam();
             $params['view']                 = $this->view;
-            $params['routeAction']          = array($this->getRequest()->getActionName() => 'index');
+            $params['routeAction']          = 'index';
             $params['formTitle']            = sprintf($this->_('Send mail to: %s'), $this->getTopic());
             $params['templateOnly']         = ! $this->currentUser->hasPrivilege('pr.token.mail.freetext');
             $params['multipleTokenData']    = $tokensData;
