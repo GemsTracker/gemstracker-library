@@ -1157,3 +1157,8 @@ UPDATE gems__roles SET grl_parents = null,
     ,pr.option.password,pr.option.edit,pr.organization-switch,
 	,pr.plan,pr.plan.compliance,pr.plan.consent,pr.plan.overview,pr.plan.respondent,pr.plan.summary,pr.plan.token'
     WHERE grl_name = 'researcher' and grl_parents = '801' and grl_changed = grl_created AND grl_changed_by = 1;
+
+-- GEMS VERSION: 59
+-- PATCH: Add gto_icon_file so individual tokens can have icons too
+ALTER TABLE gems__tokens
+    ADD gto_icon_file varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER gto_round_order;

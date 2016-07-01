@@ -1,3 +1,7 @@
+Important changes from 1.7.2 => 1.7.3
+============================================================
+Round icons are now in the token table just like the round descriptions
+
 Important changes from 1.7.1 => 1.7.2
 ============================================================
 Searching for respondents by track or lack of track

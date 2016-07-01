@@ -278,6 +278,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
             $values['gto_id_round']          = $round['gro_id_round'];
             $values['gto_id_survey']         = $round['gro_id_survey'];
             $values['gto_round_order']       = $round['gro_id_order'];
+            $values['gto_icon_file']         = $round['gro_icon_file'];
             $values['gto_round_description'] = $round['gro_round_description'];
 
             // All other values are not changed by this query and get the default DB value on insertion
@@ -360,6 +361,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
                 gto_id_track = $qTrackId,
                 gto_id_survey = CASE WHEN gto_start_time IS NULL AND grc_success = 1 THEN gro_id_survey ELSE gto_id_survey END,
                 gto_round_order = gro_id_order,
+                gto_icon_file = gro_icon_file,
                 gto_round_description = gro_round_description,
                 gto_changed = CURRENT_TIMESTAMP,
                 gto_changed_by = $qUserId
@@ -375,11 +377,14 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
                     gto_round_order != gro_id_order OR
                     (gto_round_order IS NULL AND gro_id_order IS NOT NULL) OR
                     (gto_round_order IS NOT NULL AND gro_id_order IS NULL) OR
+                    gto_icon_file != gro_icon_file OR
+                    (gto_icon_file IS NULL AND gro_icon_file IS NOT NULL) OR
+                    (gto_icon_file IS NOT NULL AND gro_icon_file IS NULL) OR
                     gto_round_description != gro_round_description OR
                     (gto_round_description IS NULL AND gro_round_description IS NOT NULL) OR
                     (gto_round_description IS NOT NULL AND gro_round_description IS NULL)
                 ) AND
-                gto_id_respondent_track = ?";
+                    gto_id_respondent_track = ?";
 
         $stmt = $this->db->query($sql, array($respTrackId));
 

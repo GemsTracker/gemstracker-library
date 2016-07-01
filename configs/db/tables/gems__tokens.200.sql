@@ -15,6 +15,7 @@ CREATE TABLE if not exists gems__tokens (
 
         -- values initially filled from gems__rounds, but that might get different values later on, but but not now
         gto_round_order         int not null default 10,
+        gto_icon_file           varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
         gto_round_description   varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
         --- fields for relations
