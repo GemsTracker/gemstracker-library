@@ -102,6 +102,7 @@ class ExportSurveysFormSnippet extends \MUtil_Snippets_SnippetAbstract
             array('label' => $this->_('Survey'), 'multiOptions' => $surveys)
             );
         $elements['gto_id_survey']->setRequired(true);
+        $elements['gto_id_survey']->setSeparator('');
 
         if (\MUtil_Bootstrap::enabled()) {
             $element = new \MUtil_Bootstrap_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=gto_id_survey]'));
@@ -168,10 +169,11 @@ class ExportSurveysFormSnippet extends \MUtil_Snippets_SnippetAbstract
 
         $exportClass = $export->getExport($currentType);
         $exportName = $exportClass->getName();
-        $exportFormElements['firstCheck'] = $this->form->createElement('hidden', $currentType);
         $exportFormElements = $exportClass->getFormElements($this->form, $data);
         
         if ($exportFormElements) {
+            $exportFormElements['firstCheck'] = $this->form->createElement('hidden', $currentType);
+            $exportFormElements['firstCheck']->setBelongsTo($exportName);
             $this->form->addElements($exportFormElements);
         }
 

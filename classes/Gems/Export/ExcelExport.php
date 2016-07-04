@@ -76,7 +76,8 @@ class ExcelExport extends ExportAbstract
                     'formatVariable' => $this->_('Export labels instead of field names'),
                     'formatAnswer' => $this->_('Format answers')
                 ))
-                ->setBelongsTo($this->getName());
+                ->setBelongsTo($this->getName())
+                ->setSeparator('');
         $elements['format'] = $element;
 
         return $elements;
@@ -162,7 +163,10 @@ class ExcelExport extends ExportAbstract
 
             $exportName = $this->getName();
 
-            if (isset($this->data[$exportName]) && isset($this->data[$exportName]['format']) && in_array('formatVariable', $this->data[$exportName]['format'])) {
+            if (isset($this->data[$exportName]) && isset($this->data[$exportName]['format']) && in_array('formatAnswer', $this->data[$exportName]['format'])) {
+                // We want answer labels instead of codes
+            } else {
+                // Skip formatting 
                $this->modelFilterAttributes = array('formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay');
             }
 

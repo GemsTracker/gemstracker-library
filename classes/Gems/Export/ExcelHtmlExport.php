@@ -71,7 +71,8 @@ class ExcelHtmlExport extends ExportAbstract
                     'formatVariable' => $this->_('Export labels instead of field names'),
                     'formatAnswer' => $this->_('Format answers')
                 ))
-                ->setBelongsTo($this->getName());
+                ->setBelongsTo($this->getName())
+                ->setSeparator('');
         $elements['format'] = $element;
 
         return $elements;
