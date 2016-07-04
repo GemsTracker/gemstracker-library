@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ../../..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 1.8.8\n"
+"X-Generator: Poedit 1.8.7\n"
 "X-Poedit-SearchPath-0: gemstracker/gemstracker\n"
 "X-Poedit-SearchPath-1: magnafacta/mutil/src/MUtil\n"
 "X-Poedit-SearchPathExcluded-0: gemstracker/gemstracker/vendor\n"
@@ -5424,7 +5424,7 @@ msgstr "(selecteer een traject)"
 #: gemstracker/gemstracker/classes/Gems/Snippets/Export/AnswerAutosearchFormSnippet.php:57
 #: gemstracker/gemstracker/classes/Gems/Snippets/Export/SurveyAutosearchFormSnippet.php:55
 msgid "(select a round)"
-msgstr "(selecteer een rone)"
+msgstr "(selecteer een ronde)"
 
 #: gemstracker/gemstracker/classes/Gems/Snippets/Export/AnswerAutosearchFormSnippet.php:68
 #: gemstracker/gemstracker/classes/Gems/Snippets/Export/ExportSurveysFormSnippet.php:133
