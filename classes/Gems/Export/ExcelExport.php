@@ -139,13 +139,16 @@ class ExcelExport extends ExportAbstract
      * @param array $data                       Data submitted by export form
      * @param array $modelId                    Model Id when multiple models are passed
      * @param string $tempFilename              The temporary filename while the file is being written
+     * @param array  $filter                    Filter (limit) to use
      */
-    public function addRows($data, $modelId, $tempFilename)
+    public function addRows($data, $modelId, $tempFilename, $filter)
     {
         $filename = $tempFilename . $this->fileExtension;
         $this->data = $data;
         $this->modelId = $modelId;
         $this->model = $this->getModel();
+        
+        $this->model->setFilter($filter + $this->model->getFilter());
         if ($this->model) {
 
             if ($this->batch) {
@@ -154,7 +157,16 @@ class ExcelExport extends ExportAbstract
                 $this->_session = new \Zend_Session_Namespace(__CLASS__);
                 $rowNumber = $this->_session->rowNumber;
             }
-
+            
+            // Reset internal rownumber when we move to a new file
+            if ($filter = $this->model->getFilter()) {
+                if (array_key_exists('limit', $filter)) {
+                    if ($filter['limit'][1] == 0) {
+                        $rowNumber = 2;
+                    }
+                }
+            }
+            
             if (empty($rowNumber)) {
                 $rowNumber = 2;
             }

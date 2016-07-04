@@ -268,11 +268,14 @@ class StataExport extends ExportAbstract
      * @param array $data                       Data submitted by export form
      * @param array $modelId                    Model Id when multiple models are passed
      * @param string $tempFilename              The temporary filename while the file is being written
+     * @param array  $filter                    Filter (limit) to use
      */
-    public function addRows($data, $modelId, $tempFilename)
+    public function addRows($data, $modelId, $tempFilename, $filter)
     {
         $this->data = $data;
         $this->model = $this->getModel();
+        
+        $this->model->setFilter($filter + $this->model->getFilter());
 
         $rows = $this->model->load();
 

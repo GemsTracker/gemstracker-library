@@ -57,7 +57,7 @@ class Gems_Task_Export_ExportCommand extends \Gems_Task_TaskAbstract
      * @param string $language   The language used / to use for the export
      * @param array  $data       The formdata
      */
-    public function execute($exportType = null, $command = null, $filter = null, $language = null, $data = null)
+    public function execute($exportType = null, $command = null, $params = null)
     {
         $params = array_slice(func_get_args(), 2);
         $export = $this->loader->getExport()->getExport($exportType);

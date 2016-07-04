@@ -159,9 +159,9 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
             do {
                 $filter['limit']  = array($this->rowsPerBatch, $currentRow);
                 if ($this->batch) {
-                    $this->batch->addTask('Export_ExportCommand', $data['type'], 'addRows', $data, $modelId, $this->tempFilename);
+                    $this->batch->addTask('Export_ExportCommand', $data['type'], 'addRows', $data, $modelId, $this->tempFilename, $filter);
                 } else {
-                    $this->addRows($data, $modelId, $this->tempFilename);
+                    $this->addRows($data, $modelId, $this->tempFilename, $filter);
                 }
                 $currentRow = $currentRow + $this->rowsPerBatch;
             } while ($currentRow < $totalRows);
@@ -212,13 +212,15 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
      * @param array $data                       Data submitted by export form
      * @param array $modelId                    Model Id when multiple models are passed
      * @param string $tempFilename              The temporary filename while the file is being written
+     * @param array  $filter                    Filter (limit) to use
      */
-    public function addRows($data, $modelId, $tempFilename)
+    public function addRows($data, $modelId, $tempFilename, $filter)
     {
         $this->data = $data;
         $this->modelId = $modelId;
         $this->model = $this->getModel();
 
+        $this->model->setFilter($filter + $this->model->getFilter());
         if ($this->model) {
             $rows = $this->model->load();
             $file = fopen($tempFilename . $this->fileExtension, 'a');
@@ -439,7 +441,8 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
             if ($this->modelId && isset($model[$this->modelId])) {
                 $model = $model[$this->modelId];
             } else {
-                $model = false;
+                return false;
+                //$model = false;
             }
         }
 
