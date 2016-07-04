@@ -1034,7 +1034,13 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
             }
         }
 
-        $rows = $select->query()->fetchAll(\Zend_Db::FETCH_ASSOC);
+        // Prevent failure when survey no longer active
+        try {
+            $rows = $select->query()->fetchAll(\Zend_Db::FETCH_ASSOC);      
+        } catch (Exception $exc) {
+            $rows = false;
+        }
+
         $results = array();
         //@@TODO: check if we really need this, or can just change the 'token' field to have the 'original'
         //        this way other sources that don't perform changes on the token field don't have to loop

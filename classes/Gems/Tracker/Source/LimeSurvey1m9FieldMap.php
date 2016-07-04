@@ -209,7 +209,12 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                 $this->_hardAnswers = array();
             }
         }
-        return $this->_hardAnswers[$qid][$scale_id];
+        
+        if (array_key_exists($qid, $this->_hardAnswers) && array_key_exists($scale_id, $this->_hardAnswers[$qid])) {
+            return $this->_hardAnswers[$qid][$scale_id];
+        }
+        
+        return false;
     }
 
     protected function _getMap()
@@ -994,9 +999,13 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
 
     protected function loadTableMetaData()
     {
-        $tableName = $this->_getSurveyTableName();
-        $table = new \Zend_DB_Table(array('name' => $tableName, 'db' => $this->lsDb));
-        $info = $table->info();
+        try {
+            $tableName = $this->_getSurveyTableName();
+            $table = new \Zend_DB_Table(array('name' => $tableName, 'db' => $this->lsDb));
+            $info = $table->info();
+        } catch (Exception $exc) {
+            $info = array('metadata'=>array());
+        }
 
         $this->tableMetaData = $info['metadata'];
 
