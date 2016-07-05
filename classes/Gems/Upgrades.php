@@ -72,6 +72,7 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
         $this->register('Upgrade164to170', 'Upgrade from 1.6.4 to 1.7.0');
         $this->register('Upgrade170to171', 'Upgrade from 1.7.0 to 1.7.1');
         $this->register('Upgrade171to172', 'Upgrade from 1.7.1 to 1.7.2');
+        $this->register('Upgrade172to173', 'Upgrade from 1.7.2 to 1.7.3');
         /**
          * To have the new_project updated to the highest level, update
          *
@@ -286,6 +287,20 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
     {
         $this->_batch->addTask('Db_CreateNewTables');
         $this->_batch->addTask('Db_AddPatches', 58);
+
+        $this->_batch->addTask('Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
+        $this->_batch->addTask('Echo', $this->_('Check the Code compatibility report for any issues with project specific code!'));
+
+        return true;
+    }
+    
+       /**
+     * To upgrade to 1.7.3
+     */
+     public function Upgrade172to173()
+    {
+        $this->_batch->addTask('Db_CreateNewTables');
+        $this->_batch->addTask('Db_AddPatches', 59);
 
         $this->_batch->addTask('Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
         $this->_batch->addTask('Echo', $this->_('Check the Code compatibility report for any issues with project specific code!'));
