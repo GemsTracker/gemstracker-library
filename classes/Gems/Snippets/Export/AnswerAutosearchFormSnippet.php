@@ -75,7 +75,7 @@ class AnswerAutosearchFormSnippet extends \Gems_Snippets_AutosearchFormSnippet
 
         $elements[] = null;
 
-        $element = $this->form->createElement('checkbox', 'tid_fields');
+        $element = $this->form->createElement('checkbox', 'add_track_fields');
         $element->setLabel($this->_('Track fields'));
         $element->getDecorator('Label')->setOption('placement', \Zend_Form_Decorator_Abstract::APPEND);
         $element->setDescription($this->_('Add track fields to export'));
