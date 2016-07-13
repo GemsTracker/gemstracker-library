@@ -200,7 +200,11 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
      */
     public function setReceptionCode($newCode, $userId)
     {
-        $oldCode = $this->respondentTrack->getReceptionCode()->getCode();
+        $oldCode = $this->respondentTrack->getReceptionCode();
+        
+        if (! $newCode instanceof \Gems_Util_ReceptionCode) {
+            $newCode = $this->util->getReceptionCode($newCode);
+        }
 
         // Use the repesondent track function as that cascades the consent code
         $changed = $this->respondentTrack->setReceptionCode($newCode, $this->formData['gr2t_comment'], $userId);
@@ -208,15 +212,9 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
         if ($this->unDelete) {
             $this->addMessage($this->_('Track restored.'));
 
-            if (isset($this->formData['restore_tokens']) && $this->formData['restore_tokens']) {
-                $count = 0;
-                foreach ($this->respondentTrack->getTokens() as $token) {
-                    if ($token instanceof \Gems_Tracker_Token) {
-                        if ($oldCode === $token->getReceptionCode()->getCode()) {
-                            $count += $token->setReceptionCode($newCode, null, $userId);
-                        }
-                    }
-                }
+            if (isset($this->formData['restore_tokens']) && $this->formData['restore_tokens']) {                
+                $count = $this->respondentTrack->restoreTokens($oldCode, $newCode);
+                
                 $this->addMessage(sprintf($this->plural(
                         '%d token reception codes restored.',
                         '%d tokens reception codes restored.',
@@ -224,7 +222,7 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
                         ), $count));
             }
         } else {
-            if ($this->util->getReceptionCode($newCode)->isStopCode()) {
+            if ($newCode->isStopCode()) {
                 $this->addMessage($this->_('Track stopped.'));
             } else {
                 $this->addMessage($this->_('Track deleted.'));

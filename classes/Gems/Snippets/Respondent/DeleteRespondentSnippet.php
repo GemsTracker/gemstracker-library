@@ -200,35 +200,16 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
      */
     public function setReceptionCode($newCode, $userId)
     {
-        $model   = $this->getModel();
-        $oldCode = $this->respondent->getReceptionCode()->getCode();
-        $code    = $model->setReceptionCode(
-                $this->formData['gr2o_patient_nr'],
-                $this->formData['gr2o_id_organization'],
-                $newCode,
-                $userId,
-                $oldCode
-                );
+        $oldCode = $this->respondent->getReceptionCode();
+        $code    = $this->respondent->setReceptionCode($newCode);
 
         // Is the respondent really removed
         if ($code->isSuccess()) {
             $this->addMessage($this->_('Respondent restored.'));
 
             if ($this->formData['restore_tracks']) {
-                $count      = 0;
-                $respTracks = $this->loader->getTracker()->getRespondentTracks(
-                        $this->formData['grs_id_user'],
-                        $this->formData['gr2o_id_organization']
-                        );
-
-                foreach ($respTracks as $respTrack) {
-                    if ($respTrack instanceof \Gems_Tracker_RespondentTrack) {
-                        if ($oldCode == $respTrack->getReceptionCode()->getCode()) {
-                            $respTrack->setReceptionCode($code, null, $userId);
-                            $count++;
-                        }
-                    }
-                }
+                $count = $this->respondent->restoreTracks($oldCode, $code);
+                
                 $this->addMessage(sprintf($this->plural('Restored %d track.', 'Restored %d tracks.', $count), $count));
             }
 
