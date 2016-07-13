@@ -5766,7 +5766,7 @@ msgstr "Ontvangstcode %s bestaat niet."
 
 #: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/DeleteRespondentSnippet.php:169
 msgid "Restore tracks"
-msgstr "Herstel trajectvelden"
+msgstr "Herstel trajecten"
 
 #: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/DeleteRespondentSnippet.php:170
 msgid "Restores tracks with the same code as the respondent."
