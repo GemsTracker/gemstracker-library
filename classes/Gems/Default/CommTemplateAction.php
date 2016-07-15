@@ -69,9 +69,9 @@ class Gems_Default_CommTemplateAction extends \Gems_Controller_ModelSnippetActio
 
         $commTargets = $this->loader->getMailTargets();
 
-        $model->set('gct_target', 'label', $this->_('Mail Target'), 'multiOptions', $commTargets, 'Gems_Default_CommTemplateAction', 'translateTargets');
         $model->set('gct_name', 'label', $this->_('Name'), 'size', 50);
-
+        $model->set('gct_target', 'label', $this->_('Mail Target'), 'multiOptions', $commTargets, 'Gems_Default_CommTemplateAction', 'translateTargets');
+        
         $translationModel = new \MUtil_Model_TableModel('gems__comm_template_translations', 'gctt');
         if ($action === 'index') {
             $translationModel->set('gctt', 'label', $this->_('Subject'), 'size', 50, 'formatFunction', array('Gems_Default_CommTemplateAction', 'displayMultipleSubjects'));

@@ -100,6 +100,7 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends \Gems_Snippets_ModelFormSn
         $this->initItems();
         $this->addItems($bridge, 'gct_name');
         $this->addItems($bridge, 'gct_id_template', 'gct_target');
+        $this->addItems($bridge, 'gct_code');
 
         $bridge->getForm()->getElement('gct_target')->setAttrib('onchange', 'this.form.submit()');
 
@@ -146,8 +147,7 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends \Gems_Snippets_ModelFormSn
 
         $bridge->addElement($this->mailElements->createPreviewHtmlElement('Preview HTML'));
         $bridge->addElement($this->mailElements->createPreviewTextElement('Preview Text'));
-        $bridge->addHtml('available_fields', array('label' => $this->_('Available fields')));
-        $this->addItems($bridge, 'gct_code');
+        $bridge->addHtml('available_fields', array('label' => $this->_('Available fields')));        
     }
 
     /**
