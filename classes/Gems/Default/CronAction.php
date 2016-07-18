@@ -47,6 +47,19 @@
 class Gems_Default_CronAction extends \Gems_Controller_Action
 {
     /**
+     * Should the batch be started automatically?
+     * 
+     * @var boolean
+     */
+    protected $_autoStart = true;
+    
+    /**
+     *
+     * @var \Gems_AccessLog
+     */
+    public $accesslog;
+    
+    /**
      *
      * @var \Gems_User_User
      */
@@ -90,143 +103,38 @@ class Gems_Default_CronAction extends \Gems_Controller_Action
      * @var \Gems_Util
      */
     public $util;
+    
+    /**
+     * Perform automatic job, needs to be started by hand
+     */
+    public function batchAction()
+    {
+        $this->_autoStart = false;
+        $this->indexAction();
+    }
 
     /**
      * Perform automatic job mail
      */
     public function commJob()
     {
-        /*
-        \Zend_Mail::setDefaultTransport(new \Zend_Mail_Transport_File(array(
-            'callback' => function ($transport) {
-                // throw new \Zend_Mail_Transport_Exception('Invalid e-mail address');
-                return $transport->recipients . '_' . time() . '_' . mt_rand() . '.tmp';
-            },
-            'path'     => GEMS_ROOT_DIR . '/var/sentmails'
-        )));
-        // */
-
-
-        $dbLookup   = $this->util->getDbLookup();
-        $mailLoader = $this->loader->getMailLoader();
-        $tracker    = $this->loader->getTracker();
-        $model      = $tracker->getTokenModel();
-
-        // Fix for #680: token with the valid from the longest in the past should be the
-        // used as first token and when multiple rounds start at the same date the
-        // lowest round order should be used.
-        $model->setSort(array('gto_valid_from' => SORT_ASC, 'gto_round_order' => SORT_ASC));
-
-        // Check for unprocessed tokens
-        $tracker->processCompletedTokens(null, $this->currentUser->getUserId());
-
-        $sql = "SELECT *
-            FROM gems__comm_jobs INNER JOIN
-                gems__comm_templates ON gcj_id_message = gct_id_template
-            WHERE gcj_active = 1
-            ORDER BY CASE WHEN gcj_id_survey IS NULL THEN 1 ELSE 0 END,
-                CASE WHEN gcj_round_description IS NULL THEN 1 ELSE 0 END,
-                CASE WHEN gcj_id_track IS NULL THEN 1 ELSE 0 END,
-                CASE WHEN gcj_id_organization IS NULL THEN 1 ELSE 0 END";
-
-        $jobs = $this->db->fetchAll($sql);
-
-        $mailed = false;
-        if ($jobs) {
-            foreach ($jobs as $job) {
-                $sendByMail = $this->getUserEmail($job['gcj_id_user_as']);
-
-                $filter = $dbLookup->getFilterForMailJob($job);
-
-                $multipleTokensData = $model->load($filter);
-                if (count($multipleTokensData)) {
-
-                    $errors  = 0;
-                    $mails   = 0;
-                    $updates = 0;
-                    $sentMailAddresses = array();
-
-                    foreach($multipleTokensData as $tokenData) {
-                        $mailer = $mailLoader->getMailer('token', $tokenData);
-                        /* @var $mailer \Gems_Mail_TokenMailer */
-                        $token = $mailer->getToken();
-                        $email = $token->getEmail();
-                        $respondentId = $token->getRespondent()->getId();
-
-                        if (!empty($email)) {
-                            if ($job['gcj_from_method'] == 'O') {
-                                $organization  = $mailer->getOrganization();
-                                $from = $organization->getEmail();//$organization->getName() . ' <' . $organization->getEmail() . '>';
-                                $mailer->setFrom($from);
-                            } elseif ($job['gcj_from_method'] == 'U') {
-                                $from = $sendByMail;
-                                $mailer->setFrom($from);
-                            } elseif ($job['gcj_from_method'] == 'F') {
-                                $mailer->setFrom($job['gcj_from_fixed']);
-                            }
-                            $mailer->setBy($sendByMail);
-
-                            try {
-                                if ($job['gcj_process_method'] == 'M') {
-                                    $mailer->setTemplate($job['gcj_id_message']);
-                                    $mailer->send();
-                                    $mailed = true;
-
-                                    $mails++;
-                                    $updates++;
-                                } elseif (!isset($sentMailAddresses[$respondentId][$email])) {
-                                    $mailer->setTemplate($job['gcj_id_message']);
-                                    $mailer->send();
-                                    $mailed = true;
-
-                                    $mails++;
-                                    $updates++;
-                                    $sentMailAddresses[$respondentId][$email] = true;
-
-                                } elseif ($job['gcj_process_method'] == 'O') {
-                                    $mailer->updateToken();
-                                    $updates++;
-                                }
-                            } catch (\Zend_Mail_Exception $exception) {
-                                $fields = $mailer->getMailFields(false);
-
-                                $info = sprintf("Error mailing to %s respondent %s with email address %s.",
-                                        $fields['organization'],
-                                        $fields['full_name'],
-                                        $fields['email']
-                                        );
-
-                                // Use a gems exception to pass extra information to the log
-                                $gemsException = new \Gems_Exception($info, 0, $exception);
-                                \Gems_Log::getLogger()->logError($gemsException);
-
-                                $errors++;
-                            }
-                        }
-                    }
-
-                    $this->addMessage(sprintf(
-                            $this->_('Sent %d e-mails with template %s, updated %d tokens.'),
-                            $mails,
-                            $job['gct_name'],
-                            $updates
-                            ));
-
-                    if ($errors) {
-                        $this->addMessage(sprintf(
-                                $this->_('%d error(s) occurred while creating mails for template %s. Check error log for details.'),
-                                $errors,
-                                $job['gct_name']
-                                ));
-                    }
-                }
-                $tokensData = null;
-            }
+        $batch = $this->loader->getTaskRunnerBatch('cron');
+        $batch->minimalStepDurationMs = 3000; // 3 seconds max before sending feedback
+        if ($this->_autoStart) {
+            $batch->autoStart = true;
         }
 
-        if (!$mailed) {
-            $this->addMessage($this->_('No mails sent.'));
+        if (!$batch->isLoaded()) {
+            // Check for unprocessed tokens
+            $tracker = $this->loader->getTracker();
+            $tracker->processCompletedTokens(null, $this->currentUser->getUserId());
+            $batch->addTask('Mail\\AddAllMailJobsTask');
         }
+
+        $title = $this->_('Executing cron jobs');
+        $this->_helper->BatchRunner($batch, $title, $this->accesslog);
+
+        $this->html->br();
     }
 
     /**
