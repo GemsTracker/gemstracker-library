@@ -130,6 +130,15 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
         $model->set('gcj_id_survey',       'label', $this->_('Survey'), 'multiOptions', $empty + $dbTracks->getAllSurveys(true));
 
         if ($detailed) {
+            // Only show reminder fields when needed
+            $switches = array(
+                'R' => array(
+                        'gcj_filter_days_between'     => array('elementClass' => 'Hidden'),
+                        'gcj_filter_max_reminders'    => array('elementClass' => 'Hidden')
+                    )
+                );
+            $model->addDependency(array('ValueSwitchDependency', $switches), 'gcj_filter_mode');
+            
             $model->set('gcj_filter_days_between', 'label', $this->_('Days between reminders'),
                     'description', $this->_('1 day means the reminder is send the next day'),
                     'validators[]', 'Digits');
