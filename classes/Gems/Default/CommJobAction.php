@@ -58,6 +58,12 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
      * @var \Gems_User_User
      */
     public $currentUser;
+    
+    /**
+     *
+     * @var \Zend_Db_Adapter_Abstract
+     */
+    public $db;
 
     /**
      *
@@ -162,6 +168,65 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
 
         return $model;
     }
+    
+    /**
+     * Execute a single mail job
+     */
+    public function executeAction()
+    {
+        $jobId = $this->getParam(\MUtil_Model::REQUEST_ID);
+        $batch = $this->loader->getTaskRunnerBatch('commjob-execute-' . $jobId);
+        $batch->minimalStepDurationMs = 3000; // 3 seconds max before sending feedback
+
+        if (!$batch->isLoaded()) {
+            // Check for unprocessed tokens
+            $tracker = $this->loader->getTracker();
+            $tracker->processCompletedTokens(null, $this->currentUser->getUserId());
+            
+            $sql = $this->db->select()->from('gems__comm_jobs')
+                    ->join('gems__comm_templates', 'gcj_id_message = gct_id_template')
+                    ->where('gcj_active = 1')
+                    ->where('gcj_id_job = ?', $jobId);
+                        
+            $jobs = $this->db->fetchAll($sql);
+            
+            if (!empty($jobs)) {
+                $job = array_shift($jobs);
+                $batch->addTask('Mail\\ExecuteMailJobTask', $job);
+            }
+        }
+
+        if ($batch->isFinished()) {
+            // Add the messages to the view and forward
+            $messages = $batch->getMessages(true);
+            foreach ($messages as $message) {
+                $this->addMessage($message);
+            }
+            
+            $this->_reroute(array('action'=>'show'));            
+        }
+        
+        $this->_helper->BatchRunner($batch, $this->_('Execute single mail job'), $this->accesslog);
+    }
+    
+    /**
+     * Execute all mail jobs
+     */
+    public function executeAllAction()
+    {
+        $batch = $this->loader->getTaskRunnerBatch('commjob-execute-all');
+        $batch->minimalStepDurationMs = 3000; // 3 seconds max before sending feedback
+
+        if (!$batch->isLoaded()) {
+            // Check for unprocessed tokens
+            $tracker = $this->loader->getTracker();
+            $tracker->processCompletedTokens(null, $this->currentUser->getUserId());
+            
+            $batch->addTask('Mail\\AddAllMailJobsTask');
+        }
+
+        $this->_helper->BatchRunner($batch, $this->_('Execute all mail jobs'), $this->accesslog);
+    }    
 
     /**
      * The types of mail filters

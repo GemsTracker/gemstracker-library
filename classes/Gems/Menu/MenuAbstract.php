@@ -353,7 +353,10 @@ abstract class Gems_Menu_MenuAbstract
         $page = $setup->addBrowsePage($this->_('Automatic mail'), 'pr.comm.job', 'comm-job');
         $page->addButtonOnly($this->_('Turn Automatic Mail Jobs OFF'), 'pr.comm.job', 'cron', 'cron-lock');
 
-        $page->addPage($this->_('Run'), 'pr.cron.job', 'cron', 'batch');
+        $page->addPage($this->_('Run all'), 'pr.cron.job', 'comm-job', 'execute-all');
+        $show = $page->findItem(array('controller' => 'comm-job', 'action' => 'show'));
+        $show->addPage($this->_('Run'), 'pr.cron.job', 'comm-job', 'execute')
+                ->setModelParameters(1);
 
         $ajaxPage = $this->addPage($this->_('Round Selection'), 'pr.comm.job', 'comm-job', 'roundselect', array('visible' => false));
 

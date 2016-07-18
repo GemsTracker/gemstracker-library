@@ -45,14 +45,7 @@
  * @since      Class available since version 1.4
  */
 class Gems_Default_CronAction extends \Gems_Controller_Action
-{
-    /**
-     * Should the batch be started automatically?
-     * 
-     * @var boolean
-     */
-    protected $_autoStart = true;
-    
+{  
     /**
      *
      * @var \Gems_AccessLog
@@ -105,24 +98,13 @@ class Gems_Default_CronAction extends \Gems_Controller_Action
     public $util;
     
     /**
-     * Perform automatic job, needs to be started by hand
-     */
-    public function batchAction()
-    {
-        $this->_autoStart = false;
-        $this->indexAction();
-    }
-
-    /**
      * Perform automatic job mail
      */
     public function commJob()
     {
         $batch = $this->loader->getTaskRunnerBatch('cron');
         $batch->minimalStepDurationMs = 3000; // 3 seconds max before sending feedback
-        if ($this->_autoStart) {
-            $batch->autoStart = true;
-        }
+        $batch->autoStart = true;
 
         if (!$batch->isLoaded()) {
             // Check for unprocessed tokens
