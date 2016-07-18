@@ -105,11 +105,37 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
         $fromMethods = $unselected + $this->getBulkMailFromOptions();
         $model->set('gcj_from_method',         'label', $this->_('From address used'), 'multiOptions', $fromMethods);
         if ($detailed) {
-            $model->set('gcj_from_fixed',      'label', $this->_('From other'),
-                    'description', sprintf($this->_("Only when '%s' is '%s'."), $model->get('gcj_from_method', 'label'), end($fromMethods)));
+            // Show other field only when last $fromMethod is select
+            end($fromMethods);  // Move array pointer to the end
+            $lastKey   = key($fromMethods);            
+            $switches = array($lastKey => array( 'gcj_from_fixed' => array('elementClass' => 'Text', 'label' => $this->_('From other'))));
+            
+            $model->addDependency(array('ValueSwitchDependency', $switches), 'gcj_from_method');
+            $model->set('gcj_from_fixed',      'label', '',
+                    'elementClass', 'Hidden');
         }
         $model->set('gcj_process_method',      'label', $this->_('Processing Method'), 'default', 'O', 'multiOptions', $translated->getBulkMailProcessOptions());
         $model->set('gcj_filter_mode',         'label', $this->_('Filter for'), 'multiOptions', $unselected + $this->getBulkMailFilterOptions());
+        
+        if ($detailed) {
+            // Only show reminder fields when needed
+            $switches = array(
+                'R' => array(
+                        'gcj_filter_days_between'     => array('elementClass' => 'Text', 'label' => $this->_('Days between reminders')),
+                        'gcj_filter_max_reminders'    => array('elementClass' => 'Text', 'label' => $this->_('Maximum reminders'))
+                    )
+                );
+            $model->addDependency(array('ValueSwitchDependency', $switches), 'gcj_filter_mode');
+            
+            $model->set('gcj_filter_days_between', 'label', '',
+                    'elementClass', 'Hidden',
+                    'description', $this->_('1 day means the reminder is send the next day'),
+                    'validators[]', 'Digits');
+            $model->set('gcj_filter_max_reminders','label', '',
+                    'elementClass', 'Hidden',
+                    'description', $this->_('1 means only one reminder will be send'),
+                    'validators[]', 'Digits');
+        }
 
         // If you really want to see this information in the overview, uncomment for the shorter labels
         // $model->set('gcj_filter_days_between', 'label', $this->_('Interval'), 'validators[]', 'Digits');
@@ -130,21 +156,6 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
         $model->set('gcj_id_survey',       'label', $this->_('Survey'), 'multiOptions', $empty + $dbTracks->getAllSurveys(true));
 
         if ($detailed) {
-            // Only show reminder fields when needed
-            $switches = array(
-                'R' => array(
-                        'gcj_filter_days_between'     => array('elementClass' => 'Hidden'),
-                        'gcj_filter_max_reminders'    => array('elementClass' => 'Hidden')
-                    )
-                );
-            $model->addDependency(array('ValueSwitchDependency', $switches), 'gcj_filter_mode');
-            
-            $model->set('gcj_filter_days_between', 'label', $this->_('Days between reminders'),
-                    'description', $this->_('1 day means the reminder is send the next day'),
-                    'validators[]', 'Digits');
-            $model->set('gcj_filter_max_reminders','label', $this->_('Maximum reminders'),
-                    'description', $this->_('1 means only one reminder will be send'),
-                    'validators[]', 'Digits');
             $model->set('gcj_id_organization', 'label', $this->_('Organization'),
                     'multiOptions', $empty + $dbLookup->getOrganizations());
         }
