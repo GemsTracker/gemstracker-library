@@ -42,7 +42,18 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract {
      *
      * @param array $job
      */
-    public function execute(array $job = array()) {
+    public function execute($jobId = null) {
+        $sql = $this->db->select()->from('gems__comm_jobs')
+                    ->join('gems__comm_templates', 'gcj_id_message = gct_id_template')
+                    ->where('gcj_active = 1')
+                    ->where('gcj_id_job = ?', $jobId);
+        
+        $job = $this->db->fetchRow($sql);
+        
+        if (empty($job)) {
+            throw new Exception($this->_('Mail job not found!'));
+        }
+                
         $dbLookup   = $this->loader->getUtil()->getDbLookup();
         $mailLoader = $this->loader->getMailLoader();
         $sendByMail = $this->getUserEmail($job['gcj_id_user_as']);

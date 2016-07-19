@@ -178,20 +178,19 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
         $batch = $this->loader->getTaskRunnerBatch('commjob-execute-' . $jobId);
         $batch->minimalStepDurationMs = 3000; // 3 seconds max before sending feedback
 
-        if (!$batch->isLoaded()) {
+        if (!$batch->isLoaded() && !is_null(($jobId))) {
             // Check for unprocessed tokens
             $tracker = $this->loader->getTracker();
             $tracker->processCompletedTokens(null, $this->currentUser->getUserId());
             
-            $sql = $this->db->select()->from('gems__comm_jobs')
-                    ->join('gems__comm_templates', 'gcj_id_message = gct_id_template')
+            // We could skip this, but a check before starting the batch is better
+            $sql = $this->db->select()->from('gems__comm_jobs', array('gcj_id_job'))
                     ->where('gcj_active = 1')
                     ->where('gcj_id_job = ?', $jobId);
                         
-            $jobs = $this->db->fetchAll($sql);
+            $job = $this->db->fetchOne($sql);
             
-            if (!empty($jobs)) {
-                $job = array_shift($jobs);
+            if (!empty($job)) {
                 $batch->addTask('Mail\\ExecuteMailJobTask', $job);
             }
         }

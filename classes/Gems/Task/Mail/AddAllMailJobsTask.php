@@ -42,9 +42,8 @@ class AddAllMailJobsTask extends \MUtil_Task_TaskAbstract {
      * Adds all jobs to the queue
      */
     public function execute() {
-        $sql = "SELECT *
-            FROM gems__comm_jobs INNER JOIN
-                gems__comm_templates ON gcj_id_message = gct_id_template
+        $sql = "SELECT gcj_id_job
+            FROM gems__comm_jobs
             WHERE gcj_active = 1
             ORDER BY CASE WHEN gcj_id_survey IS NULL THEN 1 ELSE 0 END,
                 CASE WHEN gcj_round_description IS NULL THEN 1 ELSE 0 END,
@@ -56,10 +55,10 @@ class AddAllMailJobsTask extends \MUtil_Task_TaskAbstract {
         if ($jobs) {
             $batch = $this->getBatch();
             foreach ($jobs as $job) {
-                $batch->addTask('Mail\\ExecuteMailJobTask', $job);
+                $batch->addTask('Mail\\ExecuteMailJobTask', $job['gcj_id_job']);
             }
         } else {
-            $this->getBatch()->addMessage($this->_('Nothing to do, please create a mailjob first.'));
+            $this->getBatch()->addMessage($this->_('Nothing to do, please create a mail job first.'));
         }
     }
 
