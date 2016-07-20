@@ -258,48 +258,8 @@ class ExcelExport extends ExportAbstract
         }
     }*/
 
-    protected function filterMultiOptions($result, $multiOptions)
-    {
-        if (is_array($multiOptions)) {
-            /*
-             *  Sometimes a field is an array and will be formatted later on using the
-             *  formatFunction -> handle each element in the array.
-             */
-            if (is_array($result)) {
-                foreach($result as $key => $value) {
-                    if (array_key_exists($value, $multiOptions)) {
-                        $result[$key] = $multiOptions[$value];
-                    }
-                }
-            } else {
-                if (array_key_exists($result, $multiOptions)) {
-                    $result = $multiOptions[$result];
-                }
-            }
-        }
-
-        return $result;
-    }
-
-    protected function filterFormatFunction($value, $functionName)
-    {
-        if (!is_array($functionName) && method_exists($this, $functionName)) {
-            return call_user_func(array($this, $functionName), $value);
-        } else {
-            return call_user_func($functionName, $value);
-        }
-    }
-
-    /*protected function filterDateFormat($value, $dateFormat, $columnName)
-    {
-        $storageFormat = $this->model->get($columnName, 'storageFormat');
-        return \MUtil_Date::format($result, $dateFormat, $storageFormat);
-    }*/
-
     protected function filterDateFormat($value, $dateFormat, $columnName)
     {
-        
-
         if ($value instanceof \Zend_Date) {
             $year = \MUtil_Date::format($value, 'yyyy');
             $month = \MUtil_Date::format($value, 'MM');
@@ -320,110 +280,6 @@ class ExcelExport extends ExportAbstract
 
         return PHPExcel_Shared_Date::FormattedPHPToExcel($year, $month, $day, $hours, $minutes, $seconds);
     }
-
-    protected function filterItemDisplay($value, $functionName)
-    {
-        if (is_callable($functionName)) {
-            $result = call_user_func($functionName, $value);
-        } elseif (is_object($functionName)) {
-            if (($functionName instanceof \MUtil_Html_ElementInterface)
-                || method_exists($functionName, 'append')) {
-                $object = clone $functionName;
-                $result = $object->append($value);
-            }
-        } elseif (is_string($functionName)) {
-            // Assume it is a html tag when a string
-            $result = \MUtil_Html::create($functionName, $value);
-        }
-
-        return $result;
-    }
-
-    protected function filterHtml($result)
-    {       
-        if ($result instanceof \MUtil_Html_ElementInterface && !($result instanceof \MUtil_Html_Sequence)) {
-            if ($result instanceof \MUtil_Html_AElement) {
-                $href = $result->href;
-                $result = $href;                
-            } elseif ($result->count() > 0) {
-                $result = $result[0];
-            }
-        }
-        
-        if (is_object($result)) {
-            // If it is Lazy, execute it
-            if ($result instanceof \MUtil_Lazy_LazyInterface) {
-                $result = \MUtil_Lazy::rise($result);
-            }
-
-            // If it is Html, render it
-            if ($result instanceof \MUtil_Html_HtmlInterface) {                
-                $viewRenderer = \Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
-                if (null === $viewRenderer->view) {
-                    $viewRenderer->initView();
-                }
-                $view = $viewRenderer->view;
-
-                $result = $result->render($view);
-            }
-        }
-
-        return $result;
-    }
-
-    /**
-     * Filter the data in a row so that correct values are being used
-     * @param  array $row a row in the model
-     * @return array The filtered row
-     */
-    protected function filterRow($row)
-    {
-        $exportRow = array();
-        foreach($row as $columnName=>$result) {
-            if ($this->model->get($columnName, 'label')) {
-                $options = $this->model->get($columnName, $this->modelFilterAttributes);
-
-
-                foreach($options as $optionName => $optionValue) {
-                    switch ($optionName) {
-                        case 'multiOptions':
-                            $result = $this->filterMultiOptions($result, $optionValue);
-                            
-                            break;
-
-                        case 'formatFunction':
-                            $result = $this->filterFormatFunction($result, $optionValue);
-                            
-                            break;
-
-                        case 'dateFormat':
-
-                            // if there is a formatFunction skip the date formatting
-                            if (array_key_exists('formatFunction', $options)) {
-                                continue;
-                            }
-
-                            $result = $this->filterDateFormat($result, $optionValue, $columnName);
-                            
-                            break;
-
-                        case 'itemDisplay':
-
-                            $result = $this->filterItemDisplay($result, $optionValue);
-
-                        default:
-                            break;
-                    }
-                }
-
-                $result = $this->filterHtml($result);
-
-                $exportRow[$columnName] = $result;
-            }
-        }
-        return $exportRow;
-    }
-
 
     protected function getColumn($x)
     {

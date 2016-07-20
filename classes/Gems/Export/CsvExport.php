@@ -110,8 +110,8 @@ class CsvExport extends ExportAbstract
 
         $name = $this->getName();
         if (isset($this->data[$name]) && isset($this->data[$name]['format']) && in_array('addHeader', $this->data[$name]['format'])) {
-            $labeledCols = $this->model->getColNames('label');
-            $labels = array();
+            $labeledCols = $this->getLabeledColumns();
+            $labels      = array();
 
             if (in_array('formatVariable', $this->data[$name]['format'])) {
                 foreach($labeledCols as $columnName) {
@@ -157,9 +157,9 @@ class CsvExport extends ExportAbstract
      */
     public function addRow($row, $file)
     {
-        $exportRow = $this->filterRow($row);
-        $labeledCols = $this->model->getColNames('label');
-        $exportRow = array_replace(array_flip($labeledCols), $exportRow);
+        $exportRow   = $this->filterRow($row);
+        $labeledCols = $this->getLabeledColumns();
+        $exportRow   = array_replace(array_flip($labeledCols), $exportRow);
         fputcsv($file, $exportRow, $this->delimiter, "'");
     }
 
@@ -188,7 +188,9 @@ class CsvExport extends ExportAbstract
      */
     protected function preprocessModel()
     {
-        $labeledCols = $this->model->getColNames('label');
+        parent::preprocessModel();
+        
+        $labeledCols = $this->getLabeledColumns();
         foreach($labeledCols as $columnName) {
             $options = array();
             $type = $this->model->get($columnName, 'type');

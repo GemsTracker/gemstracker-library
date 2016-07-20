@@ -133,26 +133,27 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
      * @return array Form elements
      */
     public function getFormElements(&$form, &$data) {}
-    
+
     /**
      * Returns an array of ordered columnnames that have a label
-     * 
+     *
      * @return array Array of columnnames
      */
-    public function getLabeledColumns() {
+    public function getLabeledColumns()
+    {
         if (!$this->model->hasMeta('labeledColumns')) {
             $orderedCols = $this->model->getItemsOrdered();
 
             $results = array();
-            foreach($orderedCols as $name) {
+            foreach ($orderedCols as $name) {
                 if ($this->model->has($name, 'label')) {
                     $results[] = $name;
                 }
             }
-            
+
             $this->model->setMeta('labeledColumns', $results);
         }
-        
+
         return $this->model->getMeta('labeledColumns');
     }
 
@@ -160,26 +161,26 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
      * @return array Default values in form
      */
     public function getDefaultFormValues() {}
-
+        
     /**
      * Add an export command with specific details. Can be batched.
      * @param array $data    Data submitted by export form
      * @param array $modelId Model Id when multiple models are passed
      */
-    public function addExport($data, $modelId=false)
+    public function addExport($data, $modelId = false)
     {
 
-        $this->files = $this->getFiles();
-        $this->data = $data;
+        $this->files   = $this->getFiles();
+        $this->data    = $data;
         $this->modelId = $modelId;
 
         if ($model = $this->getModel()) {
-            $totalRows = $this->getModelCount();
+            $totalRows  = $this->getModelCount();
             $this->addFile();
-            $this->addHeader($this->tempFilename.$this->fileExtension);
+            $this->addHeader($this->tempFilename . $this->fileExtension);
             $currentRow = 0;
             do {
-                $filter['limit']  = array($this->rowsPerBatch, $currentRow);
+                $filter['limit'] = array($this->rowsPerBatch, $currentRow);
                 if ($this->batch) {
                     $this->batch->addTask('Export_ExportCommand', $data['type'], 'addRows', $data, $modelId, $this->tempFilename, $filter);
                 } else {
@@ -189,11 +190,11 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
             } while ($currentRow < $totalRows);
 
             if ($this->batch) {
-                $this->batch->addTask('Export_ExportCommand', $data['type'], 'addFooter', $this->tempFilename.$this->fileExtension);
+                $this->batch->addTask('Export_ExportCommand', $data['type'], 'addFooter', $this->tempFilename . $this->fileExtension);
                 $this->batch->setSessionVariable('files', $this->files);
             } else {
-                $this->addFooter($this->tempFilename.$this->fileExtension);
-                $this->_session = new \Zend_Session_Namespace(__CLASS__);
+                $this->addFooter($this->tempFilename . $this->fileExtension);
+                $this->_session        = new \Zend_Session_Namespace(__CLASS__);
                 $this->_session->files = $this->files;
             }
         }
@@ -204,24 +205,23 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
      */
     protected function addFile()
     {
-        $tempFilename = GEMS_ROOT_DIR . '/var/tmp/export-' . md5(time() . rand());
+        $tempFilename       = GEMS_ROOT_DIR . '/var/tmp/export-' . md5(time() . rand());
         $this->tempFilename = $tempFilename;
-        $basename = $this->cleanupName($this->model->getName());
-        $filename = $basename;
-        $i=1;
-        while (isset($this->files[$filename.$this->fileExtension])) {
+        $basename           = $this->cleanupName($this->model->getName());
+        $filename           = $basename;
+        $i                  = 1;
+        while (isset($this->files[$filename . $this->fileExtension])) {
             $filename = $basename . '_' . $i;
             $i++;
         }
         $this->filename = $filename;
 
-        $this->files[$filename.$this->fileExtension] = $tempFilename . $this->fileExtension;
+        $this->files[$filename . $this->fileExtension] = $tempFilename . $this->fileExtension;
 
         $file = fopen($tempFilename . $this->fileExtension, 'w');
 
         fclose($file);
     }
-
 
     /**
      * Add headers to a specific file
@@ -238,15 +238,15 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
      */
     public function addRows($data, $modelId, $tempFilename, $filter)
     {
-        $this->data = $data;
+        $this->data    = $data;
         $this->modelId = $modelId;
-        $this->model = $this->getModel();
+        $this->model   = $this->getModel();
 
         $this->model->setFilter($filter + $this->model->getFilter());
         if ($this->model) {
             $rows = $this->model->load();
             $file = fopen($tempFilename . $this->fileExtension, 'a');
-            foreach($rows as $row) {
+            foreach ($rows as $row) {
                 $this->addRow($row, $file);
             }
             fclose($file);
@@ -265,7 +265,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
      * @param string $filename The temporary filename while the file is being written
      */
     public function addFooter($filename) {}
-
+        
     /**
      * Clean a proposed filename up so it can be used correctly as a filename
      * @param  string $filename Proposed filename
@@ -280,6 +280,94 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
         return \MUtil_File::cleanupName($filename);
     }
 
+    protected function filterDateFormat($value, $dateFormat, $columnName)
+    {
+        $storageFormat = $this->model->get($columnName, 'storageFormat');
+
+        return \MUtil_Date::format($result, $dateFormat, $storageFormat);
+    }
+
+    protected function filterFormatFunction($value, $functionName)
+    {
+        if (!is_array($functionName) && method_exists($this, $functionName)) {
+            return call_user_func(array($this, $functionName), $value);
+        } else {
+            return call_user_func($functionName, $value);
+        }
+    }    
+
+    protected function filterHtml($result)
+    {
+        if ($result instanceof \MUtil_Html_ElementInterface && !($result instanceof \MUtil_Html_Sequence)) {
+            if ($result instanceof \MUtil_Html_AElement) {
+                $href   = $result->href;
+                $result = $href;
+            } elseif ($result->count() > 0) {
+                $result = $result[0];
+            }
+        }
+
+        if (is_object($result)) {
+            // If it is Lazy, execute it
+            if ($result instanceof \MUtil_Lazy_LazyInterface) {
+                $result = \MUtil_Lazy::rise($result);
+            }
+
+            // If it is Html, render it
+            if ($result instanceof \MUtil_Html_HtmlInterface) {
+                $viewRenderer = \Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
+                if (null === $viewRenderer->view) {
+                    $viewRenderer->initView();
+                }
+                $view = $viewRenderer->view;
+
+                $result = $result->render($view);
+            }
+        }
+
+        return $result;
+    }    
+    
+    protected function filterItemDisplay($value, $functionName)
+    {
+        if (is_callable($functionName)) {
+            $result = call_user_func($functionName, $value);
+        } elseif (is_object($functionName)) {
+            if (($functionName instanceof \MUtil_Html_ElementInterface) || method_exists($functionName, 'append')) {
+                $object = clone $functionName;
+                $result = $object->append($value);
+            }
+        } elseif (is_string($functionName)) {
+            // Assume it is a html tag when a string
+            $result = \MUtil_Html::create($functionName, $value);
+        }
+
+        return $result;
+    }
+
+    protected function filterMultiOptions($result, $multiOptions)
+    {
+        if (is_array($multiOptions)) {
+            /*
+             *  Sometimes a field is an array and will be formatted later on using the
+             *  formatFunction -> handle each element in the array.
+             */
+            if (is_array($result)) {
+                foreach ($result as $key => $value) {
+                    if (array_key_exists($value, $multiOptions)) {
+                        $result[$key] = $multiOptions[$value];
+                    }
+                }
+            } else {
+                if (array_key_exists($result, $multiOptions)) {
+                    $result = $multiOptions[$result];
+                }
+            }
+        }
+
+        return $result;
+    }
+
     /**
      * Filter the data in a row so that correct values are being used
      * @param  array $row a row in the model
@@ -288,99 +376,40 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
     protected function filterRow($row)
     {
         $exportRow = array();
-        foreach($row as $columnName=>$result) {
+        foreach ($row as $columnName => $result) {
             if ($this->model->get($columnName, 'label')) {
                 $options = $this->model->get($columnName, $this->modelFilterAttributes);
 
 
-                foreach($options as $optionName => $optionValue) {
+                foreach ($options as $optionName => $optionValue) {
                     switch ($optionName) {
-                        case 'multiOptions':
-                            $multiOptions = $optionValue;
-                            if (is_array($multiOptions)) {
-                                /*
-                                 *  Sometimes a field is an array and will be formatted later on using the
-                                 *  formatFunction -> handle each element in the array.
-                                 */
-                                if (is_array($result)) {
-                                    foreach($result as $key => $value) {
-                                        if (array_key_exists($value, $multiOptions)) {
-                                            $result[$key] = $multiOptions[$value];
-                                        }
-                                    }
-                                } else {
-                                    if (array_key_exists($result, $multiOptions)) {
-                                        $result = $multiOptions[$result];
-                                    }
-                                }
-                            }
-                            break;
-
-                        case 'formatFunction':
-                            $callback = $optionValue;
-                            if (!is_array($callback) && method_exists($this, $callback)) {
-                                $result = call_user_func(array($this, $callback), $result);
-                            } else {
-                                $result = call_user_func($callback, $result);
-                            }
-                            break;
-
                         case 'dateFormat':
+                            // if there is a formatFunction skip the date formatting
                             if (array_key_exists('formatFunction', $options)) {
-                                // if there is a formatFunction skip the date formatting
                                 continue;
                             }
 
-                            $dateFormat = $optionValue;
-                            $storageFormat = $this->model->get($columnName, 'storageFormat');
-                            $result = \MUtil_Date::format($result, $dateFormat, $storageFormat);
+                            $result = $this->filterDateFormat($result, $optionValue, $columnName);
+
                             break;
+                        case 'formatFunction':
+                            $result = $this->filterFormatFunction($result, $optionValue);
 
+                            break;
                         case 'itemDisplay':
-                            $function = $optionValue;
-                            if (is_callable($function)) {
-                                $result = call_user_func($function, $result);
-                            } elseif (is_object($function)) {
-                                if (($function instanceof \MUtil_Html_ElementInterface)
-                                    || method_exists($function, 'append')) {
-                                    $object = clone $function;
-                                    $result = $object->append($result);
-                                }
-                            } elseif (is_string($function)) {
-                                // Assume it is a html tag when a string
-                                $result = \MUtil_Html::create($function, $result);
-                            }
+                            $result = $this->filterItemDisplay($result, $optionValue);
 
+                            break;
+                        case 'multiOptions':
+                            $result = $this->filterMultiOptions($result, $optionValue);
+
+                            break;
                         default:
                             break;
                     }
                 }
-                if ($result instanceof \MUtil_Html_ElementInterface && !($result instanceof \MUtil_Html_Sequence)) {
-                    if ($result instanceof \MUtil_Html_AElement) {
-                        $href = $result->href;
-                        $result = $href;                
-                    } elseif ($result->count() > 0) {
-                        $result = $result[0];
-                    }
-                }
-                
-                if (is_object($result)) {
-                    // If it is Lazy, execute it
-                    if ($result instanceof \MUtil_Lazy_LazyInterface) {
-                        $result = \MUtil_Lazy::rise($result);
-                    }
 
-                    // If it is Html, render it
-                    if ($result instanceof \MUtil_Html_HtmlInterface) {                
-                        $viewRenderer = \Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
-                        if (null === $viewRenderer->view) {
-                            $viewRenderer->initView();
-                        }
-                        $view = $viewRenderer->view;
-
-                        $result = $result->render($view);
-                    }
-                }
+                $result = $this->filterHtml($result);
 
                 $exportRow[$columnName] = $result;
             }
@@ -400,7 +429,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
             return false;
         }
         $firstName = key($this->files);
-        $file = array();
+        $file      = array();
 
         if (count($this->files) === 1) {
             $firstFile = $this->files[$firstName];
@@ -408,29 +437,27 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
             $file['file']      = $firstFile;
             $file['headers'][] = "Content-Type: application/download";
             $file['headers'][] = "Content-Disposition: attachment; filename=\"" . $firstName . "\"";
-
-
         } elseif (count($this->files) >= 1) {
             $nameArray = explode('.', $firstName);
             array_pop($nameArray);
-            $filename = join('.',$nameArray) . '.zip';
-            $zipFile     = dirname($this->files[$firstName]) . '/export-' . md5(time() . rand()) . '.zip';
+            $filename  = join('.', $nameArray) . '.zip';
+            $zipFile   = dirname($this->files[$firstName]) . '/export-' . md5(time() . rand()) . '.zip';
 
             $zipArchive = new \ZipArchive();
-            $zipArchive->open(   $zipFile, \ZipArchive::CREATE);
+            $zipArchive->open($zipFile, \ZipArchive::CREATE);
 
-            foreach($this->files as $newName => $tempName) {
+            foreach ($this->files as $newName => $tempName) {
                 $zipArchive->addFile($tempName, $newName);
             }
             $zipArchive->close();
 
-            foreach($this->files as $tempName) {
+            foreach ($this->files as $tempName) {
                 if (file_exists($tempName)) {
                     unlink($tempName);
                 }
             }
 
-            $file = array();
+            $file              = array();
             $file['file']      = $zipFile;
             $file['headers'][] = "Content-Type: application/download";
             $file['headers'][] = "Content-Disposition: attachment; filename=\"" . $filename . "\"";
@@ -446,7 +473,6 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
         } else {
             return $file;
         }
-
     }
 
     /**
@@ -501,7 +527,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
      * @param  array $filter Filter for the model
      * @return int Number of items in the model
      */
-    protected function getModelCount($filter=true)
+    protected function getModelCount($filter = true)
     {
         if ($this->model && $this->model instanceof \MUtil_Model_ModelAbstract) {
             $totalCount = $this->model->loadPaginator()->getTotalItemCount();
@@ -529,4 +555,5 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
     {
         $this->batch = $batch;
     }
+
 }
