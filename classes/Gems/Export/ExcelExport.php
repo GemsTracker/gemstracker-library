@@ -172,7 +172,7 @@ class ExcelExport extends ExportAbstract
             }
 
             $rows = $this->model->load();
-
+            
             $exportName = $this->getName();
 
             if (isset($this->data[$exportName]) && isset($this->data[$exportName]['format']) && in_array('formatAnswer', $this->data[$exportName]['format'])) {
@@ -212,14 +212,18 @@ class ExcelExport extends ExportAbstract
 
         $activeSheet = $excelObject->getActiveSheet();
 
-        $labeledCols = $this->getColumnHeaders();
-        foreach($labeledCols as $columnName=>$label) {
-            $cell = $this->getColumn($i) . $rowNumber;
+        $labeledCols = $this->getLabeledColumns();
+        
+        foreach($labeledCols as $columnName) {
+            // We could be missing data for a column, just skip it
+            if (array_key_exists($columnName, $exportRow)) {
+                $cell = $this->getColumn($i) . $rowNumber;
 
-            $activeSheet->setCellValue($cell, $exportRow[$columnName]);
+                $activeSheet->setCellValue($cell, $exportRow[$columnName]);
 
-            if ($excelDateFormat = $this->model->get($columnName, 'excelDateFormat')) {
-                $activeSheet->getStyle($cell)->getNumberFormat()->setFormatCode($excelDateFormat);
+                if ($excelDateFormat = $this->model->get($columnName, 'excelDateFormat')) {
+                    $activeSheet->getStyle($cell)->getNumberFormat()->setFormatCode($excelDateFormat);
+                }
             }
 
             $i++;
@@ -321,28 +325,46 @@ class ExcelExport extends ExportAbstract
     {
         if (is_callable($functionName)) {
             $result = call_user_func($functionName, $value);
-        } elseif (is_object($function)) {
-            if (($function instanceof \MUtil_Html_ElementInterface)
-                || method_exists($function, 'append')) {
-                $object = clone $function;
+        } elseif (is_object($functionName)) {
+            if (($functionName instanceof \MUtil_Html_ElementInterface)
+                || method_exists($functionName, 'append')) {
+                $object = clone $functionName;
                 $result = $object->append($value);
             }
-        } elseif (is_string($function)) {
+        } elseif (is_string($functionName)) {
             // Assume it is a html tag when a string
-            $result = \MUtil_Html::create($function, $value);
+            $result = \MUtil_Html::create($functionName, $value);
         }
 
         return $result;
     }
 
     protected function filterHtml($result)
-    {
-        if ($result instanceof \MUtil_Html_ElementInterface) {
-            if ($result->count() > 0) {
-                $result = $result[0];
-            } elseif ($result instanceof \MUtil_Html_AElement) {
+    {       
+        if ($result instanceof \MUtil_Html_ElementInterface && !($result instanceof \MUtil_Html_Sequence)) {
+            if ($result instanceof \MUtil_Html_AElement) {
                 $href = $result->href;
-                $result = $href[0];
+                $result = $href;                
+            } elseif ($result->count() > 0) {
+                $result = $result[0];
+            }
+        }
+        
+        if (is_object($result)) {
+            // If it is Lazy, execute it
+            if ($result instanceof \MUtil_Lazy_LazyInterface) {
+                $result = \MUtil_Lazy::rise($result);
+            }
+
+            // If it is Html, render it
+            if ($result instanceof \MUtil_Html_HtmlInterface) {                
+                $viewRenderer = \Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
+                if (null === $viewRenderer->view) {
+                    $viewRenderer->initView();
+                }
+                $view = $viewRenderer->view;
+
+                $result = $result->render($view);
             }
         }
 
@@ -410,8 +432,8 @@ class ExcelExport extends ExportAbstract
 
     protected function getColumnHeaders()
     {
-        $labeledCols = $this->model->getColNames('label');
-
+        $labeledCols = $this->getLabeledColumns();
+        
         $columnHeaders = array();
         foreach($labeledCols as $columnName) {
             $columnHeaders[$columnName] = strip_tags($this->model->get($columnName, 'label'));
@@ -425,7 +447,9 @@ class ExcelExport extends ExportAbstract
      */
     protected function preprocessModel()
     {
-        $labeledCols = $this->model->getColNames('label');
+        parent::preprocessModel();
+        
+        $labeledCols = $this->getLabeledColumns();
         foreach($labeledCols as $columnName) {
             $options = array();
             $type = $this->model->get($columnName, 'type');

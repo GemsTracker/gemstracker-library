@@ -120,7 +120,7 @@ class SpssExport extends ExportAbstract
     public function addRow($row, $file)
     {
         $exportRow = $this->filterRow($row);
-        $labeledCols = $this->model->getColNames('label');
+        $labeledCols = $this->getLabeledColumns();
         $exportRow = array_replace(array_flip($labeledCols), $exportRow);
         fputcsv($file, $exportRow, $this->delimiter, "'");
     }
@@ -158,7 +158,7 @@ GET DATA
  /VARIABLES=");
 
 
-        $labeledCols = $model->getColNames('label');
+        $labeledCols = $this->getLabeledColumns();
         $labels     = array();
         $types      = array();
         $fixedNames = array();
@@ -288,7 +288,9 @@ GET DATA
      */
     protected function preprocessModel()
     {
-        $labeledCols = $this->model->getColNames('label');
+        parent::preprocessModel();
+        
+        $labeledCols = $this->getLabeledColumns();
         foreach($labeledCols as $columnName) {
             $options = array();
             $type = $this->model->get($columnName, 'type');

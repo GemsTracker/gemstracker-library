@@ -173,11 +173,11 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
             	$engine = $this->loader->getTracker()->getTrackEngine($trackId);
             	$engine->addFieldsToModel($model, false, 'gto_id_respondent_track');
 
-                $prefixes['TF'] = array_diff($model->getItemNames(), $prefixes['A'], $prefixes['D']);
-                
                 // Add relation fields
                 $model->set('gto_id_relation', 'label', $this->_('Relation ID'), 'type', \MUtil_Model::TYPE_NUMERIC);
                 $model->set('gtf_field_name', 'label', $this->_('Relation'), 'type', \MUtil_Model::TYPE_STRING);
+                
+                $prefixes['TF'] = array_diff($model->getItemNames(), $prefixes['A'], $prefixes['D']);
             }
 
             if (isset($data['column_identifiers']) && $data['column_identifiers'] == 1) {

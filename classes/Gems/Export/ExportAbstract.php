@@ -133,6 +133,28 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
      * @return array Form elements
      */
     public function getFormElements(&$form, &$data) {}
+    
+    /**
+     * Returns an array of ordered columnnames that have a label
+     * 
+     * @return array Array of columnnames
+     */
+    public function getLabeledColumns() {
+        if (!$this->model->hasMeta('labeledColumns')) {
+            $orderedCols = $this->model->getItemsOrdered();
+
+            $results = array();
+            foreach($orderedCols as $name) {
+                if ($this->model->has($name, 'label')) {
+                    $results[] = $name;
+                }
+            }
+            
+            $this->model->setMeta('labeledColumns', $results);
+        }
+        
+        return $this->model->getMeta('labeledColumns');
+    }
 
     /**
      * @return array Default values in form
@@ -333,12 +355,30 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
                             break;
                     }
                 }
-                if ($result instanceof \MUtil_Html_ElementInterface) {
-                    if ($result->count() > 0) {
-                        $result = $result[0];
-                    } elseif ($result instanceof \MUtil_Html_AElement) {
+                if ($result instanceof \MUtil_Html_ElementInterface && !($result instanceof \MUtil_Html_Sequence)) {
+                    if ($result instanceof \MUtil_Html_AElement) {
                         $href = $result->href;
-                        $result = $href[0];
+                        $result = $href;                
+                    } elseif ($result->count() > 0) {
+                        $result = $result[0];
+                    }
+                }
+                
+                if (is_object($result)) {
+                    // If it is Lazy, execute it
+                    if ($result instanceof \MUtil_Lazy_LazyInterface) {
+                        $result = \MUtil_Lazy::rise($result);
+                    }
+
+                    // If it is Html, render it
+                    if ($result instanceof \MUtil_Html_HtmlInterface) {                
+                        $viewRenderer = \Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
+                        if (null === $viewRenderer->view) {
+                            $viewRenderer->initView();
+                        }
+                        $view = $viewRenderer->view;
+
+                        $result = $result->render($view);
                     }
                 }
 
@@ -475,6 +515,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
      */
     protected function preprocessModel()
     {
+        $this->getLabeledColumns();
     }
 
     /**

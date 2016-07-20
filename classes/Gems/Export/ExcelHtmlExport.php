@@ -136,7 +136,7 @@ class ExcelHtmlExport extends ExportAbstract
 <body>');
 
         //Only for the first row: output headers
-        $labeledCols = $this->model->getColNames('label');
+        $labeledCols = $this->getLabeledColumns();
         $output = "<table>\r\n";
         $output .= "\t<thead>\r\n";
         $output .= "\t\t<tr>\r\n";
@@ -189,9 +189,13 @@ class ExcelHtmlExport extends ExportAbstract
     {
         fwrite($file, "\t\t<tr>\r\n");
         $exportRow = $this->filterRow($row);
-        $labeledCols = $this->model->getColNames('label');
+        $labeledCols = $this->getLabeledColumns();
         foreach($labeledCols as $columnName) {
-            $result = $exportRow[$columnName];
+            // We could be missing data for a column, just skip it
+            $result = null;
+            if (array_key_exists($columnName, $exportRow)) {
+                $result = $exportRow[$columnName];
+            }            
             $type = $this->model->get($columnName, 'type');
             switch ($type) {
                 case \MUtil_Model::TYPE_DATE:

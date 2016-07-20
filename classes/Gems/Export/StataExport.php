@@ -332,7 +332,7 @@ class StataExport extends ExportAbstract
 
         $dataElement->appendChild($rowElement);
 
-        $labeledCols = $this->model->getColNames('label');
+        $labeledCols = $this->getLabeledColumns();
 
         if ($this->batch) {
             $stringSizes = $this->batch->getSessionVariable('stringSizes');
@@ -414,7 +414,7 @@ class StataExport extends ExportAbstract
     protected function getColumnHeaders()
     {
         $model = $this->getModel();
-        $labeledCols = $this->model->getColNames('label');
+        $labeledCols = $this->getLabeledColumns();
 
         $columnHeaders = array();
 
@@ -555,7 +555,9 @@ class StataExport extends ExportAbstract
      */
     protected function preprocessModel()
     {
-        $labeledCols = $this->model->getColNames('label');
+        parent::preprocessModel();
+        
+        $labeledCols = $this->getLabeledColumns();
         $newColNames = array();
         foreach($labeledCols as $columnName) {
             $options = array();
