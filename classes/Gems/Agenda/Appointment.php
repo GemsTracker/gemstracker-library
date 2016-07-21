@@ -332,6 +332,16 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * Get the DB id of the referred by person
+     *
+     * @return int
+     */
+    public function getReferredById()
+    {
+        return $this->_gemsData['gap_id_referred_by'];
+    }
+
+    /**
      * Return the respondent object
      *
      * @return \Gems_Tracker_Respondent

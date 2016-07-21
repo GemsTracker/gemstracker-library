@@ -46,6 +46,13 @@
 class Gems_Snippets_Agenda_CalendarTableSnippet extends \Gems_Snippets_ModelTableSnippetGeneric
 {
     /**
+     * One of the \MUtil_Model_Bridge_BridgeAbstract MODE constants
+     *
+     * @var int
+     */
+    // protected $bridgeMode = \MUtil_Model_Bridge_BridgeAbstract::MODE_ROWS;
+
+    /**
      *
      * @var array Optional alternative search filter for appointments
      */
@@ -141,8 +148,10 @@ class Gems_Snippets_Agenda_CalendarTableSnippet extends \Gems_Snippets_ModelTabl
         }
         $this->model->addColumn(new \Zend_Db_Expr("CONVERT(gap_admission_time, DATE)"), 'date_only');
         $this->model->set('date_only', 'dateFormat',
-                    \Zend_Date::WEEKDAY . ' ' . \Zend_Date::DAY_SHORT . ' ' .
-                    \Zend_Date::MONTH_NAME . ' ' . \Zend_Date::YEAR);
+                \Zend_Date::WEEKDAY . ' ' . \Zend_Date::DAY_SHORT . ' ' .
+                \Zend_Date::MONTH_NAME . ' ' . \Zend_Date::YEAR,
+                'storageFormat', 'YYYY-MM-DD'
+                );
         $this->model->set('gap_admission_time', 'label', $this->_('Time'),
                 'dateFormat', 'HH:mm');
 

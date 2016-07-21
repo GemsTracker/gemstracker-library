@@ -67,6 +67,7 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
      */
     protected $filterDependencies = array(
         'AndModelDependency',
+        'FieldLikeModelDependency',
         'LocationModelDependency',
         'OrModelDependency',
         'SqlLikeModelDependency',

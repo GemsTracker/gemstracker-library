@@ -469,6 +469,73 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Get the field names in appontments with their labels as the value
+     *
+     * @return array fieldname => label
+     */
+    public final function getFieldLabels()
+    {
+        $output = \Mutil_Ra::column('label', $this->getFieldData());
+
+        asort($output);
+
+        return $output;
+    }
+
+    /**
+     * Get a structured nested array contain information on all the appointment
+     *
+     * @return array fieldname => array(label[, tableName, tableId, tableLikeFilter))
+     */
+    protected function getFieldData()
+    {
+        return array(
+            'gap_id_organization' => array(
+                'label' => $this->_('Organization'),
+                'tableName' => 'gems__organizations',
+                'tableId' => 'gor_id_organization',
+                'tableLikeFilter' => "gor_active = 1 AND gor_name LIKE '%s'",
+                ),
+            'gap_source' => array(
+                'label' => $this->_('Source of appointment'),
+                ),
+            'gap_id_attended_by' => array(
+                'label' => $this->_('With'),
+                'tableName' => 'gems__agenda_staff',
+                'tableId' => 'gas_id_staff',
+                'tableLikeFilter' => "gas_active = 1 AND gas_name LIKE '%s'",
+                ),
+            'gap_id_referred_by' => array(
+                'label' => $this->_('Referrer'),
+                'tableName' => 'gems__agenda_staff',
+                'tableId' => 'gas_id_staff',
+                'tableLikeFilter' => "gas_active = 1 AND gas_name LIKE '%s'",
+                ),
+            'gap_id_activity' => array(
+                'label' => $this->_('Activity'),
+                'tableName' => 'gems__agenda_activities',
+                'tableId' => 'gaa_id_activity',
+                'tableLikeFilter' => "gaa_active = 1 AND gaa_name LIKE '%s'",
+                ),
+            'gap_id_procedure' => array(
+                'label' => $this->_('Procedure'),
+                'tableName' => 'gems__agenda_procedures',
+                'tableId' => 'gapr_id_procedure',
+                'tableLikeFilter' => "gapr_active = 1 AND gapr_name LIKE '%s'",
+                ),
+            'gap_id_location' => array(
+                'label' => $this->_('Location'),
+                'tableName' => 'gems__locations',
+                'tableId' => 'glo_id_location',
+                'tableLikeFilter' => "glo_active = 1 AND glo_name LIKE '%s'",
+                ),
+            'gap_subject' => array(
+                'label' => $this->_('Subject'),
+                ),
+        );
+    }
+
+    /**
      * Get a filter from the database
      *
      * @param $filterId Id of a single filter
