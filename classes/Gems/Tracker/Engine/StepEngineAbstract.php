@@ -391,8 +391,11 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
      */
     public function displayDateCalculation($value, $new, $name, array $context = array())
     {
-        $fieldBase = substr($name, 0, -5);  // Strip field
+        $fieldBase = substr($name, 0, -5);  // Strip field        
         $validAfter = (bool) strpos($fieldBase, 'after');
+        
+        // When always valid, just return nothing
+        if ($context[$fieldBase . 'source'] == self::NO_TABLE) return '';
 
         $fields = $this->getDateOptionsFor(
                 $context[$fieldBase . 'source'],
@@ -441,11 +444,11 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
     {
         $fieldSource = substr($name, 0, -2) . 'source';
 
-        if (!$this->_sourceUsesSurvey($context[$fieldSource])) {
-            return '';
+        if ($this->_sourceUsesSurvey($context[$fieldSource])) {
+            return $value;
         }
 
-        return $value;
+        return '';
     }
 
     /**
