@@ -118,7 +118,8 @@ class Gems_Snippets_RespondentTokenSnippet extends \Gems_Snippets_TokenModelSnip
         $roundDescription[] = $HTML->if($bridge->gto_round_description, $HTML->small(' [', $bridge->gto_round_description, ']'));
         $roundDescription[] = $HTML->small(' [', $bridge->createSortLink('gto_round_description'), ']');
 
-        $roundIcon[] = \MUtil_Lazy::iif($bridge->gro_icon_file, \MUtil_Html::create('img', array('src' => $bridge->gro_icon_file, 'class' => 'icon')));
+        $roundIcon[] = \MUtil_Lazy::iif($bridge->gto_icon_file, \MUtil_Html::create('img', array('src' => $bridge->gto_icon_file, 'class' => 'icon')),
+                \MUtil_Lazy::iif($bridge->gro_icon_file, \MUtil_Html::create('img', array('src' => $bridge->gro_icon_file, 'class' => 'icon'))));
 
         if ($menuItem = $this->findMenuItem('track', 'show-track')) {
             $href = $menuItem->toHRefAttribute($this->request, $bridge);

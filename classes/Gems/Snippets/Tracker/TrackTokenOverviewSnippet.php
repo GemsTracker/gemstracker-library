@@ -122,7 +122,8 @@ class TrackTokenOverviewSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
         $bridge->addSortable('gsu_survey_name')
                 ->append(\MUtil_Lazy::iif(
                         $bridge->gro_icon_file,
-                        \MUtil_Html::create('img', array('src' => $bridge->gro_icon_file, 'class' => 'icon'))
+                        \MUtil_Lazy::iif($bridge->gto_icon_file, \MUtil_Html::create('img', array('src' => $bridge->gto_icon_file, 'class' => 'icon')),
+                            \MUtil_Lazy::iif($bridge->gro_icon_file, \MUtil_Html::create('img', array('src' => $bridge->gro_icon_file, 'class' => 'icon'))))
                         ));
         $bridge->addSortable('gto_round_description');
         $bridge->addSortable('ggp_name');

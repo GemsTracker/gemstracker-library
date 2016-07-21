@@ -213,7 +213,9 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems_Snippets_R
             $tokenLink = $tokenDiv->a('#', $status);
         }
         $survey = array($tokenData['gsu_survey_name']);
-        if (!empty($tokenData['gro_icon_file'])) {
+        if (!empty($tokenData['gto_icon_file'])) {
+            array_unshift($survey, \MUtil_Html::create('img', array('src' => $tokenData['gto_icon_file'], 'class' => 'icon')));
+        } elseif (!empty($tokenData['gro_icon_file'])) {
             array_unshift($survey, \MUtil_Html::create('img', array('src' => $tokenData['gro_icon_file'], 'class' => 'icon')));
         }
 
@@ -297,7 +299,8 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems_Snippets_R
             'gto_completion_time',
             'gr2o_patient_nr',
             'gr2o_id_organization',
-            'gro_icon_file'
+            'gro_icon_file',
+            'gto_icon_file',
         );
         foreach ($items as $item)
         {
