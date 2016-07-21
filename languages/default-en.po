@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-07-19 08:38+0200\n"
+"POT-Creation-Date: 2016-07-21 10:40+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -883,7 +883,7 @@ msgstr "The survey for token %s is no longer active."
 #: gemstracker/gemstracker/classes/Gems/Snippets/Survey/AnswerImportSnippet.php:157
 #: gemstracker/gemstracker/classes/Gems/Snippets/Track/TracksSnippet.php:113
 #: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/AvailableTracksSnippet.php:130
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:734
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:737
 #: gemstracker/gemstracker/classes/Gems/Tracker/Engine/TrackEngineAbstract.php:849
 #: gemstracker/gemstracker/classes/Gems/Tracker/Model/FieldMaintenanceModel.php:330
 #: gemstracker/gemstracker/classes/Gems/Tracker/Model/RespondentTrackModel.php:151
@@ -900,8 +900,8 @@ msgstr "Track"
 #: gemstracker/gemstracker/classes/Gems/Snippets/Export/ExportSurveysFormSnippet.php:97
 #: gemstracker/gemstracker/classes/Gems/Snippets/Mail/TokenMailFormSnippet.php:65
 #: gemstracker/gemstracker/classes/Gems/Snippets/Survey/Display/BarChartSnippet.php:228
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:613
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:680
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:616
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:683
 #: gemstracker/gemstracker/classes/Gems/Tracker/Model/StandardTokenModel.php:299
 msgid "Round"
 msgstr "Round"
@@ -1123,7 +1123,7 @@ msgstr "Patient nr"
 #: gemstracker/gemstracker/classes/Gems/Default/ComplianceAction.php:100
 #: gemstracker/gemstracker/classes/Gems/Default/FieldOverviewAction.php:82
 #: gemstracker/gemstracker/classes/Gems/Export/ModelSource/AnswerExportModelSource.php:160
-#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:396
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:399
 #: gemstracker/gemstracker/classes/OpenRosa/Tracker/Source/OpenRosa/Form.php:586
 msgid "Start date"
 msgstr "Start date"
@@ -3140,7 +3140,7 @@ msgstr "Average answer time: %s."
 #: gemstracker/gemstracker/classes/Gems/Default/SurveyMaintenanceAction.php:221
 #: gemstracker/gemstracker/classes/Gems/Default/SurveyMaintenanceAction.php:225
 #: gemstracker/gemstracker/classes/Gems/Default/SurveyMaintenanceAction.php:247
-#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:393
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:396
 #: gemstracker/gemstracker/classes/Gems/Util/Translated.php:142
 msgid "n/a"
 msgstr "n/a"
@@ -3197,8 +3197,8 @@ msgid "OK"
 msgstr "OK"
 
 #: gemstracker/gemstracker/classes/Gems/Default/SurveyMaintenanceAction.php:426
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:610
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:676
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:613
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:679
 msgid "Source"
 msgstr "Source"
 
@@ -3341,7 +3341,7 @@ msgstr "Round / Details"
 #: gemstracker/gemstracker/classes/Gems/Snippets/TokenPlanTableSnippet.php:67
 #: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/Rounds/RoundsTableSnippet.php:138
 #: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:82
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:501
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:504
 #: gemstracker/gemstracker/classes/Gems/Tracker/Model/StandardTokenModel.php:317
 msgid "Valid from"
 msgstr "Valid from"
@@ -3355,7 +3355,7 @@ msgstr "Valid from"
 #: gemstracker/gemstracker/classes/Gems/Snippets/TokenPlanTableSnippet.php:68
 #: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/Rounds/RoundsTableSnippet.php:140
 #: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:83
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:502
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:505
 #: gemstracker/gemstracker/classes/Gems/Tracker/Model/StandardTokenModel.php:327
 msgid "Valid until"
 msgstr "Valid until"
@@ -3740,14 +3740,23 @@ msgstr "Last page"
 #: gemstracker/gemstracker/classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:112
 #: gemstracker/gemstracker/classes/Gems/Snippets/Import/FileImportSnippet.php:89
 #: gemstracker/gemstracker/classes/Gems/Snippets/TokenModelSnippetAbstract.php:80
-#: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/TrackTokenOverviewSnippet.php:151
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:732
+#: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/TrackTokenOverviewSnippet.php:152
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:735
 #: gemstracker/gemstracker/classes/Gems/Tracker/Form/AskTokenForm.php:77
 #: gemstracker/gemstracker/classes/Gems/Tracker/Model/StandardTokenModel.php:277
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:197
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:208
 msgid "Token"
 msgstr "Token"
+
+#: gemstracker/gemstracker/classes/Gems/Export/ModelSource/AnswerExportModelSource.php:177
+msgid "Relation ID"
+msgstr "Relation ID"
+
+#: gemstracker/gemstracker/classes/Gems/Export/ModelSource/AnswerExportModelSource.php:178
+#: gemstracker/gemstracker/classes/Gems/Tracker/Model/FieldMaintenanceModel.php:487
+msgid "Relation"
+msgstr "Relation"
 
 #: gemstracker/gemstracker/classes/Gems/Export/RespondentExport.php:280
 msgid "Single Survey"
@@ -3760,8 +3769,8 @@ msgid "Enter the particulars concerning the assignment to this respondent."
 msgstr "Enter the particulars concerning the assignment to this patient."
 
 #: gemstracker/gemstracker/classes/Gems/Export/RespondentExport.php:352
-#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:106
-#: gemstracker/gemstracker/classes/Gems/Snippets/RespondentTokenSnippet.php:137
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:107
+#: gemstracker/gemstracker/classes/Gems/Snippets/RespondentTokenSnippet.php:138
 #: gemstracker/gemstracker/classes/Gems/Snippets/Track/TracksSnippet.php:120
 #: gemstracker/gemstracker/classes/Gems/Tracker/Model/RespondentTrackModel.php:154
 #: gemstracker/gemstracker/classes/Gems/Tracker/Model/RespondentTrackModel.php:199
@@ -4118,7 +4127,7 @@ msgstr "E-Mail now!"
 
 #: gemstracker/gemstracker/classes/Gems/Menu.php:496
 #: gemstracker/gemstracker/classes/Gems/Menu/MenuAbstract.php:519
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:723
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:726
 msgid "Answers"
 msgstr "Answers"
 
@@ -4484,7 +4493,7 @@ msgstr "Export the current data set"
 
 #: gemstracker/gemstracker/classes/Gems/Model/AppointmentModel.php:201
 #: gemstracker/gemstracker/classes/Gems/Model/AppointmentModel.php:241
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:727
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:730
 #: gemstracker/gemstracker/classes/Gems/Tracker/Model/FieldMaintenanceModel.php:479
 msgid "Appointment"
 msgstr "Appointment"
@@ -5368,7 +5377,7 @@ msgstr "(select a round)"
 #: gemstracker/gemstracker/classes/Gems/Snippets/Export/SurveyAutosearchFormSnippet.php:66
 #: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:80
 #: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:80
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:489
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:492
 msgid "Track start"
 msgstr "Track start"
 
@@ -5377,7 +5386,7 @@ msgstr "Track start"
 #: gemstracker/gemstracker/classes/Gems/Snippets/Export/SurveyAutosearchFormSnippet.php:67
 #: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:81
 #: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:81
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:490
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:493
 msgid "Track end"
 msgstr "Track end"
 
@@ -5743,23 +5752,23 @@ msgstr "No tracks"
 msgid "Address"
 msgstr "Address"
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:111
-#: gemstracker/gemstracker/classes/Gems/Snippets/RespondentTokenSnippet.php:143
-#: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/TrackTokenOverviewSnippet.php:134
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:112
+#: gemstracker/gemstracker/classes/Gems/Snippets/RespondentTokenSnippet.php:144
+#: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/TrackTokenOverviewSnippet.php:135
 #: gemstracker/gemstracker/classes/Gems/Tracker/Model/StandardTokenModel.php:353
 msgid "Score"
 msgstr "Score"
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:176
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:177
 #, php-format
 msgid "Add %s track to this respondent"
 msgstr "Add %s track to this patient"
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:193
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:194
 msgid "Add a track to this respondent"
 msgstr "Add a track to this patient"
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:197
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:198
 msgid "No valid tokens found"
 msgstr "No valid tokens found"
 
@@ -5772,32 +5781,32 @@ msgstr "empty"
 msgid "%s (%d open)"
 msgstr "%s (%d open)"
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:355
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:358
 #: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/Buttons/TrackActionButtonRow.php:65
 #: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/DeleteTrackSnippet.php:158
 msgid "Edit track"
 msgstr "Edit track"
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:381
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:384
 msgid "Delete track"
 msgstr "Delete track"
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:496
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:499
 #, php-format
 msgid "%s completed"
 msgstr "%s completed"
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:503
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:506
 #, php-format
 msgid "%s open"
 msgstr "%s open"
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:510
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:513
 #, php-format
 msgid "%s missed"
 msgstr "%s missed"
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:517
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:520
 #, php-format
 msgid "%s upcoming"
 msgstr "%s upcoming"
@@ -6969,94 +6978,94 @@ msgstr "Next Step"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:208
 #: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:212
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:551
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:554
 #: gemstracker/gemstracker/classes/Gems/Tracker/Model/StandardTokenModel.php:305
 msgid "Assigned to"
 msgstr "Assigned to"
 
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:411
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:414
 #, php-format
 msgid "%s plus %s %s"
 msgstr "%s plus %s %s"
 
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:413
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:416
 #, php-format
 msgid "%s minus %s %s"
 msgstr "%s minus %s %s"
 
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:415
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:418
 #, php-format
 msgid "%s"
 msgstr "%s"
 
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:503
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:506
 msgid "Start time"
 msgstr "Start time"
 
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:504
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:507
 msgid "Completion time"
 msgstr "Completion time"
 
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:568
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:571
 msgid "Valid from calculation"
 msgstr "Valid from calculation"
 
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:577
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:639
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:580
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:642
 msgid "Date source"
 msgstr "Date source"
 
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:586
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:648
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:589
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:651
 msgid "Round used"
 msgstr "Round used"
 
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:594
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:655
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:597
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:658
 msgid "Date used"
 msgstr "Date used"
 
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:599
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:660
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:602
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:663
 msgid "Add to date"
 msgstr "Add to date"
 
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:600
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:661
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:603
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:664
 msgid "Can be negative"
 msgstr "Can be negative"
 
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:605
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:667
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:608
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:670
 msgid "Add to date unit"
 msgstr "Add to date unit"
 
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:619
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:686
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:622
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:689
 msgid "Date calculation"
 msgstr "Date calculation"
 
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:629
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:632
 msgid "Valid for calculation"
 msgstr "Valid for calculation"
 
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:720
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:723
 msgid "Does not expire"
 msgstr "Does not expire"
 
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:723
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:726
 msgid "Use an answer from a survey."
 msgstr "Use an answer from a survey."
 
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:728
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:731
 msgid "Use an appointment linked to this track."
 msgstr "Use an appointment linked to this track."
 
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:732
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:735
 msgid "Use a standard token date."
 msgstr "Use a standard token date."
 
-#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:734
+#: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:737
 msgid "Use a track level date."
 msgstr "Use a track level date."
 
@@ -7289,10 +7298,6 @@ msgstr "Free text"
 #: gemstracker/gemstracker/classes/Gems/Tracker/Model/FieldMaintenanceModel.php:485
 msgid "Moment in time"
 msgstr "Moment in time"
-
-#: gemstracker/gemstracker/classes/Gems/Tracker/Model/FieldMaintenanceModel.php:487
-msgid "Relation"
-msgstr "Relation"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Model/FieldMaintenanceModel.php:488
 msgid "Select one"
