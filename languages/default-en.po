@@ -12,12 +12,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Poedit-SourceCharset: iso-8859-1\n"
-"X-Poedit-Basepath: ../../..\n"
+"X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
 "X-Generator: Poedit 1.8.7\n"
-"X-Poedit-SearchPath-0: gemstracker/gemstracker\n"
-"X-Poedit-SearchPath-1: magnafacta/mutil/src\n"
-"X-Poedit-SearchPathExcluded-0: gemstracker/gemstracker/vendor\n"
+"X-Poedit-SearchPath-0: classes\n"
+"X-Poedit-SearchPath-1: vendor/magnafacta/mutil/src/MUtil\n"
+"X-Poedit-SearchPathExcluded-0: vendor\n"
 
 #: gemstracker/gemstracker/classes/Gems/Agenda.php:363
 #: gemstracker/gemstracker/classes/Gems/Agenda/Appointment.php:233
