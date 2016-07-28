@@ -4,6 +4,7 @@ Round icons are now in the token table just like the round descriptions
 Automatic email:
     Mail jobs are now executed in batch, one job at a time
     Individual jobs can be executed from the interface
+    Jobs can be sorted manually using the sort button, check the sort order after upgrade!
 Export:
     For survey responses, when available the respondent relation is exported (field name and relation id)
     Various bugfixes, check output carefully

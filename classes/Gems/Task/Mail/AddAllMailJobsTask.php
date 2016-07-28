@@ -45,7 +45,8 @@ class AddAllMailJobsTask extends \MUtil_Task_TaskAbstract {
         $sql = "SELECT gcj_id_job
             FROM gems__comm_jobs
             WHERE gcj_active = 1
-            ORDER BY CASE WHEN gcj_id_survey IS NULL THEN 1 ELSE 0 END,
+            ORDER BY gcj_id_order, 
+                CASE WHEN gcj_id_survey IS NULL THEN 1 ELSE 0 END,
                 CASE WHEN gcj_round_description IS NULL THEN 1 ELSE 0 END,
                 CASE WHEN gcj_id_track IS NULL THEN 1 ELSE 0 END,
                 CASE WHEN gcj_id_organization IS NULL THEN 1 ELSE 0 END";

@@ -1162,3 +1162,24 @@ UPDATE gems__roles SET grl_parents = null,
 -- PATCH: Add gto_icon_file so individual tokens can have icons too
 ALTER TABLE gems__tokens
     ADD gto_icon_file varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER gto_round_order;
+
+-- PATCH: Allow manual ordering of communication jobs
+ALTER TABLE `gems__comm_jobs`
+    ADD
+        `gcj_id_order` INT NOT NULL DEFAULT '10'
+    AFTER `gcj_id_job`;
+
+UPDATE `gems__comm_jobs` AS t4 
+    JOIN (
+        SELECT @rownr:=@rownr+10 AS gcj_id_order, t1.gcj_id_job
+            FROM (
+                SELECT gcj_id_job
+                FROM gems__comm_jobs
+                WHERE gcj_active = 1
+                ORDER BY CASE WHEN gcj_id_survey IS NULL THEN 1 ELSE 0 END,
+                    CASE WHEN gcj_round_description IS NULL THEN 1 ELSE 0 END,
+                    CASE WHEN gcj_id_track IS NULL THEN 1 ELSE 0 END,
+                    CASE WHEN gcj_id_organization IS NULL THEN 1 ELSE 0 END
+                ) AS t1, (SELECT @rownr:=0) AS t2
+    ) AS t3 ON t4.gcj_id_job = t3.gcj_id_job
+SET t4.gcj_id_order = t3.gcj_id_order;

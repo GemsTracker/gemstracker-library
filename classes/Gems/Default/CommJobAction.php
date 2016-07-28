@@ -46,6 +46,10 @@
  */
 class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
+    protected $autofilterParameters = array(
+        'extraSort'   => array('gcj_id_order' => SORT_ASC)
+        );
+
     /**
      * The snippets used for the create and edit actions.
      *
@@ -58,7 +62,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
      * @var \Gems_User_User
      */
     public $currentUser;
-    
+
     /**
      *
      * @var \Zend_Db_Adapter_Abstract
@@ -76,6 +80,87 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
      * @var string
      */
     protected $roundDescriptionQuery = "SELECT gro_round_description, gro_round_description FROM gems__rounds WHERE gro_id_track = ? GROUP BY gro_round_description";
+
+    public function autofilterAction($resetMvc = true)
+    {
+        parent::autofilterAction($resetMvc);
+        $jquery = $this->view->jQuery();
+        $jquery->enable();  //Just to make sure
+
+        $js = sprintf(
+                '
+                    // Return a helper with preserved width of cells
+                    var fixHelper = function(e, ui) {
+                      ui.children().each(function() {
+                        $(this).width($(this).width());
+                      });
+                      return ui;
+                    };
+
+                    function getURLParameter(url, name) {
+                        return (RegExp("/" + name + "/" + "(.+?)(/|$)").exec(url) || [, null])[1];
+                    }
+
+
+                    %1$s("#sort").click(function() {
+                        %1$s("#sort").toggle();
+                        %1$s("#sort-ok").toggle();
+                        %1$s("#sort-cancel").toggle();
+
+                        $("table.browser.table tbody").sortable({
+                            helper: fixHelper
+                        }).disableSelection();
+                    });
+
+                    %1$s("#sort-ok").click(function() {
+                        var sortables = [];
+                        %1$s("table.browser.table:not(.fixed) tbody tr").each(function(){
+                            href  = %1$s(this).find("td.table-button").first().find("a").attr("href");
+                            id    = getURLParameter(href, "id");
+                            sortables.push(id);
+                        });
+                        %1$s.ajax({
+                            url: "%2$s",
+                            type: "POST",
+                            dataType: "html",
+                            data: {ids: sortables},
+                            error: function (request, status, error) {
+                                errorContainer = $("#error");
+                                if (errorContainer.length == 0) {
+                                    // Insert error container
+                                    $("body").append("<div id=\"error\"></div>");
+                                }
+                                $("#error").html(request.responseText);
+                                $("#error").dialog({
+                                    modal: true,
+                                    width: 200,
+                                    position: {my: "left top", at: "left top", of: "#main"}
+                                    })
+                                },
+                            success: function (data, status, request) {
+                                %1$s("#AUTO_SEARCH_TEXT_BUTTON").click();
+                                }
+                        })
+                    });
+
+                    %1$s("#sort-cancel").click(function() {
+                        %1$s("#AUTO_SEARCH_TEXT_BUTTON").click();
+                    });
+                ',
+            \ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(),
+            $this->view->serverUrl() . $this->view->baseUrl() . '/' . $this->getRequest()->getControllerName() . '/' . 'sort'
+        );
+        $jquery->addOnLoad($js);
+        $buttons = \Mutil_Html::div();
+        $buttons->class = 'pull-right';
+
+        $buttons->div($this->_('Sort'),   array('id' => 'sort',        'class' => "btn"));
+        $buttons->div($this->_('Ok'),     array('id' => 'sort-ok',     'class' => "btn btn-success", 'style' => 'display:none;'));
+        $buttons->div($this->_('Cancel'), array('id' => 'sort-cancel', 'class' => "btn btn-warning", 'style' => 'display:none;'));
+
+        // First element is the wrapper
+        $this->html[0]->append($buttons);
+    }
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -99,7 +184,19 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
         $model = new \MUtil_Model_TableModel('gems__comm_jobs');
 
         \Gems_Model::setChangeFieldsByPrefix($model, 'gcj');
+        $model->set('gcj_id_order',            'label', $this->_('Order'), 'description', $this->_('Execution order of the communication jobs, lower numbers are executed first.'));
+        if ($detailed) {
+            $model->set('gcj_id_order',        'validator', $model->createUniqueValidator('gcj_id_order'));
 
+            if ($action == 'create') {
+                // Set the default round order
+                $newOrder = $this->db->fetchOne("SELECT MAX(gcj_id_order) FROM gems__comm_jobs");
+
+                if ($newOrder) {
+                    $model->set('gcj_id_order', 'default', $newOrder + 10);
+                }
+            }
+        }
         $model->set('gcj_id_message',          'label', $this->_('Template'), 'multiOptions', $unselected + $dbLookup->getCommTemplates('token'));
         $model->set('gcj_id_user_as',          'label', $this->_('By staff member'),
                 'multiOptions', $unselected + $dbLookup->getActiveStaff(), 'default', $this->currentUser->getUserId(),
@@ -113,16 +210,16 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
         if ($detailed) {
             // Show other field only when last $fromMethod is select
             end($fromMethods);  // Move array pointer to the end
-            $lastKey   = key($fromMethods);            
+            $lastKey   = key($fromMethods);
             $switches = array($lastKey => array( 'gcj_from_fixed' => array('elementClass' => 'Text', 'label' => $this->_('From other'))));
-            
+
             $model->addDependency(array('ValueSwitchDependency', $switches), 'gcj_from_method');
             $model->set('gcj_from_fixed',      'label', '',
                     'elementClass', 'Hidden');
         }
         $model->set('gcj_process_method',      'label', $this->_('Processing Method'), 'default', 'O', 'multiOptions', $translated->getBulkMailProcessOptions());
         $model->set('gcj_filter_mode',         'label', $this->_('Filter for'), 'multiOptions', $unselected + $this->getBulkMailFilterOptions());
-        
+
         if ($detailed) {
             // Only show reminder fields when needed
             $switches = array(
@@ -132,7 +229,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
                     )
                 );
             $model->addDependency(array('ValueSwitchDependency', $switches), 'gcj_filter_mode');
-            
+
             $model->set('gcj_filter_days_between', 'label', '',
                     'elementClass', 'Hidden',
                     'description', $this->_('1 day means the reminder is send the next day'),
@@ -168,7 +265,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
 
         return $model;
     }
-    
+
     /**
      * Execute a single mail job
      */
@@ -182,14 +279,14 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
             // Check for unprocessed tokens
             $tracker = $this->loader->getTracker();
             $tracker->processCompletedTokens(null, $this->currentUser->getUserId());
-            
+
             // We could skip this, but a check before starting the batch is better
             $sql = $this->db->select()->from('gems__comm_jobs', array('gcj_id_job'))
                     ->where('gcj_active = 1')
                     ->where('gcj_id_job = ?', $jobId);
-                        
+
             $job = $this->db->fetchOne($sql);
-            
+
             if (!empty($job)) {
                 $batch->addTask('Mail\\ExecuteMailJobTask', $job);
             }
@@ -201,13 +298,13 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
             foreach ($messages as $message) {
                 $this->addMessage($message);
             }
-            
-            $this->_reroute(array('action'=>'show'));            
+
+            $this->_reroute(array('action'=>'show'));
         }
-        
+
         $this->_helper->BatchRunner($batch, $this->_('Execute single mail job'), $this->accesslog);
     }
-    
+
     /**
      * Execute all mail jobs
      */
@@ -220,12 +317,12 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
             // Check for unprocessed tokens
             $tracker = $this->loader->getTracker();
             $tracker->processCompletedTokens(null, $this->currentUser->getUserId());
-            
+
             $batch->addTask('Mail\\AddAllMailJobsTask');
         }
 
         $this->_helper->BatchRunner($batch, $this->_('Execute all mail jobs'), $this->accesslog);
-    }    
+    }
 
     /**
      * The types of mail filters
@@ -327,5 +424,40 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
                 $this->addSnippet('TokenPlanTableSnippet', $params);
              }
         }
+    }
+
+    public function sortAction()
+    {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $ids = $request->getPost('ids');
+            foreach($ids as $id) {
+                $cleanIds[] = (int) $id;
+            }
+            $select = $this->db->select()->from('gems__comm_jobs', array('gcj_id_job', 'gcj_id_order'))
+                    ->where('gcj_id_job in(?)', $cleanIds)
+                    ->order('gcj_id_order');
+
+            $oldOrder = $this->db->fetchPairs($select);
+
+            if(count($oldOrder) == count($cleanIds)) {
+                $newOrder = array_combine($cleanIds, $oldOrder);
+
+                $changed = 0;
+                foreach($newOrder as $id => $order)
+                {
+                    $changed = $changed + $this->db->update('gems__comm_jobs',
+                            array('gcj_id_order' => $order),
+                            $this->db->quoteInto('gcj_id_job = ?', $id)
+                            );
+                }
+
+                $this->addMessage(sprintf($this->plural('%s record updated due to sorting.', '%s records updated due to sorting.', $changed), $changed));
+
+                return;
+            }
+        }
+
+        throw new Gems_Exception($this->_('Sorting failed'), 403);
     }
 }
