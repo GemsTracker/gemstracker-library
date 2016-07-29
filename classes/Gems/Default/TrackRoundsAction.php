@@ -127,6 +127,16 @@ class Gems_Default_TrackRoundsAction extends \Gems_Default_TrackMaintenanceWithE
         'roundId'     => 'getRoundId',
         'surveyId'    => 'getSurveyId',
     );
+    
+    public function autofilterAction($resetMvc = true)
+    {
+        parent::autofilterAction($resetMvc);
+        
+        $buttons = $this->_helper->SortableTable('sort', 'rid');
+
+        // First element is the wrapper
+        $this->html[0]->append($buttons);
+    }
 
     /**
      * Create a new round
@@ -258,5 +268,10 @@ class Gems_Default_TrackRoundsAction extends \Gems_Default_TrackMaintenanceWithE
         $this->showSnippets = $this->getTrackEngine()->getRoundShowSnippetNames();
 
         return parent::showAction();
+    }
+    
+    public function sortAction()
+    {
+        $this->_helper->getHelper('SortableTable')->ajaxAction('gems__rounds','gro_id_round', 'gro_id_order');        
     }
 }

@@ -1,6 +1,7 @@
 Important changes from 1.8.0 => 1.8.1
 ============================================================
 Round icons are now in the token table just like the round descriptions
+Rounds can be sorted using drag and drop
 Automatic email:
     Mail jobs are now executed in batch, one job at a time
     Individual jobs can be executed from the interface
