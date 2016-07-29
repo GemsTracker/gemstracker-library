@@ -359,6 +359,7 @@ abstract class Gems_Menu_MenuAbstract
                 ->setModelParameters(1);
 
         $ajaxPage = $this->addPage($this->_('Round Selection'), 'pr.comm.job', 'comm-job', 'roundselect', array('visible' => false));
+        $ajaxPage = $this->addPage($this->_('Sort jobs'), 'pr.comm.job.edit', 'comm-job', 'sort', array('visible' => false));
 
         // MAIL SERVER CONTROLLER
         $page = $setup->addBrowsePage($this->_('Servers'), 'pr.mail.server', 'mail-server');
@@ -871,6 +872,8 @@ abstract class Gems_Menu_MenuAbstract
                 ->addNamedParameters(\Gems_Model::ROUND_ID, 'gro_id_round', \MUtil_Model::REQUEST_ID, 'gro_id_track');
         $spage->addDeleteAction('pr.track-maintenance.delete')
                 ->addNamedParameters(\Gems_Model::ROUND_ID, 'gro_id_round', \MUtil_Model::REQUEST_ID, 'gro_id_track');
+        
+        $ajaxPage = $this->addPage($this->_('Sort rounds'), 'pr.track-maintenance.edit', 'track-rounds', 'sort', array('visible' => false));
 
         $overviewPage = $page->addPage($this->_('Tracks per org'), 'pr.track-maintenance.trackperorg', 'track-overview', 'index');
         $overviewPage->addExportAction();

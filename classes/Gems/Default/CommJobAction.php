@@ -84,79 +84,8 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
     public function autofilterAction($resetMvc = true)
     {
         parent::autofilterAction($resetMvc);
-        $jquery = $this->view->jQuery();
-        $jquery->enable();  //Just to make sure
-
-        $js = sprintf(
-                '
-                    // Return a helper with preserved width of cells
-                    var fixHelper = function(e, ui) {
-                      ui.children().each(function() {
-                        $(this).width($(this).width());
-                      });
-                      return ui;
-                    };
-
-                    function getURLParameter(url, name) {
-                        return (RegExp("/" + name + "/" + "(.+?)(/|$)").exec(url) || [, null])[1];
-                    }
-
-
-                    %1$s("#sort").click(function() {
-                        %1$s("#sort").toggle();
-                        %1$s("#sort-ok").toggle();
-                        %1$s("#sort-cancel").toggle();
-
-                        $("table.browser.table tbody").sortable({
-                            helper: fixHelper
-                        }).disableSelection();
-                    });
-
-                    %1$s("#sort-ok").click(function() {
-                        var sortables = [];
-                        %1$s("table.browser.table:not(.fixed) tbody tr").each(function(){
-                            href  = %1$s(this).find("td.table-button").first().find("a").attr("href");
-                            id    = getURLParameter(href, "id");
-                            sortables.push(id);
-                        });
-                        %1$s.ajax({
-                            url: "%2$s",
-                            type: "POST",
-                            dataType: "html",
-                            data: {ids: sortables},
-                            error: function (request, status, error) {
-                                errorContainer = $("#error");
-                                if (errorContainer.length == 0) {
-                                    // Insert error container
-                                    $("body").append("<div id=\"error\"></div>");
-                                }
-                                $("#error").html(request.responseText);
-                                $("#error").dialog({
-                                    modal: true,
-                                    width: 200,
-                                    position: {my: "left top", at: "left top", of: "#main"}
-                                    })
-                                },
-                            success: function (data, status, request) {
-                                %1$s("#AUTO_SEARCH_TEXT_BUTTON").click();
-                                }
-                        })
-                    });
-
-                    %1$s("#sort-cancel").click(function() {
-                        %1$s("#AUTO_SEARCH_TEXT_BUTTON").click();
-                    });
-                ',
-            \ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(),
-            $this->view->serverUrl() . $this->view->baseUrl() . '/' . $this->getRequest()->getControllerName() . '/' . 'sort'
-        );
-        $jquery->addOnLoad($js);
-        $buttons = \Mutil_Html::div();
-        $buttons->class = 'pull-right';
-
-        $buttons->div($this->_('Sort'),   array('id' => 'sort',        'class' => "btn"));
-        $buttons->div($this->_('Ok'),     array('id' => 'sort-ok',     'class' => "btn btn-success", 'style' => 'display:none;'));
-        $buttons->div($this->_('Cancel'), array('id' => 'sort-cancel', 'class' => "btn btn-warning", 'style' => 'display:none;'));
+        
+        $buttons = $this->_helper->SortableTable('sort', 'id');
 
         // First element is the wrapper
         $this->html[0]->append($buttons);
@@ -428,36 +357,6 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
 
     public function sortAction()
     {
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $ids = $request->getPost('ids');
-            foreach($ids as $id) {
-                $cleanIds[] = (int) $id;
-            }
-            $select = $this->db->select()->from('gems__comm_jobs', array('gcj_id_job', 'gcj_id_order'))
-                    ->where('gcj_id_job in(?)', $cleanIds)
-                    ->order('gcj_id_order');
-
-            $oldOrder = $this->db->fetchPairs($select);
-
-            if(count($oldOrder) == count($cleanIds)) {
-                $newOrder = array_combine($cleanIds, $oldOrder);
-
-                $changed = 0;
-                foreach($newOrder as $id => $order)
-                {
-                    $changed = $changed + $this->db->update('gems__comm_jobs',
-                            array('gcj_id_order' => $order),
-                            $this->db->quoteInto('gcj_id_job = ?', $id)
-                            );
-                }
-
-                $this->addMessage(sprintf($this->plural('%s record updated due to sorting.', '%s records updated due to sorting.', $changed), $changed));
-
-                return;
-            }
-        }
-
-        throw new Gems_Exception($this->_('Sorting failed'), 403);
+        $this->_helper->getHelper('SortableTable')->ajaxAction('gems__comm_jobs','gcj_id_job', 'gcj_id_order');        
     }
 }
