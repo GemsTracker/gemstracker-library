@@ -63,15 +63,15 @@
         </append>
     </target>
 
-    <target name="striplicense">
+<target name="striplicense">
         <reflexive>
-            <fileset dir="../" id="phpfiles">
+            <fileset dir=".." id="phpfiles">
                 <include name="**/*.php" />
                 <exclude name="vendor/**" />
             </fileset>
             <filterchain>
                 <replaceregexp>
-                    <regexp pattern="\s*\*\s*Copyright.*POSSIBILITY OF SUCH DAMAGE\..*?\n.*?\n" replace="\n" multiline="true"/>
+                    <regexp pattern="\s*\*\s*Copyright.*POSSIBILITY OF SUCH DAMAGE\..*?\n.*?(\n)" replace="\1" multiline="true"/>
                 </replaceregexp>
             </filterchain>
         </reflexive>
