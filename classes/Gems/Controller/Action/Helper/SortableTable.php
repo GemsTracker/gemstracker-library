@@ -96,7 +96,7 @@ class Gems_Controller_Action_Helper_SortableTable extends \Zend_Controller_Actio
         $jquery->addOnLoad($js);
 
         $buttons        = \Mutil_Html::div();
-        $buttons->class = 'pull-right';
+        $buttons->class = 'buttons pull-right';
 
         $buttons->div($this->getActionController()->_('Sort'), array('id' => 'sort', 'class' => "btn"));
         $buttons->div($this->getActionController()->_('Ok'), array('id' => 'sort-ok', 'class' => "btn btn-success", 'style' => 'display:none;'));
