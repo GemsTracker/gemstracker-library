@@ -63,6 +63,20 @@
         </append>
     </target>
 
+<target name="striplicense">
+        <reflexive>
+            <fileset dir="../" id="phpfiles">
+                <include name="**/*.php" />
+                <exclude name="vendor/**" />
+            </fileset>
+            <filterchain>
+                <replaceregexp>
+                    <regexp pattern="\s*\*\s*Copyright.*POSSIBILITY OF SUCH DAMAGE\.\n.*?\n" replace="" multiline="true"/>
+                </replaceregexp>
+            </filterchain>
+        </reflexive>
+    </target>
+
 	<!-- Main target -->
 	<target name="build" depends="sql-merge,sql-lite"/>
 </project>
