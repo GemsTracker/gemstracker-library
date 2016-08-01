@@ -5,7 +5,6 @@
  * @subpackage User
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -58,16 +57,7 @@ class Gems_User_Form_LayeredLoginForm extends \Gems_User_Form_LoginForm
             return array();
         }
 
-        try {
-            $organizations = $this->db->fetchPairs('SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active=1 AND gor_has_login=1 AND (gor_accessible_by LIKE ' . $this->db->quote('%:' . $parentId . ':%') . ' OR gor_id_organization = ' . $this->db->quote($parentId) .  ') ORDER BY gor_name');
-        } catch (\Exception $e) {
-            try {
-                // 1.4 fallback
-                $organizations = $this->db->fetchPairs('SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active=1 AND (gor_accessible_by LIKE ' . $this->db->quote('%:' . $parentId . ':%') . ' OR gor_id_organization = ' . $this->db->quote($parentId) .  ') ORDER BY gor_name');
-            } catch (\Exception $e) {
-                $organizations = array();
-            }
-        }
+        $organizations = $this->db->fetchPairs('SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active=1 AND gor_has_login=1 AND (gor_accessible_by LIKE ' . $this->db->quote('%:' . $parentId . ':%') . ' OR gor_id_organization = ' . $this->db->quote($parentId) .  ') ORDER BY gor_name');
 
         natsort($organizations);
 
@@ -83,11 +73,14 @@ class Gems_User_Form_LayeredLoginForm extends \Gems_User_Form_LoginForm
     {
         $userLoader = $this->loader->getUserLoader();
 
-        // Url determines organization first.
-        if ($orgId = $userLoader->getOrganizationIdByUrl()) {
-            $this->_organizationFromUrl = true;
-            $userLoader->getCurrentUser()->setCurrentOrganization($orgId);
-            return $orgId;
+        if ($this->getElement($this->organizationFieldName) instanceof \Zend_Form_Element_Hidden) {
+            // Url determines organization first when there is only one organization
+            // and thus the element is of class hidden
+            if ($orgId = $userLoader->getOrganizationIdByUrl()) {
+                $this->_organizationFromUrl = true;
+                $userLoader->getCurrentUser()->setCurrentOrganization($orgId);
+                return $orgId;
+            }
         }
 
         $request = $this->getRequest();
@@ -136,9 +129,9 @@ class Gems_User_Form_LayeredLoginForm extends \Gems_User_Form_LoginForm
      */
     public function getOrganizationElement()
     {
-        $element  = $this->getElement($this->organizationFieldName);
-        $orgId    = $this->getCurrentOrganizationId();
-        $parentId = $this->getElement($this->topOrganizationFieldName)->getValue();
+        $element   = $this->getElement($this->organizationFieldName);
+        $orgId     = $this->getCurrentOrganizationId();
+        $parentId  = $this->getParentId();
         $childOrgs = $this->getChildOrganisations($parentId);
 
         if (!empty($childOrgs)) {
@@ -167,9 +160,21 @@ class Gems_User_Form_LayeredLoginForm extends \Gems_User_Form_LoginForm
                 $this->addElement($element);
                 $element->setValue($orgId);
             }
+            $this->addElement($element);
         }
 
         return $element;
+    }
+
+    public function getParentId()
+    {
+        if ($this->_organizationFromUrl) {
+            $userLoader = $this->loader->getUserLoader();
+
+            return $userLoader->getOrganizationIdByUrl();
+        }
+
+        return $this->getElement($this->topOrganizationFieldName)->getValue();
     }
 
     /**
@@ -237,10 +242,9 @@ class Gems_User_Form_LayeredLoginForm extends \Gems_User_Form_LoginForm
             if ($this->organizationMaxLines > 1) {
                 $element->setAttrib('size', min(count($orgs) + 1, $this->organizationMaxLines));
             }
-            $this->addElement($element);
-
             $element->setValue($orgId);
         }
+        $this->addElement($element);
 
         return $element;
     }

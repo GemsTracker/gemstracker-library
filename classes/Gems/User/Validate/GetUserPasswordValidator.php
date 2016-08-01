@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -53,7 +52,7 @@ class Gems_User_Validate_GetUserPasswordValidator extends \Gems_User_Validate_Pa
      */
     public function isValid($value, $context = array())
     {
-        $user   = $this->_userSource->getUser();
+        $user = $this->_userSource->getUser();
         if ($user instanceof \Gems_User_User) {
             $result = $user->authenticate($value);
         } else {
