@@ -5,12 +5,15 @@
  *  IDPARAM
  */
 
-// Return a helper with preserved width of cells
+// Return a helper with preserved width of cells, and disabled onlick attribute 
+// for FireFox bug https://bugzilla.mozilla.org/show_bug.cgi?id=787944
 var fixHelper = function (e, ui) {
-    ui.children().each(function () {
+    var clone = jQuery.extend(true, {}, ui);
+    clone.children().each(function () {
         $(this).width($(this).width());
+        $(this).attr('onclick', null);
     });
-    return ui;
+    return clone;
 };
 
 function getURLParameter(url, name) {
