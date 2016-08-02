@@ -45,8 +45,11 @@ class Gems_Default_RespondentExportAction extends \Gems_Controller_Action
 
         if ($request->isPost()) {
             $respondents = preg_split('/[\s,;]+/', $request->getParam('id'), -1, PREG_SPLIT_NO_EMPTY);
-
-            $export->render($respondents, $request->getParam('group'), $request->getParam('format'));
+            if (count($respondents)>0) {
+                $export->render($respondents, $request->getParam('group'), $request->getParam('format'));
+            } else {
+                $this->addMessage($this->_('Please select at least one respondent'));
+            }
         }
     }
 }
