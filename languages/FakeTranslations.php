@@ -1,8 +1,6 @@
 <?php
 
 /**
-
-/**
  * This files contains fake translation calls.
  *
  * It is never called in the program, but it is used to enter

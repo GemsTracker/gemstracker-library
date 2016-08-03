@@ -1,6 +1,5 @@
 <?php
 
-/**
 
 /**
  * Outputs an array of arrays (or a \Zend_Db_Table_Rowset) as a table
