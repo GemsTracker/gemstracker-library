@@ -1,7 +1,4 @@
 <?php
-
-/**
-
 /**
  * This files contains general project code that set constants and initializes
  * PHP for use with Zend / Gemstracker. Next the autoloader and Zend_Application

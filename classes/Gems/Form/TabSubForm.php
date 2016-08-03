@@ -1,5 +1,4 @@
 <?php
-/**
 
 /**
  * A special displaygroup, to be displayed in a jQuery tab. Main difference is in the decorators.

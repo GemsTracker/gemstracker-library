@@ -1,6 +1,5 @@
 <?php
 
-/*
 
 /**
  * Description of RespondentModelTest

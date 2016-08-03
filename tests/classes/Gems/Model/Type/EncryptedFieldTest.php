@@ -1,7 +1,5 @@
 <?php
 
-/*
-
 /**
  * Description of EncryptedFieldTest
  *
