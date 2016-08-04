@@ -1,0 +1,561 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » \Gems_Form_TabSubForm</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+<div class="btn-group visibility" data-toggle="buttons-checkbox">
+<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
+</div>
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+</div>
+<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+<li class="nav-header">
+<i title="Methods" class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public "><a href="#method___call" title="__call() :: For backward compatibility, allow \MUtil_Html calls to set or append to the title"><span class="description">For backward compatibility, allow \MUtil_Html calls to set or append to the title</span><pre>__call()</pre></a></li>
+<li class="method public inherited"><a href="#method___construct" title="__construct() :: Constructor"><span class="description">Constructor</span><pre>__construct()</pre></a></li>
+<li class="method public inherited"><a href="#method_activateBootstrap" title="activateBootstrap() :: "><span class="description">activateBootstrap()
+        </span><pre>activateBootstrap()</pre></a></li>
+<li class="method public inherited"><a href="#method_activateJQuery" title="activateJQuery() :: Activate JQuery for this form"><span class="description">Activate JQuery for this form</span><pre>activateJQuery()</pre></a></li>
+<li class="method public inherited"><a href="#method_addDisplayGroup" title="addDisplayGroup() :: Add a display group to the subform"><span class="description">Add a display group to the subform</span><pre>addDisplayGroup()</pre></a></li>
+<li class="method public inherited"><a href="#method_addElement" title="addElement() :: Add a new element"><span class="description">Add a new element</span><pre>addElement()</pre></a></li>
+<li class="method public inherited"><a href="#method_doRow" title="doRow() :: "><span class="description">doRow()
+        </span><pre>doRow()</pre></a></li>
+<li class="method public inherited"><a href="#method_doRowDisplayGroup" title="doRowDisplayGroup() :: "><span class="description">doRowDisplayGroup()
+        </span><pre>doRowDisplayGroup()</pre></a></li>
+<li class="method public inherited"><a href="#method_doRowElement" title="doRowElement() :: "><span class="description">doRowElement()
+        </span><pre>doRowElement()</pre></a></li>
+<li class="method public "><a href="#method_fixDecorators" title="fixDecorators() :: Fix the decorators so we get the table layout we want. Normally this is called
+only once when rendering the form."><span class="description">Fix the decorators so we get the table layout we want. Normally this is called
+only once when rendering the form.</span><pre>fixDecorators()</pre></a></li>
+<li class="method public inherited"><a href="#method_fixDecorators" title="fixDecorators() :: Fix the decorators so we get the table layout we want. Normally this is called
+only once when rendering the form."><span class="description">Fix the decorators so we get the table layout we want. Normally this is called
+only once when rendering the form.</span><pre>fixDecorators()</pre></a></li>
+<li class="method public inherited"><a href="#method_getAutoSubmit" title="getAutoSubmit() :: Get the autosubmit arguments (if any)"><span class="description">Get the autosubmit arguments (if any)</span><pre>getAutoSubmit()</pre></a></li>
+<li class="method public inherited"><a href="#method_isAutoSubmit" title="isAutoSubmit() :: Is this a form that autosubmits?"><span class="description">Is this a form that autosubmits?</span><pre>isAutoSubmit()</pre></a></li>
+<li class="method public "><a href="#method_loadDefaultDecorators" title="loadDefaultDecorators() :: Load default decorators"><span class="description">Load default decorators</span><pre>loadDefaultDecorators()</pre></a></li>
+<li class="method public inherited"><a href="#method_loadDefaultDecorators" title="loadDefaultDecorators() :: Load default decorators"><span class="description">Load default decorators</span><pre>loadDefaultDecorators()</pre></a></li>
+<li class="method public inherited"><a href="#method_render" title="render() :: Fix the decorators the first time we try to render the form"><span class="description">Fix the decorators the first time we try to render the form</span><pre>render()</pre></a></li>
+<li class="method public inherited"><a href="#method_setAutoSubmit" title="setAutoSubmit() :: Change the form into an autosubmit form"><span class="description">Change the form into an autosubmit form</span><pre>setAutoSubmit()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="method protected inherited"><a href="#method__activateJQueryView" title="_activateJQueryView() :: "><span class="description">_activateJQueryView()
+        </span><pre>_activateJQueryView()</pre></a></li>
+<li class="method protected inherited"><a href="#method__fixDecoratorDisplayGroup" title="_fixDecoratorDisplayGroup() :: "><span class="description">_fixDecoratorDisplayGroup()
+        </span><pre>_fixDecoratorDisplayGroup()</pre></a></li>
+<li class="method protected inherited"><a href="#method__fixDecoratorElement" title="_fixDecoratorElement() :: "><span class="description">_fixDecoratorElement()
+        </span><pre>_fixDecoratorElement()</pre></a></li>
+<li class="method protected inherited"><a href="#method__fixDecoratorHiddenSubmit" title="_fixDecoratorHiddenSubmit() :: "><span class="description">_fixDecoratorHiddenSubmit()
+        </span><pre>_fixDecoratorHiddenSubmit()</pre></a></li>
+<li class="method protected inherited"><a href="#method__fixDecoratorHtml" title="_fixDecoratorHtml() :: "><span class="description">_fixDecoratorHtml()
+        </span><pre>_fixDecoratorHtml()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header private">» Private
+                    <ul>
+<li class="method private inherited"><a href="#method__enableAutoSubmitElement" title="_enableAutoSubmitElement() :: Change all elements into an autosubmit element"><span class="description">Change all elements into an autosubmit element</span><pre>_enableAutoSubmitElement()</pre></a></li>
+<li class="method private inherited"><a href="#method__getImportantDecorator" title="_getImportantDecorator() :: Get a ViewHelper or ZendX decorator to add in front of the decorator chain"><span class="description">Get a ViewHelper or ZendX decorator to add in front of the decorator chain</span><pre>_getImportantDecorator()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Properties" class="icon-custom icon-property"></i> Properties
+                    <ul></ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="property protected "><a href="#property__autosubmit" title="$_autosubmit() :: If set this holds the url and targetid for the autosubmit"><span class="description"></span><pre>$_autosubmit</pre></a></li>
+<li class="property protected "><a href="#property__isArray" title="$_isArray() :: Whether or not form elements are members of an array"><span class="description"></span><pre>$_isArray</pre></a></li>
+</ul>
+</li>
+<li class="nav-header private">» Private
+                    <ul><li class="property private "><a href="#property__alternate" title="$_alternate() :: "><span class="description"></span><pre>$_alternate</pre></a></li></ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a xmlns:php="http://php.net/xsl" id="\Gems_Form_TabSubForm"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+<li>
+<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Gems_Form_TabSubForm.html">Gems_Form_TabSubForm</a>
+</li>
+</ul>
+<div xmlns:php="http://php.net/xsl" class="element class">
+<p class="short_description">A special displaygroup, to be displayed in a jQuery tab. Main difference is in the decorators.</p>
+<div class="details">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>version</th>
+<td>$Id$</td>
+</tr>
+<tr>
+<th>author</th>
+<td><a href="">175780</a></td>
+</tr>
+<tr>
+<th>filesource</th>
+<td></td>
+</tr>
+<tr>
+<th>package</th>
+<td><a href="../packages/Gems.Form.html">Gems</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Form</td>
+</tr>
+<tr>
+<th>inherited_from</th>
+<td>\Gems_Form_TableForm</td>
+</tr>
+</table>
+<h3>
+<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
+<a id="method___call"></a><div class="element clickable method public method___call " data-toggle="collapse" data-target=".method___call .collapse" title="public">
+<h2>For backward compatibility, allow \MUtil_Html calls to set or append to the title</h2>
+<pre>__call(\type $method, \type $args) : \Gems_Form_TabSubForm</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$method</h4>
+<code>\type</code>
+</div>
+<div class="subelement argument">
+<h4>$args</h4>
+<code>\type</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Form_TabSubForm</code></div>
+</div></div>
+</div>
+<a id="method___construct"></a><div class="element clickable method public method___construct inherited" data-toggle="collapse" data-target=".method___construct .collapse" title="public">
+<h2>Constructor</h2>
+<pre>__construct(mixed $options<code> = null</code>) : void</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Registers form view helper as decorator</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$options</h4>
+<code>mixed</code>
+</div>
+</div></div>
+</div>
+<a id="method_activateBootstrap"></a><div class="element clickable method public method_activateBootstrap inherited" data-toggle="collapse" data-target=".method_activateBootstrap .collapse" title="public">
+<h2>activateBootstrap()
+        </h2>
+<pre>activateBootstrap() </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_activateJQuery"></a><div class="element clickable method public method_activateJQuery inherited" data-toggle="collapse" data-target=".method_activateJQuery .collapse" title="public">
+<h2>Activate JQuery for this form</h2>
+<pre>activateJQuery() : \MUtil_Form</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\MUtil_Form</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_addDisplayGroup"></a><div class="element clickable method public method_addDisplayGroup inherited" data-toggle="collapse" data-target=".method_addDisplayGroup .collapse" title="public">
+<h2>Add a display group to the subform</h2>
+<pre>addDisplayGroup(array $elements, string $name, array $options<code> = null</code>) : \Gems_Form_TabSubForm</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>This allows to render multiple fields in one table cell. Provide a description to set the label for
+the group. When the special option showLabels is set to true, inside the tabel cell all fields will
+still show their own label.</p>
+<p>Example:
+<code>
+$this-&gt;addDisplayGroup(array('firstname', 'infix', 'lastname'), 'name_group', array('description'=&gt;'Name', 'showLabels'=&gt;true);
+</code>
+This would result in a two cell table row, with first cell the description of the group 'Name' and in the
+second cell the three input boxes, with their label in front. If you leave the showLabels out, you will get
+just three inputboxes for the name parts.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$elements</h4>
+<code>array</code><p>Array with names of the fields you want to add</p></div>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code><p>The (unique) name for this new group</p></div>
+<div class="subelement argument">
+<h4>$options</h4>
+<code>array</code><p>An array of key=>value options to set for the group</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Form_TabSubForm</code></div>
+</div></div>
+</div>
+<a id="method_addElement"></a><div class="element clickable method public method_addElement inherited" data-toggle="collapse" data-target=".method_addElement .collapse" title="public">
+<h2>Add a new element</h2>
+<pre>addElement(string|\Zend_Form_Element $element, string $name<code> = null</code>, array|\Zend_Config $options<code> = null</code>) : \Zend_Form</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>$element may be either a string element type, or an object of type
+\Zend_Form_Element. If a string element type is provided, $name must be
+provided, and $options may be optionally provided for configuring the
+element.</p>
+<p>If a \Zend_Form_Element is provided, $name may be optionally provided,
+and any provided $options will be ignored.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$element</h4>
+<code>string</code><code>\Zend_Form_Element</code>
+</div>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$options</h4>
+<code>array</code><code>\Zend_Config</code>
+</div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code>\Zend_Form_Exception</code></th>
+<td>on invalid element</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Zend_Form</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_doRow"></a><div class="element clickable method public method_doRow inherited" data-toggle="collapse" data-target=".method_doRow .collapse" title="public">
+<h2>doRow()
+        </h2>
+<pre>doRow($content, $label, $class, $element) </pre>
+<div class="labels">
+<span class="label">Inherited</span><span class="label">Static</span>
+</div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$content</h4></div>
+<div class="subelement argument"><h4>$label</h4></div>
+<div class="subelement argument"><h4>$class</h4></div>
+<div class="subelement argument"><h4>$element</h4></div>
+</div></div>
+</div>
+<a id="method_doRowDisplayGroup"></a><div class="element clickable method public method_doRowDisplayGroup inherited" data-toggle="collapse" data-target=".method_doRowDisplayGroup .collapse" title="public">
+<h2>doRowDisplayGroup()
+        </h2>
+<pre>doRowDisplayGroup($content, $element, array $options) </pre>
+<div class="labels">
+<span class="label">Inherited</span><span class="label">Static</span>
+</div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$content</h4></div>
+<div class="subelement argument"><h4>$element</h4></div>
+<div class="subelement argument"><h4>$options</h4></div>
+</div></div>
+</div>
+<a id="method_doRowElement"></a><div class="element clickable method public method_doRowElement inherited" data-toggle="collapse" data-target=".method_doRowElement .collapse" title="public">
+<h2>doRowElement()
+        </h2>
+<pre>doRowElement(string $content, \Zend_Form_Element $element, array $options) : string</pre>
+<div class="labels">
+<span class="label">Inherited</span><span class="label">Static</span>
+</div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$content</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$element</h4>
+<code>\Zend_Form_Element</code>
+</div>
+<div class="subelement argument">
+<h4>$options</h4>
+<code>array</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_fixDecorators"></a><div class="element clickable method public method_fixDecorators " data-toggle="collapse" data-target=".method_fixDecorators .collapse" title="public">
+<h2>Fix the decorators so we get the table layout we want. Normally this is called
+only once when rendering the form.</h2>
+<pre>fixDecorators() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Form_TableForm::fixDecorators()</td>
+</tr></table>
+</div></div>
+</div>
+<a id="method_fixDecorators"></a><div class="element clickable method public method_fixDecorators inherited" data-toggle="collapse" data-target=".method_fixDecorators .collapse" title="public">
+<h2>Fix the decorators so we get the table layout we want. Normally this is called
+only once when rendering the form.</h2>
+<pre>fixDecorators() </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_getAutoSubmit"></a><div class="element clickable method public method_getAutoSubmit inherited" data-toggle="collapse" data-target=".method_getAutoSubmit .collapse" title="public">
+<h2>Get the autosubmit arguments (if any)</h2>
+<pre>getAutoSubmit() : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>or null</div>
+</div></div>
+</div>
+<a id="method_isAutoSubmit"></a><div class="element clickable method public method_isAutoSubmit inherited" data-toggle="collapse" data-target=".method_isAutoSubmit .collapse" title="public">
+<h2>Is this a form that autosubmits?</h2>
+<pre>isAutoSubmit() : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_loadDefaultDecorators"></a><div class="element clickable method public method_loadDefaultDecorators " data-toggle="collapse" data-target=".method_loadDefaultDecorators .collapse" title="public">
+<h2>Load default decorators</h2>
+<pre>loadDefaultDecorators() : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Form_TableForm::loadDefaultDecorators()</td>
+</tr></table>
+</div></div>
+</div>
+<a id="method_loadDefaultDecorators"></a><div class="element clickable method public method_loadDefaultDecorators inherited" data-toggle="collapse" data-target=".method_loadDefaultDecorators .collapse" title="public">
+<h2>Load default decorators</h2>
+<pre>loadDefaultDecorators() : void</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_render"></a><div class="element clickable method public method_render inherited" data-toggle="collapse" data-target=".method_render .collapse" title="public">
+<h2>Fix the decorators the first time we try to render the form</h2>
+<pre>render(\Zend_View_Interface $view<code> = null</code>) : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$view</h4>
+<code>\Zend_View_Interface</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_setAutoSubmit"></a><div class="element clickable method public method_setAutoSubmit inherited" data-toggle="collapse" data-target=".method_setAutoSubmit .collapse" title="public">
+<h2>Change the form into an autosubmit form</h2>
+<pre>setAutoSubmit(mixed $submitUrl, mixed $targetId, $selective<code> = false</code>) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$submitUrl</h4>
+<code>mixed</code><p>Url as \MUtil_Html_UrlArrayAttribute, array or string</p></div>
+<div class="subelement argument">
+<h4>$targetId</h4>
+<code>mixed</code><p>Id of html element whose content is replaced by the submit result: \MUtil_Html_ElementInterface or string</p></div>
+<div class="subelement argument"><h4>$selective</h4></div>
+</div></div>
+</div>
+<a id="method__activateJQueryView"></a><div class="element clickable method protected method__activateJQueryView inherited" data-toggle="collapse" data-target=".method__activateJQueryView .collapse" title="protected">
+<h2>_activateJQueryView()
+        </h2>
+<pre>_activateJQueryView(\Zend_View_Interface $view<code> = null</code>) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$view</h4></div>
+</div></div>
+</div>
+<a id="method__fixDecoratorDisplayGroup"></a><div class="element clickable method protected method__fixDecoratorDisplayGroup inherited" data-toggle="collapse" data-target=".method__fixDecoratorDisplayGroup .collapse" title="protected">
+<h2>_fixDecoratorDisplayGroup()
+        </h2>
+<pre>_fixDecoratorDisplayGroup($element) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$element</h4></div>
+</div></div>
+</div>
+<a id="method__fixDecoratorElement"></a><div class="element clickable method protected method__fixDecoratorElement inherited" data-toggle="collapse" data-target=".method__fixDecoratorElement .collapse" title="protected">
+<h2>_fixDecoratorElement()
+        </h2>
+<pre>_fixDecoratorElement($element) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$element</h4></div>
+</div></div>
+</div>
+<a id="method__fixDecoratorHiddenSubmit"></a><div class="element clickable method protected method__fixDecoratorHiddenSubmit inherited" data-toggle="collapse" data-target=".method__fixDecoratorHiddenSubmit .collapse" title="protected">
+<h2>_fixDecoratorHiddenSubmit()
+        </h2>
+<pre>_fixDecoratorHiddenSubmit($element) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$element</h4></div>
+</div></div>
+</div>
+<a id="method__fixDecoratorHtml"></a><div class="element clickable method protected method__fixDecoratorHtml inherited" data-toggle="collapse" data-target=".method__fixDecoratorHtml .collapse" title="protected">
+<h2>_fixDecoratorHtml()
+        </h2>
+<pre>_fixDecoratorHtml($element) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$element</h4></div>
+</div></div>
+</div>
+<a id="method__enableAutoSubmitElement"></a><div class="element clickable method private method__enableAutoSubmitElement inherited" data-toggle="collapse" data-target=".method__enableAutoSubmitElement .collapse" title="private">
+<h2>Change all elements into an autosubmit element</h2>
+<pre>_enableAutoSubmitElement(mixed $element) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Call only when $_autoSubmit is set</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$element</h4>
+<code>mixed</code>
+</div>
+</div></div>
+</div>
+<a id="method__getImportantDecorator"></a><div class="element clickable method private method__getImportantDecorator inherited" data-toggle="collapse" data-target=".method__getImportantDecorator .collapse" title="private">
+<h2>Get a ViewHelper or ZendX decorator to add in front of the decorator chain</h2>
+<pre>_getImportantDecorator(\Zend_Form_Element $element) : null | \Zend_Form_Decorator_Abstract</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$element</h4>
+<code>\Zend_Form_Element</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>null</code><code>\Zend_Form_Decorator_Abstract</code>
+</div>
+</div></div>
+</div>
+<h3>
+<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
+<a id="property__autosubmit"> </a><div class="element clickable property protected property__autosubmit" data-toggle="collapse" data-target=".property__autosubmit .collapse" title="protected">
+<h2>If set this holds the url and targetid for the autosubmit</h2>
+<pre>$_autosubmit : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__isArray"> </a><div class="element clickable property protected property__isArray" data-toggle="collapse" data-target=".property__isArray .collapse" title="protected">
+<h2>Whether or not form elements are members of an array</h2>
+<pre>$_isArray : boolean</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>false</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__alternate"> </a><div class="element clickable property private property__alternate" data-toggle="collapse" data-target=".property__alternate .collapse" title="private">
+<h2>$_alternate</h2>
+<pre>$_alternate </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:43+02:00.<br></footer></div>
+</div>
+</body>
+</html>

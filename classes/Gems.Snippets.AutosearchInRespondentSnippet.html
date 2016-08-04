@@ -1,0 +1,559 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » \Gems\Snippets\AutosearchInRespondentSnippet</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+<div class="btn-group visibility" data-toggle="buttons-checkbox">
+<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
+</div>
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+</div>
+<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+<li class="nav-header">
+<i title="Methods" class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public inherited"><a href="#method_afterRegistry" title="afterRegistry() :: Called after the check that all required registry values
+have been set correctly has run."><span class="description">Called after the check that all required registry values
+have been set correctly has run.</span><pre>afterRegistry()</pre></a></li>
+<li class="method public inherited"><a href="#method_getHtmlOutput" title="getHtmlOutput() :: Create the snippets content"><span class="description">Create the snippets content</span><pre>getHtmlOutput()</pre></a></li>
+<li class="method public inherited"><a href="#method_getPeriodFilter" title="getPeriodFilter() :: Helper function to generate a period query string"><span class="description">Helper function to generate a period query string</span><pre>getPeriodFilter()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="method protected inherited"><a href="#method__addPeriodSelectors" title="_addPeriodSelectors() :: Generate two date selectors and - depending on the number of $dates passed -
+either a hidden element containing the field name or an radio button or
+dropdown selector for the type of date to use."><span class="description">Generate two date selectors and - depending on the number of $dates passed -
+either a hidden element containing the field name or an radio button or
+dropdown selector for the type of date to use.</span><pre>_addPeriodSelectors()</pre></a></li>
+<li class="method protected inherited"><a href="#method__createCheckboxElement" title="_createCheckboxElement() :: Creates a \Zend_Form_Element_Select"><span class="description">Creates a \Zend_Form_Element_Select</span><pre>_createCheckboxElement()</pre></a></li>
+<li class="method protected inherited"><a href="#method__createRadioElement" title="_createRadioElement() :: Creates a \Zend_Form_Element_Select"><span class="description">Creates a \Zend_Form_Element_Select</span><pre>_createRadioElement()</pre></a></li>
+<li class="method protected inherited"><a href="#method__createSelectElement" title="_createSelectElement() :: Creates a \Zend_Form_Element_Select"><span class="description">Creates a \Zend_Form_Element_Select</span><pre>_createSelectElement()</pre></a></li>
+<li class="method protected inherited"><a href="#method_createForm" title="createForm() :: Creates the form itself"><span class="description">Creates the form itself</span><pre>createForm()</pre></a></li>
+<li class="method protected "><a href="#method_getAutoSearchElements" title="getAutoSearchElements() :: Returns a text element for autosearch. Can be overruled."><span class="description">Returns a text element for autosearch. Can be overruled.</span><pre>getAutoSearchElements()</pre></a></li>
+<li class="method protected inherited"><a href="#method_getAutoSearchElements" title="getAutoSearchElements() :: Returns a text element for autosearch. Can be overruled."><span class="description">Returns a text element for autosearch. Can be overruled.</span><pre>getAutoSearchElements()</pre></a></li>
+<li class="method protected inherited"><a href="#method_getAutoSearchForm" title="getAutoSearchForm() :: Creates an autosearch form for indexAction."><span class="description">Creates an autosearch form for indexAction.</span><pre>getAutoSearchForm()</pre></a></li>
+<li class="method protected inherited"><a href="#method_getAutoSearchHref" title="getAutoSearchHref() :: "><span class="description">getAutoSearchHref()
+        </span><pre>getAutoSearchHref()</pre></a></li>
+<li class="method protected inherited"><a href="#method_getAutoSearchReset" title="getAutoSearchReset() :: Creates a reset button for the search form"><span class="description">Creates a reset button for the search form</span><pre>getAutoSearchReset()</pre></a></li>
+<li class="method protected inherited"><a href="#method_getAutoSearchSubmit" title="getAutoSearchSubmit() :: Creates a submit button"><span class="description">Creates a submit button</span><pre>getAutoSearchSubmit()</pre></a></li>
+<li class="method protected inherited"><a href="#method_getSearchData" title="getSearchData() :: "><span class="description">getSearchData()
+        </span><pre>getSearchData()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header private">» Private
+                    <ul><li class="method private inherited"><a href="#method__createMultiElement" title="_createMultiElement() :: Creates a \Zend_Form_Element_Select"><span class="description">Creates a \Zend_Form_Element_Select</span><pre>_createMultiElement()</pre></a></li></ul>
+</li>
+<li class="nav-header">
+<i title="Properties" class="icon-custom icon-property"></i> Properties
+                    <ul><li class="property public "><a href="#property_requestCache" title="$requestCache() :: Optional, otherwise created from $util"><span class="description"></span><pre>$requestCache</pre></a></li></ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="property protected "><a href="#property_containingId" title="$containingId() :: "><span class="description">The id of a div that contains target that should be replaced.</span><pre>$containingId</pre></a></li>
+<li class="property protected "><a href="#property_dateFormat" title="$dateFormat() :: Optional string format for date"><span class="description"></span><pre>$dateFormat</pre></a></li>
+<li class="property protected "><a href="#property_db" title="$db() :: "><span class="description"></span><pre>$db</pre></a></li>
+<li class="property protected "><a href="#property_defaultSearchData" title="$defaultSearchData() :: The default search data to use."><span class="description"></span><pre>$defaultSearchData</pre></a></li>
+<li class="property protected "><a href="#property_menu" title="$menu() :: "><span class="description"></span><pre>$menu</pre></a></li>
+<li class="property protected "><a href="#property_model" title="$model() :: "><span class="description"></span><pre>$model</pre></a></li>
+<li class="property protected "><a href="#property_request" title="$request() :: "><span class="description"></span><pre>$request</pre></a></li>
+<li class="property protected "><a href="#property_searchButtonId" title="$searchButtonId() :: "><span class="description">Id for auto search button</span><pre>$searchButtonId</pre></a></li>
+<li class="property protected "><a href="#property_searchData" title="$searchData() :: "><span class="description">The input data for the model</span><pre>$searchData</pre></a></li>
+<li class="property protected "><a href="#property_util" title="$util() :: "><span class="description"></span><pre>$util</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Constants" class="icon-custom icon-constant"></i> Constants
+                    <ul><li class="constant  "><a href="#constant_PERIOD_DATE_USED" title="PERIOD_DATE_USED() :: Field name for perioe filters"><span class="description">Field name for perioe filters</span><pre>PERIOD_DATE_USED</pre></a></li></ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a xmlns:php="http://php.net/xsl" id="\Gems\Snippets\AutosearchInRespondentSnippet"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+<li>
+<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li><a href="../namespaces/Gems.html">Gems</a></li>
+<li>
+<span class="divider">\</span><a href="../namespaces/Gems.Snippets.html">Snippets</a>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Gems.Snippets.AutosearchInRespondentSnippet.html">AutosearchInRespondentSnippet</a>
+</li>
+</ul>
+<div xmlns:php="http://php.net/xsl" class="element class">
+<p class="short_description">Display a search form that selects on typed text only</p>
+<div class="details">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Gems.Snippets_Generic.html">Gems</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Snippets_Generic</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2015 Erasmus MC</td>
+</tr>
+<tr>
+<th>license</th>
+<td><a href="http://opensource.org/licenses/BSD-3-Clause">New BSD License</a></td>
+</tr>
+<tr>
+<th>since</th>
+<td>Class available since version 1.7.1 21-apr-2015 13:28:39</td>
+</tr>
+<tr>
+<th>inherited_from</th>
+<td>\Gems_Snippets_AutosearchFormSnippet</td>
+</tr>
+</table>
+<h3>
+<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
+<a id="method_afterRegistry"></a><div class="element clickable method public method_afterRegistry inherited" data-toggle="collapse" data-target=".method_afterRegistry .collapse" title="public">
+<h2>Called after the check that all required registry values
+have been set correctly has run.</h2>
+<pre>afterRegistry() : void</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_getHtmlOutput"></a><div class="element clickable method public method_getHtmlOutput inherited" data-toggle="collapse" data-target=".method_getHtmlOutput .collapse" title="public">
+<h2>Create the snippets content</h2>
+<pre>getHtmlOutput(\Zend_View_Abstract $view) : \MUtil_Html_HtmlInterface</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>This is a stub function either override getHtmlOutput() or override render()</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$view</h4>
+<code>\Zend_View_Abstract</code><p>Just in case it is needed here</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\MUtil_Html_HtmlInterface</code>Something that can be rendered</div>
+</div></div>
+</div>
+<a id="method_getPeriodFilter"></a><div class="element clickable method public method_getPeriodFilter inherited" data-toggle="collapse" data-target=".method_getPeriodFilter .collapse" title="public">
+<h2>Helper function to generate a period query string</h2>
+<pre>getPeriodFilter(array $filter, \Zend_Db_Adapter_Abstract $db, $inFormat<code> = null</code>, $outFormat<code> = null</code>) : string</pre>
+<div class="labels">
+<span class="label">Inherited</span><span class="label">Static</span>
+</div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$filter</h4>
+<code>array</code><p>A filter array or $request->getParams()</p></div>
+<div class="subelement argument">
+<h4>$db</h4>
+<code>\Zend_Db_Adapter_Abstract</code>
+</div>
+<div class="subelement argument">
+<h4>$inFormat</h4><p>Optional format to use for date when reading</p></div>
+<div class="subelement argument">
+<h4>$outFormat</h4><p>Optional format to use for date in query</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method__addPeriodSelectors"></a><div class="element clickable method protected method__addPeriodSelectors inherited" data-toggle="collapse" data-target=".method__addPeriodSelectors .collapse" title="protected">
+<h2>Generate two date selectors and - depending on the number of $dates passed -
+either a hidden element containing the field name or an radio button or
+dropdown selector for the type of date to use.</h2>
+<pre>_addPeriodSelectors(array $elements, mixed $dates, string $defaultDate<code> = null</code>, integer $switchToSelect<code> = 4</code>) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$elements</h4>
+<code>array</code><p>Search element array to which the element are added.</p></div>
+<div class="subelement argument">
+<h4>$dates</h4>
+<code>mixed</code><p>A string fieldName to use or an array of fieldName => Label</p></div>
+<div class="subelement argument">
+<h4>$defaultDate</h4>
+<code>string</code><p>Optional element, otherwise first is used.</p></div>
+<div class="subelement argument">
+<h4>$switchToSelect</h4>
+<code>integer</code><p>The number of dates where this function should switch to select display</p></div>
+</div></div>
+</div>
+<a id="method__createCheckboxElement"></a><div class="element clickable method protected method__createCheckboxElement inherited" data-toggle="collapse" data-target=".method__createCheckboxElement .collapse" title="protected">
+<h2>Creates a \Zend_Form_Element_Select</h2>
+<pre>_createCheckboxElement(string $name, string $label) : \Zend_Form_Element_Checkbox</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>If $options is a string it is assumed to contain an SQL statement.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code><p>Name of the element</p></div>
+<div class="subelement argument">
+<h4>$label</h4>
+<code>string</code><p>Label for element</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Zend_Form_Element_Checkbox</code></div>
+</div></div>
+</div>
+<a id="method__createRadioElement"></a><div class="element clickable method protected method__createRadioElement inherited" data-toggle="collapse" data-target=".method__createRadioElement .collapse" title="protected">
+<h2>Creates a \Zend_Form_Element_Select</h2>
+<pre>_createRadioElement(string $name, string|array $options, string $empty<code> = null</code>) : \Zend_Form_Element_Radio</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>If $options is a string it is assumed to contain an SQL statement.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code><p>Name of the select element</p></div>
+<div class="subelement argument">
+<h4>$options</h4>
+<code>string</code><code>array</code><p>Can be a SQL select string or key/value array of options</p></div>
+<div class="subelement argument">
+<h4>$empty</h4>
+<code>string</code><p>Text to display for the empty selector</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Zend_Form_Element_Radio</code></div>
+</div></div>
+</div>
+<a id="method__createSelectElement"></a><div class="element clickable method protected method__createSelectElement inherited" data-toggle="collapse" data-target=".method__createSelectElement .collapse" title="protected">
+<h2>Creates a \Zend_Form_Element_Select</h2>
+<pre>_createSelectElement(string $name, string|array $options, string $empty<code> = null</code>) : \Zend_Form_Element_Select</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>If $options is a string it is assumed to contain an SQL statement.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code><p>Name of the select element</p></div>
+<div class="subelement argument">
+<h4>$options</h4>
+<code>string</code><code>array</code><p>Can be a SQL select string or key/value array of options</p></div>
+<div class="subelement argument">
+<h4>$empty</h4>
+<code>string</code><p>Text to display for the empty selector</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Zend_Form_Element_Select</code></div>
+</div></div>
+</div>
+<a id="method_createForm"></a><div class="element clickable method protected method_createForm inherited" data-toggle="collapse" data-target=".method_createForm .collapse" title="protected">
+<h2>Creates the form itself</h2>
+<pre>createForm(array $options<code> = null</code>) : \Gems_Form</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$options</h4>
+<code>array</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Form</code></div>
+</div></div>
+</div>
+<a id="method_getAutoSearchElements"></a><div class="element clickable method protected method_getAutoSearchElements " data-toggle="collapse" data-target=".method_getAutoSearchElements .collapse" title="protected">
+<h2>Returns a text element for autosearch. Can be overruled.</h2>
+<pre>getAutoSearchElements(array $data) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>The form / html elements to search on. Elements can be grouped by inserting null's between them.
+That creates a distinct group of elements</p></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Snippets_AutosearchFormSnippet::getAutoSearchElements()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$data</h4>
+<code>array</code><p>The $form field values (can be usefull, but no need to set them)</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.</div>
+</div></div>
+</div>
+<a id="method_getAutoSearchElements"></a><div class="element clickable method protected method_getAutoSearchElements inherited" data-toggle="collapse" data-target=".method_getAutoSearchElements .collapse" title="protected">
+<h2>Returns a text element for autosearch. Can be overruled.</h2>
+<pre>getAutoSearchElements(array $data) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>The form / html elements to search on. Elements can be grouped by inserting null's between them.
+That creates a distinct group of elements</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$data</h4>
+<code>array</code><p>The $form field values (can be usefull, but no need to set them)</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.</div>
+</div></div>
+</div>
+<a id="method_getAutoSearchForm"></a><div class="element clickable method protected method_getAutoSearchForm inherited" data-toggle="collapse" data-target=".method_getAutoSearchForm .collapse" title="protected">
+<h2>Creates an autosearch form for indexAction.</h2>
+<pre>getAutoSearchForm() : \Gems_Form | null</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Form</code><code>null</code>
+</div>
+</div></div>
+</div>
+<a id="method_getAutoSearchHref"></a><div class="element clickable method protected method_getAutoSearchHref inherited" data-toggle="collapse" data-target=".method_getAutoSearchHref .collapse" title="protected">
+<h2>getAutoSearchHref()
+        </h2>
+<pre>getAutoSearchHref() : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>Href attribute for type as you go autofilter</div>
+</div></div>
+</div>
+<a id="method_getAutoSearchReset"></a><div class="element clickable method protected method_getAutoSearchReset inherited" data-toggle="collapse" data-target=".method_getAutoSearchReset .collapse" title="protected">
+<h2>Creates a reset button for the search form</h2>
+<pre>getAutoSearchReset() : \Zend_Form_Element_Html</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Zend_Form_Element_Html</code>or null</div>
+</div></div>
+</div>
+<a id="method_getAutoSearchSubmit"></a><div class="element clickable method protected method_getAutoSearchSubmit inherited" data-toggle="collapse" data-target=".method_getAutoSearchSubmit .collapse" title="protected">
+<h2>Creates a submit button</h2>
+<pre>getAutoSearchSubmit() : \Zend_Form_Element_Submit</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Zend_Form_Element_Submit</code></div>
+</div></div>
+</div>
+<a id="method_getSearchData"></a><div class="element clickable method protected method_getSearchData inherited" data-toggle="collapse" data-target=".method_getSearchData .collapse" title="protected">
+<h2>getSearchData()
+        </h2>
+<pre>getSearchData() : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>The data to fill the form with</div>
+</div></div>
+</div>
+<a id="method__createMultiElement"></a><div class="element clickable method private method__createMultiElement inherited" data-toggle="collapse" data-target=".method__createMultiElement .collapse" title="private">
+<h2>Creates a \Zend_Form_Element_Select</h2>
+<pre>_createMultiElement(string $class, string $name, string|array $options, string $empty) : \Zend_Form_Element_Multi</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>If $options is a string it is assumed to contain an SQL statement.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$class</h4>
+<code>string</code><p>Name of the class to use</p></div>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code><p>Name of the select element</p></div>
+<div class="subelement argument">
+<h4>$options</h4>
+<code>string</code><code>array</code><p>Can be a SQL select string or key/value array of options</p></div>
+<div class="subelement argument">
+<h4>$empty</h4>
+<code>string</code><p>Text to display for the empty selector</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Zend_Form_Element_Multi</code></div>
+</div></div>
+</div>
+<h3>
+<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
+<a id="property_requestCache"> </a><div class="element clickable property public property_requestCache" data-toggle="collapse" data-target=".property_requestCache .collapse" title="public">
+<h2>Optional, otherwise created from $util</h2>
+<pre>$requestCache : \Gems_Util_RequestCache</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_containingId"> </a><div class="element clickable property protected property_containingId" data-toggle="collapse" data-target=".property_containingId .collapse" title="protected">
+<h2>The id of a div that contains target that should be replaced.</h2>
+<pre>$containingId : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_dateFormat"> </a><div class="element clickable property protected property_dateFormat" data-toggle="collapse" data-target=".property_dateFormat .collapse" title="protected">
+<h2>Optional string format for date</h2>
+<pre>$dateFormat : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_db"> </a><div class="element clickable property protected property_db" data-toggle="collapse" data-target=".property_db .collapse" title="protected">
+<h2>$db</h2>
+<pre>$db : \Zend_Db_Adapter_Abstract</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_defaultSearchData"> </a><div class="element clickable property protected property_defaultSearchData" data-toggle="collapse" data-target=".property_defaultSearchData .collapse" title="protected">
+<h2>The default search data to use.</h2>
+<pre>$defaultSearchData : \array()</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>array()</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_menu"> </a><div class="element clickable property protected property_menu" data-toggle="collapse" data-target=".property_menu .collapse" title="protected">
+<h2>$menu</h2>
+<pre>$menu : \Gems_Menu</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_model"> </a><div class="element clickable property protected property_model" data-toggle="collapse" data-target=".property_model .collapse" title="protected">
+<h2>$model</h2>
+<pre>$model : \MUtil_Model_ModelAbstract</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_request"> </a><div class="element clickable property protected property_request" data-toggle="collapse" data-target=".property_request .collapse" title="protected">
+<h2>$request</h2>
+<pre>$request : \Zend_Controller_Request_Abstract</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_searchButtonId"> </a><div class="element clickable property protected property_searchButtonId" data-toggle="collapse" data-target=".property_searchButtonId .collapse" title="protected">
+<h2>Id for auto search button</h2>
+<pre>$searchButtonId : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>'AUTO_SEARCH_TEXT_BUTTON'</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_searchData"> </a><div class="element clickable property protected property_searchData" data-toggle="collapse" data-target=".property_searchData .collapse" title="protected">
+<h2>The input data for the model</h2>
+<pre>$searchData : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>false</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_util"> </a><div class="element clickable property protected property_util" data-toggle="collapse" data-target=".property_util .collapse" title="protected">
+<h2>$util</h2>
+<pre>$util : \Gems_Util</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<h3>
+<i title="Constants" class="icon-custom icon-constant"></i> Constants</h3>
+<a id="constant_PERIOD_DATE_USED"> </a><div class="element clickable constant  constant_PERIOD_DATE_USED" data-toggle="collapse" data-target=".constant_PERIOD_DATE_USED .collapse" title="">
+<h2>Field name for perioe filters</h2>
+<pre>PERIOD_DATE_USED = 'dateused' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:35+02:00.<br></footer></div>
+</div>
+</body>
+</html>

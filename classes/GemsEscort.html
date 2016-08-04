@@ -1,0 +1,1372 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » \GemsEscort</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+<div class="btn-group visibility" data-toggle="buttons-checkbox">
+<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
+</div>
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+</div>
+<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+<li class="nav-header">
+<i title="Methods" class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public "><a href="#method__" title="_() :: Copy from \Zend_Translate_Adapter"><span class="description">Copy from \Zend_Translate_Adapter</span><pre>_()</pre></a></li>
+<li class="method public "><a href="#method___construct" title="__construct() :: Constructor"><span class="description">Constructor</span><pre>__construct()</pre></a></li>
+<li class="method public "><a href="#method__initMailTransport" title="_initMailTransport() :: Set the default mailtransport to our own sendmail version"><span class="description">Set the default mailtransport to our own sendmail version</span><pre>_initMailTransport()</pre></a></li>
+<li class="method public "><a href="#method_addMessage" title="addMessage() :: Adds one or more messages to the session based message store."><span class="description">Adds one or more messages to the session based message store.</span><pre>addMessage()</pre></a></li>
+<li class="method public "><a href="#method_beforeRun" title="beforeRun() :: Hook 2: Called in $this-&gt;run()."><span class="description">Hook 2: Called in $this-&gt;run().</span><pre>beforeRun()</pre></a></li>
+<li class="method public "><a href="#method_controllerBeforeAction" title="controllerBeforeAction() :: Hook 10: Called before the $controller-&gt;preDispatch() and $controller-&gt;{name}Action
+methods have been called."><span class="description">Hook 10: Called before the $controller-&gt;preDispatch() and $controller-&gt;{name}Action
+methods have been called.</span><pre>controllerBeforeAction()</pre></a></li>
+<li class="method public "><a href="#method_controllerInit" title="controllerInit() :: Hook 9: During action controller initialization."><span class="description">Hook 9: During action controller initialization.</span><pre>controllerInit()</pre></a></li>
+<li class="method public "><a href="#method_dispatchLoopStartup" title="dispatchLoopStartup() :: Hook 7: Called before \Zend_Controller_Front enters its dispatch loop."><span class="description">Hook 7: Called before \Zend_Controller_Front enters its dispatch loop.</span><pre>dispatchLoopStartup()</pre></a></li>
+<li class="method public "><a href="#method_getCurrentOrganization" title="getCurrentOrganization() :: "><span class="description">getCurrentOrganization()
+        </span><pre>getCurrentOrganization()</pre></a></li>
+<li class="method public "><a href="#method_getCurrentUserId" title="getCurrentUserId() :: "><span class="description">getCurrentUserId()
+        </span><pre>getCurrentUserId()</pre></a></li>
+<li class="method public "><a href="#method_getDatabasePaths" title="getDatabasePaths() :: Return the directories where the Database Administrator Model (DbaModel)
+should look for sql creation files."><span class="description">Return the directories where the Database Administrator Model (DbaModel)
+should look for sql creation files.</span><pre>getDatabasePaths()</pre></a></li>
+<li class="method public "><a href="#method_getInstance" title="getInstance() :: Retrieve the GemsEscort object"><span class="description">Retrieve the GemsEscort object</span><pre>getInstance()</pre></a></li>
+<li class="method public "><a href="#method_getLoader" title="getLoader() :: Type access to $this-&gt;loader"><span class="description">Type access to $this-&gt;loader</span><pre>getLoader()</pre></a></li>
+<li class="method public "><a href="#method_getLoaderDirs" title="getLoaderDirs() :: The prefix / directory paths where the Gems Loaders should look"><span class="description">The prefix / directory paths where the Gems Loaders should look</span><pre>getLoaderDirs()</pre></a></li>
+<li class="method public "><a href="#method_getMessenger" title="getMessenger() :: Retrieves / sets the messenger"><span class="description">Retrieves / sets the messenger</span><pre>getMessenger()</pre></a></li>
+<li class="method public "><a href="#method_getRandomPassword" title="getRandomPassword() :: Generate random password"><span class="description">Generate random password</span><pre>getRandomPassword()</pre></a></li>
+<li class="method public "><a href="#method_getStaticSession" title="getStaticSession() :: Returns a static session, that will not be affected by loading or unloading a user"><span class="description">Returns a static session, that will not be affected by loading or unloading a user</span><pre>getStaticSession()</pre></a></li>
+<li class="method public "><a href="#method_getUtil" title="getUtil() :: Type access to $this-&gt;util"><span class="description">Type access to $this-&gt;util</span><pre>getUtil()</pre></a></li>
+<li class="method public "><a href="#method_hasPrivilege" title="hasPrivilege() :: Returns true if the given role or role of the current user has the given privilege"><span class="description">Returns true if the given role or role of the current user has the given privilege</span><pre>hasPrivilege()</pre></a></li>
+<li class="method public "><a href="#method_passwordHash" title="passwordHash() :: Return a hashed version of the input value."><span class="description">Return a hashed version of the input value.</span><pre>passwordHash()</pre></a></li>
+<li class="method public "><a href="#method_plural" title="plural() :: Copy from \Zend_Translate_Adapter"><span class="description">Copy from \Zend_Translate_Adapter</span><pre>plural()</pre></a></li>
+<li class="method public "><a href="#method_postDispatch" title="postDispatch() :: Hook 12: Called after an action is dispatched by \Zend_Controller_Dispatcher."><span class="description">Hook 12: Called after an action is dispatched by \Zend_Controller_Dispatcher.</span><pre>postDispatch()</pre></a></li>
+<li class="method public "><a href="#method_preDispatch" title="preDispatch() :: Hook 8: Start of dispatchLoop. Called before an action is dispatched
+by \Zend_Controller_Dispatcher."><span class="description">Hook 8: Start of dispatchLoop. Called before an action is dispatched
+by \Zend_Controller_Dispatcher.</span><pre>preDispatch()</pre></a></li>
+<li class="method public "><a href="#method_prepareController" title="prepareController() :: Hook function called during controllerInit"><span class="description">Hook function called during controllerInit</span><pre>prepareController()</pre></a></li>
+<li class="method public "><a href="#method_requestChanged" title="requestChanged() :: Hook 3: Called in $this-&gt;setRequest."><span class="description">Hook 3: Called in $this-&gt;setRequest.</span><pre>requestChanged()</pre></a></li>
+<li class="method public "><a href="#method_responseChanged" title="responseChanged() :: Hook 4: Called in $this-&gt;setResponse."><span class="description">Hook 4: Called in $this-&gt;setResponse.</span><pre>responseChanged()</pre></a></li>
+<li class="method public "><a href="#method_routeShutdown" title="routeShutdown() :: Hook 6: Called after \Zend_Controller_Router has determined the route set by the request."><span class="description">Hook 6: Called after \Zend_Controller_Router has determined the route set by the request.</span><pre>routeShutdown()</pre></a></li>
+<li class="method public "><a href="#method_setControllerDirectory" title="setControllerDirectory() :: "><span class="description">setControllerDirectory()
+        </span><pre>setControllerDirectory()</pre></a></li>
+<li class="method public "><a href="#method_setError" title="setError() :: Create an exception for the error, depending on processing position we either
+set the response exception or throw the exception if the response is"><span class="description">Create an exception for the error, depending on processing position we either
+set the response exception or throw the exception if the response is</span><pre>setError()</pre></a></li>
+<li class="method public "><a href="#method_setException" title="setException() :: Handle the exception depending on processing position we either
+set the response exception or throw the exception if the response is"><span class="description">Handle the exception depending on processing position we either
+set the response exception or throw the exception if the response is</span><pre>setException()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="method protected "><a href="#method__copyVariables" title="_copyVariables() :: Function to maintain uniformity of access to variables from the bootstrap object."><span class="description">Function to maintain uniformity of access to variables from the bootstrap object.</span><pre>_copyVariables()</pre></a></li>
+<li class="method protected "><a href="#method__initAccesslog" title="_initAccesslog() :: Initialize the access log."><span class="description">Initialize the access log.</span><pre>_initAccesslog()</pre></a></li>
+<li class="method protected "><a href="#method__initAcl" title="_initAcl() :: Initialize the database."><span class="description">Initialize the database.</span><pre>_initAcl()</pre></a></li>
+<li class="method protected "><a href="#method__initActionHelpers" title="_initActionHelpers() :: Does nothing but add's the Gems Actionhelper path"><span class="description">Does nothing but add's the Gems Actionhelper path</span><pre>_initActionHelpers()</pre></a></li>
+<li class="method protected "><a href="#method__initBasepath" title="_initBasepath() :: Initialize the basepath string holde object."><span class="description">Initialize the basepath string holde object.</span><pre>_initBasepath()</pre></a></li>
+<li class="method protected "><a href="#method__initCache" title="_initCache() :: Create a default file cache for the Translate and DB adapters to speed up execution"><span class="description">Create a default file cache for the Translate and DB adapters to speed up execution</span><pre>_initCache()</pre></a></li>
+<li class="method protected "><a href="#method__initCurrentUser" title="_initCurrentUser() :: Initialize the currentUser component."><span class="description">Initialize the currentUser component.</span><pre>_initCurrentUser()</pre></a></li>
+<li class="method protected "><a href="#method__initDb" title="_initDb() :: Initialize the database."><span class="description">Initialize the database.</span><pre>_initDb()</pre></a></li>
+<li class="method protected "><a href="#method__initLoader" title="_initLoader() :: Initialize the Project or Gems loader."><span class="description">Initialize the Project or Gems loader.</span><pre>_initLoader()</pre></a></li>
+<li class="method protected "><a href="#method__initLocale" title="_initLocale() :: Initialize the locale."><span class="description">Initialize the locale.</span><pre>_initLocale()</pre></a></li>
+<li class="method protected "><a href="#method__initLogger" title="_initLogger() :: Initialize the logger"><span class="description">Initialize the logger</span><pre>_initLogger()</pre></a></li>
+<li class="method protected "><a href="#method__initOpenRosa" title="_initOpenRosa() :: Initialize the OpenRosa survey source"><span class="description">Initialize the OpenRosa survey source</span><pre>_initOpenRosa()</pre></a></li>
+<li class="method protected "><a href="#method__initProject" title="_initProject() :: Initialize the GEMS project component."><span class="description">Initialize the GEMS project component.</span><pre>_initProject()</pre></a></li>
+<li class="method protected "><a href="#method__initSession" title="_initSession() :: Initialize the Gems session."><span class="description">Initialize the Gems session.</span><pre>_initSession()</pre></a></li>
+<li class="method protected "><a href="#method__initSource" title="_initSource() :: Initialize the loader as source component."><span class="description">Initialize the loader as source component.</span><pre>_initSource()</pre></a></li>
+<li class="method protected "><a href="#method__initTranslate" title="_initTranslate() :: Initialize the translate component."><span class="description">Initialize the translate component.</span><pre>_initTranslate()</pre></a></li>
+<li class="method protected "><a href="#method__initUtil" title="_initUtil() :: Initialize the util component."><span class="description">Initialize the util component.</span><pre>_initUtil()</pre></a></li>
+<li class="method protected "><a href="#method__initView" title="_initView() :: Initialize the view component and sets some project specific values."><span class="description">Initialize the view component and sets some project specific values.</span><pre>_initView()</pre></a></li>
+<li class="method protected "><a href="#method__initZFDebug" title="_initZFDebug() :: Add ZFDebug info to the page output."><span class="description">Add ZFDebug info to the page output.</span><pre>_initZFDebug()</pre></a></li>
+<li class="method protected "><a href="#method__layoutContact" title="_layoutContact() :: Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course."><span class="description">Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</span><pre>_layoutContact()</pre></a></li>
+<li class="method protected "><a href="#method__layoutCrumbs" title="_layoutCrumbs() :: Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course."><span class="description">Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</span><pre>_layoutCrumbs()</pre></a></li>
+<li class="method protected "><a href="#method__layoutCss" title="_layoutCss() :: Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course."><span class="description">Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</span><pre>_layoutCss()</pre></a></li>
+<li class="method protected "><a href="#method__layoutFavicon" title="_layoutFavicon() :: Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course."><span class="description">Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</span><pre>_layoutFavicon()</pre></a></li>
+<li class="method protected "><a href="#method__layoutJQuery" title="_layoutJQuery() :: Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course."><span class="description">Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</span><pre>_layoutJQuery()</pre></a></li>
+<li class="method protected "><a href="#method__layoutLocaleSet" title="_layoutLocaleSet() :: Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course."><span class="description">Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</span><pre>_layoutLocaleSet()</pre></a></li>
+<li class="method protected "><a href="#method__layoutLogin" title="_layoutLogin() :: Display either a link to the login screen or displays the name of the current user
+and a logoff link."><span class="description">Display either a link to the login screen or displays the name of the current user
+and a logoff link.</span><pre>_layoutLogin()</pre></a></li>
+<li class="method protected "><a href="#method__layoutMenuActiveBranch" title="_layoutMenuActiveBranch() :: Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course."><span class="description">Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</span><pre>_layoutMenuActiveBranch()</pre></a></li>
+<li class="method protected "><a href="#method__layoutMenuHtml" title="_layoutMenuHtml() :: Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course."><span class="description">Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</span><pre>_layoutMenuHtml()</pre></a></li>
+<li class="method protected "><a href="#method__layoutMenuTopLevel" title="_layoutMenuTopLevel() :: Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course."><span class="description">Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</span><pre>_layoutMenuTopLevel()</pre></a></li>
+<li class="method protected "><a href="#method__layoutMessages" title="_layoutMessages() :: Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course."><span class="description">Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</span><pre>_layoutMessages()</pre></a></li>
+<li class="method protected "><a href="#method__layoutNavigation" title="_layoutNavigation() :: Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course."><span class="description">Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</span><pre>_layoutNavigation()</pre></a></li>
+<li class="method protected "><a href="#method__layoutOrganizationSwitcher" title="_layoutOrganizationSwitcher() :: Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course."><span class="description">Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</span><pre>_layoutOrganizationSwitcher()</pre></a></li>
+<li class="method protected "><a href="#method__layoutProjectName" title="_layoutProjectName() :: Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course."><span class="description">Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</span><pre>_layoutProjectName()</pre></a></li>
+<li class="method protected "><a href="#method__layoutTime" title="_layoutTime() :: Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course."><span class="description">Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</span><pre>_layoutTime()</pre></a></li>
+<li class="method protected "><a href="#method__layoutTitle" title="_layoutTitle() :: Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course."><span class="description">Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</span><pre>_layoutTitle()</pre></a></li>
+<li class="method protected "><a href="#method__layoutUser" title="_layoutUser() :: Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course."><span class="description">Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</span><pre>_layoutUser()</pre></a></li>
+<li class="method protected "><a href="#method__layoutVersion" title="_layoutVersion() :: Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course."><span class="description">Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</span><pre>_layoutVersion()</pre></a></li>
+<li class="method protected "><a href="#method__updateVariable" title="_updateVariable() :: Function to maintain uniformity of access to variables from the bootstrap object."><span class="description">Function to maintain uniformity of access to variables from the bootstrap object.</span><pre>_updateVariable()</pre></a></li>
+<li class="method protected "><a href="#method_createProjectClass" title="createProjectClass() :: Creates an object of the specified className seareching the loader dirs path"><span class="description">Creates an object of the specified className seareching the loader dirs path</span><pre>createProjectClass()</pre></a></li>
+<li class="method protected "><a href="#method_includeFile" title="includeFile() :: Searches and loads ini, xml, php or inc file"><span class="description">Searches and loads ini, xml, php or inc file</span><pre>includeFile()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header private">» Private
+                    <ul><li class="method private "><a href="#method_findExtension" title="findExtension() :: "><span class="description">findExtension()
+        </span><pre>findExtension()</pre></a></li></ul>
+</li>
+<li class="nav-header">
+<i title="Properties" class="icon-custom icon-property"></i> Properties
+                    <ul>
+<li class="property public "><a href="#property_useBootstrap" title="$useBootstrap() :: Set to true for bootstrap projects. Needs html5 set to true as well"><span class="description"></span><pre>$useBootstrap</pre></a></li>
+<li class="property public "><a href="#property_useHtml5" title="$useHtml5() :: Set to true for html 5 projects"><span class="description"></span><pre>$useHtml5</pre></a></li>
+</ul>
+</li>
+<li class="nav-header private">» Private
+                    <ul>
+<li class="property private "><a href="#property__copyDestinations" title="$_copyDestinations() :: Targets for _updateVariable"><span class="description"></span><pre>$_copyDestinations</pre></a></li>
+<li class="property private "><a href="#property__instanceOfSelf" title="$_instanceOfSelf() :: Static instance"><span class="description"></span><pre>$_instanceOfSelf</pre></a></li>
+<li class="property private "><a href="#property__loaderDirs" title="$_loaderDirs() :: The prefix / directory paths where the Gems Loaders should look"><span class="description"></span><pre>$_loaderDirs</pre></a></li>
+<li class="property private "><a href="#property__projectLoader" title="$_projectLoader() :: The project loader"><span class="description"></span><pre>$_projectLoader</pre></a></li>
+<li class="property private "><a href="#property__startFirebird" title="$_startFirebird() :: Is firebird logging on (set by constructor from application.ini)"><span class="description"></span><pre>$_startFirebird</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Constants" class="icon-custom icon-constant"></i> Constants
+                    <ul><li class="constant  "><a href="#constant_RECEPTION_OK" title="RECEPTION_OK() :: Default reception code value"><span class="description">Default reception code value</span><pre>RECEPTION_OK</pre></a></li></ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a xmlns:php="http://php.net/xsl" id="\GemsEscort"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+<li>
+<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/GemsEscort.html">GemsEscort</a>
+</li>
+</ul>
+<div xmlns:php="http://php.net/xsl" class="element class">
+<p class="short_description">Project Application Core code</p>
+<div class="details">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Gems.Project.html">Gems</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Project</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2011 Erasmus MC</td>
+</tr>
+<tr>
+<th>license</th>
+<td><a href="http://opensource.org/licenses/BSD-3-Clause">New BSD License</a></td>
+</tr>
+<tr>
+<th>since</th>
+<td>Class available since version 1.0</td>
+</tr>
+</table>
+<h3>
+<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
+<a id="method__"></a><div class="element clickable method public method__ " data-toggle="collapse" data-target=".method__ .collapse" title="public">
+<h2>Copy from \Zend_Translate_Adapter</h2>
+<pre>_(string $text, string|\Zend_Locale $locale<code> = null</code>) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Translates the given string
+returns the translation</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$text</h4>
+<code>string</code><p>Translation string</p></div>
+<div class="subelement argument">
+<h4>$locale</h4>
+<code>string</code><code>\Zend_Locale</code><p>(optional) Locale/Language to use, identical with locale
+identifier, @see \Zend_Locale for more information</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method___construct"></a><div class="element clickable method public method___construct " data-toggle="collapse" data-target=".method___construct .collapse" title="public">
+<h2>Constructor</h2>
+<pre>__construct(\Zend_Application|\Zend_Application_Bootstrap_Bootstrapper $application) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$application</h4>
+<code>\Zend_Application</code><code>\Zend_Application_Bootstrap_Bootstrapper</code>
+</div>
+</div></div>
+</div>
+<a id="method__initMailTransport"></a><div class="element clickable method public method__initMailTransport " data-toggle="collapse" data-target=".method__initMailTransport .collapse" title="public">
+<h2>Set the default mailtransport to our own sendmail version</h2>
+<pre>_initMailTransport() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"><p>This is needed to make sure a correct sender is set when using sendmail.
+Feel free to set a different default transport method in your project
+when needed.</p></div></div></div>
+</div>
+<a id="method_addMessage"></a><div class="element clickable method public method_addMessage " data-toggle="collapse" data-target=".method_addMessage .collapse" title="public">
+<h2>Adds one or more messages to the session based message store.</h2>
+<pre>addMessage(mixed $message_args) : \MUtil_Controller_Action</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$message_args</h4>
+<code>mixed</code><p>Can be an array or multiple argemuents. Each sub element is a single message string</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\MUtil_Controller_Action</code></div>
+</div></div>
+</div>
+<a id="method_beforeRun"></a><div class="element clickable method public method_beforeRun " data-toggle="collapse" data-target=".method_beforeRun .collapse" title="public">
+<h2>Hook 2: Called in $this-&gt;run().</h2>
+<pre>beforeRun() : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"><p>This-&gt;init() has ran and the constructor has finisched so all _init{name} and application.ini
+resources have been loaded. The code between the constructor and the call to $this-&gt;run() has
+been executed in $this-&gt;run() has hooked $this as both a \Zend_Controller_Plugin and a
+\Zend_Controller_Action_Helper.</p>
+<p>Not initialized are the $request, $response and $controller objects.</p>
+<p>Previous hook: init()
+Actions since: $this-&gt;_inti{Name}; resources from configuration initialized
+Actions after: $this-&gt;request object created
+Next hook: requestChanged()</p></div></div></div>
+</div>
+<a id="method_controllerBeforeAction"></a><div class="element clickable method public method_controllerBeforeAction " data-toggle="collapse" data-target=".method_controllerBeforeAction .collapse" title="public">
+<h2>Hook 10: Called before the $controller-&gt;preDispatch() and $controller-&gt;{name}Action
+methods have been called.</h2>
+<pre>controllerBeforeAction(\Zend_Controller_Action $actionController<code> = null</code>) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Here you can change or check all values set in $controller-&gt;init(). All output echoed
+here is captured for the output.</p>
+<p>Previous hook: controllerInit()
+Actions since: $controller-&gt;init(); ob_start(); $controller-&gt;dispatch()
+Actions after: $controller-&gt;preDispatch(); $controller-&gt;{name}Action(); $controller-&gt;postDispatch()
+Next hook: controllerAfterAction()</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$actionController</h4>
+<code>\Zend_Controller_Action</code>
+</div>
+</div></div>
+</div>
+<a id="method_controllerInit"></a><div class="element clickable method public method_controllerInit " data-toggle="collapse" data-target=".method_controllerInit .collapse" title="public">
+<h2>Hook 9: During action controller initialization.</h2>
+<pre>controllerInit(\Zend_Controller_Action $actionController<code> = null</code>) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>This hook is called in the constructor of the controller. Nothing is done and
+$controller-&gt;init has not been called, so this is a good moment to change settings
+that should influence $controller-&gt;init().</p>
+<p>Previous hook: preDispatch()
+Actions since: $dispatcher-&gt;dispatch(); $controller-&gt;__construct()
+Actions after: $controller-&gt;init(); ob_start(); $controller-&gt;dispatch()
+Next hook: controllerBeforeAction()</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$actionController</h4>
+<code>\Zend_Controller_Action</code>
+</div>
+</div></div>
+</div>
+<a id="method_dispatchLoopStartup"></a><div class="element clickable method public method_dispatchLoopStartup " data-toggle="collapse" data-target=".method_dispatchLoopStartup .collapse" title="public">
+<h2>Hook 7: Called before \Zend_Controller_Front enters its dispatch loop.</h2>
+<pre>dispatchLoopStartup(\Zend_Controller_Request_Abstract $request) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>This events enables you to adjust the request after the routing has been done.</p>
+<p>This is the final hook before the dispatchLoop starts. All the hooks in the dispatchLoop
+can be executed more then once.</p>
+<p>Not yet initialized is the $controller object - as the $controller can change during
+the dispatchLoop.</p>
+<p>Previous hook: routeShutdown()
+Actions since: nothing, but the route consisting of controller, action and module should now be fixed
+Actions after: dispatch loop started
+Next hook: preDispatch()</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$request</h4>
+<code>\Zend_Controller_Request_Abstract</code>
+</div>
+</div></div>
+</div>
+<a id="method_getCurrentOrganization"></a><div class="element clickable method public method_getCurrentOrganization " data-toggle="collapse" data-target=".method_getCurrentOrganization .collapse" title="public">
+<h2>getCurrentOrganization()
+        </h2>
+<pre>getCurrentOrganization() : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>deprecated</th>
+<td>Since 1.7.2 Replaced by $this->currentOrganization->getId();</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>The current active organization id or 0 when not known</div>
+</div></div>
+</div>
+<a id="method_getCurrentUserId"></a><div class="element clickable method public method_getCurrentUserId " data-toggle="collapse" data-target=".method_getCurrentUserId .collapse" title="public">
+<h2>getCurrentUserId()
+        </h2>
+<pre>getCurrentUserId() : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>deprecated</th>
+<td>Since 1.7.2 Replaced by $this->currentUser->getUserId();</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>The current user id or 0 when not known.</div>
+</div></div>
+</div>
+<a id="method_getDatabasePaths"></a><div class="element clickable method public method_getDatabasePaths " data-toggle="collapse" data-target=".method_getDatabasePaths .collapse" title="public">
+<h2>Return the directories where the Database Administrator Model (DbaModel)
+should look for sql creation files.</h2>
+<pre>getDatabasePaths() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Of index => array('path' =>, 'name' =>, 'db' =>,)</div>
+</div></div>
+</div>
+<a id="method_getInstance"></a><div class="element clickable method public method_getInstance " data-toggle="collapse" data-target=".method_getInstance .collapse" title="public">
+<h2>Retrieve the GemsEscort object</h2>
+<pre>getInstance() : \GemsEscort</pre>
+<div class="labels"><span class="label">Static</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\GemsEscort</code></div>
+</div></div>
+</div>
+<a id="method_getLoader"></a><div class="element clickable method public method_getLoader " data-toggle="collapse" data-target=".method_getLoader .collapse" title="public">
+<h2>Type access to $this-&gt;loader</h2>
+<pre>getLoader() : \Gems_Loader</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Loader</code>Or a subclassed version when specified in the project code</div>
+</div></div>
+</div>
+<a id="method_getLoaderDirs"></a><div class="element clickable method public method_getLoaderDirs " data-toggle="collapse" data-target=".method_getLoaderDirs .collapse" title="public">
+<h2>The prefix / directory paths where the Gems Loaders should look</h2>
+<pre>getLoaderDirs() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_getMessenger"></a><div class="element clickable method public method_getMessenger " data-toggle="collapse" data-target=".method_getMessenger .collapse" title="public">
+<h2>Retrieves / sets the messenger</h2>
+<pre>getMessenger() : \Zend_Controller_Action_Helper_FlashMessenger</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Zend_Controller_Action_Helper_FlashMessenger</code></div>
+</div></div>
+</div>
+<a id="method_getRandomPassword"></a><div class="element clickable method public method_getRandomPassword " data-toggle="collapse" data-target=".method_getRandomPassword .collapse" title="public">
+<h2>Generate random password</h2>
+<pre>getRandomPassword() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getStaticSession"></a><div class="element clickable method public method_getStaticSession " data-toggle="collapse" data-target=".method_getStaticSession .collapse" title="public">
+<h2>Returns a static session, that will not be affected by loading or unloading a user</h2>
+<pre>getStaticSession() : \Zend_Session_Namespace</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Zend_Session_Namespace</code></div>
+</div></div>
+</div>
+<a id="method_getUtil"></a><div class="element clickable method public method_getUtil " data-toggle="collapse" data-target=".method_getUtil .collapse" title="public">
+<h2>Type access to $this-&gt;util</h2>
+<pre>getUtil() : \Gems_Util</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Util</code>Or a subclassed version when specified in the project code</div>
+</div></div>
+</div>
+<a id="method_hasPrivilege"></a><div class="element clickable method public method_hasPrivilege " data-toggle="collapse" data-target=".method_hasPrivilege .collapse" title="public">
+<h2>Returns true if the given role or role of the current user has the given privilege</h2>
+<pre>hasPrivilege(string $privilege, string $role<code> = null</code>) : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>deprecated</th>
+<td>Since 1.7.2 Replaced by $this->currentUser->hasPrivilege();</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$privilege</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$role</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_passwordHash"></a><div class="element clickable method public method_passwordHash " data-toggle="collapse" data-target=".method_passwordHash .collapse" title="public">
+<h2>Return a hashed version of the input value.</h2>
+<pre>passwordHash(string $value, $isNew<code> = false</code>, string $name<code> = null</code>, array $context<code> = array()</code>) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>deprecated</th>
+<td>Since 1.5</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$value</h4>
+<code>string</code><p>The value to hash.</p></div>
+<div class="subelement argument"><h4>$isNew</h4></div>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code><p>Optional name, is here for ModelAbstract setOnSave compatibility</p></div>
+<div class="subelement argument">
+<h4>$context</h4>
+<code>array</code><p>Optional, the other values being saved</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>The salted hash as a 32-character hexadecimal number.</div>
+</div></div>
+</div>
+<a id="method_plural"></a><div class="element clickable method public method_plural " data-toggle="collapse" data-target=".method_plural .collapse" title="public">
+<h2>Copy from \Zend_Translate_Adapter</h2>
+<pre>plural(string $singular, string $plural, integer $number, string|\Zend_Locale $locale<code> = null</code>) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Translates the given string using plural notations
+Returns the translated string</p></div>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td><a href="%5CZend_Locale"></a></td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$singular</h4>
+<code>string</code><p>Singular translation string</p></div>
+<div class="subelement argument">
+<h4>$plural</h4>
+<code>string</code><p>Plural translation string</p></div>
+<div class="subelement argument">
+<h4>$number</h4>
+<code>integer</code><p>Number for detecting the correct plural</p></div>
+<div class="subelement argument">
+<h4>$locale</h4>
+<code>string</code><code>\Zend_Locale</code><p>(Optional) Locale/Language to use, identical with
+locale identifier, @see \Zend_Locale for more information</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_postDispatch"></a><div class="element clickable method public method_postDispatch " data-toggle="collapse" data-target=".method_postDispatch .collapse" title="public">
+<h2>Hook 12: Called after an action is dispatched by \Zend_Controller_Dispatcher.</h2>
+<pre>postDispatch(\Zend_Controller_Request_Abstract $request) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>This callback allows for proxy or filter behavior. By altering the
+request and resetting its dispatched flag (via {@link
+\Zend_Controller_Request_Abstract::setDispatched() setDispatched(false)}),
+a new action may be specified for dispatching.</p>
+<p>\Zend_Layout_Controller_Plugin_Layout uses this event to change the output
+of the $response with the rendering of the layout. As the Layout plugin
+has a priority of 99, this Escort event will take place before the layout
+is rendered, unless $this-&gt;run() was called with a stackIndex lower than zero.</p>
+<p>Previous hook: controllerAfterAction()
+Actions since: ob_get_clean(); $response-&gt;appendBody()
+Actions after: while (! Request-&gt;isDispatched()) or back to Hook 8 preDispatch()
+Next hook: dispatchLoopShutdown()</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$request</h4>
+<code>\Zend_Controller_Request_Abstract</code>
+</div>
+</div></div>
+</div>
+<a id="method_preDispatch"></a><div class="element clickable method public method_preDispatch " data-toggle="collapse" data-target=".method_preDispatch .collapse" title="public">
+<h2>Hook 8: Start of dispatchLoop. Called before an action is dispatched
+by \Zend_Controller_Dispatcher.</h2>
+<pre>preDispatch(\Zend_Controller_Request_Abstract $request) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>This callback allows for proxy or filter behavior. By altering the request
+and resetting its dispatched flag (via \Zend_Controller_Request_Abstract::setDispatched()), the current action may be skipped.</p>
+<p>Not yet initialized is the $controller object - as the $controller can change during
+the dispatchLoop.</p>
+<p>Previous hook: dispatchLoopStartup() or new loop
+Actions since: dispatch loop started
+Actions after: $dispatcher-&gt;dispatch(); $controller-&gt;__construct()
+Next hook: controllerInit()</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$request</h4>
+<code>\Zend_Controller_Request_Abstract</code>
+</div>
+</div></div>
+</div>
+<a id="method_prepareController"></a><div class="element clickable method public method_prepareController " data-toggle="collapse" data-target=".method_prepareController .collapse" title="public">
+<h2>Hook function called during controllerInit</h2>
+<pre>prepareController() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"><p>return @void</p></div></div></div>
+</div>
+<a id="method_requestChanged"></a><div class="element clickable method public method_requestChanged " data-toggle="collapse" data-target=".method_requestChanged .collapse" title="public">
+<h2>Hook 3: Called in $this-&gt;setRequest.</h2>
+<pre>requestChanged(\Zend_Controller_Request_Abstract $request) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>All resources have been loaded and the $request object is created.
+Theoretically this event can be triggered multiple times, but this does
+not happen in a standard Zend application.</p>
+<p>Not initialized are the $response and $controller objects.</p>
+<p>Previous hook: beforeRun()
+Actions since: $this-&gt;request object created
+Actions after: $this-&gt;response object created
+Next hook: responseChanged()</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$request</h4>
+<code>\Zend_Controller_Request_Abstract</code>
+</div>
+</div></div>
+</div>
+<a id="method_responseChanged"></a><div class="element clickable method public method_responseChanged " data-toggle="collapse" data-target=".method_responseChanged .collapse" title="public">
+<h2>Hook 4: Called in $this-&gt;setResponse.</h2>
+<pre>responseChanged(\Zend_Controller_Response_Abstract $response) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>All resources have been loaded and the $request and $response object have been created.
+Theoretically this event can be triggered multiple times, but this does
+not happen in a standard Zend application.</p>
+<p>Not initialized is the $controller object and the routing has not yet been executed.</p>
+<p>Previous hook: requestChanged()
+Initialized since: the $this-&gt;response object
+Next hook: routeStartup()</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$response</h4></div>
+</div></div>
+</div>
+<a id="method_routeShutdown"></a><div class="element clickable method public method_routeShutdown " data-toggle="collapse" data-target=".method_routeShutdown .collapse" title="public">
+<h2>Hook 6: Called after \Zend_Controller_Router has determined the route set by the request.</h2>
+<pre>routeShutdown(\Zend_Controller_Request_Abstract $request) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>This events enables you to adjust the route after the routing has run it's course.</p>
+<p>Not initialized is the $controller object.</p>
+<p>Previous hook: routeStartup()
+Actions since: $router-&gt;route()
+Actions after: nothing, but the route consisting of controller, action and module should now be fixed
+Next hook: dispatchLoopStartup()</p>
+<p>Also sets $this-&gt;currentOrganization and $this-&gt;menu to access afterwards</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$request</h4>
+<code>\Zend_Controller_Request_Abstract</code>
+</div>
+</div></div>
+</div>
+<a id="method_setControllerDirectory"></a><div class="element clickable method public method_setControllerDirectory " data-toggle="collapse" data-target=".method_setControllerDirectory .collapse" title="public">
+<h2>setControllerDirectory()
+        </h2>
+<pre>setControllerDirectory(\Zend_Controller_Request_Abstract $request) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$request</h4></div>
+</div></div>
+</div>
+<a id="method_setError"></a><div class="element clickable method public method_setError " data-toggle="collapse" data-target=".method_setError .collapse" title="public">
+<h2>Create an exception for the error, depending on processing position we either
+set the response exception or throw the exception if the response is</h2>
+<pre>setError(string $message, integer $code<code> = 200</code>, string $info<code> = null</code>, boolean $isSecurity<code> = false</code>) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$message</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$code</h4>
+<code>integer</code>
+</div>
+<div class="subelement argument">
+<h4>$info</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$isSecurity</h4>
+<code>boolean</code>
+</div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code>\exception</code></th>
+<td></td>
+</tr></table>
+</div></div>
+</div>
+<a id="method_setException"></a><div class="element clickable method public method_setException " data-toggle="collapse" data-target=".method_setException .collapse" title="public">
+<h2>Handle the exception depending on processing position we either
+set the response exception or throw the exception if the response is</h2>
+<pre>setException(\exception $e) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$e</h4>
+<code>\exception</code>
+</div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code>\exception</code></th>
+<td></td>
+</tr></table>
+</div></div>
+</div>
+<a id="method__copyVariables"></a><div class="element clickable method protected method__copyVariables " data-toggle="collapse" data-target=".method__copyVariables .collapse" title="protected">
+<h2>Function to maintain uniformity of access to variables from the bootstrap object.</h2>
+<pre>_copyVariables(Object $object) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Copies all variables to the target object.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$object</h4>
+<code>Object</code><p>An object who gets all variables from this object.</p></div>
+</div></div>
+</div>
+<a id="method__initAccesslog"></a><div class="element clickable method protected method__initAccesslog " data-toggle="collapse" data-target=".method__initAccesslog .collapse" title="protected">
+<h2>Initialize the access log.</h2>
+<pre>_initAccesslog() : \Gems_AccessLog</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Use $this-&gt;accesslog to access afterwards</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_AccessLog</code></div>
+</div></div>
+</div>
+<a id="method__initAcl"></a><div class="element clickable method protected method__initAcl " data-toggle="collapse" data-target=".method__initAcl .collapse" title="protected">
+<h2>Initialize the database.</h2>
+<pre>_initAcl() : \MUtil_Acl</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Use $this-&gt;acl to access afterwards</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\MUtil_Acl</code></div>
+</div></div>
+</div>
+<a id="method__initActionHelpers"></a><div class="element clickable method protected method__initActionHelpers " data-toggle="collapse" data-target=".method__initActionHelpers .collapse" title="protected">
+<h2>Does nothing but add's the Gems Actionhelper path</h2>
+<pre>_initActionHelpers() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method__initBasepath"></a><div class="element clickable method protected method__initBasepath " data-toggle="collapse" data-target=".method__initBasepath .collapse" title="protected">
+<h2>Initialize the basepath string holde object.</h2>
+<pre>_initBasepath() : \Gems_Loader</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Use $this-&gt;basepath to access afterwards</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Loader</code></div>
+</div></div>
+</div>
+<a id="method__initCache"></a><div class="element clickable method protected method__initCache " data-toggle="collapse" data-target=".method__initCache .collapse" title="protected">
+<h2>Create a default file cache for the Translate and DB adapters to speed up execution</h2>
+<pre>_initCache() : \Zend_Cache_Core</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Zend_Cache_Core</code></div>
+</div></div>
+</div>
+<a id="method__initCurrentUser"></a><div class="element clickable method protected method__initCurrentUser " data-toggle="collapse" data-target=".method__initCurrentUser .collapse" title="protected">
+<h2>Initialize the currentUser component.</h2>
+<pre>_initCurrentUser() : \Gems_User_User</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>You can overrule this function to specify your own project translation method / file.</p>
+<p>Use $this-&gt;currentUser to access afterwards</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_User_User</code></div>
+</div></div>
+</div>
+<a id="method__initDb"></a><div class="element clickable method protected method__initDb " data-toggle="collapse" data-target=".method__initDb .collapse" title="protected">
+<h2>Initialize the database.</h2>
+<pre>_initDb() : \Zend_Db</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Use $this-&gt;db to access afterwards</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Zend_Db</code></div>
+</div></div>
+</div>
+<a id="method__initLoader"></a><div class="element clickable method protected method__initLoader " data-toggle="collapse" data-target=".method__initLoader .collapse" title="protected">
+<h2>Initialize the Project or Gems loader.</h2>
+<pre>_initLoader() : \Gems_Loader</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Use $this-&gt;loader to access afterwards</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Loader</code></div>
+</div></div>
+</div>
+<a id="method__initLocale"></a><div class="element clickable method protected method__initLocale " data-toggle="collapse" data-target=".method__initLocale .collapse" title="protected">
+<h2>Initialize the locale.</h2>
+<pre>_initLocale() : \Zend_Locale</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>We use this function instead of the standard application.ini setting to
+simplify overruling the settings.</p>
+<p>Also Firefox tends to overrule the locale settings.</p>
+<p>You can overrule this function to specify your own project translation method / file.</p>
+<p>Use $this-&gt;locale to access afterwards</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Zend_Locale</code></div>
+</div></div>
+</div>
+<a id="method__initLogger"></a><div class="element clickable method protected method__initLogger " data-toggle="collapse" data-target=".method__initLogger .collapse" title="protected">
+<h2>Initialize the logger</h2>
+<pre>_initLogger() : \Gems_Log</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Log</code></div>
+</div></div>
+</div>
+<a id="method__initOpenRosa"></a><div class="element clickable method protected method__initOpenRosa " data-toggle="collapse" data-target=".method__initOpenRosa .collapse" title="protected">
+<h2>Initialize the OpenRosa survey source</h2>
+<pre>_initOpenRosa() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method__initProject"></a><div class="element clickable method protected method__initProject " data-toggle="collapse" data-target=".method__initProject .collapse" title="protected">
+<h2>Initialize the GEMS project component.</h2>
+<pre>_initProject() : \Gems_Project_ProjectSettings</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>The project component contains information about this project that are not Zend specific.
+For example:
+-- the super administrator,
+-- the project name, version and description,
+-- locales used,
+-- css and image directories used.</p>
+<p>This is the place for you to store any project specific data that should not be in the code.
+I.e. if you make a controllor that needs a setting to work, then put the setting in this
+settings file.</p>
+<p>Use $this-&gt;project to access afterwards</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Project_ProjectSettings</code></div>
+</div></div>
+</div>
+<a id="method__initSession"></a><div class="element clickable method protected method__initSession " data-toggle="collapse" data-target=".method__initSession .collapse" title="protected">
+<h2>Initialize the Gems session.</h2>
+<pre>_initSession() : \Zend_Session_Namespace</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>The session contains information on the registered user from @see $this-&gt;loadLoginInfo($username)
+This includes:
+-- user_id
+-- user_login
+-- user_name
+-- user_role
+-- user_locale
+-- user_organization_id</p>
+<p>Use $this-&gt;session to access afterwards</p></div>
+<table class="table table-bordered"><tr>
+<th>deprecated</th>
+<td>since 1.5</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Zend_Session_Namespace</code></div>
+</div></div>
+</div>
+<a id="method__initSource"></a><div class="element clickable method protected method__initSource " data-toggle="collapse" data-target=".method__initSource .collapse" title="protected">
+<h2>Initialize the loader as source component.</h2>
+<pre>_initSource() : \Gems_Loader</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>You can overrule this function to specify your own project translation method / file.</p>
+<p>Use $this-&gt;source to access afterwards</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Loader</code></div>
+</div></div>
+</div>
+<a id="method__initTranslate"></a><div class="element clickable method protected method__initTranslate " data-toggle="collapse" data-target=".method__initTranslate .collapse" title="protected">
+<h2>Initialize the translate component.</h2>
+<pre>_initTranslate() : \Zend_Translate</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Scans the application and project dirs for available translations</p>
+<p>Use $this-&gt;translate to access afterwards
+Also sets $this-&gt;translateAdapter to access afterwards</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Zend_Translate</code></div>
+</div></div>
+</div>
+<a id="method__initUtil"></a><div class="element clickable method protected method__initUtil " data-toggle="collapse" data-target=".method__initUtil .collapse" title="protected">
+<h2>Initialize the util component.</h2>
+<pre>_initUtil() : \Gems_Util</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>You can overrule this function to specify your own project translation method / file.</p>
+<p>Use $this-&gt;util to access afterwards</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Util</code></div>
+</div></div>
+</div>
+<a id="method__initView"></a><div class="element clickable method protected method__initView " data-toggle="collapse" data-target=".method__initView .collapse" title="protected">
+<h2>Initialize the view component and sets some project specific values.</h2>
+<pre>_initView() : \Zend_View</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Actions taken here can take advantage that the full framework has
+been activated by now, including session data, etc.</p>
+<p>Use $this-&gt;view to access afterwards</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Zend_View</code></div>
+</div></div>
+</div>
+<a id="method__initZFDebug"></a><div class="element clickable method protected method__initZFDebug " data-toggle="collapse" data-target=".method__initZFDebug .collapse" title="protected">
+<h2>Add ZFDebug info to the page output.</h2>
+<pre>_initZFDebug() : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method__layoutContact"></a><div class="element clickable method protected method__layoutContact " data-toggle="collapse" data-target=".method__layoutContact .collapse" title="protected">
+<h2>Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</h2>
+<pre>_layoutContact(array $args<code> = null</code>) : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$args</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>If null nothing is set, otherwise the name of
+the function is used as \Zend_View variable name.</div>
+</div></div>
+</div>
+<a id="method__layoutCrumbs"></a><div class="element clickable method protected method__layoutCrumbs " data-toggle="collapse" data-target=".method__layoutCrumbs .collapse" title="protected">
+<h2>Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</h2>
+<pre>_layoutCrumbs(array $args<code> = null</code>) : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$args</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>If null nothing is set, otherwise the name of
+the function is used as \Zend_View variable name.</div>
+</div></div>
+</div>
+<a id="method__layoutCss"></a><div class="element clickable method protected method__layoutCss " data-toggle="collapse" data-target=".method__layoutCss .collapse" title="protected">
+<h2>Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</h2>
+<pre>_layoutCss() : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>If null nothing is set, otherwise the name of
+the function is used as \Zend_View variable name.</div>
+</div></div>
+</div>
+<a id="method__layoutFavicon"></a><div class="element clickable method protected method__layoutFavicon " data-toggle="collapse" data-target=".method__layoutFavicon .collapse" title="protected">
+<h2>Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</h2>
+<pre>_layoutFavicon() : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>If null nothing is set, otherwise the name of
+the function is used as \Zend_View variable name.</div>
+</div></div>
+</div>
+<a id="method__layoutJQuery"></a><div class="element clickable method protected method__layoutJQuery " data-toggle="collapse" data-target=".method__layoutJQuery .collapse" title="protected">
+<h2>Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</h2>
+<pre>_layoutJQuery() : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>If null nothing is set, otherwise the name of
+the function is used as \Zend_View variable name.</div>
+</div></div>
+</div>
+<a id="method__layoutLocaleSet"></a><div class="element clickable method protected method__layoutLocaleSet " data-toggle="collapse" data-target=".method__layoutLocaleSet .collapse" title="protected">
+<h2>Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</h2>
+<pre>_layoutLocaleSet(array $args<code> = null</code>) : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$args</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>If null nothing is set, otherwise the name of
+the function is used as \Zend_View variable name.</div>
+</div></div>
+</div>
+<a id="method__layoutLogin"></a><div class="element clickable method protected method__layoutLogin " data-toggle="collapse" data-target=".method__layoutLogin .collapse" title="protected">
+<h2>Display either a link to the login screen or displays the name of the current user
+and a logoff link.</h2>
+<pre>_layoutLogin(array $args<code> = null</code>) : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$args</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>If null nothing is set, otherwise the name of
+the function is used as \Zend_View variable name.</div>
+</div></div>
+</div>
+<a id="method__layoutMenuActiveBranch"></a><div class="element clickable method protected method__layoutMenuActiveBranch " data-toggle="collapse" data-target=".method__layoutMenuActiveBranch .collapse" title="protected">
+<h2>Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</h2>
+<pre>_layoutMenuActiveBranch() : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>If null nothing is set, otherwise the name of
+the function is used as \Zend_View variable name.</div>
+</div></div>
+</div>
+<a id="method__layoutMenuHtml"></a><div class="element clickable method protected method__layoutMenuHtml " data-toggle="collapse" data-target=".method__layoutMenuHtml .collapse" title="protected">
+<h2>Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</h2>
+<pre>_layoutMenuHtml() : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>If null nothing is set, otherwise the name of
+the function is used as \Zend_View variable name.</div>
+</div></div>
+</div>
+<a id="method__layoutMenuTopLevel"></a><div class="element clickable method protected method__layoutMenuTopLevel " data-toggle="collapse" data-target=".method__layoutMenuTopLevel .collapse" title="protected">
+<h2>Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</h2>
+<pre>_layoutMenuTopLevel() : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>If null nothing is set, otherwise the name of
+the function is used as \Zend_View variable name.</div>
+</div></div>
+</div>
+<a id="method__layoutMessages"></a><div class="element clickable method protected method__layoutMessages " data-toggle="collapse" data-target=".method__layoutMessages .collapse" title="protected">
+<h2>Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</h2>
+<pre>_layoutMessages(array $args<code> = null</code>) : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$args</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>If null nothing is set, otherwise the name of
+the function is used as \Zend_View variable name.</div>
+</div></div>
+</div>
+<a id="method__layoutNavigation"></a><div class="element clickable method protected method__layoutNavigation " data-toggle="collapse" data-target=".method__layoutNavigation .collapse" title="protected">
+<h2>Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</h2>
+<pre>_layoutNavigation() : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>If null nothing is set, otherwise the name of
+the function is used as \Zend_View variable name.</div>
+</div></div>
+</div>
+<a id="method__layoutOrganizationSwitcher"></a><div class="element clickable method protected method__layoutOrganizationSwitcher " data-toggle="collapse" data-target=".method__layoutOrganizationSwitcher .collapse" title="protected">
+<h2>Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</h2>
+<pre>_layoutOrganizationSwitcher(array $args<code> = null</code>) : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$args</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>If null nothing is set, otherwise the name of
+the function is used as \Zend_View variable name.</div>
+</div></div>
+</div>
+<a id="method__layoutProjectName"></a><div class="element clickable method protected method__layoutProjectName " data-toggle="collapse" data-target=".method__layoutProjectName .collapse" title="protected">
+<h2>Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</h2>
+<pre>_layoutProjectName(array $args<code> = null</code>) : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$args</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>If null nothing is set, otherwise the name of
+the function is used as \Zend_View variable name.</div>
+</div></div>
+</div>
+<a id="method__layoutTime"></a><div class="element clickable method protected method__layoutTime " data-toggle="collapse" data-target=".method__layoutTime .collapse" title="protected">
+<h2>Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</h2>
+<pre>_layoutTime(array $args<code> = null</code>) : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$args</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>If null nothing is set, otherwise the name of
+the function is used as \Zend_View variable name.</div>
+</div></div>
+</div>
+<a id="method__layoutTitle"></a><div class="element clickable method protected method__layoutTitle " data-toggle="collapse" data-target=".method__layoutTitle .collapse" title="protected">
+<h2>Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</h2>
+<pre>_layoutTitle(array $args<code> = null</code>) : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$args</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>If null nothing is set, otherwise the name of
+the function is used as \Zend_View variable name.</div>
+</div></div>
+</div>
+<a id="method__layoutUser"></a><div class="element clickable method protected method__layoutUser " data-toggle="collapse" data-target=".method__layoutUser .collapse" title="protected">
+<h2>Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</h2>
+<pre>_layoutUser(array $args<code> = null</code>) : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$args</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>If null nothing is set, otherwise the name of
+the function is used as \Zend_View variable name.</div>
+</div></div>
+</div>
+<a id="method__layoutVersion"></a><div class="element clickable method protected method__layoutVersion " data-toggle="collapse" data-target=".method__layoutVersion .collapse" title="protected">
+<h2>Function called if specified in the Project.ini layoutPrepare section before
+the layout is drawn, but after the rest of the program has run it's course.</h2>
+<pre>_layoutVersion(array $args<code> = null</code>) : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$args</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>If null nothing is set, otherwise the name of
+the function is used as \Zend_View variable name.</div>
+</div></div>
+</div>
+<a id="method__updateVariable"></a><div class="element clickable method protected method__updateVariable " data-toggle="collapse" data-target=".method__updateVariable .collapse" title="protected">
+<h2>Function to maintain uniformity of access to variables from the bootstrap object.</h2>
+<pre>_updateVariable(String|Array $name) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Updates selected variable(s) to the objects targeted in _copyVariables.</p>
+<p>Do this when an object is created or when a non-object variable has changed.
+You do not need to call this method for changes to objects .</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>String</code><code>Array</code><p>A property name or array of property names to copy from this
+object to the previous copy targets.</p></div>
+</div></div>
+</div>
+<a id="method_createProjectClass"></a><div class="element clickable method protected method_createProjectClass " data-toggle="collapse" data-target=".method_createProjectClass .collapse" title="protected">
+<h2>Creates an object of the specified className seareching the loader dirs path</h2>
+<pre>createProjectClass(string $className, mixed $paramOne<code> = null</code>, mixed $paramTwo<code> = null</code>) : object</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$className</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$paramOne</h4>
+<code>mixed</code><p>Optional</p></div>
+<div class="subelement argument">
+<h4>$paramTwo</h4>
+<code>mixed</code><p>Optional</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>object</code></div>
+</div></div>
+</div>
+<a id="method_includeFile"></a><div class="element clickable method protected method_includeFile " data-toggle="collapse" data-target=".method_includeFile .collapse" title="protected">
+<h2>Searches and loads ini, xml, php or inc file</h2>
+<pre>includeFile(string $fileName) : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>When no extension is specified the system looks for a file with the right extension,
+in the order: .ini, .php, .xml, .inc.</p>
+<p>.php and .inc files run within the context of this object and thus can access all
+$this-&gt; variables and functions.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$fileName</h4>
+<code>string</code><p>A filename in the include path</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>false if nothing was returned</div>
+</div></div>
+</div>
+<a id="method_findExtension"></a><div class="element clickable method private method_findExtension " data-toggle="collapse" data-target=".method_findExtension .collapse" title="private">
+<h2>findExtension()
+        </h2>
+<pre>findExtension($fullFileName, array $extensions) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$fullFileName</h4></div>
+<div class="subelement argument"><h4>$extensions</h4></div>
+</div></div>
+</div>
+<h3>
+<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
+<a id="property_useBootstrap"> </a><div class="element clickable property public property_useBootstrap" data-toggle="collapse" data-target=".property_useBootstrap .collapse" title="public">
+<h2>Set to true for bootstrap projects. Needs html5 set to true as well</h2>
+<pre>$useBootstrap : boolean</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>false</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_useHtml5"> </a><div class="element clickable property public property_useHtml5" data-toggle="collapse" data-target=".property_useHtml5 .collapse" title="public">
+<h2>Set to true for html 5 projects</h2>
+<pre>$useHtml5 : boolean</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>false</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__copyDestinations"> </a><div class="element clickable property private property__copyDestinations" data-toggle="collapse" data-target=".property__copyDestinations .collapse" title="private">
+<h2>Targets for _updateVariable</h2>
+<pre>$_copyDestinations : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__instanceOfSelf"> </a><div class="element clickable property private property__instanceOfSelf" data-toggle="collapse" data-target=".property__instanceOfSelf .collapse" title="private">
+<h2>Static instance</h2>
+<pre>$_instanceOfSelf : self</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"><span class="label">Static</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__loaderDirs"> </a><div class="element clickable property private property__loaderDirs" data-toggle="collapse" data-target=".property__loaderDirs .collapse" title="private">
+<h2>The prefix / directory paths where the Gems Loaders should look</h2>
+<pre>$_loaderDirs : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__projectLoader"> </a><div class="element clickable property private property__projectLoader" data-toggle="collapse" data-target=".property__projectLoader .collapse" title="private">
+<h2>The project loader</h2>
+<pre>$_projectLoader : \MUtil_Loader_PluginLoader</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__startFirebird"> </a><div class="element clickable property private property__startFirebird" data-toggle="collapse" data-target=".property__startFirebird .collapse" title="private">
+<h2>Is firebird logging on (set by constructor from application.ini)</h2>
+<pre>$_startFirebird : boolean</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<h3>
+<i title="Constants" class="icon-custom icon-constant"></i> Constants</h3>
+<a id="constant_RECEPTION_OK"> </a><div class="element clickable constant  constant_RECEPTION_OK" data-toggle="collapse" data-target=".constant_RECEPTION_OK .collapse" title="">
+<h2>Default reception code value</h2>
+<pre>RECEPTION_OK = 'OK' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:16+02:00.<br></footer></div>
+</div>
+</body>
+</html>

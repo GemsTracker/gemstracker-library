@@ -1,0 +1,452 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » \Gems_Default_ProjectInformationAction</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+<div class="btn-group visibility" data-toggle="buttons-checkbox">
+<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
+</div>
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+</div>
+<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+<li class="nav-header">
+<i title="Methods" class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public inherited"><a href="#method_addMessage" title="addMessage() :: Adds one or more messages to the session based message store."><span class="description">Adds one or more messages to the session based message store.</span><pre>addMessage()</pre></a></li>
+<li class="method public "><a href="#method_cachecleanAction" title="cachecleanAction() :: "><span class="description">cachecleanAction()
+        </span><pre>cachecleanAction()</pre></a></li>
+<li class="method public "><a href="#method_changelogAction" title="changelogAction() :: Show the project specific change log"><span class="description">Show the project specific change log</span><pre>changelogAction()</pre></a></li>
+<li class="method public "><a href="#method_changelogGemsAction" title="changelogGemsAction() :: Show the GemsTracker change log"><span class="description">Show the GemsTracker change log</span><pre>changelogGemsAction()</pre></a></li>
+<li class="method public "><a href="#method_errorsAction" title="errorsAction() :: "><span class="description">errorsAction()
+        </span><pre>errorsAction()</pre></a></li>
+<li class="method public inherited"><a href="#method_getMessenger" title="getMessenger() :: Returns a session based message store for adding messages to."><span class="description">Returns a session based message store for adding messages to.</span><pre>getMessenger()</pre></a></li>
+<li class="method public "><a href="#method_indexAction" title="indexAction() :: "><span class="description">indexAction()
+        </span><pre>indexAction()</pre></a></li>
+<li class="method public inherited"><a href="#method_initHtml" title="initHtml() :: Intializes the html component."><span class="description">Intializes the html component.</span><pre>initHtml()</pre></a></li>
+<li class="method public "><a href="#method_maintenanceAction" title="maintenanceAction() :: Action that switches the maintenance lock on or off."><span class="description">Action that switches the maintenance lock on or off.</span><pre>maintenanceAction()</pre></a></li>
+<li class="method public "><a href="#method_phpAction" title="phpAction() :: "><span class="description">phpAction()
+        </span><pre>phpAction()</pre></a></li>
+<li class="method public "><a href="#method_phpErrorsAction" title="phpErrorsAction() :: "><span class="description">phpErrorsAction()
+        </span><pre>phpErrorsAction()</pre></a></li>
+<li class="method public "><a href="#method_projectAction" title="projectAction() :: "><span class="description">projectAction()
+        </span><pre>projectAction()</pre></a></li>
+<li class="method public "><a href="#method_sessionAction" title="sessionAction() :: "><span class="description">sessionAction()
+        </span><pre>sessionAction()</pre></a></li>
+<li class="method public inherited"><a href="#method_setMessenger" title="setMessenger() :: Set the session based message store."><span class="description">Set the session based message store.</span><pre>setMessenger()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="method protected "><a href="#method__getData" title="_getData() :: Returns the data to show in the index action"><span class="description">Returns the data to show in the index action</span><pre>_getData()</pre></a></li>
+<li class="method protected "><a href="#method__showTable" title="_showTable() :: "><span class="description">_showTable()
+        </span><pre>_showTable()</pre></a></li>
+<li class="method protected "><a href="#method__showText" title="_showText() :: Helper function to show content of a text file"><span class="description">Helper function to show content of a text file</span><pre>_showText()</pre></a></li>
+<li class="method protected "><a href="#method_getDirInfo" title="getDirInfo() :: Tell all about it"><span class="description">Tell all about it</span><pre>getDirInfo()</pre></a></li>
+<li class="method protected inherited"><a href="#method_loadSnippetLoader" title="loadSnippetLoader() :: Stub for overruling default snippet loader initiation."><span class="description">Stub for overruling default snippet loader initiation.</span><pre>loadSnippetLoader()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Properties" class="icon-custom icon-property"></i> Properties
+                    <ul>
+<li class="property public "><a href="#property_accesslog" title="$accesslog() :: "><span class="description"></span><pre>$accesslog</pre></a></li>
+<li class="property public "><a href="#property_db" title="$db() :: "><span class="description"></span><pre>$db</pre></a></li>
+<li class="property public "><a href="#property_escort" title="$escort() :: "><span class="description"></span><pre>$escort</pre></a></li>
+<li class="property public "><a href="#property_loader" title="$loader() :: "><span class="description"></span><pre>$loader</pre></a></li>
+<li class="property public "><a href="#property_menu" title="$menu() :: "><span class="description"></span><pre>$menu</pre></a></li>
+<li class="property public "><a href="#property_messenger" title="$messenger() :: "><span class="description"></span><pre>$messenger</pre></a></li>
+<li class="property public "><a href="#property_project" title="$project() :: "><span class="description"></span><pre>$project</pre></a></li>
+<li class="property public "><a href="#property_useHtmlView" title="$useHtmlView() :: Set to true in child class for automatic creation of $this-&gt;html."><span class="description"></span><pre>$useHtmlView</pre></a></li>
+<li class="property public "><a href="#property_util" title="$util() :: "><span class="description"></span><pre>$util</pre></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a xmlns:php="http://php.net/xsl" id="\Gems_Default_ProjectInformationAction"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+<li>
+<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Gems_Default_ProjectInformationAction.html">Gems_Default_ProjectInformationAction</a>
+</li>
+</ul>
+<div xmlns:php="http://php.net/xsl" class="element class">
+<p class="short_description">Action controller, initialises the html object</p>
+<div class="details">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Gems.Default.html">Gems</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Default</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2011 Erasmus MC</td>
+</tr>
+<tr>
+<th>license</th>
+<td><a href="http://opensource.org/licenses/BSD-3-Clause">New BSD License</a></td>
+</tr>
+<tr>
+<th>since</th>
+<td>Class available since version 1.0</td>
+</tr>
+<tr>
+<th>inherited_from</th>
+<td>\Gems_Controller_Action</td>
+</tr>
+</table>
+<h3>
+<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
+<a id="method_addMessage"></a><div class="element clickable method public method_addMessage inherited" data-toggle="collapse" data-target=".method_addMessage .collapse" title="public">
+<h2>Adds one or more messages to the session based message store.</h2>
+<pre>addMessage($message, $status<code> = null</code>) : \MUtil_Controller_Action</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$message</h4></div>
+<div class="subelement argument"><h4>$status</h4></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\MUtil_Controller_Action</code></div>
+</div></div>
+</div>
+<a id="method_cachecleanAction"></a><div class="element clickable method public method_cachecleanAction " data-toggle="collapse" data-target=".method_cachecleanAction .collapse" title="public">
+<h2>cachecleanAction()
+        </h2>
+<pre>cachecleanAction() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_changelogAction"></a><div class="element clickable method public method_changelogAction " data-toggle="collapse" data-target=".method_changelogAction .collapse" title="public">
+<h2>Show the project specific change log</h2>
+<pre>changelogAction() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_changelogGemsAction"></a><div class="element clickable method public method_changelogGemsAction " data-toggle="collapse" data-target=".method_changelogGemsAction .collapse" title="public">
+<h2>Show the GemsTracker change log</h2>
+<pre>changelogGemsAction() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_errorsAction"></a><div class="element clickable method public method_errorsAction " data-toggle="collapse" data-target=".method_errorsAction .collapse" title="public">
+<h2>errorsAction()
+        </h2>
+<pre>errorsAction() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_getMessenger"></a><div class="element clickable method public method_getMessenger inherited" data-toggle="collapse" data-target=".method_getMessenger .collapse" title="public">
+<h2>Returns a session based message store for adding messages to.</h2>
+<pre>getMessenger() : \Zend_Controller_Action_Helper_FlashMessenger</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Zend_Controller_Action_Helper_FlashMessenger</code></div>
+</div></div>
+</div>
+<a id="method_indexAction"></a><div class="element clickable method public method_indexAction " data-toggle="collapse" data-target=".method_indexAction .collapse" title="public">
+<h2>indexAction()
+        </h2>
+<pre>indexAction() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_initHtml"></a><div class="element clickable method public method_initHtml inherited" data-toggle="collapse" data-target=".method_initHtml .collapse" title="public">
+<h2>Intializes the html component.</h2>
+<pre>initHtml(boolean $reset<code> = false</code>) : void</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$reset</h4>
+<code>boolean</code><p>Throws away any existing html output when true</p></div>
+</div></div>
+</div>
+<a id="method_maintenanceAction"></a><div class="element clickable method public method_maintenanceAction " data-toggle="collapse" data-target=".method_maintenanceAction .collapse" title="public">
+<h2>Action that switches the maintenance lock on or off.</h2>
+<pre>maintenanceAction() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_phpAction"></a><div class="element clickable method public method_phpAction " data-toggle="collapse" data-target=".method_phpAction .collapse" title="public">
+<h2>phpAction()
+        </h2>
+<pre>phpAction() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_phpErrorsAction"></a><div class="element clickable method public method_phpErrorsAction " data-toggle="collapse" data-target=".method_phpErrorsAction .collapse" title="public">
+<h2>phpErrorsAction()
+        </h2>
+<pre>phpErrorsAction() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_projectAction"></a><div class="element clickable method public method_projectAction " data-toggle="collapse" data-target=".method_projectAction .collapse" title="public">
+<h2>projectAction()
+        </h2>
+<pre>projectAction() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_sessionAction"></a><div class="element clickable method public method_sessionAction " data-toggle="collapse" data-target=".method_sessionAction .collapse" title="public">
+<h2>sessionAction()
+        </h2>
+<pre>sessionAction() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_setMessenger"></a><div class="element clickable method public method_setMessenger inherited" data-toggle="collapse" data-target=".method_setMessenger .collapse" title="public">
+<h2>Set the session based message store.</h2>
+<pre>setMessenger(\Zend_Controller_Action_Helper_FlashMessenger $messenger) : \MUtil_Controller_Action</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$messenger</h4>
+<code>\Zend_Controller_Action_Helper_FlashMessenger</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\MUtil_Controller_Action</code></div>
+</div></div>
+</div>
+<a id="method__getData"></a><div class="element clickable method protected method__getData " data-toggle="collapse" data-target=".method__getData .collapse" title="protected">
+<h2>Returns the data to show in the index action</h2>
+<pre>_getData() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Allows to easily add or modifiy the information at project level</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method__showTable"></a><div class="element clickable method protected method__showTable " data-toggle="collapse" data-target=".method__showTable .collapse" title="protected">
+<h2>_showTable()
+        </h2>
+<pre>_showTable($caption, $data, $nested<code> = false</code>) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$caption</h4></div>
+<div class="subelement argument"><h4>$data</h4></div>
+<div class="subelement argument"><h4>$nested</h4></div>
+</div></div>
+</div>
+<a id="method__showText"></a><div class="element clickable method protected method__showText " data-toggle="collapse" data-target=".method__showText .collapse" title="protected">
+<h2>Helper function to show content of a text file</h2>
+<pre>_showText(string $caption, string $logFile, string $emptyLabel<code> = null</code>) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$caption</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$logFile</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$emptyLabel</h4>
+<code>string</code>
+</div>
+</div></div>
+</div>
+<a id="method_getDirInfo"></a><div class="element clickable method protected method_getDirInfo " data-toggle="collapse" data-target=".method_getDirInfo .collapse" title="protected">
+<h2>Tell all about it</h2>
+<pre>getDirInfo(string $directory) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$directory</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_loadSnippetLoader"></a><div class="element clickable method protected method_loadSnippetLoader inherited" data-toggle="collapse" data-target=".method_loadSnippetLoader .collapse" title="protected">
+<h2>Stub for overruling default snippet loader initiation.</h2>
+<pre>loadSnippetLoader() </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<h3>
+<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
+<a id="property_accesslog"> </a><div class="element clickable property public property_accesslog" data-toggle="collapse" data-target=".property_accesslog .collapse" title="public">
+<h2>$accesslog</h2>
+<pre>$accesslog : \Gems_AccessLog</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_db"> </a><div class="element clickable property public property_db" data-toggle="collapse" data-target=".property_db .collapse" title="public">
+<h2>$db</h2>
+<pre>$db : \Zend_Db_Adapter_Abstract</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_escort"> </a><div class="element clickable property public property_escort" data-toggle="collapse" data-target=".property_escort .collapse" title="public">
+<h2>$escort</h2>
+<pre>$escort : \GemsEscort</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_loader"> </a><div class="element clickable property public property_loader" data-toggle="collapse" data-target=".property_loader .collapse" title="public">
+<h2>$loader</h2>
+<pre>$loader : \Gems_Loader</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_menu"> </a><div class="element clickable property public property_menu" data-toggle="collapse" data-target=".property_menu .collapse" title="public">
+<h2>$menu</h2>
+<pre>$menu : \Gems_Menu</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_messenger"> </a><div class="element clickable property public property_messenger" data-toggle="collapse" data-target=".property_messenger .collapse" title="public">
+<h2>$messenger</h2>
+<pre>$messenger : \Zend_Controller_Action_Helper_FlashMessenger</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_project"> </a><div class="element clickable property public property_project" data-toggle="collapse" data-target=".property_project .collapse" title="public">
+<h2>$project</h2>
+<pre>$project : \Gems_Project_ProjectSettings</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_useHtmlView"> </a><div class="element clickable property public property_useHtmlView" data-toggle="collapse" data-target=".property_useHtmlView .collapse" title="public">
+<h2>Set to true in child class for automatic creation of $this-&gt;html.</h2>
+<pre>$useHtmlView : boolean</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>true</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>To initiate the use of $this-&gt;html from the code call $this-&gt;initHtml()</p>
+<p>Overrules $useRawOutput.</p></div>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td><a href="%5C%24useRawOutput"></a></td>
+</tr></table>
+</div></div>
+</div>
+<a id="property_util"> </a><div class="element clickable property public property_util" data-toggle="collapse" data-target=".property_util .collapse" title="public">
+<h2>$util</h2>
+<pre>$util : \Gems_Util</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:18+02:00.<br></footer></div>
+</div>
+</body>
+</html>

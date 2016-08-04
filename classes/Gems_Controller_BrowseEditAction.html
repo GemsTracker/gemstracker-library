@@ -1,0 +1,1115 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » \Gems_Controller_BrowseEditAction</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+<div class="btn-group visibility" data-toggle="buttons-checkbox">
+<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
+</div>
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+</div>
+<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+<li class="nav-header">
+<i title="Methods" class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public "><a href="#method_afterFormLoad" title="afterFormLoad() :: Hook to alter the formdata just before the form is populated"><span class="description">Hook to alter the formdata just before the form is populated</span><pre>afterFormLoad()</pre></a></li>
+<li class="method public "><a href="#method_afterSave" title="afterSave() :: Hook to perform action after a record (with changes) was saved"><span class="description">Hook to perform action after a record (with changes) was saved</span><pre>afterSave()</pre></a></li>
+<li class="method public "><a href="#method_afterSaveRoute" title="afterSaveRoute() :: Get the afterSaveRoute and execute it"><span class="description">Get the afterSaveRoute and execute it</span><pre>afterSaveRoute()</pre></a></li>
+<li class="method public "><a href="#method_autofilterAction" title="autofilterAction() :: "><span class="description">autofilterAction()
+        </span><pre>autofilterAction()</pre></a></li>
+<li class="method public "><a href="#method_beforeFormDisplay" title="beforeFormDisplay() :: Perform some actions on the form, right before it is displayed but already populated"><span class="description">Perform some actions on the form, right before it is displayed but already populated</span><pre>beforeFormDisplay()</pre></a></li>
+<li class="method public "><a href="#method_beforeSave" title="beforeSave() :: Hook to alter formdata before saving"><span class="description">Hook to alter formdata before saving</span><pre>beforeSave()</pre></a></li>
+<li class="method public "><a href="#method_createAction" title="createAction() :: Creates a form for a new record"><span class="description">Creates a form for a new record</span><pre>createAction()</pre></a></li>
+<li class="method public "><a href="#method_createForm" title="createForm() :: Retrieve a form object and add extra decorators"><span class="description">Retrieve a form object and add extra decorators</span><pre>createForm()</pre></a></li>
+<li class="method public "><a href="#method_deleteAction" title="deleteAction() :: Creates a form to delete a record"><span class="description">Creates a form to delete a record</span><pre>deleteAction()</pre></a></li>
+<li class="method public "><a href="#method_editAction" title="editAction() :: Creates a form to edit"><span class="description">Creates a form to edit</span><pre>editAction()</pre></a></li>
+<li class="method public "><a href="#method_excelAction" title="excelAction() :: Outputs the model to excel, applying all filters and searches needed"><span class="description">Outputs the model to excel, applying all filters and searches needed</span><pre>excelAction()</pre></a></li>
+<li class="method public "><a href="#method_getAfterSaveRoute" title="getAfterSaveRoute() :: Return an array with route options depending on de $data given."><span class="description">Return an array with route options depending on de $data given.</span><pre>getAfterSaveRoute()</pre></a></li>
+<li class="method public "><a href="#method_getBrowseTable" title="getBrowseTable() :: Creates from the model a \MUtil_Html_TableElement that can display multiple items."><span class="description">Creates from the model a \MUtil_Html_TableElement that can display multiple items.</span><pre>getBrowseTable()</pre></a></li>
+<li class="method public "><a href="#method_getCachedRequestData" title="getCachedRequestData() :: "><span class="description">getCachedRequestData()
+        </span><pre>getCachedRequestData()</pre></a></li>
+<li class="method public "><a href="#method_getDefaultSearchData" title="getDefaultSearchData() :: Returns the default search values for this class instance."><span class="description">Returns the default search values for this class instance.</span><pre>getDefaultSearchData()</pre></a></li>
+<li class="method public inherited"><a href="#method_getInstanceId" title="getInstanceId() :: Return the current request ID, if any."><span class="description">Return the current request ID, if any.</span><pre>getInstanceId()</pre></a></li>
+<li class="method public "><a href="#method_getModelForm" title="getModelForm() :: Creates from the model a \Zend_Form using createForm and adds elements
+using addFormElements()."><span class="description">Creates from the model a \Zend_Form using createForm and adds elements
+using addFormElements().</span><pre>getModelForm()</pre></a></li>
+<li class="method public "><a href="#method_getShowTable" title="getShowTable() :: Creates from the model a \MUtil_Html_TableElement for display of a single item."><span class="description">Creates from the model a \MUtil_Html_TableElement for display of a single item.</span><pre>getShowTable()</pre></a></li>
+<li class="method public inherited"><a href="#method_getTitle" title="getTitle() :: Returns the current html/head/title for this page."><span class="description">Returns the current html/head/title for this page.</span><pre>getTitle()</pre></a></li>
+<li class="method public inherited"><a href="#method_getTopic" title="getTopic() :: Helper function to allow generalized statements about the items in the model."><span class="description">Helper function to allow generalized statements about the items in the model.</span><pre>getTopic()</pre></a></li>
+<li class="method public inherited"><a href="#method_getTopicTitle" title="getTopicTitle() :: Helper function to allow generalized treatment of the header."><span class="description">Helper function to allow generalized treatment of the header.</span><pre>getTopicTitle()</pre></a></li>
+<li class="method public "><a href="#method_importAction" title="importAction() :: Generic model based import action"><span class="description">Generic model based import action</span><pre>importAction()</pre></a></li>
+<li class="method public "><a href="#method_indexAction" title="indexAction() :: "><span class="description">indexAction()
+        </span><pre>indexAction()</pre></a></li>
+<li class="method public inherited"><a href="#method_initHtml" title="initHtml() :: Intializes the html component."><span class="description">Intializes the html component.</span><pre>initHtml()</pre></a></li>
+<li class="method public "><a href="#method_isConfirmedItem" title="isConfirmedItem() :: "><span class="description">isConfirmedItem()
+        </span><pre>isConfirmedItem()</pre></a></li>
+<li class="method public "><a href="#method_onFakeSubmit" title="onFakeSubmit() :: Performs actions when the form is submitted, but the submit button was not checked"><span class="description">Performs actions when the form is submitted, but the submit button was not checked</span><pre>onFakeSubmit()</pre></a></li>
+<li class="method public "><a href="#method_showAction" title="showAction() :: Shows a table displaying a single record from the model"><span class="description">Shows a table displaying a single record from the model</span><pre>showAction()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="method protected "><a href="#method__applySearchParameters" title="_applySearchParameters() :: "><span class="description">_applySearchParameters()
+        </span><pre>_applySearchParameters()</pre></a></li>
+<li class="method protected "><a href="#method__createSelectElement" title="_createSelectElement() :: Creates a \Zend_Form_Element_Select"><span class="description">Creates a \Zend_Form_Element_Select</span><pre>_createSelectElement()</pre></a></li>
+<li class="method protected "><a href="#method__createTable" title="_createTable() :: "><span class="description">_createTable()
+        </span><pre>_createTable()</pre></a></li>
+<li class="method protected "><a href="#method_addBrowseTableColumns" title="addBrowseTableColumns() :: Adds columns from the model to the bridge that creates the browse table."><span class="description">Adds columns from the model to the bridge that creates the browse table.</span><pre>addBrowseTableColumns()</pre></a></li>
+<li class="method protected "><a href="#method_addExcelColumns" title="addExcelColumns() :: This is where you can modify the model for excel export"><span class="description">This is where you can modify the model for excel export</span><pre>addExcelColumns()</pre></a></li>
+<li class="method protected "><a href="#method_aliasAction" title="aliasAction() :: Set the action key in request"><span class="description">Set the action key in request</span><pre>aliasAction()</pre></a></li>
+<li class="method protected inherited"><a href="#method_createForm" title="createForm() :: "><span class="description">createForm()
+        </span><pre>createForm()</pre></a></li>
+<li class="method protected inherited"><a href="#method_createMenuLinks" title="createMenuLinks() :: "><span class="description">createMenuLinks()
+        </span><pre>createMenuLinks()</pre></a></li>
+<li class="method protected inherited"><a href="#method_findAllowedMenuItem" title="findAllowedMenuItem() :: "><span class="description">findAllowedMenuItem()
+        </span><pre>findAllowedMenuItem()</pre></a></li>
+<li class="method protected "><a href="#method_getAutoSearchElements" title="getAutoSearchElements() :: Returns a text element for autosearch. Can be overruled."><span class="description">Returns a text element for autosearch. Can be overruled.</span><pre>getAutoSearchElements()</pre></a></li>
+<li class="method protected "><a href="#method_getAutoSearchForm" title="getAutoSearchForm() :: Creates an autosearch form for indexAction."><span class="description">Creates an autosearch form for indexAction.</span><pre>getAutoSearchForm()</pre></a></li>
+<li class="method protected "><a href="#method_getAutoSearchHref" title="getAutoSearchHref() :: "><span class="description">getAutoSearchHref()
+        </span><pre>getAutoSearchHref()</pre></a></li>
+<li class="method protected "><a href="#method_getAutoSearchReset" title="getAutoSearchReset() :: Creates a reset button for the search form"><span class="description">Creates a reset button for the search form</span><pre>getAutoSearchReset()</pre></a></li>
+<li class="method protected "><a href="#method_getAutoSearchSubmit" title="getAutoSearchSubmit() :: "><span class="description">getAutoSearchSubmit()
+        </span><pre>getAutoSearchSubmit()</pre></a></li>
+<li class="method protected "><a href="#method_getDataFilter" title="getDataFilter() :: Additional data filter statements for the user input."><span class="description">Additional data filter statements for the user input.</span><pre>getDataFilter()</pre></a></li>
+<li class="method protected "><a href="#method_getExcelData" title="getExcelData() :: Returns an array with all columns from the model that have a label"><span class="description">Returns an array with all columns from the model that have a label</span><pre>getExcelData()</pre></a></li>
+<li class="method protected inherited"><a href="#method_loadSnippetLoader" title="loadSnippetLoader() :: Stub for overruling default snippet loader initiation."><span class="description">Stub for overruling default snippet loader initiation.</span><pre>loadSnippetLoader()</pre></a></li>
+<li class="method protected "><a href="#method_processForm" title="processForm() :: Handles a form, including population and saving to the model"><span class="description">Handles a form, including population and saving to the model</span><pre>processForm()</pre></a></li>
+<li class="method protected "><a href="#method_setPageTitle" title="setPageTitle() :: Set the page title on top of a page, also store it in a public var"><span class="description">Set the page title on top of a page, also store it in a public var</span><pre>setPageTitle()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Properties" class="icon-custom icon-property"></i> Properties
+                    <ul>
+<li class="property public "><a href="#property_autoFilter" title="$autoFilter() :: "><span class="description"></span><pre>$autoFilter</pre></a></li>
+<li class="property public "><a href="#property_db" title="$db() :: "><span class="description"></span><pre>$db</pre></a></li>
+<li class="property public "><a href="#property_filterStandard" title="$filterStandard() :: "><span class="description"></span><pre>$filterStandard</pre></a></li>
+<li class="property public "><a href="#property_formatExcelData" title="$formatExcelData() :: Should Excel output contain formatted data (date fields, select lists)"><span class="description"></span><pre>$formatExcelData</pre></a></li>
+<li class="property public "><a href="#property_loader" title="$loader() :: "><span class="description"></span><pre>$loader</pre></a></li>
+<li class="property public "><a href="#property_menu" title="$menu() :: "><span class="description"></span><pre>$menu</pre></a></li>
+<li class="property public "><a href="#property_menuCreateIncludeLevel" title="$menuCreateIncludeLevel() :: "><span class="description"></span><pre>$menuCreateIncludeLevel</pre></a></li>
+<li class="property public "><a href="#property_menuEditIncludeLevel" title="$menuEditIncludeLevel() :: "><span class="description"></span><pre>$menuEditIncludeLevel</pre></a></li>
+<li class="property public "><a href="#property_menuIndexIncludeLevel" title="$menuIndexIncludeLevel() :: "><span class="description"></span><pre>$menuIndexIncludeLevel</pre></a></li>
+<li class="property public "><a href="#property_menuShowIncludeLevel" title="$menuShowIncludeLevel() :: "><span class="description"></span><pre>$menuShowIncludeLevel</pre></a></li>
+<li class="property public "><a href="#property_pageTitle" title="$pageTitle() :: The page title at the top of each page"><span class="description"></span><pre>$pageTitle</pre></a></li>
+<li class="property public "><a href="#property_requestCache" title="$requestCache() :: "><span class="description"></span><pre>$requestCache</pre></a></li>
+<li class="property public "><a href="#property_sortKey" title="$sortKey() :: "><span class="description"></span><pre>$sortKey</pre></a></li>
+<li class="property public "><a href="#property_summarizedActions" title="$summarizedActions() :: "><span class="description"></span><pre>$summarizedActions</pre></a></li>
+<li class="property public "><a href="#property_tableSnippets" title="$tableSnippets() :: "><span class="description"></span><pre>$tableSnippets</pre></a></li>
+<li class="property public "><a href="#property_useCsrf" title="$useCsrf() :: Use csrf token on form for protection against Cross Site Request Forgery"><span class="description"></span><pre>$useCsrf</pre></a></li>
+<li class="property public "><a href="#property_useKeyboardSelector" title="$useKeyboardSelector() :: "><span class="description"></span><pre>$useKeyboardSelector</pre></a></li>
+<li class="property public "><a href="#property_useMultiRowForm" title="$useMultiRowForm() :: "><span class="description"></span><pre>$useMultiRowForm</pre></a></li>
+<li class="property public "><a href="#property_usePreviousFilter" title="$usePreviousFilter() :: "><span class="description"></span><pre>$usePreviousFilter</pre></a></li>
+<li class="property public "><a href="#property_useTabbedForms" title="$useTabbedForms() :: "><span class="description"></span><pre>$useTabbedForms</pre></a></li>
+<li class="property public "><a href="#property_util" title="$util() :: "><span class="description"></span><pre>$util</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="property protected "><a href="#property_csrfId" title="$csrfId() :: Field id for crsf protection field."><span class="description"></span><pre>$csrfId</pre></a></li>
+<li class="property protected "><a href="#property_csrfTimeout" title="$csrfTimeout() :: The timeout for crsf, 300 is default"><span class="description"></span><pre>$csrfTimeout</pre></a></li>
+<li class="property protected "><a href="#property_importSnippets" title="$importSnippets() :: The snippets used for the import action"><span class="description"></span><pre>$importSnippets</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Constants" class="icon-custom icon-constant"></i> Constants
+                    <ul>
+<li class="constant  "><a href="#constant_RESET_PARAM" title="RESET_PARAM() :: "><span class="description">RESET_PARAM</span><pre>RESET_PARAM</pre></a></li>
+<li class="constant  "><a href="#constant_SEARCH_BUTTON" title="SEARCH_BUTTON() :: "><span class="description">SEARCH_BUTTON</span><pre>SEARCH_BUTTON</pre></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a xmlns:php="http://php.net/xsl" id="\Gems_Controller_BrowseEditAction"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+<li>
+<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Gems_Controller_BrowseEditAction.html">Gems_Controller_BrowseEditAction</a>
+</li>
+</ul>
+<div xmlns:php="http://php.net/xsl" class="element class">
+<p class="short_description">BrowseEdit controller</p>
+<div class="details">
+<div class="long_description"><p>This controller handles a default model browse / edit / export to excel</p></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Gems.Controller.html">Gems</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Controller</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2011 Erasmus MC</td>
+</tr>
+<tr>
+<th>license</th>
+<td><a href="http://opensource.org/licenses/BSD-3-Clause">New BSD License</a></td>
+</tr>
+<tr>
+<th>since</th>
+<td>Class available since version 1.0</td>
+</tr>
+<tr>
+<th>deprecated</th>
+<td>Since version 1.7.1</td>
+</tr>
+<tr>
+<th>inherited_from</th>
+<td>\Gems_Controller_ModelActionAbstract</td>
+</tr>
+</table>
+<h3>
+<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
+<a id="method_afterFormLoad"></a><div class="element clickable method public method_afterFormLoad " data-toggle="collapse" data-target=".method_afterFormLoad .collapse" title="public">
+<h2>Hook to alter the formdata just before the form is populated</h2>
+<pre>afterFormLoad(array $data, boolean $isNew) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$data</h4>
+<code>array</code>
+</div>
+<div class="subelement argument">
+<h4>$isNew</h4>
+<code>boolean</code>
+</div>
+</div></div>
+</div>
+<a id="method_afterSave"></a><div class="element clickable method public method_afterSave " data-toggle="collapse" data-target=".method_afterSave .collapse" title="public">
+<h2>Hook to perform action after a record (with changes) was saved</h2>
+<pre>afterSave(array $data, boolean $isNew) : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>As the data was already saved, it can NOT be changed anymore</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$data</h4>
+<code>array</code>
+</div>
+<div class="subelement argument">
+<h4>$isNew</h4>
+<code>boolean</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>True when you want to display the default 'saved' messages</div>
+</div></div>
+</div>
+<a id="method_afterSaveRoute"></a><div class="element clickable method public method_afterSaveRoute " data-toggle="collapse" data-target=".method_afterSaveRoute .collapse" title="public">
+<h2>Get the afterSaveRoute and execute it</h2>
+<pre>afterSaveRoute(mixed $data) : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$data</h4>
+<code>mixed</code><p>data array or Zend Request</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_autofilterAction"></a><div class="element clickable method public method_autofilterAction " data-toggle="collapse" data-target=".method_autofilterAction .collapse" title="public">
+<h2>autofilterAction()
+        </h2>
+<pre>autofilterAction() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_beforeFormDisplay"></a><div class="element clickable method public method_beforeFormDisplay " data-toggle="collapse" data-target=".method_beforeFormDisplay .collapse" title="public">
+<h2>Perform some actions on the form, right before it is displayed but already populated</h2>
+<pre>beforeFormDisplay(\Zend_Form $form, boolean $isNew) : \Zend_Form</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Here we add the table display to the form.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$form</h4>
+<code>\Zend_Form</code>
+</div>
+<div class="subelement argument">
+<h4>$isNew</h4>
+<code>boolean</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Zend_Form</code></div>
+</div></div>
+</div>
+<a id="method_beforeSave"></a><div class="element clickable method public method_beforeSave " data-toggle="collapse" data-target=".method_beforeSave .collapse" title="public">
+<h2>Hook to alter formdata before saving</h2>
+<pre>beforeSave(array $data, boolean $isNew, \Zend_Form $form<code> = null</code>) : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$data</h4>
+<code>array</code><p>The data that will be saved.</p></div>
+<div class="subelement argument">
+<h4>$isNew</h4>
+<code>boolean</code><p>$param \Zend_Form $form</p></div>
+<div class="subelement argument"><h4>$form</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>Returns true if flow should continue</div>
+</div></div>
+</div>
+<a id="method_createAction"></a><div class="element clickable method public method_createAction " data-toggle="collapse" data-target=".method_createAction .collapse" title="public">
+<h2>Creates a form for a new record</h2>
+<pre>createAction() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"><p>Uses $this-&gt;getModel()
+$this-&gt;addFormElements()</p></div></div></div>
+</div>
+<a id="method_createForm"></a><div class="element clickable method public method_createForm " data-toggle="collapse" data-target=".method_createForm .collapse" title="public">
+<h2>Retrieve a form object and add extra decorators</h2>
+<pre>createForm(array $options<code> = null</code>) : \Gems_Form</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Controller_ModelActionAbstract::createForm()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$options</h4>
+<code>array</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Form</code></div>
+</div></div>
+</div>
+<a id="method_deleteAction"></a><div class="element clickable method public method_deleteAction " data-toggle="collapse" data-target=".method_deleteAction .collapse" title="public">
+<h2>Creates a form to delete a record</h2>
+<pre>deleteAction() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"><p>Uses $this-&gt;getModel()
+$this-&gt;addFormElements()</p></div></div></div>
+</div>
+<a id="method_editAction"></a><div class="element clickable method public method_editAction " data-toggle="collapse" data-target=".method_editAction .collapse" title="public">
+<h2>Creates a form to edit</h2>
+<pre>editAction() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"><p>Uses $this-&gt;getModel()
+$this-&gt;addFormElements()</p></div></div></div>
+</div>
+<a id="method_excelAction"></a><div class="element clickable method public method_excelAction " data-toggle="collapse" data-target=".method_excelAction .collapse" title="public">
+<h2>Outputs the model to excel, applying all filters and searches needed</h2>
+<pre>excelAction() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"><p>When you want to change the output, there are two places to check:</p>
+<ol>
+<li>
+<p>$this-&gt;addExcelColumns($model), where the model can be changed to have labels for columns you
+need exported</p>
+</li>
+<li>$this-&gt;getExcelData($data, $model) where the supplied data and model are merged to get output
+(by default all fields from the model that have a label)</li>
+</ol></div></div></div>
+</div>
+<a id="method_getAfterSaveRoute"></a><div class="element clickable method public method_getAfterSaveRoute " data-toggle="collapse" data-target=".method_getAfterSaveRoute .collapse" title="public">
+<h2>Return an array with route options depending on de $data given.</h2>
+<pre>getAfterSaveRoute(mixed $data) : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$data</h4>
+<code>mixed</code><p>array or \Zend_Controller_Request_Abstract</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>array with route options or false when no redirect is found</div>
+</div></div>
+</div>
+<a id="method_getBrowseTable"></a><div class="element clickable method public method_getBrowseTable " data-toggle="collapse" data-target=".method_getBrowseTable .collapse" title="public">
+<h2>Creates from the model a \MUtil_Html_TableElement that can display multiple items.</h2>
+<pre>getBrowseTable(array $baseUrl<code> = array()</code>, $sort<code> = null</code>, $model<code> = null</code>) : \MUtil_Html_TableElement</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Overruled to add css classes for Gems</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$baseUrl</h4>
+<code>array</code>
+</div>
+<div class="subelement argument"><h4>$sort</h4></div>
+<div class="subelement argument"><h4>$model</h4></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\MUtil_Html_TableElement</code></div>
+</div></div>
+</div>
+<a id="method_getCachedRequestData"></a><div class="element clickable method public method_getCachedRequestData " data-toggle="collapse" data-target=".method_getCachedRequestData .collapse" title="public">
+<h2>getCachedRequestData()
+        </h2>
+<pre>getCachedRequestData(boolean $includeDefaults<code> = true</code>, string $sourceAction<code> = null</code>, boolean $readonly<code> = false</code>, boolean $filterEmpty<code> = true</code>) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$includeDefaults</h4>
+<code>boolean</code><p>Include the default values (yes for filtering, no for urls</p></div>
+<div class="subelement argument">
+<h4>$sourceAction</h4>
+<code>string</code><p>The action to get the cache from if not the current one.</p></div>
+<div class="subelement argument">
+<h4>$readonly</h4>
+<code>boolean</code><p>Optional, tell the cache not to store any new values</p></div>
+<div class="subelement argument">
+<h4>$filterEmpty</h4>
+<code>boolean</code><p>Optional, filter empty values from cache</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_getDefaultSearchData"></a><div class="element clickable method public method_getDefaultSearchData " data-toggle="collapse" data-target=".method_getDefaultSearchData .collapse" title="public">
+<h2>Returns the default search values for this class instance.</h2>
+<pre>getDefaultSearchData() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Used to specify the filter when no values have been entered by the user.</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_getInstanceId"></a><div class="element clickable method public method_getInstanceId inherited" data-toggle="collapse" data-target=".method_getInstanceId .collapse" title="public">
+<h2>Return the current request ID, if any.</h2>
+<pre>getInstanceId() : mixed</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Overrule this function if the last item in the page title
+should be something other than te value of
+\MUtil_Model::REQUEST_ID.</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>mixed</code></div>
+</div></div>
+</div>
+<a id="method_getModelForm"></a><div class="element clickable method public method_getModelForm " data-toggle="collapse" data-target=".method_getModelForm .collapse" title="public">
+<h2>Creates from the model a \Zend_Form using createForm and adds elements
+using addFormElements().</h2>
+<pre>getModelForm(array $data, \optional $new<code> = false</code>) : \Zend_Form</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$data</h4>
+<code>array</code><p>The data that will later be loaded into the form, can be changed</p></div>
+<div class="subelement argument">
+<h4>$new</h4>
+<code>\optional</code><p>boolean $new Form should be for a new element</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Zend_Form</code></div>
+</div></div>
+</div>
+<a id="method_getShowTable"></a><div class="element clickable method public method_getShowTable " data-toggle="collapse" data-target=".method_getShowTable .collapse" title="public">
+<h2>Creates from the model a \MUtil_Html_TableElement for display of a single item.</h2>
+<pre>getShowTable(integer $columns<code> = 1</code>, mixed $filter<code> = null</code>, mixed $sort<code> = null</code>) : \MUtil_Html_TableElement</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Overruled to add css classes for Gems</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$columns</h4>
+<code>integer</code><p>The number of columns to use for presentation</p></div>
+<div class="subelement argument">
+<h4>$filter</h4>
+<code>mixed</code><p>A valid filter for \MUtil_Model_ModelAbstract->load()</p></div>
+<div class="subelement argument">
+<h4>$sort</h4>
+<code>mixed</code><p>A valid sort for \MUtil_Model_ModelAbstract->load()</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\MUtil_Html_TableElement</code></div>
+</div></div>
+</div>
+<a id="method_getTitle"></a><div class="element clickable method public method_getTitle inherited" data-toggle="collapse" data-target=".method_getTitle .collapse" title="public">
+<h2>Returns the current html/head/title for this page.</h2>
+<pre>getTitle(string $separator<code> = null</code>) : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>If the title is an array the seperator concatenates the parts.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$separator</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getTopic"></a><div class="element clickable method public method_getTopic inherited" data-toggle="collapse" data-target=".method_getTopic .collapse" title="public">
+<h2>Helper function to allow generalized statements about the items in the model.</h2>
+<pre>getTopic(integer $count<code> = 1</code>) : \$string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$count</h4>
+<code>integer</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\$string</code></div>
+</div></div>
+</div>
+<a id="method_getTopicTitle"></a><div class="element clickable method public method_getTopicTitle inherited" data-toggle="collapse" data-target=".method_getTopicTitle .collapse" title="public">
+<h2>Helper function to allow generalized treatment of the header.</h2>
+<pre>getTopicTitle() </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"><p>return $string</p></div></div></div>
+</div>
+<a id="method_importAction"></a><div class="element clickable method public method_importAction " data-toggle="collapse" data-target=".method_importAction .collapse" title="public">
+<h2>Generic model based import action</h2>
+<pre>importAction() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_indexAction"></a><div class="element clickable method public method_indexAction " data-toggle="collapse" data-target=".method_indexAction .collapse" title="public">
+<h2>indexAction()
+        </h2>
+<pre>indexAction() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_initHtml"></a><div class="element clickable method public method_initHtml inherited" data-toggle="collapse" data-target=".method_initHtml .collapse" title="public">
+<h2>Intializes the html component.</h2>
+<pre>initHtml(boolean $reset<code> = false</code>) : void</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$reset</h4>
+<code>boolean</code><p>Throws away any existing html output when true</p></div>
+</div></div>
+</div>
+<a id="method_isConfirmedItem"></a><div class="element clickable method public method_isConfirmedItem " data-toggle="collapse" data-target=".method_isConfirmedItem .collapse" title="public">
+<h2>isConfirmedItem()
+        </h2>
+<pre>isConfirmedItem($title, $question<code> = null</code>, $info<code> = null</code>) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$title</h4></div>
+<div class="subelement argument"><h4>$question</h4></div>
+<div class="subelement argument"><h4>$info</h4></div>
+</div></div>
+</div>
+<a id="method_onFakeSubmit"></a><div class="element clickable method public method_onFakeSubmit " data-toggle="collapse" data-target=".method_onFakeSubmit .collapse" title="public">
+<h2>Performs actions when the form is submitted, but the submit button was not checked</h2>
+<pre>onFakeSubmit(\Zend_Form $form, array $data) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>When not rerouted, the form will be populated afterwards</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$form</h4>
+<code>\Zend_Form</code><p>The populated form</p></div>
+<div class="subelement argument">
+<h4>$data</h4>
+<code>array</code><p>The data-array we are working on</p></div>
+</div></div>
+</div>
+<a id="method_showAction"></a><div class="element clickable method public method_showAction " data-toggle="collapse" data-target=".method_showAction .collapse" title="public">
+<h2>Shows a table displaying a single record from the model</h2>
+<pre>showAction() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"><p>Uses: $this-&gt;getModel()
+$this-&gt;getShowTable();</p></div></div></div>
+</div>
+<a id="method__applySearchParameters"></a><div class="element clickable method protected method__applySearchParameters " data-toggle="collapse" data-target=".method__applySearchParameters .collapse" title="protected">
+<h2>_applySearchParameters()
+        </h2>
+<pre>_applySearchParameters(\MUtil_Model_ModelAbstract $model, $useStored<code> = false</code>) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$model</h4></div>
+<div class="subelement argument"><h4>$useStored</h4></div>
+</div></div>
+</div>
+<a id="method__createSelectElement"></a><div class="element clickable method protected method__createSelectElement " data-toggle="collapse" data-target=".method__createSelectElement .collapse" title="protected">
+<h2>Creates a \Zend_Form_Element_Select</h2>
+<pre>_createSelectElement(string $name, string|array $options, string $empty<code> = null</code>) : \Zend_Form_Element_Select</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code><p>Name of the select element</p></div>
+<div class="subelement argument">
+<h4>$options</h4>
+<code>string</code><code>array</code><p>Can be a SQL select string or key/value array of options</p></div>
+<div class="subelement argument">
+<h4>$empty</h4>
+<code>string</code><p>Text to display for the empty selector</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Zend_Form_Element_Select</code></div>
+</div></div>
+</div>
+<a id="method__createTable"></a><div class="element clickable method protected method__createTable " data-toggle="collapse" data-target=".method__createTable .collapse" title="protected">
+<h2>_createTable()
+        </h2>
+<pre>_createTable() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_addBrowseTableColumns"></a><div class="element clickable method protected method_addBrowseTableColumns " data-toggle="collapse" data-target=".method_addBrowseTableColumns .collapse" title="protected">
+<h2>Adds columns from the model to the bridge that creates the browse table.</h2>
+<pre>addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Adds a button column to the model, if such a button exists in the model.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$bridge</h4>
+<code>\MUtil_Model_Bridge_TableBridge</code>
+</div>
+<div class="subelement argument">
+<h4>$model</h4>
+<code>\MUtil_Model_ModelAbstract</code>
+</div>
+</div></div>
+</div>
+<a id="method_addExcelColumns"></a><div class="element clickable method protected method_addExcelColumns " data-toggle="collapse" data-target=".method_addExcelColumns .collapse" title="protected">
+<h2>This is where you can modify the model for excel export</h2>
+<pre>addExcelColumns(\MUtil_Model_ModelAbstract $model) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Only columns that have a label will be exported.</p>
+<p>example:
+<code>
+$model-&gt;set('columnname', 'label', $this-&gt;_('Excel label'));
+</code></p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$model</h4>
+<code>\MUtil_Model_ModelAbstract</code>
+</div>
+</div></div>
+</div>
+<a id="method_aliasAction"></a><div class="element clickable method protected method_aliasAction " data-toggle="collapse" data-target=".method_aliasAction .collapse" title="protected">
+<h2>Set the action key in request</h2>
+<pre>aliasAction(string $alias) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Use this when an action is a Ajax action for retrieving
+information for use within the screen of another action</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$alias</h4>
+<code>string</code>
+</div>
+</div></div>
+</div>
+<a id="method_createForm"></a><div class="element clickable method protected method_createForm inherited" data-toggle="collapse" data-target=".method_createForm .collapse" title="protected">
+<h2>createForm()
+        </h2>
+<pre>createForm(mixed $options<code> = array()</code>) : \Gems_Form</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$options</h4>
+<code>mixed</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Form</code></div>
+</div></div>
+</div>
+<a id="method_createMenuLinks"></a><div class="element clickable method protected method_createMenuLinks inherited" data-toggle="collapse" data-target=".method_createMenuLinks .collapse" title="protected">
+<h2>createMenuLinks()
+        </h2>
+<pre>createMenuLinks($includeLevel<code> = 2</code>, $parentLabel<code> = true</code>) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$includeLevel</h4></div>
+<div class="subelement argument"><h4>$parentLabel</h4></div>
+</div></div>
+</div>
+<a id="method_findAllowedMenuItem"></a><div class="element clickable method protected method_findAllowedMenuItem inherited" data-toggle="collapse" data-target=".method_findAllowedMenuItem .collapse" title="protected">
+<h2>findAllowedMenuItem()
+        </h2>
+<pre>findAllowedMenuItem($action) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$action</h4></div>
+</div></div>
+</div>
+<a id="method_getAutoSearchElements"></a><div class="element clickable method protected method_getAutoSearchElements " data-toggle="collapse" data-target=".method_getAutoSearchElements .collapse" title="protected">
+<h2>Returns a text element for autosearch. Can be overruled.</h2>
+<pre>getAutoSearchElements(\MUtil_Model_ModelAbstract $model, array $data) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>The form / html elements to search on. Elements can be grouped by inserting null's between them.
+That creates a distinct group of elements</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$model</h4>
+<code>\MUtil_Model_ModelAbstract</code>
+</div>
+<div class="subelement argument">
+<h4>$data</h4>
+<code>array</code><p>The $form field values (can be usefull, but no need to set them)</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.</div>
+</div></div>
+</div>
+<a id="method_getAutoSearchForm"></a><div class="element clickable method protected method_getAutoSearchForm " data-toggle="collapse" data-target=".method_getAutoSearchForm .collapse" title="protected">
+<h2>Creates an autosearch form for indexAction.</h2>
+<pre>getAutoSearchForm(string $targetId) : \Gems_Form | null</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$targetId</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Form</code><code>null</code>
+</div>
+</div></div>
+</div>
+<a id="method_getAutoSearchHref"></a><div class="element clickable method protected method_getAutoSearchHref " data-toggle="collapse" data-target=".method_getAutoSearchHref .collapse" title="protected">
+<h2>getAutoSearchHref()
+        </h2>
+<pre>getAutoSearchHref() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_getAutoSearchReset"></a><div class="element clickable method protected method_getAutoSearchReset " data-toggle="collapse" data-target=".method_getAutoSearchReset .collapse" title="protected">
+<h2>Creates a reset button for the search form</h2>
+<pre>getAutoSearchReset() : \Zend_Form_Element_Submit</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Zend_Form_Element_Submit</code></div>
+</div></div>
+</div>
+<a id="method_getAutoSearchSubmit"></a><div class="element clickable method protected method_getAutoSearchSubmit " data-toggle="collapse" data-target=".method_getAutoSearchSubmit .collapse" title="protected">
+<h2>getAutoSearchSubmit()
+        </h2>
+<pre>getAutoSearchSubmit(\MUtil_Model_ModelAbstract $model, \MUtil_Form $form) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$model</h4></div>
+<div class="subelement argument"><h4>$form</h4></div>
+</div></div>
+</div>
+<a id="method_getDataFilter"></a><div class="element clickable method protected method_getDataFilter " data-toggle="collapse" data-target=".method_getDataFilter .collapse" title="protected">
+<h2>Additional data filter statements for the user input.</h2>
+<pre>getDataFilter(array $data) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>User input that has the same name as a model field is automatically
+used as a filter, but if the name is different processing is needed.
+That processing should happen here.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$data</h4>
+<code>array</code><p>The current user input</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>New filter statements</div>
+</div></div>
+</div>
+<a id="method_getExcelData"></a><div class="element clickable method protected method_getExcelData " data-toggle="collapse" data-target=".method_getExcelData .collapse" title="protected">
+<h2>Returns an array with all columns from the model that have a label</h2>
+<pre>getExcelData(array $data, \MUtil_Model_ModelAbstract $model) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$data</h4>
+<code>array</code>
+</div>
+<div class="subelement argument">
+<h4>$model</h4>
+<code>\MUtil_Model_ModelAbstract</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_loadSnippetLoader"></a><div class="element clickable method protected method_loadSnippetLoader inherited" data-toggle="collapse" data-target=".method_loadSnippetLoader .collapse" title="protected">
+<h2>Stub for overruling default snippet loader initiation.</h2>
+<pre>loadSnippetLoader() </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_processForm"></a><div class="element clickable method protected method_processForm " data-toggle="collapse" data-target=".method_processForm .collapse" title="protected">
+<h2>Handles a form, including population and saving to the model</h2>
+<pre>processForm(string $saveLabel<code> = null</code>, array $data<code> = null</code>) : \Zend_Form | null</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$saveLabel</h4>
+<code>string</code><p>A label describing the form</p></div>
+<div class="subelement argument">
+<h4>$data</h4>
+<code>array</code><p>An array of data to use, adding to the data from the post</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Zend_Form</code><code>null</code>Returns a form to display or null when finished</div>
+</div></div>
+</div>
+<a id="method_setPageTitle"></a><div class="element clickable method protected method_setPageTitle " data-toggle="collapse" data-target=".method_setPageTitle .collapse" title="protected">
+<h2>Set the page title on top of a page, also store it in a public var</h2>
+<pre>setPageTitle(string $title) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$title</h4>
+<code>string</code><p>Title</p></div>
+</div></div>
+</div>
+<h3>
+<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
+<a id="property_autoFilter"> </a><div class="element clickable property public property_autoFilter" data-toggle="collapse" data-target=".property_autoFilter .collapse" title="public">
+<h2>$autoFilter</h2>
+<pre>$autoFilter </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>true</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_db"> </a><div class="element clickable property public property_db" data-toggle="collapse" data-target=".property_db .collapse" title="public">
+<h2>$db</h2>
+<pre>$db : \Zend_Db_Adapter_Abstract</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_filterStandard"> </a><div class="element clickable property public property_filterStandard" data-toggle="collapse" data-target=".property_filterStandard .collapse" title="public">
+<h2>$filterStandard</h2>
+<pre>$filterStandard </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_formatExcelData"> </a><div class="element clickable property public property_formatExcelData" data-toggle="collapse" data-target=".property_formatExcelData .collapse" title="public">
+<h2>Should Excel output contain formatted data (date fields, select lists)</h2>
+<pre>$formatExcelData : boolean</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>true</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_loader"> </a><div class="element clickable property public property_loader" data-toggle="collapse" data-target=".property_loader .collapse" title="public">
+<h2>$loader</h2>
+<pre>$loader : \Gems_Loader</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_menu"> </a><div class="element clickable property public property_menu" data-toggle="collapse" data-target=".property_menu .collapse" title="public">
+<h2>$menu</h2>
+<pre>$menu : \Gems_Menu</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_menuCreateIncludeLevel"> </a><div class="element clickable property public property_menuCreateIncludeLevel" data-toggle="collapse" data-target=".property_menuCreateIncludeLevel .collapse" title="public">
+<h2>$menuCreateIncludeLevel</h2>
+<pre>$menuCreateIncludeLevel </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>0</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_menuEditIncludeLevel"> </a><div class="element clickable property public property_menuEditIncludeLevel" data-toggle="collapse" data-target=".property_menuEditIncludeLevel .collapse" title="public">
+<h2>$menuEditIncludeLevel</h2>
+<pre>$menuEditIncludeLevel </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>10</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_menuIndexIncludeLevel"> </a><div class="element clickable property public property_menuIndexIncludeLevel" data-toggle="collapse" data-target=".property_menuIndexIncludeLevel .collapse" title="public">
+<h2>$menuIndexIncludeLevel</h2>
+<pre>$menuIndexIncludeLevel </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>4</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_menuShowIncludeLevel"> </a><div class="element clickable property public property_menuShowIncludeLevel" data-toggle="collapse" data-target=".property_menuShowIncludeLevel .collapse" title="public">
+<h2>$menuShowIncludeLevel</h2>
+<pre>$menuShowIncludeLevel </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>2</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_pageTitle"> </a><div class="element clickable property public property_pageTitle" data-toggle="collapse" data-target=".property_pageTitle .collapse" title="public">
+<h2>The page title at the top of each page</h2>
+<pre>$pageTitle : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_requestCache"> </a><div class="element clickable property public property_requestCache" data-toggle="collapse" data-target=".property_requestCache .collapse" title="public">
+<h2>$requestCache</h2>
+<pre>$requestCache : \Gems_Util_RequestCache</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_sortKey"> </a><div class="element clickable property public property_sortKey" data-toggle="collapse" data-target=".property_sortKey .collapse" title="public">
+<h2>$sortKey</h2>
+<pre>$sortKey </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_summarizedActions"> </a><div class="element clickable property public property_summarizedActions" data-toggle="collapse" data-target=".property_summarizedActions .collapse" title="public">
+<h2>$summarizedActions</h2>
+<pre>$summarizedActions </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>array('index', 'autofilter')</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_tableSnippets"> </a><div class="element clickable property public property_tableSnippets" data-toggle="collapse" data-target=".property_tableSnippets .collapse" title="public">
+<h2>$tableSnippets</h2>
+<pre>$tableSnippets </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_useCsrf"> </a><div class="element clickable property public property_useCsrf" data-toggle="collapse" data-target=".property_useCsrf .collapse" title="public">
+<h2>Use csrf token on form for protection against Cross Site Request Forgery</h2>
+<pre>$useCsrf : boolean</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>true</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_useKeyboardSelector"> </a><div class="element clickable property public property_useKeyboardSelector" data-toggle="collapse" data-target=".property_useKeyboardSelector .collapse" title="public">
+<h2>$useKeyboardSelector</h2>
+<pre>$useKeyboardSelector </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>true</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_useMultiRowForm"> </a><div class="element clickable property public property_useMultiRowForm" data-toggle="collapse" data-target=".property_useMultiRowForm .collapse" title="public">
+<h2>$useMultiRowForm</h2>
+<pre>$useMultiRowForm </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>false</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_usePreviousFilter"> </a><div class="element clickable property public property_usePreviousFilter" data-toggle="collapse" data-target=".property_usePreviousFilter .collapse" title="public">
+<h2>$usePreviousFilter</h2>
+<pre>$usePreviousFilter </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>true</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_useTabbedForms"> </a><div class="element clickable property public property_useTabbedForms" data-toggle="collapse" data-target=".property_useTabbedForms .collapse" title="public">
+<h2>$useTabbedForms</h2>
+<pre>$useTabbedForms </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>false</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_util"> </a><div class="element clickable property public property_util" data-toggle="collapse" data-target=".property_util .collapse" title="public">
+<h2>$util</h2>
+<pre>$util : \Gems_Util</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_csrfId"> </a><div class="element clickable property protected property_csrfId" data-toggle="collapse" data-target=".property_csrfId .collapse" title="protected">
+<h2>Field id for crsf protection field.</h2>
+<pre>$csrfId : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>'no_csrfx'</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_csrfTimeout"> </a><div class="element clickable property protected property_csrfTimeout" data-toggle="collapse" data-target=".property_csrfTimeout .collapse" title="protected">
+<h2>The timeout for crsf, 300 is default</h2>
+<pre>$csrfTimeout : integer</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>300</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_importSnippets"> </a><div class="element clickable property protected property_importSnippets" data-toggle="collapse" data-target=".property_importSnippets .collapse" title="protected">
+<h2>The snippets used for the import action</h2>
+<pre>$importSnippets : mixed</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>'ModelImportSnippet'</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<h3>
+<i title="Constants" class="icon-custom icon-constant"></i> Constants</h3>
+<a id="constant_RESET_PARAM"> </a><div class="element clickable constant  constant_RESET_PARAM" data-toggle="collapse" data-target=".constant_RESET_PARAM .collapse" title="">
+<h2>RESET_PARAM</h2>
+<pre>RESET_PARAM = 'reset' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_SEARCH_BUTTON"> </a><div class="element clickable constant  constant_SEARCH_BUTTON" data-toggle="collapse" data-target=".constant_SEARCH_BUTTON .collapse" title="">
+<h2>SEARCH_BUTTON</h2>
+<pre>SEARCH_BUTTON = 'AUTO_SEARCH_TEXT_BUTTON' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:54+02:00.<br></footer></div>
+</div>
+</body>
+</html>

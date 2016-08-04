@@ -1,0 +1,759 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » \Gems_Model_Translator_RespondentAnswerTranslator</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+<div class="btn-group visibility" data-toggle="buttons-checkbox">
+<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
+</div>
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+</div>
+<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+<li class="nav-header">
+<i title="Methods" class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public inherited"><a href="#method_addSaveTask" title="addSaveTask() :: Add the current row to a (possibly separate) batch that does the importing."><span class="description">Add the current row to a (possibly separate) batch that does the importing.</span><pre>addSaveTask()</pre></a></li>
+<li class="method public inherited"><a href="#method_afterRegistry" title="afterRegistry() :: Called after the check that all required registry values
+have been set correctly has run."><span class="description">Called after the check that all required registry values
+have been set correctly has run.</span><pre>afterRegistry()</pre></a></li>
+<li class="method public inherited"><a href="#method_checkRegistryRequestsAnswers" title="checkRegistryRequestsAnswers() :: Should be called after answering the request to allow the Target
+to check if all required registry values have been set correctly."><span class="description">Should be called after answering the request to allow the Target
+to check if all required registry values have been set correctly.</span><pre>checkRegistryRequestsAnswers()</pre></a></li>
+<li class="method public "><a href="#method_getFieldsTranslations" title="getFieldsTranslations() :: Get information on the field translations"><span class="description">Get information on the field translations</span><pre>getFieldsTranslations()</pre></a></li>
+<li class="method public inherited"><a href="#method_getFieldsTranslations" title="getFieldsTranslations() :: Get information on the field translations"><span class="description">Get information on the field translations</span><pre>getFieldsTranslations()</pre></a></li>
+<li class="method public inherited"><a href="#method_getNoToken" title="getNoToken() :: Get the treatment when no token exists"><span class="description">Get the treatment when no token exists</span><pre>getNoToken()</pre></a></li>
+<li class="method public "><a href="#method_getNoTokenError" title="getNoTokenError() :: Get the error message for when no token exists"><span class="description">Get the error message for when no token exists</span><pre>getNoTokenError()</pre></a></li>
+<li class="method public inherited"><a href="#method_getNoTokenError" title="getNoTokenError() :: Get the error message for when no token exists"><span class="description">Get the error message for when no token exists</span><pre>getNoTokenError()</pre></a></li>
+<li class="method public "><a href="#method_getRequiredFields" title="getRequiredFields() :: Returns an array of the field names that are required"><span class="description">Returns an array of the field names that are required</span><pre>getRequiredFields()</pre></a></li>
+<li class="method public "><a href="#method_getRespondentAnswerTranslations" title="getRespondentAnswerTranslations() :: Get information on the field translations"><span class="description">Get information on the field translations</span><pre>getRespondentAnswerTranslations()</pre></a></li>
+<li class="method public inherited"><a href="#method_getSurveyId" title="getSurveyId() :: Get the id of the survey to import to"><span class="description">Get the id of the survey to import to</span><pre>getSurveyId()</pre></a></li>
+<li class="method public inherited"><a href="#method_getTokenCompleted" title="getTokenCompleted() :: Get the treatment for completed tokens"><span class="description">Get the treatment for completed tokens</span><pre>getTokenCompleted()</pre></a></li>
+<li class="method public inherited"><a href="#method_getTrackId" title="getTrackId() :: Get the id of the track to import to or null"><span class="description">Get the id of the track to import to or null</span><pre>getTrackId()</pre></a></li>
+<li class="method public inherited"><a href="#method_setNoToken" title="setNoToken() :: Get the treatment when no token exists"><span class="description">Get the treatment when no token exists</span><pre>setNoToken()</pre></a></li>
+<li class="method public inherited"><a href="#method_setSkipUnknownPatients" title="setSkipUnknownPatients() :: Get the treatment when no token exists"><span class="description">Get the treatment when no token exists</span><pre>setSkipUnknownPatients()</pre></a></li>
+<li class="method public inherited"><a href="#method_setSurveyId" title="setSurveyId() :: Set the id of the survey to import to"><span class="description">Set the id of the survey to import to</span><pre>setSurveyId()</pre></a></li>
+<li class="method public inherited"><a href="#method_setTokenCompleted" title="setTokenCompleted() :: Set the treatment for answered or double tokens"><span class="description">Set the treatment for answered or double tokens</span><pre>setTokenCompleted()</pre></a></li>
+<li class="method public inherited"><a href="#method_setTrackId" title="setTrackId() :: Set the id of the track to import to or null"><span class="description">Set the id of the track to import to or null</span><pre>setTrackId()</pre></a></li>
+<li class="method public inherited"><a href="#method_translateRowValues" title="translateRowValues() :: Perform any translations necessary for the code to work"><span class="description">Perform any translations necessary for the code to work</span><pre>translateRowValues()</pre></a></li>
+<li class="method public inherited"><a href="#method_validateRowValues" title="validateRowValues() :: Validate the data against the target form"><span class="description">Validate the data against the target form</span><pre>validateRowValues()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="method protected inherited"><a href="#method__createTargetForm" title="_createTargetForm() :: Create an empty form for filtering and validation"><span class="description">Create an empty form for filtering and validation</span><pre>_createTargetForm()</pre></a></li>
+<li class="method protected inherited"><a href="#method_checkPatient" title="checkPatient() :: Check should a patient be imported"><span class="description">Check should a patient be imported</span><pre>checkPatient()</pre></a></li>
+<li class="method protected "><a href="#method_findRespondentTrackFor" title="findRespondentTrackFor() :: If the token can be created find the respondent track for the token"><span class="description">If the token can be created find the respondent track for the token</span><pre>findRespondentTrackFor()</pre></a></li>
+<li class="method protected inherited"><a href="#method_findRespondentTrackFor" title="findRespondentTrackFor() :: If the token can be created find the respondent track for the token"><span class="description">If the token can be created find the respondent track for the token</span><pre>findRespondentTrackFor()</pre></a></li>
+<li class="method protected "><a href="#method_findTokenFor" title="findTokenFor() :: Find the token id using the passed row data and
+the other translator parameters."><span class="description">Find the token id using the passed row data and
+the other translator parameters.</span><pre>findTokenFor()</pre></a></li>
+<li class="method protected inherited"><a href="#method_findTokenFor" title="findTokenFor() :: Find the token id using the passed row data and
+the other translator parameters."><span class="description">Find the token id using the passed row data and
+the other translator parameters.</span><pre>findTokenFor()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Properties" class="icon-custom icon-property"></i> Properties
+                    <ul></ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="property protected "><a href="#property__noToken" title="$_noToken() :: One of the TOKEN_ constants telling what to do when no token exists"><span class="description"></span><pre>$_noToken</pre></a></li>
+<li class="property protected "><a href="#property__skipUnknownPatients" title="$_skipUnknownPatients() :: "><span class="description"></span><pre>$_skipUnknownPatients</pre></a></li>
+<li class="property protected "><a href="#property__surveyId" title="$_surveyId() :: The Gems id of the survey to import to"><span class="description"></span><pre>$_surveyId</pre></a></li>
+<li class="property protected "><a href="#property__tokenCompleted" title="$_tokenCompleted() :: One of the TOKEN_ constants telling what to do when the token is completed"><span class="description"></span><pre>$_tokenCompleted</pre></a></li>
+<li class="property protected "><a href="#property__trackId" title="$_trackId() :: The id of the track to import to or null"><span class="description"></span><pre>$_trackId</pre></a></li>
+<li class="property protected "><a href="#property_db" title="$db() :: "><span class="description"></span><pre>$db</pre></a></li>
+<li class="property protected "><a href="#property_db" title="$db() :: "><span class="description"></span><pre>$db</pre></a></li>
+<li class="property protected "><a href="#property_loader" title="$loader() :: "><span class="description"></span><pre>$loader</pre></a></li>
+<li class="property protected "><a href="#property_orgIdField" title="$orgIdField() :: The name of the field to (temporarily) store the organization id in"><span class="description"></span><pre>$orgIdField</pre></a></li>
+<li class="property protected "><a href="#property_orgTranslations" title="$orgTranslations() :: Extra values the origanization id field accepts"><span class="description"></span><pre>$orgTranslations</pre></a></li>
+<li class="property protected "><a href="#property_patientNrField" title="$patientNrField() :: The name of the field to (temporarily) store the patient nr in"><span class="description"></span><pre>$patientNrField</pre></a></li>
+<li class="property protected "><a href="#property_saveTask" title="$saveTask() :: The task used for import"><span class="description"></span><pre>$saveTask</pre></a></li>
+<li class="property protected "><a href="#property_util" title="$util() :: "><span class="description"></span><pre>$util</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Constants" class="icon-custom icon-constant"></i> Constants
+                    <ul>
+<li class="constant  "><a href="#constant_TOKEN_DOUBLE" title="TOKEN_DOUBLE() :: Constant for creating an extra token when a token was already filled in."><span class="description">Constant for creating an extra token when a token was already filled in.</span><pre>TOKEN_DOUBLE</pre></a></li>
+<li class="constant  "><a href="#constant_TOKEN_ERROR" title="TOKEN_ERROR() :: Constant for generating an error when a token does not exist or is already filled in."><span class="description">Constant for generating an error when a token does not exist or is already filled in.</span><pre>TOKEN_ERROR</pre></a></li>
+<li class="constant  "><a href="#constant_TOKEN_OVERWRITE" title="TOKEN_OVERWRITE() :: Constant for creating a new token, while disabling the existing token"><span class="description">Constant for creating a new token, while disabling the existing token</span><pre>TOKEN_OVERWRITE</pre></a></li>
+<li class="constant  "><a href="#constant_TOKEN_SKIP" title="TOKEN_SKIP() :: Constant for creating a new token, while disabling the existing token"><span class="description">Constant for creating a new token, while disabling the existing token</span><pre>TOKEN_SKIP</pre></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a xmlns:php="http://php.net/xsl" id="\Gems_Model_Translator_RespondentAnswerTranslator"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+<li>
+<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Gems_Model_Translator_RespondentAnswerTranslator.html">Gems_Model_Translator_RespondentAnswerTranslator</a>
+</li>
+</ul>
+<div xmlns:php="http://php.net/xsl" class="element class">
+<p class="short_description">Make sure a \Gems_Form is used for validation</p>
+<div class="details">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Gems.Model_Translator.html">Gems</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Model_Translator</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2014 Erasmus MC</td>
+</tr>
+<tr>
+<th>license</th>
+<td><a href="http://opensource.org/licenses/BSD-3-Clause">New BSD License</a></td>
+</tr>
+<tr>
+<th>since</th>
+<td>Class available since version 1.6.3 24-apr-2014 14:46:04</td>
+</tr>
+<tr>
+<th>inherited_from</th>
+<td>\Gems_Model_Translator_AnswerTranslatorAbstract</td>
+</tr>
+</table>
+<h3>
+<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
+<a id="method_addSaveTask"></a><div class="element clickable method public method_addSaveTask inherited" data-toggle="collapse" data-target=".method_addSaveTask .collapse" title="public">
+<h2>Add the current row to a (possibly separate) batch that does the importing.</h2>
+<pre>addSaveTask(\MUtil_Task_TaskBatch $importBatch, string $key, array $row) : \MUtil_Model_ModelTranslatorAbstract</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$importBatch</h4>
+<code>\MUtil_Task_TaskBatch</code><p>The import batch to impor this row into</p></div>
+<div class="subelement argument">
+<h4>$key</h4>
+<code>string</code><p>The current iterator key</p></div>
+<div class="subelement argument">
+<h4>$row</h4>
+<code>array</code><p>translated and validated row</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\MUtil_Model_ModelTranslatorAbstract</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_afterRegistry"></a><div class="element clickable method public method_afterRegistry inherited" data-toggle="collapse" data-target=".method_afterRegistry .collapse" title="public">
+<h2>Called after the check that all required registry values
+have been set correctly has run.</h2>
+<pre>afterRegistry() : void</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_checkRegistryRequestsAnswers"></a><div class="element clickable method public method_checkRegistryRequestsAnswers inherited" data-toggle="collapse" data-target=".method_checkRegistryRequestsAnswers .collapse" title="public">
+<h2>Should be called after answering the request to allow the Target
+to check if all required registry values have been set correctly.</h2>
+<pre>checkRegistryRequestsAnswers() : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>False if required values are missing.</div>
+</div></div>
+</div>
+<a id="method_getFieldsTranslations"></a><div class="element clickable method public method_getFieldsTranslations " data-toggle="collapse" data-target=".method_getFieldsTranslations .collapse" title="public">
+<h2>Get information on the field translations</h2>
+<pre>getFieldsTranslations() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Model_Translator_AnswerTranslatorAbstract::getFieldsTranslations()</td>
+</tr></table>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code>\MUtil_Model_ModelException</code></th>
+<td></td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>of fields sourceName => targetName</div>
+</div></div>
+</div>
+<a id="method_getFieldsTranslations"></a><div class="element clickable method public method_getFieldsTranslations inherited" data-toggle="collapse" data-target=".method_getFieldsTranslations .collapse" title="public">
+<h2>Get information on the field translations</h2>
+<pre>getFieldsTranslations() : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code>\MUtil_Model_ModelException</code></th>
+<td></td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>of fields sourceName => targetName</div>
+</div></div>
+</div>
+<a id="method_getNoToken"></a><div class="element clickable method public method_getNoToken inherited" data-toggle="collapse" data-target=".method_getNoToken .collapse" title="public">
+<h2>Get the treatment when no token exists</h2>
+<pre>getNoToken() : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>One of the TOKEN_ constants.</div>
+</div></div>
+</div>
+<a id="method_getNoTokenError"></a><div class="element clickable method public method_getNoTokenError " data-toggle="collapse" data-target=".method_getNoTokenError .collapse" title="public">
+<h2>Get the error message for when no token exists</h2>
+<pre>getNoTokenError(array $row, $key) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Model_Translator_AnswerTranslatorAbstract::getNoTokenError()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$row</h4></div>
+<div class="subelement argument"><h4>$key</h4></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getNoTokenError"></a><div class="element clickable method public method_getNoTokenError inherited" data-toggle="collapse" data-target=".method_getNoTokenError .collapse" title="public">
+<h2>Get the error message for when no token exists</h2>
+<pre>getNoTokenError(array $row, $key) : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$row</h4></div>
+<div class="subelement argument"><h4>$key</h4></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getRequiredFields"></a><div class="element clickable method public method_getRequiredFields " data-toggle="collapse" data-target=".method_getRequiredFields .collapse" title="public">
+<h2>Returns an array of the field names that are required</h2>
+<pre>getRequiredFields() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>of fields sourceName => targetName</div>
+</div></div>
+</div>
+<a id="method_getRespondentAnswerTranslations"></a><div class="element clickable method public method_getRespondentAnswerTranslations " data-toggle="collapse" data-target=".method_getRespondentAnswerTranslations .collapse" title="public">
+<h2>Get information on the field translations</h2>
+<pre>getRespondentAnswerTranslations() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code>\MUtil_Model_ModelException</code></th>
+<td></td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>of fields sourceName => targetName</div>
+</div></div>
+</div>
+<a id="method_getSurveyId"></a><div class="element clickable method public method_getSurveyId inherited" data-toggle="collapse" data-target=".method_getSurveyId .collapse" title="public">
+<h2>Get the id of the survey to import to</h2>
+<pre>getSurveyId() : integer</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>$surveyId</div>
+</div></div>
+</div>
+<a id="method_getTokenCompleted"></a><div class="element clickable method public method_getTokenCompleted inherited" data-toggle="collapse" data-target=".method_getTokenCompleted .collapse" title="public">
+<h2>Get the treatment for completed tokens</h2>
+<pre>getTokenCompleted() : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>One of the TOKEN_ constants.</div>
+</div></div>
+</div>
+<a id="method_getTrackId"></a><div class="element clickable method public method_getTrackId inherited" data-toggle="collapse" data-target=".method_getTrackId .collapse" title="public">
+<h2>Get the id of the track to import to or null</h2>
+<pre>getTrackId() : integer</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>$trackId</div>
+</div></div>
+</div>
+<a id="method_setNoToken"></a><div class="element clickable method public method_setNoToken inherited" data-toggle="collapse" data-target=".method_setNoToken .collapse" title="public">
+<h2>Get the treatment when no token exists</h2>
+<pre>setNoToken(string $noToken) : \Gems_Model_Translator_AnswerTranslatorAbstract</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$noToken</h4>
+<code>string</code><p>One of the TOKEN_ constants, but not TOKEN_OVERWRITE.</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Model_Translator_AnswerTranslatorAbstract</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_setSkipUnknownPatients"></a><div class="element clickable method public method_setSkipUnknownPatients inherited" data-toggle="collapse" data-target=".method_setSkipUnknownPatients .collapse" title="public">
+<h2>Get the treatment when no token exists</h2>
+<pre>setSkipUnknownPatients(boolean $skip<code> = false</code>) : \Gems_Model_Translator_AnswerTranslatorAbstract</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$skip</h4>
+<code>boolean</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Model_Translator_AnswerTranslatorAbstract</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_setSurveyId"></a><div class="element clickable method public method_setSurveyId inherited" data-toggle="collapse" data-target=".method_setSurveyId .collapse" title="public">
+<h2>Set the id of the survey to import to</h2>
+<pre>setSurveyId(integer $surveyId) : \Gems_Model_Translator_AnswerTranslatorAbstract</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$surveyId</h4>
+<code>integer</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Model_Translator_AnswerTranslatorAbstract</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_setTokenCompleted"></a><div class="element clickable method public method_setTokenCompleted inherited" data-toggle="collapse" data-target=".method_setTokenCompleted .collapse" title="public">
+<h2>Set the treatment for answered or double tokens</h2>
+<pre>setTokenCompleted(string $tokenCompleted) : \Gems_Model_Translator_AnswerTranslatorAbstract</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$tokenCompleted</h4>
+<code>string</code><p>One f the TOKEN_ constants.</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Model_Translator_AnswerTranslatorAbstract</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_setTrackId"></a><div class="element clickable method public method_setTrackId inherited" data-toggle="collapse" data-target=".method_setTrackId .collapse" title="public">
+<h2>Set the id of the track to import to or null</h2>
+<pre>setTrackId(integer $trackId) : \Gems_Model_Translator_AnswerTranslatorAbstract</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$trackId</h4>
+<code>integer</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Model_Translator_AnswerTranslatorAbstract</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_translateRowValues"></a><div class="element clickable method public method_translateRowValues inherited" data-toggle="collapse" data-target=".method_translateRowValues .collapse" title="public">
+<h2>Perform any translations necessary for the code to work</h2>
+<pre>translateRowValues(mixed $row, scalar $key) : mixed</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$row</h4>
+<code>mixed</code><p>array or \Traversable row</p></div>
+<div class="subelement argument">
+<h4>$key</h4>
+<code>scalar</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>Row array or false when errors occurred</div>
+</div></div>
+</div>
+<a id="method_validateRowValues"></a><div class="element clickable method public method_validateRowValues inherited" data-toggle="collapse" data-target=".method_validateRowValues .collapse" title="public">
+<h2>Validate the data against the target form</h2>
+<pre>validateRowValues(array $row, scalar $key) : mixed</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$row</h4>
+<code>array</code>
+</div>
+<div class="subelement argument">
+<h4>$key</h4>
+<code>scalar</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>Row array or false when errors occurred</div>
+</div></div>
+</div>
+<a id="method__createTargetForm"></a><div class="element clickable method protected method__createTargetForm inherited" data-toggle="collapse" data-target=".method__createTargetForm .collapse" title="protected">
+<h2>Create an empty form for filtering and validation</h2>
+<pre>_createTargetForm() : \MUtil_Form</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\MUtil_Form</code></div>
+</div></div>
+</div>
+<a id="method_checkPatient"></a><div class="element clickable method protected method_checkPatient inherited" data-toggle="collapse" data-target=".method_checkPatient .collapse" title="protected">
+<h2>Check should a patient be imported</h2>
+<pre>checkPatient(string $patientNr, integer $orgId) : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$patientNr</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$orgId</h4>
+<code>integer</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_findRespondentTrackFor"></a><div class="element clickable method protected method_findRespondentTrackFor " data-toggle="collapse" data-target=".method_findRespondentTrackFor .collapse" title="protected">
+<h2>If the token can be created find the respondent track for the token</h2>
+<pre>findRespondentTrackFor(array $row) : integer | null</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Model_Translator_AnswerTranslatorAbstract::findRespondentTrackFor()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$row</h4>
+<code>array</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code><code>null</code>
+</div>
+</div></div>
+</div>
+<a id="method_findRespondentTrackFor"></a><div class="element clickable method protected method_findRespondentTrackFor inherited" data-toggle="collapse" data-target=".method_findRespondentTrackFor .collapse" title="protected">
+<h2>If the token can be created find the respondent track for the token</h2>
+<pre>findRespondentTrackFor(array $row) : integer | null</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$row</h4>
+<code>array</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code><code>null</code>
+</div>
+</div></div>
+</div>
+<a id="method_findTokenFor"></a><div class="element clickable method protected method_findTokenFor " data-toggle="collapse" data-target=".method_findTokenFor .collapse" title="protected">
+<h2>Find the token id using the passed row data and
+the other translator parameters.</h2>
+<pre>findTokenFor(array $row) : string | null</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Model_Translator_AnswerTranslatorAbstract::findTokenFor()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$row</h4>
+<code>array</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code><code>null</code>
+</div>
+</div></div>
+</div>
+<a id="method_findTokenFor"></a><div class="element clickable method protected method_findTokenFor inherited" data-toggle="collapse" data-target=".method_findTokenFor .collapse" title="protected">
+<h2>Find the token id using the passed row data and
+the other translator parameters.</h2>
+<pre>findTokenFor(array $row) : string | null</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$row</h4>
+<code>array</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code><code>null</code>
+</div>
+</div></div>
+</div>
+<h3>
+<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
+<a id="property__noToken"> </a><div class="element clickable property protected property__noToken" data-toggle="collapse" data-target=".property__noToken .collapse" title="protected">
+<h2>One of the TOKEN_ constants telling what to do when no token exists</h2>
+<pre>$_noToken : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>self::TOKEN_ERROR</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__skipUnknownPatients"> </a><div class="element clickable property protected property__skipUnknownPatients" data-toggle="collapse" data-target=".property__skipUnknownPatients .collapse" title="protected">
+<h2>$_skipUnknownPatients</h2>
+<pre>$_skipUnknownPatients : boolean</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>false</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__surveyId"> </a><div class="element clickable property protected property__surveyId" data-toggle="collapse" data-target=".property__surveyId .collapse" title="protected">
+<h2>The Gems id of the survey to import to</h2>
+<pre>$_surveyId : integer</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__tokenCompleted"> </a><div class="element clickable property protected property__tokenCompleted" data-toggle="collapse" data-target=".property__tokenCompleted .collapse" title="protected">
+<h2>One of the TOKEN_ constants telling what to do when the token is completed</h2>
+<pre>$_tokenCompleted : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>self::TOKEN_ERROR</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__trackId"> </a><div class="element clickable property protected property__trackId" data-toggle="collapse" data-target=".property__trackId .collapse" title="protected">
+<h2>The id of the track to import to or null</h2>
+<pre>$_trackId : integer</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_db"> </a><div class="element clickable property protected property_db" data-toggle="collapse" data-target=".property_db .collapse" title="protected">
+<h2>$db</h2>
+<pre>$db : \Zend_Db_Adapter_Abstract</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Model_Translator_AnswerTranslatorAbstract::db</td>
+</tr></table>
+</div></div>
+</div>
+<a id="property_db"> </a><div class="element clickable property protected property_db" data-toggle="collapse" data-target=".property_db .collapse" title="protected">
+<h2>$db</h2>
+<pre>$db : \Zend_Db_Adapter_Abstract</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_loader"> </a><div class="element clickable property protected property_loader" data-toggle="collapse" data-target=".property_loader .collapse" title="protected">
+<h2>$loader</h2>
+<pre>$loader : \Gems_Loader</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_orgIdField"> </a><div class="element clickable property protected property_orgIdField" data-toggle="collapse" data-target=".property_orgIdField .collapse" title="protected">
+<h2>The name of the field to (temporarily) store the organization id in</h2>
+<pre>$orgIdField : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>'organization_id'</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_orgTranslations"> </a><div class="element clickable property protected property_orgTranslations" data-toggle="collapse" data-target=".property_orgTranslations .collapse" title="protected">
+<h2>Extra values the origanization id field accepts</h2>
+<pre>$orgTranslations : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_patientNrField"> </a><div class="element clickable property protected property_patientNrField" data-toggle="collapse" data-target=".property_patientNrField .collapse" title="protected">
+<h2>The name of the field to (temporarily) store the patient nr in</h2>
+<pre>$patientNrField : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>'patient_id'</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_saveTask"> </a><div class="element clickable property protected property_saveTask" data-toggle="collapse" data-target=".property_saveTask .collapse" title="protected">
+<h2>The task used for import</h2>
+<pre>$saveTask : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>'Import_SaveAnswerTask'</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_util"> </a><div class="element clickable property protected property_util" data-toggle="collapse" data-target=".property_util .collapse" title="protected">
+<h2>$util</h2>
+<pre>$util : \Gems_Util</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<h3>
+<i title="Constants" class="icon-custom icon-constant"></i> Constants</h3>
+<a id="constant_TOKEN_DOUBLE"> </a><div class="element clickable constant  constant_TOKEN_DOUBLE" data-toggle="collapse" data-target=".constant_TOKEN_DOUBLE .collapse" title="">
+<h2>Constant for creating an extra token when a token was already filled in.</h2>
+<pre>TOKEN_DOUBLE = 'double' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_TOKEN_ERROR"> </a><div class="element clickable constant  constant_TOKEN_ERROR" data-toggle="collapse" data-target=".constant_TOKEN_ERROR .collapse" title="">
+<h2>Constant for generating an error when a token does not exist or is already filled in.</h2>
+<pre>TOKEN_ERROR = 'error' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_TOKEN_OVERWRITE"> </a><div class="element clickable constant  constant_TOKEN_OVERWRITE" data-toggle="collapse" data-target=".constant_TOKEN_OVERWRITE .collapse" title="">
+<h2>Constant for creating a new token, while disabling the existing token</h2>
+<pre>TOKEN_OVERWRITE = 'overwrite' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_TOKEN_SKIP"> </a><div class="element clickable constant  constant_TOKEN_SKIP" data-toggle="collapse" data-target=".constant_TOKEN_SKIP .collapse" title="">
+<h2>Constant for creating a new token, while disabling the existing token</h2>
+<pre>TOKEN_SKIP = 'skip' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:38+02:00.<br></footer></div>
+</div>
+</body>
+</html>

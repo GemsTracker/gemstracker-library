@@ -1,0 +1,378 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » \Gems_Util_ReceptionCodeLibrary</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+<div class="btn-group visibility" data-toggle="buttons-checkbox">
+<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
+</div>
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+</div>
+<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+<li class="nav-header">
+<i title="Methods" class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public "><a href="#method_getCompletedTokenDeletionCodes" title="getCompletedTokenDeletionCodes() :: Returns the token deletion reception code list."><span class="description">Returns the token deletion reception code list.</span><pre>getCompletedTokenDeletionCodes()</pre></a></li>
+<li class="method public "><a href="#method_getOKString" title="getOKString() :: Returns the string version of the OK code"><span class="description">Returns the string version of the OK code</span><pre>getOKString()</pre></a></li>
+<li class="method public "><a href="#method_getRedoValues" title="getRedoValues() :: Return the field values for the redo code."><span class="description">Return the field values for the redo code.</span><pre>getRedoValues()</pre></a></li>
+<li class="method public "><a href="#method_getRespondentDeletionCodes" title="getRespondentDeletionCodes() :: Returns the respondent deletion reception code list."><span class="description">Returns the respondent deletion reception code list.</span><pre>getRespondentDeletionCodes()</pre></a></li>
+<li class="method public "><a href="#method_getRespondentRestoreCodes" title="getRespondentRestoreCodes() :: Returns the respondent deletion reception code list."><span class="description">Returns the respondent deletion reception code list.</span><pre>getRespondentRestoreCodes()</pre></a></li>
+<li class="method public "><a href="#method_getSingleSurveyDeletionCodes" title="getSingleSurveyDeletionCodes() :: Returns the single survey deletion reception code list."><span class="description">Returns the single survey deletion reception code list.</span><pre>getSingleSurveyDeletionCodes()</pre></a></li>
+<li class="method public "><a href="#method_getStopString" title="getStopString() :: Returns the string version of the Stop code"><span class="description">Returns the string version of the Stop code</span><pre>getStopString()</pre></a></li>
+<li class="method public "><a href="#method_getSurveyApplicationValues" title="getSurveyApplicationValues() :: Return the field values for surveys."><span class="description">Return the field values for surveys.</span><pre>getSurveyApplicationValues()</pre></a></li>
+<li class="method public "><a href="#method_getTokenRestoreCodes" title="getTokenRestoreCodes() :: Returns the token deletion reception code list."><span class="description">Returns the token deletion reception code list.</span><pre>getTokenRestoreCodes()</pre></a></li>
+<li class="method public "><a href="#method_getTrackDeletionCodes" title="getTrackDeletionCodes() :: Returns the track deletion reception code list."><span class="description">Returns the track deletion reception code list.</span><pre>getTrackDeletionCodes()</pre></a></li>
+<li class="method public "><a href="#method_getTrackRestoreCodes" title="getTrackRestoreCodes() :: Returns the track deletion reception code list."><span class="description">Returns the track deletion reception code list.</span><pre>getTrackRestoreCodes()</pre></a></li>
+<li class="method public "><a href="#method_getUnansweredTokenDeletionCodes" title="getUnansweredTokenDeletionCodes() :: Returns the token deletion reception code list."><span class="description">Returns the token deletion reception code list.</span><pre>getUnansweredTokenDeletionCodes()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="method protected "><a href="#method__getDeletionCodeSelect" title="_getDeletionCodeSelect() :: "><span class="description">_getDeletionCodeSelect()
+        </span><pre>_getDeletionCodeSelect()</pre></a></li>
+<li class="method protected "><a href="#method__getRestoreSelect" title="_getRestoreSelect() :: "><span class="description">_getRestoreSelect()
+        </span><pre>_getRestoreSelect()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Properties" class="icon-custom icon-property"></i> Properties
+                    <ul></ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul><li class="property protected "><a href="#property_db" title="$db() :: "><span class="description"></span><pre>$db</pre></a></li></ul>
+</li>
+<li class="nav-header">
+<i title="Constants" class="icon-custom icon-constant"></i> Constants
+                    <ul>
+<li class="constant  "><a href="#constant_APPLY_DO" title="APPLY_DO() :: "><span class="description">APPLY_DO</span><pre>APPLY_DO</pre></a></li>
+<li class="constant  "><a href="#constant_APPLY_NOT" title="APPLY_NOT() :: "><span class="description">APPLY_NOT</span><pre>APPLY_NOT</pre></a></li>
+<li class="constant  "><a href="#constant_APPLY_STOP" title="APPLY_STOP() :: "><span class="description">APPLY_STOP</span><pre>APPLY_STOP</pre></a></li>
+<li class="constant  "><a href="#constant_REDO_COPY" title="REDO_COPY() :: "><span class="description">REDO_COPY</span><pre>REDO_COPY</pre></a></li>
+<li class="constant  "><a href="#constant_REDO_NONE" title="REDO_NONE() :: "><span class="description">REDO_NONE</span><pre>REDO_NONE</pre></a></li>
+<li class="constant  "><a href="#constant_REDO_ONLY" title="REDO_ONLY() :: "><span class="description">REDO_ONLY</span><pre>REDO_ONLY</pre></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a xmlns:php="http://php.net/xsl" id="\Gems_Util_ReceptionCodeLibrary"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+<li>
+<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Gems_Util_ReceptionCodeLibrary.html">Gems_Util_ReceptionCodeLibrary</a>
+</li>
+</ul>
+<div xmlns:php="http://php.net/xsl" class="element class">
+<p class="short_description">Library functions and constants for working with reception codes.</p>
+<div class="details">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Gems.Util.html">Gems</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Util</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2011 Erasmus MC</td>
+</tr>
+<tr>
+<th>license</th>
+<td><a href="http://opensource.org/licenses/BSD-3-Clause">New BSD License</a></td>
+</tr>
+<tr>
+<th>since</th>
+<td>Class available since version 1.5</td>
+</tr>
+</table>
+<h3>
+<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
+<a id="method_getCompletedTokenDeletionCodes"></a><div class="element clickable method public method_getCompletedTokenDeletionCodes " data-toggle="collapse" data-target=".method_getCompletedTokenDeletionCodes .collapse" title="public">
+<h2>Returns the token deletion reception code list.</h2>
+<pre>getCompletedTokenDeletionCodes() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>a value => label array.</div>
+</div></div>
+</div>
+<a id="method_getOKString"></a><div class="element clickable method public method_getOKString " data-toggle="collapse" data-target=".method_getOKString .collapse" title="public">
+<h2>Returns the string version of the OK code</h2>
+<pre>getOKString() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getRedoValues"></a><div class="element clickable method public method_getRedoValues " data-toggle="collapse" data-target=".method_getRedoValues .collapse" title="public">
+<h2>Return the field values for the redo code.</h2>
+<pre>getRedoValues() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><ul><li>0: do not redo</li>
+<li>1: redo but do not copy answers</li>
+<li>2: redo and copy answers</li></ul></div>
+<table class="table table-bordered"><tr>
+<th>staticvar</th>
+<td>array $data</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_getRespondentDeletionCodes"></a><div class="element clickable method public method_getRespondentDeletionCodes " data-toggle="collapse" data-target=".method_getRespondentDeletionCodes .collapse" title="public">
+<h2>Returns the respondent deletion reception code list.</h2>
+<pre>getRespondentDeletionCodes() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>a value => label array.</div>
+</div></div>
+</div>
+<a id="method_getRespondentRestoreCodes"></a><div class="element clickable method public method_getRespondentRestoreCodes " data-toggle="collapse" data-target=".method_getRespondentRestoreCodes .collapse" title="public">
+<h2>Returns the respondent deletion reception code list.</h2>
+<pre>getRespondentRestoreCodes() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>a value => label array.</div>
+</div></div>
+</div>
+<a id="method_getSingleSurveyDeletionCodes"></a><div class="element clickable method public method_getSingleSurveyDeletionCodes " data-toggle="collapse" data-target=".method_getSingleSurveyDeletionCodes .collapse" title="public">
+<h2>Returns the single survey deletion reception code list.</h2>
+<pre>getSingleSurveyDeletionCodes() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>deprecated</th>
+<td>since 1.7.1</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>a value => label array.</div>
+</div></div>
+</div>
+<a id="method_getStopString"></a><div class="element clickable method public method_getStopString " data-toggle="collapse" data-target=".method_getStopString .collapse" title="public">
+<h2>Returns the string version of the Stop code</h2>
+<pre>getStopString() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getSurveyApplicationValues"></a><div class="element clickable method public method_getSurveyApplicationValues " data-toggle="collapse" data-target=".method_getSurveyApplicationValues .collapse" title="public">
+<h2>Return the field values for surveys.</h2>
+<pre>getSurveyApplicationValues() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><ul><li>0: do not use</li>
+<li>1: use (and cascade)</li>
+<li>2: use for open rounds only</li></ul></div>
+<table class="table table-bordered"><tr>
+<th>staticvar</th>
+<td>array $data</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_getTokenRestoreCodes"></a><div class="element clickable method public method_getTokenRestoreCodes " data-toggle="collapse" data-target=".method_getTokenRestoreCodes .collapse" title="public">
+<h2>Returns the token deletion reception code list.</h2>
+<pre>getTokenRestoreCodes() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>a value => label array.</div>
+</div></div>
+</div>
+<a id="method_getTrackDeletionCodes"></a><div class="element clickable method public method_getTrackDeletionCodes " data-toggle="collapse" data-target=".method_getTrackDeletionCodes .collapse" title="public">
+<h2>Returns the track deletion reception code list.</h2>
+<pre>getTrackDeletionCodes() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>a value => label array.</div>
+</div></div>
+</div>
+<a id="method_getTrackRestoreCodes"></a><div class="element clickable method public method_getTrackRestoreCodes " data-toggle="collapse" data-target=".method_getTrackRestoreCodes .collapse" title="public">
+<h2>Returns the track deletion reception code list.</h2>
+<pre>getTrackRestoreCodes() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>a value => label array.</div>
+</div></div>
+</div>
+<a id="method_getUnansweredTokenDeletionCodes"></a><div class="element clickable method public method_getUnansweredTokenDeletionCodes " data-toggle="collapse" data-target=".method_getUnansweredTokenDeletionCodes .collapse" title="public">
+<h2>Returns the token deletion reception code list.</h2>
+<pre>getUnansweredTokenDeletionCodes() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>a value => label array.</div>
+</div></div>
+</div>
+<a id="method__getDeletionCodeSelect"></a><div class="element clickable method protected method__getDeletionCodeSelect " data-toggle="collapse" data-target=".method__getDeletionCodeSelect .collapse" title="protected">
+<h2>_getDeletionCodeSelect()
+        </h2>
+<pre>_getDeletionCodeSelect() : \Zend_Db_Select</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Zend_Db_Select</code>for a fetchPairs</div>
+</div></div>
+</div>
+<a id="method__getRestoreSelect"></a><div class="element clickable method protected method__getRestoreSelect " data-toggle="collapse" data-target=".method__getRestoreSelect .collapse" title="protected">
+<h2>_getRestoreSelect()
+        </h2>
+<pre>_getRestoreSelect() : \Zend_Db_Select</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Zend_Db_Select</code>for a fetchPairs</div>
+</div></div>
+</div>
+<h3>
+<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
+<a id="property_db"> </a><div class="element clickable property protected property_db" data-toggle="collapse" data-target=".property_db .collapse" title="protected">
+<h2>$db</h2>
+<pre>$db : \Zend_Db_Adapter_Abstract</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<h3>
+<i title="Constants" class="icon-custom icon-constant"></i> Constants</h3>
+<a id="constant_APPLY_DO"> </a><div class="element clickable constant  constant_APPLY_DO" data-toggle="collapse" data-target=".constant_APPLY_DO .collapse" title="">
+<h2>APPLY_DO</h2>
+<pre>APPLY_DO = 1 </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_APPLY_NOT"> </a><div class="element clickable constant  constant_APPLY_NOT" data-toggle="collapse" data-target=".constant_APPLY_NOT .collapse" title="">
+<h2>APPLY_NOT</h2>
+<pre>APPLY_NOT = 0 </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_APPLY_STOP"> </a><div class="element clickable constant  constant_APPLY_STOP" data-toggle="collapse" data-target=".constant_APPLY_STOP .collapse" title="">
+<h2>APPLY_STOP</h2>
+<pre>APPLY_STOP = 2 </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_REDO_COPY"> </a><div class="element clickable constant  constant_REDO_COPY" data-toggle="collapse" data-target=".constant_REDO_COPY .collapse" title="">
+<h2>REDO_COPY</h2>
+<pre>REDO_COPY = 2 </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_REDO_NONE"> </a><div class="element clickable constant  constant_REDO_NONE" data-toggle="collapse" data-target=".constant_REDO_NONE .collapse" title="">
+<h2>REDO_NONE</h2>
+<pre>REDO_NONE = 0 </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_REDO_ONLY"> </a><div class="element clickable constant  constant_REDO_ONLY" data-toggle="collapse" data-target=".constant_REDO_ONLY .collapse" title="">
+<h2>REDO_ONLY</h2>
+<pre>REDO_ONLY = 1 </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:25+02:00.<br></footer></div>
+</div>
+</body>
+</html>

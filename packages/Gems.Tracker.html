@@ -1,0 +1,605 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » Gems\Tracker</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+<ul class="side-nav nav nav-list">
+<li class="nav-header">
+<i class="icon-map-marker"></i> Packages</li>
+<li>
+<a href="../packages/Gems.Tracker.html" title="Tracker"><i class="icon-folder-open"></i>Tracker</a><ul class="nav nav-list nav-packages">
+<li>
+<a href="../packages/Gems.Tracker.Buttons.html" title="Buttons"><i class="icon-folder-open"></i>Buttons</a><ul class="nav nav-list nav-packages"></ul>
+</li>
+<li>
+<a href="../packages/Gems.Tracker.Field.html" title="Field"><i class="icon-folder-open"></i>Field</a><ul class="nav nav-list nav-packages"></ul>
+</li>
+<li>
+<a href="../packages/Gems.Tracker.Snippets.html" title="Snippets"><i class="icon-folder-open"></i>Snippets</a><ul class="nav nav-list nav-packages"></ul>
+</li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Interfaces" class="icon-custom icon-interface"></i> Interfaces</li>
+<li><a href="#Gems_Tracker_Engine_TrackEngineInterface" title="">Gems_Tracker_Engine_TrackEngineInterface</a></li>
+<li><a href="#Gems_Tracker_Source_SourceInterface" title="Interface description of SourceInterface for (external) survey sources.">Gems_Tracker_Source_SourceInterface</a></li>
+<li><a href="#Gems_Tracker_TrackerInterface" title="This interface lists all API-level methods in the Tracker class.">Gems_Tracker_TrackerInterface</a></li>
+<li><a href="#Gems_Tracker_Snippets_AnswerNameFilterInterface" title="Defines filters for answer display">Gems_Tracker_Snippets_AnswerNameFilterInterface</a></li>
+<li class="nav-header">
+<i title="Classes" class="icon-custom icon-class"></i> Classes</li>
+<li><a href="#Gems_Tracker_Token_TokenValidator" title="Checks whether a token kan be used for the ask/forward loop">Gems_Tracker_Token_TokenValidator</a></li>
+<li><a href="#Gems_Tracker_Snippets_AnswerModelSnippetGeneric" title="Displays answers to a survey.">Gems_Tracker_Snippets_AnswerModelSnippetGeneric</a></li>
+<li><a href="#Gems_Tracker_RespondentTrack" title="Object representing a track assignment to a respondent.">Gems_Tracker_RespondentTrack</a></li>
+<li><a href="#Gems_Tracker" title="The tracker is the central access point doing anything with tracks or tokens.">Gems_Tracker</a></li>
+<li><a href="#Gems_Tracker_Token_TokenLibrary" title="Utility functions for token string functions">Gems_Tracker_Token_TokenLibrary</a></li>
+<li><a href="#Gems_Tracker_Model_StandardTokenModel" title="The StandardTokenModel is the model used to display tokens
+in e.g. browse tables. It can also be used to edit standard
+tokens, though track engines may supply different models for
+editing, as the SingleSurveyTokeModel does.">Gems_Tracker_Model_StandardTokenModel</a></li>
+<li><a href="#Gems_Tracker_Snippets_ShowTokenLoopAbstract" title="Basic class for creating forward loop snippets">Gems_Tracker_Snippets_ShowTokenLoopAbstract</a></li>
+<li><a href="#Gems_Tracker_ChangeTracker" title="">Gems_Tracker_ChangeTracker</a></li>
+<li><a href="#Gems_Tracker_Token" title="Object class for checking and changing tokens.">Gems_Tracker_Token</a></li>
+<li><a href="#Gems_Tracker_Source_LimeSurvey2m00FieldMap" title="A fieldmap object adds LS source code knowledge and interpretation to the database data
+about a survey. This enables the code to work with the survey object.">Gems_Tracker_Source_LimeSurvey2m00FieldMap</a></li>
+<li><a href="#Gems_Tracker_Token_TokenSelect" title="Helps building select statements for the Token model">Gems_Tracker_Token_TokenSelect</a></li>
+<li><a href="#Gems_Tracker_Source_LimeSurvey2m00Database" title="Class description of LimeSurvey1m91Database">Gems_Tracker_Source_LimeSurvey2m00Database</a></li>
+<li><a href="#Gems_Tracker_SurveyModel" title="More correctly a Survey ANSWERS Model as it adds answers to token information/">Gems_Tracker_SurveyModel</a></li>
+<li><a href="#FieldMaintenanceModel" title="">FieldMaintenanceModel</a></li>
+<li><a href="#Gems_Tracker_Source_SurveyNotFoundException" title="A fieldmap object adds LS source code knowledge and interpretation to the database data
+about a survey. This enables the code to work with the survey object.">Gems_Tracker_Source_SurveyNotFoundException</a></li>
+<li><a href="#Gems_Snippets_Tracker_Answers_TrackAnswersModelSnippet" title="Show all answers for one survey within a track">Gems_Snippets_Tracker_Answers_TrackAnswersModelSnippet</a></li>
+<li><a href="#Gems_Snippets_Tracker_Compliance_ComplianceSearchFormSnippet" title="Display a search form that selects on typed text only">Gems_Snippets_Tracker_Compliance_ComplianceSearchFormSnippet</a></li>
+<li><a href="#Gems_Tracker_Snippets_ShowTokenSnippetAbstract" title="Generic extension for displaying tokens">Gems_Tracker_Snippets_ShowTokenSnippetAbstract</a></li>
+<li><a href="#Gems_Tracker_Engine_TrackEngineAbstract" title="Utility class containing functions used by most track engines.">Gems_Tracker_Engine_TrackEngineAbstract</a></li>
+<li><a href="#TokenNotFoundSnippet" title="Token snippet to return when a token snippet is required but the token does not
+exist. It displays a message that the token was not found.">TokenNotFoundSnippet</a></li>
+<li><a href="#Gems_Snippets_Tracker_Answers_SingleTokenAnswerModelSnippet" title="Displays answers from a single token to a survey.">Gems_Snippets_Tracker_Answers_SingleTokenAnswerModelSnippet</a></li>
+<li><a href="#Gems_Tracker_Snippets_ShowRoundSnippetAbstract" title="Short description for class">Gems_Tracker_Snippets_ShowRoundSnippetAbstract</a></li>
+<li><a href="#Gems_Tracker_Form_AskTokenForm" title="Adds default element loading to standard form">Gems_Tracker_Form_AskTokenForm</a></li>
+<li><a href="#FieldsDefinition" title="">FieldsDefinition</a></li>
+<li><a href="#Gems_Snippets_Tracker_Summary_SummaryTableSnippet" title="Displays multiple items from a model in a tabel by row using
+the model set through the $model snippet parameter.">Gems_Snippets_Tracker_Summary_SummaryTableSnippet</a></li>
+<li><a href="#Gems_Tracker_Model_TrackModel" title="Simple stub for track model, allows extension by projects and adds auto labelling">Gems_Tracker_Model_TrackModel</a></li>
+<li><a href="#Gems_Tracker_Snippets_EditTokenSnippetAbstract" title="Adds basic token editing snippet parameter processing and checking.">Gems_Tracker_Snippets_EditTokenSnippetAbstract</a></li>
+<li><a href="#Gems_Tracker_Snippets_EditRoundSnippetAbstract" title="Short description for class">Gems_Tracker_Snippets_EditRoundSnippetAbstract</a></li>
+<li><a href="#Gems_Tracker_Engine_AnyStepEngine" title="Step engine that can select any previous round for begin date and any round for calculating the end date.">Gems_Tracker_Engine_AnyStepEngine</a></li>
+<li><a href="#Gems_Tracker_Survey" title="Object representing a specific Survey">Gems_Tracker_Survey</a></li>
+<li><a href="#Gems_Tracker_Source_LimeSurvey1m91Database" title="Class description of LimeSurvey1m91Database">Gems_Tracker_Source_LimeSurvey1m91Database</a></li>
+<li><a href="#Gems_Tracker_Engine_NextStepEngine" title="Step engine that uses a begin date from the previous round and calculates the end date using the token itself.">Gems_Tracker_Engine_NextStepEngine</a></li>
+<li><a href="#Gems_Tracker_Source_LimeSurvey1m9Database" title="LimeSurvey1m9Database is a Source interface that enables the use of LimeSurvey 1.9.x
+installation as survey/answer source for Gems projects.">Gems_Tracker_Source_LimeSurvey1m9Database</a></li>
+<li><a href="#Gems_Snippets_Tracker_Answers_SingleTrackAnswersModelSnippet" title="Show answers for all standalone surveys of this survey type">Gems_Snippets_Tracker_Answers_SingleTrackAnswersModelSnippet</a></li>
+<li><a href="#Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric" title="Basic snippet for editing track engines instances">Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric</a></li>
+<li><a href="#Gems_Snippets_Tracker_Summary_SummarySearchFormSnippet" title="Display a search form that selects on typed text only">Gems_Snippets_Tracker_Summary_SummarySearchFormSnippet</a></li>
+<li><a href="#Gems_Tracker_Engine_StepEngineAbstract" title="Parent class for all engines that calculate dates using information
+from other rounds.">Gems_Tracker_Engine_StepEngineAbstract</a></li>
+<li><a href="#Gems_Tracker_Snippets_EditTrackSnippetAbstract" title="Adds basic track editing snippet parameter processing and checking.">Gems_Tracker_Snippets_EditTrackSnippetAbstract</a></li>
+<li><a href="#Gems_Tracker_Source_LimeSurvey1m9FieldMap" title="A fieldmap object adds LS source code knowledge and interpretation to the database data
+about a survey. This enables the code to work with the survey object.">Gems_Tracker_Source_LimeSurvey1m9FieldMap</a></li>
+<li><a href="#Gems_Tracker_Snippets_ShowTrackUsageAbstract" title="Displays the assignments of a track to a respondent.">Gems_Tracker_Snippets_ShowTrackUsageAbstract</a></li>
+<li><a href="#Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet" title="Displays multiple items from a model in a tabel by row using
+the model set through the $model snippet parameter.">Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet</a></li>
+<li><a href="#Gems_Snippets_Tracker_Answers_SurveyAnswersModelSnippet" title="Show all tokens of a certain survey type">Gems_Snippets_Tracker_Answers_SurveyAnswersModelSnippet</a></li>
+<li><a href="#Gems_Tracker_Respondent" title="Extends \MUtil_Registry_TargetAbstract with the ability to create PHP
+callables by request an existing method using $this-&gt;methodName.">Gems_Tracker_Respondent</a></li>
+<li><a href="#Round" title="">Round</a></li>
+<li><a href="#Gems_Tracker_Token_TokenFilter" title="Utility functions for token string functions">Gems_Tracker_Token_TokenFilter</a></li>
+<li><a href="#Gems_Tracker_Source_SourceAbstract" title="Abstract implementation of SourceInterface containing basic utilities and logical
+separation between the Gems database and the Source database">Gems_Tracker_Source_SourceAbstract</a></li>
+<li><a href="#FieldDataModel" title="">FieldDataModel</a></li>
+</ul>
+</div>
+<div class="span8 package-contents">
+<ul class="breadcrumb"><li>
+<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li><a href="../packages/Gems.html">Gems</a></li>
+<li class="active">
+<span class="divider">\</span><a href="../packages/Gems.Tracker.html">Tracker</a>
+</li>
+</li></ul>
+<div class="package-indent">
+<h3>
+<i title="Classes" class="icon-custom icon-class"></i> Classes, interfaces, and traits</h3>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Engine_TrackEngineInterface" class="element ajax clickable interface">
+<h1>Gems_Tracker_Engine_TrackEngineInterface<a href="../classes/Gems_Tracker_Engine_TrackEngineInterface.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Engine_TrackEngineInterface.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Snippets_AnswerNameFilterInterface" class="element ajax clickable interface">
+<h1>Gems_Tracker_Snippets_AnswerNameFilterInterface<a href="../classes/Gems_Tracker_Snippets_AnswerNameFilterInterface.html">¶</a>
+</h1>
+<p class="short_description">Defines filters for answer display</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Snippets_AnswerNameFilterInterface.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Source_SourceInterface" class="element ajax clickable interface">
+<h1>Gems_Tracker_Source_SourceInterface<a href="../classes/Gems_Tracker_Source_SourceInterface.html">¶</a>
+</h1>
+<p class="short_description">Interface description of SourceInterface for (external) survey sources.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Source_SourceInterface.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_TrackerInterface" class="element ajax clickable interface">
+<h1>Gems_Tracker_TrackerInterface<a href="../classes/Gems_Tracker_TrackerInterface.html">¶</a>
+</h1>
+<p class="short_description">This interface lists all API-level methods in the Tracker class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_TrackerInterface.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="TokenNotFoundSnippet" class="element ajax clickable class">
+<h1>TokenNotFoundSnippet<a href="../classes/Gems.Snippets.Token.TokenNotFoundSnippet.html">¶</a>
+</h1>
+<p class="short_description">Token snippet to return when a token snippet is required but the token does not
+exist. It displays a message that the token was not found.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Token.TokenNotFoundSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="FieldsDefinition" class="element ajax clickable class">
+<h1>FieldsDefinition<a href="../classes/Gems.Tracker.Engine.FieldsDefinition.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Tracker.Engine.FieldsDefinition.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="FieldDataModel" class="element ajax clickable class">
+<h1>FieldDataModel<a href="../classes/Gems.Tracker.Model.FieldDataModel.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Tracker.Model.FieldDataModel.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="FieldMaintenanceModel" class="element ajax clickable class">
+<h1>FieldMaintenanceModel<a href="../classes/Gems.Tracker.Model.FieldMaintenanceModel.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Tracker.Model.FieldMaintenanceModel.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Round" class="element ajax clickable class">
+<h1>Round<a href="../classes/Gems.Tracker.Round.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Tracker.Round.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Tracker_Answers_SingleTokenAnswerModelSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Tracker_Answers_SingleTokenAnswerModelSnippet<a href="../classes/Gems_Snippets_Tracker_Answers_SingleTokenAnswerModelSnippet.html">¶</a>
+</h1>
+<p class="short_description">Displays answers from a single token to a survey.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Tracker_Answers_SingleTokenAnswerModelSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Tracker_Answers_SingleTrackAnswersModelSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Tracker_Answers_SingleTrackAnswersModelSnippet<a href="../classes/Gems_Snippets_Tracker_Answers_SingleTrackAnswersModelSnippet.html">¶</a>
+</h1>
+<p class="short_description">Show answers for all standalone surveys of this survey type</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Tracker_Answers_SingleTrackAnswersModelSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Tracker_Answers_SurveyAnswersModelSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Tracker_Answers_SurveyAnswersModelSnippet<a href="../classes/Gems_Snippets_Tracker_Answers_SurveyAnswersModelSnippet.html">¶</a>
+</h1>
+<p class="short_description">Show all tokens of a certain survey type</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Tracker_Answers_SurveyAnswersModelSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Tracker_Answers_TrackAnswersModelSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Tracker_Answers_TrackAnswersModelSnippet<a href="../classes/Gems_Snippets_Tracker_Answers_TrackAnswersModelSnippet.html">¶</a>
+</h1>
+<p class="short_description">Show all answers for one survey within a track</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Tracker_Answers_TrackAnswersModelSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Tracker_Compliance_ComplianceSearchFormSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Tracker_Compliance_ComplianceSearchFormSnippet<a href="../classes/Gems_Snippets_Tracker_Compliance_ComplianceSearchFormSnippet.html">¶</a>
+</h1>
+<p class="short_description">Display a search form that selects on typed text only</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Tracker_Compliance_ComplianceSearchFormSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet<a href="../classes/Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet.html">¶</a>
+</h1>
+<p class="short_description">Displays multiple items from a model in a tabel by row using
+the model set through the $model snippet parameter.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Tracker_Summary_SummarySearchFormSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Tracker_Summary_SummarySearchFormSnippet<a href="../classes/Gems_Snippets_Tracker_Summary_SummarySearchFormSnippet.html">¶</a>
+</h1>
+<p class="short_description">Display a search form that selects on typed text only</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Tracker_Summary_SummarySearchFormSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Tracker_Summary_SummaryTableSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Tracker_Summary_SummaryTableSnippet<a href="../classes/Gems_Snippets_Tracker_Summary_SummaryTableSnippet.html">¶</a>
+</h1>
+<p class="short_description">Displays multiple items from a model in a tabel by row using
+the model set through the $model snippet parameter.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Tracker_Summary_SummaryTableSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker" class="element ajax clickable class">
+<h1>Gems_Tracker<a href="../classes/Gems_Tracker.html">¶</a>
+</h1>
+<p class="short_description">The tracker is the central access point doing anything with tracks or tokens.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_ChangeTracker" class="element ajax clickable class">
+<h1>Gems_Tracker_ChangeTracker<a href="../classes/Gems_Tracker_ChangeTracker.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_ChangeTracker.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Engine_AnyStepEngine" class="element ajax clickable class">
+<h1>Gems_Tracker_Engine_AnyStepEngine<a href="../classes/Gems_Tracker_Engine_AnyStepEngine.html">¶</a>
+</h1>
+<p class="short_description">Step engine that can select any previous round for begin date and any round for calculating the end date.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Engine_AnyStepEngine.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Engine_NextStepEngine" class="element ajax clickable class">
+<h1>Gems_Tracker_Engine_NextStepEngine<a href="../classes/Gems_Tracker_Engine_NextStepEngine.html">¶</a>
+</h1>
+<p class="short_description">Step engine that uses a begin date from the previous round and calculates the end date using the token itself.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Engine_NextStepEngine.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Engine_StepEngineAbstract" class="element ajax clickable class">
+<h1>Gems_Tracker_Engine_StepEngineAbstract<a href="../classes/Gems_Tracker_Engine_StepEngineAbstract.html">¶</a>
+</h1>
+<p class="short_description">Parent class for all engines that calculate dates using information
+from other rounds.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Engine_StepEngineAbstract.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Engine_TrackEngineAbstract" class="element ajax clickable class">
+<h1>Gems_Tracker_Engine_TrackEngineAbstract<a href="../classes/Gems_Tracker_Engine_TrackEngineAbstract.html">¶</a>
+</h1>
+<p class="short_description">Utility class containing functions used by most track engines.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Engine_TrackEngineAbstract.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Form_AskTokenForm" class="element ajax clickable class">
+<h1>Gems_Tracker_Form_AskTokenForm<a href="../classes/Gems_Tracker_Form_AskTokenForm.html">¶</a>
+</h1>
+<p class="short_description">Adds default element loading to standard form</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Form_AskTokenForm.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Model_StandardTokenModel" class="element ajax clickable class">
+<h1>Gems_Tracker_Model_StandardTokenModel<a href="../classes/Gems_Tracker_Model_StandardTokenModel.html">¶</a>
+</h1>
+<p class="short_description">The StandardTokenModel is the model used to display tokens
+in e.g. browse tables. It can also be used to edit standard
+tokens, though track engines may supply different models for
+editing, as the SingleSurveyTokeModel does.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Model_StandardTokenModel.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Model_TrackModel" class="element ajax clickable class">
+<h1>Gems_Tracker_Model_TrackModel<a href="../classes/Gems_Tracker_Model_TrackModel.html">¶</a>
+</h1>
+<p class="short_description">Simple stub for track model, allows extension by projects and adds auto labelling</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Model_TrackModel.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Respondent" class="element ajax clickable class">
+<h1>Gems_Tracker_Respondent<a href="../classes/Gems_Tracker_Respondent.html">¶</a>
+</h1>
+<p class="short_description">Extends \MUtil_Registry_TargetAbstract with the ability to create PHP
+callables by request an existing method using $this->methodName.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Respondent.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_RespondentTrack" class="element ajax clickable class">
+<h1>Gems_Tracker_RespondentTrack<a href="../classes/Gems_Tracker_RespondentTrack.html">¶</a>
+</h1>
+<p class="short_description">Object representing a track assignment to a respondent.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_RespondentTrack.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Snippets_AnswerModelSnippetGeneric" class="element ajax clickable class">
+<h1>Gems_Tracker_Snippets_AnswerModelSnippetGeneric<a href="../classes/Gems_Tracker_Snippets_AnswerModelSnippetGeneric.html">¶</a>
+</h1>
+<p class="short_description">Displays answers to a survey.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Snippets_AnswerModelSnippetGeneric.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Snippets_EditRoundSnippetAbstract" class="element ajax clickable class">
+<h1>Gems_Tracker_Snippets_EditRoundSnippetAbstract<a href="../classes/Gems_Tracker_Snippets_EditRoundSnippetAbstract.html">¶</a>
+</h1>
+<p class="short_description">Short description for class</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Snippets_EditRoundSnippetAbstract.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Snippets_EditTokenSnippetAbstract" class="element ajax clickable class">
+<h1>Gems_Tracker_Snippets_EditTokenSnippetAbstract<a href="../classes/Gems_Tracker_Snippets_EditTokenSnippetAbstract.html">¶</a>
+</h1>
+<p class="short_description">Adds basic token editing snippet parameter processing and checking.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Snippets_EditTokenSnippetAbstract.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric" class="element ajax clickable class">
+<h1>Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric<a href="../classes/Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric.html">¶</a>
+</h1>
+<p class="short_description">Basic snippet for editing track engines instances</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Snippets_EditTrackSnippetAbstract" class="element ajax clickable class">
+<h1>Gems_Tracker_Snippets_EditTrackSnippetAbstract<a href="../classes/Gems_Tracker_Snippets_EditTrackSnippetAbstract.html">¶</a>
+</h1>
+<p class="short_description">Adds basic track editing snippet parameter processing and checking.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Snippets_EditTrackSnippetAbstract.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Snippets_ShowRoundSnippetAbstract" class="element ajax clickable class">
+<h1>Gems_Tracker_Snippets_ShowRoundSnippetAbstract<a href="../classes/Gems_Tracker_Snippets_ShowRoundSnippetAbstract.html">¶</a>
+</h1>
+<p class="short_description">Short description for class</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Snippets_ShowRoundSnippetAbstract.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Snippets_ShowTokenLoopAbstract" class="element ajax clickable class">
+<h1>Gems_Tracker_Snippets_ShowTokenLoopAbstract<a href="../classes/Gems_Tracker_Snippets_ShowTokenLoopAbstract.html">¶</a>
+</h1>
+<p class="short_description">Basic class for creating forward loop snippets</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Snippets_ShowTokenLoopAbstract.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Snippets_ShowTokenSnippetAbstract" class="element ajax clickable class">
+<h1>Gems_Tracker_Snippets_ShowTokenSnippetAbstract<a href="../classes/Gems_Tracker_Snippets_ShowTokenSnippetAbstract.html">¶</a>
+</h1>
+<p class="short_description">Generic extension for displaying tokens</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Snippets_ShowTokenSnippetAbstract.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Snippets_ShowTrackUsageAbstract" class="element ajax clickable class">
+<h1>Gems_Tracker_Snippets_ShowTrackUsageAbstract<a href="../classes/Gems_Tracker_Snippets_ShowTrackUsageAbstract.html">¶</a>
+</h1>
+<p class="short_description">Displays the assignments of a track to a respondent.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Snippets_ShowTrackUsageAbstract.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Source_LimeSurvey1m91Database" class="element ajax clickable class">
+<h1>Gems_Tracker_Source_LimeSurvey1m91Database<a href="../classes/Gems_Tracker_Source_LimeSurvey1m91Database.html">¶</a>
+</h1>
+<p class="short_description">Class description of LimeSurvey1m91Database</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Source_LimeSurvey1m91Database.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Source_LimeSurvey1m9Database" class="element ajax clickable class">
+<h1>Gems_Tracker_Source_LimeSurvey1m9Database<a href="../classes/Gems_Tracker_Source_LimeSurvey1m9Database.html">¶</a>
+</h1>
+<p class="short_description">LimeSurvey1m9Database is a Source interface that enables the use of LimeSurvey 1.9.x
+installation as survey/answer source for Gems projects.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Source_LimeSurvey1m9Database.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Source_LimeSurvey1m9FieldMap" class="element ajax clickable class">
+<h1>Gems_Tracker_Source_LimeSurvey1m9FieldMap<a href="../classes/Gems_Tracker_Source_LimeSurvey1m9FieldMap.html">¶</a>
+</h1>
+<p class="short_description">A fieldmap object adds LS source code knowledge and interpretation to the database data
+about a survey. This enables the code to work with the survey object.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Source_LimeSurvey1m9FieldMap.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Source_LimeSurvey2m00Database" class="element ajax clickable class">
+<h1>Gems_Tracker_Source_LimeSurvey2m00Database<a href="../classes/Gems_Tracker_Source_LimeSurvey2m00Database.html">¶</a>
+</h1>
+<p class="short_description">Class description of LimeSurvey1m91Database</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Source_LimeSurvey2m00Database.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Source_LimeSurvey2m00FieldMap" class="element ajax clickable class">
+<h1>Gems_Tracker_Source_LimeSurvey2m00FieldMap<a href="../classes/Gems_Tracker_Source_LimeSurvey2m00FieldMap.html">¶</a>
+</h1>
+<p class="short_description">A fieldmap object adds LS source code knowledge and interpretation to the database data
+about a survey. This enables the code to work with the survey object.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Source_LimeSurvey2m00FieldMap.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Source_SourceAbstract" class="element ajax clickable class">
+<h1>Gems_Tracker_Source_SourceAbstract<a href="../classes/Gems_Tracker_Source_SourceAbstract.html">¶</a>
+</h1>
+<p class="short_description">Abstract implementation of SourceInterface containing basic utilities and logical
+separation between the Gems database and the Source database</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Source_SourceAbstract.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Source_SurveyNotFoundException" class="element ajax clickable class">
+<h1>Gems_Tracker_Source_SurveyNotFoundException<a href="../classes/Gems_Tracker_Source_SurveyNotFoundException.html">¶</a>
+</h1>
+<p class="short_description">A fieldmap object adds LS source code knowledge and interpretation to the database data
+about a survey. This enables the code to work with the survey object.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Source_SurveyNotFoundException.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Survey" class="element ajax clickable class">
+<h1>Gems_Tracker_Survey<a href="../classes/Gems_Tracker_Survey.html">¶</a>
+</h1>
+<p class="short_description">Object representing a specific Survey</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Survey.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_SurveyModel" class="element ajax clickable class">
+<h1>Gems_Tracker_SurveyModel<a href="../classes/Gems_Tracker_SurveyModel.html">¶</a>
+</h1>
+<p class="short_description">More correctly a Survey ANSWERS Model as it adds answers to token information/</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_SurveyModel.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Token" class="element ajax clickable class">
+<h1>Gems_Tracker_Token<a href="../classes/Gems_Tracker_Token.html">¶</a>
+</h1>
+<p class="short_description">Object class for checking and changing tokens.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Token.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Token_TokenFilter" class="element ajax clickable class">
+<h1>Gems_Tracker_Token_TokenFilter<a href="../classes/Gems_Tracker_Token_TokenFilter.html">¶</a>
+</h1>
+<p class="short_description">Utility functions for token string functions</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Token_TokenFilter.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Token_TokenLibrary" class="element ajax clickable class">
+<h1>Gems_Tracker_Token_TokenLibrary<a href="../classes/Gems_Tracker_Token_TokenLibrary.html">¶</a>
+</h1>
+<p class="short_description">Utility functions for token string functions</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Token_TokenLibrary.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Token_TokenSelect" class="element ajax clickable class">
+<h1>Gems_Tracker_Token_TokenSelect<a href="../classes/Gems_Tracker_Token_TokenSelect.html">¶</a>
+</h1>
+<p class="short_description">Helps building select statements for the Token model</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Token_TokenSelect.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Tracker_Token_TokenValidator" class="element ajax clickable class">
+<h1>Gems_Tracker_Token_TokenValidator<a href="../classes/Gems_Tracker_Token_TokenValidator.html">¶</a>
+</h1>
+<p class="short_description">Checks whether a token kan be used for the ask/forward loop</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Tracker_Token_TokenValidator.html" class="more">« More »</a>
+</div>
+<ul class="breadcrumb"><li>
+<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li><a href="../packages/Gems.html">Gems</a></li>
+<li>
+<span class="divider">\</span><a href="../packages/Gems.Tracker.html">Tracker</a>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../packages/Gems.Tracker.Buttons.html">Buttons</a>
+</li>
+</li></ul>
+<div class="package-indent">
+<h3>
+<i title="Classes" class="icon-custom icon-class"></i> Classes, interfaces, and traits</h3>
+<div xmlns:php="http://php.net/xsl" id="NewFieldButtonRow" class="element ajax clickable class">
+<h1>NewFieldButtonRow<a href="../classes/Gems.Snippets.Tracker.Buttons.NewFieldButtonRow.html">¶</a>
+</h1>
+<p class="short_description">Displays the parent menu item (if existing) plus any current
+level buttons that are visible</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Buttons.NewFieldButtonRow.html" class="more">« More »</a>
+</div>
+</div>
+<ul class="breadcrumb"><li>
+<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li><a href="../packages/Gems.html">Gems</a></li>
+<li>
+<span class="divider">\</span><a href="../packages/Gems.Tracker.html">Tracker</a>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../packages/Gems.Tracker.Field.html">Field</a>
+</li>
+</li></ul>
+<div class="package-indent">
+<h3>
+<i title="Classes" class="icon-custom icon-class"></i> Classes, interfaces, and traits</h3>
+<div xmlns:php="http://php.net/xsl" id="ConsentField" class="element ajax clickable class">
+<h1>ConsentField<a href="../classes/Gems.Tracker.Field.ConsentField.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Tracker.Field.ConsentField.html" class="more">« More »</a>
+</div>
+</div>
+<ul class="breadcrumb"><li>
+<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li><a href="../packages/Gems.html">Gems</a></li>
+<li>
+<span class="divider">\</span><a href="../packages/Gems.Tracker.html">Tracker</a>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../packages/Gems.Tracker.Snippets.html">Snippets</a>
+</li>
+</li></ul>
+<div class="package-indent">
+<h3>
+<i title="Classes" class="icon-custom icon-class"></i> Classes, interfaces, and traits</h3>
+<div xmlns:php="http://php.net/xsl" id="ExportTrackSnippetAbstract" class="element ajax clickable class">
+<h1>ExportTrackSnippetAbstract<a href="../classes/Gems.Tracker.Snippets.ExportTrackSnippetAbstract.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Tracker.Snippets.ExportTrackSnippetAbstract.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="ImportTrackSnippetAbstract" class="element ajax clickable class">
+<h1>ImportTrackSnippetAbstract<a href="../classes/Gems.Tracker.Snippets.ImportTrackSnippetAbstract.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Tracker.Snippets.ImportTrackSnippetAbstract.html" class="more">« More »</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:13+02:00.<br></footer></div>
+</div>
+</body>
+</html>

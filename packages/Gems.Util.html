@@ -1,0 +1,203 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » Gems\Util</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+<ul class="side-nav nav nav-list">
+<li class="nav-header">
+<i class="icon-map-marker"></i> Packages</li>
+<li>
+<a href="../packages/Gems.Util.html" title="Util"><i class="icon-folder-open"></i>Util</a><ul class="nav nav-list nav-packages"></ul>
+</li>
+<li class="nav-header">
+<i title="Classes" class="icon-custom icon-class"></i> Classes</li>
+<li><a href="#ConsentCode" title="Utility function for the user of consents.">ConsentCode</a></li>
+<li><a href="#Gems_Util_DbLookup" title="Lookup global information from the database, allowing for project specific overrides">Gems_Util_DbLookup</a></li>
+<li><a href="#Gems_Util_LockFile" title="A simple file based locking mechanism.">Gems_Util_LockFile</a></li>
+<li><a href="#Monitor" title="Abstract utility class containing caching and sql loading function">Monitor</a></li>
+<li><a href="#Gems_Util_ReceptionCodeLibrary" title="Library functions and constants for working with reception codes.">Gems_Util_ReceptionCodeLibrary</a></li>
+<li><a href="#Gems_Util_RequestCache" title="Keeps and reuse earlier request parameters in session cache">Gems_Util_RequestCache</a></li>
+<li><a href="#Gems_Util" title="Class for general utility functions and access to general utility classes.">Gems_Util</a></li>
+<li><a href="#Gems_Util_BasePath" title="This is a simple reference replacement class.">Gems_Util_BasePath</a></li>
+<li><a href="#Gems_Util_ReceptionCode" title="Utility function for the use of reception codes.">Gems_Util_ReceptionCode</a></li>
+<li><a href="#Gems_Util_Localized" title="Localization class, allowing for project specific overrides">Gems_Util_Localized</a></li>
+<li><a href="#Gems_Util_Translated" title="Provides translated strings for default options like gender and takes care of date/time formatting">Gems_Util_Translated</a></li>
+<li><a href="#Gems_Util_DatabasePatcher" title="File for checking and executing (new) patches.">Gems_Util_DatabasePatcher</a></li>
+<li><a href="#Gems_Util_TrackData" title="Class for general track utility functions">Gems_Util_TrackData</a></li>
+<li><a href="#Gems_Util_TokenData" title="Class that bundles information on tokens">Gems_Util_TokenData</a></li>
+</ul>
+</div>
+<div class="span8 package-contents">
+<ul class="breadcrumb"><li>
+<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li><a href="../packages/Gems.html">Gems</a></li>
+<li class="active">
+<span class="divider">\</span><a href="../packages/Gems.Util.html">Util</a>
+</li>
+</li></ul>
+<div class="package-indent">
+<h3>
+<i title="Classes" class="icon-custom icon-class"></i> Classes, interfaces, and traits</h3>
+<div xmlns:php="http://php.net/xsl" id="ConsentCode" class="element ajax clickable class">
+<h1>ConsentCode<a href="../classes/Gems.Util.ConsentCode.html">¶</a>
+</h1>
+<p class="short_description">Utility function for the user of consents.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Util.ConsentCode.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Monitor" class="element ajax clickable class">
+<h1>Monitor<a href="../classes/Gems.Util.Monitor.html">¶</a>
+</h1>
+<p class="short_description">Abstract utility class containing caching and sql loading function</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Util.Monitor.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Util" class="element ajax clickable class">
+<h1>Gems_Util<a href="../classes/Gems_Util.html">¶</a>
+</h1>
+<p class="short_description">Class for general utility functions and access to general utility classes.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Util.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Util_BasePath" class="element ajax clickable class">
+<h1>Gems_Util_BasePath<a href="../classes/Gems_Util_BasePath.html">¶</a>
+</h1>
+<p class="short_description">This is a simple reference replacement class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Util_BasePath.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Util_DatabasePatcher" class="element ajax clickable class">
+<h1>Gems_Util_DatabasePatcher<a href="../classes/Gems_Util_DatabasePatcher.html">¶</a>
+</h1>
+<p class="short_description">File for checking and executing (new) patches.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Util_DatabasePatcher.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Util_DbLookup" class="element ajax clickable class">
+<h1>Gems_Util_DbLookup<a href="../classes/Gems_Util_DbLookup.html">¶</a>
+</h1>
+<p class="short_description">Lookup global information from the database, allowing for project specific overrides</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Util_DbLookup.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Util_Localized" class="element ajax clickable class">
+<h1>Gems_Util_Localized<a href="../classes/Gems_Util_Localized.html">¶</a>
+</h1>
+<p class="short_description">Localization class, allowing for project specific overrides</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Util_Localized.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Util_LockFile" class="element ajax clickable class">
+<h1>Gems_Util_LockFile<a href="../classes/Gems_Util_LockFile.html">¶</a>
+</h1>
+<p class="short_description">A simple file based locking mechanism.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Util_LockFile.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Util_ReceptionCode" class="element ajax clickable class">
+<h1>Gems_Util_ReceptionCode<a href="../classes/Gems_Util_ReceptionCode.html">¶</a>
+</h1>
+<p class="short_description">Utility function for the use of reception codes.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Util_ReceptionCode.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Util_ReceptionCodeLibrary" class="element ajax clickable class">
+<h1>Gems_Util_ReceptionCodeLibrary<a href="../classes/Gems_Util_ReceptionCodeLibrary.html">¶</a>
+</h1>
+<p class="short_description">Library functions and constants for working with reception codes.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Util_ReceptionCodeLibrary.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Util_RequestCache" class="element ajax clickable class">
+<h1>Gems_Util_RequestCache<a href="../classes/Gems_Util_RequestCache.html">¶</a>
+</h1>
+<p class="short_description">Keeps and reuse earlier request parameters in session cache</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Util_RequestCache.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Util_TokenData" class="element ajax clickable class">
+<h1>Gems_Util_TokenData<a href="../classes/Gems_Util_TokenData.html">¶</a>
+</h1>
+<p class="short_description">Class that bundles information on tokens</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Util_TokenData.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Util_TrackData" class="element ajax clickable class">
+<h1>Gems_Util_TrackData<a href="../classes/Gems_Util_TrackData.html">¶</a>
+</h1>
+<p class="short_description">Class for general track utility functions</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Util_TrackData.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Util_Translated" class="element ajax clickable class">
+<h1>Gems_Util_Translated<a href="../classes/Gems_Util_Translated.html">¶</a>
+</h1>
+<p class="short_description">Provides translated strings for default options like gender and takes care of date/time formatting</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Util_Translated.html" class="more">« More »</a>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:14+02:00.<br></footer></div>
+</div>
+</body>
+</html>

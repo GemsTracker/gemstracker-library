@@ -1,0 +1,1751 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » \Gems_Tracker_Token</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+<div class="btn-group visibility" data-toggle="buttons-checkbox">
+<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
+</div>
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+</div>
+<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+<li class="nav-header">
+<i title="Methods" class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public "><a href="#method___construct" title="__construct() :: Creates the token object"><span class="description">Creates the token object</span><pre>__construct()</pre></a></li>
+<li class="method public inherited"><a href="#method___get" title="__get() :: Returns a callable if a method is called as a variable"><span class="description">Returns a callable if a method is called as a variable</span><pre>__get()</pre></a></li>
+<li class="method public "><a href="#method_applyToMenuSource" title="applyToMenuSource() :: Set menu parameters from this token"><span class="description">Set menu parameters from this token</span><pre>applyToMenuSource()</pre></a></li>
+<li class="method public "><a href="#method_assignTo" title="assignTo() :: Assign this token to a specific relation"><span class="description">Assign this token to a specific relation</span><pre>assignTo()</pre></a></li>
+<li class="method public "><a href="#method_cacheGet" title="cacheGet() :: Retrieve a certain $key from the local cache"><span class="description">Retrieve a certain $key from the local cache</span><pre>cacheGet()</pre></a></li>
+<li class="method public "><a href="#method_cacheHas" title="cacheHas() :: find out if a certain key is present in the cache"><span class="description">find out if a certain key is present in the cache</span><pre>cacheHas()</pre></a></li>
+<li class="method public "><a href="#method_cacheReset" title="cacheReset() :: Reset the local cache for this token"><span class="description">Reset the local cache for this token</span><pre>cacheReset()</pre></a></li>
+<li class="method public "><a href="#method_cacheSet" title="cacheSet() :: Set a $key in the local cache"><span class="description">Set a $key in the local cache</span><pre>cacheSet()</pre></a></li>
+<li class="method public "><a href="#method_checkRegistryRequestsAnswers" title="checkRegistryRequestsAnswers() :: Should be called after answering the request to allow the Target
+to check if all required registry values have been set correctly."><span class="description">Should be called after answering the request to allow the Target
+to check if all required registry values have been set correctly.</span><pre>checkRegistryRequestsAnswers()</pre></a></li>
+<li class="method public "><a href="#method_checkTokenCompletion" title="checkTokenCompletion() :: Checks whether the survey for this token was completed and processes the result"><span class="description">Checks whether the survey for this token was completed and processes the result</span><pre>checkTokenCompletion()</pre></a></li>
+<li class="method public "><a href="#method_createReplacement" title="createReplacement() :: Creates an almost exact copy of this token at the same place in the track,
+only without answers and other source data"><span class="description">Creates an almost exact copy of this token at the same place in the track,
+only without answers and other source data</span><pre>createReplacement()</pre></a></li>
+<li class="method public "><a href="#method_getAllUnansweredTokens" title="getAllUnansweredTokens() :: Get all unanswered tokens for the person answering this token"><span class="description">Get all unanswered tokens for the person answering this token</span><pre>getAllUnansweredTokens()</pre></a></li>
+<li class="method public "><a href="#method_getAnswerDateTime" title="getAnswerDateTime() :: Returns a field from the raw answers as a date object."><span class="description">Returns a field from the raw answers as a date object.</span><pre>getAnswerDateTime()</pre></a></li>
+<li class="method public "><a href="#method_getAnswerSnippetNames" title="getAnswerSnippetNames() :: Returns a snippet name that can be used to display the answers to this token."><span class="description">Returns a snippet name that can be used to display the answers to this token.</span><pre>getAnswerSnippetNames()</pre></a></li>
+<li class="method public "><a href="#method_getArrayCopy" title="getArrayCopy() :: A copy of the data array"><span class="description">A copy of the data array</span><pre>getArrayCopy()</pre></a></li>
+<li class="method public "><a href="#method_getChangedBy" title="getChangedBy() :: Returns the staff or respondent id of the person
+who last changed this token."><span class="description">Returns the staff or respondent id of the person
+who last changed this token.</span><pre>getChangedBy()</pre></a></li>
+<li class="method public "><a href="#method_getComment" title="getComment() :: Return the comment for this token"><span class="description">Return the comment for this token</span><pre>getComment()</pre></a></li>
+<li class="method public "><a href="#method_getCompletionTime" title="getCompletionTime() :: "><span class="description">getCompletionTime()
+        </span><pre>getCompletionTime()</pre></a></li>
+<li class="method public "><a href="#method_getConsentCode" title="getConsentCode() :: "><span class="description">getConsentCode()
+        </span><pre>getConsentCode()</pre></a></li>
+<li class="method public "><a href="#method_getCreatedBy" title="getCreatedBy() :: Returns the staff or respondent id of the person
+who created this token."><span class="description">Returns the staff or respondent id of the person
+who created this token.</span><pre>getCreatedBy()</pre></a></li>
+<li class="method public "><a href="#method_getDateTime" title="getDateTime() :: "><span class="description">getDateTime()
+        </span><pre>getDateTime()</pre></a></li>
+<li class="method public "><a href="#method_getDeleteSnippetNames" title="getDeleteSnippetNames() :: Returns an array of snippet names that can be used to delete this token."><span class="description">Returns an array of snippet names that can be used to delete this token.</span><pre>getDeleteSnippetNames()</pre></a></li>
+<li class="method public "><a href="#method_getEditSnippetNames" title="getEditSnippetNames() :: Returns an array of snippet names that can be used to edit this token."><span class="description">Returns an array of snippet names that can be used to edit this token.</span><pre>getEditSnippetNames()</pre></a></li>
+<li class="method public "><a href="#method_getEmail" title="getEmail() :: Get the email address of the person who needs to fill out this survey."><span class="description">Get the email address of the person who needs to fill out this survey.</span><pre>getEmail()</pre></a></li>
+<li class="method public "><a href="#method_getMailSentDate" title="getMailSentDate() :: "><span class="description">getMailSentDate()
+        </span><pre>getMailSentDate()</pre></a></li>
+<li class="method public "><a href="#method_getModel" title="getModel() :: Returns a model that can be used to save, edit, etc. the token"><span class="description">Returns a model that can be used to save, edit, etc. the token</span><pre>getModel()</pre></a></li>
+<li class="method public "><a href="#method_getNextToken" title="getNextToken() :: Returns the next token in this track"><span class="description">Returns the next token in this track</span><pre>getNextToken()</pre></a></li>
+<li class="method public "><a href="#method_getNextUnansweredToken" title="getNextUnansweredToken() :: Returns the next unanswered token for the person answering this token"><span class="description">Returns the next unanswered token for the person answering this token</span><pre>getNextUnansweredToken()</pre></a></li>
+<li class="method public "><a href="#method_getOrganization" title="getOrganization() :: "><span class="description">getOrganization()
+        </span><pre>getOrganization()</pre></a></li>
+<li class="method public "><a href="#method_getOrganizationId" title="getOrganizationId() :: "><span class="description">getOrganizationId()
+        </span><pre>getOrganizationId()</pre></a></li>
+<li class="method public "><a href="#method_getPatientNumber" title="getPatientNumber() :: "><span class="description">getPatientNumber()
+        </span><pre>getPatientNumber()</pre></a></li>
+<li class="method public "><a href="#method_getPreviousSuccessToken" title="getPreviousSuccessToken() :: Returns the previous token that has succes in this track"><span class="description">Returns the previous token that has succes in this track</span><pre>getPreviousSuccessToken()</pre></a></li>
+<li class="method public "><a href="#method_getPreviousToken" title="getPreviousToken() :: Returns the previous token in this track"><span class="description">Returns the previous token in this track</span><pre>getPreviousToken()</pre></a></li>
+<li class="method public "><a href="#method_getRawAnswers" title="getRawAnswers() :: Returns the answers in simple raw array format, without value processing etc."><span class="description">Returns the answers in simple raw array format, without value processing etc.</span><pre>getRawAnswers()</pre></a></li>
+<li class="method public "><a href="#method_getReceptionCode" title="getReceptionCode() :: Return the \Gems_Util_ReceptionCode object"><span class="description">Return the \Gems_Util_ReceptionCode object</span><pre>getReceptionCode()</pre></a></li>
+<li class="method public "><a href="#method_getRelation" title="getRelation() :: Get the relation object if any"><span class="description">Get the relation object if any</span><pre>getRelation()</pre></a></li>
+<li class="method public "><a href="#method_getRelationFieldId" title="getRelationFieldId() :: Return the id of the relation field"><span class="description">Return the id of the relation field</span><pre>getRelationFieldId()</pre></a></li>
+<li class="method public "><a href="#method_getRelationFieldName" title="getRelationFieldName() :: Get the name of the relationfield for this token"><span class="description">Get the name of the relationfield for this token</span><pre>getRelationFieldName()</pre></a></li>
+<li class="method public "><a href="#method_getRelationId" title="getRelationId() :: Return the id of the relation currently assigned to this token"><span class="description">Return the id of the relation currently assigned to this token</span><pre>getRelationId()</pre></a></li>
+<li class="method public "><a href="#method_getRespondent" title="getRespondent() :: Get the respondent linked to this token"><span class="description">Get the respondent linked to this token</span><pre>getRespondent()</pre></a></li>
+<li class="method public "><a href="#method_getRespondentGender" title="getRespondentGender() :: Returns the gender as a letter code"><span class="description">Returns the gender as a letter code</span><pre>getRespondentGender()</pre></a></li>
+<li class="method public "><a href="#method_getRespondentGenderHello" title="getRespondentGenderHello() :: Returns the gender for use as part of a sentence, e.g. Dear Mr/Mrs"><span class="description">Returns the gender for use as part of a sentence, e.g. Dear Mr/Mrs</span><pre>getRespondentGenderHello()</pre></a></li>
+<li class="method public "><a href="#method_getRespondentId" title="getRespondentId() :: "><span class="description">getRespondentId()
+        </span><pre>getRespondentId()</pre></a></li>
+<li class="method public "><a href="#method_getRespondentLanguage" title="getRespondentLanguage() :: Return the default language for the respondent"><span class="description">Return the default language for the respondent</span><pre>getRespondentLanguage()</pre></a></li>
+<li class="method public "><a href="#method_getRespondentLastName" title="getRespondentLastName() :: "><span class="description">getRespondentLastName()
+        </span><pre>getRespondentLastName()</pre></a></li>
+<li class="method public "><a href="#method_getRespondentName" title="getRespondentName() :: Get the name of the person answering this token"><span class="description">Get the name of the person answering this token</span><pre>getRespondentName()</pre></a></li>
+<li class="method public "><a href="#method_getRespondentTrack" title="getRespondentTrack() :: "><span class="description">getRespondentTrack()
+        </span><pre>getRespondentTrack()</pre></a></li>
+<li class="method public "><a href="#method_getRespondentTrackId" title="getRespondentTrackId() :: "><span class="description">getRespondentTrackId()
+        </span><pre>getRespondentTrackId()</pre></a></li>
+<li class="method public "><a href="#method_getReturnUrl" title="getReturnUrl() :: The full return url for a redirect"><span class="description">The full return url for a redirect</span><pre>getReturnUrl()</pre></a></li>
+<li class="method public "><a href="#method_getRoundCode" title="getRoundCode() :: Get the round code for this token"><span class="description">Get the round code for this token</span><pre>getRoundCode()</pre></a></li>
+<li class="method public "><a href="#method_getRoundDescription" title="getRoundDescription() :: "><span class="description">getRoundDescription()
+        </span><pre>getRoundDescription()</pre></a></li>
+<li class="method public "><a href="#method_getRoundId" title="getRoundId() :: "><span class="description">getRoundId()
+        </span><pre>getRoundId()</pre></a></li>
+<li class="method public "><a href="#method_getRoundOrder" title="getRoundOrder() :: "><span class="description">getRoundOrder()
+        </span><pre>getRoundOrder()</pre></a></li>
+<li class="method public "><a href="#method_getShowSnippetNames" title="getShowSnippetNames() :: Returns a snippet name that can be used to display this token."><span class="description">Returns a snippet name that can be used to display this token.</span><pre>getShowSnippetNames()</pre></a></li>
+<li class="method public "><a href="#method_getStatus" title="getStatus() :: Returns a string that tells if the token is open, completed or any other
+status you might like. This will not be interpreted by the tracker it is
+for display purposes only"><span class="description">Returns a string that tells if the token is open, completed or any other
+status you might like. This will not be interpreted by the tracker it is
+for display purposes only</span><pre>getStatus()</pre></a></li>
+<li class="method public "><a href="#method_getSubjectname" title="getSubjectname() :: Return the name of the respondent"><span class="description">Return the name of the respondent</span><pre>getSubjectname()</pre></a></li>
+<li class="method public "><a href="#method_getSurvey" title="getSurvey() :: "><span class="description">getSurvey()
+        </span><pre>getSurvey()</pre></a></li>
+<li class="method public "><a href="#method_getSurveyAnswerModel" title="getSurveyAnswerModel() :: "><span class="description">getSurveyAnswerModel()
+        </span><pre>getSurveyAnswerModel()</pre></a></li>
+<li class="method public "><a href="#method_getSurveyId" title="getSurveyId() :: "><span class="description">getSurveyId()
+        </span><pre>getSurveyId()</pre></a></li>
+<li class="method public "><a href="#method_getSurveyName" title="getSurveyName() :: "><span class="description">getSurveyName()
+        </span><pre>getSurveyName()</pre></a></li>
+<li class="method public "><a href="#method_getTokenCountUnanswered" title="getTokenCountUnanswered() :: Returns the number of unanswered tokens for the person answering this token,
+minus this token itself"><span class="description">Returns the number of unanswered tokens for the person answering this token,
+minus this token itself</span><pre>getTokenCountUnanswered()</pre></a></li>
+<li class="method public "><a href="#method_getTokenId" title="getTokenId() :: "><span class="description">getTokenId()
+        </span><pre>getTokenId()</pre></a></li>
+<li class="method public "><a href="#method_getTrackEngine" title="getTrackEngine() :: Get the track engine that generated this token"><span class="description">Get the track engine that generated this token</span><pre>getTrackEngine()</pre></a></li>
+<li class="method public "><a href="#method_getTrackId" title="getTrackId() :: "><span class="description">getTrackId()
+        </span><pre>getTrackId()</pre></a></li>
+<li class="method public "><a href="#method_getTrackName" title="getTrackName() :: "><span class="description">getTrackName()
+        </span><pre>getTrackName()</pre></a></li>
+<li class="method public "><a href="#method_getUrl" title="getUrl() :: "><span class="description">getUrl()
+        </span><pre>getUrl()</pre></a></li>
+<li class="method public "><a href="#method_getValidFrom" title="getValidFrom() :: "><span class="description">getValidFrom()
+        </span><pre>getValidFrom()</pre></a></li>
+<li class="method public "><a href="#method_getValidUntil" title="getValidUntil() :: "><span class="description">getValidUntil()
+        </span><pre>getValidUntil()</pre></a></li>
+<li class="method public "><a href="#method_handleAfterCompletion" title="handleAfterCompletion() :: Survey dependent calculations / answer changes that must occur after a survey is completed"><span class="description">Survey dependent calculations / answer changes that must occur after a survey is completed</span><pre>handleAfterCompletion()</pre></a></li>
+<li class="method public "><a href="#method_handleBeforeAnswering" title="handleBeforeAnswering() :: Survey dependent calculations / answer changes that must occur after a survey is completed"><span class="description">Survey dependent calculations / answer changes that must occur after a survey is completed</span><pre>handleBeforeAnswering()</pre></a></li>
+<li class="method public "><a href="#method_hasAnswersLoaded" title="hasAnswersLoaded() :: Returns true when the answers are loaded."><span class="description">Returns true when the answers are loaded.</span><pre>hasAnswersLoaded()</pre></a></li>
+<li class="method public "><a href="#method_hasRedoCode" title="hasRedoCode() :: "><span class="description">hasRedoCode()
+        </span><pre>hasRedoCode()</pre></a></li>
+<li class="method public "><a href="#method_hasRedoCopyCode" title="hasRedoCopyCode() :: True if the reception code is a redo survey copy."><span class="description">True if the reception code is a redo survey copy.</span><pre>hasRedoCopyCode()</pre></a></li>
+<li class="method public "><a href="#method_hasRelation" title="hasRelation() :: Is this token linked to a relation?"><span class="description">Is this token linked to a relation?</span><pre>hasRelation()</pre></a></li>
+<li class="method public "><a href="#method_hasResult" title="hasResult() :: "><span class="description">hasResult()
+        </span><pre>hasResult()</pre></a></li>
+<li class="method public "><a href="#method_hasSuccesCode" title="hasSuccesCode() :: "><span class="description">hasSuccesCode()
+        </span><pre>hasSuccesCode()</pre></a></li>
+<li class="method public "><a href="#method_inSource" title="inSource() :: True is this token was exported to the source."><span class="description">True is this token was exported to the source.</span><pre>inSource()</pre></a></li>
+<li class="method public "><a href="#method_isCompleted" title="isCompleted() :: "><span class="description">isCompleted()
+        </span><pre>isCompleted()</pre></a></li>
+<li class="method public "><a href="#method_isCurrentlyValid" title="isCurrentlyValid() :: True when the valid from is set and in the past and the valid until is not set or is in the future"><span class="description">True when the valid from is set and in the past and the valid until is not set or is in the future</span><pre>isCurrentlyValid()</pre></a></li>
+<li class="method public "><a href="#method_isExpired" title="isExpired() :: True when the valid until is set and is in the past"><span class="description">True when the valid until is set and is in the past</span><pre>isExpired()</pre></a></li>
+<li class="method public "><a href="#method_isNotYetValid" title="isNotYetValid() :: True when the valid from is in the future or not yet set"><span class="description">True when the valid from is in the future or not yet set</span><pre>isNotYetValid()</pre></a></li>
+<li class="method public "><a href="#method_isValidFromManual" title="isValidFromManual() :: "><span class="description">isValidFromManual()
+        </span><pre>isValidFromManual()</pre></a></li>
+<li class="method public "><a href="#method_isValidUntilManual" title="isValidUntilManual() :: "><span class="description">isValidUntilManual()
+        </span><pre>isValidUntilManual()</pre></a></li>
+<li class="method public "><a href="#method_refresh" title="refresh() :: "><span class="description">refresh()
+        </span><pre>refresh()</pre></a></li>
+<li class="method public "><a href="#method_setCompletionTime" title="setCompletionTime() :: "><span class="description">setCompletionTime()
+        </span><pre>setCompletionTime()</pre></a></li>
+<li class="method public "><a href="#method_setNextToken" title="setNextToken() :: Sets the next token in this track"><span class="description">Sets the next token in this track</span><pre>setNextToken()</pre></a></li>
+<li class="method public "><a href="#method_setRawAnswers" title="setRawAnswers() :: Sets answers for this token to the values defined in the $answers array. Also handles updating the
+internal answercache if present"><span class="description">Sets answers for this token to the values defined in the $answers array. Also handles updating the
+internal answercache if present</span><pre>setRawAnswers()</pre></a></li>
+<li class="method public "><a href="#method_setReceptionCode" title="setReceptionCode() :: Set the reception code for this token and make sure the necessary
+cascade to the source takes place."><span class="description">Set the reception code for this token and make sure the necessary
+cascade to the source takes place.</span><pre>setReceptionCode()</pre></a></li>
+<li class="method public "><a href="#method_setRoundDescription" title="setRoundDescription() :: Set a round description for the token"><span class="description">Set a round description for the token</span><pre>setRoundDescription()</pre></a></li>
+<li class="method public "><a href="#method_setValidFrom" title="setValidFrom() :: "><span class="description">setValidFrom()
+        </span><pre>setValidFrom()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="method protected "><a href="#method__addRelation" title="_addRelation() :: Add relation to the select statement"><span class="description">Add relation to the select statement</span><pre>_addRelation()</pre></a></li>
+<li class="method protected "><a href="#method__ensureRespondentData" title="_ensureRespondentData() :: Makes sure the respondent data is part of the $this-&gt;_gemsData"><span class="description">Makes sure the respondent data is part of the $this-&gt;_gemsData</span><pre>_ensureRespondentData()</pre></a></li>
+<li class="method protected "><a href="#method__getResultFieldLength" title="_getResultFieldLength() :: The maximum length of the result field"><span class="description">The maximum length of the result field</span><pre>_getResultFieldLength()</pre></a></li>
+<li class="method protected "><a href="#method__updateToken" title="_updateToken() :: Update the token, both in the database and in memory."><span class="description">Update the token, both in the database and in memory.</span><pre>_updateToken()</pre></a></li>
+<li class="method protected "><a href="#method_calculateReturnUrl" title="calculateReturnUrl() :: Returns the full url Gems should forward to after survey completion."><span class="description">Returns the full url Gems should forward to after survey completion.</span><pre>calculateReturnUrl()</pre></a></li>
+<li class="method protected "><a href="#method_toResponseDatabase" title="toResponseDatabase() :: Handle sending responses to the response database (if used)"><span class="description">Handle sending responses to the response database (if used)</span><pre>toResponseDatabase()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Properties" class="icon-custom icon-property"></i> Properties
+                    <ul>
+<li class="property public "><a href="#property_exists" title="$exists() :: True when the token does exist."><span class="description"></span><pre>$exists</pre></a></li>
+<li class="property public "><a href="#property_translate" title="$translate() :: "><span class="description"></span><pre>$translate</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="property protected "><a href="#property__gemsData" title="$_gemsData() :: "><span class="description">The gems token data</span><pre>$_gemsData</pre></a></li>
+<li class="property protected "><a href="#property__loopCheck" title="$_loopCheck() :: Helper var for preventing infinite loops"><span class="description"></span><pre>$_loopCheck</pre></a></li>
+<li class="property protected "><a href="#property__relation" title="$_relation() :: Holds the relation (if any) for this token"><span class="description"></span><pre>$_relation</pre></a></li>
+<li class="property protected "><a href="#property__respondentObject" title="$_respondentObject() :: "><span class="description"></span><pre>$_respondentObject</pre></a></li>
+<li class="property protected "><a href="#property__tokenId" title="$_tokenId() :: "><span class="description">The id of the token</span><pre>$_tokenId</pre></a></li>
+<li class="property protected "><a href="#property_db" title="$db() :: "><span class="description"></span><pre>$db</pre></a></li>
+<li class="property protected "><a href="#property_loader" title="$loader() :: "><span class="description"></span><pre>$loader</pre></a></li>
+<li class="property protected "><a href="#property_locale" title="$locale() :: "><span class="description"></span><pre>$locale</pre></a></li>
+<li class="property protected "><a href="#property_logger" title="$logger() :: Logger instance"><span class="description"></span><pre>$logger</pre></a></li>
+<li class="property protected "><a href="#property_project" title="$project() :: "><span class="description"></span><pre>$project</pre></a></li>
+<li class="property protected "><a href="#property_respTrack" title="$respTrack() :: "><span class="description"></span><pre>$respTrack</pre></a></li>
+<li class="property protected "><a href="#property_resultFieldLength" title="$resultFieldLength() :: The size of the result field, calculated from meta data when null,
+but can be set by project specific class to fixed value"><span class="description"></span><pre>$resultFieldLength</pre></a></li>
+<li class="property protected "><a href="#property_staticResultFieldLength" title="$staticResultFieldLength() :: Cache for storing the calculation of the length"><span class="description"></span><pre>$staticResultFieldLength</pre></a></li>
+<li class="property protected "><a href="#property_survey" title="$survey() :: "><span class="description"></span><pre>$survey</pre></a></li>
+<li class="property protected "><a href="#property_tracker" title="$tracker() :: "><span class="description"></span><pre>$tracker</pre></a></li>
+<li class="property protected "><a href="#property_util" title="$util() :: "><span class="description"></span><pre>$util</pre></a></li>
+</ul>
+</li>
+<li class="nav-header private">» Private
+                    <ul>
+<li class="property private "><a href="#property__cache" title="$_cache() :: "><span class="description">Can hold any data the source likes to store for the token</span><pre>$_cache</pre></a></li>
+<li class="property private "><a href="#property__nextToken" title="$_nextToken() :: "><span class="description"></span><pre>$_nextToken</pre></a></li>
+<li class="property private "><a href="#property__previousToken" title="$_previousToken() :: "><span class="description"></span><pre>$_previousToken</pre></a></li>
+<li class="property private "><a href="#property__sourceDataRaw" title="$_sourceDataRaw() :: "><span class="description">The answers in raw format</span><pre>$_sourceDataRaw</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Constants" class="icon-custom icon-constant"></i> Constants
+                    <ul>
+<li class="constant  "><a href="#constant_COMPLETION_DATACHANGE" title="COMPLETION_DATACHANGE() :: "><span class="description">COMPLETION_DATACHANGE</span><pre>COMPLETION_DATACHANGE</pre></a></li>
+<li class="constant  "><a href="#constant_COMPLETION_EVENTCHANGE" title="COMPLETION_EVENTCHANGE() :: "><span class="description">COMPLETION_EVENTCHANGE</span><pre>COMPLETION_EVENTCHANGE</pre></a></li>
+<li class="constant  "><a href="#constant_COMPLETION_NOCHANGE" title="COMPLETION_NOCHANGE() :: "><span class="description">COMPLETION_NOCHANGE</span><pre>COMPLETION_NOCHANGE</pre></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a xmlns:php="http://php.net/xsl" id="\Gems_Tracker_Token"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+<li>
+<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Gems_Tracker_Token.html">Gems_Tracker_Token</a>
+</li>
+</ul>
+<div xmlns:php="http://php.net/xsl" class="element class">
+<p class="short_description">Object class for checking and changing tokens.</p>
+<div class="details">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Gems.Tracker.html">Gems</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Tracker</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2011 Erasmus MC</td>
+</tr>
+<tr>
+<th>license</th>
+<td><a href="http://opensource.org/licenses/BSD-3-Clause">New BSD License</a></td>
+</tr>
+<tr>
+<th>since</th>
+<td>Class available since version 1.4</td>
+</tr>
+<tr>
+<th>inherited_from</th>
+<td>\Gems_Registry_TargetAbstract</td>
+</tr>
+</table>
+<h3>
+<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
+<a id="method___construct"></a><div class="element clickable method public method___construct " data-toggle="collapse" data-target=".method___construct .collapse" title="public">
+<h2>Creates the token object</h2>
+<pre>__construct(mixed $gemsTokenData) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$gemsTokenData</h4>
+<code>mixed</code><p>Token Id or array containing token record</p></div>
+</div></div>
+</div>
+<a id="method___get"></a><div class="element clickable method public method___get inherited" data-toggle="collapse" data-target=".method___get .collapse" title="public">
+<h2>Returns a callable if a method is called as a variable</h2>
+<pre>__get(string $name) : Callable</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>Callable</code></div>
+</div></div>
+</div>
+<a id="method_applyToMenuSource"></a><div class="element clickable method public method_applyToMenuSource " data-toggle="collapse" data-target=".method_applyToMenuSource .collapse" title="public">
+<h2>Set menu parameters from this token</h2>
+<pre>applyToMenuSource(\Gems_Menu_ParameterSource $source) : \Gems_Tracker_Token</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$source</h4>
+<code>\Gems_Menu_ParameterSource</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Tracker_Token</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_assignTo"></a><div class="element clickable method public method_assignTo " data-toggle="collapse" data-target=".method_assignTo .collapse" title="public">
+<h2>Assign this token to a specific relation</h2>
+<pre>assignTo(integer $respondentRelationId, integer $relationFieldId) : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$respondentRelationId</h4>
+<code>integer</code>
+</div>
+<div class="subelement argument">
+<h4>$relationFieldId</h4>
+<code>integer</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>1 if data changed, 0 otherwise</div>
+</div></div>
+</div>
+<a id="method_cacheGet"></a><div class="element clickable method public method_cacheGet " data-toggle="collapse" data-target=".method_cacheGet .collapse" title="public">
+<h2>Retrieve a certain $key from the local cache</h2>
+<pre>cacheGet(string $key, mixed $defaultValue<code> = null</code>) : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>For speeding up things the token can hold a local cache, living as long as the
+token object exists in memory. Sources can use this to store reusable information.</p>
+<p>To reset the cache on an update, the source can use the cacheReset method or the
+setCache method to update the changed value.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$key</h4>
+<code>string</code><p>The key used in the cache</p></div>
+<div class="subelement argument">
+<h4>$defaultValue</h4>
+<code>mixed</code><p>The optional default value to use when it is not present</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>mixed</code></div>
+</div></div>
+</div>
+<a id="method_cacheHas"></a><div class="element clickable method public method_cacheHas " data-toggle="collapse" data-target=".method_cacheHas .collapse" title="public">
+<h2>find out if a certain key is present in the cache</h2>
+<pre>cacheHas(string $key) : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$key</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_cacheReset"></a><div class="element clickable method public method_cacheReset " data-toggle="collapse" data-target=".method_cacheReset .collapse" title="public">
+<h2>Reset the local cache for this token</h2>
+<pre>cacheReset(string|null $key<code> = null</code>) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>You can pass in an optional $key parameter to reset just that key, otherwise all
+the cache will be reset</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$key</h4>
+<code>string</code><code>null</code><p>The key to reset</p></div>
+</div></div>
+</div>
+<a id="method_cacheSet"></a><div class="element clickable method public method_cacheSet " data-toggle="collapse" data-target=".method_cacheSet .collapse" title="public">
+<h2>Set a $key in the local cache</h2>
+<pre>cacheSet(string $key, mixed $value) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$key</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$value</h4>
+<code>mixed</code>
+</div>
+</div></div>
+</div>
+<a id="method_checkRegistryRequestsAnswers"></a><div class="element clickable method public method_checkRegistryRequestsAnswers " data-toggle="collapse" data-target=".method_checkRegistryRequestsAnswers .collapse" title="public">
+<h2>Should be called after answering the request to allow the Target
+to check if all required registry values have been set correctly.</h2>
+<pre>checkRegistryRequestsAnswers() : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>False if required are missing.</div>
+</div></div>
+</div>
+<a id="method_checkTokenCompletion"></a><div class="element clickable method public method_checkTokenCompletion " data-toggle="collapse" data-target=".method_checkTokenCompletion .collapse" title="public">
+<h2>Checks whether the survey for this token was completed and processes the result</h2>
+<pre>checkTokenCompletion(integer $userId) : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>The id of the gems user</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>self::COMPLETION_NOCHANGE || (self::COMPLETION_DATACHANGE | self::COMPLETION_EVENTCHANGE)</div>
+</div></div>
+</div>
+<a id="method_createReplacement"></a><div class="element clickable method public method_createReplacement " data-toggle="collapse" data-target=".method_createReplacement .collapse" title="public">
+<h2>Creates an almost exact copy of this token at the same place in the track,
+only without answers and other source data</h2>
+<pre>createReplacement(string $newComment, integer $userId) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Returns the new token id</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$newComment</h4>
+<code>string</code><p>Description of why the token was replaced</p></div>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>The current user</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>The new token</div>
+</div></div>
+</div>
+<a id="method_getAllUnansweredTokens"></a><div class="element clickable method public method_getAllUnansweredTokens " data-toggle="collapse" data-target=".method_getAllUnansweredTokens .collapse" title="public">
+<h2>Get all unanswered tokens for the person answering this token</h2>
+<pre>getAllUnansweredTokens($where<code> = ''</code>) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Similar to @see $this-&gt;getNextUnansweredToken()
+Similar to @see $this-&gt;getTokenCountUnanswered()</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$where</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>of tokendata</div>
+</div></div>
+</div>
+<a id="method_getAnswerDateTime"></a><div class="element clickable method public method_getAnswerDateTime " data-toggle="collapse" data-target=".method_getAnswerDateTime .collapse" title="public">
+<h2>Returns a field from the raw answers as a date object.</h2>
+<pre>getAnswerDateTime(string $fieldName) : \MUtil_Date</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$fieldName</h4>
+<code>string</code><p>Name of answer field</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\MUtil_Date</code>date time or null</div>
+</div></div>
+</div>
+<a id="method_getAnswerSnippetNames"></a><div class="element clickable method public method_getAnswerSnippetNames " data-toggle="collapse" data-target=".method_getAnswerSnippetNames .collapse" title="public">
+<h2>Returns a snippet name that can be used to display the answers to this token.</h2>
+<pre>getAnswerSnippetNames() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getArrayCopy"></a><div class="element clickable method public method_getArrayCopy " data-toggle="collapse" data-target=".method_getArrayCopy .collapse" title="public">
+<h2>A copy of the data array</h2>
+<pre>getArrayCopy() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_getChangedBy"></a><div class="element clickable method public method_getChangedBy " data-toggle="collapse" data-target=".method_getChangedBy .collapse" title="public">
+<h2>Returns the staff or respondent id of the person
+who last changed this token.</h2>
+<pre>getChangedBy() : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>integer</code></div>
+</div></div>
+</div>
+<a id="method_getComment"></a><div class="element clickable method public method_getComment " data-toggle="collapse" data-target=".method_getComment .collapse" title="public">
+<h2>Return the comment for this token</h2>
+<pre>getComment() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getCompletionTime"></a><div class="element clickable method public method_getCompletionTime " data-toggle="collapse" data-target=".method_getCompletionTime .collapse" title="public">
+<h2>getCompletionTime()
+        </h2>
+<pre>getCompletionTime() : \MUtil_Date</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\MUtil_Date</code>Completion time as a date or null</div>
+</div></div>
+</div>
+<a id="method_getConsentCode"></a><div class="element clickable method public method_getConsentCode " data-toggle="collapse" data-target=".method_getConsentCode .collapse" title="public">
+<h2>getConsentCode()
+        </h2>
+<pre>getConsentCode() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getCreatedBy"></a><div class="element clickable method public method_getCreatedBy " data-toggle="collapse" data-target=".method_getCreatedBy .collapse" title="public">
+<h2>Returns the staff or respondent id of the person
+who created this token.</h2>
+<pre>getCreatedBy() : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>integer</code></div>
+</div></div>
+</div>
+<a id="method_getDateTime"></a><div class="element clickable method public method_getDateTime " data-toggle="collapse" data-target=".method_getDateTime .collapse" title="public">
+<h2>getDateTime()
+        </h2>
+<pre>getDateTime(string $fieldName) : \MUtil_Date</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$fieldName</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\MUtil_Date</code></div>
+</div></div>
+</div>
+<a id="method_getDeleteSnippetNames"></a><div class="element clickable method public method_getDeleteSnippetNames " data-toggle="collapse" data-target=".method_getDeleteSnippetNames .collapse" title="public">
+<h2>Returns an array of snippet names that can be used to delete this token.</h2>
+<pre>getDeleteSnippetNames() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>of strings</div>
+</div></div>
+</div>
+<a id="method_getEditSnippetNames"></a><div class="element clickable method public method_getEditSnippetNames " data-toggle="collapse" data-target=".method_getEditSnippetNames .collapse" title="public">
+<h2>Returns an array of snippet names that can be used to edit this token.</h2>
+<pre>getEditSnippetNames() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>of strings</div>
+</div></div>
+</div>
+<a id="method_getEmail"></a><div class="element clickable method public method_getEmail " data-toggle="collapse" data-target=".method_getEmail .collapse" title="public">
+<h2>Get the email address of the person who needs to fill out this survey.</h2>
+<pre>getEmail() : string | null</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>This method will return null when no address available</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code><code>null</code>Email address of the person who needs to fill out the survey or null</div>
+</div></div>
+</div>
+<a id="method_getMailSentDate"></a><div class="element clickable method public method_getMailSentDate " data-toggle="collapse" data-target=".method_getMailSentDate .collapse" title="public">
+<h2>getMailSentDate()
+        </h2>
+<pre>getMailSentDate() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>Last mail sent date</div>
+</div></div>
+</div>
+<a id="method_getModel"></a><div class="element clickable method public method_getModel " data-toggle="collapse" data-target=".method_getModel .collapse" title="public">
+<h2>Returns a model that can be used to save, edit, etc. the token</h2>
+<pre>getModel() : \Gems_Tracker_Model_StandardTokenModel</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Model_StandardTokenModel</code></div>
+</div></div>
+</div>
+<a id="method_getNextToken"></a><div class="element clickable method public method_getNextToken " data-toggle="collapse" data-target=".method_getNextToken .collapse" title="public">
+<h2>Returns the next token in this track</h2>
+<pre>getNextToken() : \Gems_Tracker_Token</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token</code></div>
+</div></div>
+</div>
+<a id="method_getNextUnansweredToken"></a><div class="element clickable method public method_getNextUnansweredToken " data-toggle="collapse" data-target=".method_getNextUnansweredToken .collapse" title="public">
+<h2>Returns the next unanswered token for the person answering this token</h2>
+<pre>getNextUnansweredToken() : \Gems_Tracker_Token</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token</code></div>
+</div></div>
+</div>
+<a id="method_getOrganization"></a><div class="element clickable method public method_getOrganization " data-toggle="collapse" data-target=".method_getOrganization .collapse" title="public">
+<h2>getOrganization()
+        </h2>
+<pre>getOrganization() : \Gems_User_Organization</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_User_Organization</code></div>
+</div></div>
+</div>
+<a id="method_getOrganizationId"></a><div class="element clickable method public method_getOrganizationId " data-toggle="collapse" data-target=".method_getOrganizationId .collapse" title="public">
+<h2>getOrganizationId()
+        </h2>
+<pre>getOrganizationId() : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>integer</code></div>
+</div></div>
+</div>
+<a id="method_getPatientNumber"></a><div class="element clickable method public method_getPatientNumber " data-toggle="collapse" data-target=".method_getPatientNumber .collapse" title="public">
+<h2>getPatientNumber()
+        </h2>
+<pre>getPatientNumber() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>The respondents patient number</div>
+</div></div>
+</div>
+<a id="method_getPreviousSuccessToken"></a><div class="element clickable method public method_getPreviousSuccessToken " data-toggle="collapse" data-target=".method_getPreviousSuccessToken .collapse" title="public">
+<h2>Returns the previous token that has succes in this track</h2>
+<pre>getPreviousSuccessToken() : \Gems_Tracker_Token</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token</code></div>
+</div></div>
+</div>
+<a id="method_getPreviousToken"></a><div class="element clickable method public method_getPreviousToken " data-toggle="collapse" data-target=".method_getPreviousToken .collapse" title="public">
+<h2>Returns the previous token in this track</h2>
+<pre>getPreviousToken() : \Gems_Tracker_Token</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token</code></div>
+</div></div>
+</div>
+<a id="method_getRawAnswers"></a><div class="element clickable method public method_getRawAnswers " data-toggle="collapse" data-target=".method_getRawAnswers .collapse" title="public">
+<h2>Returns the answers in simple raw array format, without value processing etc.</h2>
+<pre>getRawAnswers() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Function may return more fields than just the answers.</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Field => Value array</div>
+</div></div>
+</div>
+<a id="method_getReceptionCode"></a><div class="element clickable method public method_getReceptionCode " data-toggle="collapse" data-target=".method_getReceptionCode .collapse" title="public">
+<h2>Return the \Gems_Util_ReceptionCode object</h2>
+<pre>getReceptionCode() : \Gems_Util_ReceptionCode</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Util_ReceptionCode</code>reception code</div>
+</div></div>
+</div>
+<a id="method_getRelation"></a><div class="element clickable method public method_getRelation " data-toggle="collapse" data-target=".method_getRelation .collapse" title="public">
+<h2>Get the relation object if any</h2>
+<pre>getRelation() : \Gems_Model_RespondentRelationInstance</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Model_RespondentRelationInstance</code></div>
+</div></div>
+</div>
+<a id="method_getRelationFieldId"></a><div class="element clickable method public method_getRelationFieldId " data-toggle="collapse" data-target=".method_getRelationFieldId .collapse" title="public">
+<h2>Return the id of the relation field</h2>
+<pre>getRelationFieldId() : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>This is not the id of the relation, but the id of the trackfield that defines
+the relation.</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>integer</code></div>
+</div></div>
+</div>
+<a id="method_getRelationFieldName"></a><div class="element clickable method public method_getRelationFieldName " data-toggle="collapse" data-target=".method_getRelationFieldName .collapse" title="public">
+<h2>Get the name of the relationfield for this token</h2>
+<pre>getRelationFieldName() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getRelationId"></a><div class="element clickable method public method_getRelationId " data-toggle="collapse" data-target=".method_getRelationId .collapse" title="public">
+<h2>Return the id of the relation currently assigned to this token</h2>
+<pre>getRelationId() : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>integer</code></div>
+</div></div>
+</div>
+<a id="method_getRespondent"></a><div class="element clickable method public method_getRespondent " data-toggle="collapse" data-target=".method_getRespondent .collapse" title="public">
+<h2>Get the respondent linked to this token</h2>
+<pre>getRespondent() : \Gems_Tracker_Respondent</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Respondent</code></div>
+</div></div>
+</div>
+<a id="method_getRespondentGender"></a><div class="element clickable method public method_getRespondentGender " data-toggle="collapse" data-target=".method_getRespondentGender .collapse" title="public">
+<h2>Returns the gender as a letter code</h2>
+<pre>getRespondentGender() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getRespondentGenderHello"></a><div class="element clickable method public method_getRespondentGenderHello " data-toggle="collapse" data-target=".method_getRespondentGenderHello .collapse" title="public">
+<h2>Returns the gender for use as part of a sentence, e.g. Dear Mr/Mrs</h2>
+<pre>getRespondentGenderHello() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getRespondentId"></a><div class="element clickable method public method_getRespondentId " data-toggle="collapse" data-target=".method_getRespondentId .collapse" title="public">
+<h2>getRespondentId()
+        </h2>
+<pre>getRespondentId() : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>integer</code></div>
+</div></div>
+</div>
+<a id="method_getRespondentLanguage"></a><div class="element clickable method public method_getRespondentLanguage " data-toggle="collapse" data-target=".method_getRespondentLanguage .collapse" title="public">
+<h2>Return the default language for the respondent</h2>
+<pre>getRespondentLanguage() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>Two letter language code</div>
+</div></div>
+</div>
+<a id="method_getRespondentLastName"></a><div class="element clickable method public method_getRespondentLastName " data-toggle="collapse" data-target=".method_getRespondentLastName .collapse" title="public">
+<h2>getRespondentLastName()
+        </h2>
+<pre>getRespondentLastName() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getRespondentName"></a><div class="element clickable method public method_getRespondentName " data-toggle="collapse" data-target=".method_getRespondentName .collapse" title="public">
+<h2>Get the name of the person answering this token</h2>
+<pre>getRespondentName() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Could be the patient or the relation when assigned to one</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getRespondentTrack"></a><div class="element clickable method public method_getRespondentTrack " data-toggle="collapse" data-target=".method_getRespondentTrack .collapse" title="public">
+<h2>getRespondentTrack()
+        </h2>
+<pre>getRespondentTrack() : \Gems_Tracker_RespondentTrack</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_RespondentTrack</code></div>
+</div></div>
+</div>
+<a id="method_getRespondentTrackId"></a><div class="element clickable method public method_getRespondentTrackId " data-toggle="collapse" data-target=".method_getRespondentTrackId .collapse" title="public">
+<h2>getRespondentTrackId()
+        </h2>
+<pre>getRespondentTrackId() : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>integer</code></div>
+</div></div>
+</div>
+<a id="method_getReturnUrl"></a><div class="element clickable method public method_getReturnUrl " data-toggle="collapse" data-target=".method_getReturnUrl .collapse" title="public">
+<h2>The full return url for a redirect</h2>
+<pre>getReturnUrl() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getRoundCode"></a><div class="element clickable method public method_getRoundCode " data-toggle="collapse" data-target=".method_getRoundCode .collapse" title="public">
+<h2>Get the round code for this token</h2>
+<pre>getRoundCode() : string | null</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code><code>null</code>Null when no round id is present or round no longer exists</div>
+</div></div>
+</div>
+<a id="method_getRoundDescription"></a><div class="element clickable method public method_getRoundDescription " data-toggle="collapse" data-target=".method_getRoundDescription .collapse" title="public">
+<h2>getRoundDescription()
+        </h2>
+<pre>getRoundDescription() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>Round description</div>
+</div></div>
+</div>
+<a id="method_getRoundId"></a><div class="element clickable method public method_getRoundId " data-toggle="collapse" data-target=".method_getRoundId .collapse" title="public">
+<h2>getRoundId()
+        </h2>
+<pre>getRoundId() : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>round id</div>
+</div></div>
+</div>
+<a id="method_getRoundOrder"></a><div class="element clickable method public method_getRoundOrder " data-toggle="collapse" data-target=".method_getRoundOrder .collapse" title="public">
+<h2>getRoundOrder()
+        </h2>
+<pre>getRoundOrder() : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>round order</div>
+</div></div>
+</div>
+<a id="method_getShowSnippetNames"></a><div class="element clickable method public method_getShowSnippetNames " data-toggle="collapse" data-target=".method_getShowSnippetNames .collapse" title="public">
+<h2>Returns a snippet name that can be used to display this token.</h2>
+<pre>getShowSnippetNames() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getStatus"></a><div class="element clickable method public method_getStatus " data-toggle="collapse" data-target=".method_getStatus .collapse" title="public">
+<h2>Returns a string that tells if the token is open, completed or any other
+status you might like. This will not be interpreted by the tracker it is
+for display purposes only</h2>
+<pre>getStatus() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>Token status description</div>
+</div></div>
+</div>
+<a id="method_getSubjectname"></a><div class="element clickable method public method_getSubjectname " data-toggle="collapse" data-target=".method_getSubjectname .collapse" title="public">
+<h2>Return the name of the respondent</h2>
+<pre>getSubjectname() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>To be used when there is a relation and you need to know the name of the respondent</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getSurvey"></a><div class="element clickable method public method_getSurvey " data-toggle="collapse" data-target=".method_getSurvey .collapse" title="public">
+<h2>getSurvey()
+        </h2>
+<pre>getSurvey() : \Gems_Tracker_Survey</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Survey</code></div>
+</div></div>
+</div>
+<a id="method_getSurveyAnswerModel"></a><div class="element clickable method public method_getSurveyAnswerModel " data-toggle="collapse" data-target=".method_getSurveyAnswerModel .collapse" title="public">
+<h2>getSurveyAnswerModel()
+        </h2>
+<pre>getSurveyAnswerModel(string $language) : \MUtil_Model_ModelAbstract</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$language</h4>
+<code>string</code><p>(ISO) language string</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\MUtil_Model_ModelAbstract</code></div>
+</div></div>
+</div>
+<a id="method_getSurveyId"></a><div class="element clickable method public method_getSurveyId " data-toggle="collapse" data-target=".method_getSurveyId .collapse" title="public">
+<h2>getSurveyId()
+        </h2>
+<pre>getSurveyId() : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>Gems survey id</div>
+</div></div>
+</div>
+<a id="method_getSurveyName"></a><div class="element clickable method public method_getSurveyName " data-toggle="collapse" data-target=".method_getSurveyName .collapse" title="public">
+<h2>getSurveyName()
+        </h2>
+<pre>getSurveyName() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>Name of the survey</div>
+</div></div>
+</div>
+<a id="method_getTokenCountUnanswered"></a><div class="element clickable method public method_getTokenCountUnanswered " data-toggle="collapse" data-target=".method_getTokenCountUnanswered .collapse" title="public">
+<h2>Returns the number of unanswered tokens for the person answering this token,
+minus this token itself</h2>
+<pre>getTokenCountUnanswered() : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>integer</code></div>
+</div></div>
+</div>
+<a id="method_getTokenId"></a><div class="element clickable method public method_getTokenId " data-toggle="collapse" data-target=".method_getTokenId .collapse" title="public">
+<h2>getTokenId()
+        </h2>
+<pre>getTokenId() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>token</div>
+</div></div>
+</div>
+<a id="method_getTrackEngine"></a><div class="element clickable method public method_getTrackEngine " data-toggle="collapse" data-target=".method_getTrackEngine .collapse" title="public">
+<h2>Get the track engine that generated this token</h2>
+<pre>getTrackEngine() : \Gems_Tracker_Engine_TrackEngineInterface</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Engine_TrackEngineInterface</code></div>
+</div></div>
+</div>
+<a id="method_getTrackId"></a><div class="element clickable method public method_getTrackId " data-toggle="collapse" data-target=".method_getTrackId .collapse" title="public">
+<h2>getTrackId()
+        </h2>
+<pre>getTrackId() : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>gems_tracks track id</div>
+</div></div>
+</div>
+<a id="method_getTrackName"></a><div class="element clickable method public method_getTrackName " data-toggle="collapse" data-target=".method_getTrackName .collapse" title="public">
+<h2>getTrackName()
+        </h2>
+<pre>getTrackName() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_getUrl"></a><div class="element clickable method public method_getUrl " data-toggle="collapse" data-target=".method_getUrl .collapse" title="public">
+<h2>getUrl()
+        </h2>
+<pre>getUrl(string $language, integer $userId) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$language</h4>
+<code>string</code><p>The language currently used by the user</p></div>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>The id of the gems user</p></div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code>\Gems_Tracker_Source_SurveyNotFoundException</code></th>
+<td></td>
+</tr></table>
+</div></div>
+</div>
+<a id="method_getValidFrom"></a><div class="element clickable method public method_getValidFrom " data-toggle="collapse" data-target=".method_getValidFrom .collapse" title="public">
+<h2>getValidFrom()
+        </h2>
+<pre>getValidFrom() : \MUtil_Date</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\MUtil_Date</code>Valid from as a date or null</div>
+</div></div>
+</div>
+<a id="method_getValidUntil"></a><div class="element clickable method public method_getValidUntil " data-toggle="collapse" data-target=".method_getValidUntil .collapse" title="public">
+<h2>getValidUntil()
+        </h2>
+<pre>getValidUntil() : \MUtil_Date</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\MUtil_Date</code>Valid until as a date or null</div>
+</div></div>
+</div>
+<a id="method_handleAfterCompletion"></a><div class="element clickable method public method_handleAfterCompletion " data-toggle="collapse" data-target=".method_handleAfterCompletion .collapse" title="public">
+<h2>Survey dependent calculations / answer changes that must occur after a survey is completed</h2>
+<pre>handleAfterCompletion() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>The changed values</div>
+</div></div>
+</div>
+<a id="method_handleBeforeAnswering"></a><div class="element clickable method public method_handleBeforeAnswering " data-toggle="collapse" data-target=".method_handleBeforeAnswering .collapse" title="public">
+<h2>Survey dependent calculations / answer changes that must occur after a survey is completed</h2>
+<pre>handleBeforeAnswering() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>The changed values</div>
+</div></div>
+</div>
+<a id="method_hasAnswersLoaded"></a><div class="element clickable method public method_hasAnswersLoaded " data-toggle="collapse" data-target=".method_hasAnswersLoaded .collapse" title="public">
+<h2>Returns true when the answers are loaded.</h2>
+<pre>hasAnswersLoaded() : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>There may not be any answers, but the attemt to retrieve them was made.</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_hasRedoCode"></a><div class="element clickable method public method_hasRedoCode " data-toggle="collapse" data-target=".method_hasRedoCode .collapse" title="public">
+<h2>hasRedoCode()
+        </h2>
+<pre>hasRedoCode() : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>deprecated</th>
+<td>Use the ReceptionCode->hasRedoCode</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_hasRedoCopyCode"></a><div class="element clickable method public method_hasRedoCopyCode " data-toggle="collapse" data-target=".method_hasRedoCopyCode .collapse" title="public">
+<h2>True if the reception code is a redo survey copy.</h2>
+<pre>hasRedoCopyCode() : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>deprecated</th>
+<td>Use the ReceptionCode->hasRedoCopyCode</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_hasRelation"></a><div class="element clickable method public method_hasRelation " data-toggle="collapse" data-target=".method_hasRelation .collapse" title="public">
+<h2>Is this token linked to a relation?</h2>
+<pre>hasRelation() : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_hasResult"></a><div class="element clickable method public method_hasResult " data-toggle="collapse" data-target=".method_hasResult .collapse" title="public">
+<h2>hasResult()
+        </h2>
+<pre>hasResult() : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_hasSuccesCode"></a><div class="element clickable method public method_hasSuccesCode " data-toggle="collapse" data-target=".method_hasSuccesCode .collapse" title="public">
+<h2>hasSuccesCode()
+        </h2>
+<pre>hasSuccesCode() : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>deprecated</th>
+<td>Use the ReceptionCode->isSuccess</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_inSource"></a><div class="element clickable method public method_inSource " data-toggle="collapse" data-target=".method_inSource .collapse" title="public">
+<h2>True is this token was exported to the source.</h2>
+<pre>inSource() : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_isCompleted"></a><div class="element clickable method public method_isCompleted " data-toggle="collapse" data-target=".method_isCompleted .collapse" title="public">
+<h2>isCompleted()
+        </h2>
+<pre>isCompleted() : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_isCurrentlyValid"></a><div class="element clickable method public method_isCurrentlyValid " data-toggle="collapse" data-target=".method_isCurrentlyValid .collapse" title="public">
+<h2>True when the valid from is set and in the past and the valid until is not set or is in the future</h2>
+<pre>isCurrentlyValid() : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_isExpired"></a><div class="element clickable method public method_isExpired " data-toggle="collapse" data-target=".method_isExpired .collapse" title="public">
+<h2>True when the valid until is set and is in the past</h2>
+<pre>isExpired() : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_isNotYetValid"></a><div class="element clickable method public method_isNotYetValid " data-toggle="collapse" data-target=".method_isNotYetValid .collapse" title="public">
+<h2>True when the valid from is in the future or not yet set</h2>
+<pre>isNotYetValid() : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_isValidFromManual"></a><div class="element clickable method public method_isValidFromManual " data-toggle="collapse" data-target=".method_isValidFromManual .collapse" title="public">
+<h2>isValidFromManual()
+        </h2>
+<pre>isValidFromManual() : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>True when this date was set by user input</div>
+</div></div>
+</div>
+<a id="method_isValidUntilManual"></a><div class="element clickable method public method_isValidUntilManual " data-toggle="collapse" data-target=".method_isValidUntilManual .collapse" title="public">
+<h2>isValidUntilManual()
+        </h2>
+<pre>isValidUntilManual() : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>True when this date was set by user input</div>
+</div></div>
+</div>
+<a id="method_refresh"></a><div class="element clickable method public method_refresh " data-toggle="collapse" data-target=".method_refresh .collapse" title="public">
+<h2>refresh()
+        </h2>
+<pre>refresh(array $gemsData<code> = null</code>) : \Gems_Tracker_Token</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$gemsData</h4>
+<code>array</code><p>Optional, the data refresh with, otherwise refresh from database.</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Tracker_Token</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_setCompletionTime"></a><div class="element clickable method public method_setCompletionTime " data-toggle="collapse" data-target=".method_setCompletionTime .collapse" title="public">
+<h2>setCompletionTime()
+        </h2>
+<pre>setCompletionTime(string|\MUtil_Date $completionTime, integer $userId) : \Gems_Tracker_Token</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$completionTime</h4>
+<code>string</code><code>\MUtil_Date</code><p>Completion time as a date or null</p></div>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>The current user</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Tracker_Token</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_setNextToken"></a><div class="element clickable method public method_setNextToken " data-toggle="collapse" data-target=".method_setNextToken .collapse" title="public">
+<h2>Sets the next token in this track</h2>
+<pre>setNextToken(\Gems_Tracker_Token $token) : \Gems_Tracker_Token</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>\Gems_Tracker_Token</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Tracker_Token</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_setRawAnswers"></a><div class="element clickable method public method_setRawAnswers " data-toggle="collapse" data-target=".method_setRawAnswers .collapse" title="public">
+<h2>Sets answers for this token to the values defined in the $answers array. Also handles updating the
+internal answercache if present</h2>
+<pre>setRawAnswers(array $answers) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$answers</h4>
+<code>array</code>
+</div>
+</div></div>
+</div>
+<a id="method_setReceptionCode"></a><div class="element clickable method public method_setReceptionCode " data-toggle="collapse" data-target=".method_setReceptionCode .collapse" title="public">
+<h2>Set the reception code for this token and make sure the necessary
+cascade to the source takes place.</h2>
+<pre>setReceptionCode(string $code, string $comment, integer $userId) : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$code</h4>
+<code>string</code><p>The new (non-success) reception code or a \Gems_Util_ReceptionCode object</p></div>
+<div class="subelement argument">
+<h4>$comment</h4>
+<code>string</code><p>Comment False values leave value unchanged</p></div>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>The current user</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>1 if the token has changed, 0 otherwise</div>
+</div></div>
+</div>
+<a id="method_setRoundDescription"></a><div class="element clickable method public method_setRoundDescription " data-toggle="collapse" data-target=".method_setRoundDescription .collapse" title="public">
+<h2>Set a round description for the token</h2>
+<pre>setRoundDescription(string $description, integer $userId) : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$description</h4>
+<code>string</code><p>The new round description</p></div>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>The current user</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>1 if data changed, 0 otherwise</div>
+</div></div>
+</div>
+<a id="method_setValidFrom"></a><div class="element clickable method public method_setValidFrom " data-toggle="collapse" data-target=".method_setValidFrom .collapse" title="public">
+<h2>setValidFrom()
+        </h2>
+<pre>setValidFrom(mixed $validFrom, mixed $validUntil, integer $userId) : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$validFrom</h4>
+<code>mixed</code><p>\Zend_Date or string</p></div>
+<div class="subelement argument">
+<h4>$validUntil</h4>
+<code>mixed</code><p>null, \Zend_Date or string. False values leave values unchangeds</p></div>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>The current user</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>1 if the token has changed, 0 otherwise</div>
+</div></div>
+</div>
+<a id="method__addRelation"></a><div class="element clickable method protected method__addRelation " data-toggle="collapse" data-target=".method__addRelation .collapse" title="protected">
+<h2>Add relation to the select statement</h2>
+<pre>_addRelation(\Gems_Tracker_Token_TokenSelect $select) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$select</h4>
+<code>\Gems_Tracker_Token_TokenSelect</code>
+</div>
+</div></div>
+</div>
+<a id="method__ensureRespondentData"></a><div class="element clickable method protected method__ensureRespondentData " data-toggle="collapse" data-target=".method__ensureRespondentData .collapse" title="protected">
+<h2>Makes sure the respondent data is part of the $this-&gt;_gemsData</h2>
+<pre>_ensureRespondentData() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method__getResultFieldLength"></a><div class="element clickable method protected method__getResultFieldLength " data-toggle="collapse" data-target=".method__getResultFieldLength .collapse" title="protected">
+<h2>The maximum length of the result field</h2>
+<pre>_getResultFieldLength() : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>integer</code></div>
+</div></div>
+</div>
+<a id="method__updateToken"></a><div class="element clickable method protected method__updateToken " data-toggle="collapse" data-target=".method__updateToken .collapse" title="protected">
+<h2>Update the token, both in the database and in memory.</h2>
+<pre>_updateToken(array $values, integer $userId) : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$values</h4>
+<code>array</code><p>The values that this token should be set to</p></div>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>The current user</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>1 if data changed, 0 otherwise</div>
+</div></div>
+</div>
+<a id="method_calculateReturnUrl"></a><div class="element clickable method protected method_calculateReturnUrl " data-toggle="collapse" data-target=".method_calculateReturnUrl .collapse" title="protected">
+<h2>Returns the full url Gems should forward to after survey completion.</h2>
+<pre>calculateReturnUrl() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>This fix allows multiple sites with multiple url's to share a single
+installation.</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_toResponseDatabase"></a><div class="element clickable method protected method_toResponseDatabase " data-toggle="collapse" data-target=".method_toResponseDatabase .collapse" title="protected">
+<h2>Handle sending responses to the response database (if used)</h2>
+<pre>toResponseDatabase(integer $userId) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Triggered by checkTokenCompletion</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>The id of the gems user</p></div>
+</div></div>
+</div>
+<h3>
+<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
+<a id="property_exists"> </a><div class="element clickable property public property_exists" data-toggle="collapse" data-target=".property_exists .collapse" title="public">
+<h2>True when the token does exist.</h2>
+<pre>$exists : boolean</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>true</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_translate"> </a><div class="element clickable property public property_translate" data-toggle="collapse" data-target=".property_translate .collapse" title="public">
+<h2>$translate</h2>
+<pre>$translate : \Zend_Translate</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__gemsData"> </a><div class="element clickable property protected property__gemsData" data-toggle="collapse" data-target=".property__gemsData .collapse" title="protected">
+<h2>The gems token data</h2>
+<pre>$_gemsData : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>array()</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__loopCheck"> </a><div class="element clickable property protected property__loopCheck" data-toggle="collapse" data-target=".property__loopCheck .collapse" title="protected">
+<h2>Helper var for preventing infinite loops</h2>
+<pre>$_loopCheck : boolean</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>false</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__relation"> </a><div class="element clickable property protected property__relation" data-toggle="collapse" data-target=".property__relation .collapse" title="protected">
+<h2>Holds the relation (if any) for this token</h2>
+<pre>$_relation : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__respondentObject"> </a><div class="element clickable property protected property__respondentObject" data-toggle="collapse" data-target=".property__respondentObject .collapse" title="protected">
+<h2>$_respondentObject</h2>
+<pre>$_respondentObject : \Gems_Tracker_Respondent</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__tokenId"> </a><div class="element clickable property protected property__tokenId" data-toggle="collapse" data-target=".property__tokenId .collapse" title="protected">
+<h2>The id of the token</h2>
+<pre>$_tokenId : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_db"> </a><div class="element clickable property protected property_db" data-toggle="collapse" data-target=".property_db .collapse" title="protected">
+<h2>$db</h2>
+<pre>$db : \Zend_Db_Adapter_Abstract</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_loader"> </a><div class="element clickable property protected property_loader" data-toggle="collapse" data-target=".property_loader .collapse" title="protected">
+<h2>$loader</h2>
+<pre>$loader : \Gems_Loader</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_locale"> </a><div class="element clickable property protected property_locale" data-toggle="collapse" data-target=".property_locale .collapse" title="protected">
+<h2>$locale</h2>
+<pre>$locale : \Zend_Locale</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_logger"> </a><div class="element clickable property protected property_logger" data-toggle="collapse" data-target=".property_logger .collapse" title="protected">
+<h2>Logger instance</h2>
+<pre>$logger : \Gems_Log</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_project"> </a><div class="element clickable property protected property_project" data-toggle="collapse" data-target=".property_project .collapse" title="protected">
+<h2>$project</h2>
+<pre>$project : \Gems_Project_ProjectSettings</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_respTrack"> </a><div class="element clickable property protected property_respTrack" data-toggle="collapse" data-target=".property_respTrack .collapse" title="protected">
+<h2>$respTrack</h2>
+<pre>$respTrack : \Gems_Tracker_RespondentTrack</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_resultFieldLength"> </a><div class="element clickable property protected property_resultFieldLength" data-toggle="collapse" data-target=".property_resultFieldLength .collapse" title="protected">
+<h2>The size of the result field, calculated from meta data when null,
+but can be set by project specific class to fixed value</h2>
+<pre>$resultFieldLength : integer</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_staticResultFieldLength"> </a><div class="element clickable property protected property_staticResultFieldLength" data-toggle="collapse" data-target=".property_staticResultFieldLength .collapse" title="protected">
+<h2>Cache for storing the calculation of the length</h2>
+<pre>$staticResultFieldLength : integer</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"><span class="label">Static</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_survey"> </a><div class="element clickable property protected property_survey" data-toggle="collapse" data-target=".property_survey .collapse" title="protected">
+<h2>$survey</h2>
+<pre>$survey : \Gems_Tracker_Survey</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_tracker"> </a><div class="element clickable property protected property_tracker" data-toggle="collapse" data-target=".property_tracker .collapse" title="protected">
+<h2>$tracker</h2>
+<pre>$tracker : \Gems_Tracker</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_util"> </a><div class="element clickable property protected property_util" data-toggle="collapse" data-target=".property_util .collapse" title="protected">
+<h2>$util</h2>
+<pre>$util : \Gems_Util</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__cache"> </a><div class="element clickable property private property__cache" data-toggle="collapse" data-target=".property__cache .collapse" title="private">
+<h2>Can hold any data the source likes to store for the token</h2>
+<pre>$_cache : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>array()</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__nextToken"> </a><div class="element clickable property private property__nextToken" data-toggle="collapse" data-target=".property__nextToken .collapse" title="private">
+<h2>$_nextToken</h2>
+<pre>$_nextToken : \Gems_Tracker_Token</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__previousToken"> </a><div class="element clickable property private property__previousToken" data-toggle="collapse" data-target=".property__previousToken .collapse" title="private">
+<h2>$_previousToken</h2>
+<pre>$_previousToken : \Gems_Tracker_Token</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__sourceDataRaw"> </a><div class="element clickable property private property__sourceDataRaw" data-toggle="collapse" data-target=".property__sourceDataRaw .collapse" title="private">
+<h2>The answers in raw format</h2>
+<pre>$_sourceDataRaw : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<h3>
+<i title="Constants" class="icon-custom icon-constant"></i> Constants</h3>
+<a id="constant_COMPLETION_DATACHANGE"> </a><div class="element clickable constant  constant_COMPLETION_DATACHANGE" data-toggle="collapse" data-target=".constant_COMPLETION_DATACHANGE .collapse" title="">
+<h2>COMPLETION_DATACHANGE</h2>
+<pre>COMPLETION_DATACHANGE = 1 </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_COMPLETION_EVENTCHANGE"> </a><div class="element clickable constant  constant_COMPLETION_EVENTCHANGE" data-toggle="collapse" data-target=".constant_COMPLETION_EVENTCHANGE .collapse" title="">
+<h2>COMPLETION_EVENTCHANGE</h2>
+<pre>COMPLETION_EVENTCHANGE = 2 </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_COMPLETION_NOCHANGE"> </a><div class="element clickable constant  constant_COMPLETION_NOCHANGE" data-toggle="collapse" data-target=".constant_COMPLETION_NOCHANGE .collapse" title="">
+<h2>COMPLETION_NOCHANGE</h2>
+<pre>COMPLETION_NOCHANGE = 0 </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:26+02:00.<br></footer></div>
+</div>
+</body>
+</html>

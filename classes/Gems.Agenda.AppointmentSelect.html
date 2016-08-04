@@ -1,0 +1,414 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » \Gems\Agenda\AppointmentSelect</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+<div class="btn-group visibility" data-toggle="buttons-checkbox">
+<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
+</div>
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+</div>
+<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+<li class="nav-header">
+<i title="Methods" class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public "><a href="#method___construct" title="__construct() :: "><span class="description">__construct()
+        </span><pre>__construct()</pre></a></li>
+<li class="method public "><a href="#method_afterRegistry" title="afterRegistry() :: Called after the check that all required registry values
+have been set correctly has run."><span class="description">Called after the check that all required registry values
+have been set correctly has run.</span><pre>afterRegistry()</pre></a></li>
+<li class="method public "><a href="#method_fetchAll" title="fetchAll() :: "><span class="description">fetchAll()
+        </span><pre>fetchAll()</pre></a></li>
+<li class="method public "><a href="#method_fetchOne" title="fetchOne() :: "><span class="description">fetchOne()
+        </span><pre>fetchOne()</pre></a></li>
+<li class="method public "><a href="#method_fetchRow" title="fetchRow() :: "><span class="description">fetchRow()
+        </span><pre>fetchRow()</pre></a></li>
+<li class="method public "><a href="#method_forFilter" title="forFilter() :: For a certain appointment filter"><span class="description">For a certain appointment filter</span><pre>forFilter()</pre></a></li>
+<li class="method public "><a href="#method_forFilterId" title="forFilterId() :: For a certain appointment filter"><span class="description">For a certain appointment filter</span><pre>forFilterId()</pre></a></li>
+<li class="method public "><a href="#method_forPeriod" title="forPeriod() :: "><span class="description">forPeriod()
+        </span><pre>forPeriod()</pre></a></li>
+<li class="method public "><a href="#method_forRespondent" title="forRespondent() :: For a certain respondent / organization"><span class="description">For a certain respondent / organization</span><pre>forRespondent()</pre></a></li>
+<li class="method public "><a href="#method_fromDate" title="fromDate() :: "><span class="description">fromDate()
+        </span><pre>fromDate()</pre></a></li>
+<li class="method public "><a href="#method_getSelect" title="getSelect() :: Get the constructed select statement"><span class="description">Get the constructed select statement</span><pre>getSelect()</pre></a></li>
+<li class="method public "><a href="#method_onlyActive" title="onlyActive() :: Select only active agenda items"><span class="description">Select only active agenda items</span><pre>onlyActive()</pre></a></li>
+<li class="method public "><a href="#method_order" title="order() :: "><span class="description">order()
+        </span><pre>order()</pre></a></li>
+<li class="method public "><a href="#method_uniqueForTrackId" title="uniqueForTrackId() :: Add a filter for the appointment id's currently used in tracks with this track id"><span class="description">Add a filter for the appointment id's currently used in tracks with this track id</span><pre>uniqueForTrackId()</pre></a></li>
+<li class="method public "><a href="#method_uniqueInTrackInstance" title="uniqueInTrackInstance() :: Add a filter for the appointment id's currently used in this track"><span class="description">Add a filter for the appointment id's currently used in this track</span><pre>uniqueInTrackInstance()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Properties" class="icon-custom icon-property"></i> Properties
+                    <ul></ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="property protected "><a href="#property__select" title="$_select() :: "><span class="description"></span><pre>$_select</pre></a></li>
+<li class="property protected "><a href="#property_agenda" title="$agenda() :: "><span class="description"></span><pre>$agenda</pre></a></li>
+<li class="property protected "><a href="#property_db" title="$db() :: "><span class="description"></span><pre>$db</pre></a></li>
+<li class="property protected "><a href="#property_fields" title="$fields() :: The fields returned by the query"><span class="description"></span><pre>$fields</pre></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a xmlns:php="http://php.net/xsl" id="\Gems\Agenda\AppointmentSelect"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+<li>
+<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li><a href="../namespaces/Gems.html">Gems</a></li>
+<li>
+<span class="divider">\</span><a href="../namespaces/Gems.Agenda.html">Agenda</a>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Gems.Agenda.AppointmentSelect.html">AppointmentSelect</a>
+</li>
+</ul>
+<div xmlns:php="http://php.net/xsl" class="element class">
+<p class="short_description"></p>
+<div class="details">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Gems.Agenda.html">Gems</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Agenda</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2014 Erasmus MC</td>
+</tr>
+<tr>
+<th>license</th>
+<td><a href="http://opensource.org/licenses/BSD-3-Clause">New BSD License</a></td>
+</tr>
+<tr>
+<th>since</th>
+<td>Class available since version 1.6.5 5-mrt-2015 11:29:20</td>
+</tr>
+</table>
+<h3>
+<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
+<a id="method___construct"></a><div class="element clickable method public method___construct " data-toggle="collapse" data-target=".method___construct .collapse" title="public">
+<h2>__construct()
+        </h2>
+<pre>__construct(string|array $fields<code> = null</code>) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$fields</h4>
+<code>string</code><code>array</code><p>Optional select fieldlist</p></div>
+</div></div>
+</div>
+<a id="method_afterRegistry"></a><div class="element clickable method public method_afterRegistry " data-toggle="collapse" data-target=".method_afterRegistry .collapse" title="public">
+<h2>Called after the check that all required registry values
+have been set correctly has run.</h2>
+<pre>afterRegistry() : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_fetchAll"></a><div class="element clickable method public method_fetchAll " data-toggle="collapse" data-target=".method_fetchAll .collapse" title="public">
+<h2>fetchAll()
+        </h2>
+<pre>fetchAll() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_fetchOne"></a><div class="element clickable method public method_fetchOne " data-toggle="collapse" data-target=".method_fetchOne .collapse" title="public">
+<h2>fetchOne()
+        </h2>
+<pre>fetchOne() : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>mixed</code></div>
+</div></div>
+</div>
+<a id="method_fetchRow"></a><div class="element clickable method public method_fetchRow " data-toggle="collapse" data-target=".method_fetchRow .collapse" title="public">
+<h2>fetchRow()
+        </h2>
+<pre>fetchRow() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_forFilter"></a><div class="element clickable method public method_forFilter " data-toggle="collapse" data-target=".method_forFilter .collapse" title="public">
+<h2>For a certain appointment filter</h2>
+<pre>forFilter(\Gems\Agenda\AppointmentFilterInterface $filter) : \Gems\Agenda\AppointmentSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Add's the filter sql where and remembers the filter</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$filter</h4>
+<code>\Gems\Agenda\AppointmentFilterInterface</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems\Agenda\AppointmentSelect</code></div>
+</div></div>
+</div>
+<a id="method_forFilterId"></a><div class="element clickable method public method_forFilterId " data-toggle="collapse" data-target=".method_forFilterId .collapse" title="public">
+<h2>For a certain appointment filter</h2>
+<pre>forFilterId(integer $filterId) : \Gems\Agenda\AppointmentSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$filterId</h4>
+<code>integer</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems\Agenda\AppointmentSelect</code></div>
+</div></div>
+</div>
+<a id="method_forPeriod"></a><div class="element clickable method public method_forPeriod " data-toggle="collapse" data-target=".method_forPeriod .collapse" title="public">
+<h2>forPeriod()
+        </h2>
+<pre>forPeriod(\MUtil_Date $from<code> = null</code>, \MUtil_Date $until<code> = null</code>, boolean $sortAsc<code> = true</code>) : \Gems\Agenda\AppointmentSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$from</h4>
+<code>\MUtil_Date</code><p>Optional date after which the appointment must occur</p></div>
+<div class="subelement argument">
+<h4>$until</h4>
+<code>\MUtil_Date</code><p>Optional date before which the appointment must occur</p></div>
+<div class="subelement argument">
+<h4>$sortAsc</h4>
+<code>boolean</code><p>Retrieve first or last appointment first</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems\Agenda\AppointmentSelect</code></div>
+</div></div>
+</div>
+<a id="method_forRespondent"></a><div class="element clickable method public method_forRespondent " data-toggle="collapse" data-target=".method_forRespondent .collapse" title="public">
+<h2>For a certain respondent / organization</h2>
+<pre>forRespondent(integer $respondentId, integer $organizationId) : \Gems\Agenda\AppointmentSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$respondentId</h4>
+<code>integer</code>
+</div>
+<div class="subelement argument">
+<h4>$organizationId</h4>
+<code>integer</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems\Agenda\AppointmentSelect</code></div>
+</div></div>
+</div>
+<a id="method_fromDate"></a><div class="element clickable method public method_fromDate " data-toggle="collapse" data-target=".method_fromDate .collapse" title="public">
+<h2>fromDate()
+        </h2>
+<pre>fromDate(mixed $from<code> = null</code>, string $oper<code> = '&gt;='</code>) : \Gems\Agenda\AppointmentSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>deprecated</th>
+<td>since 1.7.1 replace by forPeriod()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$from</h4>
+<code>mixed</code><p>Optional date or appointment after which the appointment must occur</p></div>
+<div class="subelement argument">
+<h4>$oper</h4>
+<code>string</code><p>Comparison operator for the from date: <= < = > >=</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems\Agenda\AppointmentSelect</code></div>
+</div></div>
+</div>
+<a id="method_getSelect"></a><div class="element clickable method public method_getSelect " data-toggle="collapse" data-target=".method_getSelect .collapse" title="public">
+<h2>Get the constructed select statement</h2>
+<pre>getSelect() : \Zend_Db_Select</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Zend_Db_Select</code></div>
+</div></div>
+</div>
+<a id="method_onlyActive"></a><div class="element clickable method public method_onlyActive " data-toggle="collapse" data-target=".method_onlyActive .collapse" title="public">
+<h2>Select only active agenda items</h2>
+<pre>onlyActive() : \Gems\Agenda\AppointmentSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems\Agenda\AppointmentSelect</code></div>
+</div></div>
+</div>
+<a id="method_order"></a><div class="element clickable method public method_order " data-toggle="collapse" data-target=".method_order .collapse" title="public">
+<h2>order()
+        </h2>
+<pre>order(mixed $spec) : \Gems\Agenda\AppointmentSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$spec</h4>
+<code>mixed</code><p>The column(s) and direction to order by.</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems\Agenda\AppointmentSelect</code></div>
+</div></div>
+</div>
+<a id="method_uniqueForTrackId"></a><div class="element clickable method public method_uniqueForTrackId " data-toggle="collapse" data-target=".method_uniqueForTrackId .collapse" title="public">
+<h2>Add a filter for the appointment id's currently used in tracks with this track id</h2>
+<pre>uniqueForTrackId(integer $trackId, integer $respTrackId, array $previousAppIds) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$trackId</h4>
+<code>integer</code><p>The current trrack id</p></div>
+<div class="subelement argument">
+<h4>$respTrackId</h4>
+<code>integer</code><p>The current respondent track id or null for new tracks</p></div>
+<div class="subelement argument">
+<h4>$previousAppIds</h4>
+<code>array</code><p>array of gap_id_appointment</p></div>
+</div></div>
+</div>
+<a id="method_uniqueInTrackInstance"></a><div class="element clickable method public method_uniqueInTrackInstance " data-toggle="collapse" data-target=".method_uniqueInTrackInstance .collapse" title="public">
+<h2>Add a filter for the appointment id's currently used in this track</h2>
+<pre>uniqueInTrackInstance(array $previousAppIds) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$previousAppIds</h4>
+<code>array</code><p>array of gap_id_appointment</p></div>
+</div></div>
+</div>
+<h3>
+<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
+<a id="property__select"> </a><div class="element clickable property protected property__select" data-toggle="collapse" data-target=".property__select .collapse" title="protected">
+<h2>$_select</h2>
+<pre>$_select : \Zend_Db_Select</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_agenda"> </a><div class="element clickable property protected property_agenda" data-toggle="collapse" data-target=".property_agenda .collapse" title="protected">
+<h2>$agenda</h2>
+<pre>$agenda : \Gems_Agenda</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_db"> </a><div class="element clickable property protected property_db" data-toggle="collapse" data-target=".property_db .collapse" title="protected">
+<h2>$db</h2>
+<pre>$db : \Zend_Db_Adapter_Abstract</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_fields"> </a><div class="element clickable property protected property_fields" data-toggle="collapse" data-target=".property_fields .collapse" title="protected">
+<h2>The fields returned by the query</h2>
+<pre>$fields : string | array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>"*"</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:53+02:00.<br></footer></div>
+</div>
+</body>
+</html>

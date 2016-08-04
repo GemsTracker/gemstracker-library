@@ -1,0 +1,776 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » \Gems_Events</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+<div class="btn-group visibility" data-toggle="buttons-checkbox">
+<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
+</div>
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+</div>
+<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+<li class="nav-header">
+<i title="Methods" class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public inherited"><a href="#method___construct" title="__construct() :: "><span class="description">__construct()
+        </span><pre>__construct()</pre></a></li>
+<li class="method public inherited"><a href="#method___get" title="__get() :: "><span class="description">__get()
+        </span><pre>__get()</pre></a></li>
+<li class="method public inherited"><a href="#method_addPrefixPath" title="addPrefixPath() :: Add prefixed paths to the registry of paths"><span class="description">Add prefixed paths to the registry of paths</span><pre>addPrefixPath()</pre></a></li>
+<li class="method public inherited"><a href="#method_afterRegistry" title="afterRegistry() :: Called after the check that all required registry values
+have been set correctly has run."><span class="description">Called after the check that all required registry values
+have been set correctly has run.</span><pre>afterRegistry()</pre></a></li>
+<li class="method public inherited"><a href="#method_answerRegistryRequest" title="answerRegistryRequest() :: Allows the loader to set resources."><span class="description">Allows the loader to set resources.</span><pre>answerRegistryRequest()</pre></a></li>
+<li class="method public inherited"><a href="#method_checkRegistryRequestsAnswers" title="checkRegistryRequestsAnswers() :: Should be called after answering the request to allow the Target
+to check if all required registry values have been set correctly."><span class="description">Should be called after answering the request to allow the Target
+to check if all required registry values have been set correctly.</span><pre>checkRegistryRequestsAnswers()</pre></a></li>
+<li class="method public inherited"><a href="#method_getRegistryRequests" title="getRegistryRequests() :: Allows the loader to know the resources to set."><span class="description">Allows the loader to know the resources to set.</span><pre>getRegistryRequests()</pre></a></li>
+<li class="method public "><a href="#method_listRoundChangedEvents" title="listRoundChangedEvents() :: "><span class="description">listRoundChangedEvents()
+        </span><pre>listRoundChangedEvents()</pre></a></li>
+<li class="method public "><a href="#method_listSurveyBeforeAnsweringEvents" title="listSurveyBeforeAnsweringEvents() :: "><span class="description">listSurveyBeforeAnsweringEvents()
+        </span><pre>listSurveyBeforeAnsweringEvents()</pre></a></li>
+<li class="method public "><a href="#method_listSurveyCompletionEvents" title="listSurveyCompletionEvents() :: "><span class="description">listSurveyCompletionEvents()
+        </span><pre>listSurveyCompletionEvents()</pre></a></li>
+<li class="method public "><a href="#method_listSurveyDisplayEvents" title="listSurveyDisplayEvents() :: "><span class="description">listSurveyDisplayEvents()
+        </span><pre>listSurveyDisplayEvents()</pre></a></li>
+<li class="method public "><a href="#method_listTrackCalculationEvents" title="listTrackCalculationEvents() :: "><span class="description">listTrackCalculationEvents()
+        </span><pre>listTrackCalculationEvents()</pre></a></li>
+<li class="method public "><a href="#method_listTrackCompletionEvents" title="listTrackCompletionEvents() :: "><span class="description">listTrackCompletionEvents()
+        </span><pre>listTrackCompletionEvents()</pre></a></li>
+<li class="method public "><a href="#method_listTrackFieldUpdateEvents" title="listTrackFieldUpdateEvents() :: "><span class="description">listTrackFieldUpdateEvents()
+        </span><pre>listTrackFieldUpdateEvents()</pre></a></li>
+<li class="method public "><a href="#method_loadRoundChangedEvent" title="loadRoundChangedEvent() :: "><span class="description">loadRoundChangedEvent()
+        </span><pre>loadRoundChangedEvent()</pre></a></li>
+<li class="method public "><a href="#method_loadSurveyBeforeAnsweringEvent" title="loadSurveyBeforeAnsweringEvent() :: "><span class="description">loadSurveyBeforeAnsweringEvent()
+        </span><pre>loadSurveyBeforeAnsweringEvent()</pre></a></li>
+<li class="method public "><a href="#method_loadSurveyCompletionEvent" title="loadSurveyCompletionEvent() :: "><span class="description">loadSurveyCompletionEvent()
+        </span><pre>loadSurveyCompletionEvent()</pre></a></li>
+<li class="method public "><a href="#method_loadSurveyDisplayEvent" title="loadSurveyDisplayEvent() :: "><span class="description">loadSurveyDisplayEvent()
+        </span><pre>loadSurveyDisplayEvent()</pre></a></li>
+<li class="method public "><a href="#method_loadTrackCalculationEvent" title="loadTrackCalculationEvent() :: "><span class="description">loadTrackCalculationEvent()
+        </span><pre>loadTrackCalculationEvent()</pre></a></li>
+<li class="method public "><a href="#method_loadTrackCompletionEvent" title="loadTrackCompletionEvent() :: "><span class="description">loadTrackCompletionEvent()
+        </span><pre>loadTrackCompletionEvent()</pre></a></li>
+<li class="method public "><a href="#method_loadTrackFieldUpdateEvent" title="loadTrackFieldUpdateEvent() :: "><span class="description">loadTrackFieldUpdateEvent()
+        </span><pre>loadTrackFieldUpdateEvent()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="method protected inherited"><a href="#method__cascadedDirs" title="_cascadedDirs() :: Add a subdirectory / sub name to a list of class load paths"><span class="description">Add a subdirectory / sub name to a list of class load paths</span><pre>_cascadedDirs()</pre></a></li>
+<li class="method protected inherited"><a href="#method__getClass" title="_getClass() :: Returns $this-&gt;$name, creating the item if it does not yet exist."><span class="description">Returns $this-&gt;$name, creating the item if it does not yet exist.</span><pre>_getClass()</pre></a></li>
+<li class="method protected "><a href="#method__getEventClass" title="_getEventClass() :: Lookup event class for an event type. This class or interfce should at the very least
+implement the EventInterface."><span class="description">Lookup event class for an event type. This class or interfce should at the very least
+implement the EventInterface.</span><pre>_getEventClass()</pre></a></li>
+<li class="method protected "><a href="#method__getEventDirs" title="_getEventDirs() :: "><span class="description">_getEventDirs()
+        </span><pre>_getEventDirs()</pre></a></li>
+<li class="method protected "><a href="#method__listEvents" title="_listEvents() :: Returns a list of selectable events with an empty element as the first option."><span class="description">Returns a list of selectable events with an empty element as the first option.</span><pre>_listEvents()</pre></a></li>
+<li class="method protected inherited"><a href="#method__loadClass" title="_loadClass() :: Create or loads the class. When only loading, this function returns a StaticCall object that
+can be invoked lazely."><span class="description">Create or loads the class. When only loading, this function returns a StaticCall object that
+can be invoked lazely.</span><pre>_loadClass()</pre></a></li>
+<li class="method protected "><a href="#method__loadEvent" title="_loadEvent() :: Loads and initiates an event class and returns the class (without triggering the event itself)."><span class="description">Loads and initiates an event class and returns the class (without triggering the event itself).</span><pre>_loadEvent()</pre></a></li>
+<li class="method protected inherited"><a href="#method_filterRequestNames" title="filterRequestNames() :: Filters the names that should not be requested."><span class="description">Filters the names that should not be requested.</span><pre>filterRequestNames()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Properties" class="icon-custom icon-property"></i> Properties
+                    <ul></ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="property protected "><a href="#property__dirs" title="$_dirs() :: The prefix/path location to look for classes."><span class="description"></span><pre>$_dirs</pre></a></li>
+<li class="property protected "><a href="#property__eventClasses" title="$_eventClasses() :: Each event type must implement an event class or interface derived
+from EventInterface specified in this array."><span class="description"></span><pre>$_eventClasses</pre></a></li>
+<li class="property protected "><a href="#property__loader" title="$_loader() :: "><span class="description"></span><pre>$_loader</pre></a></li>
+<li class="property protected "><a href="#property_cascade" title="$cascade() :: Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for."><span class="description"></span><pre>$cascade</pre></a></li>
+<li class="property protected "><a href="#property_util" title="$util() :: "><span class="description"></span><pre>$util</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Constants" class="icon-custom icon-constant"></i> Constants
+                    <ul>
+<li class="constant  "><a href="#constant_ROUND_CHANGED_EVENT" title="ROUND_CHANGED_EVENT() :: "><span class="description">ROUND_CHANGED_EVENT</span><pre>ROUND_CHANGED_EVENT</pre></a></li>
+<li class="constant  "><a href="#constant_SURVEY_BEFORE_ANSWERING_EVENT" title="SURVEY_BEFORE_ANSWERING_EVENT() :: "><span class="description">SURVEY_BEFORE_ANSWERING_EVENT</span><pre>SURVEY_BEFORE_ANSWERING_EVENT</pre></a></li>
+<li class="constant  "><a href="#constant_SURVEY_COMPLETION_EVENT" title="SURVEY_COMPLETION_EVENT() :: "><span class="description">SURVEY_COMPLETION_EVENT</span><pre>SURVEY_COMPLETION_EVENT</pre></a></li>
+<li class="constant  "><a href="#constant_SURVEY_DISPLAY_EVENT" title="SURVEY_DISPLAY_EVENT() :: "><span class="description">SURVEY_DISPLAY_EVENT</span><pre>SURVEY_DISPLAY_EVENT</pre></a></li>
+<li class="constant  "><a href="#constant_TRACK_CALCULATION_EVENT" title="TRACK_CALCULATION_EVENT() :: "><span class="description">TRACK_CALCULATION_EVENT</span><pre>TRACK_CALCULATION_EVENT</pre></a></li>
+<li class="constant  "><a href="#constant_TRACK_COMPLETION_EVENT" title="TRACK_COMPLETION_EVENT() :: "><span class="description">TRACK_COMPLETION_EVENT</span><pre>TRACK_COMPLETION_EVENT</pre></a></li>
+<li class="constant  "><a href="#constant_TRACK_FIELDUPDATE_EVENT" title="TRACK_FIELDUPDATE_EVENT() :: "><span class="description">TRACK_FIELDUPDATE_EVENT</span><pre>TRACK_FIELDUPDATE_EVENT</pre></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a xmlns:php="http://php.net/xsl" id="\Gems_Events"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+<li>
+<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Gems_Events.html">Gems_Events</a>
+</li>
+</ul>
+<div xmlns:php="http://php.net/xsl" class="element class">
+<p class="short_description">Per project overruleable event processing engine</p>
+<div class="details">
+<div class="long_description"><p>As these classes may need setting of values this subclass implements the
+checkRegistryRequestsAnswers() easy access to resources.</p></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Gems.Event.html">Gems</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Event</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2011 Erasmus MC</td>
+</tr>
+<tr>
+<th>license</th>
+<td><a href="http://opensource.org/licenses/BSD-3-Clause">New BSD License</a></td>
+</tr>
+<tr>
+<th>since</th>
+<td>Class available since version 1.4</td>
+</tr>
+<tr>
+<th>inherited_from</th>
+<td>\Gems_Loader_TargetLoaderAbstract</td>
+</tr>
+</table>
+<h3>
+<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
+<a id="method___construct"></a><div class="element clickable method public method___construct inherited" data-toggle="collapse" data-target=".method___construct .collapse" title="public">
+<h2>__construct()
+        </h2>
+<pre>__construct(mixed $container, array $dirs) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$container</h4>
+<code>mixed</code><p>A container acting as source for \MUtil_Registry_Source</p></div>
+<div class="subelement argument">
+<h4>$dirs</h4>
+<code>array</code><p>The directories where to look for requested classes</p></div>
+</div></div>
+</div>
+<a id="method___get"></a><div class="element clickable method public method___get inherited" data-toggle="collapse" data-target=".method___get .collapse" title="public">
+<h2>__get()
+        </h2>
+<pre>__get($name) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$name</h4></div>
+</div></div>
+</div>
+<a id="method_addPrefixPath"></a><div class="element clickable method public method_addPrefixPath inherited" data-toggle="collapse" data-target=".method_addPrefixPath .collapse" title="public">
+<h2>Add prefixed paths to the registry of paths</h2>
+<pre>addPrefixPath(string $prefix, $path, boolean $prepend<code> = true</code>) : \Gems_Loader_LoaderAbstract</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$prefix</h4>
+<code>string</code>
+</div>
+<div class="subelement argument"><h4>$path</h4></div>
+<div class="subelement argument">
+<h4>$prepend</h4>
+<code>boolean</code><p>Put path at the beginning of the stack (has no effect when prefix / dir already set)</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Loader_LoaderAbstract</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_afterRegistry"></a><div class="element clickable method public method_afterRegistry inherited" data-toggle="collapse" data-target=".method_afterRegistry .collapse" title="public">
+<h2>Called after the check that all required registry values
+have been set correctly has run.</h2>
+<pre>afterRegistry() : void</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_answerRegistryRequest"></a><div class="element clickable method public method_answerRegistryRequest inherited" data-toggle="collapse" data-target=".method_answerRegistryRequest .collapse" title="public">
+<h2>Allows the loader to set resources.</h2>
+<pre>answerRegistryRequest(string $name, mixed $resource) : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code><p>Name of resource to set</p></div>
+<div class="subelement argument">
+<h4>$resource</h4>
+<code>mixed</code><p>The resource.</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>True if $resource was OK</div>
+</div></div>
+</div>
+<a id="method_checkRegistryRequestsAnswers"></a><div class="element clickable method public method_checkRegistryRequestsAnswers inherited" data-toggle="collapse" data-target=".method_checkRegistryRequestsAnswers .collapse" title="public">
+<h2>Should be called after answering the request to allow the Target
+to check if all required registry values have been set correctly.</h2>
+<pre>checkRegistryRequestsAnswers() : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>False if required values are missing.</div>
+</div></div>
+</div>
+<a id="method_getRegistryRequests"></a><div class="element clickable method public method_getRegistryRequests inherited" data-toggle="collapse" data-target=".method_getRegistryRequests .collapse" title="public">
+<h2>Allows the loader to know the resources to set.</h2>
+<pre>getRegistryRequests() : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Returns those object variables defined by the subclass but not at the level of this definition.</p>
+<p>Can be overruled.</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>of string names</div>
+</div></div>
+</div>
+<a id="method_listRoundChangedEvents"></a><div class="element clickable method public method_listRoundChangedEvents " data-toggle="collapse" data-target=".method_listRoundChangedEvents .collapse" title="public">
+<h2>listRoundChangedEvents()
+        </h2>
+<pre>listRoundChangedEvents() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>eventname => string</div>
+</div></div>
+</div>
+<a id="method_listSurveyBeforeAnsweringEvents"></a><div class="element clickable method public method_listSurveyBeforeAnsweringEvents " data-toggle="collapse" data-target=".method_listSurveyBeforeAnsweringEvents .collapse" title="public">
+<h2>listSurveyBeforeAnsweringEvents()
+        </h2>
+<pre>listSurveyBeforeAnsweringEvents() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>eventname => string</div>
+</div></div>
+</div>
+<a id="method_listSurveyCompletionEvents"></a><div class="element clickable method public method_listSurveyCompletionEvents " data-toggle="collapse" data-target=".method_listSurveyCompletionEvents .collapse" title="public">
+<h2>listSurveyCompletionEvents()
+        </h2>
+<pre>listSurveyCompletionEvents() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>eventname => string</div>
+</div></div>
+</div>
+<a id="method_listSurveyDisplayEvents"></a><div class="element clickable method public method_listSurveyDisplayEvents " data-toggle="collapse" data-target=".method_listSurveyDisplayEvents .collapse" title="public">
+<h2>listSurveyDisplayEvents()
+        </h2>
+<pre>listSurveyDisplayEvents() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>eventname => string</div>
+</div></div>
+</div>
+<a id="method_listTrackCalculationEvents"></a><div class="element clickable method public method_listTrackCalculationEvents " data-toggle="collapse" data-target=".method_listTrackCalculationEvents .collapse" title="public">
+<h2>listTrackCalculationEvents()
+        </h2>
+<pre>listTrackCalculationEvents() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>eventname => string</div>
+</div></div>
+</div>
+<a id="method_listTrackCompletionEvents"></a><div class="element clickable method public method_listTrackCompletionEvents " data-toggle="collapse" data-target=".method_listTrackCompletionEvents .collapse" title="public">
+<h2>listTrackCompletionEvents()
+        </h2>
+<pre>listTrackCompletionEvents() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>eventname => string</div>
+</div></div>
+</div>
+<a id="method_listTrackFieldUpdateEvents"></a><div class="element clickable method public method_listTrackFieldUpdateEvents " data-toggle="collapse" data-target=".method_listTrackFieldUpdateEvents .collapse" title="public">
+<h2>listTrackFieldUpdateEvents()
+        </h2>
+<pre>listTrackFieldUpdateEvents() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>eventname => string</div>
+</div></div>
+</div>
+<a id="method_loadRoundChangedEvent"></a><div class="element clickable method public method_loadRoundChangedEvent " data-toggle="collapse" data-target=".method_loadRoundChangedEvent .collapse" title="public">
+<h2>loadRoundChangedEvent()
+        </h2>
+<pre>loadRoundChangedEvent(string $eventName) : \Gems_Event_RoundChangedEventInterface</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$eventName</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Event_RoundChangedEventInterface</code></div>
+</div></div>
+</div>
+<a id="method_loadSurveyBeforeAnsweringEvent"></a><div class="element clickable method public method_loadSurveyBeforeAnsweringEvent " data-toggle="collapse" data-target=".method_loadSurveyBeforeAnsweringEvent .collapse" title="public">
+<h2>loadSurveyBeforeAnsweringEvent()
+        </h2>
+<pre>loadSurveyBeforeAnsweringEvent(string $eventName) : \Gems_Event_SurveyBeforeAnsweringEventInterface</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$eventName</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Event_SurveyBeforeAnsweringEventInterface</code></div>
+</div></div>
+</div>
+<a id="method_loadSurveyCompletionEvent"></a><div class="element clickable method public method_loadSurveyCompletionEvent " data-toggle="collapse" data-target=".method_loadSurveyCompletionEvent .collapse" title="public">
+<h2>loadSurveyCompletionEvent()
+        </h2>
+<pre>loadSurveyCompletionEvent(string $eventName) : \Gems_Event_SurveyCompletedEventInterface</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$eventName</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Event_SurveyCompletedEventInterface</code></div>
+</div></div>
+</div>
+<a id="method_loadSurveyDisplayEvent"></a><div class="element clickable method public method_loadSurveyDisplayEvent " data-toggle="collapse" data-target=".method_loadSurveyDisplayEvent .collapse" title="public">
+<h2>loadSurveyDisplayEvent()
+        </h2>
+<pre>loadSurveyDisplayEvent(string $eventName) : \Gems_Event_SurveyDisplayEventInterface</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$eventName</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Event_SurveyDisplayEventInterface</code></div>
+</div></div>
+</div>
+<a id="method_loadTrackCalculationEvent"></a><div class="element clickable method public method_loadTrackCalculationEvent " data-toggle="collapse" data-target=".method_loadTrackCalculationEvent .collapse" title="public">
+<h2>loadTrackCalculationEvent()
+        </h2>
+<pre>loadTrackCalculationEvent(string $eventName) : \Gems_Event_TrackCalculationEventInterface</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$eventName</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Event_TrackCalculationEventInterface</code></div>
+</div></div>
+</div>
+<a id="method_loadTrackCompletionEvent"></a><div class="element clickable method public method_loadTrackCompletionEvent " data-toggle="collapse" data-target=".method_loadTrackCompletionEvent .collapse" title="public">
+<h2>loadTrackCompletionEvent()
+        </h2>
+<pre>loadTrackCompletionEvent(string $eventName) : \Gems_Event_TrackCompletedEventInterface</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$eventName</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Event_TrackCompletedEventInterface</code></div>
+</div></div>
+</div>
+<a id="method_loadTrackFieldUpdateEvent"></a><div class="element clickable method public method_loadTrackFieldUpdateEvent " data-toggle="collapse" data-target=".method_loadTrackFieldUpdateEvent .collapse" title="public">
+<h2>loadTrackFieldUpdateEvent()
+        </h2>
+<pre>loadTrackFieldUpdateEvent(string $eventName) : \Gems_TrackFieldUpdateEventInterface</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$eventName</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_TrackFieldUpdateEventInterface</code></div>
+</div></div>
+</div>
+<a id="method__cascadedDirs"></a><div class="element clickable method protected method__cascadedDirs inherited" data-toggle="collapse" data-target=".method__cascadedDirs .collapse" title="protected">
+<h2>Add a subdirectory / sub name to a list of class load paths</h2>
+<pre>_cascadedDirs(array $dirs, string $cascade, boolean $fullClassnameFallback<code> = true</code>) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$dirs</h4>
+<code>array</code><p>prefix => path</p></div>
+<div class="subelement argument">
+<h4>$cascade</h4>
+<code>string</code><p>The sub directories to cascade to</p></div>
+<div class="subelement argument">
+<h4>$fullClassnameFallback</h4>
+<code>boolean</code><p>Allows full class name specification instead of just plugin name part</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>prefix => path</div>
+</div></div>
+</div>
+<a id="method__getClass"></a><div class="element clickable method protected method__getClass inherited" data-toggle="collapse" data-target=".method__getClass .collapse" title="protected">
+<h2>Returns $this-&gt;$name, creating the item if it does not yet exist.</h2>
+<pre>_getClass(string $name, string $className<code> = null</code>, array $arguments<code> = array()</code>) : mixed</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code><p>The $name of the variable to store this object in.</p></div>
+<div class="subelement argument">
+<h4>$className</h4>
+<code>string</code><p>Class name or null if the same as $name, prepending $this->_dirs.</p></div>
+<div class="subelement argument">
+<h4>$arguments</h4>
+<code>array</code><p>Class initialization arguments.</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>Instance of $className</div>
+</div></div>
+</div>
+<a id="method__getEventClass"></a><div class="element clickable method protected method__getEventClass " data-toggle="collapse" data-target=".method__getEventClass .collapse" title="protected">
+<h2>Lookup event class for an event type. This class or interfce should at the very least
+implement the EventInterface.</h2>
+<pre>_getEventClass(string $eventType) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td><a href="%5CGems_Event_EventInterface"></a></td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$eventType</h4>
+<code>string</code><p>The type (i.e. lookup directory) to find the associated class for</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>Class/interface name associated with the type</div>
+</div></div>
+</div>
+<a id="method__getEventDirs"></a><div class="element clickable method protected method__getEventDirs " data-toggle="collapse" data-target=".method__getEventDirs .collapse" title="protected">
+<h2>_getEventDirs()
+        </h2>
+<pre>_getEventDirs(string $eventType) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$eventType</h4>
+<code>string</code><p>An event subdirectory (may contain multiple levels split by '/'</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>An array of type prefix => classname</div>
+</div></div>
+</div>
+<a id="method__listEvents"></a><div class="element clickable method protected method__listEvents " data-toggle="collapse" data-target=".method__listEvents .collapse" title="protected">
+<h2>Returns a list of selectable events with an empty element as the first option.</h2>
+<pre>_listEvents(string $eventType) : \Gems_tracker_TrackerEventInterface</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$eventType</h4>
+<code>string</code><p>The type (i.e. lookup directory with an associated class) of the events to list</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_tracker_TrackerEventInterface</code>or more specific a $eventClass type object</div>
+</div></div>
+</div>
+<a id="method__loadClass"></a><div class="element clickable method protected method__loadClass inherited" data-toggle="collapse" data-target=".method__loadClass .collapse" title="protected">
+<h2>Create or loads the class. When only loading, this function returns a StaticCall object that
+can be invoked lazely.</h2>
+<pre>_loadClass(string $name, boolean $create<code> = false</code>, array $arguments<code> = array()</code>) : mixed</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>see</th>
+<td><a href="%5CMUtil_Lazy_StaticCall"></a></td>
+</tr>
+<tr>
+<th>see</th>
+<td><a href="%5CMUtil_Registry_TargetInterface"></a></td>
+</tr>
+</table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code><p>The class name, minus the part in $this->_dirs.</p></div>
+<div class="subelement argument">
+<h4>$create</h4>
+<code>boolean</code><p>Create the object, or only when an \MUtil_Registry_TargetInterface instance.</p></div>
+<div class="subelement argument">
+<h4>$arguments</h4>
+<code>array</code><p>Class initialization arguments.</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>A class instance or a \MUtil_Lazy_StaticCall object</div>
+</div></div>
+</div>
+<a id="method__loadEvent"></a><div class="element clickable method protected method__loadEvent " data-toggle="collapse" data-target=".method__loadEvent .collapse" title="protected">
+<h2>Loads and initiates an event class and returns the class (without triggering the event itself).</h2>
+<pre>_loadEvent(string $eventName, string $eventType) : \Gems_tracker_TrackerEventInterface</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$eventName</h4>
+<code>string</code><p>The class name of the individual event to load</p></div>
+<div class="subelement argument">
+<h4>$eventType</h4>
+<code>string</code><p>The type (i.e. lookup directory with an associated class) of the event</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_tracker_TrackerEventInterface</code>or more specific a $eventClass type object</div>
+</div></div>
+</div>
+<a id="method_filterRequestNames"></a><div class="element clickable method protected method_filterRequestNames inherited" data-toggle="collapse" data-target=".method_filterRequestNames .collapse" title="protected">
+<h2>Filters the names that should not be requested.</h2>
+<pre>filterRequestNames(string $name) : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Can be overriden.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<h3>
+<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
+<a id="property__dirs"> </a><div class="element clickable property protected property__dirs" data-toggle="collapse" data-target=".property__dirs .collapse" title="protected">
+<h2>The prefix/path location to look for classes.</h2>
+<pre>$_dirs : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"><p>The standard value is</p>
+<ul>
+<li>
+<Project_name> => application/classes
+</li>
+<li>Gems =&gt; library/Gems/classes</li>
+</ul>
+<p>But an alternative could be:</p>
+<ul>
+<li>Demopulse =&gt; application/classes</li>
+<li>Pulse =&gt; application/classes</li>
+<li>Gems =&gt; library/Gems/classes</li>
+</ul></div></div></div>
+</div>
+<a id="property__eventClasses"> </a><div class="element clickable property protected property__eventClasses" data-toggle="collapse" data-target=".property__eventClasses .collapse" title="protected">
+<h2>Each event type must implement an event class or interface derived
+from EventInterface specified in this array.</h2>
+<pre>$_eventClasses : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>array(self::TRACK_CALCULATION_EVENT => 'Gems_Event_TrackCalculationEventInterface', self::TRACK_COMPLETION_EVENT => 'Gems_Event_TrackCompletedEventInterface', self::TRACK_FIELDUPDATE_EVENT => 'Gems_Event_TrackFieldUpdateEventInterface', self::ROUND_CHANGED_EVENT => 'Gems_Event_RoundChangedEventInterface', self::SURVEY_BEFORE_ANSWERING_EVENT => 'Gems_Event_SurveyBeforeAnsweringEventInterface', self::SURVEY_COMPLETION_EVENT => 'Gems_Event_SurveyCompletedEventInterface', self::SURVEY_DISPLAY_EVENT => 'Gems_Event_SurveyDisplayEventInterface')</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td><a href="%5CGems_Event_EventInterface"></a></td>
+</tr></table>
+</div></div>
+</div>
+<a id="property__loader"> </a><div class="element clickable property protected property__loader" data-toggle="collapse" data-target=".property__loader .collapse" title="protected">
+<h2>$_loader</h2>
+<pre>$_loader : \MUtil_Loader_PluginLoader</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_cascade"> </a><div class="element clickable property protected property_cascade" data-toggle="collapse" data-target=".property_cascade .collapse" title="protected">
+<h2>Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.</h2>
+<pre>$cascade : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_util"> </a><div class="element clickable property protected property_util" data-toggle="collapse" data-target=".property_util .collapse" title="protected">
+<h2>$util</h2>
+<pre>$util : \Gems_Util</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<h3>
+<i title="Constants" class="icon-custom icon-constant"></i> Constants</h3>
+<a id="constant_ROUND_CHANGED_EVENT"> </a><div class="element clickable constant  constant_ROUND_CHANGED_EVENT" data-toggle="collapse" data-target=".constant_ROUND_CHANGED_EVENT .collapse" title="">
+<h2>ROUND_CHANGED_EVENT</h2>
+<pre>ROUND_CHANGED_EVENT = 'Round/Changed' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_SURVEY_BEFORE_ANSWERING_EVENT"> </a><div class="element clickable constant  constant_SURVEY_BEFORE_ANSWERING_EVENT" data-toggle="collapse" data-target=".constant_SURVEY_BEFORE_ANSWERING_EVENT .collapse" title="">
+<h2>SURVEY_BEFORE_ANSWERING_EVENT</h2>
+<pre>SURVEY_BEFORE_ANSWERING_EVENT = 'Survey/BeforeAnswering' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_SURVEY_COMPLETION_EVENT"> </a><div class="element clickable constant  constant_SURVEY_COMPLETION_EVENT" data-toggle="collapse" data-target=".constant_SURVEY_COMPLETION_EVENT .collapse" title="">
+<h2>SURVEY_COMPLETION_EVENT</h2>
+<pre>SURVEY_COMPLETION_EVENT = 'Survey/Completed' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_SURVEY_DISPLAY_EVENT"> </a><div class="element clickable constant  constant_SURVEY_DISPLAY_EVENT" data-toggle="collapse" data-target=".constant_SURVEY_DISPLAY_EVENT .collapse" title="">
+<h2>SURVEY_DISPLAY_EVENT</h2>
+<pre>SURVEY_DISPLAY_EVENT = 'Survey/Display' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_TRACK_CALCULATION_EVENT"> </a><div class="element clickable constant  constant_TRACK_CALCULATION_EVENT" data-toggle="collapse" data-target=".constant_TRACK_CALCULATION_EVENT .collapse" title="">
+<h2>TRACK_CALCULATION_EVENT</h2>
+<pre>TRACK_CALCULATION_EVENT = 'Track/Calculate' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_TRACK_COMPLETION_EVENT"> </a><div class="element clickable constant  constant_TRACK_COMPLETION_EVENT" data-toggle="collapse" data-target=".constant_TRACK_COMPLETION_EVENT .collapse" title="">
+<h2>TRACK_COMPLETION_EVENT</h2>
+<pre>TRACK_COMPLETION_EVENT = 'Track/Completed' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_TRACK_FIELDUPDATE_EVENT"> </a><div class="element clickable constant  constant_TRACK_FIELDUPDATE_EVENT" data-toggle="collapse" data-target=".constant_TRACK_FIELDUPDATE_EVENT .collapse" title="">
+<h2>TRACK_FIELDUPDATE_EVENT</h2>
+<pre>TRACK_FIELDUPDATE_EVENT = 'Track/FieldUpdate' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:31+02:00.<br></footer></div>
+</div>
+</body>
+</html>

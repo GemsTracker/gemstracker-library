@@ -1,0 +1,802 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » \Gems\Tracker\Field\CaretakerField</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+<div class="btn-group visibility" data-toggle="buttons-checkbox">
+<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
+</div>
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+</div>
+<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+<li class="nav-header">
+<i title="Methods" class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public inherited"><a href="#method___construct" title="__construct() :: "><span class="description">__construct()
+        </span><pre>__construct()</pre></a></li>
+<li class="method public "><a href="#method_calculateFieldInfo" title="calculateFieldInfo() :: Calculation the field info display for this type"><span class="description">Calculation the field info display for this type</span><pre>calculateFieldInfo()</pre></a></li>
+<li class="method public inherited"><a href="#method_calculateFieldInfo" title="calculateFieldInfo() :: Calculation the field info display for this type"><span class="description">Calculation the field info display for this type</span><pre>calculateFieldInfo()</pre></a></li>
+<li class="method public "><a href="#method_calculateFieldValue" title="calculateFieldValue() :: Calculate the field value using the current values"><span class="description">Calculate the field value using the current values</span><pre>calculateFieldValue()</pre></a></li>
+<li class="method public inherited"><a href="#method_calculateFieldValue" title="calculateFieldValue() :: Calculate the field value using the current values"><span class="description">Calculate the field value using the current values</span><pre>calculateFieldValue()</pre></a></li>
+<li class="method public inherited"><a href="#method_calculationStart" title="calculationStart() :: Signal the start of a new calculation round (for all fields)"><span class="description">Signal the start of a new calculation round (for all fields)</span><pre>calculationStart()</pre></a></li>
+<li class="method public inherited"><a href="#method_getCalculationFields" title="getCalculationFields() :: Get the fields that should be used for calculation,
+first field to use first."><span class="description">Get the fields that should be used for calculation,
+first field to use first.</span><pre>getCalculationFields()</pre></a></li>
+<li class="method public inherited"><a href="#method_getCode" title="getCode() :: On save calculation function"><span class="description">On save calculation function</span><pre>getCode()</pre></a></li>
+<li class="method public inherited"><a href="#method_getDataModelDependsOn" title="getDataModelDependsOn() :: Respondent track fields that this field's settings are dependent on."><span class="description">Respondent track fields that this field's settings are dependent on.</span><pre>getDataModelDependsOn()</pre></a></li>
+<li class="method public "><a href="#method_getDataModelDependyChanges" title="getDataModelDependyChanges() :: Returns the changes to the model for this field that must be made in an array consisting of"><span class="description">Returns the changes to the model for this field that must be made in an array consisting of</span><pre>getDataModelDependyChanges()</pre></a></li>
+<li class="method public inherited"><a href="#method_getDataModelDependyChanges" title="getDataModelDependyChanges() :: Returns the changes to the model for this field that must be made in an array consisting of"><span class="description">Returns the changes to the model for this field that must be made in an array consisting of</span><pre>getDataModelDependyChanges()</pre></a></li>
+<li class="method public inherited"><a href="#method_getDataModelEffecteds" title="getDataModelEffecteds() :: Model settings for this field that may change depending on the dependsOn fields."><span class="description">Model settings for this field that may change depending on the dependsOn fields.</span><pre>getDataModelEffecteds()</pre></a></li>
+<li class="method public inherited"><a href="#method_getDataModelSettings" title="getDataModelSettings() :: "><span class="description">getDataModelSettings()
+        </span><pre>getDataModelSettings()</pre></a></li>
+<li class="method public inherited"><a href="#method_getFieldId" title="getFieldId() :: "><span class="description">getFieldId()
+        </span><pre>getFieldId()</pre></a></li>
+<li class="method public inherited"><a href="#method_getFieldKey" title="getFieldKey() :: "><span class="description">getFieldKey()
+        </span><pre>getFieldKey()</pre></a></li>
+<li class="method public inherited"><a href="#method_getFieldSub" title="getFieldSub() :: "><span class="description">getFieldSub()
+        </span><pre>getFieldSub()</pre></a></li>
+<li class="method public inherited"><a href="#method_getFieldType" title="getFieldType() :: "><span class="description">getFieldType()
+        </span><pre>getFieldType()</pre></a></li>
+<li class="method public inherited"><a href="#method_getLabel" title="getLabel() :: "><span class="description">getLabel()
+        </span><pre>getLabel()</pre></a></li>
+<li class="method public inherited"><a href="#method_getOrder" title="getOrder() :: "><span class="description">getOrder()
+        </span><pre>getOrder()</pre></a></li>
+<li class="method public inherited"><a href="#method_hasDataModelDependencies" title="hasDataModelDependencies() :: "><span class="description">hasDataModelDependencies()
+        </span><pre>hasDataModelDependencies()</pre></a></li>
+<li class="method public inherited"><a href="#method_isLabelInTrackInfo" title="isLabelInTrackInfo() :: Should the label be included in the track information?"><span class="description">Should the label be included in the track information?</span><pre>isLabelInTrackInfo()</pre></a></li>
+<li class="method public inherited"><a href="#method_isReadOnly" title="isReadOnly() :: "><span class="description">isReadOnly()
+        </span><pre>isReadOnly()</pre></a></li>
+<li class="method public inherited"><a href="#method_onFieldDataLoad" title="onFieldDataLoad() :: Calculation the field value when loading from a respondent track"><span class="description">Calculation the field value when loading from a respondent track</span><pre>onFieldDataLoad()</pre></a></li>
+<li class="method public inherited"><a href="#method_onFieldDataSave" title="onFieldDataSave() :: Converting the field value when saving to a respondent track"><span class="description">Converting the field value when saving to a respondent track</span><pre>onFieldDataSave()</pre></a></li>
+<li class="method public inherited"><a href="#method_toTrackInfo" title="toTrackInfo() :: Should this field be added to the track info"><span class="description">Should this field be added to the track info</span><pre>toTrackInfo()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="method protected "><a href="#method_addModelSettings" title="addModelSettings() :: Add the model settings like the elementClass for this field."><span class="description">Add the model settings like the elementClass for this field.</span><pre>addModelSettings()</pre></a></li>
+<li class="method protected inherited"><a href="#method_addModelSettings" title="addModelSettings() :: Add the model settings like the elementClass for this field."><span class="description">Add the model settings like the elementClass for this field.</span><pre>addModelSettings()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Properties" class="icon-custom icon-property"></i> Properties
+                    <ul></ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="property protected "><a href="#property__dependsOn" title="$_dependsOn() :: Respondent track fields that this field's settings are dependent on."><span class="description"></span><pre>$_dependsOn</pre></a></li>
+<li class="property protected "><a href="#property__dependsOn" title="$_dependsOn() :: Respondent track fields that this field's settings are dependent on."><span class="description"></span><pre>$_dependsOn</pre></a></li>
+<li class="property protected "><a href="#property__effecteds" title="$_effecteds() :: Model settings for this field that may change depending on the dependsOn fields."><span class="description"></span><pre>$_effecteds</pre></a></li>
+<li class="property protected "><a href="#property__effecteds" title="$_effecteds() :: Model settings for this field that may change depending on the dependsOn fields."><span class="description"></span><pre>$_effecteds</pre></a></li>
+<li class="property protected "><a href="#property__fieldDefinition" title="$_fieldDefinition() :: "><span class="description">Field definition array</span><pre>$_fieldDefinition</pre></a></li>
+<li class="property protected "><a href="#property__fieldKey" title="$_fieldKey() :: "><span class="description"></span><pre>$_fieldKey</pre></a></li>
+<li class="property protected "><a href="#property__trackId" title="$_trackId() :: "><span class="description">gems__tracks id for this field</span><pre>$_trackId</pre></a></li>
+<li class="property protected "><a href="#property_loader" title="$loader() :: "><span class="description"></span><pre>$loader</pre></a></li>
+<li class="property protected "><a href="#property_util" title="$util() :: "><span class="description"></span><pre>$util</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Constants" class="icon-custom icon-constant"></i> Constants
+                    <ul><li class="constant  "><a href="#constant_FIELD_SEP" title="FIELD_SEP() :: Option seperator for fields"><span class="description">Option seperator for fields</span><pre>FIELD_SEP</pre></a></li></ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a xmlns:php="http://php.net/xsl" id="\Gems\Tracker\Field\CaretakerField"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+<li>
+<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li><a href="../namespaces/Gems.html">Gems</a></li>
+<li>
+<span class="divider">\</span><a href="../namespaces/Gems.Tracker.html">Tracker</a>
+</li>
+<li>
+<span class="divider">\</span><a href="../namespaces/Gems.Tracker.Field.html">Field</a>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Gems.Tracker.Field.CaretakerField.html">CaretakerField</a>
+</li>
+</ul>
+<div xmlns:php="http://php.net/xsl" class="element class">
+<p class="short_description"></p>
+<div class="details">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Gems.Tracker_Field.html">Gems</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Tracker_Field</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2015 Erasmus MC</td>
+</tr>
+<tr>
+<th>license</th>
+<td><a href="http://opensource.org/licenses/BSD-3-Clause">New BSD License</a></td>
+</tr>
+<tr>
+<th>since</th>
+<td>Class available since version 1.6.5 4-mrt-2015 11:44:09</td>
+</tr>
+<tr>
+<th>inherited_from</th>
+<td>\Gems\Tracker\Field\FieldAbstract</td>
+</tr>
+</table>
+<h3>
+<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
+<a id="method___construct"></a><div class="element clickable method public method___construct inherited" data-toggle="collapse" data-target=".method___construct .collapse" title="public">
+<h2>__construct()
+        </h2>
+<pre>__construct(integer $trackId, string $key, array $fieldDefinition) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems\Tracker\Field\FieldInterface::__construct()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$trackId</h4>
+<code>integer</code><p>gems__tracks id for this field</p></div>
+<div class="subelement argument">
+<h4>$key</h4>
+<code>string</code><p>The field key</p></div>
+<div class="subelement argument">
+<h4>$fieldDefinition</h4>
+<code>array</code><p>Field definition array</p></div>
+</div></div>
+</div>
+<a id="method_calculateFieldInfo"></a><div class="element clickable method public method_calculateFieldInfo " data-toggle="collapse" data-target=".method_calculateFieldInfo .collapse" title="public">
+<h2>Calculation the field info display for this type</h2>
+<pre>calculateFieldInfo(array $currentValue, array $fieldData) : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems\Tracker\Field\FieldAbstract::calculateFieldInfo()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$currentValue</h4>
+<code>array</code><p>The current value</p></div>
+<div class="subelement argument">
+<h4>$fieldData</h4>
+<code>array</code><p>The other values loaded so far</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>the new value</div>
+</div></div>
+</div>
+<a id="method_calculateFieldInfo"></a><div class="element clickable method public method_calculateFieldInfo inherited" data-toggle="collapse" data-target=".method_calculateFieldInfo .collapse" title="public">
+<h2>Calculation the field info display for this type</h2>
+<pre>calculateFieldInfo(array $currentValue, array $fieldData) : mixed</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems\Tracker\Field\FieldInterface::calculateFieldInfo()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$currentValue</h4>
+<code>array</code><p>The current value</p></div>
+<div class="subelement argument">
+<h4>$fieldData</h4>
+<code>array</code><p>The other values loaded so far</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>the new value</div>
+</div></div>
+</div>
+<a id="method_calculateFieldValue"></a><div class="element clickable method public method_calculateFieldValue " data-toggle="collapse" data-target=".method_calculateFieldValue .collapse" title="public">
+<h2>Calculate the field value using the current values</h2>
+<pre>calculateFieldValue(array $currentValue, array $fieldData, array $trackData) : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems\Tracker\Field\FieldAbstract::calculateFieldValue()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$currentValue</h4>
+<code>array</code><p>The current value</p></div>
+<div class="subelement argument">
+<h4>$fieldData</h4>
+<code>array</code><p>The other known field values</p></div>
+<div class="subelement argument">
+<h4>$trackData</h4>
+<code>array</code><p>The currently available track data (track id may be empty)</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>the new value</div>
+</div></div>
+</div>
+<a id="method_calculateFieldValue"></a><div class="element clickable method public method_calculateFieldValue inherited" data-toggle="collapse" data-target=".method_calculateFieldValue .collapse" title="public">
+<h2>Calculate the field value using the current values</h2>
+<pre>calculateFieldValue(array $currentValue, array $fieldData, array $trackData) : mixed</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems\Tracker\Field\FieldInterface::calculateFieldValue()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$currentValue</h4>
+<code>array</code><p>The current value</p></div>
+<div class="subelement argument">
+<h4>$fieldData</h4>
+<code>array</code><p>The other known field values</p></div>
+<div class="subelement argument">
+<h4>$trackData</h4>
+<code>array</code><p>The currently available track data (track id may be empty)</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>the new value</div>
+</div></div>
+</div>
+<a id="method_calculationStart"></a><div class="element clickable method public method_calculationStart inherited" data-toggle="collapse" data-target=".method_calculationStart .collapse" title="public">
+<h2>Signal the start of a new calculation round (for all fields)</h2>
+<pre>calculationStart(array $trackData) : \Gems\Tracker\Field\FieldAbstract</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems\Tracker\Field\FieldInterface::calculationStart()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$trackData</h4>
+<code>array</code><p>The currently available track data (track id may be empty)</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems\Tracker\Field\FieldAbstract</code></div>
+</div></div>
+</div>
+<a id="method_getCalculationFields"></a><div class="element clickable method public method_getCalculationFields inherited" data-toggle="collapse" data-target=".method_getCalculationFields .collapse" title="public">
+<h2>Get the fields that should be used for calculation,
+first field to use first.</h2>
+<pre>getCalculationFields(array $fieldData) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>I.e. the last selected field in field maintenance
+is the first field in the output array.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$fieldData</h4>
+<code>array</code><p>The fields being saved</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>[fieldKey => fieldValue]</div>
+</div></div>
+</div>
+<a id="method_getCode"></a><div class="element clickable method public method_getCode inherited" data-toggle="collapse" data-target=".method_getCode .collapse" title="public">
+<h2>On save calculation function</h2>
+<pre>getCode() : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems\Tracker\Field\FieldInterface::getCode()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>The field code</div>
+</div></div>
+</div>
+<a id="method_getDataModelDependsOn"></a><div class="element clickable method public method_getDataModelDependsOn inherited" data-toggle="collapse" data-target=".method_getDataModelDependsOn .collapse" title="public">
+<h2>Respondent track fields that this field's settings are dependent on.</h2>
+<pre>getDataModelDependsOn() : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems\Tracker\Field\FieldInterface::getDataModelDependsOn()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Null or an array of respondent track fields</div>
+</div></div>
+</div>
+<a id="method_getDataModelDependyChanges"></a><div class="element clickable method public method_getDataModelDependyChanges " data-toggle="collapse" data-target=".method_getDataModelDependyChanges .collapse" title="public">
+<h2>Returns the changes to the model for this field that must be made in an array consisting of</h2>
+<pre>getDataModelDependyChanges(array $context, boolean $new) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p><code>
+array(setting1 =&gt; $value1, setting2 =&gt; $value2, ...),
+</code></p>
+<p>By using [] array notation in the setting array key you can append to existing
+values.</p>
+<p>Use the setting 'value' to change a value in the original data.</p>
+<p>When a 'model' setting is set, the workings cascade.</p></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems\Tracker\Field\FieldAbstract::getDataModelDependyChanges()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$context</h4>
+<code>array</code><p>The current data this object is dependent on</p></div>
+<div class="subelement argument">
+<h4>$new</h4>
+<code>boolean</code><p>True when the item is a new record not yet saved</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>(setting => value)</div>
+</div></div>
+</div>
+<a id="method_getDataModelDependyChanges"></a><div class="element clickable method public method_getDataModelDependyChanges inherited" data-toggle="collapse" data-target=".method_getDataModelDependyChanges .collapse" title="public">
+<h2>Returns the changes to the model for this field that must be made in an array consisting of</h2>
+<pre>getDataModelDependyChanges(array $context, boolean $new) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p><code>
+array(setting1 =&gt; $value1, setting2 =&gt; $value2, ...),
+</code></p>
+<p>By using [] array notation in the setting array key you can append to existing
+values.</p>
+<p>Use the setting 'value' to change a value in the original data.</p>
+<p>When a 'model' setting is set, the workings cascade.</p></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems\Tracker\Field\FieldInterface::getDataModelDependyChanges()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$context</h4>
+<code>array</code><p>The current data this object is dependent on</p></div>
+<div class="subelement argument">
+<h4>$new</h4>
+<code>boolean</code><p>True when the item is a new record not yet saved</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>(setting => value)</div>
+</div></div>
+</div>
+<a id="method_getDataModelEffecteds"></a><div class="element clickable method public method_getDataModelEffecteds inherited" data-toggle="collapse" data-target=".method_getDataModelEffecteds .collapse" title="public">
+<h2>Model settings for this field that may change depending on the dependsOn fields.</h2>
+<pre>getDataModelEffecteds() : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems\Tracker\Field\FieldInterface::getDataModelEffecteds()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Null or an array of model settings that change for this field</div>
+</div></div>
+</div>
+<a id="method_getDataModelSettings"></a><div class="element clickable method public method_getDataModelSettings inherited" data-toggle="collapse" data-target=".method_getDataModelSettings .collapse" title="public">
+<h2>getDataModelSettings()
+        </h2>
+<pre>getDataModelSettings() : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems\Tracker\Field\FieldInterface::getDataModelSettings()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Of settings to add to a model using these fields</div>
+</div></div>
+</div>
+<a id="method_getFieldId"></a><div class="element clickable method public method_getFieldId inherited" data-toggle="collapse" data-target=".method_getFieldId .collapse" title="public">
+<h2>getFieldId()
+        </h2>
+<pre>getFieldId() : integer</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems\Tracker\Field\FieldInterface::getFieldId()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>The track field id</div>
+</div></div>
+</div>
+<a id="method_getFieldKey"></a><div class="element clickable method public method_getFieldKey inherited" data-toggle="collapse" data-target=".method_getFieldKey .collapse" title="public">
+<h2>getFieldKey()
+        </h2>
+<pre>getFieldKey() : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems\Tracker\Field\FieldInterface::getFieldKey()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>The track field key as used by the union model</div>
+</div></div>
+</div>
+<a id="method_getFieldSub"></a><div class="element clickable method public method_getFieldSub inherited" data-toggle="collapse" data-target=".method_getFieldSub .collapse" title="public">
+<h2>getFieldSub()
+        </h2>
+<pre>getFieldSub() : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems\Tracker\Field\FieldInterface::getFieldSub()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>The track field sub (model) value</div>
+</div></div>
+</div>
+<a id="method_getFieldType"></a><div class="element clickable method public method_getFieldType inherited" data-toggle="collapse" data-target=".method_getFieldType .collapse" title="public">
+<h2>getFieldType()
+        </h2>
+<pre>getFieldType() : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems\Tracker\Field\FieldInterface::getFieldType()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>The field type</div>
+</div></div>
+</div>
+<a id="method_getLabel"></a><div class="element clickable method public method_getLabel inherited" data-toggle="collapse" data-target=".method_getLabel .collapse" title="public">
+<h2>getLabel()
+        </h2>
+<pre>getLabel() : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems\Tracker\Field\FieldInterface::getLabel()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>The field label</div>
+</div></div>
+</div>
+<a id="method_getOrder"></a><div class="element clickable method public method_getOrder inherited" data-toggle="collapse" data-target=".method_getOrder .collapse" title="public">
+<h2>getOrder()
+        </h2>
+<pre>getOrder() : integer</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems\Tracker\Field\FieldInterface::getOrder()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>The field order</div>
+</div></div>
+</div>
+<a id="method_hasDataModelDependencies"></a><div class="element clickable method public method_hasDataModelDependencies inherited" data-toggle="collapse" data-target=".method_hasDataModelDependencies .collapse" title="public">
+<h2>hasDataModelDependencies()
+        </h2>
+<pre>hasDataModelDependencies() : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems\Tracker\Field\FieldInterface::hasDataModelDependencies()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>When this field has dependencies</div>
+</div></div>
+</div>
+<a id="method_isLabelInTrackInfo"></a><div class="element clickable method public method_isLabelInTrackInfo inherited" data-toggle="collapse" data-target=".method_isLabelInTrackInfo .collapse" title="public">
+<h2>Should the label be included in the track information?</h2>
+<pre>isLabelInTrackInfo() : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems\Tracker\Field\FieldInterface::isLabelInTrackInfo()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_isReadOnly"></a><div class="element clickable method public method_isReadOnly inherited" data-toggle="collapse" data-target=".method_isReadOnly .collapse" title="public">
+<h2>isReadOnly()
+        </h2>
+<pre>isReadOnly() : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>True when this field is read only</div>
+</div></div>
+</div>
+<a id="method_onFieldDataLoad"></a><div class="element clickable method public method_onFieldDataLoad inherited" data-toggle="collapse" data-target=".method_onFieldDataLoad .collapse" title="public">
+<h2>Calculation the field value when loading from a respondent track</h2>
+<pre>onFieldDataLoad(array $currentValue, array $fieldData) : mixed</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems\Tracker\Field\FieldInterface::onFieldDataLoad()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$currentValue</h4>
+<code>array</code><p>The current value</p></div>
+<div class="subelement argument">
+<h4>$fieldData</h4>
+<code>array</code><p>The other values loaded so far</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>the new value</div>
+</div></div>
+</div>
+<a id="method_onFieldDataSave"></a><div class="element clickable method public method_onFieldDataSave inherited" data-toggle="collapse" data-target=".method_onFieldDataSave .collapse" title="public">
+<h2>Converting the field value when saving to a respondent track</h2>
+<pre>onFieldDataSave(array $currentValue, array $fieldData) : mixed</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems\Tracker\Field\FieldInterface::onFieldDataSave()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$currentValue</h4>
+<code>array</code><p>The current value</p></div>
+<div class="subelement argument">
+<h4>$fieldData</h4>
+<code>array</code><p>The other values loaded so far</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>the new value</div>
+</div></div>
+</div>
+<a id="method_toTrackInfo"></a><div class="element clickable method public method_toTrackInfo inherited" data-toggle="collapse" data-target=".method_toTrackInfo .collapse" title="public">
+<h2>Should this field be added to the track info</h2>
+<pre>toTrackInfo() : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems\Tracker\Field\FieldInterface::toTrackInfo()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_addModelSettings"></a><div class="element clickable method protected method_addModelSettings " data-toggle="collapse" data-target=".method_addModelSettings .collapse" title="protected">
+<h2>Add the model settings like the elementClass for this field.</h2>
+<pre>addModelSettings(array $settings) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>elementClass is overwritten when this field is read only, unless you override it again in getDataModelSettings()</p></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems\Tracker\Field\FieldAbstract::addModelSettings()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$settings</h4>
+<code>array</code><p>The settings set so far</p></div>
+</div></div>
+</div>
+<a id="method_addModelSettings"></a><div class="element clickable method protected method_addModelSettings inherited" data-toggle="collapse" data-target=".method_addModelSettings .collapse" title="protected">
+<h2>Add the model settings like the elementClass for this field.</h2>
+<pre>addModelSettings(array $settings) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>elementClass is overwritten when this field is read only, unless you override it again in getDataModelSettings()</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$settings</h4>
+<code>array</code><p>The settings set so far</p></div>
+</div></div>
+</div>
+<h3>
+<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
+<a id="property__dependsOn"> </a><div class="element clickable property protected property__dependsOn" data-toggle="collapse" data-target=".property__dependsOn .collapse" title="protected">
+<h2>Respondent track fields that this field's settings are dependent on.</h2>
+<pre>$_dependsOn : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>array('gr2t_id_organization')</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems\Tracker\Field\FieldAbstract::_dependsOn</td>
+</tr></table>
+</div></div>
+</div>
+<a id="property__dependsOn"> </a><div class="element clickable property protected property__dependsOn" data-toggle="collapse" data-target=".property__dependsOn .collapse" title="protected">
+<h2>Respondent track fields that this field's settings are dependent on.</h2>
+<pre>$_dependsOn : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__effecteds"> </a><div class="element clickable property protected property__effecteds" data-toggle="collapse" data-target=".property__effecteds .collapse" title="protected">
+<h2>Model settings for this field that may change depending on the dependsOn fields.</h2>
+<pre>$_effecteds : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>array('multiOptions')</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems\Tracker\Field\FieldAbstract::_effecteds</td>
+</tr></table>
+</div></div>
+</div>
+<a id="property__effecteds"> </a><div class="element clickable property protected property__effecteds" data-toggle="collapse" data-target=".property__effecteds .collapse" title="protected">
+<h2>Model settings for this field that may change depending on the dependsOn fields.</h2>
+<pre>$_effecteds : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__fieldDefinition"> </a><div class="element clickable property protected property__fieldDefinition" data-toggle="collapse" data-target=".property__fieldDefinition .collapse" title="protected">
+<h2>Field definition array</h2>
+<pre>$_fieldDefinition : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__fieldKey"> </a><div class="element clickable property protected property__fieldKey" data-toggle="collapse" data-target=".property__fieldKey .collapse" title="protected">
+<h2>$_fieldKey</h2>
+<pre>$_fieldKey : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__trackId"> </a><div class="element clickable property protected property__trackId" data-toggle="collapse" data-target=".property__trackId .collapse" title="protected">
+<h2>gems__tracks id for this field</h2>
+<pre>$_trackId : integer</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_loader"> </a><div class="element clickable property protected property_loader" data-toggle="collapse" data-target=".property_loader .collapse" title="protected">
+<h2>$loader</h2>
+<pre>$loader : \Gems_Loader</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_util"> </a><div class="element clickable property protected property_util" data-toggle="collapse" data-target=".property_util .collapse" title="protected">
+<h2>$util</h2>
+<pre>$util : \Gems_Util</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<h3>
+<i title="Constants" class="icon-custom icon-constant"></i> Constants</h3>
+<a id="constant_FIELD_SEP"> </a><div class="element clickable constant  constant_FIELD_SEP" data-toggle="collapse" data-target=".constant_FIELD_SEP .collapse" title="">
+<h2>Option seperator for fields</h2>
+<pre>FIELD_SEP = '|' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:28+02:00.<br></footer></div>
+</div>
+</body>
+</html>

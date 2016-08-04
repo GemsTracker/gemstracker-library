@@ -1,0 +1,501 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » \Gems_Menu_MenuList</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+<div class="btn-group visibility" data-toggle="buttons-checkbox">
+<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
+</div>
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+</div>
+<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+<li class="nav-header">
+<i title="Methods" class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public "><a href="#method___construct" title="__construct() :: "><span class="description">__construct()
+        </span><pre>__construct()</pre></a></li>
+<li class="method public "><a href="#method_addByController" title="addByController() :: Add a menu item by specifying the controller"><span class="description">Add a menu item by specifying the controller</span><pre>addByController()</pre></a></li>
+<li class="method public "><a href="#method_addCurrentChildren" title="addCurrentChildren() :: Adds the children of the current menu item to this list"><span class="description">Adds the children of the current menu item to this list</span><pre>addCurrentChildren()</pre></a></li>
+<li class="method public "><a href="#method_addCurrentGrandParent" title="addCurrentGrandParent() :: Adds the parent of parent of the current menu item"><span class="description">Adds the parent of parent of the current menu item</span><pre>addCurrentGrandParent()</pre></a></li>
+<li class="method public "><a href="#method_addCurrentParent" title="addCurrentParent() :: Adds the parent of the current menu item"><span class="description">Adds the parent of the current menu item</span><pre>addCurrentParent()</pre></a></li>
+<li class="method public "><a href="#method_addCurrentSiblings" title="addCurrentSiblings() :: Adds the siblings (= other children of the parent) of the current menu item to this list"><span class="description">Adds the siblings (= other children of the parent) of the current menu item to this list</span><pre>addCurrentSiblings()</pre></a></li>
+<li class="method public "><a href="#method_addMenuItem" title="addMenuItem() :: Add a menu item to this list"><span class="description">Add a menu item to this list</span><pre>addMenuItem()</pre></a></li>
+<li class="method public "><a href="#method_addParameterSources" title="addParameterSources() :: "><span class="description">addParameterSources()
+        </span><pre>addParameterSources()</pre></a></li>
+<li class="method public "><a href="#method_getActionLink" title="getActionLink() :: Get the action link for a specific item."><span class="description">Get the action link for a specific item.</span><pre>getActionLink()</pre></a></li>
+<li class="method public "><a href="#method_getActionLinks" title="getActionLinks() :: Get the action links for the specified items."><span class="description">Get the action links for the specified items.</span><pre>getActionLinks()</pre></a></li>
+<li class="method public "><a href="#method_getFirstAction" title="getFirstAction() :: Get the action link for a specific item."><span class="description">Get the action link for a specific item.</span><pre>getFirstAction()</pre></a></li>
+<li class="method public "><a href="#method_render" title="render() :: Renders the element into a html string"><span class="description">Renders the element into a html string</span><pre>render()</pre></a></li>
+<li class="method public "><a href="#method_setLabel" title="setLabel() :: Changes the label for a specific menu item"><span class="description">Changes the label for a specific menu item</span><pre>setLabel()</pre></a></li>
+<li class="method public "><a href="#method_setLowerCase" title="setLowerCase() :: Switches between lowercase links or normal case"><span class="description">Switches between lowercase links or normal case</span><pre>setLowerCase()</pre></a></li>
+<li class="method public "><a href="#method_showDisabled" title="showDisabled() :: Switches showing disabled menu items on or off (= default)"><span class="description">Switches showing disabled menu items on or off (= default)</span><pre>showDisabled()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="method protected "><a href="#method__getKey" title="_getKey() :: Generates the key name"><span class="description">Generates the key name</span><pre>_getKey()</pre></a></li>
+<li class="method protected "><a href="#method_toActionLink" title="toActionLink() :: "><span class="description">toActionLink()
+        </span><pre>toActionLink()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Properties" class="icon-custom icon-property"></i> Properties
+                    <ul></ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="property protected "><a href="#property_altLabels" title="$altLabels() :: "><span class="description">of alternative label strings</span><pre>$altLabels</pre></a></li>
+<li class="property protected "><a href="#property_linkFunction" title="$linkFunction() :: "><span class="description">toActionLink|toActionLinkLower</span><pre>$linkFunction</pre></a></li>
+<li class="property protected "><a href="#property_menu" title="$menu() :: "><span class="description"></span><pre>$menu</pre></a></li>
+<li class="property protected "><a href="#property_sources" title="$sources() :: The first 'disabled' item sets the default value of"><span class="description"></span><pre>$sources</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Constants" class="icon-custom icon-constant"></i> Constants
+                    <ul><li class="constant  "><a href="#constant_KEY_DISABLED" title="KEY_DISABLED() :: "><span class="description">KEY_DISABLED</span><pre>KEY_DISABLED</pre></a></li></ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a xmlns:php="http://php.net/xsl" id="\Gems_Menu_MenuList"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+<li>
+<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Gems_Menu_MenuList.html">Gems_Menu_MenuList</a>
+</li>
+</ul>
+<div xmlns:php="http://php.net/xsl" class="element class">
+<p class="short_description"></p>
+<div class="details">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Gems.Menu.html">Gems</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Menu</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2011 Erasmus MC</td>
+</tr>
+<tr>
+<th>license</th>
+<td><a href="http://opensource.org/licenses/BSD-3-Clause">New BSD License</a></td>
+</tr>
+<tr>
+<th>since</th>
+<td>Class available since version 1.4</td>
+</tr>
+</table>
+<h3>
+<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
+<a id="method___construct"></a><div class="element clickable method public method___construct " data-toggle="collapse" data-target=".method___construct .collapse" title="public">
+<h2>__construct()
+        </h2>
+<pre>__construct(\Gems_Menu $menu, string $glue<code> = ' '</code>) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$menu</h4>
+<code>\Gems_Menu</code>
+</div>
+<div class="subelement argument">
+<h4>$glue</h4>
+<code>string</code><p>Optional, text to put between link items</p></div>
+</div></div>
+</div>
+<a id="method_addByController"></a><div class="element clickable method public method_addByController " data-toggle="collapse" data-target=".method_addByController .collapse" title="public">
+<h2>Add a menu item by specifying the controller</h2>
+<pre>addByController(string $controller, string $action<code> = 'index'</code>, string $label<code> = null</code>) : \Gems_Menu_MenuList</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$controller</h4>
+<code>string</code><p>Controller name</p></div>
+<div class="subelement argument">
+<h4>$action</h4>
+<code>string</code><p>Action name</p></div>
+<div class="subelement argument">
+<h4>$label</h4>
+<code>string</code><p>Optional alternative label</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Menu_MenuList</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_addCurrentChildren"></a><div class="element clickable method public method_addCurrentChildren " data-toggle="collapse" data-target=".method_addCurrentChildren .collapse" title="public">
+<h2>Adds the children of the current menu item to this list</h2>
+<pre>addCurrentChildren() : \Gems_Menu_MenuList</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Menu_MenuList</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_addCurrentGrandParent"></a><div class="element clickable method public method_addCurrentGrandParent " data-toggle="collapse" data-target=".method_addCurrentGrandParent .collapse" title="public">
+<h2>Adds the parent of parent of the current menu item</h2>
+<pre>addCurrentGrandParent(string $label<code> = null</code>) : \Gems_Menu_MenuList</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Does nothing when the parent is a top level item (has no
+controllor or is the \Gems_menu itself).</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$label</h4>
+<code>string</code><p>Optional alternative label</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Menu_MenuList</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_addCurrentParent"></a><div class="element clickable method public method_addCurrentParent " data-toggle="collapse" data-target=".method_addCurrentParent .collapse" title="public">
+<h2>Adds the parent of the current menu item</h2>
+<pre>addCurrentParent(string $label<code> = null</code>) : \Gems_Menu_MenuList</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Does nothing when the parent is a top level item (has no
+controllor or is the \Gems_menu itself).</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$label</h4>
+<code>string</code><p>Optional alternative label</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Menu_MenuList</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_addCurrentSiblings"></a><div class="element clickable method public method_addCurrentSiblings " data-toggle="collapse" data-target=".method_addCurrentSiblings .collapse" title="public">
+<h2>Adds the siblings (= other children of the parent) of the current menu item to this list</h2>
+<pre>addCurrentSiblings(boolean $anyParameters<code> = false</code>, $includeCurrent<code> = false</code>) : \Gems_Menu_MenuList</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$anyParameters</h4>
+<code>boolean</code><p>When false, siblings must have the same parameter set as the current menu item</p></div>
+<div class="subelement argument"><h4>$includeCurrent</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Menu_MenuList</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_addMenuItem"></a><div class="element clickable method public method_addMenuItem " data-toggle="collapse" data-target=".method_addMenuItem .collapse" title="public">
+<h2>Add a menu item to this list</h2>
+<pre>addMenuItem(\Gems_Menu_SubMenuItem $menuItem, string $label<code> = null</code>) : \Gems_Menu_MenuList</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$menuItem</h4>
+<code>\Gems_Menu_SubMenuItem</code>
+</div>
+<div class="subelement argument">
+<h4>$label</h4>
+<code>string</code><p>Optional alternative label</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Menu_MenuList</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_addParameterSources"></a><div class="element clickable method public method_addParameterSources " data-toggle="collapse" data-target=".method_addParameterSources .collapse" title="public">
+<h2>addParameterSources()
+        </h2>
+<pre>addParameterSources($source_1, $source_2<code> = null</code>) : \Gems_Menu_MenuList</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$source_1</h4></div>
+<div class="subelement argument"><h4>$source_2</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Menu_MenuList</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_getActionLink"></a><div class="element clickable method public method_getActionLink " data-toggle="collapse" data-target=".method_getActionLink .collapse" title="public">
+<h2>Get the action link for a specific item.</h2>
+<pre>getActionLink(string $controller, string $action<code> = 'index'</code>, boolean $remove<code> = false</code>) : \MUtil_Html_HtmlElement</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$controller</h4>
+<code>string</code><p>Controller name</p></div>
+<div class="subelement argument">
+<h4>$action</h4>
+<code>string</code><p>Action name</p></div>
+<div class="subelement argument">
+<h4>$remove</h4>
+<code>boolean</code><p>Optional, set to true to remove the item from this list.</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\MUtil_Html_HtmlElement</code></div>
+</div></div>
+</div>
+<a id="method_getActionLinks"></a><div class="element clickable method public method_getActionLinks " data-toggle="collapse" data-target=".method_getActionLinks .collapse" title="public">
+<h2>Get the action links for the specified items.</h2>
+<pre>getActionLinks(boolean $remove, string $contr1, string $action1<code> = null</code>, $contr2<code> = null</code>, $action2<code> = null</code>) : \MUtil_Html_Sequence</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$remove</h4>
+<code>boolean</code><p>Optional, set to true to remove the item from this list.</p></div>
+<div class="subelement argument">
+<h4>$contr1</h4>
+<code>string</code><p>Controller name</p></div>
+<div class="subelement argument">
+<h4>$action1</h4>
+<code>string</code><p>Action name, continues in pairs</p></div>
+<div class="subelement argument"><h4>$contr2</h4></div>
+<div class="subelement argument"><h4>$action2</h4></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\MUtil_Html_Sequence</code></div>
+</div></div>
+</div>
+<a id="method_getFirstAction"></a><div class="element clickable method public method_getFirstAction " data-toggle="collapse" data-target=".method_getFirstAction .collapse" title="public">
+<h2>Get the action link for a specific item.</h2>
+<pre>getFirstAction(boolean $remove<code> = true</code>) : \MUtil_Html_HtmlElement</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$remove</h4>
+<code>boolean</code><p>Optional, set to true to remove the item from this list.</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\MUtil_Html_HtmlElement</code></div>
+</div></div>
+</div>
+<a id="method_render"></a><div class="element clickable method public method_render " data-toggle="collapse" data-target=".method_render .collapse" title="public">
+<h2>Renders the element into a html string</h2>
+<pre>render(\Zend_View_Abstract $view) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>The $view is used to correctly encode and escape the output</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$view</h4>
+<code>\Zend_View_Abstract</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>Correctly encoded and escaped html output</div>
+</div></div>
+</div>
+<a id="method_setLabel"></a><div class="element clickable method public method_setLabel " data-toggle="collapse" data-target=".method_setLabel .collapse" title="public">
+<h2>Changes the label for a specific menu item</h2>
+<pre>setLabel(string $controller, string $action, string $label) : \Gems_Menu_MenuList</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$controller</h4>
+<code>string</code><p>Controller name</p></div>
+<div class="subelement argument">
+<h4>$action</h4>
+<code>string</code><p>Action name</p></div>
+<div class="subelement argument">
+<h4>$label</h4>
+<code>string</code><p>Alternative label</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Menu_MenuList</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_setLowerCase"></a><div class="element clickable method public method_setLowerCase " data-toggle="collapse" data-target=".method_setLowerCase .collapse" title="public">
+<h2>Switches between lowercase links or normal case</h2>
+<pre>setLowerCase(boolean $value<code> = true</code>) : \Gems_Menu_MenuList</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$value</h4>
+<code>boolean</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Menu_MenuList</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_showDisabled"></a><div class="element clickable method public method_showDisabled " data-toggle="collapse" data-target=".method_showDisabled .collapse" title="public">
+<h2>Switches showing disabled menu items on or off (= default)</h2>
+<pre>showDisabled(boolean $value<code> = true</code>) : \Gems_Menu_MenuList</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$value</h4>
+<code>boolean</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Menu_MenuList</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method__getKey"></a><div class="element clickable method protected method__getKey " data-toggle="collapse" data-target=".method__getKey .collapse" title="protected">
+<h2>Generates the key name</h2>
+<pre>_getKey(string $controller, string $action) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$controller</h4>
+<code>string</code><p>Controller name</p></div>
+<div class="subelement argument">
+<h4>$action</h4>
+<code>string</code><p>Action name</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_toActionLink"></a><div class="element clickable method protected method_toActionLink " data-toggle="collapse" data-target=".method_toActionLink .collapse" title="protected">
+<h2>toActionLink()
+        </h2>
+<pre>toActionLink(string $key) : \MUtil_Html_HtmlElement</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$key</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\MUtil_Html_HtmlElement</code></div>
+</div></div>
+</div>
+<h3>
+<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
+<a id="property_altLabels"> </a><div class="element clickable property protected property_altLabels" data-toggle="collapse" data-target=".property_altLabels .collapse" title="protected">
+<h2>of alternative label strings</h2>
+<pre>$altLabels : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_linkFunction"> </a><div class="element clickable property protected property_linkFunction" data-toggle="collapse" data-target=".property_linkFunction .collapse" title="protected">
+<h2>toActionLink|toActionLinkLower</h2>
+<pre>$linkFunction : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>'toActionLink'</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_menu"> </a><div class="element clickable property protected property_menu" data-toggle="collapse" data-target=".property_menu .collapse" title="protected">
+<h2>$menu</h2>
+<pre>$menu : \Gems_Menu</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_sources"> </a><div class="element clickable property protected property_sources" data-toggle="collapse" data-target=".property_sources .collapse" title="protected">
+<h2>The first 'disabled' item sets the default value of</h2>
+<pre>$sources : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>array(self::KEY_DISABLED => false)</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<h3>
+<i title="Constants" class="icon-custom icon-constant"></i> Constants</h3>
+<a id="constant_KEY_DISABLED"> </a><div class="element clickable constant  constant_KEY_DISABLED" data-toggle="collapse" data-target=".constant_KEY_DISABLED .collapse" title="">
+<h2>KEY_DISABLED</h2>
+<pre>KEY_DISABLED = 'key_disabled' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:46+02:00.<br></footer></div>
+</div>
+</body>
+</html>

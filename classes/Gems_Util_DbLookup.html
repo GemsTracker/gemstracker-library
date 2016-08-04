@@ -1,0 +1,751 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » \Gems_Util_DbLookup</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+<div class="btn-group visibility" data-toggle="buttons-checkbox">
+<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
+</div>
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+</div>
+<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+<li class="nav-header">
+<i title="Methods" class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public inherited"><a href="#method___get" title="__get() :: Returns a callable if a method is called as a variable"><span class="description">Returns a callable if a method is called as a variable</span><pre>__get()</pre></a></li>
+<li class="method public inherited"><a href="#method_cleanupForCacheId" title="cleanupForCacheId() :: Cleans up everything to a save cacheId"><span class="description">Cleans up everything to a save cacheId</span><pre>cleanupForCacheId()</pre></a></li>
+<li class="method public "><a href="#method_getActiveOrganizations" title="getActiveOrganizations() :: Retrieve a list of orgid/name pairs"><span class="description">Retrieve a list of orgid/name pairs</span><pre>getActiveOrganizations()</pre></a></li>
+<li class="method public "><a href="#method_getActiveStaff" title="getActiveStaff() :: Return key/value pairs of all active staff members"><span class="description">Return key/value pairs of all active staff members</span><pre>getActiveStaff()</pre></a></li>
+<li class="method public "><a href="#method_getActiveStaffGroups" title="getActiveStaffGroups() :: Return key/value pairs of all active staff groups"><span class="description">Return key/value pairs of all active staff groups</span><pre>getActiveStaffGroups()</pre></a></li>
+<li class="method public "><a href="#method_getActiveStaffRoles" title="getActiveStaffRoles() :: Return key/value pairs of all active staff groups"><span class="description">Return key/value pairs of all active staff groups</span><pre>getActiveStaffRoles()</pre></a></li>
+<li class="method public "><a href="#method_getAllowedRespondentGroups" title="getAllowedRespondentGroups() :: Retrieve an array of groups the user is allowed to assign: his own group and all groups
+he inherits rights from"><span class="description">Retrieve an array of groups the user is allowed to assign: his own group and all groups
+he inherits rights from</span><pre>getAllowedRespondentGroups()</pre></a></li>
+<li class="method public "><a href="#method_getAllowedStaffGroups" title="getAllowedStaffGroups() :: Retrieve an array of groups the user is allowed to assign: his own group and all groups
+he inherits rights from"><span class="description">Retrieve an array of groups the user is allowed to assign: his own group and all groups
+he inherits rights from</span><pre>getAllowedStaffGroups()</pre></a></li>
+<li class="method public "><a href="#method_getCommTemplates" title="getCommTemplates() :: Return the available Comm templates."><span class="description">Return the available Comm templates.</span><pre>getCommTemplates()</pre></a></li>
+<li class="method public "><a href="#method_getDefaultGroup" title="getDefaultGroup() :: "><span class="description">getDefaultGroup()
+        </span><pre>getDefaultGroup()</pre></a></li>
+<li class="method public "><a href="#method_getFilterForMailJob" title="getFilterForMailJob() :: Get the filter to use on the tokenmodel when working with a mailjob."><span class="description">Get the filter to use on the tokenmodel when working with a mailjob.</span><pre>getFilterForMailJob()</pre></a></li>
+<li class="method public "><a href="#method_getGroups" title="getGroups() :: The active groups"><span class="description">The active groups</span><pre>getGroups()</pre></a></li>
+<li class="method public "><a href="#method_getOrganizations" title="getOrganizations() :: Get all active organizations"><span class="description">Get all active organizations</span><pre>getOrganizations()</pre></a></li>
+<li class="method public "><a href="#method_getOrganizationsByCode" title="getOrganizationsByCode() :: Get all organizations that share a given code"><span class="description">Get all organizations that share a given code</span><pre>getOrganizationsByCode()</pre></a></li>
+<li class="method public "><a href="#method_getOrganizationsForLogin" title="getOrganizationsForLogin() :: Returns a list of the organizations where users can login."><span class="description">Returns a list of the organizations where users can login.</span><pre>getOrganizationsForLogin()</pre></a></li>
+<li class="method public "><a href="#method_getOrganizationsWithRespondents" title="getOrganizationsWithRespondents() :: Returns a list of the organizations that have respondents."><span class="description">Returns a list of the organizations that have respondents.</span><pre>getOrganizationsWithRespondents()</pre></a></li>
+<li class="method public "><a href="#method_getPatientNr" title="getPatientNr() :: Find the patient nr corresponding to this respondentId / Orgid combo"><span class="description">Find the patient nr corresponding to this respondentId / Orgid combo</span><pre>getPatientNr()</pre></a></li>
+<li class="method public "><a href="#method_getRespondentId" title="getRespondentId() :: Find the respondent id corresponding to this patientNr / Orgid combo"><span class="description">Find the respondent id corresponding to this patientNr / Orgid combo</span><pre>getRespondentId()</pre></a></li>
+<li class="method public "><a href="#method_getRespondentIdAndName" title="getRespondentIdAndName() :: Find the respondent id name corresponding to this patientNr / Orgid combo"><span class="description">Find the respondent id name corresponding to this patientNr / Orgid combo</span><pre>getRespondentIdAndName()</pre></a></li>
+<li class="method public "><a href="#method_getRoles" title="getRoles() :: Returns the roles in the acl"><span class="description">Returns the roles in the acl</span><pre>getRoles()</pre></a></li>
+<li class="method public "><a href="#method_getRolesByPrivilege" title="getRolesByPrivilege() :: Returns the roles in the acl with the privilege"><span class="description">Returns the roles in the acl with the privilege</span><pre>getRolesByPrivilege()</pre></a></li>
+<li class="method public "><a href="#method_getRoundsForExport" title="getRoundsForExport() :: Get all round descriptions for exported"><span class="description">Get all round descriptions for exported</span><pre>getRoundsForExport()</pre></a></li>
+<li class="method public "><a href="#method_getStaff" title="getStaff() :: Return key/value pairs of all staff members, currently active or not"><span class="description">Return key/value pairs of all staff members, currently active or not</span><pre>getStaff()</pre></a></li>
+<li class="method public "><a href="#method_getStaffGroups" title="getStaffGroups() :: Return key/value pairs of all staff groups, including not active"><span class="description">Return key/value pairs of all staff groups, including not active</span><pre>getStaffGroups()</pre></a></li>
+<li class="method public "><a href="#method_getSurveysForExport" title="getSurveysForExport() :: Get all surveys that can be exported"><span class="description">Get all surveys that can be exported</span><pre>getSurveysForExport()</pre></a></li>
+<li class="method public "><a href="#method_getUserConsents" title="getUserConsents() :: "><span class="description">getUserConsents()
+        </span><pre>getUserConsents()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="method protected inherited"><a href="#method__getObjectsAllCached" title="_getObjectsAllCached() :: Utility function for loading a complete query from cache into objects"><span class="description">Utility function for loading a complete query from cache into objects</span><pre>_getObjectsAllCached()</pre></a></li>
+<li class="method protected inherited"><a href="#method__getSelectAllCached" title="_getSelectAllCached() :: Utility function for loading a complete query from cache"><span class="description">Utility function for loading a complete query from cache</span><pre>_getSelectAllCached()</pre></a></li>
+<li class="method protected inherited"><a href="#method__getSelectPairsCached" title="_getSelectPairsCached() :: Utility function for loading a query paired from cache"><span class="description">Utility function for loading a query paired from cache</span><pre>_getSelectPairsCached()</pre></a></li>
+<li class="method protected inherited"><a href="#method__getSelectPairsProcessedCached" title="_getSelectPairsProcessedCached() :: Utility function for loading a query from cache"><span class="description">Utility function for loading a query from cache</span><pre>_getSelectPairsProcessedCached()</pre></a></li>
+<li class="method protected inherited"><a href="#method__getSelectProcessedCached" title="_getSelectProcessedCached() :: Utility function for loading a query from cache"><span class="description">Utility function for loading a query from cache</span><pre>_getSelectProcessedCached()</pre></a></li>
+<li class="method protected inherited"><a href="#method__sortResult" title="_sortResult() :: Sort the array using the specified sort function"><span class="description">Sort the array using the specified sort function</span><pre>_sortResult()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Properties" class="icon-custom icon-property"></i> Properties
+                    <ul></ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="property protected "><a href="#property_acl" title="$acl() :: "><span class="description"></span><pre>$acl</pre></a></li>
+<li class="property protected "><a href="#property_cache" title="$cache() :: "><span class="description"></span><pre>$cache</pre></a></li>
+<li class="property protected "><a href="#property_db" title="$db() :: "><span class="description"></span><pre>$db</pre></a></li>
+<li class="property protected "><a href="#property_loader" title="$loader() :: "><span class="description"></span><pre>$loader</pre></a></li>
+<li class="property protected "><a href="#property_source" title="$source() :: "><span class="description"></span><pre>$source</pre></a></li>
+<li class="property protected "><a href="#property_util" title="$util() :: "><span class="description"></span><pre>$util</pre></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a xmlns:php="http://php.net/xsl" id="\Gems_Util_DbLookup"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+<li>
+<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Gems_Util_DbLookup.html">Gems_Util_DbLookup</a>
+</li>
+</ul>
+<div xmlns:php="http://php.net/xsl" class="element class">
+<p class="short_description">Lookup global information from the database, allowing for project specific overrides</p>
+<div class="details">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Gems.Util.html">Gems</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Util</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2011 Erasmus MC</td>
+</tr>
+<tr>
+<th>license</th>
+<td><a href="http://opensource.org/licenses/BSD-3-Clause">New BSD License</a></td>
+</tr>
+<tr>
+<th>inherited_from</th>
+<td>\Gems\Util\UtilAbstract</td>
+</tr>
+</table>
+<h3>
+<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
+<a id="method___get"></a><div class="element clickable method public method___get inherited" data-toggle="collapse" data-target=".method___get .collapse" title="public">
+<h2>Returns a callable if a method is called as a variable</h2>
+<pre>__get(string $name) : \MUtil_Lazy_Call</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\MUtil_Lazy_Call</code></div>
+</div></div>
+</div>
+<a id="method_cleanupForCacheId"></a><div class="element clickable method public method_cleanupForCacheId inherited" data-toggle="collapse" data-target=".method_cleanupForCacheId .collapse" title="public">
+<h2>Cleans up everything to a save cacheId</h2>
+<pre>cleanupForCacheId(string $cacheId) : string</pre>
+<div class="labels">
+<span class="label">Inherited</span><span class="label">Static</span>
+</div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$cacheId</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getActiveOrganizations"></a><div class="element clickable method public method_getActiveOrganizations " data-toggle="collapse" data-target=".method_getActiveOrganizations .collapse" title="public">
+<h2>Retrieve a list of orgid/name pairs</h2>
+<pre>getActiveOrganizations() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_getActiveStaff"></a><div class="element clickable method public method_getActiveStaff " data-toggle="collapse" data-target=".method_getActiveStaff .collapse" title="public">
+<h2>Return key/value pairs of all active staff members</h2>
+<pre>getActiveStaff() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_getActiveStaffGroups"></a><div class="element clickable method public method_getActiveStaffGroups " data-toggle="collapse" data-target=".method_getActiveStaffGroups .collapse" title="public">
+<h2>Return key/value pairs of all active staff groups</h2>
+<pre>getActiveStaffGroups() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_getActiveStaffRoles"></a><div class="element clickable method public method_getActiveStaffRoles " data-toggle="collapse" data-target=".method_getActiveStaffRoles .collapse" title="public">
+<h2>Return key/value pairs of all active staff groups</h2>
+<pre>getActiveStaffRoles() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_getAllowedRespondentGroups"></a><div class="element clickable method public method_getAllowedRespondentGroups " data-toggle="collapse" data-target=".method_getAllowedRespondentGroups .collapse" title="public">
+<h2>Retrieve an array of groups the user is allowed to assign: his own group and all groups
+he inherits rights from</h2>
+<pre>getAllowedRespondentGroups() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_getAllowedStaffGroups"></a><div class="element clickable method public method_getAllowedStaffGroups " data-toggle="collapse" data-target=".method_getAllowedStaffGroups .collapse" title="public">
+<h2>Retrieve an array of groups the user is allowed to assign: his own group and all groups
+he inherits rights from</h2>
+<pre>getAllowedStaffGroups() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>deprecated</th>
+<td>Since 1.7.2 Replaced by loader->getCurrentUser()->getAllowedStaffGroups()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_getCommTemplates"></a><div class="element clickable method public method_getCommTemplates " data-toggle="collapse" data-target=".method_getCommTemplates .collapse" title="public">
+<h2>Return the available Comm templates.</h2>
+<pre>getCommTemplates($mailTarget<code> = false</code>) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>staticvar</th>
+<td>array $data</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$mailTarget</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>The tempalteId => subject list</div>
+</div></div>
+</div>
+<a id="method_getDefaultGroup"></a><div class="element clickable method public method_getDefaultGroup " data-toggle="collapse" data-target=".method_getDefaultGroup .collapse" title="public">
+<h2>getDefaultGroup()
+        </h2>
+<pre>getDefaultGroup() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_getFilterForMailJob"></a><div class="element clickable method public method_getFilterForMailJob " data-toggle="collapse" data-target=".method_getFilterForMailJob .collapse" title="public">
+<h2>Get the filter to use on the tokenmodel when working with a mailjob.</h2>
+<pre>getFilterForMailJob(array $job) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$job</h4>
+<code>array</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_getGroups"></a><div class="element clickable method public method_getGroups " data-toggle="collapse" data-target=".method_getGroups .collapse" title="public">
+<h2>The active groups</h2>
+<pre>getGroups() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_getOrganizations"></a><div class="element clickable method public method_getOrganizations " data-toggle="collapse" data-target=".method_getOrganizations .collapse" title="public">
+<h2>Get all active organizations</h2>
+<pre>getOrganizations() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>List of the active organizations</div>
+</div></div>
+</div>
+<a id="method_getOrganizationsByCode"></a><div class="element clickable method public method_getOrganizationsByCode " data-toggle="collapse" data-target=".method_getOrganizationsByCode .collapse" title="public">
+<h2>Get all organizations that share a given code</h2>
+<pre>getOrganizationsByCode(string $code<code> = null</code>) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>On empty this will return all organizations</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$code</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>key = gor_id_organization, value = gor_name</div>
+</div></div>
+</div>
+<a id="method_getOrganizationsForLogin"></a><div class="element clickable method public method_getOrganizationsForLogin " data-toggle="collapse" data-target=".method_getOrganizationsForLogin .collapse" title="public">
+<h2>Returns a list of the organizations where users can login.</h2>
+<pre>getOrganizationsForLogin() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>List of the active organizations</div>
+</div></div>
+</div>
+<a id="method_getOrganizationsWithRespondents"></a><div class="element clickable method public method_getOrganizationsWithRespondents " data-toggle="collapse" data-target=".method_getOrganizationsWithRespondents .collapse" title="public">
+<h2>Returns a list of the organizations that have respondents.</h2>
+<pre>getOrganizationsWithRespondents() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>List of the active organizations</div>
+</div></div>
+</div>
+<a id="method_getPatientNr"></a><div class="element clickable method public method_getPatientNr " data-toggle="collapse" data-target=".method_getPatientNr .collapse" title="public">
+<h2>Find the patient nr corresponding to this respondentId / Orgid combo</h2>
+<pre>getPatientNr(integer $respondentId, integer $organizationId) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$respondentId</h4>
+<code>integer</code>
+</div>
+<div class="subelement argument">
+<h4>$organizationId</h4>
+<code>integer</code>
+</div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code>\Gems_Exception</code></th>
+<td>When the patient does not exist</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>A patient nr or null</div>
+</div></div>
+</div>
+<a id="method_getRespondentId"></a><div class="element clickable method public method_getRespondentId " data-toggle="collapse" data-target=".method_getRespondentId .collapse" title="public">
+<h2>Find the respondent id corresponding to this patientNr / Orgid combo</h2>
+<pre>getRespondentId(string $patientId, integer $organizationId) : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$patientId</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$organizationId</h4>
+<code>integer</code>
+</div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code>\Gems_Exception</code></th>
+<td>When the respondent does not exist</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>A respondent id or null</div>
+</div></div>
+</div>
+<a id="method_getRespondentIdAndName"></a><div class="element clickable method public method_getRespondentIdAndName " data-toggle="collapse" data-target=".method_getRespondentIdAndName .collapse" title="public">
+<h2>Find the respondent id name corresponding to this patientNr / Orgid combo</h2>
+<pre>getRespondentIdAndName(string $patientId, integer $organizationId) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$patientId</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$organizationId</h4>
+<code>integer</code>
+</div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code>\Gems_Exception</code></th>
+<td>When the respondent does not exist</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>['id', 'name']</div>
+</div></div>
+</div>
+<a id="method_getRoles"></a><div class="element clickable method public method_getRoles " data-toggle="collapse" data-target=".method_getRoles .collapse" title="public">
+<h2>Returns the roles in the acl</h2>
+<pre>getRoles() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>roleId => ucfirst(roleId)</div>
+</div></div>
+</div>
+<a id="method_getRolesByPrivilege"></a><div class="element clickable method public method_getRolesByPrivilege " data-toggle="collapse" data-target=".method_getRolesByPrivilege .collapse" title="public">
+<h2>Returns the roles in the acl with the privilege</h2>
+<pre>getRolesByPrivilege($privilege) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$privilege</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>roleId => ucfirst(roleId)</div>
+</div></div>
+</div>
+<a id="method_getRoundsForExport"></a><div class="element clickable method public method_getRoundsForExport " data-toggle="collapse" data-target=".method_getRoundsForExport .collapse" title="public">
+<h2>Get all round descriptions for exported</h2>
+<pre>getRoundsForExport(integer $trackId<code> = null</code>, integer $surveyId<code> = null</code>) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$trackId</h4>
+<code>integer</code><p>Optional track id</p></div>
+<div class="subelement argument">
+<h4>$surveyId</h4>
+<code>integer</code><p>Optional survey id</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_getStaff"></a><div class="element clickable method public method_getStaff " data-toggle="collapse" data-target=".method_getStaff .collapse" title="public">
+<h2>Return key/value pairs of all staff members, currently active or not</h2>
+<pre>getStaff() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_getStaffGroups"></a><div class="element clickable method public method_getStaffGroups " data-toggle="collapse" data-target=".method_getStaffGroups .collapse" title="public">
+<h2>Return key/value pairs of all staff groups, including not active</h2>
+<pre>getStaffGroups() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_getSurveysForExport"></a><div class="element clickable method public method_getSurveysForExport " data-toggle="collapse" data-target=".method_getSurveysForExport .collapse" title="public">
+<h2>Get all surveys that can be exported</h2>
+<pre>getSurveysForExport(integer $trackId<code> = null</code>, $roundDescription<code> = null</code>, $flat<code> = false</code>) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>For export not only active surveys should be returned, but all surveys that can be exported.
+As this depends on the kind of source used it is in this method so projects can change to
+adapt to their own sources.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$trackId</h4>
+<code>integer</code><p>Optional track id</p></div>
+<div class="subelement argument"><h4>$roundDescription</h4></div>
+<div class="subelement argument"><h4>$flat</h4></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_getUserConsents"></a><div class="element clickable method public method_getUserConsents " data-toggle="collapse" data-target=".method_getUserConsents .collapse" title="public">
+<h2>getUserConsents()
+        </h2>
+<pre>getUserConsents() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method__getObjectsAllCached"></a><div class="element clickable method protected method__getObjectsAllCached inherited" data-toggle="collapse" data-target=".method__getObjectsAllCached .collapse" title="protected">
+<h2>Utility function for loading a complete query from cache into objects</h2>
+<pre>_getObjectsAllCached(string $cacheId, object $object, mixed $sql, array $binds<code> = null</code>, mixed $tags<code> = array()</code>) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$cacheId</h4>
+<code>string</code><p>The class is prepended to this id</p></div>
+<div class="subelement argument">
+<h4>$object</h4>
+<code>object</code><p>The object to put the data in</p></div>
+<div class="subelement argument">
+<h4>$sql</h4>
+<code>mixed</code><p>string or \Zend_Db_Select</p></div>
+<div class="subelement argument">
+<h4>$binds</h4>
+<code>array</code><p>sql paramters</p></div>
+<div class="subelement argument">
+<h4>$tags</h4>
+<code>mixed</code><p>atring or array of strings</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method__getSelectAllCached"></a><div class="element clickable method protected method__getSelectAllCached inherited" data-toggle="collapse" data-target=".method__getSelectAllCached .collapse" title="protected">
+<h2>Utility function for loading a complete query from cache</h2>
+<pre>_getSelectAllCached(string $cacheId, mixed $sql, array $binds<code> = array()</code>, mixed $tags<code> = array()</code>) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$cacheId</h4>
+<code>string</code><p>The class is prepended to this id</p></div>
+<div class="subelement argument">
+<h4>$sql</h4>
+<code>mixed</code><p>string or \Zend_Db_Select</p></div>
+<div class="subelement argument">
+<h4>$binds</h4>
+<code>array</code><p>sql paramters</p></div>
+<div class="subelement argument">
+<h4>$tags</h4>
+<code>mixed</code><p>atring or array of strings</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method__getSelectPairsCached"></a><div class="element clickable method protected method__getSelectPairsCached inherited" data-toggle="collapse" data-target=".method__getSelectPairsCached .collapse" title="protected">
+<h2>Utility function for loading a query paired from cache</h2>
+<pre>_getSelectPairsCached(string $cacheId, mixed $sql, array $binds<code> = array()</code>, mixed $tags<code> = array()</code>, string $sort<code> = null</code>) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$cacheId</h4>
+<code>string</code><p>The class is prepended to this id</p></div>
+<div class="subelement argument">
+<h4>$sql</h4>
+<code>mixed</code><p>string or \Zend_Db_Select</p></div>
+<div class="subelement argument">
+<h4>$binds</h4>
+<code>array</code><p>sql paramters</p></div>
+<div class="subelement argument">
+<h4>$tags</h4>
+<code>mixed</code><p>atring or array of strings</p></div>
+<div class="subelement argument">
+<h4>$sort</h4>
+<code>string</code><p>Optional function to sort on, only known functions will do</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method__getSelectPairsProcessedCached"></a><div class="element clickable method protected method__getSelectPairsProcessedCached inherited" data-toggle="collapse" data-target=".method__getSelectPairsProcessedCached .collapse" title="protected">
+<h2>Utility function for loading a query from cache</h2>
+<pre>_getSelectPairsProcessedCached(string $cacheId, mixed $sql, callable $function, array $binds<code> = array()</code>, mixed $tags<code> = array()</code>, string $sort<code> = null</code>) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$cacheId</h4>
+<code>string</code><p>The class is prepended to this id</p></div>
+<div class="subelement argument">
+<h4>$sql</h4>
+<code>mixed</code><p>string or \Zend_Db_Select</p></div>
+<div class="subelement argument">
+<h4>$function</h4>
+<code>callable</code><p>The function called with each row to form the result</p></div>
+<div class="subelement argument">
+<h4>$binds</h4>
+<code>array</code><p>sql paramters</p></div>
+<div class="subelement argument">
+<h4>$tags</h4>
+<code>mixed</code><p>string or array of strings</p></div>
+<div class="subelement argument">
+<h4>$sort</h4>
+<code>string</code><p>Optional function to sort on, only known functions will do</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method__getSelectProcessedCached"></a><div class="element clickable method protected method__getSelectProcessedCached inherited" data-toggle="collapse" data-target=".method__getSelectProcessedCached .collapse" title="protected">
+<h2>Utility function for loading a query from cache</h2>
+<pre>_getSelectProcessedCached(string $cacheId, mixed $sql, callable $function, string $keyField, mixed $tags<code> = array()</code>, string $sort<code> = null</code>) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$cacheId</h4>
+<code>string</code><p>The class is prepended to this id</p></div>
+<div class="subelement argument">
+<h4>$sql</h4>
+<code>mixed</code><p>string or \Zend_Db_Select</p></div>
+<div class="subelement argument">
+<h4>$function</h4>
+<code>callable</code><p>The function called with each row to form the result</p></div>
+<div class="subelement argument">
+<h4>$keyField</h4>
+<code>string</code><p>The field containing the key for each row</p></div>
+<div class="subelement argument">
+<h4>$tags</h4>
+<code>mixed</code><p>string or array of strings</p></div>
+<div class="subelement argument">
+<h4>$sort</h4>
+<code>string</code><p>Optional function to sort on, only known functions will do</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method__sortResult"></a><div class="element clickable method protected method__sortResult inherited" data-toggle="collapse" data-target=".method__sortResult .collapse" title="protected">
+<h2>Sort the array using the specified sort function</h2>
+<pre>_sortResult(array $result, \Gems\Util\strng $sort<code> = 'asort'</code>) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$result</h4>
+<code>array</code>
+</div>
+<div class="subelement argument">
+<h4>$sort</h4>
+<code>\Gems\Util\strng</code>
+</div>
+</div></div>
+</div>
+<h3>
+<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
+<a id="property_acl"> </a><div class="element clickable property protected property_acl" data-toggle="collapse" data-target=".property_acl .collapse" title="protected">
+<h2>$acl</h2>
+<pre>$acl : \Zend_Acl</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_cache"> </a><div class="element clickable property protected property_cache" data-toggle="collapse" data-target=".property_cache .collapse" title="protected">
+<h2>$cache</h2>
+<pre>$cache : \Zend_Cache_Core</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_db"> </a><div class="element clickable property protected property_db" data-toggle="collapse" data-target=".property_db .collapse" title="protected">
+<h2>$db</h2>
+<pre>$db : \Zend_Db_Adapter_Abstract</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_loader"> </a><div class="element clickable property protected property_loader" data-toggle="collapse" data-target=".property_loader .collapse" title="protected">
+<h2>$loader</h2>
+<pre>$loader : \Gems_Loader</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_source"> </a><div class="element clickable property protected property_source" data-toggle="collapse" data-target=".property_source .collapse" title="protected">
+<h2>$source</h2>
+<pre>$source : \MUtil_Registry_Source</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_util"> </a><div class="element clickable property protected property_util" data-toggle="collapse" data-target=".property_util .collapse" title="protected">
+<h2>$util</h2>
+<pre>$util : \Gems_Util</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:21+02:00.<br></footer></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,787 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » \Gems_Util</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+<div class="btn-group visibility" data-toggle="buttons-checkbox">
+<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
+</div>
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+</div>
+<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+<li class="nav-header">
+<i title="Methods" class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public inherited"><a href="#method___construct" title="__construct() :: "><span class="description">__construct()
+        </span><pre>__construct()</pre></a></li>
+<li class="method public inherited"><a href="#method___get" title="__get() :: "><span class="description">__get()
+        </span><pre>__get()</pre></a></li>
+<li class="method public inherited"><a href="#method_addPrefixPath" title="addPrefixPath() :: Add prefixed paths to the registry of paths"><span class="description">Add prefixed paths to the registry of paths</span><pre>addPrefixPath()</pre></a></li>
+<li class="method public inherited"><a href="#method_afterRegistry" title="afterRegistry() :: Called after the check that all required registry values
+have been set correctly has run."><span class="description">Called after the check that all required registry values
+have been set correctly has run.</span><pre>afterRegistry()</pre></a></li>
+<li class="method public inherited"><a href="#method_answerRegistryRequest" title="answerRegistryRequest() :: Allows the loader to set resources."><span class="description">Allows the loader to set resources.</span><pre>answerRegistryRequest()</pre></a></li>
+<li class="method public inherited"><a href="#method_checkRegistryRequestsAnswers" title="checkRegistryRequestsAnswers() :: Should be called after answering the request to allow the Target
+to check if all required registry values have been set correctly."><span class="description">Should be called after answering the request to allow the Target
+to check if all required registry values have been set correctly.</span><pre>checkRegistryRequestsAnswers()</pre></a></li>
+<li class="method public "><a href="#method_getConsent" title="getConsent() :: Returns a single consent code object."><span class="description">Returns a single consent code object.</span><pre>getConsent()</pre></a></li>
+<li class="method public "><a href="#method_getConsentRejected" title="getConsentRejected() :: Retrieve the consentCODE to use for rejected responses by the survey system
+The mapping of actual consents to consentCODEs is done in the gems__consents table"><span class="description">Retrieve the consentCODE to use for rejected responses by the survey system
+The mapping of actual consents to consentCODEs is done in the gems__consents table</span><pre>getConsentRejected()</pre></a></li>
+<li class="method public "><a href="#method_getConsentTypes" title="getConsentTypes() :: Retrieve the array of possible consentCODEs to use for responses by the survey system
+The mapping of actual consents to consentCODEs is done in the gems__consents table"><span class="description">Retrieve the array of possible consentCODEs to use for responses by the survey system
+The mapping of actual consents to consentCODEs is done in the gems__consents table</span><pre>getConsentTypes()</pre></a></li>
+<li class="method public "><a href="#method_getConsentUnknown" title="getConsentUnknown() :: Get the code for an unknwon user consent"><span class="description">Get the code for an unknwon user consent</span><pre>getConsentUnknown()</pre></a></li>
+<li class="method public "><a href="#method_getCronJobLock" title="getCronJobLock() :: Returns the cron job lock"><span class="description">Returns the cron job lock</span><pre>getCronJobLock()</pre></a></li>
+<li class="method public "><a href="#method_getCurrentURI" title="getCurrentURI() :: Returns the current 'base site' url, optionally with a subpath."><span class="description">Returns the current 'base site' url, optionally with a subpath.</span><pre>getCurrentURI()</pre></a></li>
+<li class="method public "><a href="#method_getDbLookup" title="getDbLookup() :: "><span class="description">getDbLookup()
+        </span><pre>getDbLookup()</pre></a></li>
+<li class="method public "><a href="#method_getDefaultConsent" title="getDefaultConsent() :: Get the default user consent"><span class="description">Get the default user consent</span><pre>getDefaultConsent()</pre></a></li>
+<li class="method public "><a href="#method_getImageUri" title="getImageUri() :: "><span class="description">getImageUri()
+        </span><pre>getImageUri()</pre></a></li>
+<li class="method public "><a href="#method_getLocalized" title="getLocalized() :: "><span class="description">getLocalized()
+        </span><pre>getLocalized()</pre></a></li>
+<li class="method public "><a href="#method_getMaintenanceLock" title="getMaintenanceLock() :: Returns the maintenance lock"><span class="description">Returns the maintenance lock</span><pre>getMaintenanceLock()</pre></a></li>
+<li class="method public "><a href="#method_getMonitor" title="getMonitor() :: Returns the job monitor"><span class="description">Returns the job monitor</span><pre>getMonitor()</pre></a></li>
+<li class="method public "><a href="#method_getReceptionCode" title="getReceptionCode() :: Returns a single reception code object."><span class="description">Returns a single reception code object.</span><pre>getReceptionCode()</pre></a></li>
+<li class="method public "><a href="#method_getReceptionCodeLibrary" title="getReceptionCodeLibrary() :: Returns a"><span class="description">Returns a</span><pre>getReceptionCodeLibrary()</pre></a></li>
+<li class="method public inherited"><a href="#method_getRegistryRequests" title="getRegistryRequests() :: Allows the loader to know the resources to set."><span class="description">Allows the loader to know the resources to set.</span><pre>getRegistryRequests()</pre></a></li>
+<li class="method public "><a href="#method_getRequestCache" title="getRequestCache() :: "><span class="description">getRequestCache()
+        </span><pre>getRequestCache()</pre></a></li>
+<li class="method public "><a href="#method_getTokenData" title="getTokenData() :: "><span class="description">getTokenData()
+        </span><pre>getTokenData()</pre></a></li>
+<li class="method public "><a href="#method_getTrackData" title="getTrackData() :: "><span class="description">getTrackData()
+        </span><pre>getTrackData()</pre></a></li>
+<li class="method public "><a href="#method_getTranslated" title="getTranslated() :: "><span class="description">getTranslated()
+        </span><pre>getTranslated()</pre></a></li>
+<li class="method public "><a href="#method_isAllowedIP" title="isAllowedIP() :: Checks if a given IP is allowed according to a set
+of IP addresses / ranges."><span class="description">Checks if a given IP is allowed according to a set
+of IP addresses / ranges.</span><pre>isAllowedIP()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="method protected inherited"><a href="#method__cascadedDirs" title="_cascadedDirs() :: Add a subdirectory / sub name to a list of class load paths"><span class="description">Add a subdirectory / sub name to a list of class load paths</span><pre>_cascadedDirs()</pre></a></li>
+<li class="method protected inherited"><a href="#method__getClass" title="_getClass() :: Returns $this-&gt;$name, creating the item if it does not yet exist."><span class="description">Returns $this-&gt;$name, creating the item if it does not yet exist.</span><pre>_getClass()</pre></a></li>
+<li class="method protected inherited"><a href="#method__loadClass" title="_loadClass() :: Create or loads the class. When only loading, this function returns a StaticCall object that
+can be invoked lazely."><span class="description">Create or loads the class. When only loading, this function returns a StaticCall object that
+can be invoked lazely.</span><pre>_loadClass()</pre></a></li>
+<li class="method protected inherited"><a href="#method_filterRequestNames" title="filterRequestNames() :: Filters the names that should not be requested."><span class="description">Filters the names that should not be requested.</span><pre>filterRequestNames()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Properties" class="icon-custom icon-property"></i> Properties
+                    <ul></ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="property protected "><a href="#property__dirs" title="$_dirs() :: The prefix/path location to look for classes."><span class="description"></span><pre>$_dirs</pre></a></li>
+<li class="property protected "><a href="#property__loader" title="$_loader() :: "><span class="description"></span><pre>$_loader</pre></a></li>
+<li class="property protected "><a href="#property_basepath" title="$basepath() :: "><span class="description"></span><pre>$basepath</pre></a></li>
+<li class="property protected "><a href="#property_cascade" title="$cascade() :: Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for."><span class="description"></span><pre>$cascade</pre></a></li>
+<li class="property protected "><a href="#property_cascade" title="$cascade() :: Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for."><span class="description"></span><pre>$cascade</pre></a></li>
+<li class="property protected "><a href="#property_dbLookup" title="$dbLookup() :: "><span class="description"></span><pre>$dbLookup</pre></a></li>
+<li class="property protected "><a href="#property_localized" title="$localized() :: "><span class="description"></span><pre>$localized</pre></a></li>
+<li class="property protected "><a href="#property_monitor" title="$monitor() :: "><span class="description"></span><pre>$monitor</pre></a></li>
+<li class="property protected "><a href="#property_project" title="$project() :: "><span class="description"></span><pre>$project</pre></a></li>
+<li class="property protected "><a href="#property_receptionCodeLibrary" title="$receptionCodeLibrary() :: "><span class="description"></span><pre>$receptionCodeLibrary</pre></a></li>
+<li class="property protected "><a href="#property_requestCache" title="$requestCache() :: "><span class="description"></span><pre>$requestCache</pre></a></li>
+<li class="property protected "><a href="#property_tokenData" title="$tokenData() :: "><span class="description"></span><pre>$tokenData</pre></a></li>
+<li class="property protected "><a href="#property_trackData" title="$trackData() :: "><span class="description"></span><pre>$trackData</pre></a></li>
+<li class="property protected "><a href="#property_translated" title="$translated() :: "><span class="description"></span><pre>$translated</pre></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a xmlns:php="http://php.net/xsl" id="\Gems_Util"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+<li>
+<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Gems_Util.html">Gems_Util</a>
+</li>
+</ul>
+<div xmlns:php="http://php.net/xsl" class="element class">
+<p class="short_description">Class for general utility functions and access to general utility classes.</p>
+<div class="details">
+<div class="long_description"><p>As these classes may need setting of values this subclass implements the
+checkRegistryRequestsAnswers() easy access to resources.</p></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Gems.Util.html">Gems</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Util</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2011 Erasmus MC</td>
+</tr>
+<tr>
+<th>license</th>
+<td><a href="http://opensource.org/licenses/BSD-3-Clause">New BSD License</a></td>
+</tr>
+<tr>
+<th>since</th>
+<td>Class available since version 1.0</td>
+</tr>
+<tr>
+<th>inherited_from</th>
+<td>\Gems_Loader_TargetLoaderAbstract</td>
+</tr>
+</table>
+<h3>
+<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
+<a id="method___construct"></a><div class="element clickable method public method___construct inherited" data-toggle="collapse" data-target=".method___construct .collapse" title="public">
+<h2>__construct()
+        </h2>
+<pre>__construct(mixed $container, array $dirs) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$container</h4>
+<code>mixed</code><p>A container acting as source for \MUtil_Registry_Source</p></div>
+<div class="subelement argument">
+<h4>$dirs</h4>
+<code>array</code><p>The directories where to look for requested classes</p></div>
+</div></div>
+</div>
+<a id="method___get"></a><div class="element clickable method public method___get inherited" data-toggle="collapse" data-target=".method___get .collapse" title="public">
+<h2>__get()
+        </h2>
+<pre>__get($name) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$name</h4></div>
+</div></div>
+</div>
+<a id="method_addPrefixPath"></a><div class="element clickable method public method_addPrefixPath inherited" data-toggle="collapse" data-target=".method_addPrefixPath .collapse" title="public">
+<h2>Add prefixed paths to the registry of paths</h2>
+<pre>addPrefixPath(string $prefix, $path, boolean $prepend<code> = true</code>) : \Gems_Loader_LoaderAbstract</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$prefix</h4>
+<code>string</code>
+</div>
+<div class="subelement argument"><h4>$path</h4></div>
+<div class="subelement argument">
+<h4>$prepend</h4>
+<code>boolean</code><p>Put path at the beginning of the stack (has no effect when prefix / dir already set)</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Loader_LoaderAbstract</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_afterRegistry"></a><div class="element clickable method public method_afterRegistry inherited" data-toggle="collapse" data-target=".method_afterRegistry .collapse" title="public">
+<h2>Called after the check that all required registry values
+have been set correctly has run.</h2>
+<pre>afterRegistry() : void</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_answerRegistryRequest"></a><div class="element clickable method public method_answerRegistryRequest inherited" data-toggle="collapse" data-target=".method_answerRegistryRequest .collapse" title="public">
+<h2>Allows the loader to set resources.</h2>
+<pre>answerRegistryRequest(string $name, mixed $resource) : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code><p>Name of resource to set</p></div>
+<div class="subelement argument">
+<h4>$resource</h4>
+<code>mixed</code><p>The resource.</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>True if $resource was OK</div>
+</div></div>
+</div>
+<a id="method_checkRegistryRequestsAnswers"></a><div class="element clickable method public method_checkRegistryRequestsAnswers inherited" data-toggle="collapse" data-target=".method_checkRegistryRequestsAnswers .collapse" title="public">
+<h2>Should be called after answering the request to allow the Target
+to check if all required registry values have been set correctly.</h2>
+<pre>checkRegistryRequestsAnswers() : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>False if required values are missing.</div>
+</div></div>
+</div>
+<a id="method_getConsent"></a><div class="element clickable method public method_getConsent " data-toggle="collapse" data-target=".method_getConsent .collapse" title="public">
+<h2>Returns a single consent code object.</h2>
+<pre>getConsent(string $description) : \Gems\Util\ConsentCode</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$description</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems\Util\ConsentCode</code></div>
+</div></div>
+</div>
+<a id="method_getConsentRejected"></a><div class="element clickable method public method_getConsentRejected " data-toggle="collapse" data-target=".method_getConsentRejected .collapse" title="public">
+<h2>Retrieve the consentCODE to use for rejected responses by the survey system
+The mapping of actual consents to consentCODEs is done in the gems__consents table</h2>
+<pre>getConsentRejected() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code>\Gems_Exception_Coding</code></th>
+<td></td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>Default value is 'do not use'</div>
+</div></div>
+</div>
+<a id="method_getConsentTypes"></a><div class="element clickable method public method_getConsentTypes " data-toggle="collapse" data-target=".method_getConsentTypes .collapse" title="public">
+<h2>Retrieve the array of possible consentCODEs to use for responses by the survey system
+The mapping of actual consents to consentCODEs is done in the gems__consents table</h2>
+<pre>getConsentTypes() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Default consent codes are 'do not use' and 'consent given'</div>
+</div></div>
+</div>
+<a id="method_getConsentUnknown"></a><div class="element clickable method public method_getConsentUnknown " data-toggle="collapse" data-target=".method_getConsentUnknown .collapse" title="public">
+<h2>Get the code for an unknwon user consent</h2>
+<pre>getConsentUnknown() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>This is de consent description from gems__consents, not the consentCODE</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getCronJobLock"></a><div class="element clickable method public method_getCronJobLock " data-toggle="collapse" data-target=".method_getCronJobLock .collapse" title="public">
+<h2>Returns the cron job lock</h2>
+<pre>getCronJobLock() : \Gems_Util_LockFile</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Util_LockFile</code></div>
+</div></div>
+</div>
+<a id="method_getCurrentURI"></a><div class="element clickable method public method_getCurrentURI " data-toggle="collapse" data-target=".method_getCurrentURI .collapse" title="public">
+<h2>Returns the current 'base site' url, optionally with a subpath.</h2>
+<pre>getCurrentURI(string $subpath<code> = ''</code>) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>staticvar</th>
+<td>string $uri</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$subpath</h4>
+<code>string</code><p>Optional string</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>The Url + basePath plus the optional subpath</div>
+</div></div>
+</div>
+<a id="method_getDbLookup"></a><div class="element clickable method public method_getDbLookup " data-toggle="collapse" data-target=".method_getDbLookup .collapse" title="public">
+<h2>getDbLookup()
+        </h2>
+<pre>getDbLookup() : \Gems_Util_DbLookup</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Util_DbLookup</code></div>
+</div></div>
+</div>
+<a id="method_getDefaultConsent"></a><div class="element clickable method public method_getDefaultConsent " data-toggle="collapse" data-target=".method_getDefaultConsent .collapse" title="public">
+<h2>Get the default user consent</h2>
+<pre>getDefaultConsent() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>This is de consent description from gems__consents, not the consentCODE</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getImageUri"></a><div class="element clickable method public method_getImageUri " data-toggle="collapse" data-target=".method_getImageUri .collapse" title="public">
+<h2>getImageUri()
+        </h2>
+<pre>getImageUri($imageFile) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$imageFile</h4></div>
+</div></div>
+</div>
+<a id="method_getLocalized"></a><div class="element clickable method public method_getLocalized " data-toggle="collapse" data-target=".method_getLocalized .collapse" title="public">
+<h2>getLocalized()
+        </h2>
+<pre>getLocalized() : \Gems_Util_Localized</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Util_Localized</code></div>
+</div></div>
+</div>
+<a id="method_getMaintenanceLock"></a><div class="element clickable method public method_getMaintenanceLock " data-toggle="collapse" data-target=".method_getMaintenanceLock .collapse" title="public">
+<h2>Returns the maintenance lock</h2>
+<pre>getMaintenanceLock() : \Gems_Util_LockFile</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Util_LockFile</code></div>
+</div></div>
+</div>
+<a id="method_getMonitor"></a><div class="element clickable method public method_getMonitor " data-toggle="collapse" data-target=".method_getMonitor .collapse" title="public">
+<h2>Returns the job monitor</h2>
+<pre>getMonitor() : \Gems\Util\Monitor</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems\Util\Monitor</code></div>
+</div></div>
+</div>
+<a id="method_getReceptionCode"></a><div class="element clickable method public method_getReceptionCode " data-toggle="collapse" data-target=".method_getReceptionCode .collapse" title="public">
+<h2>Returns a single reception code object.</h2>
+<pre>getReceptionCode(string $code) : \Gems_Util_ReceptionCode</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$code</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Util_ReceptionCode</code></div>
+</div></div>
+</div>
+<a id="method_getReceptionCodeLibrary"></a><div class="element clickable method public method_getReceptionCodeLibrary " data-toggle="collapse" data-target=".method_getReceptionCodeLibrary .collapse" title="public">
+<h2>Returns a</h2>
+<pre>getReceptionCodeLibrary() : \Gems_Util_ReceptionCodeLibrary</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Util_ReceptionCodeLibrary</code></div>
+</div></div>
+</div>
+<a id="method_getRegistryRequests"></a><div class="element clickable method public method_getRegistryRequests inherited" data-toggle="collapse" data-target=".method_getRegistryRequests .collapse" title="public">
+<h2>Allows the loader to know the resources to set.</h2>
+<pre>getRegistryRequests() : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Returns those object variables defined by the subclass but not at the level of this definition.</p>
+<p>Can be overruled.</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>of string names</div>
+</div></div>
+</div>
+<a id="method_getRequestCache"></a><div class="element clickable method public method_getRequestCache " data-toggle="collapse" data-target=".method_getRequestCache .collapse" title="public">
+<h2>getRequestCache()
+        </h2>
+<pre>getRequestCache(string $sourceAction<code> = null</code>, boolean $readonly<code> = false</code>) : \Gems_Util_RequestCache</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$sourceAction</h4>
+<code>string</code><p>The action to get the cache from if not the current one.</p></div>
+<div class="subelement argument">
+<h4>$readonly</h4>
+<code>boolean</code><p>Optional, tell the cache not to store any new values</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Util_RequestCache</code></div>
+</div></div>
+</div>
+<a id="method_getTokenData"></a><div class="element clickable method public method_getTokenData " data-toggle="collapse" data-target=".method_getTokenData .collapse" title="public">
+<h2>getTokenData()
+        </h2>
+<pre>getTokenData() : \Gems_Util_TokenData</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Util_TokenData</code></div>
+</div></div>
+</div>
+<a id="method_getTrackData"></a><div class="element clickable method public method_getTrackData " data-toggle="collapse" data-target=".method_getTrackData .collapse" title="public">
+<h2>getTrackData()
+        </h2>
+<pre>getTrackData() : \Gems_Util_TrackData</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Util_TrackData</code></div>
+</div></div>
+</div>
+<a id="method_getTranslated"></a><div class="element clickable method public method_getTranslated " data-toggle="collapse" data-target=".method_getTranslated .collapse" title="public">
+<h2>getTranslated()
+        </h2>
+<pre>getTranslated() : \Gems_Util_Translated</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Util_Translated</code></div>
+</div></div>
+</div>
+<a id="method_isAllowedIP"></a><div class="element clickable method public method_isAllowedIP " data-toggle="collapse" data-target=".method_isAllowedIP .collapse" title="public">
+<h2>Checks if a given IP is allowed according to a set
+of IP addresses / ranges.</h2>
+<pre>isAllowedIP(string $ip, string $ipRanges<code> = ""</code>) : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Multiple addresses/ranges are separated by a colon,
+an individual range takes the form of
+10.0.0.0-10.0.0.255 (subnet masks are not supported)</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$ip</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$ipRanges</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method__cascadedDirs"></a><div class="element clickable method protected method__cascadedDirs inherited" data-toggle="collapse" data-target=".method__cascadedDirs .collapse" title="protected">
+<h2>Add a subdirectory / sub name to a list of class load paths</h2>
+<pre>_cascadedDirs(array $dirs, string $cascade, boolean $fullClassnameFallback<code> = true</code>) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$dirs</h4>
+<code>array</code><p>prefix => path</p></div>
+<div class="subelement argument">
+<h4>$cascade</h4>
+<code>string</code><p>The sub directories to cascade to</p></div>
+<div class="subelement argument">
+<h4>$fullClassnameFallback</h4>
+<code>boolean</code><p>Allows full class name specification instead of just plugin name part</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>prefix => path</div>
+</div></div>
+</div>
+<a id="method__getClass"></a><div class="element clickable method protected method__getClass inherited" data-toggle="collapse" data-target=".method__getClass .collapse" title="protected">
+<h2>Returns $this-&gt;$name, creating the item if it does not yet exist.</h2>
+<pre>_getClass(string $name, string $className<code> = null</code>, array $arguments<code> = array()</code>) : mixed</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code><p>The $name of the variable to store this object in.</p></div>
+<div class="subelement argument">
+<h4>$className</h4>
+<code>string</code><p>Class name or null if the same as $name, prepending $this->_dirs.</p></div>
+<div class="subelement argument">
+<h4>$arguments</h4>
+<code>array</code><p>Class initialization arguments.</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>Instance of $className</div>
+</div></div>
+</div>
+<a id="method__loadClass"></a><div class="element clickable method protected method__loadClass inherited" data-toggle="collapse" data-target=".method__loadClass .collapse" title="protected">
+<h2>Create or loads the class. When only loading, this function returns a StaticCall object that
+can be invoked lazely.</h2>
+<pre>_loadClass(string $name, boolean $create<code> = false</code>, array $arguments<code> = array()</code>) : mixed</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>see</th>
+<td><a href="%5CMUtil_Lazy_StaticCall"></a></td>
+</tr>
+<tr>
+<th>see</th>
+<td><a href="%5CMUtil_Registry_TargetInterface"></a></td>
+</tr>
+</table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code><p>The class name, minus the part in $this->_dirs.</p></div>
+<div class="subelement argument">
+<h4>$create</h4>
+<code>boolean</code><p>Create the object, or only when an \MUtil_Registry_TargetInterface instance.</p></div>
+<div class="subelement argument">
+<h4>$arguments</h4>
+<code>array</code><p>Class initialization arguments.</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>A class instance or a \MUtil_Lazy_StaticCall object</div>
+</div></div>
+</div>
+<a id="method_filterRequestNames"></a><div class="element clickable method protected method_filterRequestNames inherited" data-toggle="collapse" data-target=".method_filterRequestNames .collapse" title="protected">
+<h2>Filters the names that should not be requested.</h2>
+<pre>filterRequestNames(string $name) : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Can be overriden.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<h3>
+<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
+<a id="property__dirs"> </a><div class="element clickable property protected property__dirs" data-toggle="collapse" data-target=".property__dirs .collapse" title="protected">
+<h2>The prefix/path location to look for classes.</h2>
+<pre>$_dirs : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"><p>The standard value is</p>
+<ul>
+<li>
+<Project_name> => application/classes
+</li>
+<li>Gems =&gt; library/Gems/classes</li>
+</ul>
+<p>But an alternative could be:</p>
+<ul>
+<li>Demopulse =&gt; application/classes</li>
+<li>Pulse =&gt; application/classes</li>
+<li>Gems =&gt; library/Gems/classes</li>
+</ul></div></div></div>
+</div>
+<a id="property__loader"> </a><div class="element clickable property protected property__loader" data-toggle="collapse" data-target=".property__loader .collapse" title="protected">
+<h2>$_loader</h2>
+<pre>$_loader : \MUtil_Loader_PluginLoader</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_basepath"> </a><div class="element clickable property protected property_basepath" data-toggle="collapse" data-target=".property_basepath .collapse" title="protected">
+<h2>$basepath</h2>
+<pre>$basepath : \Gems_Util_BasePath</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_cascade"> </a><div class="element clickable property protected property_cascade" data-toggle="collapse" data-target=".property_cascade .collapse" title="protected">
+<h2>Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.</h2>
+<pre>$cascade : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>'Util'</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_cascade"> </a><div class="element clickable property protected property_cascade" data-toggle="collapse" data-target=".property_cascade .collapse" title="protected">
+<h2>Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.</h2>
+<pre>$cascade : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_dbLookup"> </a><div class="element clickable property protected property_dbLookup" data-toggle="collapse" data-target=".property_dbLookup .collapse" title="protected">
+<h2>$dbLookup</h2>
+<pre>$dbLookup : \Gems_Util_DbLookup</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_localized"> </a><div class="element clickable property protected property_localized" data-toggle="collapse" data-target=".property_localized .collapse" title="protected">
+<h2>$localized</h2>
+<pre>$localized : \Gems_Util_Localized</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_monitor"> </a><div class="element clickable property protected property_monitor" data-toggle="collapse" data-target=".property_monitor .collapse" title="protected">
+<h2>$monitor</h2>
+<pre>$monitor : \Gems\Util\Monitor</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_project"> </a><div class="element clickable property protected property_project" data-toggle="collapse" data-target=".property_project .collapse" title="protected">
+<h2>$project</h2>
+<pre>$project : \Gems_Project_ProjectSettings</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_receptionCodeLibrary"> </a><div class="element clickable property protected property_receptionCodeLibrary" data-toggle="collapse" data-target=".property_receptionCodeLibrary .collapse" title="protected">
+<h2>$receptionCodeLibrary</h2>
+<pre>$receptionCodeLibrary : \Gems_Util_ReceptionCodeLibrary</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_requestCache"> </a><div class="element clickable property protected property_requestCache" data-toggle="collapse" data-target=".property_requestCache .collapse" title="protected">
+<h2>$requestCache</h2>
+<pre>$requestCache : \Gems_Util_RequestCache</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_tokenData"> </a><div class="element clickable property protected property_tokenData" data-toggle="collapse" data-target=".property_tokenData .collapse" title="protected">
+<h2>$tokenData</h2>
+<pre>$tokenData : \Gems_Util_TokenData</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_trackData"> </a><div class="element clickable property protected property_trackData" data-toggle="collapse" data-target=".property_trackData .collapse" title="protected">
+<h2>$trackData</h2>
+<pre>$trackData : \Gems_Util_TrackData</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_translated"> </a><div class="element clickable property protected property_translated" data-toggle="collapse" data-target=".property_translated .collapse" title="protected">
+<h2>$translated</h2>
+<pre>$translated : \Gems_Util_Translated</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:28+02:00.<br></footer></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,1648 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » \Gems_Tracker_Source_LimeSurvey2m00Database</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+<div class="btn-group visibility" data-toggle="buttons-checkbox">
+<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
+</div>
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+</div>
+<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+<li class="nav-header">
+<i title="Methods" class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public inherited"><a href="#method___construct" title="__construct() :: Standard constructor for sources"><span class="description">Standard constructor for sources</span><pre>__construct()</pre></a></li>
+<li class="method public "><a href="#method_addnewAttributeDefaults" title="addnewAttributeDefaults() :: Adds the fields without default new in 2.00"><span class="description">Adds the fields without default new in 2.00</span><pre>addnewAttributeDefaults()</pre></a></li>
+<li class="method public "><a href="#method_addnewAttributeFields" title="addnewAttributeFields() :: Adds the fields without default new in 2.00"><span class="description">Adds the fields without default new in 2.00</span><pre>addnewAttributeFields()</pre></a></li>
+<li class="method public inherited"><a href="#method_checkSourceActive" title="checkSourceActive() :: Check if the tableprefix exists in the source database, and change the status of this
+adapter in the gems_sources table accordingly"><span class="description">Check if the tableprefix exists in the source database, and change the status of this
+adapter in the gems_sources table accordingly</span><pre>checkSourceActive()</pre></a></li>
+<li class="method public inherited"><a href="#method_checkSurvey" title="checkSurvey() :: Survey source synchronization check function"><span class="description">Survey source synchronization check function</span><pre>checkSurvey()</pre></a></li>
+<li class="method public inherited"><a href="#method_copyTokenToSource" title="copyTokenToSource() :: Inserts the token in the source (if needed) and sets those attributes the source wants to set."><span class="description">Inserts the token in the source (if needed) and sets those attributes the source wants to set.</span><pre>copyTokenToSource()</pre></a></li>
+<li class="method public inherited"><a href="#method_getAnswerDateTime" title="getAnswerDateTime() :: Returns a field from the raw answers as a date object."><span class="description">Returns a field from the raw answers as a date object.</span><pre>getAnswerDateTime()</pre></a></li>
+<li class="method public inherited"><a href="#method_getAttributes" title="getAttributes() :: "><span class="description">getAttributes()
+        </span><pre>getAttributes()</pre></a></li>
+<li class="method public inherited"><a href="#method_getCompletedTokens" title="getCompletedTokens() :: Bulk check token completion"><span class="description">Bulk check token completion</span><pre>getCompletedTokens()</pre></a></li>
+<li class="method public inherited"><a href="#method_getCompletionTime" title="getCompletionTime() :: Gets the time the survey was completed according to the source"><span class="description">Gets the time the survey was completed according to the source</span><pre>getCompletionTime()</pre></a></li>
+<li class="method public inherited"><a href="#method_getDatesList" title="getDatesList() :: Returns an array containing fieldname =&gt; label for each date field in the survey."><span class="description">Returns an array containing fieldname =&gt; label for each date field in the survey.</span><pre>getDatesList()</pre></a></li>
+<li class="method public inherited"><a href="#method_getFullQuestionList" title="getFullQuestionList() :: Returns an array of arrays with the structure:
+     question =&gt; string,
+     class    =&gt; question|question_sub
+     group    =&gt; is for grouping
+     type     =&gt; (optional) source specific type
+     answers  =&gt; string for single types,
+                 array for selection of,
+                 nothing for no answer"><span class="description">Returns an array of arrays with the structure:
+     question =&gt; string,
+     class    =&gt; question|question_sub
+     group    =&gt; is for grouping
+     type     =&gt; (optional) source specific type
+     answers  =&gt; string for single types,
+                 array for selection of,
+                 nothing for no answer</span><pre>getFullQuestionList()</pre></a></li>
+<li class="method public inherited"><a href="#method_getId" title="getId() :: "><span class="description">getId()
+        </span><pre>getId()</pre></a></li>
+<li class="method public inherited"><a href="#method_getQuestionInformation" title="getQuestionInformation() :: Returns an array of arrays with the structure:
+     question =&gt; string,
+     class    =&gt; question|question_sub
+     group    =&gt; is for grouping
+     type     =&gt; (optional) source specific type
+     answers  =&gt; string for single types,
+                 array for selection of,
+                 nothing for no answer"><span class="description">Returns an array of arrays with the structure:
+     question =&gt; string,
+     class    =&gt; question|question_sub
+     group    =&gt; is for grouping
+     type     =&gt; (optional) source specific type
+     answers  =&gt; string for single types,
+                 array for selection of,
+                 nothing for no answer</span><pre>getQuestionInformation()</pre></a></li>
+<li class="method public inherited"><a href="#method_getQuestionList" title="getQuestionList() :: Returns an array containing fieldname =&gt; label for each answerable question in the survey."><span class="description">Returns an array containing fieldname =&gt; label for each answerable question in the survey.</span><pre>getQuestionList()</pre></a></li>
+<li class="method public inherited"><a href="#method_getRawTokenAnswerRow" title="getRawTokenAnswerRow() :: Returns the answers in simple raw array format, without value processing etc."><span class="description">Returns the answers in simple raw array format, without value processing etc.</span><pre>getRawTokenAnswerRow()</pre></a></li>
+<li class="method public inherited"><a href="#method_getRawTokenAnswerRows" title="getRawTokenAnswerRows() :: Returns the answers of multiple tokens in simple raw nested array format,
+without value processing etc."><span class="description">Returns the answers of multiple tokens in simple raw nested array format,
+without value processing etc.</span><pre>getRawTokenAnswerRows()</pre></a></li>
+<li class="method public inherited"><a href="#method_getRawTokenAnswerRowsCount" title="getRawTokenAnswerRowsCount() :: Returns the recordcount for a given filter"><span class="description">Returns the recordcount for a given filter</span><pre>getRawTokenAnswerRowsCount()</pre></a></li>
+<li class="method public inherited"><a href="#method_getRawTokenAnswerRowsSelect" title="getRawTokenAnswerRowsSelect() :: Get the select object to use for RawTokenAnswerRows"><span class="description">Get the select object to use for RawTokenAnswerRows</span><pre>getRawTokenAnswerRowsSelect()</pre></a></li>
+<li class="method public inherited"><a href="#method_getSourceDatabase" title="getSourceDatabase() :: Get the db adapter for this source"><span class="description">Get the db adapter for this source</span><pre>getSourceDatabase()</pre></a></li>
+<li class="method public inherited"><a href="#method_getStartTime" title="getStartTime() :: Gets the time the survey was started according to the source"><span class="description">Gets the time the survey was started according to the source</span><pre>getStartTime()</pre></a></li>
+<li class="method public inherited"><a href="#method_getSurveyAnswerModel" title="getSurveyAnswerModel() :: Returns a model for the survey answers"><span class="description">Returns a model for the survey answers</span><pre>getSurveyAnswerModel()</pre></a></li>
+<li class="method public inherited"><a href="#method_getTokenInfo" title="getTokenInfo() :: Retrieve all fields stored in the token table, and store them in the tokencache"><span class="description">Retrieve all fields stored in the token table, and store them in the tokencache</span><pre>getTokenInfo()</pre></a></li>
+<li class="method public "><a href="#method_getTokenUrl" title="getTokenUrl() :: Returns the url that (should) start the survey for this token"><span class="description">Returns the url that (should) start the survey for this token</span><pre>getTokenUrl()</pre></a></li>
+<li class="method public inherited"><a href="#method_getTokenUrl" title="getTokenUrl() :: Returns the url that (should) start the survey for this token"><span class="description">Returns the url that (should) start the survey for this token</span><pre>getTokenUrl()</pre></a></li>
+<li class="method public inherited"><a href="#method_inSource" title="inSource() :: Checks whether the token is in the source."><span class="description">Checks whether the token is in the source.</span><pre>inSource()</pre></a></li>
+<li class="method public inherited"><a href="#method_isCompleted" title="isCompleted() :: Returns true if the survey was completed according to the source"><span class="description">Returns true if the survey was completed according to the source</span><pre>isCompleted()</pre></a></li>
+<li class="method public inherited"><a href="#method_setRawTokenAnswers" title="setRawTokenAnswers() :: Sets the answers passed on."><span class="description">Sets the answers passed on.</span><pre>setRawTokenAnswers()</pre></a></li>
+<li class="method public inherited"><a href="#method_setTokenCompletionTime" title="setTokenCompletionTime() :: Sets the completion time."><span class="description">Sets the completion time.</span><pre>setTokenCompletionTime()</pre></a></li>
+<li class="method public inherited"><a href="#method_synchronizeSurveyBatch" title="synchronizeSurveyBatch() :: Updates the gems database with the latest information about the surveys in this source adapter"><span class="description">Updates the gems database with the latest information about the surveys in this source adapter</span><pre>synchronizeSurveyBatch()</pre></a></li>
+<li class="method public inherited"><a href="#method_updateConsent" title="updateConsent() :: Updates the consent code of the the token in the source (if needed)"><span class="description">Updates the consent code of the the token in the source (if needed)</span><pre>updateConsent()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="method protected inherited"><a href="#method__checkReturnURI" title="_checkReturnURI() :: Checks the return URI in LimeSurvey and sets it to the correct one when needed"><span class="description">Checks the return URI in LimeSurvey and sets it to the correct one when needed</span><pre>_checkReturnURI()</pre></a></li>
+<li class="method protected "><a href="#method__checkTokenTable" title="_checkTokenTable() :: Check a token table for any changes needed by this version."><span class="description">Check a token table for any changes needed by this version.</span><pre>_checkTokenTable()</pre></a></li>
+<li class="method protected inherited"><a href="#method__checkTokenTable" title="_checkTokenTable() :: Check a token table for any changes needed by this version."><span class="description">Check a token table for any changes needed by this version.</span><pre>_checkTokenTable()</pre></a></li>
+<li class="method protected "><a href="#method__fillAttributeMap" title="_fillAttributeMap() :: Returns a list of field names that should be set in a newly inserted token."><span class="description">Returns a list of field names that should be set in a newly inserted token.</span><pre>_fillAttributeMap()</pre></a></li>
+<li class="method protected inherited"><a href="#method__fillAttributeMap" title="_fillAttributeMap() :: Returns a list of field names that should be set in a newly inserted token."><span class="description">Returns a list of field names that should be set in a newly inserted token.</span><pre>_fillAttributeMap()</pre></a></li>
+<li class="method protected inherited"><a href="#method__filterAnswersOnly" title="_filterAnswersOnly() :: Filters an answers array, return only those fields that where answered by the user."><span class="description">Filters an answers array, return only those fields that where answered by the user.</span><pre>_filterAnswersOnly()</pre></a></li>
+<li class="method protected "><a href="#method__getFieldMap" title="_getFieldMap() :: Return a fieldmap object"><span class="description">Return a fieldmap object</span><pre>_getFieldMap()</pre></a></li>
+<li class="method protected inherited"><a href="#method__getFieldMap" title="_getFieldMap() :: Return a fieldmap object"><span class="description">Return a fieldmap object</span><pre>_getFieldMap()</pre></a></li>
+<li class="method protected inherited"><a href="#method__getGemsSurveysForSynchronisation" title="_getGemsSurveysForSynchronisation() :: Returns all surveys for synchronization"><span class="description">Returns all surveys for synchronization</span><pre>_getGemsSurveysForSynchronisation()</pre></a></li>
+<li class="method protected inherited"><a href="#method__getLanguage" title="_getLanguage() :: Returns the langauge to use for the survey when this language is specified."><span class="description">Returns the langauge to use for the survey when this language is specified.</span><pre>_getLanguage()</pre></a></li>
+<li class="method protected inherited"><a href="#method__getReturnURI" title="_getReturnURI() :: Get the return URI to return from LimeSurvey to GemsTracker"><span class="description">Get the return URI to return from LimeSurvey to GemsTracker</span><pre>_getReturnURI()</pre></a></li>
+<li class="method protected inherited"><a href="#method__getReturnURIDescription" title="_getReturnURIDescription() :: Get the return URI description to set in LimeSurvey"><span class="description">Get the return URI description to set in LimeSurvey</span><pre>_getReturnURIDescription()</pre></a></li>
+<li class="method protected inherited"><a href="#method__getSid" title="_getSid() :: Looks up the LimeSurvey Survey Id"><span class="description">Looks up the LimeSurvey Survey Id</span><pre>_getSid()</pre></a></li>
+<li class="method protected inherited"><a href="#method__getSourceSurveysForSynchronisation" title="_getSourceSurveysForSynchronisation() :: Returns all surveys for synchronization"><span class="description">Returns all surveys for synchronization</span><pre>_getSourceSurveysForSynchronisation()</pre></a></li>
+<li class="method protected inherited"><a href="#method__getSurveyLanguagesTableName" title="_getSurveyLanguagesTableName() :: The survey languages table contains the survey level texts per survey"><span class="description">The survey languages table contains the survey level texts per survey</span><pre>_getSurveyLanguagesTableName()</pre></a></li>
+<li class="method protected inherited"><a href="#method__getSurveyTableName" title="_getSurveyTableName() :: There exists a survey table for each active survey. The table contains the answers to the survey"><span class="description">There exists a survey table for each active survey. The table contains the answers to the survey</span><pre>_getSurveyTableName()</pre></a></li>
+<li class="method protected inherited"><a href="#method__getSurveysTableName" title="_getSurveysTableName() :: The survey table contains one row per each survey in LS"><span class="description">The survey table contains one row per each survey in LS</span><pre>_getSurveysTableName()</pre></a></li>
+<li class="method protected inherited"><a href="#method__getToken" title="_getToken() :: Replaces hyphen with underscore so LimeSurvey won't choke on it"><span class="description">Replaces hyphen with underscore so LimeSurvey won't choke on it</span><pre>_getToken()</pre></a></li>
+<li class="method protected inherited"><a href="#method__getTokenFromSqlWhere" title="_getTokenFromSqlWhere() :: Creates a where filter statement for tokens that do not
+have a correct name and are in a tokens table"><span class="description">Creates a where filter statement for tokens that do not
+have a correct name and are in a tokens table</span><pre>_getTokenFromSqlWhere()</pre></a></li>
+<li class="method protected inherited"><a href="#method__getTokenFromToSql" title="_getTokenFromToSql() :: Creates a SQL update statement for tokens that do not
+have a correct name and are in a tokens table."><span class="description">Creates a SQL update statement for tokens that do not
+have a correct name and are in a tokens table.</span><pre>_getTokenFromToSql()</pre></a></li>
+<li class="method protected inherited"><a href="#method__getTokenTableName" title="_getTokenTableName() :: There exists a token table for each active survey with tokens."><span class="description">There exists a token table for each active survey with tokens.</span><pre>_getTokenTableName()</pre></a></li>
+<li class="method protected inherited"><a href="#method__isLanguage" title="_isLanguage() :: Check if the specified language is available in Lime Survey"><span class="description">Check if the specified language is available in Lime Survey</span><pre>_isLanguage()</pre></a></li>
+<li class="method protected inherited"><a href="#method__updateGemsSurveyExists" title="_updateGemsSurveyExists() :: This helper function updates the surveys in the gems_surveys table that
+no longer exist in in the source and returns a list of their names."><span class="description">This helper function updates the surveys in the gems_surveys table that
+no longer exist in in the source and returns a list of their names.</span><pre>_updateGemsSurveyExists()</pre></a></li>
+<li class="method protected inherited"><a href="#method__updateSource" title="_updateSource() :: Updates this source, both in the database and in memory."><span class="description">Updates this source, both in the database and in memory.</span><pre>_updateSource()</pre></a></li>
+<li class="method protected inherited"><a href="#method_addDatabasePrefix" title="addDatabasePrefix() :: Adds database (if needed) and tablename prefix to the table name"><span class="description">Adds database (if needed) and tablename prefix to the table name</span><pre>addDatabasePrefix()</pre></a></li>
+<li class="method protected inherited"><a href="#method_filterLimitOffset" title="filterLimitOffset() :: Extract limit and offset from the filter and add it to a select"><span class="description">Extract limit and offset from the filter and add it to a select</span><pre>filterLimitOffset()</pre></a></li>
+<li class="method protected inherited"><a href="#method_getBaseUrl" title="getBaseUrl() :: "><span class="description">getBaseUrl()
+        </span><pre>getBaseUrl()</pre></a></li>
+<li class="method protected inherited"><a href="#method_getSurveyData" title="getSurveyData() :: Returns all info from the Gems surveys table for a givens Gems Survey Id"><span class="description">Returns all info from the Gems surveys table for a givens Gems Survey Id</span><pre>getSurveyData()</pre></a></li>
+<li class="method protected inherited"><a href="#method_updateTokens" title="updateTokens() :: Updates the gems__tokens table so all tokens stick to the (possibly) new token name rules."><span class="description">Updates the gems__tokens table so all tokens stick to the (possibly) new token name rules.</span><pre>updateTokens()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header private">» Private
+                    <ul><li class="method private inherited"><a href="#method__extractFieldLength" title="_extractFieldLength() :: "><span class="description">_extractFieldLength()
+        </span><pre>_extractFieldLength()</pre></a></li></ul>
+</li>
+<li class="nav-header">
+<i title="Properties" class="icon-custom icon-property"></i> Properties
+                    <ul></ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="property protected "><a href="#property__anonymizedField" title="$_anonymizedField() :: "><span class="description">The LS version dependent field name for anonymized surveys</span><pre>$_anonymizedField</pre></a></li>
+<li class="property protected "><a href="#property__attributeMap" title="$_attributeMap() :: A map containing attributename =&gt; databasefieldname mappings"><span class="description"></span><pre>$_attributeMap</pre></a></li>
+<li class="property protected "><a href="#property_attributeSize" title="$attributeSize() :: The default text length attribute fields should have."><span class="description"></span><pre>$attributeSize</pre></a></li>
+<li class="property protected "><a href="#property_locale" title="$locale() :: "><span class="description"></span><pre>$locale</pre></a></li>
+<li class="property protected "><a href="#property_logger" title="$logger() :: "><span class="description"></span><pre>$logger</pre></a></li>
+<li class="property protected "><a href="#property_project" title="$project() :: "><span class="description"></span><pre>$project</pre></a></li>
+<li class="property protected "><a href="#property_request" title="$request() :: "><span class="description"></span><pre>$request</pre></a></li>
+<li class="property protected "><a href="#property_tracker" title="$tracker() :: "><span class="description"></span><pre>$tracker</pre></a></li>
+<li class="property protected "><a href="#property_translate" title="$translate() :: "><span class="description"></span><pre>$translate</pre></a></li>
+<li class="property protected "><a href="#property_util" title="$util() :: "><span class="description"></span><pre>$util</pre></a></li>
+</ul>
+</li>
+<li class="nav-header private">» Private
+                    <ul>
+<li class="property private "><a href="#property__fieldMaps" title="$_fieldMaps() :: "><span class="description">of \Gems_Tracker_Source_LimeSurvey1m9FieldMap</span><pre>$_fieldMaps</pre></a></li>
+<li class="property private "><a href="#property__gemsDb" title="$_gemsDb() :: Holds the current batch if there is any"><span class="description"></span><pre>$_gemsDb</pre></a></li>
+<li class="property private "><a href="#property__languageMap" title="$_languageMap() :: "><span class="description">of string</span><pre>$_languageMap</pre></a></li>
+<li class="property private "><a href="#property__sourceData" title="$_sourceData() :: The information from the gems__sources for this source"><span class="description"></span><pre>$_sourceData</pre></a></li>
+<li class="property private "><a href="#property__sourceDb" title="$_sourceDb() :: The database connection to the source, usedable by all implementations that use a database"><span class="description"></span><pre>$_sourceDb</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Constants" class="icon-custom icon-constant"></i> Constants
+                    <ul>
+<li class="constant  "><a href="#constant_CACHE_TOKEN_INFO" title="CACHE_TOKEN_INFO() :: "><span class="description">CACHE_TOKEN_INFO</span><pre>CACHE_TOKEN_INFO</pre></a></li>
+<li class="constant  "><a href="#constant_LS_DB_COMPLETION_FORMAT" title="LS_DB_COMPLETION_FORMAT() :: "><span class="description">LS_DB_COMPLETION_FORMAT</span><pre>LS_DB_COMPLETION_FORMAT</pre></a></li>
+<li class="constant  "><a href="#constant_LS_DB_DATETIME_FORMAT" title="LS_DB_DATETIME_FORMAT() :: "><span class="description">LS_DB_DATETIME_FORMAT</span><pre>LS_DB_DATETIME_FORMAT</pre></a></li>
+<li class="constant  "><a href="#constant_LS_DB_DATE_FORMAT" title="LS_DB_DATE_FORMAT() :: "><span class="description">LS_DB_DATE_FORMAT</span><pre>LS_DB_DATE_FORMAT</pre></a></li>
+<li class="constant  "><a href="#constant_QUESTIONS_TABLE" title="QUESTIONS_TABLE() :: "><span class="description">QUESTIONS_TABLE</span><pre>QUESTIONS_TABLE</pre></a></li>
+<li class="constant  "><a href="#constant_SURVEYS_LANG_TABLE" title="SURVEYS_LANG_TABLE() :: "><span class="description">SURVEYS_LANG_TABLE</span><pre>SURVEYS_LANG_TABLE</pre></a></li>
+<li class="constant  "><a href="#constant_SURVEYS_TABLE" title="SURVEYS_TABLE() :: "><span class="description">SURVEYS_TABLE</span><pre>SURVEYS_TABLE</pre></a></li>
+<li class="constant  "><a href="#constant_SURVEY_TABLE" title="SURVEY_TABLE() :: "><span class="description">SURVEY_TABLE</span><pre>SURVEY_TABLE</pre></a></li>
+<li class="constant  "><a href="#constant_TOKEN_TABLE" title="TOKEN_TABLE() :: "><span class="description">TOKEN_TABLE</span><pre>TOKEN_TABLE</pre></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a xmlns:php="http://php.net/xsl" id="\Gems_Tracker_Source_LimeSurvey2m00Database"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+<li>
+<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Gems_Tracker_Source_LimeSurvey2m00Database.html">Gems_Tracker_Source_LimeSurvey2m00Database</a>
+</li>
+</ul>
+<div xmlns:php="http://php.net/xsl" class="element class">
+<p class="short_description">Class description of LimeSurvey1m91Database</p>
+<div class="details">
+<div class="long_description"><p>Difference with 1.9 version:</p>
+<ul>
+<li>private field was renamed to anonymized</li>
+<li>url for survey was changed</li>
+</ul></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Gems.Tracker.html">Gems</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Tracker</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2011 Erasmus MC</td>
+</tr>
+<tr>
+<th>license</th>
+<td><a href="http://opensource.org/licenses/BSD-3-Clause">New BSD License</a></td>
+</tr>
+<tr>
+<th>since</th>
+<td>Class available since version 1.6.1</td>
+</tr>
+<tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Source_LimeSurvey1m91Database</td>
+</tr>
+</table>
+<h3>
+<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
+<a id="method___construct"></a><div class="element clickable method public method___construct inherited" data-toggle="collapse" data-target=".method___construct .collapse" title="public">
+<h2>Standard constructor for sources</h2>
+<pre>__construct(array $sourceData, \Zend_Db_Adapter_Abstract $gemsDb) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Source_SourceInterface::__construct()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$sourceData</h4>
+<code>array</code><p>The information from gems__sources for this source.</p></div>
+<div class="subelement argument">
+<h4>$gemsDb</h4>
+<code>\Zend_Db_Adapter_Abstract</code><p>Do not want to copy db using registry because that is public and this should be private</p></div>
+</div></div>
+</div>
+<a id="method_addnewAttributeDefaults"></a><div class="element clickable method public method_addnewAttributeDefaults " data-toggle="collapse" data-target=".method_addnewAttributeDefaults .collapse" title="public">
+<h2>Adds the fields without default new in 2.00</h2>
+<pre>addnewAttributeDefaults(array $values) : array</pre>
+<div class="labels"><span class="label">Static</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$values</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Of fieldname => value type</div>
+</div></div>
+</div>
+<a id="method_addnewAttributeFields"></a><div class="element clickable method public method_addnewAttributeFields " data-toggle="collapse" data-target=".method_addnewAttributeFields .collapse" title="public">
+<h2>Adds the fields without default new in 2.00</h2>
+<pre>addnewAttributeFields(array $tokenTable, array $missingFields) : array</pre>
+<div class="labels"><span class="label">Static</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$tokenTable</h4>
+<code>array</code>
+</div>
+<div class="subelement argument">
+<h4>$missingFields</h4>
+<code>array</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Fieldname => change field commands</div>
+</div></div>
+</div>
+<a id="method_checkSourceActive"></a><div class="element clickable method public method_checkSourceActive inherited" data-toggle="collapse" data-target=".method_checkSourceActive .collapse" title="public">
+<h2>Check if the tableprefix exists in the source database, and change the status of this
+adapter in the gems_sources table accordingly</h2>
+<pre>checkSourceActive(integer $userId) : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>Id of the user who takes the action (for logging)</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>True if the source is active</div>
+</div></div>
+</div>
+<a id="method_checkSurvey"></a><div class="element clickable method public method_checkSurvey inherited" data-toggle="collapse" data-target=".method_checkSurvey .collapse" title="public">
+<h2>Survey source synchronization check function</h2>
+<pre>checkSurvey(string $sourceSurveyId, integer $surveyId, integer $userId) : mixed</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$surveyId</h4>
+<code>integer</code>
+</div>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>message string or array of messages</div>
+</div></div>
+</div>
+<a id="method_copyTokenToSource"></a><div class="element clickable method public method_copyTokenToSource inherited" data-toggle="collapse" data-target=".method_copyTokenToSource .collapse" title="public">
+<h2>Inserts the token in the source (if needed) and sets those attributes the source wants to set.</h2>
+<pre>copyTokenToSource(\Gems_Tracker_Token $token, string $language, integer $surveyId, string $sourceSurveyId<code> = null</code>) : integer</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>\Gems_Tracker_Token</code>
+</div>
+<div class="subelement argument">
+<h4>$language</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$surveyId</h4>
+<code>integer</code><p>Gems Survey Id</p></div>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>string</code><p>Optional Survey Id used by source</p></div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code>\Gems_Tracker_Source_SurveyNotFoundException</code></th>
+<td></td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>1 of the token was inserted or changed, 0 otherwise</div>
+</div></div>
+</div>
+<a id="method_getAnswerDateTime"></a><div class="element clickable method public method_getAnswerDateTime inherited" data-toggle="collapse" data-target=".method_getAnswerDateTime .collapse" title="public">
+<h2>Returns a field from the raw answers as a date object.</h2>
+<pre>getAnswerDateTime(string $fieldName, \Gems_Tracker_Token $token, integer $surveyId, string $sourceSurveyId<code> = null</code>) : \MUtil_Date</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>A seperate function as only the source knows what format the date/time value has.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$fieldName</h4>
+<code>string</code><p>Name of answer field</p></div>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>\Gems_Tracker_Token</code><p>Gems token object</p></div>
+<div class="subelement argument">
+<h4>$surveyId</h4>
+<code>integer</code><p>Gems Survey Id</p></div>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>string</code><p>Optional Survey Id used by source</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\MUtil_Date</code>date time or null</div>
+</div></div>
+</div>
+<a id="method_getAttributes"></a><div class="element clickable method public method_getAttributes inherited" data-toggle="collapse" data-target=".method_getAttributes .collapse" title="public">
+<h2>getAttributes()
+        </h2>
+<pre>getAttributes() </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_getCompletedTokens"></a><div class="element clickable method public method_getCompletedTokens inherited" data-toggle="collapse" data-target=".method_getCompletedTokens .collapse" title="public">
+<h2>Bulk check token completion</h2>
+<pre>getCompletedTokens(array $tokenIds, integer $sourceSurveyId) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Returns all tokens from the input array that are completed, by doing
+this in bulk we saved overhead and only do a deep check on the completed
+tokens.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$tokenIds</h4>
+<code>array</code>
+</div>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>integer</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_getCompletionTime"></a><div class="element clickable method public method_getCompletionTime inherited" data-toggle="collapse" data-target=".method_getCompletionTime .collapse" title="public">
+<h2>Gets the time the survey was completed according to the source</h2>
+<pre>getCompletionTime(\Gems_Tracker_Token $token, integer $surveyId, string $sourceSurveyId<code> = null</code>) : \MUtil_Date</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>A source always return null when it does not know this time (or does not know
+it well enough). In the case \Gems_Tracker_Token will do it's best to keep
+track by itself.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>\Gems_Tracker_Token</code><p>Gems token object</p></div>
+<div class="subelement argument">
+<h4>$surveyId</h4>
+<code>integer</code><p>Gems Survey Id</p></div>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>string</code><p>Optional Survey Id used by source</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\MUtil_Date</code>date time or null</div>
+</div></div>
+</div>
+<a id="method_getDatesList"></a><div class="element clickable method public method_getDatesList inherited" data-toggle="collapse" data-target=".method_getDatesList .collapse" title="public">
+<h2>Returns an array containing fieldname =&gt; label for each date field in the survey.</h2>
+<pre>getDatesList(string $language, integer $surveyId, string $sourceSurveyId<code> = null</code>) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Used in dropdown list etc..</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$language</h4>
+<code>string</code><p>(ISO) language string</p></div>
+<div class="subelement argument">
+<h4>$surveyId</h4>
+<code>integer</code><p>Gems Survey Id</p></div>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>string</code><p>Optional Survey Id used by source</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>fieldname => label</div>
+</div></div>
+</div>
+<a id="method_getFullQuestionList"></a><div class="element clickable method public method_getFullQuestionList inherited" data-toggle="collapse" data-target=".method_getFullQuestionList .collapse" title="public">
+<h2>Returns an array of arrays with the structure:
+     question =&gt; string,
+     class    =&gt; question|question_sub
+     group    =&gt; is for grouping
+     type     =&gt; (optional) source specific type
+     answers  =&gt; string for single types,
+                 array for selection of,
+                 nothing for no answer</h2>
+<pre>getFullQuestionList(string $language, integer $surveyId, string $sourceSurveyId<code> = null</code>) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$language</h4>
+<code>string</code><p>(ISO) language string</p></div>
+<div class="subelement argument">
+<h4>$surveyId</h4>
+<code>integer</code><p>Gems Survey Id</p></div>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>string</code><p>Optional Survey Id used by source</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Nested array</div>
+</div></div>
+</div>
+<a id="method_getId"></a><div class="element clickable method public method_getId inherited" data-toggle="collapse" data-target=".method_getId .collapse" title="public">
+<h2>getId()
+        </h2>
+<pre>getId() : integer</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Source_SourceInterface::getId()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>The source Id of this source</div>
+</div></div>
+</div>
+<a id="method_getQuestionInformation"></a><div class="element clickable method public method_getQuestionInformation inherited" data-toggle="collapse" data-target=".method_getQuestionInformation .collapse" title="public">
+<h2>Returns an array of arrays with the structure:
+     question =&gt; string,
+     class    =&gt; question|question_sub
+     group    =&gt; is for grouping
+     type     =&gt; (optional) source specific type
+     answers  =&gt; string for single types,
+                 array for selection of,
+                 nothing for no answer</h2>
+<pre>getQuestionInformation(string $language, integer $surveyId, string $sourceSurveyId<code> = null</code>) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$language</h4>
+<code>string</code><p>(ISO) language string</p></div>
+<div class="subelement argument">
+<h4>$surveyId</h4>
+<code>integer</code><p>Gems Survey Id</p></div>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>string</code><p>Optional Survey Id used by source</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Nested array</div>
+</div></div>
+</div>
+<a id="method_getQuestionList"></a><div class="element clickable method public method_getQuestionList inherited" data-toggle="collapse" data-target=".method_getQuestionList .collapse" title="public">
+<h2>Returns an array containing fieldname =&gt; label for each answerable question in the survey.</h2>
+<pre>getQuestionList(string $language, integer $surveyId, string $sourceSurveyId<code> = null</code>) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Used in dropdown list etc..</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$language</h4>
+<code>string</code><p>(ISO) language string</p></div>
+<div class="subelement argument">
+<h4>$surveyId</h4>
+<code>integer</code><p>Gems Survey Id</p></div>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>string</code><p>Optional Survey Id used by source</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>fieldname => label</div>
+</div></div>
+</div>
+<a id="method_getRawTokenAnswerRow"></a><div class="element clickable method public method_getRawTokenAnswerRow inherited" data-toggle="collapse" data-target=".method_getRawTokenAnswerRow .collapse" title="public">
+<h2>Returns the answers in simple raw array format, without value processing etc.</h2>
+<pre>getRawTokenAnswerRow(string $tokenId, integer $surveyId, string $sourceSurveyId<code> = null</code>) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Function may return more fields than just the answers.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$tokenId</h4>
+<code>string</code><p>Gems Token Id</p></div>
+<div class="subelement argument">
+<h4>$surveyId</h4>
+<code>integer</code><p>Gems Survey Id</p></div>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>string</code><p>Optional Survey Id used by source</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Field => Value array</div>
+</div></div>
+</div>
+<a id="method_getRawTokenAnswerRows"></a><div class="element clickable method public method_getRawTokenAnswerRows inherited" data-toggle="collapse" data-target=".method_getRawTokenAnswerRows .collapse" title="public">
+<h2>Returns the answers of multiple tokens in simple raw nested array format,
+without value processing etc.</h2>
+<pre>getRawTokenAnswerRows(array $filter, integer $surveyId, string $sourceSurveyId<code> = null</code>) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Function may return more fields than just the answers.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$filter</h4>
+<code>array</code><p>XXXXX</p></div>
+<div class="subelement argument">
+<h4>$surveyId</h4>
+<code>integer</code><p>Gems Survey Id</p></div>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>string</code><p>Optional Survey Id used by source</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Of nested Field => Value arrays indexed by tokenId</div>
+</div></div>
+</div>
+<a id="method_getRawTokenAnswerRowsCount"></a><div class="element clickable method public method_getRawTokenAnswerRowsCount inherited" data-toggle="collapse" data-target=".method_getRawTokenAnswerRowsCount .collapse" title="public">
+<h2>Returns the recordcount for a given filter</h2>
+<pre>getRawTokenAnswerRowsCount(array $filter, integer $surveyId, string $sourceSurveyId<code> = null</code>) : integer</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Abstract implementation is not efficient, sources should handle this as efficient
+as possible.</p></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Source_SourceInterface::getRawTokenAnswerRowsCount()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$filter</h4>
+<code>array</code><p>filter array</p></div>
+<div class="subelement argument">
+<h4>$surveyId</h4>
+<code>integer</code><p>Gems Survey Id</p></div>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>string</code><p>Optional Survey Id used by source</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>integer</code></div>
+</div></div>
+</div>
+<a id="method_getRawTokenAnswerRowsSelect"></a><div class="element clickable method public method_getRawTokenAnswerRowsSelect inherited" data-toggle="collapse" data-target=".method_getRawTokenAnswerRowsSelect .collapse" title="public">
+<h2>Get the select object to use for RawTokenAnswerRows</h2>
+<pre>getRawTokenAnswerRowsSelect(array $filter, \type $surveyId, \type $sourceSurveyId<code> = null</code>) : \Zend_Db_Select</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$filter</h4>
+<code>array</code>
+</div>
+<div class="subelement argument">
+<h4>$surveyId</h4>
+<code>\type</code>
+</div>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>\type</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Zend_Db_Select</code></div>
+</div></div>
+</div>
+<a id="method_getSourceDatabase"></a><div class="element clickable method public method_getSourceDatabase inherited" data-toggle="collapse" data-target=".method_getSourceDatabase .collapse" title="public">
+<h2>Get the db adapter for this source</h2>
+<pre>getSourceDatabase() : \Zend_Db_Adapter_Abstract</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Source_SourceInterface::getSourceDatabase()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Zend_Db_Adapter_Abstract</code></div>
+</div></div>
+</div>
+<a id="method_getStartTime"></a><div class="element clickable method public method_getStartTime inherited" data-toggle="collapse" data-target=".method_getStartTime .collapse" title="public">
+<h2>Gets the time the survey was started according to the source</h2>
+<pre>getStartTime(\Gems_Tracker_Token $token, integer $surveyId, string $sourceSurveyId<code> = null</code>) : \MUtil_Date</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>A source always return null when it does not know this time (or does not know
+it well enough). In the case \Gems_Tracker_Token will do it's best to keep
+track by itself.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>\Gems_Tracker_Token</code><p>Gems token object</p></div>
+<div class="subelement argument">
+<h4>$surveyId</h4>
+<code>integer</code><p>Gems Survey Id</p></div>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>string</code><p>Optional Survey Id used by source</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\MUtil_Date</code>date time or null</div>
+</div></div>
+</div>
+<a id="method_getSurveyAnswerModel"></a><div class="element clickable method public method_getSurveyAnswerModel inherited" data-toggle="collapse" data-target=".method_getSurveyAnswerModel .collapse" title="public">
+<h2>Returns a model for the survey answers</h2>
+<pre>getSurveyAnswerModel(\Gems_Tracker_Survey $survey, string $language<code> = null</code>, string $sourceSurveyId<code> = null</code>) : \MUtil_Model_ModelAbstract</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$survey</h4>
+<code>\Gems_Tracker_Survey</code>
+</div>
+<div class="subelement argument">
+<h4>$language</h4>
+<code>string</code><p>Optional (ISO) language string</p></div>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>string</code><p>Optional Survey Id used by source</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\MUtil_Model_ModelAbstract</code></div>
+</div></div>
+</div>
+<a id="method_getTokenInfo"></a><div class="element clickable method public method_getTokenInfo inherited" data-toggle="collapse" data-target=".method_getTokenInfo .collapse" title="public">
+<h2>Retrieve all fields stored in the token table, and store them in the tokencache</h2>
+<pre>getTokenInfo(\Gems_Tracker_Token $token, \type $surveyId, \type $sourceSurveyId, array $fields<code> = null</code>) : \type</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>\Gems_Tracker_Token</code>
+</div>
+<div class="subelement argument">
+<h4>$surveyId</h4>
+<code>\type</code>
+</div>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>\type</code>
+</div>
+<div class="subelement argument">
+<h4>$fields</h4>
+<code>array</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\type</code></div>
+</div></div>
+</div>
+<a id="method_getTokenUrl"></a><div class="element clickable method public method_getTokenUrl " data-toggle="collapse" data-target=".method_getTokenUrl .collapse" title="public">
+<h2>Returns the url that (should) start the survey for this token</h2>
+<pre>getTokenUrl(\Gems_Tracker_Token $token, string $language, integer $surveyId, string $sourceSurveyId) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>\Gems_Tracker_Token</code><p>Gems token object</p></div>
+<div class="subelement argument">
+<h4>$language</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$surveyId</h4>
+<code>integer</code><p>Gems Survey Id</p></div>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>string</code><p>Optional Survey Id used by source</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>The url to start the survey</div>
+</div></div>
+</div>
+<a id="method_getTokenUrl"></a><div class="element clickable method public method_getTokenUrl inherited" data-toggle="collapse" data-target=".method_getTokenUrl .collapse" title="public">
+<h2>Returns the url that (should) start the survey for this token</h2>
+<pre>getTokenUrl(\Gems_Tracker_Token $token, string $language, integer $surveyId, string $sourceSurveyId) : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>\Gems_Tracker_Token</code><p>Gems token object</p></div>
+<div class="subelement argument">
+<h4>$language</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$surveyId</h4>
+<code>integer</code><p>Gems Survey Id</p></div>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>string</code><p>Optional Survey Id used by source</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>The url to start the survey</div>
+</div></div>
+</div>
+<a id="method_inSource"></a><div class="element clickable method public method_inSource inherited" data-toggle="collapse" data-target=".method_inSource .collapse" title="public">
+<h2>Checks whether the token is in the source.</h2>
+<pre>inSource(\Gems_Tracker_Token $token, integer $surveyId, string $sourceSurveyId<code> = null</code>) : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>\Gems_Tracker_Token</code><p>Gems token object</p></div>
+<div class="subelement argument">
+<h4>$surveyId</h4>
+<code>integer</code><p>Gems Survey Id</p></div>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>string</code><p>Optional Survey Id used by source</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_isCompleted"></a><div class="element clickable method public method_isCompleted inherited" data-toggle="collapse" data-target=".method_isCompleted .collapse" title="public">
+<h2>Returns true if the survey was completed according to the source</h2>
+<pre>isCompleted(\Gems_Tracker_Token $token, integer $surveyId, string $sourceSurveyId<code> = null</code>) : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>\Gems_Tracker_Token</code><p>Gems token object</p></div>
+<div class="subelement argument">
+<h4>$surveyId</h4>
+<code>integer</code><p>Gems Survey Id</p></div>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>string</code><p>Optional Survey Id used by source</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>True if the token has completed</div>
+</div></div>
+</div>
+<a id="method_setRawTokenAnswers"></a><div class="element clickable method public method_setRawTokenAnswers inherited" data-toggle="collapse" data-target=".method_setRawTokenAnswers .collapse" title="public">
+<h2>Sets the answers passed on.</h2>
+<pre>setRawTokenAnswers(\Gems_Tracker_Token $token, array $answers, integer $surveyId, string $sourceSurveyId<code> = null</code>) : true</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>\Gems_Tracker_Token</code><p>Gems token object</p></div>
+<div class="subelement argument">
+<h4>$answers</h4>
+<code>array</code><p>Field => Value array</p></div>
+<div class="subelement argument">
+<h4>$surveyId</h4>
+<code>integer</code><p>Gems Survey Id</p></div>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>string</code><p>Optional Survey Id used by source</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>true</code>When answers changed</div>
+</div></div>
+</div>
+<a id="method_setTokenCompletionTime"></a><div class="element clickable method public method_setTokenCompletionTime inherited" data-toggle="collapse" data-target=".method_setTokenCompletionTime .collapse" title="public">
+<h2>Sets the completion time.</h2>
+<pre>setTokenCompletionTime(\Gems_Tracker_Token $token, \Zend_Date|null $completionTime, integer $surveyId, string $sourceSurveyId<code> = null</code>) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>\Gems_Tracker_Token</code><p>Gems token object</p></div>
+<div class="subelement argument">
+<h4>$completionTime</h4>
+<code>\Zend_Date</code><code>null</code><p>\Zend_Date or null</p></div>
+<div class="subelement argument">
+<h4>$surveyId</h4>
+<code>integer</code><p>Gems Survey Id (actually required)</p></div>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>string</code><p>Optional Survey Id used by source</p></div>
+</div></div>
+</div>
+<a id="method_synchronizeSurveyBatch"></a><div class="element clickable method public method_synchronizeSurveyBatch inherited" data-toggle="collapse" data-target=".method_synchronizeSurveyBatch .collapse" title="public">
+<h2>Updates the gems database with the latest information about the surveys in this source adapter</h2>
+<pre>synchronizeSurveyBatch(\Gems_Task_TaskRunnerBatch $batch, integer $userId) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Source_SourceInterface::synchronizeSurveyBatch()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$batch</h4>
+<code>\Gems_Task_TaskRunnerBatch</code>
+</div>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>Id of the user who takes the action (for logging)</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Returns an array of messages</div>
+</div></div>
+</div>
+<a id="method_updateConsent"></a><div class="element clickable method public method_updateConsent inherited" data-toggle="collapse" data-target=".method_updateConsent .collapse" title="public">
+<h2>Updates the consent code of the the token in the source (if needed)</h2>
+<pre>updateConsent(\Gems_Tracker_Token $token, integer $surveyId, string $sourceSurveyId<code> = null</code>, string $consentCode<code> = null</code>) : integer</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>\Gems_Tracker_Token</code>
+</div>
+<div class="subelement argument">
+<h4>$surveyId</h4>
+<code>integer</code><p>Gems Survey Id</p></div>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>string</code><p>Optional Survey Id used by source</p></div>
+<div class="subelement argument">
+<h4>$consentCode</h4>
+<code>string</code><p>Optional consent code, otherwise code from token is used.</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>1 of the token was inserted or changed, 0 otherwise</div>
+</div></div>
+</div>
+<a id="method__checkReturnURI"></a><div class="element clickable method protected method__checkReturnURI inherited" data-toggle="collapse" data-target=".method__checkReturnURI .collapse" title="protected">
+<h2>Checks the return URI in LimeSurvey and sets it to the correct one when needed</h2>
+<pre>_checkReturnURI(string $sourceSurveyId, \Gems_Tracker_Survey $survey, array $messages) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td><a href="%5CGems_Tracker_Source_LimeSurvey1m9Database::checkSurvey()"></a></td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$survey</h4>
+<code>\Gems_Tracker_Survey</code>
+</div>
+<div class="subelement argument">
+<h4>$messages</h4>
+<code>array</code>
+</div>
+</div></div>
+</div>
+<a id="method__checkTokenTable"></a><div class="element clickable method protected method__checkTokenTable " data-toggle="collapse" data-target=".method__checkTokenTable .collapse" title="protected">
+<h2>Check a token table for any changes needed by this version.</h2>
+<pre>_checkTokenTable(array $tokenTable) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Source_LimeSurvey1m91Database::_checkTokenTable()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$tokenTable</h4>
+<code>array</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Fieldname => change field commands</div>
+</div></div>
+</div>
+<a id="method__checkTokenTable"></a><div class="element clickable method protected method__checkTokenTable inherited" data-toggle="collapse" data-target=".method__checkTokenTable .collapse" title="protected">
+<h2>Check a token table for any changes needed by this version.</h2>
+<pre>_checkTokenTable(array $tokenTable) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$tokenTable</h4>
+<code>array</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Fieldname => change field commands</div>
+</div></div>
+</div>
+<a id="method__fillAttributeMap"></a><div class="element clickable method protected method__fillAttributeMap " data-toggle="collapse" data-target=".method__fillAttributeMap .collapse" title="protected">
+<h2>Returns a list of field names that should be set in a newly inserted token.</h2>
+<pre>_fillAttributeMap(\Gems_Tracker_Token $token) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Adds the fields without default new in 2.00</p></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Source_LimeSurvey1m91Database::_fillAttributeMap()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>\Gems_Tracker_Token</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Of fieldname => value type</div>
+</div></div>
+</div>
+<a id="method__fillAttributeMap"></a><div class="element clickable method protected method__fillAttributeMap inherited" data-toggle="collapse" data-target=".method__fillAttributeMap .collapse" title="protected">
+<h2>Returns a list of field names that should be set in a newly inserted token.</h2>
+<pre>_fillAttributeMap(\Gems_Tracker_Token $token) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>\Gems_Tracker_Token</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Of fieldname => value type</div>
+</div></div>
+</div>
+<a id="method__filterAnswersOnly"></a><div class="element clickable method protected method__filterAnswersOnly inherited" data-toggle="collapse" data-target=".method__filterAnswersOnly .collapse" title="protected">
+<h2>Filters an answers array, return only those fields that where answered by the user.</h2>
+<pre>_filterAnswersOnly(integer $sourceSurveyId, array $answers) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>integer</code><p>Survey ID</p></div>
+<div class="subelement argument">
+<h4>$answers</h4>
+<code>array</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method__getFieldMap"></a><div class="element clickable method protected method__getFieldMap " data-toggle="collapse" data-target=".method__getFieldMap .collapse" title="protected">
+<h2>Return a fieldmap object</h2>
+<pre>_getFieldMap(integer $sourceSurveyId, string $language<code> = null</code>) : \Gems_Tracker_Source_LimeSurvey1m9FieldMap</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>integer</code><p>Survey ID</p></div>
+<div class="subelement argument">
+<h4>$language</h4>
+<code>string</code><p>Optional (ISO) Language, uses default language for survey when null</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Source_LimeSurvey1m9FieldMap</code></div>
+</div></div>
+</div>
+<a id="method__getFieldMap"></a><div class="element clickable method protected method__getFieldMap inherited" data-toggle="collapse" data-target=".method__getFieldMap .collapse" title="protected">
+<h2>Return a fieldmap object</h2>
+<pre>_getFieldMap(integer $sourceSurveyId, string $language<code> = null</code>) : \Gems_Tracker_Source_LimeSurvey1m9FieldMap</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>integer</code><p>Survey ID</p></div>
+<div class="subelement argument">
+<h4>$language</h4>
+<code>string</code><p>Optional (ISO) Language, uses default language for survey when null</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Source_LimeSurvey1m9FieldMap</code></div>
+</div></div>
+</div>
+<a id="method__getGemsSurveysForSynchronisation"></a><div class="element clickable method protected method__getGemsSurveysForSynchronisation inherited" data-toggle="collapse" data-target=".method__getGemsSurveysForSynchronisation .collapse" title="protected">
+<h2>Returns all surveys for synchronization</h2>
+<pre>_getGemsSurveysForSynchronisation() : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Pairs gemsId => sourceId</div>
+</div></div>
+</div>
+<a id="method__getLanguage"></a><div class="element clickable method protected method__getLanguage inherited" data-toggle="collapse" data-target=".method__getLanguage .collapse" title="protected">
+<h2>Returns the langauge to use for the survey when this language is specified.</h2>
+<pre>_getLanguage(integer $sourceSurveyId, string $language) : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Uses the requested language if it exists for the survey, the default language for the survey otherwise</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>integer</code><p>Survey ID</p></div>
+<div class="subelement argument">
+<h4>$language</h4>
+<code>string</code><p>(ISO) Language</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>(ISO) Language</div>
+</div></div>
+</div>
+<a id="method__getReturnURI"></a><div class="element clickable method protected method__getReturnURI inherited" data-toggle="collapse" data-target=".method__getReturnURI .collapse" title="protected">
+<h2>Get the return URI to return from LimeSurvey to GemsTracker</h2>
+<pre>_getReturnURI() : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method__getReturnURIDescription"></a><div class="element clickable method protected method__getReturnURIDescription inherited" data-toggle="collapse" data-target=".method__getReturnURIDescription .collapse" title="protected">
+<h2>Get the return URI description to set in LimeSurvey</h2>
+<pre>_getReturnURIDescription(string $language) : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$language</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method__getSid"></a><div class="element clickable method protected method__getSid inherited" data-toggle="collapse" data-target=".method__getSid .collapse" title="protected">
+<h2>Looks up the LimeSurvey Survey Id</h2>
+<pre>_getSid(integer $surveyId) : integer</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$surveyId</h4>
+<code>integer</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>integer</code></div>
+</div></div>
+</div>
+<a id="method__getSourceSurveysForSynchronisation"></a><div class="element clickable method protected method__getSourceSurveysForSynchronisation inherited" data-toggle="collapse" data-target=".method__getSourceSurveysForSynchronisation .collapse" title="protected">
+<h2>Returns all surveys for synchronization</h2>
+<pre>_getSourceSurveysForSynchronisation() : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>of sourceId values or false</div>
+</div></div>
+</div>
+<a id="method__getSurveyLanguagesTableName"></a><div class="element clickable method protected method__getSurveyLanguagesTableName inherited" data-toggle="collapse" data-target=".method__getSurveyLanguagesTableName .collapse" title="protected">
+<h2>The survey languages table contains the survey level texts per survey</h2>
+<pre>_getSurveyLanguagesTableName() : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>Name of survey languages table</div>
+</div></div>
+</div>
+<a id="method__getSurveyTableName"></a><div class="element clickable method protected method__getSurveyTableName inherited" data-toggle="collapse" data-target=".method__getSurveyTableName .collapse" title="protected">
+<h2>There exists a survey table for each active survey. The table contains the answers to the survey</h2>
+<pre>_getSurveyTableName(integer $sourceSurveyId) : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>integer</code><p>Survey ID</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>Name of survey table for this survey</div>
+</div></div>
+</div>
+<a id="method__getSurveysTableName"></a><div class="element clickable method protected method__getSurveysTableName inherited" data-toggle="collapse" data-target=".method__getSurveysTableName .collapse" title="protected">
+<h2>The survey table contains one row per each survey in LS</h2>
+<pre>_getSurveysTableName() : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>Name of survey table</div>
+</div></div>
+</div>
+<a id="method__getToken"></a><div class="element clickable method protected method__getToken inherited" data-toggle="collapse" data-target=".method__getToken .collapse" title="protected">
+<h2>Replaces hyphen with underscore so LimeSurvey won't choke on it</h2>
+<pre>_getToken($tokenId, boolean $reverse<code> = false</code>) : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$tokenId</h4></div>
+<div class="subelement argument">
+<h4>$reverse</h4>
+<code>boolean</code><p>Reverse the action to go from limesurvey to GemsTracker token (default is false)</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method__getTokenFromSqlWhere"></a><div class="element clickable method protected method__getTokenFromSqlWhere inherited" data-toggle="collapse" data-target=".method__getTokenFromSqlWhere .collapse" title="protected">
+<h2>Creates a where filter statement for tokens that do not
+have a correct name and are in a tokens table</h2>
+<pre>_getTokenFromSqlWhere(string $from, string $fieldName) : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$from</h4>
+<code>string</code><p>The tokens that should not occur</p></div>
+<div class="subelement argument">
+<h4>$fieldName</h4>
+<code>string</code><p>Name of database field to use</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method__getTokenFromToSql"></a><div class="element clickable method protected method__getTokenFromToSql inherited" data-toggle="collapse" data-target=".method__getTokenFromToSql .collapse" title="protected">
+<h2>Creates a SQL update statement for tokens that do not
+have a correct name and are in a tokens table.</h2>
+<pre>_getTokenFromToSql(string $from, string $to, string $fieldName) : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$from</h4>
+<code>string</code><p>The tokens that should not occur</p></div>
+<div class="subelement argument">
+<h4>$to</h4>
+<code>string</code><p>The tokens that replace them</p></div>
+<div class="subelement argument">
+<h4>$fieldName</h4>
+<code>string</code><p>Name of database field to use</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method__getTokenTableName"></a><div class="element clickable method protected method__getTokenTableName inherited" data-toggle="collapse" data-target=".method__getTokenTableName .collapse" title="protected">
+<h2>There exists a token table for each active survey with tokens.</h2>
+<pre>_getTokenTableName(integer $sourceSurveyId) : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>integer</code><p>Survey ID</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>Name of token table for this survey</div>
+</div></div>
+</div>
+<a id="method__isLanguage"></a><div class="element clickable method protected method__isLanguage inherited" data-toggle="collapse" data-target=".method__isLanguage .collapse" title="protected">
+<h2>Check if the specified language is available in Lime Survey</h2>
+<pre>_isLanguage(integer $sourceSurveyId, string $language) : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>integer</code><p>Survey ID</p></div>
+<div class="subelement argument">
+<h4>$language</h4>
+<code>string</code><p>(ISO) Language</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>True when the language is an existing language</div>
+</div></div>
+</div>
+<a id="method__updateGemsSurveyExists"></a><div class="element clickable method protected method__updateGemsSurveyExists inherited" data-toggle="collapse" data-target=".method__updateGemsSurveyExists .collapse" title="protected">
+<h2>This helper function updates the surveys in the gems_surveys table that
+no longer exist in in the source and returns a list of their names.</h2>
+<pre>_updateGemsSurveyExists(array $surveyorSids, integer $userId) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$surveyorSids</h4>
+<code>array</code><p>The gsu_surveyor_id's that ARE in the source</p></div>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>Id of the user who takes the action (for logging)</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>The names of the surveys that no longer exist</div>
+</div></div>
+</div>
+<a id="method__updateSource"></a><div class="element clickable method protected method__updateSource inherited" data-toggle="collapse" data-target=".method__updateSource .collapse" title="protected">
+<h2>Updates this source, both in the database and in memory.</h2>
+<pre>_updateSource(array $values, integer $userId) : integer</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$values</h4>
+<code>array</code><p>The values that this source should be set to</p></div>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>The current user</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>1 if data changed, 0 otherwise</div>
+</div></div>
+</div>
+<a id="method_addDatabasePrefix"></a><div class="element clickable method protected method_addDatabasePrefix inherited" data-toggle="collapse" data-target=".method_addDatabasePrefix .collapse" title="protected">
+<h2>Adds database (if needed) and tablename prefix to the table name</h2>
+<pre>addDatabasePrefix(\return $tableName, boolean $addDatabaseName<code> = true</code>) : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$tableName</h4>
+<code>\return</code>
+</div>
+<div class="subelement argument">
+<h4>$addDatabaseName</h4>
+<code>boolean</code><p>Optional, when true (= default) and there is a database name then it is prepended to the name.</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_filterLimitOffset"></a><div class="element clickable method protected method_filterLimitOffset inherited" data-toggle="collapse" data-target=".method_filterLimitOffset .collapse" title="protected">
+<h2>Extract limit and offset from the filter and add it to a select</h2>
+<pre>filterLimitOffset(array $filter, \Zend_Db_Select $select) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$filter</h4>
+<code>array</code>
+</div>
+<div class="subelement argument">
+<h4>$select</h4>
+<code>\Zend_Db_Select</code>
+</div>
+</div></div>
+</div>
+<a id="method_getBaseUrl"></a><div class="element clickable method protected method_getBaseUrl inherited" data-toggle="collapse" data-target=".method_getBaseUrl .collapse" title="protected">
+<h2>getBaseUrl()
+        </h2>
+<pre>getBaseUrl() : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>Base url for source</div>
+</div></div>
+</div>
+<a id="method_getSurveyData"></a><div class="element clickable method protected method_getSurveyData inherited" data-toggle="collapse" data-target=".method_getSurveyData .collapse" title="protected">
+<h2>Returns all info from the Gems surveys table for a givens Gems Survey Id</h2>
+<pre>getSurveyData(integer $surveyId, string $field<code> = null</code>) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Uses internal caching to prevent multiple db lookups during a program run (so no caching
+beyond page generation time)</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$surveyId</h4>
+<code>integer</code>
+</div>
+<div class="subelement argument">
+<h4>$field</h4>
+<code>string</code><p>Optional field to retrieve data for</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_updateTokens"></a><div class="element clickable method protected method_updateTokens inherited" data-toggle="collapse" data-target=".method_updateTokens .collapse" title="protected">
+<h2>Updates the gems__tokens table so all tokens stick to the (possibly) new token name rules.</h2>
+<pre>updateTokens(integer $userId, $updateTokens<code> = true</code>) : integer</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>Id of the user who takes the action (for logging)</p></div>
+<div class="subelement argument"><h4>$updateTokens</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>The number of tokens changed</div>
+</div></div>
+</div>
+<a id="method__extractFieldLength"></a><div class="element clickable method private method__extractFieldLength inherited" data-toggle="collapse" data-target=".method__extractFieldLength .collapse" title="private">
+<h2>_extractFieldLength()
+        </h2>
+<pre>_extractFieldLength(string $typeDescr) : integer</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$typeDescr</h4>
+<code>string</code><p>E.g. int(11) or varchar(36)</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>In case 11 or 36</div>
+</div></div>
+</div>
+<h3>
+<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
+<a id="property__anonymizedField"> </a><div class="element clickable property protected property__anonymizedField" data-toggle="collapse" data-target=".property__anonymizedField .collapse" title="protected">
+<h2>The LS version dependent field name for anonymized surveys</h2>
+<pre>$_anonymizedField : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>'private'</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__attributeMap"> </a><div class="element clickable property protected property__attributeMap" data-toggle="collapse" data-target=".property__attributeMap .collapse" title="protected">
+<h2>A map containing attributename =&gt; databasefieldname mappings</h2>
+<pre>$_attributeMap : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>array('respondentid' => 'attribute_1', 'organizationid' => 'attribute_2', 'consentcode' => 'attribute_3', 'resptrackid' => 'attribute_4')</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"><p>Should contain maps for respondentid, organizationid and consentcode.</p></div></div></div>
+</div>
+<a id="property_attributeSize"> </a><div class="element clickable property protected property_attributeSize" data-toggle="collapse" data-target=".property_attributeSize .collapse" title="protected">
+<h2>The default text length attribute fields should have.</h2>
+<pre>$attributeSize : integer</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>255</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_locale"> </a><div class="element clickable property protected property_locale" data-toggle="collapse" data-target=".property_locale .collapse" title="protected">
+<h2>$locale</h2>
+<pre>$locale : \Zend_Locale</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_logger"> </a><div class="element clickable property protected property_logger" data-toggle="collapse" data-target=".property_logger .collapse" title="protected">
+<h2>$logger</h2>
+<pre>$logger : \Gems_Log</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_project"> </a><div class="element clickable property protected property_project" data-toggle="collapse" data-target=".property_project .collapse" title="protected">
+<h2>$project</h2>
+<pre>$project : \Gems_Project_ProjectSettings</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_request"> </a><div class="element clickable property protected property_request" data-toggle="collapse" data-target=".property_request .collapse" title="protected">
+<h2>$request</h2>
+<pre>$request : \Zend_Controller_Request_Abstract</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_tracker"> </a><div class="element clickable property protected property_tracker" data-toggle="collapse" data-target=".property_tracker .collapse" title="protected">
+<h2>$tracker</h2>
+<pre>$tracker : \Gems_Tracker</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_translate"> </a><div class="element clickable property protected property_translate" data-toggle="collapse" data-target=".property_translate .collapse" title="protected">
+<h2>$translate</h2>
+<pre>$translate : \Zend_Translate</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_util"> </a><div class="element clickable property protected property_util" data-toggle="collapse" data-target=".property_util .collapse" title="protected">
+<h2>$util</h2>
+<pre>$util : \Gems_Util</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__fieldMaps"> </a><div class="element clickable property private property__fieldMaps" data-toggle="collapse" data-target=".property__fieldMaps .collapse" title="private">
+<h2>of \Gems_Tracker_Source_LimeSurvey1m9FieldMap</h2>
+<pre>$_fieldMaps : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__gemsDb"> </a><div class="element clickable property private property__gemsDb" data-toggle="collapse" data-target=".property__gemsDb .collapse" title="private">
+<h2>Holds the current batch if there is any</h2>
+<pre>$_gemsDb : \Gems_Task_TaskRunnerBatch: \Zend_Db_Adapter_Abstract</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__languageMap"> </a><div class="element clickable property private property__languageMap" data-toggle="collapse" data-target=".property__languageMap .collapse" title="private">
+<h2>of string</h2>
+<pre>$_languageMap : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__sourceData"> </a><div class="element clickable property private property__sourceData" data-toggle="collapse" data-target=".property__sourceData .collapse" title="private">
+<h2>The information from the gems__sources for this source</h2>
+<pre>$_sourceData : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__sourceDb"> </a><div class="element clickable property private property__sourceDb" data-toggle="collapse" data-target=".property__sourceDb .collapse" title="private">
+<h2>The database connection to the source, usedable by all implementations that use a database</h2>
+<pre>$_sourceDb : \Zend_Db_Adapter_Abstract</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<h3>
+<i title="Constants" class="icon-custom icon-constant"></i> Constants</h3>
+<a id="constant_CACHE_TOKEN_INFO"> </a><div class="element clickable constant  constant_CACHE_TOKEN_INFO" data-toggle="collapse" data-target=".constant_CACHE_TOKEN_INFO .collapse" title="">
+<h2>CACHE_TOKEN_INFO</h2>
+<pre>CACHE_TOKEN_INFO = 'tokenInfo' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_LS_DB_COMPLETION_FORMAT"> </a><div class="element clickable constant  constant_LS_DB_COMPLETION_FORMAT" data-toggle="collapse" data-target=".constant_LS_DB_COMPLETION_FORMAT .collapse" title="">
+<h2>LS_DB_COMPLETION_FORMAT</h2>
+<pre>LS_DB_COMPLETION_FORMAT = 'yyyy-MM-dd HH:mm' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_LS_DB_DATETIME_FORMAT"> </a><div class="element clickable constant  constant_LS_DB_DATETIME_FORMAT" data-toggle="collapse" data-target=".constant_LS_DB_DATETIME_FORMAT .collapse" title="">
+<h2>LS_DB_DATETIME_FORMAT</h2>
+<pre>LS_DB_DATETIME_FORMAT = 'yyyy-MM-dd HH:mm:ss' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_LS_DB_DATE_FORMAT"> </a><div class="element clickable constant  constant_LS_DB_DATE_FORMAT" data-toggle="collapse" data-target=".constant_LS_DB_DATE_FORMAT .collapse" title="">
+<h2>LS_DB_DATE_FORMAT</h2>
+<pre>LS_DB_DATE_FORMAT = 'yyyy-MM-dd' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_QUESTIONS_TABLE"> </a><div class="element clickable constant  constant_QUESTIONS_TABLE" data-toggle="collapse" data-target=".constant_QUESTIONS_TABLE .collapse" title="">
+<h2>QUESTIONS_TABLE</h2>
+<pre>QUESTIONS_TABLE = 'questions' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_SURVEYS_LANG_TABLE"> </a><div class="element clickable constant  constant_SURVEYS_LANG_TABLE" data-toggle="collapse" data-target=".constant_SURVEYS_LANG_TABLE .collapse" title="">
+<h2>SURVEYS_LANG_TABLE</h2>
+<pre>SURVEYS_LANG_TABLE = 'surveys_languagesettings' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_SURVEYS_TABLE"> </a><div class="element clickable constant  constant_SURVEYS_TABLE" data-toggle="collapse" data-target=".constant_SURVEYS_TABLE .collapse" title="">
+<h2>SURVEYS_TABLE</h2>
+<pre>SURVEYS_TABLE = 'surveys' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_SURVEY_TABLE"> </a><div class="element clickable constant  constant_SURVEY_TABLE" data-toggle="collapse" data-target=".constant_SURVEY_TABLE .collapse" title="">
+<h2>SURVEY_TABLE</h2>
+<pre>SURVEY_TABLE = 'survey_' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_TOKEN_TABLE"> </a><div class="element clickable constant  constant_TOKEN_TABLE" data-toggle="collapse" data-target=".constant_TOKEN_TABLE .collapse" title="">
+<h2>TOKEN_TABLE</h2>
+<pre>TOKEN_TABLE = 'tokens_' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:27+02:00.<br></footer></div>
+</div>
+</body>
+</html>

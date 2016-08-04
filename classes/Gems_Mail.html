@@ -1,0 +1,326 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » \Gems_Mail</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+<div class="btn-group visibility" data-toggle="buttons-checkbox">
+<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
+</div>
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+</div>
+<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+<li class="nav-header">
+<i title="Methods" class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public "><a href="#method___construct" title="__construct() :: "><span class="description">__construct()
+        </span><pre>__construct()</pre></a></li>
+<li class="method public "><a href="#method_addTo" title="addTo() :: Adds To-header and recipient, $email can be an array, or a single string address"><span class="description">Adds To-header and recipient, $email can be an array, or a single string address</span><pre>addTo()</pre></a></li>
+<li class="method public "><a href="#method_bounceCheck" title='bounceCheck() :: Returns true if the "email.bounce" setting exists in the project
+configuration and is true'><span class="description">Returns true if the "email.bounce" setting exists in the project
+configuration and is true</span><pre>bounceCheck()</pre></a></li>
+<li class="method public "><a href="#method_checkTransport" title="checkTransport() :: Returns \Zend_Mail_Transport_Abstract when something else than the default mail protocol should be used."><span class="description">Returns \Zend_Mail_Transport_Abstract when something else than the default mail protocol should be used.</span><pre>checkTransport()</pre></a></li>
+<li class="method public "><a href="#method_getHtmlTemplate" title="getHtmlTemplate() :: Returns the the current template"><span class="description">Returns the the current template</span><pre>getHtmlTemplate()</pre></a></li>
+<li class="method public "><a href="#method_send" title="send() :: "><span class="description">send()
+        </span><pre>send()</pre></a></li>
+<li class="method public "><a href="#method_setTemplateStyle" title="setTemplateStyle() :: Set the template using style as basis"><span class="description">Set the template using style as basis</span><pre>setTemplateStyle()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Properties" class="icon-custom icon-property"></i> Properties
+                    <ul><li class="property public "><a href="#property_escort" title="$escort() :: "><span class="description"></span><pre>$escort</pre></a></li></ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="property protected "><a href="#property__charset" title="$_charset() :: Mail character set"><span class="description"></span><pre>$_charset</pre></a></li>
+<li class="property protected "><a href="#property_db" title="$db() :: "><span class="description"></span><pre>$db</pre></a></li>
+<li class="property protected "><a href="#property_mailServers" title="$mailServers() :: "><span class="description"></span><pre>$mailServers</pre></a></li>
+<li class="property protected "><a href="#property_project" title="$project() :: "><span class="description"></span><pre>$project</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Constants" class="icon-custom icon-constant"></i> Constants
+                    <ul>
+<li class="constant  "><a href="#constant_MAIL_NO_ENCRYPT" title="MAIL_NO_ENCRYPT() :: "><span class="description">MAIL_NO_ENCRYPT</span><pre>MAIL_NO_ENCRYPT</pre></a></li>
+<li class="constant  "><a href="#constant_MAIL_SSL" title="MAIL_SSL() :: "><span class="description">MAIL_SSL</span><pre>MAIL_SSL</pre></a></li>
+<li class="constant  "><a href="#constant_MAIL_TLS" title="MAIL_TLS() :: "><span class="description">MAIL_TLS</span><pre>MAIL_TLS</pre></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a xmlns:php="http://php.net/xsl" id="\Gems_Mail"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+<li>
+<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Gems_Mail.html">Gems_Mail</a>
+</li>
+</ul>
+<div xmlns:php="http://php.net/xsl" class="element class">
+<p class="short_description"></p>
+<div class="details">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Gems.Mail.html">Gems</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Mail</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2012 Erasmus MC</td>
+</tr>
+<tr>
+<th>license</th>
+<td><a href="http://opensource.org/licenses/BSD-3-Clause">New BSD License</a></td>
+</tr>
+<tr>
+<th>since</th>
+<td>Class available since version 1.5.3</td>
+</tr>
+</table>
+<h3>
+<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
+<a id="method___construct"></a><div class="element clickable method public method___construct " data-toggle="collapse" data-target=".method___construct .collapse" title="public">
+<h2>__construct()
+        </h2>
+<pre>__construct($charset<code> = null</code>) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$charset</h4></div>
+</div></div>
+</div>
+<a id="method_addTo"></a><div class="element clickable method public method_addTo " data-toggle="collapse" data-target=".method_addTo .collapse" title="public">
+<h2>Adds To-header and recipient, $email can be an array, or a single string address</h2>
+<pre>addTo(string|array $email, string $name<code> = ''</code>, boolean $bounce<code> = null</code>) : \Zend_Mail</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$email</h4>
+<code>string</code><code>array</code>
+</div>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$bounce</h4>
+<code>boolean</code><p>When true the e-mail is bounced to the from address, when omitted bounce is read from project settings</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Zend_Mail</code>Provides fluent interface</div>
+</div></div>
+</div>
+<a id="method_bounceCheck"></a><div class="element clickable method public method_bounceCheck " data-toggle="collapse" data-target=".method_bounceCheck .collapse" title="public">
+<h2>Returns true if the "email.bounce" setting exists in the project
+configuration and is true</h2>
+<pre>bounceCheck() : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_checkTransport"></a><div class="element clickable method public method_checkTransport " data-toggle="collapse" data-target=".method_checkTransport .collapse" title="public">
+<h2>Returns \Zend_Mail_Transport_Abstract when something else than the default mail protocol should be used.</h2>
+<pre>checkTransport(\email $from) : \Zend_Mail_Transport_Abstract</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>staticvar</th>
+<td>array $mailServers</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$from</h4>
+<code>\email</code><p>address $from</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Zend_Mail_Transport_Abstract</code>or null</div>
+</div></div>
+</div>
+<a id="method_getHtmlTemplate"></a><div class="element clickable method public method_getHtmlTemplate " data-toggle="collapse" data-target=".method_getHtmlTemplate .collapse" title="public">
+<h2>Returns the the current template</h2>
+<pre>getHtmlTemplate() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_send"></a><div class="element clickable method public method_send " data-toggle="collapse" data-target=".method_send .collapse" title="public">
+<h2>send()
+        </h2>
+<pre>send($transport<code> = null</code>) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$transport</h4></div>
+</div></div>
+</div>
+<a id="method_setTemplateStyle"></a><div class="element clickable method public method_setTemplateStyle " data-toggle="collapse" data-target=".method_setTemplateStyle .collapse" title="public">
+<h2>Set the template using style as basis</h2>
+<pre>setTemplateStyle(string $style<code> = null</code>) : \MUtil_Mail</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$style</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\MUtil_Mail</code>(continuation pattern)</div>
+</div></div>
+</div>
+<h3>
+<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
+<a id="property_escort"> </a><div class="element clickable property public property_escort" data-toggle="collapse" data-target=".property_escort .collapse" title="public">
+<h2>$escort</h2>
+<pre>$escort : \GemsEscort</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__charset"> </a><div class="element clickable property protected property__charset" data-toggle="collapse" data-target=".property__charset .collapse" title="protected">
+<h2>Mail character set</h2>
+<pre>$_charset : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>'utf-8'</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"><p>For Gems we use utf-8 as default instead op iso-8859-1</p></div></div></div>
+</div>
+<a id="property_db"> </a><div class="element clickable property protected property_db" data-toggle="collapse" data-target=".property_db .collapse" title="protected">
+<h2>$db</h2>
+<pre>$db : \Zend_Db_Adapter_Abstract</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_mailServers"> </a><div class="element clickable property protected property_mailServers" data-toggle="collapse" data-target=".property_mailServers .collapse" title="protected">
+<h2>$mailServers</h2>
+<pre>$mailServers </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>array()</code></div>
+</div></div>
+<div class="labels"><span class="label">Static</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_project"> </a><div class="element clickable property protected property_project" data-toggle="collapse" data-target=".property_project .collapse" title="protected">
+<h2>$project</h2>
+<pre>$project : \Gems_Project_ProjectSettings</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<h3>
+<i title="Constants" class="icon-custom icon-constant"></i> Constants</h3>
+<a id="constant_MAIL_NO_ENCRYPT"> </a><div class="element clickable constant  constant_MAIL_NO_ENCRYPT" data-toggle="collapse" data-target=".constant_MAIL_NO_ENCRYPT .collapse" title="">
+<h2>MAIL_NO_ENCRYPT</h2>
+<pre>MAIL_NO_ENCRYPT = 0 </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_MAIL_SSL"> </a><div class="element clickable constant  constant_MAIL_SSL" data-toggle="collapse" data-target=".constant_MAIL_SSL .collapse" title="">
+<h2>MAIL_SSL</h2>
+<pre>MAIL_SSL = 1 </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_MAIL_TLS"> </a><div class="element clickable constant  constant_MAIL_TLS" data-toggle="collapse" data-target=".constant_MAIL_TLS .collapse" title="">
+<h2>MAIL_TLS</h2>
+<pre>MAIL_TLS = 2 </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:37+02:00.<br></footer></div>
+</div>
+</body>
+</html>

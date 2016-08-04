@@ -1,0 +1,1567 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="css/template.css" rel="stylesheet" media="all">
+<script src="js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="js/bootstrap.js" type="text/javascript"></script><script src="js/template.js" type="text/javascript"></script><script src="js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="img/favicon.ico">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4"><ul class="side-nav nav nav-list">
+<li class="nav-header">Navigation</li>
+<li><a href="#Gems%5CTracker%5CSnippets%5CAnswerModelSnippetGeneric.php"><i class="icon-file"></i>Gems\Tracker\Snippets\AnswerModelSnippetGeneric.php</a></li>
+<li><a href="#GemsEscort.php"><i class="icon-file"></i>GemsEscort.php</a></li>
+<li><a href="#Gems%5CValidate%5CLimeSurveySoapClient.php"><i class="icon-file"></i>Gems\Validate\LimeSurveySoapClient.php</a></li>
+<li><a href="#Gems%5CTask%5CTaskAbstract.php"><i class="icon-file"></i>Gems\Task\TaskAbstract.php</a></li>
+<li><a href="#Gems%5CTracker%5CRespondentTrack.php"><i class="icon-file"></i>Gems\Tracker\RespondentTrack.php</a></li>
+<li><a href="#Gems%5CSnippets%5CTracker%5CTrackUsageOverviewSnippet.php"><i class="icon-file"></i>Gems\Snippets\Tracker\TrackUsageOverviewSnippet.php</a></li>
+<li><a href="#Gems%5CSnippets%5CAgenda%5CCalendarTableSnippet.php"><i class="icon-file"></i>Gems\Snippets\Agenda\CalendarTableSnippet.php</a></li>
+<li><a href="#Gems%5CUtil%5CDbLookup.php"><i class="icon-file"></i>Gems\Util\DbLookup.php</a></li>
+<li><a href="#Gems%5CProject%5COrganization%5CSingleOrganizationInterface.php"><i class="icon-file"></i>Gems\Project\Organization\SingleOrganizationInterface.php</a></li>
+<li><a href="#Gems%5CSnippets%5CAgenda%5CAppointmentsTableSnippet.php"><i class="icon-file"></i>Gems\Snippets\Agenda\AppointmentsTableSnippet.php</a></li>
+<li><a href="#Gems%5CSnippets%5CToken%5CPlanTokenSnippet.php"><i class="icon-file"></i>Gems\Snippets\Token\PlanTokenSnippet.php</a></li>
+<li><a href="#Gems%5CUtil%5CReceptionCodeLibrary.php"><i class="icon-file"></i>Gems\Util\ReceptionCodeLibrary.php</a></li>
+<li><a href="#Gems%5CUtil%5CRequestCache.php"><i class="icon-file"></i>Gems\Util\RequestCache.php</a></li>
+<li><a href="#Gems%5CTracker%5CToken.php"><i class="icon-file"></i>Gems\Tracker\Token.php</a></li>
+<li><a href="#Gems%5CSnippets%5CTrack%5CTracksSnippet.php"><i class="icon-file"></i>Gems\Snippets\Track\TracksSnippet.php</a></li>
+<li><a href="#Gems%5CSnippets%5CTokenPlanTableSnippet.php"><i class="icon-file"></i>Gems\Snippets\TokenPlanTableSnippet.php</a></li>
+<li><a href="#Gems%5CAccessLog.php"><i class="icon-file"></i>Gems\AccessLog.php</a></li>
+<li><a href="#Gems%5CSnippets%5CToken%5CPlanRespondentSnippet.php"><i class="icon-file"></i>Gems\Snippets\Token\PlanRespondentSnippet.php</a></li>
+<li><a href="#Gems%5CSnippets%5CTracker%5CAnswers%5CTrackAnswersModelSnippet.php"><i class="icon-file"></i>Gems\Snippets\Tracker\Answers\TrackAnswersModelSnippet.php</a></li>
+<li><a href="#Gems%5CProject%5CTracks%5CTracksOnlyInterface.php"><i class="icon-file"></i>Gems\Project\Tracks\TracksOnlyInterface.php</a></li>
+<li><a href="#Gems%5CModel.php"><i class="icon-file"></i>Gems\Model.php</a></li>
+<li><a href="#Gems%5CSnippets%5CTracker%5CShowTrackUsageSnippet.php"><i class="icon-file"></i>Gems\Snippets\Tracker\ShowTrackUsageSnippet.php</a></li>
+<li><a href="#Gems%5CSnippets%5COrganization%5COrganizationTableSnippet.php"><i class="icon-file"></i>Gems\Snippets\Organization\OrganizationTableSnippet.php</a></li>
+<li><a href="#Gems%5CSnippets%5CTracker%5CRounds%5CRoundsTableSnippet.php"><i class="icon-file"></i>Gems\Snippets\Tracker\Rounds\RoundsTableSnippet.php</a></li>
+<li><a href="#Gems%5CProject%5COrganization%5CMultiOrganizationInterface.php"><i class="icon-file"></i>Gems\Project\Organization\MultiOrganizationInterface.php</a></li>
+<li><a href="#Gems%5CSnippets%5CModelTableSnippetAbstract.php"><i class="icon-file"></i>Gems\Snippets\ModelTableSnippetAbstract.php</a></li>
+<li><a href="#Gems%5CSnippets%5CSurvey%5CDisplay%5CScoreChartsSnippet.php"><i class="icon-file"></i>Gems\Snippets\Survey\Display\ScoreChartsSnippet.php</a></li>
+<li><a href="#Gems%5CProject%5CTracks%5CFixedTracksInterface.php"><i class="icon-file"></i>Gems\Project\Tracks\FixedTracksInterface.php</a></li>
+<li><a href="#Gems%5CSnippets%5CTracker%5CAnswers%5CSingleTokenAnswerModelSnippet.php"><i class="icon-file"></i>Gems\Snippets\Tracker\Answers\SingleTokenAnswerModelSnippet.php</a></li>
+<li><a href="#Gems%5CSnippets%5CRespondent%5CRelation%5CTableSnippet.php"><i class="icon-file"></i>Gems\Snippets\Respondent\Relation\TableSnippet.php</a></li>
+<li><a href="#Gems%5CProject%5CLog%5CLogRespondentAccessInterface.php"><i class="icon-file"></i>Gems\Project\Log\LogRespondentAccessInterface.php</a></li>
+<li><a href="#Gems%5CSnippets%5CTracker%5CEditTrackEngineSnippet.php"><i class="icon-file"></i>Gems\Snippets\Tracker\EditTrackEngineSnippet.php</a></li>
+<li><a href="#Gems%5CSnippets%5CTracker%5CSummary%5CSummaryTableSnippet.php"><i class="icon-file"></i>Gems\Snippets\Tracker\Summary\SummaryTableSnippet.php</a></li>
+<li><a href="#Gems%5CSnippets%5CTracker%5CAvailableTracksSnippet.php"><i class="icon-file"></i>Gems\Snippets\Tracker\AvailableTracksSnippet.php</a></li>
+<li><a href="#Gems%5CSnippets%5CRespondentTokenSnippet.php"><i class="icon-file"></i>Gems\Snippets\RespondentTokenSnippet.php</a></li>
+<li><a href="#Gems%5CTracker%5CEngine%5CAnyStepEngine.php"><i class="icon-file"></i>Gems\Tracker\Engine\AnyStepEngine.php</a></li>
+<li><a href="#Gems%5CSnippets%5CModelTableSnippetGeneric.php"><i class="icon-file"></i>Gems\Snippets\ModelTableSnippetGeneric.php</a></li>
+<li><a href="#Gems%5CSnippets%5CRespondent%5CRespondentTableSnippet.php"><i class="icon-file"></i>Gems\Snippets\Respondent\RespondentTableSnippet.php</a></li>
+<li><a href="#Gems%5CSnippets%5CAgenda%5CAppointmentTokensSnippet.php"><i class="icon-file"></i>Gems\Snippets\Agenda\AppointmentTokensSnippet.php</a></li>
+<li><a href="#Gems%5CSnippets%5CTracker%5CAnswers%5CTrackAllAnswersModelSnippet.php"><i class="icon-file"></i>Gems\Snippets\Tracker\Answers\TrackAllAnswersModelSnippet.php</a></li>
+<li><a href="#Gems%5CTracker%5CEngine%5CNextStepEngine.php"><i class="icon-file"></i>Gems\Tracker\Engine\NextStepEngine.php</a></li>
+<li><a href="#Gems%5CSnippets%5CTracker%5CAnswers%5CSingleTrackAnswersModelSnippet.php"><i class="icon-file"></i>Gems\Snippets\Tracker\Answers\SingleTrackAnswersModelSnippet.php</a></li>
+<li><a href="#Gems%5CSnippets%5CTracker%5COverview%5CTableSnippet.php"><i class="icon-file"></i>Gems\Snippets\Tracker\Overview\TableSnippet.php</a></li>
+<li><a href="#Gems%5CSnippets%5CTrack%5CTracksForAppointment.php"><i class="icon-file"></i>Gems\Snippets\Track\TracksForAppointment.php</a></li>
+<li><a href="#Gems%5CTask%5CTracker%5CSourceCommand.php"><i class="icon-file"></i>Gems\Task\Tracker\SourceCommand.php</a></li>
+<li><a href="#Gems%5CSnippets%5CTracker%5CFields%5CFieldsTableSnippet.php"><i class="icon-file"></i>Gems\Snippets\Tracker\Fields\FieldsTableSnippet.php</a></li>
+<li><a href="#Gems%5CProject%5CTracks%5CStandAloneSurveysInterface.php"><i class="icon-file"></i>Gems\Project\Tracks\StandAloneSurveysInterface.php</a></li>
+<li><a href="#Gems%5CSnippets%5CLog%5CLogTableSnippet.php"><i class="icon-file"></i>Gems\Snippets\Log\LogTableSnippet.php</a></li>
+<li><a href="#Gems%5CSnippets%5CStaff%5CStaffTableSnippet.php"><i class="icon-file"></i>Gems\Snippets\Staff\StaffTableSnippet.php</a></li>
+<li><a href="#Gems%5CUtil%5CTrackData.php"><i class="icon-file"></i>Gems\Util\TrackData.php</a></li>
+<li><a href="#Gems%5CTracker%5CEngine%5CStepEngineAbstract.php"><i class="icon-file"></i>Gems\Tracker\Engine\StepEngineAbstract.php</a></li>
+<li><a href="#Gems%5CSnippets%5CTracker%5CSingleSurveyAvailableTracksSnippet.php"><i class="icon-file"></i>Gems\Snippets\Tracker\SingleSurveyAvailableTracksSnippet.php</a></li>
+<li><a href="#Gems%5CSnippets%5CRespondent%5CRoundTokenSnippet.php"><i class="icon-file"></i>Gems\Snippets\Respondent\RoundTokenSnippet.php</a></li>
+<li><a href="#Gems%5CTracker%5CSnippets%5CShowTrackUsageAbstract.php"><i class="icon-file"></i>Gems\Tracker\Snippets\ShowTrackUsageAbstract.php</a></li>
+<li><a href="#Gems%5CSnippets%5CRespondent%5CTrafficLightTokenSnippet.php"><i class="icon-file"></i>Gems\Snippets\Respondent\TrafficLightTokenSnippet.php</a></li>
+<li><a href="#Gems%5CSnippets%5CTracker%5CCompliance%5CComplianceTableSnippet.php"><i class="icon-file"></i>Gems\Snippets\Tracker\Compliance\ComplianceTableSnippet.php</a></li>
+<li><a href="#Gems%5CSnippets%5CMail%5CLog%5CMailLogBrowseSnippet.php"><i class="icon-file"></i>Gems\Snippets\Mail\Log\MailLogBrowseSnippet.php</a></li>
+<li><a href="#Gems%5CSnippets%5CTracker%5CAnswers%5CSurveyAnswersModelSnippet.php"><i class="icon-file"></i>Gems\Snippets\Tracker\Answers\SurveyAnswersModelSnippet.php</a></li>
+<li><a href="#Gems%5CAgenda%5CAppointmentSelect.php"><i class="icon-file"></i>Gems\Agenda\AppointmentSelect.php</a></li>
+<li><a href="#Gems%5CTracker%5CRespondent.php"><i class="icon-file"></i>Gems\Tracker\Respondent.php</a></li>
+<li><a href="#Gems%5CController%5CBrowseEditAction.php"><i class="icon-file"></i>Gems\Controller\BrowseEditAction.php</a></li>
+<li><a href="#Gems%5CSnippets%5CTracker%5CTrackTokenOverviewSnippet.php"><i class="icon-file"></i>Gems\Snippets\Tracker\TrackTokenOverviewSnippet.php</a></li>
+<li><a href="#Gems%5CSnippets%5CTokenModelSnippetAbstract.php"><i class="icon-file"></i>Gems\Snippets\TokenModelSnippetAbstract.php</a></li>
+<li><a href="#Gems%5CDefault%5CRespondentAction.php"><i class="icon-file"></i>Gems\Default\RespondentAction.php</a></li>
+</ul></div>
+<div class="span8">
+<ul class="breadcrumb">
+<li>
+<a href=""><i class="icon-stop"></i></a><span class="divider">\</span>
+</li>
+<li>Deprecated elements</li>
+</ul>
+<div id="marker-accordion">
+<a name="Gems%5CTracker%5CSnippets%5CAnswerModelSnippetGeneric.php" id="Gems\Tracker\Snippets\AnswerModelSnippetGeneric.php"></a><h3>
+<i class="icon-file"></i>Gems\Tracker\Snippets\AnswerModelSnippetGeneric.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="GemsEscort.php" id="GemsEscort.php"></a><h3>
+<i class="icon-file"></i>GemsEscort.php<small style="float: right;padding-right: 10px;">5</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>1432</td>
+<td>Since 1.7.2 Replaced by $this->currentOrganization->getId();</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>1442</td>
+<td>Since 1.7.2 Replaced by $this->currentUser->getUserId();</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>1552</td>
+<td>Since 1.7.2 Replaced by $this->currentUser->hasPrivilege();</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>1623</td>
+<td>Since 1.5</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>451</td>
+<td>since 1.5</td>
+</tr>
+</table></div>
+<a name="Gems%5CValidate%5CLimeSurveySoapClient.php" id="Gems\Validate\LimeSurveySoapClient.php"></a><h3>
+<i class="icon-file"></i>Gems\Validate\LimeSurveySoapClient.php<small style="float: right;padding-right: 10px;">2</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>21</td>
+<td></td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>21</td>
+<td></td>
+</tr>
+</table></div>
+<a name="Gems%5CTask%5CTaskAbstract.php" id="Gems\Task\TaskAbstract.php"></a><h3>
+<i class="icon-file"></i>Gems\Task\TaskAbstract.php<small style="float: right;padding-right: 10px;">1</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>23</td>
+<td>since version 1.6.2 Moved to \MUtil_Task_TaskAbstract (that uses $this->batch, not $this->_batch)</td>
+</tr>
+</table></div>
+<a name="Gems%5CTracker%5CRespondentTrack.php" id="Gems\Tracker\RespondentTrack.php"></a><h3>
+<i class="icon-file"></i>Gems\Tracker\RespondentTrack.php<small style="float: right;padding-right: 10px;">1</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>750</td>
+<td>since version 1.7.1 Snippets defined TrackAction</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CTracker%5CTrackUsageOverviewSnippet.php" id="Gems\Snippets\Tracker\TrackUsageOverviewSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Tracker\TrackUsageOverviewSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CAgenda%5CCalendarTableSnippet.php" id="Gems\Snippets\Agenda\CalendarTableSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Agenda\CalendarTableSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CUtil%5CDbLookup.php" id="Gems\Util\DbLookup.php"></a><h3>
+<i class="icon-file"></i>Gems\Util\DbLookup.php<small style="float: right;padding-right: 10px;">1</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>137</td>
+<td>Since 1.7.2 Replaced by loader->getCurrentUser()->getAllowedStaffGroups()</td>
+</tr>
+</table></div>
+<a name="Gems%5CProject%5COrganization%5CSingleOrganizationInterface.php" id="Gems\Project\Organization\SingleOrganizationInterface.php"></a><h3>
+<i class="icon-file"></i>Gems\Project\Organization\SingleOrganizationInterface.php<small style="float: right;padding-right: 10px;">1</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>29</td>
+<td>since 1.7.1: no longer in use</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CAgenda%5CAppointmentsTableSnippet.php" id="Gems\Snippets\Agenda\AppointmentsTableSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Agenda\AppointmentsTableSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CToken%5CPlanTokenSnippet.php" id="Gems\Snippets\Token\PlanTokenSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Token\PlanTokenSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CUtil%5CReceptionCodeLibrary.php" id="Gems\Util\ReceptionCodeLibrary.php"></a><h3>
+<i class="icon-file"></i>Gems\Util\ReceptionCodeLibrary.php<small style="float: right;padding-right: 10px;">1</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>190</td>
+<td>since 1.7.1</td>
+</tr>
+</table></div>
+<a name="Gems%5CUtil%5CRequestCache.php" id="Gems\Util\RequestCache.php"></a><h3>
+<i class="icon-file"></i>Gems\Util\RequestCache.php<small style="float: right;padding-right: 10px;">1</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>23</td>
+<td>since 1.7.2</td>
+</tr>
+</table></div>
+<a name="Gems%5CTracker%5CToken.php" id="Gems\Tracker\Token.php"></a><h3>
+<i class="icon-file"></i>Gems\Tracker\Token.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>1576</td>
+<td>Use the ReceptionCode->hasRedoCode</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>1587</td>
+<td>Use the ReceptionCode->hasRedoCopyCode</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>1597</td>
+<td>Use the ReceptionCode->isSuccess</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CTrack%5CTracksSnippet.php" id="Gems\Snippets\Track\TracksSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Track\TracksSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CTokenPlanTableSnippet.php" id="Gems\Snippets\TokenPlanTableSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\TokenPlanTableSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CAccessLog.php" id="Gems\AccessLog.php"></a><h3>
+<i class="icon-file"></i>Gems\AccessLog.php<small style="float: right;padding-right: 10px;">4</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>123</td>
+<td>Since 1.7.1</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>207</td>
+<td>Since 1.7.2</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>381</td>
+<td>since 1.7.1 Use accessLog source variable instead</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>415</td>
+<td>Since version 1.7.1: use logChange or logRequest</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CToken%5CPlanRespondentSnippet.php" id="Gems\Snippets\Token\PlanRespondentSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Token\PlanRespondentSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CTracker%5CAnswers%5CTrackAnswersModelSnippet.php" id="Gems\Snippets\Tracker\Answers\TrackAnswersModelSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Tracker\Answers\TrackAnswersModelSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CProject%5CTracks%5CTracksOnlyInterface.php" id="Gems\Project\Tracks\TracksOnlyInterface.php"></a><h3>
+<i class="icon-file"></i>Gems\Project\Tracks\TracksOnlyInterface.php<small style="float: right;padding-right: 10px;">1</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>27</td>
+<td>since version 1.7.1 Stand Alone Survey engine no longer exitst</td>
+</tr>
+</table></div>
+<a name="Gems%5CModel.php" id="Gems\Model.php"></a><h3>
+<i class="icon-file"></i>Gems\Model.php<small style="float: right;padding-right: 10px;">1</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>128</td>
+<td>since version 1.5.4</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CTracker%5CShowTrackUsageSnippet.php" id="Gems\Snippets\Tracker\ShowTrackUsageSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Tracker\ShowTrackUsageSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5COrganization%5COrganizationTableSnippet.php" id="Gems\Snippets\Organization\OrganizationTableSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Organization\OrganizationTableSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CTracker%5CRounds%5CRoundsTableSnippet.php" id="Gems\Snippets\Tracker\Rounds\RoundsTableSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Tracker\Rounds\RoundsTableSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CProject%5COrganization%5CMultiOrganizationInterface.php" id="Gems\Project\Organization\MultiOrganizationInterface.php"></a><h3>
+<i class="icon-file"></i>Gems\Project\Organization\MultiOrganizationInterface.php<small style="float: right;padding-right: 10px;">1</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>32</td>
+<td>since 1.7.1: is default setup</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CModelTableSnippetAbstract.php" id="Gems\Snippets\ModelTableSnippetAbstract.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\ModelTableSnippetAbstract.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CSurvey%5CDisplay%5CScoreChartsSnippet.php" id="Gems\Snippets\Survey\Display\ScoreChartsSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Survey\Display\ScoreChartsSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CProject%5CTracks%5CFixedTracksInterface.php" id="Gems\Project\Tracks\FixedTracksInterface.php"></a><h3>
+<i class="icon-file"></i>Gems\Project\Tracks\FixedTracksInterface.php<small style="float: right;padding-right: 10px;">1</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>27</td>
+<td>since version 1.7.1 Stand Alone Survey engine no longer exitst</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CTracker%5CAnswers%5CSingleTokenAnswerModelSnippet.php" id="Gems\Snippets\Tracker\Answers\SingleTokenAnswerModelSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Tracker\Answers\SingleTokenAnswerModelSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CRespondent%5CRelation%5CTableSnippet.php" id="Gems\Snippets\Respondent\Relation\TableSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Respondent\Relation\TableSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CProject%5CLog%5CLogRespondentAccessInterface.php" id="Gems\Project\Log\LogRespondentAccessInterface.php"></a><h3>
+<i class="icon-file"></i>Gems\Project\Log\LogRespondentAccessInterface.php<small style="float: right;padding-right: 10px;">1</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>23</td>
+<td>Since 1.7.1 code included for all projects</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CTracker%5CEditTrackEngineSnippet.php" id="Gems\Snippets\Tracker\EditTrackEngineSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Tracker\EditTrackEngineSnippet.php<small style="float: right;padding-right: 10px;">1</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>25</td>
+<td>since version 1.6.5</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CTracker%5CSummary%5CSummaryTableSnippet.php" id="Gems\Snippets\Tracker\Summary\SummaryTableSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Tracker\Summary\SummaryTableSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CTracker%5CAvailableTracksSnippet.php" id="Gems\Snippets\Tracker\AvailableTracksSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Tracker\AvailableTracksSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CRespondentTokenSnippet.php" id="Gems\Snippets\RespondentTokenSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\RespondentTokenSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CTracker%5CEngine%5CAnyStepEngine.php" id="Gems\Tracker\Engine\AnyStepEngine.php"></a><h3>
+<i class="icon-file"></i>Gems\Tracker\Engine\AnyStepEngine.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>794</td>
+<td>since version 1.7.1 Snippets defined TrackAction</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>805</td>
+<td>since version 1.7.1 Snippets defined TrackAction</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>822</td>
+<td>since version 1.7.1 Snippets defined TrackAction</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CModelTableSnippetGeneric.php" id="Gems\Snippets\ModelTableSnippetGeneric.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\ModelTableSnippetGeneric.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CRespondent%5CRespondentTableSnippet.php" id="Gems\Snippets\Respondent\RespondentTableSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Respondent\RespondentTableSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CAgenda%5CAppointmentTokensSnippet.php" id="Gems\Snippets\Agenda\AppointmentTokensSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Agenda\AppointmentTokensSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CTracker%5CAnswers%5CTrackAllAnswersModelSnippet.php" id="Gems\Snippets\Tracker\Answers\TrackAllAnswersModelSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Tracker\Answers\TrackAllAnswersModelSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CTracker%5CEngine%5CNextStepEngine.php" id="Gems\Tracker\Engine\NextStepEngine.php"></a><h3>
+<i class="icon-file"></i>Gems\Tracker\Engine\NextStepEngine.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>794</td>
+<td>since version 1.7.1 Snippets defined TrackAction</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>805</td>
+<td>since version 1.7.1 Snippets defined TrackAction</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>822</td>
+<td>since version 1.7.1 Snippets defined TrackAction</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CTracker%5CAnswers%5CSingleTrackAnswersModelSnippet.php" id="Gems\Snippets\Tracker\Answers\SingleTrackAnswersModelSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Tracker\Answers\SingleTrackAnswersModelSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CTracker%5COverview%5CTableSnippet.php" id="Gems\Snippets\Tracker\Overview\TableSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Tracker\Overview\TableSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CTrack%5CTracksForAppointment.php" id="Gems\Snippets\Track\TracksForAppointment.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Track\TracksForAppointment.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CTask%5CTracker%5CSourceCommand.php" id="Gems\Task\Tracker\SourceCommand.php"></a><h3>
+<i class="icon-file"></i>Gems\Task\Tracker\SourceCommand.php<small style="float: right;padding-right: 10px;">1</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>20</td>
+<td>since 1.6.4 No longer in use</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CTracker%5CFields%5CFieldsTableSnippet.php" id="Gems\Snippets\Tracker\Fields\FieldsTableSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Tracker\Fields\FieldsTableSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CProject%5CTracks%5CStandAloneSurveysInterface.php" id="Gems\Project\Tracks\StandAloneSurveysInterface.php"></a><h3>
+<i class="icon-file"></i>Gems\Project\Tracks\StandAloneSurveysInterface.php<small style="float: right;padding-right: 10px;">1</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>25</td>
+<td>since version 1.7.1 Stand Alone Survey engine no longer exitst</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CLog%5CLogTableSnippet.php" id="Gems\Snippets\Log\LogTableSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Log\LogTableSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CStaff%5CStaffTableSnippet.php" id="Gems\Snippets\Staff\StaffTableSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Staff\StaffTableSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CUtil%5CTrackData.php" id="Gems\Util\TrackData.php"></a><h3>
+<i class="icon-file"></i>Gems\Util\TrackData.php<small style="float: right;padding-right: 10px;">2</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>208</td>
+<td>since 1.7.1 use Translated->getDatePeriodUnits()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>274</td>
+<td>Since 1.7.1 getAllTracks() is all we need</td>
+</tr>
+</table></div>
+<a name="Gems%5CTracker%5CEngine%5CStepEngineAbstract.php" id="Gems\Tracker\Engine\StepEngineAbstract.php"></a><h3>
+<i class="icon-file"></i>Gems\Tracker\Engine\StepEngineAbstract.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>794</td>
+<td>since version 1.7.1 Snippets defined TrackAction</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>805</td>
+<td>since version 1.7.1 Snippets defined TrackAction</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>822</td>
+<td>since version 1.7.1 Snippets defined TrackAction</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CTracker%5CSingleSurveyAvailableTracksSnippet.php" id="Gems\Snippets\Tracker\SingleSurveyAvailableTracksSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Tracker\SingleSurveyAvailableTracksSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CRespondent%5CRoundTokenSnippet.php" id="Gems\Snippets\Respondent\RoundTokenSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Respondent\RoundTokenSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CTracker%5CSnippets%5CShowTrackUsageAbstract.php" id="Gems\Tracker\Snippets\ShowTrackUsageAbstract.php"></a><h3>
+<i class="icon-file"></i>Gems\Tracker\Snippets\ShowTrackUsageAbstract.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CRespondent%5CTrafficLightTokenSnippet.php" id="Gems\Snippets\Respondent\TrafficLightTokenSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Respondent\TrafficLightTokenSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CTracker%5CCompliance%5CComplianceTableSnippet.php" id="Gems\Snippets\Tracker\Compliance\ComplianceTableSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Tracker\Compliance\ComplianceTableSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CMail%5CLog%5CMailLogBrowseSnippet.php" id="Gems\Snippets\Mail\Log\MailLogBrowseSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Mail\Log\MailLogBrowseSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CTracker%5CAnswers%5CSurveyAnswersModelSnippet.php" id="Gems\Snippets\Tracker\Answers\SurveyAnswersModelSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Tracker\Answers\SurveyAnswersModelSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CAgenda%5CAppointmentSelect.php" id="Gems\Agenda\AppointmentSelect.php"></a><h3>
+<i class="icon-file"></i>Gems\Agenda\AppointmentSelect.php<small style="float: right;padding-right: 10px;">1</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>182</td>
+<td>since 1.7.1 replace by forPeriod()</td>
+</tr>
+</table></div>
+<a name="Gems%5CTracker%5CRespondent.php" id="Gems\Tracker\Respondent.php"></a><h3>
+<i class="icon-file"></i>Gems\Tracker\Respondent.php<small style="float: right;padding-right: 10px;">1</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>314</td>
+<td>since version 1.6.4</td>
+</tr>
+</table></div>
+<a name="Gems%5CController%5CBrowseEditAction.php" id="Gems\Controller\BrowseEditAction.php"></a><h3>
+<i class="icon-file"></i>Gems\Controller\BrowseEditAction.php<small style="float: right;padding-right: 10px;">1</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>25</td>
+<td>Since version 1.7.1</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CTracker%5CTrackTokenOverviewSnippet.php" id="Gems\Snippets\Tracker\TrackTokenOverviewSnippet.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\Tracker\TrackTokenOverviewSnippet.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CSnippets%5CTokenModelSnippetAbstract.php" id="Gems\Snippets\TokenModelSnippetAbstract.php"></a><h3>
+<i class="icon-file"></i>Gems\Snippets\TokenModelSnippetAbstract.php<small style="float: right;padding-right: 10px;">3</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>234</td>
+<td>since 1.7.1, use findMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>275</td>
+<td>since 1.7.1, use getEditMenuItems()</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>335</td>
+<td>since 1.7.1, use getShowMenuItems()</td>
+</tr>
+</table></div>
+<a name="Gems%5CDefault%5CRespondentAction.php" id="Gems\Default\RespondentAction.php"></a><h3>
+<i class="icon-file"></i>Gems\Default\RespondentAction.php<small style="float: right;padding-right: 10px;">1</small>
+</h3>
+<div><table class="table markers table-bordered">
+<tr>
+<th>Type</th>
+<th>Line</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>23</td>
+<td>Since 1.7.2</td>
+</tr>
+</table></div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:40:01+02:00.<br></footer></div>
+</div>
+</body>
+</html>

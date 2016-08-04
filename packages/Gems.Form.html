@@ -1,0 +1,205 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » Gems\Form</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+<ul class="side-nav nav nav-list">
+<li class="nav-header">
+<i class="icon-map-marker"></i> Packages</li>
+<li>
+<a href="../packages/Gems.Form.html" title="Form"><i class="icon-folder-open"></i>Form</a><ul class="nav nav-list nav-packages"></ul>
+</li>
+<li class="nav-header">
+<i title="Interfaces" class="icon-custom icon-interface"></i> Interfaces</li>
+<li><a href="#Gems_Form_AutosubmitElementInterface" title="Interface for elements that need to change settings on an autosubmit form.">Gems_Form_AutosubmitElementInterface</a></li>
+<li class="nav-header">
+<i title="Classes" class="icon-custom icon-class"></i> Classes</li>
+<li><a href="#Gems_Form_Decorator_TabErrors" title="Takes care of rendering errors in tabbed forms">Gems_Form_Decorator_TabErrors</a></li>
+<li><a href="#Gems_TabForm" title="Creates a form using tab-layout where each tab is a subform">Gems_TabForm</a></li>
+<li><a href="#Gems_Form_Decorator_Form" title="Takes care of adding css or javascript when the form is rendered">Gems_Form_Decorator_Form</a></li>
+<li><a href="#Gems_Form" title="Base form class with extensions for correct load paths, autosubmit forms and registry use.">Gems_Form</a></li>
+<li><a href="#Gems_Form_TableForm" title="Render a Form as a table just by modifying the decorators">Gems_Form_TableForm</a></li>
+<li><a href="#Gems_Form_Element_CKEditor" title="CKEditor form element.">Gems_Form_Element_CKEditor</a></li>
+<li><a href="#Gems_Form_Decorator_Tooltip" title="Render a tooltip as a jQuery tooltip">Gems_Form_Decorator_Tooltip</a></li>
+<li><a href="#Gems_Form_TabSubForm" title="A special displaygroup, to be displayed in a jQuery tab. Main difference is in the decorators.">Gems_Form_TabSubForm</a></li>
+<li><a href="#Gems_Form_TabGroup" title="A special displaygroup, to be displayed in a jQuery tab. Main difference is in the decorators.">Gems_Form_TabGroup</a></li>
+<li><a href="#Gems_Form_Decorator_CKEditor" title="">Gems_Form_Decorator_CKEditor</a></li>
+<li><a href="#Gems_Form_AutoLoadFormAbstract" title="Adds default element loading to standard form">Gems_Form_AutoLoadFormAbstract</a></li>
+<li><a href="#Gems_Form_SubForm" title="Base form class with extensions for correct load paths, autosubmit forms and registry use.">Gems_Form_SubForm</a></li>
+<li><a href="#Gems_Form_Decorator_Tabs" title="Display a form in a table decorator.">Gems_Form_Decorator_Tabs</a></li>
+</ul>
+</div>
+<div class="span8 package-contents">
+<ul class="breadcrumb"><li>
+<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li><a href="../packages/Gems.html">Gems</a></li>
+<li class="active">
+<span class="divider">\</span><a href="../packages/Gems.Form.html">Form</a>
+</li>
+</li></ul>
+<div class="package-indent">
+<h3>
+<i title="Classes" class="icon-custom icon-class"></i> Classes, interfaces, and traits</h3>
+<div xmlns:php="http://php.net/xsl" id="Gems_Form_AutosubmitElementInterface" class="element ajax clickable interface">
+<h1>Gems_Form_AutosubmitElementInterface<a href="../classes/Gems_Form_AutosubmitElementInterface.html">¶</a>
+</h1>
+<p class="short_description">Interface for elements that need to change settings on an autosubmit form.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Form_AutosubmitElementInterface.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Form" class="element ajax clickable class">
+<h1>Gems_Form<a href="../classes/Gems_Form.html">¶</a>
+</h1>
+<p class="short_description">Base form class with extensions for correct load paths, autosubmit forms and registry use.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Form.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Form_AutoLoadFormAbstract" class="element ajax clickable class">
+<h1>Gems_Form_AutoLoadFormAbstract<a href="../classes/Gems_Form_AutoLoadFormAbstract.html">¶</a>
+</h1>
+<p class="short_description">Adds default element loading to standard form</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Form_AutoLoadFormAbstract.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Form_Decorator_CKEditor" class="element ajax clickable class">
+<h1>Gems_Form_Decorator_CKEditor<a href="../classes/Gems_Form_Decorator_CKEditor.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Form_Decorator_CKEditor.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Form_Decorator_Form" class="element ajax clickable class">
+<h1>Gems_Form_Decorator_Form<a href="../classes/Gems_Form_Decorator_Form.html">¶</a>
+</h1>
+<p class="short_description">Takes care of adding css or javascript when the form is rendered</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Form_Decorator_Form.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Form_Decorator_TabErrors" class="element ajax clickable class">
+<h1>Gems_Form_Decorator_TabErrors<a href="../classes/Gems_Form_Decorator_TabErrors.html">¶</a>
+</h1>
+<p class="short_description">Takes care of rendering errors in tabbed forms</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Form_Decorator_TabErrors.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Form_Decorator_Tabs" class="element ajax clickable class">
+<h1>Gems_Form_Decorator_Tabs<a href="../classes/Gems_Form_Decorator_Tabs.html">¶</a>
+</h1>
+<p class="short_description">Display a form in a table decorator.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Form_Decorator_Tabs.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Form_Decorator_Tooltip" class="element ajax clickable class">
+<h1>Gems_Form_Decorator_Tooltip<a href="../classes/Gems_Form_Decorator_Tooltip.html">¶</a>
+</h1>
+<p class="short_description">Render a tooltip as a jQuery tooltip</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Form_Decorator_Tooltip.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Form_Element_CKEditor" class="element ajax clickable class">
+<h1>Gems_Form_Element_CKEditor<a href="../classes/Gems_Form_Element_CKEditor.html">¶</a>
+</h1>
+<p class="short_description">CKEditor form element.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Form_Element_CKEditor.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Form_SubForm" class="element ajax clickable class">
+<h1>Gems_Form_SubForm<a href="../classes/Gems_Form_SubForm.html">¶</a>
+</h1>
+<p class="short_description">Base form class with extensions for correct load paths, autosubmit forms and registry use.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Form_SubForm.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Form_TabGroup" class="element ajax clickable class">
+<h1>Gems_Form_TabGroup<a href="../classes/Gems_Form_TabGroup.html">¶</a>
+</h1>
+<p class="short_description">A special displaygroup, to be displayed in a jQuery tab. Main difference is in the decorators.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Form_TabGroup.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Form_TabSubForm" class="element ajax clickable class">
+<h1>Gems_Form_TabSubForm<a href="../classes/Gems_Form_TabSubForm.html">¶</a>
+</h1>
+<p class="short_description">A special displaygroup, to be displayed in a jQuery tab. Main difference is in the decorators.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Form_TabSubForm.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Form_TableForm" class="element ajax clickable class">
+<h1>Gems_Form_TableForm<a href="../classes/Gems_Form_TableForm.html">¶</a>
+</h1>
+<p class="short_description">Render a Form as a table just by modifying the decorators</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Form_TableForm.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_TabForm" class="element ajax clickable class">
+<h1>Gems_TabForm<a href="../classes/Gems_TabForm.html">¶</a>
+</h1>
+<p class="short_description">Creates a form using tab-layout where each tab is a subform</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_TabForm.html" class="more">« More »</a>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:09+02:00.<br></footer></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,688 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » \Gems_Tracker_Source_LimeSurvey1m9FieldMap</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+<div class="btn-group visibility" data-toggle="buttons-checkbox">
+<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
+</div>
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+</div>
+<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+<li class="nav-header">
+<i title="Methods" class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public "><a href="#method___construct" title="__construct() :: Construct a fieldmap object to add LS source code knowledge and interpretation to the database data about a survey."><span class="description">Construct a fieldmap object to add LS source code knowledge and interpretation to the database data about a survey.</span><pre>__construct()</pre></a></li>
+<li class="method public "><a href="#method_applyToModel" title="applyToModel() :: Applies the fieldmap data to the model"><span class="description">Applies the fieldmap data to the model</span><pre>applyToModel()</pre></a></li>
+<li class="method public "><a href="#method_getFullQuestionList" title="getFullQuestionList() :: Returns an array containing fieldname =&gt; label for dropdown list etc."><span class="description">Returns an array containing fieldname =&gt; label for dropdown list etc.</span><pre>getFullQuestionList()</pre></a></li>
+<li class="method public "><a href="#method_getQuestionInformation" title="getQuestionInformation() :: Returns an array of array with the structure:
+     question =&gt; string,
+     class    =&gt; question|question_sub
+     group    =&gt; is for grouping
+     type     =&gt; (optional) source specific type
+     answers  =&gt; string for single types,
+                 array for selection of,
+                 nothing for no answer"><span class="description">Returns an array of array with the structure:
+     question =&gt; string,
+     class    =&gt; question|question_sub
+     group    =&gt; is for grouping
+     type     =&gt; (optional) source specific type
+     answers  =&gt; string for single types,
+                 array for selection of,
+                 nothing for no answer</span><pre>getQuestionInformation()</pre></a></li>
+<li class="method public "><a href="#method_getQuestionList" title="getQuestionList() :: Returns an array containing fieldname =&gt; label for dropdown list etc."><span class="description">Returns an array containing fieldname =&gt; label for dropdown list etc.</span><pre>getQuestionList()</pre></a></li>
+<li class="method public "><a href="#method_mapKeysToTitles" title="mapKeysToTitles() :: Changes the keys of the values array to the more readable titles
+also available in LimeSurvey"><span class="description">Changes the keys of the values array to the more readable titles
+also available in LimeSurvey</span><pre>mapKeysToTitles()</pre></a></li>
+<li class="method public "><a href="#method_mapTitlesToKeys" title="mapTitlesToKeys() :: Changes the keys of the values array to the more readable titles
+also available in LimeSurvey"><span class="description">Changes the keys of the values array to the more readable titles
+also available in LimeSurvey</span><pre>mapTitlesToKeys()</pre></a></li>
+<li class="method public "><a href="#method_removeMarkup" title="removeMarkup() :: Removes all markup from input"><span class="description">Removes all markup from input</span><pre>removeMarkup()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="method protected "><a href="#method__getAnswersTableName" title="_getAnswersTableName() :: The answers table contains code =&gt; answer sets per question/language/scale_id"><span class="description">The answers table contains code =&gt; answer sets per question/language/scale_id</span><pre>_getAnswersTableName()</pre></a></li>
+<li class="method protected "><a href="#method__getGroupsTableName" title="_getGroupsTableName() :: The groups table contains group texts per group id / language"><span class="description">The groups table contains group texts per group id / language</span><pre>_getGroupsTableName()</pre></a></li>
+<li class="method protected "><a href="#method__getMap" title="_getMap() :: "><span class="description">_getMap()
+        </span><pre>_getMap()</pre></a></li>
+<li class="method protected "><a href="#method__getMultiOptions" title="_getMultiOptions() :: Return an array with all possible answers for a given sid/field combination"><span class="description">Return an array with all possible answers for a given sid/field combination</span><pre>_getMultiOptions()</pre></a></li>
+<li class="method protected "><a href="#method__getQuestionAttribute" title="_getQuestionAttribute() :: Return a certain question attribute or the default value if it does not exist."><span class="description">Return a certain question attribute or the default value if it does not exist.</span><pre>_getQuestionAttribute()</pre></a></li>
+<li class="method protected "><a href="#method__getQuestionAttributesTableName" title="_getQuestionAttributesTableName() :: The question attributes table contains all non-translateable settings for a question, e.g. 'page_break'"><span class="description">The question attributes table contains all non-translateable settings for a question, e.g. 'page_break'</span><pre>_getQuestionAttributesTableName()</pre></a></li>
+<li class="method protected "><a href="#method__getQuestionsTableName" title="_getQuestionsTableName() :: The question table contains one row per language per question per survey in LS."><span class="description">The question table contains one row per language per question per survey in LS.</span><pre>_getQuestionsTableName()</pre></a></li>
+<li class="method protected "><a href="#method__getSurveyTableName" title="_getSurveyTableName() :: There exists a survey table for each active survey. The table contains the answers to the survey"><span class="description">There exists a survey table for each active survey. The table contains the answers to the survey</span><pre>_getSurveyTableName()</pre></a></li>
+<li class="method protected "><a href="#method__getSurveysTableName" title="_getSurveysTableName() :: The survey table contains one row per each survey in LS"><span class="description">The survey table contains one row per each survey in LS</span><pre>_getSurveysTableName()</pre></a></li>
+<li class="method protected "><a href="#method__getType" title="_getType() :: Returns"><span class="description">Returns</span><pre>_getType()</pre></a></li>
+<li class="method protected "><a href="#method_getDateFormats" title="getDateFormats() :: "><span class="description">getDateFormats()
+        </span><pre>getDateFormats()</pre></a></li>
+<li class="method protected "><a href="#method_getFieldTableDataType" title="getFieldTableDataType() :: "><span class="description">getFieldTableDataType()
+        </span><pre>getFieldTableDataType()</pre></a></li>
+<li class="method protected "><a href="#method_loadTableMetaData" title="loadTableMetaData() :: "><span class="description">loadTableMetaData()
+        </span><pre>loadTableMetaData()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header private">» Private
+                    <ul>
+<li class="method private "><a href="#method__getFixedAnswers" title="_getFixedAnswers() :: "><span class="description">_getFixedAnswers()
+        </span><pre>_getFixedAnswers()</pre></a></li>
+<li class="method private "><a href="#method__getHardAnswers" title="_getHardAnswers() :: Returns the answers for a matrix or list type question from the answers table"><span class="description">Returns the answers for a matrix or list type question from the answers table</span><pre>_getHardAnswers()</pre></a></li>
+<li class="method private "><a href="#method__getPossibleAnswers" title="_getPossibleAnswers() :: Return an array with all possible answers for a given sid/field combination"><span class="description">Return an array with all possible answers for a given sid/field combination</span><pre>_getPossibleAnswers()</pre></a></li>
+<li class="method private "><a href="#method__getTitlesMap" title="_getTitlesMap() :: Returns a map of databasecode =&gt; questioncode"><span class="description">Returns a map of databasecode =&gt; questioncode</span><pre>_getTitlesMap()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Properties" class="icon-custom icon-property"></i> Properties
+                    <ul></ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="property protected "><a href="#property__answers" title="$_answers() :: "><span class="description"></span><pre>$_answers</pre></a></li>
+<li class="property protected "><a href="#property__attributes" title="$_attributes() :: "><span class="description"></span><pre>$_attributes</pre></a></li>
+<li class="property protected "><a href="#property__fieldMap" title="$_fieldMap() :: "><span class="description"></span><pre>$_fieldMap</pre></a></li>
+<li class="property protected "><a href="#property__hardAnswers" title="$_hardAnswers() :: "><span class="description"></span><pre>$_hardAnswers</pre></a></li>
+<li class="property protected "><a href="#property__titlesMap" title="$_titlesMap() :: "><span class="description"></span><pre>$_titlesMap</pre></a></li>
+<li class="property protected "><a href="#property_cache" title="$cache() :: "><span class="description"></span><pre>$cache</pre></a></li>
+<li class="property protected "><a href="#property_language" title="$language() :: The language of this fieldmap"><span class="description"></span><pre>$language</pre></a></li>
+<li class="property protected "><a href="#property_ldDb" title="$ldDb() :: Limesurvey database adapter"><span class="description"></span><pre>$ldDb</pre></a></li>
+<li class="property protected "><a href="#property_sourceSurveyId" title="$sourceSurveyId() :: The Lime Survey survey Id"><span class="description"></span><pre>$sourceSurveyId</pre></a></li>
+<li class="property protected "><a href="#property_tableMetaData" title="$tableMetaData() :: "><span class="description"></span><pre>$tableMetaData</pre></a></li>
+<li class="property protected "><a href="#property_tablePrefix" title="$tablePrefix() :: Prefix to add to standard table name"><span class="description"></span><pre>$tablePrefix</pre></a></li>
+<li class="property protected "><a href="#property_translate" title="$translate() :: "><span class="description"></span><pre>$translate</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Constants" class="icon-custom icon-constant"></i> Constants
+                    <ul>
+<li class="constant  "><a href="#constant_ANSWERS_TABLE" title="ANSWERS_TABLE() :: "><span class="description">ANSWERS_TABLE</span><pre>ANSWERS_TABLE</pre></a></li>
+<li class="constant  "><a href="#constant_ATTRIBUTES_TABLE" title="ATTRIBUTES_TABLE() :: "><span class="description">ATTRIBUTES_TABLE</span><pre>ATTRIBUTES_TABLE</pre></a></li>
+<li class="constant  "><a href="#constant_GROUPS_TABLE" title="GROUPS_TABLE() :: "><span class="description">GROUPS_TABLE</span><pre>GROUPS_TABLE</pre></a></li>
+<li class="constant  "><a href="#constant_INTERNAL" title="INTERNAL() :: Internal type, used for startdate, submitdate, datestamp fields"><span class="description">Internal type, used for startdate, submitdate, datestamp fields</span><pre>INTERNAL</pre></a></li>
+<li class="constant  "><a href="#constant_QUESTIONS_TABLE" title="QUESTIONS_TABLE() :: "><span class="description">QUESTIONS_TABLE</span><pre>QUESTIONS_TABLE</pre></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a xmlns:php="http://php.net/xsl" id="\Gems_Tracker_Source_LimeSurvey1m9FieldMap"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+<li>
+<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Gems_Tracker_Source_LimeSurvey1m9FieldMap.html">Gems_Tracker_Source_LimeSurvey1m9FieldMap</a>
+</li>
+</ul>
+<div xmlns:php="http://php.net/xsl" class="element class">
+<p class="short_description">A fieldmap object adds LS source code knowledge and interpretation to the database data
+about a survey. This enables the code to work with the survey object.</p>
+<div class="details">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Gems.Tracker.html">Gems</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Tracker</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2011 Erasmus MC</td>
+</tr>
+<tr>
+<th>license</th>
+<td><a href="http://opensource.org/licenses/BSD-3-Clause">New BSD License</a></td>
+</tr>
+<tr>
+<th>since</th>
+<td>Class available since version 1.4</td>
+</tr>
+</table>
+<h3>
+<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
+<a id="method___construct"></a><div class="element clickable method public method___construct " data-toggle="collapse" data-target=".method___construct .collapse" title="public">
+<h2>Construct a fieldmap object to add LS source code knowledge and interpretation to the database data about a survey.</h2>
+<pre>__construct(integer $sourceSurveyId, string $language, \Zend_Db_Adapter_Abstract $lsDb, \Zend_Translate $translate, \type $tablePrefix) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>integer</code><p>Survey ID</p></div>
+<div class="subelement argument">
+<h4>$language</h4>
+<code>string</code><p>(ISO) Language</p></div>
+<div class="subelement argument">
+<h4>$lsDb</h4>
+<code>\Zend_Db_Adapter_Abstract</code><p>The Lime Survey database connection</p></div>
+<div class="subelement argument">
+<h4>$translate</h4>
+<code>\Zend_Translate</code><p>A translate object</p></div>
+<div class="subelement argument">
+<h4>$tablePrefix</h4>
+<code>\type</code><p>The prefix to use for all LS tables (in this installation)</p></div>
+</div></div>
+</div>
+<a id="method_applyToModel"></a><div class="element clickable method public method_applyToModel " data-toggle="collapse" data-target=".method_applyToModel .collapse" title="public">
+<h2>Applies the fieldmap data to the model</h2>
+<pre>applyToModel(\MUtil_Model_ModelAbstract $model) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$model</h4>
+<code>\MUtil_Model_ModelAbstract</code>
+</div>
+</div></div>
+</div>
+<a id="method_getFullQuestionList"></a><div class="element clickable method public method_getFullQuestionList " data-toggle="collapse" data-target=".method_getFullQuestionList .collapse" title="public">
+<h2>Returns an array containing fieldname =&gt; label for dropdown list etc.</h2>
+<pre>getFullQuestionList(string $forType<code> = false</code>) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$forType</h4>
+<code>string</code><p>Optional type filter</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>fieldname => label</div>
+</div></div>
+</div>
+<a id="method_getQuestionInformation"></a><div class="element clickable method public method_getQuestionInformation " data-toggle="collapse" data-target=".method_getQuestionInformation .collapse" title="public">
+<h2>Returns an array of array with the structure:
+     question =&gt; string,
+     class    =&gt; question|question_sub
+     group    =&gt; is for grouping
+     type     =&gt; (optional) source specific type
+     answers  =&gt; string for single types,
+                 array for selection of,
+                 nothing for no answer</h2>
+<pre>getQuestionInformation() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Nested array</div>
+</div></div>
+</div>
+<a id="method_getQuestionList"></a><div class="element clickable method public method_getQuestionList " data-toggle="collapse" data-target=".method_getQuestionList .collapse" title="public">
+<h2>Returns an array containing fieldname =&gt; label for dropdown list etc.</h2>
+<pre>getQuestionList(string $forType<code> = false</code>) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$forType</h4>
+<code>string</code><p>Optional type filter</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>fieldname => label</div>
+</div></div>
+</div>
+<a id="method_mapKeysToTitles"></a><div class="element clickable method public method_mapKeysToTitles " data-toggle="collapse" data-target=".method_mapKeysToTitles .collapse" title="public">
+<h2>Changes the keys of the values array to the more readable titles
+also available in LimeSurvey</h2>
+<pre>mapKeysToTitles(array $values) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$values</h4>
+<code>array</code>
+</div>
+</div></div>
+</div>
+<a id="method_mapTitlesToKeys"></a><div class="element clickable method public method_mapTitlesToKeys " data-toggle="collapse" data-target=".method_mapTitlesToKeys .collapse" title="public">
+<h2>Changes the keys of the values array to the more readable titles
+also available in LimeSurvey</h2>
+<pre>mapTitlesToKeys(array $values) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$values</h4>
+<code>array</code>
+</div>
+</div></div>
+</div>
+<a id="method_removeMarkup"></a><div class="element clickable method public method_removeMarkup " data-toggle="collapse" data-target=".method_removeMarkup .collapse" title="public">
+<h2>Removes all markup from input</h2>
+<pre>removeMarkup(string $text) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$text</h4>
+<code>string</code><p>Input possibly containing html</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method__getAnswersTableName"></a><div class="element clickable method protected method__getAnswersTableName " data-toggle="collapse" data-target=".method__getAnswersTableName .collapse" title="protected">
+<h2>The answers table contains code =&gt; answer sets per question/language/scale_id</h2>
+<pre>_getAnswersTableName() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>name of the answers table</div>
+</div></div>
+</div>
+<a id="method__getGroupsTableName"></a><div class="element clickable method protected method__getGroupsTableName " data-toggle="collapse" data-target=".method__getGroupsTableName .collapse" title="protected">
+<h2>The groups table contains group texts per group id / language</h2>
+<pre>_getGroupsTableName() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>name of the groups table</div>
+</div></div>
+</div>
+<a id="method__getMap"></a><div class="element clickable method protected method__getMap " data-toggle="collapse" data-target=".method__getMap .collapse" title="protected">
+<h2>_getMap()
+        </h2>
+<pre>_getMap() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method__getMultiOptions"></a><div class="element clickable method protected method__getMultiOptions " data-toggle="collapse" data-target=".method__getMultiOptions .collapse" title="protected">
+<h2>Return an array with all possible answers for a given sid/field combination</h2>
+<pre>_getMultiOptions($field) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$field</h4><p>Field from getFieldMap function</p></div>
+</div></div>
+</div>
+<a id="method__getQuestionAttribute"></a><div class="element clickable method protected method__getQuestionAttribute " data-toggle="collapse" data-target=".method__getQuestionAttribute .collapse" title="protected">
+<h2>Return a certain question attribute or the default value if it does not exist.</h2>
+<pre>_getQuestionAttribute(string $qid, string $subId, \mxied $default<code> = null</code>) : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$qid</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$subId</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$default</h4>
+<code>\mxied</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>mixed</code></div>
+</div></div>
+</div>
+<a id="method__getQuestionAttributesTableName"></a><div class="element clickable method protected method__getQuestionAttributesTableName " data-toggle="collapse" data-target=".method__getQuestionAttributesTableName .collapse" title="protected">
+<h2>The question attributes table contains all non-translateable settings for a question, e.g. 'page_break'</h2>
+<pre>_getQuestionAttributesTableName() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>name of the question attributes table</div>
+</div></div>
+</div>
+<a id="method__getQuestionsTableName"></a><div class="element clickable method protected method__getQuestionsTableName " data-toggle="collapse" data-target=".method__getQuestionsTableName .collapse" title="protected">
+<h2>The question table contains one row per language per question per survey in LS.</h2>
+<pre>_getQuestionsTableName() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>All non-text data is replicated over all the question/language rows.</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>name of the questions table</div>
+</div></div>
+</div>
+<a id="method__getSurveyTableName"></a><div class="element clickable method protected method__getSurveyTableName " data-toggle="collapse" data-target=".method__getSurveyTableName .collapse" title="protected">
+<h2>There exists a survey table for each active survey. The table contains the answers to the survey</h2>
+<pre>_getSurveyTableName() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>Name of survey table for this survey</div>
+</div></div>
+</div>
+<a id="method__getSurveysTableName"></a><div class="element clickable method protected method__getSurveysTableName " data-toggle="collapse" data-target=".method__getSurveysTableName .collapse" title="protected">
+<h2>The survey table contains one row per each survey in LS</h2>
+<pre>_getSurveysTableName() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>name of the surveys table</div>
+</div></div>
+</div>
+<a id="method__getType"></a><div class="element clickable method protected method__getType " data-toggle="collapse" data-target=".method__getType .collapse" title="protected">
+<h2>Returns</h2>
+<pre>_getType($field) : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$field</h4><p>Field from _getMap function</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>\MUtil_Model::TYPE_ constant</div>
+</div></div>
+</div>
+<a id="method_getDateFormats"></a><div class="element clickable method protected method_getDateFormats " data-toggle="collapse" data-target=".method_getDateFormats .collapse" title="protected">
+<h2>getDateFormats()
+        </h2>
+<pre>getDateFormats($fieldname, $type) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$fieldname</h4></div>
+<div class="subelement argument"><h4>$type</h4></div>
+</div></div>
+</div>
+<a id="method_getFieldTableDataType"></a><div class="element clickable method protected method_getFieldTableDataType " data-toggle="collapse" data-target=".method_getFieldTableDataType .collapse" title="protected">
+<h2>getFieldTableDataType()
+        </h2>
+<pre>getFieldTableDataType($fieldname) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$fieldname</h4></div>
+</div></div>
+</div>
+<a id="method_loadTableMetaData"></a><div class="element clickable method protected method_loadTableMetaData " data-toggle="collapse" data-target=".method_loadTableMetaData .collapse" title="protected">
+<h2>loadTableMetaData()
+        </h2>
+<pre>loadTableMetaData() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method__getFixedAnswers"></a><div class="element clickable method private method__getFixedAnswers " data-toggle="collapse" data-target=".method__getFixedAnswers .collapse" title="private">
+<h2>_getFixedAnswers()
+        </h2>
+<pre>_getFixedAnswers($type) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$type</h4></div>
+</div></div>
+</div>
+<a id="method__getHardAnswers"></a><div class="element clickable method private method__getHardAnswers " data-toggle="collapse" data-target=".method__getHardAnswers .collapse" title="private">
+<h2>Returns the answers for a matrix or list type question from the answers table</h2>
+<pre>_getHardAnswers(integer $qid, integer $scale_id) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Uses 1 query to retrieve all answers and serves them as needed</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$qid</h4>
+<code>integer</code><p>Question ID</p></div>
+<div class="subelement argument">
+<h4>$scale_id</h4>
+<code>integer</code><p>Scale ID</p></div>
+</div></div>
+</div>
+<a id="method__getPossibleAnswers"></a><div class="element clickable method private method__getPossibleAnswers " data-toggle="collapse" data-target=".method__getPossibleAnswers .collapse" title="private">
+<h2>Return an array with all possible answers for a given sid/field combination</h2>
+<pre>_getPossibleAnswers($field) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$field</h4><p>Field from getFieldMap function</p></div>
+</div></div>
+</div>
+<a id="method__getTitlesMap"></a><div class="element clickable method private method__getTitlesMap " data-toggle="collapse" data-target=".method__getTitlesMap .collapse" title="private">
+<h2>Returns a map of databasecode =&gt; questioncode</h2>
+<pre>_getTitlesMap() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<h3>
+<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
+<a id="property__answers"> </a><div class="element clickable property protected property__answers" data-toggle="collapse" data-target=".property__answers .collapse" title="protected">
+<h2>$_answers</h2>
+<pre>$_answers </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__attributes"> </a><div class="element clickable property protected property__attributes" data-toggle="collapse" data-target=".property__attributes .collapse" title="protected">
+<h2>$_attributes</h2>
+<pre>$_attributes </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__fieldMap"> </a><div class="element clickable property protected property__fieldMap" data-toggle="collapse" data-target=".property__fieldMap .collapse" title="protected">
+<h2>$_fieldMap</h2>
+<pre>$_fieldMap </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__hardAnswers"> </a><div class="element clickable property protected property__hardAnswers" data-toggle="collapse" data-target=".property__hardAnswers .collapse" title="protected">
+<h2>$_hardAnswers</h2>
+<pre>$_hardAnswers </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__titlesMap"> </a><div class="element clickable property protected property__titlesMap" data-toggle="collapse" data-target=".property__titlesMap .collapse" title="protected">
+<h2>$_titlesMap</h2>
+<pre>$_titlesMap </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_cache"> </a><div class="element clickable property protected property_cache" data-toggle="collapse" data-target=".property_cache .collapse" title="protected">
+<h2>$cache</h2>
+<pre>$cache : \Zend_Cache_Core</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_language"> </a><div class="element clickable property protected property_language" data-toggle="collapse" data-target=".property_language .collapse" title="protected">
+<h2>The language of this fieldmap</h2>
+<pre>$language : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_ldDb"> </a><div class="element clickable property protected property_ldDb" data-toggle="collapse" data-target=".property_ldDb .collapse" title="protected">
+<h2>Limesurvey database adapter</h2>
+<pre>$ldDb : \Zend_Db_Adapter_Abstract</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_sourceSurveyId"> </a><div class="element clickable property protected property_sourceSurveyId" data-toggle="collapse" data-target=".property_sourceSurveyId .collapse" title="protected">
+<h2>The Lime Survey survey Id</h2>
+<pre>$sourceSurveyId : integer</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_tableMetaData"> </a><div class="element clickable property protected property_tableMetaData" data-toggle="collapse" data-target=".property_tableMetaData .collapse" title="protected">
+<h2>$tableMetaData</h2>
+<pre>$tableMetaData </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_tablePrefix"> </a><div class="element clickable property protected property_tablePrefix" data-toggle="collapse" data-target=".property_tablePrefix .collapse" title="protected">
+<h2>Prefix to add to standard table name</h2>
+<pre>$tablePrefix : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_translate"> </a><div class="element clickable property protected property_translate" data-toggle="collapse" data-target=".property_translate .collapse" title="protected">
+<h2>$translate</h2>
+<pre>$translate : \Zend_Translate</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<h3>
+<i title="Constants" class="icon-custom icon-constant"></i> Constants</h3>
+<a id="constant_ANSWERS_TABLE"> </a><div class="element clickable constant  constant_ANSWERS_TABLE" data-toggle="collapse" data-target=".constant_ANSWERS_TABLE .collapse" title="">
+<h2>ANSWERS_TABLE</h2>
+<pre>ANSWERS_TABLE = 'answers' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_ATTRIBUTES_TABLE"> </a><div class="element clickable constant  constant_ATTRIBUTES_TABLE" data-toggle="collapse" data-target=".constant_ATTRIBUTES_TABLE .collapse" title="">
+<h2>ATTRIBUTES_TABLE</h2>
+<pre>ATTRIBUTES_TABLE = 'question_attributes' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_GROUPS_TABLE"> </a><div class="element clickable constant  constant_GROUPS_TABLE" data-toggle="collapse" data-target=".constant_GROUPS_TABLE .collapse" title="">
+<h2>GROUPS_TABLE</h2>
+<pre>GROUPS_TABLE = 'groups' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_INTERNAL"> </a><div class="element clickable constant  constant_INTERNAL" data-toggle="collapse" data-target=".constant_INTERNAL .collapse" title="">
+<h2>Internal type, used for startdate, submitdate, datestamp fields</h2>
+<pre>INTERNAL = 'stamp' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_QUESTIONS_TABLE"> </a><div class="element clickable constant  constant_QUESTIONS_TABLE" data-toggle="collapse" data-target=".constant_QUESTIONS_TABLE .collapse" title="">
+<h2>QUESTIONS_TABLE</h2>
+<pre>QUESTIONS_TABLE = 'questions' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:49+02:00.<br></footer></div>
+</div>
+</body>
+</html>

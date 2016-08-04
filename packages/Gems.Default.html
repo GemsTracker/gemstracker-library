@@ -1,0 +1,597 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » Gems\Default</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+<ul class="side-nav nav nav-list">
+<li class="nav-header">
+<i class="icon-map-marker"></i> Packages</li>
+<li>
+<a href="../packages/Gems.Default.html" title="Default"><i class="icon-folder-open"></i>Default</a><ul class="nav nav-list nav-packages"></ul>
+</li>
+<li class="nav-header">
+<i title="Classes" class="icon-custom icon-class"></i> Classes</li>
+<li><a href="#Gems_Default_AgendaProcedureAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_AgendaProcedureAction</a></li>
+<li><a href="#Gems_Default_AgendaStaffAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_AgendaStaffAction</a></li>
+<li><a href="#Gems_Default_ProjectInformationAction" title="Action controller, initialises the html object">Gems_Default_ProjectInformationAction</a></li>
+<li><a href="#Gems_Default_UpgradeAction" title="This controller handles applying upgrades to the project">Gems_Default_UpgradeAction</a></li>
+<li><a href="#Gems_Default_TrackRoundsAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_TrackRoundsAction</a></li>
+<li><a href="#Gems_Default_TrackOverviewAction" title="Action for consent overview">Gems_Default_TrackOverviewAction</a></li>
+<li><a href="#Gems_Default_MailLogAction" title="Controller for looking at mail activity">Gems_Default_MailLogAction</a></li>
+<li><a href="#Gems_Default_TrackFieldsAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_TrackFieldsAction</a></li>
+<li><a href="#Gems_Default_RespondentChildActionAbstract" title="Class contains Gems specific adaptations to parent class.">Gems_Default_RespondentChildActionAbstract</a></li>
+<li><a href="#Gems_Default_TokenSearchActionAbstract" title="Class contains Gems specific adaptations to parent class.">Gems_Default_TokenSearchActionAbstract</a></li>
+<li><a href="#Gems_Default_TokenPlanAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_TokenPlanAction</a></li>
+<li><a href="#Gems_Default_LogMaintenanceAction" title="The maintenace screen for the action log">Gems_Default_LogMaintenanceAction</a></li>
+<li><a href="#Gems_Default_RespondentRelationAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_RespondentRelationAction</a></li>
+<li><a href="#Gems_Default_DatabaseAction" title="Standard controller for database creation and maintenance.">Gems_Default_DatabaseAction</a></li>
+<li><a href="#Gems_Default_RespondentLogAction" title="Show the action log">Gems_Default_RespondentLogAction</a></li>
+<li><a href="#Gems_Default_SurveyMaintenanceAction" title="Generic controller class for showing and editing respondents">Gems_Default_SurveyMaintenanceAction</a></li>
+<li><a href="#Gems_Default_OpenrosaAction" title="Handles call like an openRosa compliant server. Implements the api as described on
+https://bitbucket.org/javarosa/javarosa/wiki/OpenRosaAPI">Gems_Default_OpenrosaAction</a></li>
+<li><a href="#Gems_Default_ReceptionAction" title="Controller for maintaining reception codes.">Gems_Default_ReceptionAction</a></li>
+<li><a href="#Gems_Default_RespondentNewAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_RespondentNewAction</a></li>
+<li><a href="#Gems_Default_OverviewPlanAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_OverviewPlanAction</a></li>
+<li><a href="#Gems_Default_ProjectTracksAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_ProjectTracksAction</a></li>
+<li><a href="#Gems_Default_SourceAction" title="Controller for Source maintenance">Gems_Default_SourceAction</a></li>
+<li><a href="#Gems_Default_LogAction" title="Show the action log">Gems_Default_LogAction</a></li>
+<li><a href="#Gems_Default_OrganizationAction" title="Generic controller class for showing and editing organizations">Gems_Default_OrganizationAction</a></li>
+<li><a href="#Gems_Default_ConsentPlanAction" title="Action for consent overview">Gems_Default_ConsentPlanAction</a></li>
+<li><a href="#Gems_Default_ProjectSurveysAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_ProjectSurveysAction</a></li>
+<li><a href="#Gems_Default_AgendaActivityAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_AgendaActivityAction</a></li>
+<li><a href="#Gems_Default_MailServerAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_MailServerAction</a></li>
+<li><a href="#Gems_Default_OptionAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_OptionAction</a></li>
+<li><a href="#Gems_Default_GroupAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_GroupAction</a></li>
+<li><a href="#Gems_Default_CalendarAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_CalendarAction</a></li>
+<li><a href="#Gems_Default_TrackMaintenanceAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_TrackMaintenanceAction</a></li>
+<li><a href="#Gems_Default_ChartconfigAction" title="Configuration for barchart snippets">Gems_Default_ChartconfigAction</a></li>
+<li><a href="#Gems_Default_SummaryAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_SummaryAction</a></li>
+<li><a href="#Gems_Default_ConsentAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_ConsentAction</a></li>
+<li><a href="#Gems_Default_RespondentMailLogAction" title="Controller for looking at mail activity">Gems_Default_RespondentMailLogAction</a></li>
+<li><a href="#Gems_Default_TemplateAction" title="Generic controller class for showing and editing template variables">Gems_Default_TemplateAction</a></li>
+<li><a href="#Gems_Default_StaffAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_StaffAction</a></li>
+<li><a href="#Gems_Default_CronAction" title="Performs bulk-mail action, can be called from a cronjob">Gems_Default_CronAction</a></li>
+<li><a href="#Gems_Default_CommJobAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_CommJobAction</a></li>
+<li><a href="#Gems_Default_RespondentPlanAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_RespondentPlanAction</a></li>
+<li><a href="#Gems_Default_ImportedFilesAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_ImportedFilesAction</a></li>
+<li><a href="#Gems_Default_FieldReportAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_FieldReportAction</a></li>
+<li><a href="#Gems_Default_TokenAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_TokenAction</a></li>
+<li><a href="#Gems_Default_AskAction" title="Action controller, initialises the html object">Gems_Default_AskAction</a></li>
+<li><a href="#Gems_Default_IndexAction" title="Index controller, this one handles the default login / logout actions">Gems_Default_IndexAction</a></li>
+<li><a href="#Gems_Default_LocationAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_LocationAction</a></li>
+<li><a href="#Gems_Default_AgendaFilterAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_AgendaFilterAction</a></li>
+<li><a href="#Gems_Default_ImportedFailuresAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_ImportedFailuresAction</a></li>
+<li><a href="#Gems_Default_RespondentExportAction" title="Standard controller to export respondent data to html">Gems_Default_RespondentExportAction</a></li>
+<li><a href="#Gems_Default_TrackAction" title="Controller for editing respondent tracks, including their tokens">Gems_Default_TrackAction</a></li>
+<li><a href="#Gems_Default_FileImportAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_FileImportAction</a></li>
+<li><a href="#Gems_Default_CommTemplateAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_CommTemplateAction</a></li>
+<li><a href="#Gems_Default_AppointmentAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_AppointmentAction</a></li>
+<li><a href="#Gems_Default_RoleAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_RoleAction</a></li>
+<li><a href="#Gems_Default_StaffLogAction" title="Show the action log">Gems_Default_StaffLogAction</a></li>
+<li><a href="#Gems_Default_ComplianceAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_ComplianceAction</a></li>
+<li><a href="#Gems_Default_RespondentAction" title="Generic controller class for showing and editing respondents">Gems_Default_RespondentAction</a></li>
+<li><a href="#Gems_Default_LogFileAction" title="Class contains Gems specific adaptations to parent class.">Gems_Default_LogFileAction</a></li>
+<li><a href="#Gems_Default_ContactAction" title="Action controller, initialises the html object">Gems_Default_ContactAction</a></li>
+<li><a href="#Gems_Default_LanguageAction" title="Allows the user to switch interface language.">Gems_Default_LanguageAction</a></li>
+<li><a href="#Gems_Default_FileActionAbstract" title="Class contains Gems specific adaptations to parent class.">Gems_Default_FileActionAbstract</a></li>
+<li><a href="#Gems_Default_ErrorAction" title="">Gems_Default_ErrorAction</a></li>
+</ul>
+</div>
+<div class="span8 package-contents">
+<ul class="breadcrumb"><li>
+<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li><a href="../packages/Gems.html">Gems</a></li>
+<li class="active">
+<span class="divider">\</span><a href="../packages/Gems.Default.html">Default</a>
+</li>
+</li></ul>
+<div class="package-indent">
+<h3>
+<i title="Classes" class="icon-custom icon-class"></i> Classes, interfaces, and traits</h3>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_AgendaActivityAction" class="element ajax clickable class">
+<h1>Gems_Default_AgendaActivityAction<a href="../classes/Gems_Default_AgendaActivityAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_AgendaActivityAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_AgendaFilterAction" class="element ajax clickable class">
+<h1>Gems_Default_AgendaFilterAction<a href="../classes/Gems_Default_AgendaFilterAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_AgendaFilterAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_AgendaProcedureAction" class="element ajax clickable class">
+<h1>Gems_Default_AgendaProcedureAction<a href="../classes/Gems_Default_AgendaProcedureAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_AgendaProcedureAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_AgendaStaffAction" class="element ajax clickable class">
+<h1>Gems_Default_AgendaStaffAction<a href="../classes/Gems_Default_AgendaStaffAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_AgendaStaffAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_AppointmentAction" class="element ajax clickable class">
+<h1>Gems_Default_AppointmentAction<a href="../classes/Gems_Default_AppointmentAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_AppointmentAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_AskAction" class="element ajax clickable class">
+<h1>Gems_Default_AskAction<a href="../classes/Gems_Default_AskAction.html">¶</a>
+</h1>
+<p class="short_description">Action controller, initialises the html object</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_AskAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_CalendarAction" class="element ajax clickable class">
+<h1>Gems_Default_CalendarAction<a href="../classes/Gems_Default_CalendarAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_CalendarAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_ChartconfigAction" class="element ajax clickable class">
+<h1>Gems_Default_ChartconfigAction<a href="../classes/Gems_Default_ChartconfigAction.html">¶</a>
+</h1>
+<p class="short_description">Configuration for barchart snippets</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_ChartconfigAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_CommJobAction" class="element ajax clickable class">
+<h1>Gems_Default_CommJobAction<a href="../classes/Gems_Default_CommJobAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_CommJobAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_CommTemplateAction" class="element ajax clickable class">
+<h1>Gems_Default_CommTemplateAction<a href="../classes/Gems_Default_CommTemplateAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_CommTemplateAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_ComplianceAction" class="element ajax clickable class">
+<h1>Gems_Default_ComplianceAction<a href="../classes/Gems_Default_ComplianceAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_ComplianceAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_ConsentAction" class="element ajax clickable class">
+<h1>Gems_Default_ConsentAction<a href="../classes/Gems_Default_ConsentAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_ConsentAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_ConsentPlanAction" class="element ajax clickable class">
+<h1>Gems_Default_ConsentPlanAction<a href="../classes/Gems_Default_ConsentPlanAction.html">¶</a>
+</h1>
+<p class="short_description">Action for consent overview</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_ConsentPlanAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_ContactAction" class="element ajax clickable class">
+<h1>Gems_Default_ContactAction<a href="../classes/Gems_Default_ContactAction.html">¶</a>
+</h1>
+<p class="short_description">Action controller, initialises the html object</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_ContactAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_CronAction" class="element ajax clickable class">
+<h1>Gems_Default_CronAction<a href="../classes/Gems_Default_CronAction.html">¶</a>
+</h1>
+<p class="short_description">Performs bulk-mail action, can be called from a cronjob</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_CronAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_DatabaseAction" class="element ajax clickable class">
+<h1>Gems_Default_DatabaseAction<a href="../classes/Gems_Default_DatabaseAction.html">¶</a>
+</h1>
+<p class="short_description">Standard controller for database creation and maintenance.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_DatabaseAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_ErrorAction" class="element ajax clickable class">
+<h1>Gems_Default_ErrorAction<a href="../classes/Gems_Default_ErrorAction.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_ErrorAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_FieldReportAction" class="element ajax clickable class">
+<h1>Gems_Default_FieldReportAction<a href="../classes/Gems_Default_FieldReportAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_FieldReportAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_FileActionAbstract" class="element ajax clickable class">
+<h1>Gems_Default_FileActionAbstract<a href="../classes/Gems_Default_FileActionAbstract.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_FileActionAbstract.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_FileImportAction" class="element ajax clickable class">
+<h1>Gems_Default_FileImportAction<a href="../classes/Gems_Default_FileImportAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_FileImportAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_GroupAction" class="element ajax clickable class">
+<h1>Gems_Default_GroupAction<a href="../classes/Gems_Default_GroupAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_GroupAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_ImportedFailuresAction" class="element ajax clickable class">
+<h1>Gems_Default_ImportedFailuresAction<a href="../classes/Gems_Default_ImportedFailuresAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_ImportedFailuresAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_ImportedFilesAction" class="element ajax clickable class">
+<h1>Gems_Default_ImportedFilesAction<a href="../classes/Gems_Default_ImportedFilesAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_ImportedFilesAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_IndexAction" class="element ajax clickable class">
+<h1>Gems_Default_IndexAction<a href="../classes/Gems_Default_IndexAction.html">¶</a>
+</h1>
+<p class="short_description">Index controller, this one handles the default login / logout actions</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_IndexAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_LanguageAction" class="element ajax clickable class">
+<h1>Gems_Default_LanguageAction<a href="../classes/Gems_Default_LanguageAction.html">¶</a>
+</h1>
+<p class="short_description">Allows the user to switch interface language.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_LanguageAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_LocationAction" class="element ajax clickable class">
+<h1>Gems_Default_LocationAction<a href="../classes/Gems_Default_LocationAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_LocationAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_LogAction" class="element ajax clickable class">
+<h1>Gems_Default_LogAction<a href="../classes/Gems_Default_LogAction.html">¶</a>
+</h1>
+<p class="short_description">Show the action log</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_LogAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_LogFileAction" class="element ajax clickable class">
+<h1>Gems_Default_LogFileAction<a href="../classes/Gems_Default_LogFileAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_LogFileAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_LogMaintenanceAction" class="element ajax clickable class">
+<h1>Gems_Default_LogMaintenanceAction<a href="../classes/Gems_Default_LogMaintenanceAction.html">¶</a>
+</h1>
+<p class="short_description">The maintenace screen for the action log</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_LogMaintenanceAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_MailLogAction" class="element ajax clickable class">
+<h1>Gems_Default_MailLogAction<a href="../classes/Gems_Default_MailLogAction.html">¶</a>
+</h1>
+<p class="short_description">Controller for looking at mail activity</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_MailLogAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_MailServerAction" class="element ajax clickable class">
+<h1>Gems_Default_MailServerAction<a href="../classes/Gems_Default_MailServerAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_MailServerAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_OpenrosaAction" class="element ajax clickable class">
+<h1>Gems_Default_OpenrosaAction<a href="../classes/Gems_Default_OpenrosaAction.html">¶</a>
+</h1>
+<p class="short_description">Handles call like an openRosa compliant server. Implements the api as described on
+https://bitbucket.org/javarosa/javarosa/wiki/OpenRosaAPI</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_OpenrosaAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_OptionAction" class="element ajax clickable class">
+<h1>Gems_Default_OptionAction<a href="../classes/Gems_Default_OptionAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_OptionAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_OrganizationAction" class="element ajax clickable class">
+<h1>Gems_Default_OrganizationAction<a href="../classes/Gems_Default_OrganizationAction.html">¶</a>
+</h1>
+<p class="short_description">Generic controller class for showing and editing organizations</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_OrganizationAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_OverviewPlanAction" class="element ajax clickable class">
+<h1>Gems_Default_OverviewPlanAction<a href="../classes/Gems_Default_OverviewPlanAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_OverviewPlanAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_ProjectInformationAction" class="element ajax clickable class">
+<h1>Gems_Default_ProjectInformationAction<a href="../classes/Gems_Default_ProjectInformationAction.html">¶</a>
+</h1>
+<p class="short_description">Action controller, initialises the html object</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_ProjectInformationAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_ProjectSurveysAction" class="element ajax clickable class">
+<h1>Gems_Default_ProjectSurveysAction<a href="../classes/Gems_Default_ProjectSurveysAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_ProjectSurveysAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_ProjectTracksAction" class="element ajax clickable class">
+<h1>Gems_Default_ProjectTracksAction<a href="../classes/Gems_Default_ProjectTracksAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_ProjectTracksAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_ReceptionAction" class="element ajax clickable class">
+<h1>Gems_Default_ReceptionAction<a href="../classes/Gems_Default_ReceptionAction.html">¶</a>
+</h1>
+<p class="short_description">Controller for maintaining reception codes.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_ReceptionAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_RespondentAction" class="element ajax clickable class">
+<h1>Gems_Default_RespondentAction<a href="../classes/Gems_Default_RespondentAction.html">¶</a>
+</h1>
+<p class="short_description">Generic controller class for showing and editing respondents</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_RespondentAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_RespondentChildActionAbstract" class="element ajax clickable class">
+<h1>Gems_Default_RespondentChildActionAbstract<a href="../classes/Gems_Default_RespondentChildActionAbstract.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_RespondentChildActionAbstract.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_RespondentExportAction" class="element ajax clickable class">
+<h1>Gems_Default_RespondentExportAction<a href="../classes/Gems_Default_RespondentExportAction.html">¶</a>
+</h1>
+<p class="short_description">Standard controller to export respondent data to html</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_RespondentExportAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_RespondentLogAction" class="element ajax clickable class">
+<h1>Gems_Default_RespondentLogAction<a href="../classes/Gems_Default_RespondentLogAction.html">¶</a>
+</h1>
+<p class="short_description">Show the action log</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_RespondentLogAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_RespondentMailLogAction" class="element ajax clickable class">
+<h1>Gems_Default_RespondentMailLogAction<a href="../classes/Gems_Default_RespondentMailLogAction.html">¶</a>
+</h1>
+<p class="short_description">Controller for looking at mail activity</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_RespondentMailLogAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_RespondentNewAction" class="element ajax clickable class">
+<h1>Gems_Default_RespondentNewAction<a href="../classes/Gems_Default_RespondentNewAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_RespondentNewAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_RespondentPlanAction" class="element ajax clickable class">
+<h1>Gems_Default_RespondentPlanAction<a href="../classes/Gems_Default_RespondentPlanAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_RespondentPlanAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_RespondentRelationAction" class="element ajax clickable class">
+<h1>Gems_Default_RespondentRelationAction<a href="../classes/Gems_Default_RespondentRelationAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_RespondentRelationAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_RoleAction" class="element ajax clickable class">
+<h1>Gems_Default_RoleAction<a href="../classes/Gems_Default_RoleAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_RoleAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_SourceAction" class="element ajax clickable class">
+<h1>Gems_Default_SourceAction<a href="../classes/Gems_Default_SourceAction.html">¶</a>
+</h1>
+<p class="short_description">Controller for Source maintenance</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_SourceAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_StaffAction" class="element ajax clickable class">
+<h1>Gems_Default_StaffAction<a href="../classes/Gems_Default_StaffAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_StaffAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_StaffLogAction" class="element ajax clickable class">
+<h1>Gems_Default_StaffLogAction<a href="../classes/Gems_Default_StaffLogAction.html">¶</a>
+</h1>
+<p class="short_description">Show the action log</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_StaffLogAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_SummaryAction" class="element ajax clickable class">
+<h1>Gems_Default_SummaryAction<a href="../classes/Gems_Default_SummaryAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_SummaryAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_SurveyMaintenanceAction" class="element ajax clickable class">
+<h1>Gems_Default_SurveyMaintenanceAction<a href="../classes/Gems_Default_SurveyMaintenanceAction.html">¶</a>
+</h1>
+<p class="short_description">Generic controller class for showing and editing respondents</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_SurveyMaintenanceAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_TemplateAction" class="element ajax clickable class">
+<h1>Gems_Default_TemplateAction<a href="../classes/Gems_Default_TemplateAction.html">¶</a>
+</h1>
+<p class="short_description">Generic controller class for showing and editing template variables</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_TemplateAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_TokenAction" class="element ajax clickable class">
+<h1>Gems_Default_TokenAction<a href="../classes/Gems_Default_TokenAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_TokenAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_TokenPlanAction" class="element ajax clickable class">
+<h1>Gems_Default_TokenPlanAction<a href="../classes/Gems_Default_TokenPlanAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_TokenPlanAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_TokenSearchActionAbstract" class="element ajax clickable class">
+<h1>Gems_Default_TokenSearchActionAbstract<a href="../classes/Gems_Default_TokenSearchActionAbstract.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_TokenSearchActionAbstract.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_TrackAction" class="element ajax clickable class">
+<h1>Gems_Default_TrackAction<a href="../classes/Gems_Default_TrackAction.html">¶</a>
+</h1>
+<p class="short_description">Controller for editing respondent tracks, including their tokens</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_TrackAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_TrackFieldsAction" class="element ajax clickable class">
+<h1>Gems_Default_TrackFieldsAction<a href="../classes/Gems_Default_TrackFieldsAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_TrackFieldsAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_TrackMaintenanceAction" class="element ajax clickable class">
+<h1>Gems_Default_TrackMaintenanceAction<a href="../classes/Gems_Default_TrackMaintenanceAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_TrackMaintenanceAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_TrackOverviewAction" class="element ajax clickable class">
+<h1>Gems_Default_TrackOverviewAction<a href="../classes/Gems_Default_TrackOverviewAction.html">¶</a>
+</h1>
+<p class="short_description">Action for consent overview</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_TrackOverviewAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_TrackRoundsAction" class="element ajax clickable class">
+<h1>Gems_Default_TrackRoundsAction<a href="../classes/Gems_Default_TrackRoundsAction.html">¶</a>
+</h1>
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_TrackRoundsAction.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Default_UpgradeAction" class="element ajax clickable class">
+<h1>Gems_Default_UpgradeAction<a href="../classes/Gems_Default_UpgradeAction.html">¶</a>
+</h1>
+<p class="short_description">This controller handles applying upgrades to the project</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Default_UpgradeAction.html" class="more">« More »</a>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:09+02:00.<br></footer></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,1465 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » \Gems_Tracker</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+<div class="btn-group visibility" data-toggle="buttons-checkbox">
+<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
+</div>
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+</div>
+<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+<li class="nav-header">
+<i title="Methods" class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public "><a href="#method___construct" title="__construct() :: "><span class="description">__construct()
+        </span><pre>__construct()</pre></a></li>
+<li class="method public inherited"><a href="#method___construct" title="__construct() :: "><span class="description">__construct()
+        </span><pre>__construct()</pre></a></li>
+<li class="method public inherited"><a href="#method___get" title="__get() :: "><span class="description">__get()
+        </span><pre>__get()</pre></a></li>
+<li class="method public inherited"><a href="#method_addPrefixPath" title="addPrefixPath() :: Add prefixed paths to the registry of paths"><span class="description">Add prefixed paths to the registry of paths</span><pre>addPrefixPath()</pre></a></li>
+<li class="method public "><a href="#method_addSourceClasses" title="addSourceClasses() :: Add one or more survey sourceclasses"><span class="description">Add one or more survey sourceclasses</span><pre>addSourceClasses()</pre></a></li>
+<li class="method public inherited"><a href="#method_afterRegistry" title="afterRegistry() :: Called after the check that all required registry values
+have been set correctly has run."><span class="description">Called after the check that all required registry values
+have been set correctly has run.</span><pre>afterRegistry()</pre></a></li>
+<li class="method public inherited"><a href="#method_answerRegistryRequest" title="answerRegistryRequest() :: Allows the loader to set resources."><span class="description">Allows the loader to set resources.</span><pre>answerRegistryRequest()</pre></a></li>
+<li class="method public inherited"><a href="#method_checkRegistryRequestsAnswers" title="checkRegistryRequestsAnswers() :: Should be called after answering the request to allow the Target
+to check if all required registry values have been set correctly."><span class="description">Should be called after answering the request to allow the Target
+to check if all required registry values have been set correctly.</span><pre>checkRegistryRequestsAnswers()</pre></a></li>
+<li class="method public "><a href="#method_checkTrackRounds" title="checkTrackRounds() :: Checks tracks for changes to the track and round definitions
+and corrects them."><span class="description">Checks tracks for changes to the track and round definitions
+and corrects them.</span><pre>checkTrackRounds()</pre></a></li>
+<li class="method public "><a href="#method_createRespondentTrack" title="createRespondentTrack() :: Create a new track for a patient"><span class="description">Create a new track for a patient</span><pre>createRespondentTrack()</pre></a></li>
+<li class="method public "><a href="#method_createToken" title="createToken() :: Creates a new token with a new random token Id"><span class="description">Creates a new token with a new random token Id</span><pre>createToken()</pre></a></li>
+<li class="method public "><a href="#method_createTrackClass" title="createTrackClass() :: Dynamically load and create a [Gems|Project]_Tracker class"><span class="description">Dynamically load and create a [Gems|Project]_Tracker class</span><pre>createTrackClass()</pre></a></li>
+<li class="method public "><a href="#method_filterChangesOnly" title="filterChangesOnly() :: Utility function for detecting unchanged values."><span class="description">Utility function for detecting unchanged values.</span><pre>filterChangesOnly()</pre></a></li>
+<li class="method public "><a href="#method_filterToken" title="filterToken() :: Removes all unacceptable characters from the input token and inserts any fixed characters left out"><span class="description">Removes all unacceptable characters from the input token and inserts any fixed characters left out</span><pre>filterToken()</pre></a></li>
+<li class="method public "><a href="#method_getAllCodeFields" title="getAllCodeFields() :: Returns an array of all field id's for all tracks that have a code id"><span class="description">Returns an array of all field id's for all tracks that have a code id</span><pre>getAllCodeFields()</pre></a></li>
+<li class="method public "><a href="#method_getAppointment" title="getAppointment() :: Get an appointment object"><span class="description">Get an appointment object</span><pre>getAppointment()</pre></a></li>
+<li class="method public "><a href="#method_getAskTokenForm" title="getAskTokenForm() :: Returns a form to ask for a token"><span class="description">Returns a form to ask for a token</span><pre>getAskTokenForm()</pre></a></li>
+<li class="method public inherited"><a href="#method_getRegistryRequests" title="getRegistryRequests() :: Allows the loader to know the resources to set."><span class="description">Allows the loader to know the resources to set.</span><pre>getRegistryRequests()</pre></a></li>
+<li class="method public "><a href="#method_getRespondentTrack" title="getRespondentTrack() :: "><span class="description">getRespondentTrack()
+        </span><pre>getRespondentTrack()</pre></a></li>
+<li class="method public "><a href="#method_getRespondentTrackModel" title="getRespondentTrackModel() :: Load project specific model or general Gems model otherwise"><span class="description">Load project specific model or general Gems model otherwise</span><pre>getRespondentTrackModel()</pre></a></li>
+<li class="method public "><a href="#method_getRespondentTracks" title="getRespondentTracks() :: Get all tracks for a respondent"><span class="description">Get all tracks for a respondent</span><pre>getRespondentTracks()</pre></a></li>
+<li class="method public "><a href="#method_getSource" title="getSource() :: Retrieve a SourceInterface with a given id"><span class="description">Retrieve a SourceInterface with a given id</span><pre>getSource()</pre></a></li>
+<li class="method public "><a href="#method_getSourceClasses" title="getSourceClasses() :: Returns all registered source classes"><span class="description">Returns all registered source classes</span><pre>getSourceClasses()</pre></a></li>
+<li class="method public "><a href="#method_getSourceDatabaseClasses" title="getSourceDatabaseClasses() :: Returns all registered database source classes"><span class="description">Returns all registered database source classes</span><pre>getSourceDatabaseClasses()</pre></a></li>
+<li class="method public "><a href="#method_getSurvey" title="getSurvey() :: "><span class="description">getSurvey()
+        </span><pre>getSurvey()</pre></a></li>
+<li class="method public "><a href="#method_getSurveyBySourceId" title="getSurveyBySourceId() :: "><span class="description">getSurveyBySourceId()
+        </span><pre>getSurveyBySourceId()</pre></a></li>
+<li class="method public "><a href="#method_getSurveyModel" title="getSurveyModel() :: "><span class="description">getSurveyModel()
+        </span><pre>getSurveyModel()</pre></a></li>
+<li class="method public "><a href="#method_getToken" title="getToken() :: "><span class="description">getToken()
+        </span><pre>getToken()</pre></a></li>
+<li class="method public "><a href="#method_getTokenFilter" title="getTokenFilter() :: "><span class="description">getTokenFilter()
+        </span><pre>getTokenFilter()</pre></a></li>
+<li class="method public "><a href="#method_getTokenLibrary" title="getTokenLibrary() :: Use this function only within \Gems_Tracker!!"><span class="description">Use this function only within \Gems_Tracker!!</span><pre>getTokenLibrary()</pre></a></li>
+<li class="method public "><a href="#method_getTokenModel" title="getTokenModel() :: Returns a token model of the specified class with full display information"><span class="description">Returns a token model of the specified class with full display information</span><pre>getTokenModel()</pre></a></li>
+<li class="method public "><a href="#method_getTokenSelect" title="getTokenSelect() :: Create a select statement on the token table"><span class="description">Create a select statement on the token table</span><pre>getTokenSelect()</pre></a></li>
+<li class="method public "><a href="#method_getTokenValidator" title="getTokenValidator() :: "><span class="description">getTokenValidator()
+        </span><pre>getTokenValidator()</pre></a></li>
+<li class="method public "><a href="#method_getTrackDisplayGroups" title="getTrackDisplayGroups() :: Get the allowed display groups for tracks in this project."><span class="description">Get the allowed display groups for tracks in this project.</span><pre>getTrackDisplayGroups()</pre></a></li>
+<li class="method public "><a href="#method_getTrackEngine" title="getTrackEngine() :: "><span class="description">getTrackEngine()
+        </span><pre>getTrackEngine()</pre></a></li>
+<li class="method public "><a href="#method_getTrackEngineClasses" title="getTrackEngineClasses() :: Returns dummy objects for all registered track engines class names"><span class="description">Returns dummy objects for all registered track engines class names</span><pre>getTrackEngineClasses()</pre></a></li>
+<li class="method public "><a href="#method_getTrackEngineEditSnippets" title="getTrackEngineEditSnippets() :: Return the edit snippets for editing or creating a new track"><span class="description">Return the edit snippets for editing or creating a new track</span><pre>getTrackEngineEditSnippets()</pre></a></li>
+<li class="method public "><a href="#method_getTrackEngineList" title="getTrackEngineList() :: Returns all registered track engines classes for use in drop down lists."><span class="description">Returns all registered track engines classes for use in drop down lists.</span><pre>getTrackEngineList()</pre></a></li>
+<li class="method public "><a href="#method_getTrackModel" title="getTrackModel() :: Simple function for a default track model."><span class="description">Simple function for a default track model.</span><pre>getTrackModel()</pre></a></li>
+<li class="method public "><a href="#method_processCompletedTokens" title="processCompletedTokens() :: Checks the token table to see if there are any answered surveys to be processed"><span class="description">Checks the token table to see if there are any answered surveys to be processed</span><pre>processCompletedTokens()</pre></a></li>
+<li class="method public "><a href="#method_recalcTrackFields" title="recalcTrackFields() :: Recalculates the fields in tracks."><span class="description">Recalculates the fields in tracks.</span><pre>recalcTrackFields()</pre></a></li>
+<li class="method public "><a href="#method_recalculateTokens" title="recalculateTokens() :: Recalculates all token dates, timing and results
+and outputs text messages."><span class="description">Recalculates all token dates, timing and results
+and outputs text messages.</span><pre>recalculateTokens()</pre></a></li>
+<li class="method public "><a href="#method_refreshTokenAttributes" title="refreshTokenAttributes() :: Refreshes the tokens in the source"><span class="description">Refreshes the tokens in the source</span><pre>refreshTokenAttributes()</pre></a></li>
+<li class="method public "><a href="#method_removeToken" title="removeToken() :: Remove token from cache for saving memory"><span class="description">Remove token from cache for saving memory</span><pre>removeToken()</pre></a></li>
+<li class="method public "><a href="#method_synchronizeSources" title="synchronizeSources() :: Recalculates all token dates, timing and results
+and outputs text messages."><span class="description">Recalculates all token dates, timing and results
+and outputs text messages.</span><pre>synchronizeSources()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="method protected inherited"><a href="#method__cascadedDirs" title="_cascadedDirs() :: Add a subdirectory / sub name to a list of class load paths"><span class="description">Add a subdirectory / sub name to a list of class load paths</span><pre>_cascadedDirs()</pre></a></li>
+<li class="method protected inherited"><a href="#method__getClass" title="_getClass() :: Returns $this-&gt;$name, creating the item if it does not yet exist."><span class="description">Returns $this-&gt;$name, creating the item if it does not yet exist.</span><pre>_getClass()</pre></a></li>
+<li class="method protected inherited"><a href="#method__loadClass" title="_loadClass() :: Create or loads the class. When only loading, this function returns a StaticCall object that
+can be invoked lazely."><span class="description">Create or loads the class. When only loading, this function returns a StaticCall object that
+can be invoked lazely.</span><pre>_loadClass()</pre></a></li>
+<li class="method protected inherited"><a href="#method_filterRequestNames" title="filterRequestNames() :: Filters the names that should not be requested."><span class="description">Filters the names that should not be requested.</span><pre>filterRequestNames()</pre></a></li>
+<li class="method protected "><a href="#method_getTrackEngineClassNames" title="getTrackEngineClassNames() :: Returns all registered track engines class names"><span class="description">Returns all registered track engines class names</span><pre>getTrackEngineClassNames()</pre></a></li>
+<li class="method protected "><a href="#method_processTokensBatch" title="processTokensBatch() :: Checks the token table to see if there are any answered surveys to be processed"><span class="description">Checks the token table to see if there are any answered surveys to be processed</span><pre>processTokensBatch()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header private">» Private
+                    <ul><li class="method private "><a href="#method__checkUserId" title="_checkUserId() :: Replaces a null or empty userId with that of the current user"><span class="description">Replaces a null or empty userId with that of the current user</span><pre>_checkUserId()</pre></a></li></ul>
+</li>
+<li class="nav-header">
+<i title="Properties" class="icon-custom icon-property"></i> Properties
+                    <ul><li class="property public "><a href="#property_verbose" title="$verbose() :: Set to true to get detailed information on all tracker actions"><span class="description"></span><pre>$verbose</pre></a></li></ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="property protected "><a href="#property__dirs" title="$_dirs() :: The prefix/path location to look for classes."><span class="description"></span><pre>$_dirs</pre></a></li>
+<li class="property protected "><a href="#property__loader" title="$_loader() :: "><span class="description"></span><pre>$_loader</pre></a></li>
+<li class="property protected "><a href="#property__sourceClasses" title="$_sourceClasses() :: This variable holds all registered source classes, may be changed in derived classes"><span class="description"></span><pre>$_sourceClasses</pre></a></li>
+<li class="property protected "><a href="#property_cascade" title="$cascade() :: Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for."><span class="description"></span><pre>$cascade</pre></a></li>
+<li class="property protected "><a href="#property_cascade" title="$cascade() :: Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for."><span class="description"></span><pre>$cascade</pre></a></li>
+<li class="property protected "><a href="#property_currentUser" title="$currentUser() :: "><span class="description"></span><pre>$currentUser</pre></a></li>
+<li class="property protected "><a href="#property_db" title="$db() :: "><span class="description"></span><pre>$db</pre></a></li>
+<li class="property protected "><a href="#property_loader" title="$loader() :: "><span class="description"></span><pre>$loader</pre></a></li>
+<li class="property protected "><a href="#property_logger" title="$logger() :: "><span class="description"></span><pre>$logger</pre></a></li>
+<li class="property protected "><a href="#property_session" title="$session() :: "><span class="description"></span><pre>$session</pre></a></li>
+<li class="property protected "><a href="#property_translate" title="$translate() :: "><span class="description"></span><pre>$translate</pre></a></li>
+</ul>
+</li>
+<li class="nav-header private">» Private
+                    <ul>
+<li class="property private "><a href="#property__respTracks" title="$_respTracks() :: "><span class="description">of \Gems_Tracker_RespondentTrack</span><pre>$_respTracks</pre></a></li>
+<li class="property private "><a href="#property__sources" title="$_sources() :: "><span class="description">of \Gems_Tracker_SourceInterface</span><pre>$_sources</pre></a></li>
+<li class="property private "><a href="#property__surveys" title="$_surveys() :: "><span class="description">of \Gems_Survey</span><pre>$_surveys</pre></a></li>
+<li class="property private "><a href="#property__tokenLibrary" title="$_tokenLibrary() :: "><span class="description"></span><pre>$_tokenLibrary</pre></a></li>
+<li class="property private "><a href="#property__tokenModels" title="$_tokenModels() :: "><span class="description">of \Gems_Tracker_Model_StandardTokenModel</span><pre>$_tokenModels</pre></a></li>
+<li class="property private "><a href="#property__tokens" title="$_tokens() :: "><span class="description">of \Gems_Tracker_Token</span><pre>$_tokens</pre></a></li>
+<li class="property private "><a href="#property__trackEngines" title="$_trackEngines() :: "><span class="description">of \Gems_Tracker_Engine_TrackEngineInterface</span><pre>$_trackEngines</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Constants" class="icon-custom icon-constant"></i> Constants
+                    <ul>
+<li class="constant  "><a href="#constant_DB_DATETIME_FORMAT" title="DB_DATETIME_FORMAT() :: "><span class="description">DB_DATETIME_FORMAT</span><pre>DB_DATETIME_FORMAT</pre></a></li>
+<li class="constant  "><a href="#constant_DB_DATE_FORMAT" title="DB_DATE_FORMAT() :: "><span class="description">DB_DATE_FORMAT</span><pre>DB_DATE_FORMAT</pre></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a xmlns:php="http://php.net/xsl" id="\Gems_Tracker"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+<li>
+<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Gems_Tracker.html">Gems_Tracker</a>
+</li>
+</ul>
+<div xmlns:php="http://php.net/xsl" class="element class">
+<p class="short_description">The tracker is the central access point doing anything with tracks or tokens.</p>
+<div class="details">
+<div class="long_description"><p>Tracker contains a number of getXxx functions to create Token, Survey,
+RespondentTrack, [Survey]SourceInterface and TrackEngine objects.</p>
+<p>Tracker also offers \MUtil_Model_ModelAbstract children for RespondentTracks,
+Surveys, Tokens and Tracks.</p>
+<p>Other object classes accessible through gems_Tracker are TokenLibrary (defines
+how tokens are created and checked), TokenSelect (\Gems_Tracker_Token_TokenSelect
+extension) and TokenValidator.</p>
+<p>Other functions are general utility functions, e.g. checkTrackRounds(), createToken(),
+processCompletedTokens() and recalculateTokens().</p></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Gems.Tracker.html">Gems</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Tracker</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2011 Erasmus MC</td>
+</tr>
+<tr>
+<th>license</th>
+<td><a href="http://opensource.org/licenses/BSD-3-Clause">New BSD License</a></td>
+</tr>
+<tr>
+<th>since</th>
+<td>Class available since version 1.4</td>
+</tr>
+<tr>
+<th>inherited_from</th>
+<td>\Gems_Loader_TargetLoaderAbstract</td>
+</tr>
+</table>
+<h3>
+<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
+<a id="method___construct"></a><div class="element clickable method public method___construct " data-toggle="collapse" data-target=".method___construct .collapse" title="public">
+<h2>__construct()
+        </h2>
+<pre>__construct(\type $container, array $dirs) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$container</h4>
+<code>\type</code><p>A container acting as source fro \MUtil_Registry_Source</p></div>
+<div class="subelement argument">
+<h4>$dirs</h4>
+<code>array</code><p>The directories where to look for requested classes</p></div>
+</div></div>
+</div>
+<a id="method___construct"></a><div class="element clickable method public method___construct inherited" data-toggle="collapse" data-target=".method___construct .collapse" title="public">
+<h2>__construct()
+        </h2>
+<pre>__construct(mixed $container, array $dirs) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$container</h4>
+<code>mixed</code><p>A container acting as source for \MUtil_Registry_Source</p></div>
+<div class="subelement argument">
+<h4>$dirs</h4>
+<code>array</code><p>The directories where to look for requested classes</p></div>
+</div></div>
+</div>
+<a id="method___get"></a><div class="element clickable method public method___get inherited" data-toggle="collapse" data-target=".method___get .collapse" title="public">
+<h2>__get()
+        </h2>
+<pre>__get($name) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$name</h4></div>
+</div></div>
+</div>
+<a id="method_addPrefixPath"></a><div class="element clickable method public method_addPrefixPath inherited" data-toggle="collapse" data-target=".method_addPrefixPath .collapse" title="public">
+<h2>Add prefixed paths to the registry of paths</h2>
+<pre>addPrefixPath(string $prefix, $path, boolean $prepend<code> = true</code>) : \Gems_Loader_LoaderAbstract</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$prefix</h4>
+<code>string</code>
+</div>
+<div class="subelement argument"><h4>$path</h4></div>
+<div class="subelement argument">
+<h4>$prepend</h4>
+<code>boolean</code><p>Put path at the beginning of the stack (has no effect when prefix / dir already set)</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Loader_LoaderAbstract</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_addSourceClasses"></a><div class="element clickable method public method_addSourceClasses " data-toggle="collapse" data-target=".method_addSourceClasses .collapse" title="public">
+<h2>Add one or more survey sourceclasses</h2>
+<pre>addSourceClasses(array $stack) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$stack</h4>
+<code>array</code><p>classname / description array of sourceclasses</p></div>
+</div></div>
+</div>
+<a id="method_afterRegistry"></a><div class="element clickable method public method_afterRegistry inherited" data-toggle="collapse" data-target=".method_afterRegistry .collapse" title="public">
+<h2>Called after the check that all required registry values
+have been set correctly has run.</h2>
+<pre>afterRegistry() : void</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_answerRegistryRequest"></a><div class="element clickable method public method_answerRegistryRequest inherited" data-toggle="collapse" data-target=".method_answerRegistryRequest .collapse" title="public">
+<h2>Allows the loader to set resources.</h2>
+<pre>answerRegistryRequest(string $name, mixed $resource) : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code><p>Name of resource to set</p></div>
+<div class="subelement argument">
+<h4>$resource</h4>
+<code>mixed</code><p>The resource.</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>True if $resource was OK</div>
+</div></div>
+</div>
+<a id="method_checkRegistryRequestsAnswers"></a><div class="element clickable method public method_checkRegistryRequestsAnswers inherited" data-toggle="collapse" data-target=".method_checkRegistryRequestsAnswers .collapse" title="public">
+<h2>Should be called after answering the request to allow the Target
+to check if all required registry values have been set correctly.</h2>
+<pre>checkRegistryRequestsAnswers() : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>False if required values are missing.</div>
+</div></div>
+</div>
+<a id="method_checkTrackRounds"></a><div class="element clickable method public method_checkTrackRounds " data-toggle="collapse" data-target=".method_checkTrackRounds .collapse" title="public">
+<h2>Checks tracks for changes to the track and round definitions
+and corrects them.</h2>
+<pre>checkTrackRounds(string $batchId, integer $userId<code> = null</code>, string $cond<code> = null</code>) : \Gems_Task_TaskRunnerBatch</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Does recalculate changed tracks</p></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::checkTrackRounds()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$batchId</h4>
+<code>string</code><p>A unique identifier for the current batch</p></div>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>Id of the user who takes the action (for logging)</p></div>
+<div class="subelement argument">
+<h4>$cond</h4>
+<code>string</code><p>Optional where statement for selecting tracks</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Task_TaskRunnerBatch</code>A batch to process the changes</div>
+</div></div>
+</div>
+<a id="method_createRespondentTrack"></a><div class="element clickable method public method_createRespondentTrack " data-toggle="collapse" data-target=".method_createRespondentTrack .collapse" title="public">
+<h2>Create a new track for a patient</h2>
+<pre>createRespondentTrack(integer $respondentId, integer $organizationId, integer $trackId, integer $userId, mixed $respTrackData<code> = array()</code>, array $trackFieldsData<code> = array()</code>) : \Gems_Tracker_RespondentTrack</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::createRespondentTrack()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$respondentId</h4>
+<code>integer</code><p>The real patientId (grs_id_user), not the patientnr (gr2o_patient_nr)</p></div>
+<div class="subelement argument">
+<h4>$organizationId</h4>
+<code>integer</code>
+</div>
+<div class="subelement argument">
+<h4>$trackId</h4>
+<code>integer</code>
+</div>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>Id of the user who takes the action (for logging)</p></div>
+<div class="subelement argument">
+<h4>$respTrackData</h4>
+<code>mixed</code><p>Optional array containing field values or the start date.</p></div>
+<div class="subelement argument">
+<h4>$trackFieldsData</h4>
+<code>array</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Tracker_RespondentTrack</code>The newly created track</div>
+</div></div>
+</div>
+<a id="method_createToken"></a><div class="element clickable method public method_createToken " data-toggle="collapse" data-target=".method_createToken .collapse" title="public">
+<h2>Creates a new token with a new random token Id</h2>
+<pre>createToken(array $tokenData, integer $userId<code> = null</code>) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$tokenData</h4>
+<code>array</code><p>The other new data for the token</p></div>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>Id of the user who takes the action (for logging)</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_createTrackClass"></a><div class="element clickable method public method_createTrackClass " data-toggle="collapse" data-target=".method_createTrackClass .collapse" title="public">
+<h2>Dynamically load and create a [Gems|Project]_Tracker class</h2>
+<pre>createTrackClass(string $className, mixed $param1<code> = null</code>, mixed $param2<code> = null</code>) : object</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::createTrackClass()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$className</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$param1</h4>
+<code>mixed</code>
+</div>
+<div class="subelement argument">
+<h4>$param2</h4>
+<code>mixed</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>object</code></div>
+</div></div>
+</div>
+<a id="method_filterChangesOnly"></a><div class="element clickable method public method_filterChangesOnly " data-toggle="collapse" data-target=".method_filterChangesOnly .collapse" title="public">
+<h2>Utility function for detecting unchanged values.</h2>
+<pre>filterChangesOnly(array $oldValues, array $newValues) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::filterChangesOnly()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$oldValues</h4>
+<code>array</code>
+</div>
+<div class="subelement argument">
+<h4>$newValues</h4>
+<code>array</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_filterToken"></a><div class="element clickable method public method_filterToken " data-toggle="collapse" data-target=".method_filterToken .collapse" title="public">
+<h2>Removes all unacceptable characters from the input token and inserts any fixed characters left out</h2>
+<pre>filterToken(string $tokenId) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::filterToken()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$tokenId</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>Reformatted token</div>
+</div></div>
+</div>
+<a id="method_getAllCodeFields"></a><div class="element clickable method public method_getAllCodeFields " data-toggle="collapse" data-target=".method_getAllCodeFields .collapse" title="public">
+<h2>Returns an array of all field id's for all tracks that have a code id</h2>
+<pre>getAllCodeFields() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::getAllCodeFields()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>id => code</div>
+</div></div>
+</div>
+<a id="method_getAppointment"></a><div class="element clickable method public method_getAppointment " data-toggle="collapse" data-target=".method_getAppointment .collapse" title="public">
+<h2>Get an appointment object</h2>
+<pre>getAppointment(mixed $appointmentData) : \Gems_Agenda_Appointment</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::getAppointment()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$appointmentData</h4>
+<code>mixed</code><p>Appointment id or array containing appintment data</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Agenda_Appointment</code></div>
+</div></div>
+</div>
+<a id="method_getAskTokenForm"></a><div class="element clickable method public method_getAskTokenForm " data-toggle="collapse" data-target=".method_getAskTokenForm .collapse" title="public">
+<h2>Returns a form to ask for a token</h2>
+<pre>getAskTokenForm(mixed $args_array<code> = null</code>) : \Gems_Tracker_Form_AskTokenForm</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::getAskTokenForm()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$args_array</h4>
+<code>mixed</code><p>\MUtil_Ra::args array for Form initiation.</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Form_AskTokenForm</code></div>
+</div></div>
+</div>
+<a id="method_getRegistryRequests"></a><div class="element clickable method public method_getRegistryRequests inherited" data-toggle="collapse" data-target=".method_getRegistryRequests .collapse" title="public">
+<h2>Allows the loader to know the resources to set.</h2>
+<pre>getRegistryRequests() : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Returns those object variables defined by the subclass but not at the level of this definition.</p>
+<p>Can be overruled.</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>of string names</div>
+</div></div>
+</div>
+<a id="method_getRespondentTrack"></a><div class="element clickable method public method_getRespondentTrack " data-toggle="collapse" data-target=".method_getRespondentTrack .collapse" title="public">
+<h2>getRespondentTrack()
+        </h2>
+<pre>getRespondentTrack(mixed $respTrackData) : \Gems_Tracker_RespondentTrack</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::getRespondentTrack()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$respTrackData</h4>
+<code>mixed</code><p>Track id or array containing trackdata</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_RespondentTrack</code></div>
+</div></div>
+</div>
+<a id="method_getRespondentTrackModel"></a><div class="element clickable method public method_getRespondentTrackModel " data-toggle="collapse" data-target=".method_getRespondentTrackModel .collapse" title="public">
+<h2>Load project specific model or general Gems model otherwise</h2>
+<pre>getRespondentTrackModel() : \Gems_Tracker_Model_RespondentTrackModel</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::getRespondentTrackModel()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Model_RespondentTrackModel</code></div>
+</div></div>
+</div>
+<a id="method_getRespondentTracks"></a><div class="element clickable method public method_getRespondentTracks " data-toggle="collapse" data-target=".method_getRespondentTracks .collapse" title="public">
+<h2>Get all tracks for a respondent</h2>
+<pre>getRespondentTracks(integer $respondentId, integer $organizationId, mixed $order<code> = array('gr2t_start_date')</code>) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Specify the optional $order to sort other than on start date</p></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::getRespondentTracks()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$respondentId</h4>
+<code>integer</code>
+</div>
+<div class="subelement argument">
+<h4>$organizationId</h4>
+<code>integer</code>
+</div>
+<div class="subelement argument">
+<h4>$order</h4>
+<code>mixed</code><p>The column(s) and direction to order by</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>of \Gems_Tracker_RespondentTrack</div>
+</div></div>
+</div>
+<a id="method_getSource"></a><div class="element clickable method public method_getSource " data-toggle="collapse" data-target=".method_getSource .collapse" title="public">
+<h2>Retrieve a SourceInterface with a given id</h2>
+<pre>getSource(mixed $sourceData) : \Gems_Tracker_Source_SourceInterface</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Should only be called by \Gems_Tracker, \Gems_Tracker_Survey or \Gems_Tracker_Token (or should
+this one use \Gems_Tracker_Survey instead?)</p></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::getSource()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$sourceData</h4>
+<code>mixed</code><p>Gems source id or array containing gems source data</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Source_SourceInterface</code></div>
+</div></div>
+</div>
+<a id="method_getSourceClasses"></a><div class="element clickable method public method_getSourceClasses " data-toggle="collapse" data-target=".method_getSourceClasses .collapse" title="public">
+<h2>Returns all registered source classes</h2>
+<pre>getSourceClasses() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::getSourceClasses()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Of classname => description</div>
+</div></div>
+</div>
+<a id="method_getSourceDatabaseClasses"></a><div class="element clickable method public method_getSourceDatabaseClasses " data-toggle="collapse" data-target=".method_getSourceDatabaseClasses .collapse" title="public">
+<h2>Returns all registered database source classes</h2>
+<pre>getSourceDatabaseClasses() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::getSourceDatabaseClasses()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Of classname => description</div>
+</div></div>
+</div>
+<a id="method_getSurvey"></a><div class="element clickable method public method_getSurvey " data-toggle="collapse" data-target=".method_getSurvey .collapse" title="public">
+<h2>getSurvey()
+        </h2>
+<pre>getSurvey(mixed $surveyData) : \Gems_Tracker_Survey</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::getSurvey()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$surveyData</h4>
+<code>mixed</code><p>Gems survey id or array containing gems survey data</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Survey</code></div>
+</div></div>
+</div>
+<a id="method_getSurveyBySourceId"></a><div class="element clickable method public method_getSurveyBySourceId " data-toggle="collapse" data-target=".method_getSurveyBySourceId .collapse" title="public">
+<h2>getSurveyBySourceId()
+        </h2>
+<pre>getSurveyBySourceId(mixed $sourceSurveyId, integer $sourceId) : \Gems_Tracker_Survey</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::getSurveyBySourceId()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$sourceSurveyId</h4>
+<code>mixed</code><p>The source survey id</p></div>
+<div class="subelement argument">
+<h4>$sourceId</h4>
+<code>integer</code><p>The gems source id of the source</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Survey</code></div>
+</div></div>
+</div>
+<a id="method_getSurveyModel"></a><div class="element clickable method public method_getSurveyModel " data-toggle="collapse" data-target=".method_getSurveyModel .collapse" title="public">
+<h2>getSurveyModel()
+        </h2>
+<pre>getSurveyModel(\Gems_Tracker_Survey $survey, \Gems_Tracker_Source_SourceInterface $source) : \Gems_Tracker_SurveyModel</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::getSurveyModel()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$survey</h4>
+<code>\Gems_Tracker_Survey</code>
+</div>
+<div class="subelement argument">
+<h4>$source</h4>
+<code>\Gems_Tracker_Source_SourceInterface</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_SurveyModel</code></div>
+</div></div>
+</div>
+<a id="method_getToken"></a><div class="element clickable method public method_getToken " data-toggle="collapse" data-target=".method_getToken .collapse" title="public">
+<h2>getToken()
+        </h2>
+<pre>getToken(mixed $tokenData) : \Gems_Tracker_Token</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::getToken()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$tokenData</h4>
+<code>mixed</code><p>Token id or array containing tokendata</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token</code></div>
+</div></div>
+</div>
+<a id="method_getTokenFilter"></a><div class="element clickable method public method_getTokenFilter " data-toggle="collapse" data-target=".method_getTokenFilter .collapse" title="public">
+<h2>getTokenFilter()
+        </h2>
+<pre>getTokenFilter() : \Gems_Tracker_Token_TokenFilter</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::getTokenFilter()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token_TokenFilter</code></div>
+</div></div>
+</div>
+<a id="method_getTokenLibrary"></a><div class="element clickable method public method_getTokenLibrary " data-toggle="collapse" data-target=".method_getTokenLibrary .collapse" title="public">
+<h2>Use this function only within \Gems_Tracker!!</h2>
+<pre>getTokenLibrary() : \Gems_Tracker_Token_TokenLibrary</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::getTokenLibrary()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token_TokenLibrary</code></div>
+</div></div>
+</div>
+<a id="method_getTokenModel"></a><div class="element clickable method public method_getTokenModel " data-toggle="collapse" data-target=".method_getTokenModel .collapse" title="public">
+<h2>Returns a token model of the specified class with full display information</h2>
+<pre>getTokenModel(string $modelClass<code> = 'StandardTokenModel'</code>) : \Gems_Tracker_Model_StandardTokenModel</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::getTokenModel()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$modelClass</h4>
+<code>string</code><p>Optional class to use instead of StandardTokenModel. Must be subclass.</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Model_StandardTokenModel</code></div>
+</div></div>
+</div>
+<a id="method_getTokenSelect"></a><div class="element clickable method public method_getTokenSelect " data-toggle="collapse" data-target=".method_getTokenSelect .collapse" title="public">
+<h2>Create a select statement on the token table</h2>
+<pre>getTokenSelect($fields<code> = '*'</code>) : \Gems_Tracker_Token_TokenSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::getTokenSelect()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$fields</h4></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token_TokenSelect</code></div>
+</div></div>
+</div>
+<a id="method_getTokenValidator"></a><div class="element clickable method public method_getTokenValidator " data-toggle="collapse" data-target=".method_getTokenValidator .collapse" title="public">
+<h2>getTokenValidator()
+        </h2>
+<pre>getTokenValidator() : \Gems_Tracker_Token_TokenValidator</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::getTokenValidator()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token_TokenValidator</code></div>
+</div></div>
+</div>
+<a id="method_getTrackDisplayGroups"></a><div class="element clickable method public method_getTrackDisplayGroups " data-toggle="collapse" data-target=".method_getTrackDisplayGroups .collapse" title="public">
+<h2>Get the allowed display groups for tracks in this project.</h2>
+<pre>getTrackDisplayGroups() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::getTrackDisplayGroups()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_getTrackEngine"></a><div class="element clickable method public method_getTrackEngine " data-toggle="collapse" data-target=".method_getTrackEngine .collapse" title="public">
+<h2>getTrackEngine()
+        </h2>
+<pre>getTrackEngine(mixed $trackData) : \Gems_Tracker_Engine_TrackEngineInterface</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::getTrackEngine()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$trackData</h4>
+<code>mixed</code><p>Gems track id or array containing gems track data</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Engine_TrackEngineInterface</code></div>
+</div></div>
+</div>
+<a id="method_getTrackEngineClasses"></a><div class="element clickable method public method_getTrackEngineClasses " data-toggle="collapse" data-target=".method_getTrackEngineClasses .collapse" title="public">
+<h2>Returns dummy objects for all registered track engines class names</h2>
+<pre>getTrackEngineClasses() : array</pre>
+<div class="labels"><span class="label">Static</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Instead of creating another object layer all classes defined by
+getTrackEngineClassNames() are loaded with dummy data so that the
+TrackEngineInterface functions containing general class information
+can be used.</p></div>
+<table class="table table-bordered">
+<tr>
+<th>see</th>
+<td><a href="%5CGems_Tracker::getTrackEngineClassNames()"></a></td>
+</tr>
+<tr>
+<th>static</th>
+<td>$dummyClasses Cache array</td>
+</tr>
+<tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::getTrackEngineClasses()</td>
+</tr>
+</table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Of \Gems_Tracker_Engine_TrackEngineInterface</div>
+</div></div>
+</div>
+<a id="method_getTrackEngineEditSnippets"></a><div class="element clickable method public method_getTrackEngineEditSnippets " data-toggle="collapse" data-target=".method_getTrackEngineEditSnippets .collapse" title="public">
+<h2>Return the edit snippets for editing or creating a new track</h2>
+<pre>getTrackEngineEditSnippets() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::getTrackEngineEditSnippets()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>of snippet names for creating a new track engine</div>
+</div></div>
+</div>
+<a id="method_getTrackEngineList"></a><div class="element clickable method public method_getTrackEngineList " data-toggle="collapse" data-target=".method_getTrackEngineList .collapse" title="public">
+<h2>Returns all registered track engines classes for use in drop down lists.</h2>
+<pre>getTrackEngineList(boolean $extended<code> = false</code>, boolean $userCreatableOnly<code> = false</code>) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::getTrackEngineList()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$extended</h4>
+<code>boolean</code><p>When true return a longer name.</p></div>
+<div class="subelement argument">
+<h4>$userCreatableOnly</h4>
+<code>boolean</code><p>Return only the classes that can be created by the user interface</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Of classname => description</div>
+</div></div>
+</div>
+<a id="method_getTrackModel"></a><div class="element clickable method public method_getTrackModel " data-toggle="collapse" data-target=".method_getTrackModel .collapse" title="public">
+<h2>Simple function for a default track model.</h2>
+<pre>getTrackModel() : \Gems_Tracker_Model_TrackModel</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::getTrackModel()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Model_TrackModel</code></div>
+</div></div>
+</div>
+<a id="method_processCompletedTokens"></a><div class="element clickable method public method_processCompletedTokens " data-toggle="collapse" data-target=".method_processCompletedTokens .collapse" title="public">
+<h2>Checks the token table to see if there are any answered surveys to be processed</h2>
+<pre>processCompletedTokens(integer $respondentId, integer $userId<code> = null</code>, integer $orgId<code> = null</code>, boolean $quickCheck<code> = false</code>) : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>If the survey was started (and the token was forwarded to limesurvey) we need to check
+if is was completed. If so, we might want to check the track the survey is in to enable
+or disable future rounds</p>
+<p>Does not reflect changes to tracks or rounds.</p></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::processCompletedTokens()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$respondentId</h4>
+<code>integer</code><p>Id of the respondent to check for or NULL</p></div>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>Id of the user who takes the action (for logging)</p></div>
+<div class="subelement argument">
+<h4>$orgId</h4>
+<code>integer</code><p>Optional Id of the organization to check for</p></div>
+<div class="subelement argument">
+<h4>$quickCheck</h4>
+<code>boolean</code><p>Check only tokens with recent gto_start_time's</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>Did we find new answers?</div>
+</div></div>
+</div>
+<a id="method_recalcTrackFields"></a><div class="element clickable method public method_recalcTrackFields " data-toggle="collapse" data-target=".method_recalcTrackFields .collapse" title="public">
+<h2>Recalculates the fields in tracks.</h2>
+<pre>recalcTrackFields(string $batchId, integer $userId<code> = null</code>, string $cond<code> = null</code>) : \Gems_Task_TaskRunnerBatch</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Does recalculate changed tracks</p></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::recalcTrackFields()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$batchId</h4>
+<code>string</code><p>A unique identifier for the current batch</p></div>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>Id of the user who takes the action (for logging)</p></div>
+<div class="subelement argument">
+<h4>$cond</h4>
+<code>string</code><p>Optional where statement for selecting tracks</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Task_TaskRunnerBatch</code>A batch to process the changes</div>
+</div></div>
+</div>
+<a id="method_recalculateTokens"></a><div class="element clickable method public method_recalculateTokens " data-toggle="collapse" data-target=".method_recalculateTokens .collapse" title="public">
+<h2>Recalculates all token dates, timing and results
+and outputs text messages.</h2>
+<pre>recalculateTokens(string $batch_id, integer $userId<code> = null</code>, string $cond<code> = null</code>) : \Gems_Task_TaskRunnerBatch</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Does not reflect changes to tracks or rounds.</p></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::recalculateTokens()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$batch_id</h4>
+<code>string</code><p>A unique identifier for the current batch</p></div>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>Id of the user who takes the action (for logging)</p></div>
+<div class="subelement argument">
+<h4>$cond</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Task_TaskRunnerBatch</code>A batch to process the changes</div>
+</div></div>
+</div>
+<a id="method_refreshTokenAttributes"></a><div class="element clickable method public method_refreshTokenAttributes " data-toggle="collapse" data-target=".method_refreshTokenAttributes .collapse" title="public">
+<h2>Refreshes the tokens in the source</h2>
+<pre>refreshTokenAttributes(string $batch_id, string $cond<code> = null</code>) : \Gems_Task_TaskRunnerBatch</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::refreshTokenAttributes()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$batch_id</h4>
+<code>string</code><p>A unique identifier for the current batch</p></div>
+<div class="subelement argument">
+<h4>$cond</h4>
+<code>string</code><p>An optional where statement</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Task_TaskRunnerBatch</code>A batch to process the changes</div>
+</div></div>
+</div>
+<a id="method_removeToken"></a><div class="element clickable method public method_removeToken " data-toggle="collapse" data-target=".method_removeToken .collapse" title="public">
+<h2>Remove token from cache for saving memory</h2>
+<pre>removeToken(string|\Gems_Tracker_Token $token) : \Gems_Tracker</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::removeToken()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>string</code><code>\Gems_Tracker_Token</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Tracker</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_synchronizeSources"></a><div class="element clickable method public method_synchronizeSources " data-toggle="collapse" data-target=".method_synchronizeSources .collapse" title="public">
+<h2>Recalculates all token dates, timing and results
+and outputs text messages.</h2>
+<pre>synchronizeSources(integer $sourceId<code> = null</code>, integer $userId<code> = null</code>) : \Gems_Task_TaskRunnerBatch</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Does not reflect changes to tracks or rounds.</p></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_TrackerInterface::synchronizeSources()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$sourceId</h4>
+<code>integer</code><p>A source identifier</p></div>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>Id of the user who takes the action (for logging)</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Task_TaskRunnerBatch</code>A batch to process the synchronization</div>
+</div></div>
+</div>
+<a id="method__cascadedDirs"></a><div class="element clickable method protected method__cascadedDirs inherited" data-toggle="collapse" data-target=".method__cascadedDirs .collapse" title="protected">
+<h2>Add a subdirectory / sub name to a list of class load paths</h2>
+<pre>_cascadedDirs(array $dirs, string $cascade, boolean $fullClassnameFallback<code> = true</code>) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$dirs</h4>
+<code>array</code><p>prefix => path</p></div>
+<div class="subelement argument">
+<h4>$cascade</h4>
+<code>string</code><p>The sub directories to cascade to</p></div>
+<div class="subelement argument">
+<h4>$fullClassnameFallback</h4>
+<code>boolean</code><p>Allows full class name specification instead of just plugin name part</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>prefix => path</div>
+</div></div>
+</div>
+<a id="method__getClass"></a><div class="element clickable method protected method__getClass inherited" data-toggle="collapse" data-target=".method__getClass .collapse" title="protected">
+<h2>Returns $this-&gt;$name, creating the item if it does not yet exist.</h2>
+<pre>_getClass(string $name, string $className<code> = null</code>, array $arguments<code> = array()</code>) : mixed</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code><p>The $name of the variable to store this object in.</p></div>
+<div class="subelement argument">
+<h4>$className</h4>
+<code>string</code><p>Class name or null if the same as $name, prepending $this->_dirs.</p></div>
+<div class="subelement argument">
+<h4>$arguments</h4>
+<code>array</code><p>Class initialization arguments.</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>Instance of $className</div>
+</div></div>
+</div>
+<a id="method__loadClass"></a><div class="element clickable method protected method__loadClass inherited" data-toggle="collapse" data-target=".method__loadClass .collapse" title="protected">
+<h2>Create or loads the class. When only loading, this function returns a StaticCall object that
+can be invoked lazely.</h2>
+<pre>_loadClass(string $name, boolean $create<code> = false</code>, array $arguments<code> = array()</code>) : mixed</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>see</th>
+<td><a href="%5CMUtil_Lazy_StaticCall"></a></td>
+</tr>
+<tr>
+<th>see</th>
+<td><a href="%5CMUtil_Registry_TargetInterface"></a></td>
+</tr>
+</table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code><p>The class name, minus the part in $this->_dirs.</p></div>
+<div class="subelement argument">
+<h4>$create</h4>
+<code>boolean</code><p>Create the object, or only when an \MUtil_Registry_TargetInterface instance.</p></div>
+<div class="subelement argument">
+<h4>$arguments</h4>
+<code>array</code><p>Class initialization arguments.</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>A class instance or a \MUtil_Lazy_StaticCall object</div>
+</div></div>
+</div>
+<a id="method_filterRequestNames"></a><div class="element clickable method protected method_filterRequestNames inherited" data-toggle="collapse" data-target=".method_filterRequestNames .collapse" title="protected">
+<h2>Filters the names that should not be requested.</h2>
+<pre>filterRequestNames(string $name) : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Can be overriden.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_getTrackEngineClassNames"></a><div class="element clickable method protected method_getTrackEngineClassNames " data-toggle="collapse" data-target=".method_getTrackEngineClassNames .collapse" title="protected">
+<h2>Returns all registered track engines class names</h2>
+<pre>getTrackEngineClassNames() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Of classname</div>
+</div></div>
+</div>
+<a id="method_processTokensBatch"></a><div class="element clickable method protected method_processTokensBatch " data-toggle="collapse" data-target=".method_processTokensBatch .collapse" title="protected">
+<h2>Checks the token table to see if there are any answered surveys to be processed</h2>
+<pre>processTokensBatch(string $batch_id, \Gems_Tracker_Token_TokenSelect $tokenSelect, integer $userId) : \Gems_Task_TaskRunnerBatch</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>If the survey was started (and the token was forwarded to limesurvey) we need to check
+if is was completed. If so, we might want to check the track the survey is in to enable
+or disable future rounds</p>
+<p>Does not reflect changes to tracks or rounds.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$batch_id</h4>
+<code>string</code><p>A unique identifier for the current batch</p></div>
+<div class="subelement argument">
+<h4>$tokenSelect</h4>
+<code>\Gems_Tracker_Token_TokenSelect</code><p>Select statements selecting tokens</p></div>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>Id of the user who takes the action (for logging)</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Task_TaskRunnerBatch</code>A batch to process the changes</div>
+</div></div>
+</div>
+<a id="method__checkUserId"></a><div class="element clickable method private method__checkUserId " data-toggle="collapse" data-target=".method__checkUserId .collapse" title="private">
+<h2>Replaces a null or empty userId with that of the current user</h2>
+<pre>_checkUserId(integer $userId<code> = null</code>) : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>integer</code></div>
+</div></div>
+</div>
+<h3>
+<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
+<a id="property_verbose"> </a><div class="element clickable property public property_verbose" data-toggle="collapse" data-target=".property_verbose .collapse" title="public">
+<h2>Set to true to get detailed information on all tracker actions</h2>
+<pre>$verbose : boolean</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>false</code></div>
+</div></div>
+<div class="labels"><span class="label">Static</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__dirs"> </a><div class="element clickable property protected property__dirs" data-toggle="collapse" data-target=".property__dirs .collapse" title="protected">
+<h2>The prefix/path location to look for classes.</h2>
+<pre>$_dirs : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"><p>The standard value is</p>
+<ul>
+<li>
+<Project_name> => application/classes
+</li>
+<li>Gems =&gt; library/Gems/classes</li>
+</ul>
+<p>But an alternative could be:</p>
+<ul>
+<li>Demopulse =&gt; application/classes</li>
+<li>Pulse =&gt; application/classes</li>
+<li>Gems =&gt; library/Gems/classes</li>
+</ul></div></div></div>
+</div>
+<a id="property__loader"> </a><div class="element clickable property protected property__loader" data-toggle="collapse" data-target=".property__loader .collapse" title="protected">
+<h2>$_loader</h2>
+<pre>$_loader : \MUtil_Loader_PluginLoader</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__sourceClasses"> </a><div class="element clickable property protected property__sourceClasses" data-toggle="collapse" data-target=".property__sourceClasses .collapse" title="protected">
+<h2>This variable holds all registered source classes, may be changed in derived classes</h2>
+<pre>$_sourceClasses : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>array('LimeSurvey1m9Database' => 'Lime Survey 1.90 DB', 'LimeSurvey1m91Database' => 'Lime Survey 1.91+ DB', 'LimeSurvey2m00Database' => 'Lime Survey 2.00 DB')</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_cascade"> </a><div class="element clickable property protected property_cascade" data-toggle="collapse" data-target=".property_cascade .collapse" title="protected">
+<h2>Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.</h2>
+<pre>$cascade : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>'Tracker'</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_cascade"> </a><div class="element clickable property protected property_cascade" data-toggle="collapse" data-target=".property_cascade .collapse" title="protected">
+<h2>Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.</h2>
+<pre>$cascade : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_currentUser"> </a><div class="element clickable property protected property_currentUser" data-toggle="collapse" data-target=".property_currentUser .collapse" title="protected">
+<h2>$currentUser</h2>
+<pre>$currentUser : \Gems_User_User</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_db"> </a><div class="element clickable property protected property_db" data-toggle="collapse" data-target=".property_db .collapse" title="protected">
+<h2>$db</h2>
+<pre>$db : \Zend_Db_Adapter_Abstract</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_loader"> </a><div class="element clickable property protected property_loader" data-toggle="collapse" data-target=".property_loader .collapse" title="protected">
+<h2>$loader</h2>
+<pre>$loader : \Gems_Loader</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_logger"> </a><div class="element clickable property protected property_logger" data-toggle="collapse" data-target=".property_logger .collapse" title="protected">
+<h2>$logger</h2>
+<pre>$logger : \Gems_Log</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_session"> </a><div class="element clickable property protected property_session" data-toggle="collapse" data-target=".property_session .collapse" title="protected">
+<h2>$session</h2>
+<pre>$session : \Zend_Session</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_translate"> </a><div class="element clickable property protected property_translate" data-toggle="collapse" data-target=".property_translate .collapse" title="protected">
+<h2>$translate</h2>
+<pre>$translate : \Zend_Translate</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__respTracks"> </a><div class="element clickable property private property__respTracks" data-toggle="collapse" data-target=".property__respTracks .collapse" title="private">
+<h2>of \Gems_Tracker_RespondentTrack</h2>
+<pre>$_respTracks : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>array()</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__sources"> </a><div class="element clickable property private property__sources" data-toggle="collapse" data-target=".property__sources .collapse" title="private">
+<h2>of \Gems_Tracker_SourceInterface</h2>
+<pre>$_sources : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>array()</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__surveys"> </a><div class="element clickable property private property__surveys" data-toggle="collapse" data-target=".property__surveys .collapse" title="private">
+<h2>of \Gems_Survey</h2>
+<pre>$_surveys : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>array()</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__tokenLibrary"> </a><div class="element clickable property private property__tokenLibrary" data-toggle="collapse" data-target=".property__tokenLibrary .collapse" title="private">
+<h2>$_tokenLibrary</h2>
+<pre>$_tokenLibrary : \Gems_Tracker_TokenLibrary</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__tokenModels"> </a><div class="element clickable property private property__tokenModels" data-toggle="collapse" data-target=".property__tokenModels .collapse" title="private">
+<h2>of \Gems_Tracker_Model_StandardTokenModel</h2>
+<pre>$_tokenModels : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>array()</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__tokens"> </a><div class="element clickable property private property__tokens" data-toggle="collapse" data-target=".property__tokens .collapse" title="private">
+<h2>of \Gems_Tracker_Token</h2>
+<pre>$_tokens : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>array()</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__trackEngines"> </a><div class="element clickable property private property__trackEngines" data-toggle="collapse" data-target=".property__trackEngines .collapse" title="private">
+<h2>of \Gems_Tracker_Engine_TrackEngineInterface</h2>
+<pre>$_trackEngines : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>array()</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<h3>
+<i title="Constants" class="icon-custom icon-constant"></i> Constants</h3>
+<a id="constant_DB_DATETIME_FORMAT"> </a><div class="element clickable constant  constant_DB_DATETIME_FORMAT" data-toggle="collapse" data-target=".constant_DB_DATETIME_FORMAT .collapse" title="">
+<h2>DB_DATETIME_FORMAT</h2>
+<pre>DB_DATETIME_FORMAT = 'yyyy-MM-dd HH:mm:ss' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_DB_DATE_FORMAT"> </a><div class="element clickable constant  constant_DB_DATE_FORMAT" data-toggle="collapse" data-target=".constant_DB_DATE_FORMAT .collapse" title="">
+<h2>DB_DATE_FORMAT</h2>
+<pre>DB_DATE_FORMAT = 'yyyy-MM-dd' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:19+02:00.<br></footer></div>
+</div>
+</body>
+</html>

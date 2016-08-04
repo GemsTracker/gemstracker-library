@@ -1,0 +1,487 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » \Gems_Default_IndexAction</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+<div class="btn-group visibility" data-toggle="buttons-checkbox">
+<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
+</div>
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+</div>
+<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+<li class="nav-header">
+<i title="Methods" class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public inherited"><a href="#method_addMessage" title="addMessage() :: Adds one or more messages to the session based message store."><span class="description">Adds one or more messages to the session based message store.</span><pre>addMessage()</pre></a></li>
+<li class="method public "><a href="#method_getChildOrganizationDescription" title="getChildOrganizationDescription() :: Modify this to set a new title for the child organization element
+if you use layered login"><span class="description">Modify this to set a new title for the child organization element
+if you use layered login</span><pre>getChildOrganizationDescription()</pre></a></li>
+<li class="method public inherited"><a href="#method_getMessenger" title="getMessenger() :: Returns a session based message store for adding messages to."><span class="description">Returns a session based message store for adding messages to.</span><pre>getMessenger()</pre></a></li>
+<li class="method public "><a href="#method_getTopOrganizationDescription" title="getTopOrganizationDescription() :: Modify this to set a new title for the top organization element
+if you use layered login"><span class="description">Modify this to set a new title for the top organization element
+if you use layered login</span><pre>getTopOrganizationDescription()</pre></a></li>
+<li class="method public "><a href="#method_indexAction" title="indexAction() :: Dummy: always rerouted by GemsEscort"><span class="description">Dummy: always rerouted by GemsEscort</span><pre>indexAction()</pre></a></li>
+<li class="method public inherited"><a href="#method_initHtml" title="initHtml() :: Intializes the html component."><span class="description">Intializes the html component.</span><pre>initHtml()</pre></a></li>
+<li class="method public "><a href="#method_loginAction" title="loginAction() :: Default login page"><span class="description">Default login page</span><pre>loginAction()</pre></a></li>
+<li class="method public "><a href="#method_logoffAction" title="logoffAction() :: Default logoff action"><span class="description">Default logoff action</span><pre>logoffAction()</pre></a></li>
+<li class="method public "><a href="#method_resetpasswordAction" title="resetpasswordAction() :: Reset password page."><span class="description">Reset password page.</span><pre>resetpasswordAction()</pre></a></li>
+<li class="method public "><a href="#method_sendUserResetEMail" title="sendUserResetEMail() :: Send the user an e-mail with a link for password reset"><span class="description">Send the user an e-mail with a link for password reset</span><pre>sendUserResetEMail()</pre></a></li>
+<li class="method public inherited"><a href="#method_setMessenger" title="setMessenger() :: Set the session based message store."><span class="description">Set the session based message store.</span><pre>setMessenger()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="method protected "><a href="#method_createLoginForm" title="createLoginForm() :: Returns a login form"><span class="description">Returns a login form</span><pre>createLoginForm()</pre></a></li>
+<li class="method protected "><a href="#method_createResetRequestForm" title="createResetRequestForm() :: Gets a reset password form."><span class="description">Gets a reset password form.</span><pre>createResetRequestForm()</pre></a></li>
+<li class="method protected "><a href="#method_displayLoginForm" title="displayLoginForm() :: Function for overruling the display of the login form."><span class="description">Function for overruling the display of the login form.</span><pre>displayLoginForm()</pre></a></li>
+<li class="method protected "><a href="#method_displayResetForm" title="displayResetForm() :: Function for overruling the display of the reset form."><span class="description">Function for overruling the display of the reset form.</span><pre>displayResetForm()</pre></a></li>
+<li class="method protected inherited"><a href="#method_loadSnippetLoader" title="loadSnippetLoader() :: Stub for overruling default snippet loader initiation."><span class="description">Stub for overruling default snippet loader initiation.</span><pre>loadSnippetLoader()</pre></a></li>
+<li class="method protected "><a href="#method_setCurrentOrganizationTo" title="setCurrentOrganizationTo() :: Helper function to safely switch org during login"><span class="description">Helper function to safely switch org during login</span><pre>setCurrentOrganizationTo()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Properties" class="icon-custom icon-property"></i> Properties
+                    <ul>
+<li class="property public "><a href="#property_accesslog" title="$accesslog() :: "><span class="description"></span><pre>$accesslog</pre></a></li>
+<li class="property public "><a href="#property_currentUser" title="$currentUser() :: "><span class="description"></span><pre>$currentUser</pre></a></li>
+<li class="property public "><a href="#property_db" title="$db() :: "><span class="description"></span><pre>$db</pre></a></li>
+<li class="property public "><a href="#property_loader" title="$loader() :: "><span class="description"></span><pre>$loader</pre></a></li>
+<li class="property public "><a href="#property_messenger" title="$messenger() :: "><span class="description"></span><pre>$messenger</pre></a></li>
+<li class="property public "><a href="#property_util" title="$util() :: "><span class="description"></span><pre>$util</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="property protected "><a href="#property_labelWidthFactor" title="$labelWidthFactor() :: The width factor for the label elements."><span class="description"></span><pre>$labelWidthFactor</pre></a></li>
+<li class="property protected "><a href="#property_layeredLogin" title="$layeredLogin() :: Use a flat login (false = default) or a layered login where you first
+select a parent organization and then see a list of child organizations."><span class="description"></span><pre>$layeredLogin</pre></a></li>
+<li class="property protected "><a href="#property_organizationMaxLines" title="$organizationMaxLines() :: For small numbers of organizations a multiline selectbox will be nice. This
+setting handles how many lines will display at once. Use 1 for the normal
+dropdown selectbox"><span class="description"></span><pre>$organizationMaxLines</pre></a></li>
+<li class="property protected "><a href="#property_returnToLoginAfterReset" title="$returnToLoginAfterReset() :: When true, the rese4t form returns to the login page after sending a change request"><span class="description"></span><pre>$returnToLoginAfterReset</pre></a></li>
+<li class="property protected "><a href="#property_showPasswordLostButton" title="$showPasswordLostButton() :: The default behaviour for showing a lost password button"><span class="description"></span><pre>$showPasswordLostButton</pre></a></li>
+<li class="property protected "><a href="#property_showTokenButton" title="$showTokenButton() :: The default behaviour for showing an 'ask token' button"><span class="description"></span><pre>$showTokenButton</pre></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a xmlns:php="http://php.net/xsl" id="\Gems_Default_IndexAction"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+<li>
+<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Gems_Default_IndexAction.html">Gems_Default_IndexAction</a>
+</li>
+</ul>
+<div xmlns:php="http://php.net/xsl" class="element class">
+<p class="short_description">Index controller, this one handles the default login / logout actions</p>
+<div class="details">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Gems.Default.html">Gems</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Default</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2011 Erasmus MC</td>
+</tr>
+<tr>
+<th>license</th>
+<td><a href="http://opensource.org/licenses/BSD-3-Clause">New BSD License</a></td>
+</tr>
+<tr>
+<th>since</th>
+<td>Class available since version 1.0</td>
+</tr>
+<tr>
+<th>inherited_from</th>
+<td>\Gems_Controller_Action</td>
+</tr>
+</table>
+<h3>
+<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
+<a id="method_addMessage"></a><div class="element clickable method public method_addMessage inherited" data-toggle="collapse" data-target=".method_addMessage .collapse" title="public">
+<h2>Adds one or more messages to the session based message store.</h2>
+<pre>addMessage($message, $status<code> = null</code>) : \MUtil_Controller_Action</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$message</h4></div>
+<div class="subelement argument"><h4>$status</h4></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\MUtil_Controller_Action</code></div>
+</div></div>
+</div>
+<a id="method_getChildOrganizationDescription"></a><div class="element clickable method public method_getChildOrganizationDescription " data-toggle="collapse" data-target=".method_getChildOrganizationDescription .collapse" title="public">
+<h2>Modify this to set a new title for the child organization element
+if you use layered login</h2>
+<pre>getChildOrganizationDescription() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getMessenger"></a><div class="element clickable method public method_getMessenger inherited" data-toggle="collapse" data-target=".method_getMessenger .collapse" title="public">
+<h2>Returns a session based message store for adding messages to.</h2>
+<pre>getMessenger() : \Zend_Controller_Action_Helper_FlashMessenger</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Zend_Controller_Action_Helper_FlashMessenger</code></div>
+</div></div>
+</div>
+<a id="method_getTopOrganizationDescription"></a><div class="element clickable method public method_getTopOrganizationDescription " data-toggle="collapse" data-target=".method_getTopOrganizationDescription .collapse" title="public">
+<h2>Modify this to set a new title for the top organization element
+if you use layered login</h2>
+<pre>getTopOrganizationDescription() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_indexAction"></a><div class="element clickable method public method_indexAction " data-toggle="collapse" data-target=".method_indexAction .collapse" title="public">
+<h2>Dummy: always rerouted by GemsEscort</h2>
+<pre>indexAction() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_initHtml"></a><div class="element clickable method public method_initHtml inherited" data-toggle="collapse" data-target=".method_initHtml .collapse" title="public">
+<h2>Intializes the html component.</h2>
+<pre>initHtml(boolean $reset<code> = false</code>) : void</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$reset</h4>
+<code>boolean</code><p>Throws away any existing html output when true</p></div>
+</div></div>
+</div>
+<a id="method_loginAction"></a><div class="element clickable method public method_loginAction " data-toggle="collapse" data-target=".method_loginAction .collapse" title="public">
+<h2>Default login page</h2>
+<pre>loginAction() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_logoffAction"></a><div class="element clickable method public method_logoffAction " data-toggle="collapse" data-target=".method_logoffAction .collapse" title="public">
+<h2>Default logoff action</h2>
+<pre>logoffAction() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_resetpasswordAction"></a><div class="element clickable method public method_resetpasswordAction " data-toggle="collapse" data-target=".method_resetpasswordAction .collapse" title="public">
+<h2>Reset password page.</h2>
+<pre>resetpasswordAction() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_sendUserResetEMail"></a><div class="element clickable method public method_sendUserResetEMail " data-toggle="collapse" data-target=".method_sendUserResetEMail .collapse" title="public">
+<h2>Send the user an e-mail with a link for password reset</h2>
+<pre>sendUserResetEMail(\Gems_User_User $user) : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$user</h4>
+<code>\Gems_User_User</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>string or array of Errors or null when successful.</div>
+</div></div>
+</div>
+<a id="method_setMessenger"></a><div class="element clickable method public method_setMessenger inherited" data-toggle="collapse" data-target=".method_setMessenger .collapse" title="public">
+<h2>Set the session based message store.</h2>
+<pre>setMessenger(\Zend_Controller_Action_Helper_FlashMessenger $messenger) : \MUtil_Controller_Action</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$messenger</h4>
+<code>\Zend_Controller_Action_Helper_FlashMessenger</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\MUtil_Controller_Action</code></div>
+</div></div>
+</div>
+<a id="method_createLoginForm"></a><div class="element clickable method protected method_createLoginForm " data-toggle="collapse" data-target=".method_createLoginForm .collapse" title="protected">
+<h2>Returns a login form</h2>
+<pre>createLoginForm(boolean $showToken<code> = null</code>, boolean $showPasswordLost<code> = null</code>) : \Gems_User_Form_LoginForm</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$showToken</h4>
+<code>boolean</code><p>Optional, show 'Ask token' button, $this->showTokenButton is used when not specified</p></div>
+<div class="subelement argument">
+<h4>$showPasswordLost</h4>
+<code>boolean</code><p>Optional, show 'Lost password' button, $this->showPasswordLostButton is used when not specified</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_User_Form_LoginForm</code></div>
+</div></div>
+</div>
+<a id="method_createResetRequestForm"></a><div class="element clickable method protected method_createResetRequestForm " data-toggle="collapse" data-target=".method_createResetRequestForm .collapse" title="protected">
+<h2>Gets a reset password form.</h2>
+<pre>createResetRequestForm() : \Gems_User_Form_ResetForm</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_User_Form_ResetForm</code></div>
+</div></div>
+</div>
+<a id="method_displayLoginForm"></a><div class="element clickable method protected method_displayLoginForm " data-toggle="collapse" data-target=".method_displayLoginForm .collapse" title="protected">
+<h2>Function for overruling the display of the login form.</h2>
+<pre>displayLoginForm(\Gems_User_Form_LoginForm $form) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$form</h4>
+<code>\Gems_User_Form_LoginForm</code>
+</div>
+</div></div>
+</div>
+<a id="method_displayResetForm"></a><div class="element clickable method protected method_displayResetForm " data-toggle="collapse" data-target=".method_displayResetForm .collapse" title="protected">
+<h2>Function for overruling the display of the reset form.</h2>
+<pre>displayResetForm(\Gems_Form_AutoLoadFormAbstract $form, mixed $errors) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$form</h4>
+<code>\Gems_Form_AutoLoadFormAbstract</code><p>Rset password or reset request form</p></div>
+<div class="subelement argument">
+<h4>$errors</h4>
+<code>mixed</code>
+</div>
+</div></div>
+</div>
+<a id="method_loadSnippetLoader"></a><div class="element clickable method protected method_loadSnippetLoader inherited" data-toggle="collapse" data-target=".method_loadSnippetLoader .collapse" title="protected">
+<h2>Stub for overruling default snippet loader initiation.</h2>
+<pre>loadSnippetLoader() </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_setCurrentOrganizationTo"></a><div class="element clickable method protected method_setCurrentOrganizationTo " data-toggle="collapse" data-target=".method_setCurrentOrganizationTo .collapse" title="protected">
+<h2>Helper function to safely switch org during login</h2>
+<pre>setCurrentOrganizationTo(\Gems_User_User $user) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$user</h4>
+<code>\Gems_User_User</code>
+</div>
+</div></div>
+</div>
+<h3>
+<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
+<a id="property_accesslog"> </a><div class="element clickable property public property_accesslog" data-toggle="collapse" data-target=".property_accesslog .collapse" title="public">
+<h2>$accesslog</h2>
+<pre>$accesslog : \Gems_AccessLog</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_currentUser"> </a><div class="element clickable property public property_currentUser" data-toggle="collapse" data-target=".property_currentUser .collapse" title="public">
+<h2>$currentUser</h2>
+<pre>$currentUser : \Gems_User_User</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_db"> </a><div class="element clickable property public property_db" data-toggle="collapse" data-target=".property_db .collapse" title="public">
+<h2>$db</h2>
+<pre>$db : \Zend_Db_Adapter_Abstract</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_loader"> </a><div class="element clickable property public property_loader" data-toggle="collapse" data-target=".property_loader .collapse" title="public">
+<h2>$loader</h2>
+<pre>$loader : \Gems_Loader</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_messenger"> </a><div class="element clickable property public property_messenger" data-toggle="collapse" data-target=".property_messenger .collapse" title="public">
+<h2>$messenger</h2>
+<pre>$messenger : \Zend_Controller_Action_Helper_FlashMessenger</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_util"> </a><div class="element clickable property public property_util" data-toggle="collapse" data-target=".property_util .collapse" title="public">
+<h2>$util</h2>
+<pre>$util : \Gems_Util</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_labelWidthFactor"> </a><div class="element clickable property protected property_labelWidthFactor" data-toggle="collapse" data-target=".property_labelWidthFactor .collapse" title="protected">
+<h2>The width factor for the label elements.</h2>
+<pre>$labelWidthFactor : float</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"><p>Width = (max(characters in labels) * labelWidthFactor) . 'em'</p></div></div></div>
+</div>
+<a id="property_layeredLogin"> </a><div class="element clickable property protected property_layeredLogin" data-toggle="collapse" data-target=".property_layeredLogin .collapse" title="protected">
+<h2>Use a flat login (false = default) or a layered login where you first
+select a parent organization and then see a list of child organizations.</h2>
+<pre>$layeredLogin : boolean</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>false</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_organizationMaxLines"> </a><div class="element clickable property protected property_organizationMaxLines" data-toggle="collapse" data-target=".property_organizationMaxLines .collapse" title="protected">
+<h2>For small numbers of organizations a multiline selectbox will be nice. This
+setting handles how many lines will display at once. Use 1 for the normal
+dropdown selectbox</h2>
+<pre>$organizationMaxLines : integer</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>6</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_returnToLoginAfterReset"> </a><div class="element clickable property protected property_returnToLoginAfterReset" data-toggle="collapse" data-target=".property_returnToLoginAfterReset .collapse" title="protected">
+<h2>When true, the rese4t form returns to the login page after sending a change request</h2>
+<pre>$returnToLoginAfterReset : boolean</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>true</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_showPasswordLostButton"> </a><div class="element clickable property protected property_showPasswordLostButton" data-toggle="collapse" data-target=".property_showPasswordLostButton .collapse" title="protected">
+<h2>The default behaviour for showing a lost password button</h2>
+<pre>$showPasswordLostButton : boolean</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>true</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_showTokenButton"> </a><div class="element clickable property protected property_showTokenButton" data-toggle="collapse" data-target=".property_showTokenButton .collapse" title="protected">
+<h2>The default behaviour for showing an 'ask token' button</h2>
+<pre>$showTokenButton : boolean</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>true</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:48+02:00.<br></footer></div>
+</div>
+</body>
+</html>

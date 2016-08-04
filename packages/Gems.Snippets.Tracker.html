@@ -1,0 +1,302 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » Gems\Snippets\Tracker</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+<ul class="side-nav nav nav-list">
+<li class="nav-header">
+<i class="icon-map-marker"></i> Packages</li>
+<li>
+<a href="../packages/Gems.Snippets.Tracker.html" title="Tracker"><i class="icon-folder-open"></i>Tracker</a><ul class="nav nav-list nav-packages"></ul>
+</li>
+<li class="nav-header">
+<i title="Classes" class="icon-custom icon-class"></i> Classes</li>
+<li><a href="#MergeTrackSnippetGeneric" title="">MergeTrackSnippetGeneric</a></li>
+<li><a href="#ExportTrackSnippetGeneric" title="">ExportTrackSnippetGeneric</a></li>
+<li><a href="#TrackUsageOverviewSnippet" title="Adds Gems specific display details and helper functions:">TrackUsageOverviewSnippet</a></li>
+<li><a href="#FieldEditSnippet" title="Displays an edit form based on the model the model set through the $model snippet parameter.">FieldEditSnippet</a></li>
+<li><a href="#TrackMaintenanceSearchSnippet" title="Display a search form that selects on typed text only">TrackMaintenanceSearchSnippet</a></li>
+<li><a href="#Gems_Snippets_Tracker_Fields_FieldReportSearchSnippet" title="Display a search form that selects on typed text only">Gems_Snippets_Tracker_Fields_FieldReportSearchSnippet</a></li>
+<li><a href="#RoundsTitleSnippet" title="">RoundsTitleSnippet</a></li>
+<li><a href="#RoundDeleteSnippet" title="Ask Yes/No conformation for deletion and deletes item when confirmed.">RoundDeleteSnippet</a></li>
+<li><a href="#FieldDeleteSnippet" title="Ask Yes/No conformation for deletion and deletes item when confirmed.">FieldDeleteSnippet</a></li>
+<li><a href="#NewRoundButtonRow" title="Displays the parent menu item (if existing) plus any current
+level buttons that are visible">NewRoundButtonRow</a></li>
+<li><a href="#RoundsTableSnippet" title="Adds Gems specific display details and helper functions:">RoundsTableSnippet</a></li>
+<li><a href="#TrackIndexButtonRow" title="Displays the parent menu item (if existing) plus any current
+level buttons that are visible">TrackIndexButtonRow</a></li>
+<li><a href="#EditRoundStepSnippet" title="Short description for class">EditRoundStepSnippet</a></li>
+<li><a href="#AvailableTracksSnippet" title="Adds Gems specific display details and helper functions:">AvailableTracksSnippet</a></li>
+<li><a href="#TokenActionButtonRow" title="Displays the parent menu item (if existing) plus any current
+level buttons that are visible">TokenActionButtonRow</a></li>
+<li><a href="#ShowRoundStepSnippet" title="Short description for class">ShowRoundStepSnippet</a></li>
+<li><a href="#Gems_Snippets_Tracker_Fields_FieldsAutosearchForm" title="Display a search form that selects on typed text only">Gems_Snippets_Tracker_Fields_FieldsAutosearchForm</a></li>
+<li><a href="#Gems_Snippets_Tracker_Overview_TableSnippet" title="Display a tabel that links to the track maintenance">Gems_Snippets_Tracker_Overview_TableSnippet</a></li>
+<li><a href="#EditTrackSnippet" title="Adds basic track editing snippet parameter processing and checking.">EditTrackSnippet</a></li>
+<li><a href="#FieldsTableSnippet" title="Adds Gems specific display details and helper functions:">FieldsTableSnippet</a></li>
+<li><a href="#SingleSurveyAvailableTracksSnippet" title="Adds Gems specific display details and helper functions:">SingleSurveyAvailableTracksSnippet</a></li>
+<li><a href="#TrackActionButtonRow" title="Displays the parent menu item (if existing) plus any current
+level buttons that are visible">TrackActionButtonRow</a></li>
+<li><a href="#ImportTrackSnippetGeneric" title="">ImportTrackSnippetGeneric</a></li>
+<li><a href="#FieldsTitleSnippet" title="">FieldsTitleSnippet</a></li>
+<li><a href="#DeleteTrackSnippet" title="Adds Gems specific display details and helper functions:">DeleteTrackSnippet</a></li>
+</ul>
+</div>
+<div class="span8 package-contents">
+<ul class="breadcrumb"><li>
+<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li><a href="../packages/Gems.html">Gems</a></li>
+<li>
+<span class="divider">\</span><a href="../packages/Gems.Snippets.html">Snippets</a>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../packages/Gems.Snippets.Tracker.html">Tracker</a>
+</li>
+</li></ul>
+<div class="package-indent">
+<h3>
+<i title="Classes" class="icon-custom icon-class"></i> Classes, interfaces, and traits</h3>
+<div xmlns:php="http://php.net/xsl" id="AvailableTracksSnippet" class="element ajax clickable class">
+<h1>AvailableTracksSnippet<a href="../classes/Gems.Snippets.Tracker.AvailableTracksSnippet.html">¶</a>
+</h1>
+<p class="short_description">Adds Gems specific display details and helper functions:</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.AvailableTracksSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="NewRoundButtonRow" class="element ajax clickable class">
+<h1>NewRoundButtonRow<a href="../classes/Gems.Snippets.Tracker.Buttons.NewRoundButtonRow.html">¶</a>
+</h1>
+<p class="short_description">Displays the parent menu item (if existing) plus any current
+level buttons that are visible</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Buttons.NewRoundButtonRow.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="TokenActionButtonRow" class="element ajax clickable class">
+<h1>TokenActionButtonRow<a href="../classes/Gems.Snippets.Tracker.Buttons.TokenActionButtonRow.html">¶</a>
+</h1>
+<p class="short_description">Displays the parent menu item (if existing) plus any current
+level buttons that are visible</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Buttons.TokenActionButtonRow.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="TrackActionButtonRow" class="element ajax clickable class">
+<h1>TrackActionButtonRow<a href="../classes/Gems.Snippets.Tracker.Buttons.TrackActionButtonRow.html">¶</a>
+</h1>
+<p class="short_description">Displays the parent menu item (if existing) plus any current
+level buttons that are visible</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Buttons.TrackActionButtonRow.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="TrackIndexButtonRow" class="element ajax clickable class">
+<h1>TrackIndexButtonRow<a href="../classes/Gems.Snippets.Tracker.Buttons.TrackIndexButtonRow.html">¶</a>
+</h1>
+<p class="short_description">Displays the parent menu item (if existing) plus any current
+level buttons that are visible</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Buttons.TrackIndexButtonRow.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="DeleteTrackSnippet" class="element ajax clickable class">
+<h1>DeleteTrackSnippet<a href="../classes/Gems.Snippets.Tracker.DeleteTrackSnippet.html">¶</a>
+</h1>
+<p class="short_description">Adds Gems specific display details and helper functions:</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.DeleteTrackSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="EditTrackSnippet" class="element ajax clickable class">
+<h1>EditTrackSnippet<a href="../classes/Gems.Snippets.Tracker.EditTrackSnippet.html">¶</a>
+</h1>
+<p class="short_description">Adds basic track editing snippet parameter processing and checking.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.EditTrackSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="ExportTrackSnippetGeneric" class="element ajax clickable class">
+<h1>ExportTrackSnippetGeneric<a href="../classes/Gems.Snippets.Tracker.Export.ExportTrackSnippetGeneric.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Export.ExportTrackSnippetGeneric.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="FieldDeleteSnippet" class="element ajax clickable class">
+<h1>FieldDeleteSnippet<a href="../classes/Gems.Snippets.Tracker.Fields.FieldDeleteSnippet.html">¶</a>
+</h1>
+<p class="short_description">Ask Yes/No conformation for deletion and deletes item when confirmed.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Fields.FieldDeleteSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="FieldEditSnippet" class="element ajax clickable class">
+<h1>FieldEditSnippet<a href="../classes/Gems.Snippets.Tracker.Fields.FieldEditSnippet.html">¶</a>
+</h1>
+<p class="short_description">Displays an edit form based on the model the model set through the $model snippet parameter.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Fields.FieldEditSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="FieldsTableSnippet" class="element ajax clickable class">
+<h1>FieldsTableSnippet<a href="../classes/Gems.Snippets.Tracker.Fields.FieldsTableSnippet.html">¶</a>
+</h1>
+<p class="short_description">Adds Gems specific display details and helper functions:</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Fields.FieldsTableSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="FieldsTitleSnippet" class="element ajax clickable class">
+<h1>FieldsTitleSnippet<a href="../classes/Gems.Snippets.Tracker.Fields.FieldsTitleSnippet.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Fields.FieldsTitleSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="ImportTrackSnippetGeneric" class="element ajax clickable class">
+<h1>ImportTrackSnippetGeneric<a href="../classes/Gems.Snippets.Tracker.Import.ImportTrackSnippetGeneric.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Import.ImportTrackSnippetGeneric.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="MergeTrackSnippetGeneric" class="element ajax clickable class">
+<h1>MergeTrackSnippetGeneric<a href="../classes/Gems.Snippets.Tracker.Import.MergeTrackSnippetGeneric.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Import.MergeTrackSnippetGeneric.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="EditRoundStepSnippet" class="element ajax clickable class">
+<h1>EditRoundStepSnippet<a href="../classes/Gems.Snippets.Tracker.Rounds.EditRoundStepSnippet.html">¶</a>
+</h1>
+<p class="short_description">Short description for class</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Rounds.EditRoundStepSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="RoundDeleteSnippet" class="element ajax clickable class">
+<h1>RoundDeleteSnippet<a href="../classes/Gems.Snippets.Tracker.Rounds.RoundDeleteSnippet.html">¶</a>
+</h1>
+<p class="short_description">Ask Yes/No conformation for deletion and deletes item when confirmed.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Rounds.RoundDeleteSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="RoundsTableSnippet" class="element ajax clickable class">
+<h1>RoundsTableSnippet<a href="../classes/Gems.Snippets.Tracker.Rounds.RoundsTableSnippet.html">¶</a>
+</h1>
+<p class="short_description">Adds Gems specific display details and helper functions:</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Rounds.RoundsTableSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="RoundsTitleSnippet" class="element ajax clickable class">
+<h1>RoundsTitleSnippet<a href="../classes/Gems.Snippets.Tracker.Rounds.RoundsTitleSnippet.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Rounds.RoundsTitleSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="ShowRoundStepSnippet" class="element ajax clickable class">
+<h1>ShowRoundStepSnippet<a href="../classes/Gems.Snippets.Tracker.Rounds.ShowRoundStepSnippet.html">¶</a>
+</h1>
+<p class="short_description">Short description for class</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Rounds.ShowRoundStepSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="SingleSurveyAvailableTracksSnippet" class="element ajax clickable class">
+<h1>SingleSurveyAvailableTracksSnippet<a href="../classes/Gems.Snippets.Tracker.SingleSurveyAvailableTracksSnippet.html">¶</a>
+</h1>
+<p class="short_description">Adds Gems specific display details and helper functions:</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.SingleSurveyAvailableTracksSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="TrackMaintenanceSearchSnippet" class="element ajax clickable class">
+<h1>TrackMaintenanceSearchSnippet<a href="../classes/Gems.Snippets.Tracker.TrackMaintenance.TrackMaintenanceSearchSnippet.html">¶</a>
+</h1>
+<p class="short_description">Display a search form that selects on typed text only</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.TrackMaintenance.TrackMaintenanceSearchSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="TrackUsageOverviewSnippet" class="element ajax clickable class">
+<h1>TrackUsageOverviewSnippet<a href="../classes/Gems.Snippets.Tracker.TrackUsageOverviewSnippet.html">¶</a>
+</h1>
+<p class="short_description">Adds Gems specific display details and helper functions:</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.TrackUsageOverviewSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Tracker_Fields_FieldReportSearchSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Tracker_Fields_FieldReportSearchSnippet<a href="../classes/Gems_Snippets_Tracker_Fields_FieldReportSearchSnippet.html">¶</a>
+</h1>
+<p class="short_description">Display a search form that selects on typed text only</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Tracker_Fields_FieldReportSearchSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Tracker_Fields_FieldsAutosearchForm" class="element ajax clickable class">
+<h1>Gems_Snippets_Tracker_Fields_FieldsAutosearchForm<a href="../classes/Gems_Snippets_Tracker_Fields_FieldsAutosearchForm.html">¶</a>
+</h1>
+<p class="short_description">Display a search form that selects on typed text only</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Tracker_Fields_FieldsAutosearchForm.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Tracker_Overview_TableSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Tracker_Overview_TableSnippet<a href="../classes/Gems_Snippets_Tracker_Overview_TableSnippet.html">¶</a>
+</h1>
+<p class="short_description">Display a tabel that links to the track maintenance</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Tracker_Overview_TableSnippet.html" class="more">« More »</a>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:12+02:00.<br></footer></div>
+</div>
+</body>
+</html>

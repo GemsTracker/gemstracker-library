@@ -1,0 +1,359 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » \Gems_Communication_RespondentContainer</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+<div class="btn-group visibility" data-toggle="buttons-checkbox">
+<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
+</div>
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+</div>
+<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+<li class="nav-header">
+<i title="Methods" class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public "><a href="#method_getBirthday" title="getBirthday() :: "><span class="description">getBirthday()
+        </span><pre>getBirthday()</pre></a></li>
+<li class="method public "><a href="#method_getBsn" title="getBsn() :: "><span class="description">getBsn()
+        </span><pre>getBsn()</pre></a></li>
+<li class="method public "><a href="#method_getFirstName" title="getFirstName() :: "><span class="description">getFirstName()
+        </span><pre>getFirstName()</pre></a></li>
+<li class="method public "><a href="#method_getGender" title="getGender() :: "><span class="description">getGender()
+        </span><pre>getGender()</pre></a></li>
+<li class="method public "><a href="#method_getLastName" title="getLastName() :: "><span class="description">getLastName()
+        </span><pre>getLastName()</pre></a></li>
+<li class="method public "><a href="#method_getPatientId" title="getPatientId() :: "><span class="description">getPatientId()
+        </span><pre>getPatientId()</pre></a></li>
+<li class="method public "><a href="#method_getSurnamePrefix" title="getSurnamePrefix() :: "><span class="description">getSurnamePrefix()
+        </span><pre>getSurnamePrefix()</pre></a></li>
+<li class="method public "><a href="#method_setBirthday" title="setBirthday() :: "><span class="description">setBirthday()
+        </span><pre>setBirthday()</pre></a></li>
+<li class="method public "><a href="#method_setBsn" title="setBsn() :: "><span class="description">setBsn()
+        </span><pre>setBsn()</pre></a></li>
+<li class="method public "><a href="#method_setFirstName" title="setFirstName() :: "><span class="description">setFirstName()
+        </span><pre>setFirstName()</pre></a></li>
+<li class="method public "><a href="#method_setGender" title="setGender() :: "><span class="description">setGender()
+        </span><pre>setGender()</pre></a></li>
+<li class="method public "><a href="#method_setLastName" title="setLastName() :: "><span class="description">setLastName()
+        </span><pre>setLastName()</pre></a></li>
+<li class="method public "><a href="#method_setPatientId" title="setPatientId() :: "><span class="description">setPatientId()
+        </span><pre>setPatientId()</pre></a></li>
+<li class="method public "><a href="#method_setSurnamePrefix" title="setSurnamePrefix() :: "><span class="description">setSurnamePrefix()
+        </span><pre>setSurnamePrefix()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Properties" class="icon-custom icon-property"></i> Properties
+                    <ul></ul>
+</li>
+<li class="nav-header private">» Private
+                    <ul>
+<li class="property private "><a href="#property__birthday" title="$_birthday() :: "><span class="description"></span><pre>$_birthday</pre></a></li>
+<li class="property private "><a href="#property__bsn" title="$_bsn() :: "><span class="description"></span><pre>$_bsn</pre></a></li>
+<li class="property private "><a href="#property__firstName" title="$_firstName() :: "><span class="description"></span><pre>$_firstName</pre></a></li>
+<li class="property private "><a href="#property__gender" title="$_gender() :: "><span class="description"></span><pre>$_gender</pre></a></li>
+<li class="property private "><a href="#property__lastName" title="$_lastName() :: "><span class="description"></span><pre>$_lastName</pre></a></li>
+<li class="property private "><a href="#property__patientId" title="$_patientId() :: "><span class="description"></span><pre>$_patientId</pre></a></li>
+<li class="property private "><a href="#property__surnamePrefix" title="$_surnamePrefix() :: "><span class="description"></span><pre>$_surnamePrefix</pre></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a xmlns:php="http://php.net/xsl" id="\Gems_Communication_RespondentContainer"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+<li>
+<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Gems_Communication_RespondentContainer.html">Gems_Communication_RespondentContainer</a>
+</li>
+</ul>
+<div xmlns:php="http://php.net/xsl" class="element class">
+<p class="short_description">A simple value-object containing respondent information</p>
+<div class="details">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Gems.Communication.html">Gems</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Communication</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2011 Erasmus MC</td>
+</tr>
+<tr>
+<th>license</th>
+<td><a href="http://opensource.org/licenses/BSD-3-Clause">New BSD License</a></td>
+</tr>
+</table>
+<h3>
+<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
+<a id="method_getBirthday"></a><div class="element clickable method public method_getBirthday " data-toggle="collapse" data-target=".method_getBirthday .collapse" title="public">
+<h2>getBirthday()
+        </h2>
+<pre>getBirthday() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_getBsn"></a><div class="element clickable method public method_getBsn " data-toggle="collapse" data-target=".method_getBsn .collapse" title="public">
+<h2>getBsn()
+        </h2>
+<pre>getBsn() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_getFirstName"></a><div class="element clickable method public method_getFirstName " data-toggle="collapse" data-target=".method_getFirstName .collapse" title="public">
+<h2>getFirstName()
+        </h2>
+<pre>getFirstName() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_getGender"></a><div class="element clickable method public method_getGender " data-toggle="collapse" data-target=".method_getGender .collapse" title="public">
+<h2>getGender()
+        </h2>
+<pre>getGender() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_getLastName"></a><div class="element clickable method public method_getLastName " data-toggle="collapse" data-target=".method_getLastName .collapse" title="public">
+<h2>getLastName()
+        </h2>
+<pre>getLastName() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_getPatientId"></a><div class="element clickable method public method_getPatientId " data-toggle="collapse" data-target=".method_getPatientId .collapse" title="public">
+<h2>getPatientId()
+        </h2>
+<pre>getPatientId() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_getSurnamePrefix"></a><div class="element clickable method public method_getSurnamePrefix " data-toggle="collapse" data-target=".method_getSurnamePrefix .collapse" title="public">
+<h2>getSurnamePrefix()
+        </h2>
+<pre>getSurnamePrefix() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_setBirthday"></a><div class="element clickable method public method_setBirthday " data-toggle="collapse" data-target=".method_setBirthday .collapse" title="public">
+<h2>setBirthday()
+        </h2>
+<pre>setBirthday($birthday) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$birthday</h4></div>
+</div></div>
+</div>
+<a id="method_setBsn"></a><div class="element clickable method public method_setBsn " data-toggle="collapse" data-target=".method_setBsn .collapse" title="public">
+<h2>setBsn()
+        </h2>
+<pre>setBsn($bsn) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$bsn</h4></div>
+</div></div>
+</div>
+<a id="method_setFirstName"></a><div class="element clickable method public method_setFirstName " data-toggle="collapse" data-target=".method_setFirstName .collapse" title="public">
+<h2>setFirstName()
+        </h2>
+<pre>setFirstName($firstName) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$firstName</h4></div>
+</div></div>
+</div>
+<a id="method_setGender"></a><div class="element clickable method public method_setGender " data-toggle="collapse" data-target=".method_setGender .collapse" title="public">
+<h2>setGender()
+        </h2>
+<pre>setGender($gender) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$gender</h4></div>
+</div></div>
+</div>
+<a id="method_setLastName"></a><div class="element clickable method public method_setLastName " data-toggle="collapse" data-target=".method_setLastName .collapse" title="public">
+<h2>setLastName()
+        </h2>
+<pre>setLastName($lastName) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$lastName</h4></div>
+</div></div>
+</div>
+<a id="method_setPatientId"></a><div class="element clickable method public method_setPatientId " data-toggle="collapse" data-target=".method_setPatientId .collapse" title="public">
+<h2>setPatientId()
+        </h2>
+<pre>setPatientId($patientId) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$patientId</h4></div>
+</div></div>
+</div>
+<a id="method_setSurnamePrefix"></a><div class="element clickable method public method_setSurnamePrefix " data-toggle="collapse" data-target=".method_setSurnamePrefix .collapse" title="public">
+<h2>setSurnamePrefix()
+        </h2>
+<pre>setSurnamePrefix($surnamePrefix) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$surnamePrefix</h4></div>
+</div></div>
+</div>
+<h3>
+<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
+<a id="property__birthday"> </a><div class="element clickable property private property__birthday" data-toggle="collapse" data-target=".property__birthday .collapse" title="private">
+<h2>$_birthday</h2>
+<pre>$_birthday </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__bsn"> </a><div class="element clickable property private property__bsn" data-toggle="collapse" data-target=".property__bsn .collapse" title="private">
+<h2>$_bsn</h2>
+<pre>$_bsn </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__firstName"> </a><div class="element clickable property private property__firstName" data-toggle="collapse" data-target=".property__firstName .collapse" title="private">
+<h2>$_firstName</h2>
+<pre>$_firstName </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__gender"> </a><div class="element clickable property private property__gender" data-toggle="collapse" data-target=".property__gender .collapse" title="private">
+<h2>$_gender</h2>
+<pre>$_gender </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__lastName"> </a><div class="element clickable property private property__lastName" data-toggle="collapse" data-target=".property__lastName .collapse" title="private">
+<h2>$_lastName</h2>
+<pre>$_lastName </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__patientId"> </a><div class="element clickable property private property__patientId" data-toggle="collapse" data-target=".property__patientId .collapse" title="private">
+<h2>$_patientId</h2>
+<pre>$_patientId </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__surnamePrefix"> </a><div class="element clickable property private property__surnamePrefix" data-toggle="collapse" data-target=".property__surnamePrefix .collapse" title="private">
+<h2>$_surnamePrefix</h2>
+<pre>$_surnamePrefix </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:20+02:00.<br></footer></div>
+</div>
+</body>
+</html>

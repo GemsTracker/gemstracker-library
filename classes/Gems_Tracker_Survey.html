@@ -1,0 +1,860 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » \Gems_Tracker_Survey</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+<div class="btn-group visibility" data-toggle="buttons-checkbox">
+<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
+</div>
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+</div>
+<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+<li class="nav-header">
+<i title="Methods" class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public "><a href="#method___construct" title="__construct() :: "><span class="description">__construct()
+        </span><pre>__construct()</pre></a></li>
+<li class="method public inherited"><a href="#method___get" title="__get() :: Returns a callable if a method is called as a variable"><span class="description">Returns a callable if a method is called as a variable</span><pre>__get()</pre></a></li>
+<li class="method public "><a href="#method_checkRegistryRequestsAnswers" title="checkRegistryRequestsAnswers() :: Should be called after answering the request to allow the Target
+to check if all required registry values have been set correctly."><span class="description">Should be called after answering the request to allow the Target
+to check if all required registry values have been set correctly.</span><pre>checkRegistryRequestsAnswers()</pre></a></li>
+<li class="method public "><a href="#method_copyTokenToSource" title="copyTokenToSource() :: Inserts the token in the source (if needed) and sets those attributes the source wants to set."><span class="description">Inserts the token in the source (if needed) and sets those attributes the source wants to set.</span><pre>copyTokenToSource()</pre></a></li>
+<li class="method public "><a href="#method_getAnswerDateTime" title="getAnswerDateTime() :: Returns a field from the raw answers as a date object."><span class="description">Returns a field from the raw answers as a date object.</span><pre>getAnswerDateTime()</pre></a></li>
+<li class="method public "><a href="#method_getAnswerModel" title="getAnswerModel() :: Returns a model for displaying the answers to this survey in the requested language."><span class="description">Returns a model for displaying the answers to this survey in the requested language.</span><pre>getAnswerModel()</pre></a></li>
+<li class="method public "><a href="#method_getAnswerSnippetNames" title="getAnswerSnippetNames() :: Returns a snippet name that can be used to display the answers to the token or nothing."><span class="description">Returns a snippet name that can be used to display the answers to the token or nothing.</span><pre>getAnswerSnippetNames()</pre></a></li>
+<li class="method public "><a href="#method_getCode" title="getCode() :: "><span class="description">getCode()
+        </span><pre>getCode()</pre></a></li>
+<li class="method public "><a href="#method_getCompletionTime" title="getCompletionTime() :: The time the survey was completed according to the source"><span class="description">The time the survey was completed according to the source</span><pre>getCompletionTime()</pre></a></li>
+<li class="method public "><a href="#method_getDatesList" title="getDatesList() :: Returns an array containing fieldname =&gt; label for each date field in the survey."><span class="description">Returns an array containing fieldname =&gt; label for each date field in the survey.</span><pre>getDatesList()</pre></a></li>
+<li class="method public "><a href="#method_getDescription" title="getDescription() :: "><span class="description">getDescription()
+        </span><pre>getDescription()</pre></a></li>
+<li class="method public "><a href="#method_getDuration" title="getDuration() :: "><span class="description">getDuration()
+        </span><pre>getDuration()</pre></a></li>
+<li class="method public "><a href="#method_getExportCode" title="getExportCode() :: "><span class="description">getExportCode()
+        </span><pre>getExportCode()</pre></a></li>
+<li class="method public "><a href="#method_getGroupId" title="getGroupId() :: "><span class="description">getGroupId()
+        </span><pre>getGroupId()</pre></a></li>
+<li class="method public "><a href="#method_getInsertDateUntil" title="getInsertDateUntil() :: Calculate the until date for single survey insertion"><span class="description">Calculate the until date for single survey insertion</span><pre>getInsertDateUntil()</pre></a></li>
+<li class="method public "><a href="#method_getName" title="getName() :: "><span class="description">getName()
+        </span><pre>getName()</pre></a></li>
+<li class="method public "><a href="#method_getQuestionInformation" title="getQuestionInformation() :: Returns an array of array with the structure:
+     question =&gt; string,
+     class    =&gt; question|question_sub
+     group    =&gt; is for grouping
+     type     =&gt; (optional) source specific type
+     answers  =&gt; string for single types,
+                 array for selection of,
+                 nothing for no answer"><span class="description">Returns an array of array with the structure:
+     question =&gt; string,
+     class    =&gt; question|question_sub
+     group    =&gt; is for grouping
+     type     =&gt; (optional) source specific type
+     answers  =&gt; string for single types,
+                 array for selection of,
+                 nothing for no answer</span><pre>getQuestionInformation()</pre></a></li>
+<li class="method public "><a href="#method_getQuestionList" title="getQuestionList() :: Returns a fieldlist with the field names as key and labels as array."><span class="description">Returns a fieldlist with the field names as key and labels as array.</span><pre>getQuestionList()</pre></a></li>
+<li class="method public "><a href="#method_getRawTokenAnswerRow" title="getRawTokenAnswerRow() :: Returns the answers in simple raw array format, without value processing etc."><span class="description">Returns the answers in simple raw array format, without value processing etc.</span><pre>getRawTokenAnswerRow()</pre></a></li>
+<li class="method public "><a href="#method_getRawTokenAnswerRows" title="getRawTokenAnswerRows() :: Returns the answers of multiple tokens in simple raw nested array format,
+without value processing etc."><span class="description">Returns the answers of multiple tokens in simple raw nested array format,
+without value processing etc.</span><pre>getRawTokenAnswerRows()</pre></a></li>
+<li class="method public "><a href="#method_getRawTokenAnswerRowsCount" title="getRawTokenAnswerRowsCount() :: Returns the number of answers of multiple tokens"><span class="description">Returns the number of answers of multiple tokens</span><pre>getRawTokenAnswerRowsCount()</pre></a></li>
+<li class="method public "><a href="#method_getResultField" title="getResultField() :: Retrieve the name of the resultfield"><span class="description">Retrieve the name of the resultfield</span><pre>getResultField()</pre></a></li>
+<li class="method public "><a href="#method_getSource" title="getSource() :: "><span class="description">getSource()
+        </span><pre>getSource()</pre></a></li>
+<li class="method public "><a href="#method_getSourceSurveyId" title="getSourceSurveyId() :: "><span class="description">getSourceSurveyId()
+        </span><pre>getSourceSurveyId()</pre></a></li>
+<li class="method public "><a href="#method_getStartTime" title="getStartTime() :: The time the survey was started according to the source"><span class="description">The time the survey was started according to the source</span><pre>getStartTime()</pre></a></li>
+<li class="method public "><a href="#method_getStatus" title="getStatus() :: "><span class="description">getStatus()
+        </span><pre>getStatus()</pre></a></li>
+<li class="method public "><a href="#method_getSurveyBeforeAnsweringEvent" title="getSurveyBeforeAnsweringEvent() :: Return the Survey Before Answering event (if any)"><span class="description">Return the Survey Before Answering event (if any)</span><pre>getSurveyBeforeAnsweringEvent()</pre></a></li>
+<li class="method public "><a href="#method_getSurveyCompletedEvent" title="getSurveyCompletedEvent() :: Return the Survey Completed event"><span class="description">Return the Survey Completed event</span><pre>getSurveyCompletedEvent()</pre></a></li>
+<li class="method public "><a href="#method_getSurveyId" title="getSurveyId() :: "><span class="description">getSurveyId()
+        </span><pre>getSurveyId()</pre></a></li>
+<li class="method public "><a href="#method_getTokenUrl" title="getTokenUrl() :: Returns the url that (should) start the survey for this token"><span class="description">Returns the url that (should) start the survey for this token</span><pre>getTokenUrl()</pre></a></li>
+<li class="method public "><a href="#method_hasPdf" title="hasPdf() :: "><span class="description">hasPdf()
+        </span><pre>hasPdf()</pre></a></li>
+<li class="method public "><a href="#method_inSource" title="inSource() :: Checks whether the token is in the source."><span class="description">Checks whether the token is in the source.</span><pre>inSource()</pre></a></li>
+<li class="method public "><a href="#method_isActive" title="isActive() :: "><span class="description">isActive()
+        </span><pre>isActive()</pre></a></li>
+<li class="method public "><a href="#method_isActiveInSource" title="isActiveInSource() :: "><span class="description">isActiveInSource()
+        </span><pre>isActiveInSource()</pre></a></li>
+<li class="method public "><a href="#method_isCompleted" title="isCompleted() :: Returns true if the survey was completed according to the source"><span class="description">Returns true if the survey was completed according to the source</span><pre>isCompleted()</pre></a></li>
+<li class="method public "><a href="#method_isTakenByStaff" title="isTakenByStaff() :: Should this survey be filled in by staff members."><span class="description">Should this survey be filled in by staff members.</span><pre>isTakenByStaff()</pre></a></li>
+<li class="method public "><a href="#method_saveSurvey" title="saveSurvey() :: Update the survey, both in the database and in memory."><span class="description">Update the survey, both in the database and in memory.</span><pre>saveSurvey()</pre></a></li>
+<li class="method public "><a href="#method_updateConsent" title="updateConsent() :: Updates the consent code of the the token in the source (if needed)"><span class="description">Updates the consent code of the the token in the source (if needed)</span><pre>updateConsent()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header private">» Private
+                    <ul>
+<li class="method private "><a href="#method__ensureGroupData" title="_ensureGroupData() :: Makes sure the group data is part of the $this-&gt;_gemsSurvey"><span class="description">Makes sure the group data is part of the $this-&gt;_gemsSurvey</span><pre>_ensureGroupData()</pre></a></li>
+<li class="method private "><a href="#method__updateSurvey" title="_updateSurvey() :: Update the survey, both in the database and in memory."><span class="description">Update the survey, both in the database and in memory.</span><pre>_updateSurvey()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Properties" class="icon-custom icon-property"></i> Properties
+                    <ul><li class="property public "><a href="#property_exists" title="$exists() :: True when the survey does exist."><span class="description"></span><pre>$exists</pre></a></li></ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="property protected "><a href="#property_db" title="$db() :: "><span class="description"></span><pre>$db</pre></a></li>
+<li class="property protected "><a href="#property_events" title="$events() :: "><span class="description"></span><pre>$events</pre></a></li>
+<li class="property protected "><a href="#property_tracker" title="$tracker() :: "><span class="description"></span><pre>$tracker</pre></a></li>
+</ul>
+</li>
+<li class="nav-header private">» Private
+                    <ul>
+<li class="property private "><a href="#property__gemsSurvey" title="$_gemsSurvey() :: "><span class="description">The gems survey data</span><pre>$_gemsSurvey</pre></a></li>
+<li class="property private "><a href="#property__source" title="$_source() :: "><span class="description"></span><pre>$_source</pre></a></li>
+<li class="property private "><a href="#property__surveyId" title="$_surveyId() :: "><span class="description">The id of the token</span><pre>$_surveyId</pre></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a xmlns:php="http://php.net/xsl" id="\Gems_Tracker_Survey"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+<li>
+<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Gems_Tracker_Survey.html">Gems_Tracker_Survey</a>
+</li>
+</ul>
+<div xmlns:php="http://php.net/xsl" class="element class">
+<p class="short_description">Object representing a specific Survey</p>
+<div class="details">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Gems.Tracker.html">Gems</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Tracker</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2011 Erasmus MC</td>
+</tr>
+<tr>
+<th>license</th>
+<td><a href="http://opensource.org/licenses/BSD-3-Clause">New BSD License</a></td>
+</tr>
+<tr>
+<th>since</th>
+<td>Class available since version 1.4</td>
+</tr>
+<tr>
+<th>inherited_from</th>
+<td>\Gems_Registry_TargetAbstract</td>
+</tr>
+</table>
+<h3>
+<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
+<a id="method___construct"></a><div class="element clickable method public method___construct " data-toggle="collapse" data-target=".method___construct .collapse" title="public">
+<h2>__construct()
+        </h2>
+<pre>__construct(mixed $gemsSurveyData) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$gemsSurveyData</h4>
+<code>mixed</code><p>Token Id or array containing token record</p></div>
+</div></div>
+</div>
+<a id="method___get"></a><div class="element clickable method public method___get inherited" data-toggle="collapse" data-target=".method___get .collapse" title="public">
+<h2>Returns a callable if a method is called as a variable</h2>
+<pre>__get(string $name) : Callable</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>Callable</code></div>
+</div></div>
+</div>
+<a id="method_checkRegistryRequestsAnswers"></a><div class="element clickable method public method_checkRegistryRequestsAnswers " data-toggle="collapse" data-target=".method_checkRegistryRequestsAnswers .collapse" title="public">
+<h2>Should be called after answering the request to allow the Target
+to check if all required registry values have been set correctly.</h2>
+<pre>checkRegistryRequestsAnswers() : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>False if required are missing.</div>
+</div></div>
+</div>
+<a id="method_copyTokenToSource"></a><div class="element clickable method public method_copyTokenToSource " data-toggle="collapse" data-target=".method_copyTokenToSource .collapse" title="public">
+<h2>Inserts the token in the source (if needed) and sets those attributes the source wants to set.</h2>
+<pre>copyTokenToSource(\Gems_Tracker_Token $token, string $language) : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>\Gems_Tracker_Token</code>
+</div>
+<div class="subelement argument">
+<h4>$language</h4>
+<code>string</code>
+</div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code>\Gems_Tracker_Source_SurveyNotFoundException</code></th>
+<td></td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>1 of the token was inserted or changed, 0 otherwise</div>
+</div></div>
+</div>
+<a id="method_getAnswerDateTime"></a><div class="element clickable method public method_getAnswerDateTime " data-toggle="collapse" data-target=".method_getAnswerDateTime .collapse" title="public">
+<h2>Returns a field from the raw answers as a date object.</h2>
+<pre>getAnswerDateTime(string $fieldName, \Gems_Tracker_Token $token) : \MUtil_Date</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$fieldName</h4>
+<code>string</code><p>Name of answer field</p></div>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>\Gems_Tracker_Token</code><p>Gems token object</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\MUtil_Date</code>date time or null</div>
+</div></div>
+</div>
+<a id="method_getAnswerModel"></a><div class="element clickable method public method_getAnswerModel " data-toggle="collapse" data-target=".method_getAnswerModel .collapse" title="public">
+<h2>Returns a model for displaying the answers to this survey in the requested language.</h2>
+<pre>getAnswerModel(string $language) : \MUtil_Model_ModelAbstract</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$language</h4>
+<code>string</code><p>(ISO) language string</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\MUtil_Model_ModelAbstract</code></div>
+</div></div>
+</div>
+<a id="method_getAnswerSnippetNames"></a><div class="element clickable method public method_getAnswerSnippetNames " data-toggle="collapse" data-target=".method_getAnswerSnippetNames .collapse" title="public">
+<h2>Returns a snippet name that can be used to display the answers to the token or nothing.</h2>
+<pre>getAnswerSnippetNames(\Gems_Tracker_Token $token) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>\Gems_Tracker_Token</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Of snippet names</div>
+</div></div>
+</div>
+<a id="method_getCode"></a><div class="element clickable method public method_getCode " data-toggle="collapse" data-target=".method_getCode .collapse" title="public">
+<h2>getCode()
+        </h2>
+<pre>getCode() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>Internal code of the survey</div>
+</div></div>
+</div>
+<a id="method_getCompletionTime"></a><div class="element clickable method public method_getCompletionTime " data-toggle="collapse" data-target=".method_getCompletionTime .collapse" title="public">
+<h2>The time the survey was completed according to the source</h2>
+<pre>getCompletionTime(\Gems_Tracker_Token $token) : \MUtil_Date</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>\Gems_Tracker_Token</code><p>Gems token object</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\MUtil_Date</code>date time or null</div>
+</div></div>
+</div>
+<a id="method_getDatesList"></a><div class="element clickable method public method_getDatesList " data-toggle="collapse" data-target=".method_getDatesList .collapse" title="public">
+<h2>Returns an array containing fieldname =&gt; label for each date field in the survey.</h2>
+<pre>getDatesList(string $language) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Used in dropdown list etc..</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$language</h4>
+<code>string</code><p>(ISO) language string</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Returns an array of the strings datename => label</div>
+</div></div>
+</div>
+<a id="method_getDescription"></a><div class="element clickable method public method_getDescription " data-toggle="collapse" data-target=".method_getDescription .collapse" title="public">
+<h2>getDescription()
+        </h2>
+<pre>getDescription() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>Description of the survey</div>
+</div></div>
+</div>
+<a id="method_getDuration"></a><div class="element clickable method public method_getDuration " data-toggle="collapse" data-target=".method_getDuration .collapse" title="public">
+<h2>getDuration()
+        </h2>
+<pre>getDuration() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>The (manually entered) normal duration for taking this survey</div>
+</div></div>
+</div>
+<a id="method_getExportCode"></a><div class="element clickable method public method_getExportCode " data-toggle="collapse" data-target=".method_getExportCode .collapse" title="public">
+<h2>getExportCode()
+        </h2>
+<pre>getExportCode() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>Export code of the survey</div>
+</div></div>
+</div>
+<a id="method_getGroupId"></a><div class="element clickable method public method_getGroupId " data-toggle="collapse" data-target=".method_getGroupId .collapse" title="public">
+<h2>getGroupId()
+        </h2>
+<pre>getGroupId() : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>Gems group id for survey</div>
+</div></div>
+</div>
+<a id="method_getInsertDateUntil"></a><div class="element clickable method public method_getInsertDateUntil " data-toggle="collapse" data-target=".method_getInsertDateUntil .collapse" title="public">
+<h2>Calculate the until date for single survey insertion</h2>
+<pre>getInsertDateUntil(\MUtil_Date $from) : \MUtil_Date</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$from</h4>
+<code>\MUtil_Date</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\MUtil_Date</code></div>
+</div></div>
+</div>
+<a id="method_getName"></a><div class="element clickable method public method_getName " data-toggle="collapse" data-target=".method_getName .collapse" title="public">
+<h2>getName()
+        </h2>
+<pre>getName() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>Name of the survey</div>
+</div></div>
+</div>
+<a id="method_getQuestionInformation"></a><div class="element clickable method public method_getQuestionInformation " data-toggle="collapse" data-target=".method_getQuestionInformation .collapse" title="public">
+<h2>Returns an array of array with the structure:
+     question =&gt; string,
+     class    =&gt; question|question_sub
+     group    =&gt; is for grouping
+     type     =&gt; (optional) source specific type
+     answers  =&gt; string for single types,
+                 array for selection of,
+                 nothing for no answer</h2>
+<pre>getQuestionInformation(string $language) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$language</h4>
+<code>string</code><p>(ISO) language string</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Nested array</div>
+</div></div>
+</div>
+<a id="method_getQuestionList"></a><div class="element clickable method public method_getQuestionList " data-toggle="collapse" data-target=".method_getQuestionList .collapse" title="public">
+<h2>Returns a fieldlist with the field names as key and labels as array.</h2>
+<pre>getQuestionList(string $language) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$language</h4>
+<code>string</code><p>(ISO) language string</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>of fieldname => label type</div>
+</div></div>
+</div>
+<a id="method_getRawTokenAnswerRow"></a><div class="element clickable method public method_getRawTokenAnswerRow " data-toggle="collapse" data-target=".method_getRawTokenAnswerRow .collapse" title="public">
+<h2>Returns the answers in simple raw array format, without value processing etc.</h2>
+<pre>getRawTokenAnswerRow(string $tokenId) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Function may return more fields than just the answers.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$tokenId</h4>
+<code>string</code><p>Gems Token Id</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Field => Value array</div>
+</div></div>
+</div>
+<a id="method_getRawTokenAnswerRows"></a><div class="element clickable method public method_getRawTokenAnswerRows " data-toggle="collapse" data-target=".method_getRawTokenAnswerRows .collapse" title="public">
+<h2>Returns the answers of multiple tokens in simple raw nested array format,
+without value processing etc.</h2>
+<pre>getRawTokenAnswerRows(array $filter<code> = array()</code>) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Function may return more fields than just the answers.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$filter</h4>
+<code>array</code><p>XXX</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Of nested Field => Value arrays indexed by tokenId</div>
+</div></div>
+</div>
+<a id="method_getRawTokenAnswerRowsCount"></a><div class="element clickable method public method_getRawTokenAnswerRowsCount " data-toggle="collapse" data-target=".method_getRawTokenAnswerRowsCount .collapse" title="public">
+<h2>Returns the number of answers of multiple tokens</h2>
+<pre>getRawTokenAnswerRowsCount(array $filter<code> = array()</code>) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$filter</h4>
+<code>array</code><p>XXX</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Of nested Field => Value arrays indexed by tokenId</div>
+</div></div>
+</div>
+<a id="method_getResultField"></a><div class="element clickable method public method_getResultField " data-toggle="collapse" data-target=".method_getResultField .collapse" title="public">
+<h2>Retrieve the name of the resultfield</h2>
+<pre>getResultField() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>The resultfield should be present in this surveys answers.</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getSource"></a><div class="element clickable method public method_getSource " data-toggle="collapse" data-target=".method_getSource .collapse" title="public">
+<h2>getSource()
+        </h2>
+<pre>getSource() : \Gems_Tracker_Source_SourceInterface</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Source_SourceInterface</code></div>
+</div></div>
+</div>
+<a id="method_getSourceSurveyId"></a><div class="element clickable method public method_getSourceSurveyId " data-toggle="collapse" data-target=".method_getSourceSurveyId .collapse" title="public">
+<h2>getSourceSurveyId()
+        </h2>
+<pre>getSourceSurveyId() : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>Gems survey ID</div>
+</div></div>
+</div>
+<a id="method_getStartTime"></a><div class="element clickable method public method_getStartTime " data-toggle="collapse" data-target=".method_getStartTime .collapse" title="public">
+<h2>The time the survey was started according to the source</h2>
+<pre>getStartTime(\Gems_Tracker_Token $token) : \MUtil_Date</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>\Gems_Tracker_Token</code><p>Gems token object</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\MUtil_Date</code>date time or null</div>
+</div></div>
+</div>
+<a id="method_getStatus"></a><div class="element clickable method public method_getStatus " data-toggle="collapse" data-target=".method_getStatus .collapse" title="public">
+<h2>getStatus()
+        </h2>
+<pre>getStatus() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>Survey status</div>
+</div></div>
+</div>
+<a id="method_getSurveyBeforeAnsweringEvent"></a><div class="element clickable method public method_getSurveyBeforeAnsweringEvent " data-toggle="collapse" data-target=".method_getSurveyBeforeAnsweringEvent .collapse" title="public">
+<h2>Return the Survey Before Answering event (if any)</h2>
+<pre>getSurveyBeforeAnsweringEvent() : \Gems_Event_SurveyBeforeAnsweringEventInterface</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Event_SurveyBeforeAnsweringEventInterface</code>event instance or null</div>
+</div></div>
+</div>
+<a id="method_getSurveyCompletedEvent"></a><div class="element clickable method public method_getSurveyCompletedEvent " data-toggle="collapse" data-target=".method_getSurveyCompletedEvent .collapse" title="public">
+<h2>Return the Survey Completed event</h2>
+<pre>getSurveyCompletedEvent() : \Gems_Event_SurveyCompletedEventInterface</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Event_SurveyCompletedEventInterface</code>event instance or null</div>
+</div></div>
+</div>
+<a id="method_getSurveyId"></a><div class="element clickable method public method_getSurveyId " data-toggle="collapse" data-target=".method_getSurveyId .collapse" title="public">
+<h2>getSurveyId()
+        </h2>
+<pre>getSurveyId() : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>Gems survey ID</div>
+</div></div>
+</div>
+<a id="method_getTokenUrl"></a><div class="element clickable method public method_getTokenUrl " data-toggle="collapse" data-target=".method_getTokenUrl .collapse" title="public">
+<h2>Returns the url that (should) start the survey for this token</h2>
+<pre>getTokenUrl(\Gems_Tracker_Token $token, string $language) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>\Gems_Tracker_Token</code><p>Gems token object</p></div>
+<div class="subelement argument">
+<h4>$language</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>The url to start the survey</div>
+</div></div>
+</div>
+<a id="method_hasPdf"></a><div class="element clickable method public method_hasPdf " data-toggle="collapse" data-target=".method_hasPdf .collapse" title="public">
+<h2>hasPdf()
+        </h2>
+<pre>hasPdf() : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>True if the survey has a pdf</div>
+</div></div>
+</div>
+<a id="method_inSource"></a><div class="element clickable method public method_inSource " data-toggle="collapse" data-target=".method_inSource .collapse" title="public">
+<h2>Checks whether the token is in the source.</h2>
+<pre>inSource(\Gems_Tracker_Token $token) : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>\Gems_Tracker_Token</code><p>Gems token object</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_isActive"></a><div class="element clickable method public method_isActive " data-toggle="collapse" data-target=".method_isActive .collapse" title="public">
+<h2>isActive()
+        </h2>
+<pre>isActive() : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>True if the survey is active</div>
+</div></div>
+</div>
+<a id="method_isActiveInSource"></a><div class="element clickable method public method_isActiveInSource " data-toggle="collapse" data-target=".method_isActiveInSource .collapse" title="public">
+<h2>isActiveInSource()
+        </h2>
+<pre>isActiveInSource() : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>True if the survey is active in the source</div>
+</div></div>
+</div>
+<a id="method_isCompleted"></a><div class="element clickable method public method_isCompleted " data-toggle="collapse" data-target=".method_isCompleted .collapse" title="public">
+<h2>Returns true if the survey was completed according to the source</h2>
+<pre>isCompleted(\Gems_Tracker_Token $token) : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>\Gems_Tracker_Token</code><p>Gems token object</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>True if the token has completed</div>
+</div></div>
+</div>
+<a id="method_isTakenByStaff"></a><div class="element clickable method public method_isTakenByStaff " data-toggle="collapse" data-target=".method_isTakenByStaff .collapse" title="public">
+<h2>Should this survey be filled in by staff members.</h2>
+<pre>isTakenByStaff() : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_saveSurvey"></a><div class="element clickable method public method_saveSurvey " data-toggle="collapse" data-target=".method_saveSurvey .collapse" title="public">
+<h2>Update the survey, both in the database and in memory.</h2>
+<pre>saveSurvey(array $values, integer $userId) : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$values</h4>
+<code>array</code><p>The values that this token should be set to</p></div>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>The current user</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>1 if data changed, 0 otherwise</div>
+</div></div>
+</div>
+<a id="method_updateConsent"></a><div class="element clickable method public method_updateConsent " data-toggle="collapse" data-target=".method_updateConsent .collapse" title="public">
+<h2>Updates the consent code of the the token in the source (if needed)</h2>
+<pre>updateConsent(\Gems_Tracker_Token $token, string $consentCode<code> = null</code>) : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>\Gems_Tracker_Token</code>
+</div>
+<div class="subelement argument">
+<h4>$consentCode</h4>
+<code>string</code><p>Optional consent code, otherwise code from token is used.</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>1 of the token was inserted or changed, 0 otherwise</div>
+</div></div>
+</div>
+<a id="method__ensureGroupData"></a><div class="element clickable method private method__ensureGroupData " data-toggle="collapse" data-target=".method__ensureGroupData .collapse" title="private">
+<h2>Makes sure the group data is part of the $this-&gt;_gemsSurvey</h2>
+<pre>_ensureGroupData(boolean $reload<code> = false</code>) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$reload</h4>
+<code>boolean</code><p>Optional parameter to force reload.</p></div>
+</div></div>
+</div>
+<a id="method__updateSurvey"></a><div class="element clickable method private method__updateSurvey " data-toggle="collapse" data-target=".method__updateSurvey .collapse" title="private">
+<h2>Update the survey, both in the database and in memory.</h2>
+<pre>_updateSurvey(array $values, integer $userId) : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$values</h4>
+<code>array</code><p>The values that this token should be set to</p></div>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>The current user</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>1 if data changed, 0 otherwise</div>
+</div></div>
+</div>
+<h3>
+<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
+<a id="property_exists"> </a><div class="element clickable property public property_exists" data-toggle="collapse" data-target=".property_exists .collapse" title="public">
+<h2>True when the survey does exist.</h2>
+<pre>$exists : boolean</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>true</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_db"> </a><div class="element clickable property protected property_db" data-toggle="collapse" data-target=".property_db .collapse" title="protected">
+<h2>$db</h2>
+<pre>$db : \Zend_Db_Adapter_Abstract</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_events"> </a><div class="element clickable property protected property_events" data-toggle="collapse" data-target=".property_events .collapse" title="protected">
+<h2>$events</h2>
+<pre>$events : \Gems_Events</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_tracker"> </a><div class="element clickable property protected property_tracker" data-toggle="collapse" data-target=".property_tracker .collapse" title="protected">
+<h2>$tracker</h2>
+<pre>$tracker : \Gems_Tracker</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__gemsSurvey"> </a><div class="element clickable property private property__gemsSurvey" data-toggle="collapse" data-target=".property__gemsSurvey .collapse" title="private">
+<h2>The gems survey data</h2>
+<pre>$_gemsSurvey : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__source"> </a><div class="element clickable property private property__source" data-toggle="collapse" data-target=".property__source .collapse" title="private">
+<h2>$_source</h2>
+<pre>$_source : \Gems_Tracker_SourceInterface</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__surveyId"> </a><div class="element clickable property private property__surveyId" data-toggle="collapse" data-target=".property__surveyId .collapse" title="private">
+<h2>The id of the token</h2>
+<pre>$_surveyId : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:42+02:00.<br></footer></div>
+</div>
+</body>
+</html>

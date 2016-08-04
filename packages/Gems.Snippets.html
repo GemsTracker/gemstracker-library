@@ -1,0 +1,1287 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » Gems\Snippets</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+<ul class="side-nav nav nav-list">
+<li class="nav-header">
+<i class="icon-map-marker"></i> Packages</li>
+<li>
+<a href="../packages/Gems.Snippets.html" title="Snippets"><i class="icon-folder-open"></i>Snippets</a><ul class="nav nav-list nav-packages">
+<li>
+<a href="../packages/Gems.Snippets.Agenda.html" title="Agenda"><i class="icon-folder-open"></i>Agenda</a><ul class="nav nav-list nav-packages"></ul>
+</li>
+<li>
+<a href="../packages/Gems.Snippets.Ask.html" title="Ask"><i class="icon-folder-open"></i>Ask</a><ul class="nav nav-list nav-packages"></ul>
+</li>
+<li>
+<a href="../packages/Gems.Snippets.Database.html" title="Database"><i class="icon-folder-open"></i>Database</a><ul class="nav nav-list nav-packages"></ul>
+</li>
+<li>
+<a href="../packages/Gems.Snippets.Export.html" title="Export"><i class="icon-folder-open"></i>Export</a><ul class="nav nav-list nav-packages"></ul>
+</li>
+<li>
+<a href="../packages/Gems.Snippets.Generic.html" title="Generic"><i class="icon-folder-open"></i>Generic</a><ul class="nav nav-list nav-packages"></ul>
+</li>
+<li>
+<a href="../packages/Gems.Snippets.Log.html" title="Log"><i class="icon-folder-open"></i>Log</a><ul class="nav nav-list nav-packages"></ul>
+</li>
+<li>
+<a href="../packages/Gems.Snippets.Mail.html" title="Mail"><i class="icon-folder-open"></i>Mail</a><ul class="nav nav-list nav-packages"></ul>
+</li>
+<li>
+<a href="../packages/Gems.Snippets.Organization.html" title="Organization"><i class="icon-folder-open"></i>Organization</a><ul class="nav nav-list nav-packages"></ul>
+</li>
+<li>
+<a href="../packages/Gems.Snippets.ReceptionCode.html" title="ReceptionCode"><i class="icon-folder-open"></i>ReceptionCode</a><ul class="nav nav-list nav-packages"></ul>
+</li>
+<li>
+<a href="../packages/Gems.Snippets.Respondent.html" title="Respondent"><i class="icon-folder-open"></i>Respondent</a><ul class="nav nav-list nav-packages"></ul>
+</li>
+<li>
+<a href="../packages/Gems.Snippets.Staff.html" title="Staff"><i class="icon-folder-open"></i>Staff</a><ul class="nav nav-list nav-packages"></ul>
+</li>
+<li>
+<span class="empty-package"><i class="icon-folder-close"></i>Survey</span><ul class="nav nav-list nav-packages"><li>
+<a href="../packages/Gems.Snippets.Survey.Display.html" title="Display"><i class="icon-folder-open"></i>Display</a><ul class="nav nav-list nav-packages"></ul>
+</li></ul>
+</li>
+<li>
+<a href="../packages/Gems.Snippets.Token.html" title="Token"><i class="icon-folder-open"></i>Token</a><ul class="nav nav-list nav-packages"></ul>
+</li>
+<li>
+<a href="../packages/Gems.Snippets.Track.html" title="Track"><i class="icon-folder-open"></i>Track</a><ul class="nav nav-list nav-packages"></ul>
+</li>
+<li>
+<a href="../packages/Gems.Snippets.Tracker.html" title="Tracker"><i class="icon-folder-open"></i>Tracker</a><ul class="nav nav-list nav-packages"></ul>
+</li>
+<li>
+<a href="../packages/Gems.Snippets.Upgrade.html" title="Upgrade"><i class="icon-folder-open"></i>Upgrade</a><ul class="nav nav-list nav-packages"></ul>
+</li>
+<li>
+<a href="../packages/Gems.Snippets.User.html" title="User"><i class="icon-folder-open"></i>User</a><ul class="nav nav-list nav-packages"></ul>
+</li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Classes" class="icon-custom icon-class"></i> Classes</li>
+<li><a href="#Gems_Snippets_HorizontalScrollMenuSnippetAbstract" title="Abstract class for quickly creating a tabbed bar, or rather a div that contains a number
+of links, adding specific classes for display.">Gems_Snippets_HorizontalScrollMenuSnippetAbstract</a></li>
+<li><a href="#Gems_Snippets_ModelFormVariableFieldSnippet" title="Adds the ability to add a variable value to a select form element based on another form elements value">Gems_Snippets_ModelFormVariableFieldSnippet</a></li>
+<li><a href="#Gems_Snippets_ModelTabFormSnippetGeneric" title="Displays an edit form using tabs based on the model the model set through the $model snippet parameter.">Gems_Snippets_ModelTabFormSnippetGeneric</a></li>
+<li><a href="#Gems_Snippets_Export_ReportFooterSnippet" title="Footer for html/pdf export of a respondent">Gems_Snippets_Export_ReportFooterSnippet</a></li>
+<li><a href="#Gems_Snippets_ModelFormSnippetGeneric" title="Displays an edit form based on the model the model set through the $model snippet parameter.">Gems_Snippets_ModelFormSnippetGeneric</a></li>
+<li><a href="#Gems_Snippets_ModelItemTableSnippetGeneric" title="Displays each fields of a single item in a model in a row in a Html table
+the model set through the $model snippet parameter.">Gems_Snippets_ModelItemTableSnippetGeneric</a></li>
+<li><a href="#Gems_Snippets_ModelItemYesNoDeleteSnippetGeneric" title="Ask Yes/No conformation for deletion and deletes item when confirmed.">Gems_Snippets_ModelItemYesNoDeleteSnippetGeneric</a></li>
+<li><a href="#Gems_Snippets_TokenPlanTableSnippet" title="Displays a table for TokenModel">Gems_Snippets_TokenPlanTableSnippet</a></li>
+<li><a href="#ContentTitleSnippet" title="">ContentTitleSnippet</a></li>
+<li><a href="#RespondentDetailsSnippet" title="Displays a respondent's details">RespondentDetailsSnippet</a></li>
+<li><a href="#Gems_Snippets_RespondentFormSnippet" title="Displays an edit form based on the model the model set through the $model snippet parameter.">Gems_Snippets_RespondentFormSnippet</a></li>
+<li><a href="#ModelImportSnippet" title="">ModelImportSnippet</a></li>
+<li><a href="#ShowTrackUsageSnippet" title="Class description of ShowTrackUsageSnippet">ShowTrackUsageSnippet</a></li>
+<li><a href="#Gems_Snippets_Group_GroupDeleteSnippet" title="Ask Yes/No conformation for deletion and deletes item when confirmed.">Gems_Snippets_Group_GroupDeleteSnippet</a></li>
+<li><a href="#Gems_Snippets_MenuSnippetAbstract" title="Parent class for snippets that need to do something with the \Gems_Menu">Gems_Snippets_MenuSnippetAbstract</a></li>
+<li><a href="#Gems_Snippets_ModelTableSnippetAbstract" title="Adds Gems specific display details and helper functions:">Gems_Snippets_ModelTableSnippetAbstract</a></li>
+<li><a href="#Gems_Snippets_Survey_AnswerImportSnippet" title="">Gems_Snippets_Survey_AnswerImportSnippet</a></li>
+<li><a href="#Gems_Snippets_ModelItemTableSnippetAbstract" title="Displays each fields of a single item in a model in a row in a Html table
+the model set through the $model snippet parameter.">Gems_Snippets_ModelItemTableSnippetAbstract</a></li>
+<li><a href="#Gems_Snippets_Export_RespondentSnippet" title="Show info about the respondent during html/pdf export">Gems_Snippets_Export_RespondentSnippet</a></li>
+<li><a href="#Gems_Snippets_ModelItemYesNoDeleteSnippetAbstract" title="Ask Yes/No conformation for deletion and deletes item when confirmed.">Gems_Snippets_ModelItemYesNoDeleteSnippetAbstract</a></li>
+<li><a href="#RoleEditFormSnippet" title="Adds Gems specific display details and helper functions:">RoleEditFormSnippet</a></li>
+<li><a href="#Gems_Snippets_SnippetLoader" title="Gems specific version of the snippet loader">Gems_Snippets_SnippetLoader</a></li>
+<li><a href="#Gems_Snippets_RespondentTokenSnippet" title="Snippet for showing the all tokens for a single respondent.">Gems_Snippets_RespondentTokenSnippet</a></li>
+<li><a href="#Gems_Snippets_ModelTableSnippetGeneric" title="Displays multiple items from a model in a tabel by row using
+the model set through the $model snippet parameter.">Gems_Snippets_ModelTableSnippetGeneric</a></li>
+<li><a href="#DetailsWithAssignmentsSnippet" title="Displays a respondent's details with assigned surveys and tracks in extra columns.">DetailsWithAssignmentsSnippet</a></li>
+<li><a href="#FormSnippetAbstract" title="">FormSnippetAbstract</a></li>
+<li><a href="#Gems_Snippets_RespondentDetailSnippetAbstract" title="Prepares displays of respondent information">Gems_Snippets_RespondentDetailSnippetAbstract</a></li>
+<li><a href="#Gems_Snippets_Import_FileImportSnippet" title="">Gems_Snippets_Import_FileImportSnippet</a></li>
+<li><a href="#Gems_Snippets_RespondentSearchSnippet" title="Display a search form that selects on typed text only">Gems_Snippets_RespondentSearchSnippet</a></li>
+<li><a href="#Gems_Snippets_Mail_CommTemplateShowSnippet" title="Displays each fields of a single item in a model in a row in a Html table
+the model set through the $model snippet parameter.">Gems_Snippets_Mail_CommTemplateShowSnippet</a></li>
+<li><a href="#ModelConfirmDataChangeSnippet" title="">ModelConfirmDataChangeSnippet</a></li>
+<li><a href="#Gems_Snippets_Respondent_RoundTokenSnippet" title="Snippet for showing the all tokens for a single respondent.">Gems_Snippets_Respondent_RoundTokenSnippet</a></li>
+<li><a href="#Gems_Snippets_Respondent_TrafficLightTokenSnippet" title="Show the track in a different way, ordered by round and group showing
+traffic light color indicating the status of a token and uses inline
+answer display.">Gems_Snippets_Respondent_TrafficLightTokenSnippet</a></li>
+<li><a href="#Gems_Snippets_Export_SurveyHeaderSnippet" title="Header for html/pdf export of a survey">Gems_Snippets_Export_SurveyHeaderSnippet</a></li>
+<li><a href="#Gems_Snippets_FolderModelTableSnippet" title="Adds Gems specific display details and helper functions plus fule buttons:">Gems_Snippets_FolderModelTableSnippet</a></li>
+<li><a href="#Gems_Snippets_Respondent_RoundsTabsSnippet" title="">Gems_Snippets_Respondent_RoundsTabsSnippet</a></li>
+<li><a href="#TrackTokenOverviewSnippet" title="Snippet for showing the all tokens for a single track for a single patient">TrackTokenOverviewSnippet</a></li>
+<li><a href="#Gems_Snippets_ModelFormSnippetAbstract" title="Adds Gems specific display details and helper functions:">Gems_Snippets_ModelFormSnippetAbstract</a></li>
+<li><a href="#Gems_Snippets_Export_ReportHeaderSnippet" title="Header for html/pdf export of a respondent">Gems_Snippets_Export_ReportHeaderSnippet</a></li>
+<li><a href="#Gems_Snippets_TokenModelSnippetAbstract" title="Extra code for displaying token models.">Gems_Snippets_TokenModelSnippetAbstract</a></li>
+<li><a href="#TokenTabsSnippet" title="Respondent token filter tabs">TokenTabsSnippet</a></li>
+</ul>
+</div>
+<div class="span8 package-contents">
+<ul class="breadcrumb"><li>
+<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li><a href="../packages/Gems.html">Gems</a></li>
+<li class="active">
+<span class="divider">\</span><a href="../packages/Gems.Snippets.html">Snippets</a>
+</li>
+</li></ul>
+<div class="package-indent">
+<h3>
+<i title="Classes" class="icon-custom icon-class"></i> Classes, interfaces, and traits</h3>
+<div xmlns:php="http://php.net/xsl" id="FormSnippetAbstract" class="element ajax clickable class">
+<h1>FormSnippetAbstract<a href="../classes/Gems.Snippets.FormSnippetAbstract.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.FormSnippetAbstract.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="ContentTitleSnippet" class="element ajax clickable class">
+<h1>ContentTitleSnippet<a href="../classes/Gems.Snippets.Generic.ContentTitleSnippet.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Generic.ContentTitleSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="ModelConfirmDataChangeSnippet" class="element ajax clickable class">
+<h1>ModelConfirmDataChangeSnippet<a href="../classes/Gems.Snippets.ModelConfirmDataChangeSnippet.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.ModelConfirmDataChangeSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="ModelImportSnippet" class="element ajax clickable class">
+<h1>ModelImportSnippet<a href="../classes/Gems.Snippets.ModelImportSnippet.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.ModelImportSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="DetailsWithAssignmentsSnippet" class="element ajax clickable class">
+<h1>DetailsWithAssignmentsSnippet<a href="../classes/Gems.Snippets.Respondent.DetailsWithAssignmentsSnippet.html">¶</a>
+</h1>
+<p class="short_description">Displays a respondent's details with assigned surveys and tracks in extra columns.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Respondent.DetailsWithAssignmentsSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="RespondentDetailsSnippet" class="element ajax clickable class">
+<h1>RespondentDetailsSnippet<a href="../classes/Gems.Snippets.Respondent.RespondentDetailsSnippet.html">¶</a>
+</h1>
+<p class="short_description">Displays a respondent's details</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Respondent.RespondentDetailsSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="RoleEditFormSnippet" class="element ajax clickable class">
+<h1>RoleEditFormSnippet<a href="../classes/Gems.Snippets.Role.RoleEditFormSnippet.html">¶</a>
+</h1>
+<p class="short_description">Adds Gems specific display details and helper functions:</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Role.RoleEditFormSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="TokenTabsSnippet" class="element ajax clickable class">
+<h1>TokenTabsSnippet<a href="../classes/Gems.Snippets.Token.TokenTabsSnippet.html">¶</a>
+</h1>
+<p class="short_description">Respondent token filter tabs</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Token.TokenTabsSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="ShowTrackUsageSnippet" class="element ajax clickable class">
+<h1>ShowTrackUsageSnippet<a href="../classes/Gems.Snippets.Tracker.ShowTrackUsageSnippet.html">¶</a>
+</h1>
+<p class="short_description">Class description of ShowTrackUsageSnippet</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.ShowTrackUsageSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="TrackTokenOverviewSnippet" class="element ajax clickable class">
+<h1>TrackTokenOverviewSnippet<a href="../classes/Gems.Snippets.Tracker.TrackTokenOverviewSnippet.html">¶</a>
+</h1>
+<p class="short_description">Snippet for showing the all tokens for a single track for a single patient</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.TrackTokenOverviewSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Export_ReportFooterSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Export_ReportFooterSnippet<a href="../classes/Gems_Snippets_Export_ReportFooterSnippet.html">¶</a>
+</h1>
+<p class="short_description">Footer for html/pdf export of a respondent</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Export_ReportFooterSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Export_ReportHeaderSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Export_ReportHeaderSnippet<a href="../classes/Gems_Snippets_Export_ReportHeaderSnippet.html">¶</a>
+</h1>
+<p class="short_description">Header for html/pdf export of a respondent</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Export_ReportHeaderSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Export_RespondentSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Export_RespondentSnippet<a href="../classes/Gems_Snippets_Export_RespondentSnippet.html">¶</a>
+</h1>
+<p class="short_description">Show info about the respondent during html/pdf export</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Export_RespondentSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Export_SurveyHeaderSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Export_SurveyHeaderSnippet<a href="../classes/Gems_Snippets_Export_SurveyHeaderSnippet.html">¶</a>
+</h1>
+<p class="short_description">Header for html/pdf export of a survey</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Export_SurveyHeaderSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_FolderModelTableSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_FolderModelTableSnippet<a href="../classes/Gems_Snippets_FolderModelTableSnippet.html">¶</a>
+</h1>
+<p class="short_description">Adds Gems specific display details and helper functions plus fule buttons:</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_FolderModelTableSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Group_GroupDeleteSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Group_GroupDeleteSnippet<a href="../classes/Gems_Snippets_Group_GroupDeleteSnippet.html">¶</a>
+</h1>
+<p class="short_description">Ask Yes/No conformation for deletion and deletes item when confirmed.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Group_GroupDeleteSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_HorizontalScrollMenuSnippetAbstract" class="element ajax clickable class">
+<h1>Gems_Snippets_HorizontalScrollMenuSnippetAbstract<a href="../classes/Gems_Snippets_HorizontalScrollMenuSnippetAbstract.html">¶</a>
+</h1>
+<p class="short_description">Abstract class for quickly creating a tabbed bar, or rather a div that contains a number
+of links, adding specific classes for display.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_HorizontalScrollMenuSnippetAbstract.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Import_FileImportSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Import_FileImportSnippet<a href="../classes/Gems_Snippets_Import_FileImportSnippet.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Import_FileImportSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Mail_CommTemplateShowSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Mail_CommTemplateShowSnippet<a href="../classes/Gems_Snippets_Mail_CommTemplateShowSnippet.html">¶</a>
+</h1>
+<p class="short_description">Displays each fields of a single item in a model in a row in a Html table
+the model set through the $model snippet parameter.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Mail_CommTemplateShowSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_MenuSnippetAbstract" class="element ajax clickable class">
+<h1>Gems_Snippets_MenuSnippetAbstract<a href="../classes/Gems_Snippets_MenuSnippetAbstract.html">¶</a>
+</h1>
+<p class="short_description">Parent class for snippets that need to do something with the \Gems_Menu</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_MenuSnippetAbstract.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_ModelFormSnippetAbstract" class="element ajax clickable class">
+<h1>Gems_Snippets_ModelFormSnippetAbstract<a href="../classes/Gems_Snippets_ModelFormSnippetAbstract.html">¶</a>
+</h1>
+<p class="short_description">Adds Gems specific display details and helper functions:</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_ModelFormSnippetAbstract.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_ModelFormSnippetGeneric" class="element ajax clickable class">
+<h1>Gems_Snippets_ModelFormSnippetGeneric<a href="../classes/Gems_Snippets_ModelFormSnippetGeneric.html">¶</a>
+</h1>
+<p class="short_description">Displays an edit form based on the model the model set through the $model snippet parameter.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_ModelFormSnippetGeneric.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_ModelFormVariableFieldSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_ModelFormVariableFieldSnippet<a href="../classes/Gems_Snippets_ModelFormVariableFieldSnippet.html">¶</a>
+</h1>
+<p class="short_description">Adds the ability to add a variable value to a select form element based on another form elements value</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_ModelFormVariableFieldSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_ModelItemTableSnippetAbstract" class="element ajax clickable class">
+<h1>Gems_Snippets_ModelItemTableSnippetAbstract<a href="../classes/Gems_Snippets_ModelItemTableSnippetAbstract.html">¶</a>
+</h1>
+<p class="short_description">Displays each fields of a single item in a model in a row in a Html table
+the model set through the $model snippet parameter.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_ModelItemTableSnippetAbstract.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_ModelItemTableSnippetGeneric" class="element ajax clickable class">
+<h1>Gems_Snippets_ModelItemTableSnippetGeneric<a href="../classes/Gems_Snippets_ModelItemTableSnippetGeneric.html">¶</a>
+</h1>
+<p class="short_description">Displays each fields of a single item in a model in a row in a Html table
+the model set through the $model snippet parameter.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_ModelItemTableSnippetGeneric.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_ModelItemYesNoDeleteSnippetAbstract" class="element ajax clickable class">
+<h1>Gems_Snippets_ModelItemYesNoDeleteSnippetAbstract<a href="../classes/Gems_Snippets_ModelItemYesNoDeleteSnippetAbstract.html">¶</a>
+</h1>
+<p class="short_description">Ask Yes/No conformation for deletion and deletes item when confirmed.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_ModelItemYesNoDeleteSnippetAbstract.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_ModelItemYesNoDeleteSnippetGeneric" class="element ajax clickable class">
+<h1>Gems_Snippets_ModelItemYesNoDeleteSnippetGeneric<a href="../classes/Gems_Snippets_ModelItemYesNoDeleteSnippetGeneric.html">¶</a>
+</h1>
+<p class="short_description">Ask Yes/No conformation for deletion and deletes item when confirmed.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_ModelItemYesNoDeleteSnippetGeneric.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_ModelTabFormSnippetGeneric" class="element ajax clickable class">
+<h1>Gems_Snippets_ModelTabFormSnippetGeneric<a href="../classes/Gems_Snippets_ModelTabFormSnippetGeneric.html">¶</a>
+</h1>
+<p class="short_description">Displays an edit form using tabs based on the model the model set through the $model snippet parameter.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_ModelTabFormSnippetGeneric.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_ModelTableSnippetAbstract" class="element ajax clickable class">
+<h1>Gems_Snippets_ModelTableSnippetAbstract<a href="../classes/Gems_Snippets_ModelTableSnippetAbstract.html">¶</a>
+</h1>
+<p class="short_description">Adds Gems specific display details and helper functions:</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_ModelTableSnippetAbstract.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_ModelTableSnippetGeneric" class="element ajax clickable class">
+<h1>Gems_Snippets_ModelTableSnippetGeneric<a href="../classes/Gems_Snippets_ModelTableSnippetGeneric.html">¶</a>
+</h1>
+<p class="short_description">Displays multiple items from a model in a tabel by row using
+the model set through the $model snippet parameter.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_ModelTableSnippetGeneric.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_RespondentDetailSnippetAbstract" class="element ajax clickable class">
+<h1>Gems_Snippets_RespondentDetailSnippetAbstract<a href="../classes/Gems_Snippets_RespondentDetailSnippetAbstract.html">¶</a>
+</h1>
+<p class="short_description">Prepares displays of respondent information</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_RespondentDetailSnippetAbstract.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_RespondentFormSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_RespondentFormSnippet<a href="../classes/Gems_Snippets_RespondentFormSnippet.html">¶</a>
+</h1>
+<p class="short_description">Displays an edit form based on the model the model set through the $model snippet parameter.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_RespondentFormSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_RespondentSearchSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_RespondentSearchSnippet<a href="../classes/Gems_Snippets_RespondentSearchSnippet.html">¶</a>
+</h1>
+<p class="short_description">Display a search form that selects on typed text only</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_RespondentSearchSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_RespondentTokenSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_RespondentTokenSnippet<a href="../classes/Gems_Snippets_RespondentTokenSnippet.html">¶</a>
+</h1>
+<p class="short_description">Snippet for showing the all tokens for a single respondent.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_RespondentTokenSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Respondent_RoundTokenSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Respondent_RoundTokenSnippet<a href="../classes/Gems_Snippets_Respondent_RoundTokenSnippet.html">¶</a>
+</h1>
+<p class="short_description">Snippet for showing the all tokens for a single respondent.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Respondent_RoundTokenSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Respondent_RoundsTabsSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Respondent_RoundsTabsSnippet<a href="../classes/Gems_Snippets_Respondent_RoundsTabsSnippet.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Respondent_RoundsTabsSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Respondent_TrafficLightTokenSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Respondent_TrafficLightTokenSnippet<a href="../classes/Gems_Snippets_Respondent_TrafficLightTokenSnippet.html">¶</a>
+</h1>
+<p class="short_description">Show the track in a different way, ordered by round and group showing
+traffic light color indicating the status of a token and uses inline
+answer display.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Respondent_TrafficLightTokenSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_SnippetLoader" class="element ajax clickable class">
+<h1>Gems_Snippets_SnippetLoader<a href="../classes/Gems_Snippets_SnippetLoader.html">¶</a>
+</h1>
+<p class="short_description">Gems specific version of the snippet loader</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_SnippetLoader.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Survey_AnswerImportSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Survey_AnswerImportSnippet<a href="../classes/Gems_Snippets_Survey_AnswerImportSnippet.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Survey_AnswerImportSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_TokenModelSnippetAbstract" class="element ajax clickable class">
+<h1>Gems_Snippets_TokenModelSnippetAbstract<a href="../classes/Gems_Snippets_TokenModelSnippetAbstract.html">¶</a>
+</h1>
+<p class="short_description">Extra code for displaying token models.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_TokenModelSnippetAbstract.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_TokenPlanTableSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_TokenPlanTableSnippet<a href="../classes/Gems_Snippets_TokenPlanTableSnippet.html">¶</a>
+</h1>
+<p class="short_description">Displays a table for TokenModel</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_TokenPlanTableSnippet.html" class="more">« More »</a>
+</div>
+<ul class="breadcrumb"><li>
+<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li><a href="../packages/Gems.html">Gems</a></li>
+<li>
+<span class="divider">\</span><a href="../packages/Gems.Snippets.html">Snippets</a>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../packages/Gems.Snippets.Agenda.html">Agenda</a>
+</li>
+</li></ul>
+<div class="package-indent">
+<h3>
+<i title="Classes" class="icon-custom icon-class"></i> Classes, interfaces, and traits</h3>
+<div xmlns:php="http://php.net/xsl" id="AppointmentCleanupSnippet" class="element ajax clickable class">
+<h1>AppointmentCleanupSnippet<a href="../classes/Gems.Snippets.Agenda.AppointmentCleanupSnippet.html">¶</a>
+</h1>
+<p class="short_description">Displays each fields of a single item in a model in a row in a Html table
+the model set through the $model snippet parameter.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Agenda.AppointmentCleanupSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Agenda_AppointmentFormSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Agenda_AppointmentFormSnippet<a href="../classes/Gems_Snippets_Agenda_AppointmentFormSnippet.html">¶</a>
+</h1>
+<p class="short_description">Adds Gems specific display details and helper functions:</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Agenda_AppointmentFormSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Agenda_AppointmentShowSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Agenda_AppointmentShowSnippet<a href="../classes/Gems_Snippets_Agenda_AppointmentShowSnippet.html">¶</a>
+</h1>
+<p class="short_description">Displays each fields of a single item in a model in a row in a Html table
+the model set through the $model snippet parameter.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Agenda_AppointmentShowSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Agenda_AppointmentsTableSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Agenda_AppointmentsTableSnippet<a href="../classes/Gems_Snippets_Agenda_AppointmentsTableSnippet.html">¶</a>
+</h1>
+<p class="short_description">Adds Gems specific display details and helper functions:</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Agenda_AppointmentsTableSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Agenda_CalendarSearchSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Agenda_CalendarSearchSnippet<a href="../classes/Gems_Snippets_Agenda_CalendarSearchSnippet.html">¶</a>
+</h1>
+<p class="short_description">Display a search form that selects on typed text only</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Agenda_CalendarSearchSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Agenda_CalendarTableSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Agenda_CalendarTableSnippet<a href="../classes/Gems_Snippets_Agenda_CalendarTableSnippet.html">¶</a>
+</h1>
+<p class="short_description">Displays multiple items from a model in a tabel by row using
+the model set through the $model snippet parameter.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Agenda_CalendarTableSnippet.html" class="more">« More »</a>
+</div>
+</div>
+<ul class="breadcrumb"><li>
+<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li><a href="../packages/Gems.html">Gems</a></li>
+<li>
+<span class="divider">\</span><a href="../packages/Gems.Snippets.html">Snippets</a>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../packages/Gems.Snippets.Ask.html">Ask</a>
+</li>
+</li></ul>
+<div class="package-indent">
+<h3>
+<i title="Classes" class="icon-custom icon-class"></i> Classes, interfaces, and traits</h3>
+<div xmlns:php="http://php.net/xsl" id="RedirectUntilGoodbyeSnippet" class="element ajax clickable class">
+<h1>RedirectUntilGoodbyeSnippet<a href="../classes/Gems.Snippets.Ask.RedirectUntilGoodbyeSnippet.html">¶</a>
+</h1>
+<p class="short_description">Loops through all open surveys and then shows an endmessage</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Ask.RedirectUntilGoodbyeSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="ShowAllOpenSnippet" class="element ajax clickable class">
+<h1>ShowAllOpenSnippet<a href="../classes/Gems.Snippets.Ask.ShowAllOpenSnippet.html">¶</a>
+</h1>
+<p class="short_description">Basic class for creating forward loop snippets</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Ask.ShowAllOpenSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="ShowFirstOpenSnippet" class="element ajax clickable class">
+<h1>ShowFirstOpenSnippet<a href="../classes/Gems.Snippets.Ask.ShowFirstOpenSnippet.html">¶</a>
+</h1>
+<p class="short_description">Show a single button for an unanswered survey or nothing.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Ask.ShowFirstOpenSnippet.html" class="more">« More »</a>
+</div>
+</div>
+<ul class="breadcrumb"><li>
+<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li><a href="../packages/Gems.html">Gems</a></li>
+<li>
+<span class="divider">\</span><a href="../packages/Gems.Snippets.html">Snippets</a>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../packages/Gems.Snippets.Database.html">Database</a>
+</li>
+</li></ul>
+<div class="package-indent">
+<h3>
+<i title="Classes" class="icon-custom icon-class"></i> Classes, interfaces, and traits</h3>
+<div xmlns:php="http://php.net/xsl" id="StructuralChanges" class="element ajax clickable class">
+<h1>StructuralChanges<a href="../classes/Gems.Snippets.Database.StructuralChanges.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Database.StructuralChanges.html" class="more">« More »</a>
+</div>
+</div>
+<ul class="breadcrumb"><li>
+<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li><a href="../packages/Gems.html">Gems</a></li>
+<li>
+<span class="divider">\</span><a href="../packages/Gems.Snippets.html">Snippets</a>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../packages/Gems.Snippets.Export.html">Export</a>
+</li>
+</li></ul>
+<div class="package-indent">
+<h3>
+<i title="Classes" class="icon-custom icon-class"></i> Classes, interfaces, and traits</h3>
+<div xmlns:php="http://php.net/xsl" id="RespondentExportSnippet" class="element ajax clickable class">
+<h1>RespondentExportSnippet<a href="../classes/Gems.Snippets.Export.RespondentExportSnippet.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Export.RespondentExportSnippet.html" class="more">« More »</a>
+</div>
+</div>
+<ul class="breadcrumb"><li>
+<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li><a href="../packages/Gems.html">Gems</a></li>
+<li>
+<span class="divider">\</span><a href="../packages/Gems.Snippets.html">Snippets</a>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../packages/Gems.Snippets.Generic.html">Generic</a>
+</li>
+</li></ul>
+<div class="package-indent">
+<h3>
+<i title="Classes" class="icon-custom icon-class"></i> Classes, interfaces, and traits</h3>
+<div xmlns:php="http://php.net/xsl" id="ButtonRowSnippet" class="element ajax clickable class">
+<h1>ButtonRowSnippet<a href="../classes/Gems.Snippets.Generic.ButtonRowSnippet.html">¶</a>
+</h1>
+<p class="short_description">Displays the parent menu item (if existing) plus any current
+level buttons that are visible</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Generic.ButtonRowSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="CurrentButtonRowSnippet" class="element ajax clickable class">
+<h1>CurrentButtonRowSnippet<a href="../classes/Gems.Snippets.Generic.CurrentButtonRowSnippet.html">¶</a>
+</h1>
+<p class="short_description">Displays the parent menu item (if existing) plus any current
+level buttons that are visible</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Generic.CurrentButtonRowSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="CurrentSiblingsButtonRowSnippet" class="element ajax clickable class">
+<h1>CurrentSiblingsButtonRowSnippet<a href="../classes/Gems.Snippets.Generic.CurrentSiblingsButtonRowSnippet.html">¶</a>
+</h1>
+<p class="short_description">Displays the parent menu item (if existing) plus any current
+level buttons that are visible</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Generic.CurrentSiblingsButtonRowSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="TextExplanationSnippet" class="element ajax clickable class">
+<h1>TextExplanationSnippet<a href="../classes/Gems.Snippets.Generic.TextExplanationSnippet.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Generic.TextExplanationSnippet.html" class="more">« More »</a>
+</div>
+</div>
+<ul class="breadcrumb"><li>
+<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li><a href="../packages/Gems.html">Gems</a></li>
+<li>
+<span class="divider">\</span><a href="../packages/Gems.Snippets.html">Snippets</a>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../packages/Gems.Snippets.Log.html">Log</a>
+</li>
+</li></ul>
+<div class="package-indent">
+<h3>
+<i title="Classes" class="icon-custom icon-class"></i> Classes, interfaces, and traits</h3>
+<div xmlns:php="http://php.net/xsl" id="LogSearchSnippet" class="element ajax clickable class">
+<h1>LogSearchSnippet<a href="../classes/Gems.Snippets.Log.LogSearchSnippet.html">¶</a>
+</h1>
+<p class="short_description">Display a search form that selects on typed text only</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Log.LogSearchSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="StaffLogSearchSnippet" class="element ajax clickable class">
+<h1>StaffLogSearchSnippet<a href="../classes/Gems.Snippets.Log.StaffLogSearchSnippet.html">¶</a>
+</h1>
+<p class="short_description">Display a search form that selects on typed text only</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Log.StaffLogSearchSnippet.html" class="more">« More »</a>
+</div>
+</div>
+<ul class="breadcrumb"><li>
+<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li><a href="../packages/Gems.html">Gems</a></li>
+<li>
+<span class="divider">\</span><a href="../packages/Gems.Snippets.html">Snippets</a>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../packages/Gems.Snippets.Mail.html">Mail</a>
+</li>
+</li></ul>
+<div class="package-indent">
+<h3>
+<i title="Classes" class="icon-custom icon-class"></i> Classes, interfaces, and traits</h3>
+<div xmlns:php="http://php.net/xsl" id="MailLogBrowseSnippet" class="element ajax clickable class">
+<h1>MailLogBrowseSnippet<a href="../classes/Gems.Snippets.Mail.Log.MailLogBrowseSnippet.html">¶</a>
+</h1>
+<p class="short_description">Displays multiple items from a model in a tabel by row using
+the model set through the $model snippet parameter.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Mail.Log.MailLogBrowseSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Mail_MailFormSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Mail_MailFormSnippet<a href="../classes/Gems_Snippets_Mail_MailFormSnippet.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Mail_MailFormSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Mail_MailModelFormSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Mail_MailModelFormSnippet<a href="../classes/Gems_Snippets_Mail_MailModelFormSnippet.html">¶</a>
+</h1>
+<p class="short_description">Displays an edit form based on the model the model set through the $model snippet parameter.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Mail_MailModelFormSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Mail_TokenBulkMailFormSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Mail_TokenBulkMailFormSnippet<a href="../classes/Gems_Snippets_Mail_TokenBulkMailFormSnippet.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Mail_TokenBulkMailFormSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Mail_TokenMailFormSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Mail_TokenMailFormSnippet<a href="../classes/Gems_Snippets_Mail_TokenMailFormSnippet.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Mail_TokenMailFormSnippet.html" class="more">« More »</a>
+</div>
+</div>
+<ul class="breadcrumb"><li>
+<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li><a href="../packages/Gems.html">Gems</a></li>
+<li>
+<span class="divider">\</span><a href="../packages/Gems.Snippets.html">Snippets</a>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../packages/Gems.Snippets.Organization.html">Organization</a>
+</li>
+</li></ul>
+<div class="package-indent">
+<h3>
+<i title="Classes" class="icon-custom icon-class"></i> Classes, interfaces, and traits</h3>
+<div xmlns:php="http://php.net/xsl" id="AutosearchOrganizationSnippet" class="element ajax clickable class">
+<h1>AutosearchOrganizationSnippet<a href="../classes/Gems.Snippets.Organization.AutosearchOrganizationSnippet.html">¶</a>
+</h1>
+<p class="short_description">Display a search form that selects on typed text only</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Organization.AutosearchOrganizationSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="ChooseOrganizationSnippet" class="element ajax clickable class">
+<h1>ChooseOrganizationSnippet<a href="../classes/Gems.Snippets.Organization.ChooseOrganizationSnippet.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Organization.ChooseOrganizationSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="OrganizationEditSnippet" class="element ajax clickable class">
+<h1>OrganizationEditSnippet<a href="../classes/Gems.Snippets.Organization.OrganizationEditSnippet.html">¶</a>
+</h1>
+<p class="short_description">Displays an edit form using tabs based on the model the model set through the $model snippet parameter.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Organization.OrganizationEditSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="OrganizationTableSnippet" class="element ajax clickable class">
+<h1>OrganizationTableSnippet<a href="../classes/Gems.Snippets.Organization.OrganizationTableSnippet.html">¶</a>
+</h1>
+<p class="short_description">Displays multiple items from a model in a tabel by row using
+the model set through the $model snippet parameter.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Organization.OrganizationTableSnippet.html" class="more">« More »</a>
+</div>
+</div>
+<ul class="breadcrumb"><li>
+<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li><a href="../packages/Gems.html">Gems</a></li>
+<li>
+<span class="divider">\</span><a href="../packages/Gems.Snippets.html">Snippets</a>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../packages/Gems.Snippets.ReceptionCode.html">ReceptionCode</a>
+</li>
+</li></ul>
+<div class="package-indent">
+<h3>
+<i title="Classes" class="icon-custom icon-class"></i> Classes, interfaces, and traits</h3>
+<div xmlns:php="http://php.net/xsl" id="ChangeReceptionCodeSnippetAbstract" class="element ajax clickable class">
+<h1>ChangeReceptionCodeSnippetAbstract<a href="../classes/Gems.Snippets.ReceptionCode.ChangeReceptionCodeSnippetAbstract.html">¶</a>
+</h1>
+<p class="short_description">Adds Gems specific display details and helper functions:</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.ReceptionCode.ChangeReceptionCodeSnippetAbstract.html" class="more">« More »</a>
+</div>
+</div>
+<ul class="breadcrumb"><li>
+<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li><a href="../packages/Gems.html">Gems</a></li>
+<li>
+<span class="divider">\</span><a href="../packages/Gems.Snippets.html">Snippets</a>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../packages/Gems.Snippets.Respondent.html">Respondent</a>
+</li>
+</li></ul>
+<div class="package-indent">
+<h3>
+<i title="Classes" class="icon-custom icon-class"></i> Classes, interfaces, and traits</h3>
+<div xmlns:php="http://php.net/xsl" id="DeleteRespondentSnippet" class="element ajax clickable class">
+<h1>DeleteRespondentSnippet<a href="../classes/Gems.Snippets.Respondent.DeleteRespondentSnippet.html">¶</a>
+</h1>
+<p class="short_description">Adds Gems specific display details and helper functions:</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Respondent.DeleteRespondentSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="MultiOrganizationTab" class="element ajax clickable class">
+<h1>MultiOrganizationTab<a href="../classes/Gems.Snippets.Respondent.MultiOrganizationTab.html">¶</a>
+</h1>
+<p class="short_description">Displays tabs for multiple organizations.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Respondent.MultiOrganizationTab.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="RespondentTableSnippet" class="element ajax clickable class">
+<h1>RespondentTableSnippet<a href="../classes/Gems.Snippets.Respondent.RespondentTableSnippet.html">¶</a>
+</h1>
+<p class="short_description">Adds Gems specific display details and helper functions:</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Respondent.RespondentTableSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Respondent_Relation_ModelFormSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Respondent_Relation_ModelFormSnippet<a href="../classes/Gems_Snippets_Respondent_Relation_ModelFormSnippet.html">¶</a>
+</h1>
+<p class="short_description">Displays an edit form based on the model the model set through the $model snippet parameter.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Respondent_Relation_ModelFormSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Respondent_Relation_TableSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Respondent_Relation_TableSnippet<a href="../classes/Gems_Snippets_Respondent_Relation_TableSnippet.html">¶</a>
+</h1>
+<p class="short_description">Ask Yes/No conformation for deletion and deletes respondent relation when confirmed.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Respondent_Relation_TableSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Respondent_Relation_YesNoDeleteSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Respondent_Relation_YesNoDeleteSnippet<a href="../classes/Gems_Snippets_Respondent_Relation_YesNoDeleteSnippet.html">¶</a>
+</h1>
+<p class="short_description">Ask Yes/No conformation for deletion and deletes respondent relation when confirmed.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Respondent_Relation_YesNoDeleteSnippet.html" class="more">« More »</a>
+</div>
+</div>
+<ul class="breadcrumb"><li>
+<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li><a href="../packages/Gems.html">Gems</a></li>
+<li>
+<span class="divider">\</span><a href="../packages/Gems.Snippets.html">Snippets</a>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../packages/Gems.Snippets.Staff.html">Staff</a>
+</li>
+</li></ul>
+<div class="package-indent">
+<h3>
+<i title="Classes" class="icon-custom icon-class"></i> Classes, interfaces, and traits</h3>
+<div xmlns:php="http://php.net/xsl" id="StaffSearchSnippet" class="element ajax clickable class">
+<h1>StaffSearchSnippet<a href="../classes/Gems.Snippets.Staff.StaffSearchSnippet.html">¶</a>
+</h1>
+<p class="short_description">Display a search form that selects on typed text only</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Staff.StaffSearchSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="StaffTableSnippet" class="element ajax clickable class">
+<h1>StaffTableSnippet<a href="../classes/Gems.Snippets.Staff.StaffTableSnippet.html">¶</a>
+</h1>
+<p class="short_description">Adds Gems specific display details and helper functions:</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Staff.StaffTableSnippet.html" class="more">« More »</a>
+</div>
+</div>
+<ul class="breadcrumb"><li>
+<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li><a href="../packages/Gems.html">Gems</a></li>
+<li>
+<span class="divider">\</span><a href="../packages/Gems.Snippets.html">Snippets</a>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../packages/Gems.Snippets.Survey.html">Survey</a>
+</li>
+</li></ul>
+<div class="package-indent">
+<ul class="breadcrumb"><li>
+<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li><a href="../packages/Gems.html">Gems</a></li>
+<li>
+<span class="divider">\</span><a href="../packages/Gems.Snippets.html">Snippets</a>
+</li>
+<li>
+<span class="divider">\</span><a href="../packages/Gems.Snippets.Survey.html">Survey</a>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../packages/Gems.Snippets.Survey.Display.html">Display</a>
+</li>
+</li></ul>
+<div class="package-indent">
+<h3>
+<i title="Classes" class="icon-custom icon-class"></i> Classes, interfaces, and traits</h3>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Survey_Display_BarChartSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Survey_Display_BarChartSnippet<a href="../classes/Gems_Snippets_Survey_Display_BarChartSnippet.html">¶</a>
+</h1>
+<p class="short_description">The BarChart snippet provides a single dimension barchart based on one question_code for all surveys using a specific survey_code</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Survey_Display_BarChartSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Survey_Display_FullAnswerToggleSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Survey_Display_FullAnswerToggleSnippet<a href="../classes/Gems_Snippets_Survey_Display_FullAnswerToggleSnippet.html">¶</a>
+</h1>
+<p class="short_description">Display survey answers with a toggle for full or compact view</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Survey_Display_FullAnswerToggleSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Survey_Display_ScoreChartsSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Survey_Display_ScoreChartsSnippet<a href="../classes/Gems_Snippets_Survey_Display_ScoreChartsSnippet.html">¶</a>
+</h1>
+<p class="short_description">Show a chart for each 'score' element in a survey</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Survey_Display_ScoreChartsSnippet.html" class="more">« More »</a>
+</div>
+</div>
+</div>
+<ul class="breadcrumb"><li>
+<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li><a href="../packages/Gems.html">Gems</a></li>
+<li>
+<span class="divider">\</span><a href="../packages/Gems.Snippets.html">Snippets</a>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../packages/Gems.Snippets.Token.html">Token</a>
+</li>
+</li></ul>
+<div class="package-indent">
+<h3>
+<i title="Classes" class="icon-custom icon-class"></i> Classes, interfaces, and traits</h3>
+<div xmlns:php="http://php.net/xsl" id="DeleteTrackTokenSnippet" class="element ajax clickable class">
+<h1>DeleteTrackTokenSnippet<a href="../classes/Gems.Snippets.Token.DeleteTrackTokenSnippet.html">¶</a>
+</h1>
+<p class="short_description">Snippet for editing reception code of token.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Token.DeleteTrackTokenSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="EditTrackTokenSnippet" class="element ajax clickable class">
+<h1>EditTrackTokenSnippet<a href="../classes/Gems.Snippets.Token.EditTrackTokenSnippet.html">¶</a>
+</h1>
+<p class="short_description">Adds basic token editing snippet parameter processing and checking.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Token.EditTrackTokenSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="OverviewSearchSnippet" class="element ajax clickable class">
+<h1>OverviewSearchSnippet<a href="../classes/Gems.Snippets.Token.OverviewSearchSnippet.html">¶</a>
+</h1>
+<p class="short_description">Display a search form that selects on typed text only</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Token.OverviewSearchSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="PlanRespondentSnippet" class="element ajax clickable class">
+<h1>PlanRespondentSnippet<a href="../classes/Gems.Snippets.Token.PlanRespondentSnippet.html">¶</a>
+</h1>
+<p class="short_description">Snippet for showing the all tokens for a single respondent.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Token.PlanRespondentSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="PlanSearchSnippet" class="element ajax clickable class">
+<h1>PlanSearchSnippet<a href="../classes/Gems.Snippets.Token.PlanSearchSnippet.html">¶</a>
+</h1>
+<p class="short_description">Display a search form that selects on typed text only</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Token.PlanSearchSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="PlanTokenSnippet" class="element ajax clickable class">
+<h1>PlanTokenSnippet<a href="../classes/Gems.Snippets.Token.PlanTokenSnippet.html">¶</a>
+</h1>
+<p class="short_description">Snippet for showing the all tokens for a single respondent.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Token.PlanTokenSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="TokenDateSelectorSnippet" class="element ajax clickable class">
+<h1>TokenDateSelectorSnippet<a href="../classes/Gems.Snippets.Token.TokenDateSelectorSnippet.html">¶</a>
+</h1>
+<p class="short_description">Displays a dateSelector</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Token.TokenDateSelectorSnippet.html" class="more">« More »</a>
+</div>
+</div>
+<ul class="breadcrumb"><li>
+<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li><a href="../packages/Gems.html">Gems</a></li>
+<li>
+<span class="divider">\</span><a href="../packages/Gems.Snippets.html">Snippets</a>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../packages/Gems.Snippets.Track.html">Track</a>
+</li>
+</li></ul>
+<div class="package-indent">
+<h3>
+<i title="Classes" class="icon-custom icon-class"></i> Classes, interfaces, and traits</h3>
+<div xmlns:php="http://php.net/xsl" id="CheckAnswersInformation" class="element ajax clickable class">
+<h1>CheckAnswersInformation<a href="../classes/Gems.Snippets.Survey.CheckAnswersInformation.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Survey.CheckAnswersInformation.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="CheckRoundsInformation" class="element ajax clickable class">
+<h1>CheckRoundsInformation<a href="../classes/Gems.Snippets.Track.CheckRoundsInformation.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Track.CheckRoundsInformation.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="RecalcFieldsInformation" class="element ajax clickable class">
+<h1>RecalcFieldsInformation<a href="../classes/Gems.Snippets.Track.RecalcFieldsInformation.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Track.RecalcFieldsInformation.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="TracksForAppointment" class="element ajax clickable class">
+<h1>TracksForAppointment<a href="../classes/Gems.Snippets.Track.TracksForAppointment.html">¶</a>
+</h1>
+<p class="short_description">Adds Gems specific display details and helper functions:</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Track.TracksForAppointment.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="TracksSnippet" class="element ajax clickable class">
+<h1>TracksSnippet<a href="../classes/Gems.Snippets.Track.TracksSnippet.html">¶</a>
+</h1>
+<p class="short_description">Adds Gems specific display details and helper functions:</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Track.TracksSnippet.html" class="more">« More »</a>
+</div>
+</div>
+<ul class="breadcrumb"><li>
+<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li><a href="../packages/Gems.html">Gems</a></li>
+<li>
+<span class="divider">\</span><a href="../packages/Gems.Snippets.html">Snippets</a>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../packages/Gems.Snippets.Tracker.html">Tracker</a>
+</li>
+</li></ul>
+<div class="package-indent">
+<h3>
+<i title="Classes" class="icon-custom icon-class"></i> Classes, interfaces, and traits</h3>
+<div xmlns:php="http://php.net/xsl" id="AvailableTracksSnippet" class="element ajax clickable class">
+<h1>AvailableTracksSnippet<a href="../classes/Gems.Snippets.Tracker.AvailableTracksSnippet.html">¶</a>
+</h1>
+<p class="short_description">Adds Gems specific display details and helper functions:</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.AvailableTracksSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="NewRoundButtonRow" class="element ajax clickable class">
+<h1>NewRoundButtonRow<a href="../classes/Gems.Snippets.Tracker.Buttons.NewRoundButtonRow.html">¶</a>
+</h1>
+<p class="short_description">Displays the parent menu item (if existing) plus any current
+level buttons that are visible</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Buttons.NewRoundButtonRow.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="TokenActionButtonRow" class="element ajax clickable class">
+<h1>TokenActionButtonRow<a href="../classes/Gems.Snippets.Tracker.Buttons.TokenActionButtonRow.html">¶</a>
+</h1>
+<p class="short_description">Displays the parent menu item (if existing) plus any current
+level buttons that are visible</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Buttons.TokenActionButtonRow.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="TrackActionButtonRow" class="element ajax clickable class">
+<h1>TrackActionButtonRow<a href="../classes/Gems.Snippets.Tracker.Buttons.TrackActionButtonRow.html">¶</a>
+</h1>
+<p class="short_description">Displays the parent menu item (if existing) plus any current
+level buttons that are visible</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Buttons.TrackActionButtonRow.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="TrackIndexButtonRow" class="element ajax clickable class">
+<h1>TrackIndexButtonRow<a href="../classes/Gems.Snippets.Tracker.Buttons.TrackIndexButtonRow.html">¶</a>
+</h1>
+<p class="short_description">Displays the parent menu item (if existing) plus any current
+level buttons that are visible</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Buttons.TrackIndexButtonRow.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="DeleteTrackSnippet" class="element ajax clickable class">
+<h1>DeleteTrackSnippet<a href="../classes/Gems.Snippets.Tracker.DeleteTrackSnippet.html">¶</a>
+</h1>
+<p class="short_description">Adds Gems specific display details and helper functions:</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.DeleteTrackSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="EditTrackSnippet" class="element ajax clickable class">
+<h1>EditTrackSnippet<a href="../classes/Gems.Snippets.Tracker.EditTrackSnippet.html">¶</a>
+</h1>
+<p class="short_description">Adds basic track editing snippet parameter processing and checking.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.EditTrackSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="ExportTrackSnippetGeneric" class="element ajax clickable class">
+<h1>ExportTrackSnippetGeneric<a href="../classes/Gems.Snippets.Tracker.Export.ExportTrackSnippetGeneric.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Export.ExportTrackSnippetGeneric.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="FieldDeleteSnippet" class="element ajax clickable class">
+<h1>FieldDeleteSnippet<a href="../classes/Gems.Snippets.Tracker.Fields.FieldDeleteSnippet.html">¶</a>
+</h1>
+<p class="short_description">Ask Yes/No conformation for deletion and deletes item when confirmed.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Fields.FieldDeleteSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="FieldEditSnippet" class="element ajax clickable class">
+<h1>FieldEditSnippet<a href="../classes/Gems.Snippets.Tracker.Fields.FieldEditSnippet.html">¶</a>
+</h1>
+<p class="short_description">Displays an edit form based on the model the model set through the $model snippet parameter.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Fields.FieldEditSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="FieldsTableSnippet" class="element ajax clickable class">
+<h1>FieldsTableSnippet<a href="../classes/Gems.Snippets.Tracker.Fields.FieldsTableSnippet.html">¶</a>
+</h1>
+<p class="short_description">Adds Gems specific display details and helper functions:</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Fields.FieldsTableSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="FieldsTitleSnippet" class="element ajax clickable class">
+<h1>FieldsTitleSnippet<a href="../classes/Gems.Snippets.Tracker.Fields.FieldsTitleSnippet.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Fields.FieldsTitleSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="ImportTrackSnippetGeneric" class="element ajax clickable class">
+<h1>ImportTrackSnippetGeneric<a href="../classes/Gems.Snippets.Tracker.Import.ImportTrackSnippetGeneric.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Import.ImportTrackSnippetGeneric.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="MergeTrackSnippetGeneric" class="element ajax clickable class">
+<h1>MergeTrackSnippetGeneric<a href="../classes/Gems.Snippets.Tracker.Import.MergeTrackSnippetGeneric.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Import.MergeTrackSnippetGeneric.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="EditRoundStepSnippet" class="element ajax clickable class">
+<h1>EditRoundStepSnippet<a href="../classes/Gems.Snippets.Tracker.Rounds.EditRoundStepSnippet.html">¶</a>
+</h1>
+<p class="short_description">Short description for class</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Rounds.EditRoundStepSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="RoundDeleteSnippet" class="element ajax clickable class">
+<h1>RoundDeleteSnippet<a href="../classes/Gems.Snippets.Tracker.Rounds.RoundDeleteSnippet.html">¶</a>
+</h1>
+<p class="short_description">Ask Yes/No conformation for deletion and deletes item when confirmed.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Rounds.RoundDeleteSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="RoundsTableSnippet" class="element ajax clickable class">
+<h1>RoundsTableSnippet<a href="../classes/Gems.Snippets.Tracker.Rounds.RoundsTableSnippet.html">¶</a>
+</h1>
+<p class="short_description">Adds Gems specific display details and helper functions:</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Rounds.RoundsTableSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="RoundsTitleSnippet" class="element ajax clickable class">
+<h1>RoundsTitleSnippet<a href="../classes/Gems.Snippets.Tracker.Rounds.RoundsTitleSnippet.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Rounds.RoundsTitleSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="ShowRoundStepSnippet" class="element ajax clickable class">
+<h1>ShowRoundStepSnippet<a href="../classes/Gems.Snippets.Tracker.Rounds.ShowRoundStepSnippet.html">¶</a>
+</h1>
+<p class="short_description">Short description for class</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.Rounds.ShowRoundStepSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="SingleSurveyAvailableTracksSnippet" class="element ajax clickable class">
+<h1>SingleSurveyAvailableTracksSnippet<a href="../classes/Gems.Snippets.Tracker.SingleSurveyAvailableTracksSnippet.html">¶</a>
+</h1>
+<p class="short_description">Adds Gems specific display details and helper functions:</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.SingleSurveyAvailableTracksSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="TrackMaintenanceSearchSnippet" class="element ajax clickable class">
+<h1>TrackMaintenanceSearchSnippet<a href="../classes/Gems.Snippets.Tracker.TrackMaintenance.TrackMaintenanceSearchSnippet.html">¶</a>
+</h1>
+<p class="short_description">Display a search form that selects on typed text only</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.TrackMaintenance.TrackMaintenanceSearchSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="TrackUsageOverviewSnippet" class="element ajax clickable class">
+<h1>TrackUsageOverviewSnippet<a href="../classes/Gems.Snippets.Tracker.TrackUsageOverviewSnippet.html">¶</a>
+</h1>
+<p class="short_description">Adds Gems specific display details and helper functions:</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Tracker.TrackUsageOverviewSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Tracker_Fields_FieldReportSearchSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Tracker_Fields_FieldReportSearchSnippet<a href="../classes/Gems_Snippets_Tracker_Fields_FieldReportSearchSnippet.html">¶</a>
+</h1>
+<p class="short_description">Display a search form that selects on typed text only</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Tracker_Fields_FieldReportSearchSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Tracker_Fields_FieldsAutosearchForm" class="element ajax clickable class">
+<h1>Gems_Snippets_Tracker_Fields_FieldsAutosearchForm<a href="../classes/Gems_Snippets_Tracker_Fields_FieldsAutosearchForm.html">¶</a>
+</h1>
+<p class="short_description">Display a search form that selects on typed text only</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Tracker_Fields_FieldsAutosearchForm.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Snippets_Tracker_Overview_TableSnippet" class="element ajax clickable class">
+<h1>Gems_Snippets_Tracker_Overview_TableSnippet<a href="../classes/Gems_Snippets_Tracker_Overview_TableSnippet.html">¶</a>
+</h1>
+<p class="short_description">Display a tabel that links to the track maintenance</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Snippets_Tracker_Overview_TableSnippet.html" class="more">« More »</a>
+</div>
+</div>
+<ul class="breadcrumb"><li>
+<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li><a href="../packages/Gems.html">Gems</a></li>
+<li>
+<span class="divider">\</span><a href="../packages/Gems.Snippets.html">Snippets</a>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../packages/Gems.Snippets.Upgrade.html">Upgrade</a>
+</li>
+</li></ul>
+<div class="package-indent">
+<h3>
+<i title="Classes" class="icon-custom icon-class"></i> Classes, interfaces, and traits</h3>
+<div xmlns:php="http://php.net/xsl" id="UpgradeCompatibilitySnippet" class="element ajax clickable class">
+<h1>UpgradeCompatibilitySnippet<a href="../classes/Gems.Snippets.Upgrade.UpgradeCompatibilitySnippet.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.Upgrade.UpgradeCompatibilitySnippet.html" class="more">« More »</a>
+</div>
+</div>
+<ul class="breadcrumb"><li>
+<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li><a href="../packages/Gems.html">Gems</a></li>
+<li>
+<span class="divider">\</span><a href="../packages/Gems.Snippets.html">Snippets</a>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../packages/Gems.Snippets.User.html">User</a>
+</li>
+</li></ul>
+<div class="package-indent">
+<h3>
+<i title="Classes" class="icon-custom icon-class"></i> Classes, interfaces, and traits</h3>
+<div xmlns:php="http://php.net/xsl" id="AdminPasswordResetSnippet" class="element ajax clickable class">
+<h1>AdminPasswordResetSnippet<a href="../classes/Gems.Snippets.User.AdminPasswordResetSnippet.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.User.AdminPasswordResetSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="OwnAccountEditSnippet" class="element ajax clickable class">
+<h1>OwnAccountEditSnippet<a href="../classes/Gems.Snippets.User.OwnAccountEditSnippet.html">¶</a>
+</h1>
+<p class="short_description">Adds Gems specific display details and helper functions:</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.User.OwnAccountEditSnippet.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="PasswordResetSnippet" class="element ajax clickable class">
+<h1>PasswordResetSnippet<a href="../classes/Gems.Snippets.User.PasswordResetSnippet.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Gems.Snippets.User.PasswordResetSnippet.html" class="more">« More »</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:11+02:00.<br></footer></div>
+</div>
+</body>
+</html>

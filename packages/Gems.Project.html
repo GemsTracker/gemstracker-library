@@ -1,0 +1,203 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » Gems\Project</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+<ul class="side-nav nav nav-list">
+<li class="nav-header">
+<i class="icon-map-marker"></i> Packages</li>
+<li>
+<a href="../packages/Gems.Project.html" title="Project"><i class="icon-folder-open"></i>Project</a><ul class="nav nav-list nav-packages"></ul>
+</li>
+<li class="nav-header">
+<i title="Interfaces" class="icon-custom icon-interface"></i> Interfaces</li>
+<li><a href="#Gems_Project_Organization_SingleOrganizationInterface" title="Marker interface for Pulse Projects having respondents
+in only one organization.">Gems_Project_Organization_SingleOrganizationInterface</a></li>
+<li><a href="#Gems_Project_Tracks_TracksOnlyInterface" title="Marker interface for Pulse Projects NOT allowing the single survey tracks
+allowed by \Gems_Project_Tracks_StandAloneSurveysInterface (a nd that are just
+shells for assinging a single survey).">Gems_Project_Tracks_TracksOnlyInterface</a></li>
+<li><a href="#Gems_Project_Organization_MultiOrganizationInterface" title="Marker interface for Pulse Projects having respondents
+in only multiple organization.">Gems_Project_Organization_MultiOrganizationInterface</a></li>
+<li><a href="#Gems_Project_Layout_SingleLayoutInterface" title="Marker interface for Pulse Projects using only a single layout">Gems_Project_Layout_SingleLayoutInterface</a></li>
+<li><a href="#Gems_Project_Tracks_FixedTracksInterface" title="Marker interface for Pulse Projects that use tracks that cannot be assigned by the user
+(but are assigned by the system instead).">Gems_Project_Tracks_FixedTracksInterface</a></li>
+<li><a href="#Gems_Project_Log_LogRespondentAccessInterface" title="Marker interface for Pulse Projects logging access to respondent data and their tokens">Gems_Project_Log_LogRespondentAccessInterface</a></li>
+<li><a href="#Gems_Project_Tracks_StandAloneSurveysInterface" title="Marker interface for Pulse Projects allowing single survey tracks
+that are just shells for assinging a single survey.">Gems_Project_Tracks_StandAloneSurveysInterface</a></li>
+<li><a href="#Gems_Project_Layout_MultiLayoutInterface" title="Marker interface for Pulse Projects using only multi layout">Gems_Project_Layout_MultiLayoutInterface</a></li>
+<li><a href="#Gems_Project_Tracks_MultiTracksInterface" title="Marker interface for Pulse Projects that use tracks that be assigned at will by the user
+to respondents.">Gems_Project_Tracks_MultiTracksInterface</a></li>
+<li><a href="#Gems_Project_Tracks_SingleTrackInterface" title="Marker interface for Pulse Projects using only a single track">Gems_Project_Tracks_SingleTrackInterface</a></li>
+<li class="nav-header">
+<i title="Classes" class="icon-custom icon-class"></i> Classes</li>
+<li><a href="#GemsEscort" title="Project Application Core code">GemsEscort</a></li>
+<li><a href="#Gems_Project_ProjectSettings" title="Class that extends Array object to add Gems specific functions.">Gems_Project_ProjectSettings</a></li>
+</ul>
+</div>
+<div class="span8 package-contents">
+<ul class="breadcrumb"><li>
+<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li><a href="../packages/Gems.html">Gems</a></li>
+<li class="active">
+<span class="divider">\</span><a href="../packages/Gems.Project.html">Project</a>
+</li>
+</li></ul>
+<div class="package-indent">
+<h3>
+<i title="Classes" class="icon-custom icon-class"></i> Classes, interfaces, and traits</h3>
+<div xmlns:php="http://php.net/xsl" id="Gems_Project_Layout_MultiLayoutInterface" class="element ajax clickable interface">
+<h1>Gems_Project_Layout_MultiLayoutInterface<a href="../classes/Gems_Project_Layout_MultiLayoutInterface.html">¶</a>
+</h1>
+<p class="short_description">Marker interface for Pulse Projects using only multi layout</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Project_Layout_MultiLayoutInterface.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Project_Layout_SingleLayoutInterface" class="element ajax clickable interface">
+<h1>Gems_Project_Layout_SingleLayoutInterface<a href="../classes/Gems_Project_Layout_SingleLayoutInterface.html">¶</a>
+</h1>
+<p class="short_description">Marker interface for Pulse Projects using only a single layout</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Project_Layout_SingleLayoutInterface.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Project_Log_LogRespondentAccessInterface" class="element ajax clickable interface">
+<h1>Gems_Project_Log_LogRespondentAccessInterface<a href="../classes/Gems_Project_Log_LogRespondentAccessInterface.html">¶</a>
+</h1>
+<p class="short_description">Marker interface for Pulse Projects logging access to respondent data and their tokens</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Project_Log_LogRespondentAccessInterface.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Project_Organization_MultiOrganizationInterface" class="element ajax clickable interface">
+<h1>Gems_Project_Organization_MultiOrganizationInterface<a href="../classes/Gems_Project_Organization_MultiOrganizationInterface.html">¶</a>
+</h1>
+<p class="short_description">Marker interface for Pulse Projects having respondents
+in only multiple organization.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Project_Organization_MultiOrganizationInterface.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Project_Organization_SingleOrganizationInterface" class="element ajax clickable interface">
+<h1>Gems_Project_Organization_SingleOrganizationInterface<a href="../classes/Gems_Project_Organization_SingleOrganizationInterface.html">¶</a>
+</h1>
+<p class="short_description">Marker interface for Pulse Projects having respondents
+in only one organization.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Project_Organization_SingleOrganizationInterface.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Project_Tracks_FixedTracksInterface" class="element ajax clickable interface">
+<h1>Gems_Project_Tracks_FixedTracksInterface<a href="../classes/Gems_Project_Tracks_FixedTracksInterface.html">¶</a>
+</h1>
+<p class="short_description">Marker interface for Pulse Projects that use tracks that cannot be assigned by the user
+(but are assigned by the system instead).</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Project_Tracks_FixedTracksInterface.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Project_Tracks_MultiTracksInterface" class="element ajax clickable interface">
+<h1>Gems_Project_Tracks_MultiTracksInterface<a href="../classes/Gems_Project_Tracks_MultiTracksInterface.html">¶</a>
+</h1>
+<p class="short_description">Marker interface for Pulse Projects that use tracks that be assigned at will by the user
+to respondents.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Project_Tracks_MultiTracksInterface.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Project_Tracks_SingleTrackInterface" class="element ajax clickable interface">
+<h1>Gems_Project_Tracks_SingleTrackInterface<a href="../classes/Gems_Project_Tracks_SingleTrackInterface.html">¶</a>
+</h1>
+<p class="short_description">Marker interface for Pulse Projects using only a single track</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Project_Tracks_SingleTrackInterface.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Project_Tracks_StandAloneSurveysInterface" class="element ajax clickable interface">
+<h1>Gems_Project_Tracks_StandAloneSurveysInterface<a href="../classes/Gems_Project_Tracks_StandAloneSurveysInterface.html">¶</a>
+</h1>
+<p class="short_description">Marker interface for Pulse Projects allowing single survey tracks
+that are just shells for assinging a single survey.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Project_Tracks_StandAloneSurveysInterface.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Project_Tracks_TracksOnlyInterface" class="element ajax clickable interface">
+<h1>Gems_Project_Tracks_TracksOnlyInterface<a href="../classes/Gems_Project_Tracks_TracksOnlyInterface.html">¶</a>
+</h1>
+<p class="short_description">Marker interface for Pulse Projects NOT allowing the single survey tracks
+allowed by \Gems_Project_Tracks_StandAloneSurveysInterface (a nd that are just
+shells for assinging a single survey).</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Project_Tracks_TracksOnlyInterface.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="GemsEscort" class="element ajax clickable class">
+<h1>GemsEscort<a href="../classes/GemsEscort.html">¶</a>
+</h1>
+<p class="short_description">Project Application Core code</p>
+<div class="details collapse"></div>
+<a href="../classes/GemsEscort.html" class="more">« More »</a>
+</div>
+<div xmlns:php="http://php.net/xsl" id="Gems_Project_ProjectSettings" class="element ajax clickable class">
+<h1>Gems_Project_ProjectSettings<a href="../classes/Gems_Project_ProjectSettings.html">¶</a>
+</h1>
+<p class="short_description">Class that extends Array object to add Gems specific functions.</p>
+<div class="details collapse"></div>
+<a href="../classes/Gems_Project_ProjectSettings.html" class="more">« More »</a>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:10+02:00.<br></footer></div>
+</div>
+</body>
+</html>

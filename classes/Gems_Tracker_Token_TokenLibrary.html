@@ -1,0 +1,397 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » \Gems_Tracker_Token_TokenLibrary</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+<div class="btn-group visibility" data-toggle="buttons-checkbox">
+<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
+</div>
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+</div>
+<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+<li class="nav-header">
+<i title="Methods" class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public inherited"><a href="#method___get" title="__get() :: Returns a callable if a method is called as a variable"><span class="description">Returns a callable if a method is called as a variable</span><pre>__get()</pre></a></li>
+<li class="method public "><a href="#method_checkRegistryRequestsAnswers" title="checkRegistryRequestsAnswers() :: Should be called after answering the request to allow the Target
+to check if all required registry values have been set correctly."><span class="description">Should be called after answering the request to allow the Target
+to check if all required registry values have been set correctly.</span><pre>checkRegistryRequestsAnswers()</pre></a></li>
+<li class="method public "><a href="#method_createToken" title="createToken() :: Creates a new token with a new random token Id"><span class="description">Creates a new token with a new random token Id</span><pre>createToken()</pre></a></li>
+<li class="method public "><a href="#method_filter" title="filter() :: Removes all unacceptable characters from the input token and inserts any fixed characters left out"><span class="description">Removes all unacceptable characters from the input token and inserts any fixed characters left out</span><pre>filter()</pre></a></li>
+<li class="method public "><a href="#method_getCaseSensitive" title="getCaseSensitive() :: "><span class="description">getCaseSensitive()
+        </span><pre>getCaseSensitive()</pre></a></li>
+<li class="method public "><a href="#method_getFormat" title="getFormat() :: Display format describing token format"><span class="description">Display format describing token format</span><pre>getFormat()</pre></a></li>
+<li class="method public "><a href="#method_getFrom" title="getFrom() :: The characters that should not occur in a token"><span class="description">The characters that should not occur in a token</span><pre>getFrom()</pre></a></li>
+<li class="method public "><a href="#method_getLength" title="getLength() :: "><span class="description">getLength()
+        </span><pre>getLength()</pre></a></li>
+<li class="method public "><a href="#method_getReuse" title="getReuse() :: The number of days after completion a token can be used to look up other not completed tokens"><span class="description">The number of days after completion a token can be used to look up other not completed tokens</span><pre>getReuse()</pre></a></li>
+<li class="method public "><a href="#method_getTo" title="getTo() :: The characters that replace characters that should not occur in a token"><span class="description">The characters that replace characters that should not occur in a token</span><pre>getTo()</pre></a></li>
+<li class="method public "><a href="#method_hasReuse" title="hasReuse() :: True if after completion a token can be used to look up other not completed tokens"><span class="description">True if after completion a token can be used to look up other not completed tokens</span><pre>hasReuse()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul><li class="method protected "><a href="#method_createTokenId" title="createTokenId() :: Generates a random token and checks for uniqueness"><span class="description">Generates a random token and checks for uniqueness</span><pre>createTokenId()</pre></a></li></ul>
+</li>
+<li class="nav-header">
+<i title="Properties" class="icon-custom icon-property"></i> Properties
+                    <ul></ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="property protected "><a href="#property_db" title="$db() :: "><span class="description"></span><pre>$db</pre></a></li>
+<li class="property protected "><a href="#property_project" title="$project() :: "><span class="description"></span><pre>$project</pre></a></li>
+<li class="property protected "><a href="#property_tokenCaseSensitive" title="$tokenCaseSensitive() :: "><span class="description"></span><pre>$tokenCaseSensitive</pre></a></li>
+<li class="property protected "><a href="#property_tokenDisplayFormat" title="$tokenDisplayFormat() :: "><span class="description"></span><pre>$tokenDisplayFormat</pre></a></li>
+<li class="property protected "><a href="#property_tokenFormat" title="$tokenFormat() :: "><span class="description"></span><pre>$tokenFormat</pre></a></li>
+<li class="property protected "><a href="#property_tokenFrom" title="$tokenFrom() :: "><span class="description"></span><pre>$tokenFrom</pre></a></li>
+<li class="property protected "><a href="#property_tokenReuse" title="$tokenReuse() :: "><span class="description"></span><pre>$tokenReuse</pre></a></li>
+<li class="property protected "><a href="#property_tokenTo" title="$tokenTo() :: "><span class="description"></span><pre>$tokenTo</pre></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a xmlns:php="http://php.net/xsl" id="\Gems_Tracker_Token_TokenLibrary"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+<li>
+<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Gems_Tracker_Token_TokenLibrary.html">Gems_Tracker_Token_TokenLibrary</a>
+</li>
+</ul>
+<div xmlns:php="http://php.net/xsl" class="element class">
+<p class="short_description">Utility functions for token string functions</p>
+<div class="details">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Gems.Tracker.html">Gems</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Tracker</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2011 Erasmus MC</td>
+</tr>
+<tr>
+<th>license</th>
+<td><a href="http://opensource.org/licenses/BSD-3-Clause">New BSD License</a></td>
+</tr>
+<tr>
+<th>since</th>
+<td>Class available since version 1.2</td>
+</tr>
+<tr>
+<th>inherited_from</th>
+<td>\Gems_Registry_TargetAbstract</td>
+</tr>
+</table>
+<h3>
+<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
+<a id="method___get"></a><div class="element clickable method public method___get inherited" data-toggle="collapse" data-target=".method___get .collapse" title="public">
+<h2>Returns a callable if a method is called as a variable</h2>
+<pre>__get(string $name) : Callable</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>Callable</code></div>
+</div></div>
+</div>
+<a id="method_checkRegistryRequestsAnswers"></a><div class="element clickable method public method_checkRegistryRequestsAnswers " data-toggle="collapse" data-target=".method_checkRegistryRequestsAnswers .collapse" title="public">
+<h2>Should be called after answering the request to allow the Target
+to check if all required registry values have been set correctly.</h2>
+<pre>checkRegistryRequestsAnswers() : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>False if required values are missing.</div>
+</div></div>
+</div>
+<a id="method_createToken"></a><div class="element clickable method public method_createToken " data-toggle="collapse" data-target=".method_createToken .collapse" title="public">
+<h2>Creates a new token with a new random token Id</h2>
+<pre>createToken(array $tokenData, integer $userId) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$tokenData</h4>
+<code>array</code>
+</div>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>Id of the user who takes the action (for logging)</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>The new token Id</div>
+</div></div>
+</div>
+<a id="method_filter"></a><div class="element clickable method public method_filter " data-toggle="collapse" data-target=".method_filter .collapse" title="public">
+<h2>Removes all unacceptable characters from the input token and inserts any fixed characters left out</h2>
+<pre>filter(string $token) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>Reformatted token</div>
+</div></div>
+</div>
+<a id="method_getCaseSensitive"></a><div class="element clickable method public method_getCaseSensitive " data-toggle="collapse" data-target=".method_getCaseSensitive .collapse" title="public">
+<h2>getCaseSensitive()
+        </h2>
+<pre>getCaseSensitive() : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>True if case sensitive</div>
+</div></div>
+</div>
+<a id="method_getFormat"></a><div class="element clickable method public method_getFormat " data-toggle="collapse" data-target=".method_getFormat .collapse" title="public">
+<h2>Display format describing token format</h2>
+<pre>getFormat() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getFrom"></a><div class="element clickable method public method_getFrom " data-toggle="collapse" data-target=".method_getFrom .collapse" title="public">
+<h2>The characters that should not occur in a token</h2>
+<pre>getFrom() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td><a href="%5CgetFrom"></a></td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getLength"></a><div class="element clickable method public method_getLength " data-toggle="collapse" data-target=".method_getLength .collapse" title="public">
+<h2>getLength()
+        </h2>
+<pre>getLength() : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>The length a token is allowed to have.</div>
+</div></div>
+</div>
+<a id="method_getReuse"></a><div class="element clickable method public method_getReuse " data-toggle="collapse" data-target=".method_getReuse .collapse" title="public">
+<h2>The number of days after completion a token can be used to look up other not completed tokens</h2>
+<pre>getReuse() : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>integer</code></div>
+</div></div>
+</div>
+<a id="method_getTo"></a><div class="element clickable method public method_getTo " data-toggle="collapse" data-target=".method_getTo .collapse" title="public">
+<h2>The characters that replace characters that should not occur in a token</h2>
+<pre>getTo() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td><a href="%5CGems_Tracker_Token_TokenLibrary::getFrom()"></a></td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_hasReuse"></a><div class="element clickable method public method_hasReuse " data-toggle="collapse" data-target=".method_hasReuse .collapse" title="public">
+<h2>True if after completion a token can be used to look up other not completed tokens</h2>
+<pre>hasReuse() : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_createTokenId"></a><div class="element clickable method protected method_createTokenId " data-toggle="collapse" data-target=".method_createTokenId .collapse" title="protected">
+<h2>Generates a random token and checks for uniqueness</h2>
+<pre>createTokenId() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>A non-existing token</div>
+</div></div>
+</div>
+<h3>
+<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
+<a id="property_db"> </a><div class="element clickable property protected property_db" data-toggle="collapse" data-target=".property_db .collapse" title="protected">
+<h2>$db</h2>
+<pre>$db : \Zend_Db_Adapter_Abstract</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_project"> </a><div class="element clickable property protected property_project" data-toggle="collapse" data-target=".property_project .collapse" title="protected">
+<h2>$project</h2>
+<pre>$project : \Gems_Project_ProjectSettings</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_tokenCaseSensitive"> </a><div class="element clickable property protected property_tokenCaseSensitive" data-toggle="collapse" data-target=".property_tokenCaseSensitive .collapse" title="protected">
+<h2>$tokenCaseSensitive</h2>
+<pre>$tokenCaseSensitive </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_tokenDisplayFormat"> </a><div class="element clickable property protected property_tokenDisplayFormat" data-toggle="collapse" data-target=".property_tokenDisplayFormat .collapse" title="protected">
+<h2>$tokenDisplayFormat</h2>
+<pre>$tokenDisplayFormat </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_tokenFormat"> </a><div class="element clickable property protected property_tokenFormat" data-toggle="collapse" data-target=".property_tokenFormat .collapse" title="protected">
+<h2>$tokenFormat</h2>
+<pre>$tokenFormat </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_tokenFrom"> </a><div class="element clickable property protected property_tokenFrom" data-toggle="collapse" data-target=".property_tokenFrom .collapse" title="protected">
+<h2>$tokenFrom</h2>
+<pre>$tokenFrom </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_tokenReuse"> </a><div class="element clickable property protected property_tokenReuse" data-toggle="collapse" data-target=".property_tokenReuse .collapse" title="protected">
+<h2>$tokenReuse</h2>
+<pre>$tokenReuse </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_tokenTo"> </a><div class="element clickable property protected property_tokenTo" data-toggle="collapse" data-target=".property_tokenTo .collapse" title="protected">
+<h2>$tokenTo</h2>
+<pre>$tokenTo </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:19+02:00.<br></footer></div>
+</div>
+</body>
+</html>

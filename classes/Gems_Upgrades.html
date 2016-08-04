@@ -1,0 +1,900 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » \Gems_Upgrades</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+<div class="btn-group visibility" data-toggle="buttons-checkbox">
+<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
+</div>
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+</div>
+<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+<li class="nav-header">
+<i title="Methods" class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public "><a href="#method_Upgrade143to150" title="Upgrade143to150() :: To upgrade from 143 to 15 we need to do some work:
+1. execute db patches 42 and 43
+2. create new tables"><span class="description">To upgrade from 143 to 15 we need to do some work:
+1. execute db patches 42 and 43
+2. create new tables</span><pre>Upgrade143to150()</pre></a></li>
+<li class="method public "><a href="#method_Upgrade150to151" title="Upgrade150to151() :: To upgrade to 1.5.1 just execute patchlevel 44"><span class="description">To upgrade to 1.5.1 just execute patchlevel 44</span><pre>Upgrade150to151()</pre></a></li>
+<li class="method public "><a href="#method_Upgrade151to152" title="Upgrade151to152() :: To upgrade to 1.5.2 just execute patchlevel 45"><span class="description">To upgrade to 1.5.2 just execute patchlevel 45</span><pre>Upgrade151to152()</pre></a></li>
+<li class="method public "><a href="#method_Upgrade152to153" title="Upgrade152to153() :: To upgrade to 1.5.2 just execute patchlevel 46"><span class="description">To upgrade to 1.5.2 just execute patchlevel 46</span><pre>Upgrade152to153()</pre></a></li>
+<li class="method public "><a href="#method_Upgrade153to154" title="Upgrade153to154() :: To upgrade to 1.5.4 just execute patchlevel 47"><span class="description">To upgrade to 1.5.4 just execute patchlevel 47</span><pre>Upgrade153to154()</pre></a></li>
+<li class="method public "><a href="#method_Upgrade154to155" title="Upgrade154to155() :: To upgrade to 1.5.5 just execute patchlevel 48"><span class="description">To upgrade to 1.5.5 just execute patchlevel 48</span><pre>Upgrade154to155()</pre></a></li>
+<li class="method public "><a href="#method_Upgrade155to156" title="Upgrade155to156() :: To upgrade to 1.5.6 just execute patchlevel 49"><span class="description">To upgrade to 1.5.6 just execute patchlevel 49</span><pre>Upgrade155to156()</pre></a></li>
+<li class="method public "><a href="#method_Upgrade156to157" title="Upgrade156to157() :: To upgrade to 1.5.7 just execute patchlevel 50"><span class="description">To upgrade to 1.5.7 just execute patchlevel 50</span><pre>Upgrade156to157()</pre></a></li>
+<li class="method public "><a href="#method_Upgrade157to16" title="Upgrade157to16() :: To upgrade to 1.6 just execute patchlevel 51"><span class="description">To upgrade to 1.6 just execute patchlevel 51</span><pre>Upgrade157to16()</pre></a></li>
+<li class="method public "><a href="#method_Upgrade161to162" title="Upgrade161to162() :: To upgrade to 1.6.2 just execute patchlevel 53"><span class="description">To upgrade to 1.6.2 just execute patchlevel 53</span><pre>Upgrade161to162()</pre></a></li>
+<li class="method public "><a href="#method_Upgrade162to163" title="Upgrade162to163() :: To upgrade to 1.6.3 just execute patchlevel 54"><span class="description">To upgrade to 1.6.3 just execute patchlevel 54</span><pre>Upgrade162to163()</pre></a></li>
+<li class="method public "><a href="#method_Upgrade163to164" title="Upgrade163to164() :: To upgrade to 1.6.4 just execute patchlevel 55"><span class="description">To upgrade to 1.6.4 just execute patchlevel 55</span><pre>Upgrade163to164()</pre></a></li>
+<li class="method public "><a href="#method_Upgrade164to170" title="Upgrade164to170() :: To upgrade to 1.7.0"><span class="description">To upgrade to 1.7.0</span><pre>Upgrade164to170()</pre></a></li>
+<li class="method public "><a href="#method_Upgrade16to161" title="Upgrade16to161() :: To upgrade to 1.6.1 just execute patchlevel 52"><span class="description">To upgrade to 1.6.1 just execute patchlevel 52</span><pre>Upgrade16to161()</pre></a></li>
+<li class="method public "><a href="#method_Upgrade170to171" title="Upgrade170to171() :: To upgrade to 1.7.1"><span class="description">To upgrade to 1.7.1</span><pre>Upgrade170to171()</pre></a></li>
+<li class="method public "><a href="#method_Upgrade171to172" title="Upgrade171to172() :: To upgrade to 1.7.2"><span class="description">To upgrade to 1.7.2</span><pre>Upgrade171to172()</pre></a></li>
+<li class="method public "><a href="#method_Upgrade172to181" title="Upgrade172to181() :: To upgrade to 1.8.1"><span class="description">To upgrade to 1.8.1</span><pre>Upgrade172to181()</pre></a></li>
+<li class="method public "><a href="#method___construct" title="__construct() :: "><span class="description">__construct()
+        </span><pre>__construct()</pre></a></li>
+<li class="method public inherited"><a href="#method___construct" title="__construct() :: "><span class="description">__construct()
+        </span><pre>__construct()</pre></a></li>
+<li class="method public inherited"><a href="#method___get" title="__get() :: "><span class="description">__get()
+        </span><pre>__get()</pre></a></li>
+<li class="method public inherited"><a href="#method_addPrefixPath" title="addPrefixPath() :: Add prefixed paths to the registry of paths"><span class="description">Add prefixed paths to the registry of paths</span><pre>addPrefixPath()</pre></a></li>
+<li class="method public inherited"><a href="#method_afterRegistry" title="afterRegistry() :: Called after the check that all required registry values
+have been set correctly has run."><span class="description">Called after the check that all required registry values
+have been set correctly has run.</span><pre>afterRegistry()</pre></a></li>
+<li class="method public inherited"><a href="#method_answerRegistryRequest" title="answerRegistryRequest() :: Allows the loader to set resources."><span class="description">Allows the loader to set resources.</span><pre>answerRegistryRequest()</pre></a></li>
+<li class="method public inherited"><a href="#method_checkRegistryRequestsAnswers" title="checkRegistryRequestsAnswers() :: Should be called after answering the request to allow the Target
+to check if all required registry values have been set correctly."><span class="description">Should be called after answering the request to allow the Target
+to check if all required registry values have been set correctly.</span><pre>checkRegistryRequestsAnswers()</pre></a></li>
+<li class="method public inherited"><a href="#method_execute" title="execute() :: Execute upgrades for the given $context"><span class="description">Execute upgrades for the given $context</span><pre>execute()</pre></a></li>
+<li class="method public inherited"><a href="#method_getContext" title="getContext() :: Retrieve the current context"><span class="description">Retrieve the current context</span><pre>getContext()</pre></a></li>
+<li class="method public inherited"><a href="#method_getLevel" title="getLevel() :: Get the current upgrade level for the given $context"><span class="description">Get the current upgrade level for the given $context</span><pre>getLevel()</pre></a></li>
+<li class="method public inherited"><a href="#method_getMaxLevel" title="getMaxLevel() :: Get the highest level for the given $context"><span class="description">Get the highest level for the given $context</span><pre>getMaxLevel()</pre></a></li>
+<li class="method public inherited"><a href="#method_getMessages" title="getMessages() :: Get all messages that were recorded during the upgrade process"><span class="description">Get all messages that were recorded during the upgrade process</span><pre>getMessages()</pre></a></li>
+<li class="method public inherited"><a href="#method_getNextLevel" title="getNextLevel() :: Get the next level for a given level and context"><span class="description">Get the next level for a given level and context</span><pre>getNextLevel()</pre></a></li>
+<li class="method public inherited"><a href="#method_getRegistryRequests" title="getRegistryRequests() :: Allows the loader to know the resources to set."><span class="description">Allows the loader to know the resources to set.</span><pre>getRegistryRequests()</pre></a></li>
+<li class="method public inherited"><a href="#method_getUpgrades" title="getUpgrades() :: Retrieve the upgrades for a certain context, will return an empty array when nothing present."><span class="description">Retrieve the upgrades for a certain context, will return an empty array when nothing present.</span><pre>getUpgrades()</pre></a></li>
+<li class="method public inherited"><a href="#method_getUpgradesInfo" title="getUpgradesInfo() :: Retrieve info about the $requestedContext or all contexts when omitted"><span class="description">Retrieve info about the $requestedContext or all contexts when omitted</span><pre>getUpgradesInfo()</pre></a></li>
+<li class="method public inherited"><a href="#method_register" title="register() :: Register an upgrade in the stack, it can be executed by using $this-&gt;execute"><span class="description">Register an upgrade in the stack, it can be executed by using $this-&gt;execute</span><pre>register()</pre></a></li>
+<li class="method public inherited"><a href="#method_setBatch" title="setBatch() :: Set the batch to use"><span class="description">Set the batch to use</span><pre>setBatch()</pre></a></li>
+<li class="method public inherited"><a href="#method_setContext" title="setContext() :: Change the active context"><span class="description">Change the active context</span><pre>setContext()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="method protected inherited"><a href="#method__" title="_() :: Proxy to the translate object"><span class="description">Proxy to the translate object</span><pre>_()</pre></a></li>
+<li class="method protected inherited"><a href="#method__cascadedDirs" title="_cascadedDirs() :: Add a subdirectory / sub name to a list of class load paths"><span class="description">Add a subdirectory / sub name to a list of class load paths</span><pre>_cascadedDirs()</pre></a></li>
+<li class="method protected inherited"><a href="#method__getClass" title="_getClass() :: Returns $this-&gt;$name, creating the item if it does not yet exist."><span class="description">Returns $this-&gt;$name, creating the item if it does not yet exist.</span><pre>_getClass()</pre></a></li>
+<li class="method protected inherited"><a href="#method__loadClass" title="_loadClass() :: Create or loads the class. When only loading, this function returns a StaticCall object that
+can be invoked lazely."><span class="description">Create or loads the class. When only loading, this function returns a StaticCall object that
+can be invoked lazely.</span><pre>_loadClass()</pre></a></li>
+<li class="method protected inherited"><a href="#method_addMessage" title="addMessage() :: Add a message to the stack"><span class="description">Add a message to the stack</span><pre>addMessage()</pre></a></li>
+<li class="method protected inherited"><a href="#method_clearMessages" title="clearMessages() :: Reset the message stack"><span class="description">Reset the message stack</span><pre>clearMessages()</pre></a></li>
+<li class="method protected inherited"><a href="#method_filterRequestNames" title="filterRequestNames() :: Filters the names that should not be requested."><span class="description">Filters the names that should not be requested.</span><pre>filterRequestNames()</pre></a></li>
+<li class="method protected inherited"><a href="#method_setLevel" title="setLevel() :: Set the upgrade level for the given $context to a certain level"><span class="description">Set the upgrade level for the given $context to a certain level</span><pre>setLevel()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Properties" class="icon-custom icon-property"></i> Properties
+                    <ul>
+<li class="property public "><a href="#property_db" title="$db() :: "><span class="description"></span><pre>$db</pre></a></li>
+<li class="property public "><a href="#property_loader" title="$loader() :: "><span class="description"></span><pre>$loader</pre></a></li>
+<li class="property public "><a href="#property_project" title="$project() :: "><span class="description"></span><pre>$project</pre></a></li>
+<li class="property public "><a href="#property_translate" title="$translate() :: "><span class="description"></span><pre>$translate</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="property protected "><a href="#property__batch" title="$_batch() :: "><span class="description"></span><pre>$_batch</pre></a></li>
+<li class="property protected "><a href="#property__context" title="$_context() :: "><span class="description"></span><pre>$_context</pre></a></li>
+<li class="property protected "><a href="#property__dirs" title="$_dirs() :: The prefix/path location to look for classes."><span class="description"></span><pre>$_dirs</pre></a></li>
+<li class="property protected "><a href="#property__info" title="$_info() :: "><span class="description"></span><pre>$_info</pre></a></li>
+<li class="property protected "><a href="#property__loader" title="$_loader() :: "><span class="description"></span><pre>$_loader</pre></a></li>
+<li class="property protected "><a href="#property__messages" title="$_messages() :: "><span class="description"></span><pre>$_messages</pre></a></li>
+<li class="property protected "><a href="#property__upgradeStack" title="$_upgradeStack() :: "><span class="description"></span><pre>$_upgradeStack</pre></a></li>
+<li class="property protected "><a href="#property_cascade" title="$cascade() :: Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for."><span class="description"></span><pre>$cascade</pre></a></li>
+<li class="property protected "><a href="#property_originalFile" title="$originalFile() :: Holds the inital config file"><span class="description"></span><pre>$originalFile</pre></a></li>
+<li class="property protected "><a href="#property_upgradeFile" title="$upgradeFile() :: Holds the config file specific to this environment"><span class="description"></span><pre>$upgradeFile</pre></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a xmlns:php="http://php.net/xsl" id="\Gems_Upgrades"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+<li>
+<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Gems_Upgrades.html">Gems_Upgrades</a>
+</li>
+</ul>
+<div xmlns:php="http://php.net/xsl" class="element class">
+<p class="short_description">Short description for Upgrades</p>
+<div class="details">
+<div class="long_description"><p>Long description for class Upgrades (if any)...</p></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Gems.Upgrades.html">Gems</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Upgrades</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2011 Erasmus MC</td>
+</tr>
+<tr>
+<th>license</th>
+<td><a href="http://opensource.org/licenses/BSD-3-Clause">New BSD License</a></td>
+</tr>
+<tr>
+<th>since</th>
+<td>Class available since version 1.5</td>
+</tr>
+<tr>
+<th>inherited_from</th>
+<td>\Gems_UpgradesAbstract</td>
+</tr>
+</table>
+<h3>
+<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
+<a id="method_Upgrade143to150"></a><div class="element clickable method public method_Upgrade143to150 " data-toggle="collapse" data-target=".method_Upgrade143to150 .collapse" title="public">
+<h2>To upgrade from 143 to 15 we need to do some work:
+1. execute db patches 42 and 43
+2. create new tables</h2>
+<pre>Upgrade143to150() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_Upgrade150to151"></a><div class="element clickable method public method_Upgrade150to151 " data-toggle="collapse" data-target=".method_Upgrade150to151 .collapse" title="public">
+<h2>To upgrade to 1.5.1 just execute patchlevel 44</h2>
+<pre>Upgrade150to151() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_Upgrade151to152"></a><div class="element clickable method public method_Upgrade151to152 " data-toggle="collapse" data-target=".method_Upgrade151to152 .collapse" title="public">
+<h2>To upgrade to 1.5.2 just execute patchlevel 45</h2>
+<pre>Upgrade151to152() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_Upgrade152to153"></a><div class="element clickable method public method_Upgrade152to153 " data-toggle="collapse" data-target=".method_Upgrade152to153 .collapse" title="public">
+<h2>To upgrade to 1.5.2 just execute patchlevel 46</h2>
+<pre>Upgrade152to153() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_Upgrade153to154"></a><div class="element clickable method public method_Upgrade153to154 " data-toggle="collapse" data-target=".method_Upgrade153to154 .collapse" title="public">
+<h2>To upgrade to 1.5.4 just execute patchlevel 47</h2>
+<pre>Upgrade153to154() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_Upgrade154to155"></a><div class="element clickable method public method_Upgrade154to155 " data-toggle="collapse" data-target=".method_Upgrade154to155 .collapse" title="public">
+<h2>To upgrade to 1.5.5 just execute patchlevel 48</h2>
+<pre>Upgrade154to155() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_Upgrade155to156"></a><div class="element clickable method public method_Upgrade155to156 " data-toggle="collapse" data-target=".method_Upgrade155to156 .collapse" title="public">
+<h2>To upgrade to 1.5.6 just execute patchlevel 49</h2>
+<pre>Upgrade155to156() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_Upgrade156to157"></a><div class="element clickable method public method_Upgrade156to157 " data-toggle="collapse" data-target=".method_Upgrade156to157 .collapse" title="public">
+<h2>To upgrade to 1.5.7 just execute patchlevel 50</h2>
+<pre>Upgrade156to157() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_Upgrade157to16"></a><div class="element clickable method public method_Upgrade157to16 " data-toggle="collapse" data-target=".method_Upgrade157to16 .collapse" title="public">
+<h2>To upgrade to 1.6 just execute patchlevel 51</h2>
+<pre>Upgrade157to16() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_Upgrade161to162"></a><div class="element clickable method public method_Upgrade161to162 " data-toggle="collapse" data-target=".method_Upgrade161to162 .collapse" title="public">
+<h2>To upgrade to 1.6.2 just execute patchlevel 53</h2>
+<pre>Upgrade161to162() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_Upgrade162to163"></a><div class="element clickable method public method_Upgrade162to163 " data-toggle="collapse" data-target=".method_Upgrade162to163 .collapse" title="public">
+<h2>To upgrade to 1.6.3 just execute patchlevel 54</h2>
+<pre>Upgrade162to163() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_Upgrade163to164"></a><div class="element clickable method public method_Upgrade163to164 " data-toggle="collapse" data-target=".method_Upgrade163to164 .collapse" title="public">
+<h2>To upgrade to 1.6.4 just execute patchlevel 55</h2>
+<pre>Upgrade163to164() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_Upgrade164to170"></a><div class="element clickable method public method_Upgrade164to170 " data-toggle="collapse" data-target=".method_Upgrade164to170 .collapse" title="public">
+<h2>To upgrade to 1.7.0</h2>
+<pre>Upgrade164to170() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_Upgrade16to161"></a><div class="element clickable method public method_Upgrade16to161 " data-toggle="collapse" data-target=".method_Upgrade16to161 .collapse" title="public">
+<h2>To upgrade to 1.6.1 just execute patchlevel 52</h2>
+<pre>Upgrade16to161() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_Upgrade170to171"></a><div class="element clickable method public method_Upgrade170to171 " data-toggle="collapse" data-target=".method_Upgrade170to171 .collapse" title="public">
+<h2>To upgrade to 1.7.1</h2>
+<pre>Upgrade170to171() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_Upgrade171to172"></a><div class="element clickable method public method_Upgrade171to172 " data-toggle="collapse" data-target=".method_Upgrade171to172 .collapse" title="public">
+<h2>To upgrade to 1.7.2</h2>
+<pre>Upgrade171to172() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_Upgrade172to181"></a><div class="element clickable method public method_Upgrade172to181 " data-toggle="collapse" data-target=".method_Upgrade172to181 .collapse" title="public">
+<h2>To upgrade to 1.8.1</h2>
+<pre>Upgrade172to181() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method___construct"></a><div class="element clickable method public method___construct " data-toggle="collapse" data-target=".method___construct .collapse" title="public">
+<h2>__construct()
+        </h2>
+<pre>__construct() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_UpgradesAbstract::__construct()</td>
+</tr></table>
+</div></div>
+</div>
+<a id="method___construct"></a><div class="element clickable method public method___construct inherited" data-toggle="collapse" data-target=".method___construct .collapse" title="public">
+<h2>__construct()
+        </h2>
+<pre>__construct(mixed $container, array $dirs) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$container</h4>
+<code>mixed</code><p>A container acting as source for \MUtil_Registry_Source</p></div>
+<div class="subelement argument">
+<h4>$dirs</h4>
+<code>array</code><p>The directories where to look for requested classes</p></div>
+</div></div>
+</div>
+<a id="method___get"></a><div class="element clickable method public method___get inherited" data-toggle="collapse" data-target=".method___get .collapse" title="public">
+<h2>__get()
+        </h2>
+<pre>__get($name) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$name</h4></div>
+</div></div>
+</div>
+<a id="method_addPrefixPath"></a><div class="element clickable method public method_addPrefixPath inherited" data-toggle="collapse" data-target=".method_addPrefixPath .collapse" title="public">
+<h2>Add prefixed paths to the registry of paths</h2>
+<pre>addPrefixPath(string $prefix, $path, boolean $prepend<code> = true</code>) : \Gems_Loader_LoaderAbstract</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$prefix</h4>
+<code>string</code>
+</div>
+<div class="subelement argument"><h4>$path</h4></div>
+<div class="subelement argument">
+<h4>$prepend</h4>
+<code>boolean</code><p>Put path at the beginning of the stack (has no effect when prefix / dir already set)</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Loader_LoaderAbstract</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_afterRegistry"></a><div class="element clickable method public method_afterRegistry inherited" data-toggle="collapse" data-target=".method_afterRegistry .collapse" title="public">
+<h2>Called after the check that all required registry values
+have been set correctly has run.</h2>
+<pre>afterRegistry() : void</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_answerRegistryRequest"></a><div class="element clickable method public method_answerRegistryRequest inherited" data-toggle="collapse" data-target=".method_answerRegistryRequest .collapse" title="public">
+<h2>Allows the loader to set resources.</h2>
+<pre>answerRegistryRequest(string $name, mixed $resource) : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code><p>Name of resource to set</p></div>
+<div class="subelement argument">
+<h4>$resource</h4>
+<code>mixed</code><p>The resource.</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>True if $resource was OK</div>
+</div></div>
+</div>
+<a id="method_checkRegistryRequestsAnswers"></a><div class="element clickable method public method_checkRegistryRequestsAnswers inherited" data-toggle="collapse" data-target=".method_checkRegistryRequestsAnswers .collapse" title="public">
+<h2>Should be called after answering the request to allow the Target
+to check if all required registry values have been set correctly.</h2>
+<pre>checkRegistryRequestsAnswers() : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>False if required values are missing.</div>
+</div></div>
+</div>
+<a id="method_execute"></a><div class="element clickable method public method_execute inherited" data-toggle="collapse" data-target=".method_execute .collapse" title="public">
+<h2>Execute upgrades for the given $context</h2>
+<pre>execute(string $context, integer|null $to<code> = null</code>, integer|null $from<code> = null</code>) : false | integer</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>When no $to or $from are given, the given $context will be upgraded from the current level
+to the max level. Otherwise the $from and/or $to will be used to determine what upgrades
+to execute.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$context</h4>
+<code>string</code><p>The context to execute the upgrades for</p></div>
+<div class="subelement argument">
+<h4>$to</h4>
+<code>integer</code><code>null</code><p>The level to upgrade to</p></div>
+<div class="subelement argument">
+<h4>$from</h4>
+<code>integer</code><code>null</code><p>The level to start the upgrade on</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>false</code><code>integer</code>The achieved upgrade level or false on failure</div>
+</div></div>
+</div>
+<a id="method_getContext"></a><div class="element clickable method public method_getContext inherited" data-toggle="collapse" data-target=".method_getContext .collapse" title="public">
+<h2>Retrieve the current context</h2>
+<pre>getContext() : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getLevel"></a><div class="element clickable method public method_getLevel inherited" data-toggle="collapse" data-target=".method_getLevel .collapse" title="public">
+<h2>Get the current upgrade level for the given $context</h2>
+<pre>getLevel(string $context) : integer</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$context</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>integer</code></div>
+</div></div>
+</div>
+<a id="method_getMaxLevel"></a><div class="element clickable method public method_getMaxLevel inherited" data-toggle="collapse" data-target=".method_getMaxLevel .collapse" title="public">
+<h2>Get the highest level for the given $context</h2>
+<pre>getMaxLevel(string|null $context<code> = null</code>) : integer</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$context</h4>
+<code>string</code><code>null</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>integer</code></div>
+</div></div>
+</div>
+<a id="method_getMessages"></a><div class="element clickable method public method_getMessages inherited" data-toggle="collapse" data-target=".method_getMessages .collapse" title="public">
+<h2>Get all messages that were recorded during the upgrade process</h2>
+<pre>getMessages() : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_getNextLevel"></a><div class="element clickable method public method_getNextLevel inherited" data-toggle="collapse" data-target=".method_getNextLevel .collapse" title="public">
+<h2>Get the next level for a given level and context</h2>
+<pre>getNextLevel(\type $context<code> = null</code>, \type $level<code> = null</code>) : \type</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>When context is null, it will get the current context
+When level is null, it will get the current level</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$context</h4>
+<code>\type</code>
+</div>
+<div class="subelement argument">
+<h4>$level</h4>
+<code>\type</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\type</code></div>
+</div></div>
+</div>
+<a id="method_getRegistryRequests"></a><div class="element clickable method public method_getRegistryRequests inherited" data-toggle="collapse" data-target=".method_getRegistryRequests .collapse" title="public">
+<h2>Allows the loader to know the resources to set.</h2>
+<pre>getRegistryRequests() : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Returns those object variables defined by the subclass but not at the level of this definition.</p>
+<p>Can be overruled.</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>of string names</div>
+</div></div>
+</div>
+<a id="method_getUpgrades"></a><div class="element clickable method public method_getUpgrades inherited" data-toggle="collapse" data-target=".method_getUpgrades .collapse" title="public">
+<h2>Retrieve the upgrades for a certain context, will return an empty array when nothing present.</h2>
+<pre>getUpgrades(string $context<code> = null</code>) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$context</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_getUpgradesInfo"></a><div class="element clickable method public method_getUpgradesInfo inherited" data-toggle="collapse" data-target=".method_getUpgradesInfo .collapse" title="public">
+<h2>Retrieve info about the $requestedContext or all contexts when omitted</h2>
+<pre>getUpgradesInfo(string $requestedContext<code> = null</code>) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$requestedContext</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_register"></a><div class="element clickable method public method_register inherited" data-toggle="collapse" data-target=".method_register .collapse" title="public">
+<h2>Register an upgrade in the stack, it can be executed by using $this-&gt;execute</h2>
+<pre>register(array|string $callback, string $info<code> = null</code>, integer $index<code> = null</code>, string $context<code> = null</code>) : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Index and context are optional and will be generated when omitted. For the
+user interface to be clear $info should provide a good description of what
+the upgrade does.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$callback</h4>
+<code>array</code><code>string</code><p>A valid callback, either string for a method of the current class or array otherwise</p></div>
+<div class="subelement argument">
+<h4>$info</h4>
+<code>string</code><p>A descriptive message about what this upgrade does</p></div>
+<div class="subelement argument">
+<h4>$index</h4>
+<code>integer</code><p>The number of the upgrade</p></div>
+<div class="subelement argument">
+<h4>$context</h4>
+<code>string</code><p>The context to which this upgrade applies</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_setBatch"></a><div class="element clickable method public method_setBatch inherited" data-toggle="collapse" data-target=".method_setBatch .collapse" title="public">
+<h2>Set the batch to use</h2>
+<pre>setBatch(\Gems_Task_TaskRunnerBatch $batch) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$batch</h4>
+<code>\Gems_Task_TaskRunnerBatch</code>
+</div>
+</div></div>
+</div>
+<a id="method_setContext"></a><div class="element clickable method public method_setContext inherited" data-toggle="collapse" data-target=".method_setContext .collapse" title="public">
+<h2>Change the active context</h2>
+<pre>setContext(string $context) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Usefull when adding upgrades in the construct to save typing</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$context</h4>
+<code>string</code>
+</div>
+</div></div>
+</div>
+<a id="method__"></a><div class="element clickable method protected method__ inherited" data-toggle="collapse" data-target=".method__ .collapse" title="protected">
+<h2>Proxy to the translate object</h2>
+<pre>_(string $messageId, \type $locale<code> = null</code>) : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$messageId</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$locale</h4>
+<code>\type</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method__cascadedDirs"></a><div class="element clickable method protected method__cascadedDirs inherited" data-toggle="collapse" data-target=".method__cascadedDirs .collapse" title="protected">
+<h2>Add a subdirectory / sub name to a list of class load paths</h2>
+<pre>_cascadedDirs(array $dirs, string $cascade, boolean $fullClassnameFallback<code> = true</code>) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$dirs</h4>
+<code>array</code><p>prefix => path</p></div>
+<div class="subelement argument">
+<h4>$cascade</h4>
+<code>string</code><p>The sub directories to cascade to</p></div>
+<div class="subelement argument">
+<h4>$fullClassnameFallback</h4>
+<code>boolean</code><p>Allows full class name specification instead of just plugin name part</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>prefix => path</div>
+</div></div>
+</div>
+<a id="method__getClass"></a><div class="element clickable method protected method__getClass inherited" data-toggle="collapse" data-target=".method__getClass .collapse" title="protected">
+<h2>Returns $this-&gt;$name, creating the item if it does not yet exist.</h2>
+<pre>_getClass(string $name, string $className<code> = null</code>, array $arguments<code> = array()</code>) : mixed</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code><p>The $name of the variable to store this object in.</p></div>
+<div class="subelement argument">
+<h4>$className</h4>
+<code>string</code><p>Class name or null if the same as $name, prepending $this->_dirs.</p></div>
+<div class="subelement argument">
+<h4>$arguments</h4>
+<code>array</code><p>Class initialization arguments.</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>Instance of $className</div>
+</div></div>
+</div>
+<a id="method__loadClass"></a><div class="element clickable method protected method__loadClass inherited" data-toggle="collapse" data-target=".method__loadClass .collapse" title="protected">
+<h2>Create or loads the class. When only loading, this function returns a StaticCall object that
+can be invoked lazely.</h2>
+<pre>_loadClass(string $name, boolean $create<code> = false</code>, array $arguments<code> = array()</code>) : mixed</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>see</th>
+<td><a href="%5CMUtil_Lazy_StaticCall"></a></td>
+</tr>
+<tr>
+<th>see</th>
+<td><a href="%5CMUtil_Registry_TargetInterface"></a></td>
+</tr>
+</table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code><p>The class name, minus the part in $this->_dirs.</p></div>
+<div class="subelement argument">
+<h4>$create</h4>
+<code>boolean</code><p>Create the object, or only when an \MUtil_Registry_TargetInterface instance.</p></div>
+<div class="subelement argument">
+<h4>$arguments</h4>
+<code>array</code><p>Class initialization arguments.</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>A class instance or a \MUtil_Lazy_StaticCall object</div>
+</div></div>
+</div>
+<a id="method_addMessage"></a><div class="element clickable method protected method_addMessage inherited" data-toggle="collapse" data-target=".method_addMessage .collapse" title="protected">
+<h2>Add a message to the stack</h2>
+<pre>addMessage(string $message) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$message</h4>
+<code>string</code>
+</div>
+</div></div>
+</div>
+<a id="method_clearMessages"></a><div class="element clickable method protected method_clearMessages inherited" data-toggle="collapse" data-target=".method_clearMessages .collapse" title="protected">
+<h2>Reset the message stack</h2>
+<pre>clearMessages() </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_filterRequestNames"></a><div class="element clickable method protected method_filterRequestNames inherited" data-toggle="collapse" data-target=".method_filterRequestNames .collapse" title="protected">
+<h2>Filters the names that should not be requested.</h2>
+<pre>filterRequestNames(string $name) : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Can be overriden.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_setLevel"></a><div class="element clickable method protected method_setLevel inherited" data-toggle="collapse" data-target=".method_setLevel .collapse" title="protected">
+<h2>Set the upgrade level for the given $context to a certain level</h2>
+<pre>setLevel(string $context, integer $level<code> = null</code>, boolean $force<code> = false</code>) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Will only update when the $level is higher than the achieved level, unless
+when $force = true when it will always update.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$context</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$level</h4>
+<code>integer</code>
+</div>
+<div class="subelement argument">
+<h4>$force</h4>
+<code>boolean</code>
+</div>
+</div></div>
+</div>
+<h3>
+<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
+<a id="property_db"> </a><div class="element clickable property public property_db" data-toggle="collapse" data-target=".property_db .collapse" title="public">
+<h2>$db</h2>
+<pre>$db : \Zend_Db_Adapter_Abstract</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_loader"> </a><div class="element clickable property public property_loader" data-toggle="collapse" data-target=".property_loader .collapse" title="public">
+<h2>$loader</h2>
+<pre>$loader : \Gems_Loader</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_project"> </a><div class="element clickable property public property_project" data-toggle="collapse" data-target=".property_project .collapse" title="public">
+<h2>$project</h2>
+<pre>$project : \Gems_Project_ProjectSettings</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_translate"> </a><div class="element clickable property public property_translate" data-toggle="collapse" data-target=".property_translate .collapse" title="public">
+<h2>$translate</h2>
+<pre>$translate : \Zend_Translate_Adapter</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__batch"> </a><div class="element clickable property protected property__batch" data-toggle="collapse" data-target=".property__batch .collapse" title="protected">
+<h2>$_batch</h2>
+<pre>$_batch : \Gems_Task_TaskRunnerBatch</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__context"> </a><div class="element clickable property protected property__context" data-toggle="collapse" data-target=".property__context .collapse" title="protected">
+<h2>$_context</h2>
+<pre>$_context </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__dirs"> </a><div class="element clickable property protected property__dirs" data-toggle="collapse" data-target=".property__dirs .collapse" title="protected">
+<h2>The prefix/path location to look for classes.</h2>
+<pre>$_dirs : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"><p>The standard value is</p>
+<ul>
+<li>
+<Project_name> => application/classes
+</li>
+<li>Gems =&gt; library/Gems/classes</li>
+</ul>
+<p>But an alternative could be:</p>
+<ul>
+<li>Demopulse =&gt; application/classes</li>
+<li>Pulse =&gt; application/classes</li>
+<li>Gems =&gt; library/Gems/classes</li>
+</ul></div></div></div>
+</div>
+<a id="property__info"> </a><div class="element clickable property protected property__info" data-toggle="collapse" data-target=".property__info .collapse" title="protected">
+<h2>$_info</h2>
+<pre>$_info : \Zend_Config_Ini</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__loader"> </a><div class="element clickable property protected property__loader" data-toggle="collapse" data-target=".property__loader .collapse" title="protected">
+<h2>$_loader</h2>
+<pre>$_loader : \MUtil_Loader_PluginLoader</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__messages"> </a><div class="element clickable property protected property__messages" data-toggle="collapse" data-target=".property__messages .collapse" title="protected">
+<h2>$_messages</h2>
+<pre>$_messages </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>array()</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__upgradeStack"> </a><div class="element clickable property protected property__upgradeStack" data-toggle="collapse" data-target=".property__upgradeStack .collapse" title="protected">
+<h2>$_upgradeStack</h2>
+<pre>$_upgradeStack </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>array()</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_cascade"> </a><div class="element clickable property protected property_cascade" data-toggle="collapse" data-target=".property_cascade .collapse" title="protected">
+<h2>Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.</h2>
+<pre>$cascade : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_originalFile"> </a><div class="element clickable property protected property_originalFile" data-toggle="collapse" data-target=".property_originalFile .collapse" title="protected">
+<h2>Holds the inital config file</h2>
+<pre>$originalFile : \Zend_Config</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_upgradeFile"> </a><div class="element clickable property protected property_upgradeFile" data-toggle="collapse" data-target=".property_upgradeFile .collapse" title="protected">
+<h2>Holds the config file specific to this environment</h2>
+<pre>$upgradeFile : \Zend_Config</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:28+02:00.<br></footer></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,557 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » \Gems_Selector_SelectorField</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+<div class="btn-group visibility" data-toggle="buttons-checkbox">
+<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
+</div>
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+</div>
+<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+<li class="nav-header">
+<i title="Methods" class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public "><a href="#method___construct" title="__construct() :: "><span class="description">__construct()
+        </span><pre>__construct()</pre></a></li>
+<li class="method public "><a href="#method_getClass" title="getClass() :: "><span class="description">getClass()
+        </span><pre>getClass()</pre></a></li>
+<li class="method public "><a href="#method_getDefault" title="getDefault() :: "><span class="description">getDefault()
+        </span><pre>getDefault()</pre></a></li>
+<li class="method public "><a href="#method_getFilter" title="getFilter() :: "><span class="description">getFilter()
+        </span><pre>getFilter()</pre></a></li>
+<li class="method public "><a href="#method_getHRef" title="getHRef() :: "><span class="description">getHRef()
+        </span><pre>getHRef()</pre></a></li>
+<li class="method public "><a href="#method_getLabel" title="getLabel() :: "><span class="description">getLabel()
+        </span><pre>getLabel()</pre></a></li>
+<li class="method public "><a href="#method_getLabelClass" title="getLabelClass() :: "><span class="description">getLabelClass()
+        </span><pre>getLabelClass()</pre></a></li>
+<li class="method public "><a href="#method_getSQL" title="getSQL() :: "><span class="description">getSQL()
+        </span><pre>getSQL()</pre></a></li>
+<li class="method public "><a href="#method_setClass" title="setClass() :: "><span class="description">setClass()
+        </span><pre>setClass()</pre></a></li>
+<li class="method public "><a href="#method_setFilter" title="setFilter() :: "><span class="description">setFilter()
+        </span><pre>setFilter()</pre></a></li>
+<li class="method public "><a href="#method_setLabel" title="setLabel() :: "><span class="description">setLabel()
+        </span><pre>setLabel()</pre></a></li>
+<li class="method public "><a href="#method_setLabelClass" title="setLabelClass() :: "><span class="description">setLabelClass()
+        </span><pre>setLabelClass()</pre></a></li>
+<li class="method public "><a href="#method_setSQL" title="setSQL() :: "><span class="description">setSQL()
+        </span><pre>setSQL()</pre></a></li>
+<li class="method public "><a href="#method_setSQLFunction" title="setSQLFunction() :: "><span class="description">setSQLFunction()
+        </span><pre>setSQLFunction()</pre></a></li>
+<li class="method public "><a href="#method_setToAverage" title="setToAverage() :: "><span class="description">setToAverage()
+        </span><pre>setToAverage()</pre></a></li>
+<li class="method public "><a href="#method_setToCount" title="setToCount() :: "><span class="description">setToCount()
+        </span><pre>setToCount()</pre></a></li>
+<li class="method public "><a href="#method_setToMaximum" title="setToMaximum() :: "><span class="description">setToMaximum()
+        </span><pre>setToMaximum()</pre></a></li>
+<li class="method public "><a href="#method_setToMinimum" title="setToMinimum() :: "><span class="description">setToMinimum()
+        </span><pre>setToMinimum()</pre></a></li>
+<li class="method public "><a href="#method_setToSum" title="setToSum() :: "><span class="description">setToSum()
+        </span><pre>setToSum()</pre></a></li>
+<li class="method public "><a href="#method_setToSumWhen" title="setToSumWhen() :: "><span class="description">setToSumWhen()
+        </span><pre>setToSumWhen()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Properties" class="icon-custom icon-property"></i> Properties
+                    <ul></ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="property protected "><a href="#property_class" title="$class() :: "><span class="description"></span><pre>$class</pre></a></li>
+<li class="property protected "><a href="#property_default" title="$default() :: "><span class="description"></span><pre>$default</pre></a></li>
+<li class="property protected "><a href="#property_filter" title="$filter() :: "><span class="description"></span><pre>$filter</pre></a></li>
+<li class="property protected "><a href="#property_label" title="$label() :: "><span class="description"></span><pre>$label</pre></a></li>
+<li class="property protected "><a href="#property_labelClass" title="$labelClass() :: "><span class="description"></span><pre>$labelClass</pre></a></li>
+<li class="property protected "><a href="#property_name" title="$name() :: "><span class="description"></span><pre>$name</pre></a></li>
+<li class="property protected "><a href="#property_sql" title="$sql() :: "><span class="description"></span><pre>$sql</pre></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a xmlns:php="http://php.net/xsl" id="\Gems_Selector_SelectorField"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+<li>
+<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Gems_Selector_SelectorField.html">Gems_Selector_SelectorField</a>
+</li>
+</ul>
+<div xmlns:php="http://php.net/xsl" class="element class">
+<p class="short_description"></p>
+<div class="details">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Gems.Selector.html">Gems</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Selector</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2011 Erasmus MC</td>
+</tr>
+<tr>
+<th>license</th>
+<td><a href="http://opensource.org/licenses/BSD-3-Clause">New BSD License</a></td>
+</tr>
+<tr>
+<th>since</th>
+<td>Class available since version 1.1</td>
+</tr>
+</table>
+<h3>
+<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
+<a id="method___construct"></a><div class="element clickable method public method___construct " data-toggle="collapse" data-target=".method___construct .collapse" title="public">
+<h2>__construct()
+        </h2>
+<pre>__construct($name) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$name</h4></div>
+</div></div>
+</div>
+<a id="method_getClass"></a><div class="element clickable method public method_getClass " data-toggle="collapse" data-target=".method_getClass .collapse" title="public">
+<h2>getClass()
+        </h2>
+<pre>getClass() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_getDefault"></a><div class="element clickable method public method_getDefault " data-toggle="collapse" data-target=".method_getDefault .collapse" title="public">
+<h2>getDefault()
+        </h2>
+<pre>getDefault() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_getFilter"></a><div class="element clickable method public method_getFilter " data-toggle="collapse" data-target=".method_getFilter .collapse" title="public">
+<h2>getFilter()
+        </h2>
+<pre>getFilter() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_getHRef"></a><div class="element clickable method public method_getHRef " data-toggle="collapse" data-target=".method_getHRef .collapse" title="public">
+<h2>getHRef()
+        </h2>
+<pre>getHRef(\MUtil_Lazy_RepeatableInterface $repeater, array $url<code> = array()</code>) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$repeater</h4></div>
+<div class="subelement argument"><h4>$url</h4></div>
+</div></div>
+</div>
+<a id="method_getLabel"></a><div class="element clickable method public method_getLabel " data-toggle="collapse" data-target=".method_getLabel .collapse" title="public">
+<h2>getLabel()
+        </h2>
+<pre>getLabel() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_getLabelClass"></a><div class="element clickable method public method_getLabelClass " data-toggle="collapse" data-target=".method_getLabelClass .collapse" title="public">
+<h2>getLabelClass()
+        </h2>
+<pre>getLabelClass() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_getSQL"></a><div class="element clickable method public method_getSQL " data-toggle="collapse" data-target=".method_getSQL .collapse" title="public">
+<h2>getSQL()
+        </h2>
+<pre>getSQL() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_setClass"></a><div class="element clickable method public method_setClass " data-toggle="collapse" data-target=".method_setClass .collapse" title="public">
+<h2>setClass()
+        </h2>
+<pre>setClass(string $class) : \Gems_Selector_SelectorField</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$class</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Selector_SelectorField</code></div>
+</div></div>
+</div>
+<a id="method_setFilter"></a><div class="element clickable method public method_setFilter " data-toggle="collapse" data-target=".method_setFilter .collapse" title="public">
+<h2>setFilter()
+        </h2>
+<pre>setFilter($filter) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$filter</h4></div>
+</div></div>
+</div>
+<a id="method_setLabel"></a><div class="element clickable method public method_setLabel " data-toggle="collapse" data-target=".method_setLabel .collapse" title="public">
+<h2>setLabel()
+        </h2>
+<pre>setLabel(string $label) : \Gems_Selector_SelectorField</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$label</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Selector_SelectorField</code></div>
+</div></div>
+</div>
+<a id="method_setLabelClass"></a><div class="element clickable method public method_setLabelClass " data-toggle="collapse" data-target=".method_setLabelClass .collapse" title="public">
+<h2>setLabelClass()
+        </h2>
+<pre>setLabelClass(string $class) : \Gems_Selector_SelectorField</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$class</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Selector_SelectorField</code></div>
+</div></div>
+</div>
+<a id="method_setSQL"></a><div class="element clickable method public method_setSQL " data-toggle="collapse" data-target=".method_setSQL .collapse" title="public">
+<h2>setSQL()
+        </h2>
+<pre>setSQL(string|\Zend_Db_Expr $sql) : \Gems_Selector_SelectorField</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$sql</h4>
+<code>string</code><code>\Zend_Db_Expr</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Selector_SelectorField</code></div>
+</div></div>
+</div>
+<a id="method_setSQLFunction"></a><div class="element clickable method public method_setSQLFunction " data-toggle="collapse" data-target=".method_setSQLFunction .collapse" title="public">
+<h2>setSQLFunction()
+        </h2>
+<pre>setSQLFunction(string $function, string $calculation, string $round<code> = null</code>, $default<code> = null</code>) : \Gems_Selector_SelectorField</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$function</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$calculation</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$round</h4>
+<code>string</code>
+</div>
+<div class="subelement argument"><h4>$default</h4></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Selector_SelectorField</code></div>
+</div></div>
+</div>
+<a id="method_setToAverage"></a><div class="element clickable method public method_setToAverage " data-toggle="collapse" data-target=".method_setToAverage .collapse" title="public">
+<h2>setToAverage()
+        </h2>
+<pre>setToAverage(string $calculation, integer|null $round<code> = null</code>, mixed $default<code> = null</code>) : \Gems_Selector_SelectorField</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$calculation</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$round</h4>
+<code>integer</code><code>null</code>
+</div>
+<div class="subelement argument">
+<h4>$default</h4>
+<code>mixed</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Selector_SelectorField</code></div>
+</div></div>
+</div>
+<a id="method_setToCount"></a><div class="element clickable method public method_setToCount " data-toggle="collapse" data-target=".method_setToCount .collapse" title="public">
+<h2>setToCount()
+        </h2>
+<pre>setToCount(string $calculation<code> = '*'</code>, mixed $default<code> = 0</code>) : \Gems_Selector_SelectorField</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$calculation</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$default</h4>
+<code>mixed</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Selector_SelectorField</code></div>
+</div></div>
+</div>
+<a id="method_setToMaximum"></a><div class="element clickable method public method_setToMaximum " data-toggle="collapse" data-target=".method_setToMaximum .collapse" title="public">
+<h2>setToMaximum()
+        </h2>
+<pre>setToMaximum(string $calculation, integer|null $round<code> = null</code>, mixed $default<code> = null</code>) : \Gems_Selector_SelectorField</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$calculation</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$round</h4>
+<code>integer</code><code>null</code>
+</div>
+<div class="subelement argument">
+<h4>$default</h4>
+<code>mixed</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Selector_SelectorField</code></div>
+</div></div>
+</div>
+<a id="method_setToMinimum"></a><div class="element clickable method public method_setToMinimum " data-toggle="collapse" data-target=".method_setToMinimum .collapse" title="public">
+<h2>setToMinimum()
+        </h2>
+<pre>setToMinimum(string $calculation, integer|null $round<code> = null</code>, mixed $default<code> = null</code>) : \Gems_Selector_SelectorField</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$calculation</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$round</h4>
+<code>integer</code><code>null</code>
+</div>
+<div class="subelement argument">
+<h4>$default</h4>
+<code>mixed</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Selector_SelectorField</code></div>
+</div></div>
+</div>
+<a id="method_setToSum"></a><div class="element clickable method public method_setToSum " data-toggle="collapse" data-target=".method_setToSum .collapse" title="public">
+<h2>setToSum()
+        </h2>
+<pre>setToSum(string $calculation, integer|null $round<code> = null</code>, mixed $default<code> = 0</code>) : \Gems_Selector_SelectorField</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$calculation</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$round</h4>
+<code>integer</code><code>null</code>
+</div>
+<div class="subelement argument">
+<h4>$default</h4>
+<code>mixed</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Selector_SelectorField</code></div>
+</div></div>
+</div>
+<a id="method_setToSumWhen"></a><div class="element clickable method public method_setToSumWhen " data-toggle="collapse" data-target=".method_setToSumWhen .collapse" title="public">
+<h2>setToSumWhen()
+        </h2>
+<pre>setToSumWhen(string $condition, mixed $field<code> = 1</code>, integer|null $round<code> = null</code>, mixed $default<code> = 0</code>) : \Gems_Selector_SelectorField</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$condition</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$field</h4>
+<code>mixed</code><p>The field or constant to add to the sum when $condition is true.</p></div>
+<div class="subelement argument">
+<h4>$round</h4>
+<code>integer</code><code>null</code>
+</div>
+<div class="subelement argument">
+<h4>$default</h4>
+<code>mixed</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Selector_SelectorField</code></div>
+</div></div>
+</div>
+<h3>
+<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
+<a id="property_class"> </a><div class="element clickable property protected property_class" data-toggle="collapse" data-target=".property_class .collapse" title="protected">
+<h2>$class</h2>
+<pre>$class </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_default"> </a><div class="element clickable property protected property_default" data-toggle="collapse" data-target=".property_default .collapse" title="protected">
+<h2>$default</h2>
+<pre>$default </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_filter"> </a><div class="element clickable property protected property_filter" data-toggle="collapse" data-target=".property_filter .collapse" title="protected">
+<h2>$filter</h2>
+<pre>$filter </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_label"> </a><div class="element clickable property protected property_label" data-toggle="collapse" data-target=".property_label .collapse" title="protected">
+<h2>$label</h2>
+<pre>$label </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_labelClass"> </a><div class="element clickable property protected property_labelClass" data-toggle="collapse" data-target=".property_labelClass .collapse" title="protected">
+<h2>$labelClass</h2>
+<pre>$labelClass </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_name"> </a><div class="element clickable property protected property_name" data-toggle="collapse" data-target=".property_name .collapse" title="protected">
+<h2>$name</h2>
+<pre>$name </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_sql"> </a><div class="element clickable property protected property_sql" data-toggle="collapse" data-target=".property_sql .collapse" title="protected">
+<h2>$sql</h2>
+<pre>$sql </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:32+02:00.<br></footer></div>
+</div>
+</body>
+</html>

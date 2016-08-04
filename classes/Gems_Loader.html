@@ -1,0 +1,922 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » \Gems_Loader</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+<div class="btn-group visibility" data-toggle="buttons-checkbox">
+<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
+</div>
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+</div>
+<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+<li class="nav-header">
+<i title="Methods" class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public inherited"><a href="#method___construct" title="__construct() :: "><span class="description">__construct()
+        </span><pre>__construct()</pre></a></li>
+<li class="method public inherited"><a href="#method___get" title="__get() :: "><span class="description">__get()
+        </span><pre>__get()</pre></a></li>
+<li class="method public inherited"><a href="#method_addPrefixPath" title="addPrefixPath() :: Add prefixed paths to the registry of paths"><span class="description">Add prefixed paths to the registry of paths</span><pre>addPrefixPath()</pre></a></li>
+<li class="method public "><a href="#method_createMenu" title="createMenu() :: Load project specific menu or general Gems menu otherwise"><span class="description">Load project specific menu or general Gems menu otherwise</span><pre>createMenu()</pre></a></li>
+<li class="method public "><a href="#method_getAgenda" title="getAgenda() :: "><span class="description">getAgenda()
+        </span><pre>getAgenda()</pre></a></li>
+<li class="method public "><a href="#method_getCurrentUser" title="getCurrentUser() :: "><span class="description">getCurrentUser()
+        </span><pre>getCurrentUser()</pre></a></li>
+<li class="method public "><a href="#method_getEvents" title="getEvents() :: "><span class="description">getEvents()
+        </span><pre>getEvents()</pre></a></li>
+<li class="method public "><a href="#method_getExport" title="getExport() :: "><span class="description">getExport()
+        </span><pre>getExport()</pre></a></li>
+<li class="method public "><a href="#method_getExportModelSource" title="getExportModelSource() :: "><span class="description">getExportModelSource()
+        </span><pre>getExportModelSource()</pre></a></li>
+<li class="method public "><a href="#method_getImportLoader" title="getImportLoader() :: "><span class="description">getImportLoader()
+        </span><pre>getImportLoader()</pre></a></li>
+<li class="method public "><a href="#method_getInstance" title="getInstance() :: Returns an instance (row) of the the model, this allows for easy loading of instances"><span class="description">Returns an instance (row) of the the model, this allows for easy loading of instances</span><pre>getInstance()</pre></a></li>
+<li class="method public "><a href="#method_getMail" title="getMail() :: "><span class="description">getMail()
+        </span><pre>getMail()</pre></a></li>
+<li class="method public "><a href="#method_getMailLoader" title="getMailLoader() :: "><span class="description">getMailLoader()
+        </span><pre>getMailLoader()</pre></a></li>
+<li class="method public "><a href="#method_getMailTargets" title="getMailTargets() :: "><span class="description">getMailTargets()
+        </span><pre>getMailTargets()</pre></a></li>
+<li class="method public "><a href="#method_getMenu" title="getMenu() :: Get the project specific menu or general Gems menu otherwise"><span class="description">Get the project specific menu or general Gems menu otherwise</span><pre>getMenu()</pre></a></li>
+<li class="method public "><a href="#method_getMessenger" title="getMessenger() :: "><span class="description">getMessenger()
+        </span><pre>getMessenger()</pre></a></li>
+<li class="method public "><a href="#method_getModels" title="getModels() :: "><span class="description">getModels()
+        </span><pre>getModels()</pre></a></li>
+<li class="method public "><a href="#method_getOrganization" title="getOrganization() :: Returns an organization object, initiated from the database."><span class="description">Returns an organization object, initiated from the database.</span><pre>getOrganization()</pre></a></li>
+<li class="method public "><a href="#method_getPdf" title="getPdf() :: "><span class="description">getPdf()
+        </span><pre>getPdf()</pre></a></li>
+<li class="method public "><a href="#method_getRespondent" title="getRespondent() :: Get a respondent object"><span class="description">Get a respondent object</span><pre>getRespondent()</pre></a></li>
+<li class="method public "><a href="#method_getRespondentExport" title="getRespondentExport() :: Get a new respondentExport"><span class="description">Get a new respondentExport</span><pre>getRespondentExport()</pre></a></li>
+<li class="method public "><a href="#method_getRoles" title="getRoles() :: "><span class="description">getRoles()
+        </span><pre>getRoles()</pre></a></li>
+<li class="method public "><a href="#method_getSelector" title="getSelector() :: "><span class="description">getSelector()
+        </span><pre>getSelector()</pre></a></li>
+<li class="method public "><a href="#method_getSnippetLoader" title="getSnippetLoader() :: "><span class="description">getSnippetLoader()
+        </span><pre>getSnippetLoader()</pre></a></li>
+<li class="method public "><a href="#method_getTaskRunnerBatch" title="getTaskRunnerBatch() :: "><span class="description">getTaskRunnerBatch()
+        </span><pre>getTaskRunnerBatch()</pre></a></li>
+<li class="method public "><a href="#method_getTestExport" title="getTestExport() :: "><span class="description">getTestExport()
+        </span><pre>getTestExport()</pre></a></li>
+<li class="method public "><a href="#method_getTracker" title="getTracker() :: "><span class="description">getTracker()
+        </span><pre>getTracker()</pre></a></li>
+<li class="method public "><a href="#method_getUpgrades" title="getUpgrades() :: "><span class="description">getUpgrades()
+        </span><pre>getUpgrades()</pre></a></li>
+<li class="method public "><a href="#method_getUser" title="getUser() :: "><span class="description">getUser()
+        </span><pre>getUser()</pre></a></li>
+<li class="method public "><a href="#method_getUserLoader" title="getUserLoader() :: "><span class="description">getUserLoader()
+        </span><pre>getUserLoader()</pre></a></li>
+<li class="method public "><a href="#method_getUtil" title="getUtil() :: "><span class="description">getUtil()
+        </span><pre>getUtil()</pre></a></li>
+<li class="method public "><a href="#method_getVersions" title="getVersions() :: "><span class="description">getVersions()
+        </span><pre>getVersions()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="method protected inherited"><a href="#method__cascadedDirs" title="_cascadedDirs() :: Add a subdirectory / sub name to a list of class load paths"><span class="description">Add a subdirectory / sub name to a list of class load paths</span><pre>_cascadedDirs()</pre></a></li>
+<li class="method protected inherited"><a href="#method__getClass" title="_getClass() :: Returns $this-&gt;$name, creating the item if it does not yet exist."><span class="description">Returns $this-&gt;$name, creating the item if it does not yet exist.</span><pre>_getClass()</pre></a></li>
+<li class="method protected inherited"><a href="#method__loadClass" title="_loadClass() :: Create or loads the class. When only loading, this function returns a StaticCall object that
+can be invoked lazely."><span class="description">Create or loads the class. When only loading, this function returns a StaticCall object that
+can be invoked lazely.</span><pre>_loadClass()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Properties" class="icon-custom icon-property"></i> Properties
+                    <ul></ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="property protected "><a href="#property__dirs" title="$_dirs() :: The prefix/path location to look for classes."><span class="description"></span><pre>$_dirs</pre></a></li>
+<li class="property protected "><a href="#property__loader" title="$_loader() :: "><span class="description"></span><pre>$_loader</pre></a></li>
+<li class="property protected "><a href="#property_agenda" title="$agenda() :: "><span class="description"></span><pre>$agenda</pre></a></li>
+<li class="property protected "><a href="#property_cascade" title="$cascade() :: Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for."><span class="description"></span><pre>$cascade</pre></a></li>
+<li class="property protected "><a href="#property_events" title="$events() :: "><span class="description"></span><pre>$events</pre></a></li>
+<li class="property protected "><a href="#property_export" title="$export() :: "><span class="description"></span><pre>$export</pre></a></li>
+<li class="property protected "><a href="#property_importLoader" title="$importLoader() :: "><span class="description"></span><pre>$importLoader</pre></a></li>
+<li class="property protected "><a href="#property_menu" title="$menu() :: Required"><span class="description"></span><pre>$menu</pre></a></li>
+<li class="property protected "><a href="#property_models" title="$models() :: "><span class="description"></span><pre>$models</pre></a></li>
+<li class="property protected "><a href="#property_pdf" title="$pdf() :: "><span class="description"></span><pre>$pdf</pre></a></li>
+<li class="property protected "><a href="#property_respondentexport" title="$respondentexport() :: "><span class="description"></span><pre>$respondentexport</pre></a></li>
+<li class="property protected "><a href="#property_roles" title="$roles() :: "><span class="description"></span><pre>$roles</pre></a></li>
+<li class="property protected "><a href="#property_selector" title="$selector() :: "><span class="description"></span><pre>$selector</pre></a></li>
+<li class="property protected "><a href="#property_snippetLoader" title="$snippetLoader() :: "><span class="description"></span><pre>$snippetLoader</pre></a></li>
+<li class="property protected "><a href="#property_tracker" title="$tracker() :: "><span class="description"></span><pre>$tracker</pre></a></li>
+<li class="property protected "><a href="#property_upgrades" title="$upgrades() :: "><span class="description"></span><pre>$upgrades</pre></a></li>
+<li class="property protected "><a href="#property_userLoader" title="$userLoader() :: "><span class="description"></span><pre>$userLoader</pre></a></li>
+<li class="property protected "><a href="#property_util" title="$util() :: "><span class="description"></span><pre>$util</pre></a></li>
+<li class="property protected "><a href="#property_versions" title="$versions() :: "><span class="description"></span><pre>$versions</pre></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a xmlns:php="http://php.net/xsl" id="\Gems_Loader"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+<li>
+<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Gems_Loader.html">Gems_Loader</a>
+</li>
+</ul>
+<div xmlns:php="http://php.net/xsl" class="element class">
+<p class="short_description">LoaderAbstract is used for classes that chain from \Gems_Loader and that thus allow
+projects to overrule the original implementation.</p>
+<div class="details">
+<div class="long_description"><p>I.e if you create a class <Project_name>_Model or <Project_name>_Util, that class is loaded
+automatically instead of \Gems_Model or \Gems_Util. <Project_name>_Model should be a subclass
+of \Gems_Model.</p>
+<p>You can set more than one overrule level. I.e. you can specify the class chain Demopulse,
+Pulse, Gems. The loader will then always look first in Demopulse, then in Pulse and
+lastly in Gems.</p>
+<p>The class inherits from \MUtil_Registry_Source as the chained classes may have values
+that should be set automatically, e.g. from \Zend_Registry.</p></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Gems.Loader.html">Gems</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Loader</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2011 Erasmus MC</td>
+</tr>
+<tr>
+<th>license</th>
+<td><a href="http://opensource.org/licenses/BSD-3-Clause">New BSD License</a></td>
+</tr>
+<tr>
+<th>since</th>
+<td>Class available since version 1.4</td>
+</tr>
+<tr>
+<th>inherited_from</th>
+<td>\Gems_Loader_LoaderAbstract</td>
+</tr>
+</table>
+<h3>
+<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
+<a id="method___construct"></a><div class="element clickable method public method___construct inherited" data-toggle="collapse" data-target=".method___construct .collapse" title="public">
+<h2>__construct()
+        </h2>
+<pre>__construct(mixed $container, array $dirs) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$container</h4>
+<code>mixed</code><p>A container acting as source for \MUtil_Registry_Source</p></div>
+<div class="subelement argument">
+<h4>$dirs</h4>
+<code>array</code><p>The directories where to look for requested classes</p></div>
+</div></div>
+</div>
+<a id="method___get"></a><div class="element clickable method public method___get inherited" data-toggle="collapse" data-target=".method___get .collapse" title="public">
+<h2>__get()
+        </h2>
+<pre>__get($name) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$name</h4></div>
+</div></div>
+</div>
+<a id="method_addPrefixPath"></a><div class="element clickable method public method_addPrefixPath inherited" data-toggle="collapse" data-target=".method_addPrefixPath .collapse" title="public">
+<h2>Add prefixed paths to the registry of paths</h2>
+<pre>addPrefixPath(string $prefix, $path, boolean $prepend<code> = true</code>) : \Gems_Loader_LoaderAbstract</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$prefix</h4>
+<code>string</code>
+</div>
+<div class="subelement argument"><h4>$path</h4></div>
+<div class="subelement argument">
+<h4>$prepend</h4>
+<code>boolean</code><p>Put path at the beginning of the stack (has no effect when prefix / dir already set)</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Loader_LoaderAbstract</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_createMenu"></a><div class="element clickable method public method_createMenu " data-toggle="collapse" data-target=".method_createMenu .collapse" title="public">
+<h2>Load project specific menu or general Gems menu otherwise</h2>
+<pre>createMenu(\GemsEscort $escort) : \Gems_Menu</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$escort</h4>
+<code>\GemsEscort</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Menu</code></div>
+</div></div>
+</div>
+<a id="method_getAgenda"></a><div class="element clickable method public method_getAgenda " data-toggle="collapse" data-target=".method_getAgenda .collapse" title="public">
+<h2>getAgenda()
+        </h2>
+<pre>getAgenda() : \Gems_Agenda</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Agenda</code></div>
+</div></div>
+</div>
+<a id="method_getCurrentUser"></a><div class="element clickable method public method_getCurrentUser " data-toggle="collapse" data-target=".method_getCurrentUser .collapse" title="public">
+<h2>getCurrentUser()
+        </h2>
+<pre>getCurrentUser() : \Gems_User_User</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_User_User</code></div>
+</div></div>
+</div>
+<a id="method_getEvents"></a><div class="element clickable method public method_getEvents " data-toggle="collapse" data-target=".method_getEvents .collapse" title="public">
+<h2>getEvents()
+        </h2>
+<pre>getEvents() : \Gems_Events</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Events</code></div>
+</div></div>
+</div>
+<a id="method_getExport"></a><div class="element clickable method public method_getExport " data-toggle="collapse" data-target=".method_getExport .collapse" title="public">
+<h2>getExport()
+        </h2>
+<pre>getExport() : \Gems_Export</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Export</code></div>
+</div></div>
+</div>
+<a id="method_getExportModelSource"></a><div class="element clickable method public method_getExportModelSource " data-toggle="collapse" data-target=".method_getExportModelSource .collapse" title="public">
+<h2>getExportModelSource()
+        </h2>
+<pre>getExportModelSource($exportModelSourceName) : \Gems_Export</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$exportModelSourceName</h4></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Export</code></div>
+</div></div>
+</div>
+<a id="method_getImportLoader"></a><div class="element clickable method public method_getImportLoader " data-toggle="collapse" data-target=".method_getImportLoader .collapse" title="public">
+<h2>getImportLoader()
+        </h2>
+<pre>getImportLoader() : \Gems_Import_ImportLoader</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Import_ImportLoader</code></div>
+</div></div>
+</div>
+<a id="method_getInstance"></a><div class="element clickable method public method_getInstance " data-toggle="collapse" data-target=".method_getInstance .collapse" title="public">
+<h2>Returns an instance (row) of the the model, this allows for easy loading of instances</h2>
+<pre>getInstance(string $name, \MUtil_Model_ModelAbstract $model, array $data) : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Best usage would be to load from within the model, so return type can be
+fixed there and code completion would work like desired</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$model</h4>
+<code>\MUtil_Model_ModelAbstract</code>
+</div>
+<div class="subelement argument">
+<h4>$data</h4>
+<code>array</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>mixed</code></div>
+</div></div>
+</div>
+<a id="method_getMail"></a><div class="element clickable method public method_getMail " data-toggle="collapse" data-target=".method_getMail .collapse" title="public">
+<h2>getMail()
+        </h2>
+<pre>getMail($charset<code> = null</code>) : \Gems_Mail</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$charset</h4></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Mail</code></div>
+</div></div>
+</div>
+<a id="method_getMailLoader"></a><div class="element clickable method public method_getMailLoader " data-toggle="collapse" data-target=".method_getMailLoader .collapse" title="public">
+<h2>getMailLoader()
+        </h2>
+<pre>getMailLoader() : \Gems_Mail_MailLoader</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Mail_MailLoader</code></div>
+</div></div>
+</div>
+<a id="method_getMailTargets"></a><div class="element clickable method public method_getMailTargets " data-toggle="collapse" data-target=".method_getMailTargets .collapse" title="public">
+<h2>getMailTargets()
+        </h2>
+<pre>getMailTargets() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_getMenu"></a><div class="element clickable method public method_getMenu " data-toggle="collapse" data-target=".method_getMenu .collapse" title="public">
+<h2>Get the project specific menu or general Gems menu otherwise</h2>
+<pre>getMenu() : \Gems_Menu</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Menu</code></div>
+</div></div>
+</div>
+<a id="method_getMessenger"></a><div class="element clickable method public method_getMessenger " data-toggle="collapse" data-target=".method_getMessenger .collapse" title="public">
+<h2>getMessenger()
+        </h2>
+<pre>getMessenger() : \Zend_Controller_Action_Helper_FlashMessenger</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Zend_Controller_Action_Helper_FlashMessenger</code></div>
+</div></div>
+</div>
+<a id="method_getModels"></a><div class="element clickable method public method_getModels " data-toggle="collapse" data-target=".method_getModels .collapse" title="public">
+<h2>getModels()
+        </h2>
+<pre>getModels() : \Gems_Model</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Model</code></div>
+</div></div>
+</div>
+<a id="method_getOrganization"></a><div class="element clickable method public method_getOrganization " data-toggle="collapse" data-target=".method_getOrganization .collapse" title="public">
+<h2>Returns an organization object, initiated from the database.</h2>
+<pre>getOrganization(integer $organizationId<code> = null</code>) : \Gems_User_Organization</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$organizationId</h4>
+<code>integer</code><p>Optional, uses current user when empty</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_User_Organization</code></div>
+</div></div>
+</div>
+<a id="method_getPdf"></a><div class="element clickable method public method_getPdf " data-toggle="collapse" data-target=".method_getPdf .collapse" title="public">
+<h2>getPdf()
+        </h2>
+<pre>getPdf() : \Gems_Pdf</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Pdf</code></div>
+</div></div>
+</div>
+<a id="method_getRespondent"></a><div class="element clickable method public method_getRespondent " data-toggle="collapse" data-target=".method_getRespondent .collapse" title="public">
+<h2>Get a respondent object</h2>
+<pre>getRespondent(string $patientId, integer $organizationId, integer $respondentId<code> = null</code>) : \Gems_Tracker_Respondent</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$patientId</h4>
+<code>string</code><p>Patient number, you can use $respondentId instead</p></div>
+<div class="subelement argument">
+<h4>$organizationId</h4>
+<code>integer</code><p>Organization id</p></div>
+<div class="subelement argument">
+<h4>$respondentId</h4>
+<code>integer</code><p>Optional respondent id, used when patient id is empty</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Respondent</code></div>
+</div></div>
+</div>
+<a id="method_getRespondentExport"></a><div class="element clickable method public method_getRespondentExport " data-toggle="collapse" data-target=".method_getRespondentExport .collapse" title="public">
+<h2>Get a new respondentExport</h2>
+<pre>getRespondentExport() : \Gems_Export_RespondentExport</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Export_RespondentExport</code></div>
+</div></div>
+</div>
+<a id="method_getRoles"></a><div class="element clickable method public method_getRoles " data-toggle="collapse" data-target=".method_getRoles .collapse" title="public">
+<h2>getRoles()
+        </h2>
+<pre>getRoles(\GemsEscort $escort) : \Gems_Roles</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$escort</h4>
+<code>\GemsEscort</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Roles</code></div>
+</div></div>
+</div>
+<a id="method_getSelector"></a><div class="element clickable method public method_getSelector " data-toggle="collapse" data-target=".method_getSelector .collapse" title="public">
+<h2>getSelector()
+        </h2>
+<pre>getSelector() : \Gems_Selector</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Selector</code></div>
+</div></div>
+</div>
+<a id="method_getSnippetLoader"></a><div class="element clickable method public method_getSnippetLoader " data-toggle="collapse" data-target=".method_getSnippetLoader .collapse" title="public">
+<h2>getSnippetLoader()
+        </h2>
+<pre>getSnippetLoader($container) : \Gems_Snippets_SnippetLoader</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$container</h4></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Snippets_SnippetLoader</code></div>
+</div></div>
+</div>
+<a id="method_getTaskRunnerBatch"></a><div class="element clickable method public method_getTaskRunnerBatch " data-toggle="collapse" data-target=".method_getTaskRunnerBatch .collapse" title="public">
+<h2>getTaskRunnerBatch()
+        </h2>
+<pre>getTaskRunnerBatch(\type $id, \MUtil_Batch_Stack_Stackinterface $stack<code> = null</code>) : \Gems_Task_TaskRunnerBatch</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$id</h4>
+<code>\type</code>
+</div>
+<div class="subelement argument">
+<h4>$stack</h4>
+<code>\MUtil_Batch_Stack_Stackinterface</code><p>Optional different stack than session stack</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Task_TaskRunnerBatch</code></div>
+</div></div>
+</div>
+<a id="method_getTestExport"></a><div class="element clickable method public method_getTestExport " data-toggle="collapse" data-target=".method_getTestExport .collapse" title="public">
+<h2>getTestExport()
+        </h2>
+<pre>getTestExport() : \Gems_Export</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Export</code></div>
+</div></div>
+</div>
+<a id="method_getTracker"></a><div class="element clickable method public method_getTracker " data-toggle="collapse" data-target=".method_getTracker .collapse" title="public">
+<h2>getTracker()
+        </h2>
+<pre>getTracker() : \Gems_Tracker_TrackerInterface</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_TrackerInterface</code></div>
+</div></div>
+</div>
+<a id="method_getUpgrades"></a><div class="element clickable method public method_getUpgrades " data-toggle="collapse" data-target=".method_getUpgrades .collapse" title="public">
+<h2>getUpgrades()
+        </h2>
+<pre>getUpgrades() : \Gems_Upgrades</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Upgrades</code></div>
+</div></div>
+</div>
+<a id="method_getUser"></a><div class="element clickable method public method_getUser " data-toggle="collapse" data-target=".method_getUser .collapse" title="public">
+<h2>getUser()
+        </h2>
+<pre>getUser(string $login_name, integer $organization) : \Gems_User_User</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$login_name</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$organization</h4>
+<code>integer</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_User_User</code></div>
+</div></div>
+</div>
+<a id="method_getUserLoader"></a><div class="element clickable method public method_getUserLoader " data-toggle="collapse" data-target=".method_getUserLoader .collapse" title="public">
+<h2>getUserLoader()
+        </h2>
+<pre>getUserLoader() : \Gems_User_UserLoader</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_User_UserLoader</code></div>
+</div></div>
+</div>
+<a id="method_getUtil"></a><div class="element clickable method public method_getUtil " data-toggle="collapse" data-target=".method_getUtil .collapse" title="public">
+<h2>getUtil()
+        </h2>
+<pre>getUtil() : \Gems_Util</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Util</code></div>
+</div></div>
+</div>
+<a id="method_getVersions"></a><div class="element clickable method public method_getVersions " data-toggle="collapse" data-target=".method_getVersions .collapse" title="public">
+<h2>getVersions()
+        </h2>
+<pre>getVersions() : \Gems_Versions</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Versions</code></div>
+</div></div>
+</div>
+<a id="method__cascadedDirs"></a><div class="element clickable method protected method__cascadedDirs inherited" data-toggle="collapse" data-target=".method__cascadedDirs .collapse" title="protected">
+<h2>Add a subdirectory / sub name to a list of class load paths</h2>
+<pre>_cascadedDirs(array $dirs, string $cascade, boolean $fullClassnameFallback<code> = true</code>) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$dirs</h4>
+<code>array</code><p>prefix => path</p></div>
+<div class="subelement argument">
+<h4>$cascade</h4>
+<code>string</code><p>The sub directories to cascade to</p></div>
+<div class="subelement argument">
+<h4>$fullClassnameFallback</h4>
+<code>boolean</code><p>Allows full class name specification instead of just plugin name part</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>prefix => path</div>
+</div></div>
+</div>
+<a id="method__getClass"></a><div class="element clickable method protected method__getClass inherited" data-toggle="collapse" data-target=".method__getClass .collapse" title="protected">
+<h2>Returns $this-&gt;$name, creating the item if it does not yet exist.</h2>
+<pre>_getClass(string $name, string $className<code> = null</code>, array $arguments<code> = array()</code>) : mixed</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code><p>The $name of the variable to store this object in.</p></div>
+<div class="subelement argument">
+<h4>$className</h4>
+<code>string</code><p>Class name or null if the same as $name, prepending $this->_dirs.</p></div>
+<div class="subelement argument">
+<h4>$arguments</h4>
+<code>array</code><p>Class initialization arguments.</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>Instance of $className</div>
+</div></div>
+</div>
+<a id="method__loadClass"></a><div class="element clickable method protected method__loadClass inherited" data-toggle="collapse" data-target=".method__loadClass .collapse" title="protected">
+<h2>Create or loads the class. When only loading, this function returns a StaticCall object that
+can be invoked lazely.</h2>
+<pre>_loadClass(string $name, boolean $create<code> = false</code>, array $arguments<code> = array()</code>) : mixed</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>see</th>
+<td><a href="%5CMUtil_Lazy_StaticCall"></a></td>
+</tr>
+<tr>
+<th>see</th>
+<td><a href="%5CMUtil_Registry_TargetInterface"></a></td>
+</tr>
+</table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code><p>The class name, minus the part in $this->_dirs.</p></div>
+<div class="subelement argument">
+<h4>$create</h4>
+<code>boolean</code><p>Create the object, or only when an \MUtil_Registry_TargetInterface instance.</p></div>
+<div class="subelement argument">
+<h4>$arguments</h4>
+<code>array</code><p>Class initialization arguments.</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>A class instance or a \MUtil_Lazy_StaticCall object</div>
+</div></div>
+</div>
+<h3>
+<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
+<a id="property__dirs"> </a><div class="element clickable property protected property__dirs" data-toggle="collapse" data-target=".property__dirs .collapse" title="protected">
+<h2>The prefix/path location to look for classes.</h2>
+<pre>$_dirs : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"><p>The standard value is</p>
+<ul>
+<li>
+<Project_name> => application/classes
+</li>
+<li>Gems =&gt; library/Gems/classes</li>
+</ul>
+<p>But an alternative could be:</p>
+<ul>
+<li>Demopulse =&gt; application/classes</li>
+<li>Pulse =&gt; application/classes</li>
+<li>Gems =&gt; library/Gems/classes</li>
+</ul></div></div></div>
+</div>
+<a id="property__loader"> </a><div class="element clickable property protected property__loader" data-toggle="collapse" data-target=".property__loader .collapse" title="protected">
+<h2>$_loader</h2>
+<pre>$_loader : \MUtil_Loader_PluginLoader</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_agenda"> </a><div class="element clickable property protected property_agenda" data-toggle="collapse" data-target=".property_agenda .collapse" title="protected">
+<h2>$agenda</h2>
+<pre>$agenda : \Gems_Agenda</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_cascade"> </a><div class="element clickable property protected property_cascade" data-toggle="collapse" data-target=".property_cascade .collapse" title="protected">
+<h2>Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.</h2>
+<pre>$cascade : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_events"> </a><div class="element clickable property protected property_events" data-toggle="collapse" data-target=".property_events .collapse" title="protected">
+<h2>$events</h2>
+<pre>$events : \Gems_Events</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_export"> </a><div class="element clickable property protected property_export" data-toggle="collapse" data-target=".property_export .collapse" title="protected">
+<h2>$export</h2>
+<pre>$export : \Gems_Export</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_importLoader"> </a><div class="element clickable property protected property_importLoader" data-toggle="collapse" data-target=".property_importLoader .collapse" title="protected">
+<h2>$importLoader</h2>
+<pre>$importLoader : \Gems_Import_ImportLoader</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_menu"> </a><div class="element clickable property protected property_menu" data-toggle="collapse" data-target=".property_menu .collapse" title="protected">
+<h2>Required</h2>
+<pre>$menu : \Gems_Menu</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_models"> </a><div class="element clickable property protected property_models" data-toggle="collapse" data-target=".property_models .collapse" title="protected">
+<h2>$models</h2>
+<pre>$models : \Gems_Model</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_pdf"> </a><div class="element clickable property protected property_pdf" data-toggle="collapse" data-target=".property_pdf .collapse" title="protected">
+<h2>$pdf</h2>
+<pre>$pdf : \Gems_Pdf</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_respondentexport"> </a><div class="element clickable property protected property_respondentexport" data-toggle="collapse" data-target=".property_respondentexport .collapse" title="protected">
+<h2>$respondentexport</h2>
+<pre>$respondentexport : \Gems_Export_RespondentExport</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_roles"> </a><div class="element clickable property protected property_roles" data-toggle="collapse" data-target=".property_roles .collapse" title="protected">
+<h2>$roles</h2>
+<pre>$roles : \Gems_Roles</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_selector"> </a><div class="element clickable property protected property_selector" data-toggle="collapse" data-target=".property_selector .collapse" title="protected">
+<h2>$selector</h2>
+<pre>$selector : \Gems_Selector</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_snippetLoader"> </a><div class="element clickable property protected property_snippetLoader" data-toggle="collapse" data-target=".property_snippetLoader .collapse" title="protected">
+<h2>$snippetLoader</h2>
+<pre>$snippetLoader : \Gems_Snippets_SnippetLoader</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_tracker"> </a><div class="element clickable property protected property_tracker" data-toggle="collapse" data-target=".property_tracker .collapse" title="protected">
+<h2>$tracker</h2>
+<pre>$tracker : \Gems_Tracker</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_upgrades"> </a><div class="element clickable property protected property_upgrades" data-toggle="collapse" data-target=".property_upgrades .collapse" title="protected">
+<h2>$upgrades</h2>
+<pre>$upgrades : \Gems_Upgrades</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_userLoader"> </a><div class="element clickable property protected property_userLoader" data-toggle="collapse" data-target=".property_userLoader .collapse" title="protected">
+<h2>$userLoader</h2>
+<pre>$userLoader : \Gems_User_UserLoader</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_util"> </a><div class="element clickable property protected property_util" data-toggle="collapse" data-target=".property_util .collapse" title="protected">
+<h2>$util</h2>
+<pre>$util : \Gems_Util</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_versions"> </a><div class="element clickable property protected property_versions" data-toggle="collapse" data-target=".property_versions .collapse" title="protected">
+<h2>$versions</h2>
+<pre>$versions : \Gems_Versions</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:20+02:00.<br></footer></div>
+</div>
+</body>
+</html>

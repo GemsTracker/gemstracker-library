@@ -1,0 +1,364 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » \Gems_User_Adapter_Radius</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+<div class="btn-group visibility" data-toggle="buttons-checkbox">
+<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
+</div>
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+</div>
+<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+<li class="nav-header">
+<i title="Methods" class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public "><a href="#method___construct" title="__construct() :: Constructor"><span class="description">Constructor</span><pre>__construct()</pre></a></li>
+<li class="method public "><a href="#method_authenticate" title="authenticate() :: authenticate() - defined by \Zend_Auth_Adapter_Interface.  This method is called to
+attempt an authenication.  Previous to this call, this adapter would have already
+been configured with all necessary information to successfully connect to a Radius
+server and attempt to find a record matching the provided identity."><span class="description">authenticate() - defined by \Zend_Auth_Adapter_Interface.  This method is called to
+attempt an authenication.  Previous to this call, this adapter would have already
+been configured with all necessary information to successfully connect to a Radius
+server and attempt to find a record matching the provided identity.</span><pre>authenticate()</pre></a></li>
+<li class="method public "><a href="#method_setCredential" title="setCredential() :: setCredential() - set the credential value to be used"><span class="description">setCredential() - set the credential value to be used</span><pre>setCredential()</pre></a></li>
+<li class="method public "><a href="#method_setIdentity" title="setIdentity() :: setIdentity() - set the value to be used as the identity"><span class="description">setIdentity() - set the value to be used as the identity</span><pre>setIdentity()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="method protected "><a href="#method__authenticateCreateAuthResult" title="_authenticateCreateAuthResult() :: _authenticateCreateAuthResult() - This method creates a \Zend_Auth_Result object
+from the information that has been collected during the authenticate() attempt."><span class="description">_authenticateCreateAuthResult() - This method creates a \Zend_Auth_Result object
+from the information that has been collected during the authenticate() attempt.</span><pre>_authenticateCreateAuthResult()</pre></a></li>
+<li class="method protected "><a href="#method__authenticateSetup" title="_authenticateSetup() :: _authenticateSetup() - This method abstracts the steps involved with making sure
+that this adapter was indeed setup properly with all required peices of information."><span class="description">_authenticateSetup() - This method abstracts the steps involved with making sure
+that this adapter was indeed setup properly with all required peices of information.</span><pre>_authenticateSetup()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Properties" class="icon-custom icon-property"></i> Properties
+                    <ul></ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="property protected "><a href="#property__accountingPort" title="$_accountingPort() :: Accounting port for Radius server"><span class="description"></span><pre>$_accountingPort</pre></a></li>
+<li class="property protected "><a href="#property__authenticateResultInfo" title="$_authenticateResultInfo() :: $_authenticateResultInfo"><span class="description"></span><pre>$_authenticateResultInfo</pre></a></li>
+<li class="property protected "><a href="#property__authenticationPort" title="$_authenticationPort() :: Authentication port for Radius server"><span class="description"></span><pre>$_authenticationPort</pre></a></li>
+<li class="property protected "><a href="#property__credential" title="$_credential() :: $_credential - Credential values"><span class="description"></span><pre>$_credential</pre></a></li>
+<li class="property protected "><a href="#property__identity" title="$_identity() :: $_identity - Identity value"><span class="description"></span><pre>$_identity</pre></a></li>
+<li class="property protected "><a href="#property__ip" title="$_ip() :: IP addres of the Radius server"><span class="description"></span><pre>$_ip</pre></a></li>
+<li class="property protected "><a href="#property__radius" title="$_radius() :: The actual Radius object"><span class="description"></span><pre>$_radius</pre></a></li>
+<li class="property protected "><a href="#property__sharedSecret" title="$_sharedSecret() :: Shared secret for the Radius server"><span class="description"></span><pre>$_sharedSecret</pre></a></li>
+<li class="property protected "><a href="#property__suffix" title="$_suffix() :: Suffix for Radius server"><span class="description"></span><pre>$_suffix</pre></a></li>
+<li class="property protected "><a href="#property__timeout" title="$_timeout() :: Timeout for Radius server in seconds"><span class="description"></span><pre>$_timeout</pre></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a xmlns:php="http://php.net/xsl" id="\Gems_User_Adapter_Radius"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+<li>
+<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Gems_User_Adapter_Radius.html">Gems_User_Adapter_Radius</a>
+</li>
+</ul>
+<div xmlns:php="http://php.net/xsl" class="element class">
+<p class="short_description">Implements Radius authentication using Pure PHP radius class as downloaded
+from http://www.phpkode.com/scripts/item/pure-php-radius-class/</p>
+<div class="details">
+<div class="long_description"><p>This class is a wrapper around the Pure PHP radius class by
+SysCo systemes de communication sa
+see library folder for specific copyright and license information</p>
+<p>Check the constructor for required config parameters.</p></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Gems.User.html">Gems</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>User</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2011 Erasmus MC</td>
+</tr>
+<tr>
+<th>license</th>
+<td><a href="http://opensource.org/licenses/BSD-3-Clause">New BSD License</a></td>
+</tr>
+<tr>
+<th>since</th>
+<td>Class available since version 1.5</td>
+</tr>
+</table>
+<h3>
+<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
+<a id="method___construct"></a><div class="element clickable method public method___construct " data-toggle="collapse" data-target=".method___construct .collapse" title="public">
+<h2>Constructor</h2>
+<pre>__construct(array $config<code> = array()</code>) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Supported params for $config are:</p>
+<ul>
+<li>ip                 = Ip address of the Radius server.</li>
+<li>sharedsecret       = The shared secret.</li>
+<li>suffix             = Suffix for the Radius server.</li>
+<li>timeout            = Timeout in seconds, default = 5.</li>
+<li>authenticationport = Authentication port, default = 1812.</li>
+<li>accountingport     = Accounting port, default = 1813.</li>
+</ul>
+<p>The minimal options are ip and shared secret, all others are optional</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$config</h4>
+<code>array</code><p>Array of user-specified config options.</p></div>
+</div></div>
+</div>
+<a id="method_authenticate"></a><div class="element clickable method public method_authenticate " data-toggle="collapse" data-target=".method_authenticate .collapse" title="public">
+<h2>authenticate() - defined by \Zend_Auth_Adapter_Interface.  This method is called to
+attempt an authenication.  Previous to this call, this adapter would have already
+been configured with all necessary information to successfully connect to a Radius
+server and attempt to find a record matching the provided identity.</h2>
+<pre>authenticate() : \Zend_Auth_Result</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code>\Zend_Auth_Adapter_Exception</code></th>
+<td>if answering the authentication query is impossible</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Zend_Auth_Result</code></div>
+</div></div>
+</div>
+<a id="method_setCredential"></a><div class="element clickable method public method_setCredential " data-toggle="collapse" data-target=".method_setCredential .collapse" title="public">
+<h2>setCredential() - set the credential value to be used</h2>
+<pre>setCredential(string $credential) : \Gems_User_Adapter_Radius</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$credential</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_User_Adapter_Radius</code>Provides a fluent interface</div>
+</div></div>
+</div>
+<a id="method_setIdentity"></a><div class="element clickable method public method_setIdentity " data-toggle="collapse" data-target=".method_setIdentity .collapse" title="public">
+<h2>setIdentity() - set the value to be used as the identity</h2>
+<pre>setIdentity(string $value) : \Gems_User_Adapter_Radius</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$value</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_User_Adapter_Radius</code>Provides a fluent interface</div>
+</div></div>
+</div>
+<a id="method__authenticateCreateAuthResult"></a><div class="element clickable method protected method__authenticateCreateAuthResult " data-toggle="collapse" data-target=".method__authenticateCreateAuthResult .collapse" title="protected">
+<h2>_authenticateCreateAuthResult() - This method creates a \Zend_Auth_Result object
+from the information that has been collected during the authenticate() attempt.</h2>
+<pre>_authenticateCreateAuthResult() : \Zend_Auth_Result</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Zend_Auth_Result</code></div>
+</div></div>
+</div>
+<a id="method__authenticateSetup"></a><div class="element clickable method protected method__authenticateSetup " data-toggle="collapse" data-target=".method__authenticateSetup .collapse" title="protected">
+<h2>_authenticateSetup() - This method abstracts the steps involved with making sure
+that this adapter was indeed setup properly with all required peices of information.</h2>
+<pre>_authenticateSetup() : true</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code>\Gems_Exception_Coding</code></th>
+<td>- in the event that setup was not done properly</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>true</code></div>
+</div></div>
+</div>
+<h3>
+<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
+<a id="property__accountingPort"> </a><div class="element clickable property protected property__accountingPort" data-toggle="collapse" data-target=".property__accountingPort .collapse" title="protected">
+<h2>Accounting port for Radius server</h2>
+<pre>$_accountingPort : integer</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>1813</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__authenticateResultInfo"> </a><div class="element clickable property protected property__authenticateResultInfo" data-toggle="collapse" data-target=".property__authenticateResultInfo .collapse" title="protected">
+<h2>$_authenticateResultInfo</h2>
+<pre>$_authenticateResultInfo : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__authenticationPort"> </a><div class="element clickable property protected property__authenticationPort" data-toggle="collapse" data-target=".property__authenticationPort .collapse" title="protected">
+<h2>Authentication port for Radius server</h2>
+<pre>$_authenticationPort : integer</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>1812</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__credential"> </a><div class="element clickable property protected property__credential" data-toggle="collapse" data-target=".property__credential .collapse" title="protected">
+<h2>$_credential - Credential values</h2>
+<pre>$_credential : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__identity"> </a><div class="element clickable property protected property__identity" data-toggle="collapse" data-target=".property__identity .collapse" title="protected">
+<h2>$_identity - Identity value</h2>
+<pre>$_identity : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__ip"> </a><div class="element clickable property protected property__ip" data-toggle="collapse" data-target=".property__ip .collapse" title="protected">
+<h2>IP addres of the Radius server</h2>
+<pre>$_ip : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__radius"> </a><div class="element clickable property protected property__radius" data-toggle="collapse" data-target=".property__radius .collapse" title="protected">
+<h2>The actual Radius object</h2>
+<pre>$_radius : \Radius</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__sharedSecret"> </a><div class="element clickable property protected property__sharedSecret" data-toggle="collapse" data-target=".property__sharedSecret .collapse" title="protected">
+<h2>Shared secret for the Radius server</h2>
+<pre>$_sharedSecret : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__suffix"> </a><div class="element clickable property protected property__suffix" data-toggle="collapse" data-target=".property__suffix .collapse" title="protected">
+<h2>Suffix for Radius server</h2>
+<pre>$_suffix : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__timeout"> </a><div class="element clickable property protected property__timeout" data-toggle="collapse" data-target=".property__timeout .collapse" title="protected">
+<h2>Timeout for Radius server in seconds</h2>
+<pre>$_timeout : integer</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>5</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:18+02:00.<br></footer></div>
+</div>
+</body>
+</html>

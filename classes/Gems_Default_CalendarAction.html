@@ -1,0 +1,880 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » \Gems_Default_CalendarAction</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+<div class="btn-group visibility" data-toggle="buttons-checkbox">
+<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
+</div>
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+</div>
+<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+<li class="nav-header">
+<i title="Methods" class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public inherited"><a href="#method_autofilterAction" title="autofilterAction() :: The automatically filtered result"><span class="description">The automatically filtered result</span><pre>autofilterAction()</pre></a></li>
+<li class="method public inherited"><a href="#method_createAction" title="createAction() :: Action for showing a create new item page with extra title"><span class="description">Action for showing a create new item page with extra title</span><pre>createAction()</pre></a></li>
+<li class="method public inherited"><a href="#method_deactivateAction" title="deactivateAction() :: Action for showing a deactivate item page with extra titles"><span class="description">Action for showing a deactivate item page with extra titles</span><pre>deactivateAction()</pre></a></li>
+<li class="method public inherited"><a href="#method_deleteAction" title="deleteAction() :: Action for showing a delete item page with extra titles"><span class="description">Action for showing a delete item page with extra titles</span><pre>deleteAction()</pre></a></li>
+<li class="method public inherited"><a href="#method_editAction" title="editAction() :: Action for showing a edit item page with extra title"><span class="description">Action for showing a edit item page with extra title</span><pre>editAction()</pre></a></li>
+<li class="method public inherited"><a href="#method_excelAction" title="excelAction() :: Outputs the model to excel, applying all filters and searches needed"><span class="description">Outputs the model to excel, applying all filters and searches needed</span><pre>excelAction()</pre></a></li>
+<li class="method public inherited"><a href="#method_exportAction" title="exportAction() :: Export model data"><span class="description">Export model data</span><pre>exportAction()</pre></a></li>
+<li class="method public inherited"><a href="#method_getCreateTitle" title="getCreateTitle() :: Helper function to get the title for the create action."><span class="description">Helper function to get the title for the create action.</span><pre>getCreateTitle()</pre></a></li>
+<li class="method public "><a href="#method_getDateFormat" title="getDateFormat() :: Get the date format used for the appointment date"><span class="description">Get the date format used for the appointment date</span><pre>getDateFormat()</pre></a></li>
+<li class="method public inherited"><a href="#method_getDeactivateQuestion" title="getDeactivateQuestion() :: Helper function to get the question for the deactivate action."><span class="description">Helper function to get the question for the deactivate action.</span><pre>getDeactivateQuestion()</pre></a></li>
+<li class="method public inherited"><a href="#method_getDeactivateTitle" title="getDeactivateTitle() :: Helper function to get the title for the deactivate action."><span class="description">Helper function to get the title for the deactivate action.</span><pre>getDeactivateTitle()</pre></a></li>
+<li class="method public inherited"><a href="#method_getDefaultImportTranslator" title="getDefaultImportTranslator() :: Name of the default import translator"><span class="description">Name of the default import translator</span><pre>getDefaultImportTranslator()</pre></a></li>
+<li class="method public inherited"><a href="#method_getDeleteQuestion" title="getDeleteQuestion() :: Helper function to get the question for the delete action."><span class="description">Helper function to get the question for the delete action.</span><pre>getDeleteQuestion()</pre></a></li>
+<li class="method public inherited"><a href="#method_getDeleteTitle" title="getDeleteTitle() :: Helper function to get the title for the delete action."><span class="description">Helper function to get the title for the delete action.</span><pre>getDeleteTitle()</pre></a></li>
+<li class="method public inherited"><a href="#method_getEditTitle" title="getEditTitle() :: Helper function to get the title for the edit action."><span class="description">Helper function to get the title for the edit action.</span><pre>getEditTitle()</pre></a></li>
+<li class="method public inherited"><a href="#method_getImportTempDirectory" title="getImportTempDirectory() :: The directory to use for temporary storage"><span class="description">The directory to use for temporary storage</span><pre>getImportTempDirectory()</pre></a></li>
+<li class="method public inherited"><a href="#method_getImportTranslators" title="getImportTranslators() :: Get the possible translators for the import snippet."><span class="description">Get the possible translators for the import snippet.</span><pre>getImportTranslators()</pre></a></li>
+<li class="method public inherited"><a href="#method_getImporter" title="getImporter() :: Get an Importer object for this actions"><span class="description">Get an Importer object for this actions</span><pre>getImporter()</pre></a></li>
+<li class="method public inherited"><a href="#method_getIndexTitle" title="getIndexTitle() :: Helper function to get the title for the index action."><span class="description">Helper function to get the title for the index action.</span><pre>getIndexTitle()</pre></a></li>
+<li class="method public inherited"><a href="#method_getInstanceId" title="getInstanceId() :: Return the current request ID, if any."><span class="description">Return the current request ID, if any.</span><pre>getInstanceId()</pre></a></li>
+<li class="method public inherited"><a href="#method_getOnEmptyText" title="getOnEmptyText() :: Returns the on empty texts for the autofilter snippets"><span class="description">Returns the on empty texts for the autofilter snippets</span><pre>getOnEmptyText()</pre></a></li>
+<li class="method public inherited"><a href="#method_getReactivateQuestion" title="getReactivateQuestion() :: Helper function to get the question for the reactivate action."><span class="description">Helper function to get the question for the reactivate action.</span><pre>getReactivateQuestion()</pre></a></li>
+<li class="method public inherited"><a href="#method_getReactivateTitle" title="getReactivateTitle() :: Helper function to get the title for the reactivate action."><span class="description">Helper function to get the title for the reactivate action.</span><pre>getReactivateTitle()</pre></a></li>
+<li class="method public "><a href="#method_getSearchDefaults" title="getSearchDefaults() :: Function to allow the creation of search defaults in code"><span class="description">Function to allow the creation of search defaults in code</span><pre>getSearchDefaults()</pre></a></li>
+<li class="method public "><a href="#method_getSearchFilter" title="getSearchFilter() :: Get the filter to use with the model for searching"><span class="description">Get the filter to use with the model for searching</span><pre>getSearchFilter()</pre></a></li>
+<li class="method public inherited"><a href="#method_getShowTitle" title="getShowTitle() :: Helper function to get the title for the show action."><span class="description">Helper function to get the title for the show action.</span><pre>getShowTitle()</pre></a></li>
+<li class="method public inherited"><a href="#method_getTitle" title="getTitle() :: Returns the current html/head/title for this page."><span class="description">Returns the current html/head/title for this page.</span><pre>getTitle()</pre></a></li>
+<li class="method public inherited"><a href="#method_getTopic" title="getTopic() :: Helper function to allow generalized statements about the items in the model."><span class="description">Helper function to allow generalized statements about the items in the model.</span><pre>getTopic()</pre></a></li>
+<li class="method public inherited"><a href="#method_getTopicCallable" title="getTopicCallable() :: Get a callable for the gettopic function"><span class="description">Get a callable for the gettopic function</span><pre>getTopicCallable()</pre></a></li>
+<li class="method public inherited"><a href="#method_importAction" title="importAction() :: Generic model based import action"><span class="description">Generic model based import action</span><pre>importAction()</pre></a></li>
+<li class="method public inherited"><a href="#method_indexAction" title="indexAction() :: Action for showing a browse page"><span class="description">Action for showing a browse page</span><pre>indexAction()</pre></a></li>
+<li class="method public inherited"><a href="#method_initHtml" title="initHtml() :: Intializes the html component."><span class="description">Intializes the html component.</span><pre>initHtml()</pre></a></li>
+<li class="method public inherited"><a href="#method_reactivateAction" title="reactivateAction() :: Action for showing a reactivate item page with extra titles"><span class="description">Action for showing a reactivate item page with extra titles</span><pre>reactivateAction()</pre></a></li>
+<li class="method public inherited"><a href="#method_showAction" title="showAction() :: Action for showing an item page with title"><span class="description">Action for showing an item page with title</span><pre>showAction()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="method protected "><a href="#method_createModel" title="createModel() :: Creates a model for getModel(). Called only for each new $action."><span class="description">Creates a model for getModel(). Called only for each new $action.</span><pre>createModel()</pre></a></li>
+<li class="method protected inherited"><a href="#method_firstAllowedMenuItem" title="firstAllowedMenuItem() :: Finds the first item with one of the actions specified as parameter and using the current controller"><span class="description">Finds the first item with one of the actions specified as parameter and using the current controller</span><pre>firstAllowedMenuItem()</pre></a></li>
+<li class="method protected inherited"><a href="#method_getExcelData" title="getExcelData() :: Returns an array with all columns from the model that have a label"><span class="description">Returns an array with all columns from the model that have a label</span><pre>getExcelData()</pre></a></li>
+<li class="method protected inherited"><a href="#method_getExportModel" title="getExportModel() :: Get the model for export and have the option to change it before using for export"><span class="description">Get the model for export and have the option to change it before using for export</span><pre>getExportModel()</pre></a></li>
+<li class="method protected inherited"><a href="#method_loadSnippetLoader" title="loadSnippetLoader() :: Stub for overruling default snippet loader initiation."><span class="description">Stub for overruling default snippet loader initiation.</span><pre>loadSnippetLoader()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Properties" class="icon-custom icon-property"></i> Properties
+                    <ul>
+<li class="property public "><a href="#property_currentOrganization" title="$currentOrganization() :: "><span class="description"></span><pre>$currentOrganization</pre></a></li>
+<li class="property public "><a href="#property_db" title="$db() :: "><span class="description"></span><pre>$db</pre></a></li>
+<li class="property public "><a href="#property_escort" title="$escort() :: "><span class="description"></span><pre>$escort</pre></a></li>
+<li class="property public "><a href="#property_formatExcelData" title="$formatExcelData() :: Should Excel output contain formatted data (date fields, select lists)"><span class="description"></span><pre>$formatExcelData</pre></a></li>
+<li class="property public "><a href="#property_loader" title="$loader() :: "><span class="description"></span><pre>$loader</pre></a></li>
+<li class="property public "><a href="#property_menu" title="$menu() :: "><span class="description"></span><pre>$menu</pre></a></li>
+<li class="property public "><a href="#property_util" title="$util() :: "><span class="description"></span><pre>$util</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="property protected "><a href="#property_autofilterParameters" title="$autofilterParameters() :: The snippets used for the autofilter action."><span class="description"></span><pre>$autofilterParameters</pre></a></li>
+<li class="property protected "><a href="#property_autofilterSnippets" title="$autofilterSnippets() :: The snippets used for the autofilter action."><span class="description"></span><pre>$autofilterSnippets</pre></a></li>
+<li class="property protected "><a href="#property_autofilterSnippets" title="$autofilterSnippets() :: The snippets used for the autofilter action."><span class="description"></span><pre>$autofilterSnippets</pre></a></li>
+<li class="property protected "><a href="#property_createEditSnippets" title="$createEditSnippets() :: The snippets used for the create and edit actions."><span class="description"></span><pre>$createEditSnippets</pre></a></li>
+<li class="property protected "><a href="#property_deleteSnippets" title="$deleteSnippets() :: The snippets used for the delete action."><span class="description"></span><pre>$deleteSnippets</pre></a></li>
+<li class="property protected "><a href="#property_exportFormSnippets" title="$exportFormSnippets() :: "><span class="description"></span><pre>$exportFormSnippets</pre></a></li>
+<li class="property protected "><a href="#property_indexStartSnippets" title="$indexStartSnippets() :: The snippets used for the index action, before those in autofilter"><span class="description"></span><pre>$indexStartSnippets</pre></a></li>
+<li class="property protected "><a href="#property_indexStartSnippets" title="$indexStartSnippets() :: The snippets used for the index action, before those in autofilter"><span class="description"></span><pre>$indexStartSnippets</pre></a></li>
+<li class="property protected "><a href="#property_indexStopSnippets" title="$indexStopSnippets() :: The snippets used for the index action, after those in autofilter"><span class="description"></span><pre>$indexStopSnippets</pre></a></li>
+<li class="property protected "><a href="#property_showSnippets" title="$showSnippets() :: The snippets used for the show action"><span class="description"></span><pre>$showSnippets</pre></a></li>
+</ul>
+</li>
+<li class="nav-header private">» Private
+                    <ul>
+<li class="property private "><a href="#property__autofilterExtraParameters" title="$_autofilterExtraParameters() :: Gems only parameters used for the autofilter action. Can be overruled
+by setting $this-&gt;autofilterParameters"><span class="description"></span><pre>$_autofilterExtraParameters</pre></a></li>
+<li class="property private "><a href="#property__createExtraParameters" title="$_createExtraParameters() :: Gems only parameters used for the create action. Can be overruled
+by setting $this-&gt;createParameters or $this-&gt;createEditParameters"><span class="description"></span><pre>$_createExtraParameters</pre></a></li>
+<li class="property private "><a href="#property__deactivateExtraParameters" title="$_deactivateExtraParameters() :: Gems only parameters used for the deactivate action. Can be overruled
+by setting $this-&gt;deactivateParameters"><span class="description"></span><pre>$_deactivateExtraParameters</pre></a></li>
+<li class="property private "><a href="#property__deleteExtraParameters" title="$_deleteExtraParameters() :: Gems only parameters used for the delete action. Can be overruled
+by setting $this-&gt;deleteParameters"><span class="description"></span><pre>$_deleteExtraParameters</pre></a></li>
+<li class="property private "><a href="#property__editExtraParameters" title="$_editExtraParameters() :: Gems only parameters used for the edit action. Can be overruled
+by setting $this-&gt;editParameters or $this-&gt;createEditParameters"><span class="description"></span><pre>$_editExtraParameters</pre></a></li>
+<li class="property private "><a href="#property__importExtraParameters" title="$_importExtraParameters() :: Gems only parameters used for the import action. Can be overruled
+by setting $this-&gt;inmportParameters"><span class="description"></span><pre>$_importExtraParameters</pre></a></li>
+<li class="property private "><a href="#property__reactivateExtraParameters" title="$_reactivateExtraParameters() :: Gems only parameters used for the deactivate action. Can be overruled
+by setting $this-&gt;deactivateParameters"><span class="description"></span><pre>$_reactivateExtraParameters</pre></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a xmlns:php="http://php.net/xsl" id="\Gems_Default_CalendarAction"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+<li>
+<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Gems_Default_CalendarAction.html">Gems_Default_CalendarAction</a>
+</li>
+</ul>
+<div xmlns:php="http://php.net/xsl" class="element class">
+<p class="short_description">Class contains Gems specific adaptations to parent class.</p>
+<div class="details">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Gems.Default.html">Gems</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Default</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2013 Erasmus MC</td>
+</tr>
+<tr>
+<th>license</th>
+<td><a href="http://opensource.org/licenses/BSD-3-Clause">New BSD License</a></td>
+</tr>
+<tr>
+<th>since</th>
+<td>Class available since version 1.6.2</td>
+</tr>
+<tr>
+<th>inherited_from</th>
+<td>\Gems_Controller_ModelSnippetActionAbstract</td>
+</tr>
+</table>
+<h3>
+<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
+<a id="method_autofilterAction"></a><div class="element clickable method public method_autofilterAction inherited" data-toggle="collapse" data-target=".method_autofilterAction .collapse" title="public">
+<h2>The automatically filtered result</h2>
+<pre>autofilterAction($resetMvc<code> = true</code>) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$resetMvc</h4><p>When true only the filtered resulsts</p></div>
+</div></div>
+</div>
+<a id="method_createAction"></a><div class="element clickable method public method_createAction inherited" data-toggle="collapse" data-target=".method_createAction .collapse" title="public">
+<h2>Action for showing a create new item page with extra title</h2>
+<pre>createAction() </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_deactivateAction"></a><div class="element clickable method public method_deactivateAction inherited" data-toggle="collapse" data-target=".method_deactivateAction .collapse" title="public">
+<h2>Action for showing a deactivate item page with extra titles</h2>
+<pre>deactivateAction() </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_deleteAction"></a><div class="element clickable method public method_deleteAction inherited" data-toggle="collapse" data-target=".method_deleteAction .collapse" title="public">
+<h2>Action for showing a delete item page with extra titles</h2>
+<pre>deleteAction() </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_editAction"></a><div class="element clickable method public method_editAction inherited" data-toggle="collapse" data-target=".method_editAction .collapse" title="public">
+<h2>Action for showing a edit item page with extra title</h2>
+<pre>editAction() </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_excelAction"></a><div class="element clickable method public method_excelAction inherited" data-toggle="collapse" data-target=".method_excelAction .collapse" title="public">
+<h2>Outputs the model to excel, applying all filters and searches needed</h2>
+<pre>excelAction() </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"><p>When you want to change the output, there are two places to check:</p>
+<ol>
+<li>
+<p>$this-&gt;addExcelColumns($model), where the model can be changed to have labels for columns you
+need exported</p>
+</li>
+<li>$this-&gt;getExcelData($data, $model) where the supplied data and model are merged to get output
+(by default all fields from the model that have a label)</li>
+</ol></div></div></div>
+</div>
+<a id="method_exportAction"></a><div class="element clickable method public method_exportAction inherited" data-toggle="collapse" data-target=".method_exportAction .collapse" title="public">
+<h2>Export model data</h2>
+<pre>exportAction() </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_getCreateTitle"></a><div class="element clickable method public method_getCreateTitle inherited" data-toggle="collapse" data-target=".method_getCreateTitle .collapse" title="public">
+<h2>Helper function to get the title for the create action.</h2>
+<pre>getCreateTitle() : \$string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\$string</code></div>
+</div></div>
+</div>
+<a id="method_getDateFormat"></a><div class="element clickable method public method_getDateFormat " data-toggle="collapse" data-target=".method_getDateFormat .collapse" title="public">
+<h2>Get the date format used for the appointment date</h2>
+<pre>getDateFormat() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_getDeactivateQuestion"></a><div class="element clickable method public method_getDeactivateQuestion inherited" data-toggle="collapse" data-target=".method_getDeactivateQuestion .collapse" title="public">
+<h2>Helper function to get the question for the deactivate action.</h2>
+<pre>getDeactivateQuestion() : \$string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\$string</code></div>
+</div></div>
+</div>
+<a id="method_getDeactivateTitle"></a><div class="element clickable method public method_getDeactivateTitle inherited" data-toggle="collapse" data-target=".method_getDeactivateTitle .collapse" title="public">
+<h2>Helper function to get the title for the deactivate action.</h2>
+<pre>getDeactivateTitle() : \$string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\$string</code></div>
+</div></div>
+</div>
+<a id="method_getDefaultImportTranslator"></a><div class="element clickable method public method_getDefaultImportTranslator inherited" data-toggle="collapse" data-target=".method_getDefaultImportTranslator .collapse" title="public">
+<h2>Name of the default import translator</h2>
+<pre>getDefaultImportTranslator() : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getDeleteQuestion"></a><div class="element clickable method public method_getDeleteQuestion inherited" data-toggle="collapse" data-target=".method_getDeleteQuestion .collapse" title="public">
+<h2>Helper function to get the question for the delete action.</h2>
+<pre>getDeleteQuestion() : \$string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\$string</code></div>
+</div></div>
+</div>
+<a id="method_getDeleteTitle"></a><div class="element clickable method public method_getDeleteTitle inherited" data-toggle="collapse" data-target=".method_getDeleteTitle .collapse" title="public">
+<h2>Helper function to get the title for the delete action.</h2>
+<pre>getDeleteTitle() : \$string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\$string</code></div>
+</div></div>
+</div>
+<a id="method_getEditTitle"></a><div class="element clickable method public method_getEditTitle inherited" data-toggle="collapse" data-target=".method_getEditTitle .collapse" title="public">
+<h2>Helper function to get the title for the edit action.</h2>
+<pre>getEditTitle() : \$string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\$string</code></div>
+</div></div>
+</div>
+<a id="method_getImportTempDirectory"></a><div class="element clickable method public method_getImportTempDirectory inherited" data-toggle="collapse" data-target=".method_getImportTempDirectory .collapse" title="public">
+<h2>The directory to use for temporary storage</h2>
+<pre>getImportTempDirectory() : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getImportTranslators"></a><div class="element clickable method public method_getImportTranslators inherited" data-toggle="collapse" data-target=".method_getImportTranslators .collapse" title="public">
+<h2>Get the possible translators for the import snippet.</h2>
+<pre>getImportTranslators() : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>of \MUtil_Model_ModelTranslatorInterface objects</div>
+</div></div>
+</div>
+<a id="method_getImporter"></a><div class="element clickable method public method_getImporter inherited" data-toggle="collapse" data-target=".method_getImporter .collapse" title="public">
+<h2>Get an Importer object for this actions</h2>
+<pre>getImporter() : \MUtil_Model_Importer</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\MUtil_Model_Importer</code></div>
+</div></div>
+</div>
+<a id="method_getIndexTitle"></a><div class="element clickable method public method_getIndexTitle inherited" data-toggle="collapse" data-target=".method_getIndexTitle .collapse" title="public">
+<h2>Helper function to get the title for the index action.</h2>
+<pre>getIndexTitle() : \$string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\$string</code></div>
+</div></div>
+</div>
+<a id="method_getInstanceId"></a><div class="element clickable method public method_getInstanceId inherited" data-toggle="collapse" data-target=".method_getInstanceId .collapse" title="public">
+<h2>Return the current request ID, if any.</h2>
+<pre>getInstanceId() : mixed</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Overrule this function if the last item in the page title
+should be something other than te value of
+\MUtil_Model::REQUEST_ID.</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>mixed</code></div>
+</div></div>
+</div>
+<a id="method_getOnEmptyText"></a><div class="element clickable method public method_getOnEmptyText inherited" data-toggle="collapse" data-target=".method_getOnEmptyText .collapse" title="public">
+<h2>Returns the on empty texts for the autofilter snippets</h2>
+<pre>getOnEmptyText() : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getReactivateQuestion"></a><div class="element clickable method public method_getReactivateQuestion inherited" data-toggle="collapse" data-target=".method_getReactivateQuestion .collapse" title="public">
+<h2>Helper function to get the question for the reactivate action.</h2>
+<pre>getReactivateQuestion() : \$string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\$string</code></div>
+</div></div>
+</div>
+<a id="method_getReactivateTitle"></a><div class="element clickable method public method_getReactivateTitle inherited" data-toggle="collapse" data-target=".method_getReactivateTitle .collapse" title="public">
+<h2>Helper function to get the title for the reactivate action.</h2>
+<pre>getReactivateTitle() : \$string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\$string</code></div>
+</div></div>
+</div>
+<a id="method_getSearchDefaults"></a><div class="element clickable method public method_getSearchDefaults " data-toggle="collapse" data-target=".method_getSearchDefaults .collapse" title="public">
+<h2>Function to allow the creation of search defaults in code</h2>
+<pre>getSearchDefaults() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td><a href="%5CGems_Default_CalendarAction::getSearchFilter()"></a></td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_getSearchFilter"></a><div class="element clickable method public method_getSearchFilter " data-toggle="collapse" data-target=".method_getSearchFilter .collapse" title="public">
+<h2>Get the filter to use with the model for searching</h2>
+<pre>getSearchFilter(boolean $useRequest<code> = true</code>) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$useRequest</h4>
+<code>boolean</code><p>Use the request as source (when false, the session is used)</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>or false</div>
+</div></div>
+</div>
+<a id="method_getShowTitle"></a><div class="element clickable method public method_getShowTitle inherited" data-toggle="collapse" data-target=".method_getShowTitle .collapse" title="public">
+<h2>Helper function to get the title for the show action.</h2>
+<pre>getShowTitle() : \$string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\$string</code></div>
+</div></div>
+</div>
+<a id="method_getTitle"></a><div class="element clickable method public method_getTitle inherited" data-toggle="collapse" data-target=".method_getTitle .collapse" title="public">
+<h2>Returns the current html/head/title for this page.</h2>
+<pre>getTitle(string $separator<code> = null</code>) : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>If the title is an array the seperator concatenates the parts.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$separator</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getTopic"></a><div class="element clickable method public method_getTopic inherited" data-toggle="collapse" data-target=".method_getTopic .collapse" title="public">
+<h2>Helper function to allow generalized statements about the items in the model.</h2>
+<pre>getTopic(integer $count<code> = 1</code>) : \$string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$count</h4>
+<code>integer</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\$string</code></div>
+</div></div>
+</div>
+<a id="method_getTopicCallable"></a><div class="element clickable method public method_getTopicCallable inherited" data-toggle="collapse" data-target=".method_getTopicCallable .collapse" title="public">
+<h2>Get a callable for the gettopic function</h2>
+<pre>getTopicCallable() : callable</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>callable</code></div>
+</div></div>
+</div>
+<a id="method_importAction"></a><div class="element clickable method public method_importAction inherited" data-toggle="collapse" data-target=".method_importAction .collapse" title="public">
+<h2>Generic model based import action</h2>
+<pre>importAction() </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_indexAction"></a><div class="element clickable method public method_indexAction inherited" data-toggle="collapse" data-target=".method_indexAction .collapse" title="public">
+<h2>Action for showing a browse page</h2>
+<pre>indexAction() </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_initHtml"></a><div class="element clickable method public method_initHtml inherited" data-toggle="collapse" data-target=".method_initHtml .collapse" title="public">
+<h2>Intializes the html component.</h2>
+<pre>initHtml(boolean $reset<code> = false</code>) : void</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$reset</h4>
+<code>boolean</code><p>Throws away any existing html output when true</p></div>
+</div></div>
+</div>
+<a id="method_reactivateAction"></a><div class="element clickable method public method_reactivateAction inherited" data-toggle="collapse" data-target=".method_reactivateAction .collapse" title="public">
+<h2>Action for showing a reactivate item page with extra titles</h2>
+<pre>reactivateAction() </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_showAction"></a><div class="element clickable method public method_showAction inherited" data-toggle="collapse" data-target=".method_showAction .collapse" title="public">
+<h2>Action for showing an item page with title</h2>
+<pre>showAction() </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_createModel"></a><div class="element clickable method protected method_createModel " data-toggle="collapse" data-target=".method_createModel .collapse" title="protected">
+<h2>Creates a model for getModel(). Called only for each new $action.</h2>
+<pre>createModel(boolean $detailed, string $action) : \MUtil_Model_ModelAbstract</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>The parameters allow you to easily adapt the model to the current action. The $detailed
+parameter was added, because the most common use of action is a split between detailed
+and summarized actions.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$detailed</h4>
+<code>boolean</code><p>True when the current action is not in $summarizedActions.</p></div>
+<div class="subelement argument">
+<h4>$action</h4>
+<code>string</code><p>The current action.</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\MUtil_Model_ModelAbstract</code></div>
+</div></div>
+</div>
+<a id="method_firstAllowedMenuItem"></a><div class="element clickable method protected method_firstAllowedMenuItem inherited" data-toggle="collapse" data-target=".method_firstAllowedMenuItem .collapse" title="protected">
+<h2>Finds the first item with one of the actions specified as parameter and using the current controller</h2>
+<pre>firstAllowedMenuItem(string $action, string $action2<code> = null</code>) : \Gems_Menu_SubMenuItem</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$action</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$action2</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Menu_SubMenuItem</code></div>
+</div></div>
+</div>
+<a id="method_getExcelData"></a><div class="element clickable method protected method_getExcelData inherited" data-toggle="collapse" data-target=".method_getExcelData .collapse" title="protected">
+<h2>Returns an array with all columns from the model that have a label</h2>
+<pre>getExcelData(array $data, \MUtil_Model_ModelAbstract $model) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$data</h4>
+<code>array</code>
+</div>
+<div class="subelement argument">
+<h4>$model</h4>
+<code>\MUtil_Model_ModelAbstract</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_getExportModel"></a><div class="element clickable method protected method_getExportModel inherited" data-toggle="collapse" data-target=".method_getExportModel .collapse" title="protected">
+<h2>Get the model for export and have the option to change it before using for export</h2>
+<pre>getExportModel() : </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"></div>
+</div></div>
+</div>
+<a id="method_loadSnippetLoader"></a><div class="element clickable method protected method_loadSnippetLoader inherited" data-toggle="collapse" data-target=".method_loadSnippetLoader .collapse" title="protected">
+<h2>Stub for overruling default snippet loader initiation.</h2>
+<pre>loadSnippetLoader() </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<h3>
+<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
+<a id="property_currentOrganization"> </a><div class="element clickable property public property_currentOrganization" data-toggle="collapse" data-target=".property_currentOrganization .collapse" title="public">
+<h2>$currentOrganization</h2>
+<pre>$currentOrganization : \Gems_User_Organization</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_db"> </a><div class="element clickable property public property_db" data-toggle="collapse" data-target=".property_db .collapse" title="public">
+<h2>$db</h2>
+<pre>$db : \Zend_Db_Adapter_Abstract</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_escort"> </a><div class="element clickable property public property_escort" data-toggle="collapse" data-target=".property_escort .collapse" title="public">
+<h2>$escort</h2>
+<pre>$escort : \GemsEscort</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_formatExcelData"> </a><div class="element clickable property public property_formatExcelData" data-toggle="collapse" data-target=".property_formatExcelData .collapse" title="public">
+<h2>Should Excel output contain formatted data (date fields, select lists)</h2>
+<pre>$formatExcelData : boolean</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>true</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_loader"> </a><div class="element clickable property public property_loader" data-toggle="collapse" data-target=".property_loader .collapse" title="public">
+<h2>$loader</h2>
+<pre>$loader : \Gems_Loader</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_menu"> </a><div class="element clickable property public property_menu" data-toggle="collapse" data-target=".property_menu .collapse" title="public">
+<h2>$menu</h2>
+<pre>$menu : \Gems_Menu</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_util"> </a><div class="element clickable property public property_util" data-toggle="collapse" data-target=".property_util .collapse" title="public">
+<h2>$util</h2>
+<pre>$util : \Gems_Util</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_autofilterParameters"> </a><div class="element clickable property protected property_autofilterParameters" data-toggle="collapse" data-target=".property_autofilterParameters .collapse" title="protected">
+<h2>The snippets used for the autofilter action.</h2>
+<pre>$autofilterParameters : mixed</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>array('dateFormat' => 'getDateFormat', 'extraSort' => array('gap_admission_time' => SORT_ASC, 'gor_name' => SORT_ASC, 'glo_name' => SORT_ASC))</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_autofilterSnippets"> </a><div class="element clickable property protected property_autofilterSnippets" data-toggle="collapse" data-target=".property_autofilterSnippets .collapse" title="protected">
+<h2>The snippets used for the autofilter action.</h2>
+<pre>$autofilterSnippets : mixed</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>'Agenda_CalendarTableSnippet'</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Controller_ModelSnippetActionAbstract::autofilterSnippets</td>
+</tr></table>
+</div></div>
+</div>
+<a id="property_autofilterSnippets"> </a><div class="element clickable property protected property_autofilterSnippets" data-toggle="collapse" data-target=".property_autofilterSnippets .collapse" title="protected">
+<h2>The snippets used for the autofilter action.</h2>
+<pre>$autofilterSnippets : mixed</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>'ModelTableSnippetGeneric'</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_createEditSnippets"> </a><div class="element clickable property protected property_createEditSnippets" data-toggle="collapse" data-target=".property_createEditSnippets .collapse" title="protected">
+<h2>The snippets used for the create and edit actions.</h2>
+<pre>$createEditSnippets : mixed</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>'ModelFormSnippetGeneric'</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_deleteSnippets"> </a><div class="element clickable property protected property_deleteSnippets" data-toggle="collapse" data-target=".property_deleteSnippets .collapse" title="protected">
+<h2>The snippets used for the delete action.</h2>
+<pre>$deleteSnippets : mixed</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>'ModelItemYesNoDeleteSnippetGeneric'</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_exportFormSnippets"> </a><div class="element clickable property protected property_exportFormSnippets" data-toggle="collapse" data-target=".property_exportFormSnippets .collapse" title="protected">
+<h2>$exportFormSnippets</h2>
+<pre>$exportFormSnippets </pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>'Export\\ExportFormSnippet'</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_indexStartSnippets"> </a><div class="element clickable property protected property_indexStartSnippets" data-toggle="collapse" data-target=".property_indexStartSnippets .collapse" title="protected">
+<h2>The snippets used for the index action, before those in autofilter</h2>
+<pre>$indexStartSnippets : mixed</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>array('Generic\\ContentTitleSnippet', 'Agenda_CalendarSearchSnippet')</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Controller_ModelSnippetActionAbstract::indexStartSnippets</td>
+</tr></table>
+</div></div>
+</div>
+<a id="property_indexStartSnippets"> </a><div class="element clickable property protected property_indexStartSnippets" data-toggle="collapse" data-target=".property_indexStartSnippets .collapse" title="protected">
+<h2>The snippets used for the index action, before those in autofilter</h2>
+<pre>$indexStartSnippets : mixed</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>array('Generic\\ContentTitleSnippet', 'AutosearchFormSnippet')</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_indexStopSnippets"> </a><div class="element clickable property protected property_indexStopSnippets" data-toggle="collapse" data-target=".property_indexStopSnippets .collapse" title="protected">
+<h2>The snippets used for the index action, after those in autofilter</h2>
+<pre>$indexStopSnippets : mixed</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>'Generic\\CurrentSiblingsButtonRowSnippet'</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_showSnippets"> </a><div class="element clickable property protected property_showSnippets" data-toggle="collapse" data-target=".property_showSnippets .collapse" title="protected">
+<h2>The snippets used for the show action</h2>
+<pre>$showSnippets : mixed</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>array('Generic\\ContentTitleSnippet', 'ModelItemTableSnippetGeneric')</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__autofilterExtraParameters"> </a><div class="element clickable property private property__autofilterExtraParameters" data-toggle="collapse" data-target=".property__autofilterExtraParameters .collapse" title="private">
+<h2>Gems only parameters used for the autofilter action. Can be overruled
+by setting $this-&gt;autofilterParameters</h2>
+<pre>$_autofilterExtraParameters : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>array('browse' => true, 'containingId' => 'autofilter_target', 'keyboard' => true, 'onEmpty' => 'getOnEmptyText', 'sortParamAsc' => 'asrt', 'sortParamDesc' => 'dsrt')</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__createExtraParameters"> </a><div class="element clickable property private property__createExtraParameters" data-toggle="collapse" data-target=".property__createExtraParameters .collapse" title="private">
+<h2>Gems only parameters used for the create action. Can be overruled
+by setting $this-&gt;createParameters or $this-&gt;createEditParameters</h2>
+<pre>$_createExtraParameters : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>array('formTitle' => 'getCreateTitle', 'topicCallable' => 'getTopicCallable')</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__deactivateExtraParameters"> </a><div class="element clickable property private property__deactivateExtraParameters" data-toggle="collapse" data-target=".property__deactivateExtraParameters .collapse" title="private">
+<h2>Gems only parameters used for the deactivate action. Can be overruled
+by setting $this-&gt;deactivateParameters</h2>
+<pre>$_deactivateExtraParameters : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>array('confirmQuestion' => 'getDeactivateQuestion', 'displayTitle' => 'getDeactivateTitle', 'formTitle' => 'getDeactivateTitle', 'topicCallable' => 'getTopicCallable')</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__deleteExtraParameters"> </a><div class="element clickable property private property__deleteExtraParameters" data-toggle="collapse" data-target=".property__deleteExtraParameters .collapse" title="private">
+<h2>Gems only parameters used for the delete action. Can be overruled
+by setting $this-&gt;deleteParameters</h2>
+<pre>$_deleteExtraParameters : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>array('deleteQuestion' => 'getDeleteQuestion', 'displayTitle' => 'getDeleteTitle', 'formTitle' => 'getDeleteTitle', 'topicCallable' => 'getTopicCallable')</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__editExtraParameters"> </a><div class="element clickable property private property__editExtraParameters" data-toggle="collapse" data-target=".property__editExtraParameters .collapse" title="private">
+<h2>Gems only parameters used for the edit action. Can be overruled
+by setting $this-&gt;editParameters or $this-&gt;createEditParameters</h2>
+<pre>$_editExtraParameters : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>array('formTitle' => 'getEditTitle', 'topicCallable' => 'getTopicCallable')</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__importExtraParameters"> </a><div class="element clickable property private property__importExtraParameters" data-toggle="collapse" data-target=".property__importExtraParameters .collapse" title="private">
+<h2>Gems only parameters used for the import action. Can be overruled
+by setting $this-&gt;inmportParameters</h2>
+<pre>$_importExtraParameters : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>array('formatBoxClass' => 'browser table', 'importer' => 'getImporter', 'tempDirectory' => 'getImportTempDirectory', 'topicCallable' => 'getTopic')</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__reactivateExtraParameters"> </a><div class="element clickable property private property__reactivateExtraParameters" data-toggle="collapse" data-target=".property__reactivateExtraParameters .collapse" title="private">
+<h2>Gems only parameters used for the deactivate action. Can be overruled
+by setting $this-&gt;deactivateParameters</h2>
+<pre>$_reactivateExtraParameters : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>array('confirmQuestion' => 'getReactivateQuestion', 'displayTitle' => 'getReactivateTitle', 'formTitle' => 'getReactivateTitle', 'topicCallable' => 'getTopicCallable')</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:38+02:00.<br></footer></div>
+</div>
+</body>
+</html>

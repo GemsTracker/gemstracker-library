@@ -1,0 +1,572 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » \Gems_TabForm</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+<div class="btn-group visibility" data-toggle="buttons-checkbox">
+<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
+</div>
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+</div>
+<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+<li class="nav-header">
+<i title="Methods" class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public "><a href="#method___construct" title="__construct() :: Constructor"><span class="description">Constructor</span><pre>__construct()</pre></a></li>
+<li class="method public inherited"><a href="#method___construct" title="__construct() :: Constructor"><span class="description">Constructor</span><pre>__construct()</pre></a></li>
+<li class="method public inherited"><a href="#method_activateBootstrap" title="activateBootstrap() :: "><span class="description">activateBootstrap()
+        </span><pre>activateBootstrap()</pre></a></li>
+<li class="method public inherited"><a href="#method_activateJQuery" title="activateJQuery() :: Activate JQuery for this form"><span class="description">Activate JQuery for this form</span><pre>activateJQuery()</pre></a></li>
+<li class="method public "><a href="#method_addDisplayGroup" title="addDisplayGroup() :: Add an element to the form, when a tab (subform) had been added, it will return
+the subform instead of the form, keep this in mind when chaining methods"><span class="description">Add an element to the form, when a tab (subform) had been added, it will return
+the subform instead of the form, keep this in mind when chaining methods</span><pre>addDisplayGroup()</pre></a></li>
+<li class="method public "><a href="#method_addElement" title="addElement() :: Add an element to the form, when a tab (subform) had been added, it will return
+the subform instead of the form, keep this in mind when chaining methods"><span class="description">Add an element to the form, when a tab (subform) had been added, it will return
+the subform instead of the form, keep this in mind when chaining methods</span><pre>addElement()</pre></a></li>
+<li class="method public inherited"><a href="#method_addElement" title="addElement() :: Add a new element"><span class="description">Add a new element</span><pre>addElement()</pre></a></li>
+<li class="method public "><a href="#method_addTab" title="addTab() :: Add a tab to the form"><span class="description">Add a tab to the form</span><pre>addTab()</pre></a></li>
+<li class="method public "><a href="#method_addToOtherGroup" title="addToOtherGroup() :: Add to the group all non-tab elements are in"><span class="description">Add to the group all non-tab elements are in</span><pre>addToOtherGroup()</pre></a></li>
+<li class="method public inherited"><a href="#method_getAutoSubmit" title="getAutoSubmit() :: Get the autosubmit arguments (if any)"><span class="description">Get the autosubmit arguments (if any)</span><pre>getAutoSubmit()</pre></a></li>
+<li class="method public "><a href="#method_getDisplayGroup" title="getDisplayGroup() :: Return a display group, use recursive search in subforms to provide a transparent experience
+with tabs"><span class="description">Return a display group, use recursive search in subforms to provide a transparent experience
+with tabs</span><pre>getDisplayGroup()</pre></a></li>
+<li class="method public "><a href="#method_getElement" title="getElement() :: Retrieve a single element, use recursive search in subforms to provide a transparent experience
+with tabs"><span class="description">Retrieve a single element, use recursive search in subforms to provide a transparent experience
+with tabs</span><pre>getElement()</pre></a></li>
+<li class="method public "><a href="#method_getTab" title="getTab() :: Retrieve a named tab (subform) and set the active tab to this one"><span class="description">Retrieve a named tab (subform) and set the active tab to this one</span><pre>getTab()</pre></a></li>
+<li class="method public "><a href="#method_getValues" title="getValues() :: Retrieve all form element values"><span class="description">Retrieve all form element values</span><pre>getValues()</pre></a></li>
+<li class="method public inherited"><a href="#method_isAutoSubmit" title="isAutoSubmit() :: Is this a form that autosubmits?"><span class="description">Is this a form that autosubmits?</span><pre>isAutoSubmit()</pre></a></li>
+<li class="method public "><a href="#method_loadDefaultDecorators" title="loadDefaultDecorators() :: Load the default decorators"><span class="description">Load the default decorators</span><pre>loadDefaultDecorators()</pre></a></li>
+<li class="method public "><a href="#method_resetContext" title="resetContext() :: Reset the currentTab to be the main form again"><span class="description">Reset the currentTab to be the main form again</span><pre>resetContext()</pre></a></li>
+<li class="method public "><a href="#method_selectTab" title="selectTab() :: Select a tab by it's numerical index"><span class="description">Select a tab by it's numerical index</span><pre>selectTab()</pre></a></li>
+<li class="method public inherited"><a href="#method_setAutoSubmit" title="setAutoSubmit() :: Change the form into an autosubmit form"><span class="description">Change the form into an autosubmit form</span><pre>setAutoSubmit()</pre></a></li>
+<li class="method public "><a href="#method_setVerbose" title="setVerbose() :: Set the form to be verbose, showing above the form what tabs have errors and
+possibly add custom (sub)formlevel error messages"><span class="description">Set the form to be verbose, showing above the form what tabs have errors and
+possibly add custom (sub)formlevel error messages</span><pre>setVerbose()</pre></a></li>
+<li class="method public "><a href="#method_setView" title="setView() :: Set the view object"><span class="description">Set the view object</span><pre>setView()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul><li class="method protected inherited"><a href="#method__activateJQueryView" title="_activateJQueryView() :: "><span class="description">_activateJQueryView()
+        </span><pre>_activateJQueryView()</pre></a></li></ul>
+</li>
+<li class="nav-header private">» Private
+                    <ul><li class="method private inherited"><a href="#method__enableAutoSubmitElement" title="_enableAutoSubmitElement() :: Change all elements into an autosubmit element"><span class="description">Change all elements into an autosubmit element</span><pre>_enableAutoSubmitElement()</pre></a></li></ul>
+</li>
+<li class="nav-header">
+<i title="Properties" class="icon-custom icon-property"></i> Properties
+                    <ul></ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul><li class="property protected "><a href="#property__autosubmit" title="$_autosubmit() :: If set this holds the url and targetid for the autosubmit"><span class="description"></span><pre>$_autosubmit</pre></a></li></ul>
+</li>
+<li class="nav-header private">» Private
+                    <ul><li class="property private "><a href="#property_currentTab" title="$currentTab() :: Holds the last tab we added information to"><span class="description"></span><pre>$currentTab</pre></a></li></ul>
+</li>
+<li class="nav-header">
+<i title="Constants" class="icon-custom icon-constant"></i> Constants
+                    <ul><li class="constant  "><a href="#constant_GROUP_OTHER" title="GROUP_OTHER() :: Group ID for elements below form"><span class="description">Group ID for elements below form</span><pre>GROUP_OTHER</pre></a></li></ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a xmlns:php="http://php.net/xsl" id="\Gems_TabForm"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+<li>
+<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Gems_TabForm.html">Gems_TabForm</a>
+</li>
+</ul>
+<div xmlns:php="http://php.net/xsl" class="element class">
+<p class="short_description">Creates a form using tab-layout where each tab is a subform</p>
+<div class="details">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Gems.Form.html">Gems</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Form</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2011 Erasmus MC</td>
+</tr>
+<tr>
+<th>license</th>
+<td><a href="http://opensource.org/licenses/BSD-3-Clause">New BSD License</a></td>
+</tr>
+<tr>
+<th>inherited_from</th>
+<td>\Gems_Form</td>
+</tr>
+</table>
+<h3>
+<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
+<a id="method___construct"></a><div class="element clickable method public method___construct " data-toggle="collapse" data-target=".method___construct .collapse" title="public">
+<h2>Constructor</h2>
+<pre>__construct(mixed $options<code> = null</code>) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Registers form view helper as decorator</p></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Form::__construct()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$options</h4></div>
+</div></div>
+</div>
+<a id="method___construct"></a><div class="element clickable method public method___construct inherited" data-toggle="collapse" data-target=".method___construct .collapse" title="public">
+<h2>Constructor</h2>
+<pre>__construct(mixed $options<code> = null</code>) : void</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Registers form view helper as decorator</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$options</h4>
+<code>mixed</code>
+</div>
+</div></div>
+</div>
+<a id="method_activateBootstrap"></a><div class="element clickable method public method_activateBootstrap inherited" data-toggle="collapse" data-target=".method_activateBootstrap .collapse" title="public">
+<h2>activateBootstrap()
+        </h2>
+<pre>activateBootstrap() </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_activateJQuery"></a><div class="element clickable method public method_activateJQuery inherited" data-toggle="collapse" data-target=".method_activateJQuery .collapse" title="public">
+<h2>Activate JQuery for this form</h2>
+<pre>activateJQuery() : \MUtil_Form</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\MUtil_Form</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_addDisplayGroup"></a><div class="element clickable method public method_addDisplayGroup " data-toggle="collapse" data-target=".method_addDisplayGroup .collapse" title="public">
+<h2>Add an element to the form, when a tab (subform) had been added, it will return
+the subform instead of the form, keep this in mind when chaining methods</h2>
+<pre>addDisplayGroup(array $elements, string $name, array|\Zend_Config $options<code> = null</code>) : \Gems_TabForm | \Gems_Form_TabSubForm</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$elements</h4>
+<code>array</code>
+</div>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$options</h4>
+<code>array</code><code>\Zend_Config</code>
+</div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code>\Zend_Form_Exception</code></th>
+<td>if no valid elements provided</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_TabForm</code><code>\Gems_Form_TabSubForm</code>
+</div>
+</div></div>
+</div>
+<a id="method_addElement"></a><div class="element clickable method public method_addElement " data-toggle="collapse" data-target=".method_addElement .collapse" title="public">
+<h2>Add an element to the form, when a tab (subform) had been added, it will return
+the subform instead of the form, keep this in mind when chaining methods</h2>
+<pre>addElement(string|\Zend_Form_Element $element, string $name<code> = null</code>, array|\Zend_Config $options<code> = null</code>) : \Gems_TabForm | \Gems_Form_TabSubForm</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>$element may be either a string element type, or an object of type
+\Zend_Form_Element. If a string element type is provided, $name must be
+provided, and $options may be optionally provided for configuring the
+element.</p>
+<p>If a \Zend_Form_Element is provided, $name may be optionally provided,
+and any provided $options will be ignored.</p></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Form::addElement()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$element</h4>
+<code>string</code><code>\Zend_Form_Element</code>
+</div>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$options</h4>
+<code>array</code><code>\Zend_Config</code>
+</div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code>\Zend_Form_Exception</code></th>
+<td>on invalid element</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_TabForm</code><code>\Gems_Form_TabSubForm</code>
+</div>
+</div></div>
+</div>
+<a id="method_addElement"></a><div class="element clickable method public method_addElement inherited" data-toggle="collapse" data-target=".method_addElement .collapse" title="public">
+<h2>Add a new element</h2>
+<pre>addElement(string|\Zend_Form_Element $element, string $name<code> = null</code>, array|\Zend_Config $options<code> = null</code>) : \Zend_Form</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>$element may be either a string element type, or an object of type
+\Zend_Form_Element. If a string element type is provided, $name must be
+provided, and $options may be optionally provided for configuring the
+element.</p>
+<p>If a \Zend_Form_Element is provided, $name may be optionally provided,
+and any provided $options will be ignored.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$element</h4>
+<code>string</code><code>\Zend_Form_Element</code>
+</div>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$options</h4>
+<code>array</code><code>\Zend_Config</code>
+</div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code>\Zend_Form_Exception</code></th>
+<td>on invalid element</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Zend_Form</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_addTab"></a><div class="element clickable method public method_addTab " data-toggle="collapse" data-target=".method_addTab .collapse" title="public">
+<h2>Add a tab to the form</h2>
+<pre>addTab(string $name, string $title) : \Gems_Form_TabSubForm</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$title</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Form_TabSubForm</code></div>
+</div></div>
+</div>
+<a id="method_addToOtherGroup"></a><div class="element clickable method public method_addToOtherGroup " data-toggle="collapse" data-target=".method_addToOtherGroup .collapse" title="public">
+<h2>Add to the group all non-tab elements are in</h2>
+<pre>addToOtherGroup(mixed $element) : \Gems_TabForm</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$element</h4>
+<code>mixed</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_TabForm</code></div>
+</div></div>
+</div>
+<a id="method_getAutoSubmit"></a><div class="element clickable method public method_getAutoSubmit inherited" data-toggle="collapse" data-target=".method_getAutoSubmit .collapse" title="public">
+<h2>Get the autosubmit arguments (if any)</h2>
+<pre>getAutoSubmit() : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>or null</div>
+</div></div>
+</div>
+<a id="method_getDisplayGroup"></a><div class="element clickable method public method_getDisplayGroup " data-toggle="collapse" data-target=".method_getDisplayGroup .collapse" title="public">
+<h2>Return a display group, use recursive search in subforms to provide a transparent experience
+with tabs</h2>
+<pre>getDisplayGroup(string $name) : \Zend_Form_DisplayGroup | null</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Zend_Form_DisplayGroup</code><code>null</code>
+</div>
+</div></div>
+</div>
+<a id="method_getElement"></a><div class="element clickable method public method_getElement " data-toggle="collapse" data-target=".method_getElement .collapse" title="public">
+<h2>Retrieve a single element, use recursive search in subforms to provide a transparent experience
+with tabs</h2>
+<pre>getElement(string $name) : \Zend_Form_Element | null</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Zend_Form_Element</code><code>null</code>
+</div>
+</div></div>
+</div>
+<a id="method_getTab"></a><div class="element clickable method public method_getTab " data-toggle="collapse" data-target=".method_getTab .collapse" title="public">
+<h2>Retrieve a named tab (subform) and set the active tab to this one</h2>
+<pre>getTab(string $name) : \Gems_Form_TabSubForm</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Form_TabSubForm</code></div>
+</div></div>
+</div>
+<a id="method_getValues"></a><div class="element clickable method public method_getValues " data-toggle="collapse" data-target=".method_getValues .collapse" title="public">
+<h2>Retrieve all form element values</h2>
+<pre>getValues(boolean $suppressArrayNotation<code> = false</code>) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Fix for ZF error where subform values will be pushed into an array with key: formname
+for compatibility both are now in the result array</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$suppressArrayNotation</h4>
+<code>boolean</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_isAutoSubmit"></a><div class="element clickable method public method_isAutoSubmit inherited" data-toggle="collapse" data-target=".method_isAutoSubmit .collapse" title="public">
+<h2>Is this a form that autosubmits?</h2>
+<pre>isAutoSubmit() : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_loadDefaultDecorators"></a><div class="element clickable method public method_loadDefaultDecorators " data-toggle="collapse" data-target=".method_loadDefaultDecorators .collapse" title="public">
+<h2>Load the default decorators</h2>
+<pre>loadDefaultDecorators() : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_resetContext"></a><div class="element clickable method public method_resetContext " data-toggle="collapse" data-target=".method_resetContext .collapse" title="public">
+<h2>Reset the currentTab to be the main form again</h2>
+<pre>resetContext() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"><p>As addElement and addDisplayGroup provide a fluent way of working with subforms
+we need to provide a method to skip back to the main form again.</p></div></div></div>
+</div>
+<a id="method_selectTab"></a><div class="element clickable method public method_selectTab " data-toggle="collapse" data-target=".method_selectTab .collapse" title="public">
+<h2>Select a tab by it's numerical index</h2>
+<pre>selectTab(integer $tabIdx) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$tabIdx</h4>
+<code>integer</code>
+</div>
+</div></div>
+</div>
+<a id="method_setAutoSubmit"></a><div class="element clickable method public method_setAutoSubmit inherited" data-toggle="collapse" data-target=".method_setAutoSubmit .collapse" title="public">
+<h2>Change the form into an autosubmit form</h2>
+<pre>setAutoSubmit(mixed $submitUrl, mixed $targetId, $selective<code> = false</code>) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$submitUrl</h4>
+<code>mixed</code><p>Url as \MUtil_Html_UrlArrayAttribute, array or string</p></div>
+<div class="subelement argument">
+<h4>$targetId</h4>
+<code>mixed</code><p>Id of html element whose content is replaced by the submit result: \MUtil_Html_ElementInterface or string</p></div>
+<div class="subelement argument"><h4>$selective</h4></div>
+</div></div>
+</div>
+<a id="method_setVerbose"></a><div class="element clickable method public method_setVerbose " data-toggle="collapse" data-target=".method_setVerbose .collapse" title="public">
+<h2>Set the form to be verbose, showing above the form what tabs have errors and
+possibly add custom (sub)formlevel error messages</h2>
+<pre>setVerbose(boolean $bool) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$bool</h4>
+<code>boolean</code>
+</div>
+</div></div>
+</div>
+<a id="method_setView"></a><div class="element clickable method public method_setView " data-toggle="collapse" data-target=".method_setView .collapse" title="public">
+<h2>Set the view object</h2>
+<pre>setView(\Zend_View_Interface $view<code> = null</code>) : \Gems_TabForm</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$view</h4>
+<code>\Zend_View_Interface</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_TabForm</code></div>
+</div></div>
+</div>
+<a id="method__activateJQueryView"></a><div class="element clickable method protected method__activateJQueryView inherited" data-toggle="collapse" data-target=".method__activateJQueryView .collapse" title="protected">
+<h2>_activateJQueryView()
+        </h2>
+<pre>_activateJQueryView(\Zend_View_Interface $view<code> = null</code>) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$view</h4></div>
+</div></div>
+</div>
+<a id="method__enableAutoSubmitElement"></a><div class="element clickable method private method__enableAutoSubmitElement inherited" data-toggle="collapse" data-target=".method__enableAutoSubmitElement .collapse" title="private">
+<h2>Change all elements into an autosubmit element</h2>
+<pre>_enableAutoSubmitElement(mixed $element) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Call only when $_autoSubmit is set</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$element</h4>
+<code>mixed</code>
+</div>
+</div></div>
+</div>
+<h3>
+<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
+<a id="property__autosubmit"> </a><div class="element clickable property protected property__autosubmit" data-toggle="collapse" data-target=".property__autosubmit .collapse" title="protected">
+<h2>If set this holds the url and targetid for the autosubmit</h2>
+<pre>$_autosubmit : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_currentTab"> </a><div class="element clickable property private property_currentTab" data-toggle="collapse" data-target=".property_currentTab .collapse" title="private">
+<h2>Holds the last tab we added information to</h2>
+<pre>$currentTab : \Gems_Form_TabSubForm</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<h3>
+<i title="Constants" class="icon-custom icon-constant"></i> Constants</h3>
+<a id="constant_GROUP_OTHER"> </a><div class="element clickable constant  constant_GROUP_OTHER" data-toggle="collapse" data-target=".constant_GROUP_OTHER .collapse" title="">
+<h2>Group ID for elements below form</h2>
+<pre>GROUP_OTHER = 'not_in_tab' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:22+02:00.<br></footer></div>
+</div>
+</body>
+</html>

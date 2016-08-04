@@ -1,0 +1,606 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » \Gems_Tracker_Token_TokenSelect</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+<div class="btn-group visibility" data-toggle="buttons-checkbox">
+<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
+</div>
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+</div>
+<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+<li class="nav-header">
+<i title="Methods" class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public "><a href="#method___construct" title="__construct() :: "><span class="description">__construct()
+        </span><pre>__construct()</pre></a></li>
+<li class="method public "><a href="#method___toString" title="__toString() :: "><span class="description">__toString()
+        </span><pre>__toString()</pre></a></li>
+<li class="method public "><a href="#method_andConsents" title="andConsents() :: Add consent descriptions to the select statement"><span class="description">Add consent descriptions to the select statement</span><pre>andConsents()</pre></a></li>
+<li class="method public "><a href="#method_andReceptionCodes" title="andReceptionCodes() :: "><span class="description">andReceptionCodes()
+        </span><pre>andReceptionCodes()</pre></a></li>
+<li class="method public "><a href="#method_andRespondentOrganizations" title="andRespondentOrganizations() :: Add RespondentOrganization info to the select statement"><span class="description">Add RespondentOrganization info to the select statement</span><pre>andRespondentOrganizations()</pre></a></li>
+<li class="method public "><a href="#method_andRespondentTracks" title="andRespondentTracks() :: Add Respondent Track info to the select statement"><span class="description">Add Respondent Track info to the select statement</span><pre>andRespondentTracks()</pre></a></li>
+<li class="method public "><a href="#method_andRespondents" title="andRespondents() :: Add Respondent info to the select statement"><span class="description">Add Respondent info to the select statement</span><pre>andRespondents()</pre></a></li>
+<li class="method public "><a href="#method_andRounds" title="andRounds() :: Adds round info to the select statement"><span class="description">Adds round info to the select statement</span><pre>andRounds()</pre></a></li>
+<li class="method public "><a href="#method_andSurveys" title="andSurveys() :: Add survey info to the select statement"><span class="description">Add survey info to the select statement</span><pre>andSurveys()</pre></a></li>
+<li class="method public "><a href="#method_andTracks" title="andTracks() :: Add track info to the select statement"><span class="description">Add track info to the select statement</span><pre>andTracks()</pre></a></li>
+<li class="method public "><a href="#method_fetchAll" title="fetchAll() :: "><span class="description">fetchAll()
+        </span><pre>fetchAll()</pre></a></li>
+<li class="method public "><a href="#method_fetchOne" title="fetchOne() :: "><span class="description">fetchOne()
+        </span><pre>fetchOne()</pre></a></li>
+<li class="method public "><a href="#method_fetchRow" title="fetchRow() :: "><span class="description">fetchRow()
+        </span><pre>fetchRow()</pre></a></li>
+<li class="method public "><a href="#method_forGroupId" title="forGroupId() :: Select only a specific group"><span class="description">Select only a specific group</span><pre>forGroupId()</pre></a></li>
+<li class="method public "><a href="#method_forNextTokenId" title="forNextTokenId() :: Select the token before the current token"><span class="description">Select the token before the current token</span><pre>forNextTokenId()</pre></a></li>
+<li class="method public "><a href="#method_forPreviousTokenId" title="forPreviousTokenId() :: Select the token before the current token"><span class="description">Select the token before the current token</span><pre>forPreviousTokenId()</pre></a></li>
+<li class="method public "><a href="#method_forRespondent" title="forRespondent() :: Select only a specific respondent"><span class="description">Select only a specific respondent</span><pre>forRespondent()</pre></a></li>
+<li class="method public "><a href="#method_forRespondentTrack" title="forRespondentTrack() :: Select only for a specific Respondent Track ID"><span class="description">Select only for a specific Respondent Track ID</span><pre>forRespondentTrack()</pre></a></li>
+<li class="method public "><a href="#method_forRound" title="forRound() :: Select only for a specific Round ID"><span class="description">Select only for a specific Round ID</span><pre>forRound()</pre></a></li>
+<li class="method public "><a href="#method_forSurveyCode" title="forSurveyCode() :: Select only a specific surveyId"><span class="description">Select only a specific surveyId</span><pre>forSurveyCode()</pre></a></li>
+<li class="method public "><a href="#method_forSurveyId" title="forSurveyId() :: Select only a specific surveyId"><span class="description">Select only a specific surveyId</span><pre>forSurveyId()</pre></a></li>
+<li class="method public "><a href="#method_forTokenId" title="forTokenId() :: Select only a specific tokenId"><span class="description">Select only a specific tokenId</span><pre>forTokenId()</pre></a></li>
+<li class="method public "><a href="#method_forWhere" title="forWhere() :: For adding generic where statements"><span class="description">For adding generic where statements</span><pre>forWhere()</pre></a></li>
+<li class="method public "><a href="#method_getSelect" title="getSelect() :: Get the constructed select statement"><span class="description">Get the constructed select statement</span><pre>getSelect()</pre></a></li>
+<li class="method public "><a href="#method_onlyActive" title="onlyActive() :: Select only active tokens"><span class="description">Select only active tokens</span><pre>onlyActive()</pre></a></li>
+<li class="method public "><a href="#method_onlyCompleted" title="onlyCompleted() :: Select only completed tokens"><span class="description">Select only completed tokens</span><pre>onlyCompleted()</pre></a></li>
+<li class="method public "><a href="#method_onlySucces" title="onlySucces() :: Select tokens with receptioncodes with the success status 1"><span class="description">Select tokens with receptioncodes with the success status 1</span><pre>onlySucces()</pre></a></li>
+<li class="method public "><a href="#method_onlyValid" title="onlyValid() :: Select only valid tokens"><span class="description">Select only valid tokens</span><pre>onlyValid()</pre></a></li>
+<li class="method public "><a href="#method_order" title="order() :: "><span class="description">order()
+        </span><pre>order()</pre></a></li>
+<li class="method public "><a href="#method_withoutToken" title="withoutToken() :: Do not select the current token"><span class="description">Do not select the current token</span><pre>withoutToken()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Properties" class="icon-custom icon-property"></i> Properties
+                    <ul></ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul><li class="property protected "><a href="#property_db" title="$db() :: "><span class="description"></span><pre>$db</pre></a></li></ul>
+</li>
+<li class="nav-header private">» Private
+                    <ul><li class="property private "><a href="#property_sql_select" title="$sql_select() :: "><span class="description"></span><pre>$sql_select</pre></a></li></ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a xmlns:php="http://php.net/xsl" id="\Gems_Tracker_Token_TokenSelect"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+<li>
+<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Gems_Tracker_Token_TokenSelect.html">Gems_Tracker_Token_TokenSelect</a>
+</li>
+</ul>
+<div xmlns:php="http://php.net/xsl" class="element class">
+<p class="short_description">Helps building select statements for the Token model</p>
+<div class="details">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Gems.Tracker.html">Gems</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Tracker</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2011 Erasmus MC</td>
+</tr>
+<tr>
+<th>license</th>
+<td><a href="http://opensource.org/licenses/BSD-3-Clause">New BSD License</a></td>
+</tr>
+<tr>
+<th>since</th>
+<td>Class available since version 1.4</td>
+</tr>
+</table>
+<h3>
+<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
+<a id="method___construct"></a><div class="element clickable method public method___construct " data-toggle="collapse" data-target=".method___construct .collapse" title="public">
+<h2>__construct()
+        </h2>
+<pre>__construct(\Zend_Db_Adapter_Abstract $db, \type $fields<code> = "*"</code>) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$db</h4>
+<code>\Zend_Db_Adapter_Abstract</code><p>Adapter to use</p></div>
+<div class="subelement argument">
+<h4>$fields</h4>
+<code>\type</code><p>Optional select fieldlist</p></div>
+</div></div>
+</div>
+<a id="method___toString"></a><div class="element clickable method public method___toString " data-toggle="collapse" data-target=".method___toString .collapse" title="public">
+<h2>__toString()
+        </h2>
+<pre>__toString() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>SQL Select statement</div>
+</div></div>
+</div>
+<a id="method_andConsents"></a><div class="element clickable method public method_andConsents " data-toggle="collapse" data-target=".method_andConsents .collapse" title="public">
+<h2>Add consent descriptions to the select statement</h2>
+<pre>andConsents(string|array $fields<code> = '*'</code>) : \Gems_Tracker_Token_TokenSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$fields</h4>
+<code>string</code><code>array</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token_TokenSelect</code></div>
+</div></div>
+</div>
+<a id="method_andReceptionCodes"></a><div class="element clickable method public method_andReceptionCodes " data-toggle="collapse" data-target=".method_andReceptionCodes .collapse" title="public">
+<h2>andReceptionCodes()
+        </h2>
+<pre>andReceptionCodes(string|array $fields<code> = '*'</code>) : \Gems_Tracker_Token_TokenSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$fields</h4>
+<code>string</code><code>array</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token_TokenSelect</code></div>
+</div></div>
+</div>
+<a id="method_andRespondentOrganizations"></a><div class="element clickable method public method_andRespondentOrganizations " data-toggle="collapse" data-target=".method_andRespondentOrganizations .collapse" title="public">
+<h2>Add RespondentOrganization info to the select statement</h2>
+<pre>andRespondentOrganizations(string|array $fields<code> = '*'</code>) : \Gems_Tracker_Token_TokenSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$fields</h4>
+<code>string</code><code>array</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token_TokenSelect</code></div>
+</div></div>
+</div>
+<a id="method_andRespondentTracks"></a><div class="element clickable method public method_andRespondentTracks " data-toggle="collapse" data-target=".method_andRespondentTracks .collapse" title="public">
+<h2>Add Respondent Track info to the select statement</h2>
+<pre>andRespondentTracks(string|array $fields<code> = '*'</code>, boolean $groupBy<code> = false</code>) : \Gems_Tracker_Token_TokenSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$fields</h4>
+<code>string</code><code>array</code>
+</div>
+<div class="subelement argument">
+<h4>$groupBy</h4>
+<code>boolean</code><p>Optional, add these fields to group by statement</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token_TokenSelect</code></div>
+</div></div>
+</div>
+<a id="method_andRespondents"></a><div class="element clickable method public method_andRespondents " data-toggle="collapse" data-target=".method_andRespondents .collapse" title="public">
+<h2>Add Respondent info to the select statement</h2>
+<pre>andRespondents(string|array $fields<code> = '*'</code>) : \Gems_Tracker_Token_TokenSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$fields</h4>
+<code>string</code><code>array</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token_TokenSelect</code></div>
+</div></div>
+</div>
+<a id="method_andRounds"></a><div class="element clickable method public method_andRounds " data-toggle="collapse" data-target=".method_andRounds .collapse" title="public">
+<h2>Adds round info to the select statement</h2>
+<pre>andRounds(string|array $fields<code> = '*'</code>) : \Gems_Tracker_Token_TokenSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$fields</h4>
+<code>string</code><code>array</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token_TokenSelect</code></div>
+</div></div>
+</div>
+<a id="method_andSurveys"></a><div class="element clickable method public method_andSurveys " data-toggle="collapse" data-target=".method_andSurveys .collapse" title="public">
+<h2>Add survey info to the select statement</h2>
+<pre>andSurveys(string|array $fields<code> = '*'</code>) : \Gems_Tracker_Token_TokenSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$fields</h4>
+<code>string</code><code>array</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token_TokenSelect</code></div>
+</div></div>
+</div>
+<a id="method_andTracks"></a><div class="element clickable method public method_andTracks " data-toggle="collapse" data-target=".method_andTracks .collapse" title="public">
+<h2>Add track info to the select statement</h2>
+<pre>andTracks(string|array $fields<code> = '*'</code>, boolean $groupBy<code> = false</code>) : \Gems_Tracker_Token_TokenSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$fields</h4>
+<code>string</code><code>array</code>
+</div>
+<div class="subelement argument">
+<h4>$groupBy</h4>
+<code>boolean</code><p>Optional, add these fields to group by statement</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token_TokenSelect</code></div>
+</div></div>
+</div>
+<a id="method_fetchAll"></a><div class="element clickable method public method_fetchAll " data-toggle="collapse" data-target=".method_fetchAll .collapse" title="public">
+<h2>fetchAll()
+        </h2>
+<pre>fetchAll() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_fetchOne"></a><div class="element clickable method public method_fetchOne " data-toggle="collapse" data-target=".method_fetchOne .collapse" title="public">
+<h2>fetchOne()
+        </h2>
+<pre>fetchOne() : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>mixed</code></div>
+</div></div>
+</div>
+<a id="method_fetchRow"></a><div class="element clickable method public method_fetchRow " data-toggle="collapse" data-target=".method_fetchRow .collapse" title="public">
+<h2>fetchRow()
+        </h2>
+<pre>fetchRow() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_forGroupId"></a><div class="element clickable method public method_forGroupId " data-toggle="collapse" data-target=".method_forGroupId .collapse" title="public">
+<h2>Select only a specific group</h2>
+<pre>forGroupId(integer $groupId) : \Gems_Tracker_Token_TokenSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$groupId</h4>
+<code>integer</code><p>Gems group id</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token_TokenSelect</code></div>
+</div></div>
+</div>
+<a id="method_forNextTokenId"></a><div class="element clickable method public method_forNextTokenId " data-toggle="collapse" data-target=".method_forNextTokenId .collapse" title="public">
+<h2>Select the token before the current token</h2>
+<pre>forNextTokenId($tokenId) : \Gems_Tracker_Token_TokenSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$tokenId</h4></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token_TokenSelect</code></div>
+</div></div>
+</div>
+<a id="method_forPreviousTokenId"></a><div class="element clickable method public method_forPreviousTokenId " data-toggle="collapse" data-target=".method_forPreviousTokenId .collapse" title="public">
+<h2>Select the token before the current token</h2>
+<pre>forPreviousTokenId($tokenId) : \Gems_Tracker_Token_TokenSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$tokenId</h4></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token_TokenSelect</code></div>
+</div></div>
+</div>
+<a id="method_forRespondent"></a><div class="element clickable method public method_forRespondent " data-toggle="collapse" data-target=".method_forRespondent .collapse" title="public">
+<h2>Select only a specific respondent</h2>
+<pre>forRespondent(string $respondentId, string $organizationId<code> = null</code>) : \Gems_Tracker_Token_TokenSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$respondentId</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$organizationId</h4>
+<code>string</code><p>Optional</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token_TokenSelect</code></div>
+</div></div>
+</div>
+<a id="method_forRespondentTrack"></a><div class="element clickable method public method_forRespondentTrack " data-toggle="collapse" data-target=".method_forRespondentTrack .collapse" title="public">
+<h2>Select only for a specific Respondent Track ID</h2>
+<pre>forRespondentTrack(integer $respTrackId) : \Gems_Tracker_Token_TokenSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$respTrackId</h4>
+<code>integer</code><p>Respondent Track ID</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token_TokenSelect</code></div>
+</div></div>
+</div>
+<a id="method_forRound"></a><div class="element clickable method public method_forRound " data-toggle="collapse" data-target=".method_forRound .collapse" title="public">
+<h2>Select only for a specific Round ID</h2>
+<pre>forRound(integer $roundId) : \Gems_Tracker_Token_TokenSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$roundId</h4>
+<code>integer</code><p>Round ID</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token_TokenSelect</code></div>
+</div></div>
+</div>
+<a id="method_forSurveyCode"></a><div class="element clickable method public method_forSurveyCode " data-toggle="collapse" data-target=".method_forSurveyCode .collapse" title="public">
+<h2>Select only a specific surveyId</h2>
+<pre>forSurveyCode($surveyCode) : \Gems_Tracker_Token_TokenSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$surveyCode</h4></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token_TokenSelect</code></div>
+</div></div>
+</div>
+<a id="method_forSurveyId"></a><div class="element clickable method public method_forSurveyId " data-toggle="collapse" data-target=".method_forSurveyId .collapse" title="public">
+<h2>Select only a specific surveyId</h2>
+<pre>forSurveyId(string $surveyId) : \Gems_Tracker_Token_TokenSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$surveyId</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token_TokenSelect</code></div>
+</div></div>
+</div>
+<a id="method_forTokenId"></a><div class="element clickable method public method_forTokenId " data-toggle="collapse" data-target=".method_forTokenId .collapse" title="public">
+<h2>Select only a specific tokenId</h2>
+<pre>forTokenId(string $tokenId) : \Gems_Tracker_Token_TokenSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$tokenId</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token_TokenSelect</code></div>
+</div></div>
+</div>
+<a id="method_forWhere"></a><div class="element clickable method public method_forWhere " data-toggle="collapse" data-target=".method_forWhere .collapse" title="public">
+<h2>For adding generic where statements</h2>
+<pre>forWhere(string $cond, mixed $bind<code> = null</code>) : \Gems_Tracker_Token_TokenSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$cond</h4>
+<code>string</code><p>SQL Where condition.</p></div>
+<div class="subelement argument">
+<h4>$bind</h4>
+<code>mixed</code><p>optional bind values</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token_TokenSelect</code></div>
+</div></div>
+</div>
+<a id="method_getSelect"></a><div class="element clickable method public method_getSelect " data-toggle="collapse" data-target=".method_getSelect .collapse" title="public">
+<h2>Get the constructed select statement</h2>
+<pre>getSelect() : \Zend_Db_Select</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Zend_Db_Select</code></div>
+</div></div>
+</div>
+<a id="method_onlyActive"></a><div class="element clickable method public method_onlyActive " data-toggle="collapse" data-target=".method_onlyActive .collapse" title="public">
+<h2>Select only active tokens</h2>
+<pre>onlyActive(boolean $recentCheck<code> = false</code>) : \Gems_Tracker_Token_TokenSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Active is token already in surveyor and completiondate is null</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$recentCheck</h4>
+<code>boolean</code><p>Check only tokens with recent gto_start_time's</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token_TokenSelect</code></div>
+</div></div>
+</div>
+<a id="method_onlyCompleted"></a><div class="element clickable method public method_onlyCompleted " data-toggle="collapse" data-target=".method_onlyCompleted .collapse" title="public">
+<h2>Select only completed tokens</h2>
+<pre>onlyCompleted() : \Gems_Tracker_Token_TokenSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Comleted is token has a completiondate</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token_TokenSelect</code></div>
+</div></div>
+</div>
+<a id="method_onlySucces"></a><div class="element clickable method public method_onlySucces " data-toggle="collapse" data-target=".method_onlySucces .collapse" title="public">
+<h2>Select tokens with receptioncodes with the success status 1</h2>
+<pre>onlySucces() : \Gems_Tracker_Token_TokenSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token_TokenSelect</code></div>
+</div></div>
+</div>
+<a id="method_onlyValid"></a><div class="element clickable method public method_onlyValid " data-toggle="collapse" data-target=".method_onlyValid .collapse" title="public">
+<h2>Select only valid tokens</h2>
+<pre>onlyValid() : \Gems_Tracker_Token_TokenSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Not answered, and valid_from/to in right range</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token_TokenSelect</code></div>
+</div></div>
+</div>
+<a id="method_order"></a><div class="element clickable method public method_order " data-toggle="collapse" data-target=".method_order .collapse" title="public">
+<h2>order()
+        </h2>
+<pre>order(mixed $spec) : \Gems_Tracker_Token_TokenSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$spec</h4>
+<code>mixed</code><p>The column(s) and direction to order by.</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token_TokenSelect</code></div>
+</div></div>
+</div>
+<a id="method_withoutToken"></a><div class="element clickable method public method_withoutToken " data-toggle="collapse" data-target=".method_withoutToken .collapse" title="public">
+<h2>Do not select the current token</h2>
+<pre>withoutToken(string $tokenId) : \Gems_Tracker_Token_TokenSelect</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$tokenId</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Token_TokenSelect</code></div>
+</div></div>
+</div>
+<h3>
+<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
+<a id="property_db"> </a><div class="element clickable property protected property_db" data-toggle="collapse" data-target=".property_db .collapse" title="protected">
+<h2>$db</h2>
+<pre>$db : \Zend_Db_Adapter_Abstract</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_sql_select"> </a><div class="element clickable property private property_sql_select" data-toggle="collapse" data-target=".property_sql_select .collapse" title="private">
+<h2>$sql_select</h2>
+<pre>$sql_select : \Zend_Db_Select</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:27+02:00.<br></footer></div>
+</div>
+</body>
+</html>

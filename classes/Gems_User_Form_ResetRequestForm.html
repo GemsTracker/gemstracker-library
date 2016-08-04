@@ -1,0 +1,699 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » \Gems_User_Form_ResetRequestForm</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+<div class="btn-group visibility" data-toggle="buttons-checkbox">
+<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
+</div>
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+</div>
+<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+<li class="nav-header">
+<i title="Methods" class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public inherited"><a href="#method___construct" title="__construct() :: Constructor"><span class="description">Constructor</span><pre>__construct()</pre></a></li>
+<li class="method public inherited"><a href="#method_activateBootstrap" title="activateBootstrap() :: "><span class="description">activateBootstrap()
+        </span><pre>activateBootstrap()</pre></a></li>
+<li class="method public inherited"><a href="#method_activateJQuery" title="activateJQuery() :: Activate JQuery for this form"><span class="description">Activate JQuery for this form</span><pre>activateJQuery()</pre></a></li>
+<li class="method public inherited"><a href="#method_addElement" title="addElement() :: Add a new element"><span class="description">Add a new element</span><pre>addElement()</pre></a></li>
+<li class="method public inherited"><a href="#method_afterRegistry" title="afterRegistry() :: Called after the check that all required registry values
+have been set correctly has run."><span class="description">Called after the check that all required registry values
+have been set correctly has run.</span><pre>afterRegistry()</pre></a></li>
+<li class="method public inherited"><a href="#method_getAutoSubmit" title="getAutoSubmit() :: Get the autosubmit arguments (if any)"><span class="description">Get the autosubmit arguments (if any)</span><pre>getAutoSubmit()</pre></a></li>
+<li class="method public inherited"><a href="#method_getCurrentOrganizationId" title="getCurrentOrganizationId() :: Returns the organization id that should currently be used for this form."><span class="description">Returns the organization id that should currently be used for this form.</span><pre>getCurrentOrganizationId()</pre></a></li>
+<li class="method public inherited"><a href="#method_getLoadDefault" title="getLoadDefault() :: When true all elements are loaded after initiation."><span class="description">When true all elements are loaded after initiation.</span><pre>getLoadDefault()</pre></a></li>
+<li class="method public "><a href="#method_getLoginLink" title="getLoginLink() :: Returns an html link for the login page."><span class="description">Returns an html link for the login page.</span><pre>getLoginLink()</pre></a></li>
+<li class="method public "><a href="#method_getLoginLinkElement" title="getLoginLinkElement() :: Returns a link to the login page"><span class="description">Returns a link to the login page</span><pre>getLoginLinkElement()</pre></a></li>
+<li class="method public inherited"><a href="#method_getLoginOrganizations" title="getLoginOrganizations() :: Returns a list with the organizations the user can select for login."><span class="description">Returns a list with the organizations the user can select for login.</span><pre>getLoginOrganizations()</pre></a></li>
+<li class="method public inherited"><a href="#method_getOrganizationElement" title="getOrganizationElement() :: Returns/sets an element for determining / selecting the organization."><span class="description">Returns/sets an element for determining / selecting the organization.</span><pre>getOrganizationElement()</pre></a></li>
+<li class="method public inherited"><a href="#method_getOrganizationIsVisible" title="getOrganizationIsVisible() :: Returns true when the organization element is visible to the user."><span class="description">Returns true when the organization element is visible to the user.</span><pre>getOrganizationIsVisible()</pre></a></li>
+<li class="method public inherited"><a href="#method_getRequest" title="getRequest() :: Return the Request object"><span class="description">Return the Request object</span><pre>getRequest()</pre></a></li>
+<li class="method public inherited"><a href="#method_getSubmitButton" title="getSubmitButton() :: Returns/sets a submit button."><span class="description">Returns/sets a submit button.</span><pre>getSubmitButton()</pre></a></li>
+<li class="method public "><a href="#method_getSubmitButtonLabel" title="getSubmitButtonLabel() :: Returns the label for the submitbutton"><span class="description">Returns the label for the submitbutton</span><pre>getSubmitButtonLabel()</pre></a></li>
+<li class="method public inherited"><a href="#method_getSubmitButtonLabel" title="getSubmitButtonLabel() :: Returns the label for the submitbutton"><span class="description">Returns the label for the submitbutton</span><pre>getSubmitButtonLabel()</pre></a></li>
+<li class="method public inherited"><a href="#method_getUser" title="getUser() :: Returns a user"><span class="description">Returns a user</span><pre>getUser()</pre></a></li>
+<li class="method public "><a href="#method_getUserNameElement" title="getUserNameElement() :: Returns/sets a login name element."><span class="description">Returns/sets a login name element.</span><pre>getUserNameElement()</pre></a></li>
+<li class="method public inherited"><a href="#method_getUserNameElement" title="getUserNameElement() :: Returns/sets a login name element."><span class="description">Returns/sets a login name element.</span><pre>getUserNameElement()</pre></a></li>
+<li class="method public inherited"><a href="#method_isAutoSubmit" title="isAutoSubmit() :: Is this a form that autosubmits?"><span class="description">Is this a form that autosubmits?</span><pre>isAutoSubmit()</pre></a></li>
+<li class="method public inherited"><a href="#method_isValid" title="isValid() :: Validate the form"><span class="description">Validate the form</span><pre>isValid()</pre></a></li>
+<li class="method public "><a href="#method_loadDefaultElements" title="loadDefaultElements() :: The function that determines the element load order"><span class="description">The function that determines the element load order</span><pre>loadDefaultElements()</pre></a></li>
+<li class="method public inherited"><a href="#method_loadDefaultElements" title="loadDefaultElements() :: The function loads the elements for this form"><span class="description">The function loads the elements for this form</span><pre>loadDefaultElements()</pre></a></li>
+<li class="method public inherited"><a href="#method_setAutoSubmit" title="setAutoSubmit() :: Change the form into an autosubmit form"><span class="description">Change the form into an autosubmit form</span><pre>setAutoSubmit()</pre></a></li>
+<li class="method public inherited"><a href="#method_setLoadDefault" title="setLoadDefault() :: When true all elements are loaded after initiation."><span class="description">When true all elements are loaded after initiation.</span><pre>setLoadDefault()</pre></a></li>
+<li class="method public inherited"><a href="#method_setOrganizationMaxLines" title="setOrganizationMaxLines() :: For small numbers of organizations a multiline selectbox will be nice. This
+setting handles how many lines will display at once. Use 1 for the normal
+dropdown selectbox"><span class="description">For small numbers of organizations a multiline selectbox will be nice. This
+setting handles how many lines will display at once. Use 1 for the normal
+dropdown selectbox</span><pre>setOrganizationMaxLines()</pre></a></li>
+<li class="method public inherited"><a href="#method_wasSubmitted" title="wasSubmitted() :: True when this form was submitted."><span class="description">True when this form was submitted.</span><pre>wasSubmitted()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul><li class="method protected inherited"><a href="#method__activateJQueryView" title="_activateJQueryView() :: "><span class="description">_activateJQueryView()
+        </span><pre>_activateJQueryView()</pre></a></li></ul>
+</li>
+<li class="nav-header private">» Private
+                    <ul><li class="method private inherited"><a href="#method__enableAutoSubmitElement" title="_enableAutoSubmitElement() :: Change all elements into an autosubmit element"><span class="description">Change all elements into an autosubmit element</span><pre>_enableAutoSubmitElement()</pre></a></li></ul>
+</li>
+<li class="nav-header">
+<i title="Properties" class="icon-custom icon-property"></i> Properties
+                    <ul>
+<li class="property public "><a href="#property_organizationFieldName" title="$organizationFieldName() :: The field name for the organization element."><span class="description"></span><pre>$organizationFieldName</pre></a></li>
+<li class="property public "><a href="#property_usernameFieldName" title="$usernameFieldName() :: The field name for the username element."><span class="description"></span><pre>$usernameFieldName</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="property protected "><a href="#property__autosubmit" title="$_autosubmit() :: If set this holds the url and targetid for the autosubmit"><span class="description"></span><pre>$_autosubmit</pre></a></li>
+<li class="property protected "><a href="#property__loginLinkFieldName" title="$_loginLinkFieldName() :: The field name for the login link element"><span class="description"></span><pre>$_loginLinkFieldName</pre></a></li>
+<li class="property protected "><a href="#property__organizationFromUrl" title="$_organizationFromUrl() :: When true the organization was derived from the the url"><span class="description"></span><pre>$_organizationFromUrl</pre></a></li>
+<li class="property protected "><a href="#property__submitFieldName" title="$_submitFieldName() :: The field name for the submit element."><span class="description"></span><pre>$_submitFieldName</pre></a></li>
+<li class="property protected "><a href="#property__user" title="$_user() :: "><span class="description"></span><pre>$_user</pre></a></li>
+<li class="property protected "><a href="#property_loadDefault" title="$loadDefault() :: When true all elements are loaded after initiation."><span class="description"></span><pre>$loadDefault</pre></a></li>
+<li class="property protected "><a href="#property_loader" title="$loader() :: "><span class="description"></span><pre>$loader</pre></a></li>
+<li class="property protected "><a href="#property_organizationMaxLines" title="$organizationMaxLines() :: For small numbers of organizations a multiline selectbox will be nice. This
+setting handles how many lines will display at once. Use 1 for the normal
+dropdown selectbox"><span class="description"></span><pre>$organizationMaxLines</pre></a></li>
+<li class="property protected "><a href="#property_request" title="$request() :: "><span class="description"></span><pre>$request</pre></a></li>
+<li class="property protected "><a href="#property_translate" title="$translate() :: "><span class="description"></span><pre>$translate</pre></a></li>
+<li class="property protected "><a href="#property_util" title="$util() :: "><span class="description"></span><pre>$util</pre></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a xmlns:php="http://php.net/xsl" id="\Gems_User_Form_ResetRequestForm"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+<li>
+<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Gems_User_Form_ResetRequestForm.html">Gems_User_Form_ResetRequestForm</a>
+</li>
+</ul>
+<div xmlns:php="http://php.net/xsl" class="element class">
+<p class="short_description">Adds default element loading to standard form</p>
+<div class="details">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Gems.User.html">Gems</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>User</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2012 Erasmus MC</td>
+</tr>
+<tr>
+<th>license</th>
+<td><a href="http://opensource.org/licenses/BSD-3-Clause">New BSD License</a></td>
+</tr>
+<tr>
+<th>since</th>
+<td>Class available since version 1.5.3</td>
+</tr>
+<tr>
+<th>inherited_from</th>
+<td>\Gems_User_Form_OrganizationFormAbstract</td>
+</tr>
+</table>
+<h3>
+<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
+<a id="method___construct"></a><div class="element clickable method public method___construct inherited" data-toggle="collapse" data-target=".method___construct .collapse" title="public">
+<h2>Constructor</h2>
+<pre>__construct(mixed $options<code> = null</code>) : void</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Registers form view helper as decorator</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$options</h4>
+<code>mixed</code>
+</div>
+</div></div>
+</div>
+<a id="method_activateBootstrap"></a><div class="element clickable method public method_activateBootstrap inherited" data-toggle="collapse" data-target=".method_activateBootstrap .collapse" title="public">
+<h2>activateBootstrap()
+        </h2>
+<pre>activateBootstrap() </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_activateJQuery"></a><div class="element clickable method public method_activateJQuery inherited" data-toggle="collapse" data-target=".method_activateJQuery .collapse" title="public">
+<h2>Activate JQuery for this form</h2>
+<pre>activateJQuery() : \MUtil_Form</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\MUtil_Form</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_addElement"></a><div class="element clickable method public method_addElement inherited" data-toggle="collapse" data-target=".method_addElement .collapse" title="public">
+<h2>Add a new element</h2>
+<pre>addElement(string|\Zend_Form_Element $element, string $name<code> = null</code>, array|\Zend_Config $options<code> = null</code>) : \Zend_Form</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>$element may be either a string element type, or an object of type
+\Zend_Form_Element. If a string element type is provided, $name must be
+provided, and $options may be optionally provided for configuring the
+element.</p>
+<p>If a \Zend_Form_Element is provided, $name may be optionally provided,
+and any provided $options will be ignored.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$element</h4>
+<code>string</code><code>\Zend_Form_Element</code>
+</div>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$options</h4>
+<code>array</code><code>\Zend_Config</code>
+</div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code>\Zend_Form_Exception</code></th>
+<td>on invalid element</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Zend_Form</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_afterRegistry"></a><div class="element clickable method public method_afterRegistry inherited" data-toggle="collapse" data-target=".method_afterRegistry .collapse" title="public">
+<h2>Called after the check that all required registry values
+have been set correctly has run.</h2>
+<pre>afterRegistry() : void</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_getAutoSubmit"></a><div class="element clickable method public method_getAutoSubmit inherited" data-toggle="collapse" data-target=".method_getAutoSubmit .collapse" title="public">
+<h2>Get the autosubmit arguments (if any)</h2>
+<pre>getAutoSubmit() : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>or null</div>
+</div></div>
+</div>
+<a id="method_getCurrentOrganizationId"></a><div class="element clickable method public method_getCurrentOrganizationId inherited" data-toggle="collapse" data-target=".method_getCurrentOrganizationId .collapse" title="public">
+<h2>Returns the organization id that should currently be used for this form.</h2>
+<pre>getCurrentOrganizationId() : integer</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>Returns the current organization id, if any</div>
+</div></div>
+</div>
+<a id="method_getLoadDefault"></a><div class="element clickable method public method_getLoadDefault inherited" data-toggle="collapse" data-target=".method_getLoadDefault .collapse" title="public">
+<h2>When true all elements are loaded after initiation.</h2>
+<pre>getLoadDefault($loadDefault<code> = true</code>) : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$loadDefault</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>$loadDefault</div>
+</div></div>
+</div>
+<a id="method_getLoginLink"></a><div class="element clickable method public method_getLoginLink " data-toggle="collapse" data-target=".method_getLoginLink .collapse" title="public">
+<h2>Returns an html link for the login page.</h2>
+<pre>getLoginLink() : \MUtil_Html_AElement</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\MUtil_Html_AElement</code></div>
+</div></div>
+</div>
+<a id="method_getLoginLinkElement"></a><div class="element clickable method public method_getLoginLinkElement " data-toggle="collapse" data-target=".method_getLoginLinkElement .collapse" title="public">
+<h2>Returns a link to the login page</h2>
+<pre>getLoginLinkElement() : \MUtil_Form_Element_Html</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\MUtil_Form_Element_Html</code></div>
+</div></div>
+</div>
+<a id="method_getLoginOrganizations"></a><div class="element clickable method public method_getLoginOrganizations inherited" data-toggle="collapse" data-target=".method_getLoginOrganizations .collapse" title="public">
+<h2>Returns a list with the organizations the user can select for login.</h2>
+<pre>getLoginOrganizations() : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>orgId => Name</div>
+</div></div>
+</div>
+<a id="method_getOrganizationElement"></a><div class="element clickable method public method_getOrganizationElement inherited" data-toggle="collapse" data-target=".method_getOrganizationElement .collapse" title="public">
+<h2>Returns/sets an element for determining / selecting the organization.</h2>
+<pre>getOrganizationElement() : \Zend_Form_Element_Xhtml</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Zend_Form_Element_Xhtml</code></div>
+</div></div>
+</div>
+<a id="method_getOrganizationIsVisible"></a><div class="element clickable method public method_getOrganizationIsVisible inherited" data-toggle="collapse" data-target=".method_getOrganizationIsVisible .collapse" title="public">
+<h2>Returns true when the organization element is visible to the user.</h2>
+<pre>getOrganizationIsVisible() : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_getRequest"></a><div class="element clickable method public method_getRequest inherited" data-toggle="collapse" data-target=".method_getRequest .collapse" title="public">
+<h2>Return the Request object</h2>
+<pre>getRequest() : \Zend_Controller_Request_Abstract</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Zend_Controller_Request_Abstract</code></div>
+</div></div>
+</div>
+<a id="method_getSubmitButton"></a><div class="element clickable method public method_getSubmitButton inherited" data-toggle="collapse" data-target=".method_getSubmitButton .collapse" title="public">
+<h2>Returns/sets a submit button.</h2>
+<pre>getSubmitButton() : \Zend_Form_Element_Submit</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Zend_Form_Element_Submit</code></div>
+</div></div>
+</div>
+<a id="method_getSubmitButtonLabel"></a><div class="element clickable method public method_getSubmitButtonLabel " data-toggle="collapse" data-target=".method_getSubmitButtonLabel .collapse" title="public">
+<h2>Returns the label for the submitbutton</h2>
+<pre>getSubmitButtonLabel() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getSubmitButtonLabel"></a><div class="element clickable method public method_getSubmitButtonLabel inherited" data-toggle="collapse" data-target=".method_getSubmitButtonLabel .collapse" title="public">
+<h2>Returns the label for the submitbutton</h2>
+<pre>getSubmitButtonLabel() : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getUser"></a><div class="element clickable method public method_getUser inherited" data-toggle="collapse" data-target=".method_getUser .collapse" title="public">
+<h2>Returns a user</h2>
+<pre>getUser() : \Gems_User_User</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_User_Validate_GetUserInterface::getUser()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_User_User</code></div>
+</div></div>
+</div>
+<a id="method_getUserNameElement"></a><div class="element clickable method public method_getUserNameElement " data-toggle="collapse" data-target=".method_getUserNameElement .collapse" title="public">
+<h2>Returns/sets a login name element.</h2>
+<pre>getUserNameElement() : \Zend_Form_Element_Text</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_User_Form_OrganizationFormAbstract::getUserNameElement()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Zend_Form_Element_Text</code></div>
+</div></div>
+</div>
+<a id="method_getUserNameElement"></a><div class="element clickable method public method_getUserNameElement inherited" data-toggle="collapse" data-target=".method_getUserNameElement .collapse" title="public">
+<h2>Returns/sets a login name element.</h2>
+<pre>getUserNameElement() : \Zend_Form_Element_Text</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Zend_Form_Element_Text</code></div>
+</div></div>
+</div>
+<a id="method_isAutoSubmit"></a><div class="element clickable method public method_isAutoSubmit inherited" data-toggle="collapse" data-target=".method_isAutoSubmit .collapse" title="public">
+<h2>Is this a form that autosubmits?</h2>
+<pre>isAutoSubmit() : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_isValid"></a><div class="element clickable method public method_isValid inherited" data-toggle="collapse" data-target=".method_isValid .collapse" title="public">
+<h2>Validate the form</h2>
+<pre>isValid(array $data, boolean $disableTranslateValidators<code> = null</code>) : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>As it is better for translation utilities to set the labels etc. translated,
+the MUtil default is to disable translation.</p>
+<p>However, this also disables the translation of validation messages, which we
+cannot set translated. The MUtil form is extended so it can make this switch.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$data</h4>
+<code>array</code>
+</div>
+<div class="subelement argument">
+<h4>$disableTranslateValidators</h4>
+<code>boolean</code><p>Extra switch</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_loadDefaultElements"></a><div class="element clickable method public method_loadDefaultElements " data-toggle="collapse" data-target=".method_loadDefaultElements .collapse" title="public">
+<h2>The function that determines the element load order</h2>
+<pre>loadDefaultElements() : \Gems_User_Form_LoginForm</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_User_Form_LoginForm</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_loadDefaultElements"></a><div class="element clickable method public method_loadDefaultElements inherited" data-toggle="collapse" data-target=".method_loadDefaultElements .collapse" title="public">
+<h2>The function loads the elements for this form</h2>
+<pre>loadDefaultElements() : \Gems_Form_AutoLoadFormAbstract</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Form_AutoLoadFormAbstract</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_setAutoSubmit"></a><div class="element clickable method public method_setAutoSubmit inherited" data-toggle="collapse" data-target=".method_setAutoSubmit .collapse" title="public">
+<h2>Change the form into an autosubmit form</h2>
+<pre>setAutoSubmit(mixed $submitUrl, mixed $targetId, $selective<code> = false</code>) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$submitUrl</h4>
+<code>mixed</code><p>Url as \MUtil_Html_UrlArrayAttribute, array or string</p></div>
+<div class="subelement argument">
+<h4>$targetId</h4>
+<code>mixed</code><p>Id of html element whose content is replaced by the submit result: \MUtil_Html_ElementInterface or string</p></div>
+<div class="subelement argument"><h4>$selective</h4></div>
+</div></div>
+</div>
+<a id="method_setLoadDefault"></a><div class="element clickable method public method_setLoadDefault inherited" data-toggle="collapse" data-target=".method_setLoadDefault .collapse" title="public">
+<h2>When true all elements are loaded after initiation.</h2>
+<pre>setLoadDefault(boolean $loadDefault<code> = true</code>) : \Gems_User_Form_LoginForm</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Enables loading of parameter through \Zend_Form::__construct()</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$loadDefault</h4>
+<code>boolean</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_User_Form_LoginForm</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_setOrganizationMaxLines"></a><div class="element clickable method public method_setOrganizationMaxLines inherited" data-toggle="collapse" data-target=".method_setOrganizationMaxLines .collapse" title="public">
+<h2>For small numbers of organizations a multiline selectbox will be nice. This
+setting handles how many lines will display at once. Use 1 for the normal
+dropdown selectbox</h2>
+<pre>setOrganizationMaxLines(integer $organizationMaxLines) : \Gems_User_Form_LoginForm</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Enables loading of parameter through \Zend_Form::__construct()</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$organizationMaxLines</h4>
+<code>integer</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_User_Form_LoginForm</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_wasSubmitted"></a><div class="element clickable method public method_wasSubmitted inherited" data-toggle="collapse" data-target=".method_wasSubmitted .collapse" title="public">
+<h2>True when this form was submitted.</h2>
+<pre>wasSubmitted() : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method__activateJQueryView"></a><div class="element clickable method protected method__activateJQueryView inherited" data-toggle="collapse" data-target=".method__activateJQueryView .collapse" title="protected">
+<h2>_activateJQueryView()
+        </h2>
+<pre>_activateJQueryView(\Zend_View_Interface $view<code> = null</code>) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$view</h4></div>
+</div></div>
+</div>
+<a id="method__enableAutoSubmitElement"></a><div class="element clickable method private method__enableAutoSubmitElement inherited" data-toggle="collapse" data-target=".method__enableAutoSubmitElement .collapse" title="private">
+<h2>Change all elements into an autosubmit element</h2>
+<pre>_enableAutoSubmitElement(mixed $element) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Call only when $_autoSubmit is set</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$element</h4>
+<code>mixed</code>
+</div>
+</div></div>
+</div>
+<h3>
+<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
+<a id="property_organizationFieldName"> </a><div class="element clickable property public property_organizationFieldName" data-toggle="collapse" data-target=".property_organizationFieldName .collapse" title="public">
+<h2>The field name for the organization element.</h2>
+<pre>$organizationFieldName : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>'organization'</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_usernameFieldName"> </a><div class="element clickable property public property_usernameFieldName" data-toggle="collapse" data-target=".property_usernameFieldName .collapse" title="public">
+<h2>The field name for the username element.</h2>
+<pre>$usernameFieldName : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>'userlogin'</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__autosubmit"> </a><div class="element clickable property protected property__autosubmit" data-toggle="collapse" data-target=".property__autosubmit .collapse" title="protected">
+<h2>If set this holds the url and targetid for the autosubmit</h2>
+<pre>$_autosubmit : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>null</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__loginLinkFieldName"> </a><div class="element clickable property protected property__loginLinkFieldName" data-toggle="collapse" data-target=".property__loginLinkFieldName .collapse" title="protected">
+<h2>The field name for the login link element</h2>
+<pre>$_loginLinkFieldName : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>'loginlink'</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__organizationFromUrl"> </a><div class="element clickable property protected property__organizationFromUrl" data-toggle="collapse" data-target=".property__organizationFromUrl .collapse" title="protected">
+<h2>When true the organization was derived from the the url</h2>
+<pre>$_organizationFromUrl : boolean</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>false</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__submitFieldName"> </a><div class="element clickable property protected property__submitFieldName" data-toggle="collapse" data-target=".property__submitFieldName .collapse" title="protected">
+<h2>The field name for the submit element.</h2>
+<pre>$_submitFieldName : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>'button'</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__user"> </a><div class="element clickable property protected property__user" data-toggle="collapse" data-target=".property__user .collapse" title="protected">
+<h2>$_user</h2>
+<pre>$_user : \Gems_User_User</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_loadDefault"> </a><div class="element clickable property protected property_loadDefault" data-toggle="collapse" data-target=".property_loadDefault .collapse" title="protected">
+<h2>When true all elements are loaded after initiation.</h2>
+<pre>$loadDefault : boolean</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>true</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_loader"> </a><div class="element clickable property protected property_loader" data-toggle="collapse" data-target=".property_loader .collapse" title="protected">
+<h2>$loader</h2>
+<pre>$loader : \Gems_Loader</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_organizationMaxLines"> </a><div class="element clickable property protected property_organizationMaxLines" data-toggle="collapse" data-target=".property_organizationMaxLines .collapse" title="protected">
+<h2>For small numbers of organizations a multiline selectbox will be nice. This
+setting handles how many lines will display at once. Use 1 for the normal
+dropdown selectbox</h2>
+<pre>$organizationMaxLines : integer</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>6</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_request"> </a><div class="element clickable property protected property_request" data-toggle="collapse" data-target=".property_request .collapse" title="protected">
+<h2>$request</h2>
+<pre>$request : \Zend_Controller_Request_Abstract</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_translate"> </a><div class="element clickable property protected property_translate" data-toggle="collapse" data-target=".property_translate .collapse" title="protected">
+<h2>$translate</h2>
+<pre>$translate : \Zend_Translate</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_util"> </a><div class="element clickable property protected property_util" data-toggle="collapse" data-target=".property_util .collapse" title="protected">
+<h2>$util</h2>
+<pre>$util : \Zend_Util</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:17+02:00.<br></footer></div>
+</div>
+</body>
+</html>

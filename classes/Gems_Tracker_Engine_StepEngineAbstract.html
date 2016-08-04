@@ -1,0 +1,1782 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>API Documentation » \Gems_Tracker_Engine_StepEngineAbstract</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">API Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Gems.html"><i class="icon-th"></i> Gems</a></li>
+<li><a href="../namespaces/global.html"><i class="icon-th"></i> global</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/Booth.html"><i class="icon-folder-open"></i> Booth</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/Depar.html"><i class="icon-folder-open"></i> Depar</a></li>
+<li><a href="../packages/Gems.html"><i class="icon-folder-open"></i> Gems</a></li>
+<li><a href="../packages/MUtil.html"><i class="icon-folder-open"></i> MUtil</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">3435</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">157</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+<div class="btn-group visibility" data-toggle="buttons-checkbox">
+<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
+</div>
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+</div>
+<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+<li class="nav-header">
+<i title="Methods" class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public inherited"><a href="#method___construct" title="__construct() :: "><span class="description">__construct()
+        </span><pre>__construct()</pre></a></li>
+<li class="method public inherited"><a href="#method_addFieldsToModel" title="addFieldsToModel() :: Integrate field loading en showing and editing"><span class="description">Integrate field loading en showing and editing</span><pre>addFieldsToModel()</pre></a></li>
+<li class="method public inherited"><a href="#method_afterRegistry" title="afterRegistry() :: Called after the check that all required registry values
+have been set correctly has run."><span class="description">Called after the check that all required registry values
+have been set correctly has run.</span><pre>afterRegistry()</pre></a></li>
+<li class="method public inherited"><a href="#method_applyToMenuSource" title="applyToMenuSource() :: Set menu parameters from this track engine"><span class="description">Set menu parameters from this track engine</span><pre>applyToMenuSource()</pre></a></li>
+<li class="method public inherited"><a href="#method_calculateFieldsInfo" title="calculateFieldsInfo() :: Calculate the track info from the fields"><span class="description">Calculate the track info from the fields</span><pre>calculateFieldsInfo()</pre></a></li>
+<li class="method public inherited"><a href="#method_calculateRoundCount" title="calculateRoundCount() :: Calculate the number of active rounds in this track from the database."><span class="description">Calculate the number of active rounds in this track from the database.</span><pre>calculateRoundCount()</pre></a></li>
+<li class="method public inherited"><a href="#method_checkRegistryRequestsAnswers" title="checkRegistryRequestsAnswers() :: Should be called after answering the request to allow the Target
+to check if all required registry values have been set correctly."><span class="description">Should be called after answering the request to allow the Target
+to check if all required registry values have been set correctly.</span><pre>checkRegistryRequestsAnswers()</pre></a></li>
+<li class="method public inherited"><a href="#method_checkRoundsFor" title="checkRoundsFor() :: Check for the existence of all tokens and create them otherwise"><span class="description">Check for the existence of all tokens and create them otherwise</span><pre>checkRoundsFor()</pre></a></li>
+<li class="method public "><a href="#method_checkTokensFrom" title="checkTokensFrom() :: Check the valid from and until dates in the track starting at a specified token"><span class="description">Check the valid from and until dates in the track starting at a specified token</span><pre>checkTokensFrom()</pre></a></li>
+<li class="method public "><a href="#method_checkTokensFromStart" title="checkTokensFromStart() :: Check the valid from and until dates in the track"><span class="description">Check the valid from and until dates in the track</span><pre>checkTokensFromStart()</pre></a></li>
+<li class="method public inherited"><a href="#method_convertTo" title="convertTo() :: Convert a TrackEngine instance to a TrackEngine of another type."><span class="description">Convert a TrackEngine instance to a TrackEngine of another type.</span><pre>convertTo()</pre></a></li>
+<li class="method public inherited"><a href="#method_copyTrack" title="copyTrack() :: Copy a track and all it's related data (rounds/fields etc)"><span class="description">Copy a track and all it's related data (rounds/fields etc)</span><pre>copyTrack()</pre></a></li>
+<li class="method public "><a href="#method_displayDateCalculation" title="displayDateCalculation() :: Changes the display of gro_valid_[after|for]_field into something readable"><span class="description">Changes the display of gro_valid_[after|for]_field into something readable</span><pre>displayDateCalculation()</pre></a></li>
+<li class="method public "><a href="#method_displayRoundId" title="displayRoundId() :: Changes the display of gro_valid_[for|after]_id into something readable"><span class="description">Changes the display of gro_valid_[for|after]_id into something readable</span><pre>displayRoundId()</pre></a></li>
+<li class="method public "><a href="#method_getAnswerSnippetNames" title="getAnswerSnippetNames() :: An array of snippet names for displaying the answers to a survey."><span class="description">An array of snippet names for displaying the answers to a survey.</span><pre>getAnswerSnippetNames()</pre></a></li>
+<li class="method public inherited"><a href="#method_getConversionTargets" title="getConversionTargets() :: Returns a list of classnames this track engine can be converted into."><span class="description">Returns a list of classnames this track engine can be converted into.</span><pre>getConversionTargets()</pre></a></li>
+<li class="method public inherited"><a href="#method_getFieldNames" title="getFieldNames() :: Returns an array of the fields in this track
+key / value are id / field name"><span class="description">Returns an array of the fields in this track
+key / value are id / field name</span><pre>getFieldNames()</pre></a></li>
+<li class="method public inherited"><a href="#method_getFieldUpdateEvent" title="getFieldUpdateEvent() :: Get the FieldUpdateEvent for this trackId"><span class="description">Get the FieldUpdateEvent for this trackId</span><pre>getFieldUpdateEvent()</pre></a></li>
+<li class="method public inherited"><a href="#method_getFields" title="getFields() :: Returns an array of the fields in this track
+key / value are id / code"><span class="description">Returns an array of the fields in this track
+key / value are id / code</span><pre>getFields()</pre></a></li>
+<li class="method public inherited"><a href="#method_getFieldsData" title="getFieldsData() :: Returns the field data for the respondent track id."><span class="description">Returns the field data for the respondent track id.</span><pre>getFieldsData()</pre></a></li>
+<li class="method public inherited"><a href="#method_getFieldsDataStorageModel" title="getFieldsDataStorageModel() :: Get the storage model for field values"><span class="description">Get the storage model for field values</span><pre>getFieldsDataStorageModel()</pre></a></li>
+<li class="method public inherited"><a href="#method_getFieldsDefinition" title="getFieldsDefinition() :: Returns the field definition for the track enige."><span class="description">Returns the field definition for the track enige.</span><pre>getFieldsDefinition()</pre></a></li>
+<li class="method public inherited"><a href="#method_getFieldsMaintenanceModel" title="getFieldsMaintenanceModel() :: Returns a model that can be used to retrieve or save the field definitions for the track editor."><span class="description">Returns a model that can be used to retrieve or save the field definitions for the track editor.</span><pre>getFieldsMaintenanceModel()</pre></a></li>
+<li class="method public inherited"><a href="#method_getFieldsOfType" title="getFieldsOfType() :: Returns an array name =&gt; code of all the fields of the type specified"><span class="description">Returns an array name =&gt; code of all the fields of the type specified</span><pre>getFieldsOfType()</pre></a></li>
+<li class="method public inherited"><a href="#method_getFirstRoundId" title="getFirstRoundId() :: Get the round id of the first round"><span class="description">Get the round id of the first round</span><pre>getFirstRoundId()</pre></a></li>
+<li class="method public inherited"><a href="#method_getNextRoundId" title="getNextRoundId() :: Look up the round id for the next round"><span class="description">Look up the round id for the next round</span><pre>getNextRoundId()</pre></a></li>
+<li class="method public inherited"><a href="#method_getPreviousRoundId" title="getPreviousRoundId() :: Look up the round id for the previous round"><span class="description">Look up the round id for the previous round</span><pre>getPreviousRoundId()</pre></a></li>
+<li class="method public "><a href="#method_getRespondentRelationFields" title="getRespondentRelationFields() :: Get all respondent relation fields"><span class="description">Get all respondent relation fields</span><pre>getRespondentRelationFields()</pre></a></li>
+<li class="method public inherited"><a href="#method_getRound" title="getRound() :: Get the round object"><span class="description">Get the round object</span><pre>getRound()</pre></a></li>
+<li class="method public inherited"><a href="#method_getRoundAnswerSnippets" title="getRoundAnswerSnippets() :: Returns a snippet name that can be used to display the answers to the token or nothing."><span class="description">Returns a snippet name that can be used to display the answers to the token or nothing.</span><pre>getRoundAnswerSnippets()</pre></a></li>
+<li class="method public inherited"><a href="#method_getRoundChangedEvent" title="getRoundChangedEvent() :: Return the Round Changed event name for this round"><span class="description">Return the Round Changed event name for this round</span><pre>getRoundChangedEvent()</pre></a></li>
+<li class="method public inherited"><a href="#method_getRoundDefaults" title="getRoundDefaults() :: Get the defaults for a new round"><span class="description">Get the defaults for a new round</span><pre>getRoundDefaults()</pre></a></li>
+<li class="method public inherited"><a href="#method_getRoundDescriptions" title="getRoundDescriptions() :: The round descriptions for this track"><span class="description">The round descriptions for this track</span><pre>getRoundDescriptions()</pre></a></li>
+<li class="method public inherited"><a href="#method_getRoundEditSnippetNames" title="getRoundEditSnippetNames() :: An array of snippet names for editing a round."><span class="description">An array of snippet names for editing a round.</span><pre>getRoundEditSnippetNames()</pre></a></li>
+<li class="method public "><a href="#method_getRoundModel" title="getRoundModel() :: Returns a model that can be used to retrieve or save the data."><span class="description">Returns a model that can be used to retrieve or save the data.</span><pre>getRoundModel()</pre></a></li>
+<li class="method public inherited"><a href="#method_getRoundModel" title="getRoundModel() :: Returns a model that can be used to retrieve or save the data."><span class="description">Returns a model that can be used to retrieve or save the data.</span><pre>getRoundModel()</pre></a></li>
+<li class="method public inherited"><a href="#method_getRoundShowSnippetNames" title="getRoundShowSnippetNames() :: An array of snippet names for editing a round."><span class="description">An array of snippet names for editing a round.</span><pre>getRoundShowSnippetNames()</pre></a></li>
+<li class="method public inherited"><a href="#method_getRounds" title="getRounds() :: Get all the round objects"><span class="description">Get all the round objects</span><pre>getRounds()</pre></a></li>
+<li class="method public "><a href="#method_getTokenDeleteSnippetNames" title="getTokenDeleteSnippetNames() :: An array of snippet names for deleting a token."><span class="description">An array of snippet names for deleting a token.</span><pre>getTokenDeleteSnippetNames()</pre></a></li>
+<li class="method public "><a href="#method_getTokenEditSnippetNames" title="getTokenEditSnippetNames() :: An array of snippet names for editing a token."><span class="description">An array of snippet names for editing a token.</span><pre>getTokenEditSnippetNames()</pre></a></li>
+<li class="method public inherited"><a href="#method_getTokenModel" title="getTokenModel() :: Returns a model that can be used to save, edit, etc. the token"><span class="description">Returns a model that can be used to save, edit, etc. the token</span><pre>getTokenModel()</pre></a></li>
+<li class="method public "><a href="#method_getTokenShowSnippetNames" title="getTokenShowSnippetNames() :: An array of snippet names for displaying a token"><span class="description">An array of snippet names for displaying a token</span><pre>getTokenShowSnippetNames()</pre></a></li>
+<li class="method public inherited"><a href="#method_getTrackCalculationEvent" title="getTrackCalculationEvent() :: Get the TrackCompletedEvent for this trackId"><span class="description">Get the TrackCompletedEvent for this trackId</span><pre>getTrackCalculationEvent()</pre></a></li>
+<li class="method public inherited"><a href="#method_getTrackCompletionEvent" title="getTrackCompletionEvent() :: Get the TrackCompletedEvent for this trackId"><span class="description">Get the TrackCompletedEvent for this trackId</span><pre>getTrackCompletionEvent()</pre></a></li>
+<li class="method public "><a href="#method_getTrackCreateSnippetNames" title="getTrackCreateSnippetNames() :: An array of snippet names for editing a track."><span class="description">An array of snippet names for editing a track.</span><pre>getTrackCreateSnippetNames()</pre></a></li>
+<li class="method public "><a href="#method_getTrackDeleteSnippetNames" title="getTrackDeleteSnippetNames() :: An array of snippet names for deleting a track."><span class="description">An array of snippet names for deleting a track.</span><pre>getTrackDeleteSnippetNames()</pre></a></li>
+<li class="method public "><a href="#method_getTrackEditSnippetNames" title="getTrackEditSnippetNames() :: An array of snippet names for editing a track."><span class="description">An array of snippet names for editing a track.</span><pre>getTrackEditSnippetNames()</pre></a></li>
+<li class="method public inherited"><a href="#method_getTrackId" title="getTrackId() :: "><span class="description">getTrackId()
+        </span><pre>getTrackId()</pre></a></li>
+<li class="method public inherited"><a href="#method_getTrackName" title="getTrackName() :: "><span class="description">getTrackName()
+        </span><pre>getTrackName()</pre></a></li>
+<li class="method public "><a href="#method_getTrackType" title="getTrackType() :: The track type of this engine"><span class="description">The track type of this engine</span><pre>getTrackType()</pre></a></li>
+<li class="method public inherited"><a href="#method_isAppointmentField" title="isAppointmentField() :: Is the field an appointment type"><span class="description">Is the field an appointment type</span><pre>isAppointmentField()</pre></a></li>
+<li class="method public "><a href="#method_isUserCreatable" title="isUserCreatable() :: True if the user can create this kind of track in TrackMaintenanceAction."><span class="description">True if the user can create this kind of track in TrackMaintenanceAction.</span><pre>isUserCreatable()</pre></a></li>
+<li class="method public inherited"><a href="#method_updateRoundCount" title="updateRoundCount() :: Updates the number of rounds in this track."><span class="description">Updates the number of rounds in this track.</span><pre>updateRoundCount()</pre></a></li>
+<li class="method public "><a href="#method_updateRoundModelToItem" title="updateRoundModelToItem() :: Updates the model to reflect the values for the current item data"><span class="description">Updates the model to reflect the values for the current item data</span><pre>updateRoundModelToItem()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="method protected "><a href="#method__applyOptions" title="_applyOptions() :: Helper function for default handling of multi options value sets"><span class="description">Helper function for default handling of multi options value sets</span><pre>_applyOptions()</pre></a></li>
+<li class="method protected inherited"><a href="#method__ensureRounds" title="_ensureRounds() :: Loads the rounds data for this type of track engine."><span class="description">Loads the rounds data for this type of track engine.</span><pre>_ensureRounds()</pre></a></li>
+<li class="method protected inherited"><a href="#method__getAvailableIcons" title="_getAvailableIcons() :: Returns a list of available icons under 'htdocs/pulse/icons'"><span class="description">Returns a list of available icons under 'htdocs/pulse/icons'</span><pre>_getAvailableIcons()</pre></a></li>
+<li class="method protected "><a href="#method__sourceUsesSurvey" title="_sourceUsesSurvey() :: Returns true if the source uses values from another token."><span class="description">Returns true if the source uses values from another token.</span><pre>_sourceUsesSurvey()</pre></a></li>
+<li class="method protected inherited"><a href="#method_addNewTokens" title="addNewTokens() :: Creates all tokens that should exist, but do not exist"><span class="description">Creates all tokens that should exist, but do not exist</span><pre>addNewTokens()</pre></a></li>
+<li class="method protected "><a href="#method_applyDatesValidAfter" title="applyDatesValidAfter() :: Set the after dates to be listed for this item and the way they are displayed (if at all)"><span class="description">Set the after dates to be listed for this item and the way they are displayed (if at all)</span><pre>applyDatesValidAfter()</pre></a></li>
+<li class="method protected "><a href="#method_applyDatesValidFor" title="applyDatesValidFor() :: Set the for dates to be listed for this item and the way they are displayed (if at all)"><span class="description">Set the for dates to be listed for this item and the way they are displayed (if at all)</span><pre>applyDatesValidFor()</pre></a></li>
+<li class="method protected "><a href="#method_applyRespondentRelation" title="applyRespondentRelation() :: Apply respondent relation settings to the round model"><span class="description">Apply respondent relation settings to the round model</span><pre>applyRespondentRelation()</pre></a></li>
+<li class="method protected "><a href="#method_applySurveyListValidAfter" title="applySurveyListValidAfter() :: Set the surveys to be listed as valid after choices for this item and the way they are displayed (if at all)"><span class="description">Set the surveys to be listed as valid after choices for this item and the way they are displayed (if at all)</span><pre>applySurveyListValidAfter()</pre></a></li>
+<li class="method protected "><a href="#method_applySurveyListValidFor" title="applySurveyListValidFor() :: Set the surveys to be listed as valid for choices for this item and the way they are displayed (if at all)"><span class="description">Set the surveys to be listed as valid for choices for this item and the way they are displayed (if at all)</span><pre>applySurveyListValidFor()</pre></a></li>
+<li class="method protected "><a href="#method_calculateFromDate" title="calculateFromDate() :: "><span class="description">calculateFromDate()
+        </span><pre>calculateFromDate()</pre></a></li>
+<li class="method protected "><a href="#method_calculateUntilDate" title="calculateUntilDate() :: "><span class="description">calculateUntilDate()
+        </span><pre>calculateUntilDate()</pre></a></li>
+<li class="method protected inherited"><a href="#method_checkExistingRoundsFor" title="checkExistingRoundsFor() :: Checks all existing tokens and updates any changes to the original rounds (when necessary)"><span class="description">Checks all existing tokens and updates any changes to the original rounds (when necessary)</span><pre>checkExistingRoundsFor()</pre></a></li>
+<li class="method protected inherited"><a href="#method_createRoundModel" title="createRoundModel() :: Create model for rounds. Allowes overriding by sub classes."><span class="description">Create model for rounds. Allowes overriding by sub classes.</span><pre>createRoundModel()</pre></a></li>
+<li class="method protected "><a href="#method_getDateOptionsFor" title="getDateOptionsFor() :: Returns the date fields selectable using the current source"><span class="description">Returns the date fields selectable using the current source</span><pre>getDateOptionsFor()</pre></a></li>
+<li class="method protected "><a href="#method_getRoundTranslations" title="getRoundTranslations() :: Get the display values for rounds"><span class="description">Get the display values for rounds</span><pre>getRoundTranslations()</pre></a></li>
+<li class="method protected "><a href="#method_getSourceList" title="getSourceList() :: Returns the source choices in an array."><span class="description">Returns the source choices in an array.</span><pre>getSourceList()</pre></a></li>
+<li class="method protected "><a href="#method_getSurveyId" title="getSurveyId() :: Look up the survey id associated with a round"><span class="description">Look up the survey id associated with a round</span><pre>getSurveyId()</pre></a></li>
+<li class="method protected "><a href="#method_getValidFromDate" title="getValidFromDate() :: Returns the date to use to calculate the ValidFrom if any"><span class="description">Returns the date to use to calculate the ValidFrom if any</span><pre>getValidFromDate()</pre></a></li>
+<li class="method protected "><a href="#method_getValidUntilDate" title="getValidUntilDate() :: Returns the date to use to calculate the ValidUntil if any"><span class="description">Returns the date to use to calculate the ValidUntil if any</span><pre>getValidUntilDate()</pre></a></li>
+<li class="method protected inherited"><a href="#method_removeInactiveRounds" title="removeInactiveRounds() :: Remove the unanswered tokens for inactive rounds."><span class="description">Remove the unanswered tokens for inactive rounds.</span><pre>removeInactiveRounds()</pre></a></li>
+<li class="method protected "><a href="#method_setDateListFor" title="setDateListFor() :: The logic to set the display of the valid_X_field date list field."><span class="description">The logic to set the display of the valid_X_field date list field.</span><pre>setDateListFor()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header private">» Private
+                    <ul><li class="method private inherited"><a href="#method__update" title="_update() :: Update the track, both in the database and in memory."><span class="description">Update the track, both in the database and in memory.</span><pre>_update()</pre></a></li></ul>
+</li>
+<li class="nav-header">
+<i title="Properties" class="icon-custom icon-property"></i> Properties
+                    <ul></ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="property protected "><a href="#property__fieldsDefinition" title="$_fieldsDefinition() :: Stores how the fields are define for this track"><span class="description"></span><pre>$_fieldsDefinition</pre></a></li>
+<li class="property protected "><a href="#property__roundModelClass" title="$_roundModelClass() :: "><span class="description">Class name for creating the round model.</span><pre>$_roundModelClass</pre></a></li>
+<li class="property protected "><a href="#property__roundObjects" title="$_roundObjects() :: "><span class="description">of rounds objects, initiated at need</span><pre>$_roundObjects</pre></a></li>
+<li class="property protected "><a href="#property__rounds" title="$_rounds() :: "><span class="description">of rounds data</span><pre>$_rounds</pre></a></li>
+<li class="property protected "><a href="#property__trackData" title="$_trackData() :: "><span class="description"></span><pre>$_trackData</pre></a></li>
+<li class="property protected "><a href="#property__trackId" title="$_trackId() :: "><span class="description"></span><pre>$_trackId</pre></a></li>
+<li class="property protected "><a href="#property_db" title="$db() :: "><span class="description"></span><pre>$db</pre></a></li>
+<li class="property protected "><a href="#property_events" title="$events() :: "><span class="description"></span><pre>$events</pre></a></li>
+<li class="property protected "><a href="#property_loader" title="$loader() :: "><span class="description"></span><pre>$loader</pre></a></li>
+<li class="property protected "><a href="#property_locale" title="$locale() :: "><span class="description"></span><pre>$locale</pre></a></li>
+<li class="property protected "><a href="#property_project" title="$project() :: "><span class="description"></span><pre>$project</pre></a></li>
+<li class="property protected "><a href="#property_tracker" title="$tracker() :: "><span class="description"></span><pre>$tracker</pre></a></li>
+<li class="property protected "><a href="#property_util" title="$util() :: "><span class="description"></span><pre>$util</pre></a></li>
+<li class="property protected "><a href="#property_view" title="$view() :: "><span class="description"></span><pre>$view</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i title="Constants" class="icon-custom icon-constant"></i> Constants
+                    <ul>
+<li class="constant  "><a href="#constant_ANSWER_TABLE" title="ANSWER_TABLE() :: Database stored constant value for using an answer in a survey as date source"><span class="description">Database stored constant value for using an answer in a survey as date source</span><pre>ANSWER_TABLE</pre></a></li>
+<li class="constant  "><a href="#constant_APPOINTMENT_TABLE" title="APPOINTMENT_TABLE() :: Database stored constant value for using an appointment as date source"><span class="description">Database stored constant value for using an appointment as date source</span><pre>APPOINTMENT_TABLE</pre></a></li>
+<li class="constant  "><a href="#constant_NO_TABLE" title="NO_TABLE() :: Database stored constant value for using nothing as a date source"><span class="description">Database stored constant value for using nothing as a date source</span><pre>NO_TABLE</pre></a></li>
+<li class="constant  "><a href="#constant_RESPONDENT_TRACK_TABLE" title="RESPONDENT_TRACK_TABLE() :: Database stored constant value for using a track field as date source"><span class="description">Database stored constant value for using a track field as date source</span><pre>RESPONDENT_TRACK_TABLE</pre></a></li>
+<li class="constant  "><a href="#constant_TOKEN_TABLE" title="TOKEN_TABLE() :: Database stored constant value for using a token as date source"><span class="description">Database stored constant value for using a token as date source</span><pre>TOKEN_TABLE</pre></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a xmlns:php="http://php.net/xsl" id="\Gems_Tracker_Engine_StepEngineAbstract"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+<li>
+<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Gems_Tracker_Engine_StepEngineAbstract.html">Gems_Tracker_Engine_StepEngineAbstract</a>
+</li>
+</ul>
+<div xmlns:php="http://php.net/xsl" class="element class">
+<p class="short_description">Parent class for all engines that calculate dates using information
+from other rounds.</p>
+<div class="details">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/Gems.Tracker.html">Gems</a></td>
+</tr>
+<tr>
+<th>subpackage</th>
+<td>Tracker</td>
+</tr>
+<tr>
+<th>copyright</th>
+<td>Copyright (c) 2011 Erasmus MC</td>
+</tr>
+<tr>
+<th>license</th>
+<td><a href="http://opensource.org/licenses/BSD-3-Clause">New BSD License</a></td>
+</tr>
+<tr>
+<th>since</th>
+<td>Class available since version 1.4</td>
+</tr>
+<tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineAbstract</td>
+</tr>
+</table>
+<h3>
+<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
+<a id="method___construct"></a><div class="element clickable method public method___construct inherited" data-toggle="collapse" data-target=".method___construct .collapse" title="public">
+<h2>__construct()
+        </h2>
+<pre>__construct(array $trackData) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::__construct()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$trackData</h4>
+<code>array</code><p>array containing track record</p></div>
+</div></div>
+</div>
+<a id="method_addFieldsToModel"></a><div class="element clickable method public method_addFieldsToModel inherited" data-toggle="collapse" data-target=".method_addFieldsToModel .collapse" title="public">
+<h2>Integrate field loading en showing and editing</h2>
+<pre>addFieldsToModel(\MUtil_Model_ModelAbstract $model, boolean $addDependency<code> = true</code>, $respTrackId<code> = false</code>) : \Gems_Tracker_Engine_TrackEngineAbstract</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::addFieldsToModel()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$model</h4>
+<code>\MUtil_Model_ModelAbstract</code>
+</div>
+<div class="subelement argument">
+<h4>$addDependency</h4>
+<code>boolean</code><p>True when editing, can be false in all other cases</p></div>
+<div class="subelement argument">
+<h4>$respTrackId</h4><p>Optional Database column name where Respondent Track Id is set</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Engine_TrackEngineAbstract</code></div>
+</div></div>
+</div>
+<a id="method_afterRegistry"></a><div class="element clickable method public method_afterRegistry inherited" data-toggle="collapse" data-target=".method_afterRegistry .collapse" title="public">
+<h2>Called after the check that all required registry values
+have been set correctly has run.</h2>
+<pre>afterRegistry() : void</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_applyToMenuSource"></a><div class="element clickable method public method_applyToMenuSource inherited" data-toggle="collapse" data-target=".method_applyToMenuSource .collapse" title="public">
+<h2>Set menu parameters from this track engine</h2>
+<pre>applyToMenuSource(\Gems_Menu_ParameterSource $source) : \Gems_Tracker_Engine_TrackEngineInterface</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::applyToMenuSource()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$source</h4>
+<code>\Gems_Menu_ParameterSource</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Tracker_Engine_TrackEngineInterface</code>(continuation pattern)</div>
+</div></div>
+</div>
+<a id="method_calculateFieldsInfo"></a><div class="element clickable method public method_calculateFieldsInfo inherited" data-toggle="collapse" data-target=".method_calculateFieldsInfo .collapse" title="public">
+<h2>Calculate the track info from the fields</h2>
+<pre>calculateFieldsInfo(array $data) : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::calculateFieldsInfo()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$data</h4>
+<code>array</code><p>The values to save</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>The description to save as track_info</div>
+</div></div>
+</div>
+<a id="method_calculateRoundCount"></a><div class="element clickable method public method_calculateRoundCount inherited" data-toggle="collapse" data-target=".method_calculateRoundCount .collapse" title="public">
+<h2>Calculate the number of active rounds in this track from the database.</h2>
+<pre>calculateRoundCount() : integer</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::calculateRoundCount()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>The number of rounds in this track.</div>
+</div></div>
+</div>
+<a id="method_checkRegistryRequestsAnswers"></a><div class="element clickable method public method_checkRegistryRequestsAnswers inherited" data-toggle="collapse" data-target=".method_checkRegistryRequestsAnswers .collapse" title="public">
+<h2>Should be called after answering the request to allow the Target
+to check if all required registry values have been set correctly.</h2>
+<pre>checkRegistryRequestsAnswers() : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>False if required are missing.</div>
+</div></div>
+</div>
+<a id="method_checkRoundsFor"></a><div class="element clickable method public method_checkRoundsFor inherited" data-toggle="collapse" data-target=".method_checkRoundsFor .collapse" title="public">
+<h2>Check for the existence of all tokens and create them otherwise</h2>
+<pre>checkRoundsFor(\Gems_Tracker_RespondentTrack $respTrack, integer $userId, \Gems_Task_TaskRunnerBatch $batch<code> = null</code>) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::checkRoundsFor()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$respTrack</h4>
+<code>\Gems_Tracker_RespondentTrack</code><p>The respondent track to check</p></div>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>Id of the user who takes the action (for logging)</p></div>
+<div class="subelement argument"><h4>$batch</h4></div>
+</div></div>
+</div>
+<a id="method_checkTokensFrom"></a><div class="element clickable method public method_checkTokensFrom " data-toggle="collapse" data-target=".method_checkTokensFrom .collapse" title="public">
+<h2>Check the valid from and until dates in the track starting at a specified token</h2>
+<pre>checkTokensFrom(\Gems_Tracker_RespondentTrack $respTrack, \Gems_Tracker_Token $startToken, integer $userId, \Gems_Tracker_Token $skipToken<code> = null</code>) : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$respTrack</h4>
+<code>\Gems_Tracker_RespondentTrack</code><p>The respondent track to check</p></div>
+<div class="subelement argument">
+<h4>$startToken</h4>
+<code>\Gems_Tracker_Token</code><p>The token to start at</p></div>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>Id of the user who takes the action (for logging)</p></div>
+<div class="subelement argument">
+<h4>$skipToken</h4>
+<code>\Gems_Tracker_Token</code><p>Optional token to skip in the recalculation</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>The number of tokens changed by this code</div>
+</div></div>
+</div>
+<a id="method_checkTokensFromStart"></a><div class="element clickable method public method_checkTokensFromStart " data-toggle="collapse" data-target=".method_checkTokensFromStart .collapse" title="public">
+<h2>Check the valid from and until dates in the track</h2>
+<pre>checkTokensFromStart(\Gems_Tracker_RespondentTrack $respTrack, integer $userId) : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$respTrack</h4>
+<code>\Gems_Tracker_RespondentTrack</code><p>The respondent track to check</p></div>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>Id of the user who takes the action (for logging)</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>The number of tokens changed by this code</div>
+</div></div>
+</div>
+<a id="method_convertTo"></a><div class="element clickable method public method_convertTo inherited" data-toggle="collapse" data-target=".method_convertTo .collapse" title="public">
+<h2>Convert a TrackEngine instance to a TrackEngine of another type.</h2>
+<pre>convertTo(\type $conversionTargetClass) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>see</th>
+<td><a href="%5CGems_Tracker_Engine_TrackEngineAbstract::getConversionTargets()"></a></td>
+</tr>
+<tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::convertTo()</td>
+</tr>
+</table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$conversionTargetClass</h4>
+<code>\type</code>
+</div>
+</div></div>
+</div>
+<a id="method_copyTrack"></a><div class="element clickable method public method_copyTrack inherited" data-toggle="collapse" data-target=".method_copyTrack .collapse" title="public">
+<h2>Copy a track and all it's related data (rounds/fields etc)</h2>
+<pre>copyTrack(\inte $oldTrackId) : integer</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::copyTrack()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$oldTrackId</h4>
+<code>\inte</code><p>The id of the track to copy</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>The id of the copied track</div>
+</div></div>
+</div>
+<a id="method_displayDateCalculation"></a><div class="element clickable method public method_displayDateCalculation " data-toggle="collapse" data-target=".method_displayDateCalculation .collapse" title="public">
+<h2>Changes the display of gro_valid_[after|for]_field into something readable</h2>
+<pre>displayDateCalculation(mixed $value, $new, string $name, array $context<code> = array()</code>) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$value</h4>
+<code>mixed</code><p>The value being saved</p></div>
+<div class="subelement argument"><h4>$new</h4></div>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code><p>The name of the current field</p></div>
+<div class="subelement argument">
+<h4>$context</h4>
+<code>array</code><p>Optional, the other values being saved</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>The value to use</div>
+</div></div>
+</div>
+<a id="method_displayRoundId"></a><div class="element clickable method public method_displayRoundId " data-toggle="collapse" data-target=".method_displayRoundId .collapse" title="public">
+<h2>Changes the display of gro_valid_[for|after]_id into something readable</h2>
+<pre>displayRoundId(mixed $value, $new, string $name, array $context<code> = array()</code>) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Makes it empty when not applicable</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$value</h4>
+<code>mixed</code><p>The value being saved</p></div>
+<div class="subelement argument"><h4>$new</h4></div>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code><p>The name of the current field</p></div>
+<div class="subelement argument">
+<h4>$context</h4>
+<code>array</code><p>Optional, the other values being saved</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>The value to use</div>
+</div></div>
+</div>
+<a id="method_getAnswerSnippetNames"></a><div class="element clickable method public method_getAnswerSnippetNames " data-toggle="collapse" data-target=".method_getAnswerSnippetNames .collapse" title="public">
+<h2>An array of snippet names for displaying the answers to a survey.</h2>
+<pre>getAnswerSnippetNames() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>if string snippet names</div>
+</div></div>
+</div>
+<a id="method_getConversionTargets"></a><div class="element clickable method public method_getConversionTargets inherited" data-toggle="collapse" data-target=".method_getConversionTargets .collapse" title="public">
+<h2>Returns a list of classnames this track engine can be converted into.</h2>
+<pre>getConversionTargets(array $options) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Should always contain at least the class itself.</p></div>
+<table class="table table-bordered">
+<tr>
+<th>see</th>
+<td><a href="%5CGems_Tracker_Engine_TrackEngineAbstract::convertTo()"></a></td>
+</tr>
+<tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::getConversionTargets()</td>
+</tr>
+</table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$options</h4>
+<code>array</code><p>The track engine class options available in as a "track engine class names" => "descriptions" array</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Filter or adaptation of $options</div>
+</div></div>
+</div>
+<a id="method_getFieldNames"></a><div class="element clickable method public method_getFieldNames inherited" data-toggle="collapse" data-target=".method_getFieldNames .collapse" title="public">
+<h2>Returns an array of the fields in this track
+key / value are id / field name</h2>
+<pre>getFieldNames() : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::getFieldNames()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>fieldid => fieldcode</div>
+</div></div>
+</div>
+<a id="method_getFieldUpdateEvent"></a><div class="element clickable method public method_getFieldUpdateEvent inherited" data-toggle="collapse" data-target=".method_getFieldUpdateEvent .collapse" title="public">
+<h2>Get the FieldUpdateEvent for this trackId</h2>
+<pre>getFieldUpdateEvent() : \Gems_TrackFieldUpdateEventInterface</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::getFieldUpdateEvent()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_TrackFieldUpdateEventInterface</code>| null</div>
+</div></div>
+</div>
+<a id="method_getFields"></a><div class="element clickable method public method_getFields inherited" data-toggle="collapse" data-target=".method_getFields .collapse" title="public">
+<h2>Returns an array of the fields in this track
+key / value are id / code</h2>
+<pre>getFields() : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>fieldid => fieldcode</div>
+</div></div>
+</div>
+<a id="method_getFieldsData"></a><div class="element clickable method public method_getFieldsData inherited" data-toggle="collapse" data-target=".method_getFieldsData .collapse" title="public">
+<h2>Returns the field data for the respondent track id.</h2>
+<pre>getFieldsData(integer $respTrackId) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::getFieldsData()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$respTrackId</h4>
+<code>integer</code><p>Gems respondent track id or null when new</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>of the existing field values for this respondent track</div>
+</div></div>
+</div>
+<a id="method_getFieldsDataStorageModel"></a><div class="element clickable method public method_getFieldsDataStorageModel inherited" data-toggle="collapse" data-target=".method_getFieldsDataStorageModel .collapse" title="public">
+<h2>Get the storage model for field values</h2>
+<pre>getFieldsDataStorageModel() : \Gems\Tracker\Model\FieldDataModel</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::getFieldsDataStorageModel()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems\Tracker\Model\FieldDataModel</code></div>
+</div></div>
+</div>
+<a id="method_getFieldsDefinition"></a><div class="element clickable method public method_getFieldsDefinition inherited" data-toggle="collapse" data-target=".method_getFieldsDefinition .collapse" title="public">
+<h2>Returns the field definition for the track enige.</h2>
+<pre>getFieldsDefinition() : \Gems\Tracker\Engine\FieldsDefinition;</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::getFieldsDefinition()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems\Tracker\Engine\FieldsDefinition;</code></div>
+</div></div>
+</div>
+<a id="method_getFieldsMaintenanceModel"></a><div class="element clickable method public method_getFieldsMaintenanceModel inherited" data-toggle="collapse" data-target=".method_getFieldsMaintenanceModel .collapse" title="public">
+<h2>Returns a model that can be used to retrieve or save the field definitions for the track editor.</h2>
+<pre>getFieldsMaintenanceModel(boolean $detailed<code> = false</code>, string $action<code> = 'index'</code>) : \Gems\Tracker\Model\FieldMaintenanceModel</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::getFieldsMaintenanceModel()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$detailed</h4>
+<code>boolean</code><p>Create a model for the display of detailed item data or just a browse table</p></div>
+<div class="subelement argument">
+<h4>$action</h4>
+<code>string</code><p>The current action</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems\Tracker\Model\FieldMaintenanceModel</code></div>
+</div></div>
+</div>
+<a id="method_getFieldsOfType"></a><div class="element clickable method public method_getFieldsOfType inherited" data-toggle="collapse" data-target=".method_getFieldsOfType .collapse" title="public">
+<h2>Returns an array name =&gt; code of all the fields of the type specified</h2>
+<pre>getFieldsOfType(string $fieldType) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::getFieldsOfType()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$fieldType</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>name => code</div>
+</div></div>
+</div>
+<a id="method_getFirstRoundId"></a><div class="element clickable method public method_getFirstRoundId inherited" data-toggle="collapse" data-target=".method_getFirstRoundId .collapse" title="public">
+<h2>Get the round id of the first round</h2>
+<pre>getFirstRoundId() : integer</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::getFirstRoundId()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>Gems id of first round</div>
+</div></div>
+</div>
+<a id="method_getNextRoundId"></a><div class="element clickable method public method_getNextRoundId inherited" data-toggle="collapse" data-target=".method_getNextRoundId .collapse" title="public">
+<h2>Look up the round id for the next round</h2>
+<pre>getNextRoundId(integer $roundId) : integer</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::getNextRoundId()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$roundId</h4>
+<code>integer</code><p>Gems round id</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>Gems round id</div>
+</div></div>
+</div>
+<a id="method_getPreviousRoundId"></a><div class="element clickable method public method_getPreviousRoundId inherited" data-toggle="collapse" data-target=".method_getPreviousRoundId .collapse" title="public">
+<h2>Look up the round id for the previous round</h2>
+<pre>getPreviousRoundId(integer $roundId, integer $roundOrder<code> = null</code>) : integer</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::getPreviousRoundId()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$roundId</h4>
+<code>integer</code><p>Gems round id</p></div>
+<div class="subelement argument">
+<h4>$roundOrder</h4>
+<code>integer</code><p>Optional extra round order, for when the current round may have changed.</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>Gems round id</div>
+</div></div>
+</div>
+<a id="method_getRespondentRelationFields"></a><div class="element clickable method public method_getRespondentRelationFields " data-toggle="collapse" data-target=".method_getRespondentRelationFields .collapse" title="public">
+<h2>Get all respondent relation fields</h2>
+<pre>getRespondentRelationFields() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Returns an array of field id =&gt; field name</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_getRound"></a><div class="element clickable method public method_getRound inherited" data-toggle="collapse" data-target=".method_getRound .collapse" title="public">
+<h2>Get the round object</h2>
+<pre>getRound(integer $roundId) : \Gems\Tracker\Round</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::getRound()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$roundId</h4>
+<code>integer</code><p>Gems round id</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems\Tracker\Round</code></div>
+</div></div>
+</div>
+<a id="method_getRoundAnswerSnippets"></a><div class="element clickable method public method_getRoundAnswerSnippets inherited" data-toggle="collapse" data-target=".method_getRoundAnswerSnippets .collapse" title="public">
+<h2>Returns a snippet name that can be used to display the answers to the token or nothing.</h2>
+<pre>getRoundAnswerSnippets(\Gems_Tracker_Token $token) : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::getRoundAnswerSnippets()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>\Gems_Tracker_Token</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Of snippet names</div>
+</div></div>
+</div>
+<a id="method_getRoundChangedEvent"></a><div class="element clickable method public method_getRoundChangedEvent inherited" data-toggle="collapse" data-target=".method_getRoundChangedEvent .collapse" title="public">
+<h2>Return the Round Changed event name for this round</h2>
+<pre>getRoundChangedEvent(integer $roundId) : \Gems_Event_RoundChangedEventInterface</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::getRoundChangedEvent()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$roundId</h4>
+<code>integer</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Event_RoundChangedEventInterface</code>event instance or null</div>
+</div></div>
+</div>
+<a id="method_getRoundDefaults"></a><div class="element clickable method public method_getRoundDefaults inherited" data-toggle="collapse" data-target=".method_getRoundDefaults .collapse" title="public">
+<h2>Get the defaults for a new round</h2>
+<pre>getRoundDefaults() : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::getRoundDefaults()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Of fieldname => default</div>
+</div></div>
+</div>
+<a id="method_getRoundDescriptions"></a><div class="element clickable method public method_getRoundDescriptions inherited" data-toggle="collapse" data-target=".method_getRoundDescriptions .collapse" title="public">
+<h2>The round descriptions for this track</h2>
+<pre>getRoundDescriptions() : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::getRoundDescriptions()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>roundId => string</div>
+</div></div>
+</div>
+<a id="method_getRoundEditSnippetNames"></a><div class="element clickable method public method_getRoundEditSnippetNames inherited" data-toggle="collapse" data-target=".method_getRoundEditSnippetNames .collapse" title="public">
+<h2>An array of snippet names for editing a round.</h2>
+<pre>getRoundEditSnippetNames() : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::getRoundEditSnippetNames()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>of string snippet names</div>
+</div></div>
+</div>
+<a id="method_getRoundModel"></a><div class="element clickable method public method_getRoundModel " data-toggle="collapse" data-target=".method_getRoundModel .collapse" title="public">
+<h2>Returns a model that can be used to retrieve or save the data.</h2>
+<pre>getRoundModel(boolean $detailed, string $action) : \MUtil_Model_ModelAbstract</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineAbstract::getRoundModel()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$detailed</h4>
+<code>boolean</code><p>Create a model for the display of detailed item data or just a browse table</p></div>
+<div class="subelement argument">
+<h4>$action</h4>
+<code>string</code><p>The current action</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\MUtil_Model_ModelAbstract</code></div>
+</div></div>
+</div>
+<a id="method_getRoundModel"></a><div class="element clickable method public method_getRoundModel inherited" data-toggle="collapse" data-target=".method_getRoundModel .collapse" title="public">
+<h2>Returns a model that can be used to retrieve or save the data.</h2>
+<pre>getRoundModel(boolean $detailed, string $action) : \MUtil_Model_ModelAbstract</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::getRoundModel()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$detailed</h4>
+<code>boolean</code><p>Create a model for the display of detailed item data or just a browse table</p></div>
+<div class="subelement argument">
+<h4>$action</h4>
+<code>string</code><p>The current action</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\MUtil_Model_ModelAbstract</code></div>
+</div></div>
+</div>
+<a id="method_getRoundShowSnippetNames"></a><div class="element clickable method public method_getRoundShowSnippetNames inherited" data-toggle="collapse" data-target=".method_getRoundShowSnippetNames .collapse" title="public">
+<h2>An array of snippet names for editing a round.</h2>
+<pre>getRoundShowSnippetNames() : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::getRoundShowSnippetNames()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>of string snippet names</div>
+</div></div>
+</div>
+<a id="method_getRounds"></a><div class="element clickable method public method_getRounds inherited" data-toggle="collapse" data-target=".method_getRounds .collapse" title="public">
+<h2>Get all the round objects</h2>
+<pre>getRounds() : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::getRounds()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>of roundId => \Gems\Tracker\Round</div>
+</div></div>
+</div>
+<a id="method_getTokenDeleteSnippetNames"></a><div class="element clickable method public method_getTokenDeleteSnippetNames " data-toggle="collapse" data-target=".method_getTokenDeleteSnippetNames .collapse" title="public">
+<h2>An array of snippet names for deleting a token.</h2>
+<pre>getTokenDeleteSnippetNames(\Gems_Tracker_Token $token) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>\Gems_Tracker_Token</code><p>Allows token status dependent delete snippets</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>of string snippet names</div>
+</div></div>
+</div>
+<a id="method_getTokenEditSnippetNames"></a><div class="element clickable method public method_getTokenEditSnippetNames " data-toggle="collapse" data-target=".method_getTokenEditSnippetNames .collapse" title="public">
+<h2>An array of snippet names for editing a token.</h2>
+<pre>getTokenEditSnippetNames(\Gems_Tracker_Token $token) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>\Gems_Tracker_Token</code><p>Allows token status dependent edit snippets</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>of string snippet names</div>
+</div></div>
+</div>
+<a id="method_getTokenModel"></a><div class="element clickable method public method_getTokenModel inherited" data-toggle="collapse" data-target=".method_getTokenModel .collapse" title="public">
+<h2>Returns a model that can be used to save, edit, etc. the token</h2>
+<pre>getTokenModel() : \Gems_Tracker_Model_StandardTokenModel</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::getTokenModel()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Tracker_Model_StandardTokenModel</code></div>
+</div></div>
+</div>
+<a id="method_getTokenShowSnippetNames"></a><div class="element clickable method public method_getTokenShowSnippetNames " data-toggle="collapse" data-target=".method_getTokenShowSnippetNames .collapse" title="public">
+<h2>An array of snippet names for displaying a token</h2>
+<pre>getTokenShowSnippetNames(\Gems_Tracker_Token $token) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>\Gems_Tracker_Token</code><p>Allows token status dependent show snippets</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>of string snippet names</div>
+</div></div>
+</div>
+<a id="method_getTrackCalculationEvent"></a><div class="element clickable method public method_getTrackCalculationEvent inherited" data-toggle="collapse" data-target=".method_getTrackCalculationEvent .collapse" title="public">
+<h2>Get the TrackCompletedEvent for this trackId</h2>
+<pre>getTrackCalculationEvent() : \Gems_Event_TrackCalculationEventInterface</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::getTrackCalculationEvent()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Event_TrackCalculationEventInterface</code>| null</div>
+</div></div>
+</div>
+<a id="method_getTrackCompletionEvent"></a><div class="element clickable method public method_getTrackCompletionEvent inherited" data-toggle="collapse" data-target=".method_getTrackCompletionEvent .collapse" title="public">
+<h2>Get the TrackCompletedEvent for this trackId</h2>
+<pre>getTrackCompletionEvent() : \Gems_Event_TrackCompletedEventInterface | null</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::getTrackCompletionEvent()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Gems_Event_TrackCompletedEventInterface</code><code>null</code>
+</div>
+</div></div>
+</div>
+<a id="method_getTrackCreateSnippetNames"></a><div class="element clickable method public method_getTrackCreateSnippetNames " data-toggle="collapse" data-target=".method_getTrackCreateSnippetNames .collapse" title="public">
+<h2>An array of snippet names for editing a track.</h2>
+<pre>getTrackCreateSnippetNames() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>deprecated</th>
+<td>since version 1.7.1 Snippets defined TrackAction</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>of string snippet names</div>
+</div></div>
+</div>
+<a id="method_getTrackDeleteSnippetNames"></a><div class="element clickable method public method_getTrackDeleteSnippetNames " data-toggle="collapse" data-target=".method_getTrackDeleteSnippetNames .collapse" title="public">
+<h2>An array of snippet names for deleting a track.</h2>
+<pre>getTrackDeleteSnippetNames(\Gems_Tracker_RespondentTrack $respTrack) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>deprecated</th>
+<td>since version 1.7.1 Snippets defined TrackAction</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$respTrack</h4>
+<code>\Gems_Tracker_RespondentTrack</code><p>Allows track status dependent edit snippets</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>of string snippet names</div>
+</div></div>
+</div>
+<a id="method_getTrackEditSnippetNames"></a><div class="element clickable method public method_getTrackEditSnippetNames " data-toggle="collapse" data-target=".method_getTrackEditSnippetNames .collapse" title="public">
+<h2>An array of snippet names for editing a track.</h2>
+<pre>getTrackEditSnippetNames(\Gems_Tracker_RespondentTrack $respTrack) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>deprecated</th>
+<td>since version 1.7.1 Snippets defined TrackAction</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$respTrack</h4>
+<code>\Gems_Tracker_RespondentTrack</code><p>Allows track status dependent edit snippets</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>of string snippet names</div>
+</div></div>
+</div>
+<a id="method_getTrackId"></a><div class="element clickable method public method_getTrackId inherited" data-toggle="collapse" data-target=".method_getTrackId .collapse" title="public">
+<h2>getTrackId()
+        </h2>
+<pre>getTrackId() : integer</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::getTrackId()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>The track id</div>
+</div></div>
+</div>
+<a id="method_getTrackName"></a><div class="element clickable method public method_getTrackName inherited" data-toggle="collapse" data-target=".method_getTrackName .collapse" title="public">
+<h2>getTrackName()
+        </h2>
+<pre>getTrackName() : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::getTrackName()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>The gems track name</div>
+</div></div>
+</div>
+<a id="method_getTrackType"></a><div class="element clickable method public method_getTrackType " data-toggle="collapse" data-target=".method_getTrackType .collapse" title="public">
+<h2>The track type of this engine</h2>
+<pre>getTrackType() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>'T' or 'S'</div>
+</div></div>
+</div>
+<a id="method_isAppointmentField"></a><div class="element clickable method public method_isAppointmentField inherited" data-toggle="collapse" data-target=".method_isAppointmentField .collapse" title="public">
+<h2>Is the field an appointment type</h2>
+<pre>isAppointmentField(string $fieldName) : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::isAppointmentField()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$fieldName</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_isUserCreatable"></a><div class="element clickable method public method_isUserCreatable " data-toggle="collapse" data-target=".method_isUserCreatable .collapse" title="public">
+<h2>True if the user can create this kind of track in TrackMaintenanceAction.</h2>
+<pre>isUserCreatable() : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>False if this type of track is created by specialized user interface actions.</p>
+<p>Engine level function, should be the same for each class instance.</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_updateRoundCount"></a><div class="element clickable method public method_updateRoundCount inherited" data-toggle="collapse" data-target=".method_updateRoundCount .collapse" title="public">
+<h2>Updates the number of rounds in this track.</h2>
+<pre>updateRoundCount(integer $userId) : integer</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Gems_Tracker_Engine_TrackEngineInterface::updateRoundCount()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>The current user</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>1 if data changed, 0 otherwise</div>
+</div></div>
+</div>
+<a id="method_updateRoundModelToItem"></a><div class="element clickable method public method_updateRoundModelToItem " data-toggle="collapse" data-target=".method_updateRoundModelToItem .collapse" title="public">
+<h2>Updates the model to reflect the values for the current item data</h2>
+<pre>updateRoundModelToItem(\MUtil_Model_ModelAbstract $model, array $itemData, string $language) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$model</h4>
+<code>\MUtil_Model_ModelAbstract</code><p>The round model</p></div>
+<div class="subelement argument">
+<h4>$itemData</h4>
+<code>array</code><p>The current items data</p></div>
+<div class="subelement argument">
+<h4>$language</h4>
+<code>string</code><p>(ISO) language string</p></div>
+</div></div>
+</div>
+<a id="method__applyOptions"></a><div class="element clickable method protected method__applyOptions " data-toggle="collapse" data-target=".method__applyOptions .collapse" title="protected">
+<h2>Helper function for default handling of multi options value sets</h2>
+<pre>_applyOptions(\MUtil_Model_ModelAbstract $model, string $fieldName, array $options, array $itemData) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$model</h4>
+<code>\MUtil_Model_ModelAbstract</code>
+</div>
+<div class="subelement argument">
+<h4>$fieldName</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$options</h4>
+<code>array</code>
+</div>
+<div class="subelement argument">
+<h4>$itemData</h4>
+<code>array</code><p>The current items data</p></div>
+</div></div>
+</div>
+<a id="method__ensureRounds"></a><div class="element clickable method protected method__ensureRounds inherited" data-toggle="collapse" data-target=".method__ensureRounds .collapse" title="protected">
+<h2>Loads the rounds data for this type of track engine.</h2>
+<pre>_ensureRounds() </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"><p>Can be overruled by sub classes.</p></div></div></div>
+</div>
+<a id="method__getAvailableIcons"></a><div class="element clickable method protected method__getAvailableIcons inherited" data-toggle="collapse" data-target=".method__getAvailableIcons .collapse" title="protected">
+<h2>Returns a list of available icons under 'htdocs/pulse/icons'</h2>
+<pre>_getAvailableIcons() : array&lt;mixed,string&gt;</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array&lt;mixed,string&gt;</code></div>
+</div></div>
+</div>
+<a id="method__sourceUsesSurvey"></a><div class="element clickable method protected method__sourceUsesSurvey " data-toggle="collapse" data-target=".method__sourceUsesSurvey .collapse" title="protected">
+<h2>Returns true if the source uses values from another token.</h2>
+<pre>_sourceUsesSurvey(string $source) : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$source</h4>
+<code>string</code><p>The current source</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="method_addNewTokens"></a><div class="element clickable method protected method_addNewTokens inherited" data-toggle="collapse" data-target=".method_addNewTokens .collapse" title="protected">
+<h2>Creates all tokens that should exist, but do not exist</h2>
+<pre>addNewTokens(\Gems_Tracker_RespondentTrack $respTrack, integer $userId) : integer</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>NOTE: When overruling this function you should not create tokens because they
+were deleted by the user</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$respTrack</h4>
+<code>\Gems_Tracker_RespondentTrack</code><p>The respondent track to check</p></div>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>Id of the user who takes the action (for logging)</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>The number of tokens created by this code</div>
+</div></div>
+</div>
+<a id="method_applyDatesValidAfter"></a><div class="element clickable method protected method_applyDatesValidAfter " data-toggle="collapse" data-target=".method_applyDatesValidAfter .collapse" title="protected">
+<h2>Set the after dates to be listed for this item and the way they are displayed (if at all)</h2>
+<pre>applyDatesValidAfter(\MUtil_Model_ModelAbstract $model, array $itemData, string $language) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$model</h4>
+<code>\MUtil_Model_ModelAbstract</code><p>The round model</p></div>
+<div class="subelement argument">
+<h4>$itemData</h4>
+<code>array</code><p>The current items data</p></div>
+<div class="subelement argument">
+<h4>$language</h4>
+<code>string</code><p>(ISO) language string</p></div>
+</div></div>
+</div>
+<a id="method_applyDatesValidFor"></a><div class="element clickable method protected method_applyDatesValidFor " data-toggle="collapse" data-target=".method_applyDatesValidFor .collapse" title="protected">
+<h2>Set the for dates to be listed for this item and the way they are displayed (if at all)</h2>
+<pre>applyDatesValidFor(\MUtil_Model_ModelAbstract $model, array $itemData, string $language) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$model</h4>
+<code>\MUtil_Model_ModelAbstract</code><p>The round model</p></div>
+<div class="subelement argument">
+<h4>$itemData</h4>
+<code>array</code><p>The current items data</p></div>
+<div class="subelement argument">
+<h4>$language</h4>
+<code>string</code><p>(ISO) language string</p></div>
+</div></div>
+</div>
+<a id="method_applyRespondentRelation"></a><div class="element clickable method protected method_applyRespondentRelation " data-toggle="collapse" data-target=".method_applyRespondentRelation .collapse" title="protected">
+<h2>Apply respondent relation settings to the round model</h2>
+<pre>applyRespondentRelation(\MUtil_Model_ModelAbstract $model, array $itemData) : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>For respondent surveys, we allow to set a relation, with possible choices:</p>
+<p>null =&gt; the respondent
+0    =&gt; undefined (specifiy when assigning)</p>
+<blockquote>
+<p>0   =&gt; the id of the track field of type relation to use</p>
+</blockquote></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$model</h4>
+<code>\MUtil_Model_ModelAbstract</code><p>The round model</p></div>
+<div class="subelement argument">
+<h4>$itemData</h4>
+<code>array</code><p>The current items data</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>True if the update changed values (usually by changed selection lists).</div>
+</div></div>
+</div>
+<a id="method_applySurveyListValidAfter"></a><div class="element clickable method protected method_applySurveyListValidAfter " data-toggle="collapse" data-target=".method_applySurveyListValidAfter .collapse" title="protected">
+<h2>Set the surveys to be listed as valid after choices for this item and the way they are displayed (if at all)</h2>
+<pre>applySurveyListValidAfter(\MUtil_Model_ModelAbstract $model, array $itemData) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$model</h4>
+<code>\MUtil_Model_ModelAbstract</code><p>The round model</p></div>
+<div class="subelement argument">
+<h4>$itemData</h4>
+<code>array</code><p>The current items data</p></div>
+</div></div>
+</div>
+<a id="method_applySurveyListValidFor"></a><div class="element clickable method protected method_applySurveyListValidFor " data-toggle="collapse" data-target=".method_applySurveyListValidFor .collapse" title="protected">
+<h2>Set the surveys to be listed as valid for choices for this item and the way they are displayed (if at all)</h2>
+<pre>applySurveyListValidFor(\MUtil_Model_ModelAbstract $model, array $itemData) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$model</h4>
+<code>\MUtil_Model_ModelAbstract</code><p>The round model</p></div>
+<div class="subelement argument">
+<h4>$itemData</h4>
+<code>array</code><p>The current items data</p></div>
+</div></div>
+</div>
+<a id="method_calculateFromDate"></a><div class="element clickable method protected method_calculateFromDate " data-toggle="collapse" data-target=".method_calculateFromDate .collapse" title="protected">
+<h2>calculateFromDate()
+        </h2>
+<pre>calculateFromDate(\MUtil_Date $startDate, string $type, integer $period) : \MUtil_Date</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$startDate</h4>
+<code>\MUtil_Date</code>
+</div>
+<div class="subelement argument">
+<h4>$type</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$period</h4>
+<code>integer</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\MUtil_Date</code></div>
+</div></div>
+</div>
+<a id="method_calculateUntilDate"></a><div class="element clickable method protected method_calculateUntilDate " data-toggle="collapse" data-target=".method_calculateUntilDate .collapse" title="protected">
+<h2>calculateUntilDate()
+        </h2>
+<pre>calculateUntilDate(\MUtil_Date $startDate, string $type, integer $period) : \MUtil_Date</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$startDate</h4>
+<code>\MUtil_Date</code>
+</div>
+<div class="subelement argument">
+<h4>$type</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$period</h4>
+<code>integer</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\MUtil_Date</code></div>
+</div></div>
+</div>
+<a id="method_checkExistingRoundsFor"></a><div class="element clickable method protected method_checkExistingRoundsFor inherited" data-toggle="collapse" data-target=".method_checkExistingRoundsFor .collapse" title="protected">
+<h2>Checks all existing tokens and updates any changes to the original rounds (when necessary)</h2>
+<pre>checkExistingRoundsFor(\Gems_Tracker_RespondentTrack $respTrack, integer $userId) : integer</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$respTrack</h4>
+<code>\Gems_Tracker_RespondentTrack</code><p>The respondent track to check</p></div>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>Id of the user who takes the action (for logging)</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>The number of tokens changed by this code</div>
+</div></div>
+</div>
+<a id="method_createRoundModel"></a><div class="element clickable method protected method_createRoundModel inherited" data-toggle="collapse" data-target=".method_createRoundModel .collapse" title="protected">
+<h2>Create model for rounds. Allowes overriding by sub classes.</h2>
+<pre>createRoundModel() : \Gems_Model_JoinModel</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Gems_Model_JoinModel</code></div>
+</div></div>
+</div>
+<a id="method_getDateOptionsFor"></a><div class="element clickable method protected method_getDateOptionsFor " data-toggle="collapse" data-target=".method_getDateOptionsFor .collapse" title="protected">
+<h2>Returns the date fields selectable using the current source</h2>
+<pre>getDateOptionsFor($sourceType, integer $roundId, string $language, boolean $validAfter) : \type</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$sourceType</h4></div>
+<div class="subelement argument">
+<h4>$roundId</h4>
+<code>integer</code><p>Gems round id</p></div>
+<div class="subelement argument">
+<h4>$language</h4>
+<code>string</code><p>(ISO) language string</p></div>
+<div class="subelement argument">
+<h4>$validAfter</h4>
+<code>boolean</code><p>True if it concenrs _valid_after_ dates</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\type</code></div>
+</div></div>
+</div>
+<a id="method_getRoundTranslations"></a><div class="element clickable method protected method_getRoundTranslations " data-toggle="collapse" data-target=".method_getRoundTranslations .collapse" title="protected">
+<h2>Get the display values for rounds</h2>
+<pre>getRoundTranslations() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>roundId => display string</div>
+</div></div>
+</div>
+<a id="method_getSourceList"></a><div class="element clickable method protected method_getSourceList " data-toggle="collapse" data-target=".method_getSourceList .collapse" title="protected">
+<h2>Returns the source choices in an array.</h2>
+<pre>getSourceList(boolean $validAfter, boolean $firstRound, boolean $detailed<code> = true</code>) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$validAfter</h4>
+<code>boolean</code><p>True if it concerns _valid_after_ dates</p></div>
+<div class="subelement argument">
+<h4>$firstRound</h4>
+<code>boolean</code><p>List for first round</p></div>
+<div class="subelement argument">
+<h4>$detailed</h4>
+<code>boolean</code><p>Return extended info</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>source_name => label</div>
+</div></div>
+</div>
+<a id="method_getSurveyId"></a><div class="element clickable method protected method_getSurveyId " data-toggle="collapse" data-target=".method_getSurveyId .collapse" title="protected">
+<h2>Look up the survey id associated with a round</h2>
+<pre>getSurveyId(integer $roundId) : integer</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$roundId</h4>
+<code>integer</code><p>Gems round id</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>Gems survey id</div>
+</div></div>
+</div>
+<a id="method_getValidFromDate"></a><div class="element clickable method protected method_getValidFromDate " data-toggle="collapse" data-target=".method_getValidFromDate .collapse" title="protected">
+<h2>Returns the date to use to calculate the ValidFrom if any</h2>
+<pre>getValidFromDate(string $fieldSource, string $fieldName, integer $prevRoundId, \Gems_Tracker_Token $token, \Gems_Tracker_RespondentTrack $respTrack) : \MUtil_Date</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$fieldSource</h4>
+<code>string</code><p>Source for field from round</p></div>
+<div class="subelement argument">
+<h4>$fieldName</h4>
+<code>string</code><p>Name from round</p></div>
+<div class="subelement argument">
+<h4>$prevRoundId</h4>
+<code>integer</code><p>Id from round</p></div>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>\Gems_Tracker_Token</code>
+</div>
+<div class="subelement argument">
+<h4>$respTrack</h4>
+<code>\Gems_Tracker_RespondentTrack</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\MUtil_Date</code>date time or null</div>
+</div></div>
+</div>
+<a id="method_getValidUntilDate"></a><div class="element clickable method protected method_getValidUntilDate " data-toggle="collapse" data-target=".method_getValidUntilDate .collapse" title="protected">
+<h2>Returns the date to use to calculate the ValidUntil if any</h2>
+<pre>getValidUntilDate(string $fieldSource, string $fieldName, integer $prevRoundId, \Gems_Tracker_Token $token, \Gems_Tracker_RespondentTrack $respTrack, \MUtil_Date $validFrom) : \MUtil_Date</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$fieldSource</h4>
+<code>string</code><p>Source for field from round</p></div>
+<div class="subelement argument">
+<h4>$fieldName</h4>
+<code>string</code><p>Name from round</p></div>
+<div class="subelement argument">
+<h4>$prevRoundId</h4>
+<code>integer</code><p>Id from round</p></div>
+<div class="subelement argument">
+<h4>$token</h4>
+<code>\Gems_Tracker_Token</code>
+</div>
+<div class="subelement argument">
+<h4>$respTrack</h4>
+<code>\Gems_Tracker_RespondentTrack</code>
+</div>
+<div class="subelement argument">
+<h4>$validFrom</h4>
+<code>\MUtil_Date</code><p>The calculated new valid from value</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\MUtil_Date</code>date time or null</div>
+</div></div>
+</div>
+<a id="method_removeInactiveRounds"></a><div class="element clickable method protected method_removeInactiveRounds inherited" data-toggle="collapse" data-target=".method_removeInactiveRounds .collapse" title="protected">
+<h2>Remove the unanswered tokens for inactive rounds.</h2>
+<pre>removeInactiveRounds(\Gems_Tracker_RespondentTrack $respTrack, integer $userId) : integer</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$respTrack</h4>
+<code>\Gems_Tracker_RespondentTrack</code><p>The respondent track to check</p></div>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>Id of the user who takes the action (for logging)</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>The number of tokens changed by this code</div>
+</div></div>
+</div>
+<a id="method_setDateListFor"></a><div class="element clickable method protected method_setDateListFor " data-toggle="collapse" data-target=".method_setDateListFor .collapse" title="protected">
+<h2>The logic to set the display of the valid_X_field date list field.</h2>
+<pre>setDateListFor(\MUtil_Model_ModelAbstract $model, string $fieldName, string $source, integer $roundId, string $language, boolean $validAfter) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$model</h4>
+<code>\MUtil_Model_ModelAbstract</code><p>The round model</p></div>
+<div class="subelement argument">
+<h4>$fieldName</h4>
+<code>string</code><p>The valid_X_field to set</p></div>
+<div class="subelement argument">
+<h4>$source</h4>
+<code>string</code><p>The date list source as defined by this object</p></div>
+<div class="subelement argument">
+<h4>$roundId</h4>
+<code>integer</code><p>Optional a round id</p></div>
+<div class="subelement argument">
+<h4>$language</h4>
+<code>string</code><p>(ISO) language string</p></div>
+<div class="subelement argument">
+<h4>$validAfter</h4>
+<code>boolean</code><p>True if it concerns _valid_after_ dates</p></div>
+</div></div>
+</div>
+<a id="method__update"></a><div class="element clickable method private method__update inherited" data-toggle="collapse" data-target=".method__update .collapse" title="private">
+<h2>Update the track, both in the database and in memory.</h2>
+<pre>_update(array $values, integer $userId) : integer</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$values</h4>
+<code>array</code><p>The values that this token should be set to</p></div>
+<div class="subelement argument">
+<h4>$userId</h4>
+<code>integer</code><p>The current user</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>integer</code>1 if data changed, 0 otherwise</div>
+</div></div>
+</div>
+<h3>
+<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
+<a id="property__fieldsDefinition"> </a><div class="element clickable property protected property__fieldsDefinition" data-toggle="collapse" data-target=".property__fieldsDefinition .collapse" title="protected">
+<h2>Stores how the fields are define for this track</h2>
+<pre>$_fieldsDefinition : \Gems\Tracker\Engine\FieldsDefinition;</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__roundModelClass"> </a><div class="element clickable property protected property__roundModelClass" data-toggle="collapse" data-target=".property__roundModelClass .collapse" title="protected">
+<h2>Class name for creating the round model.</h2>
+<pre>$_roundModelClass : string</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"><code>'MUtil_Model_TableModel'</code></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__roundObjects"> </a><div class="element clickable property protected property__roundObjects" data-toggle="collapse" data-target=".property__roundObjects .collapse" title="protected">
+<h2>of rounds objects, initiated at need</h2>
+<pre>$_roundObjects : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__rounds"> </a><div class="element clickable property protected property__rounds" data-toggle="collapse" data-target=".property__rounds .collapse" title="protected">
+<h2>of rounds data</h2>
+<pre>$_rounds : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__trackData"> </a><div class="element clickable property protected property__trackData" data-toggle="collapse" data-target=".property__trackData .collapse" title="protected">
+<h2>$_trackData</h2>
+<pre>$_trackData : array</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property__trackId"> </a><div class="element clickable property protected property__trackId" data-toggle="collapse" data-target=".property__trackId .collapse" title="protected">
+<h2>$_trackId</h2>
+<pre>$_trackId : integer</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_db"> </a><div class="element clickable property protected property_db" data-toggle="collapse" data-target=".property_db .collapse" title="protected">
+<h2>$db</h2>
+<pre>$db : \Zend_Db_Adapter_Abstract</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_events"> </a><div class="element clickable property protected property_events" data-toggle="collapse" data-target=".property_events .collapse" title="protected">
+<h2>$events</h2>
+<pre>$events : \Gems_Events</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_loader"> </a><div class="element clickable property protected property_loader" data-toggle="collapse" data-target=".property_loader .collapse" title="protected">
+<h2>$loader</h2>
+<pre>$loader : \Gems_Loader</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_locale"> </a><div class="element clickable property protected property_locale" data-toggle="collapse" data-target=".property_locale .collapse" title="protected">
+<h2>$locale</h2>
+<pre>$locale : \Zend_Locale</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_project"> </a><div class="element clickable property protected property_project" data-toggle="collapse" data-target=".property_project .collapse" title="protected">
+<h2>$project</h2>
+<pre>$project : \Gems_Project_ProjectSettings</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_tracker"> </a><div class="element clickable property protected property_tracker" data-toggle="collapse" data-target=".property_tracker .collapse" title="protected">
+<h2>$tracker</h2>
+<pre>$tracker : \Gems_Tracker</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_util"> </a><div class="element clickable property protected property_util" data-toggle="collapse" data-target=".property_util .collapse" title="protected">
+<h2>$util</h2>
+<pre>$util : \Gems_Util</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_view"> </a><div class="element clickable property protected property_view" data-toggle="collapse" data-target=".property_view .collapse" title="protected">
+<h2>$view</h2>
+<pre>$view : \Zend_View</pre>
+<div class="row collapse"><div class="detail-description">
+<h3>Default</h3>
+<div class="subelement argument"></div>
+</div></div>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<h3>
+<i title="Constants" class="icon-custom icon-constant"></i> Constants</h3>
+<a id="constant_ANSWER_TABLE"> </a><div class="element clickable constant  constant_ANSWER_TABLE" data-toggle="collapse" data-target=".constant_ANSWER_TABLE .collapse" title="">
+<h2>Database stored constant value for using an answer in a survey as date source</h2>
+<pre>ANSWER_TABLE = 'ans' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_APPOINTMENT_TABLE"> </a><div class="element clickable constant  constant_APPOINTMENT_TABLE" data-toggle="collapse" data-target=".constant_APPOINTMENT_TABLE .collapse" title="">
+<h2>Database stored constant value for using an appointment as date source</h2>
+<pre>APPOINTMENT_TABLE = 'app' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_NO_TABLE"> </a><div class="element clickable constant  constant_NO_TABLE" data-toggle="collapse" data-target=".constant_NO_TABLE .collapse" title="">
+<h2>Database stored constant value for using nothing as a date source</h2>
+<pre>NO_TABLE = 'nul' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_RESPONDENT_TRACK_TABLE"> </a><div class="element clickable constant  constant_RESPONDENT_TRACK_TABLE" data-toggle="collapse" data-target=".constant_RESPONDENT_TRACK_TABLE .collapse" title="">
+<h2>Database stored constant value for using a track field as date source</h2>
+<pre>RESPONDENT_TRACK_TABLE = 'rtr' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_TOKEN_TABLE"> </a><div class="element clickable constant  constant_TOKEN_TABLE" data-toggle="collapse" data-target=".constant_TOKEN_TABLE .collapse" title="">
+<h2>Database stored constant value for using a token as date source</h2>
+<pre>TOKEN_TABLE = 'tok' </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.5</a> and<br>
+            generated on 2016-08-04T14:39:48+02:00.<br></footer></div>
+</div>
+</body>
+</html>
