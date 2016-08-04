@@ -5,5 +5,8 @@ See [new project](https://github.com/GemsTracker/new-project) for a basic implem
 
 GemsTracker (GEneric Medical Survey Tracker) is a software package for (complex) distribution of questionnaires and forms during clinical research and quality registrations in healthcare.
 
+#API
+Check the [API docs](https://gemstracker.github.io/gemstracker-library/) for the latest release.
+
 #Contribute
 Help on improving and developing the library is appreciated but please contact one of the developers first before you start working.
