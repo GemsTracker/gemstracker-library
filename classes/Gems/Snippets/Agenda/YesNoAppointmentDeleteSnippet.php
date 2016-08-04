@@ -1,14 +1,13 @@
 <?php
 
 /**
- * Copyright (c) 2016, J-POP Foundation
- * All rights reserved.
  *
- * @package    Booth
+ * @package    Gems
  * @subpackage Snippets\Agenda
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2016 J-POP Foundation
- * @license    no free license, do not use without permission
+ * @copyright  Copyright (c) 2013 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 namespace Gems\Snippets\Agenda;
@@ -16,12 +15,13 @@ namespace Gems\Snippets\Agenda;
 /**
  *
  *
- * @package    Booth
+ * @package    Gems
  * @subpackage Snippets\Agenda
- * @copyright  Copyright (c) 2016 J-POP Foundation
- * @license    no free license, do not use without permission
- * @since      Class available since Jun 16, 2016 5:11:31 PM
+ * @copyright  Copyright (c) 2013 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.7.1
  */
+
 class YesNoAppointmentDeleteSnippet extends \Gems_Snippets_ModelItemYesNoDeleteSnippetGeneric
 {
     /**

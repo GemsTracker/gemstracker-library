@@ -1,21 +1,21 @@
 <?php
 
+
 /**
- *
- * @package    Depar
- * @subpackage Controllers
+ * @package    Gems
+ * @subpackage Default
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @license    Not licensed, do not copy
- * @version    $id: SummaryController.php 203 2012-01-01t 12:51:32Z matijs $
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
  *
- *
- * @package    Depar
- * @subpackage Controllers
- * @copyright  Copyright (c) 2014 Equipe Zorgbedrijven BV
- * @license    Not licensed, do not copy
+ * @package    Gems
+ * @subpackage Default
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
  * @since      Class available since version 1.7.0 9-mrt-2015 17:15:29
  */
 class Gems_Default_FieldOverviewAction extends \Gems_Controller_ModelSnippetActionAbstract
