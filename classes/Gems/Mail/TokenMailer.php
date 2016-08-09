@@ -300,37 +300,37 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
             if ($this->token->hasRelation()) {
                 $allFields = $this->getMailFields(false);
                 // Set about to patient name
-                $results['relation_about'] = $allFields['name'];
-                $results['relation_about_first_name'] = $allFields['first_name'];
-                $results['relation_about_full_name'] = $allFields['full_name'];
-                $results['relation_about_greeting'] = $allFields['greeting'];
-                $results['relation_about_last_name'] = $allFields['last_name'];
-                $results['relation_field_name'] = $this->token->getRelationFieldName();
+                $result['relation_about'] = $allFields['name'];
+                $result['relation_about_first_name'] = $allFields['first_name'];
+                $result['relation_about_full_name'] = $allFields['full_name'];
+                $result['relation_about_greeting'] = $allFields['greeting'];
+                $result['relation_about_last_name'] = $allFields['last_name'];
+                $result['relation_field_name'] = $this->token->getRelationFieldName();
 
                 if ($relation = $this->token->getRelation()) {
                     // Now update all respondent fields to be of the relation
-                    $results['name']       = $relation->getName();
-                    $results['first_name'] = $relation->getFirstName();
-                    $results['last_name']  = $relation->getLastName();
-                    $results['full_name']  = $relation->getHello($locale);
-                    $results['greeting']   = $relation->getGreeting($locale);
-                    $results['to']         = $relation->getEmail();
-                    $this->addTo($results['to'], $results['name']);
+                    $result['name']       = $relation->getName();
+                    $result['first_name'] = $relation->getFirstName();
+                    $result['last_name']  = $relation->getLastName();
+                    $result['full_name']  = $relation->getHello($locale);
+                    $result['greeting']   = $relation->getGreeting($locale);
+                    $result['to']         = $relation->getEmail();
+                    $this->addTo($result['to'], $result['name']);
                 } else {
-                    $results['name']       = $this->translate->getAdapter()->_('Undefined relation');
-                    $results['first_name'] = '';
-                    $results['last_name']  = '';
-                    $results['full_name']  = '';
-                    $results['greeting']   = '';
-                    $results['to']         = '';
+                    $result['name']       = $this->translate->getAdapter()->_('Undefined relation');
+                    $result['first_name'] = '';
+                    $result['last_name']  = '';
+                    $result['full_name']  = '';
+                    $result['greeting']   = '';
+                    $result['to']         = '';
                 }
             } else {
-                $results['relation_about'] = $this->translate->getAdapter()->_('yourself', $this->token->getRespondentLanguage());
-                $results['relation_about_first_name'] = '';
-                $results['relation_about_full_name'] = '';
-                $results['relation_about_greeting'] = '';
-                $results['relation_about_last_name'] = '';
-                $results['relation_field_name'] = '';
+                $result['relation_about'] = $this->translate->getAdapter()->_('yourself', $this->token->getRespondentLanguage());
+                $result['relation_about_first_name'] = '';
+                $result['relation_about_full_name'] = '';
+                $result['relation_about_greeting'] = '';
+                $result['relation_about_last_name'] = '';
+                $result['relation_field_name'] = '';
             }
 
         } else {
