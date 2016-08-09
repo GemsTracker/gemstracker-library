@@ -594,6 +594,9 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
                 $values['gsu_id_source']          = $this->getId();
 
                 $messages[] = sprintf($this->_('Imported the \'%s\' survey.'), $surveyor_title);
+                
+                // Check return url description
+                $this->_checkReturnURI($sourceSurveyId, $survey, $messages);
             }
             $values['gsu_survey_description'] = strtr(substr(\MUtil_Html::removeMarkup($lsSurvey['surveyls_description']), 0, 100), "\xA0\xC2", '  ');
             $survey->saveSurvey($values, $userId);
