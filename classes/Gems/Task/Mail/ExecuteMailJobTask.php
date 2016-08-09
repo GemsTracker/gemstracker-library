@@ -96,11 +96,10 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract {
 
                         case 'F':   // Send on behalf of fixed email address
                             $from = $job['gcj_from_fixed'];
-
                             break;
 
                         default:
-                            throw new \Gems_Exception(sprintf($this->_('Invalid option for %s'), '`From address used`'));
+                            throw new \Gems_Exception(sprintf($this->_('Invalid option for %s'), $this->_('From address used')));
                     }
 
                     $mailer->setFrom($from);
@@ -126,9 +125,10 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract {
                                     $mail = true;
                                 }
                                 $update = true;
+                                break;
 
                             default:
-                                throw new \Gems_Exception(sprintf($this->_('Invalid option for %s'), '`From address used`'));
+                                throw new \Gems_Exception(sprintf($this->_('Invalid option for %s'), $this->_('Processing Method')));
                         }
 
                         if ($mail == true) {
