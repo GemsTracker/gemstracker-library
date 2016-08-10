@@ -170,7 +170,6 @@ class OpenRosa_Tracker_Source_OpenRosa extends \Gems_Tracker_Source_SourceAbstra
 
         $values['gso_active'] = $active ? 1 : 0;
         $values['gso_status'] = $active ? 'Active' : 'Inactive';
-        $values['gso_last_synch'] = new \Zend_Db_Expr('CURRENT_TIMESTAMP');
 
         $this->_updateSource($values, $userId);
 

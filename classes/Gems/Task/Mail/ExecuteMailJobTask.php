@@ -99,7 +99,7 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract {
                             break;
 
                         default:
-                            throw new \Gems_Exception(sprintf($this->_('Invalid option for %s'), $this->_('From address used')));
+                            throw new \Gems_Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('From address used')));
                     }
 
                     $mailer->setFrom($from);
@@ -128,7 +128,7 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract {
                                 break;
 
                             default:
-                                throw new \Gems_Exception(sprintf($this->_('Invalid option for %s'), $this->_('Processing Method')));
+                                throw new \Gems_Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Processing Method')));
                         }
 
                         if ($mail == true) {

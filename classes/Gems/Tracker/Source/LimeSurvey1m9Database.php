@@ -436,7 +436,6 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
 
         $values['gso_active'] = $active ? 1 : 0;
         $values['gso_status'] = $active ? 'Active' : 'Inactive';
-        $values['gso_last_synch'] = new \MUtil_Db_Expr_CurrentTimestamp();
 
         $this->_updateSource($values, $userId);
 
