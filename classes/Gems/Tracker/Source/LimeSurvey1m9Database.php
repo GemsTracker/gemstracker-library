@@ -581,9 +581,6 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
                     $messages[] = sprintf($this->_('The name of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $surveyor_title);
                 }
 
-                // Check return url description
-                $this->_checkReturnURI($sourceSurveyId, $survey, $messages);
-
             } else { // New record
                 $values['gsu_survey_name']        = $surveyor_title;
                 $values['gsu_surveyor_active']    = $surveyor_active ? 1 : 0;
@@ -592,13 +589,13 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
                 $values['gsu_surveyor_id']        = $sourceSurveyId;
                 $values['gsu_id_source']          = $this->getId();
 
-                $messages[] = sprintf($this->_('Imported the \'%s\' survey.'), $surveyor_title);
-                
-                // Check return url description
-                $this->_checkReturnURI($sourceSurveyId, $survey, $messages);
+                $messages[] = sprintf($this->_('Imported the \'%s\' survey.'), $surveyor_title);                
             }
             $values['gsu_survey_description'] = strtr(substr(\MUtil_Html::removeMarkup($lsSurvey['surveyls_description']), 0, 100), "\xA0\xC2", '  ');
             $survey->saveSurvey($values, $userId);
+            
+            // Check return url description
+            $this->_checkReturnURI($sourceSurveyId, $survey, $messages);
         }
 
         return $messages;
