@@ -68,6 +68,12 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     protected $failureIgnoreTime = 600;
 
     /**
+     *
+     * @var \Gems_Loader
+     */
+    public $loader;
+
+    /**
      * Array containing the parameter names that may point to an organization
      *
      * @var array
@@ -1434,7 +1440,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
             return $this->_('Trying to send a password reset to a user that cannot be reset.');
         }
 
-        $mail = new \Gems_Mail();
+        $mail = $this->loader->getMail();
         $mail->setTemplateStyle($this->getBaseOrganization()->getStyle());
         $mail->setFrom($this->getFrom());
         $mail->addTo($this->getEmailAddress(), $this->getFullName(), $this->project->getEmailBounce());
