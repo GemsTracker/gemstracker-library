@@ -56,7 +56,7 @@ class Gems_User_RadiusUserDefinition extends \Gems_User_StaffUserDefinition impl
         $order       = $orgModel->getOrder('gor_user_class') + 1;
 
         foreach ($configModel->getItemNames() as $name) {
-            $orgModel->set($name, 'order', $order++, 'tab', 'access');
+            $orgModel->set($name, 'order', $order++);
             $orgModel->set($name, $configModel->get($name));
         }
     }
