@@ -234,7 +234,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     {
         try {
             $select = $this->db->select();
-            $select->from('gems__user_login_attempts', array('gula_failed_logins', 'gula_last_failed', 'gula_block_until', 'UNIX_TIMESTAMP() - UNIX_TIMESTAMP(gula_last_failed) AS since_last'))
+            $select->from('gems__user_login_attempts', array('gula_failed_logins', 'gula_last_failed', 'gula_block_until', new \Zend_Db_Expr('UNIX_TIMESTAMP() - UNIX_TIMESTAMP(gula_last_failed) AS since_last')))
                     ->where('gula_login = ?', $this->getLoginName())
                     ->where('gula_id_organization = ?', $this->getCurrentOrganizationId())
                     ->limit(1);
