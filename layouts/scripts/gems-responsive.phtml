@@ -102,7 +102,7 @@ $(function() {
         menuCollapse.toggleClass('active').removeClass('hidden');
         $('#menu-collapse-backdrop').toggleClass('active').removeClass('hidden');
 
-        var menuHeight = window.innerHeight - menu.offsetTop;
+        var menuHeight = window.document.documentElement.clientHeight - $('.main-menu').height();
         menuCollapse.css('height', menuHeight+'px');
     });
 
