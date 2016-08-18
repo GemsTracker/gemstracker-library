@@ -330,6 +330,17 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
             // Remove up unchanged values
             foreach ($newValues as $name => $value) {
                 if (array_key_exists($name, $oldValues)) {
+                    /*
+                     * Token->setValidFrom will convert to a string representation
+                     * but values read from database will be Date objects. Make
+                     * sure we compare string with strings
+                     */
+                    if ($value instanceof \Zend_Date) {
+                        $value = $value->toString(\Gems_Tracker::DB_DATETIME_FORMAT);
+                    }
+                    if ($oldValues[$name] instanceof \Zend_Date) {
+                        $oldValues[$name] = $oldValues[$name]->toString(\Gems_Tracker::DB_DATETIME_FORMAT);
+                    }
                     // Extra condition for empty time in date values
                     if (($value === $oldValues[$name]) || ($value === $oldValues[$name] . ' 00:00:00')) {
                         unset($newValues[$name]);
