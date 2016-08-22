@@ -228,7 +228,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
 
         // $this->t
 
-        $sql = "SELECT gro_id_round, gro_id_survey, gro_id_order, gro_round_description
+        $sql = "SELECT gro_id_round, gro_id_survey, gro_id_order, gro_icon_file, gro_round_description
             FROM gems__rounds
             WHERE gro_id_track = ? AND
                 gro_active = 1 AND
