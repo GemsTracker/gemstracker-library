@@ -67,7 +67,7 @@ class SpssExport extends ExportAbstract
      */
     public function addExport($data, $modelId=false)
     {
-        parent::addExport($data, $modelId=false);
+        parent::addExport($data, $modelId);
         if ($model = $this->getModel()) {
             $this->addSpssFile();
 

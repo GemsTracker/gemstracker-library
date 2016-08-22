@@ -259,7 +259,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
     {
         $storageFormat = $this->model->get($columnName, 'storageFormat');
 
-        return \MUtil_Date::format($result, $dateFormat, $storageFormat);
+        return \MUtil_Date::format($value, $dateFormat, $storageFormat);
     }
 
     protected function filterFormatFunction($value, $functionName)
