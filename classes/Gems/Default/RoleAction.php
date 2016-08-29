@@ -374,11 +374,31 @@ class Gems_Default_RoleAction extends \Gems_Controller_ModelSnippetActionAbstrac
             $privileges[$privilege][$this->_('Allowed')]   = $roles[\Zend_Acl::TYPE_ALLOW] ? implode(', ', $roles[\Zend_Acl::TYPE_ALLOW]) : null;
             $privileges[$privilege][$this->_('Denied')]    = $roles[\Zend_Acl::TYPE_DENY]  ? implode(', ', $roles[\Zend_Acl::TYPE_DENY])  : null;
         }
+        
+        // Add unassigned rights to the array too
+        $all_existing = $this->getUsedPrivileges();
+        $unassigned   = array_diff_key($all_existing, $privileges);
+        $nonexistent  = array_diff_key($privileges, $all_existing);
+        unset($nonexistent['pr.nologin']);
+        unset($nonexistent['pr.islogin']);
+        ksort($nonexistent);
+
+        foreach ($unassigned as $privilege => $description) {
+            $privileges[$privilege] = array(
+                $this->_('Privilege') => $privilege,
+                $this->_('Allowed')   => null,
+                $this->_('Denied')    => null
+            );
+        }
         ksort($privileges);
 
         $this->html->h2($this->_('Project privileges'));
         $this->_showTable($this->_('Privileges'), $privileges, true);
 
+        // Nonexistent rights are probably left-overs from old installations, this should be cleaned
+        if (!empty($nonexistent)) {
+            $this->_showTable($this->_('Assigned but nonexistent privileges'), $nonexistent, true);
+        }
         // $this->acl->echoRules();
     }
 }

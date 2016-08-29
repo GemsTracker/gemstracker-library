@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-10 12:11+0200\n"
+"POT-Creation-Date: 2016-08-29 15:42+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -2919,7 +2919,7 @@ msgid "Parents"
 msgstr "Afgeleid van"
 
 #: classes/Gems/Default/RoleAction.php:123
-#: classes/Gems/Default/RoleAction.php:380 classes/Gems/Menu.php:177
+#: classes/Gems/Default/RoleAction.php:396 classes/Gems/Menu.php:177
 msgid "Privileges"
 msgstr "Priviléges"
 
@@ -2955,6 +2955,7 @@ msgstr[1] "Rollen"
 
 #: classes/Gems/Default/RoleAction.php:353
 #: classes/Gems/Default/RoleAction.php:374
+#: classes/Gems/Default/RoleAction.php:389
 msgid "Allowed"
 msgstr "Toegestaan"
 
@@ -2972,16 +2973,22 @@ msgid "Roles"
 msgstr "Rollen"
 
 #: classes/Gems/Default/RoleAction.php:373
+#: classes/Gems/Default/RoleAction.php:388
 msgid "Privilege"
 msgstr "Privilége"
 
 #: classes/Gems/Default/RoleAction.php:375
+#: classes/Gems/Default/RoleAction.php:390
 msgid "Denied"
 msgstr "Geweigerd"
 
-#: classes/Gems/Default/RoleAction.php:379
+#: classes/Gems/Default/RoleAction.php:395
 msgid "Project privileges"
 msgstr "Project priviléges"
+
+#: classes/Gems/Default/RoleAction.php:400
+msgid "Assigned but nonexistent privileges"
+msgstr "Toegewezen maar niet bestaande priviléges"
 
 #: classes/Gems/Default/SourceAction.php:64
 msgid ""
@@ -4297,10 +4304,6 @@ msgid "Grant right to send free text (i.e. non-template) email messages."
 msgstr ""
 "Heeft het recht om vrij tekst e-mails te versturen (i.p.v. alleen het "
 "gebruik van sjablonen)."
-
-#: classes/Gems/Menu.php:780
-msgid "Changelog"
-msgstr "Changelog"
 
 #: classes/Gems/Menu/MenuAbstract.php:224
 #: classes/Gems/Model/AppointmentModel.php:184
@@ -8598,6 +8601,9 @@ msgstr "Ontvangst datum"
 #, php-format
 msgid "Response is for a different formId: %s <-> %s"
 msgstr "Antwoord is voor een andere formId: %s <-> %s"
+
+#~ msgid "Changelog"
+#~ msgstr "Changelog"
 
 #~ msgid "Last synch"
 #~ msgstr "Laatste synchronizatie"

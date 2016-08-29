@@ -775,9 +775,10 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
                 'Grant right to send free text (i.e. non-template) email messages.'
                 ));
 
-
+        /* MD 20160826: We probably don't need this as it is under the projectinfopage
         //Changelog added as button only
         $this->addButtonOnly($this->_('Changelog'),  'pr.project-information.changelog', 'project-information','changelog');
+         */
 
         $this->addPage(null, 'pr.cron.job', 'cron', 'index');
         $this->addPage(null, 'pr.cron.job', 'cron', 'monitor');

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-10 12:09+0200\n"
+"POT-Creation-Date: 2016-08-29 15:41+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -2894,7 +2894,7 @@ msgid "Parents"
 msgstr "Parents"
 
 #: classes/Gems/Default/RoleAction.php:123
-#: classes/Gems/Default/RoleAction.php:380 classes/Gems/Menu.php:177
+#: classes/Gems/Default/RoleAction.php:396 classes/Gems/Menu.php:177
 msgid "Privileges"
 msgstr "Privileges"
 
@@ -2930,6 +2930,7 @@ msgstr[1] "roles"
 
 #: classes/Gems/Default/RoleAction.php:353
 #: classes/Gems/Default/RoleAction.php:374
+#: classes/Gems/Default/RoleAction.php:389
 msgid "Allowed"
 msgstr "Allowed"
 
@@ -2947,16 +2948,22 @@ msgid "Roles"
 msgstr "Roles"
 
 #: classes/Gems/Default/RoleAction.php:373
+#: classes/Gems/Default/RoleAction.php:388
 msgid "Privilege"
 msgstr "Privilege"
 
 #: classes/Gems/Default/RoleAction.php:375
+#: classes/Gems/Default/RoleAction.php:390
 msgid "Denied"
 msgstr "Denied"
 
-#: classes/Gems/Default/RoleAction.php:379
+#: classes/Gems/Default/RoleAction.php:395
 msgid "Project privileges"
 msgstr "Project privileges"
+
+#: classes/Gems/Default/RoleAction.php:400
+msgid "Assigned but nonexistent privileges"
+msgstr "Assigned but nonexistent privileges"
 
 #: classes/Gems/Default/SourceAction.php:64
 msgid ""
@@ -4244,10 +4251,6 @@ msgstr "Display all organizations in staff overview."
 #: classes/Gems/Menu.php:775
 msgid "Grant right to send free text (i.e. non-template) email messages."
 msgstr "Grant right to send free text (i.e. non-template) email messages."
-
-#: classes/Gems/Menu.php:780
-msgid "Changelog"
-msgstr "Changelog"
 
 #: classes/Gems/Menu/MenuAbstract.php:224
 #: classes/Gems/Model/AppointmentModel.php:184
@@ -8502,6 +8505,9 @@ msgstr "Date received"
 #, php-format
 msgid "Response is for a different formId: %s <-> %s"
 msgstr "Response is for a different formId: %s <-> %s"
+
+#~ msgid "Changelog"
+#~ msgstr "Changelog"
 
 #~ msgid "Last synch"
 #~ msgstr "Last synch"
