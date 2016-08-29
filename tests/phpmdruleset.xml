@@ -9,7 +9,7 @@
     <description>
         Configures some rules to have different tresholds or less strict checks
     </description>
-    <rule ref="rulesets/cleancode.xml" />
+    <!-- <rule ref="rulesets/cleancode.xml" /> -->
     <rule ref="rulesets/codesize.xml" />
     <rule ref="rulesets/design.xml" />
     <rule ref="rulesets/naming.xml" />
