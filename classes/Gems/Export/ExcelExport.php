@@ -87,6 +87,7 @@ class ExcelExport extends ExportAbstract
         $exportName = $this->getName();
 
         $i=0;
+        $cell = 'A1';
         foreach($columnHeaders as $columnName=>$columnHeader) {
             $column = $this->getColumn($i);
             $cell = $column . $row;

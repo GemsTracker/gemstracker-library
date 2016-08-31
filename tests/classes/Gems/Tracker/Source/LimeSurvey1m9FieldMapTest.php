@@ -95,7 +95,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMapTest extends \Gems_Test_DbTestAbs
 	{
 		// Create a simple array model to apply to fieldmap to
 		$array = array('test' => 123);
-		$model = new \Gems_Model_PlaceholderModel($array); 
+		$model = new \Gems_Model_PlaceholderModel('test', $array); 
 		$this->fieldmap->applyToModel($model);
 		
 		$this->assertEquals($expectedStorageFormat, $model->get($fieldName, 'storageFormat'));

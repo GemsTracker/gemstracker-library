@@ -25,7 +25,9 @@ class Gems_Default_ExportAction extends \Gems_Controller_ModelSnippetActionAbstr
             $model = $exportModelSource->getModel($this->_searchFilter, $this->data);
         } else {
             $basicArray = array('gto_id_survey', 'gto_id_track', 'gto_round_description', 'gto_id_organization', 'gto_start_date', 'gto_end_date', 'gto_valid_from', 'gto_valid_until');
-            $model = new \Gems_Model_PlaceholderModel($basicArray);
+            
+            $model = new \Gems_Model_PlaceholderModel('nosurvey', $basicArray);
+            $model->set('gto_id_survey', 'label', $this->_('Please select a survey to start the export'));
         }
         
         return $model;

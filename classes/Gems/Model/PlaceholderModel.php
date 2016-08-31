@@ -6,8 +6,10 @@ class Gems_Model_PlaceholderModel extends \MUtil_Model_ArrayModelAbstract
 {
 	protected $data;
 
-	public function __construct($fieldArray, $data = array())
+	public function __construct($modelName, $fieldArray, $data = array())
 	{
+        parent::__construct($modelName);
+        
 		$this->data = $data;
 
 		$this->setMulti($fieldArray);
