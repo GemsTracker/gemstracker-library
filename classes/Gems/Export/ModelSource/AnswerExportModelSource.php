@@ -166,6 +166,13 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
                 }
             }
             $this->model = $model;
+            
+            // Exclude external fields from sorting
+            foreach($this->model->getItemsUsed() as $item) {
+                if (!$this->model->get($item, 'table', 'column_expression')) {
+                    $this->model->set($item, 'noSort', true);
+                }
+            }
         }
 
 		return $this->model;
