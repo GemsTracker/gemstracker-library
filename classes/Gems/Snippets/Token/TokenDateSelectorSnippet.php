@@ -29,6 +29,13 @@ class TokenDateSelectorSnippet extends \MUtil_Snippets_SnippetAbstract
      * @var \Gems_Selector_DateSelectorAbstract
      */
     protected $dateSelector;
+    
+    /**
+     * Required
+     *
+     * @var \Zend_Controller_Request_Abstract
+     */
+    protected $request;
 
     /**
      * The raw search data
@@ -36,6 +43,20 @@ class TokenDateSelectorSnippet extends \MUtil_Snippets_SnippetAbstract
      * @var array
      */
     protected $searchData;
+    
+    /**
+     * The $request param that stores the ascending sort
+     *
+     * @var string
+     */
+    protected $sortParamAsc;
+
+    /**
+     * The $request param that stores the descending sort
+     *
+     * @var string
+     */
+    protected $sortParamDesc;
 
     /**
      * Create the snippets content
@@ -47,6 +68,21 @@ class TokenDateSelectorSnippet extends \MUtil_Snippets_SnippetAbstract
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
+        if ($this->sortParamAsc) {
+            $this->dateSelector->getModel()->setSortParamAsc($this->sortParamAsc);
+        }
+        if ($this->sortParamDesc) {
+            $this->dateSelector->getModel()->setSortParamDesc($this->sortParamDesc);
+        }
+        
+        $model = $this->dateSelector->getModel();
+        $filter = $model->getFilter();
+        // Unset sorts from the filter
+        unset($filter[$model->getSortParamAsc()]);
+        unset($filter[$model->getSortParamDesc()]);
+
+        $model->setFilter($filter);
+        
         return $this->dateSelector->getTable($this->searchData);
     }
 
@@ -62,7 +98,7 @@ class TokenDateSelectorSnippet extends \MUtil_Snippets_SnippetAbstract
      * @return boolean
      */
     public function hasHtmlOutput()
-    {
+    {        
         return (boolean) $this->dateSelector;
     }
 }

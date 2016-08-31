@@ -135,7 +135,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
     /**
      * Creates the base model.
      *
-     * @return \MUtil_Model_Transform_RequiredRowsTransformer
+     * @return \MUtil_Model_SelectModel
      */
     protected function createModel()
     {
@@ -453,7 +453,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
         if (! $this->_model) {
             $this->_model = $this->createModel();
         }
-
+        
         return $this->_model;
     }
 
@@ -495,9 +495,9 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
         $this->dateType   = $this->processFilterName(self::DATE_TYPE, $request, $filter, $defaults);
 
         unset($filter[self::DATE_FACTOR], $filter[self::DATE_GROUP], $filter[self::DATE_TYPE]);
-
+               
         $model = $this->getModel();
-
+        
         return $filter;
     }
 
