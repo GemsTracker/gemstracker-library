@@ -281,9 +281,13 @@ class Gems_AccessLog
                 $output[$key] = $this->_toCleanArray($value);
             } else {
                 if (is_string($value)) {
+                    // Filter passwords from the log
                     if (\MUtil_String::contains($key, 'password', true) || \MUtil_String::contains($key, 'pwd', true)) {
                         $value = '****';
                     }
+                } elseif ($value instanceof Zend_Date) {
+                    // Output iso representation for date objects
+                    $value = $value->getIso();
                 }
                 $output[$key] = $value;
             }
