@@ -10,6 +10,8 @@
  * @version    $Id$
  */
 
+use Gems\Event\RespondentChangedEventInterface;
+
 /**
  * Per project overruleable event processing engine
  *
@@ -21,6 +23,7 @@
  */
 class Gems_Events extends \Gems_Loader_TargetLoaderAbstract
 {
+    const RESPONDENT_CHANGE_EVENT       = 'Respondent/Change';
     const TRACK_CALCULATION_EVENT       = 'Track/Calculate';
     const TRACK_COMPLETION_EVENT        = 'Track/Completed';
     const TRACK_FIELDUPDATE_EVENT       = 'Track/FieldUpdate';
@@ -38,6 +41,7 @@ class Gems_Events extends \Gems_Loader_TargetLoaderAbstract
      * @var array containing eventType => eventClass for all event classes
      */
     protected $_eventClasses = array(
+        self::RESPONDENT_CHANGE_EVENT       => 'Gems\\Event\\RespondentChangedEventInterface',
         self::TRACK_CALCULATION_EVENT       => 'Gems_Event_TrackCalculationEventInterface',
         self::TRACK_COMPLETION_EVENT        => 'Gems_Event_TrackCompletedEventInterface',
         self::TRACK_FIELDUPDATE_EVENT       => 'Gems_Event_TrackFieldUpdateEventInterface',
@@ -187,6 +191,15 @@ class Gems_Events extends \Gems_Loader_TargetLoaderAbstract
      *
      * @return array eventname => string
      */
+    public function listRespondentChangedEvents()
+    {
+        return $this->_listEvents(self::RESPONDENT_CHANGE_EVENT);
+    }
+
+    /**
+     *
+     * @return array eventname => string
+     */
     public function listRoundChangedEvents()
     {
         return $this->_listEvents(self::ROUND_CHANGED_EVENT);
@@ -244,6 +257,16 @@ class Gems_Events extends \Gems_Loader_TargetLoaderAbstract
     public function listTrackFieldUpdateEvents()
     {
         return $this->_listEvents(self::TRACK_FIELDUPDATE_EVENT);
+    }
+
+    /**
+     *
+     * @param string $eventName
+     * @return \Gems|Event\RespondentChangedEventInterface
+     */
+    public function loadRespondentChangedEvent($eventName)
+    {
+        return $this->_loadEvent($eventName, self::RESPONDENT_CHANGE_EVENT);
     }
 
     /**

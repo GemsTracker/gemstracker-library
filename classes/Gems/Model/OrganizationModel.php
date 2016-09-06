@@ -144,6 +144,9 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
                     );
         }
 
+        $this->setIfExists('gor_resp_change_event', 'label', $this->_('Respondent change event'),
+                'multiOptions', $this->loader->getEvents()->listRespondentChangedEvents()
+                );
         $this->setIfExists('gor_iso_lang',      'label', $this->_('Language'),
                 'multiOptions', $localized->getLanguages()
                 );
@@ -280,8 +283,11 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
         }
 
         // OTHER TAB
-        $this->setIfExists('gor_iso_lang',  'tab', $this->_('Other'),
-                'order', $this->getOrder('gor_user_class') + 1000,
+        $this->setIfExists('gor_resp_change_event',  'tab', $this->_('Other'),
+                'order', $this->getOrder('gor_user_class') + 1000
+                );
+        $this->setIfExists('gor_iso_lang',  
+                'order', $this->getOrder('gor_user_class') + 1010,
                 'default', $this->project->getLocaleDefault()
                 );
         if ($this->_styles) {

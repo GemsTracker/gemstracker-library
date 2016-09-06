@@ -642,6 +642,45 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
     }
 
     /**
+     *
+     * @param string $patientId
+     * @param int|\Gems_User_Organization $organization
+     * @param int $respondentId
+     * @return boolean True when something changed
+     */
+    public function handleRespondentChanged($patientId, $organization, $respondentId = null)
+    {
+        if ($organization instanceof \Gems_User_Organization) {
+            $org   = $organization;
+            $orgId = $organization->getId();
+        } else {
+            $org   = $this->loader->getOrganization($organization);
+            $orgId = $organization;
+        }
+
+        $changeEventClass = $org->getRespondentChangeEventClass();
+
+        if ($changeEventClass) {
+            $event = $this->loader->getEvents()->loadRespondentChangedEvent($changeEventClass);
+
+            if ($event) {
+                $respondent = $this->loader->getRespondent($patientId, $orgId, $respondentId);
+
+                if ($event->processChangedRespondent($respondent)) {
+                    // If no change was registered yet, do so now
+                    if (! $this->getChanged()) {
+                        $this->addChanged();
+                    }
+
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Has the respondent tracks
      *
      * @param string $patientId   Can be empty if $respondentId is passed
@@ -751,6 +790,8 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
             if ($org) {
                 $org->setHasRespondents($this->currentUser->getUserId());
             }
+
+            $this->handleRespondentChanged($result['gr2o_patient_nr'], $org, $result['grs_id_user']);
         }
 
         return $result;
@@ -837,6 +878,10 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                     $this->addChanged();
                 }
             }
+        }
+
+        if ($code->isForRespondents()) {
+            $this->handleRespondentChanged($patientId, $organizationId, $respondentId);
         }
 
         return $code;

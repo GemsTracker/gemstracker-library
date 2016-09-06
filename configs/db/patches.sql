@@ -1169,7 +1169,7 @@ ALTER TABLE `gems__comm_jobs`
         `gcj_id_order` INT NOT NULL DEFAULT '10'
     AFTER `gcj_id_job`;
 
-UPDATE `gems__comm_jobs` AS t4 
+UPDATE `gems__comm_jobs` AS t4
     JOIN (
         SELECT @rownr:=@rownr+10 AS gcj_id_order, t1.gcj_id_job
             FROM (
@@ -1183,3 +1183,8 @@ UPDATE `gems__comm_jobs` AS t4
                 ) AS t1, (SELECT @rownr:=0) AS t2
     ) AS t3 ON t4.gcj_id_job = t3.gcj_id_job
 SET t4.gcj_id_order = t3.gcj_id_order;
+
+-- PATCH: Respondent change events at organisation level
+ALTER TABLE gems__organizations ADD
+    gor_resp_change_event       varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'
+    AFTER gor_style;

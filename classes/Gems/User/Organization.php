@@ -272,7 +272,18 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
     }
 
     /**
-     *  Get the template id for the reset password mail
+     * Class name for organization specific respondent change event
+     *
+     * @return string
+     */
+    public function getRespondentChangeEventClass()
+    {
+        return $this->_get('gor_resp_change_event');
+    }
+
+    /**
+     * Get the template id for the reset password mail
+     *
      * @return  integer Template ID
      */
     public function getResetPasswordTemplate()

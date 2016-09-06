@@ -33,7 +33,7 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
      * @var boolean
      */
     protected $addLoginCheck = false;
-    
+
     /**
      *
      * @var \Gems_User_User
@@ -398,20 +398,20 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
             $this->exists = false;
         }
 	}
-    
+
     /**
      * Restores tracks for a respondent, when the reception code matches the given $oldCode
-     * 
+     *
      * Used when restoring a respondent, and the restore tracks box is checked. This will
      * also restore all tokens in the tracks that have the same codes.
-     * 
+     *
      * @param \Gems_Util_ReceptionCode $oldCode The old reception code
      * @param \Gems_Util_ReceptionCode $newCode the new reception code
      * @return int  The number of restored tracks
      */
     public function restoreTracks(\Gems_Util_ReceptionCode $oldCode, \Gems_Util_ReceptionCode $newCode) {
         $count      = 0;
-        
+
         if (!$oldCode->isSuccess() && $newCode->isSuccess()) {
             $respTracks = $this->loader->getTracker()->getRespondentTracks(
                     $this->getId(),
@@ -428,16 +428,18 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
                 }
             }
         }
-        
+
         return $count;
     }
 
     /**
      * Overwrite the respondents prefered language
      */
-    public function setLocale($locale) {
+    public function setLocale($locale)
+    {
         $this->respondentLanguage = $locale;
     }
+
     /**
      * Set the reception code for a respondent and cascade non-success codes to the
      * tracks / surveys.
