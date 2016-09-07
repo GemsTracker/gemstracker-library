@@ -77,9 +77,14 @@ class TokenDateSelectorSnippet extends \MUtil_Snippets_SnippetAbstract
         
         $model = $this->dateSelector->getModel();
         $filter = $model->getFilter();
+		
         // Unset sorts from the filter
         unset($filter[$model->getSortParamAsc()]);
         unset($filter[$model->getSortParamDesc()]);
+		
+		// Unset items and page (from paginator)
+        unset($filter['page']);
+        unset($filter['items']);
 
         $model->setFilter($filter);
         
