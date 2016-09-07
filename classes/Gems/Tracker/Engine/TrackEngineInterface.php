@@ -334,6 +334,12 @@ interface Gems_Tracker_Engine_TrackEngineInterface
     public function getTrackCalculationEvent();
 
     /**
+     *
+     * @return string The gems track code
+     */
+    public function getTrackCode();
+    
+    /**
      * Get the TrackCompletedEvent for the given trackId
      *
      * @return \Gems_Event_TrackCompletedEventInterface|null

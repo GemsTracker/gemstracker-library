@@ -85,7 +85,7 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
     public $db;
 
     /**
-     * The parameters used for the edit actions, overrules any values in
+     * The parameters used for the create actions, overrules any values in
      * $this->createEditParameters.
      *
      * When the value is a function name of that object, then that functions is executed

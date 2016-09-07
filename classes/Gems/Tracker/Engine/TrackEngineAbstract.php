@@ -957,6 +957,15 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
     }
 
     /**
+     *
+     * @return string The gems track code
+     */
+    public function getTrackCode()
+    {
+        return $this->_trackData['gtr_code'];
+    }
+
+    /**
      * Get the TrackCompletedEvent for this trackId
      *
      * @return \Gems_Event_TrackCompletedEventInterface|null

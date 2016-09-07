@@ -301,6 +301,25 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * Get a specific field by field code
+     *
+     * @param string $code
+     * @return \Gems\Tracker\Field\FieldInterface
+     */
+    public function getFieldByCode($code)
+    {
+        foreach ($this->_fields as $field) {
+            if ($field instanceof FieldInterface) {
+                if ($field->getCode() == $code) {
+                    return $field;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Get a specific field by field order
      *
      * @param int $order
