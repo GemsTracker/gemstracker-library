@@ -69,7 +69,7 @@ class RecalculateTracks extends \MUtil_Translate_TranslateableAbstract
                 $changes += $respondentTrack->checkTrackTokens($userId);
             }
         }
-        \MUtil_Echo::track('Hi there! ' . $changes);
+        // \MUtil_Echo::track('Hi there! ' . $changes);
 
         return (boolean) $changes;
     }
