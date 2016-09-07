@@ -11,4 +11,4 @@ CREATE TABLE if not exists gems__patch_levels (
 
 INSERT INTO gems__patch_levels (gpl_level, gpl_created)
    VALUES
-   (60, CURRENT_TIMESTAMP);
+   (61, CURRENT_TIMESTAMP);

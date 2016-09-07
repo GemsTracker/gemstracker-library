@@ -1,6 +1,5 @@
-1.8.1 => 1.8.1-p1
+1.8.1 => 1.8.2
 =================
-Fixes some issues with filtering and sorting
 Respondent changed events can be set at the organization level
 
 Important changes from 1.8.0 => 1.8.1
