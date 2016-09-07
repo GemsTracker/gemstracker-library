@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-06 16:49+0200\n"
+"POT-Creation-Date: 2016-09-07 11:35+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -17,6 +17,7 @@ msgstr ""
 "X-Generator: Poedit 1.8.9\n"
 "X-Poedit-SearchPath-0: gemstracker/gemstracker/classes\n"
 "X-Poedit-SearchPath-1: magnafacta/mutil/src\n"
+"X-Poedit-SearchPath-2: gemstracker/gemstracker/languages\n"
 "X-Poedit-SearchPathExcluded-0: gemstracker/gemstracker/vendor\n"
 
 #: gemstracker/gemstracker/classes/Gems/Agenda.php:338
@@ -2681,6 +2682,7 @@ msgid "Additional actions"
 msgstr "Additional actions"
 
 #: gemstracker/gemstracker/classes/Gems/Default/ReceptionAction.php:100
+#: gemstracker/gemstracker/languages/ReceptionCodeTranslations.php:13
 msgid "Redo survey"
 msgstr "Redo survey"
 
@@ -8075,27 +8077,29 @@ msgstr "This token cannot (yet) be used."
 msgid "Unknown token."
 msgstr "Unknown token."
 
-#: gemstracker/gemstracker/classes/Gems/Upgrades.php:74
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:75
 msgid "Syncing surveys for all sources"
 msgstr "Syncing surveys for all sources"
 
-#: gemstracker/gemstracker/classes/Gems/Upgrades.php:134
-#: gemstracker/gemstracker/classes/Gems/Upgrades.php:146
-#: gemstracker/gemstracker/classes/Gems/Upgrades.php:168
-#: gemstracker/gemstracker/classes/Gems/Upgrades.php:180
-#: gemstracker/gemstracker/classes/Gems/Upgrades.php:193
-#: gemstracker/gemstracker/classes/Gems/Upgrades.php:207
-#: gemstracker/gemstracker/classes/Gems/Upgrades.php:221
-#: gemstracker/gemstracker/classes/Gems/Upgrades.php:239
-#: gemstracker/gemstracker/classes/Gems/Upgrades.php:252
-#: gemstracker/gemstracker/classes/Gems/Upgrades.php:266
-#: gemstracker/gemstracker/classes/Gems/Upgrades.php:280
-msgid "Make sure to read the changelog as it contains important instructions"
-msgstr "Make sure to read the changelog as it contains important instructions"
-
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:135
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:147
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:169
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:181
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:194
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:208
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:222
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:240
 #: gemstracker/gemstracker/classes/Gems/Upgrades.php:253
 #: gemstracker/gemstracker/classes/Gems/Upgrades.php:267
 #: gemstracker/gemstracker/classes/Gems/Upgrades.php:281
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:295
+msgid "Make sure to read the changelog as it contains important instructions"
+msgstr "Make sure to read the changelog as it contains important instructions"
+
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:254
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:268
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:282
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:296
 msgid ""
 "Check the Code compatibility report for any issues with project specific "
 "code!"
@@ -8130,6 +8134,7 @@ msgstr "New password"
 
 #: gemstracker/gemstracker/classes/Gems/User/Form/ChangePasswordForm.php:277
 #: gemstracker/gemstracker/classes/Gems/User/Form/ChangePasswordForm.php:333
+#: gemstracker/gemstracker/languages/FakeTranslations.php:57
 msgid "Must be the same as %fieldDescription%."
 msgstr "Must be the same as %fieldDescription%."
 
@@ -8273,6 +8278,7 @@ msgstr[1] "Your account is temporarily blocked, please wait %d minutes."
 
 #: gemstracker/gemstracker/classes/Gems/User/User.php:448
 #: gemstracker/gemstracker/classes/Gems/User/User.php:480
+#: gemstracker/gemstracker/languages/FakeTranslations.php:19
 msgid "You are not allowed to login from this location."
 msgstr "You are not allowed to login from this location."
 
@@ -8627,6 +8633,162 @@ msgstr "Date received"
 msgid "Response is for a different formId: %s <-> %s"
 msgstr "Response is for a different formId: %s <-> %s"
 
+#: gemstracker/gemstracker/languages/FakeTranslations.php:12
+msgid "Value is required and can't be empty"
+msgstr "Value is required and can't be empty"
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:13
+#: gemstracker/gemstracker/languages/FakeTranslations.php:75
+msgid "Invalid type given, value should be string, integer or float"
+msgstr "Invalid type given, value should be string, integer or float"
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:17
+msgid "Installation not complete! Login is not yet possible!"
+msgstr "Installation not complete! Login is not yet possible!"
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:18
+#, php-format
+msgid "Your account is temporarily blocked, please wait %s minutes"
+msgstr "Your account is temporarily blocked, please wait %s minutes"
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:22
+msgid "One or more IPs are illegal."
+msgstr "One or more IPs are illegal."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:25
+msgid "Either '%description%' or '%fieldDescription%' must be entered."
+msgstr "Either '%description%' or '%fieldDescription%' must be entered."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:28
+msgid "A duplicate export code matching '%value%' was found."
+msgstr "A duplicate export code matching '%value%' was found."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:31
+#, php-format
+msgid "Date should be '%dateAfter%' or later."
+msgstr "Date should be '%dateAfter%' or later."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:32
+msgid "Should be empty if valid from date is not set."
+msgstr "Should be empty if valid from date is not set."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:35
+#, php-format
+msgid "Date should be '%dateBefore%' or earlier."
+msgstr "Date should be '%dateBefore%' or earlier."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:38
+msgid "%value% is not a valid date."
+msgstr "%value% is not a valid date."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:41
+msgid "No record matching %value% was found."
+msgstr "No record matching %value% was found."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:42
+msgid "A duplicate record matching '%value%' was found."
+msgstr "A duplicate record matching '%value%' was found."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:45
+msgid "Only relative paths are allowed"
+msgstr "Only relative paths are allowed"
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:48
+msgid "'%pattern%' characters are forbidden in a path"
+msgstr "'%pattern%' characters are forbidden in a path"
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:51
+msgid "This is not a valid %testDescription%."
+msgstr "This is not a valid %testDescription%."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:52
+msgid "A %testDescription% cannot contain letters."
+msgstr "A %testDescription% cannot contain letters."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:53
+msgid "%value% is too long for a %testDescription%. Should be %length% digits."
+msgstr ""
+"%value% is too long for a %testDescription%. Should be %length% digits."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:54
+msgid ""
+"%value% is too short for a %testDescription%. Should be %length% digits."
+msgstr ""
+"%value% is too short for a %testDescription%. Should be %length% digits."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:60
+msgid "This value is not allowed."
+msgstr "This value is not allowed."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:63
+msgid "Values may not be the same."
+msgstr "Values may not be the same."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:66
+msgid "'%value%' is not a phone number (e.g. +12 (0)34-567 890)."
+msgstr "'%value%' is not a phone number (e.g. +12 (0)34-567 890)."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:69
+msgid ""
+"Unsupported PDF version: %value% Use PDF versions 1.0 - 1.4 to avoid this "
+"problem."
+msgstr ""
+"Unsupported PDF version: %value% Use PDF versions 1.0 - 1.4 to avoid this "
+"problem."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:72
+msgid "To set '%description%' you have to set '%fieldDescription%'."
+msgstr "To set '%description%' you have to set '%fieldDescription%'."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:76
+msgid "'%value%' is not an email address (e.g. name@somewhere.com)."
+msgstr "'%value%' is not an email address (e.g. name@somewhere.com)."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:79
+msgid ""
+"'%value%' is not a series of email addresses (e.g. name@somewhere.com, "
+"nobody@nowhere.org)."
+msgstr ""
+"'%value%' is not a series of email addresses (e.g. name@somewhere.com, "
+"nobody@nowhere.org)."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:82
+msgid "'%value%' must contain only digits"
+msgstr "'%value%' must contain only digits"
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:83
+msgid "'%value%' is an empty string"
+msgstr "'%value%' is an empty string"
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:84
+msgid "Invalid type given. String, integer or float expected"
+msgstr "Invalid type given. String, integer or float expected"
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:87
+#, php-format
+msgid "Only %extension% files are accepted."
+msgstr "Only %extension% files are accepted."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:90
+msgid "'%value%' is not greater than '%min%'"
+msgstr "'%value%' is not greater than '%min%'"
+
+#: gemstracker/gemstracker/languages/ReceptionCodeTranslations.php:14
+msgid "Survey refused"
+msgstr "Survey refused"
+
+#: gemstracker/gemstracker/languages/ReceptionCodeTranslations.php:15
+msgid "Consent retracted"
+msgstr "Consent retracted"
+
+#: gemstracker/gemstracker/languages/ReceptionCodeTranslations.php:16
+msgid "Skipped by calculation"
+msgstr "Skipped by calculation"
+
+#: gemstracker/gemstracker/languages/ReceptionCodeTranslations.php:17
+msgid "Stopped participating"
+msgstr "Stopped participating"
+
 #: magnafacta/mutil/src/MUtil/Date.php:180
 #, php-format
 msgid "%s ago"
@@ -8953,111 +9115,6 @@ msgstr[1] "%s, %d import problems found, continuing check."
 
 #~ msgid "Invalid option for %s"
 #~ msgstr "Invalid option for %s"
-
-#~ msgid "Value is required and can't be empty"
-#~ msgstr "Value is required and can't be empty"
-
-#~ msgid "Invalid type given, value should be string, integer or float"
-#~ msgstr "Invalid type given, value should be string, integer or float"
-
-#~ msgid "Installation not complete! Login is not yet possible!"
-#~ msgstr "Installation not complete! Login is not yet possible!"
-
-#~ msgid "Your account is temporarily blocked, please wait %s minutes"
-#~ msgstr "Your account is temporarily blocked, please wait %s minutes"
-
-#~ msgid "One or more IPs are illegal."
-#~ msgstr "One or more IPs are illegal."
-
-#~ msgid "Either '%description%' or '%fieldDescription%' must be entered."
-#~ msgstr "Either '%description%' or '%fieldDescription%' must be entered."
-
-#~ msgid "A duplicate export code matching '%value%' was found."
-#~ msgstr "A duplicate export code matching '%value%' was found."
-
-#~ msgid "Date should be '%dateAfter%' or later."
-#~ msgstr "Date should be '%dateAfter%' or later."
-
-#~ msgid "Should be empty if valid from date is not set."
-#~ msgstr "Should be empty if valid from date is not set."
-
-#~ msgid "Date should be '%dateBefore%' or earlier."
-#~ msgstr "Date should be '%dateBefore%' or earlier."
-
-#~ msgid "%value% is not a valid date."
-#~ msgstr "%value% is not a valid date."
-
-#~ msgid "No record matching %value% was found."
-#~ msgstr "No record matching %value% was found."
-
-#~ msgid "A duplicate record matching '%value%' was found."
-#~ msgstr "A duplicate record matching '%value%' was found."
-
-#~ msgid "Only relative paths are allowed"
-#~ msgstr "Only relative paths are allowed"
-
-#~ msgid "'%pattern%' characters are forbidden in a path"
-#~ msgstr "'%pattern%' characters are forbidden in a path"
-
-#~ msgid "This is not a valid %testDescription%."
-#~ msgstr "This is not a valid %testDescription%."
-
-#~ msgid "A %testDescription% cannot contain letters."
-#~ msgstr "A %testDescription% cannot contain letters."
-
-#~ msgid ""
-#~ "%value% is too long for a %testDescription%. Should be %length% digits."
-#~ msgstr ""
-#~ "%value% is too long for a %testDescription%. Should be %length% digits."
-
-#~ msgid ""
-#~ "%value% is too short for a %testDescription%. Should be %length% digits."
-#~ msgstr ""
-#~ "%value% is too short for a %testDescription%. Should be %length% digits."
-
-#~ msgid "This value is not allowed."
-#~ msgstr "This value is not allowed."
-
-#~ msgid "Values may not be the same."
-#~ msgstr "Values may not be the same."
-
-#~ msgid "'%value%' is not a phone number (e.g. +12 (0)34-567 890)."
-#~ msgstr "'%value%' is not a phone number (e.g. +12 (0)34-567 890)."
-
-#~ msgid ""
-#~ "Unsupported PDF version: %value% Use PDF versions 1.0 - 1.4 to avoid this "
-#~ "problem."
-#~ msgstr ""
-#~ "Unsupported PDF version: %value% Use PDF versions 1.0 - 1.4 to avoid this "
-#~ "problem."
-
-#~ msgid "To set '%description%' you have to set '%fieldDescription%'."
-#~ msgstr "To set '%description%' you have to set '%fieldDescription%'."
-
-#~ msgid "'%value%' is not an email address (e.g. name@somewhere.com)."
-#~ msgstr "'%value%' is not an email address (e.g. name@somewhere.com)."
-
-#~ msgid ""
-#~ "'%value%' is not a series of email addresses (e.g. name@somewhere.com, "
-#~ "nobody@nowhere.org)."
-#~ msgstr ""
-#~ "'%value%' is not a series of email addresses (e.g. name@somewhere.com, "
-#~ "nobody@nowhere.org)."
-
-#~ msgid "'%value%' must contain only digits"
-#~ msgstr "'%value%' must contain only digits"
-
-#~ msgid "'%value%' is an empty string"
-#~ msgstr "'%value%' is an empty string"
-
-#~ msgid "Invalid type given. String, integer or float expected"
-#~ msgstr "Invalid type given. String, integer or float expected"
-
-#~ msgid "Only %extension% files are accepted."
-#~ msgstr "Only %extension% files are accepted."
-
-#~ msgid "'%value%' is not greater than '%min%'"
-#~ msgstr "'%value%' is not greater than '%min%'"
 
 #~ msgid "Only when '%s' is '%s'."
 #~ msgstr "Only when '%s' is '%s'."

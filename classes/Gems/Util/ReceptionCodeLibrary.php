@@ -74,6 +74,21 @@ class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstr
     }
 
     /**
+     * Translate and sort while maintaining key association
+     *
+     * @param array $pairs
+     * @return array
+     */
+    protected function _translateAndSort(array $pairs)
+    {
+        $translations = array_map([$this->translateAdapter, '_'], $pairs);
+
+        asort($translations);
+
+        return $translations;
+    }
+
+    /**
      * Returns the token deletion reception code list.
      *
      * @return array a value => label array.
@@ -83,7 +98,7 @@ class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstr
         $select = $this->_getDeletionCodeSelect();
         $select->where('grc_for_surveys = ?', self::APPLY_DO);
 
-        return $this->db->fetchPairs($select);
+        return $this->_translateAndSort($this->db->fetchPairs($select));
     }
 
     /**
@@ -165,7 +180,7 @@ class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstr
         $select = $this->_getDeletionCodeSelect();
         $select->where('grc_for_respondents = 1');
 
-        return $this->db->fetchPairs($select);
+        return $this->_translateAndSort($this->db->fetchPairs($select));
     }
 
     /**
@@ -178,7 +193,7 @@ class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstr
         $select = $this->_getRestoreSelect();
         $select->where('grc_for_respondents = 1');
 
-        return $this->db->fetchPairs($select);
+        return $this->_translateAndSort($this->db->fetchPairs($select));
     }
 
     /**
@@ -193,7 +208,7 @@ class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstr
         $select->where('(grc_for_surveys = ? OR grc_for_tracks = 1)', self::APPLY_DO);
                 //->where('grc_redo_survey = ?', self::REDO_NONE);
 
-        return array('' => '') + $this->db->fetchPairs($select);
+        return array('' => '') + $this->_translateAndSort($this->db->fetchPairs($select));
     }
 
     /**
@@ -206,7 +221,7 @@ class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstr
         $select = $this->_getRestoreSelect();
         $select->where('grc_for_surveys = ?', self::APPLY_DO);
 
-        return $this->db->fetchPairs($select);
+        return $this->_translateAndSort($this->db->fetchPairs($select));
     }
 
     /**
@@ -219,7 +234,7 @@ class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstr
         $select = $this->_getDeletionCodeSelect();
         $select->where('(grc_for_tracks = 1 OR grc_for_surveys = ?)', self::APPLY_STOP);
 
-        return $this->db->fetchPairs($select);
+        return $this->_translateAndSort($this->db->fetchPairs($select));
     }
 
     /**
@@ -232,7 +247,7 @@ class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstr
         $select = $this->_getRestoreSelect();
         $select->where('(grc_for_tracks = 1 OR grc_for_surveys = ?)', self::APPLY_STOP);
 
-        return $this->db->fetchPairs($select);
+        return $this->_translateAndSort($this->db->fetchPairs($select));
     }
 
     /**
@@ -246,6 +261,10 @@ class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstr
         $select->where('grc_for_surveys = ?', self::APPLY_DO)
                 ->where('grc_redo_survey = ?', self::REDO_NONE);
 
-        return $this->db->fetchPairs($select);
+        $pairs = $this->_translateAndSort($this->db->fetchPairs($select));
+
+        asort($pairs);
+
+        return ;
     }
 }

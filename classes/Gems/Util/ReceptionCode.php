@@ -70,7 +70,7 @@ class Gems_Util_ReceptionCode extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function getDescription()
     {
-        return $this->_get('grc_description');
+        return $this->_($this->_get('grc_description'));
     }
 
     /**

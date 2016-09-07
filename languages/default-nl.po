@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-06 16:51+0200\n"
+"POT-Creation-Date: 2016-09-07 11:37+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -17,6 +17,7 @@ msgstr ""
 "X-Generator: Poedit 1.8.9\n"
 "X-Poedit-SearchPath-0: gemstracker/gemstracker/classes\n"
 "X-Poedit-SearchPath-1: magnafacta/mutil/src\n"
+"X-Poedit-SearchPath-2: gemstracker/gemstracker/languages\n"
 "X-Poedit-SearchPathExcluded-0: gemstracker/gemstracker/vendor\n"
 
 #: gemstracker/gemstracker/classes/Gems/Agenda.php:338
@@ -2704,6 +2705,7 @@ msgid "Additional actions"
 msgstr "Aanvullende acties"
 
 #: gemstracker/gemstracker/classes/Gems/Default/ReceptionAction.php:100
+#: gemstracker/gemstracker/languages/ReceptionCodeTranslations.php:13
 msgid "Redo survey"
 msgstr "Vragenlijsten herhalen"
 
@@ -8160,27 +8162,29 @@ msgstr "Dit kenmerk kan (nog) niet gebruikt worden."
 msgid "Unknown token."
 msgstr "Onbekend kenmerk."
 
-#: gemstracker/gemstracker/classes/Gems/Upgrades.php:74
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:75
 msgid "Syncing surveys for all sources"
 msgstr "Vragenlijsten synchroniseren voor alle bronnen."
 
-#: gemstracker/gemstracker/classes/Gems/Upgrades.php:134
-#: gemstracker/gemstracker/classes/Gems/Upgrades.php:146
-#: gemstracker/gemstracker/classes/Gems/Upgrades.php:168
-#: gemstracker/gemstracker/classes/Gems/Upgrades.php:180
-#: gemstracker/gemstracker/classes/Gems/Upgrades.php:193
-#: gemstracker/gemstracker/classes/Gems/Upgrades.php:207
-#: gemstracker/gemstracker/classes/Gems/Upgrades.php:221
-#: gemstracker/gemstracker/classes/Gems/Upgrades.php:239
-#: gemstracker/gemstracker/classes/Gems/Upgrades.php:252
-#: gemstracker/gemstracker/classes/Gems/Upgrades.php:266
-#: gemstracker/gemstracker/classes/Gems/Upgrades.php:280
-msgid "Make sure to read the changelog as it contains important instructions"
-msgstr "Lees de wijzigingen, er kunnen belangrijke aanwijzingen in staan"
-
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:135
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:147
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:169
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:181
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:194
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:208
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:222
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:240
 #: gemstracker/gemstracker/classes/Gems/Upgrades.php:253
 #: gemstracker/gemstracker/classes/Gems/Upgrades.php:267
 #: gemstracker/gemstracker/classes/Gems/Upgrades.php:281
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:295
+msgid "Make sure to read the changelog as it contains important instructions"
+msgstr "Lees de wijzigingen, er kunnen belangrijke aanwijzingen in staan"
+
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:254
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:268
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:282
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:296
 msgid ""
 "Check the Code compatibility report for any issues with project specific "
 "code!"
@@ -8215,6 +8219,7 @@ msgstr "Nieuw wachtwoord"
 
 #: gemstracker/gemstracker/classes/Gems/User/Form/ChangePasswordForm.php:277
 #: gemstracker/gemstracker/classes/Gems/User/Form/ChangePasswordForm.php:333
+#: gemstracker/gemstracker/languages/FakeTranslations.php:57
 msgid "Must be the same as %fieldDescription%."
 msgstr "Moet identiek zijn aan %fieldDescription%."
 
@@ -8363,6 +8368,7 @@ msgstr[1] ""
 
 #: gemstracker/gemstracker/classes/Gems/User/User.php:448
 #: gemstracker/gemstracker/classes/Gems/User/User.php:480
+#: gemstracker/gemstracker/languages/FakeTranslations.php:19
 msgid "You are not allowed to login from this location."
 msgstr "U kunt vanaf deze locatie niet inloggen."
 
@@ -8723,6 +8729,167 @@ msgstr "Ontvangst datum"
 msgid "Response is for a different formId: %s <-> %s"
 msgstr "Antwoord is voor een andere formId: %s <-> %s"
 
+#: gemstracker/gemstracker/languages/FakeTranslations.php:12
+msgid "Value is required and can't be empty"
+msgstr "Verplicht veld mag niet leeg zijn"
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:13
+#: gemstracker/gemstracker/languages/FakeTranslations.php:75
+msgid "Invalid type given, value should be string, integer or float"
+msgstr "Ongeldige invoer, geef een tekst of een nummer op"
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:17
+msgid "Installation not complete! Login is not yet possible!"
+msgstr "Installatie niet afgerond! Inloggen is nog niet mogelijk!"
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:18
+#, php-format
+msgid "Your account is temporarily blocked, please wait %s minutes"
+msgstr ""
+"Uw account is tijdelijk geblokkeerd. U kunt opnieuw inloggen over %s minuten."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:22
+msgid "One or more IPs are illegal."
+msgstr "Een of meer IP adressen zijn incorrect."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:25
+msgid "Either '%description%' or '%fieldDescription%' must be entered."
+msgstr "Of '%description%' of '%fieldDescription%' moet ingevoerd worden."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:28
+msgid "A duplicate export code matching '%value%' was found."
+msgstr "De exportcode '%value%' is al in gebruik."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:31
+#, php-format
+msgid "Date should be '%dateAfter%' or later."
+msgstr "Datum moet later vallen dan '%dateAfter%' of er gelijk aan zijn."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:32
+msgid "Should be empty if valid from date is not set."
+msgstr "Moet leeg zijn als 'afname op' niet is ingevuld."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:35
+#, php-format
+msgid "Date should be '%dateBefore%' or earlier."
+msgstr "Datum moet vallen voor '%dateBefore%' of er gelijk aan zijn."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:38
+msgid "%value% is not a valid date."
+msgstr "%value% is geen geldige datum."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:41
+msgid "No record matching %value% was found."
+msgstr "Geen gegevens gevonden die overeenkomen met %value%."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:42
+msgid "A duplicate record matching '%value%' was found."
+msgstr "De waarde '%value%' is al in gebruik."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:45
+msgid "Only relative paths are allowed"
+msgstr "Alleen relatieve padnamen zijn toegestaan"
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:48
+msgid "'%pattern%' characters are forbidden in a path"
+msgstr "De tekens '%pattern%' zijn niet toegestaan in een padnaam"
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:51
+msgid "This is not a valid %testDescription%."
+msgstr "%testDescription% is niet geldig."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:52
+msgid "A %testDescription% cannot contain letters."
+msgstr "Een %testDescription% mag geen letters bevatten."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:53
+msgid "%value% is too long for a %testDescription%. Should be %length% digits."
+msgstr ""
+"%value% is te lang voor een %testDescription%. Die moet %length% cijfers "
+"lang zijn."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:54
+msgid ""
+"%value% is too short for a %testDescription%. Should be %length% digits."
+msgstr ""
+"%value% is te kort voor een %testDescription%. Die moet %length% cijfers "
+"lang zijn."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:60
+msgid "This value is not allowed."
+msgstr "Deze waarde is niet toegestaan"
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:63
+msgid "Values may not be the same."
+msgstr "Deze waardes mogen niet hetzelfde zijn."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:66
+msgid "'%value%' is not a phone number (e.g. +12 (0)34-567 890)."
+msgstr "'%value%' is geen telefoonnummer (zoals: +12 (0)34-567 890)."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:69
+msgid ""
+"Unsupported PDF version: %value% Use PDF versions 1.0 - 1.4 to avoid this "
+"problem."
+msgstr ""
+"Deze PDF een versie wordt niet ondersteund: %value% Gebruik PDF versies "
+"1.0-1.4 op dit probleem te voorkomen."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:72
+msgid "To set '%description%' you have to set '%fieldDescription%'."
+msgstr ""
+" '%fieldDescription%' moet ingevoerd worden om '%description%' te kunnen "
+"kiezen."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:76
+msgid "'%value%' is not an email address (e.g. name@somewhere.com)."
+msgstr "'%value%' is niet een email address (zoals naam@ergens.nl)."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:79
+msgid ""
+"'%value%' is not a series of email addresses (e.g. name@somewhere.com, "
+"nobody@nowhere.org)."
+msgstr ""
+"'%value%' is niet een verzameling email adressen (zoals naam@ergens.nl, "
+"niemand@nergens.net)."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:82
+msgid "'%value%' must contain only digits"
+msgstr "'%value%' mag alleen cijfers bevatten"
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:83
+msgid "'%value%' is an empty string"
+msgstr "'%value%' is leeg"
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:84
+msgid "Invalid type given. String, integer or float expected"
+msgstr "Ongeldige invoer, geef een tekst of een nummer op"
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:87
+#, php-format
+msgid "Only %extension% files are accepted."
+msgstr "Alleen bestanden van het %extension% formaat zijn toegestaan."
+
+#: gemstracker/gemstracker/languages/FakeTranslations.php:90
+msgid "'%value%' is not greater than '%min%'"
+msgstr "'%value%' is niet groter dan '%min%'"
+
+#: gemstracker/gemstracker/languages/ReceptionCodeTranslations.php:14
+msgid "Survey refused"
+msgstr "Vragenlijst geweigerd"
+
+#: gemstracker/gemstracker/languages/ReceptionCodeTranslations.php:15
+msgid "Consent retracted"
+msgstr "Consent ingetrokken"
+
+#: gemstracker/gemstracker/languages/ReceptionCodeTranslations.php:16
+msgid "Skipped by calculation"
+msgstr "Overgeslagen door een berekening"
+
+#: gemstracker/gemstracker/languages/ReceptionCodeTranslations.php:17
+msgid "Stopped participating"
+msgstr "Patiënt stopt met deelnemen"
+
 #: magnafacta/mutil/src/MUtil/Date.php:180
 #, php-format
 msgid "%s ago"
@@ -9053,117 +9220,6 @@ msgstr[1] "%s, %d import problemen gevonden, gaan door met controle."
 
 #~ msgid "Invalid option for %s"
 #~ msgstr "Ongeldige keuze voor %s"
-
-#~ msgid "Value is required and can't be empty"
-#~ msgstr "Verplicht veld mag niet leeg zijn"
-
-#~ msgid "Invalid type given, value should be string, integer or float"
-#~ msgstr "Ongeldige invoer, geef een tekst of een nummer op"
-
-#~ msgid "Installation not complete! Login is not yet possible!"
-#~ msgstr "Installatie niet afgerond! Inloggen is nog niet mogelijk!"
-
-#~ msgid "Your account is temporarily blocked, please wait %s minutes"
-#~ msgstr ""
-#~ "Uw account is tijdelijk geblokkeerd. U kunt opnieuw inloggen over %s "
-#~ "minuten."
-
-#~ msgid "One or more IPs are illegal."
-#~ msgstr "Een of meer IP adressen zijn incorrect."
-
-#~ msgid "Either '%description%' or '%fieldDescription%' must be entered."
-#~ msgstr "Of '%description%' of '%fieldDescription%' moet ingevoerd worden."
-
-#~ msgid "A duplicate export code matching '%value%' was found."
-#~ msgstr "De exportcode '%value%' is al in gebruik."
-
-#~ msgid "Date should be '%dateAfter%' or later."
-#~ msgstr "Datum moet later vallen dan '%dateAfter%' of er gelijk aan zijn."
-
-#~ msgid "Should be empty if valid from date is not set."
-#~ msgstr "Moet leeg zijn als 'afname op' niet is ingevuld."
-
-#~ msgid "Date should be '%dateBefore%' or earlier."
-#~ msgstr "Datum moet vallen voor '%dateBefore%' of er gelijk aan zijn."
-
-#~ msgid "%value% is not a valid date."
-#~ msgstr "%value% is geen geldige datum."
-
-#~ msgid "No record matching %value% was found."
-#~ msgstr "Geen gegevens gevonden die overeenkomen met %value%."
-
-#~ msgid "A duplicate record matching '%value%' was found."
-#~ msgstr "De waarde '%value%' is al in gebruik."
-
-#~ msgid "Only relative paths are allowed"
-#~ msgstr "Alleen relatieve padnamen zijn toegestaan"
-
-#~ msgid "'%pattern%' characters are forbidden in a path"
-#~ msgstr "De tekens '%pattern%' zijn niet toegestaan in een padnaam"
-
-#~ msgid "This is not a valid %testDescription%."
-#~ msgstr "%testDescription% is niet geldig."
-
-#~ msgid "A %testDescription% cannot contain letters."
-#~ msgstr "Een %testDescription% mag geen letters bevatten."
-
-#~ msgid ""
-#~ "%value% is too long for a %testDescription%. Should be %length% digits."
-#~ msgstr ""
-#~ "%value% is te lang voor een %testDescription%. Die moet %length% cijfers "
-#~ "lang zijn."
-
-#~ msgid ""
-#~ "%value% is too short for a %testDescription%. Should be %length% digits."
-#~ msgstr ""
-#~ "%value% is te kort voor een %testDescription%. Die moet %length% cijfers "
-#~ "lang zijn."
-
-#~ msgid "This value is not allowed."
-#~ msgstr "Deze waarde is niet toegestaan"
-
-#~ msgid "Values may not be the same."
-#~ msgstr "Deze waardes mogen niet hetzelfde zijn."
-
-#~ msgid "'%value%' is not a phone number (e.g. +12 (0)34-567 890)."
-#~ msgstr "'%value%' is geen telefoonnummer (zoals: +12 (0)34-567 890)."
-
-#~ msgid ""
-#~ "Unsupported PDF version: %value% Use PDF versions 1.0 - 1.4 to avoid this "
-#~ "problem."
-#~ msgstr ""
-#~ "Deze PDF een versie wordt niet ondersteund: %value% Gebruik PDF versies "
-#~ "1.0-1.4 op dit probleem te voorkomen."
-
-#~ msgid "To set '%description%' you have to set '%fieldDescription%'."
-#~ msgstr ""
-#~ " '%fieldDescription%' moet ingevoerd worden om '%description%' te kunnen "
-#~ "kiezen."
-
-#~ msgid "'%value%' is not an email address (e.g. name@somewhere.com)."
-#~ msgstr "'%value%' is niet een email address (zoals naam@ergens.nl)."
-
-#~ msgid ""
-#~ "'%value%' is not a series of email addresses (e.g. name@somewhere.com, "
-#~ "nobody@nowhere.org)."
-#~ msgstr ""
-#~ "'%value%' is niet een verzameling email adressen (zoals naam@ergens.nl, "
-#~ "niemand@nergens.net)."
-
-#~ msgid "'%value%' must contain only digits"
-#~ msgstr "'%value%' mag alleen cijfers bevatten"
-
-#~ msgid "'%value%' is an empty string"
-#~ msgstr "'%value%' is leeg"
-
-#~ msgid "Invalid type given. String, integer or float expected"
-#~ msgstr "Ongeldige invoer, geef een tekst of een nummer op"
-
-#~ msgid "Only %extension% files are accepted."
-#~ msgstr "Alleen bestanden van het %extension% formaat zijn toegestaan."
-
-#~ msgid "'%value%' is not greater than '%min%'"
-#~ msgstr "'%value%' is niet groter dan '%min%'"
 
 #~ msgid "Only when '%s' is '%s'."
 #~ msgstr "Aleen als '%s' is '%s'."
