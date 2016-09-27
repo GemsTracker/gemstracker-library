@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -617,7 +616,7 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
             switch ($filter['status']) {
                 case 'sok':
                     $filter['gsu_active'] = 0;
-                    $filter[] = "(gsu_status IS NULL OR gsu_status NOT IN ('', 'OK')";
+                    $filter[] = "(gsu_status IS NULL OR gsu_status NOT IN ('', 'OK'))";
                     break;
 
                 case 'nok':
