@@ -54,31 +54,32 @@ class Round extends RaObject
             return $this->_description;
         }
 
-        $descr    = $this->getRoundDescription();
-        $hasDescr = strlen(trim($descr));
-        $order    = $this->getRoundOrder();
-        $survey   = $this->getSurvey();
+        $descr        = $this->getRoundDescription();
+        $hasDescr     = strlen(trim($descr));
+        $order        = $this->getRoundOrder();
+        $survey       = $this->getSurvey();
+        $surveyExists = $survey ? $survey->exists : false;
 
         if ($order) {
             if ($hasDescr) {
-                if ($survey) {
+                if ($surveyExists) {
                     $this->_description = sprintf($this->_('%d: %s - %s'), $order, $descr, $survey->getName());
                 } else {
                     $this->_description = sprintf($this->_('%d: %s'), $order, $descr);
                 }
-            } elseif ($survey) {
+            } elseif ($surveyExists) {
                 $this->_description = sprintf($this->_('%d: %s'), $order, $survey->getName());
             } else {
                 $this->_description = $order;
             }
         } elseif ($hasDescr) {
-            if ($survey) {
+            if ($surveyExists) {
                 $this->_description = sprintf($this->_('%s - %s'), $descr, $survey->getName());
             } else {
                 $this->_description = $descr;
             }
         } else {
-            if ($survey) {
+            if ($surveyExists) {
                 $this->_description = $survey->getName();
             } else {
                 $this->_description = '';
