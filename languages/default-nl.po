@@ -8623,7 +8623,7 @@ msgstr "De heer/Mevrouw"
 #: magnafacta/mutil/src/MUtil/Log.php:105
 #, php-format
 msgid "Path %s not writable"
-msgstr "Path %s niet schrijfbaar"
+msgstr "Pad %s niet schrijfbaar"
 
 #: gemstracker/gemstracker/classes/GemsEscort.php:817
 msgid " > "
