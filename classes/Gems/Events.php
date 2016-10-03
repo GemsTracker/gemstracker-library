@@ -26,6 +26,7 @@ class Gems_Events extends \Gems_Loader_TargetLoaderAbstract
     const RESPONDENT_CHANGE_EVENT       = 'Respondent/Change';
     const TRACK_CALCULATION_EVENT       = 'Track/Calculate';
     const TRACK_COMPLETION_EVENT        = 'Track/Completed';
+    const TRACK_BEFOREFIELDUPDATE_EVENT = 'Track/BeforeFieldUpdate';
     const TRACK_FIELDUPDATE_EVENT       = 'Track/FieldUpdate';
     const ROUND_CHANGED_EVENT           = 'Round/Changed';
     const SURVEY_BEFORE_ANSWERING_EVENT = 'Survey/BeforeAnswering';
@@ -44,6 +45,7 @@ class Gems_Events extends \Gems_Loader_TargetLoaderAbstract
         self::RESPONDENT_CHANGE_EVENT       => 'Gems\\Event\\RespondentChangedEventInterface',
         self::TRACK_CALCULATION_EVENT       => 'Gems_Event_TrackCalculationEventInterface',
         self::TRACK_COMPLETION_EVENT        => 'Gems_Event_TrackCompletedEventInterface',
+        self::TRACK_BEFOREFIELDUPDATE_EVENT => 'Gems\\Event\\TrackBeforeFieldUpdateEventInterface',
         self::TRACK_FIELDUPDATE_EVENT       => 'Gems_Event_TrackFieldUpdateEventInterface',
         self::ROUND_CHANGED_EVENT           => 'Gems_Event_RoundChangedEventInterface',
         self::SURVEY_BEFORE_ANSWERING_EVENT => 'Gems_Event_SurveyBeforeAnsweringEventInterface',
@@ -236,6 +238,15 @@ class Gems_Events extends \Gems_Loader_TargetLoaderAbstract
      *
      * @return array eventname => string
      */
+    public function listTrackBeforeFieldUpdateEvents()
+    {
+        return $this->_listEvents(self::TRACK_BEFOREFIELDUPDATE_EVENT);
+    }
+
+    /**
+     *
+     * @return array eventname => string
+     */
     public function listTrackCalculationEvents()
     {
         return $this->_listEvents(self::TRACK_CALCULATION_EVENT);
@@ -313,6 +324,16 @@ class Gems_Events extends \Gems_Loader_TargetLoaderAbstract
     /**
      *
      * @param string $eventName
+     * @return \Gems\Event\TrackBeforeFieldUpdateEventInterface
+     */
+    public function loadBeforeTrackFieldUpdateEvent($eventName)
+    {
+        return $this->_loadEvent($eventName, self::TRACK_BEFOREFIELDUPDATE_EVENT);
+    }
+
+    /**
+     *
+     * @param string $eventName
      * @return \Gems_Event_TrackCalculationEventInterface
      */
     public function loadTrackCalculationEvent($eventName)
@@ -333,7 +354,7 @@ class Gems_Events extends \Gems_Loader_TargetLoaderAbstract
     /**
      *
      * @param string $eventName
-     * @return \Gems_TrackFieldUpdateEventInterface
+     * @return \Gems_Event_TrackFieldUpdateEventInterface
      */
     public function loadTrackFieldUpdateEvent($eventName)
     {

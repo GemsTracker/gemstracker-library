@@ -87,7 +87,7 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
      *
      * @var mixed String or array of snippets name
      */
-    protected $exportSnippets = 'Tracker\Export\ExportTrackSnippetGeneric';
+    protected $exportSnippets = 'Tracker\\Export\\ExportTrackSnippetGeneric';
 
     /**
      * The parameters used for the import action
@@ -282,8 +282,7 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
     public function recalcAllFieldsAction()
     {
         $batch = $this->loader->getTracker()->recalcTrackFields(
-                'trackRecalcAllFields',
-                $this->currentUser->getUserId()
+                'trackRecalcAllFields'
                 );
         $this->_helper->BatchRunner($batch, $this->_('Recalculating fields for all tracks.'), $this->accesslog);
 
@@ -300,7 +299,6 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
         $where = $this->db->quoteInto('gr2t_id_track = ?', $id);
         $batch = $this->loader->getTracker()->recalcTrackFields(
                 'trackRecalcFields' . $id,
-                $this->currentUser->getUserId(),
                 $where
                 );
 

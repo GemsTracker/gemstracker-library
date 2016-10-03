@@ -603,7 +603,7 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
      * Saves the field data for the respondent track id.
      *
      * @param int $respTrackId Gems respondent track id
-     * @param array $fieldData The values to save
+     * @param array $fieldData The values to save, only the key is used, not the code
      * @return int The number of changed fields
      */
     public function saveFields($respTrackId, array $fieldData)

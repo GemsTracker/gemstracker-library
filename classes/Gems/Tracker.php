@@ -425,7 +425,12 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
             $respTracksId = $respTrackData;
         }
 
-        if (! isset($this->_respTracks[$respTracksId])) {
+        if (isset($this->_respTracks[$respTracksId])) {
+            if (is_array($respTrackData)) {
+                // Refresh the data when called with an array of respTrackData
+                $this->_respTracks[$respTracksId]->refresh($respTrackData);
+            }
+        } else {
             $this->_respTracks[$respTracksId] = $this->_loadClass('respondentTrack', true, array($respTrackData));
         }
 
@@ -953,13 +958,11 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
      * Does recalculate changed tracks
      *
      * @param string $batchId A unique identifier for the current batch
-     * @param int $userId Id of the user who takes the action (for logging)
      * @param string $cond Optional where statement for selecting tracks
      * @return \Gems_Task_TaskRunnerBatch A batch to process the changes
      */
-    public function recalcTrackFields($batchId, $userId = null, $cond = null)
+    public function recalcTrackFields($batchId, $cond = null)
     {
-        $userId = $this->_checkUserId($userId);
         $respTrackSelect = $this->db->select();
         $respTrackSelect->from('gems__respondent2track', array('gr2t_id_respondent_track'));
         $respTrackSelect->join('gems__reception_codes', 'gr2t_reception_code = grc_id_reception_code', array());
@@ -983,7 +986,7 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
             //Process one item at a time to prevent out of memory errors for really big resultsets
             while ($respTrackData  = $statement->fetch()) {
                 $respTrackId = $respTrackData['gr2t_id_respondent_track'];
-                $batch->setTask('Tracker_RecalculateFields', 'trkfcalc-' . $respTrackId, $respTrackId, $userId);
+                $batch->setTask('Tracker_RecalculateFields', 'trkfcalc-' . $respTrackId, $respTrackId);
                 $batch->addToCounter('resptracks');
             }
         }

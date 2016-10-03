@@ -1189,3 +1189,12 @@ SET t4.gcj_id_order = t3.gcj_id_order;
 ALTER TABLE gems__organizations ADD
     gor_resp_change_event       varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'
     AFTER gor_style;
+
+-- PATCH: Cleanup of old fields
+ALTER TABLE gems__tracks DROP INDEX gtr_track_type;
+
+ALTER TABLE gems__tracks DROP gtr_track_type;
+
+-- PATCH: Add before field update event
+ALTER TABLE gems__tracks ADD
+    gtr_beforefieldupdate_event varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' AFTER gtr_track_class;

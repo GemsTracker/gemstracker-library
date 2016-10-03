@@ -118,6 +118,9 @@ class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends \Gems_Snippets
         if ($model->has('gtr_completed_event', 'label')) {
             $bridge->add('gtr_completed_event');
         }
+        if ($model->has('gtr_beforefieldupdate_event', 'label')) {
+            $bridge->add('gtr_beforefieldupdate_event');
+        }
         if ($model->has('gtr_fieldupdate_event', 'label')) {
             $bridge->add('gtr_fieldupdate_event');
         }

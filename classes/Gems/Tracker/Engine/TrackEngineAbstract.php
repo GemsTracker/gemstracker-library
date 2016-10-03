@@ -188,7 +188,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
      *
      * @param \MUtil_Model_ModelAbstract $model
      * @param boolean $addDependency True when editing, can be false in all other cases
-     * @param $respTrackId Optional Database column name where Respondent Track Id is set
+     * @param string $respTrackId Optional Database column name where Respondent Track Id is set
      * @return \Gems_Tracker_Engine_TrackEngineAbstract
      */
     public function addFieldsToModel(\MUtil_Model_ModelAbstract $model, $addDependency = true, $respTrackId = false)
@@ -537,6 +537,28 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
     }
 
     /**
+     * Get the FieldUpdateEvent for this trackId
+     *
+     * @return \Gems\Event\TrackBeforeFieldUpdateEventInterface | null
+     */
+    public function getFieldBeforeUpdateEvent()
+    {
+        if (isset($this->_trackData['gtr_beforefieldupdate_event']) && $this->_trackData['gtr_beforefieldupdate_event']) {
+            return $this->events->loadBeforeTrackFieldUpdateEvent($this->_trackData['gtr_beforefieldupdate_event']);
+        }
+    }
+
+    /**
+     * Returns an array of the fields in this track key / value are id / code
+     *
+     * @return array fieldid => fieldcode With null when no fieldcode
+     */
+    public function getFieldCodes()
+    {
+        return $this->_fieldsDefinition->getFieldCodes();
+    }
+
+    /**
      * Returns an array of the fields in this track
      * key / value are id / field name
      *
@@ -552,6 +574,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
      * key / value are id / code
      *
      * @return array fieldid => fieldcode
+     * @deprecated since 1.8.2 Replaced with getFieldCodes()
      */
     public function getFields()
     {
@@ -615,7 +638,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
     /**
      * Get the FieldUpdateEvent for this trackId
      *
-     * @return \Gems_TrackFieldUpdateEventInterface | null
+     * @return \Gems_Event_TrackFieldUpdateEventInterface | null
      */
     public function getFieldUpdateEvent()
     {

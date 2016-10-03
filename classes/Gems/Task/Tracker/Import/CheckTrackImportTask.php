@@ -93,6 +93,18 @@ class CheckTrackImportTask extends \MUtil_Task_TaskAbstract
                             $lineNr
                             ));
                 }
+                if (isset($trackData['gtr_beforefieldupdate_event']) && $trackData['gtr_beforefieldupdate_event']) {
+                    try {
+                        $events->loadTrackFieldUpdateEvent($trackData['gtr_beforefieldupdate_event']);
+                    } catch (\Gems_Exception_Coding $ex) {
+                        $batch->addToCounter('import_errors');
+                        $batch->addMessage(sprintf(
+                                $this->_('Unknown or invalid track field before update event "%s" specified on line %d.'),
+                                $trackData['gtr_beforefieldupdate_event'],
+                                $lineNr
+                                ));
+                    }
+                }
                 if (isset($trackData['gtr_calculation_event']) && $trackData['gtr_calculation_event']) {
                     try {
                         $events->loadTrackCalculationEvent($trackData['gtr_calculation_event']);

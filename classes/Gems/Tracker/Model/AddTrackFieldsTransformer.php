@@ -33,7 +33,7 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
 
     /**
      *
-     * @var \Gems_loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
@@ -42,6 +42,12 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
      * @var string The field that contains the respondent track id
      */
     protected $respTrackIdField = 'gr2t_id_respondent_track';
+
+    /**
+     *
+     * @var \Gems_Tracker
+     */
+    protected $tracker;
 
     /**
      *
@@ -90,7 +96,7 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
         if ($isPostData) {
             return $data;
         }
-        
+
         $empty = false;
 
         foreach ($data as $key => $row) {
@@ -124,20 +130,20 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
     public function transformRowAfterSave(\MUtil_Model_ModelAbstract $model, array $row)
     {
         if (isset($row[$this->respTrackIdField]) && $row[$this->respTrackIdField]) {
+            
+            if ((! $this->respTrackIdField) || ($this->respTrackIdField == 'gr2t_id_respondent_track')) {
+                // Load && refresh when using standard gems__respondent2track data
+                $respTrack = $this->tracker->getRespondentTrack($row);
+            } else {
+                $respTrack = $this->tracker->getRespondentTrack($row[$this->respTrackIdField]);
+            }
+
             // Field data was already (re)calculated in transformRowBeforeSave
             // and saveFields() extracts the used field data from the row.
-            $changed = $this->fieldsDefinition->saveFields($row[$this->respTrackIdField], $row);
+            $changed = $respTrack->saveFields($row);
 
-            if ($changed) {
-                $tracker   = $this->loader->getTracker();
-                $respTrack = $tracker->getRespondentTrack($row[$this->respTrackIdField]);
-                $userId    = $this->loader->getCurrentUser()->getUserId();
-
-                $respTrack->handleFieldUpdate($userId);
-
-                if (! $model->getChanged()) {
-                    $model->addChanged(1);
-                }
+            if ($changed && (! $model->getChanged())) {
+                $model->addChanged(1);
             }
         }
 
@@ -155,11 +161,19 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
      */
     public function transformRowBeforeSave(\MUtil_Model_ModelAbstract $model, array $row)
     {
-        $fields = $this->fieldsDefinition->processBeforeSave($row, $row);
-        $row['gr2t_track_info'] = $this->fieldsDefinition->calculateFieldsInfo($fields);
+        if (! $this->tracker) {
+            $this->tracker = $this->loader->getTracker();
+        }
 
-        // Also save the calculated fields into the row (actual save is in transformRowAfterSave)
-        $row = $fields + $row;
+        if (isset($row[$this->respTrackIdField]) && $row[$this->respTrackIdField]) {
+            $respTrack = $this->tracker->getRespondentTrack($row[$this->respTrackIdField]);
+            $fields    = $respTrack->processFieldsBeforeSave($row);
+
+            $row['gr2t_track_info'] = $this->fieldsDefinition->calculateFieldsInfo($fields);
+
+            // Also save the calculated fields into the row (actual save is in transformRowAfterSave)
+            return $fields + $row;
+        }
 
         return $row;
     }

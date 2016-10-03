@@ -182,8 +182,9 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     /**
      * Adds the code fields to the fieldData array
      */
-    public function _fixFieldData() {
-        $fieldMap  = $this->getTrackEngine()->getFields();
+    public function _fixFieldData()
+    {
+        $fieldMap = $this->getTrackEngine()->getFieldCodes();
 
         foreach ($this->_fieldData as $key => $value) {
             if (isset($fieldMap[$key])) {
@@ -233,6 +234,51 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
                 $this->_rounds[$round['gro_id_round']] = $round;
             }
         }
+    }
+
+    /**
+     * Processes the field values and returns the new complete field data
+     *
+     * @param array $newFieldData The new field values, may be partial, field set by code overwrite field set by key
+     * @param array $oldFieldData The old field values
+     * @param \Gems_Tracker_Engine_TrackEngineInterface $trackEngine
+     * @return array The processed data in the format key1 => val1, code1 => val1, key2 => val2
+     */
+    protected function _mergeFieldValues(array $newFieldData, array $oldFieldData, \Gems_Tracker_Engine_TrackEngineInterface $trackEngine)
+    {
+        $fieldMap = $trackEngine->getFieldsDefinition()->getFieldCodes();
+        $output   = array();
+
+        foreach ($fieldMap as $key => $code) {
+            if ($code) {
+                if (isset($newFieldData[$code])) {
+                    $output[$key]  = $newFieldData[$code];
+                    $output[$code] = $newFieldData[$code];
+                } elseif (isset($newFieldData[$key])) {
+                    $output[$key]  = $newFieldData[$key];
+                    $output[$code] = $newFieldData[$key];
+                } elseif (isset($oldFieldData[$code])) {
+                    $output[$key]  = $oldFieldData[$code];
+                    $output[$code] = $oldFieldData[$code];
+                } elseif (isset($oldFieldData[$key])) {
+                    $output[$key]  = $oldFieldData[$key];
+                    $output[$code] = $oldFieldData[$key];
+                } else {
+                    $output[$key]  = null;
+                    $output[$code] = null;
+                }
+            } else {
+                if (isset($newFieldData[$key])) {
+                    $output[$key]  = $newFieldData[$key];
+                } elseif (isset($oldFieldData[$key])) {
+                    $output[$key]  = $oldFieldData[$key];
+                } else {
+                    $output[$key]  = null;
+                }
+            }
+        }
+
+        return $output;
     }
 
     private function _updateTrack(array $values, $userId)
@@ -1039,6 +1085,79 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     }
 
     /**
+     * Find out if there are before field update events and delegate to the event if needed
+     *
+     * @param array $fieldData fieldname => value + codename => value
+     * @return array Of changed fields. Codename using items overwrite any key using items
+     */
+    public function handleBeforeFieldUpdate(array $fieldData)
+    {
+        static $running = array();
+
+        // Process any events
+        $trackEngine = $this->getTrackEngine();
+
+        if (! $trackEngine) {
+            return array();
+        }
+
+        $event = $trackEngine->getFieldBeforeUpdateEvent();
+
+        if (! $event) {
+            return array();
+        }
+
+        if (isset($running[$this->_respTrackId])) {
+            throw new \Gems_Exception(sprintf(
+                    "Nested calls to '%s' track before field update event are not allowed.",
+                    $trackEngine->getName()
+                    ));
+        }
+        $running[$this->_respTrackId] = true;
+
+        $output = $event->prepareFieldUpdate($fieldData, $this);
+
+        unset($running[$this->_respTrackId]);
+
+        return $output;
+    }
+
+    /**
+     * Find out if there are field update events and delegate to the event if needed
+     *
+     * @return void
+     */
+    public function handleFieldUpdate()
+    {
+        static $running = array();
+
+        // Process any events
+        $trackEngine = $this->getTrackEngine();
+
+        if (! $trackEngine) {
+            return;
+        }
+
+        $event = $trackEngine->getFieldUpdateEvent();
+
+        if (! $event) {
+            return;
+        }
+
+        if (isset($running[$this->_respTrackId])) {
+            throw new \Gems_Exception(sprintf(
+                    "Nested calls to '%s' track after field update event are not allowed.",
+                    $trackEngine->getName()
+                    ));
+        }
+        $running[$this->_respTrackId] = true;
+
+        $event->processFieldUpdate($this, $this->currentUser->getUserId());
+
+        unset($running[$this->_respTrackId]);
+    }
+
+    /**
      *
      * @param mixed $token
      * @param int $userId The current user
@@ -1064,23 +1183,6 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         // Process any events
         if ($event = $this->getTrackEngine()->getRoundChangedEvent($token->getRoundId())) {
             return $event->processChangedRound($token, $this, $userId);
-        }
-
-        return 0;
-    }
-
-    /**
-     * Find out if there are field update events and delegate to the event if needed
-     *
-     * @param int $userId
-     */
-    public function handleFieldUpdate($userId)
-    {
-        // Process any events
-        $trackEngine = $this->getTrackEngine();
-
-        if ($event = $trackEngine->getFieldUpdateEvent()) {
-            return $event->processFieldUpdate($this, $userId);
         }
 
         return 0;
@@ -1145,12 +1247,37 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     }
 
     /**
+     * Processes the field values and and changes them as required
+     *
+     * @param array $newFieldData The new field values, may be partial, field set by code overwrite field set by key
+     * @return array The processed data in the format key1 => val1, code1 => val1, key2 => val2
+     */
+    public function processFieldsBeforeSave(array $newFieldData)
+    {
+        $trackEngine = $this->getTrackEngine();
+
+        if (! $trackEngine) {
+            return $newFieldData;
+        }
+
+        $step1Data = $this->_mergeFieldValues($newFieldData, $this->getFieldData(), $trackEngine);
+        $step2Data = $trackEngine->getFieldsDefinition()->processBeforeSave($step1Data, $this->_respTrackData);
+        $step3Data = $this->handleBeforeFieldUpdate($step2Data);
+
+        if ($step3Data) {
+            return $this->_mergeFieldValues($step3Data, $step2Data, $trackEngine);
+        } else {
+            return $step2Data;
+        }
+    }
+
+    /**
      * Refresh the fields (to reflect any changed appointments)
      *
-     * @param int $userId The current user or null if a recalculation should not be performed
+     * @param boolean $trackEngine Set to true when changed
      * @return int The number of tokens changed as a result of this update
      */
-    public function recalculateFields($userId, &$fieldsChanged = false)
+    public function recalculateFields(&$fieldsChanged = false)
     {
         $fieldDef  = $this->getTrackEngine()->getFieldsDefinition();
 
@@ -1159,32 +1286,20 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
 
         $this->_fixFieldData();
 
-//        if (! $fieldsChanged) {
-//            return 0;
-//        }
-
         $changes       = $fieldDef->saveFields($this->_respTrackId, $this->_fieldData);
         $fieldsChanged = (boolean) $changes;
 
-//        if (! $fieldsChanged) {
-//            return 0;
-//        }
-
-        if (! $userId) {
-            return 0;
-        }
-
-        $this->handleFieldUpdate($userId);
+        $this->handleFieldUpdate();
 
         $info = $fieldDef->calculateFieldsInfo($this->_fieldData);
         if ($info != $this->_respTrackData['gr2t_track_info']) {
-            $this->_updateTrack(array('gr2t_track_info' => $info), $userId);
+            $this->_updateTrack(array('gr2t_track_info' => $info), $this->currentUser->getUserId());
         }
 
         // We always update the fields, but recalculate the token dates
         // only when this respondent track is still running.
-        if ($userId && $this->hasSuccesCode() && $this->isOpen()) {
-            return $this->checkTrackTokens($userId);
+        if ($this->hasSuccesCode() && $this->isOpen()) {
+            return $this->checkTrackTokens($this->currentUser->getUserId());
         }
     }
 
@@ -1212,32 +1327,59 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
 
         return $this;
     }
-    
+
     /**
      * Restores tokens for this track, when the reception code matches the given $oldCode
-     * 
-     * Used when restoring a respondent or this tracks, and the restore tracks/tokens 
+     *
+     * Used when restoring a respondent or this tracks, and the restore tracks/tokens
      * box is checked.
-     * 
+     *
      * @param \Gems_Util_ReceptionCode $oldCode The old reception code
      * @param \Gems_Util_ReceptionCode $newCode the new reception code
      * @return int  The number of restored tokens
      */
     public function restoreTokens(\Gems_Util_ReceptionCode $oldCode, \Gems_Util_ReceptionCode $newCode) {
         $count = 0;
-        
+
         if (!$oldCode->isSuccess() && $newCode->isSuccess()) {
             foreach ($this->getTokens() as $token) {
                 if ($token instanceof \Gems_Tracker_Token) {
                     if ($oldCode->getCode() === $token->getReceptionCode()->getCode()) {
                         $token->setReceptionCode($newCode, null, $this->currentUser->getUserId());
-                        $count++; 
+                        $count++;
                     }
                 }
             }
         }
 
         return $count;
+    }
+
+    /**
+     * Saves the field data for the respondent track id.
+     *
+     * @param array $fieldData The values to save, only the key is used, not the code
+     * @return int The number of changed fields
+     */
+    public function saveFields(array $fieldData)
+    {
+        $trackEngine = $this->getTrackEngine();
+
+        if (! $trackEngine) {
+            return 0;
+        }
+
+        $this->_fieldData = $this->_mergeFieldValues($fieldData, $this->getFieldData(), $trackEngine);
+
+        $changed = $trackEngine->getFieldsDefinition()->saveFields($this->_respTrackId, $this->_fieldData);
+
+        if ($changed) {
+            $this->_ensureFieldData(true);
+        }
+
+        $this->handleFieldUpdate();
+
+        return $changed;
     }
 
     /**
@@ -1255,55 +1397,29 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     }
 
     /**
-     * Update one or more values for this track's fielddata.
+     * Update one or more values for this track's fields.
      *
      * Return the complete set of fielddata
      *
-     * @param array $data
-     * @param int $userId The current user, when passed the track_info is recalculated and saved
+     * @param array $newFieldData The new field values, may be partial, field set by code overwrite field set by key
      * @return array
      */
-    public function setFieldData($data, $userId = null)
+    public function setFieldData($newFieldData)
     {
-        $fieldDef  = $this->getTrackEngine()->getFieldsDefinition();
-        $fieldMap  = $fieldDef->getFieldCodes();
-        $fieldsRaw = $this->getFieldData(); // To preserve old values
+        $trackEngine = $this->getTrackEngine();
 
-        // Get only the real fieldnames, strip the extra code entries
-        $fieldData = array_intersect_key($fieldsRaw, $fieldMap);
-
-        // Use values on code fields if oiginal does not exist
-        foreach ($data as $key => $value)
-        {
-            if (array_key_exists($key, $fieldMap)) {
-                $fieldData[$key] = $value;
-            } else {
-                $index = array_search($key, $fieldMap);
-                if ($index !== false) {
-                    $fieldData[$index] = $value;
-                }
-            }
+        if (! $trackEngine) {
+            return $newFieldData;
         }
 
-        $this->_fieldData = $fieldDef->processBeforeSave($fieldData, $this->_respTrackData);
-        $changes          = $fieldDef->saveFields($this->_respTrackId, $this->_fieldData);
+        $this->_fieldData = $this->processFieldsBeforeSave($newFieldData);
+        $changes          = $this->saveFields(array());
 
         if ($changes) {
-            $this->_ensureFieldData(true);
-        } else {
-            $this->_fixFieldData();
-        }
-
-        if ($changes) {
-            if (! $userId) {
-                $userId = $this->currentUser->getUserId();
-            }
-            $this->handleFieldUpdate($userId);
-
-            $info = $fieldDef->calculateFieldsInfo($this->_fieldData);
+            $info = $trackEngine->getFieldsDefinition()->calculateFieldsInfo($this->_fieldData);
 
             if ($info != $this->_respTrackData['gr2t_track_info']) {
-                $this->_updateTrack(array('gr2t_track_info' => $info), $userId);
+                $this->_updateTrack(array('gr2t_track_info' => $info), $this->currentUser->getUserId());
             }
         }
 

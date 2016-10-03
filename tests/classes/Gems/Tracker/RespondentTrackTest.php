@@ -1,13 +1,13 @@
 <?php
-class Gems_Tracker_RespondentTrackTest extends Gems_Test_DbTestAbstract
+class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
 {
     /**
-     * @var Gems_Tracker_TrackerInterface
+     * @var \Gems_Tracker_TrackerInterface
      */
     protected $tracker;
 
     /**
-     * @var Gems_Tracker_Engine_TrackEngineInterface
+     * @var \Gems_Tracker_Engine_TrackEngineInterface
      */
     protected $engine;
 
@@ -49,7 +49,7 @@ class Gems_Tracker_RespondentTrackTest extends Gems_Test_DbTestAbstract
         $datetimeFormOptions['dateFormat']   = 'dd-MM-yyyy HH:mm';
         $timeFormOptions['dateFormat']   = 'HH:mm';
 
-        MUtil_Model_Bridge_FormBridge::setFixedOptions(array(
+        \MUtil_Model_Bridge_FormBridge::setFixedOptions(array(
             'date'     => $dateFormOptions,
             'datetime' => $datetimeFormOptions,
             'time'     => $timeFormOptions,
@@ -83,7 +83,7 @@ class Gems_Tracker_RespondentTrackTest extends Gems_Test_DbTestAbstract
 
         // If this worked, we can check all elements and make sure we allow a delta in seconds if provided
         foreach ($expected as $key => $value) {
-            if ($value instanceof Zend_Date) {
+            if (($value instanceof \Zend_Date) && ($actual[$key] instanceof \Zend_Date)) {
                 $this->assertEquals(0, $expected[$key]->diffSeconds($actual[$key]), $message, $deltaSeconds);
             } else {
                 $this->assertEquals($expected[$key], $actual[$key], $message, $deltaGlobal);
@@ -110,13 +110,13 @@ class Gems_Tracker_RespondentTrackTest extends Gems_Test_DbTestAbstract
             'f__2' => 'datecode'
             );
 
-        $this->assertEquals($expected, $this->tracker->getTrackEngine(1)->getFields());
+        $this->assertEquals($expected, $this->tracker->getTrackEngine(1)->getFieldCodes());
     }
 
     public function testGetFields()
     {
         $trackData = array('gr2t_id_respondent_track' => 1, 'gr2t_id_track' => 1);
-        $respondentTrack = new Gems_Tracker_RespondentTrack($trackData);
+        $respondentTrack = new \Gems_Tracker_RespondentTrack($trackData);
         $respondentTrack->answerRegistryRequest('tracker', $this->tracker);
         $date = new MUtil_Date('2010-10-08', 'yyyy-MM-dd');
         $expected = array(
@@ -137,7 +137,7 @@ class Gems_Tracker_RespondentTrackTest extends Gems_Test_DbTestAbstract
     {
         $respondentTrack = $this->loader->getTracker()->getRespondentTrack(1);
 
-        $date = new MUtil_Date('2010-11-09', 'yyyy-MM-dd');
+        $date = new \MUtil_Date('2010-11-09', 'yyyy-MM-dd');
         $expected = array(
             'f__1' => 'newvalue',
             'code' => 'newvalue',
@@ -155,9 +155,9 @@ class Gems_Tracker_RespondentTrackTest extends Gems_Test_DbTestAbstract
     public function testSetDateFields()
     {
         $respondentTrack = $this->loader->getTracker()->getRespondentTrack(1);
-        
-        $expected = $respondentTrack->getFieldData();
-        $date = new MUtil_Date('2010-11-09', 'yyyy-MM-dd');
+
+        // $expected = $respondentTrack->getFieldData();
+        $date = new \MUtil_Date('2010-11-09', 'yyyy-MM-dd');
         $expected = array(
             'f__1' => 'newvalue',
             'code' => 'newvalue',
@@ -175,7 +175,7 @@ class Gems_Tracker_RespondentTrackTest extends Gems_Test_DbTestAbstract
     public function testSetFieldsPartial()
     {
         $respondentTrack = $this->loader->getTracker()->getRespondentTrack(1);
-        
+
         $expected = $respondentTrack->getFieldData();
         $expected['f__1'] = $expected['code'] = 'newvalue';
         $actual = $respondentTrack->setFieldData(array('code' => 'newvalue'));

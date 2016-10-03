@@ -30,9 +30,10 @@ interface Gems_Tracker_Engine_TrackEngineInterface
      *
      * @param \MUtil_Model_ModelAbstract $model
      * @param boolean $addDependency True when editing, can be false in all other cases
+     * @param string $respTrackId Optional Database column name where Respondent Track Id is set
      * @return \Gems_Tracker_Engine_TrackEngineAbstract
      */
-    public function addFieldsToModel(\MUtil_Model_ModelAbstract $model, $addDependency = true);
+    public function addFieldsToModel(\MUtil_Model_ModelAbstract $model, $addDependency = true, $respTrackId = false);
 
     /**
      * Set menu parameters from this track engine
@@ -133,6 +134,20 @@ interface Gems_Tracker_Engine_TrackEngineInterface
     public function getDescription();
 
     /**
+     * Get the FieldUpdateEvent for this trackId
+     *
+     * @return \Gems\Event\TrackBeforeFieldUpdateEventInterface | null
+     */
+    public function getFieldBeforeUpdateEvent();
+
+    /**
+     * Returns an array of the fields in this track key / value are id / code
+     *
+     * @return array fieldid => fieldcode With null when no fieldcode
+     */
+    public function getFieldCodes();
+
+    /**
      * Returns an array of the fields in this track
      * key / value are id / field name
      *
@@ -190,7 +205,7 @@ interface Gems_Tracker_Engine_TrackEngineInterface
     /**
      * Get the FieldUpdateEvent for this trackId
      *
-     * @return \Gems_TrackFieldUpdateEventInterface | null
+     * @return \Gems_Event_TrackFieldUpdateEventInterface | null
      */
     public function getFieldUpdateEvent();
 
@@ -338,7 +353,7 @@ interface Gems_Tracker_Engine_TrackEngineInterface
      * @return string The gems track code
      */
     public function getTrackCode();
-    
+
     /**
      * Get the TrackCompletedEvent for the given trackId
      *

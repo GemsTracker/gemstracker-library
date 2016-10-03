@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: RecalculateFields.php $
  */
 
 /**
@@ -32,14 +31,14 @@ class Gems_Task_Tracker_RecalculateFields extends \MUtil_Task_TaskAbstract
      * The parameters should be optional and failing to provide them should be handled by
      * the task
      */
-    public function execute($respTrackData = null, $userId = null)
+    public function execute($respTrackData = null)
     {
         $batch     = $this->getBatch();
         $tracker   = $this->loader->getTracker();
         $respTrack = $tracker->getRespondentTrack($respTrackData);
 
         $fieldsChanged = false;
-        $tokensChanged = $respTrack->recalculateFields($userId, $fieldsChanged);
+        $tokensChanged = $respTrack->recalculateFields($fieldsChanged);
 
         $t = $batch->addToCounter('trackFieldsChecked');
         if ($fieldsChanged) {

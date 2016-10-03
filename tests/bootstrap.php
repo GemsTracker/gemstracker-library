@@ -16,6 +16,7 @@ date_default_timezone_set('Europe/Amsterdam');
 define('GEMS_TEST_DIR', realpath(dirname(__FILE__)));
 define('GEMS_ROOT_DIR', realpath(dirname(__FILE__) . '/../'));
 define('GEMS_LIBRARY_DIR', realpath(dirname(__FILE__) . '/../'));
+define('GEMS_WEB_DIR', dirname(__FILE__));
 define('APPLICATION_ENV', 'testing');
 define('GEMS_PROJECT_NAME', 'Gems');
 define('GEMS_PROJECT_NAME_UC', 'Gems');
@@ -35,8 +36,7 @@ if (!is_writable( session_save_path())) {
 set_include_path(
     GEMS_TEST_DIR . '/classes' . PATH_SEPARATOR .
     GEMS_TEST_DIR . '/library' . PATH_SEPARATOR .
-    GEMS_ROOT_DIR . '/classes' . PATH_SEPARATOR .
-    get_include_path());
+    GEMS_ROOT_DIR . '/classes');
 
 // Set up autoload.
 if (file_exists(dirname(__FILE__) . '/../vendor/autoload.php')) {
@@ -62,6 +62,10 @@ if (file_exists(dirname(__FILE__) . '/../vendor/autoload.php')) {
     $autoloader = \Zend_Loader_Autoloader::getInstance();
     $autoloader->registerNamespace('MUtil_');
     $autoloader->registerNamespace('Gems_');
+
+    // Otherwise not loaded by Zend Autoloader
+    require_once "Gems/Tracker/Field/FieldInterface.php";
+    require_once "Gems/Tracker/Field/FieldAbstract.php";
 }
 
 \Zend_Session::start();

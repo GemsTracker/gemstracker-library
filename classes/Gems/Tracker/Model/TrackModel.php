@@ -102,24 +102,31 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
         if ($detailed) {
             $events = $this->loader->getEvents();
 
-            $list = $events->listTrackCalculationEvents();
-            if (count($list) > 1) {
+            $caList = $events->listTrackCalculationEvents();
+            if (count($caList) > 1) {
                 $this->setIfExists('gtr_calculation_event', 'label', $translator->_('Before (re)calculation'),
-                        'multiOptions', $list
+                        'multiOptions', $caList
                         );
             }
 
-            $list = $events->listTrackCompletionEvents();
-            if (count($list) > 1) {
+            $coList = $events->listTrackCompletionEvents();
+            if (count($coList) > 1) {
                 $this->setIfExists('gtr_completed_event', 'label', $translator->_('After completion'),
-                        'multiOptions', $list
+                        'multiOptions', $coList
                         );
             }
 
-            $list = $events->listTrackFieldUpdateEvents();
-            if (count($list) > 1) {
+            $bfuList = $events->listTrackBeforeFieldUpdateEvents();
+            if (count($bfuList) > 1) {
+                $this->setIfExists('gtr_beforefieldupdate_event', 'label', $translator->_('Before field update'),
+                        'multiOptions', $bfuList
+                        );
+            }
+
+            $fuList = $events->listTrackFieldUpdateEvents();
+            if (count($fuList) > 1) {
                 $this->setIfExists('gtr_fieldupdate_event', 'label', $translator->_('After field update'),
-                        'multiOptions', $list
+                        'multiOptions', $fuList
                         );
             }
             $this->setIfExists('gtr_organizations', 'label', $translator->_('Organizations'),

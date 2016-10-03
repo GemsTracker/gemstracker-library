@@ -1140,7 +1140,6 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
 
         $batch = $this->loader->getTracker()->recalcTrackFields(
                 'trackRecalcFieldsResp_' . $respondent->getId(),
-                $this->currentUser->getUserId(),
                 $where
                 );
 
@@ -1165,7 +1164,6 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
         $where       = $this->db->quoteInto('gr2t_id_respondent_track = ?', $respTrackId);
         $batch = $this->loader->getTracker()->recalcTrackFields(
                 'trackRecalcFieldsFor_' . $respTrackId,
-                $this->currentUser->getUserId(),
                 $where
                 );
 
