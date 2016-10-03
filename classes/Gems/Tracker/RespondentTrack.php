@@ -1262,7 +1262,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
 
         $step1Data = $this->_mergeFieldValues($newFieldData, $this->getFieldData(), $trackEngine);
         $step2Data = $trackEngine->getFieldsDefinition()->processBeforeSave($step1Data, $this->_respTrackData);
-        $step3Data = $this->handleBeforeFieldUpdate($step2Data);
+        $step3Data = $this->handleBeforeFieldUpdate($this->_mergeFieldValues($step2Data, $step1Data, $trackEngine));
 
         if ($step3Data) {
             return $this->_mergeFieldValues($step3Data, $step2Data, $trackEngine);
@@ -1281,10 +1281,8 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     {
         $fieldDef  = $this->getTrackEngine()->getFieldsDefinition();
 
-        $this->_fieldData = $fieldDef->processBeforeSave($this->_fieldData, $this->_respTrackData);
+        $this->_fieldData = $this->processFieldsBeforeSave($this->_fieldData, $this->_respTrackData);
         $fieldsChanged    = $fieldDef->changed;
-
-        $this->_fixFieldData();
 
         $changes       = $fieldDef->saveFields($this->_respTrackId, $this->_fieldData);
         $fieldsChanged = (boolean) $changes;
