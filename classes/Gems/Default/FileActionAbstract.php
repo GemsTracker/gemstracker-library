@@ -129,11 +129,17 @@ abstract class Gems_Default_FileActionAbstract extends \Gems_Controller_ModelSni
      */
     public function deleteAction()
     {
-        $model = $this->getModel();
-        $model->applyRequest($this->getRequest());
+        $request = $this->getRequest();
 
-        $model->delete();
-        $this->_reroute(array($this->getRequest()->getActionKey() => 'index', MUTil_Model::REQUEST_ID => null));
+        $model = $this->getModel();
+        $model->applyRequest($request);
+
+        if ($model->getFilter()) {
+            $model->delete();
+        } else {
+            $this->addMessage($this->_('Empty delete request not allowed'));
+        }
+        $this->_reroute(array($request => 'index', MUTil_Model::REQUEST_ID => null));
     }
 
     /**
