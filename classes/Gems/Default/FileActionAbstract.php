@@ -139,7 +139,7 @@ abstract class Gems_Default_FileActionAbstract extends \Gems_Controller_ModelSni
         } else {
             $this->addMessage($this->_('Empty delete request not allowed'));
         }
-        $this->_reroute(array($request => 'index', MUTil_Model::REQUEST_ID => null));
+        $this->_reroute(array($request->getActionKey() => 'index', MUTil_Model::REQUEST_ID => null));
     }
 
     /**
