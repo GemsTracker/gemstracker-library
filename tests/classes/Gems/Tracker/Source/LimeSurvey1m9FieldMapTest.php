@@ -15,8 +15,6 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMapTest extends \Gems_Test_DbTestAbs
         );
 
         $this->bootstrap = $application;
-
-        include_once GEMS_TEST_DIR . '/library/Gems/Cookies.php';   // Dirty fix for cookie problem during tests
         
         parent::setUp();
         

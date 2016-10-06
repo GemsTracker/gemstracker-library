@@ -28,8 +28,6 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
 
         $this->bootstrap = $application;
 
-        include_once GEMS_TEST_DIR . '/library/Gems/Cookies.php';   // Dirty fix for cookie problem during tests
-
         parent::setUp();
 
         $this->bootstrap->bootstrap('db');
