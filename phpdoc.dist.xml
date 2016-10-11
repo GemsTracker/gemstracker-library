@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpdoc>
+    <title>GemsTracker library API</title>
+    
+    <parser>
+        <target>var/cache</target>        
+    </parser>
+    
+    <transformer>
+        <target>var/docs</target>
+    </transformer>
+    
+    <transformations>
+        <template name="responsive" />
+    </transformations>
+    
+    <files>
+        <directory>classes</directory>
+        <ignore>classes/Zend/*</ignore>
+        <ignore>classes/ZFDebug/*</ignore>
+        <ignore>classes/Gems/User/Adapter/Radius/**.**</ignore>
+    </files>
+  
+</phpdoc>
