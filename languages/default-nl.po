@@ -4,7 +4,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-10-04 19:34+0200\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
+"Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
 "Language: nl_NL\n"
 "MIME-Version: 1.0\n"
@@ -6057,7 +6057,7 @@ msgstr "Onbekenden overslaan"
 
 #: gemstracker/gemstracker/classes/Gems/Snippets/Survey/AnswerImportSnippet.php:140
 msgid "What to do when the respondent does not exist"
-msgstr "Wat te doen als er de patiënt niet bestaat"
+msgstr "Wat te doen als de patiënt niet bestaat"
 
 #: gemstracker/gemstracker/classes/Gems/Snippets/Survey/AnswerImportSnippet.php:147
 msgid "Delete old token and create new"
@@ -7887,7 +7887,7 @@ msgstr "Samenvoegen met"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:646
 msgid "Create a new track or choose a track to merge the import into."
-msgstr "Maak een nieuw traject of kies een bestand traject om samen te voegen"
+msgstr "Maak een nieuw traject of kies een bestaand traject om samen te voegen"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:725
 #, php-format
