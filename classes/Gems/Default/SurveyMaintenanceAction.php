@@ -616,7 +616,7 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
             switch ($filter['status']) {
                 case 'sok':
                     $filter['gsu_active'] = 0;
-                    $filter[] = "(gsu_status IS NULL OR gsu_status NOT IN ('', 'OK'))";
+                    $filter[] = "(gsu_status IS NULL OR gsu_status IN ('', 'OK'))";
                     break;
 
                 case 'nok':
