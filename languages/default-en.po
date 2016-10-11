@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-29 15:41+0200\n"
+"POT-Creation-Date: 2016-10-11 10:43+0200\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
+"Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
 "Language: en_GB\n"
 "MIME-Version: 1.0\n"
@@ -14,15 +14,15 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 1.8.7\n"
+"X-Generator: Poedit 1.8.9\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: vendor/magnafacta/mutil/src/MUtil\n"
-"X-Poedit-SearchPathExcluded-0: vendor\n"
 
 #: classes/Gems/Agenda.php:338 classes/Gems/Agenda/Appointment.php:208
 #: classes/Gems/Agenda/AppointmentFilterModel.php:166
 #: classes/Gems/Agenda/AppointmentFilterModel.php:184
 #: classes/Gems/Tracker/Model/Dependency/FromAppointmentsMaintenanceDependency.php:91
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:901
 msgid "; "
 msgstr "; "
 
@@ -175,7 +175,7 @@ msgstr "Determines what is filtered how."
 #: classes/Gems/Default/GroupAction.php:65
 #: classes/Gems/Default/RoleAction.php:111
 #: classes/Gems/Default/SourceAction.php:155
-#: classes/Gems/Default/SurveyMaintenanceAction.php:394
+#: classes/Gems/Default/SurveyMaintenanceAction.php:393
 #: classes/Gems/Default/TokenSearchActionAbstract.php:100
 #: classes/Gems/Model/OrganizationModel.php:82
 #: classes/Gems/Model/RespondentModel.php:269
@@ -255,6 +255,7 @@ msgid "Calculated name"
 msgstr "Calculated name"
 
 #: classes/Gems/Agenda/AppointmentFilterModel.php:165
+#: vendor/magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:454
 msgid ": "
 msgstr ": "
 
@@ -329,10 +330,12 @@ msgstr "%s like \"%s\""
 
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:67
 #: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:54
-#: classes/Gems/Default/SurveyMaintenanceAction.php:449
+#: classes/Gems/Default/SurveyMaintenanceAction.php:448
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:874
 #: classes/Gems/Tracker/Model/TrackModel.php:130
 #: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:525
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:873
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:1031
 msgid ", "
 msgstr ", "
 
@@ -485,6 +488,7 @@ msgstr "Ok"
 #: classes/Gems/Snippets/RespondentDetailSnippetAbstract.php:108
 #: classes/Gems/Snippets/Survey/SurveyQuestionsSnippet.php:171
 #: classes/Gems/Tracker/Snippets/ShowRoundSnippetAbstract.php:168
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/WizardFormSnippetAbstract.php:263
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -550,6 +554,7 @@ msgstr "No %s found."
 
 #: classes/Gems/Controller/BrowseEditAction.php:877
 #: classes/Gems/Default/DatabaseAction.php:395
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelConfirmDataChangeSnippetAbstract.php:180
 msgid "Are you sure?"
 msgstr "Are you sure?"
 
@@ -566,6 +571,9 @@ msgstr "Are you sure?"
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:129
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:148
 #: classes/Gems/Util/Translated.php:358
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelConfirmDataChangeSnippetAbstract.php:275
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelYesNoDeleteSnippetAbstract.php:256
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:804
 msgid "Yes"
 msgstr "Yes"
 
@@ -584,6 +592,8 @@ msgstr "Yes"
 #: classes/Gems/Util/ReceptionCodeLibrary.php:116
 #: classes/Gems/Util/ReceptionCodeLibrary.php:150
 #: classes/Gems/Util/Translated.php:358
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelConfirmDataChangeSnippetAbstract.php:281
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelYesNoDeleteSnippetAbstract.php:262
 msgid "No"
 msgstr "No"
 
@@ -603,10 +613,13 @@ msgstr "New %1$s..."
 #: classes/Gems/Controller/BrowseEditAction.php:978
 #: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:185
 #: classes/Gems/User/Form/ChangePasswordForm.php:406
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/FormSnippetAbstract.php:245
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:295
 msgid "Save"
 msgstr "Save"
 
 #: classes/Gems/Controller/BrowseEditAction.php:1023
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:326
 #, php-format
 msgid "%2$u %1$s saved"
 msgstr "%2$u %1$s saved"
@@ -621,6 +634,8 @@ msgid "Input error! No changes saved!"
 msgstr "Input error! No changes saved!"
 
 #: classes/Gems/Controller/BrowseEditAction.php:1037
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/FormSnippetAbstract.php:459
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:539
 msgid "The form was open for too long or was opened in multiple windows."
 msgstr "The form was open for too long or was opened in multiple windows."
 
@@ -680,6 +695,9 @@ msgid "Showing %s"
 msgstr "Showing %s"
 
 #: classes/Gems/Controller/ModelSnippetActionAbstract.php:671
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/FormSnippetAbstract.php:386
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:446
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/WizardFormSnippetAbstract.php:464
 msgid "item"
 msgid_plural "items"
 msgstr[0] "item"
@@ -1001,7 +1019,7 @@ msgid "Survey"
 msgstr "Survey"
 
 #: classes/Gems/Default/ChartconfigAction.php:39
-#: classes/Gems/Default/SurveyMaintenanceAction.php:502
+#: classes/Gems/Default/SurveyMaintenanceAction.php:501
 msgid "Survey code"
 msgstr "Survey code"
 
@@ -1011,7 +1029,7 @@ msgstr "Survey code"
 #: classes/Gems/Default/ProjectSurveysAction.php:113
 #: classes/Gems/Default/ReceptionAction.php:67
 #: classes/Gems/Default/RoleAction.php:115
-#: classes/Gems/Default/SurveyMaintenanceAction.php:397
+#: classes/Gems/Default/SurveyMaintenanceAction.php:396
 #: classes/Gems/Default/UpgradeAction.php:204
 #: classes/Gems/Export/RespondentExport.php:325
 #: classes/Gems/Snippets/Track/TracksSnippet.php:89
@@ -1459,7 +1477,7 @@ msgstr "Type"
 #: classes/Gems/Default/DatabaseAction.php:213
 #: classes/Gems/Default/DatabaseAction.php:428
 #: classes/Gems/Default/DatabaseAction.php:474
-#: classes/Gems/Default/SurveyMaintenanceAction.php:413
+#: classes/Gems/Default/SurveyMaintenanceAction.php:412
 msgid "Group"
 msgstr "Group"
 
@@ -1726,6 +1744,7 @@ msgstr "The data in table %s"
 msgid "Contents of %s %s"
 msgstr "Contents of %s %s"
 
+#: classes/Gems/Default/ExportAction.php:30
 #: classes/Gems/Default/ExportSurveysAction.php:315
 msgid "Please select a survey to start the export"
 msgstr "Please select a survey to start the export"
@@ -1745,7 +1764,7 @@ msgstr[1] "track fields"
 #: classes/Gems/Menu/MenuAbstract.php:684
 #: classes/Gems/Menu/MenuAbstract.php:805
 #: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:257
-#: classes/Gems/Tracker.php:680
+#: classes/Gems/Tracker.php:691
 msgid "Tracks"
 msgstr "Tracks"
 
@@ -1800,6 +1819,7 @@ msgstr "Full name"
 
 #: classes/Gems/Default/FileActionAbstract.php:113
 #: classes/Gems/Default/LogFileAction.php:93 classes/Gems/Menu.php:151
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:905
 msgid "Content"
 msgstr "Content"
 
@@ -1853,7 +1873,7 @@ msgstr "Role"
 
 #: classes/Gems/Default/GroupAction.php:71
 #: classes/Gems/Default/StaffAction.php:175 classes/Gems/Menu.php:183
-#: classes/Gems/Model/LogModel.php:98 classes/Gems/Tracker.php:682
+#: classes/Gems/Model/LogModel.php:98 classes/Gems/Tracker.php:693
 msgid "Staff"
 msgstr "Staff"
 
@@ -2524,7 +2544,7 @@ msgid "Session"
 msgstr "Session"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:116
-#: classes/Gems/Default/SurveyMaintenanceAction.php:409
+#: classes/Gems/Default/SurveyMaintenanceAction.php:408
 #, php-format
 msgid "Active in %s"
 msgstr "Active in %s"
@@ -2535,7 +2555,7 @@ msgid "By"
 msgstr "By"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:123
-#: classes/Gems/Default/SurveyMaintenanceAction.php:471
+#: classes/Gems/Default/SurveyMaintenanceAction.php:470
 msgid "Usage"
 msgstr "Usage"
 
@@ -2544,22 +2564,22 @@ msgid "How many track definitions use this survey?"
 msgstr "How many track definitions use this survey?"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:125
-#: classes/Gems/Default/SurveyMaintenanceAction.php:428
+#: classes/Gems/Default/SurveyMaintenanceAction.php:427
 msgid "Insertable"
 msgstr "Insertable"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:126
-#: classes/Gems/Default/SurveyMaintenanceAction.php:429
+#: classes/Gems/Default/SurveyMaintenanceAction.php:428
 msgid "Can this survey be manually inserted into a track?"
 msgstr "Can this survey be manually inserted into a track?"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:131
-#: classes/Gems/Default/SurveyMaintenanceAction.php:483
+#: classes/Gems/Default/SurveyMaintenanceAction.php:482
 msgid "Duration description"
 msgstr "Duration description"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:132
-#: classes/Gems/Default/SurveyMaintenanceAction.php:484
+#: classes/Gems/Default/SurveyMaintenanceAction.php:483
 msgid "Text to inform the respondent, e.g. \"20 seconds\" or \"1 minute\"."
 msgstr "Text to inform the patient, e.g. \"20 seconds\" or \"1 minute\"."
 
@@ -2568,7 +2588,7 @@ msgid "Active surveys"
 msgstr "Active surveys"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:189
-#: classes/Gems/Default/SurveyMaintenanceAction.php:663
+#: classes/Gems/Default/SurveyMaintenanceAction.php:662
 #: classes/Gems/Default/TokenAction.php:119
 msgid "survey"
 msgid_plural "surveys"
@@ -3182,165 +3202,165 @@ msgid_plural "tokens"
 msgstr[0] "token"
 msgstr[1] "tokens"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:176
+#: classes/Gems/Default/SurveyMaintenanceAction.php:175
 msgid "incalculable"
 msgstr "incalculable"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:193
+#: classes/Gems/Default/SurveyMaintenanceAction.php:192
 #, php-format
 msgid "Answered surveys: %d."
 msgstr "Answered surveys: %d."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:195
+#: classes/Gems/Default/SurveyMaintenanceAction.php:194
 #, php-format
 msgid "Average answer time: %s."
 msgstr "Average answer time: %s."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:196
-#: classes/Gems/Default/SurveyMaintenanceAction.php:200
-#: classes/Gems/Default/SurveyMaintenanceAction.php:222
+#: classes/Gems/Default/SurveyMaintenanceAction.php:195
+#: classes/Gems/Default/SurveyMaintenanceAction.php:199
+#: classes/Gems/Default/SurveyMaintenanceAction.php:221
 #: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:371
 #: classes/Gems/Util/Translated.php:117
 msgid "n/a"
 msgstr "n/a"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:199
+#: classes/Gems/Default/SurveyMaintenanceAction.php:198
 #, php-format
 msgid "Standard deviation: %s."
 msgstr "Standard deviation: %s."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:218
-#: classes/Gems/Default/SurveyMaintenanceAction.php:222
+#: classes/Gems/Default/SurveyMaintenanceAction.php:217
+#: classes/Gems/Default/SurveyMaintenanceAction.php:221
 #, php-format
 msgid "Median value: %s."
 msgstr "Median value: %s."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:259
+#: classes/Gems/Default/SurveyMaintenanceAction.php:258
 #, php-format
 msgid "%d times in %d track(s)."
 msgstr "%d times in %d track(s)."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:261
-#: classes/Gems/Default/SurveyMaintenanceAction.php:307
+#: classes/Gems/Default/SurveyMaintenanceAction.php:260
+#: classes/Gems/Default/SurveyMaintenanceAction.php:306
 msgid "Not in any track."
 msgstr "Not in any track."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:300
+#: classes/Gems/Default/SurveyMaintenanceAction.php:299
 #, php-format
 msgid "%d time in %s track."
 msgid_plural "%d times in %s track."
 msgstr[0] "%d time in %s track."
 msgstr[1] "%d times in %s track."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:321
+#: classes/Gems/Default/SurveyMaintenanceAction.php:320
 #, php-format
 msgid "Checking for the %s survey for answers ."
 msgstr "Checking for the %s survey for answers ."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:326
+#: classes/Gems/Default/SurveyMaintenanceAction.php:325
 msgid "This task checks all tokens using this survey for answers."
 msgstr "This task checks all tokens using this survey for answers."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:337
+#: classes/Gems/Default/SurveyMaintenanceAction.php:336
 msgid "Checking for all surveys for answers ."
 msgstr "Checking for all surveys for answers ."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:341
+#: classes/Gems/Default/SurveyMaintenanceAction.php:340
 msgid "This task checks all tokens for all surveys for answers."
 msgstr "This task checks all tokens for all surveys for answers."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:382
+#: classes/Gems/Default/SurveyMaintenanceAction.php:381
 #: classes/Gems/Tracker/Form/AskTokenForm.php:73
 #: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:133
 msgid "OK"
 msgstr "OK"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:401
+#: classes/Gems/Default/SurveyMaintenanceAction.php:400
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:588
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:654
 msgid "Source"
 msgstr "Source"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:403
+#: classes/Gems/Default/SurveyMaintenanceAction.php:402
 msgid "Active in source"
 msgstr "Active in source"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:407
+#: classes/Gems/Default/SurveyMaintenanceAction.php:406
 msgid "Status in source"
 msgstr "Status in source"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:414
+#: classes/Gems/Default/SurveyMaintenanceAction.php:413
 msgid "If empty, survey will never show up!"
 msgstr "If empty, survey will never show up!"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:435
+#: classes/Gems/Default/SurveyMaintenanceAction.php:434
 msgid "Add to inserted end date"
 msgstr "Add to inserted end date"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:436
+#: classes/Gems/Default/SurveyMaintenanceAction.php:435
 msgid "Add to the start date to calculate the end date when inserting."
 msgstr "Add to the start date to calculate the end date when inserting."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:439
+#: classes/Gems/Default/SurveyMaintenanceAction.php:438
 msgid "Inserted end date unit"
 msgstr "Inserted end date unit"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:440
+#: classes/Gems/Default/SurveyMaintenanceAction.php:439
 msgid "The unit used to calculate the end date when inserting the survey."
 msgstr "The unit used to calculate the end date when inserting the survey."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:443
+#: classes/Gems/Default/SurveyMaintenanceAction.php:442
 msgid "Insert organizations"
 msgstr "Insert organizations"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:444
+#: classes/Gems/Default/SurveyMaintenanceAction.php:443
 msgid "The organizations where the survey may be inserted."
 msgstr "The organizations where the survey may be inserted."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:478
+#: classes/Gems/Default/SurveyMaintenanceAction.php:477
 msgid "Duration calculated"
 msgstr "Duration calculated"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:489
+#: classes/Gems/Default/SurveyMaintenanceAction.php:488
 msgid "Result field"
 msgstr "Result field"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:503
+#: classes/Gems/Default/SurveyMaintenanceAction.php:502
 msgid "Optional code name to link the survey to program code."
 msgstr "Optional code name to link the survey to program code."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:506
+#: classes/Gems/Default/SurveyMaintenanceAction.php:505
 msgid "Survey export code"
 msgstr "Survey export code"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:507
+#: classes/Gems/Default/SurveyMaintenanceAction.php:506
 #: classes/Gems/Tracker/Snippets/ExportTrackSnippetAbstract.php:382
 msgid "A unique code indentifying this survey during track import"
 msgstr "A unique code indentifying this survey during track import"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:514
+#: classes/Gems/Default/SurveyMaintenanceAction.php:513
 msgid "Before answering"
 msgstr "Before answering"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:521
+#: classes/Gems/Default/SurveyMaintenanceAction.php:520
 #: classes/Gems/Tracker/Model/TrackModel.php:114
 msgid "After completion"
 msgstr "After completion"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:528
+#: classes/Gems/Default/SurveyMaintenanceAction.php:527
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:848
 msgid "Answer display"
 msgstr "Answer display"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:588
+#: classes/Gems/Default/SurveyMaintenanceAction.php:587
 msgid " ["
 msgstr " ["
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:589
+#: classes/Gems/Default/SurveyMaintenanceAction.php:588
 msgid "]"
 msgstr "]"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:603
+#: classes/Gems/Default/SurveyMaintenanceAction.php:602
 #: classes/Gems/Menu.php:440 classes/Gems/Menu/MenuAbstract.php:691
 #: classes/Gems/Menu/MenuAbstract.php:786
 #: classes/Gems/Tracker/Model/TrackModel.php:88
@@ -3381,7 +3401,7 @@ msgstr "Token planning"
 #: classes/Gems/Snippets/Respondent/DetailsWithAssignmentsSnippet.php:93
 #: classes/Gems/Snippets/Respondent/RespondentDetailsSnippet.php:57
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:40
-#: classes/Gems/Tracker.php:681
+#: classes/Gems/Tracker.php:692
 msgid "Respondent"
 msgstr "Patient"
 
@@ -3880,10 +3900,12 @@ msgid "<< First"
 msgstr "<< First"
 
 #: classes/Gems/Html.php:144
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/WizardFormSnippetAbstract.php:362
 msgid "< Previous"
 msgstr "< Previous"
 
 #: classes/Gems/Html.php:145
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/WizardFormSnippetAbstract.php:343
 msgid "Next >"
 msgstr "Next >"
 
@@ -3919,6 +3941,7 @@ msgstr "Link by patient id and completion date"
 #: classes/Gems/Import/ImportLoader.php:323
 #: classes/Gems/Import/ImportLoader.php:327
 #: classes/Gems/Import/ImportLoader.php:331
+#: vendor/magnafacta/mutil/src/MUtil/Controller/ModelSnippetActionAbstract.php:613
 msgid "Direct import"
 msgstr "Direct import"
 
@@ -4326,6 +4349,7 @@ msgid "Importable"
 msgstr "Importable"
 
 #: classes/Gems/Menu/MenuAbstract.php:498
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:609
 msgid "Import file"
 msgstr "Import file"
 
@@ -4858,7 +4882,7 @@ msgstr "Login Name"
 
 #: classes/Gems/Model/StaffModel.php:173
 #: classes/Gems/User/Form/OrganizationFormAbstract.php:206
-#: classes/Gems/User/User.php:1322
+#: classes/Gems/User/User.php:1328
 msgid "Username"
 msgstr "Username"
 
@@ -6396,7 +6420,7 @@ msgid "Survey insertion impossible: no insertable survey exists!"
 msgstr "Survey insertion impossible: no insertable survey exists!"
 
 #: classes/Gems/Snippets/Tracker/InsertSurveySnippet.php:462
-#: classes/Gems/Tracker/Round.php:76
+#: classes/Gems/Tracker/Round.php:77
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:839
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:959
 #, php-format
@@ -6554,6 +6578,7 @@ msgid "Saved your setup data"
 msgstr "Saved your setup data"
 
 #: classes/Gems/Snippets/User/OwnAccountEditSnippet.php:75
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:328
 msgid "No changes to save!"
 msgstr "No changes to save!"
 
@@ -7258,6 +7283,7 @@ msgid "Add the name of this field to the track description"
 msgstr "Add the name of this field to the track description"
 
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:248
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:762
 msgid "Required"
 msgstr "Required"
 
@@ -7404,12 +7430,12 @@ msgstr "Track stopped"
 msgid "Track completed"
 msgstr "Track completed"
 
-#: classes/Gems/Tracker/Round.php:65
+#: classes/Gems/Tracker/Round.php:66
 #, php-format
 msgid "%d: %s - %s"
 msgstr "%d: %s - %s"
 
-#: classes/Gems/Tracker/Round.php:67 classes/Gems/Tracker/Round.php:70
+#: classes/Gems/Tracker/Round.php:68 classes/Gems/Tracker/Round.php:71
 #, php-format
 msgid "%d: %s"
 msgstr "%d: %s"
@@ -7631,6 +7657,7 @@ msgid "Upload a track definition file."
 msgstr "Upload a track definition file."
 
 #: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:441
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:261
 #, php-format
 msgid "Error retrieving file '%s'."
 msgstr "Error retrieving file '%s'."
@@ -7867,13 +7894,13 @@ msgstr "The status warning for the '%s' survey was removed."
 msgid "The name of the '%s' survey has changed to '%s'."
 msgstr "The name of the '%s' survey has changed to '%s'."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:595
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:592
 #: classes/OpenRosa/Tracker/Source/OpenRosa.php:676
 #, php-format
 msgid "Imported the '%s' survey."
 msgstr "Imported the '%s' survey."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:865
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:862
 msgid "Submitdate"
 msgstr "Submitdate"
 
@@ -8013,7 +8040,7 @@ msgid "Trying upgrade for %s to level %s: %s"
 msgstr "Trying upgrade for %s to level %s: %s"
 
 #: classes/Gems/User/Form/ChangePasswordForm.php:180
-#: classes/Gems/User/User.php:1317
+#: classes/Gems/User/User.php:1323
 #, php-format
 msgid "%s is not correct."
 msgstr "%s is not correct."
@@ -8159,26 +8186,26 @@ msgstr "may not contain numbers"
 msgid "Shared secret"
 msgstr "Shared secret"
 
-#: classes/Gems/User/User.php:396
+#: classes/Gems/User/User.php:402
 #, php-format
 msgid "Your account is temporarily blocked, please wait a minute."
 msgid_plural "Your account is temporarily blocked, please wait %d minutes."
 msgstr[0] "Your account is temporarily blocked, please wait a minute."
 msgstr[1] "Your account is temporarily blocked, please wait %d minutes."
 
-#: classes/Gems/User/User.php:442 classes/Gems/User/User.php:474
+#: classes/Gems/User/User.php:448 classes/Gems/User/User.php:480
 msgid "You are not allowed to login from this location."
 msgstr "You are not allowed to login from this location."
 
-#: classes/Gems/User/User.php:1303
+#: classes/Gems/User/User.php:1309
 msgid "Your birthday"
 msgstr "Your birthday"
 
-#: classes/Gems/User/User.php:1434
+#: classes/Gems/User/User.php:1440
 msgid "Trying to send a password reset to a user that cannot be reset."
 msgstr "Trying to send a password reset to a user that cannot be reset."
 
-#: classes/Gems/User/User.php:1462
+#: classes/Gems/User/User.php:1468
 msgid "Unable to send e-mail."
 msgstr "Unable to send e-mail."
 
@@ -8387,7 +8414,7 @@ msgstr "Mrs."
 msgid "Mr./Mrs."
 msgstr "Mr./Mrs."
 
-#: classes/GemsEscort.php:249
+#: classes/GemsEscort.php:249 vendor/magnafacta/mutil/src/MUtil/Log.php:105
 #, php-format
 msgid "Path %s not writable"
 msgstr "Path %s not writable"
@@ -8506,6 +8533,324 @@ msgstr "Date received"
 msgid "Response is for a different formId: %s <-> %s"
 msgstr "Response is for a different formId: %s <-> %s"
 
+#: vendor/magnafacta/mutil/src/MUtil/Date.php:180
+#, php-format
+msgid "%s ago"
+msgstr "%s ago"
+
+#: vendor/magnafacta/mutil/src/MUtil/Date.php:183
+#, php-format
+msgid "%s to go"
+msgstr "%s to go"
+
+#: vendor/magnafacta/mutil/src/MUtil/Date.php:194
+msgid "second"
+msgid_plural "seconds"
+msgstr[0] "second"
+msgstr[1] "seconds"
+
+#: vendor/magnafacta/mutil/src/MUtil/Date.php:197
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "minute"
+msgstr[1] "minutes"
+
+#: vendor/magnafacta/mutil/src/MUtil/Date.php:200
+msgid "hour"
+msgid_plural "hours"
+msgstr[0] "hour"
+msgstr[1] "hours"
+
+#: vendor/magnafacta/mutil/src/MUtil/Date.php:203
+msgid "day"
+msgid_plural "days"
+msgstr[0] "day"
+msgstr[1] "days"
+
+#: vendor/magnafacta/mutil/src/MUtil/Date.php:206
+msgid "week"
+msgid_plural "weeks"
+msgstr[0] "week"
+msgstr[1] "weeks"
+
+#: vendor/magnafacta/mutil/src/MUtil/Date.php:209
+msgid "month"
+msgid_plural "months"
+msgstr[0] "month"
+msgstr[1] "months"
+
+#: vendor/magnafacta/mutil/src/MUtil/Date.php:212
+msgid "year"
+msgid_plural "years"
+msgstr[0] "year"
+msgstr[1] "years"
+
+#: vendor/magnafacta/mutil/src/MUtil/Date.php:215
+msgid "decade"
+msgid_plural "decades"
+msgstr[0] "decade"
+msgstr[1] "decades"
+
+#: vendor/magnafacta/mutil/src/MUtil/Model/Importer.php:235
+#, php-format
+msgid "Found %2$d import error(s). Import aborted."
+msgstr "Found %2$d import error(s). Import aborted."
+
+#: vendor/magnafacta/mutil/src/MUtil/Model/Importer.php:453
+msgid "No filename specified to import"
+msgstr "No filename specified to import"
+
+#: vendor/magnafacta/mutil/src/MUtil/Model/Importer.php:462
+#, php-format
+msgid "File '%s' does not exist. Import not possible."
+msgstr "File '%s' does not exist. Import not possible."
+
+#: vendor/magnafacta/mutil/src/MUtil/Model/Importer.php:482
+#, php-format
+msgid "Unsupported file extension: %s. Import not possible."
+msgstr "Unsupported file extension: %s. Import not possible."
+
+#: vendor/magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:302
+msgid "No field overlap between source and target"
+msgstr "No field overlap between source and target"
+
+#: vendor/magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:447
+#, php-format
+msgid "Row %s"
+msgstr "Row %s"
+
+#: vendor/magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:452
+#, php-format
+msgid " field %s"
+msgstr " field %s"
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/FormSnippetAbstract.php:455
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:535
+#, php-format
+msgid "Input error! Changes to %s not saved!"
+msgstr "Input error! Changes to %s not saved!"
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:513
+msgid "Unknown edit data requested"
+msgstr "Unknown edit data requested"
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelYesNoDeleteSnippetAbstract.php:162
+msgid "Do you really want to delete this item?"
+msgstr "Do you really want to delete this item?"
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:236
+msgid "Choosen import definition: "
+msgstr "Choosen import definition: "
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:302
+msgid "Upload successful!"
+msgstr "Upload successful!"
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:303
+msgid "Check the input visually."
+msgstr "Check the input visually."
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:320
+msgid "Upload error!"
+msgstr "Upload error!"
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:357
+msgid "Import errors found, import is not allowed."
+msgstr "Import errors found, import is not allowed."
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:359
+msgid "Check was successfull, import can start."
+msgstr "Check was successfull, import can start."
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:374
+msgid "Check error!"
+msgstr "Check error!"
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:422
+msgid "Import error!"
+msgstr "Import error!"
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:443
+#, php-format
+msgid "Data import. Step %d of %d."
+msgstr "Data import. Step %d of %d."
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:483
+#, php-format
+msgid "%d row imported."
+msgid_plural "%d rows imported."
+msgstr[0] "%d row imported."
+msgstr[1] "%d rows imported."
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:484
+#, php-format
+msgid "%d row changed."
+msgid_plural "%d rows changed."
+msgstr[0] "%d row changed."
+msgstr[1] "%d rows changed."
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:564
+msgid "Import field definitions"
+msgstr "Import field definitions"
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:591
+msgid "Import definition"
+msgstr "Import definition"
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:593
+msgid "See import field definitions table"
+msgstr "See import field definitions table"
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:599
+msgid "Choose work mode"
+msgstr "Choose work mode"
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:602
+msgid "Upload a file"
+msgstr "Upload a file"
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:603
+msgid "Copy and paste into a text field"
+msgstr "Copy and paste into a text field"
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:623
+msgid "Import text - user header line - separate fields using tabs"
+msgstr "Import text - user header line - separate fields using tabs"
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:624
+msgid "Empty fields remove any existing values. Add a field only when used."
+msgstr "Empty fields remove any existing values. Add a field only when used."
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:678
+msgid "No import definition specified"
+msgstr "No import definition specified"
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:683
+#, php-format
+msgid "Import definition %s does not exist."
+msgstr "Import definition %s does not exist."
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:689
+#, php-format
+msgid "%s is not a valid import definition."
+msgstr "%s is not a valid import definition."
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:804
+msgid "For bold"
+msgstr "For bold"
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:823
+#, php-format
+msgid "A number of length %d, with a precision of %d digits after the period."
+msgstr "A number of length %d, with a precision of %d digits after the period."
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:825
+#, php-format
+msgid "A whole number of length %d."
+msgstr "A whole number of length %d."
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:828
+msgid "A numeric value"
+msgstr "A numeric value"
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:833
+msgid "Date value using ISO 8601: yyyy-mm-dd"
+msgstr "Date value using ISO 8601: yyyy-mm-dd"
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:837
+msgid "Datetime value using ISO 8601: yyyy-mm-ddThh:mm::ss[+-hh:mm]"
+msgstr "Datetime value using ISO 8601: yyyy-mm-ddThh:mm::ss[+-hh:mm]"
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:841
+msgid "Time value using ISO 8601: hh:mm::ss[+-hh:mm]"
+msgstr "Time value using ISO 8601: hh:mm::ss[+-hh:mm]"
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:849
+#, php-format
+msgid "Text, between %d and %d character"
+msgid_plural "Text, between %d and %d characters"
+msgstr[0] "Text, between %d and %d character"
+msgstr[1] "Text, between %d and %d characters"
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:854
+#, php-format
+msgid "Text, %d character"
+msgid_plural "Text, %d characters"
+msgstr[0] "Text, %d character"
+msgstr[1] "Text, %d characters"
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:859
+#, php-format
+msgid "Text, at least %d character"
+msgid_plural "Text, at least %d characters"
+msgstr[0] "Text, at least %d character"
+msgstr[1] "Text, at least %d characters"
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:863
+msgid "Text"
+msgstr "Text"
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:882
+#, php-format
+msgid ", %s"
+msgstr ", %s"
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:893
+#, php-format
+msgid "; one of: %s"
+msgstr "; one of: %s"
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:895
+#, php-format
+msgid "; e.g. one of: %s, ..."
+msgstr "; e.g. one of: %s, ..."
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:904
+msgid "Field description"
+msgstr "Field description"
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:904
+msgid "<<no description>>"
+msgstr "<<no description>>"
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:1029
+#, php-format
+msgid "Unknown translator '%s'. Should be one of: %s"
+msgstr "Unknown translator '%s'. Should be one of: %s"
+
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/WizardFormSnippetAbstract.php:298
+msgid "Finish"
+msgstr "Finish"
+
+#: vendor/magnafacta/mutil/src/MUtil/Task/File/CopyFileWhenTask.php:85
+#, php-format
+msgid "Copied file to \"%s\"."
+msgstr "Copied file to \"%s\"."
+
+#: vendor/magnafacta/mutil/src/MUtil/Task/File/CopyFileWhenTask.php:88
+#, php-format
+msgid "Could not copy \"%s\" to \"%s\"."
+msgstr "Could not copy \"%s\" to \"%s\"."
+
+#: vendor/magnafacta/mutil/src/MUtil/Task/Import/ImportCheckTask.php:118
+#, php-format
+msgid "%d row checked"
+msgid_plural "%d rows checked"
+msgstr[0] "%d row checked"
+msgstr[1] "%d rows checked"
+
+#: vendor/magnafacta/mutil/src/MUtil/Task/Import/ImportCheckTask.php:129
+#, php-format
+msgid "%s, no problems found."
+msgstr "%s, no problems found."
+
+#: vendor/magnafacta/mutil/src/MUtil/Task/Import/ImportCheckTask.php:133
+#, php-format
+msgid "%s, one import problem found, continuing check."
+msgid_plural "%s, %d import problems found, continuing check."
+msgstr[0] "%s, one import problem found, continuing check."
+msgstr[1] "%s, %d import problems found, continuing check."
+
 #~ msgid "Changelog"
 #~ msgstr "Changelog"
 
@@ -8619,234 +8964,6 @@ msgstr "Response is for a different formId: %s <-> %s"
 
 #~ msgid "'%value%' is not greater than '%min%'"
 #~ msgstr "'%value%' is not greater than '%min%'"
-
-#~ msgid "%s ago"
-#~ msgstr "%s ago"
-
-#~ msgid "%s to go"
-#~ msgstr "%s to go"
-
-#~ msgid "second"
-#~ msgid_plural "seconds"
-#~ msgstr[0] "second"
-#~ msgstr[1] "seconds"
-
-#~ msgid "minute"
-#~ msgid_plural "minutes"
-#~ msgstr[0] "minute"
-#~ msgstr[1] "minutes"
-
-#~ msgid "hour"
-#~ msgid_plural "hours"
-#~ msgstr[0] "hour"
-#~ msgstr[1] "hours"
-
-#~ msgid "day"
-#~ msgid_plural "days"
-#~ msgstr[0] "day"
-#~ msgstr[1] "days"
-
-#~ msgid "week"
-#~ msgid_plural "weeks"
-#~ msgstr[0] "week"
-#~ msgstr[1] "weeks"
-
-#~ msgid "month"
-#~ msgid_plural "months"
-#~ msgstr[0] "month"
-#~ msgstr[1] "months"
-
-#~ msgid "year"
-#~ msgid_plural "years"
-#~ msgstr[0] "year"
-#~ msgstr[1] "years"
-
-#~ msgid "decade"
-#~ msgid_plural "decades"
-#~ msgstr[0] "decade"
-#~ msgstr[1] "decades"
-
-#~ msgid "Found %2$d import error(s). Import aborted."
-#~ msgstr "Found %2$d import error(s). Import aborted."
-
-#~ msgid "No filename specified to import"
-#~ msgstr "No filename specified to import"
-
-#~ msgid "File '%s' does not exist. Import not possible."
-#~ msgstr "File '%s' does not exist. Import not possible."
-
-#~ msgid "Unsupported file extension: %s. Import not possible."
-#~ msgstr "Unsupported file extension: %s. Import not possible."
-
-#~ msgid "No field overlap between source and target"
-#~ msgstr "No field overlap between source and target"
-
-#~ msgid "Row %s"
-#~ msgstr "Row %s"
-
-#~ msgid " field %s"
-#~ msgstr " field %s"
-
-#~ msgid "Input error! Changes to %s not saved!"
-#~ msgstr "Input error! Changes to %s not saved!"
-
-#~ msgid "Unknown edit data requested"
-#~ msgstr "Unknown edit data requested"
-
-#~ msgid "Do you really want to delete this item?"
-#~ msgstr "Do you really want to delete this item?"
-
-#~ msgid "Choosen import definition: "
-#~ msgstr "Choosen import definition: "
-
-#~ msgid "Upload successful!"
-#~ msgstr "Upload successful!"
-
-#~ msgid "Check the input visually."
-#~ msgstr "Check the input visually."
-
-#~ msgid "Upload error!"
-#~ msgstr "Upload error!"
-
-#~ msgid "Import errors found, import is not allowed."
-#~ msgstr "Import errors found, import is not allowed."
-
-#~ msgid "Check was successfull, import can start."
-#~ msgstr "Check was successfull, import can start."
-
-#~ msgid "Check error!"
-#~ msgstr "Check error!"
-
-#~ msgid "Import error!"
-#~ msgstr "Import error!"
-
-#~ msgid "Data import. Step %d of %d."
-#~ msgstr "Data import. Step %d of %d."
-
-#~ msgid "%d row imported."
-#~ msgid_plural "%d rows imported."
-#~ msgstr[0] "%d row imported."
-#~ msgstr[1] "%d rows imported."
-
-#~ msgid "%d row changed."
-#~ msgid_plural "%d rows changed."
-#~ msgstr[0] "%d row changed."
-#~ msgstr[1] "%d rows changed."
-
-#~ msgid "Import field definitions"
-#~ msgstr "Import field definitions"
-
-#~ msgid "Import definition"
-#~ msgstr "Import definition"
-
-#~ msgid "See import field definitions table"
-#~ msgstr "See import field definitions table"
-
-#~ msgid "Choose work mode"
-#~ msgstr "Choose work mode"
-
-#~ msgid "Upload a file"
-#~ msgstr "Upload a file"
-
-#~ msgid "Copy and paste into a text field"
-#~ msgstr "Copy and paste into a text field"
-
-#~ msgid "Import text - user header line - separate fields using tabs"
-#~ msgstr "Import text - user header line - separate fields using tabs"
-
-#~ msgid "Empty fields remove any existing values. Add a field only when used."
-#~ msgstr ""
-#~ "Empty fields remove any existing values. Add a field only when used."
-
-#~ msgid "No import definition specified"
-#~ msgstr "No import definition specified"
-
-#~ msgid "Import definition %s does not exist."
-#~ msgstr "Import definition %s does not exist."
-
-#~ msgid "%s is not a valid import definition."
-#~ msgstr "%s is not a valid import definition."
-
-#~ msgid "For bold"
-#~ msgstr "For bold"
-
-#~ msgid ""
-#~ "A number of length %d, with a precision of %d digits after the period."
-#~ msgstr ""
-#~ "A number of length %d, with a precision of %d digits after the period."
-
-#~ msgid "A whole number of length %d."
-#~ msgstr "A whole number of length %d."
-
-#~ msgid "A numeric value"
-#~ msgstr "A numeric value"
-
-#~ msgid "Date value using ISO 8601: yyyy-mm-dd"
-#~ msgstr "Date value using ISO 8601: yyyy-mm-dd"
-
-#~ msgid "Datetime value using ISO 8601: yyyy-mm-ddThh:mm::ss[+-hh:mm]"
-#~ msgstr "Datetime value using ISO 8601: yyyy-mm-ddThh:mm::ss[+-hh:mm]"
-
-#~ msgid "Time value using ISO 8601: hh:mm::ss[+-hh:mm]"
-#~ msgstr "Time value using ISO 8601: hh:mm::ss[+-hh:mm]"
-
-#~ msgid "Text, between %d and %d character"
-#~ msgid_plural "Text, between %d and %d characters"
-#~ msgstr[0] "Text, between %d and %d character"
-#~ msgstr[1] "Text, between %d and %d characters"
-
-#~ msgid "Text, %d character"
-#~ msgid_plural "Text, %d characters"
-#~ msgstr[0] "Text, %d character"
-#~ msgstr[1] "Text, %d characters"
-
-#~ msgid "Text, at least %d character"
-#~ msgid_plural "Text, at least %d characters"
-#~ msgstr[0] "Text, at least %d character"
-#~ msgstr[1] "Text, at least %d characters"
-
-#~ msgid "Text"
-#~ msgstr "Text"
-
-#~ msgid ", %s"
-#~ msgstr ", %s"
-
-#~ msgid "; one of: %s"
-#~ msgstr "; one of: %s"
-
-#~ msgid "; e.g. one of: %s, ..."
-#~ msgstr "; e.g. one of: %s, ..."
-
-#~ msgid "Field description"
-#~ msgstr "Field description"
-
-#~ msgid "<<no description>>"
-#~ msgstr "<<no description>>"
-
-#~ msgid "Unknown translator '%s'. Should be one of: %s"
-#~ msgstr "Unknown translator '%s'. Should be one of: %s"
-
-#~ msgid "Finish"
-#~ msgstr "Finish"
-
-#~ msgid "Copied file to \"%s\"."
-#~ msgstr "Copied file to \"%s\"."
-
-#~ msgid "Could not copy \"%s\" to \"%s\"."
-#~ msgstr "Could not copy \"%s\" to \"%s\"."
-
-#~ msgid "%d row checked"
-#~ msgid_plural "%d rows checked"
-#~ msgstr[0] "%d row checked"
-#~ msgstr[1] "%d rows checked"
-
-#~ msgid "%s, no problems found."
-#~ msgstr "%s, no problems found."
-
-#~ msgid "%s, one import problem found, continuing check."
-#~ msgid_plural "%s, %d import problems found, continuing check."
-#~ msgstr[0] "%s, one import problem found, continuing check."
-#~ msgstr[1] "%s, %d import problems found, continuing check."
 
 #~ msgid "Only when '%s' is '%s'."
 #~ msgstr "Only when '%s' is '%s'."
