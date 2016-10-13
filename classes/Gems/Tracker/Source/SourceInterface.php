@@ -73,6 +73,13 @@ interface Gems_Tracker_Source_SourceInterface extends \MUtil_Registry_TargetInte
      * @return \MUtil_Date date time or null
      */
     public function getAnswerDateTime($fieldName, \Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null);
+    
+    /**
+     * Returns all the gemstracker names for attributes stored in source for a token
+     * 
+     * @return array
+     */
+    public function getAttributes();
 
     /**
      * Gets the time the survey was completed according to the source

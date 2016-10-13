@@ -239,6 +239,15 @@ abstract class Gems_Tracker_Source_SourceAbstract extends \MUtil_Translate_Trans
         }
         $select->limit($limit, $offset);
     }
+    
+    /**
+     * Returns all the gemstracker names for attributes stored in source for a token
+     * 
+     * @return array
+     */
+    public function getAttributes() {
+        return array();
+    }
 
     /**
      *
