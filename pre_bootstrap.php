@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This files contains general project code that set constants and initializes
  * PHP for use with Zend / Gemstracker. Next the autoloader and Zend_Application
@@ -6,7 +7,6 @@
  *
  * @author Matijs de Jong <mjong@magnafacta.nl>
  * @since 1.0
- * @version $Id: pre_bootstrap.php 2659 2015-07-30 16:10:15Z jvangestel $
  * @package Gems
  * @subpackage Project
  */
@@ -21,6 +21,10 @@ mb_internal_encoding(APPLICATION_ENCODING);
  */
 defined('APPLICATION_PATH') || define('APPLICATION_PATH', GEMS_ROOT_DIR . '/application');
 defined('GEMS_PROJECT_NAME_UC') || define('GEMS_PROJECT_NAME_UC', ucfirst(GEMS_PROJECT_NAME));
+
+defined('VENDOR_DIR') || define('VENDOR_DIR', realpath(GEMS_ROOT_DIR . '/vendor/'));
+defined('GEMS_LIBRARY_DIR') || define('GEMS_LIBRARY_DIR', realpath(VENDOR_DIR . '/gemstracker/gemstracker'));
+defined('MUTIL_LIBRARY_DIR') || define('MUTIL_LIBRARY_DIR', realpath(VENDOR_DIR . '/magnafacta/mutil/src'));
 
 /**
  * Use the composer autoloader, since we store this variable in global scope, projects can interact with it when needed.
@@ -40,7 +44,7 @@ set_include_path(
 
 
 // Create application, bootstrap, and run
-$application = new Zend_Application(
+$application = new \Zend_Application(
     APPLICATION_ENV,
     APPLICATION_PATH . '/configs/application.ini'
 );

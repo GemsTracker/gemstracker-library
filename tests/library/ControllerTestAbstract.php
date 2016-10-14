@@ -3,14 +3,14 @@ class ControllerTestAbstract extends \Zend_Test_PHPUnit_ControllerTestCase
 {
     public function setUp()
     {
-        // \Zend_Application: loads the autoloader
-        require_once 'Zend/Application.php';
+        $iniFile = APPLICATION_PATH . '/configs/application.example.ini';
+        
+        if (!file_exists($iniFile)) {
+            $iniFile = APPLICATION_PATH . '/configs/application.ini';
+        }
 
         // Create application, bootstrap, and run
-        $application = new \Zend_Application(
-            APPLICATION_ENV,
-            GEMS_ROOT_DIR . '/configs/application.example.ini'
-        );
+        $application = new \Zend_Application(APPLICATION_ENV, $iniFile);
 
         $this->bootstrap = $application;
 

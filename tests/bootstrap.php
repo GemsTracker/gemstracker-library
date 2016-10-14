@@ -8,22 +8,25 @@
  * @package Gems
  */
 
-date_default_timezone_set('Europe/Amsterdam');
+defined('GEMS_TIMEZONE') || define('GEMS_TIMEZONE', 'Europe/Amsterdam');
+date_default_timezone_set(GEMS_TIMEZONE);
 
 /**
  * Setup environment
  */
-define('GEMS_TEST_DIR', realpath(dirname(__FILE__)));
-define('GEMS_ROOT_DIR', realpath(dirname(__FILE__) . '/../'));
-define('GEMS_LIBRARY_DIR', realpath(dirname(__FILE__) . '/../'));
-define('GEMS_WEB_DIR', dirname(__FILE__));
 define('APPLICATION_ENV', 'testing');
 define('GEMS_PROJECT_NAME', 'Gems');
 define('GEMS_PROJECT_NAME_UC', 'Gems');
-define('APPLICATION_PATH', GEMS_LIBRARY_DIR);
 
-defined('VENDOR_DIR') || define('VENDOR_DIR', realpath(GEMS_TEST_DIR . '/../vendor/'));
-defined('MUTIL_LIBRARY_DIR') || define('MUTIL_LIBRARY_DIR', realpath(VENDOR_DIR . '/magnafacta'));
+define('GEMS_TEST_DIR', __DIR__);
+define('GEMS_ROOT_DIR', dirname(__DIR__));
+define('GEMS_WEB_DIR', dirname(__FILE__));
+
+defined('APPLICATION_PATH') || define('APPLICATION_PATH', GEMS_ROOT_DIR);
+defined('VENDOR_DIR') || define('VENDOR_DIR', dirname(dirname(GEMS_ROOT_DIR)));
+defined('GEMS_LIBRARY_DIR') || define('GEMS_LIBRARY_DIR', realpath(VENDOR_DIR . '/gemstracker/gemstracker'));
+defined('MUTIL_LIBRARY_DIR') || define('MUTIL_LIBRARY_DIR', realpath(VENDOR_DIR . '/magnafacta/mutil/src'));
+defined('APPLICATION_PATH') || define('APPLICATION_PATH', GEMS_LIBRARY_DIR);
 
 // Make sure session save path is writable for current user (needed for Jenkins)
 if (!is_writable( session_save_path())) {
