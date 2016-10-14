@@ -39,12 +39,14 @@ if (!is_writable( session_save_path())) {
 set_include_path(
     GEMS_TEST_DIR . '/classes' . PATH_SEPARATOR .
     GEMS_TEST_DIR . '/library' . PATH_SEPARATOR .
-    GEMS_LIBRARY_DIR . '/classes' . PATH_SEPARATOR
+    GEMS_LIBRARY_DIR . '/classes' . PATH_SEPARATOR .
+    MUTIL_LIBRARY_DIR . PATH_SEPARATOR .
+    VENDOR_DIR . '/magnafacta/mutil/src'
     );
 
 // Set up autoload.
-if (file_exists(dirname(__FILE__) . '/../vendor/autoload.php')) {
-    require_once dirname(__FILE__) . '/../vendor/autoload.php';
+if (false && file_exists(VENDOR_DIR . '/autoload.php')) {
+    require_once VENDOR_DIR . '/autoload.php';
 } else {
     // Try to set the correct include path (if needed)
     $paths = array(
@@ -53,7 +55,7 @@ if (file_exists(dirname(__FILE__) . '/../vendor/autoload.php')) {
         'zendframework/zendframework1/library',
         'zendframework/zf1-extras/library',
     );
-    $start = VENDOR_DIR;
+    $start = VENDOR_DIR . DIRECTORY_SEPARATOR;
     foreach ($paths as $path) {
         $dir = realpath($start . $path);
 
