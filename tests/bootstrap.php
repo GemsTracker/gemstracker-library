@@ -33,23 +33,28 @@ if (!is_writable( session_save_path())) {
      session_save_path(GEMS_TEST_DIR . '/tmp');
 }
 
-/**
- * Setup include path
- */
-set_include_path(
-    GEMS_TEST_DIR . '/classes' . PATH_SEPARATOR .
-    GEMS_TEST_DIR . '/library' . PATH_SEPARATOR .
-    GEMS_LIBRARY_DIR . '/classes' . PATH_SEPARATOR .
-    MUTIL_LIBRARY_DIR . PATH_SEPARATOR .
-    VENDOR_DIR . '/magnafacta/mutil/tests' . PATH_SEPARATOR .
-    VENDOR_DIR . '/zendframework/zendframework1/library' . PATH_SEPARATOR .
-    VENDOR_DIR . '/zendframework/zf1-extras/library'
-    );
-
 // Set up autoload for travis.
 if (file_exists(dirname(__FILE__) . '/../vendor/autoload.php')) {
+    /**
+     * Setup include path
+     */
+    set_include_path(
+        GEMS_TEST_DIR . '/classes' . PATH_SEPARATOR .
+        GEMS_TEST_DIR . '/library' . PATH_SEPARATOR .
+        GEMS_ROOT_DIR . '/classes'
+        );
+
     require_once dirname(__FILE__) . '/../vendor/autoload.php';
 } else {
+    /**
+     * Setup include path
+     */
+    set_include_path(
+        GEMS_TEST_DIR . '/classes' . PATH_SEPARATOR .
+        GEMS_TEST_DIR . '/library' . PATH_SEPARATOR .
+        GEMS_LIBRARY_DIR . '/classes'
+        );
+
     // Try to set the correct include path (if needed)
     $paths = array(
         'magnafacta/mutil/src',
