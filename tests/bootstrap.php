@@ -20,7 +20,7 @@ define('GEMS_PROJECT_NAME_UC', 'Gems');
 
 define('GEMS_TEST_DIR', __DIR__);
 define('GEMS_ROOT_DIR', dirname(__DIR__));
-define('GEMS_WEB_DIR', dirname(__FILE__));
+define('GEMS_WEB_DIR', GEMS_TEST_DIR);
 
 defined('APPLICATION_PATH') || define('APPLICATION_PATH', GEMS_ROOT_DIR);
 defined('VENDOR_DIR') || define('VENDOR_DIR', dirname(dirname(GEMS_ROOT_DIR)));
@@ -39,7 +39,8 @@ if (!is_writable( session_save_path())) {
 set_include_path(
     GEMS_TEST_DIR . '/classes' . PATH_SEPARATOR .
     GEMS_TEST_DIR . '/library' . PATH_SEPARATOR .
-    GEMS_ROOT_DIR . '/classes');
+    GEMS_LIBRARY_DIR . '/classes' . PATH_SEPARATOR
+    );
 
 // Set up autoload.
 if (file_exists(dirname(__FILE__) . '/../vendor/autoload.php')) {
@@ -52,7 +53,7 @@ if (file_exists(dirname(__FILE__) . '/../vendor/autoload.php')) {
         'zendframework/zendframework1/library',
         'zendframework/zf1-extras/library',
     );
-    $start = realpath(dirname(__FILE__) . '/../../../') . '/';
+    $start = VENDOR_DIR;
     foreach ($paths as $path) {
         $dir = realpath($start . $path);
 
