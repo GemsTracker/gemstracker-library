@@ -19,7 +19,7 @@ define('GEMS_PROJECT_NAME', 'Gems');
 define('GEMS_PROJECT_NAME_UC', 'Gems');
 
 define('GEMS_TEST_DIR', __DIR__);
-define('GEMS_ROOT_DIR', dirname(__DIR__));
+define('GEMS_ROOT_DIR', dirname(GEMS_TEST_DIR));
 define('GEMS_WEB_DIR', GEMS_TEST_DIR);
 
 defined('APPLICATION_PATH') || define('APPLICATION_PATH', GEMS_ROOT_DIR);
@@ -41,12 +41,14 @@ set_include_path(
     GEMS_TEST_DIR . '/library' . PATH_SEPARATOR .
     GEMS_LIBRARY_DIR . '/classes' . PATH_SEPARATOR .
     MUTIL_LIBRARY_DIR . PATH_SEPARATOR .
-    VENDOR_DIR . '/magnafacta/mutil/src'
+    VENDOR_DIR . '/magnafacta/mutil/tests' . PATH_SEPARATOR .
+    VENDOR_DIR . '/zendframework/zendframework1/library' . PATH_SEPARATOR .
+    VENDOR_DIR . '/zendframework/zf1-extras/library'
     );
 
-// Set up autoload.
-if (false && file_exists(VENDOR_DIR . '/autoload.php')) {
-    require_once VENDOR_DIR . '/autoload.php';
+// Set up autoload for travis.
+if (file_exists(dirname(__FILE__) . '/../vendor/autoload.php')) {
+    require_once dirname(__FILE__) . '/../vendor/autoload.php';
 } else {
     // Try to set the correct include path (if needed)
     $paths = array(
