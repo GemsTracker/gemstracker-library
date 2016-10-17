@@ -6,7 +6,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -279,22 +278,22 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $page->addExportAction();
         $page->addImportAction();
 
-        $page = $page->addShowAction()
+        $rPage = $page->addShowAction()
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
 
-        $page->addEditAction('pr.respondent.edit')
+        $rPage->addEditAction('pr.respondent.edit')
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
 
-        $page->addPage($this->_('View survey'), 'pr.track.insert', 'track', 'view-survey', array('button_only' => true))
+        $rPage->addPage($this->_('View survey'), 'pr.track.insert', 'track', 'view-survey', array('button_only' => true))
                     ->setNamedParameters($params)
                     ->addNamedParameters(\Gems_Model::SURVEY_ID, 'gsu_id_survey')
                     ->setHiddenOrgId($orgId);
 
         // Add "appointments"
         $appParams = array(\Gems_Model::APPOINTMENT_ID => 'gap_id_appointment'); // + $params;
-        $apage = $page->addPage($this->_('Appointments'), 'pr.appointments', 'appointment');
+        $apage = $rPage->addPage($this->_('Appointments'), 'pr.appointments', 'appointment');
         $apage->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
         $apage->addAutofilterAction();
@@ -305,7 +304,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
 
         if ($this->escort instanceof \Gems_Project_Tracks_SingleTrackInterface) {
 
-            $subPage = $page->addPage($this->_('Track'), 'pr.track', 'track', 'show-track')
+            $subPage = $rPage->addPage($this->_('Track'), 'pr.track', 'track', 'show-track')
                     ->setNamedParameters($params)
                     ->setHiddenOrgId($orgId)
                     ->addHiddenParameter(\Gems_Model::TRACK_ID, $this->escort->getTrackId());
@@ -359,7 +358,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
 
         } else {
 
-            $trPage = $page->addPage($this->_('Tracks'), 'pr.track', 'track');
+            $trPage = $rPage->addPage($this->_('Tracks'), 'pr.track', 'track');
             $trPage->setNamedParameters($params)
                     ->setHiddenOrgId($orgId)
                     ->addAutofilterAction();
@@ -437,7 +436,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
                     ->setNamedParameters($params)
                     ->setHiddenOrgId($orgId);
 
-            $trPage = $page->addPage($this->_('Surveys'), 'pr.survey', 'token');
+            $trPage = $rPage->addPage($this->_('Surveys'), 'pr.survey', 'token');
 
             // Surveys overview
             $trPage->setNamedParameters($params)
@@ -483,18 +482,18 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
                 ->setParameterFilter('is_completed', 1, \Gems_Model::ID_TYPE, 'token');
 
 
-        $page->addAction($this->_('Export archive'), 'pr.respondent.export-html', 'export-archive')
+        $rPage->addAction($this->_('Export archive'), 'pr.respondent.export-html', 'export-archive')
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
 
-        $mailLogPage = $page->addPage($this->_('Communication log'), 'pr.respondent-commlog', 'respondent-mail-log', 'index')
+        $mailLogPage = $rPage->addPage($this->_('Communication log'), 'pr.respondent-commlog', 'respondent-mail-log', 'index')
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
         $mailLogPage->addAutofilterAction();
         $mailLogPage->addShowAction();
 
         // LOG CONTROLLER
-        $logPage = $page->addPage($this->_('Activity log'), 'pr.respondent-log', 'respondent-log', 'index');
+        $logPage = $rPage->addPage($this->_('Activity log'), 'pr.respondent-log', 'respondent-log', 'index');
         $logPage->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
         $logPage->addAutofilterAction();
@@ -503,18 +502,18 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
                 ->setNamedParameters($logParams)
                 ->setHiddenOrgId($orgId);
 
-        $page->addDeleteAction('pr.respondent.delete')
+        $rPage->addDeleteAction('pr.respondent.delete')
                 ->setNamedParameters($params)
                 ->setParameterFilter('resp_deleted', 0)
                 ->setHiddenOrgId($orgId);
-        $page->addAction($this->_('Undelete!'), 'pr.respondent.undelete', 'undelete')
+        $rPage->addAction($this->_('Undelete!'), 'pr.respondent.undelete', 'undelete')
                 ->setNamedParameters($params)
                 ->setParameterFilter('resp_deleted', 1)
                 ->setHiddenOrgId($orgId);
 
         /* Add respondent relations */
         $relParams = $params + array('rid' => 'grr_id');
-        $relationsPage = $page->addPage($this->_('Relations'), 'pr.respondent.relation', 'respondent-relation', 'index')
+        $relationsPage = $rPage->addPage($this->_('Relations'), 'pr.respondent.relation', 'respondent-relation', 'index')
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
         $relationsPage->addAutofilterAction();
@@ -532,7 +531,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
             }
         }
 
-        return $page;
+        return $rPage;
     }
 
     /**

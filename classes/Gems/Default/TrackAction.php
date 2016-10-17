@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -263,7 +262,6 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
         'createData' => true,
         'formTitle'  => 'getInsertInTrackTitle',
         'model'      => null,
-        'surveyId'   => 'getSurveyId',
         );
 
     /**

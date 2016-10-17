@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: InsertSurveySnippet.php 0000 2015-04-15 16:29:48Z matijsdejong $
  */
 
 namespace Gems\Snippets\Tracker;
@@ -172,7 +171,9 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
 
         $trackData = $this->util->getTrackData();
 
-        $this->surveyList = $trackData->getInsertableSurveys();
+        if (! $this->surveyList) {
+            $this->surveyList = $trackData->getInsertableSurveys();
+        }
 
         $model->set('gto_id_survey',   'label', $this->_('Suvey to insert'),
                 // 'elementClass' set in loadSurvey
