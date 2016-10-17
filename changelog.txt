@@ -1,5 +1,6 @@
 1.8.1 => 1.8.2
 =================
+Correct token button added to menu
 Before field save events allows changing the fields after their new values have been calculated
 Respondent changed events can be set at the organization level
 

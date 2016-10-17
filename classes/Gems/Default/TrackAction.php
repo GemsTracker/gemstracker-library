@@ -79,10 +79,14 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
         );
 
     /**
+     * The parameters used for the insert action.
      *
-     * @var \Zend_Db_Adapter_Abstract
+     * @var array Mixed key => value array for snippet initialization
      */
-    public $db;
+    protected $correctParameters = array(
+        'fixedReceptionCode' => 'redo',
+        'formTitle'          => 'getCorrectTokenTitle',
+        );
 
     /**
      * The parameters used for the create actions, overrules any values in
@@ -119,6 +123,12 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
      * @var \Gems_User_User
      */
     public $currentUser;
+
+    /**
+     *
+     * @var \Zend_Db_Adapter_Abstract
+     */
+    public $db;
 
     /**
      * The default parameters used for any token action like answers or sho0w
@@ -545,6 +555,16 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
     }
 
     /**
+     * Action for correcting answers
+     */
+    public function correctAction()
+    {
+        $this->deleteParameters = $this->correctParameters + $this->deleteParameters;
+
+        $this->deleteAction();
+    }
+
+    /**
      * Action for showing a create new item page
      *
      * Uses separate createSnippets instead of createEditSnipppets
@@ -681,6 +701,22 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
 
             $this->addSnippets($this->exportTrackSnippets, $params);
         }
+    }
+
+    /**
+     * Get the title for correcting a token
+     *
+     * @return string
+     */
+    protected function getCorrectTokenTitle()
+    {
+        $token = $this->getToken();
+
+        return sprintf(
+                $this->_('Correct answers for survey %s, round %s'),
+                $token->getSurveyName(),
+                $token->getRoundDescription()
+                );
     }
 
     /**

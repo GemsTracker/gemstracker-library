@@ -449,6 +449,9 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
                 ->setNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
                 ->setParameterFilter('grc_success', 1, \Gems_Model::ID_TYPE, 'token');
 
+        $tkPage->addAction($this->_('Correct answers'), 'pr.token.correct', 'correct')
+                ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
+                ->setParameterFilter('is_completed', 1, 'grc_success', 1, Gems_Model::ID_TYPE, 'token');
         $tkPage->addDeleteAction('pr.token.delete')
                 ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
                 ->setParameterFilter('grc_success', 1, \Gems_Model::ID_TYPE, 'token');

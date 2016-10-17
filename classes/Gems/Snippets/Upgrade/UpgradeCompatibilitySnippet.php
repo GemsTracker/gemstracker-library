@@ -211,6 +211,15 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
                 }
                 break;
 
+            case 'TrackController.php':
+                if (preg_match('/\\sfunction\\s+correctAction\\s*\\(/', $content) &&
+                        (! preg_match('/\\sparent::correctAction\\s*\\(/', $content))) {
+                    $messages[] = "Your track controller has a correctAction() function. "
+                            . "This function is now part of the GemsTracker core. "
+                            . "Remove the function or make sure it calls parent::correctAction().";
+                }
+                break;
+
             default:
                 $changedControllers = array(
                     'ConsentController'           => 57,

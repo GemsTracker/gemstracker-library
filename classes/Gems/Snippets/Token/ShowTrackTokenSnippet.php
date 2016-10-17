@@ -98,7 +98,7 @@ class ShowTrackTokenSnippet extends \Gems_Tracker_Snippets_ShowTokenSnippetAbstr
         if ($this->token->hasResult()) {
             $fields[] = 'gto_result';
         }
-        $fields[] = $links->getActionLink($controller, 'delete', true);
+        $fields[] = $links->getActionLinks(true, $controller, 'correct', $controller, 'delete');
 
         $bridge->addWithThird($fields);
 

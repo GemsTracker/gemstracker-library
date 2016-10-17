@@ -1198,3 +1198,7 @@ ALTER TABLE gems__tracks DROP gtr_track_type;
 -- PATCH: Add before field update event
 ALTER TABLE gems__tracks ADD
     gtr_beforefieldupdate_event varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' AFTER gtr_track_class;
+
+-- PATCH: Add correct token right
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.token.correct')
+    WHERE grl_privileges NOT LIKE '%,pr.token.correct%' AND grl_privileges LIKE '%,pr.token.delete%';

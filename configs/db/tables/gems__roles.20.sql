@@ -72,7 +72,7 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     ,pr.respondent.create,pr.respondent.edit,pr.respondent.select-on-track,pr.respondent.who,
     ,pr.respondent-commlog,pr.respondent-log,
     ,pr.survey,
-    ,pr.token,pr.token.answers,pr.token.delete,pr.token.edit,pr.token.mail,pr.token.print,
+    ,pr.token,pr.token.answers,pr.token.correct,pr.token.delete,pr.token.edit,pr.token.mail,pr.token.print,
     ,pr.track,pr.track.answers,pr.track.create,pr.track.delete,pr.track.edit',
     CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
@@ -136,7 +136,7 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     ,pr.agenda-filters,pr.agenda-filters.create,pr.agenda-filters.delete,pr.agenda-filters.edit,
     ,pr.agenda-procedure,pr.agenda-procedure.cleanup,pr.agenda-procedure.create,pr.agenda-procedure.delete,pr.agenda-procedure.edit,
     ,pr.agenda-staff,pr.agenda-staff.create,pr.agenda-staff.delete,pr.agenda-staff.edit,
-    ,pr.comm.job.create,pr.comm.job.edit,pr.comm.job.delete,    
+    ,pr.comm.job.create,pr.comm.job.edit,pr.comm.job.delete,
     ,pr.consent.delete,
     ,pr.database,pr.database.create,pr.database.delete,pr.database.execute,pr.database.patches,
 	,pr.file-import,
