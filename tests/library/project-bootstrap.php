@@ -12,10 +12,10 @@
 defined('GEMS_WEB_DIR') || define('GEMS_WEB_DIR', dirname(dirname(__DIR__)));
 defined('GEMS_ROOT_DIR') || define('GEMS_ROOT_DIR', dirname(GEMS_WEB_DIR));
 
-define('GEMS_PROJECT_NAME_UC', ucfirst(GEMS_PROJECT_NAME));
+defined('GEMS_PROJECT_NAME_UC') || define('GEMS_PROJECT_NAME_UC', ucfirst(GEMS_PROJECT_NAME));
 defined('APPLICATION_ENV') || define('APPLICATION_ENV', 'development');
 
-define('APPLICATION_PATH', GEMS_ROOT_DIR . '/application');
+defined('APPLICATION_PATH') || define('APPLICATION_PATH', GEMS_ROOT_DIR . '/application');
 defined('APPLICATION_PATH') || define('APPLICATION_PATH', GEMS_ROOT_DIR . '/application');
 defined('GEMS_PROJECT_NAME_UC') || define('GEMS_PROJECT_NAME_UC', ucfirst(GEMS_PROJECT_NAME));
 
