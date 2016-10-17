@@ -23,8 +23,8 @@ define('GEMS_ROOT_DIR', dirname(GEMS_TEST_DIR));
 define('GEMS_WEB_DIR', GEMS_TEST_DIR);
 
 defined('APPLICATION_PATH') || define('APPLICATION_PATH', GEMS_ROOT_DIR);
-defined('VENDOR_DIR') || define('VENDOR_DIR', dirname(dirname(GEMS_ROOT_DIR)));
-defined('GEMS_LIBRARY_DIR') || define('GEMS_LIBRARY_DIR', realpath(VENDOR_DIR . '/gemstracker/gemstracker'));
+defined('VENDOR_DIR') || define('VENDOR_DIR', realpath(GEMS_ROOT_DIR . '/vendor/'));
+defined('GEMS_LIBRARY_DIR') || define('GEMS_LIBRARY_DIR', GEMS_ROOT_DIR);
 defined('MUTIL_LIBRARY_DIR') || define('MUTIL_LIBRARY_DIR', realpath(VENDOR_DIR . '/magnafacta/mutil/src'));
 defined('APPLICATION_PATH') || define('APPLICATION_PATH', GEMS_LIBRARY_DIR);
 
