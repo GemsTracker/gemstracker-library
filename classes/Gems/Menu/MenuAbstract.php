@@ -440,7 +440,7 @@ abstract class Gems_Menu_MenuAbstract
         $onDelete->addConfirm($this->_("Are you sure you want to delete this file?"));
         $page->addButtonOnly($this->_('Delete'), $privilege . '.delete', $controller, 'delete', array(
             'onclick' => $onDelete,
-            ));
+            ))->setModelParameters(1);
 
         $page->addButtonOnly($this->_('Download'), $privilege . '.download', $controller, 'download')
                 ->setModelParameters(1);
@@ -847,7 +847,7 @@ abstract class Gems_Menu_MenuAbstract
                 ->addNamedParameters(\Gems_Model::ROUND_ID, 'gro_id_round', \MUtil_Model::REQUEST_ID, 'gro_id_track');
         $spage->addDeleteAction('pr.track-maintenance.delete')
                 ->addNamedParameters(\Gems_Model::ROUND_ID, 'gro_id_round', \MUtil_Model::REQUEST_ID, 'gro_id_track');
-        
+
         $ajaxPage = $this->addPage($this->_('Sort rounds'), 'pr.track-maintenance.edit', 'track-rounds', 'sort', array('visible' => false));
 
         $overviewPage = $page->addPage($this->_('Tracks per org'), 'pr.track-maintenance.trackperorg', 'track-overview', 'index');

@@ -105,13 +105,17 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
             return $result;
         }
 
-        $result = $this->db->fetchAll($sql, (array) $binds);
+        try {
+            $result = $this->db->fetchAll($sql, (array) $binds);
 
-        if ($natSort) {
-            natsort($result);
+            if ($natSort) {
+                natsort($result);
+            }
+
+            $this->cache->save($result, $cacheId, (array) $tags);
+        } catch (\Zend_Db_Statement_Mysqli_Exception $e) {
+            $result = array();
         }
-
-        $this->cache->save($result, $cacheId, (array) $tags);
 
         return $result;
     }
@@ -136,16 +140,19 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
             return $result;
         }
 
-        $result = $this->db->fetchPairs($sql, (array) $binds);
+        try {
+            $result = $this->db->fetchPairs($sql, (array) $binds);
 
-        if ($result && $sort) {
-            $this->_sortResult($result, $sort);
+            if ($result && $sort) {
+                $this->_sortResult($result, $sort);
+            }
+
+            $this->cache->save($result, $cacheId, (array) $tags);
+        } catch (\Zend_Db_Statement_Mysqli_Exception $e) {
+            $result = array();
         }
 
-        $this->cache->save($result, $cacheId, (array) $tags);
-
         return $result;
-
     }
 
     /**
@@ -169,19 +176,23 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
             return $result;
         }
 
-        $result = $this->db->fetchPairs($sql, (array) $binds);
+        try {
+            $result = $this->db->fetchPairs($sql, (array) $binds);
 
-        if ($result) {
-            foreach ($result as $id => & $value) {
-                $value = call_user_func($function, $value);
+            if ($result) {
+                foreach ($result as $id => & $value) {
+                    $value = call_user_func($function, $value);
+                }
+
+                if ($sort) {
+                    $this->_sortResult($result, $sort);
+                }
             }
 
-            if ($sort) {
-                $this->_sortResult($result, $sort);
-            }
+            $this->cache->save($result, $cacheId, (array) $tags);
+        } catch (\Zend_Db_Statement_Mysqli_Exception $e) {
+            $result = array();
         }
-
-        $this->cache->save($result, $cacheId, (array) $tags);
 
         return $result;
     }
@@ -208,21 +219,24 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
         }
 
         $result = array();
-        $rows   = $this->db->fetchAll($sql);
+        try {
+            $rows   = $this->db->fetchAll($sql);
 
-        if ($rows) {
-            foreach ($rows as $row) {
-                if (! isset($result[$row[$keyField]])) {
-                    $result[$row[$keyField]] = call_user_func($function, $row);
+            if ($rows) {
+                foreach ($rows as $row) {
+                    if (! isset($result[$row[$keyField]])) {
+                        $result[$row[$keyField]] = call_user_func($function, $row);
+                    }
+                }
+
+                if ($sort) {
+                    $this->_sortResult($result, $sort);
                 }
             }
 
-            if ($sort) {
-                $this->_sortResult($result, $sort);
-            }
+            $this->cache->save($result, $cacheId, (array) $tags);
+        } catch (\Zend_Db_Statement_Mysqli_Exception $e) {
         }
-
-        $this->cache->save($result, $cacheId, (array) $tags);
 
         return $result;
     }

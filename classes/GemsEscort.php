@@ -246,7 +246,11 @@ class GemsEscort extends \MUtil_Application_Escort
                 $writer = new \Zend_Log_Writer_Stream($logPath . '/errors.log');
             } catch (Exception $exc) {
                 $this->bootstrap(array('locale', 'translate'));
-                die(sprintf($this->translateAdapter->_('Path %s not writable'), $logPath));
+                die(str_replace(GEMS_ROOT_DIR . '/', '', sprintf(
+                        $this->translateAdapter->_('Path %s not writable') . "\n%s\n",
+                        $logPath,
+                        $exc->getMessage()
+                        )));
             }
         }
 
@@ -517,12 +521,12 @@ class GemsEscort extends \MUtil_Application_Escort
 
         return $locale;
     }
-    
+
     /**
      * Set the default mailtransport to our own sendmail version
-     * 
-     * This is needed to make sure a correct sender is set when using sendmail. 
-     * Feel free to set a different default transport method in your project 
+     *
+     * This is needed to make sure a correct sender is set when using sendmail.
+     * Feel free to set a different default transport method in your project
      * when needed.
      */
     public function _initMailTransport()
