@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-11 11:05+0200\n"
+"POT-Creation-Date: 2016-10-18 14:45+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -1829,37 +1829,41 @@ msgstr "Content"
 msgid "Size"
 msgstr "Size"
 
-#: classes/Gems/Default/FileActionAbstract.php:165
+#: classes/Gems/Default/FileActionAbstract.php:140
+msgid "Empty delete request not allowed"
+msgstr "Empty delete request not allowed"
+
+#: classes/Gems/Default/FileActionAbstract.php:171
 #, php-format
 msgid "Edit file %s"
 msgstr "Edit file %s"
 
-#: classes/Gems/Default/FileActionAbstract.php:226
+#: classes/Gems/Default/FileActionAbstract.php:232
 #, php-format
 msgid "Showing file %s"
 msgstr "Showing file %s"
 
-#: classes/Gems/Default/FileActionAbstract.php:237
+#: classes/Gems/Default/FileActionAbstract.php:243
 msgid "file"
 msgid_plural "files"
 msgstr[0] "file"
 msgstr[1] "files"
 
-#: classes/Gems/Default/FileActionAbstract.php:251
+#: classes/Gems/Default/FileActionAbstract.php:257
 #, php-format
 msgid "File \"%s\" not found on the server."
 msgstr "File \"%s\" not found on the server."
 
-#: classes/Gems/Default/FileActionAbstract.php:259
+#: classes/Gems/Default/FileActionAbstract.php:265
 #, php-format
 msgid "Automatic import not possible for file \"%s\"."
 msgstr "Automatic import not possible for file \"%s\"."
 
-#: classes/Gems/Default/FileActionAbstract.php:265
+#: classes/Gems/Default/FileActionAbstract.php:271
 msgid "Import the file."
 msgstr "Import the file."
 
-#: classes/Gems/Default/FileActionAbstract.php:269
+#: classes/Gems/Default/FileActionAbstract.php:275
 msgid "Checks this file for validity and then performs an import."
 msgstr "Checks this file for validity and then performs an import."
 
@@ -3137,7 +3141,7 @@ msgstr "Synchronize all sources."
 
 #: classes/Gems/Default/StaffAction.php:135
 #: classes/Gems/Default/StaffAction.php:149
-#: classes/Gems/Default/StaffLogAction.php:68 classes/GemsEscort.php:2031
+#: classes/Gems/Default/StaffLogAction.php:68 classes/GemsEscort.php:2035
 msgid "No access to page"
 msgstr "No access to page"
 
@@ -4089,7 +4093,7 @@ msgstr "Show"
 msgid "Change password"
 msgstr "Change password"
 
-#: classes/Gems/Menu.php:229 classes/GemsEscort.php:969
+#: classes/Gems/Menu.php:229 classes/GemsEscort.php:973
 msgid "Logoff"
 msgstr "Logoff"
 
@@ -4554,7 +4558,7 @@ msgstr "Appointment"
 
 #: classes/Gems/Model/AppointmentModel.php:179
 #: classes/Gems/Model/AppointmentModel.php:218
-#: classes/Gems/Model/AppointmentModel.php:221 classes/GemsEscort.php:1346
+#: classes/Gems/Model/AppointmentModel.php:221 classes/GemsEscort.php:1350
 msgid "dd-mm-yyyy hh:mm"
 msgstr "dd-mm-yyyy hh:mm"
 
@@ -8417,42 +8421,42 @@ msgstr "Mrs."
 msgid "Mr./Mrs."
 msgstr "Mr./Mrs."
 
-#: classes/GemsEscort.php:249 vendor/magnafacta/mutil/src/MUtil/Log.php:105
+#: classes/GemsEscort.php:250 vendor/magnafacta/mutil/src/MUtil/Log.php:105
 #, php-format
 msgid "Path %s not writable"
 msgstr "Path %s not writable"
 
-#: classes/GemsEscort.php:817
+#: classes/GemsEscort.php:821
 msgid " > "
 msgstr " > "
 
-#: classes/GemsEscort.php:967
+#: classes/GemsEscort.php:971
 #, php-format
 msgid "You are logged in as %s"
 msgstr "You are logged in as %s"
 
-#: classes/GemsEscort.php:973
+#: classes/GemsEscort.php:977
 msgid "You are not logged in"
 msgstr "You are not logged in"
 
-#: classes/GemsEscort.php:1197
+#: classes/GemsEscort.php:1201
 #, php-format
 msgid "User: %s"
 msgstr "User: %s"
 
-#: classes/GemsEscort.php:1224
+#: classes/GemsEscort.php:1228
 msgid "version"
 msgstr "version"
 
-#: classes/GemsEscort.php:1327
+#: classes/GemsEscort.php:1331
 msgid "dd-mm-yyyy"
 msgstr "dd-mm-yyyy"
 
-#: classes/GemsEscort.php:1358
+#: classes/GemsEscort.php:1362
 msgid "hh:mm"
 msgstr "hh:mm"
 
-#: classes/GemsEscort.php:1807
+#: classes/GemsEscort.php:1811
 msgid ""
 "Take note: your session has expired, your inputs were not saved. Please "
 "check the input data and try again"
@@ -8460,33 +8464,33 @@ msgstr ""
 "Take note: your session has expired, your inputs were not saved. Please "
 "check the input data and try again"
 
-#: classes/GemsEscort.php:1994
+#: classes/GemsEscort.php:1998
 msgid "Please check back later."
 msgstr "Please check back later."
 
-#: classes/GemsEscort.php:1996 classes/GemsEscort.php:2000
-#: classes/GemsEscort.php:2001
+#: classes/GemsEscort.php:2000 classes/GemsEscort.php:2004
+#: classes/GemsEscort.php:2005
 msgid "System is in maintenance mode"
 msgstr "System is in maintenance mode"
 
-#: classes/GemsEscort.php:2012
+#: classes/GemsEscort.php:2016
 msgid "No access to site."
 msgstr "No access to site."
 
-#: classes/GemsEscort.php:2014 classes/GemsEscort.php:2078
+#: classes/GemsEscort.php:2018 classes/GemsEscort.php:2082
 msgid "You have no access to this site."
 msgstr "You have no access to this site."
 
-#: classes/GemsEscort.php:2033
+#: classes/GemsEscort.php:2037
 #, php-format
 msgid "Access to the %s/%s page is not allowed for current role: %s."
 msgstr "Access to the %s/%s page is not allowed for current role: %s."
 
-#: classes/GemsEscort.php:2060 classes/GemsEscort.php:2076
+#: classes/GemsEscort.php:2064 classes/GemsEscort.php:2080
 msgid "You are no longer logged in."
 msgstr "You are no longer logged in."
 
-#: classes/GemsEscort.php:2061
+#: classes/GemsEscort.php:2065
 msgid "You must login to access this page."
 msgstr "You must login to access this page."
 
