@@ -80,7 +80,6 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract {
                 $email        = $token->getEmail();
                 $respondentId = $token->getRespondent()->getId();
                 $mail         = false;
-                $update       = false;
 
                 if (!empty($email)) {
                     // Set the from address to use in this job
@@ -109,22 +108,21 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract {
                         switch ($job['gcj_process_method']) {
                             case 'M':   // Each token sends an email
                                 $mail   = true;
-                                $update = true;
-
                                 break;
 
                             case 'A':   // Only first token mailed and marked
                                 if (!isset($sentMailAddresses[$respondentId][$email])) {  // When not mailed before
                                     $mail   = true;
-                                    $update = true;
                                 }
                                 break;
 
                             case 'O':   // Only first token mailed, all marked
                                 if (!isset($sentMailAddresses[$respondentId][$email])) {  // When not mailed before
                                     $mail = true;
-                                }
-                                $update = true;
+                                } else {
+                                    $mailer->updateToken();
+                                    $updates++;
+                                }                                
                                 break;
 
                             default:
@@ -136,13 +134,10 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract {
                             $mailer->send();
 
                             $mails++;
+                            $updates++;
                             $sentMailAddresses[$respondentId][$email] = true;
                         }
-
-                        if ($update == true) {
-                            $mailer->updateToken();
-                            $updates++;
-                        }
+                        
                     } catch (\Zend_Mail_Exception $exception) {
                         $fields = $mailer->getMailFields(false);
 
