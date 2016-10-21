@@ -1,4 +1,5 @@
 # GemsTracker library
+[![Latest Stable Version](https://poser.pugx.org/gemstracker/gemstracker/v/stable)](https://packagist.org/packages/gemstracker/gemstracker)
 [![Build Status](https://travis-ci.org/GemsTracker/gemstracker-library.svg?branch=master)](https://travis-ci.org/GemsTracker/gemstracker-library)
 
 GemsTracker (GEneric Medical Survey Tracker) is a software package for (complex) distribution of questionnaires and forms during clinical research and quality registrations in healthcare.
