@@ -518,7 +518,7 @@ class Gems_Util_DbLookup extends UtilAbstract
 
         return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'staff') +
                 array(
-                    \Gems_User_UserLoader::SYSTEM_USER_ID => $this->_('&laquo;system&raquo;'),
+                    \Gems_User_UserLoader::SYSTEM_USER_ID => \MUtil_Html::raw($this->_('&laquo;system&raquo;')),
                 );
     }
 

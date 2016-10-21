@@ -495,6 +495,24 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
         return $this;
     }
 
+    public function simpleApiAction()
+    {
+        $this->disableLayout();
+
+        $data    =  $this->getRequest()->getParams();
+        $model   = $this->getModel();
+        $output  = $model->save($data);
+        $changed = $model->getChanged();
+        print_r($output);
+
+        $patientId = $output['gr2o_patient_nr'];
+        if ($changed) {
+            echo "Changes to patient $patientId saved.";
+        }  else {
+            echo "No changes to patient $patientId.";
+        }
+    }
+
     /**
      * Action for showing a delete item page
      */

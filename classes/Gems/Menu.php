@@ -277,6 +277,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $page->addCreateAction('pr.respondent.create')->setParameterFilter('can_add_respondents', true);
         $page->addExportAction();
         $page->addImportAction();
+        $page->addAction(null, 'pr.respondent.simple-api', 'simple-api');
 
         $rPage = $page->addShowAction()
                 ->setNamedParameters($params)
