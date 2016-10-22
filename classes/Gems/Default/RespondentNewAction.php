@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -503,7 +502,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
         $model   = $this->getModel();
         $output  = $model->save($data);
         $changed = $model->getChanged();
-        print_r($output);
+        // print_r($output);
 
         $patientId = $output['gr2o_patient_nr'];
         if ($changed) {
