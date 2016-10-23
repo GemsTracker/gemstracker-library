@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -58,7 +57,7 @@ class Gems_Default_AppointmentAction extends \Gems_Default_RespondentChildAction
      * @var mixed String or array of snippets name
      */
     protected $createEditSnippets = 'Agenda_AppointmentFormSnippet';
-	
+
     /**
      *
      * @var \Gems_User_User

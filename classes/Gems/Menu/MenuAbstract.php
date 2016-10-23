@@ -309,6 +309,7 @@ abstract class Gems_Menu_MenuAbstract
         $page->addAutofilterAction();
         $page->addExportAction();
         $page->addImportAction();
+        $page->addAction(null, 'pr.calendar.simple-api', 'simple-api');
 
         return $page;
     }

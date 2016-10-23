@@ -47,12 +47,21 @@ class Gems_Default_CalendarAction extends \Gems_Controller_ModelSnippetActionAbs
      * @var \Gems_User_Organization
      */
     public $currentOrganization;
-    
+
     /**
      *
      * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
+
+    /**
+     * Array of the actions that use the model in form version.
+     *
+     * This determines the value of forForm().
+     *
+     * @var array $formActions Array of the actions that use the model with a form.
+     */
+    public $formActions = array('create', 'delete', 'edit', 'import', 'simpleApi');
 
     /**
      * The snippets used for the index action, before those in autofilter
@@ -138,5 +147,41 @@ class Gems_Default_CalendarAction extends \Gems_Controller_ModelSnippetActionAbs
         }
 
         return $filter;
+    }
+
+    public function simpleApiAction()
+    {
+        $this->disableLayout();
+
+        $data         = $this->getRequest()->getParams();
+        $importLoader = $this->loader->getImportLoader();
+        $model        = $this->getModel();
+        $translator   = new \Gems_Model_Translator_AppointmentTranslator($this->_('Direct import'));
+
+        $this->source->applySource($translator);
+        $translator->setTargetModel($model)
+                ->startImport();
+
+        $raw    = $translator->translateRowValues($data, 1);
+        $row    = $translator->validateRowValues($raw, 1);
+        $errors = $translator->getRowErrors(1);
+
+        if ($errors) {
+            echo "ERRORS Occured:\n" . implode("\n", $errors);
+            exit(count($errors));
+
+        } else {
+            $output  = $model->save($row);
+            $changed = $model->getChanged();
+            // print_r($output);
+
+            $appId = $output['gap_id_appointment'];
+            if ($changed) {
+                echo "Changes saved to appointment $appId.";
+            }  else {
+                echo "No changes to appointment $appId.";
+            }
+            exit(0);
+        }
     }
 }

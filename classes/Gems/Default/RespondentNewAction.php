@@ -115,6 +115,15 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
     public $exportSnippets = array('Respondent\\RespondentDetailsSnippet');
 
     /**
+     * Array of the actions that use the model in form version.
+     *
+     * This determines the value of forForm().
+     *
+     * @var array $formActions Array of the actions that use the model with a form.
+     */
+    public $formActions = array('create', 'delete', 'edit', 'import', 'simpleApi');
+
+    /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
@@ -157,6 +166,12 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
         'Token\\TokenTabsSnippet',
         'RespondentTokenSnippet',
     );
+
+    /**
+     *
+     * @var \MUtil_Registry_SourceInterface
+     */
+    public $source;
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -498,17 +513,35 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
     {
         $this->disableLayout();
 
-        $data    =  $this->getRequest()->getParams();
-        $model   = $this->getModel();
-        $output  = $model->save($data);
-        $changed = $model->getChanged();
-        // print_r($output);
+        $data         = $this->getRequest()->getParams();
+        $importLoader = $this->loader->getImportLoader();
+        $model        = $this->getModel();
+        $translator   = new \Gems_Model_Translator_RespondentTranslator($this->_('Direct import'));
 
-        $patientId = $output['gr2o_patient_nr'];
-        if ($changed) {
-            echo "Changes to patient $patientId saved.";
-        }  else {
-            echo "No changes to patient $patientId.";
+        $this->source->applySource($translator);
+        $translator->setTargetModel($model)
+                ->startImport();
+
+        $raw    = $translator->translateRowValues($data, 1);
+        $row    = $translator->validateRowValues($raw, 1);
+        $errors = $translator->getRowErrors(1);
+
+        if ($errors) {
+            echo "ERRORS Occured:\n" . implode("\n", $errors);
+            exit(count($errors));
+
+        } else {
+            $output  = $model->save($row);
+            $changed = $model->getChanged();
+            // print_r($output);
+
+            $patientId = $output['gr2o_patient_nr'];
+            if ($changed) {
+                echo "Changes to patient $patientId saved.";
+            }  else {
+                echo "No changes to patient $patientId.";
+            }
+            exit(0);
         }
     }
 

@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -73,10 +72,10 @@ interface Gems_Tracker_Source_SourceInterface extends \MUtil_Registry_TargetInte
      * @return \MUtil_Date date time or null
      */
     public function getAnswerDateTime($fieldName, \Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null);
-    
+
     /**
      * Returns all the gemstracker names for attributes stored in source for a token
-     * 
+     *
      * @return array
      */
     public function getAttributes();
@@ -186,7 +185,7 @@ interface Gems_Tracker_Source_SourceInterface extends \MUtil_Registry_TargetInte
      * @return int
      */
     public function getRawTokenAnswerRowsCount(array $filter, $surveyId, $sourceSurveyId = null);
-    
+
     /**
      * Get the db adapter for this source
      *
