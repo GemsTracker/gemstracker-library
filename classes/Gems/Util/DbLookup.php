@@ -498,6 +498,20 @@ class Gems_Util_DbLookup extends UtilAbstract
 
         return $result;
     }
+    
+    /**
+     * Returns the roles in the acl
+     *
+     * @return array roleId => ucfirst(roleId)
+     */
+    public function getSources()
+    {
+        $sql = "SELECT gso_id_source, gso_source_name
+                    FROM gems__sources 
+                    ORDER BY gso_source_name";
+
+        return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'sources');
+    }
 
     /**
      * Return key/value pairs of all staff members, currently active or not

@@ -39,6 +39,12 @@ class SurveyMaintenanceSearchSnippet extends \Gems_Snippets_AutosearchFormSnippe
         $groups     = $this->util->getDbLookup()->getGroups();
         $elements[] = $this->_createSelectElement('gsu_id_primary_group', $groups, $this->_('(all groups)'));
 
+        // If more than one source, allow to filter on it
+        $sources = $this->util->getDbLookup()->getSources();
+        if (count($sources) > 1) {
+            $elements[] = $this->_createSelectElement('gsu_id_source', $sources, $this->_('(all sources)'));    
+        }        
+
         $states     = array(
             'act' => $this->_('Active'),
             'sok' => $this->_('OK in source, not active'),
