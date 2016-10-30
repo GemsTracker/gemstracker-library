@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-27 13:15+0200\n"
+"POT-Creation-Date: 2016-10-30 19:17+0100\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
+"Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
 "Language: nl_NL\n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ../../..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 1.8.9\n"
+"X-Generator: Poedit 1.8.11\n"
 "X-Poedit-SearchPath-0: gemstracker/gemstracker/languages\n"
 "X-Poedit-SearchPath-1: gemstracker/gemstracker/classes\n"
 "X-Poedit-SearchPath-2: magnafacta/mutil/src/MUtil\n"
@@ -24,7 +24,7 @@ msgstr ""
 #: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:166
 #: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:184
 #: gemstracker/gemstracker/classes/Gems/Tracker/Model/Dependency/FromAppointmentsMaintenanceDependency.php:91
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:901
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:875
 msgid "; "
 msgstr "; "
 
@@ -43,7 +43,7 @@ msgstr "; "
 #: gemstracker/gemstracker/classes/Gems/Model/RespondentModel.php:259
 #: gemstracker/gemstracker/classes/Gems/Model/RespondentModel.php:262
 #: gemstracker/gemstracker/classes/Gems/Model/RespondentModel.php:313
-#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:185
+#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:184
 #: gemstracker/gemstracker/classes/Gems/Snippets/Export/ReportHeaderSnippet.php:45
 #: gemstracker/gemstracker/classes/Gems/Snippets/RespondentSearchSnippet.php:89
 #: gemstracker/gemstracker/classes/Gems/Tracker/Model/StandardTokenModel.php:262
@@ -182,7 +182,7 @@ msgstr "Bepaald wat op welke manier gefilterd wordt."
 #: gemstracker/gemstracker/classes/Gems/Default/TokenSearchActionAbstract.php:100
 #: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:82
 #: gemstracker/gemstracker/classes/Gems/Model/RespondentModel.php:269
-#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:201
+#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:200
 #: gemstracker/gemstracker/classes/Gems/Model/TemplateModel.php:51
 #: gemstracker/gemstracker/classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:135
 #: gemstracker/gemstracker/classes/Gems/Snippets/TokenPlanTableSnippet.php:45
@@ -220,7 +220,7 @@ msgstr ""
 #: gemstracker/gemstracker/classes/Gems/Default/ReceptionAction.php:73
 #: gemstracker/gemstracker/classes/Gems/Default/SourceAction.php:222
 #: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:101
-#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:259
+#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:258
 #: gemstracker/gemstracker/classes/Gems/Snippets/Survey/SurveyMaintenanceSearchSnippet.php:49
 #: gemstracker/gemstracker/classes/Gems/Tracker/Engine/TrackEngineAbstract.php:875
 #: gemstracker/gemstracker/classes/Gems/Tracker/Model/TrackModel.php:90
@@ -260,7 +260,7 @@ msgid "Calculated name"
 msgstr "Berekende naam"
 
 #: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:165
-#: magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:454
+#: magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:428
 msgid ": "
 msgstr ": "
 
@@ -339,8 +339,8 @@ msgstr "%s like \"%s\""
 #: gemstracker/gemstracker/classes/Gems/Tracker/Engine/TrackEngineAbstract.php:897
 #: gemstracker/gemstracker/classes/Gems/Tracker/Model/TrackModel.php:137
 #: gemstracker/gemstracker/classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:525
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:873
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:1031
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:847
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:1005
 msgid ", "
 msgstr ", "
 
@@ -490,7 +490,7 @@ msgstr "Ok"
 #: gemstracker/gemstracker/classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:116
 #: gemstracker/gemstracker/classes/Gems/Snippets/FormSnippetAbstract.php:215
 #: gemstracker/gemstracker/classes/Gems/Snippets/Generic/ButtonRowSnippet.php:79
-#: gemstracker/gemstracker/classes/Gems/Snippets/ModelFormSnippetAbstract.php:336
+#: gemstracker/gemstracker/classes/Gems/Snippets/ModelFormSnippetAbstract.php:335
 #: gemstracker/gemstracker/classes/Gems/Snippets/ModelItemTableSnippetAbstract.php:176
 #: gemstracker/gemstracker/classes/Gems/Snippets/RespondentDetailSnippetAbstract.php:108
 #: gemstracker/gemstracker/classes/Gems/Snippets/Survey/SurveyQuestionsSnippet.php:171
@@ -502,7 +502,7 @@ msgstr "Annuleren"
 #: gemstracker/gemstracker/classes/Gems/Controller/BrowseEditAction.php:384
 #: gemstracker/gemstracker/classes/Gems/Controller/ModelSnippetActionAbstract.php:423
 #: gemstracker/gemstracker/classes/Gems/Snippets/FormSnippetAbstract.php:238
-#: gemstracker/gemstracker/classes/Gems/Snippets/ModelFormSnippetAbstract.php:359
+#: gemstracker/gemstracker/classes/Gems/Snippets/ModelFormSnippetAbstract.php:358
 #, php-format
 msgid "New %s..."
 msgstr "Nieuwe %s..."
@@ -528,7 +528,7 @@ msgstr "Bewerk %s %s"
 #: gemstracker/gemstracker/classes/Gems/Controller/BrowseEditAction.php:440
 #: gemstracker/gemstracker/classes/Gems/Controller/ModelSnippetActionAbstract.php:483
 #: gemstracker/gemstracker/classes/Gems/Snippets/FormSnippetAbstract.php:240
-#: gemstracker/gemstracker/classes/Gems/Snippets/ModelFormSnippetAbstract.php:361
+#: gemstracker/gemstracker/classes/Gems/Snippets/ModelFormSnippetAbstract.php:360
 #, php-format
 msgid "Edit %s"
 msgstr "Bewerk %s"
@@ -580,7 +580,8 @@ msgstr "Weet u het zeker?"
 #: gemstracker/gemstracker/classes/Gems/Util/Translated.php:358
 #: magnafacta/mutil/src/MUtil/Snippets/ModelConfirmDataChangeSnippetAbstract.php:275
 #: magnafacta/mutil/src/MUtil/Snippets/ModelYesNoDeleteSnippetAbstract.php:256
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:804
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:778
+#: magnafacta/mutil/src/MUtil/Snippets/YesNoDeleteSnippetAbstract.php:127
 msgid "Yes"
 msgstr "Ja"
 
@@ -601,6 +602,7 @@ msgstr "Ja"
 #: gemstracker/gemstracker/classes/Gems/Util/Translated.php:358
 #: magnafacta/mutil/src/MUtil/Snippets/ModelConfirmDataChangeSnippetAbstract.php:281
 #: magnafacta/mutil/src/MUtil/Snippets/ModelYesNoDeleteSnippetAbstract.php:262
+#: magnafacta/mutil/src/MUtil/Snippets/YesNoDeleteSnippetAbstract.php:136
 msgid "No"
 msgstr "Nee"
 
@@ -892,7 +894,7 @@ msgid "Appointments for respondent number %s: %s"
 msgstr "Afspraken voor patiëntnummer %s: %s"
 
 #: gemstracker/gemstracker/classes/Gems/Default/AppointmentAction.php:210
-#: gemstracker/gemstracker/classes/Gems/Menu.php:297
+#: gemstracker/gemstracker/classes/Gems/Menu.php:300
 msgid "Appointments"
 msgstr "Afspraken"
 
@@ -985,12 +987,12 @@ msgid "The survey for token %s is no longer active."
 msgstr "De vragenlijst voor kenmerk %s is niet meer in gebruik."
 
 #: gemstracker/gemstracker/classes/Gems/Default/CalendarAction.php:159
-#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:519
+#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:557
 #: gemstracker/gemstracker/classes/Gems/Import/ImportLoader.php:319
 #: gemstracker/gemstracker/classes/Gems/Import/ImportLoader.php:323
 #: gemstracker/gemstracker/classes/Gems/Import/ImportLoader.php:327
 #: gemstracker/gemstracker/classes/Gems/Import/ImportLoader.php:331
-#: magnafacta/mutil/src/MUtil/Controller/ModelSnippetActionAbstract.php:613
+#: magnafacta/mutil/src/MUtil/Controller/ModelSnippetActionAbstract.php:587
 msgid "Direct import"
 msgstr "Directe import"
 
@@ -999,7 +1001,7 @@ msgstr "Directe import"
 #: gemstracker/gemstracker/classes/Gems/Default/ProjectTracksAction.php:99
 #: gemstracker/gemstracker/classes/Gems/Export/RespondentExport.php:324
 #: gemstracker/gemstracker/classes/Gems/Export/RespondentExport.php:336
-#: gemstracker/gemstracker/classes/Gems/Menu.php:308
+#: gemstracker/gemstracker/classes/Gems/Menu.php:311
 #: gemstracker/gemstracker/classes/Gems/Model/CommLogModel.php:135
 #: gemstracker/gemstracker/classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:117
 #: gemstracker/gemstracker/classes/Gems/Snippets/Export/ExportSurveysFormSnippet.php:80
@@ -1402,7 +1404,7 @@ msgid "More information about GemsTracker is available on the %s website."
 msgstr "Meer informatie over GemsTracker vindt u op de %s site."
 
 #: gemstracker/gemstracker/classes/Gems/Default/ContactAction.php:145
-#: gemstracker/gemstracker/classes/Gems/Menu.php:747
+#: gemstracker/gemstracker/classes/Gems/Menu.php:750
 msgid "Contact"
 msgstr "Contact"
 
@@ -1795,7 +1797,7 @@ msgstr[1] "trajectvelden"
 
 #: gemstracker/gemstracker/classes/Gems/Default/FieldReportAction.php:139
 #: gemstracker/gemstracker/classes/Gems/Default/ReceptionAction.php:87
-#: gemstracker/gemstracker/classes/Gems/Menu.php:362
+#: gemstracker/gemstracker/classes/Gems/Menu.php:365
 #: gemstracker/gemstracker/classes/Gems/Menu/MenuAbstract.php:685
 #: gemstracker/gemstracker/classes/Gems/Menu/MenuAbstract.php:806
 #: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/AddTracksSnippet.php:257
@@ -1855,7 +1857,7 @@ msgstr "Vollledige bestandsnaam"
 #: gemstracker/gemstracker/classes/Gems/Default/FileActionAbstract.php:113
 #: gemstracker/gemstracker/classes/Gems/Default/LogFileAction.php:93
 #: gemstracker/gemstracker/classes/Gems/Menu.php:150
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:905
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:879
 msgid "Content"
 msgstr "Inhoud"
 
@@ -1923,8 +1925,8 @@ msgstr "Medewerkers"
 #: gemstracker/gemstracker/classes/Gems/Default/GroupAction.php:72
 #: gemstracker/gemstracker/classes/Gems/Default/ReceptionAction.php:83
 #: gemstracker/gemstracker/classes/Gems/Default/RespondentAction.php:476
-#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:279
-#: gemstracker/gemstracker/classes/Gems/Menu.php:720
+#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:317
+#: gemstracker/gemstracker/classes/Gems/Menu.php:723
 #: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:124
 msgid "Respondents"
 msgstr "Patiënten"
@@ -2806,8 +2808,8 @@ msgstr "Instellingen"
 #: gemstracker/gemstracker/classes/Gems/Default/RespondentAction.php:197
 #: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:150
 #: gemstracker/gemstracker/classes/Gems/Model/RespondentModel.php:379
-#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:131
-#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:237
+#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:130
+#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:236
 msgid "Language"
 msgstr "Taal"
 
@@ -2854,7 +2856,7 @@ msgstr "Kies een ontvangstcode om te verwijderen."
 
 #: gemstracker/gemstracker/classes/Gems/Default/RespondentAction.php:346
 #: gemstracker/gemstracker/classes/Gems/Default/RespondentExportAction.php:38
-#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:233
+#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:271
 msgid "Export respondent archive"
 msgstr "Exporteer patiëntdossier"
 
@@ -2875,7 +2877,7 @@ msgid "(all organizations)"
 msgstr "(alle organisaties)"
 
 #: gemstracker/gemstracker/classes/Gems/Default/RespondentAction.php:471
-#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:458
+#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:496
 msgid "respondent"
 msgid_plural "respondents"
 msgstr[0] "patiënt"
@@ -2906,7 +2908,7 @@ msgid_plural "communication activities"
 msgstr[0] "Communicatie"
 msgstr[1] "Communicatie"
 
-#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:216
+#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:254
 msgid "Delete or stop respondent"
 msgstr "Verwijder of stop patiënt"
 
@@ -2926,7 +2928,7 @@ msgid "Show respondent"
 msgstr "Toon patiënt"
 
 #: gemstracker/gemstracker/classes/Gems/Default/RespondentPlanAction.php:54
-#: gemstracker/gemstracker/classes/Gems/Menu.php:382
+#: gemstracker/gemstracker/classes/Gems/Menu.php:385
 #: gemstracker/gemstracker/classes/Gems/Snippets/Token/DeleteTrackTokenSnippet.php:133
 #: gemstracker/gemstracker/classes/Gems/Snippets/Token/EditTrackTokenSnippet.php:57
 #: gemstracker/gemstracker/classes/Gems/Snippets/Token/PlanRespondentSnippet.php:69
@@ -3436,7 +3438,7 @@ msgid "]"
 msgstr "]"
 
 #: gemstracker/gemstracker/classes/Gems/Default/SurveyMaintenanceAction.php:602
-#: gemstracker/gemstracker/classes/Gems/Menu.php:440
+#: gemstracker/gemstracker/classes/Gems/Menu.php:443
 #: gemstracker/gemstracker/classes/Gems/Menu/MenuAbstract.php:692
 #: gemstracker/gemstracker/classes/Gems/Menu/MenuAbstract.php:787
 #: gemstracker/gemstracker/classes/Gems/Tracker/Model/TrackModel.php:88
@@ -3907,8 +3909,8 @@ msgstr "Laatste pagina"
 #: gemstracker/gemstracker/classes/Gems/Export/ModelSource/AnswerExportModelSource.php:142
 #: gemstracker/gemstracker/classes/Gems/Export/RespondentExport.php:243
 #: gemstracker/gemstracker/classes/Gems/Menu.php:227
-#: gemstracker/gemstracker/classes/Gems/Menu.php:332
-#: gemstracker/gemstracker/classes/Gems/Menu.php:426
+#: gemstracker/gemstracker/classes/Gems/Menu.php:335
+#: gemstracker/gemstracker/classes/Gems/Menu.php:429
 #: gemstracker/gemstracker/classes/Gems/Model/CommLogModel.php:133
 #: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:233
 #: gemstracker/gemstracker/classes/Gems/Model/Translator/TokenAnswerTranslator.php:89
@@ -3986,7 +3988,7 @@ msgid "Output format"
 msgstr "Uitvoerformaat"
 
 #: gemstracker/gemstracker/classes/Gems/Export/RespondentExport.php:466
-#: gemstracker/gemstracker/classes/Gems/Menu.php:738
+#: gemstracker/gemstracker/classes/Gems/Menu.php:741
 #: gemstracker/gemstracker/classes/Gems/Menu/MenuAbstract.php:817
 #: gemstracker/gemstracker/classes/Gems/Menu/SubMenuItem.php:512
 #: gemstracker/gemstracker/classes/Gems/Snippets/Export/ExportFormSnippet.php:55
@@ -4200,18 +4202,23 @@ msgstr "Uitloggen"
 msgid "Scan Responses"
 msgstr "Scan antwoorden"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:290
+#: gemstracker/gemstracker/classes/Gems/Menu.php:289
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:91
+msgid "Change organization"
+msgstr "Wijzig organisatie"
+
+#: gemstracker/gemstracker/classes/Gems/Menu.php:293
 msgid "View survey"
 msgstr "Bekijk vragenlijst"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:313
-#: gemstracker/gemstracker/classes/Gems/Menu.php:367
+#: gemstracker/gemstracker/classes/Gems/Menu.php:316
+#: gemstracker/gemstracker/classes/Gems/Menu.php:370
 #: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/AddTracksSnippet.php:260
 msgid "Add"
 msgstr "Voeg toe"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:319
-#: gemstracker/gemstracker/classes/Gems/Menu.php:471
+#: gemstracker/gemstracker/classes/Gems/Menu.php:322
+#: gemstracker/gemstracker/classes/Gems/Menu.php:474
 #: gemstracker/gemstracker/classes/Gems/Menu/MenuAbstract.php:677
 #: gemstracker/gemstracker/classes/Gems/Menu/MenuAbstract.php:689
 #: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:151
@@ -4219,159 +4226,159 @@ msgstr "Voeg toe"
 msgid "Preview"
 msgstr "Preview"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:325
-#: gemstracker/gemstracker/classes/Gems/Menu.php:387
+#: gemstracker/gemstracker/classes/Gems/Menu.php:328
+#: gemstracker/gemstracker/classes/Gems/Menu.php:390
 #: gemstracker/gemstracker/classes/Gems/Menu/SubMenuItem.php:468
 msgid "Edit"
 msgstr "Wijzig"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:336
-#: gemstracker/gemstracker/classes/Gems/Menu.php:377
+#: gemstracker/gemstracker/classes/Gems/Menu.php:339
+#: gemstracker/gemstracker/classes/Gems/Menu.php:380
 msgid "Insert"
 msgstr "Invoegen"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:341
-#: gemstracker/gemstracker/classes/Gems/Menu.php:405
+#: gemstracker/gemstracker/classes/Gems/Menu.php:344
+#: gemstracker/gemstracker/classes/Gems/Menu.php:408
 msgid "Check answers"
 msgstr "Controleer op antwoorden"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:347
-#: gemstracker/gemstracker/classes/Gems/Menu.php:409
+#: gemstracker/gemstracker/classes/Gems/Menu.php:350
+#: gemstracker/gemstracker/classes/Gems/Menu.php:412
 #: gemstracker/gemstracker/classes/Gems/Menu/MenuAbstract.php:819
 msgid "Check rounds"
 msgstr "Controleer rondes"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:353
-#: gemstracker/gemstracker/classes/Gems/Menu.php:414
+#: gemstracker/gemstracker/classes/Gems/Menu.php:356
+#: gemstracker/gemstracker/classes/Gems/Menu.php:417
 #: gemstracker/gemstracker/classes/Gems/Menu/MenuAbstract.php:822
 msgid "Recalculate fields"
 msgstr "Herbereken trajectvelden"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:372
+#: gemstracker/gemstracker/classes/Gems/Menu.php:375
 msgid "Assignments"
 msgstr "Toewijzingen"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:393
+#: gemstracker/gemstracker/classes/Gems/Menu.php:396
 #: gemstracker/gemstracker/classes/Gems/Menu/MenuAbstract.php:442
 #: gemstracker/gemstracker/classes/Gems/Menu/SubMenuItem.php:442
 msgid "Delete"
 msgstr "Verwijder"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:399
-#: gemstracker/gemstracker/classes/Gems/Menu.php:458
-#: gemstracker/gemstracker/classes/Gems/Menu.php:510
+#: gemstracker/gemstracker/classes/Gems/Menu.php:402
+#: gemstracker/gemstracker/classes/Gems/Menu.php:461
+#: gemstracker/gemstracker/classes/Gems/Menu.php:513
 msgid "Undelete!"
 msgstr "Herstel!"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:420
+#: gemstracker/gemstracker/classes/Gems/Menu.php:423
 msgid "Export track"
 msgstr "Exporteer traject"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:430
+#: gemstracker/gemstracker/classes/Gems/Menu.php:433
 msgid "Check all answers"
 msgstr "Controleer alles op antwoorden"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:433
+#: gemstracker/gemstracker/classes/Gems/Menu.php:436
 #: gemstracker/gemstracker/classes/Gems/Menu/MenuAbstract.php:858
 msgid "Check all rounds"
 msgstr "Controleer alle rondes"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:436
+#: gemstracker/gemstracker/classes/Gems/Menu.php:439
 #: gemstracker/gemstracker/classes/Gems/Menu/MenuAbstract.php:859
 msgid "Recalculate all fields"
 msgstr "Herbereken alle trajectvelden"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:452
+#: gemstracker/gemstracker/classes/Gems/Menu.php:455
 msgid "Correct answers"
 msgstr "Wijzig antwoorden"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:462
+#: gemstracker/gemstracker/classes/Gems/Menu.php:465
 #: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:163
 msgid "Fill in"
 msgstr "Vul in"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:465
+#: gemstracker/gemstracker/classes/Gems/Menu.php:468
 msgid "Print PDF"
 msgstr "Print PDF"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:468
+#: gemstracker/gemstracker/classes/Gems/Menu.php:471
 msgid "E-Mail now!"
 msgstr "Email nu!"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:474
+#: gemstracker/gemstracker/classes/Gems/Menu.php:477
 #: gemstracker/gemstracker/classes/Gems/Menu/MenuAbstract.php:496
 #: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:701
 msgid "Answers"
 msgstr "Antwoorden"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:478
+#: gemstracker/gemstracker/classes/Gems/Menu.php:481
 msgid "(Re)check answers"
 msgstr "(Her)controleer antwoorden"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:481
+#: gemstracker/gemstracker/classes/Gems/Menu.php:484
 msgid "Export answers"
 msgstr "Exporteer antwoorden"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:486
+#: gemstracker/gemstracker/classes/Gems/Menu.php:489
 msgid "Export archive"
 msgstr "Dossier export"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:490
+#: gemstracker/gemstracker/classes/Gems/Menu.php:493
 #: gemstracker/gemstracker/classes/Gems/Menu/MenuAbstract.php:348
 msgid "Communication log"
 msgstr "Communicatie logboek"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:497
+#: gemstracker/gemstracker/classes/Gems/Menu.php:500
 msgid "Activity log"
 msgstr "Activiteiten log"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:517
+#: gemstracker/gemstracker/classes/Gems/Menu.php:520
 msgid "Relations"
 msgstr "Relaties"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:723
+#: gemstracker/gemstracker/classes/Gems/Menu.php:726
 msgid "Calendar"
 msgstr "Kalender"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:726
+#: gemstracker/gemstracker/classes/Gems/Menu.php:729
 msgid "Overview"
 msgstr "Overzicht"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:729
+#: gemstracker/gemstracker/classes/Gems/Menu.php:732
 #: gemstracker/gemstracker/classes/Gems/Menu/MenuAbstract.php:607
 msgid "Project"
 msgstr "Project"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:732
+#: gemstracker/gemstracker/classes/Gems/Menu.php:735
 msgid "Setup"
 msgstr "Beheer"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:735
+#: gemstracker/gemstracker/classes/Gems/Menu.php:738
 msgid "Track Builder"
 msgstr "Trajectbouwer"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:741
+#: gemstracker/gemstracker/classes/Gems/Menu.php:744
 #: gemstracker/gemstracker/classes/Gems/Menu/SubMenuItem.php:549
 msgid "Import"
 msgstr "Importeer"
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:751
+#: gemstracker/gemstracker/classes/Gems/Menu.php:754
 msgid "Grant access to all organization."
 msgstr "Heeft toegang tot alle organisaties."
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:754
+#: gemstracker/gemstracker/classes/Gems/Menu.php:757
 msgid "Grant right to impersonate the site when mailing."
 msgstr "Heeft het recht emails te sturen alsof deze van de website komen."
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:757
+#: gemstracker/gemstracker/classes/Gems/Menu.php:760
 msgid "Display multiple organizations in respondent overview."
 msgstr "Toon meerdere organisaties tegelijk in patiënten overzicht."
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:760
+#: gemstracker/gemstracker/classes/Gems/Menu.php:763
 msgid "Display results in token overviews."
 msgstr "Toon resultaten in kenmerk overzichten."
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:763
+#: gemstracker/gemstracker/classes/Gems/Menu.php:766
 msgid ""
 "Grant checkboxes to select respondents on track status in respondent "
 "overview."
@@ -4379,24 +4386,24 @@ msgstr ""
 "Heeft checkbox optie om patiënten te selecteren op traject status in het "
 "patiënten overzicht."
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:766
+#: gemstracker/gemstracker/classes/Gems/Menu.php:769
 msgid "Grant checkbox to view deleted respondents in respondent overview."
 msgstr ""
 "Heeft checkbox optie voor verwijderde patiënten in het patiënten overzicht."
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:769
+#: gemstracker/gemstracker/classes/Gems/Menu.php:772
 msgid "Display staff member name in token overviews."
 msgstr "Toon de naam van de medewerker in kenmerk overzichten."
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:772
+#: gemstracker/gemstracker/classes/Gems/Menu.php:775
 msgid "Grant right to edit staff members from all organizations."
 msgstr "Heeft het recht medewerkers van alle organisaties te bewerken."
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:775
+#: gemstracker/gemstracker/classes/Gems/Menu.php:778
 msgid "Display all organizations in staff overview."
 msgstr "Toon alle organisaties in het medewerker overzicht."
 
-#: gemstracker/gemstracker/classes/Gems/Menu.php:778
+#: gemstracker/gemstracker/classes/Gems/Menu.php:781
 msgid "Grant right to send free text (i.e. non-template) email messages."
 msgstr ""
 "Heeft het recht om vrij tekst e-mails te versturen (i.p.v. alleen het "
@@ -4476,7 +4483,7 @@ msgid "Importable"
 msgstr "Importeerbaar"
 
 #: gemstracker/gemstracker/classes/Gems/Menu/MenuAbstract.php:499
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:609
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:583
 msgid "Import file"
 msgstr "Import bestand"
 
@@ -4878,7 +4885,7 @@ msgid "Accessible by"
 msgstr "Toegankelijk voor"
 
 #: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:142
-#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:229
+#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:228
 msgid "User Definition"
 msgstr "Gebruikers definitie"
 
@@ -4922,8 +4929,8 @@ msgstr "Toegang tot"
 #: gemstracker/gemstracker/classes/Gems/Model/RespondentModel.php:271
 #: gemstracker/gemstracker/classes/Gems/Model/RespondentModel.php:353
 #: gemstracker/gemstracker/classes/Gems/Model/RespondentRelationModel.php:62
-#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:113
-#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:209
+#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:112
+#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:208
 msgid "E-Mail"
 msgstr "Email"
 
@@ -4951,14 +4958,14 @@ msgstr "Initialen"
 
 #: gemstracker/gemstracker/classes/Gems/Model/RespondentModel.php:335
 #: gemstracker/gemstracker/classes/Gems/Model/RespondentRelationModel.php:59
-#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:117
-#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:191
+#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:116
+#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:190
 msgid "First name"
 msgstr "Voornaam"
 
 #: gemstracker/gemstracker/classes/Gems/Model/RespondentModel.php:336
-#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:118
-#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:193
+#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:117
+#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:192
 msgid "Surname prefix"
 msgstr "Tussenvoegsel"
 
@@ -4969,8 +4976,8 @@ msgstr "de, van der, 't, etc..."
 
 #: gemstracker/gemstracker/classes/Gems/Model/RespondentModel.php:339
 #: gemstracker/gemstracker/classes/Gems/Model/RespondentRelationModel.php:60
-#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:122
-#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:196
+#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:121
+#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:195
 msgid "Last name"
 msgstr "Achternaam"
 
@@ -4984,8 +4991,8 @@ msgstr "Achternaam partner "
 
 #: gemstracker/gemstracker/classes/Gems/Model/RespondentModel.php:345
 #: gemstracker/gemstracker/classes/Gems/Model/RespondentRelationModel.php:58
-#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:126
-#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:204
+#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:125
+#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:203
 msgid "Gender"
 msgstr "Geslacht"
 
@@ -5003,7 +5010,7 @@ msgstr "Ingevoerd door"
 
 #: gemstracker/gemstracker/classes/Gems/Model/RespondentNlModel.php:35
 #: gemstracker/gemstracker/classes/Gems/Model/RespondentNlModel.php:36
-#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:194
+#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:193
 msgid "de, van der, 't, etc..."
 msgstr "de, van der, 't, etc..."
 
@@ -5015,43 +5022,43 @@ msgstr "Relatie soort"
 msgid "Father, mother, etc."
 msgstr "Vader, moeder, etc."
 
-#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:110
+#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:109
 msgid "Login Name"
 msgstr "Login Naam"
 
-#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:173
+#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:172
 #: gemstracker/gemstracker/classes/Gems/User/Form/OrganizationFormAbstract.php:206
 #: gemstracker/gemstracker/classes/Gems/User/User.php:1328
 msgid "Username"
 msgstr "Gebruikersnaam"
 
-#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:216
+#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:215
 msgid "Primary function"
 msgstr "Primaire functie"
 
-#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:241
+#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:240
 msgid "Can login"
 msgstr "Kan inloggen"
 
-#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:243
+#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:242
 msgid "Users can only login when this box is checked."
 msgstr "Gebruikers kunnen alleen inloggen als dit is aangevinkt."
 
-#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:247
+#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:246
 msgid "Logout on survey"
 msgstr "Logout bij beantwoorden vragenlijst"
 
-#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:248
+#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:247
 msgid "If checked the user will logoff when answering a survey."
 msgstr ""
 "Indien actief, dan logt de gebruiker uit voor het beantwoorden van een "
 "vragenlijst."
 
-#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:252
+#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:251
 msgid "Check cron job mail"
 msgstr "Controleer cron opdracht mail"
 
-#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:253
+#: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:252
 msgid ""
 "If checked the user will be mailed when the cron job does not run on time."
 msgstr ""
@@ -5888,6 +5895,67 @@ msgstr "Al ingestelt op deze ontvangstcode."
 #, php-format
 msgid "Reception code %s does not exist."
 msgstr "Ontvangstcode %s bestaat niet."
+
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:95
+msgid "Share between both organizations, keep tracks in old"
+msgstr "Deel tussen beide organisaties, traject blijven in oude"
+
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:96
+msgid "Move tracks but keep in both organization"
+msgstr "Verplaats alle trajecten maar blijft in oude organisatie"
+
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:97
+msgid "Move tracks and remove from old organization"
+msgstr "Verplaats alle trajecten  en verwijder uit oude organisatie"
+
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:101
+msgid "Change method"
+msgstr "Veranderingsmethode"
+
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:119
+msgid "Is current organization."
+msgstr "Is huidige organisatie."
+
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:123
+#, php-format
+msgid "Exists already with respondent nr %s."
+msgstr "Bestaat al met patiënt nr %s."
+
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:138
+msgid "New organization"
+msgstr "Nieuwe organisatie"
+
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:145
+msgid "You cannot change to this organization"
+msgstr "Veranderen naar deze organisatie is niet mogelijk"
+
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:149
+msgid "New respondent nr"
+msgstr "Nieuw patiënt nr"
+
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:167
+#, php-format
+msgid "Shared %s with %s as %s"
+msgstr "%s met %s gedeelt als %s"
+
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:171
+#, php-format
+msgid "Moved %s with tracks to %s as %s"
+msgstr "Verplaatst %s met traject naar %s als %s"
+
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:174
+#, php-format
+msgid "Moved %s to %s as %s"
+msgstr "%s naar %s verplaatst als %s"
+
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:222
+#, php-format
+msgid "Change organization of respondent nr %s: %s"
+msgstr "Wijzig organisatie van patiënt nr %s: %s"
+
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:227
+msgid "Change organization of respondent"
+msgstr "Organisatie van patiënt wijzigen"
 
 #: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/DeleteRespondentSnippet.php:144
 msgid "Restore tracks"
@@ -7463,7 +7531,7 @@ msgid "Add the name of this field to the track description"
 msgstr "Voeg ook de naam van dit veld aan de trajectomschrijving toe"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Model/FieldMaintenanceModel.php:248
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:762
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:736
 msgid "Required"
 msgstr "Verplicht"
 
@@ -7843,7 +7911,7 @@ msgid "Upload a track definition file."
 msgstr "Upload een trajectdefinitiebestand."
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:441
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:261
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:235
 #, php-format
 msgid "Error retrieving file '%s'."
 msgstr "Fout tijdens het lezen van bestand '%s'."
@@ -8978,36 +9046,36 @@ msgid_plural "decades"
 msgstr[0] "decennium"
 msgstr[1] "decennia"
 
-#: magnafacta/mutil/src/MUtil/Model/Importer.php:235
+#: magnafacta/mutil/src/MUtil/Model/Importer.php:209
 #, php-format
 msgid "Found %2$d import error(s). Import aborted."
 msgstr "%2$d import foutmelding(en). Import afgebroken."
 
-#: magnafacta/mutil/src/MUtil/Model/Importer.php:453
+#: magnafacta/mutil/src/MUtil/Model/Importer.php:427
 msgid "No filename specified to import"
 msgstr "Geen bestandsnaam voor import opgegeven"
 
-#: magnafacta/mutil/src/MUtil/Model/Importer.php:462
+#: magnafacta/mutil/src/MUtil/Model/Importer.php:436
 #, php-format
 msgid "File '%s' does not exist. Import not possible."
 msgstr "Het bestand %s'' bestaat niet. Importeren is niet mogelijk."
 
-#: magnafacta/mutil/src/MUtil/Model/Importer.php:482
+#: magnafacta/mutil/src/MUtil/Model/Importer.php:456
 #, php-format
 msgid "Unsupported file extension: %s. Import not possible."
 msgstr ""
 "De bestandstype %s wordt niet ondersteunt. Importeren is niet mogelijk."
 
-#: magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:302
+#: magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:276
 msgid "No field overlap between source and target"
 msgstr "Bron en doel velden komen niet overeen"
 
-#: magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:447
+#: magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:421
 #, php-format
 msgid "Row %s"
 msgstr "Rij %s"
 
-#: magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:452
+#: magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:426
 #, php-format
 msgid " field %s"
 msgstr " veld %s"
@@ -9026,185 +9094,185 @@ msgstr "Onjuist gegevens bewerkingsverzoek"
 msgid "Do you really want to delete this item?"
 msgstr "Weet u zeker dat dit item verwijderd moet worden?"
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:236
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:210
 msgid "Choosen import definition: "
 msgstr "Gekozen importdefinitie: "
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:302
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:276
 msgid "Upload successful!"
 msgstr "Upload geslaagd!"
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:303
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:277
 msgid "Check the input visually."
 msgstr "Controleer de import visueel."
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:320
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:294
 msgid "Upload error!"
 msgstr "Upload fout!"
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:357
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:331
 msgid "Import errors found, import is not allowed."
 msgstr "Fouten gevonden in de import, import niet toegestaan."
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:359
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:333
 msgid "Check was successfull, import can start."
 msgstr "De  controle was succesvol, de import kan beginnen."
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:374
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:348
 msgid "Check error!"
 msgstr "Controle fout!"
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:422
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:396
 msgid "Import error!"
 msgstr "Import fout!"
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:443
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:417
 #, php-format
 msgid "Data import. Step %d of %d."
 msgstr "Bulk import gegevens. Stap %d van %d."
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:483
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:457
 #, php-format
 msgid "%d row imported."
 msgid_plural "%d rows imported."
 msgstr[0] "%d rij geïmporteerd."
 msgstr[1] "%d rijen geïmporteerd."
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:484
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:458
 #, php-format
 msgid "%d row changed."
 msgid_plural "%d rows changed."
 msgstr[0] "Één rij veranderd."
 msgstr[1] "%d  rijen veranderd."
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:564
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:538
 msgid "Import field definitions"
 msgstr "Velddefinities voor import"
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:591
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:565
 msgid "Import definition"
 msgstr "Importdefinitie"
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:593
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:567
 msgid "See import field definitions table"
 msgstr "Zie velddefinities voor import tabel"
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:599
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:573
 msgid "Choose work mode"
 msgstr "Kies werkwijze"
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:602
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:576
 msgid "Upload a file"
 msgstr "Upload een bestand"
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:603
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:577
 msgid "Copy and paste into a text field"
 msgstr "Kopiëren en plakken in een groot tekstveld"
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:623
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:597
 msgid "Import text - user header line - separate fields using tabs"
 msgstr "Importeer tekst - gebruik de kopregel en scheidt velden middels tabs"
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:624
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:598
 msgid "Empty fields remove any existing values. Add a field only when used."
 msgstr ""
 "Lege velden verwijderen eventuele waardes die al aanwezig zijn. Importeer "
 "een veld daarom alleen als het in gebruik is."
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:678
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:652
 msgid "No import definition specified"
 msgstr "Geen importdefinitie opgegeven"
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:683
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:657
 #, php-format
 msgid "Import definition %s does not exist."
 msgstr "Importdefinitie %s bestaat niet."
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:689
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:663
 #, php-format
 msgid "%s is not a valid import definition."
 msgstr "%s is geen geldig importdefinitie."
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:804
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:778
 msgid "For bold"
 msgstr "Als vet"
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:823
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:797
 #, php-format
 msgid "A number of length %d, with a precision of %d digits after the period."
 msgstr "Een getal van %d teken, waarvan %d echter de comma."
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:825
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:799
 #, php-format
 msgid "A whole number of length %d."
 msgstr "Een heel getal van %d tekens."
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:828
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:802
 msgid "A numeric value"
 msgstr "Een getals waarde"
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:833
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:807
 msgid "Date value using ISO 8601: yyyy-mm-dd"
 msgstr "Een datum volgens ISO 8601: yyyy-mm-dd"
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:837
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:811
 msgid "Datetime value using ISO 8601: yyyy-mm-ddThh:mm::ss[+-hh:mm]"
 msgstr ""
 "Een datum + tijd waarde volgens ISO 8601: yyyy-mm-ddThh:mm::ss[+-hh:mm]"
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:841
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:815
 msgid "Time value using ISO 8601: hh:mm::ss[+-hh:mm]"
 msgstr "Een tijd volgens ISO 8601: hh:mm::ss[+-hh:mm]"
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:849
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:823
 #, php-format
 msgid "Text, between %d and %d character"
 msgid_plural "Text, between %d and %d characters"
 msgstr[0] "Tekst, tussen %d en %d teken"
 msgstr[1] "Tekst, tussen %d en %d tekens"
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:854
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:828
 #, php-format
 msgid "Text, %d character"
 msgid_plural "Text, %d characters"
 msgstr[0] "Tekst, %d teken"
 msgstr[1] "Tekst, %d tekens"
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:859
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:833
 #, php-format
 msgid "Text, at least %d character"
 msgid_plural "Text, at least %d characters"
 msgstr[0] "Tekst, tenminste %d teken"
 msgstr[1] "Tekst, tenminste %d tekens"
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:863
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:837
 msgid "Text"
 msgstr "Tekst"
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:882
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:856
 #, php-format
 msgid ", %s"
 msgstr ", %s"
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:893
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:867
 #, php-format
 msgid "; one of: %s"
 msgstr "; één van: %s"
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:895
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:869
 #, php-format
 msgid "; e.g. one of: %s, ..."
 msgstr "; bijvoorbeeld één van:  %s, ..."
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:904
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:878
 msgid "Field description"
 msgstr "Veld omschrijving"
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:904
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:878
 msgid "<<no description>>"
 msgstr "<<geen omschrijving>>"
 
-#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:1029
+#: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:1003
 #, php-format
 msgid "Unknown translator '%s'. Should be one of: %s"
 msgstr "Onbekende translator '%s'. Moet één van deze zijn: %s"
@@ -9212,6 +9280,10 @@ msgstr "Onbekende translator '%s'. Moet één van deze zijn: %s"
 #: magnafacta/mutil/src/MUtil/Snippets/WizardFormSnippetAbstract.php:298
 msgid "Finish"
 msgstr "Klaar"
+
+#: magnafacta/mutil/src/MUtil/Snippets/YesNoDeleteSnippetAbstract.php:153
+msgid "Do you really want to do this?"
+msgstr "Wil je dit echt doen?"
 
 #: magnafacta/mutil/src/MUtil/Task/File/CopyFileWhenTask.php:85
 #, php-format
@@ -9241,9 +9313,6 @@ msgid "%s, one import problem found, continuing check."
 msgid_plural "%s, %d import problems found, continuing check."
 msgstr[0] "%s, één import probleem gevonden, gaan door met controle."
 msgstr[1] "%s, %d import problemen gevonden, gaan door met controle."
-
-#~ msgid "Do you really want to do this?"
-#~ msgstr "Wil je dit echt doen?"
 
 #~ msgid "Changelog"
 #~ msgstr "Changelog"

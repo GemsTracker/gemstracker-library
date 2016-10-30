@@ -1009,7 +1009,7 @@ class Gems_Project_ProjectSettings extends \ArrayObject
 
     /**
      * Is login shared between organizations (which therefore require
-     * a unique staff logon id for each user, instead of for each
+     * a unique staff login id for each user, instead of for each
      * user within an organization).
      *
      * @return boolean

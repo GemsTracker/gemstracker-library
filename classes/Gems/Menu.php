@@ -286,6 +286,9 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $rPage->addEditAction('pr.respondent.edit')
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
+        $rPage->addAction($this->_('Change organization'), 'pr.respondent.change-org', 'change-organization')
+                ->setNamedParameters($params)
+                ->setHiddenOrgId($orgId);
 
         $rPage->addPage($this->_('View survey'), 'pr.track.insert', 'track', 'view-survey', array('button_only' => true))
                     ->setNamedParameters($params)

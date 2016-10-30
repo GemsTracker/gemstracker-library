@@ -1202,3 +1202,7 @@ ALTER TABLE gems__tracks ADD
 -- PATCH: Add correct token right
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.token.correct')
     WHERE grl_privileges NOT LIKE '%,pr.token.correct%' AND grl_privileges LIKE '%,pr.token.delete%';
+
+-- PATCH: Add change resp org right
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.respondent.change-org')
+    WHERE grl_privileges NOT LIKE '%,pr.respondent.change-org%' AND grl_name = 'admin';

@@ -45,6 +45,27 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
     protected $autofilterSnippets = 'Respondent\\RespondentTableSnippet';
 
     /**
+     * The parameters used for the change organization action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $changeOrganizationParameters = array(
+        'keepConsent' => false,
+        );
+
+    /**
+     * The snippets used for the change organization action.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $changeOrganizationSnippets = 'Respondent\\ChangeRespondentOrganization';
+
+    /**
      * The parameters used for the create and edit actions.
      *
      * When the value is a function name of that object, then that functions is executed
@@ -59,7 +80,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
     /**
      * The snippets used for the create and edit actions.
      *
-     * @var mixed String or array of snippets name
+     * @var mixed String or array of snippet names
      */
     protected $createEditSnippets = 'RespondentFormSnippet';
 
@@ -161,6 +182,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      */
     protected $showSnippets = array(
         'Generic\\ContentTitleSnippet',
+        'Respondent\\MultiOrganizationTab',
         'Respondent\\RespondentDetailsSnippet',
     	'Tracker\\AddTracksSnippet',
         'Token\\TokenTabsSnippet',
@@ -172,6 +194,22 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      * @var \MUtil_Registry_SourceInterface
      */
     public $source;
+
+    /**
+     * Action to change a users
+     */
+    public function changeOrganizationAction()
+    {
+        if ($this->changeOrganizationSnippets) {
+            $params = $this->_processParameters(
+                    $this->changeOrganizationParameters +
+                    $this->editParameters +
+                    $this->createEditParameters +
+                    ['createData' => false]);
+
+            $this->addSnippets($this->changeOrganizationSnippets, $params);
+        }
+    }
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
