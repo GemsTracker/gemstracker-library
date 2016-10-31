@@ -1646,7 +1646,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
      */
     public function isExpired()
     {
-        $date = $this->getValidFrom();
+        $date = $this->getValidUntil();
 
         if ($date instanceof \MUtil_Date) {
             return $date->isEarlierOrEqual(time());
@@ -1665,7 +1665,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         $date = $this->getValidFrom();
 
         if ($date instanceof \MUtil_Date) {
-            return $date->isEarlierOrEqual(time());
+            return $date->isLaterOrEqual(time());
         }
 
         return true;
