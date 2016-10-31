@@ -763,6 +763,43 @@ class Gems_Tracker_TokenTest extends Gems_Test_DbTestAbstract
     }
 
     /**
+     * @covers Gems_Tracker_Token::isExpired
+     * @dataProvider providerIsExpired
+     */
+    public function testIsExpired($data, $expected)
+    {
+        $token = $this->tracker->getToken($data);
+        $this->assertEquals($expected, $token->isExpired());
+    }
+    
+    public function providerIsExpired() {
+        $now = new MUtil_Date();
+        $tomorrow = clone $now;
+        $yesterday = clone $now;
+        $tomorrow->addDay(1);
+        $yesterday->subDay(1);
+        echo $now, $tomorrow, $yesterday;
+        return array(
+            array(
+                array(
+                    'gto_id_token' => '111',
+                    'gto_valid_from' => $yesterday,
+                    'gto_valid_until' => $yesterday
+                    ),
+                true
+                ),
+            array(
+                array(
+                    'gto_id_token' => '111',
+                    'gto_valid_from' => $yesterday,
+                    'gto_valid_until' => $tomorrow
+                ),
+                false
+            )
+        );
+    }
+
+    /**
      * @covers Gems_Tracker_Token::refresh
      * @todo   Implement testRefresh().
      */
