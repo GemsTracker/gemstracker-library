@@ -763,38 +763,65 @@ class Gems_Tracker_TokenTest extends Gems_Test_DbTestAbstract
     }
 
     /**
+     * @covers Gems_Tracker_Token::isCurrentlyValid
+     * @dataProvider providerTokenValid
+     */
+    public function testIsCurrentlyValid($data, $expected)
+    {
+        $token = $this->tracker->getToken($data);
+        $this->assertEquals($expected[2], $token->isCurrentlyValid());
+    }
+    
+    /**
      * @covers Gems_Tracker_Token::isExpired
-     * @dataProvider providerIsExpired
+     * @dataProvider providerTokenValid
      */
     public function testIsExpired($data, $expected)
     {
         $token = $this->tracker->getToken($data);
-        $this->assertEquals($expected, $token->isExpired());
+        $this->assertEquals($expected[0], $token->isExpired());
     }
     
-    public function providerIsExpired() {
+    /**
+     * @covers Gems_Tracker_Token::isNotYetValid
+     * @dataProvider providerTokenValid
+     */
+    public function testIsNotYetValid($data, $expected)
+    {
+        $token = $this->tracker->getToken($data);
+        $this->assertEquals($expected[1], $token->isNotYetValid());
+    }
+    
+    public function providerTokenValid() {
         $now = new MUtil_Date();
         $tomorrow = clone $now;
         $yesterday = clone $now;
         $tomorrow->addDay(1);
         $yesterday->subDay(1);
-        echo $now, $tomorrow, $yesterday;
         return array(
             array(
-                array(
+                array(  // Expired
                     'gto_id_token' => '111',
                     'gto_valid_from' => $yesterday,
                     'gto_valid_until' => $yesterday
                     ),
-                true
+                array(true, false, false)   // Expired, NotYetValid, CurrentlyValid
                 ),
-            array(
+            array(  // Current
                 array(
                     'gto_id_token' => '111',
                     'gto_valid_from' => $yesterday,
                     'gto_valid_until' => $tomorrow
                 ),
-                false
+                array(false, false, true)
+            ),
+            array(  // Future
+                array(
+                    'gto_id_token' => '111',
+                    'gto_valid_from' => $tomorrow,
+                    'gto_valid_until' => $tomorrow
+                ),
+                array(false, true, false)
             )
         );
     }
