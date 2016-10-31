@@ -1210,4 +1210,4 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.respondent.c
 INSERT ignore INTO gems__log_setup (gls_name, gls_when_no_user, gls_on_action, gls_on_post, gls_on_change,
         gls_changed, gls_changed_by, gls_created, gls_created_by)
     VALUES
-        ('respondent.patch', 0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
+        ('respondent.change-organization', 0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
