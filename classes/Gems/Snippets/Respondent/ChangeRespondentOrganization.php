@@ -23,6 +23,12 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
 {
     /**
      *
+     * @var \Gems_AccessLog
+     */
+    protected $accesslog;
+
+    /**
+     *
      * @var int Number of records changed
      */
     protected $_changed = 0;
@@ -182,6 +188,9 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
                     $this->loader->getOrganization($this->formData['gr2o_id_organization'])->getName(),
                     $this->formData['gr2o_patient_nr']
                     ));
+
+            $this->accesslog->logChange($this->request, null, $this->formData);
+
         } else {
             parent::afterSave($changed);
         }
@@ -356,6 +365,8 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
         $model = $this->getModel();
         $model->save($row);
 
+        $this->loader->getOrganization($toOrgId)->setHasRespondents($this->currentUser->getUserId());
+
         return $model->getChanged();
     }
 
@@ -369,15 +380,21 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
      */
     protected function saveTo($fromOrgId, $fromRespId, $toOrgId, $toPatientId)
     {
+        $userId = $this->currentUser->getUserId();
         $values = [
             'gr2o_patient_nr'      => $toPatientId,
             'gr2o_id_organization' => $toOrgId,
             'gr2o_changed'         => new \MUtil_Db_Expr_CurrentTimestamp(),
-            'gr2o_changed_by'      => $this->currentUser->getUserId(),
+            'gr2o_changed_by'      => $userId,
             ];
         $where = ['gr2o_id_user = ?' => $fromRespId, 'gr2o_id_organization = ?' => $fromOrgId];
-        
-        return $this->db->update('gems__respondent2org', $values, $where);
+
+        $output = $this->db->update('gems__respondent2org', $values, $where);
+
+        $this->loader->getOrganization($fromOrgId)->checkHasRespondents($userId);
+        $this->loader->getOrganization($toOrgId)->setHasRespondents($userId);
+
+        return $output;
     }
 
     /**

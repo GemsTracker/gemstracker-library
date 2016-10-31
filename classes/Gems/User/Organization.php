@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -109,6 +108,34 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
     public function canHaveRespondents()
     {
         return (boolean) $this->_get('gor_has_respondents') || $this->_get('gor_add_respondents');
+    }
+
+    /**
+     * Check whether the organization still has at least one respondent attached to it.
+     *
+     * Does nothing if this is already known.
+     *
+     * @param int $userId The current user
+     * @return \Gems_User_Organization (continuation pattern)
+     */
+    public function checkHasRespondents($userId, $check = false)
+    {
+        $sql = "CASE
+            WHEN EXISTS (SELECT * FROM gems__respondent2org WHERE gr2o_id_organization = gor_id_organization)
+            THEN 1
+            ELSE 0
+            END";
+        $values['gor_has_respondents'] = new \Zend_Db_Expr($sql);
+        $values['gor_changed']         = new \MUtil_Db_Expr_CurrentTimestamp();
+        $values['gor_changed_by']      = $userId;
+
+        $where = $this->db->quoteInto('gor_id_organization = ?', $this->_id);
+
+        if ($this->db->update('gems__organizations', $values, $where)) {
+            $this->loadData($this->_id);
+        }
+
+        return $this;
     }
 
     /**
@@ -392,7 +419,7 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
     /**
      * Set this organization as teh one currently active
      *
-     * @return \Gems_User_Organization (continutation pattern)
+     * @return \Gems_User_Organization (continuation pattern)
      */
     public function setAsCurrentOrganization()
     {
@@ -416,7 +443,7 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
      * Does nothing if this is already known.
      *
      * @param int $userId The current user
-     * @return \Gems_User_Organization (continutation pattern)
+     * @return \Gems_User_Organization (continuation pattern)
      */
     public function setHasRespondents($userId)
     {

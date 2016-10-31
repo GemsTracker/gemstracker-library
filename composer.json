@@ -47,7 +47,17 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=5.3.9",
+        "ext-curl": "*",
+        "ext-gd": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*",
         "ext-mcrypt": "*",
+        "ext-mysqli": "*",
+        "ext-opensll": "*",
+        "ext-soap": "*",
+        "ext-xmlreader": "*",
+        "ext-xmlwriter": "*",
+        "ext-zip": "*",
         "magnafacta/mutil": "~1.8.1",
         "phpoffice/phpexcel": "1.8.1"
     },
