@@ -58,7 +58,7 @@
         "ext-zip": "*",
         "lib-iconv": "*",
         "lib-curl": "*",
-        "lib-opensll": "*",
+        "lib-openssl": "*",
         "lib-libxml": "*",
         "magnafacta/mutil": "~1.8.1",
         "phpoffice/phpexcel": "1.8.1"
