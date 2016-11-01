@@ -38,7 +38,7 @@ CREATE TABLE if not exists gems__tokens (
         gto_completion_time     datetime,
         gto_duration_in_sec     bigint(20) unsigned NULL,
         -- gto_followup_date       date, -- deprecated
-        gto_result              varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        gto_result              varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
         gto_comment             text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
         gto_reception_code      varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' default 'OK' not null

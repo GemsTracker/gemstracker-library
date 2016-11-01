@@ -1211,3 +1211,7 @@ INSERT ignore INTO gems__log_setup (gls_name, gls_when_no_user, gls_on_action, g
         gls_changed, gls_changed_by, gls_created, gls_created_by)
     VALUES
         ('respondent.change-organization', 0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
+
+-- PATCH: Allow longer results in token table
+
+ALTER TABLE gems__tokens CHANGE gto_result gto_result varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';

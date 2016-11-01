@@ -100,7 +100,17 @@ class SetInformedConsent extends \MUtil_Translate_TranslateableAbstract
                 'gr2o_id_organization' => $respondent->getOrganizationId(),
                 'gr2o_consent'         => $consentCode,
             );
-            $respondent->getRespondentModel()->save($values);
+            $model = $respondent->getRespondentModel();
+            $model->save($values);
+
+            if ($model->getChanged()) {
+                // Refresh the token so it has the new consent code
+                $token->refresh();
+
+                // Make sure the NEW consent is applied to this survey itself
+                $survey = $token->getSurvey();
+                $survey->copyTokenToSource($token, '');
+            }
         }
 
         return false;

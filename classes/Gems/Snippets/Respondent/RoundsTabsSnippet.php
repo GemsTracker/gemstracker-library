@@ -50,6 +50,13 @@ class Gems_Snippets_Respondent_RoundsTabsSnippet extends \MUtil_Snippets_TabSnip
     protected $model;
 
     /**
+     * Optional array of labels that should never be the default tab
+     *
+     * @var array
+     */
+    protected $neverDefaults = array();
+
+    /**
      * Required, can be derived from request or respondent
      *
      * @var array
@@ -200,6 +207,11 @@ class Gems_Snippets_Respondent_RoundsTabsSnippet extends \MUtil_Snippets_TabSnip
 
                 $filters[$name] = $row['label'];
                 $tabs[$name]    = $label;
+
+                if (in_array($row['label'], $this->neverDefaults)) {
+                    // Skip default setting
+                    continue;
+                }
 
                 if ($noOpen && ($row['completed'] > 0)) {
                     $default  = $name;

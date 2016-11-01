@@ -23,6 +23,20 @@ namespace Gems\Snippets\Tracker;
 class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
 {
     /**
+     *
+     * @var array The fields from formData to copy to the token when creating it
+     */
+    protected $copyFields = array(
+        'gto_id_round',
+        'gto_valid_from',
+        'gto_valid_from_manual',
+        'gto_valid_until',
+        'gto_valid_until_manual',
+        'gto_comment',
+        'gto_id_relationfield',
+        );
+
+    /**
      * True when the form should edit a new model item.
      *
      * @var boolean
@@ -503,7 +517,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     /**
      * Hook containing the actual save code.
      *
-     * Call's afterSave() for user interaction.
+     * Calls afterSave() for user interaction.
      *
      * @see afterSave()
      */
@@ -513,17 +527,8 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
 
         $userId     = $this->currentUser->getUserId();
         $tokenData  = array();
-        $copyFields = array(
-            'gto_id_round',
-            'gto_valid_from',
-            'gto_valid_from_manual',
-            'gto_valid_until',
-            'gto_valid_until_manual',
-            'gto_comment',
-            'gto_id_relationfield'
-            );
 
-        foreach ($copyFields as $name) {
+        foreach ($this->copyFields as $name) {
             if (array_key_exists($name, $this->formData)) {
                 if ($model->hasOnSave($name)) {
                     $tokenData[$name] = $model->getOnSave($this->formData[$name], $this->createData, $name, $this->formData);

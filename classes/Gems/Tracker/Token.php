@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -298,11 +297,13 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
             $this->getRespondentTrack()->applyToMenuSource($source);
 
             $source->offsetSet('gsu_id_survey', $this->_gemsData['gto_id_survey']);
-            $source->offsetSet('grc_success', $this->getReceptionCode()->isSuccess() ? 1 : 0);
             $source->offsetSet('is_completed', $this->_gemsData['gto_completion_time'] ? 1 : 0);
             $source->offsetSet('show_answers', $this->_gemsData['gto_completion_time'] ? 1 : 0);
+            $source->offsetSet('gto_reception_code', $this->_gemsData['gto_reception_code']);
 
-            if ($this->getReceptionCode()->isSuccess() &&
+            $rc = $this->getReceptionCode();
+            $source->offsetSet('grc_success', $rc->isSuccess() ? 1 : 0);
+            if ($rc->isSuccess() &&
                     (! $this->_gemsData['gto_completion_time']) &&
                     ($validFrom = $this->getValidFrom())) {
 
@@ -626,7 +627,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                 ->order('gr2t_track_info')
                 ->order('gto_valid_until')
                 ->order('gto_valid_from');
-        
+
         $this->_addRelation($select);
 
         if (!empty($where)) {
@@ -682,7 +683,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
     /**
      * A copy of the data array
-     * 
+     *
      * @return array
      */
     public function getArrayCopy()
@@ -1417,8 +1418,6 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         }
         $values['gto_by']         = $userId;
         $values['gto_return_url'] = $this->calculateReturnUrl();
-
-        // \MUtil_Echo::track($values);
 
         $this->_updateToken($values, $userId);
 
