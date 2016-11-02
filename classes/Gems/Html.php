@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -27,7 +26,7 @@ class Gems_Html
 
         $element = \MUtil_Html::createArray('span', $args);
 
-        $element->appendAttrib('class', 'actionlink'); // Keeps existing classes
+        $element->appendAttrib('class', 'actionlink btn disabled'); // Keeps existing classes
         return $element;
     }
 

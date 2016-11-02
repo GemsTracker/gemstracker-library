@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 namespace Gems\Snippets\Token;
@@ -131,7 +130,7 @@ class ShowTrackTokenSnippet extends \Gems_Tracker_Snippets_ShowTokenSnippetAbstr
                 ->addCurrentChildren()
                 ->showDisabled();
 
-        // \MUtil_Echo::track($links->count());
+        // \MUtil_Echo::track(array_keys($links->getArrayCopy()));
 
         return $links;
     }

@@ -191,7 +191,26 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends \Gems_Snippets_Mod
         $td->appendAttrib('class', $bridge->row_class);
     }
 
-    public function afterRegistry() {
+    /**
+     * Add the buttons to the result div
+     *
+     * @param \MUtil_Html_HtmlElement $html
+     */
+    protected function addButtons(\MUtil_Html_HtmlElement $html)
+    {
+        $buttonDiv = $html->buttonDiv();
+        $buttonDiv->actionLink(array(), $this->_('Close'), array('onclick' => 'window.close();'));
+        $buttonDiv->actionLink(array(), $this->_('Print'), array('onclick' => 'window.print();'));
+    }
+
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    {
         parent::afterRegistry();
 
         // If loaded inline by Ajax request, disable the buttons
@@ -257,9 +276,7 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends \Gems_Snippets_Mod
         }
 
         if ($this->showButtons) {
-            $buttonDiv = $htmlDiv->buttonDiv();
-            $buttonDiv->actionLink(array(), $this->_('Close'), array('onclick' => 'window.close();'));
-            $buttonDiv->actionLink(array(), $this->_('Print'), array('onclick' => 'window.print();'));
+            $this->addButtons($htmlDiv);
         }
         return $htmlDiv;
     }

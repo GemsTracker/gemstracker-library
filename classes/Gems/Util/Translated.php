@@ -5,7 +5,6 @@
  * @subpackage Util
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -33,7 +32,7 @@ class Gems_Util_Translated extends \MUtil_Translate_TranslateableAbstract
     public $dateFormatString = 'yyyy-MM-dd';
 
     /**
-     * DateTime format string usaed by this project
+     * DateTime format string used by this project
      *
      * @var string
      */
