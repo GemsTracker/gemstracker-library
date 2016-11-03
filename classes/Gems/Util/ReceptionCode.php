@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+use MUtil\Translate\TranslateableTrait;
 
 /**
  * Utility function for the use of reception codes.
@@ -21,6 +22,8 @@
  */
 class Gems_Util_ReceptionCode extends \Gems_Registry_CachedArrayTargetAbstract
 {
+    use TranslateableTrait;
+
     /**
      * Variable to add tags to the cache for cleanup.
      *
@@ -42,6 +45,21 @@ class Gems_Util_ReceptionCode extends \Gems_Registry_CachedArrayTargetAbstract
     public function __toString()
     {
         return $this->getCode();
+    }
+
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * This function is no needed if the classes are setup correctly
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    {
+        parent::afterRegistry();
+
+        $this->initTranslateable();
     }
 
     /**

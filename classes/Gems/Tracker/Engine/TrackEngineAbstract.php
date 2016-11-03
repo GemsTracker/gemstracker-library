@@ -131,15 +131,23 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
      */
     protected function _getAvailableIcons()
     {
-        $icons = array();
-        $iterator = new DirectoryIterator(realpath(GEMS_WEB_DIR . '/gems/icons'));
+        $dir = GEMS_WEB_DIR . '/gems-responsive/images/icons';
+        if (!file_exists($dir)) {
+            $dir = GEMS_WEB_DIR . '/gems/icons';
+        }
 
-        foreach ($iterator as $fileinfo) {
-            if ($fileinfo->isFile()) {
-                // $icons[$fileinfo->getFilename()] = $fileinfo->getFilename();
-                $filename = $fileinfo->getFilename();
-                $url = $this->view->baseUrl() . \MUtil_Html_ImgElement::getImageDir($filename);
-                $icons[$fileinfo->getFilename()] = \MUtil_Html::create('span', $filename, array('style' => 'background: transparent url(' . $url . $filename . ') center right no-repeat; padding-right: 20px;'));
+        $icons = array();
+
+        if (file_exists($dir)) {
+            $iterator = new DirectoryIterator($dir);
+
+            foreach ($iterator as $fileinfo) {
+                if ($fileinfo->isFile()) {
+                    // $icons[$fileinfo->getFilename()] = $fileinfo->getFilename();
+                    $filename = $fileinfo->getFilename();
+                    $url = $this->view->baseUrl() . \MUtil_Html_ImgElement::getImageDir($filename);
+                    $icons[$fileinfo->getFilename()] = \MUtil_Html::create('span', $filename, array('style' => 'background: transparent url(' . $url . $filename . ') center right no-repeat; padding-right: 20px;'));
+                }
             }
         }
 

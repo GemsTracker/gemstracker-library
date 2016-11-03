@@ -21,6 +21,7 @@ mb_internal_encoding(APPLICATION_ENCODING);
  */
 defined('APPLICATION_PATH') || define('APPLICATION_PATH', GEMS_ROOT_DIR . '/application');
 defined('GEMS_PROJECT_NAME_UC') || define('GEMS_PROJECT_NAME_UC', ucfirst(GEMS_PROJECT_NAME));
+defined('GEMS_WEB_DIR') || define('GEMS_WEB_DIR', GEMS_ROOT_DIR . '/htdocs');
 
 defined('VENDOR_DIR') || define('VENDOR_DIR', realpath(GEMS_ROOT_DIR . '/vendor/'));
 defined('GEMS_LIBRARY_DIR') || define('GEMS_LIBRARY_DIR', realpath(VENDOR_DIR . '/gemstracker/gemstracker'));
