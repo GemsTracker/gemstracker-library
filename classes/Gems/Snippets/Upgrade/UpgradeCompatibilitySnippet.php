@@ -45,12 +45,19 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
 
     /**
      *
+     * @var \MUtil_Html_Sequence
+     */
+    protected $html;
+
+    /**
+     *
      * @var \Gems_Loader
      */
     protected $loader;
 
     /**
      * The snippets that have moved
+     *
      * @var array
      */
     protected $movedSnippets = array(
@@ -98,10 +105,17 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
     protected $projectDirs;
 
     /**
+     * Renamed variables
      *
-     * @var \MUtil_Html_Sequence
+     * @var array Nested [filenamePart => [oldName => newName]]
      */
-    protected $html;
+    protected $variablesChanged = array(
+        'Midel_Translator' => array(
+            'dateFormat'     => 'dateFormats',
+            'datetimeFormat' => 'datetimeFormats',
+            'timeFormat'     => 'timeFormats',
+            ),
+        );
 
     /**
      *
@@ -377,6 +391,27 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
     }
 
     /**
+     *
+     * @param \SplFileInfo $fileinfo
+     * @param string $content
+     * @param array $messages
+     */
+    protected function _checkVariablesChanged(\SplFileInfo $fileinfo, $content, array &$messages)
+    {
+        $filePathName = $fileinfo->getPathname();
+
+        foreach ($this->variablesChanged as $pathPart => $replacements) {
+            if (\MUtil_String::contains($filePathName, $pathPart)) {
+                foreach ($replacements as $old => $new) {
+                    if (preg_match("/(\$|->)$old\\W/", $content)) {
+                        $messages[] = "This file uses the \$$old variable, that is renamed to \$$new.";
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * A specific report on the escort class
      */
     protected function addEscortReport()
@@ -450,6 +485,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
         }
 
         $this->_checkTablesChanged($fileinfo, $content, $messages);
+        $this->_checkVariablesChanged($fileinfo, $messages, $messages);
 
         if (! $messages) {
             return false;
