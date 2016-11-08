@@ -110,7 +110,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
      * @var array Nested [filenamePart => [oldName => newName]]
      */
     protected $variablesChanged = array(
-        'Midel_Translator' => array(
+        'Model_Translator' => array(
             'dateFormat'     => 'dateFormats',
             'datetimeFormat' => 'datetimeFormats',
             'timeFormat'     => 'timeFormats',
@@ -401,10 +401,10 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
         $filePathName = $fileinfo->getPathname();
 
         foreach ($this->variablesChanged as $pathPart => $replacements) {
-            if (\MUtil_String::contains($filePathName, $pathPart)) {
+            if (\MUtil_String::contains($filePathName, str_replace('_', DIRECTORY_SEPARATOR, $pathPart))) {
                 foreach ($replacements as $old => $new) {
-                    if (preg_match("/(\$|->)$old\\W/", $content)) {
-                        $messages[] = "This file uses the \$$old variable, that is renamed to \$$new.";
+                    if (preg_match("/(\\\$|->)$old\\W/", $content)) {
+                        $messages[] = "This file uses the \$$old variable that is renamed to \$$new.";
                     }
                 }
             }
@@ -485,7 +485,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
         }
 
         $this->_checkTablesChanged($fileinfo, $content, $messages);
-        $this->_checkVariablesChanged($fileinfo, $messages, $messages);
+        $this->_checkVariablesChanged($fileinfo, $content, $messages);
 
         if (! $messages) {
             return false;
