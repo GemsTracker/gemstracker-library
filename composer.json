@@ -60,7 +60,7 @@
         "lib-curl": "*",
         "lib-openssl": "*",
         "lib-libxml": "*",
-        "magnafacta/mutil": "~1.8.1",
+        "magnafacta/mutil": "dev-master",
         "phpoffice/phpexcel": "1.8.1"
     },
     "require-dev": {
