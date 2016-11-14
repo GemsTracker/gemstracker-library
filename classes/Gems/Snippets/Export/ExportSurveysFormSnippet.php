@@ -105,9 +105,9 @@ class ExportSurveysFormSnippet extends \MUtil_Snippets_SnippetAbstract
         $elements['gto_id_survey']->setSeparator('');
 
         if (\MUtil_Bootstrap::enabled()) {
-            $element = new \MUtil_Bootstrap_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=gto_id_survey]'));
+            $element = new \MUtil_Bootstrap_Form_Element_ToggleCheckboxes('toggleSurvey', array('selector'=>'input[name^=gto_id_survey]'));
         } else {
-            $element = new \Gems_JQuery_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=gto_id_survey]'));
+            $element = new \Gems_JQuery_Form_Element_ToggleCheckboxes('toggleSurvey', array('selector'=>'input[name^=gto_id_survey]'));
         }
 
         $element->setLabel($this->_('Toggle'));
