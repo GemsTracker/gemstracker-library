@@ -756,7 +756,7 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
         // Set params
         return sprintf(
                 $this->_('Send mail to %s respondent nr %s for token %s'),
-                $respondent->getEmailAddress(),
+                $token->getEmailAddress(),          // When using relations, this is the right email address
                 $respondent->getPatientNumber(),
                 $token->getTokenId()
                 );
