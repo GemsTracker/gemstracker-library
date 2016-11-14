@@ -1,3 +1,7 @@
+1.8.1-p2 => 1.8.1-p3
+====================
+Fixed toggles for survey and organization in survey export
+
 1.8.1 => 1.8.1-p2
 =================
 Fixes some issues with filtering and sorting
