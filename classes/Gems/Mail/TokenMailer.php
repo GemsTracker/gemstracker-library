@@ -85,9 +85,10 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
 
         parent::afterRegistry();
         
-        if ($this->token && $this->token->hasRelation()) {
+        if ($this->token && $this->token->hasRelation() && $relation = $this->token->getRelation()) {
             // If we have a token with a relation, remove the respondent and use relation in to field
-            array_pop($this->to);
+            $this->to = array();
+            $this->addTo($relation->getEmail(), $relation->getName());
         }
     }
 
@@ -315,7 +316,6 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
                     $result['full_name']  = $relation->getHello($locale);
                     $result['greeting']   = $relation->getGreeting($locale);
                     $result['to']         = $relation->getEmail();
-                    $this->addTo($result['to'], $result['name']);
                 } else {
                     $result['name']       = $this->translate->getAdapter()->_('Undefined relation');
                     $result['first_name'] = '';
