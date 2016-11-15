@@ -17,7 +17,7 @@ class ExportSurveysFormSnippet extends \MUtil_Snippets_SnippetAbstract
 
     protected $form;
 
-	public $loader;
+    public $loader;
 
     /**
      * Defines the value used for 'no round description'
@@ -45,7 +45,7 @@ class ExportSurveysFormSnippet extends \MUtil_Snippets_SnippetAbstract
 
         $export        = $this->loader->getExport();
         $exportTypes   = $export->getExportClasses();
-        
+
         if (isset($post['type'])) {
             $currentType = $post['type'];
         } else {
@@ -118,7 +118,8 @@ class ExportSurveysFormSnippet extends \MUtil_Snippets_SnippetAbstract
             $elements['gto_id_organization'] = $this->form->createElement('multiCheckbox',
                 'gto_id_organization',
                 array('label' => $this->_('Organizations'), 'multiOptions' => $organizations)
-                );   
+                );
+            $elements['gto_id_organization']->setSeparator('');
 
             if (\MUtil_Bootstrap::enabled()) {
                 $element = new \MUtil_Bootstrap_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=gto_id_organization]'));
@@ -170,7 +171,7 @@ class ExportSurveysFormSnippet extends \MUtil_Snippets_SnippetAbstract
         $exportClass = $export->getExport($currentType);
         $exportName = $exportClass->getName();
         $exportFormElements = $exportClass->getFormElements($this->form, $data);
-        
+
         if ($exportFormElements) {
             $exportFormElements['firstCheck'] = $this->form->createElement('hidden', $currentType);
             $exportFormElements['firstCheck']->setBelongsTo($exportName);
