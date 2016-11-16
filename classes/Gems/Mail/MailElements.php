@@ -204,7 +204,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
         }
         $options['nohidden']    = true;
 
-        return $this->_form->createElement('exhibitor', 'preview_text', $options);
+        return $this->_form->createElement('exhibitor', 'preview_html', $options);
     }
 
     /**

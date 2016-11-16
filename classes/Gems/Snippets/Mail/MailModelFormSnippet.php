@@ -120,9 +120,9 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends \Gems_Snippets_ModelFormSn
 
         $bridge->addElement($this->getSaveButton($bridge->getForm()));
 
-        $bridge->addElement($this->mailElements->createPreviewHtmlElement('Preview HTML'));
-        $bridge->addElement($this->mailElements->createPreviewTextElement('Preview Text'));
-        $bridge->addHtml('available_fields', array('label' => $this->_('Available fields')));        
+        $bridge->addElement($this->mailElements->createPreviewHtmlElement($this->_('Preview HTML')));
+        $bridge->addElement($this->mailElements->createPreviewTextElement($this->_('Preview Text')));
+        $bridge->addHtml('available_fields', array('label' => $this->_('Available fields')));
     }
 
     /**
