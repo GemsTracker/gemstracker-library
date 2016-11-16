@@ -7,7 +7,6 @@
  * @author     Jasper van Gestel <jappie@dse.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -23,6 +22,18 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends \Gems_Snippets_ModelFormSn
 {
     /**
      *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
+    /**
+     *
+     * @var \Gems_Loader
+     */
+    protected $loader;
+
+    /**
+     *
      * @var \Gems_Mail_MailElements
      */
     protected $mailElements;
@@ -35,21 +46,9 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends \Gems_Snippets_ModelFormSn
 
     /**
      *
-     * @var \Gems_Loader
-     */
-    protected $loader;
-
-    /**
-     *
      * @var \Gems_Project_ProjectSettings
      */
     protected $project;
-
-    /**
-     *
-     * @var \Zend_Controller_Request_Abstract
-     */
-    protected $request;
 
     /**
      *
@@ -171,8 +170,10 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends \Gems_Snippets_ModelFormSn
                 $content .= "[/i]\n\n";
                 $content .= $this->mailer->applyFields($template['gctt_body']);
 
-                $htmlView->div(array('class' => 'mailpreview'))->raw(\MUtil_Markup::render($content, 'Bbcode', 'Html'));
-                $textView->pre(array('class' => 'mailpreview'))->raw(\MUtil_Markup::render($content, 'Bbcode', 'Text'));
+                $htmlView->div(array('class' => 'mailpreview'))
+                        ->raw(\MUtil_Markup::render($content, 'Bbcode', 'Html'));
+                $textView->pre(array('class' => 'mailpreview'))
+                        ->raw(wordwrap(\MUtil_Markup::render($content, 'Bbcode', 'Text'), 80));
             }
 
         }
@@ -210,11 +211,11 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends \Gems_Snippets_ModelFormSn
         }
         if (!isset($this->formData['to'])) {
             $organization = $this->mailer->getOrganization();
-            $this->formData['to'] = $this->formData['from'] = null;
+            $this->formData['to'] = $this->formData['from'] = $this->currentUser->getEmailAddress();
             if ($organization->getEmail()) {
-                $this->formData['to'] = $this->formData['from'] = $organization->getEmail();
+                $this->formData['from'] = $organization->getEmail();
             } elseif ($this->project->getSiteEmail ()) {
-                $this->formData['to'] = $this->formData['from'] = $this->project->getSiteEmail();
+                $this->formData['from'] = $this->project->getSiteEmail();
             }
         }
 

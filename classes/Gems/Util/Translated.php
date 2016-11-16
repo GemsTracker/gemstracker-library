@@ -1,6 +1,7 @@
 <?php
 
 /**
+ * 
  * @package    Gems
  * @subpackage Util
  * @copyright  Copyright (c) 2011 Erasmus MC
@@ -359,4 +360,23 @@ class Gems_Util_Translated extends \MUtil_Translate_TranslateableAbstract
 
         return $data;
     }
+
+    /**
+     * Mark empty data as empty
+     *
+     * @param string $subject
+     * @return mxied
+     */
+    public function markEmpty($value)
+    {
+        if (empty($value)) {
+            $em = \MUtil_Html::create('em');
+            $em->raw($this->_('&laquo;empty&raquo;'));
+
+            return $em;
+        }
+
+        return $value;
+    }
+
 }

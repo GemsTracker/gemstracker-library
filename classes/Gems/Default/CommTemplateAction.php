@@ -7,7 +7,6 @@
  * @author     Jasper van Gestel <jappie@dse.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -21,10 +20,75 @@
  */
 class Gems_Default_CommTemplateAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
-
+    /**
+     * The snippets used for the create and edit actions.
+     *
+     * @var mixed String or array of snippets name
+     */
     protected $createEditSnippets = 'Mail_MailModelFormSnippet';
 
-    public $showSnippets = 'Mail_CommTemplateShowSnippet';
+    /**
+     * The snippets used for the show action
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $showSnippets = 'Mail_CommTemplateShowSnippet';
+
+    /**
+     *
+     * @var \Gems_Util
+     */
+    public $util;
+
+    /**
+     * Display a template body
+     *
+     * @param string $bbcode
+     * @return \MUtil_Html_HtmlElement
+     */
+    public function bbToHtml($bbcode)
+    {
+        if (empty($bbcode)) {
+            $em = \MUtil_Html::create('em');
+            $em->raw($this->_('&laquo;empty&raquo;'));
+
+            return $em;
+        }
+
+        $text = \MUtil_Markup::render($bbcode, 'Bbcode', 'Html');
+
+        $div = \MUtil_Html::create('div', array('class' => 'mailpreview'));
+        $div->raw($text);
+
+        return $div;
+    }
+
+    /**
+     *
+     * @param array $subValuesArray
+     * @return string
+     */
+    public function displayMultipleSubjects($subValuesArray)
+    {
+        $html = \MUtil_Html::create()->div();
+        $output = '';
+
+        $multi = false;
+        if (count($subValuesArray) > 1) {
+            $multi = true;
+        }
+        foreach($subValuesArray as $subitem) {
+            if (!empty($subitem['gctt_subject'])) {
+                $paragraph = $html->p();
+                if ($multi) {
+                    $paragraph->strong()->append($subitem['gctt_lang'].':');
+                    $paragraph->br();
+                }
+                $paragraph[] = $subitem['gctt_subject'];
+            }
+        }
+        return $html;
+    }
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -39,33 +103,56 @@ class Gems_Default_CommTemplateAction extends \Gems_Controller_ModelSnippetActio
      */
     public function createModel($detailed, $action)
     {
+        $allLanguages    = $this->util->getLocalized()->getLanguages();
         $currentLanguage = $this->locale->getLanguage();
+        $markEmptyCall   = array($this->util->getTranslated(), 'markEmpty');
+
+        ksort($allLanguages);
+
         $model = $this->loader->getModels()->getCommtemplateModel($currentLanguage);
 
         $commTargets = $this->loader->getMailTargets();
 
         $model->set('gct_name', 'label', $this->_('Name'), 'size', 50);
-        $model->set('gct_target', 'label', $this->_('Mail Target'), 'multiOptions', $commTargets, 'Gems_Default_CommTemplateAction', 'translateTargets');
-        
+        $model->set('gct_target', 'label', $this->_('Mail Target'),
+                'multiOptions', $commTargets,
+                'formatFunction', array($this, '_')
+                );
+
+        $model->set('gct_code', 'label', $this->_('Template code'),
+                'description', $this->_('Optional code name to link the template to program code.'),
+                'formatFunction', $markEmptyCall,
+                'size', 50
+                );
+
+        // SUB TRANSLATION MODEL
         $translationModel = new \MUtil_Model_TableModel('gems__comm_template_translations', 'gctt');
+
+        $translationModel->set('gctt_lang', 'multiOptions', $allLanguages);
+
         if ($action === 'index') {
-            $translationModel->set('gctt', 'label', $this->_('Subject'), 'size', 50, 'formatFunction', array('Gems_Default_CommTemplateAction', 'displayMultipleSubjects'));
+            $translationModel->set('gctt', 'label', $this->_('Subject'),
+                    'size', 50,
+                    'formatFunction', array($this, 'displayMultipleSubjects')
+                    );
         } else {
-            $translationModel->set('gctt_subject', 'label', $this->_('Subject'), 'size', 50);
+            $translationModel->set('gctt_subject', 'label', $this->_('Subject'),
+                    'size', 50,
+                    'formatFunction', $markEmptyCall
+                    );
         }
+
         if ($detailed) {
-            $translationModel->set('gctt_body',
-                'label', $this->_('Message'),
-                'elementClass', 'textarea',
-                'decorators', array('CKEditor'),
-                'rows', 4,
-                'formatFunction', array('Gems_Default_CommTemplateAction', 'bbToHtml')
-            );
+            $translationModel->set('gctt_body', 'label', $this->_('Message'),
+                    'cols', 60,
+                    'decorators', array('CKEditor'),
+                    'elementClass', 'textarea',
+                    'formatFunction', array($this, 'bbToHtml'),
+                    'rows', 8
+                    );
         }
 
         if ($this->project->getEmailMultiLanguage()) {
-            $allLanguages = $this->util->getLocalized()->getLanguages();
-            ksort($allLanguages);
             $requiredRows = array();
             foreach($allLanguages as $code=>$language) {
                 $requiredRows[]['gctt_lang'] = $code;
@@ -77,10 +164,6 @@ class Gems_Default_CommTemplateAction extends \Gems_Controller_ModelSnippetActio
             $translationModel->setFilter(array('gctt_lang' => $defaultLanguage));
         }
 
-        $model->set('gct_code', 'label', $this->_('Template code'),
-                'size', 50,
-                'description', $this->_('Optional code name to link the template to program code.')
-                );
         $transformer = new \MUtil_Model_Transform_RequiredRowsTransformer();
         $transformer->setRequiredRows($requiredRows);
         $translationModel->addTransformer($transformer);
@@ -107,45 +190,4 @@ class Gems_Default_CommTemplateAction extends \Gems_Controller_ModelSnippetActio
     {
         return $this->_('Email templates');
     }
-
-    public static function bbToHtml($bbcode) {
-        $text = '';
-        if (!empty($bbcode)) {
-            $text = \MUtil_Markup::render($bbcode, 'Bbcode', 'Html');
-        }
-
-
-        $div = \MUtil_Html::create()->div(array('class' => 'mailpreview'));
-        $div->raw($text);
-
-        return $div;
-    }
-
-    public static function displayMultipleSubjects($subValuesArray)
-    {
-        $html = \MUtil_Html::create()->div();
-        $output = '';
-
-        $multi = false;
-        if (count($subValuesArray) > 1) {
-            $multi = true;
-        }
-        foreach($subValuesArray as $subitem) {
-            if (!empty($subitem['gctt_subject'])) {
-                $paragraph = $html->p();
-                if ($multi) {
-                    $paragraph->strong()->append($subitem['gctt_lang'].':');
-                    $paragraph->br();
-                }
-                $paragraph[] = $subitem['gctt_subject'];
-            }
-        }
-        return $html;
-    }
-
-    public static function translateTargets($targetName)
-    {
-        return $this->_($targetName);
-    }
-
 }

@@ -3,26 +3,28 @@
 /**
  *
  * @package    Gems
- * @subpackage Snippets
+ * @subpackage Snippets\Mail
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
  *
  * @package    Gems
- * @subpackage Snippets
+ * @subpackage Snippets\Mail
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
 class Gems_Snippets_Mail_CommTemplateShowSnippet extends \Gems_Snippets_ModelItemTableSnippetGeneric
 {
-    protected $subTitleItem = 'gctt_lang';
-
-    protected $submodel;
+    /**
+     * One of the \MUtil_Model_Bridge_BridgeAbstract MODE constants
+     *
+     * @var int
+     */
+    protected $bridgeMode = \MUtil_Model_Bridge_BridgeAbstract::MODE_SINGLE_ROW;
 
     /**
      * Adds rows from the model to the bridge that creates the browse table.
@@ -39,8 +41,8 @@ class Gems_Snippets_Mail_CommTemplateShowSnippet extends \Gems_Snippets_ModelIte
         $items = $model->getItemsOrdered();
         foreach($items as $name) {
             if ($model->get($name, 'type') === \MUtil_Model::TYPE_CHILD_MODEL) {
-                $this->submodel = $model->get($name, 'model');
-                $subitems = $this->submodel->getItemsOrdered();
+                $submodel = $model->get($name, 'model');
+                $subitems = $submodel->getItemsOrdered();
             }
         }
 
@@ -54,10 +56,6 @@ class Gems_Snippets_Mail_CommTemplateShowSnippet extends \Gems_Snippets_ModelIte
             }
         }
 
-        /*if ($subitems) {
-            $bridge->addItem('gctt', 'moo');
-        }*/
-
         if ($model->has('row_class')) {
             // Make sure deactivated rounds are show as deleted
             foreach ($bridge->getTable()->tbody() as $tr) {
@@ -68,32 +66,43 @@ class Gems_Snippets_Mail_CommTemplateShowSnippet extends \Gems_Snippets_ModelIte
                 }
             }
         }
+
+        if ($submodel) {
+            $subrow = $bridge->tr();
+            $subrow->th();
+            $subContainer = $subrow->td();
+            $this->addSubModelTable($bridge, $submodel, $subContainer);
+        }
     }
 
-    protected function addSubModelTable($subContainer)
+    /**
+     *
+     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $subModel
+     * @param \MUtil_Html_TdElement $subContainer
+     */
+    protected function addSubModelTable(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $subModel, \MUtil_Html_TdElement $subContainer)
     {
-    	if ($this->submodel) {
-    		$data = $this->loadData();
-    		$submodelName = $this->submodel->getName();
-            $multi = false;
-            if (count($data[$submodelName]) > 1) {
-                $multi = true;
-            }
-    		foreach($data[$submodelName] as $item) {
-        		if ($multi && isset($this->subTitleItem) && isset($item[$this->subTitleItem])) {
-        			$subContainer->h3($item[$this->subTitleItem]);
-        		}
-        		$subTable = $subContainer->table();
-           		foreach($item as $subColumnName => $subValue) {
-           			if ($subLabel = $this->submodel->get($subColumnName, 'label')) {
-        				$row = $subTable->tr();
-        				$row->th()->append($subLabel);
-        				$row->td()->append($this->processValue($subColumnName, $subValue, $this->submodel));
-        			}
-        		}
-        	}
+        $data         = $bridge->getRow();
+        $itemBridge   = new \MUtil_Model_Bridge_DisplayBridge($subModel);
+        $submodelName = $subModel->getName();
+        $multi        = count($data[$submodelName]) > 1;
 
-    	}
+        foreach($data[$submodelName] as $item) {
+            $itemBridge->setRow($item);
+            if ($multi && isset($item['gctt_lang'])) {
+                $subContainer->h3($bridge->format('gctt_lang', $item['gctt_lang']));
+            }
+            $subTable = $subContainer->table();
+            foreach($item as $subColumnName => $subValue) {
+                $subLabel = $subModel->get($subColumnName, 'label');
+                if ($subLabel) {
+                    $row = $subTable->tr();
+                    $row->th($subLabel);
+                    $row->td($itemBridge->format($subColumnName, $item[$subColumnName]));
+                }
+            }
+        }
     }
 
     /**
@@ -112,66 +121,8 @@ class Gems_Snippets_Mail_CommTemplateShowSnippet extends \Gems_Snippets_ModelIte
         }
 
         $table = $this->getShowTable($model);
-        if ($this->submodel) {
-            $subrow = $table->tr();
-            $subrow->th();
-            $subContainer = $subrow->td();
-            $this->addSubModelTable($subContainer);
-        }
         $table->setRepeater($this->getRepeater($model));
-
 
         return $table;
     }
-
-    protected function loadData()
-	{
-		return $this->model->loadFirst();
-	}
-
-	protected function processValue($name, $value, $model=false)
-	{
-		if (!$model) {
-			$model = $this->model;
-		}
-		$result = $value;
-
-		if ($default = $model->get($name, 'default')) {
-            if (null === $result) {
-                $result = $default;
-            }
-        }
-        if ($formatFunction = $model->get($name, 'formatFunction')) {
-
-            $result = call_user_func($formatFunction, $result);
-        } elseif ($dateFormat = $model->get($name, 'dateFormat')) {
-
-            $storageFormat = $model->get($name, 'storageFormat');
-
-            $result = \MUtil_Date::format($result, $dateFormat, $storageFormat);
-        }
-
-        if ($itemDisplay = $model->get($name, 'itemDisplay')) {
-
-            if (is_callable($itemDisplay)) {
-                $result = call_user_func($itemDisplay, $result);
-
-            } elseif (is_object($itemDisplay)) {
-
-                if (($itemDisplay instanceof \MUtil_Html_ElementInterface)
-                    || method_exists($itemDisplay, 'append')) {
-
-                    $object = clone $itemDisplay;
-
-                    $result = $object->append($result);
-                }
-
-            } elseif (is_string($itemDisplay)) {
-                // Assume it is a html tag when a string
-
-                $result = \MUtil_Html::create($itemDisplay, $result);
-            }
-        }
-        return $result;
-	}
 }

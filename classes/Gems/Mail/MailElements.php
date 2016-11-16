@@ -7,7 +7,6 @@
  * @author     Jasper van Gestel <jappie@dse.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -202,7 +201,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
         } else {
             $options['label'] = $this->translate->_('Preview HTML');
         }
-        $options['nohidden']    = true;
+        $options['nohidden'] = true;
 
         return $this->_form->createElement('exhibitor', 'preview_html', $options);
     }
