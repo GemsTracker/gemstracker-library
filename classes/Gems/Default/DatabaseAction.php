@@ -485,7 +485,7 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
                 $form->setAttrib('style', 'display: none;');
 
                 if ($this->getMessenger()->getCurrentMessages()) {
-                    $this->accesslog->logChange($this->_request);
+                    $this->accesslog->logChange($this->getRequest());
                 }
             }
 
@@ -607,6 +607,8 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
             $results = $model->runScript($data);
 
             $this->addMessage($results);
+            $this->accesslog->logChange($this->getRequest());
+
             $this->_cleanCache();
             $this->_reroute(array('action' => 'show'));
         }
@@ -636,6 +638,7 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
                 $results[] = $this->_('All objects exist. Nothing was executed.');
             }
             $this->addMessage($results);
+            $this->accesslog->logChange($this->getRequest());
             $this->_cleanCache();
             $this->_reroute(array('action' => 'index'), true);
         }

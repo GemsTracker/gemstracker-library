@@ -349,7 +349,10 @@ class Gems_AccessLog
         $values['gls_when_no_user'] = 0;
         $values['gls_on_action']    = 0;
         $values['gls_on_post']      = 0; // preg_match('/(create|edit)/', $action);
-        $values['gls_on_change']    = preg_match('/(create|edit|delete|deactivate|reactivate|import|export)/', $action);
+        $values['gls_on_change']    = preg_match(
+                '/(create|edit|delete|deactivate|reactivate|import|export|recalc|check|synchronize|run|patch)/',
+                $action
+                );
 
         $values['gls_changed']      = $values['gls_created']    = new \MUtil_Db_Expr_CurrentTimestamp();
         $values['gls_changed_by']   = $values['gls_created_by'] = \Gems_User_UserLoader::SYSTEM_USER_ID;

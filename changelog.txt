@@ -4,6 +4,8 @@ You can change the organization(s) a patient belongs to (and move his/her tracks
 Correct token button added to menu
 Before field save events allows changing the fields after their new values have been calculated
 Respondent changed events can be set at the organization level
+Improved interface for communication templates and automatic mail
+All recalculate, check, synchronize, patch and run commands are set to logged
 
 Important changes from 1.8.0 => 1.8.1
 ============================================================

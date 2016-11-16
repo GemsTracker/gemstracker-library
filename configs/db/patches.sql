@@ -1215,3 +1215,13 @@ INSERT ignore INTO gems__log_setup (gls_name, gls_when_no_user, gls_on_action, g
 -- PATCH: Allow longer results in token table
 
 ALTER TABLE gems__tokens CHANGE gto_result gto_result varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+
+-- PATCH: Set logging of heavy actions to true
+
+UPDATE gems__log_setup
+    SET gls_on_change = 1
+    WHERE gls_name LIKE '%recalc%' OR
+        gls_name LIKE '%check%' OR
+        gls_name LIKE '%synchronize%' OR
+        gls_name LIKE '%patch%' OR
+        gls_name LIKE '%run%';
