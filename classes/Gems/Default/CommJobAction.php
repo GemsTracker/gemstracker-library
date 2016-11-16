@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -59,7 +58,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
     public function autofilterAction($resetMvc = true)
     {
         parent::autofilterAction($resetMvc);
-        
+
         $buttons = $this->_helper->SortableTable('sort', 'id');
 
         // First element is the wrapper
@@ -82,7 +81,6 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
         $dbLookup   = $this->util->getDbLookup();
         $dbTracks   = $this->util->getTrackData();
         $translated = $this->util->getTranslated();
-        $empty      = $translated->getEmptyDropdownArray();
         $unselected = array('' => '');
 
         $model = new \MUtil_Model_TableModel('gems__comm_jobs');
@@ -148,23 +146,33 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
         // $model->set('gcj_filter_days_between', 'label', $this->_('Interval'), 'validators[]', 'Digits');
         // $model->set('gcj_filter_max_reminders','label', $this->_('Max'), 'validators[]', 'Digits');
 
-        $model->set('gcj_id_track',        'label', $this->_('Track'), 'multiOptions', $empty + $dbTracks->getAllTracks());
+        $anyTrack[''] = $this->_('(all tracks)');
+        $model->set('gcj_id_track', 'label', $this->_('Track'),
+                'multiOptions', $anyTrack + $dbTracks->getAllTracks(),
+                'onchange', 'this.form.submit();'
+                );
 
-        $defaultRounds = $empty + $this->db->fetchPairs('SELECT gro_round_description, gro_round_description FROM gems__rounds WHERE gro_round_description IS NOT NULL AND gro_round_description != "" GROUP BY gro_round_description');
-        $model->set('gcj_round_description',         'label', $this->_('Round'), 'multiOptions', $defaultRounds,
-                    'variableSelect', array(
-                        'source' => 'gcj_id_track',
-                        'baseQuery' => $this->roundDescriptionQuery,
-                        'ajax' => array('controller' => 'comm-job', 'action' => 'roundselect'),
-                        'firstValue' => $empty,
-                        'defaultValues' => $defaultRounds,
-                    ));
+        $anyRound['']  = $this->_('(all rounds)');
+        $defaultRounds = $anyRound + $dbTracks->getAllRoundDescriptions();
+        $model->set('gcj_round_description', 'label', $this->_('Round'),
+                'multiOptions', $defaultRounds,
+                'variableSelect', array(
+                    'source' => 'gcj_id_track',
+                    'baseQuery' => $this->roundDescriptionQuery,
+                    'ajax' => array('controller' => 'comm-job', 'action' => 'roundselect'),
+                    'firstValue' => $anyRound,
+                    'defaultValues' => $defaultRounds,
+                ));
 
-        $model->set('gcj_id_survey',       'label', $this->_('Survey'), 'multiOptions', $empty + $dbTracks->getAllSurveys(true));
+        $anySurvey[''] = $this->_('(all surveys)');
+        $model->set('gcj_id_survey', 'label', $this->_('Survey'),
+                'multiOptions', $anySurvey + $dbTracks->getAllSurveys(true)
+                );
 
         if ($detailed) {
+            $anyOrganization[''] = $this->_('(all organizations)');
             $model->set('gcj_id_organization', 'label', $this->_('Organization'),
-                    'multiOptions', $empty + $dbLookup->getOrganizations());
+                    'multiOptions', $anyOrganization + $dbLookup->getOrganizations());
         }
 
         return $model;
@@ -332,6 +340,6 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
 
     public function sortAction()
     {
-        $this->_helper->getHelper('SortableTable')->ajaxAction('gems__comm_jobs','gcj_id_job', 'gcj_id_order');        
+        $this->_helper->getHelper('SortableTable')->ajaxAction('gems__comm_jobs','gcj_id_job', 'gcj_id_order');
     }
 }

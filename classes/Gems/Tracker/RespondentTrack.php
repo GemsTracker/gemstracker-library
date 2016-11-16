@@ -77,6 +77,12 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
 
     /**
      *
+     * @var array Raw track engine data, set in getCode()
+     */
+    protected $_trackData;
+
+    /**
+     *
      * @var \Gems_User_User
      */
     protected $currentUser;
@@ -631,14 +637,14 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
      */
     public function getCode()
     {
-        static $track = false;
-
-        if (!$track) {
-            $track = $this->tracker->getTrackModel()->loadFirst(array('gtr_id_track'=>$this->_respTrackData['gr2t_id_track']));
+        if (null === $this->_trackData) {
+            $this->_trackData = $this->tracker->getTrackModel()->loadFirst(array(
+                'gtr_id_track' => $this->_respTrackData['gr2t_id_track'],
+                ));
         }
 
-        if (is_array($track)) {
-            return $track['gtr_code'];
+        if (is_array($this->_trackData)) {
+            return $this->_trackData['gtr_code'];
         } else {
             return false;
         }

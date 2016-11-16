@@ -7,7 +7,6 @@
  * @author     Jasper van Gestel <jappie@dse.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -145,6 +144,16 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
     }
 
     /**
+     * Can respondent be mailed
+     *
+     * @return boolean
+     */
+    public function canBeMailed()
+    {
+        return $this->_gemsData['gr2o_mailable'] && $this->_gemsData['grs_email'];
+    }
+
+    /**
      * Creates a copy of the data data
      *
      * @return array
@@ -175,7 +184,8 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
     }
 
     /**
-     * Get Email adres of respondent
+     * Get Email address of respondent
+     *
      * @return string
      */
     public function getEmailAddress()

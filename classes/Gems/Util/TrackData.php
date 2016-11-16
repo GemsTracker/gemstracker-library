@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 use Gems\Util\UtilAbstract;
@@ -133,7 +132,22 @@ class Gems_Util_TrackData extends UtilAbstract
 
         return $this->_getSelectPairsCached(__FUNCTION__, $sql, array(), 'tracks');
     }
-    
+
+    /**
+     * Returns array (description => description) of all round descriptions in all tracks, sorted by name
+     *
+     * @return array
+     */
+    public function getAllRoundDescriptions()
+    {
+        $sql = "SELECT gro_round_description, gro_round_description
+            FROM gems__rounds
+            WHERE gro_round_description IS NOT NULL AND gro_round_description != '' AND gro_id_round != 0
+            GROUP BY gro_round_description";
+
+        return $this->_getSelectPairsCached(__FUNCTION__, $sql, array(), 'tracks');
+    }
+
     /**
      * Retrieve an array of key/value pairs for gsu_id_survey and gsu_survey_name
      * @param  boolean $active Only show active surveys Default: False

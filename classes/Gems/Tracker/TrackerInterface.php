@@ -1,11 +1,11 @@
 <?php
 
 /**
+ *
  * @package    Gems
  * @subpackage Tracker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -253,6 +253,13 @@ interface Gems_Tracker_TrackerInterface
      * @return \Gems_Tracker_Engine_TrackEngineInterface
      */
     public function getTrackEngine($trackData);
+
+    /**
+     *
+     * @param string $trackCode Track code or whole word part of code to find track by
+     * @return \Gems_Tracker_Engine_TrackEngineInterface or null when not found
+     */
+    public function getTrackEngineByCode($trackCode);
 
     /**
      * Returns dummy objects for all registered track engines class names

@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 use Gems\Util\UtilAbstract;
@@ -193,9 +192,11 @@ class Gems_Util_DbLookup extends UtilAbstract
      * Get the filter to use on the tokenmodel when working with a mailjob.
      *
      * @param array $job
+     * @param $respondentId Optional, get for just one respondent
+     * @param $organizationId Optional, get for just one organization
      * @return array
      */
-    public function getFilterForMailJob($job)
+    public function getFilterForMailJob($job, $respondentId = null, $organizationId = null)
     {
         // Set up filter
         $filter = array(
@@ -215,6 +216,11 @@ class Gems_Util_DbLookup extends UtilAbstract
             $filter['gto_mail_sent_date'] = NULL;
         }
         if ($job['gcj_id_organization']) {
+            if ($organizationId && ($organizationId !== $job['gcj_id_organization'])) {
+                // Should never return any data
+                $filter[] = '1=0';
+                return $filter;
+            }
             $filter['gto_id_organization'] = $job['gcj_id_organization'];
         }
         if ($job['gcj_id_track']) {
@@ -237,6 +243,9 @@ class Gems_Util_DbLookup extends UtilAbstract
         }
         if ($job['gcj_id_survey']) {
             $filter['gto_id_survey'] = $job['gcj_id_survey'];
+        }
+        if ($respondentId) {
+            $filter['gto_id_respondent'] = $respondentId;
         }
 
         return $filter;
@@ -498,7 +507,7 @@ class Gems_Util_DbLookup extends UtilAbstract
 
         return $result;
     }
-    
+
     /**
      * Returns the roles in the acl
      *
@@ -507,7 +516,7 @@ class Gems_Util_DbLookup extends UtilAbstract
     public function getSources()
     {
         $sql = "SELECT gso_id_source, gso_source_name
-                    FROM gems__sources 
+                    FROM gems__sources
                     ORDER BY gso_source_name";
 
         return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'sources');

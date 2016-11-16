@@ -1,22 +1,17 @@
 <?php
 
 /**
- * Description of ExecuteMailJobTask
  *
  * @package    Gems
  * @subpackage Task
  * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2016 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.7.3
  */
 
 namespace Gems\Task\Mail;
 
 /**
- * Description
- *
- * Long description
  *
  * @package    Gems
  * @subpackage Task
@@ -41,23 +36,25 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract {
     /**
      *
      * @param array $job
+     * @param $respondentId Optional, execute for just one respondent
+     * @param $organizationId Optional, execute for just one organization
      */
-    public function execute($jobId = null) {
+    public function execute($jobId = null, $respondentId = null, $organizationId = null) {
         $sql = $this->db->select()->from('gems__comm_jobs')
                     ->join('gems__comm_templates', 'gcj_id_message = gct_id_template')
                     ->where('gcj_active = 1')
                     ->where('gcj_id_job = ?', $jobId);
-        
+
         $job = $this->db->fetchRow($sql);
-        
+
         if (empty($job)) {
             throw new Exception($this->_('Mail job not found!'));
         }
-                
+
         $dbLookup   = $this->loader->getUtil()->getDbLookup();
         $mailLoader = $this->loader->getMailLoader();
         $sendByMail = $this->getUserEmail($job['gcj_id_user_as']);
-        $filter     = $dbLookup->getFilterForMailJob($job);
+        $filter     = $dbLookup->getFilterForMailJob($job, $respondentId, $organizationId);
         $tracker    = $this->loader->getTracker();
         $model      = $tracker->getTokenModel();
 
@@ -122,7 +119,7 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract {
                                 } else {
                                     $mailer->updateToken();
                                     $updates++;
-                                }                                
+                                }
                                 break;
 
                             default:
@@ -137,7 +134,7 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract {
                             $updates++;
                             $sentMailAddresses[$respondentId][$email] = true;
                         }
-                        
+
                     } catch (\Zend_Mail_Exception $exception) {
                         $fields = $mailer->getMailFields(false);
 

@@ -1,14 +1,12 @@
 <?php
 
 /**
- * Description of AddAllMailJobsTask
  *
  * @package    Gems
  * @subpackage Task
  * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2016 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.7.3
  */
 
 namespace Gems\Task\Mail;
@@ -40,12 +38,24 @@ class AddAllMailJobsTask extends \MUtil_Task_TaskAbstract {
 
     /**
      * Adds all jobs to the queue
+     *
+     * @param $respondentId Optional, execute for just one respondent
+     * @param $organizationId Optional, execute for just one organization
      */
-    public function execute() {
+    public function execute($respondentId = null, $organizationId = null) {
         $sql = "SELECT gcj_id_job
             FROM gems__comm_jobs
-            WHERE gcj_active = 1
-            ORDER BY gcj_id_order, 
+            WHERE gcj_active = 1";
+
+        if ($organizationId) {
+            $sql .= $this->db->quoteInto(
+                    " AND (gcj_id_organization IS NULL OR gcj_id_organization = ?)",
+                    $organizationId
+                    );
+        }
+
+        $sql .= "
+            ORDER BY gcj_id_order,
                 CASE WHEN gcj_id_survey IS NULL THEN 1 ELSE 0 END,
                 CASE WHEN gcj_round_description IS NULL THEN 1 ELSE 0 END,
                 CASE WHEN gcj_id_track IS NULL THEN 1 ELSE 0 END,
@@ -56,7 +66,7 @@ class AddAllMailJobsTask extends \MUtil_Task_TaskAbstract {
         if ($jobs) {
             $batch = $this->getBatch();
             foreach ($jobs as $job) {
-                $batch->addTask('Mail\\ExecuteMailJobTask', $job['gcj_id_job']);
+                $batch->addTask('Mail\\ExecuteMailJobTask', $job['gcj_id_job'], $respondentId, $organizationId);
             }
         } else {
             $this->getBatch()->addMessage($this->_('Nothing to do, please create a mail job first.'));

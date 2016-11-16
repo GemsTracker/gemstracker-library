@@ -1,12 +1,12 @@
 <?php
 
 /**
+ *
  * @package    Gems
  * @subpackage Tracker
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 use Gems\Tracker\Engine\FieldsDefinition;
@@ -727,6 +727,28 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
         }
 
         return $this->_trackEngines[$trackId];
+    }
+
+    /**
+     *
+     * @param string $trackCode Track code or whole word part of code to find track by
+     * @return \Gems_Tracker_Engine_TrackEngineInterface or null when not found
+     */
+    public function getTrackEngineByCode($trackCode)
+    {
+        $trackData = $this->db->fetchRow(
+                "SELECT * FROM gems__tracks
+                    WHERE CONCAT(' ', gtr_code, ' ') LIKE ? AND
+                        gtr_active = 1 AND
+                        gtr_date_start <= CURRENT_DATE AND
+                        (gtr_date_until IS NULL OR gtr_date_until <= CURRENT_DATE)
+                    ORDER BY gtr_date_start",
+                "% $trackCode %"
+                );
+
+        if ($trackData) {
+            return $this->getTrackEngine($trackData);
+        }
     }
 
     /**
