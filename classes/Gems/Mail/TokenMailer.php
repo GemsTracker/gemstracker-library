@@ -197,7 +197,7 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
         $logData['grco_id_to']        = $this->respondent->getId();
 
         if (! is_int($this->by)) {
-            $this->by = 0;
+            $this->by = $currentUserId;
         }
 
         $logData['grco_id_by']        = $this->by;

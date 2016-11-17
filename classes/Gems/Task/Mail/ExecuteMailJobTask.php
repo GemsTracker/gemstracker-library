@@ -53,7 +53,7 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract {
 
         $dbLookup   = $this->loader->getUtil()->getDbLookup();
         $mailLoader = $this->loader->getMailLoader();
-        $sendByMail = $this->getUserEmail($job['gcj_id_user_as']);
+        $sendByMail = $job['gcj_id_user_as'];
         $filter     = $dbLookup->getFilterForMailJob($job, $respondentId, $organizationId);
         $tracker    = $this->loader->getTracker();
         $model      = $tracker->getTokenModel();
