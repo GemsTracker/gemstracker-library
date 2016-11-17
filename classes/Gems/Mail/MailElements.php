@@ -213,7 +213,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
      */
     public function createPreviewTextElement()
     {
-        $options['label']       = $this->translate->_('Preview text');
+        $options['label']       = $this->translate->_('Preview Text');
         $options['nohidden']    = true;
 
         return $this->_form->createElement('exhibitor', 'preview_text', $options);

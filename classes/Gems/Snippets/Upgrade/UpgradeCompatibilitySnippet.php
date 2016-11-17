@@ -280,8 +280,8 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
         $filePathName = $fileinfo->getPathname();
 
         foreach ($this->movedSnippets as $oldSnippet => $newSnippet) {
-            if (\MUtil_String::endsWith($filePathName, $oldSnippet . '.php') &&
-                    (! \MUtil_String::endsWith($filePathName, $newSnippet . '.php'))) {
+            if (\MUtil_String::endsWith($filePathName, str_replace('\\/', DIRECTORY_SEPARATOR, $oldSnippet) . '.php') &&
+                    (! \MUtil_String::endsWith($filePathName, str_replace('\\/', DIRECTORY_SEPARATOR, $newSnippet) . '.php'))) {
 
                 if ($newSnippet) {
                     $messages[] = "This snippet is moved to $newSnippet.";
