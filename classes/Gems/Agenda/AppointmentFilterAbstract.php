@@ -30,6 +30,11 @@ abstract class AppointmentFilterAbstract extends \MUtil_Translate_TranslateableA
     /**
      * Constant for filters that should never trigger
      */
+    const MATCH_ALL_SQL = '1=1';
+
+    /**
+     * Constant for filters that should never trigger
+     */
     const NO_MATCH_SQL = '1=0';
 
     /**

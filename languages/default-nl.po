@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-17 14:39+0100\n"
+"POT-Creation-Date: 2016-11-20 19:24+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -21,8 +21,8 @@ msgstr ""
 
 #: gemstracker/gemstracker/classes/Gems/Agenda.php:338
 #: gemstracker/gemstracker/classes/Gems/Agenda/Appointment.php:208
-#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:166
-#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:184
+#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:167
+#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:185
 #: gemstracker/gemstracker/classes/Gems/Tracker/Model/Dependency/FromAppointmentsMaintenanceDependency.php:91
 #: magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:875
 msgid "; "
@@ -61,7 +61,7 @@ msgstr "Afspraken bron"
 #: gemstracker/gemstracker/classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:83
 #: gemstracker/gemstracker/classes/Gems/Model/AppointmentModel.php:182
 #: gemstracker/gemstracker/classes/Gems/Model/AppointmentModel.php:227
-#: gemstracker/gemstracker/classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:91
+#: gemstracker/gemstracker/classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:95
 msgid "With"
 msgstr "Met"
 
@@ -159,17 +159,17 @@ msgstr "Virueel"
 msgid "Track created by %s filter"
 msgstr "Traject aangemaakt door %s filter"
 
-#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:85
-#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:139
+#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:86
+#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:140
 msgid "Filter type"
 msgstr "Soort filter"
 
-#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:86
-#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:140
+#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:87
+#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:141
 msgid "Determines what is filtered how."
 msgstr "Bepaald wat op welke manier gefilterd wordt."
 
-#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:90
+#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:91
 #: gemstracker/gemstracker/classes/Gems/Default/AgendaStaffAction.php:109
 #: gemstracker/gemstracker/classes/Gems/Default/CommTemplateAction.php:116
 #: gemstracker/gemstracker/classes/Gems/Default/DatabaseAction.php:210
@@ -184,7 +184,7 @@ msgstr "Bepaald wat op welke manier gefilterd wordt."
 #: gemstracker/gemstracker/classes/Gems/Model/RespondentModel.php:269
 #: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:200
 #: gemstracker/gemstracker/classes/Gems/Model/TemplateModel.php:51
-#: gemstracker/gemstracker/classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:135
+#: gemstracker/gemstracker/classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:139
 #: gemstracker/gemstracker/classes/Gems/Snippets/TokenPlanTableSnippet.php:45
 #: gemstracker/gemstracker/classes/Gems/Tracker/Model/FieldMaintenanceModel.php:219
 #: gemstracker/gemstracker/classes/Gems/Tracker/Model/TrackModel.php:85
@@ -192,8 +192,8 @@ msgstr "Bepaald wat op welke manier gefilterd wordt."
 msgid "Name"
 msgstr "Naam"
 
-#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:91
-#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:146
+#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:92
+#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:147
 #: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:89
 #: gemstracker/gemstracker/classes/Gems/Default/ConsentAction.php:56
 #: gemstracker/gemstracker/classes/Gems/Default/DatabaseAction.php:214
@@ -202,15 +202,15 @@ msgstr "Naam"
 msgid "Order"
 msgstr "Volgorde"
 
-#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:92
-#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:147
+#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:93
+#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:148
 msgid "Execution order of the filters, lower numbers are executed first."
 msgstr ""
 "Volgorde waarin de filters geevalueeerd worden, het laagste getal wordt als "
 "eerste eerste gecontroleerd."
 
-#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:94
-#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:156
+#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:95
+#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:157
 #: gemstracker/gemstracker/classes/Gems/Default/AgendaActivityAction.php:130
 #: gemstracker/gemstracker/classes/Gems/Default/AgendaProcedureAction.php:130
 #: gemstracker/gemstracker/classes/Gems/Default/AgendaStaffAction.php:128
@@ -229,64 +229,66 @@ msgstr ""
 msgid "Active"
 msgstr "Actief"
 
-#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:101
-#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:169
+#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:102
+#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:170
 msgid "Use in track fields"
 msgstr "Gebruik in trajectvelden"
 
-#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:102
+#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:103
 msgid "The number of uses of this filter in track fields."
 msgstr "Het aantal keren dat dit filter in trajectvelden gebruikt is."
 
-#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:117
-#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:187
+#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:118
+#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:188
 msgid "Use in filters"
 msgstr "Gebruik in filters"
 
-#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:118
+#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:119
 msgid "The number of uses of this filter in other filters."
 msgstr "Het aantal keren dat dit filter in andere filters gebruikt is."
 
-#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:143
+#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:144
 msgid "Manual name"
 msgstr "Handmatige naam"
 
-#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:144
+#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:145
 msgid "A name for this filter. The calculated name is used otherwise."
 msgstr "Een naam voor dit filter. Anders wordt de berekende naam gebruikt."
 
-#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:145
+#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:146
 msgid "Calculated name"
 msgstr "Berekende naam"
 
-#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:165
+#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:166
 #: magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:428
 msgid ": "
 msgstr ": "
 
-#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:167
+#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:168
 msgid "Not used in tracks"
 msgstr "Niet gebruikt in trajecten"
 
-#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:170
+#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:171
 msgid "The use of this filter in track fields."
 msgstr "Gebruik van dit filter in trajectvelden."
 
-#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:185
+#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:186
 msgid "Not used in filters"
 msgstr "Niet gebruikt in filters"
 
-#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:188
+#: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:189
 msgid "The use of this filter in other filters."
 msgstr "Gebruik van dit filter in andere filters."
 
 #: gemstracker/gemstracker/classes/Gems/Agenda/Filter/AndModelDependency.php:84
+#: gemstracker/gemstracker/classes/Gems/Agenda/Filter/NotAnyModelDependency.php:49
 msgid " AND "
 msgstr " EN "
 
 #: gemstracker/gemstracker/classes/Gems/Agenda/Filter/AndModelDependency.php:86
 #: gemstracker/gemstracker/classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:69
 #: gemstracker/gemstracker/classes/Gems/Agenda/Filter/LocationModelDependency.php:45
+#: gemstracker/gemstracker/classes/Gems/Agenda/Filter/NotAnyModelDependency.php:51
 #: gemstracker/gemstracker/classes/Gems/Agenda/Filter/OrModelDependency.php:85
 #: gemstracker/gemstracker/classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:56
 #: gemstracker/gemstracker/classes/Gems/Agenda/Filter/SubjectModelDependency.php:45
@@ -393,6 +395,10 @@ msgstr "Vestigings filter"
 #: gemstracker/gemstracker/classes/Gems/Agenda/Filter/LocationModelDependency.php:84
 msgid "Appointment location"
 msgstr "Afspraak vestiging"
+
+#: gemstracker/gemstracker/classes/Gems/Agenda/Filter/NotAnyModelDependency.php:72
+msgid "NOT ANY filter combination"
+msgstr "NIET filter combinatie"
 
 #: gemstracker/gemstracker/classes/Gems/Agenda/Filter/OrModelDependency.php:83
 msgid " OR "
@@ -1280,7 +1286,7 @@ msgstr "Email sjabloon"
 #: gemstracker/gemstracker/classes/Gems/Model/CommLogModel.php:128
 #: gemstracker/gemstracker/classes/Gems/Model/RespondentModel.php:267
 #: gemstracker/gemstracker/classes/Gems/Snippets/Agenda/AppointmentsTableSnippet.php:176
-#: gemstracker/gemstracker/classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:133
+#: gemstracker/gemstracker/classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:137
 #: gemstracker/gemstracker/classes/Gems/Tracker/Model/StandardTokenModel.php:256
 msgid "Respondent nr"
 msgstr "Patiënt nr"
@@ -2935,7 +2941,7 @@ msgid "Delete or stop respondent"
 msgstr "Verwijder of stop patiënt"
 
 #: gemstracker/gemstracker/classes/Gems/Default/RespondentPlanAction.php:48
-#: gemstracker/gemstracker/classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:62
+#: gemstracker/gemstracker/classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:66
 #: gemstracker/gemstracker/classes/Gems/Snippets/Log/LogShowSnippet.php:106
 #: gemstracker/gemstracker/classes/Gems/Snippets/Token/DeleteTrackTokenSnippet.php:131
 #: gemstracker/gemstracker/classes/Gems/Snippets/Token/EditTrackTokenSnippet.php:55
@@ -4800,7 +4806,7 @@ msgid "(no respondent)"
 msgstr "(geen patiënt)"
 
 #: gemstracker/gemstracker/classes/Gems/Model/LogModel.php:95
-#: gemstracker/gemstracker/classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:76
+#: gemstracker/gemstracker/classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:80
 #: gemstracker/gemstracker/classes/Gems/Snippets/Survey/Display/BarChartSnippet.php:202
 #: gemstracker/gemstracker/classes/Gems/Tracker/Model/FieldMaintenanceModel.php:457
 #: gemstracker/gemstracker/classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:495
@@ -5388,7 +5394,7 @@ msgid "No tokens are set by this appointment"
 msgstr "Geen kenmerk gebruikt deze afspraak "
 
 #: gemstracker/gemstracker/classes/Gems/Snippets/Agenda/AppointmentsTableSnippet.php:88
-#: gemstracker/gemstracker/classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:57
+#: gemstracker/gemstracker/classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:61
 msgid "Show appointment"
 msgstr "Toon afspraak"
 
@@ -5401,7 +5407,7 @@ msgid "No appointments found."
 msgstr "Geen afspraken gevonden."
 
 #: gemstracker/gemstracker/classes/Gems/Snippets/Agenda/AppointmentsTableSnippet.php:169
-#: gemstracker/gemstracker/classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:130
+#: gemstracker/gemstracker/classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:134
 msgid "Time"
 msgstr "Tijd"
 
@@ -6912,13 +6918,20 @@ msgstr ""
 "%d fout(en) tijdens het maken van emails voor sjabloon %s. Kijk in het error "
 "log voor de details."
 
-#: gemstracker/gemstracker/classes/Gems/Task/Tracker/AddRefreshQuestions.php:117
+#: gemstracker/gemstracker/classes/Gems/Task/Tracker/AddRefreshQuestions.php:124
 #, php-format
-msgid ""
-"Creating view failed, try adding rights using the following statement: %s"
-msgstr ""
-"Maken van SQL-view mislukt, probeer het toevoegen van rechten met deze "
-"instructie: %s"
+msgid "View creation failed for survey %s with message: '%s'"
+msgstr "View aanmaak mislukt voor vragenlijst %s met de foutmelding: '%s'"
+
+#: gemstracker/gemstracker/classes/Gems/Task/Tracker/AddRefreshQuestions.php:128
+#, php-format
+msgid "View creation statement: %s"
+msgstr "View aanmaak opdracht: %s"
+
+#: gemstracker/gemstracker/classes/Gems/Task/Tracker/AddRefreshQuestions.php:129
+#, php-format
+msgid "Try adding rights using this statement: %s"
+msgstr "Probeer rechten toe te voegen middels dit commando: %s"
 
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/CheckSurvey.php:48
 #, php-format
@@ -9324,6 +9337,12 @@ msgid "%s, one import problem found, continuing check."
 msgid_plural "%s, %d import problems found, continuing check."
 msgstr[0] "%s, één import probleem gevonden, gaan door met controle."
 msgstr[1] "%s, %d import problemen gevonden, gaan door met controle."
+
+#~ msgid ""
+#~ "Creating view failed, try adding rights using the following statement: %s"
+#~ msgstr ""
+#~ "Maken van SQL-view mislukt, probeer het toevoegen van rechten met deze "
+#~ "instructie: %s"
 
 #~ msgid "Preview text"
 #~ msgstr "Tekstvoorbeeld"
