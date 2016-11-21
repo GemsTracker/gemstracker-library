@@ -28,7 +28,7 @@ abstract class AppointmentFilterAbstract extends \MUtil_Translate_TranslateableA
     implements AppointmentFilterInterface, \Serializable
 {
     /**
-     * Constant for filters that should never trigger
+     * Constant for filters that should always trigger
      */
     const MATCH_ALL_SQL = '1=1';
 

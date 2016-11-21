@@ -21,13 +21,6 @@
 class Gems_Snippets_Agenda_CalendarTableSnippet extends \Gems_Snippets_ModelTableSnippetGeneric
 {
     /**
-     * One of the \MUtil_Model_Bridge_BridgeAbstract MODE constants
-     *
-     * @var int
-     */
-    // protected $bridgeMode = \MUtil_Model_Bridge_BridgeAbstract::MODE_ROWS;
-
-    /**
      *
      * @var array Optional alternative search filter for appointments
      */
