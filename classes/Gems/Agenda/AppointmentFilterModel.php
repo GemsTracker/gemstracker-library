@@ -44,6 +44,7 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
         'AndModelDependency',
         'FieldLikeModelDependency',
         'LocationModelDependency',
+        'NotAnyModelDependency',
         'OrModelDependency',
         'SqlLikeModelDependency',
         'SubjectModelDependency',

@@ -21,13 +21,6 @@
 class Gems_Snippets_Agenda_CalendarTableSnippet extends \Gems_Snippets_ModelTableSnippetGeneric
 {
     /**
-     * One of the \MUtil_Model_Bridge_BridgeAbstract MODE constants
-     *
-     * @var int
-     */
-    // protected $bridgeMode = \MUtil_Model_Bridge_BridgeAbstract::MODE_ROWS;
-
-    /**
      *
      * @var array Optional alternative search filter for appointments
      */
@@ -93,6 +86,10 @@ class Gems_Snippets_Agenda_CalendarTableSnippet extends \Gems_Snippets_ModelTabl
         $bridge->addColumn($respButton)->class = 'middleAlign rightAlign';
 
         unset($table[\MUtil_Html_TableElement::THEAD]);
+
+        // Make sure the rows are loaded now (as otherwise only 1 one row is loaded)
+        $bridge->setMode(\MUtil_Model_Bridge_BridgeAbstract::MODE_ROWS);
+        $rows = $bridge->getRows();
     }
 
     /**

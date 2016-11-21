@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: UpgradeCompatibilitySnippet.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Snippets\Upgrade;
@@ -257,8 +256,8 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
         $filePathName = $fileinfo->getPathname();
 
         foreach ($this->movedSnippets as $oldSnippet => $newSnippet) {
-            if (\MUtil_String::endsWith($filePathName, $oldSnippet . '.php') &&
-                    (! \MUtil_String::endsWith($filePathName, $newSnippet . '.php'))) {
+            if (\MUtil_String::endsWith($filePathName, str_replace('\\/', DIRECTORY_SEPARATOR, $oldSnippet) . '.php') &&
+                    (! \MUtil_String::endsWith($filePathName, str_replace('\\/', DIRECTORY_SEPARATOR, $newSnippet) . '.php'))) {
 
                 if ($newSnippet) {
                     $messages[] = "This snippet is moved to $newSnippet.";

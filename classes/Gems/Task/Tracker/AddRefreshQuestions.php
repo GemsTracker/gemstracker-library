@@ -89,7 +89,8 @@ class Gems_Task_Tracker_AddRefreshQuestions extends \MUtil_Task_TaskAbstract
      * @param \Gems_Tracker_Survey       $viewName
      * @param \MUtil_Model_ModelAbstract $answerModel
      */
-    protected function replaceCreateView(\Gems_Tracker_Survey $survey, \MUtil_Model_ModelAbstract $answerModel) {
+    protected function replaceCreateView(\Gems_Tracker_Survey $survey, \MUtil_Model_ModelAbstract $answerModel)
+    {
         $viewName = $this->getViewName($survey);
         $responseDb = $this->project->getResponseDatabase();
         $fieldSql   = '';
