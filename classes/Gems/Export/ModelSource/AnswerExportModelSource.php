@@ -128,6 +128,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
             $model->set('consentcode',              'label', $this->_('Consent'), 'type', \MUtil_Model::TYPE_STRING);
             $model->set('resptrackid',              'label', $this->_('Respondent track ID'), 'type', \MUtil_Model::TYPE_NUMERIC);
             $model->set('gto_round_description',    'label', $this->_('Round description'));
+            $model->set('gto_round_order',          'label', $this->_('Round order'));
             $model->set('gtr_track_name',           'label', $this->_('Track name'));
             $model->set('gr2t_track_info',          'label', $this->_('Track description'));
 
