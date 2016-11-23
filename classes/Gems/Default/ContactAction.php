@@ -123,8 +123,8 @@ class Gems_Default_ContactAction extends \Gems_Controller_Action
                 $this->project->getName());
         $this->html->pInfo()->sprintf($this->_('GemsTracker is an open source project hosted on %s.'))
                 ->a(
-                        'http://sourceforge.net/projects/gemstracker/',
-                        'SourceForge',
+                        'https://github.com/GemsTracker/gemstracker-library',
+                        'GitHub',
                         array('rel' => 'external', 'target' => 'sourceforge')
                         );
         $this->html->pInfo()->sprintf($this->_('More information about GemsTracker is available on the %s website.'))

@@ -115,12 +115,9 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $page->addAction(sprintf($this->_('About %s'), $project->getName()), null, 'about');
         $page->addAction(sprintf($this->_('About %s'), $this->_('GemsTracker')), 'pr.contact.gems', 'gems');
 
-        if ($project->hasBugsUrl()) {
-            $page->addAction($this->_('Reporting bugs'), 'pr.contact.bugs', 'bugs');
-        }
-        if ($project->hasAnySupportUrl()) {
-            $page->addAction($this->_('Support'), 'pr.contact.support', 'support');
-        }
+        $page->addAction($this->_('Reporting bugs'), 'pr.contact.bugs', 'bugs');
+
+        $page->addAction($this->_('Support'), 'pr.contact.support', 'support');
 
         return $page;
     }

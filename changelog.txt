@@ -6,6 +6,7 @@ Before field save events allows changing the fields after their new values have 
 Respondent changed events can be set at the organization level
 Improved interface for communication templates and automatic mail
 All recalculate, check, synchronize, patch and run commands are set to logged
+The Contact => Bugs and GemsTracker pages have been refreshed with a default bugs url (use Roles to make invisible)
 
 Important changes from 1.8.0 => 1.8.1
 ============================================================

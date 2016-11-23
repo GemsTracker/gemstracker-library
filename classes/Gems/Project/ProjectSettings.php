@@ -312,6 +312,20 @@ class Gems_Project_ProjectSettings extends \ArrayObject
     }
 
     /**
+     * Returns the documentation url
+     *
+     * @return string
+     */
+    public function getBugsUrl()
+    {
+        if (isset($this['contact'], $this['contact']['bugsUrl'])) {
+            return $this['contact']['bugsUrl'];
+        }
+
+        return 'https://github.com/GemsTracker/gemstracker-library/issues';
+    }
+
+    /**
      * Get the specified cache method from project settings
      *
      * @return string
@@ -906,6 +920,7 @@ class Gems_Project_ProjectSettings extends \ArrayObject
      * True at least one support url exists.
      *
      * @return boolean
+     * @deprecated Since 1.8.2 No longer in use
      */
     public function hasAnySupportUrl()
     {
@@ -921,10 +936,11 @@ class Gems_Project_ProjectSettings extends \ArrayObject
      * True the bugs url exists.
      *
      * @return boolean
+     * @deprecated Since 1.8.2 No longer in use
      */
     public function hasBugsUrl()
     {
-        return isset($this['contact'], $this['contact']['bugsUrl']);
+        return isset($this['contact'], $this['contact']['bugsUrl']) ? $this['contact']['bugsUrl'] : true;
     }
 
     /**
