@@ -49,7 +49,7 @@
         "php": ">=5.3.9",
         "ext-mcrypt": "*",
         "magnafacta/mutil": "dev-r1.8.1",
-        "phpoffice/phpexcel": "1.8.1"
+        "box/spout": "^2.7.1"
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.*",

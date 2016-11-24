@@ -40,7 +40,7 @@ class Gems_Export extends \Gems_Loader_TargetLoaderAbstract
      * @var array Of classname => description
      */
     protected $_exportClasses = array(
-        'ExcelExport' => 'Excel (xlsx)',
+        'StreamingExcelExport' => 'Excel (xlsx)',
         'ExcelHtmlExport' => 'Excel HTML (xls)',
         'SpssExport' => 'SPSS',
         'CsvExport' => 'CSV',
