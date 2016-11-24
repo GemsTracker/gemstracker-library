@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 1.8.9\n"
+"X-Generator: Poedit 1.8.11\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: vendor/magnafacta/mutil/src/MUtil\n"
 "X-Poedit-SearchPath-2: languages\n"
@@ -7057,7 +7057,7 @@ msgstr "Vanwege ronde aanpassingen zijn %d kenmerken verwijderd."
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:406
 #, php-format
 msgid "%d tokens created to by round changes."
-msgstr "Vanwege ronde aanpassingen zijn nieuwe %d kenmerken gecreëerd."
+msgstr "Vanwege ronde aanpassingen zijn %d nieuwe kenmerken gecreëerd."
 
 #: classes/Gems/Tracker/ChangeTracker.php:68
 msgid "No tokens were changed."
