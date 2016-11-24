@@ -7242,7 +7242,7 @@ msgstr "Vanwege ronde aanpassingen zijn %d kenmerken verwijderd."
 #: gemstracker/gemstracker/classes/Gems/Tracker/Engine/TrackEngineAbstract.php:414
 #, php-format
 msgid "%d tokens created to by round changes."
-msgstr "Vanwege ronde aanpassingen zijn nieuwe %d kenmerken gecreëerd."
+msgstr "Vanwege ronde aanpassingen zijn %d nieuwe kenmerken gecreëerd."
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/ChangeTracker.php:68
 msgid "No tokens were changed."
