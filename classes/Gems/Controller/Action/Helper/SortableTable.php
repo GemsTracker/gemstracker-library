@@ -24,7 +24,7 @@ class Gems_Controller_Action_Helper_SortableTable extends \Zend_Controller_Actio
 {
     /**
      * Handles sort in an ajax request
-     * 
+     *
      * @param string $table The table used
      * @param string $idField The name of the field with the primary key
      * @param string $orderField The name of the field that holds the order
@@ -64,12 +64,12 @@ class Gems_Controller_Action_Helper_SortableTable extends \Zend_Controller_Actio
             }
         }
 
-        throw new Gems_Exception($this->_('Sorting failed'), 403);        
+        throw new Gems_Exception($this->_('Sorting failed'), 403);
     }
 
     /**
      * Get the sort buttons to add under the table with sortable rows
-     * 
+     *
      * @param string $sortAction The name of the ajax action
      * @param string $urlIdParam The namr used to refer to the record ID in the url
      * @return MUtil_Html_HtmlElement
@@ -78,6 +78,7 @@ class Gems_Controller_Action_Helper_SortableTable extends \Zend_Controller_Actio
     {
         $view = $this->getView();
 
+        \MUtil_JQuery::enableView($view);
         $jquery = $view->jQuery();
         $jquery->enable();  //Just to make sure
 

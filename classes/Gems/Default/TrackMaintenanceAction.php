@@ -87,7 +87,7 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
      *
      * @var mixed String or array of snippets name
      */
-    protected $exportSnippets = 'Tracker\Export\ExportTrackSnippetGeneric';
+    protected $exportSnippets = 'Tracker\\Export\\ExportTrackSnippetGeneric';
 
     /**
      * The parameters used for the import action
