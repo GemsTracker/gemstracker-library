@@ -4,7 +4,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-10-18 14:46+0200\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
+"Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
 "Language: nl_NL\n"
 "MIME-Version: 1.0\n"
@@ -7639,7 +7639,7 @@ msgstr "Ronde export"
 #: classes/Gems/Tracker/Snippets/ExportTrackSnippetAbstract.php:374
 #, php-format
 msgid "%s (inactive)"
-msgstr "%s (inactieif)"
+msgstr "%s (inactief)"
 
 #: classes/Gems/Tracker/Snippets/ExportTrackSnippetAbstract.php:392
 msgid "Check the rounds to export"
