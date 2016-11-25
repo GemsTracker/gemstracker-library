@@ -1,15 +1,16 @@
 <?php
 
 /**
+ *
  * @package    Gems
  * @subpackage Controller\Action
- * @author Menno Dekker <menno.dekker@erasmusmc.nl>
+ * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2016 Erasmus MC
  * @license    New BSD License
  */
 
 /**
- * This action belper makes sorting table data that has an order field easier
+ * This action helper makes sorting table data that has an order field easier
  *
  * Implement by adding the buttons returned by the direct method to the bottom
  * of the table output. Create an action that calls the ajaxRequest method.
@@ -24,7 +25,7 @@ class Gems_Controller_Action_Helper_SortableTable extends \Zend_Controller_Actio
 {
     /**
      * Handles sort in an ajax request
-     * 
+     *
      * @param string $table The table used
      * @param string $idField The name of the field with the primary key
      * @param string $orderField The name of the field that holds the order
@@ -64,12 +65,12 @@ class Gems_Controller_Action_Helper_SortableTable extends \Zend_Controller_Actio
             }
         }
 
-        throw new Gems_Exception($this->_('Sorting failed'), 403);        
+        throw new \Gems_Exception($this->_('Sorting failed'), 403);
     }
 
     /**
      * Get the sort buttons to add under the table with sortable rows
-     * 
+     *
      * @param string $sortAction The name of the ajax action
      * @param string $urlIdParam The namr used to refer to the record ID in the url
      * @return MUtil_Html_HtmlElement
@@ -77,6 +78,7 @@ class Gems_Controller_Action_Helper_SortableTable extends \Zend_Controller_Actio
     public function direct($sortAction = 'sort', $urlIdParam = 'id')
     {
         $view = $this->getView();
+        \MUtil_JQuery::enableView($view);
 
         $jquery = $view->jQuery();
         $jquery->enable();  //Just to make sure
