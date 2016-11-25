@@ -1154,6 +1154,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     {
         $fieldDef  = $this->getTrackEngine()->getFieldsDefinition();
 
+        $this->_ensureFieldData();
         $this->_fieldData = $fieldDef->processBeforeSave($this->_fieldData, $this->_respTrackData);
         $fieldsChanged    = $fieldDef->changed;
 
@@ -1212,26 +1213,26 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
 
         return $this;
     }
-    
+
     /**
      * Restores tokens for this track, when the reception code matches the given $oldCode
-     * 
-     * Used when restoring a respondent or this tracks, and the restore tracks/tokens 
+     *
+     * Used when restoring a respondent or this tracks, and the restore tracks/tokens
      * box is checked.
-     * 
+     *
      * @param \Gems_Util_ReceptionCode $oldCode The old reception code
      * @param \Gems_Util_ReceptionCode $newCode the new reception code
      * @return int  The number of restored tokens
      */
     public function restoreTokens(\Gems_Util_ReceptionCode $oldCode, \Gems_Util_ReceptionCode $newCode) {
         $count = 0;
-        
+
         if (!$oldCode->isSuccess() && $newCode->isSuccess()) {
             foreach ($this->getTokens() as $token) {
                 if ($token instanceof \Gems_Tracker_Token) {
                     if ($oldCode->getCode() === $token->getReceptionCode()->getCode()) {
                         $token->setReceptionCode($newCode, null, $this->currentUser->getUserId());
-                        $count++; 
+                        $count++;
                     }
                 }
             }
