@@ -1287,6 +1287,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     {
         $fieldDef  = $this->getTrackEngine()->getFieldsDefinition();
 
+        $this->_ensureFieldData();
         $this->_fieldData = $this->processFieldsBeforeSave($this->_fieldData, $this->_respTrackData);
         $fieldsChanged    = $fieldDef->changed;
 
