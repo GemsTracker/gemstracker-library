@@ -262,6 +262,11 @@ class StreamingExcelExport extends ExportAbstract
                 $timestamp = $value->getTimestamp();
 
                 return ($timestamp/86400)+25569.4167;
+            } elseif (\MUtil_Date::ifDate($value, $dateFormat)) {
+                $date = new \MUtil_Date($value, $dateFormat);
+                $timestamp = $date->getTimestamp();
+
+                return ($timestamp/86400)+25569.4167;
             }
         }
 
