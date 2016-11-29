@@ -1,7 +1,16 @@
 1.8.1-p2 => 1.8.1-p3
 ====================
+New   Added NOT filter to Agenda Filters
+New   Added round order to export
 Fixed toggles for survey and organization in survey export
 Fixed mailing relations in specific scenarios impossible due to missing To field
+Fixed not logging sender in communication log
+Fixed not-remembered organization during browsing and export
+Fixed skipped rows during manual csv file import
+Fixed CSRF (Hash) element not displayed correctly in in forms
+Fixed Excel (xlsx) export runs out of memory
+Fixed single survey export does not respond to date filter
+Fixed traanslations
 
 1.8.1 => 1.8.1-p2
 =================
