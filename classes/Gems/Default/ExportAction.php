@@ -4,6 +4,8 @@ class Gems_Default_ExportAction extends \Gems_Controller_ModelSnippetActionAbstr
 {
     protected $autofilterParameters = array('extraSort' => 'gto_start_time ASC');
 
+    public $db;
+
     public $request;
 
     /**
@@ -21,8 +23,12 @@ class Gems_Default_ExportAction extends \Gems_Controller_ModelSnippetActionAbstr
 
         if (isset($this->_searchFilter['gto_id_survey']) && is_numeric($this->_searchFilter['gto_id_survey'])) {
             // Surveys have been selected       
-            $exportModelSource = $this->loader->getExportModelSource($this->exportModelSource);         
+            $exportModelSource = $this->loader->getExportModelSource($this->exportModelSource);
             $model = $exportModelSource->getModel($this->_searchFilter, $this->data);
+
+            if ($where = \Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($this->data, $this->db)) {
+                $model->addFilter(array($where));
+            }
         } else {
             $basicArray = array('gto_id_survey', 'gto_id_track', 'gto_round_description', 'gto_id_organization', 'gto_start_date', 'gto_end_date', 'gto_valid_from', 'gto_valid_until');
             
