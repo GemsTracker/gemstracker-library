@@ -48,7 +48,7 @@
     "require": {
         "php": ">=5.3.9",
         "ext-mcrypt": "*",
-        "magnafacta/mutil": "dev-r1.8.1",
+        "magnafacta/mutil": "~1.8.1",
         "box/spout": "^2.7.1"
     },
     "require-dev": {
