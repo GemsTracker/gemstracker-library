@@ -24,6 +24,7 @@
  */
 class Gems_Task_TaskRunnerBatch extends \MUtil_Task_TaskBatch
 {
+
     /**
      * The number of bytes to pad during push communication in Kilobytes.
      *
@@ -35,7 +36,7 @@ class Gems_Task_TaskRunnerBatch extends \MUtil_Task_TaskBatch
      */
     public $extraPushPaddingKb = 5;
 
-     /**
+    /**
      * The number of bytes to pad for the first push communication in Kilobytes. If zero
      * $extraPushPaddingKb is used.
      *
@@ -54,5 +55,19 @@ class Gems_Task_TaskRunnerBatch extends \MUtil_Task_TaskBatch
     protected $taskLoaderDirs = array(
         'Gems_Task'  => 'Gems/Task',
         'MUtil_Task' => 'MUtil/Task',
-        );
+    );
+
+    /**
+     *
+     * @var \Gems_Log
+     */
+    protected $logger;
+
+    public function afterRegistry() {
+        if (!isset($this->log) && $this->logger instanceof \Zend_Log) {
+            $this->log = $this->logger;
+        }
+        return parent::afterRegistry();
+    }
+
 }
