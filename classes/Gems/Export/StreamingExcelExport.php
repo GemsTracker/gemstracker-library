@@ -252,6 +252,15 @@ class StreamingExcelExport extends ExportAbstract
         }
 
         $writer->close();
+
+        // reset row number and iteration
+        if ($this->batch) {
+            $this->batch->setSessionVariable('rowNumber', 0);
+            $this->batch->setSessionVariable('iteration', 0);
+        } else {
+            $this->_session->rowNumber = 0;
+            $this->_session->iteration = 0;
+        }
     }
 
     protected function filterDateFormat($value, $dateFormat, $columnName)
