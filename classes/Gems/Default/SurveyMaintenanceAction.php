@@ -475,7 +475,9 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
             $model->setOnLoad('track_usage', array($this, 'calculateTrackUsage'));
 
             $model->set('calc_duration',        'label', $this->_('Duration calculated'),
-                    'elementClass', 'Html'
+                    'elementClass', 'Html',
+                    'noSort', true,
+                    'no_text_search', true
                     );
             $model->setOnLoad('calc_duration', array($this, 'calculateDuration'));
 
