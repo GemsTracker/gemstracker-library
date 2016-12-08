@@ -1443,7 +1443,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         $mail = $this->loader->getMail();
         $mail->setTemplateStyle($this->getBaseOrganization()->getStyle());
         $mail->setFrom($this->getFrom());
-        $mail->addTo($this->getEmailAddress(), $this->getFullName(), $this->project->getEmailBounce());
+        $mail->addTo($this->getEmailAddress(), $this->getFullName(), $this->project->getStaffBounce());
         if ($bcc = $this->project->getEmailBcc()) {
             $mail->addBcc($bcc);
         }

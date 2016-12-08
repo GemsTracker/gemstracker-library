@@ -843,7 +843,20 @@ class Gems_Project_ProjectSettings extends \ArrayObject
         }
     }
 
-    /**
+     /**
+     * Should staff mail be bounced to the sender?
+     *
+     * @return boolean
+     */
+    public function getStaffBounce()
+    {
+        if ($this->offsetExists('email') && isset($this->email['staffBounce'])) {
+            return (boolean) $this->email['staffBounce'];
+        }
+        return $this->getEmailBounce();
+    }
+
+   /**
      * Returns the super admin name, if any
      *
      * @return string

@@ -5,6 +5,7 @@ Correct token button added to menu
 Before field save events allows changing the fields after their new values have been calculated
 Respondent changed events can be set at the organization level
 Improved interface for communication templates and automatic mail
+On acceptance and demonstration mail only respondent mails are bounce, staff mails are sent to receiver
 All recalculate, check, synchronize, patch and run commands are set to logged
 The Contact => Bugs and GemsTracker pages have been refreshed with a default bugs url (use Roles to make invisible)
 

@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -24,6 +23,12 @@ class Gems_Mail extends \MUtil_Mail
     const MAIL_NO_ENCRYPT = 0;
     const MAIL_SSL = 1;
     const MAIL_TLS = 2;
+
+    /**
+     *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
 
     /**
      * @var \GemsEscort
@@ -81,6 +86,9 @@ class Gems_Mail extends \MUtil_Mail
             $email = $this->getFrom();
             if (! $email) {
                 throw new \Gems_Exception_Coding('Adding bounce To address while From is not set.');
+            }
+            if (($this->currentUser instanceof \Gems_User_User) && $this->currentUser->hasEmailAddress()) {
+                $email = $this->currentUser->getEmailAddress();
             }
         }
         return parent::addTo($email, $name);
@@ -150,7 +158,7 @@ class Gems_Mail extends \MUtil_Mail
 
         return self::$mailServers[$from];
     }
-    
+
     /**
      * Returns the the current template
      *
@@ -186,7 +194,7 @@ class Gems_Mail extends \MUtil_Mail
         if (empty($from)) {
             throw new \Gems_Exception('No sender email set!');
         }
-        
+
         // Get the transport method when it was not set
         if (is_null($transport)) {
             $transport = $this->checkTransport($this->getFrom());

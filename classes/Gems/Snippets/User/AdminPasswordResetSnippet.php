@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: AdminPasswordResetSnippet.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Snippets\User;
@@ -83,7 +82,6 @@ class AdminPasswordResetSnippet extends PasswordResetSnippet
     {
         if (isset($this->formData['create_account']) && $this->formData['create_account']) {
             $mail = $this->loader->getMailLoader()->getMailer('staffPassword', $this->user->getUserId());
-            $mail->setOrganizationFrom();
             if ($mail->setCreateAccountTemplate()) {
                 $mail->send();
                 $this->addMessage($this->_('Create account mail sent'));
@@ -96,7 +94,6 @@ class AdminPasswordResetSnippet extends PasswordResetSnippet
 
         if (isset($this->formData['reset_password']) && $this->formData['reset_password']) {
             $mail = $this->loader->getMailLoader()->getMailer('staffPassword', $this->user->getUserId());
-            $mail->setOrganizationFrom();
             if ($mail->setResetPasswordTemplate()) {
                 $mail->send();
                 $this->addMessage($this->_('Reset password mail sent'));

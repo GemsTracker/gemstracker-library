@@ -6803,7 +6803,7 @@ msgstr "Verander het wachtwoord voor: %s"
 
 #: gemstracker/gemstracker/classes/Gems/Snippets/User/AdminPasswordResetSnippet.php:89
 msgid "Create account mail sent"
-msgstr "Nieuwe medewerker email"
+msgstr "Nieuwe medewerker email verzonden"
 
 #: gemstracker/gemstracker/classes/Gems/Snippets/User/AdminPasswordResetSnippet.php:92
 msgid "No default Create Account mail template set in organization or project"

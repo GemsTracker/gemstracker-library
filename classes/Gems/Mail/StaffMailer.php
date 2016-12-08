@@ -7,7 +7,6 @@
  * @author     Jasper van Gestel <jappie@dse.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -80,8 +79,19 @@ class Gems_Mail_StaffMailer extends \Gems_Mail_MailerAbstract
         $mailFields = $this->user->getMailFields();
         $this->addMailFields($mailFields);
 
+        $this->setFrom($this->user->getFrom());
         $this->addTo($this->user->getEmailAddress(), $this->user->getFullName());
         $this->setLanguage($this->user->getLocale());
+    }
+
+    /**
+     * Returns true if the "email.bounce" setting exists in the project
+     * configuration and is true
+     * @return boolean
+     */
+    public function bounceCheck()
+    {
+        return $this->project->getStaffBounce();
     }
 
     public function getDataLoaded()

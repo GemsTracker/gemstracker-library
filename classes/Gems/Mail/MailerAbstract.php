@@ -7,7 +7,6 @@
  * @author     Jasper van Gestel <jappie@dse.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -36,6 +35,10 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
      */
     protected $bodyText;
 
+    /**
+     *
+     * @var \Zend_Db_Adapter_Abstract
+     */
     protected $db;
 
     /**
@@ -125,6 +128,22 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
     }
 
     /**
+     * Add a To field
+     */
+    public function addTo($newTo, $newToName = '')
+    {
+        if (is_array($newTo)) {
+            $this->to  = array_merge($newTo, $this->to);
+        } else {
+            if (empty($newToName)) {
+                $this->to[] = $newTo;
+            } else {
+                $this->to[$newToName] = $newTo;
+            }
+        }
+    }
+
+    /**
      * After registry load, load the MailFields
      */
     public function afterRegistry()
@@ -154,7 +173,6 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
     {
         return $this->project->getEmailBounce();
     }
-
 
     /**
      * Return the mailFields
@@ -358,6 +376,39 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
         return $markedMailFields;
     }
 
+    /**
+     * Send the mail
+     */
+    public function send()
+    {
+        $mail = $this->loader->getMail();
+
+        $mail->setFrom($this->from);
+        $mail->addTo($this->to, '', $this->bounceCheck());
+
+        if (isset($this->project->email['bcc'])) {
+            $mail->addBcc($this->project->email['bcc']);
+        }
+
+        $mail->setSubject($this->applyFields($this->subject));
+
+        $mail->setTemplateStyle($this->getTemplateStyle());
+
+        if ($this->bodyBb) {
+            $mail->setBodyBBCode($this->applyFields($this->bodyBb));
+        } elseif ($this->bodyHtml) {
+            $mail->setBodyHtml($this->applyFields($this->bodyHtml));
+        } elseif ($this->bodyText) {
+            $mail->setBodyText($this->applyFields($this->bodyText));
+        }
+
+        $this->beforeMail();
+
+        $mail->send();
+
+        $this->afterMail();
+    }
+
     public function setBody($message, $renderer = 'Bbcode')
     {
         if ($renderer == 'Bbcode') {
@@ -371,11 +422,12 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
 
 
     /**
-     * Organization or project Style (as defined in application/configs/email/)
+     * set the from field
      */
-    public function setStyle($style)
+    public function setFrom($newFrom)
     {
-        $this->templateStyle = $style;
+        $this->from = $newFrom;
+        $this->mailFields['from'] = $this->mailFields['reply_to'] = $newFrom;
     }
 
     /**
@@ -388,6 +440,14 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
     }
 
     /**
+     * Organization or project Style (as defined in application/configs/email/)
+     */
+    public function setStyle($style)
+    {
+        $this->templateStyle = $style;
+    }
+
+    /**
      * Set the time when the email should be sent.
      */
     public function setTime()
@@ -395,38 +455,12 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
     }
 
     /**
-     * Add a To field
-     */
-    public function addTo($newTo, $newToName = '')
-    {
-        if (is_array($newTo)) {
-            $this->to  = array_merge($newTo, $this->to);
-        } else {
-            if (empty($newToName)) {
-                $this->to[] = $newTo;
-            } else {
-                $this->to[$newToName] = $newTo;
-            }
-        }
-    }
-
-    /**
-     * set the from field
-     */
-    public function setFrom($newFrom)
-    {
-        $this->from = $newFrom;
-        $this->mailFields['from'] = $this->mailFields['reply_to'] = $newFrom;
-    }
-
-    /**
      * Set the current Organization as from
      */
-    public function setOrganizationFrom() {
+    public function setOrganizationFrom()
+    {
         $this->from = $this->organization->getEmail();
     }
-
-
 
     /**
      * set the subject of the mail
@@ -475,38 +509,5 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
                 $this->to[$newToName] = $newTo;
             }
         }
-    }
-
-    /**
-     * Send the mail
-     */
-    public function send()
-    {
-        $mail = $this->loader->getMail();
-
-        $mail->setFrom($this->from);
-        $mail->addTo($this->to, '', $this->bounceCheck());
-
-        if (isset($this->project->email['bcc'])) {
-            $mail->addBcc($this->project->email['bcc']);
-        }
-
-        $mail->setSubject($this->applyFields($this->subject));
-
-        $mail->setTemplateStyle($this->getTemplateStyle());
-
-        if ($this->bodyBb) {
-            $mail->setBodyBBCode($this->applyFields($this->bodyBb));
-        } elseif ($this->bodyHtml) {
-            $mail->setBodyHtml($this->applyFields($this->bodyHtml));
-        } elseif ($this->bodyText) {
-            $mail->setBodyText($this->applyFields($this->bodyText));
-        }
-
-        $this->beforeMail();
-
-        $mail->send();
-
-        $this->afterMail();
     }
 }
