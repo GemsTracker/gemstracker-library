@@ -154,8 +154,6 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
         $yesNo      = $translated->getYesNo();
 
         if ($editing) {
-            $ucfirst = new \Zend_Filter_Callback('ucfirst');
-
             if ($this->project->isLoginShared()) {
                 $this->set('gsf_login', 'validator', $this->createUniqueValidator('gsf_login', array('gsf_id_user')));
             } else {
@@ -166,8 +164,6 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
                         $this->createUniqueValidator(array('gsf_login', 'gsf_id_organization'), array('gsf_id_user'))
                         );
             }
-        } else {
-            $ucfirst = null;
         }
         $this->set('gsf_login',                'label', $this->_('Username'),
                 'minlength', 4,
@@ -187,15 +183,18 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
                 );
 
         if ($detailed) {
-            $this->set('gsf_first_name',       'label', $this->_('First name'),
-                    'filters[ucfirst]', $ucfirst);
+            $this->set('gsf_first_name',       'label', $this->_('First name'));            
             $this->set('gsf_surname_prefix',   'label', $this->_('Surname prefix'),
                     'description', $this->_('de, van der, \'t, etc...')
                     );
             $this->set('gsf_last_name',        'label', $this->_('Last name'),
-                    'required', true,
-                    'filters[ucfirst]', $ucfirst
-                    );
+                    'required', true);
+            
+            if ($editing) {
+                $ucfirst = new \Zend_Filter_Callback('ucfirst');
+                $this->set('gsf_first_name',   'filters[ucfirst]', $ucfirst);
+                $this->set('gsf_last_name',    'filters[ucfirst]', $ucfirst);
+            }
         } else {
             $this->set('name',                 'label', $this->_('Name'));
         }
