@@ -37,11 +37,15 @@ class Gems_Util_BasePath
     public function getBasePath()
     {
         if (null === $this->basePath) {
-            $front   = \Zend_Controller_Front::getInstance();
-            $request = $front->getRequest();
+            if (defined('BASE_URL')) {
+                $this->setBasePath(BASE_URL);
+            } else {
+                $front   = \Zend_Controller_Front::getInstance();
+                $request = $front->getRequest();
 
-            if ($request) {
-                $this->setBasePath($request->getBasePath());
+                if ($request) {
+                    $this->setBasePath($request->getBasePath());
+                }
             }
         }
 

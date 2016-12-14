@@ -273,8 +273,8 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
         $respTrackData  = $respTrackModel->save($respTrackData);
         // \MUtil_Echo::track($respTrackData);
 
-        // Load the track object
-        $respTrack      = $this->getRespondentTrack($respTrackData);
+        // Load the track object using only id (otherwise wrong respondent data is loaded)
+        $respTrack      = $this->getRespondentTrack($respTrackData['gr2t_id_respondent_track']);
 
         // Save the fields
         if ($usedFields) {

@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -20,6 +19,12 @@
  */
 class Gems_Loader extends \Gems_Loader_LoaderAbstract
 {
+    /**
+     *
+     * @var array of arrays of \Gems_Tracker_Respondent
+     */
+    private $_respondents = array();
+
     /**
      *
      * @var \Gems_Agenda
@@ -174,13 +179,13 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
     {
         return $this->_loadClass('Export_ModelSource_' . $exportModelSourceName, true);
     }
-    
+
     /**
      * Returns an instance (row) of the the model, this allows for easy loading of instances
      *
      * Best usage would be to load from within the model, so return type can be
      * fixed there and code completion would work like desired
-     * 
+     *
      * @param string $name
      * @param \MUtil_Model_ModelAbstract $model
      * @param array $data
@@ -189,10 +194,10 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
     public function getInstance($name, $model, $data)
     {
         $instance = $this->_loadClass($name, true, array($model, $data));
-        
+
         return $instance;
     }
-    
+
     /**
      *
      * @return \Gems_Import_ImportLoader
@@ -200,7 +205,7 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
     public function getImportLoader()
     {
         return $this->_getClass('importLoader', 'Import_ImportLoader');
-    }    
+    }
 
     /**
      * @return \Gems_Mail
@@ -284,7 +289,19 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
      */
     public function getRespondent($patientId, $organizationId, $respondentId = null)
     {
-       return $this->_loadClass('Tracker_Respondent', true, array($patientId, $organizationId, $respondentId));
+        if ($patientId) {
+            if (isset($this->_respondents[$organizationId][$patientId])) {
+                return $this->_respondents[$organizationId][$patientId];
+            }
+        }
+        $newResp = $this->_loadClass('Tracker_Respondent', true, array($patientId, $organizationId, $respondentId));
+        $patientId = $newResp->getPatientNumber();
+
+        if (! isset($this->_respondents[$organizationId][$patientId])) {
+            $this->_respondents[$organizationId][$patientId] = $newResp;
+        }
+
+        return $this->_respondents[$organizationId][$patientId];
     }
 
     /**
@@ -358,7 +375,7 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
 
         return $taskBatch;
     }
-    
+
     /**
      *
      * @return \Gems_Export

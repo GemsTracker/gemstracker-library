@@ -393,9 +393,7 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
             $filter['gr2o_id_organization'] = $this->organizationId;
         }
 
-        $this->model->setFilter($filter);
-
-        $this->_gemsData = $this->model->loadFirst();
+        $this->_gemsData = $this->model->loadFirst($filter);
 
         if ($this->_gemsData) {
             $this->exists = true;

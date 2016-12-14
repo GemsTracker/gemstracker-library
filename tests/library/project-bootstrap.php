@@ -9,21 +9,16 @@
 /**
  * Setup environment
  */
-defined('GEMS_WEB_DIR') || define('GEMS_WEB_DIR', dirname(dirname(__DIR__)));
-defined('GEMS_ROOT_DIR') || define('GEMS_ROOT_DIR', dirname(GEMS_WEB_DIR));
-
-defined('GEMS_PROJECT_NAME_UC') || define('GEMS_PROJECT_NAME_UC', ucfirst(GEMS_PROJECT_NAME));
-defined('APPLICATION_ENV') || define('APPLICATION_ENV', 'development');
-
+defined('APPLICATION_ENV')  || define('APPLICATION_ENV', 'development');
 defined('APPLICATION_PATH') || define('APPLICATION_PATH', GEMS_ROOT_DIR . '/application');
-defined('APPLICATION_PATH') || define('APPLICATION_PATH', GEMS_ROOT_DIR . '/application');
+
+defined('VENDOR_DIR')        || define('VENDOR_DIR', GEMS_ROOT_DIR . '/vendor/');
+defined('MUTIL_LIBRARY_DIR') || define('MUTIL_LIBRARY_DIR', realpath(VENDOR_DIR . '/magnafacta'));
+
+defined('GEMS_TEST_DIR')        || define('GEMS_TEST_DIR', realpath(__DIR__ . '/..'));
+defined('GEMS_LIBRARY_DIR')     || define('GEMS_LIBRARY_DIR', VENDOR_DIR . '/gemstracker/gemstracker');
+defined('GEMS_WEB_DIR')         || define('GEMS_WEB_DIR', GEMS_ROOT_DIR . '/htdocs');
 defined('GEMS_PROJECT_NAME_UC') || define('GEMS_PROJECT_NAME_UC', ucfirst(GEMS_PROJECT_NAME));
-
-defined('VENDOR_DIR') || define('VENDOR_DIR', realpath(GEMS_ROOT_DIR . '/vendor/'));
-defined('GEMS_LIBRARY_DIR') || define('GEMS_LIBRARY_DIR', realpath(VENDOR_DIR . '/gemstracker/gemstracker'));
-defined('MUTIL_LIBRARY_DIR') || define('MUTIL_LIBRARY_DIR', realpath(VENDOR_DIR . '/magnafacta/mutil/src'));
-
-defined('GEMS_TEST_DIR') || define('GEMS_TEST_DIR', GEMS_LIBRARY_DIR . '/tests');
 
 // Make sure session save path is writable for current user (needed for Jenkins)
 if (!is_writable( session_save_path())) {
@@ -34,14 +29,25 @@ if (!is_writable( session_save_path())) {
  * Setup include path
  */
 set_include_path(
+    GEMS_TEST_DIR . '/library' . PATH_SEPARATOR .    //Test folder
+    GEMS_TEST_DIR . '/classes' . PATH_SEPARATOR .    //Test folder
+    GEMS_LIBRARY_DIR . '/classes' . PATH_SEPARATOR .
+    GEMS_ROOT_DIR . '/application/classes' . PATH_SEPARATOR .
+    get_include_path());
+
+
+/**
+ * Setup include path
+ */
+set_include_path(
     GEMS_TEST_DIR . '/classes' . PATH_SEPARATOR .
     GEMS_TEST_DIR . '/library' . PATH_SEPARATOR .
-    GEMS_LIBRARY_DIR . '/classes' . PATH_SEPARATOR .
-    MUTIL_LIBRARY_DIR . '/src');
+    GEMS_ROOT_DIR . '/classes' . PATH_SEPARATOR .
+    get_include_path());
 
 // Set up autoload.
-if (file_exists(VENDOR_DIR  . '/autoload.php')) {
-    require_once VENDOR_DIR  . '/autoload.php';
+if (file_exists(dirname(__FILE__) . '/../vendor/autoload.php')) {
+    require_once dirname(__FILE__) . '/../vendor/autoload.php';
 } else {
     // Try to set the correct include path (if needed)
     $paths = array(
@@ -50,7 +56,7 @@ if (file_exists(VENDOR_DIR  . '/autoload.php')) {
         'zendframework/zendframework1/library',
         'zendframework/zf1-extras/library',
     );
-    $start = VENDOR_DIR;
+    $start = realpath(dirname(__FILE__) . '/../../../') . '/';
     foreach ($paths as $path) {
         $dir = realpath($start . $path);
 
@@ -63,11 +69,10 @@ if (file_exists(VENDOR_DIR  . '/autoload.php')) {
     $autoloader = \Zend_Loader_Autoloader::getInstance();
     $autoloader->registerNamespace('MUtil_');
     $autoloader->registerNamespace('Gems_');
-
-    // Otherwise not loaded by Zend Autoloader
-    require_once "Gems/Tracker/Field/FieldInterface.php";
-    require_once "Gems/Tracker/Field/FieldAbstract.php";
+    $autoloader->registerNameSpace(GEMS_PROJECT_NAME_UC . '_');
+    // $autoloader->registerNameSpace('ZFDebug_');
 }
+
 
 \Zend_Session::start();
 \Zend_Session::$_unitTestEnabled = true;

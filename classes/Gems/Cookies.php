@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -79,7 +78,7 @@ class Gems_Cookies
         if (\Zend_Session::$_unitTestEnabled) {
             return true;
         }
-        
+
         // Set the cookie for 30 days
         return setcookie($name, $value, time() + ($days * 86400), $basepath, '', (APPLICATION_ENV == 'production'), true);
     }
