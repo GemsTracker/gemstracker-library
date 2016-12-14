@@ -76,10 +76,11 @@ class Gems_Cookies
             $basepath = '/';
         }
 
-        if (!\Zend_Session::$_unitTestEnabled) {
-            // Set the cookie for 30 days
-            return setcookie($name, $value, time() + ($days * 86400), $basepath, '', (APPLICATION_ENV == 'production'), true);
+        if (\Zend_Session::$_unitTestEnabled) {
+            return true;
         }
+        // Set the cookie for 30 days
+        return setcookie($name, $value, time() + ($days * 86400), $basepath, '', (APPLICATION_ENV == 'production'), true);
     }
 
     /**
