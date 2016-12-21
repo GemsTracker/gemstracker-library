@@ -107,10 +107,12 @@ class Gems_Default_TrackRoundsAction extends \Gems_Default_TrackMaintenanceWithE
     {
         parent::autofilterAction($resetMvc);
         
-        $buttons = $this->_helper->SortableTable('sort', 'rid');
-
-        // First element is the wrapper
-        $this->html[0]->append($buttons);
+        //If allowed, add the sort action
+        if ($this->menu->findAllowedController($this->getRequest()->getControllerName(), 'sort')) {
+            $buttons = $this->_helper->SortableTable('sort', 'rid');
+            // First element is the wrapper
+            $this->html[0]->append($buttons);
+        }
     }
 
     /**
