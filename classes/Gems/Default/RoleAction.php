@@ -7,7 +7,6 @@
  * @author     Michiel Rook
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -374,7 +373,7 @@ class Gems_Default_RoleAction extends \Gems_Controller_ModelSnippetActionAbstrac
             $privileges[$privilege][$this->_('Allowed')]   = $roles[\Zend_Acl::TYPE_ALLOW] ? implode(', ', $roles[\Zend_Acl::TYPE_ALLOW]) : null;
             $privileges[$privilege][$this->_('Denied')]    = $roles[\Zend_Acl::TYPE_DENY]  ? implode(', ', $roles[\Zend_Acl::TYPE_DENY])  : null;
         }
-        
+
         // Add unassigned rights to the array too
         $all_existing = $this->getUsedPrivileges();
         $unassigned   = array_diff_key($all_existing, $privileges);

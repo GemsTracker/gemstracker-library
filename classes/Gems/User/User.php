@@ -567,6 +567,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      */
     public function getAllowedStaffGroups()
     {
+        // Always refresh because these values are otherwise not responsive to change
         $this->refreshAllowedStaffGroups();
 
         return $this->_getVar('__allowedStaffGroups');
@@ -1350,7 +1351,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
-     * Allowes a refresh of the existing list of groups the user is allowed to assign:
+     * Allows a refresh of the existing list of groups the user is allowed to assign:
      * his own group and all groups he/she inherits rights from
      *
      * @return array

@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: RoleEditFormSnippet.php $
  */
 
 namespace Gems\Snippets\Role;
@@ -28,6 +27,17 @@ class RoleEditFormSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
      * @var \MUtil_Acl
      */
     protected $acl;
+
+    /**
+     * As it is better for translation utilities to set the labels etc. translated,
+     * the MUtil default is to disable translation.
+     *
+     * However, this also disables the translation of validation messages, which we
+     * cannot set translated. The MUtil form is extended so it can make this switch.
+     *
+     * @var boolean True
+     */
+    protected $disableValidatorTranslation = true;
 
     /**
      *
@@ -108,14 +118,15 @@ class RoleEditFormSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
                         \MUtil_Html::create('small', $this->_('this role'), $this->view);
             }
         }
+
         // Add this for validator to allow empty list
         $possibleParents[''] = '';
 
         $bridge->addMultiCheckbox('grl_parents', 'multiOptions', $possibleParents,
                 'disable', $disabled,
                 'escape', false,
-                'required', false,
-                'onchange', 'this.form.submit();'
+                'onchange', 'this.form.submit();',
+                'required', false
                 );
 
         $allPrivileges       = $this->usedPrivileges;
@@ -230,5 +241,23 @@ class RoleEditFormSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
         unset($inherited[""]);
 
         return $inherited;
+    }
+
+    /**
+     * Hook that loads the form data from $_POST or the model
+     *
+     * Or from whatever other source you specify here.
+     */
+    protected function loadFormData()
+    {
+        parent::loadFormData();
+
+        // Sometimes these settings sneek in when changing the parents of a role
+        foreach(['pr.nologin', 'pr.islogin'] as $val) {
+            $key = array_search($val, $this->formData['grl_privileges']);
+            if (false !== $key) {
+                unset($this->formData['grl_privileges'][$key]);
+            }
+        }
     }
  }

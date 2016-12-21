@@ -103,7 +103,7 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
         grl_privileges,
         grl_changed, grl_changed_by, grl_created, grl_created_by)
     VALUES
-    (807, 'admin', 'admin', '801,803,804,805,806',
+    (807, 'admin', 'local admin', '801,803,804,805,806',
     'pr.comm.job,
     ,pr.comm.template,pr.comm.template.create,pr.comm.template.delete,pr.comm.template.edit,
     ,pr.consent,pr.consent.create,pr.consent.edit,
@@ -131,7 +131,35 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
         grl_privileges,
         grl_changed, grl_changed_by, grl_created, grl_created_by)
     VALUES
-    (808, 'super', 'super', '801,803,804,805,806,807',
+    (808, 'siteadmin', 'site admin', '801,803,804,805,806,807',
+    'pr.comm.job,
+    ,pr.comm.template,pr.comm.template.create,pr.comm.template.delete,pr.comm.template.edit,
+    ,pr.consent,pr.consent.create,pr.consent.edit,
+    ,pr.export,pr.export.export,pr.export-html,
+    ,pr.group,
+    ,pr.mail.log,
+    ,pr.organization,pr.organization-switch,
+    ,pr.plan.compliance.export,pr.plan.overview.export,
+    ,pr.plan.respondent,pr.plan.respondent.export,pr.plan.summary.export,pr.plan.token.export,
+    ,pr.project-information,
+    ,pr.reception,pr.reception.create,pr.reception.edit,
+    ,pr.respondent.delete,pr.respondent.result,pr.respondent.show-deleted,pr.respondent.undelete,
+    ,pr.role,
+    ,pr.staff,pr.staff.create,pr.staff.deactivate,pr.staff.edit,pr.staff.edit.all,pr.staff.reactivate,pr.staff.see.all,
+    ,pr.staff-log,
+    ,pr.source,
+    ,pr.survey-maintenance,pr.survey-maintenance.answer-import,
+    ,pr.token.mail.freetext,pr.token.undelete,
+    ,pr.track.check,pr.track.insert,pr.track.undelete,
+    ,pr.track-maintenance,pr.track-maintenance.create,pr.track-maintenance.edit,pr.track-maintenance.export,
+    ,pr.track-maintenance.import,pr.track-maintenance.trackperorg',
+    CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
+
+INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_parents,
+        grl_privileges,
+        grl_changed, grl_changed_by, grl_created, grl_created_by)
+    VALUES
+    (809, 'super', 'super', '801,803,804,805,806,807,808',
     'pr.agenda-activity,pr.agenda-activity.cleanup,pr.agenda-activity.create,pr.agenda-activity.delete,pr.agenda-activity.edit,
     ,pr.agenda-filters,pr.agenda-filters.create,pr.agenda-filters.delete,pr.agenda-filters.edit,
     ,pr.agenda-procedure,pr.agenda-procedure.cleanup,pr.agenda-procedure.create,pr.agenda-procedure.delete,pr.agenda-procedure.edit,

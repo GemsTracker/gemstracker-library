@@ -452,7 +452,8 @@ class Gems_Util_DbLookup extends UtilAbstract
                 $roles[$role] = ucfirst($role);
             }
         }
-
+        asort($roles);
+        
         return $roles;
     }
 
