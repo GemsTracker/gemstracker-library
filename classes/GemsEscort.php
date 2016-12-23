@@ -895,6 +895,58 @@ class GemsEscort extends \MUtil_Application_Escort
      * @return mixed If null nothing is set, otherwise the name of
      * the function is used as \Zend_View variable name.
      */
+    protected function _layoutGroupSwitcher(array $args = null)
+    {
+        if ($this->currentUser->isActive() && $this->currentUser->hasPrivilege('pr.group.switch', false)) {
+            $groups = $this->currentUser->getAllowedStaffGroups(false);
+
+            if (count($groups) > 1) {
+                // Group switcher
+                $groupSwitch  = \MUtil_Html::create('div', $args, array('id' => 'groups'));
+                $currentId    = $this->currentUser->getGroupId();
+                $params       = $this->request->getparams();
+                unset($params['error_handler']);    // If present, this is an object and causes a warning
+                unset($params[\MUtil_Model::AUTOSEARCH_RESET]);
+                if ($this->request instanceof \Zend_Controller_Request_Http) {
+                    // Use only get params, not post as it is an url
+                    $params = array_diff_key($params, $this->request->getPost());
+                }
+
+                $currentUri = $this->view->url($params, null, true);
+                // \MUtil_Echo::track($currentUri, $this->request->getParams());
+
+                $url = $this->view->url(array('controller' => 'group', 'action' => 'change-ui'), null, false);
+
+                $formDiv = $groupSwitch->form(array('method' => 'get', 'action' => $url))->div();
+                $formDiv->input(
+                        array(
+                            'type'  => "hidden",
+                            'name'  => "current_uri",
+                            'value' => base64_encode($currentUri))
+                        );
+
+                $select = $formDiv->select(array('name' => "group", 'onchange' => "javascript:this.form.submit();", 'class' => 'form-control'));
+                foreach ($groups as $id => $name) {
+                    $selected = '';
+                    if ($id == $currentId) {
+                        $selected = array('selected' => "selected");
+                    }
+                    $select->option(array('value' => $id), $name, $selected);
+                }
+
+                return $groupSwitch;
+            }
+        }
+        return;
+    }
+
+    /**
+     * Function called if specified in the Project.ini layoutPrepare section before
+     * the layout is drawn, but after the rest of the program has run it's course.
+     *
+     * @return mixed If null nothing is set, otherwise the name of
+     * the function is used as \Zend_View variable name.
+     */
     protected function _layoutJQuery()
     {
         // JQUERY
@@ -1214,7 +1266,11 @@ class GemsEscort extends \MUtil_Application_Escort
     protected function _layoutVersion(array $args = null)
     {
         $div = \MUtil_Html::create()->div($args, array('id' => 'version'));
-        $version = $this->loader->getVersions()->getVersion();
+        if ($this->currentUser->isActive()) {
+            $version = $this->loader->getVersions()->getVersion();
+        } else {
+            $version = $this->loader->getVersions()->getMainVersion();
+        }
         if (($this->menu instanceof \Gems_Menu) &&
                 ($item = $this->menu->findController('project-information', 'changelog')->toHRefAttribute())) {
             $link = \MUtil_Html::create()->a($version, $item);
@@ -2033,10 +2089,10 @@ class GemsEscort extends \MUtil_Application_Escort
                     $this->setError(
                             $this->_('No access to page'),
                             403,
-                            sprintf($this->_('Access to the %s/%s page is not allowed for current role: %s.'),
+                            sprintf($this->_('Access to the %s/%s page is not allowed for your current group: %s.'),
                                     $request->getControllerName(),
                                     $request->getActionName(),
-                                    $user->getRole()),
+                                    $user->getGroup()->getName()),
                             true);
 
                 } else { // No longer logged in

@@ -35,11 +35,54 @@ class Gems_Default_GroupAction extends \Gems_Controller_ModelSnippetActionAbstra
     protected $createEditSnippets = 'Group_GroupFormSnippet';
 
     /**
+     *
+     * @var \Gems_User_User
+     */
+    public $currentUser;
+
+    /**
      * The snippets used for the delete action.
      *
      * @var mixed String or array of snippets name
      */
     protected $deleteSnippets = 'Group_GroupDeleteSnippet';
+
+    /**
+     *
+     * @throws \Exception
+     */
+    public function changeUiAction()
+    {
+        $request = $this->getRequest();
+
+        if (! $this->currentUser->hasPrivilege('pr.group.switch', false)) {
+            $this->escort->setError(
+                    $this->_('No access to page'),
+                    403,
+                    sprintf($this->_('Access to the %s/%s page is not allowed for your current group: %s.'),
+                            $request->getControllerName(),
+                            $request->getActionName(),
+                            $this->currentUser->getGroup()->getName()),
+                    true);
+        }
+
+        $group = strtolower($request->getParam('group'));
+        $url   = base64_decode($request->getParam('current_uri'));
+
+        if ((! $url) || ('/' !== $url[0])) {
+            throw new \Exception($this->_('Illegal group redirect url.'));
+        }
+
+        // Throws exception on invalid value
+        $this->currentUser->setGroupTemp(intval($group));
+
+        if ($url) {
+            $this->getResponse()->setRedirect($url);
+        } else {
+            $this->currentUser->gotoStartPage($this->menu, $request);
+        }
+        return;
+    }
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -55,6 +98,7 @@ class Gems_Default_GroupAction extends \Gems_Controller_ModelSnippetActionAbstra
     public function createModel($detailed, $action)
     {
         $dbLookup = $this->util->getDbLookup();
+        $rolesObj = \Gems_Roles::getInstance();
 
         $model = new \MUtil_Model_TableModel('gems__groups');
 
@@ -74,12 +118,12 @@ class Gems_Default_GroupAction extends \Gems_Controller_ModelSnippetActionAbstra
         $model->set('ggp_role', 'label', $this->_('Role'),
                 'multiOptions', $dbLookup->getRoles()
                 );
-        $model->setOnLoad('ggp_role', [$this, 'translateRoleToName']);
-        $model->setOnSave('ggp_role', [$this, 'translateRoleToId']);
+        $model->setOnLoad('ggp_role', [$rolesObj, 'translateToRoleName']);
+        $model->setOnSave('ggp_role', [$rolesObj, 'translateToRoleId']);
 
         $groups = $dbLookup->getGroups();
         unset($groups['']);
-        $model->set('ggp_may_set_groups', 'label', $this->_('May set groups'),
+        $model->set('ggp_may_set_groups', 'label', $this->_('May set these groups'),
                 'elementClass', 'MultiCheckbox',
                 'multiOptions', $groups
                 );
@@ -131,65 +175,5 @@ class Gems_Default_GroupAction extends \Gems_Controller_ModelSnippetActionAbstra
     public function getTopic($count = 1)
     {
         return $this->plural('group', 'groups', $count);
-    }
-
-    /**
-     * Translate a string role name to int role id
-     *
-     * @param string $value
-     * @return int
-     */
-    public function translateRoleToId($value)
-    {
-        if (is_int($value)) {
-            return $value;
-        }
-        $results = \Gems_Roles::getInstance()->translateToRoleIds([$value]);
-
-        return reset($results);
-    }
-
-    /**
-     * Translate a array or string role named to array of int role id
-     *
-     * @param mixed $value
-     * @return array of int
-     */
-    public function translateRoleToIds($value)
-    {
-        if (! is_array($value)) {
-            $value = explode(',', $value);
-        }
-        return implode(',', \Gems_Roles::getInstance()->translateToRoleIds($value));
-    }
-
-    /**
-     * Translate a int role id to string role name
-     *
-     * @param int $value
-     * @return string
-     */
-    public function translateRoleToName($value)
-    {
-        if (! intval($value)) {
-            return $value;
-        }
-        $results = \Gems_Roles::getInstance()->translateToRoleNames([$value]);
-
-        return reset($results);
-    }
-
-    /**
-     * Translate a int array of string of int role id's to array of string role names
-     *
-     * @param mixed $value
-     * @return array of string
-     */
-    public function translateRoleToNames($value)
-    {
-        if (! is_array($value)) {
-            $value = explode(',', $value);
-        }
-        return \Gems_Roles::getInstance()->translateToRoleNames($value);
     }
 }

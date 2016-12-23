@@ -28,6 +28,12 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
 
     /**
      *
+     * @var \Gems\User\Group
+     */
+    protected $_group;
+
+    /**
+     *
      * @var \ArrayObject or \Zend_Session_Namespace
      */
     private $_vars;
@@ -71,7 +77,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      *
      * @var \Gems_Loader
      */
-    public $loader;
+    protected $loader;
 
     /**
      * Array containing the parameter names that may point to an organization
@@ -317,7 +323,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     {
         $source->offsetSet('gsf_id_organization', $this->getBaseOrganizationId());
         $source->offsetSet('gsf_active',          $this->isActive() ? 1 : 0);
-        $source->offsetSet('accessible_role',     $this->hasAllowedRole() ? 1 : 0);
+        $source->offsetSet('accessible_role',     $this->inAllowedGroup() ? 1 : 0);
         $source->offsetSet('can_mail',            $this->hasEmailAddress() ? 1 : 0);
     }
 
@@ -570,14 +576,36 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      * Retrieve an array of groups the user is allowed to assign: his own group and all groups
      * he/she inherits rights from
      *
+     * @param boolean $current Return the current list or the original list when true
      * @return array
      */
-    public function getAllowedStaffGroups()
+    public function getAllowedStaffGroups($current = true)
     {
         // Always refresh because these values are otherwise not responsive to change
-        $this->refreshAllowedStaffGroups();
+        $dbLookup = $this->util->getDbLookup();
+        $groupId  = $current ? $this->getGroupId() : $this->_getVar('user_group');
+        $groups   = $dbLookup->getActiveStaffGroups();
 
-        return $this->_getVar('__allowedStaffGroups');
+        if ('master' === $this->getRole()) {
+            $this->_setVar('__allowedStaffGroups', $groups);
+            return;
+        }
+
+        $setGroups     = $this->db->fetchOne(
+                "SELECT ggp_may_set_groups FROM gems__groups WHERE ggp_id_group = ?",
+                $groupId
+                );
+        $groupsAllowed = explode(',', $setGroups);
+        $result        = array();
+
+        foreach ($groups as $id => $label) {
+            if ((in_array($id, $groupsAllowed))) {
+                $result[$id] = $groups[$id];
+            }
+        }
+        natsort($result);
+
+        return $result;
     }
 
     /**
@@ -834,19 +862,35 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         return $this->_getVar('user_greeting');
     }
 
-
     /**
-     * Returns the group number of the current user.
+     * Returns the group of this user.
      *
-     * @return int
+     * @return \Gems\User\Group
      */
     public function getGroup()
     {
+        if (! $this->_group) {
+            $this->_group = $this->userLoader->getGroup($this->getGroupId());
+        }
+
+        return $this->_group;
+    }
+
+    /**
+     * Returns the group number of this user.
+     *
+     * @return int
+     */
+    public function getGroupId()
+    {
+        if ($this->_hasVar('current_user_group')) {
+            return $this->_getVar('current_user_group');
+        }
         return $this->_getVar('user_group');
     }
 
     /**
-     * The locale set for this user..
+     * The locale set for this user.
      *
      * @return string
      */
@@ -1006,6 +1050,9 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      */
     public function getRole()
     {
+        if ($this->_hasVar('current_user_role')) {
+            return $this->_getVar('current_user_role');
+        }
         return $this->_getVar('user_role');
     }
 
@@ -1108,36 +1155,6 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
-     * Return true if this user has a role that is accessible by the current user,
-     * i.e. is the current user allowed to change this specific user
-     *
-     * @return boolean
-     */
-    public function hasAllowedRole()
-    {
-        if ($this->isCurrentUser() || (! $this->isStaff())) {
-            // Always allow editing of non-staff user
-            // for the time being
-            return true;
-        }
-        $dbLookup = $this->util->getDbLookup();
-        $groups   = $dbLookup->getActiveStaffGroups();
-        $group    = $this->getGroup();
-
-        if (! isset($groups[$group])) {
-            // Allow editing when the group does not exist or is no longer active.
-            return true;
-        }
-
-        $allowedGroups = $this->userLoader->getCurrentUser()->getAllowedStaffGroups();
-        if ($allowedGroups) {
-            return (boolean) isset($allowedGroups[$this->getGroup()]);
-        } else {
-            return false;
-        }
-    }
-
-    /**
      * Return true if this user has a password.
      *
      * @return boolean
@@ -1161,11 +1178,16 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      * Returns true if the role of the current user has the given privilege
      *
      * @param string $privilege
+     * @param boolean $current Checks value for current role (when false for normal role);
      * @return bool
      */
-    public function hasPrivilege($privilege)
+    public function hasPrivilege($privilege, $current = true)
     {
-        return (! $this->acl) || $this->acl->isAllowed($this->getRole(), null, $privilege);
+        return (! $this->acl) || $this->acl->isAllowed(
+                $current ? $this->getRole() : $this->_getVar('user_role'),
+                null,
+                $privilege
+                );
     }
 
     /**
@@ -1189,6 +1211,35 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     public function hasValidResetKey()
     {
         return (boolean) $this->isActive() && $this->_getVar('user_resetkey_valid');
+    }
+
+    /**
+     * Return true if this user has a role that is accessible by the current user,
+     * i.e. is the current user allowed to change this specific user
+     *
+     * @return boolean
+     */
+    public function inAllowedGroup()
+    {
+        if ($this->isCurrentUser() || (! $this->isStaff())) {
+            // Always allow editing of non-staff user
+            // for the time being
+            return true;
+        }
+
+        $group  = $this->getGroupId();
+        $groups = $this->util->getDbLookup()->getActiveStaffGroups();
+        if (! isset($groups[$group])) {
+            // Allow editing when the group does not exist or is no longer active.
+            return true;
+        }
+
+        $allowedGroups = $this->userLoader->getCurrentUser()->getAllowedStaffGroups();
+        if ($allowedGroups) {
+            return (boolean) isset($allowedGroups[$group]);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -1355,39 +1406,6 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         }
 
         return $this;
-    }
-
-    /**
-     * Allows a refresh of the existing list of groups the user is allowed to assign:
-     * his own group and all groups he/she inherits rights from
-     *
-     * @return array
-     */
-    public function refreshAllowedStaffGroups()
-    {
-        $dbLookup = $this->util->getDbLookup();
-        $groups   = $dbLookup->getActiveStaffGroups();
-
-        if ('master' === $this->getRole()) {
-            $this->_setVar('__allowedStaffGroups', $groups);
-            return;
-        }
-
-        $setGroups = $this->db->fetchOne(
-                "SELECT ggp_may_set_groups FROM gems__groups WHERE ggp_id_group = ?",
-                $this->getGroup()
-                );
-        $groupsAllowed = explode(',', $setGroups);
-        $result        = array();
-
-        foreach ($groups as $id => $label) {
-            if ((in_array($id, $groupsAllowed))) {
-                $result[$id] = $groups[$id];
-            }
-        }
-        natsort($result);
-
-        $this->_setVar('__allowedStaffGroups', $result);
     }
 
     /**
@@ -1581,6 +1599,41 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
             }
         }
 
+        return $this;
+    }
+
+    /**
+     * (Temporarily) the group of the current user.
+     *
+     * @return self
+     */
+    public function setGroupTemp($groupId)
+    {
+        if ($groupId == $this->_getVar('user_group')) {
+            $this->_unsetVar('current_user_group');
+            $this->_unsetVar('current_user_role');
+        } else {
+            $groups = $this->getAllowedStaffGroups(false);
+
+            $group = $this->userLoader->getGroup($groupId);
+
+            if (isset($groups[$groupId])) {
+                $this->_setVar('current_user_group', $groupId);
+                $this->_setVar('current_user_role',  $group->getRole());
+            } elseif ($group->isActive()) {
+                throw new \Gems_Exception($this->_('No access to group'), 403, null, sprintf(
+                        $this->_('You are not allowed to switch to the %s group.'),
+                        $group->getName()
+                        ));
+            } else {
+                throw new \Gems_Exception($this->_('No access to group'), 403, null, sprintf(
+                        $this->_('You cannot switch to an inactive or non-existing group.')
+                        ));
+            }
+        }
+        if ($this->_hasVar('current_user_group')) {
+            return $this->_getVar('current_user_group');
+        }
         return $this;
     }
 

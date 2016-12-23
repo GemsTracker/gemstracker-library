@@ -168,7 +168,7 @@ class PasswordResetSnippet extends FormSnippetAbstract
      */
     public function hasHtmlOutput()
     {
-        if (! ($this->user->hasAllowedRole() && $this->user->canSetPassword())) {
+        if (! ($this->user->inAllowedGroup() && $this->user->canSetPassword())) {
             $this->addMessage($this->getNotAllowedMessage());
             return false;
         }

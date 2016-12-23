@@ -44,7 +44,29 @@ class Gems_Versions
      */
     public final function getGemsVersion()
     {
-        return '1.8.2';
+        return $this->getMainVersion() . '.2';
+    }
+
+    /**
+     * The official Gems main version number (with only one dot)
+     *
+     * @return string
+     */
+    public function getMainVersion()
+    {
+        return '1.8';
+    }
+
+    /**
+     * An optionally project specific main version number (with only one dot)
+     *
+     * Can be overruled at project level
+     *
+     * @return string
+     */
+    public function getMainProjectVersion()
+    {
+        return $this->getMainVersion();
     }
 
     /**

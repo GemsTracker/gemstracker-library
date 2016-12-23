@@ -1245,6 +1245,6 @@ UPDATE gems__groups INNER JOIN
     WHERE ggp_may_set_groups IS NULL AND
         ggp_role IN (SELECT grl_id_role FROM gems__roles WHERE grl_privileges LIKE '%pr.staff.edit%');
 
-UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',rw.responent.seenaw')
-    WHERE grl_privileges LIKE '%,pr.respondent%'
-        AND grl_privileges NOT LIKE '%,rw.responent.seenaw%';
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.group.switch')
+    WHERE grl_privileges LIKE '%,pr.group%'
+        AND grl_privileges NOT LIKE '%,pr.group.switch%';

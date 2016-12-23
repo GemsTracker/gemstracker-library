@@ -179,6 +179,24 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             }
         }
 
+        $obsFunctions = array(
+            'Gems_User_User' => array(
+                'hasAllowedRole' => 'inAllowedGroup',
+                'refreshAllowedStaffGroups' => null,
+                ),
+        );
+        foreach ($obsFunctions as $className => $functions) {
+            foreach ($functions as $funcName => $replacement) {
+                if (preg_match(sprintf('/->%s\(/', preg_quote($funcName)), $content)) {
+                    if ($replacement) {
+                        $messages[] = "The code in this file seems to use the obsolete class $className function '$funcName'. Use the '$replacement' function instead.";
+                    } else {
+                        $messages[] = "The code in this file seems to use the obsolete class $className function '$funcName'.";
+                    }
+                }
+            }
+        }
+
         $obsVariables = array(
             '$this->respondentData' => '$this->respondent->getArrayCopy()',
             '$this->session' => '$this->currentUser',

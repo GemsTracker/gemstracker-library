@@ -459,27 +459,31 @@ abstract class Gems_Menu_MenuAbstract
     public function addGroupsPage($label, array $other = array())
     {
         $page  = $this->addBrowsePage($label, 'pr.group', 'group', $other);
-        $roles = array();
-
-        if ($this->user instanceof \Gems_User_User) {
-            if ($this->user->hasPrivilege('pr.group')) {
-                $roles = $this->user->getAllowedRoles();
-            }
-        }
-        // \MUtil_Echo::track($roles);
-
-        // Now limit changes to allowed roles
-        foreach ($page->getChildren() as $showpage) {
-            if ($showpage instanceof \Gems_Menu_SubMenuItem) {
-                if ('show' === $showpage->get('action')) {
-                    foreach ($showpage->getChildren() as $subpage) {
-                        $subpage->addParameterFilter('ggp_role', $roles);
-                    }
-                    break;
-                }
-            }
-        }
-
+//        $groups = array();
+//
+//        if ($this->user instanceof \Gems_User_User) {
+//            if ($this->user->hasPrivilege('pr.group')) {
+//                $groups = $this->user->getAllowedStaffGroups();
+//                $rolesObj = \Gems_Roles::getInstance();
+//                $rolesRaw = $this->user->getAllowedRoles();
+//                $roleIds  = $rolesObj->translateToRoleIds($rolesRaw);
+//                $roles    = array_combine($roleIds, $roleIds) + $rolesRaw;
+//            }
+//        }
+//        \MUtil_Echo::track($roles, array_flip($rolesObj->translateToRoleIds($rolesRaw)), $rolesRaw);
+//        \Gems_Menu::$verbose = true;
+//        // Now limit changes to allowed roles
+//        foreach ($page->getChildren() as $showpage) {
+//            if ($showpage instanceof \Gems_Menu_SubMenuItem) {
+//                if ('show' === $showpage->get('action')) {
+//                    foreach ($showpage->getChildren() as $subpage) {
+//                        $subpage->addParameterFilter('ggp_role', $groups);
+//                    }
+//                    break;
+//                }
+//            }
+//        }
+//
         return $page;
     }
 

@@ -316,6 +316,24 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Returns a group object, initiated from the database or from
+     * Group::$_noGroup when the database does not yet exist.
+     *
+     * @param int $groupId Group id
+     * @return \Gems\User\Grou[
+     */
+    public function getGroup($groupId)
+    {
+        static $groups = array();
+
+        if (! isset($groups[$groupId])) {
+            $groups[$groupId] = $this->_loadClass('Group', true, array($groupId));
+        }
+
+        return $groups[$groupId];
+    }
+
+    /**
      * Returns a layered login form where user first selects a top organization and then a
      * child organization
      *

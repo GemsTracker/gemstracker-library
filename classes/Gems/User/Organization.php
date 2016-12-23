@@ -338,6 +338,16 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
     }
 
     /**
+     * Get the welcome message for the organization.
+     *
+     * @return string
+     */
+    public function getWelcome()
+    {
+        return $this->_get('gor_welcome');
+    }
+
+    /**
      * Has org an email attribute?
      *
      * @return boolean
@@ -404,16 +414,6 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
         }
 
         return $data;
-    }
-
-    /**
-     * Get the welcome message for the organization.
-     *
-     * @return string
-     */
-    public function getWelcome()
-    {
-        return $this->_get('gor_welcome');
     }
 
     /**

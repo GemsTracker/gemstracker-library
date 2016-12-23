@@ -224,13 +224,20 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $this->addAskPage($this->_('Token'));
         $this->addPage($this->_('Logoff'), 'pr.islogin', 'index', 'logoff');
 
+        if (count($this->user->getAllowedStaffGroups(false)) > 1) {
+            // ALLOW GROUP SWITCH
+            $this->addPage(null, null, 'group', 'change-ui');
+        }
+
         if ($this->escort->project->multiLocale) {
             // ALLOW LANGUAGE CHANGE
             $this->addPage(null, null, 'language', 'change-ui');
         }
 
-        // ALLOW ORGANIZATION CHANGE
-        $this->addPage(null, null, 'organization', 'change-ui');
+        if (count($this->user->getAllowedOrganizations()) > 1) {
+            // ALLOW ORGANIZATION CHANGE
+            $this->addPage(null, null, 'organization', 'change-ui');
+        }
     }
 
     /**
@@ -773,6 +780,9 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
                 ));
         $this->addHiddenPrivilege('pr.staff.see.all', $this->_(
                 'Display all organizations in staff overview.'
+                ));
+        $this->addHiddenPrivilege('pr.group.switch', $this->_(
+                'Grant right to switch groups.'
                 ));
         $this->addHiddenPrivilege('pr.token.mail.freetext', $this->_(
                 'Grant right to send free text (i.e. non-template) email messages.'

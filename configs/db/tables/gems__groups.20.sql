@@ -7,6 +7,8 @@ CREATE TABLE if not exists gems__groups (
       ggp_role varchar(150) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'respondent',
       -- The ggp_role value(s) determines someones roles as set in the bootstrap
 
+      ggp_may_set_groups varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
+
       ggp_group_active boolean not null default 1,
       ggp_staff_members boolean not null default 0,
       ggp_respondent_members boolean not null default 1,
@@ -23,11 +25,12 @@ CREATE TABLE if not exists gems__groups (
    AUTO_INCREMENT = 800
    CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
 
--- Default group
+-- Default groups
 INSERT ignore INTO gems__groups
-   (ggp_id_group, ggp_name, ggp_description, ggp_role, ggp_group_active, ggp_staff_members, ggp_respondent_members, ggp_changed_by, ggp_created, ggp_created_by)
+   (ggp_id_group, ggp_name, ggp_description, ggp_role, ggp_may_set_groups, ggp_group_active, ggp_staff_members, ggp_respondent_members, ggp_changed_by, ggp_created, ggp_created_by)
    VALUES
-   (800, 'Super Administrators', 'Super administrators with access to the whole site', 'super', 1, 1, 0, 0, current_timestamp, 0),
-   (801, 'Local Admins', 'Local Administrators', 'admin', 1, 1, 0, 0, current_timestamp, 0),
-   (802, 'Staff', 'Health care staff', 'staff', 1, 1, 0, 0, current_timestamp, 0),
-   (803, 'Respondents', 'Respondents', 'respondent', 1, 0, 1, 0, current_timestamp, 0);
+   (900, 'Super Administrators', 'Super administrators with access to the whole site', 809, '900,901,902,903', 1, 1, 0, 0, current_timestamp, 0),
+   (901, 'Site Admins', 'Site Administrators', 808, '901,902,903', 1, 1, 0, 0, current_timestamp, 0),
+   (902, 'Local Admins', 'Local Administrators', 807, '903', 1, 1, 0, 0, current_timestamp, 0),
+   (903, 'Staff', 'Health care staff', 804, null, 1, 1, 0, 0, current_timestamp, 0),
+   (904, 'Respondents', 'Respondents', 802, null, 1, 0, 1, 0, current_timestamp, 0);

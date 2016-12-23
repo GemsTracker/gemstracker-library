@@ -307,6 +307,23 @@ class Gems_Roles
     }
 
     /**
+     * Translate string role id to numeric role id
+     *
+     * @param string $role
+     * @return array Of role id's
+     */
+    public function translateToRoleId($role)
+    {
+        $lookup = array_flip($this->_roleTranslations);
+ 
+        if (isset($lookup[$role])) {
+            return $lookup[$role];
+        }
+
+        return $role;
+    }
+
+    /**
      * Translate all string role id's to numeric role ids
      *
      * @param mixed $roles string or array
@@ -330,6 +347,21 @@ class Gems_Roles
     }
 
     /**
+     * Translate numeric role id to string name
+     *
+     * @param int $role
+     * @return string
+     */
+    public function translateToRoleName($role)
+    {
+        if (isset($this->_roleTranslations[$role])) {
+            return $this->_roleTranslations[$role];
+        }
+
+        return $role;
+    }
+
+    /**
      * Translate all numeric role id's to string names
      *
      * @param mixed $roles string or array
@@ -337,15 +369,15 @@ class Gems_Roles
      */
     public function translateToRoleNames($roles)
     {
-       if (!is_array($roles)) {
-           $roles = explode(",", $roles);
-       }
-       foreach ($roles as $key => $role) {
-           if (isset($this->_roleTranslations[$role])) {
-               $roles[$key] = $this->_roleTranslations[$role];
-           }
-       }
+        if (!is_array($roles)) {
+            $roles = explode(",", $roles);
+        }
+        foreach ($roles as $key => $role) {
+            if (isset($this->_roleTranslations[$role])) {
+                $roles[$key] = $this->_roleTranslations[$role];
+            }
+        }
 
-       return $roles;
+        return $roles;
     }
 }

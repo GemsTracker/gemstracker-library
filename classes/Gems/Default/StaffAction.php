@@ -157,11 +157,11 @@ class Gems_Default_StaffAction extends \Gems_Controller_ModelSnippetActionAbstra
                         break;
 
                     default:
-                        if (! $user->hasAllowedRole()) {
+                        if (! $user->inAllowedGroup()) {
                             throw new \Gems_Exception($this->_('No access to page'), 403, null, sprintf(
-                                    $this->_('As %s user you have no right to access users with the role %s.'),
-                                    $this->currentUser->getRole(),
-                                    $user->getRole()
+                                    $this->_('In the %s group you have no right to change users in the %s group.'),
+                                    $this->currentUser->getGroup()->getName(),
+                                    $user->getGroup()->getName()
                                     ));
                         }
                 }

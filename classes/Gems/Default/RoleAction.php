@@ -47,7 +47,7 @@ class Gems_Default_RoleAction extends \Gems_Controller_ModelSnippetActionAbstrac
      *
      * @var array
      */
-    public $cacheTags = array('gems_acl', 'roles');
+    public $cacheTags = array('gems_acl', 'roles', 'group', 'groups');
 
     /**
      * The parameters used for the create and edit actions.
