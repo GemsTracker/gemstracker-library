@@ -6,7 +6,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -32,6 +31,19 @@ class Gems_Default_StaffAction extends \Gems_Controller_ModelSnippetActionAbstra
      * @var array
      */
     public $cacheTags = array('staff');
+
+    /**
+     * The parameters used for the edit actions, overrules any values in
+     * $this->createEditParameters.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $createEditParameters = array('routeAction' => 'reset');
 
     /**
      *

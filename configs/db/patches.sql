@@ -1217,7 +1217,6 @@ INSERT ignore INTO gems__log_setup (gls_name, gls_when_no_user, gls_on_action, g
 ALTER TABLE gems__tokens CHANGE gto_result gto_result varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
 
 -- PATCH: Set logging of heavy actions to true
-
 UPDATE gems__log_setup
     SET gls_on_change = 1
     WHERE gls_name LIKE '%recalc%' OR
@@ -1225,3 +1224,27 @@ UPDATE gems__log_setup
         gls_name LIKE '%synchronize%' OR
         gls_name LIKE '%patch%' OR
         gls_name LIKE '%run%';
+
+-- PATCH: Set roles per group
+ALTER TABLE gems__groups ADD
+    ggp_may_set_groups varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null AFTER ggp_role;
+
+UPDATE gems__groups INNER JOIN gems__roles ON ggp_role = grl_name
+    SET ggp_role = grl_id_role;
+
+UPDATE gems__groups INNER JOIN
+    (SELECT GROUP_CONCAT(gp.ggp_id_group SEPARATOR ',') as groups, rp.grl_id_role as role_id
+        FROM gems__roles AS rp INNER JOIN
+            gems__roles AS rc ON rp.grl_id_role = rc.grl_id_role OR rp.grl_parents LIKE CONCAT('%', rc.grl_id_role, '%')
+                INNER JOIN
+            gems__groups AS gp ON gp.ggp_role = rc.grl_id_role
+        GROUP BY rp.grl_id_role
+        ) AS rg
+        ON ggp_role = rg.role_id
+    SET ggp_may_set_groups = rg.groups
+    WHERE ggp_may_set_groups IS NULL AND
+        ggp_role IN (SELECT grl_id_role FROM gems__roles WHERE grl_privileges LIKE '%pr.staff.edit%');
+
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',rw.responent.seenaw')
+    WHERE grl_privileges LIKE '%,pr.respondent%'
+        AND grl_privileges NOT LIKE '%,rw.responent.seenaw%';

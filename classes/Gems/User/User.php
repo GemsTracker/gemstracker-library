@@ -556,6 +556,13 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
             }
         }
 
+        // Change a numeric role id to it's string value
+        if (intval($this->_getVar('user_role'))) {
+            $roles = \Gems_Roles::getInstance();
+            $trans = $roles->translateToRoleNames([$this->_getVar('user_role')]);
+            $this->_setVar('user_role', reset($trans));
+        }
+
         return (boolean) $this->acl && $this->userLoader;
     }
 
@@ -1366,12 +1373,15 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
             return;
         }
 
-        $rolesAllowed = $this->getRoles();
-        $roles        = $dbLookup->getActiveStaffRoles();
-        $result       = array();
+        $setGroups = $this->db->fetchOne(
+                "SELECT ggp_may_set_groups FROM gems__groups WHERE ggp_id_group = ?",
+                $this->getGroup()
+                );
+        $groupsAllowed = explode(',', $setGroups);
+        $result        = array();
 
-        foreach ($roles as $id => $role) {
-            if ((in_array($role, $rolesAllowed)) && isset($groups[$id])) {
+        foreach ($groups as $id => $label) {
+            if ((in_array($id, $groupsAllowed))) {
                 $result[$id] = $groups[$id];
             }
         }
