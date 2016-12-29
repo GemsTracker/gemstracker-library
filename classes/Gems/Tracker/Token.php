@@ -626,7 +626,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                 ->order('gr2t_track_info')
                 ->order('gto_valid_until')
                 ->order('gto_valid_from');
-        
+
         $this->_addRelation($select);
 
         if (!empty($where)) {
@@ -682,7 +682,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
     /**
      * A copy of the data array
-     * 
+     *
      * @return array
      */
     public function getArrayCopy()
@@ -1736,7 +1736,11 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                         array(\Gems_Tracker::DB_DATETIME_FORMAT, \Gems_Tracker::DB_DATE_FORMAT, null)
                         );
             }
-            $values['gto_completion_time'] = $completionTime->toString(\Gems_Tracker::DB_DATETIME_FORMAT);
+            if ($completionTime instanceof \Zend_Date) {
+                $values['gto_completion_time'] = $completionTime->toString(\Gems_Tracker::DB_DATETIME_FORMAT);
+            } else {
+                $values['gto_completion_time'] = null;
+            }
         }
         $changed = $this->_updateToken($values, $userId);
 
