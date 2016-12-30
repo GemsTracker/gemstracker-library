@@ -406,7 +406,9 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
             $this->exists = false;
         }
 
-        $this->_gemsData = $this->currentUser->applyGroupMask($this->_gemsData);
+        if ($this->currentUser instanceof \Gems_User_User) {
+            $this->_gemsData = $this->currentUser->applyGroupMask($this->_gemsData);
+        }
 	}
 
     /**

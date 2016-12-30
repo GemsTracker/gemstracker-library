@@ -451,7 +451,9 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     public function checkRegistryRequestsAnswers()
     {
         if ($this->_gemsData) {
-            $this->_gemsData = $this->currentUser->applyGroupMask($this->_gemsData);
+            if ($this->currentUser instanceof \Gems_User_User) {
+                $this->_gemsData = $this->currentUser->applyGroupMask($this->_gemsData);
+            }
         } else {
             if ($this->db instanceof \Zend_Db_Adapter_Abstract) {
                 $this->refresh();
@@ -1725,7 +1727,9 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                 $this->_gemsData = array();
             }
         }
-        $this->_gemsData = $this->currentUser->applyGroupMask($this->_gemsData);
+        if ($this->currentUser instanceof \Gems_User_User) {
+            $this->_gemsData = $this->currentUser->applyGroupMask($this->_gemsData);
+        }
         $this->exists = isset($this->_gemsData['gto_id_token']);
 
         return $this;
