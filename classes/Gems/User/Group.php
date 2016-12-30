@@ -43,6 +43,7 @@ class Group extends \Gems_Registry_CachedArrayTargetAbstract
         'ggp_staff_members'      => 0,
         'ggp_respondent_members' => 0,
         'ggp_allowed_ip_ranges'  => '',
+        'ggp_mask_settings'      => array(),
         );
 
     /**
@@ -192,7 +193,9 @@ class Group extends \Gems_Registry_CachedArrayTargetAbstract
             if (intval($data['ggp_role'])) {
                 $data['ggp_role'] = \Gems_Roles::getInstance()->translateToRoleName($data['ggp_role']);
             }
-            if (! is_array($data['ggp_mask_settings'])) {
+            if (! isset($data['ggp_mask_settings'])) {
+                $data['ggp_mask_settings'] = array();
+            } elseif (! is_array($data['ggp_mask_settings'])) {
                 $data['ggp_mask_settings'] = (array) json_decode($data['ggp_mask_settings']);
             }
             // \MUtil_Echo::track($data['ggp_mask_settings']);
