@@ -26,7 +26,7 @@ class MaskStore extends \Gems_Loader_TargetLoaderAbstract
     use TranslateableTrait;
 
     /**
-     * Loaded in _ensureSettings, derived wholly from $_settings
+     * Loaded in afterRegistry, derived wholly from $_settings
      *
      * @var array of [fieldname => groupname]
      */

@@ -113,8 +113,8 @@ class Gems_Loader_LoaderAbstract extends \MUtil_Registry_Source
             $newdirs = array();
         }
 
-        $cascadePath = '/' . strtr($cascade, '_', '/');
-        $cascadeCls  = '_' . $cascade;
+        $cascadePath = '/' . strtr($cascade, '_\\', '//');
+        $cascadeCls  = '_' . strtr($cascade, '/\\', '__');
         foreach ($dirs as $prefix => $path) {
             // Do not cascade a full classname fallback
             if ($prefix) {

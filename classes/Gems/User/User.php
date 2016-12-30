@@ -667,12 +667,18 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
             return;
         }
 
-        $setGroups     = $this->db->fetchOne(
-                "SELECT ggp_may_set_groups FROM gems__groups WHERE ggp_id_group = ?",
-                $groupId
-                );
-        $groupsAllowed = explode(',', $setGroups);
-        $result        = array();
+        try {
+            $setGroups     = $this->db->fetchOne(
+                    "SELECT ggp_may_set_groups FROM gems__groups WHERE ggp_id_group = ?",
+                    $groupId
+                    );
+            $groupsAllowed = explode(',', $setGroups);
+        } catch (\Zend_Db_Statement_Mysqli_Exception $e) {
+            // The database might not be updated
+            $groupsAllowed = [];
+        }
+
+        $result = array();
 
         foreach ($groups as $id => $label) {
             if ((in_array($id, $groupsAllowed))) {
