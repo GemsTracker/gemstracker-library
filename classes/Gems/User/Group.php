@@ -52,6 +52,54 @@ class Group extends \Gems_Registry_CachedArrayTargetAbstract
     protected $db;
 
     /**
+     *
+     * @var \Gems_Loader
+     */
+    protected $loader;
+
+    /**
+     *
+     * @var \Gems\User\Mask\MaskStore
+     */
+    protected $maskStore;
+
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    {
+        parent::afterRegistry();
+
+        $this->maskStore = $this->loader->getUserMaskStore();
+        $this->maskStore->setMaskSettings($this->_data['ggp_mask_settings']);
+    }
+
+    /**
+     *
+     * @param array $row
+     * @return array with the values masked
+     */
+    public function applyGroupToData(array $row)
+    {
+        return $this->maskStore->maskRow($row);
+    }
+
+    /**
+     *
+     * @param \MUtil_Model_ModelAbstract $model
+     * @return $this
+     */
+    public function applyGroupToModel(\MUtil_Model_ModelAbstract $model)
+    {
+        $this->maskStore->applyMaskDataToModel($model);
+
+        return $this;
+    }
+
+    /**
      * Get the group id.
      *
      * @return int
@@ -92,6 +140,36 @@ class Group extends \Gems_Registry_CachedArrayTargetAbstract
     }
 
     /**
+     *
+     * @param string $fieldName
+     * @return boolean True if this field is invisible
+     */
+    public function isFieldInvisible($fieldName)
+    {
+        return $this->maskStore->isFieldInvisible($fieldName);
+    }
+
+    /**
+     *
+     * @param string $fieldName
+     * @return boolean True if this field is partially (or wholly) masked (or invisible)
+     */
+    public function isFieldMaskedPartial($fieldName)
+    {
+        return $this->maskStore->isFieldMaskedPartial($fieldName);
+    }
+
+    /**
+     *
+     * @param string $fieldName
+     * @return boolean True if this field is wholly masked (or invisible)
+     */
+    public function isFieldMaskedWhole($fieldName)
+    {
+        return $this->maskStore->isFieldMaskedWhole($fieldName);
+    }
+
+    /**
      * Load the data when the cache is empty.
      *
      * @param mixed $id
@@ -110,8 +188,14 @@ class Group extends \Gems_Registry_CachedArrayTargetAbstract
         }
 
         // Translate numeric role id
-        if (is_array($data) && intval($data['ggp_role'])) {
-            $data['ggp_role'] = \Gems_Roles::getInstance()->translateToRoleName($data['ggp_role']);
+        if (is_array($data)) {
+            if (intval($data['ggp_role'])) {
+                $data['ggp_role'] = \Gems_Roles::getInstance()->translateToRoleName($data['ggp_role']);
+            }
+            if (! is_array($data['ggp_mask_settings'])) {
+                $data['ggp_mask_settings'] = (array) json_decode($data['ggp_mask_settings']);
+            }
+            // \MUtil_Echo::track($data['ggp_mask_settings']);
         }
 
         return $data;

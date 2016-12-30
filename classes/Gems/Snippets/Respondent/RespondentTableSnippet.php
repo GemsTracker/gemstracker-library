@@ -24,6 +24,12 @@ class RespondentTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
 {
     /**
      *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
+    /**
+     *
      * @var \Gems_Loader
      */
     protected $loader;
@@ -81,6 +87,10 @@ class RespondentTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
      */
     protected function addBrowseColumn2(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
+        if ($this->currentUser->isFieldMaskedWhole('name') && $this->currentUser->isFieldMaskedWhole('grs_email')) {
+            return;
+        }
+
         $br = \MUtil_Html::create('br');
 
         $model->setIfExists('grs_email', 'formatFunction', array('MUtil_Html_AElement', 'ifmail'));
@@ -133,7 +143,29 @@ class RespondentTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
 
             $bridge->addMultiSort($track, $br, 'gr2t_track_info');
         } else {
-            $citysep  = \MUtil_Html::raw('&nbsp;&nbsp;'); // $bridge->itemIf($bridge->grs_zipcode, \MUtil_Html::raw('&nbsp;&nbsp;'));
+            $maskAddress = $this->currentUser->isFieldMaskedWhole('grs_address_1');
+            $maskZip     = $this->currentUser->isFieldMaskedWhole('grs_zipcode');
+            $maskCity    = $this->currentUser->isFieldMaskedWhole('grs_city');
+
+            if ($maskAddress && $maskZip && $maskCity) {
+                return;
+            }
+
+            if ($maskAddress && $maskCity) {
+                $bridge->addMultiSort('grs_zipcode');
+                return;
+            }
+
+            if ($maskAddress && $maskZip) {
+                $bridge->addMultiSort('grs_city');
+                return;
+            }
+            if ($maskAddress) {
+                $bridge->addMultiSort('grs_zipcode', $br, 'grs_city');
+                return;
+            }
+            
+            $citysep  = \MUtil_Html::raw('&nbsp;&nbsp;');
 
             $bridge->addMultiSort('grs_address_1', $br, 'grs_zipcode', $citysep, 'grs_city');
         }
@@ -154,13 +186,46 @@ class RespondentTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
      */
     protected function addBrowseColumn4(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
+        $maskBirthday = $this->currentUser->isFieldMaskedWhole('grs_birthday');
+        $maskPhone    = $this->currentUser->isFieldMaskedWhole('grs_phone_1');
+
+        if ($maskBirthday && $maskPhone) {
+            return;
+        }
+
+        if ($maskPhone && ! $maskBirthday)  {
+            $bridge->addMultiSort('grs_birthday');
+            return;
+        }
+
+        if (! $maskPhone)  {
+
+            // Display separator and phone sign only if phone exist.
+            $phonesep = \MUtil_Html::raw('&#9743; '); // $bridge->itemIf($bridge->grs_phone_1, \MUtil_Html::raw('&#9743; '));
+        }
+        if ($maskBirthday) {
+            $bridge->addMultiSort($phonesep, 'grs_phone_1');
+        }
+
         $br = \MUtil_Html::create('br');
-
-        // Display separator and phone sign only if phone exist.
-        $phonesep = \MUtil_Html::raw('&#9743; '); // $bridge->itemIf($bridge->grs_phone_1, \MUtil_Html::raw('&#9743; '));
-
         $bridge->addMultiSort('grs_birthday', $br, $phonesep, 'grs_phone_1');
     }
+
+    /**
+     * Add first columns (group) from the model to the bridge that creates the browse table.
+     *
+     * You can actually add more than one column in this function, but just call all four functions
+     * with the default columns in each
+     *
+     * Overrule this function to add different columns to the browse table, without
+     * having to recode the core table building code.
+     *
+     * @param \MUtil_Model_Bridge_TableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
+     * @return void
+     */
+    protected function addBrowseColumn5(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    { }
 
     /**
      * Adds columns from the model to the bridge that creates the browse table.
@@ -197,6 +262,7 @@ class RespondentTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
         $this->addBrowseColumn2($bridge, $model);
         $this->addBrowseColumn3($bridge, $model);
         $this->addBrowseColumn4($bridge, $model);
+        $this->addBrowseColumn5($bridge, $model);
 
         if ($this->showMenu) {
             $editMenuItems = $this->getEditMenuItems();

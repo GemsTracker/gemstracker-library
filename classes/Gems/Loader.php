@@ -230,6 +230,15 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
     }
 
     /**
+     *
+     * @return \Gems\User\Mask\MaskStore
+     */
+    public function getUserMaskStore()
+    {
+        return $this->_getClass('maskStore', 'User\\Mask\\MaskStore');
+    }
+
+    /**
      * Get the project specific menu or general Gems menu otherwise
      *
      * @return \Gems_Menu

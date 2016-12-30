@@ -549,8 +549,12 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
      */
     public function checkRegistryRequestsAnswers()
     {
-        if ($this->db && (! $this->_respTrackData)) {
-            $this->refresh();
+        if ($this->_respTrackData) {
+            $this->_respTrackData = $this->currentUser->applyGroupMask($this->_respTrackData);
+        } else {
+            if ($this->db instanceof \Zend_Db_Adapter_Abstract) {
+                $this->refresh();
+            }
         }
 
         return (boolean) $this->_respTrackData;
@@ -1324,6 +1328,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
 
             $this->_respTrackData = $this->db->fetchRow($sql, $this->_respTrackId);
         }
+        $this->_respTrackData = $this->currentUser->applyGroupMask($this->_respTrackData);
 
         $this->_ensureFieldData(true);
 

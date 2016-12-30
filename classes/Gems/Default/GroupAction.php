@@ -151,6 +151,12 @@ class Gems_Default_GroupAction extends \Gems_Controller_ModelSnippetActionAbstra
                 'validator', new \Gems_Validate_IPRanges()
                 );
 
+        if ($detailed) {
+            $maskStore = $this->loader->getUserMaskStore();
+
+            $maskStore->addMaskSettingsToModel($model, 'ggp_mask_settings');
+        }
+
         \Gems_Model::setChangeFieldsByPrefix($model, 'ggp');
 
         return $model;

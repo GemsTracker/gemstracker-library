@@ -1,15 +1,18 @@
 <?php
+
 /**
  * @package    Gems
+ * @subpackage FormattedData
+ * @author     Jasper van Gestel
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
- * Format and araay of data according to a provided model
+ * Format and array of data according to a provided model
  *
  * @package    Gems
+ * @subpackage FormattedData
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.5

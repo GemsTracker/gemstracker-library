@@ -24,7 +24,7 @@ namespace Gems\Tracker\Field;
 abstract class FieldAbstract extends \MUtil_Translate_TranslateableAbstract implements FieldInterface
 {
     /**
-     * Option seperator for fields
+     * Option separator for fields
      */
     const FIELD_SEP = '|';
 

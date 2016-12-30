@@ -82,6 +82,12 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
     /**
      *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
+    /**
+     *
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
@@ -444,8 +450,14 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
      */
     public function checkRegistryRequestsAnswers()
     {
-        if ($this->db && (! $this->_gemsData)) {
-            $this->refresh();
+        if ($this->_gemsData) {
+            $this->_gemsData = $this->currentUser->applyGroupMask($this->_gemsData);
+        } else {
+            if ($this->db instanceof \Zend_Db_Adapter_Abstract) {
+                $this->refresh();
+            } else {
+                return false;
+            }
         }
 
         return $this->exists;
@@ -1713,6 +1725,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                 $this->_gemsData = array();
             }
         }
+        $this->_gemsData = $this->currentUser->applyGroupMask($this->_gemsData);
         $this->exists = isset($this->_gemsData['gto_id_token']);
 
         return $this;
@@ -1735,7 +1748,11 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                         array(\Gems_Tracker::DB_DATETIME_FORMAT, \Gems_Tracker::DB_DATE_FORMAT, null)
                         );
             }
-            $values['gto_completion_time'] = $completionTime->toString(\Gems_Tracker::DB_DATETIME_FORMAT);
+            if ($completionTime instanceof \Zend_Date) {
+                $values['gto_completion_time'] = $completionTime->toString(\Gems_Tracker::DB_DATETIME_FORMAT);
+            } else {
+                $values['gto_completion_time'] = null;
+            }
         }
         $changed = $this->_updateToken($values, $userId);
 

@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+use Gems\User\Group;
 
 /**
  * Extension of JoinModel for models where the organization id is
@@ -27,6 +28,19 @@ class Gems_Model_HiddenOrganizationModel extends \Gems_Model_JoinModel
      * @var \Gems_User_User
      */
     protected $currentUser;
+
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    {
+        parent::afterRegistry();
+
+        $this->refreshGroupSettings();
+   }
 
     /**
      * Stores the fields that can be used for sorting or filtering in the
@@ -146,5 +160,36 @@ class Gems_Model_HiddenOrganizationModel extends \Gems_Model_JoinModel
         }
 
         return $this->translate;
+    }
+
+    /**
+     * Helper function that procesess the raw data after a load.
+     *
+     * @see \MUtil_Model_SelectModelPaginator
+     *
+     * @param mxied $data Nested array or Traversable containing rows or iterator
+     * @param boolean $new True when it is a new item
+     * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
+     * @return array or Traversable Nested
+     */
+    public function processAfterLoad($data, $new = false, $isPostData = false)
+    {
+        // Repeat settings here, because the might be overloaded in the meantime
+        $this->refreshGroupSettings();
+
+        return parent::processAfterLoad($data, $new, $isPostData);
+    }
+
+    /**
+     * Function te re-apply all the masks and settings for the current group
+     *
+     * @return void
+     */
+    protected function refreshGroupSettings()
+    {
+        $group = $this->currentUser->getGroup();
+        if ($group instanceof Group) {
+            $group->applyGroupToModel($this);
+        }
     }
 }

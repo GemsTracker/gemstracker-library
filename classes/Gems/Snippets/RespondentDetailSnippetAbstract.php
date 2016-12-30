@@ -3,18 +3,17 @@
 /**
  *
  * @package    Gems
- * @subpackage Snippets
+ * @subpackage Snippets\Respondent
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
  * Prepares displays of respondent information
  *
  * @package    Gems
- * @subpackage Snippets
+ * @subpackage Snippets\Respondent
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.1
@@ -27,6 +26,12 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
      * @var array
      */
     protected $buttons;
+
+    /**
+     *
+     * @var \Gems\User\User
+     */
+    protected $currentUser;
 
     /**
      *

@@ -314,6 +314,22 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     *
+     * @param array $row
+     * @return array $row
+     */
+    public function applyGroupMask(array $row)
+    {
+        $group = $this->getGroup();
+
+        if (! $group) {
+            return $row;
+        }
+
+        return $group->applyGroupToData($row);
+    }
+
+    /**
      * Set menu parameters from this user
      *
      * @param \Gems_Menu_ParameterSource $source
@@ -325,6 +341,66 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         $source->offsetSet('gsf_active',          $this->isActive() ? 1 : 0);
         $source->offsetSet('accessible_role',     $this->inAllowedGroup() ? 1 : 0);
         $source->offsetSet('can_mail',            $this->hasEmailAddress() ? 1 : 0);
+    }
+
+    /**
+     *
+     * @param string $fieldName1 First of unlimited number of field names
+     * @return boolean True if this field is invisible
+     */
+    public function areAllFieldsInvisible($fieldName1, $fieldName2 = null)
+    {
+        $group = $this->getGroup();
+        if (! $group) {
+            return false;
+        }
+
+        foreach (func_get_args() as $fieldName) {
+            if (! $group->isFieldInvisible($fieldName)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     *
+     * @param string $fieldName1 First of unlimited number of field names
+     * @return boolean True if this field is partially (or wholly) masked (or invisible)
+     */
+    public function areAllFieldsMaskedPartial($fieldName1, $fieldName2 = null)
+    {
+        $group = $this->getGroup();
+        if (! $group) {
+            return false;
+        }
+
+        foreach (func_get_args() as $fieldName) {
+            if (! $group->isFieldMaskedPartial($fieldName)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     *
+     * @param string $fieldName1 First of unlimited number of field names
+     * @return boolean True if this field is wholly masked (or invisible)
+     */
+    public function areAllFieldsMaskedWhole($fieldName1, $fieldName2 = null)
+    {
+        $group = $this->getGroup();
+        if (! $group) {
+            return false;
+        }
+
+        foreach (func_get_args() as $fieldName) {
+            if (! $group->isFieldMaskedWhole($fieldName)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -1286,6 +1362,48 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     public function isCurrentUser()
     {
         return $this->_vars instanceof \Zend_Session_Namespace;
+    }
+
+    /**
+     *
+     * @param string $fieldName
+     * @return boolean True if this field is invisible
+     */
+    public function isFieldInvisible($fieldName)
+    {
+        $group = $this->getGroup();
+        if ($group) {
+            return $group->isFieldInvisible($fieldName);
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @param string $fieldName
+     * @return boolean True if this field is partially (or wholly) masked (or invisible)
+     */
+    public function isFieldMaskedPartial($fieldName)
+    {
+        $group = $this->getGroup();
+        if ($group) {
+            return $group->isFieldMaskedPartial($fieldName);
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @param string $fieldName
+     * @return boolean True if this field is wholly masked (or invisible)
+     */
+    public function isFieldMaskedWhole($fieldName)
+    {
+        $group = $this->getGroup();
+        if ($group) {
+            return $group->isFieldMaskedWhole($fieldName);
+        }
+        return false;
     }
 
     /**

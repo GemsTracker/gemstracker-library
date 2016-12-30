@@ -1248,3 +1248,8 @@ UPDATE gems__groups INNER JOIN
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.group.switch')
     WHERE grl_privileges LIKE '%,pr.group%'
         AND grl_privileges NOT LIKE '%,pr.group.switch%';
+
+-- PATCH: Add mask settings to groups
+ALTER TABLE gems__groups ADD
+    ggp_mask_settings text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null
+    AFTER ggp_allowed_ip_ranges;

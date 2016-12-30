@@ -405,6 +405,8 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
             $this->_gemsData = $this->model->loadNew();
             $this->exists = false;
         }
+
+        $this->_gemsData = $this->currentUser->applyGroupMask($this->_gemsData);
 	}
 
     /**
