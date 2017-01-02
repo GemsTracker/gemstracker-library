@@ -38,15 +38,22 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
      */
     protected $_form;
 
-
     /**
      *
      * @var \Zend_Loader
      */
 	protected $loader;
 
+    /**
+     *
+     * @var \Gems_Menu
+     */
     protected $menu;
 
+    /**
+     *
+     * @var \Gems_Project_ProjectSettings
+     */
     protected $project;
 
     /**
@@ -55,6 +62,10 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
      */
 	protected $translate;
 
+    /**
+     *
+     * @var \Gems_Util
+     */
     protected $util;
 
     /**
@@ -219,6 +230,12 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
         return $this->_form->createElement('exhibitor', 'preview_text', $options);
     }
 
+    /**
+     *
+     * @param string $name
+     * @param string $label
+     * @return \Zend_Form_Element_Submit
+     */
     public function createSubmitButton($name, $label)
     {
         $button = $this->_form->createElement('submit', $name, array('label'=>$label));
@@ -315,24 +332,6 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
         }
 
         return $text;
-    }
-
-    public function getAvailableMailTemplates($list=false, $target=false)
-    {
-        $select = $this->loader->getModels()->getCommTemplateModel()->getSelect();
-
-        if ($target) {
-            if (is_array($target)) {
-                $select->where('gct_target IN (?)', $target);
-            } else {
-                $select->where('gct_target = ?', $target);
-            }
-        }
-        $templates = $this->db->fetchPairs($select);
-        if (! $list) {
-            $templates = array('' => '') + $templates;
-        }
-        return $templates;
     }
 
     public function setForm($form) {

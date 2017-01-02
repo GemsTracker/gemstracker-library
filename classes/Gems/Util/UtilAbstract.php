@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: UtilAbstract.php 2493 2015-04-15 16:29:48Z matijsdejong $
  */
 
 namespace Gems\Util;
@@ -95,7 +94,7 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
      * @param boolean $natSort Perform a natsort over the output
      * @return array
      */
-    protected function _getSelectAllCached($cacheId, $sql, $binds = array(), $tags = array())
+    protected function _getSelectAllCached($cacheId, $sql, $binds = array(), $tags = array(), $natSort = false)
     {
         $cacheId = strtr(get_class($this) . '_a_' . $cacheId, '\\/', '__');
 

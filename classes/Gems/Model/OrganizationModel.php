@@ -8,7 +8,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -138,10 +137,17 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
 
         $this->setIfExists('gor_allowed_ip_ranges');
 
-        if ($definitions && (count($definitions) > 1)) {
+        if ($definitions) {
+            reset($definitions);
             $this->setIfExists('gor_user_class',    'label', $this->_('User Definition'),
+                    'default', key($definitions),
                     'multiOptions', $definitions
                     );
+            if (1 == count($definitions)) {
+                $this->setIfExists('gor_user_class',
+                        'elementClass', 'None'
+                        );
+            }
         }
 
         $this->setIfExists('gor_resp_change_event', 'label', $this->_('Respondent change event'),
@@ -164,7 +170,9 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
      */
     public function applyDetailSettings()
     {
-        $staffTemplates = $this->getPasswordTemplatesFor('staffPassword');
+        $commUtil = $this->util->getCommTemplateUtil();
+
+        $staffTemplates = $commUtil->getCommTemplatesForTarget('staffPassword', null, true);
 
         $this->applyBrowseSettings();
 
@@ -173,8 +181,10 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
         $this->set('gor_signature',                 'label', $this->_('Signature'),
                 'description', $this->_('For emails and token forward screen.'), 'elementClass', 'Textarea', 'rows', 5);
         $this->set('gor_create_account_template',   'label', $this->_('Create Account template'),
+                'default', $commUtil->getCommTemplateForCode('accountCreate', 'staffPassword'),
                 'multiOptions', $staffTemplates);
         $this->set('gor_reset_pass_template',       'label', $this->_('Reset Password template'),
+                'default', $commUtil->getCommTemplateForCode('passwordReset', 'staffPassword'),
                 'multiOptions', $staffTemplates);
 
         $this->setIfExists('gor_allowed_ip_ranges', 'label', $this->_('Allowed IP Ranges'),
@@ -286,7 +296,7 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
         $this->setIfExists('gor_resp_change_event',  'tab', $this->_('Other'),
                 'order', $this->getOrder('gor_user_class') + 1000
                 );
-        $this->setIfExists('gor_iso_lang',  
+        $this->setIfExists('gor_iso_lang',
                 'order', $this->getOrder('gor_user_class') + 1010,
                 'default', $this->project->getLocaleDefault()
                 );
@@ -294,17 +304,6 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
             $this->setIfExists('gor_style');
         }
         return $this;
-    }
-
-    /**
-     * Helper function to get the templates for mails
-     *
-     * @param string|array $for the template types to get
-     * @return array
-     */
-    public function getPasswordTemplatesFor($for)
-    {
-        return $this->loader->getMailLoader()->getMailElements()->getAvailableMailTemplates(false, $for);
     }
 
     /**

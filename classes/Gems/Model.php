@@ -303,7 +303,7 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
      */
     public function getStaffModel($addLogin = true)
     {
-        $model = $this->_loadClass('StaffModel', true, array($this->loader));
+        $model = $this->_loadClass('StaffModel', true);
 
         if ($addLogin) {
             $this->addUserLogin($model, 'gsf_login', 'gsf_id_organization');
@@ -353,7 +353,7 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
 
         if (! $userid) {
             $currentUser = \GemsEscort::getInstance()->currentUser;
-            
+
             if ($currentUser instanceof Gems_User_User) {   // During some unit tests this will be null
                 $userid = $currentUser->getUserId();
             }

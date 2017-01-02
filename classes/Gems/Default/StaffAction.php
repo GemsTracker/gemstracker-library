@@ -165,14 +165,13 @@ class Gems_Default_StaffAction extends \Gems_Controller_ModelSnippetActionAbstra
                                     ));
                         }
                 }
-                $defaultOrgId = $user->getBaseOrganizationId();
             }
         }
 
         // \MUtil_Model::$verbose = true;
         $model = $this->loader->getModels()->getStaffModel(! (('deactivate' === $action) || ('reactivate' === $action)));
 
-        $model->applySettings($detailed, $action, $defaultOrgId);
+        $model->applySettings($detailed, $action);
 
         return $model;
     }

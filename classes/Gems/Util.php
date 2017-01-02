@@ -35,6 +35,12 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
+     * @var \Gems\Util\CommTemplateUtil
+     */
+    protected $commTemplateUtil;
+
+    /**
+     *
      * @var \Gems_Util_DbLookup
      */
     protected $dbLookup;
@@ -86,6 +92,15 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
      * @var \Gems_Util_Translated
      */
     protected $translated;
+
+    /**
+     *
+     * @return \Gems\Util\CommTemplateUtil
+     */
+    public function getCommTemplateUtil()
+    {
+        return $this->_getClass('commTemplateUtil');
+    }
 
     /**
      * Returns a single consent code object.
@@ -214,6 +229,11 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
         return $this->_getClass('dbLookup');
     }
 
+    /**
+     *
+     * @param string $imageFile
+     * @return string
+     */
     public function getImageUri($imageFile)
     {
         return $this->basepath->getBasePath() . '/' . $this->project->getImageDir() . '/' . $imageFile;

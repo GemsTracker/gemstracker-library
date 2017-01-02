@@ -37,6 +37,7 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
     const USER_NOLOGIN    = 'NoLogin';
     const USER_OLD_STAFF  = 'OldStaffUser';
     const USER_PROJECT    = 'ProjectUser';
+    const USER_RADIUS     = 'RadiusUser';
     const USER_RESPONDENT = 'RespondentUser';
     const USER_STAFF      = 'StaffUser';
 
@@ -236,12 +237,10 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
      */
     public function getAvailableStaffDefinitions()
     {
-        $definitions = array(
-            self::USER_STAFF => $this->translate->_('Db storage'),
-            'RadiusUser'     => $this->translate->_('Radius storage')
+        return array(
+            self::USER_STAFF  => $this->translate->_('Db storage'),
+            self::USER_RADIUS => $this->translate->_('Radius storage'),
         );
-
-        return $definitions;
     }
 
     /**
@@ -385,7 +384,11 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
         }
 
         if (! isset($organizations[$organizationId])) {
-            $organizations[$organizationId] = $this->_loadClass('Organization', true, array($organizationId));
+            $organizations[$organizationId] = $this->_loadClass(
+                    'Organization',
+                    true,
+                    array($organizationId, $this->getAvailableStaffDefinitions())
+                    );
         }
 
         return $organizations[$organizationId];

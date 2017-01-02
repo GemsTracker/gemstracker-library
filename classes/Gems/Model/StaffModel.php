@@ -24,6 +24,18 @@
 class Gems_Model_StaffModel extends \Gems_Model_JoinModel
 {
     /**
+     *
+     * @var \Gems_User_Organization
+     */
+    protected $currentOrganization;
+
+    /**
+     *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
+    /**
      * One of the user classes available to the user loader
      *
      * @var string
@@ -143,15 +155,25 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
      * @param int $defaultOrgId The default organization id or null if current organization
      * @return \Gems_Model_StaffModel
      */
-    public function applySettings($detailed, $action, $defaultOrgId)
+    public function applySettings($detailed, $action)
     {
         $this->resetOrder();
 
         $dbLookup   = $this->util->getDbLookup();
         $editing    = ($action == 'edit') || ($action == 'create');
         $translated = $this->util->getTranslated();
-        $user       = $this->loader->getCurrentUser();
         $yesNo      = $translated->getYesNo();
+
+        if ($this->currentUser->hasPrivilege('pr.staff.see.all') || (! $editing)) {
+            // Select organization
+            $options = $dbLookup->getOrganizations();
+        } else {
+            $options = $this->currentUser->getAllowedOrganizations();
+        }
+        $this->set('gsf_id_organization',      'label', $this->_('Organization'),
+                'multiOptions', $options,
+                'required', true
+                );
 
         if ($editing) {
             if ($this->project->isLoginShared()) {
@@ -171,25 +193,14 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
                 'size', 15
                 );
 
-        if ($user->hasPrivilege('pr.staff.see.all') || (! $editing)) {
-            // Select organization
-            $options = $dbLookup->getOrganizations();
-        } else {
-            $options = $user->getAllowedOrganizations();
-        }
-        $this->set('gsf_id_organization',      'label', $this->_('Organization'),
-                'multiOptions', $options,
-                'required', true
-                );
-
         if ($detailed) {
-            $this->set('gsf_first_name',       'label', $this->_('First name'));            
+            $this->set('gsf_first_name',       'label', $this->_('First name'));
             $this->set('gsf_surname_prefix',   'label', $this->_('Surname prefix'),
                     'description', $this->_('de, van der, \'t, etc...')
                     );
             $this->set('gsf_last_name',        'label', $this->_('Last name'),
                     'required', true);
-            
+
             if ($editing) {
                 $ucfirst = new \Zend_Filter_Callback('ucfirst');
                 $this->set('gsf_first_name',   'filters[ucfirst]', $ucfirst);
@@ -212,25 +223,30 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
 
 
         $this->set('gsf_id_primary_group',     'label', $this->_('Primary function'),
-                'multiOptions', $editing ? $user->getAllowedStaffGroups() : $dbLookup->getStaffGroups()
+                'multiOptions', $editing ? $this->currentUser->getAllowedStaffGroups() : $dbLookup->getStaffGroups()
                 );
 
 
         if ($detailed) {
-            // Now try to load the current organization and find out if it has a default user definition
-            // otherwise use the defaultStaffDefinition
-            $organization = $this->loader->getOrganization(
-                    $defaultOrgId ? $defaultOrgId : $user->getCurrentOrganizationId()
-                    );
-            $this->set('gsf_id_organization', 'default', $organization->getId());
+            $this->set('gsf_id_organization', 'default', $this->currentOrganization->getId());
 
-            $this->set('gul_user_class',       'label', $this->_('User Definition'),
-                    'default', $organization->get('gor_user_class', $this->defaultStaffDefinition),
-                    'multiOptions', $this->loader->getUserLoader()->getAvailableStaffDefinitions()
-                    );
-            if ($editing) {
-                $this->set('gul_user_class', 'order', 1,
-                        'required', true);
+            $defaultStaffDefinitions = $this->loader->getUserLoader()->getAvailableStaffDefinitions();
+            if (1 == count($defaultStaffDefinitions)) {
+                reset($defaultStaffDefinitions);
+                $this->set('gul_user_class',
+                        'default', key($defaultStaffDefinitions),
+                        'elementClass', 'Hidden',
+                        'multiOptions', $defaultStaffDefinitions,
+                        'required', false
+                        );
+            } else {
+                $this->set('gul_user_class',       'label', $this->_('User Definition'),
+                        'default', $this->currentOrganization->getDefaultUserClass(),
+                        'multiOptions', $defaultStaffDefinitions,
+                        'order', $this->getOrder('gsf_id_organization') + 1,
+                        'required', true
+                        );
+                $this->addDependency('StaffUserClassDependency');
             }
             $this->set('gsf_iso_lang',         'label', $this->_('Language'),
                     'default', $this->project->locale['default'],
@@ -261,7 +277,7 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
 
         $this->setDeleteValues('gsf_active', 0, 'gul_can_login', 0);
 
-        if (! $user->hasPrivilege('pr.staff.edit.all')) {
+        if (! $this->currentUser->hasPrivilege('pr.staff.edit.all')) {
             $this->set('gsf_id_organization', 'elementClass', 'Exhibitor');
         }
 

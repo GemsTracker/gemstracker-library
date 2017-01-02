@@ -15,7 +15,6 @@ CREATE TABLE if not exists gems__staff (
         gsf_last_failed			timestamp null,
         -- end depreciated
 
-
         gsf_id_primary_group	bigint unsigned references gems__groups (ggp_id_group),
         gsf_iso_lang			char(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'en'
 								references gems__languages (gml_iso_lang),

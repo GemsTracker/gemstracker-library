@@ -23,6 +23,12 @@
 class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
 {
     /**
+     *
+     * @var array of class name => class label
+     */
+    protected $_allowedProjectUserClasses;
+
+    /**
      * Variable to add tags to the cache for cleanup.
      *
      * @var array
@@ -68,6 +74,19 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
      * @var \Gems_Util
      */
     protected $util;
+
+    /**
+     * Creates the object.
+     *
+     * @param mixed $id Whatever identifies this object.
+     * @param array $allowedProjectUserClasses of class name => class label
+     */
+    public function __construct($id, array $allowedProjectUserClasses)
+    {
+        parent::__construct($id);
+
+        $this->_allowedProjectUserClasses = $allowedProjectUserClasses;
+    }
 
     /**
      * When true respondents of this organization may login
@@ -195,6 +214,25 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
         return $this->_get('can_access');
     }
 
+    /**
+     * Get the available user class for new users in this organization
+     *
+     * @return array Of type class name => class label
+     */
+    public function getAllowedUserClasses()
+    {
+        $output = $this->_allowedProjectUserClasses;
+
+        if (\Gems_User_UserLoader::USER_RADIUS !== $this->_get('gor_user_class')) {
+            unset($output[\Gems_User_UserLoader::USER_RADIUS]);
+        }
+        return $output;
+    }
+
+    /**
+     *
+     * @return integer Create account template id
+     */
     public function getCreateAccountTemplate()
     {
         return $this->_get('gor_create_account_template');
@@ -218,6 +256,16 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
     public function getContactName()
     {
         return $this->_get('gor_contact_name');
+    }
+
+    /**
+     * Get the default user class for new users in this organization
+     *
+     * @return string The stored user class
+     */
+    public function getDefaultUserClass()
+    {
+        return $this->_get('gor_user_class');
     }
 
     /**

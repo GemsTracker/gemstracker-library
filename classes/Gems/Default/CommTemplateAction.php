@@ -21,6 +21,13 @@
 class Gems_Default_CommTemplateAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
+     * Tags for cache cleanup after changes, passed to snippets
+     *
+     * @var array
+     */
+    public $cacheTags = ['commTemplates'];
+
+    /**
      * The snippets used for the create and edit actions.
      *
      * @var mixed String or array of snippets name
