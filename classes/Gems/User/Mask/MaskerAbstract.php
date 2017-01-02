@@ -74,9 +74,10 @@ abstract class MaskerAbstract extends \MUtil_Translate_TranslateableAbstract imp
 
     /**
      *
+     * @param boolean $hideWhollyMasked When true the labels of wholly masked items are removed
      * @return array of fieldname => settings to set in using model or null when nothing needs to be set
      */
-    public function getDataModelOptions()
+    public function getDataModelOptions($hideWhollyMasked)
     {
         $output = [];
         $types  = [];
@@ -85,6 +86,10 @@ abstract class MaskerAbstract extends \MUtil_Translate_TranslateableAbstract imp
             if (! isset($types[$type])) {
                 if ($this->isTypeMaskedPartial($type, $this->_choice)) {
                     $types[$type] = $this->getDataModelMask($type);
+                    if ($hideWhollyMasked && $this->isTypeMaskedWhole($type, $this->_choice)) {
+                        $types[$type]['label']        = null;
+                        $types[$type]['elementClass'] = 'None';
+                    }
                 } else {
                     $types[$type] = false;
                 }

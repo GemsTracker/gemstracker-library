@@ -7,10 +7,11 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: CommLogModel.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Model;
+
+use Gems\User\Group;
 
 /**
  *
@@ -23,6 +24,12 @@ namespace Gems\Model;
  */
 class CommLogModel extends \Gems_Model_JoinModel
 {
+    /**
+     *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
     /**
      * Required
      *
@@ -59,7 +66,7 @@ class CommLogModel extends \Gems_Model_JoinModel
         $this->addLeftTable(array('gems__staff', 'staff_by'),  array('gto_by' => 'staff_by.gsf_id_user'));
         $this->addLeftTable('gems__track_fields',         array('gto_id_relationfield' => 'gtf_id_field', 'gtf_field_type = "relation"'));       // Add relation fields
         $this->addLeftTable('gems__respondent_relations', array('gto_id_relation' => 'grr_id', 'gto_id_respondent' => 'grr_id_respondent')); // Add relation
-        
+
         $this->addColumn(
             "TRIM(CONCAT(
                 COALESCE(CONCAT(grs_last_name, ', '), '-, '),
@@ -141,6 +148,8 @@ class CommLogModel extends \Gems_Model_JoinModel
         if ($detailed) {
             $this->set('gct_name', 'label', $this->_('Template'));
         }
+
+        $this->refreshGroupSettings();
     }
 
     public function displayToken($token)
@@ -154,6 +163,19 @@ class CommLogModel extends \Gems_Model_JoinModel
 
 
             return \MUtil_Html::create('a', $url, $token);
+        }
+    }
+
+    /**
+     * Function to re-apply all the masks and settings for the current group
+     *
+     * @return void
+     */
+    public function refreshGroupSettings()
+    {
+        $group = $this->currentUser->getGroup();
+        if ($group instanceof Group) {
+            $group->applyGroupToModel($this, false);
         }
     }
 }

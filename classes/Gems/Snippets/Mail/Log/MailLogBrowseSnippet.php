@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 namespace Gems\Snippets\Mail\Log;
@@ -22,6 +21,12 @@ namespace Gems\Snippets\Mail\Log;
  */
 class MailLogBrowseSnippet extends \Gems_Snippets_ModelTableSnippetGeneric
 {
+    /**
+     *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
     /**
      *
      * @var \Gems_Util
@@ -60,7 +65,11 @@ class MailLogBrowseSnippet extends \Gems_Snippets_ModelTableSnippetGeneric
         // make sure search results are highlighted
         $this->applyTextMarker();
 
-        $bridge->addMultiSort('grco_created',  $br, 'gr2o_patient_nr', $sp, 'respondent_name', $br, 'grco_address', $br, 'gtr_track_name');
+        if ($this->currentUser->areAllFieldsMaskedWhole('respondent_name', 'grs_surname_prefix', 'grco_address')) {
+            $bridge->addMultiSort('grco_created',  $br, 'gr2o_patient_nr', $br, 'gtr_track_name');
+        } else {
+            $bridge->addMultiSort('grco_created',  $br, 'gr2o_patient_nr', $sp, 'respondent_name', $br, 'grco_address', $br, 'gtr_track_name');
+        }
         $bridge->addMultiSort('grco_id_token', $br, 'assigned_by',     $br, 'grco_sender',     $br, 'gsu_survey_name');
         $bridge->addMultiSort('status',        $by, 'filler',          $br, 'grco_topic');
 

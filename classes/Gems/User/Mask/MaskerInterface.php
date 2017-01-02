@@ -35,9 +35,10 @@ interface MaskerInterface
 
     /**
      *
+     * @param boolean $hideWhollyMasked When true the labels of wholly masked items are removed
      * @return array of fieldname => settings to set in using model or null when nothing needs to be set
      */
-    public function getDataModelOptions();
+    public function getDataModelOptions($hideWhollyMasked);
 
     /**
      *

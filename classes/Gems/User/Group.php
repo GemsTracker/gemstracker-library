@@ -91,11 +91,12 @@ class Group extends \Gems_Registry_CachedArrayTargetAbstract
     /**
      *
      * @param \MUtil_Model_ModelAbstract $model
+     * @param boolean $hideWhollyMasked When true the labels of wholly masked items are removed
      * @return $this
      */
-    public function applyGroupToModel(\MUtil_Model_ModelAbstract $model)
+    public function applyGroupToModel(\MUtil_Model_ModelAbstract $model, $hideWhollyMasked)
     {
-        $this->maskStore->applyMaskDataToModel($model);
+        $this->maskStore->applyMaskDataToModel($model, $hideWhollyMasked);
 
         return $this;
     }

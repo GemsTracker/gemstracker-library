@@ -412,19 +412,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
 
         $activeTracks = $this->util->getTrackData()->getActiveTracks($orgs);
 
-        if (isset($data['gr2t_id_track']) && $data['gr2t_id_track']) {
-            switch ($data['gr2t_id_track']) {
-                case 'show_without_track':
-                case 'show_all':
-                case 'show_with_track':
-                    break;
-
-                default:
-                    if (! isset($activeTracks[$data['gr2t_id_track']])) {
-                        $data['gr2t_id_track'] = 'show_with_track';
-                    }
-            }
-        }
+        // Cache used by RespondentSearchSnippet and $this->getSearchFilter()
         $data['__active_tracks'] = $activeTracks;
 
         return $data;
@@ -447,7 +435,9 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
                 $this->defaultSearchData[\MUtil_Model::REQUEST_ID2] = $this->currentOrganization->getId();
             }
         }
+
         $this->defaultSearchData['gr2t_id_track'] = 'show_all';
+
         return parent::getSearchDefaults();
     }
 
@@ -472,8 +462,6 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
                     break;
 
                 case 'show_with_track':
-                    unset($filter['gr2t_id_track']);
-                    // Intentional fall through
                 default:
                     $model = $this->getModel();
                     if (! $model->hasAlias('gems__respondent2track')) {
@@ -484,6 +472,9 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
                     }
                     if (! $model->hasAlias('gems__tracks')) {
                         $model->addTable('gems__tracks', array('gr2t_id_track' => 'gtr_id_track'));
+                    }
+                    if (! isset($filter['__active_tracks'], $filter['__active_tracks'][$filter['gr2t_id_track']])) {
+                        unset($filter['gr2t_id_track']);
                     }
 
             }

@@ -24,6 +24,12 @@ class Gems_Snippets_TokenModelSnippetAbstract extends \Gems_Snippets_ModelTableS
 {
     /**
      *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
+    /**
+     *
      * @var \Gems_Loader
      */
     protected $loader;

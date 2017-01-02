@@ -7,11 +7,12 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: LogModel.php 2493 2015-04-15 16:29:48Z matijsdejong $
  */
 
 namespace Gems\Model;
 
+use Gems\Model\Type\MaskedJsonData;
+use Gems\User\Group;
 use MUtil\Model\Type\JsonData;
 
 /**
@@ -25,6 +26,12 @@ use MUtil\Model\Type\JsonData;
  */
 class LogModel extends \Gems_Model_JoinModel
 {
+    /**
+     *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
     /**
      *
      * @var \Zend_Db_Adapter_Abstract
@@ -104,12 +111,15 @@ class LogModel extends \Gems_Model_JoinModel
         $jdType->apply($this, 'gla_message', $detailed);
 
         if ($detailed) {
+            $mjdType = new MaskedJsonData($this->currentUser);
             $this->set('gla_data', 'label', $this->_('Data'));
-            $jdType->apply($this, 'gla_data', $detailed);
+            $mjdType->apply($this, 'gla_data', $detailed);
 
             $this->set('gla_method', 'label', $this->_('Method'));
             $this->set('gla_remote_ip', 'label', $this->_('IP address'));
         }
+
+        $this->refreshGroupSettings();
     }
 
     /**
@@ -120,5 +130,18 @@ class LogModel extends \Gems_Model_JoinModel
     public function applyDetailSettings()
     {
         $this->applyBrowseSettings(true);
+    }
+
+    /**
+     * Function to re-apply all the masks and settings for the current group
+     *
+     * @return void
+     */
+    public function refreshGroupSettings()
+    {
+        $group = $this->currentUser->getGroup();
+        if ($group instanceof Group) {
+            $group->applyGroupToModel($this, false);
+        }
     }
 }

@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -63,11 +62,11 @@ class Gems_Snippets_RespondentSearchSnippet extends \Gems_Snippets_AutosearchFor
             }
 
             if (count($tracks) > 1) {
-                $elements[] = $this->_createSelectElement('gr2t_id_track', $masks + $tracks);
+                $elements['gr2t_id_track'] = $this->_createSelectElement('gr2t_id_track', $masks + $tracks);
             } else {
                 $element = $this->_createRadioElement('gr2t_id_track', $masks + $tracks);
                 $element->setSeparator(' ');
-                $elements[] = $element;
+                $elements['gr2t_id_track'] = $element;
             }
             $lineBreak = true;
         } else {
@@ -75,7 +74,7 @@ class Gems_Snippets_RespondentSearchSnippet extends \Gems_Snippets_AutosearchFor
         }
 
         if ($user->hasPrivilege('pr.respondent.show-deleted')) {
-            $elements[] = $this->_createCheckboxElement('grc_success', $this->_('Show active'));
+            $elements['grc_success'] = $this->_createCheckboxElement('grc_success', $this->_('Show active'));
         }
 
         if ($this->model->isMultiOrganization()) {
@@ -90,7 +89,7 @@ class Gems_Snippets_RespondentSearchSnippet extends \Gems_Snippets_AutosearchFor
                         ->setAttrib('onchange', 'this.form.submit();');
                 $elements[] = \MUtil_Html::create('br');
             }
-            $elements[] = $element;
+            $elements[\MUtil_Model::REQUEST_ID2] = $element;
         }
 
         return $elements;

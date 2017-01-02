@@ -746,6 +746,15 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
         if ($respTrack) {
             $trackEngine = $respTrack->getTrackEngine();
 
+            if ($this->currentUser->areAllFieldsMaskedWhole('grs_first_name', 'grs_surname_prefix', 'grs_last_name')) {
+                // Set params
+                return sprintf(
+                        $this->_('%s track for respondent nr %s'),
+                        $trackEngine->getTrackName(),
+                        $respondent->getPatientNumber()
+                        );
+            }
+
             // Set params
             return sprintf(
                     $this->_('%s track for respondent nr %s: %s'),

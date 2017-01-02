@@ -111,21 +111,25 @@ class BirthdayMasker extends MaskerAbstract
     public function mask($type, $value)
     {
         if ($value instanceof \Zend_Date) {
+            $dateValue = $value;
+        } else {
+            $dateValue = \MUtil_Date::ifDate($value, array_keys(\MUtil_Date::$zendToPhpFormats));
+        }
+        if ($dateValue) {
             switch ($this->_choice) {
                 case 'D':
-                    $value = $value->setDay(1);
-                    // intentional fall through
+                    return $dateValue->toString('MMM YYYY');
 
                 case 'M':
-                    $value = $value->setMonth(1);
-                    break;
+                    return $dateValue->toString('YYYY');
 
                 case 'Y':
-                    return $value->toString('DD MMM');
+                    return $dateValue->toString('DD MMM');
 
                 case '*':
                     return null;
             }
+
         }
 
         return $value;

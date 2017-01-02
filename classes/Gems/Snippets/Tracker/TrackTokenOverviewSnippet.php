@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 namespace Gems\Snippets\Tracker;
@@ -106,7 +105,8 @@ class TrackTokenOverviewSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
         $bridge->addSortable('gto_completion_time', null, 'date');
         $bridge->addSortable('gto_valid_until',     null, 'date');
 
-        if ($this->loader->getCurrentUser()->hasPrivilege('pr.respondent.result')) {
+        if ($this->currentUser->hasPrivilege('pr.respondent.result') &&
+                (! $this->currentUser->isFieldMaskedWhole('gto_result'))) {
             $bridge->addSortable('gto_result', $this->_('Score'), 'date');
         }
         $actionLinks[] = $this->createMenuLink($bridge, 'track',  'answer');

@@ -191,6 +191,9 @@ class Gems_Default_AppointmentAction extends \Gems_Default_RespondentChildAction
     {
         $patientId = $this->_getParam(\MUtil_Model::REQUEST_ID1);
         if ($patientId) {
+            if ($this->currentUser->areAllFieldsMaskedWhole('grs_first_name', 'grs_surname_prefix', 'grs_last_name')) {
+                return sprintf($this->_('Appointments for respondent number %s'), $patientId);
+            }
             $respondent = $this->loader->getRespondent(
                     $patientId,
                     $this->getRequest()->getParam(\MUtil_Model::REQUEST_ID2)

@@ -30,6 +30,12 @@ class Gems_Model_HiddenOrganizationModel extends \Gems_Model_JoinModel
     protected $currentUser;
 
     /**
+     *
+     * @var boolean When true the labels of wholly masked items are removed
+     */
+    protected $hideWhollyMasked = false;
+
+    /**
      * Called after the check that all required registry values
      * have been set correctly has run.
      *
@@ -181,15 +187,15 @@ class Gems_Model_HiddenOrganizationModel extends \Gems_Model_JoinModel
     }
 
     /**
-     * Function te re-apply all the masks and settings for the current group
+     * Function to re-apply all the masks and settings for the current group
      *
      * @return void
      */
-    protected function refreshGroupSettings()
+    public function refreshGroupSettings()
     {
         $group = $this->currentUser->getGroup();
         if ($group instanceof Group) {
-            $group->applyGroupToModel($this);
+            $group->applyGroupToModel($this, $this->hideWhollyMasked);
         }
     }
 }

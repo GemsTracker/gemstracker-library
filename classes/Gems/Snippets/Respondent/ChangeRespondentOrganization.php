@@ -37,7 +37,7 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
      *
      * @var \Gems_User_User
      */
-    public $currentUser;
+    protected $currentUser;
 
     /**
      * Required
@@ -95,7 +95,6 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
     protected function addFormElements(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
     {
         $this->saveLabel = $this->_('Change organization');
-
 
         $choices = [
             'share' => $this->_('Share between both organizations, keep tracks in old'),
@@ -227,14 +226,19 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
     protected function getTitle()
     {
         if ($this->respondent instanceof \Gems_Tracker_Respondent) {
+            if ($this->currentUser->areAllFieldsMaskedWhole('grs_first_name', 'grs_surname_prefix', 'grs_last_name')) {
+                return sprintf(
+                        $this->_('Change organization of respondent nr %s'),
+                        $this->respondent->getPatientNumber()
+                        );
+            }
             return sprintf(
                     $this->_('Change organization of respondent nr %s: %s'),
                     $this->respondent->getPatientNumber(),
                     $this->respondent->getName()
                     );
-        } else {
-            return $this->_('Change organization of respondent');
         }
+        return $this->_('Change organization of respondent');
     }
 
     /**

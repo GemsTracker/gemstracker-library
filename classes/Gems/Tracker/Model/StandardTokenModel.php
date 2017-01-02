@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 use MUtil\Model\Dependency\OffOnElementsDependency;
@@ -43,6 +42,12 @@ use MUtil\Model\Dependency\OffOnElementsDependency;
  */
 class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizationModel
 {
+    /**
+     *
+     * @var boolean When true the labels of wholly masked items are removed
+     */
+    protected $hideWhollyMasked = true;
+
     /**
      *
      * @var boolean Set to true when data in the respondent2track table must be saved as well
@@ -339,6 +344,8 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
         $this->set('assigned_by',            'label', $this->_('Assigned by'),
                 'elementClass', 'Exhibitor'
                 );
+
+        $this->refreshGroupSettings();
 
         return $this;
     }

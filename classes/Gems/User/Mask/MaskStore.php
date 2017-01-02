@@ -26,6 +26,18 @@ class MaskStore extends \Gems_Loader_TargetLoaderAbstract
     use TranslateableTrait;
 
     /**
+     *
+     * @var array Of hidden model settings
+     */
+    private $_compiledHiddenModelSettings;
+
+    /**
+     *
+     * @var array Of non-hidden model settings
+     */
+    private $_compiledNormalModelSettings;
+
+    /**
      * Loaded in afterRegistry, derived wholly from $_settings
      *
      * @var array of [fieldname => groupname]
@@ -69,7 +81,7 @@ class MaskStore extends \Gems_Loader_TargetLoaderAbstract
         $this->_settings = [
             'name' => [
                 'label'       => $this->_('Mask respondent name'),
-                'description' => $this->_('Hide name parts and e-mail address.'),
+                'description' => $this->_('Hide name and e-mail address.'),
                 'class'       => 'NameMasker',
                 'maskFields'  => $this->_getNameFields(),
             ],
@@ -179,6 +191,7 @@ class MaskStore extends \Gems_Loader_TargetLoaderAbstract
             'grs_email'                  => 'mask',
             'name'                       => 'double',
             'respondent_name'            => 'double',
+            'grco_address'               => 'mask',
             ];
     }
 
@@ -209,7 +222,7 @@ class MaskStore extends \Gems_Loader_TargetLoaderAbstract
         $model->set($storageField, 'elementClass', 'Hidden');
         $model->setOnSave($storageField, [$this, 'saveSettings']);
 
-        $html = \MUtil_Html::create()->h4($this->_('Data view settings'));
+        $html = \MUtil_Html::create()->h4($this->_('Privacy settings'));
         $model->set($storageField . '__HEADER', 'label', ' ',
                 'default', $html,
                 'elementClass', 'Html',
@@ -254,7 +267,11 @@ class MaskStore extends \Gems_Loader_TargetLoaderAbstract
         // Load the masker classes
         foreach ($this->_settings as $name => $setting) {
             if (isset($setting['class'], $setting['maskFields'])) {
-                $this->_settings[$name]['masker'] = $this->getMasker($setting['class'], $setting['maskFields']);
+                $this->_settings[$name]['masker'] = $this->_loadClass(
+                        $setting['class'],
+                        true,
+                        array($setting['maskFields'])
+                        );
             }
         }
 
@@ -272,27 +289,46 @@ class MaskStore extends \Gems_Loader_TargetLoaderAbstract
     /**
      *
      * @param \MUtil_Model_ModelAbstract $model
-     * @param array $maskData
+     * @param boolean $hideWhollyMasked When true the labels of wholly masked items are removed
      * @return $this
      */
-    public function applyMaskDataToModel(\MUtil_Model_ModelAbstract $model)
+    public function applyMaskDataToModel(\MUtil_Model_ModelAbstract $model, $hideWhollyMasked = false)
     {
-        foreach ($this->_settings as $name => $setting) {
-            if (isset($setting['masker']) && $setting['masker'] instanceof MaskerInterface) {
+        if ($hideWhollyMasked) {
+            $compiled = $this->_compiledHiddenModelSettings;
+        } else {
+            $compiled = $this->_compiledNormalModelSettings;
+        }
+        // \MUtil_Echo::track($hideWhollyMasked, (boolean) $compiled);
+        if (! is_array($compiled)) {
+            $compiled = [];
+            foreach ($this->_settings as $name => $setting) {
+                if (isset($setting['masker']) && $setting['masker'] instanceof MaskerInterface) {
 
-                if ($model->hasAnyOf($setting['masker']->getMaskFields())) {
+                    if ($model->hasAnyOf($setting['masker']->getMaskFields())) {
 
-                    $dataOptions = $setting['masker']->getDataModelOptions();
+                        $dataOptions = $setting['masker']->getDataModelOptions($hideWhollyMasked);
 
-                    // \MUtil_Echo::track($name, $dataOptions);
-                    if ($dataOptions) {
-                        foreach ($dataOptions as $field => $options) {
-                            // \MUtil_Echo::track($name, $field, array_keys($options));
-                            $model->setIfExists($field, $options);
+                        // \MUtil_Echo::track($name, count($dataOptions));
+                        if ($dataOptions) {
+                            foreach ($dataOptions as $field => $options) {
+                                // \MUtil_Echo::track($hideWhollyMasked, $name, $field, array_keys($options));
+                                $compiled[$field] = $options;
+                            }
                         }
                     }
                 }
             }
+        }
+        foreach ($compiled as $field => $options) {
+            if ($model->has($field)) {
+                $model->set($field, $options);
+            }
+        }
+        if ($hideWhollyMasked) {
+            $this->_compiledHiddenModelSettings = $compiled;
+        } else {
+            $this->_compiledNormalModelSettings = $compiled;
         }
         return $this;
     }
@@ -319,17 +355,6 @@ class MaskStore extends \Gems_Loader_TargetLoaderAbstract
             return json_decode($value, true);
         }
         return $this->defaultData;
-    }
-
-    /**
-     *
-     * @param string $className
-     * @param array $maskFields
-     * @return \Gems\User\Mask\MaskerInterface
-     */
-    public function getMasker($className, array $maskFields)
-    {
-        return $this->_loadClass($className, true, [$maskFields]);
     }
 
     /**
@@ -488,11 +513,9 @@ class MaskStore extends \Gems_Loader_TargetLoaderAbstract
         $settings = $this->getSettings();
 
         foreach ($settings as $name => $setting) {
-            if (isset($setting['class'], $setting['maskFields'])) {
-                $masker = $this->getMasker($setting['class'], $setting['maskFields']);
-
-                if (array_intersect(array_keys($row), $masker->getMaskFields())) {
-                    $masker->maskRow($row);
+            if (isset($setting['masker']) && $setting['masker'] instanceof MaskerInterface) {
+                if (array_intersect(array_keys($row), $setting['masker']->getMaskFields())) {
+                    $setting['masker']->maskRow($row);
                 }
             }
         }
@@ -534,6 +557,9 @@ class MaskStore extends \Gems_Loader_TargetLoaderAbstract
      */
     public function setMaskSettings(array $maskData)
     {
+        $this->_compiledHiddenModelSettings = false;
+        $this->_compiledNormalModelSettings = false;
+
         foreach ($this->_settings as $name => $setting) {
             if (isset($setting['masker']) && $setting['masker'] instanceof MaskerInterface) {
 

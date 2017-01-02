@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -27,6 +26,12 @@ abstract class Gems_Tracker_Snippets_ShowTokenSnippetAbstract extends \MUtil_Sni
      * @var string
      */
     protected $class = 'displayer table table-bordered table-condensed';
+
+    /**
+     *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
 
     /**
      * Required

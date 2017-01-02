@@ -113,8 +113,8 @@ class Gems_Snippets_RespondentTokenSnippet extends \Gems_Snippets_TokenModelSnip
         $project = \GemsEscort::getInstance()->project;
 
         // If we are allowed to see the result of the survey, show them
-        $user = $this->loader->getCurrentUser();
-        if ($user->hasPrivilege('pr.respondent.result')) {
+        if ($this->currentUser->hasPrivilege('pr.respondent.result') &&
+                (! $this->currentUser->isFieldMaskedWhole('gto_result'))) {
             $bridge->addSortable('gto_result', $this->_('Score'), 'date');
         }
 

@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 use MUtil\Model\Dependency\OffOnElementsDependency;
@@ -37,6 +36,12 @@ use MUtil\Model\Dependency\OffOnElementsDependency;
  */
 class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganizationModel
 {
+    /**
+     *
+     * @var boolean When true the labels of wholly masked items are removed
+     */
+    protected $hideWhollyMasked = true;
+
     /**
      *
      * @var \Gems_Util
@@ -190,6 +195,8 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
             'formatFunction', $formatDate);
         $this->set('gr2t_track_info',      'label', $this->_('Description'));
         $this->set('gr2t_comment',         'label', $this->_('Comment'));
+
+        $this->refreshGroupSettings();
 
         return $this;
     }

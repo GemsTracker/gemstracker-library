@@ -63,7 +63,9 @@ class ShowTrackTokenSnippet extends \Gems_Tracker_Snippets_ShowTokenSnippetAbstr
         $bridge->addMarkerRow();
 
         $bridge->add('gr2o_patient_nr');
-        $bridge->add('respondent_name');
+        if (! $this->currentUser->isFieldMaskedWhole('respondent_name')) {
+            $bridge->add('respondent_name');
+        }
         $bridge->addMarkerRow();
 
         $bridge->add('gtr_track_name');
