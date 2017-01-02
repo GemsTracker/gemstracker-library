@@ -227,7 +227,7 @@ class RoleEditFormSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
      */
     protected function loadFormData()
     {
-        \MUtil_Echo::track(file_get_contents('php://input'));
+        // \MUtil_Echo::track(file_get_contents('php://input'));
         parent::loadFormData();
         // \MUtil_Echo::track($this->formData);
 
