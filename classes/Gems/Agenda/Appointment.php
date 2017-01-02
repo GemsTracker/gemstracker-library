@@ -73,10 +73,13 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
     public function __construct($appointmentData)
     {
         if (is_array($appointmentData)) {
-            $this->_gemsData       = $appointmentData;
-            $this->_appointmentId  = $appointmentData['gap_id_appointment'];
+            $this->_gemsData      = $appointmentData;
+            $this->_appointmentId = $appointmentData['gap_id_appointment'];
+            if ($this->currentUser instanceof \Gems_User_User) {
+                $this->_gemsData = $this->currentUser->applyGroupMask($this->_gemsData);
+            }
         } else {
-            $this->_appointmentId  = $appointmentData;
+            $this->_appointmentId = $appointmentData;
             // loading occurs in checkRegistryRequestAnswers
         }
     }
@@ -404,6 +407,10 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
         }
         $this->exists = isset($this->_gemsData['gap_id_appointment']);
 
+        if ($this->currentUser instanceof \Gems_User_User) {
+            $this->_gemsData = $this->currentUser->applyGroupMask($this->_gemsData);
+        }
+        
         return $this;
     }
 

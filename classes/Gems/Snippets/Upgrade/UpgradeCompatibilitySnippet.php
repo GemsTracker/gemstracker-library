@@ -181,7 +181,8 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
 
         $obsFunctions = array(
             'Gems_User_User' => array(
-                'hasAllowedRole' => 'inAllowedGroup',
+                'getAppointmentFieldVale'   => 'getAppointmentFieldValue',
+                'hasAllowedRole'            => 'inAllowedGroup',
                 'refreshAllowedStaffGroups' => null,
                 ),
         );

@@ -147,7 +147,7 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
      * @param string $field
      * @return mixed
      */
-    public function getAppointmentFieldVale(\Gems_Agenda_Appointment $appointment, $field)
+    public function getAppointmentFieldValue(\Gems_Agenda_Appointment $appointment, $field)
     {
         switch ($field) {
             case 'gap_id_organization':
@@ -230,7 +230,7 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
     public function matchAppointment(\Gems_Agenda_Appointment $appointment)
     {
         if ($this->_data['gaf_filter_text1'] && $this->_data['gaf_filter_text2']) {
-            $value = $this->getAppointmentFieldVale($appointment, $this->_data['gaf_filter_text1']);
+            $value = $this->getAppointmentFieldValue($appointment, $this->_data['gaf_filter_text1']);
             if (isset($this->_lookupTables[$this->_data['gaf_filter_text1']])) {
                 if ($this->_fieldList2 && $this->_fieldList2 !== true) {
                     if (! isset($this->_fieldList2[$value])) {
@@ -249,7 +249,7 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
         }
 
         if ($this->_data['gaf_filter_text3'] && $this->_data['gaf_filter_text4']) {
-            $value = $this->getAppointmentFieldVale($appointment, $this->_data['gaf_filter_text3']);
+            $value = $this->getAppointmentFieldValue($appointment, $this->_data['gaf_filter_text3']);
             if (isset($this->_lookupTables[$this->_data['gaf_filter_text3']])) {
                 if ($this->_fieldList4 && $this->_fieldList4 !== true) {
                     if (! isset($this->_fieldList4[$value])) {

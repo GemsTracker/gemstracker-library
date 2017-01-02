@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -44,6 +43,12 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends \Gems_Snippets_Mod
      * @var string
      */
     protected $class = 'browser table answer';
+
+    /**
+     *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
 
     /**
      *
@@ -204,6 +209,25 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends \Gems_Snippets_Mod
     }
 
     /**
+     * Add elements that form the header
+     *
+     * @param \MUtil_Html_HtmlElement $htmlDiv
+     */
+    public function addHeaderInfo(\MUtil_Html_HtmlElement $htmlDiv)
+    {
+        $htmlDiv->h3(sprintf($this->_('%s answers for patient number %s'), $this->token->getSurveyName(), $this->token->getPatientNumber()));
+
+        if (! $this->currentUser->isFieldMaskedWhole('name')) {
+            $htmlDiv->pInfo(sprintf(
+                    $this->_('Answers for token %s, patient number %s: %s.'),
+                    strtoupper($this->tokenId),
+                    $this->token->getPatientNumber(),
+                    $this->token->getRespondentName()))
+                    ->appendAttrib('class', 'noprint');
+        }
+    }
+
+    /**
      * Called after the check that all required registry values
      * have been set correctly has run.
      *
@@ -234,7 +258,6 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends \Gems_Snippets_Mod
         return $model;
     }
 
-
     /**
      * Create the snippets content
      *
@@ -245,19 +268,12 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends \Gems_Snippets_Mod
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
-        $htmlDiv   = \MUtil_Html::create()->div(array('class' => 'answer-container'));
+        $htmlDiv = \MUtil_Html::create()->div(array('class' => 'answer-container'));
 
         if ($this->tokenId) {
             if ($this->token->exists) {
                 if ($this->showHeaders) {
-                    $htmlDiv->h3(sprintf($this->_('%s answers for patient number %s'), $this->token->getSurveyName(), $this->token->getPatientNumber()));
-
-                    $htmlDiv->pInfo(sprintf(
-                            $this->_('Answers for token %s, patient number %s: %s.'),
-                            strtoupper($this->tokenId),
-                            $this->token->getPatientNumber(),
-                            $this->token->getRespondentName()))
-                            ->appendAttrib('class', 'noprint');
+                    $this->addHeaderInfo($htmlDiv);
                 }
 
                 $table = parent::getHtmlOutput($view);

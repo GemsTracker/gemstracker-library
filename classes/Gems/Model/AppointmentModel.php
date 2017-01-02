@@ -30,6 +30,12 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
 
     /**
      *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
+    /**
+     *
      * @var boolean
      */
     protected $autoTrackUpdate = true;
@@ -145,7 +151,7 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
                         "') THEN 'deleted' ELSE '' END",
                     'row_class'
                     );
-					
+
             $codes = $agenda->getStatusCodesInactive();
             if (isset($codes['CA'])) {
                 $cancelCode = 'CA';
@@ -194,6 +200,8 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
                     'row_class'
                     );
         }
+        
+        $this->refreshGroupSettings();
 
         return $this;
     }
@@ -242,6 +250,8 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
             $this->setIfExists('gap_id_procedure',    'multiOptions', $empty + $agenda->getProcedures());
             $this->setIfExists('gap_id_location',     'multiOptions', $empty + $agenda->getLocations());
         }
+
+        $this->refreshGroupSettings();
 
         return $this;
     }
@@ -349,5 +359,18 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
         $this->autoTrackUpdate = $value;
 
         return $this;
+    }
+
+    /**
+     * Function to re-apply all the masks and settings for the current group
+     *
+     * @return void
+     */
+    public function refreshGroupSettings()
+    {
+        $group = $this->currentUser->getGroup();
+        if ($group instanceof Group) {
+            $group->applyGroupToModel($this, false);
+        }
     }
 }
