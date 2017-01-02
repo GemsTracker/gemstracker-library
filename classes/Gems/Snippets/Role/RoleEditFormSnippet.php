@@ -119,9 +119,6 @@ class RoleEditFormSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
             }
         }
 
-        // Add this for validator to allow empty list
-        $possibleParents[''] = '';
-
         $bridge->addMultiCheckbox('grl_parents', 'multiOptions', $possibleParents,
                 'disable', $disabled,
                 'escape', false,
@@ -149,33 +146,13 @@ class RoleEditFormSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
                     'label', $this->_('Inherited'),
                     'multiOptions', $inheritedPrivileges,
                     'required', false,
-                    'disabled', 'disabled');
+                    'disabled', 'disabled'
+                    );
             $checkbox->setAttrib('escape', false); //Don't use escaping, so the line breaks work
             $checkbox->setValue(array_keys($inheritedPrivileges)); //To check the boxes
         }
-    }
 
-    /**
-     * Perform some actions on the form, right before it is displayed but already populated
-     *
-     * Here we add the table display to the form.
-     *
-     * @return \Zend_Form
-     */
-    public function beforeDisplay()
-    {
-        parent::beforeDisplay();
-
-        $element = $this->_form->getElement('grl_parents');
-
-        if ($element instanceof \Zend_Form_Element_MultiCheckbox) {
-            $options = $element->getMultiOptions();
-
-            // Remove this as validator with allowed empty list has occured
-            unset($options['']);
-
-            $element->setMultiOptions($options);
-        }
+        $bridge->getForm()->setDisableTranslator(true);
     }
 
     /**
@@ -250,7 +227,9 @@ class RoleEditFormSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
      */
     protected function loadFormData()
     {
+        \MUtil_Echo::track(file_get_contents('php://input'));
         parent::loadFormData();
+        // \MUtil_Echo::track($this->formData);
 
         // Sometimes these settings sneek in when changing the parents of a role
         foreach(['pr.nologin', 'pr.islogin'] as $val) {

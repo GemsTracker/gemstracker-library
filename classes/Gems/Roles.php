@@ -315,7 +315,7 @@ class Gems_Roles
     public function translateToRoleId($role)
     {
         $lookup = array_flip($this->_roleTranslations);
- 
+
         if (isset($lookup[$role])) {
             return $lookup[$role];
         }
@@ -332,7 +332,11 @@ class Gems_Roles
     public function translateToRoleIds($roles)
     {
         if (!is_array($roles)) {
-            $roles = explode(",", $roles);
+            if ($roles) {
+                $roles = explode(",", $roles);
+            } else {
+                $roles = array();
+            }
         }
 
         $lookup = array_flip($this->_roleTranslations);
@@ -370,7 +374,11 @@ class Gems_Roles
     public function translateToRoleNames($roles)
     {
         if (!is_array($roles)) {
-            $roles = explode(",", $roles);
+            if ($roles) {
+                $roles = explode(",", $roles);
+            } else {
+                $roles = array();
+            }
         }
         foreach ($roles as $key => $role) {
             if (isset($this->_roleTranslations[$role])) {
