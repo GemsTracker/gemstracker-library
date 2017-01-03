@@ -237,11 +237,16 @@ class Gems_Import_ImportLoader extends \Gems_Loader_TargetLoaderAbstract
      * The file name to use for final storage, minus the extension
      *
      * @param string $controller Name of controller (or other id)
+     * @param mixed $dateValue Optional date item to use in filename, timestamp, or DateObject or MUtil_Date
      * @return string
      */
-    public function getLongtermFileName($controller)
+    public function getLongtermFileName($controller, $dateValue = null)
     {
-        $date   = new \MUtil_Date();
+        if ($dateValue instanceof \Zend_Date) {
+            $date = $dateValue;
+        } else {
+            $date = new \MUtil_Date($dateValue);
+        }
 
         $name[] = $controller;
         $name[] = $date->toString('YYYY-MM-ddTHH-mm-ss');
