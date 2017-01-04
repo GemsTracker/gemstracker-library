@@ -1,21 +1,20 @@
 <?php echo $this->doctype(); ?>
-
 <html <?php echo 'xmlns="http://www.w3.org/1999/xhtml" xml:lang="'.$this->locale.'"' ?> lang="<?php echo $this->locale; ?>">
 <head>
     <meta charset="utf-8">
     <?php echo $this->headMeta(); ?>
-    
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <?php 
+    <?php
     echo $this->headTitle();
     if ($this->jQuery) {
         echo $this->jQuery()->renderStylesheets();
-    } 
+    }
     if (MUtil_Bootstrap::enabled()) {
         echo MUtil_Bootstrap::bootstrap()->renderStylesheets();
     }
-    echo $this->headLink();   
-    echo $this->headStyle(); 
+    echo $this->headLink();
+    echo $this->headStyle();
     ?>
 
 </head>
@@ -46,9 +45,9 @@
             </div>
             <div id="menu-collapse-backdrop" class="hidden"></div>
         </header>
-    
+
 <?php
-    
+
 ?>
         <div class="content">
             <?php if ($this->navigation || $this->menuHtml || $this->subnav) { ?>
@@ -67,9 +66,9 @@
             </div>
             <?php if ($this->navigation || $this->menuHtml || $this->subnav ) { ?>
             <div id="menu" role="navigation">
-                <?php if ($this->subnav) { 
-                    echo $this->subnav->render($this); 
-                } elseif ($this->menuHtml) { 
+                <?php if ($this->subnav) {
+                    echo $this->subnav->render($this);
+                } elseif ($this->menuHtml) {
                     echo $this->menuHtml;
                 } ?>
             </div>
@@ -87,7 +86,7 @@
 
 
 <?php if ($this->jQuery) {
-        //echo 
+        //echo
         echo $this->jQuery()->renderJavascript();
     }
     if (MUtil_Bootstrap::enabled()) {

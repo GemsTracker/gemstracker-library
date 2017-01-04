@@ -344,11 +344,16 @@ abstract class Gems_Tracker_Source_SourceAbstract extends \MUtil_Translate_Trans
      * @param string $field Optional field to retrieve data for
      * @return array
      */
-    protected function getSurveyData($surveyId, $field = null) {
+    protected function getSurveyData($surveyId, $field = null)
+    {
         static $cache = array();
 
         if (! isset($cache[$surveyId])) {
-            $cache[$surveyId] = $this->_gemsDb->fetchRow('SELECT * FROM gems__surveys WHERE gsu_id_survey = ? LIMIT 1', $surveyId, \Zend_Db::FETCH_ASSOC);
+            $cache[$surveyId] = $this->_gemsDb->fetchRow(
+                    'SELECT * FROM gems__surveys WHERE gsu_id_survey = ? LIMIT 1',
+                    $surveyId,
+                    \Zend_Db::FETCH_ASSOC
+                    );
         }
 
         if (null === $field) {
