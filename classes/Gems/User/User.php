@@ -662,8 +662,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         $groupId  = $current ? $this->getGroupId() : $this->_getVar('user_group');
         $groups   = $dbLookup->getActiveStaffGroups();
 
-        if ('master' === $this->getRole()) {
-            $this->_setVar('__allowedStaffGroups', $groups);
+        if ('master' === $this->getRole($current)) {
             return $groups;
         }
 

@@ -75,14 +75,19 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $createEditParameters = array('resetRoute' => true, 'useTabbedForm' => true);
+    protected $createEditParameters = array(
+        'menuShowSiblings' => true,
+        'menuShowChildren' => true,
+        'resetRoute'       => true,
+        'useTabbedForm'    => true,
+        );
 
     /**
      * The snippets used for the create and edit actions.
      *
      * @var mixed String or array of snippet names
      */
-    protected $createEditSnippets = 'RespondentFormSnippet';
+    protected $createEditSnippets = 'Respondent\\RespondentFormSnippet';
 
     /**
      * The parameters used for the edit actions, overrules any values in
@@ -162,7 +167,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'RespondentSearchSnippet');
+    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Respondent\\RespondentSearchSnippet');
 
     /**
      *
@@ -318,6 +323,27 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
         if ($item) {
             return $item->toHRefAttribute($request);
         }
+    }
+
+    /**
+     * Helper function to get the title for the edit action.
+     *
+     * @return $string
+     */
+    public function getEditTitle()
+    {
+        $respondent = $this->getRespondent();
+        if ($respondent->exists) {
+            if ($this->currentUser->areAllFieldsMaskedWhole('grs_first_name', 'grs_last_name')) {
+                return sprintf($this->_('Edit patient nr %s'), $respondent->getPatientNumber());
+            }
+            return sprintf(
+                    $this->_('Edit patient nr %s: %s'),
+                    $respondent->getPatientNumber(),
+                    $respondent->getName()
+                    );
+        }
+        return parent::getEditTitle();
     }
 
     /**
