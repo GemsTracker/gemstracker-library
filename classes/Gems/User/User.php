@@ -664,7 +664,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
 
         if ('master' === $this->getRole()) {
             $this->_setVar('__allowedStaffGroups', $groups);
-            return;
+            return $groups;
         }
 
         try {
