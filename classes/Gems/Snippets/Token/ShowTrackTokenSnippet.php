@@ -23,69 +23,18 @@ namespace Gems\Snippets\Token;
 class ShowTrackTokenSnippet extends \Gems_Tracker_Snippets_ShowTokenSnippetAbstract
 {
     /**
-     * Adds rows from the model to the bridge that creates the browse table.
+     * Adds third block to fifth group group of rows showing completion data
      *
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
      * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
      * @param \MUtil_Model_ModelAbstract $model
-     * @return void
+     * @param \Gems_Menu_MenuList $links
+     * @return boolean True when there was row output
      */
-    protected function addShowTableRows(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addCompletionBlock(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model, \Gems_Menu_MenuList $links)
     {
-        // \MUtil_Model::$verbose = true;
-
-        // Extra item needed for menu items
-        $bridge->gr2t_id_respondent_track;
-        $bridge->gr2o_patient_nr;
-        $bridge->gr2o_id_organization;
-        $bridge->grc_success;
-
-        $controller = $this->request->getControllerName();
-        $links      = $this->getMenuList();
-        $links->addParameterSources($this->request, $bridge);
-
-        $bridge->addItem('gto_id_token', null, array('colspan' => 1.5));
-
-        $buttons = $links->getActionLinks(true,
-                'ask', 'take',
-                'pdf', 'show',
-                $controller, 'questions',
-                $controller, 'answer',
-                $controller, 'answer-export'
-                );
-        if (count($buttons)) {
-            $bridge->tr();
-            $bridge->tdh($this->_('Actions'));
-            $bridge->td($buttons, array('colspan' => 2, 'skiprowclass' => true));
-        }
-        $bridge->addMarkerRow();
-
-        $bridge->add('gr2o_patient_nr');
-        if (! $this->currentUser->isFieldMaskedWhole('respondent_name')) {
-            $bridge->add('respondent_name');
-        }
-        $bridge->addMarkerRow();
-
-        $bridge->add('gtr_track_name');
-        $bridge->add('gr2t_track_info');
-        $bridge->add('assigned_by');
-        $bridge->addMarkerRow();
-
-        $bridge->add('gsu_survey_name');
-        $bridge->add('gto_round_description');
-        $bridge->add('ggp_name');
-        $bridge->addMarkerRow();
-
-        // Editable part (INFO / VALID FROM / UNTIL / E-MAIL
-        $button = $links->getActionLink($controller, 'edit', true);
-        $bridge->addWithThird('gto_valid_from_manual', 'gto_valid_from', 'gto_valid_until_manual', 'gto_valid_until', 'gto_comment', $button);
-
-        // E-MAIL
-        $button = $links->getActionLink($controller, 'email', true);
-        $bridge->addWithThird('gto_mail_sent_date', 'gto_mail_sent_num', $button);
-
         // COMPLETION DATE
         $fields = array();
         if ($this->token->getReceptionCode()->hasDescription()) {
@@ -99,10 +48,95 @@ class ShowTrackTokenSnippet extends \Gems_Tracker_Snippets_ShowTokenSnippetAbstr
         if ($this->token->hasResult()) {
             $fields[] = 'gto_result';
         }
-        $fields[] = $links->getActionLinks(true, $controller, 'correct', $controller, 'delete');
+        $controller = $this->request->getControllerName();
+        $fields[]   = $links->getActionLinks(true, $controller, 'correct', $controller, 'delete');
 
         $bridge->addWithThird($fields);
 
+        return true;
+    }
+
+    /**
+     * Adds second block to fifth group group of rows showing contact data
+     *
+     * Overrule this function to add different columns to the browse table, without
+     * having to recode the core table building code.
+     *
+     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
+     * @param \Gems_Menu_MenuList $links
+     * @return boolean True when there was row output
+     */
+    protected function addContactBlock(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model, \Gems_Menu_MenuList $links)
+    {
+        // E-MAIL
+        $button = $links->getActionLink($this->request->getControllerName(), 'email', true);
+        $bridge->addWithThird('gto_mail_sent_date', 'gto_mail_sent_num', $button);
+
+        return true;
+    }
+
+    /**
+     * Adds first group of rows showing token specific data
+     *
+     * Overrule this function to add different columns to the browse table, without
+     * having to recode the core table building code.
+     *
+     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
+     * @param \Gems_Menu_MenuList $links
+     * @return boolean True when there was row output
+     */
+    protected function addHeaderGroup(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model, \Gems_Menu_MenuList $links)
+    {
+        $controller = $this->request->getControllerName();
+        $bridge->addItem('gto_id_token', null, array('colspan' => 1.5));
+        $copiedFrom = $this->token->getCopiedFrom();
+        if ($copiedFrom) {
+            $bridge->tr();
+            $bridge->tdh($this->_('Token copied from'));
+            $bridge->td(array('colspan' => 2, 'skiprowclass' => true))
+                    ->a([\MUtil_Model::REQUEST_ID => $copiedFrom], $copiedFrom);
+        }
+        $copiedTo = $this->token->getCopiedTo();
+        if ($copiedTo) {
+            $bridge->tr();
+            $bridge->tdh($this->_('Token copied to'));
+            $td = $bridge->td(array('colspan' => 2, 'skiprowclass' => true));
+            foreach ($copiedTo as $copy) {
+                $td->a([\MUtil_Model::REQUEST_ID => $copy], $copy);
+                $td->append(' ');
+            }
+        }
+        $buttons = $links->getActionLinks(true,
+                'ask', 'take',
+                'pdf', 'show',
+                $controller, 'questions',
+                $controller, 'answer',
+                $controller, 'answer-export'
+                );
+        if (count($buttons)) {
+            $bridge->tr();
+            $bridge->tdh($this->_('Actions'));
+            $bridge->td($buttons, array('colspan' => 2, 'skiprowclass' => true));
+        }
+
+        return true;
+    }
+
+    /**
+     * Adds last group of rows cleaning up whatever is left to do in adding links etc.
+     *
+     * Overrule this function to add different columns to the browse table, without
+     * having to recode the core table building code.
+     *
+     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
+     * @param \Gems_Menu_MenuList $links
+     * @return boolean True when there was row output
+     */
+    protected function addLastitems(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model, \Gems_Menu_MenuList $links)
+    {
         if ($links->count()) {
             $bridge->tfrow($links, array('class' => 'centerAlign'));
         }
@@ -116,6 +150,139 @@ class ShowTrackTokenSnippet extends \Gems_Tracker_Snippets_ShowTokenSnippetAbstr
                 }
             }
         }
+
+        return true;
+    }
+
+    /**
+     * Adds second group of rows showing patient specific data
+     *
+     * Overrule this function to add different columns to the browse table, without
+     * having to recode the core table building code.
+     *
+     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
+     * @param \Gems_Menu_MenuList $links
+     * @return boolean True when there was row output
+     */
+    protected function addRespondentGroup(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model, \Gems_Menu_MenuList $links)
+    {
+        $bridge->add('gr2o_patient_nr');
+        if (! $this->currentUser->isFieldMaskedWhole('respondent_name')) {
+            $bridge->add('respondent_name');
+        }
+
+        return true;
+    }
+
+    /**
+     * Adds forth group of rows showing round specific data
+     *
+     * Overrule this function to add different columns to the browse table, without
+     * having to recode the core table building code.
+     *
+     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
+     * @param \Gems_Menu_MenuList $links
+     * @return boolean True when there was row output
+     */
+    protected function addRoundGroup(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model, \Gems_Menu_MenuList $links)
+    {
+        $bridge->add('gsu_survey_name');
+        $bridge->add('gto_round_description');
+        $bridge->add('ggp_name');
+
+        return true;
+    }
+
+    /**
+     * Adds rows from the model to the bridge that creates the browse table.
+     *
+     * Overrule this function to add different columns to the browse table, without
+     * having to recode the core table building code.
+     *
+     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
+     * @return void
+     */
+    protected function addShowTableRows(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    {
+        // \MUtil_Model::$verbose = true;
+
+        // Extra items needed for menu items
+        $bridge->gr2t_id_respondent_track;
+        $bridge->gr2o_patient_nr;
+        $bridge->gr2o_id_organization;
+        $bridge->grc_success;
+
+        $links = $this->getMenuList();
+        $links->addParameterSources($this->request, $bridge);
+
+        if ($this->addHeaderGroup($bridge, $model, $links)) {
+            $bridge->addMarkerRow();
+        }
+        if ($this->addRespondentGroup($bridge, $model, $links)) {
+            $bridge->addMarkerRow();
+        }
+        if ($this->addTrackGroup($bridge, $model, $links)) {
+            $bridge->addMarkerRow();
+        }
+        if ($this->addRoundGroup($bridge, $model, $links)) {
+            $bridge->addMarkerRow();
+        }
+
+        $this->addValidFromBlock($bridge, $model, $links);
+        $this->addContactBlock($bridge, $model, $links);
+        $this->addCompletionBlock($bridge, $model, $links);
+
+        $this->addLastitems($bridge, $model, $links);
+    }
+
+    /**
+     * Adds third group of rows showing track specific data
+     *
+     * Overrule this function to add different columns to the browse table, without
+     * having to recode the core table building code.
+     *
+     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
+     * @param \Gems_Menu_MenuList $links
+     * @return boolean True when there was row output
+     */
+    protected function addTrackGroup(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model, \Gems_Menu_MenuList $links)
+    {
+        $bridge->add('gtr_track_name');
+        $bridge->add('gr2t_track_info');
+        $bridge->add('assigned_by');
+
+        return true;
+    }
+
+    /**
+     * Adds first block to fifth group group of rows showing valid from data
+     *
+     * Overrule this function to add different columns to the browse table, without
+     * having to recode the core table building code.
+     *
+     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
+     * @param \Gems_Menu_MenuList $links
+     * @return boolean True when there was row output
+     */
+    protected function addValidFromBlock(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model, \Gems_Menu_MenuList $links)
+    {
+        // Editable part (INFO / VALID FROM / UNTIL / E-MAIL
+        $button = $links->getActionLink($this->request->getControllerName(), 'edit', true);
+        $bridge->addWithThird(
+                'gto_valid_from_manual',
+                'gto_valid_from',
+                'gto_valid_until_manual',
+                'gto_valid_until',
+                'gto_comment',
+                $button
+                );
+
+        return true;
     }
 
     /**

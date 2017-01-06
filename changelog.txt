@@ -5,6 +5,7 @@ New features:
     Correct token button added to menu
     (Re)import imported files
 Interface improvements:
+    When a token is corrected links are visible when seeing the token to open the original / copy
     Improved interface for communication templates and automatic mail
     The Contact => Bugs and GemsTracker pages have been refreshed with a default bugs url (use Roles to make invisible)
     Editing staff and organizations uses defaults for smoother creation
@@ -20,6 +21,7 @@ Security:
 Programmability:
     Before field save events allows changing the fields after their new values have been calculated
     Respondent changed events can be set at the organization level
+    It is easier to change part of the display in ShowTrackTokenSnippet
 Testing:
     On acceptance and demonstration mail only respondent mails are bounce, staff mails are sent to receiver
     Administrators may now have the right to switch the used group to any they may set

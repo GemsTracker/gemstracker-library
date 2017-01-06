@@ -19,8 +19,8 @@ CREATE TABLE if not exists gems__tokens (
         gto_round_description   varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
         --- fields for relations
-        gto_id_relationfield  bigint(2) null default null,
-        gto_id_relation       bigint(2) null default null,
+        gto_id_relationfield    bigint(2) null default null,
+        gto_id_relation         bigint(2) null default null,
 
         -- real data
         gto_valid_from          datetime,

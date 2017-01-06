@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Snippets\Token;
+
 /**
  *
  * @package    Gems
@@ -17,7 +19,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.1
  */
-class Gems_Snippets_Respondent_RoundTokenSnippet extends \Gems_Snippets_RespondentTokenSnippet
+class RoundTokenSnippet extends RespondentTokenSnippet
 {
     /**
      * Set a fixed model sort.

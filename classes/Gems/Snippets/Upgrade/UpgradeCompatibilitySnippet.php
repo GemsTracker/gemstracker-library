@@ -71,6 +71,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
         'Organization_ChooseOrganizationSnippet'  => 'Organization\\ChooseOrganizationSnippet',
         'Organization_OrganizationEditSnippet'    => 'Organization\\OrganizationEditSnippet',
         'Organization_OrganizationTableSnippet'   => 'Organization\\OrganizationTableSnippet',
+        'Respondent_RoundTokenSnippet'            => 'Token\\RoundTokenSnippet',
         'RespondentDetailsSnippet'                => 'Respondent\\RespondentDetailsSnippet',
         'RespondentDetailsWithAssignmentsSnippet' => 'Respondent\\DetailsWithAssignmentsSnippet',
         'RespondentFormSnippet'                   => 'Respondent\\RespondentFormSnippet',

@@ -32,6 +32,18 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
     /**
      *
+     * @var string The token id of the token this one was copied from, null when not loaded, false when does not exist
+     */
+    protected $_copiedFromTokenId = null;
+
+    /**
+     *
+     * @var array The token id's of the tokens this one was copied to, null when not loaded, [] when none exist
+     */
+    protected $_copiedToTokenIds = null;
+
+    /**
+     *
      * @var array The gems token data
      */
     protected $_gemsData = array();
@@ -592,9 +604,10 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
      *
      * @param string $newComment Description of why the token was replaced
      * @param int $userId The current user
+     * @param array $otherValues Other values to set in the token
      * @return string The new token
      */
-    public function createReplacement($newComment, $userId)
+    public function createReplacement($newComment, $userId, array $otherValues = array())
     {
         $values['gto_id_respondent_track'] = $this->_gemsData['gto_id_respondent_track'];
         $values['gto_id_round']            = $this->_gemsData['gto_id_round'];
@@ -611,7 +624,14 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         $values['gto_mail_sent_date']      = $this->_gemsData['gto_mail_sent_date'];
         $values['gto_comment']             = $newComment;
 
-        $tokenId = $this->tracker->createToken($values, $userId);
+        $tokenId = $this->tracker->createToken($otherValues + $values, $userId);
+
+        $replacementLog['gtrp_id_token_new'] = $tokenId;
+        $replacementLog['gtrp_id_token_old'] = $this->_tokenId;
+        $replacementLog['gtrp_created']      = new \MUtil_Db_Expr_CurrentTimestamp();
+        $replacementLog['gtrp_created_by']   = $userId;
+
+        $this->db->insert('gems__token_replacements', $replacementLog);
 
         return $tokenId;
     }
@@ -755,6 +775,46 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         } else {
             return $this->util->getConsentRejected();
         }
+    }
+
+    /**
+     * Get the token id of the token this one was copied from, null when not loaded, false when does not exist
+     *
+     * @return string
+     */
+    public function getCopiedFrom()
+    {
+        if (null === $this->_copiedFromTokenId) {
+            $this->_copiedFromTokenId = $this->db->fetchOne(
+                    "SELECT gtrp_id_token_old FROM gems__token_replacements WHERE gtrp_id_token_new = ?",
+                    $this->_tokenId
+                    );
+        }
+
+        return $this->_copiedFromTokenId;
+    }
+
+    /**
+     * The token id's of the tokens this one was copied to, null when not loaded, [] when none exist
+     *
+     * @return array tokenId => tokenId
+     */
+    public function getCopiedTo()
+    {
+        if (null === $this->_copiedToTokenIds) {
+            $this->_copiedToTokenIds = $this->db->fetchPairs(
+                    "SELECT gtrp_id_token_new, gtrp_id_token_new
+                        FROM gems__token_replacements
+                        WHERE gtrp_id_token_old = ?",
+                    $this->_tokenId
+                    );
+
+            if (! $this->_copiedToTokenIds) {
+                $this->_copiedToTokenIds = [];
+            }
+        }
+
+        return $this->_copiedToTokenIds;
     }
 
     /**
@@ -1475,43 +1535,6 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     }
 
     /**
-     * Returns true when the answers are loaded.
-     *
-     * There may not be any answers, but the attemt to retrieve them was made.
-     *
-     * @return boolean
-     */
-    public function hasAnswersLoaded()
-    {
-        return (boolean) $this->_sourceDataRaw;
-    }
-
-    /**
-     * Is this token linked to a relation?
-     *
-     * @return boolean
-     */
-    public function hasRelation()
-    {
-        if (array_key_exists('gto_id_relationfield', $this->_gemsData) && $this->_gemsData['gto_id_relationfield'] > 0) {
-            // We have a relation
-            return true;
-        }
-
-        // no relation
-        return false;
-    }
-
-    /**
-     *
-     * @return boolean
-     */
-    public function hasResult()
-    {
-        return $this->_gemsData['gto_result'];
-    }
-
-    /**
      * Survey dependent calculations / answer changes that must occur after a survey is completed
      *
      * @param type $tokenId The tokend the answers are for
@@ -1582,6 +1605,18 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     }
 
     /**
+     * Returns true when the answers are loaded.
+     *
+     * There may not be any answers, but the attemt to retrieve them was made.
+     *
+     * @return boolean
+     */
+    public function hasAnswersLoaded()
+    {
+        return (boolean) $this->_sourceDataRaw;
+    }
+
+    /**
      *
      * @deprecated Use the ReceptionCode->hasRedoCode
      * @return boolean
@@ -1600,6 +1635,31 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     public function hasRedoCopyCode()
     {
         return $this->getReceptionCode()->hasRedoCopyCode();
+    }
+
+    /**
+     * Is this token linked to a relation?
+     *
+     * @return boolean
+     */
+    public function hasRelation()
+    {
+        if (array_key_exists('gto_id_relationfield', $this->_gemsData) && $this->_gemsData['gto_id_relationfield'] > 0) {
+            // We have a relation
+            return true;
+        }
+
+        // no relation
+        return false;
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    public function hasResult()
+    {
+        return $this->_gemsData['gto_result'];
     }
 
     /**

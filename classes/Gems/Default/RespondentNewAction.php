@@ -204,7 +204,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
         'Respondent\\RespondentDetailsSnippet',
     	'Tracker\\AddTracksSnippet',
         'Token\\TokenTabsSnippet',
-        'RespondentTokenSnippet',
+        'Token\\RespondentTokenSnippet',
     );
 
     /**
