@@ -335,10 +335,10 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
         $respondent = $this->getRespondent();
         if ($respondent->exists) {
             if ($this->currentUser->areAllFieldsMaskedWhole('grs_first_name', 'grs_last_name')) {
-                return sprintf($this->_('Edit patient nr %s'), $respondent->getPatientNumber());
+                return sprintf($this->_('Edit respondent nr %s'), $respondent->getPatientNumber());
             }
             return sprintf(
-                    $this->_('Edit patient nr %s: %s'),
+                    $this->_('Edit respondent nr %s: %s'),
                     $respondent->getPatientNumber(),
                     $respondent->getName()
                     );
