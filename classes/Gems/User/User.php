@@ -659,7 +659,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     {
         // Always refresh because these values are otherwise not responsive to change
         $dbLookup = $this->util->getDbLookup();
-        $groupId  = $current ? $this->getGroupId() : $this->_getVar('user_group');
+        $groupId  = $this->getGroupId($current);
         $groups   = $dbLookup->getActiveStaffGroups();
 
         if ('master' === $this->getRole($current)) {
@@ -960,11 +960,12 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     /**
      * Returns the group number of this user.
      *
+     * @param boolean $current Checks value for current role (when false for normal role);
      * @return int
      */
-    public function getGroupId()
+    public function getGroupId($current = true)
     {
-        if ($this->_hasVar('current_user_group')) {
+        if ($current && $this->_hasVar('current_user_group')) {
             return $this->_getVar('current_user_group');
         }
         return $this->_getVar('user_group');
@@ -1127,11 +1128,12 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     /**
      * Returns the current user role.
      *
+     * @param boolean $current Checks value for current role (when false for normal role);
      * @return string
      */
-    public function getRole()
+    public function getRole($current = true)
     {
-        if ($this->_hasVar('current_user_role')) {
+        if ($current && $this->_hasVar('current_user_role')) {
             return $this->_getVar('current_user_role');
         }
         return $this->_getVar('user_role');
