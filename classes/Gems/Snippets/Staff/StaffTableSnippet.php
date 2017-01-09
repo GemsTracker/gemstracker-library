@@ -65,12 +65,14 @@ class StaffTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
     {
         $br = \MUtil_Html::create('br');
 
-        $this->columns = array(
-            10 => array('gsf_login', $br, 'gsf_id_primary_group'),
-            20 => array('name', $br, 'gsf_email'),
-            30 => array('gsf_id_organization'),
-            40 => array('gsf_gender', $br, 'gsf_active'),
-        );
+        if (! $this->columns) {
+            $this->columns = array(
+                10 => array('gsf_login', $br, 'gsf_id_primary_group'),
+                20 => array('name', $br, 'gsf_email'),
+                30 => array('gsf_id_organization'),
+                40 => array('gsf_gender', $br, 'gsf_active'),
+            );
+        }
 
         parent::addBrowseTableColumns($bridge, $model);
     }

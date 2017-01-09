@@ -29,7 +29,7 @@ CREATE TABLE if not exists gems__staff (
         gsf_gender				char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'
 								not null default 'U',
         -- gsf_birthday            date,
-        -- gsf_function            varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        gsf_job_title           varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
         -- gsf_address_1           varchar(80) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
         -- gsf_address_2           varchar(80) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',

@@ -52,12 +52,14 @@ class Gems_View_Helper_HeadLink extends \MUtil_Less_View_Helper_HeadLink
             }
         }
 
-    	$version = $this->view->currentVersion;
+        if (isset($this->view->currentVersion)) {
+            $version = $this->view->currentVersion;
 
-    	if (property_exists($item, 'href')) {
-        	$item->href = $item->href . '?' . $version;
+            if (property_exists($item, 'href')) {
+                $item->href = $item->href . '?' . $version;
+            }
         }
-
+        
         return \Zend_View_Helper_HeadLink::itemToString($item);
     }
 

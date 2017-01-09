@@ -1,12 +1,12 @@
 <?php
 
 /**
+ *
  * @package    Gems
  * @subpackage Default
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -136,7 +136,7 @@ class Gems_Default_ContactAction extends \Gems_Controller_Action
     }
 
     /**
-     * Genaral contact page
+     * General contact page
      */
     public function indexAction()
     {

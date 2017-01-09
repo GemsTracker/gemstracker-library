@@ -205,10 +205,13 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
                 $ucfirst = new \Zend_Filter_Callback('ucfirst');
                 $this->set('gsf_first_name',   'filters[ucfirst]', $ucfirst);
                 $this->set('gsf_last_name',    'filters[ucfirst]', $ucfirst);
+                $this->set('gsf_job_title',    'filters[ucfirst]', $ucfirst);
             }
         } else {
             $this->set('name',                 'label', $this->_('Name'));
         }
+        $this->setIfExists('gsf_job_title', 'label', $this->_('Functie'));
+
 
         $this->set('gsf_gender',               'label', $this->_('Gender'),
                 'elementClass', 'Radio',

@@ -1271,3 +1271,6 @@ INSERT ignore INTO gems__token_replacements (gtrp_id_token_new, gtrp_id_token_ol
                         nw.gto_created             > prpr.gto_created
                     )
     WHERE nw.gto_id_token NOT IN (SELECT gtrp_id_token_new FROM gems__token_replacements);
+
+-- PATCH: Activate job title as default staff element
+ALTER TABLE gems__staff ADD gsf_job_title varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' after gsf_gender;
