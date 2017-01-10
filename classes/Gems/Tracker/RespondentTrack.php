@@ -339,6 +339,10 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         $surveyData['gto_id_respondent']       = $this->_respTrackData['gr2t_id_user'];
         $surveyData['gto_id_survey']           = $surveyId;
 
+        if (! isset($surveyData['gto_id_round'])) {
+            $surveyData['gto_id_round'] = 0;
+        }
+
         $tokenId = $tokenLibrary->createToken($surveyData, $userId);
 
         if ($checkTrack === true) {

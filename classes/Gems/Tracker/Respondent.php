@@ -73,13 +73,13 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
      *
      * @var integer Organization Id
      */
-    private $organizationId;
+    protected $organizationId;
 
     /**
      *
      * @var string Patient Id
      */
-    private $patientId;
+    protected $patientId;
 
     /**
      * @var int respondentId
@@ -352,6 +352,16 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
     }
 
     /**
+     * Return the \Gems_Util_ReceptionCode object
+     *
+     * @return \Gems_Util_ReceptionCode reception code
+     */
+    public function getReceptionCode()
+    {
+        return $this->util->getReceptionCode($this->_gemsData['gr2o_reception_code']);
+    }
+
+    /**
      *
      * @return \Gems_Model_RespondentModel
      */
@@ -361,13 +371,37 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
     }
 
     /**
-     * Return the \Gems_Util_ReceptionCode object
+     * Has the respondent active tracks
      *
-     * @return \Gems_Util_ReceptionCode reception code
+     * @return boolean
      */
-    public function getReceptionCode()
+    public function hasActiveTracks()
     {
-        return $this->util->getReceptionCode($this->_gemsData['gr2o_reception_code']);
+        $select = $this->db->select()
+                ->from('gems__respondent2track', ['gr2t_id_respondent_track'])
+                ->joinInner('gems__reception_codes', 'gr2t_reception_code = grc_id_reception_code', [])
+                ->where('grc_success = 1')
+                ->where('gr2t_id_user = ?', $this->respondentId)
+                ->where('gr2t_id_organization = ?', $this->organizationId)
+                ->limit(1);
+
+        return (boolean) $this->db->fetchOne($select);
+    }
+
+    /**
+     * Has the respondent active tracks
+     *
+     * @return boolean
+     */
+    public function hasAnyTracks()
+    {
+        $select = $this->db->select()
+                ->from('gems__respondent2track', ['gr2t_id_respondent_track'])
+                ->where('gr2t_id_user = ?', $this->respondentId)
+                ->where('gr2t_id_organization = ?', $this->organizationId)
+                ->limit(1);
+
+        return (boolean) $this->db->fetchOne($select);
     }
 
     /**
