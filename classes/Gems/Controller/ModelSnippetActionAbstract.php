@@ -173,6 +173,12 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
     protected $indexStopSnippets = 'Generic\\CurrentSiblingsButtonRowSnippet';
 
     /**
+     *
+     * @var \Zend_Controller_Action_Helper_FlashMessenger
+     */
+    public $messenger;
+
+    /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
@@ -609,6 +615,20 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
     }
 
     /**
+     * Returns a session based message store for adding messages to.
+     *
+     * @return \Zend_Controller_Action_Helper_FlashMessenger
+     */
+    public function getMessenger()
+    {
+        if (! $this->messenger) {
+            $this->setMessenger($this->loader->getMessenger());
+        }
+
+        return $this->messenger;
+    }
+
+    /**
      * Returns the on empty texts for the autofilter snippets
      *
      * @return string
@@ -748,6 +768,20 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         $this->reactivateParameters = $this->reactivateParameters + $this->_reactivateExtraParameters;
 
         parent::reactivateAction();
+    }
+
+    /**
+     * Set the session based message store.
+     *
+     * @param \Zend_Controller_Action_Helper_FlashMessenger $messenger
+     * @return \MUtil_Controller_Action
+     */
+    public function setMessenger(\Zend_Controller_Action_Helper_FlashMessenger $messenger)
+    {
+        $this->messenger = $messenger;
+        $this->view->messenger = $messenger;
+
+        return $this;
     }
 
     /**

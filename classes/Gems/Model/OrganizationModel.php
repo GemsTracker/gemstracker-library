@@ -240,7 +240,7 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
                 );
 
         // EMAIL TAB
-        $this->set('gor_contact_name',              'tab', $this->_('Email') . ' & ' . $this->_('Token'),
+        $this->set('gor_contact_name', 'tab', $this->_('Email') . ' & ' . $this->_('Token'),
                 'order', $this->getOrder('gor_active') + 1000,
                 'size', 25
                 );
@@ -260,7 +260,7 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
         $this->set('gor_reset_pass_template');
 
         // ACCESS TAB
-        $this->set('gor_has_login',                 'tab', $this->_('Access'),
+        $this->set('gor_has_login',  'tab', $this->_('Access'),
                 'order', $this->getOrder('gor_reset_pass_template') + 1000,
                 'elementClass', 'CheckBox'
                 );
@@ -289,7 +289,7 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
         $definitions = $this->get('gor_user_class', 'multiOptions');
         if ($definitions && (count($definitions) > 1)) {
             reset($definitions);
-            $this->setIfExists('gor_user_class',    'default', key($definitions), 'required', true);
+            $this->setIfExists('gor_user_class', 'default', key($definitions), 'required', true, 'onchange', 'this.form.submit();');
         }
 
         // OTHER TAB

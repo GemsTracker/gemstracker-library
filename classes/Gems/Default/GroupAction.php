@@ -21,6 +21,22 @@
 class Gems_Default_GroupAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
+     * The parameters used for the autofilter action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $autofilterParameters = array(
+        'extraSort'   => array(
+            'ggp_name' => SORT_ASC,
+            ),
+        );
+
+    /**
      * Variable to set tags for cache cleanup after changes
      *
      * @var array

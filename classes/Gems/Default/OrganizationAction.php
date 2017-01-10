@@ -49,6 +49,19 @@ class Gems_Default_OrganizationAction extends \Gems_Controller_ModelSnippetActio
 
     /**
      *
+     * @var \Zend_Db_Adapter_Abstract
+     */
+    public $db;
+
+    /**
+     * The snippets used for the index action, before those in autofilter
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Organization\\OrganizationSearchSnippet');
+
+    /**
+     *
      * @var \Gems_Loader
      */
     public $loader;
@@ -147,6 +160,50 @@ class Gems_Default_OrganizationAction extends \Gems_Controller_ModelSnippetActio
     public function getIndexTitle()
     {
         return $this->_('Participating organizations');
+    }
+
+    /**
+     * Get the filter to use with the model for searching including model sorts, etc..
+     *
+     * @param boolean $useRequest Use the request as source (when false, the session is used)
+     * @return array or false
+     */
+    public function getSearchFilter($useRequest = true)
+    {
+        $filter = parent::getSearchFilter();
+
+        if (isset($filter['respondentstatus'])) {
+            switch ($filter['respondentstatus']) {
+                case 'maybePatient':
+                    $filter[] = '(gor_add_respondents = 1 OR gor_has_respondents = 1)';
+                    break;
+
+                case 'createPatient':
+                    $filter['gor_add_respondents'] = 1;
+                    break;
+                case 'noNewPatient':
+                    $filter['gor_add_respondents'] = 0;
+                    // Intentional fall through
+
+                case 'hasPatient':
+                    $filter['gor_has_respondents'] = 1;
+                    break;
+
+                case 'noPatient':
+                    $filter['gor_add_respondents'] = 0;
+                    $filter['gor_has_respondents'] = 0;
+                    break;
+
+            }
+            unset($filter['respondentstatus']);
+        }
+        if (isset($filter['accessible_by'])) {
+            $filter[] = $this->db->quoteInto('gor_accessible_by LIKE ?', '%:' . intval($filter['accessible_by']) . ':%');
+
+            unset($filter['accessible_by']);
+        }
+
+        return $filter;
     }
 
     /**

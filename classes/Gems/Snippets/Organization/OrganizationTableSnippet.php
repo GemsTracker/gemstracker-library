@@ -67,7 +67,11 @@ class OrganizationTableSnippet extends \Gems_Snippets_ModelTableSnippetGeneric
 
         $bridge->addMultiSort($orgName, $br, 'gor_task', $br, 'gor_location');
         $bridge->addMultiSort($mailName, $br, 'gor_active', $br, 'gor_has_login');
-        $bridge->addMultiSort('gor_add_respondents', $br, 'gor_has_respondents', $br, 'gor_respondent_group');
+        if ($model->has('gor_respondent_group', 'label')) {
+            $bridge->addMultiSort('gor_add_respondents', $br, 'gor_has_respondents', $br, 'gor_respondent_group');
+        } else {
+            $bridge->addMultiSort('gor_add_respondents', $br, 'gor_has_respondents');
+        }
         $bridge->add('gor_accessible_by');
 
         if ($editMenuItem = $this->getEditMenuItem()) {

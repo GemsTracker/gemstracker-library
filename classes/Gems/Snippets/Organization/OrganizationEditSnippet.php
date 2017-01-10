@@ -24,6 +24,12 @@ class OrganizationEditSnippet extends \Gems_Snippets_ModelTabFormSnippetGeneric
 {
     /**
      *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
+    /**
+     *
      * @var \Gems_Loader
      */
     protected $loader;
@@ -40,7 +46,7 @@ class OrganizationEditSnippet extends \Gems_Snippets_ModelTabFormSnippetGeneric
          parent::afterSave($changed);
 
         // Make sure any changes in the allowed list are reflected.
-        $this->loader->getCurrentUser()->refreshAllowedOrganizations();
+        $this->currentUser->refreshAllowedOrganizations();
     }
 
     /**
@@ -69,7 +75,7 @@ class OrganizationEditSnippet extends \Gems_Snippets_ModelTabFormSnippetGeneric
             if (! $display) {
                 $display = \MUtil_Html::create('em', $this->_('No access to other organizations.'));
             }
-
+            $this->formData['allowed'] = $display;
             $model->set('allowed', 'value', $display);
         }
     }
