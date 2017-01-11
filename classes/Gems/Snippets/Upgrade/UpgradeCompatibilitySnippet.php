@@ -164,7 +164,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             'MUtil_' => 'MUtil',
         ) + $this->projectDirs;
         // Remove the class statements
-        $noClass = preg_replace('/class\\s+([^\\s]+)/', '', $content);
+        $noClass = $this->_filterContent($content);
 
         foreach ($gtObjects as $search => $className) {
             if (preg_match("/[^_\"'\\\\a-z]$search/", $noClass)) {
@@ -433,6 +433,31 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             }
         }
     }
+    
+    /**
+     * Return the filtered content to reduce false positives
+     * 
+     * @param string $content
+     * @return string
+     */
+    protected function _filterContent($content)
+    {
+        return preg_replace('/class\\s+([^\\s]+)/', '', $content);
+    }
+    
+    /**
+     * Return the filenames that need to be checked
+     * 
+     * @return \SplFileinfo[]
+     */
+    protected function _getFilenames()
+    {
+        foreach ($this->getRecursiveDirectoryIterator(APPLICATION_PATH) as $filename) {
+            $files[] = $filename;
+        }
+        
+        return $files;
+    }
 
     /**
      * A specific report on the escort class
@@ -530,7 +555,8 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
         $sCode = $this->html->sequence();
 
         $output = false;
-        foreach ($this->getRecursiveDirectoryIterator(APPLICATION_PATH) as  $filename) {
+        $filenames = $this->_getFilenames();
+        foreach ($filenames as  $filename) {
             $output = $this->addFileReport($filename) || $output;
         }
         if ($this->appNamespaceError) {
