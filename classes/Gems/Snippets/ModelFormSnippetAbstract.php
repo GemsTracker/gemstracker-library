@@ -313,7 +313,10 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
     {
         $htmlDiv = \MUtil_Html::div();
 
-        $htmlDiv->h3($this->getTitle(), array('class' => 'title'));
+        $title = $this->getTitle();
+        if ($title) {
+            $htmlDiv->h3($title, array('class' => 'title'));
+        }
 
         $form = parent::getHtmlOutput($view);
 
