@@ -446,10 +446,11 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         $this->setIfExists('gr2o_patient_nr',
                 'size', 15,
                 'minlength', 4,
-                'validator', $this->createUniqueValidator(
+                'validators[unique]', $this->createUniqueValidator(
                         array('gr2o_patient_nr', 'gr2o_id_organization'),
                         array('gr2o_id_user' => 'grs_id_user', 'gr2o_id_organization')
-                        )
+                        ),
+                'validators[regex]', new Zend_Validate_Regex('/^[^\/\\%&]*$/')  // Between start and end no \/%& allowed
                 );
         $this->set('grs_id_user');
 
