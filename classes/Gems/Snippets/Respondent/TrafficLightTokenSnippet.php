@@ -21,7 +21,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.1
  */
-class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems_Snippets_RespondentTokenSnippet
+class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnippet
 {
     
     public $browse = false;

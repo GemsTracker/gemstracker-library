@@ -24,7 +24,7 @@ use Gems\Tracker\Model\FieldMaintenanceModel;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 Mar 14, 2016 3:19:57 PM
  */
-class AppointmentTokensSnippet extends \Gems_Snippets_RespondentTokenSnippet
+class AppointmentTokensSnippet extends \Gems\Snippets\Token\RespondentTokenSnippet
 {
     /**
      *
