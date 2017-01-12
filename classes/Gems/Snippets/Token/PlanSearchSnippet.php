@@ -84,31 +84,32 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
         }
 
         $allowedOrgs = $this->getOrganizationList($data);
-        $orgWhere    = "(INSTR(gtr_organizations, '|" .
-                implode("|') > 0 OR INSTR(gtr_organizations, '|", array_keys($allowedOrgs)) .
-                "|') > 0)";
 
         $elements[] = $this->_('Select:');
         $elements[] = \MUtil_Html::create('br');
+        
+        \MUtil_Echo::track($this->getAllSurveys($allowedOrgs, $data));
+        \MUtil_Echo::track($this->getAllGroups($allowedOrgs, $data));
+        \MUtil_Echo::track($this->getAllTrackRounds($allowedOrgs, $data));
 
         // Add track selection
         if ($this->multiTracks) {
             $elements[] = $this->_createSelectElement(
                     'gto_id_track',
-                    $this->getAllTrackTypes($orgWhere, $data),
+                    $this->getAllTrackTypes($allowedOrgs, $data),
                     $this->_('(all tracks)')
                     );
         }
 
         $elements[] = $this->_createSelectElement(
                 'gto_round_description',
-                $this->getAllTrackRounds($orgWhere, $data),
+                $this->getAllTrackRounds($allowedOrgs, $data),
                 $this->_('(all rounds)')
                 );
 
         $elements[] = $this->_createSelectElement(
                 'gto_id_survey',
-                $this->getAllSurveys($orgWhere, $data),
+                $this->getAllSurveys($allowedOrgs, $data),
                 $this->_('(all surveys)')
                 );
 
@@ -128,7 +129,7 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
 
         $elements[] = $this->_createSelectElement(
                 'gsu_id_primary_group',
-                $this->getAllGroups($orgWhere, $data),
+                $this->getAllGroups($allowedOrgs, $data),
                 $this->_('(all fillers)')
                 );
 
@@ -182,16 +183,31 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
      * @param array $data The $form field values (can be usefull, but no need to set them)
      * @return mixed SQL string or array
      */
-    protected function getAllGroups($orgWhere, array $data)
+    protected function getAllGroups($allowedOrgs, array $data)
     {
-        return "SELECT DISTINCT ggp_id_group, ggp_name
+        $orgWhere    = "(INSTR(gtr_organizations, '|" .
+                implode("|') > 0 OR INSTR(gtr_organizations, '|", array_keys($allowedOrgs)) .
+                "|') > 0)";
+        return "(SELECT DISTINCT ggp_id_group, ggp_name
                     FROM gems__groups INNER JOIN gems__surveys ON ggp_id_group = gsu_id_primary_group
                         INNER JOIN gems__rounds ON gsu_id_survey = gro_id_survey
                         INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
                     WHERE ggp_group_active = 1 AND
                         gro_active=1 AND
                         gtr_active=1 AND
-                        $orgWhere
+                        $orgWhere)
+                            
+                UNION DISTINCT
+                
+                (SELECT DISTINCT ggp_id_group, ggp_name
+                    FROM gems__tokens
+                    INNER JOIN gems__surveys ON (gto_id_survey = gsu_id_survey AND gsu_active = 1)
+                    INNER JOIN gems__groups ON (gsu_id_primary_group = ggp_id_group AND ggp_group_active = 1)
+                    INNER JOIN gems__tracks ON (gto_id_track = gtr_id_track AND gtr_active = 1)
+                    WHERE 
+                        gto_id_round = 0 AND
+                        gto_id_organization IN (" . implode(',', array_keys($allowedOrgs)) . ")
+                )
                     ORDER BY ggp_name";
     }
 
@@ -201,15 +217,35 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
      * @param array $data The $form field values (can be usefull, but no need to set them)
      * @return mixed SQL string or array
      */
-    protected function getAllTrackRounds($orgWhere, array $data)
+    protected function getAllTrackRounds($allowedOrgs, array $data)
     {
-        return "SELECT DISTINCT gro_round_description, gro_round_description
-                    FROM gems__rounds INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
+        $orgWhere    = "(INSTR(gtr_organizations, '|" .
+                implode("|') > 0 OR INSTR(gtr_organizations, '|", array_keys($allowedOrgs)) .
+                "|') > 0)";        
+        
+        /**
+         * Explanation:
+         *  Select all unique round descriptions for active rounds in active tracks
+         *  Add to this the unique round descriptions for all tokens in active tracks with round id 0 (inserted round)
+         */
+        return "(SELECT DISTINCT gro_round_description, gro_round_description as gto_round_description
+                    FROM gems__rounds 
+                    INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
                     WHERE gro_active=1 AND
                         LENGTH(gro_round_description) > 0 AND
                         gtr_active=1 AND
-                        $orgWhere
-                    ORDER BY gro_round_description";
+                        $orgWhere)
+                UNION DISTINCT
+                
+                (SELECT DISTINCT gto_round_description as gro_round_description, gto_round_description
+                    FROM gems__tokens
+                    INNER JOIN gems__tracks ON (gto_id_track = gtr_id_track AND gtr_active = 1)
+                    WHERE 
+                        gto_id_round = 0 AND
+                        LENGTH(gto_round_description) > 0 AND
+                        gto_id_organization IN (" . implode(',', array_keys($allowedOrgs)) . ")
+                )
+                ORDER BY gro_round_description";
     }
 
     /**
@@ -218,9 +254,9 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
      * @param array $data The $form field values (can be usefull, but no need to set them)
      * @return mixed SQL string or array
      */
-    protected function getAllTrackTypes($orgWhere, array $data)
+    protected function getAllTrackTypes($allowedOrgs, array $data)
     {
-        return $this->util->getTrackData()->getActiveTracks($orgWhere);
+        return $this->util->getTrackData()->getActiveTracks($allowedOrgs);
     }
 
     /**
@@ -229,16 +265,31 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
      * @param array $data The $form field values (can be usefull, but no need to set them)
      * @return mixed SQL string or array
      */
-    protected function getAllSurveys($orgWhere, array $data)
+    protected function getAllSurveys($allowedOrgs, array $data)
     {
-        return "SELECT DISTINCT gsu_id_survey, gsu_survey_name
+        $orgWhere    = "(INSTR(gtr_organizations, '|" .
+                implode("|') > 0 OR INSTR(gtr_organizations, '|", array_keys($allowedOrgs)) .
+                "|') > 0)";      
+        
+        return "(SELECT DISTINCT gsu_id_survey, gsu_survey_name
                     FROM gems__surveys INNER JOIN gems__rounds ON gsu_id_survey = gro_id_survey
                         INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
                     WHERE gsu_active=1 AND
                         gro_active=1 AND
                         gtr_active=1 AND
-                        $orgWhere
-                    ORDER BY gsu_survey_name";
+                        $orgWhere)
+                    
+                UNION DISTINCT
+                
+                (SELECT DISTINCT gsu_id_survey, gsu_survey_name
+                    FROM gems__tokens
+                    INNER JOIN gems__surveys ON (gto_id_survey = gsu_id_survey AND gsu_active = 1)
+                    INNER JOIN gems__tracks ON (gto_id_track = gtr_id_track AND gtr_active = 1)
+                    WHERE 
+                        gto_id_round = 0 AND
+                        gto_id_organization IN (" . implode(',', array_keys($allowedOrgs)) . ")
+                )
+                ORDER BY gsu_survey_name";
     }
 
     /**
