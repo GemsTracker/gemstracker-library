@@ -88,10 +88,6 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
         $elements[] = $this->_('Select:');
         $elements[] = \MUtil_Html::create('br');
         
-        \MUtil_Echo::track($this->getAllSurveys($allowedOrgs, $data));
-        \MUtil_Echo::track($this->getAllGroups($allowedOrgs, $data));
-        \MUtil_Echo::track($this->getAllTrackRounds($allowedOrgs, $data));
-
         // Add track selection
         if ($this->multiTracks) {
             $elements[] = $this->_createSelectElement(
