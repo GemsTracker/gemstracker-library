@@ -187,6 +187,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             'Gems_User_User' => array(
                 'getAppointmentFieldVale'   => 'getAppointmentFieldValue',
                 'getAvailableMailTemplates' => 'CommTemplateUtil->getCommTemplatesForTarget',
+                'getGroup'                  => 'getGroupId', // REMOVE IN 1.8.3
                 'hasAllowedRole'            => 'inAllowedGroup',
                 'refreshAllowedStaffGroups' => null,
                 ),
@@ -433,10 +434,10 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             }
         }
     }
-    
+
     /**
      * Return the filtered content to reduce false positives
-     * 
+     *
      * @param string $content
      * @return string
      */
@@ -444,10 +445,10 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
     {
         return preg_replace('/class\\s+([^\\s]+)/', '', $content);
     }
-    
+
     /**
      * Return the filenames that need to be checked
-     * 
+     *
      * @return \SplFileinfo[]
      */
     protected function _getFilenames()
@@ -455,7 +456,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
         foreach ($this->getRecursiveDirectoryIterator(APPLICATION_PATH) as $filename) {
             $files[] = $filename;
         }
-        
+
         return $files;
     }
 
