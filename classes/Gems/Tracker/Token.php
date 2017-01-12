@@ -437,7 +437,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         } // */
 
         // Use the survey return if available.
-        $surveyReturn = $this->loader->getCurrentUser()->getSurveyReturn();
+        $surveyReturn = $this->currentUser->getSurveyReturn();
         if ($surveyReturn) {
             // Do not show the base url as it is in $currentUri
             $surveyReturn['NoBase'] = true;
@@ -1492,7 +1492,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         }
         $values['gto_by']         = $userId;
         $values['gto_return_url'] = $this->calculateReturnUrl();
-
+        
         $this->_updateToken($values, $userId);
 
         $this->handleBeforeAnswering();
