@@ -289,7 +289,9 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
         $definitions = $this->get('gor_user_class', 'multiOptions');
         if ($definitions && (count($definitions) > 1)) {
             reset($definitions);
-            $this->setIfExists('gor_user_class', 'default', key($definitions), 'required', true, 'onchange', 'this.form.submit();');
+            // MD: Removed onchange because it does not play nice with the processAfterLoad and save methods in this class
+            //     @@TODO: See if we can enable it when these methods are changed into a dependency
+            $this->setIfExists('gor_user_class', 'default', key($definitions), 'required', true/*, 'onchange', 'this.form.submit();'*/);
         }
 
         // OTHER TAB
