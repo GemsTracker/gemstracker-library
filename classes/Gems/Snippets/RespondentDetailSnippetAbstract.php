@@ -21,6 +21,36 @@
 abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snippets_MenuSnippetAbstract
 {
     /**
+     * Add the children of the current menu item
+     *
+     * @var boolean
+     */
+    protected $addCurrentChildren = false;
+
+    /**
+     * Add the parent of the current menu item
+     *
+     * @var boolean
+     */
+    protected $addCurrentParent = false;
+
+    /**
+     * Add the siblings of the current menu item
+     *
+     * @var boolean
+     */
+    protected $addCurrentSiblings = false;
+
+    /**
+     * Add siblings of the current menu item with any parameters.
+     *
+     * Add only those with the same when false.
+     *
+     * @var boolean
+     */
+    protected $anyParameterSiblings = false;
+
+    /**
      * Optional: array of buttons
      *
      * @var array
@@ -112,6 +142,16 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
             } else {
                 $menuList = $this->menu->getCurrentMenuList($this->request, $this->_('Cancel'));
                 $menuList->addParameterSources($bridge);
+                
+                if ($this->addCurrentParent) {
+                    $menuList->addCurrentParent($this->_('Cancel'));
+                }
+                if ($this->addCurrentSiblings) {
+                    $menuList->addCurrentSiblings($this->anyParameterSiblings);
+                }
+                if ($this->addCurrentChildren) {
+                    $menuList->addCurrentChildren();
+                }
 
                 $bridge->tfrow($menuList, array('class' => 'centerAlign'));
             }
@@ -137,6 +177,21 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
      * @return void
      */
     abstract protected function addTableCells(\MUtil_Model_Bridge_VerticalTableBridge $bridge);
+
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    {
+        parent::afterRegistry();
+
+        if (! $this->model instanceof \Gems_Model_RespondentModel) {
+            $this->model = $this->loader->getModels()->getRespondentModel(true);
+        }
+    }
 
     /**
      * Check if we have the 'Unknown' consent, and present a warning. The project default consent is

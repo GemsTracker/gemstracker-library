@@ -46,7 +46,7 @@ class ButtonRowSnippet extends \MUtil_Snippets_SnippetAbstract
     protected $addCurrentSiblings = false;
 
     /**
-     * Add siblings of the current menu item with any paramters.
+     * Add siblings of the current menu item with any parameters.
      *
      * Add only those with the same when false.
      *
