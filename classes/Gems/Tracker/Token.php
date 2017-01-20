@@ -1492,7 +1492,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         }
         $values['gto_by']         = $userId;
         $values['gto_return_url'] = $this->calculateReturnUrl();
-        
+
         $this->_updateToken($values, $userId);
 
         $this->handleBeforeAnswering();
@@ -1880,7 +1880,6 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         if (! $code instanceof \Gems_Util_ReceptionCode) {
             $code = $this->util->getReceptionCode($code);
         }
-
         $values['gto_reception_code'] = $code->getCode();
         if ($comment) {
             $values['gto_comment'] = $comment;

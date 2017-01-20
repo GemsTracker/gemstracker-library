@@ -211,7 +211,7 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
 
         $genderGreetings = $this->util->getTranslated()->getGenderHello($this->getLanguage());
 
-        $greeting = $genderGreetings[$this->getGender()];
+        $greeting = isset($genderGreetings[$this->getGender()]) ? $genderGreetings[$this->getGender()] : '';
 
         return $greeting . ' ' . $this->getName();
     }

@@ -24,6 +24,12 @@
 class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends \Gems_Snippets_ModelFormSnippetAbstract
 {
     /**
+     *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
+    /**
      * Required
      *
      * @var \Gems_Loader
@@ -114,6 +120,9 @@ class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends \Gems_Snippets_Mode
      */
     public function checkRegistryRequestsAnswers()
     {
+        if ((! $this->userId) && $this->currentUser) {
+            $this->userId = $this->currentUser->getUserId();
+        }
         return $this->loader && $this->request && parent::checkRegistryRequestsAnswers();
     }
 
