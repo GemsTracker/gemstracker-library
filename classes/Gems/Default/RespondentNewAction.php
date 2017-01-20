@@ -214,6 +214,32 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
     public $source;
 
     /**
+     * The automatically filtered result
+     *
+     * @param $resetMvc When true only the filtered resulsts
+     */
+    public function autofilterAction($resetMvc = true)
+    {
+        if ($resetMvc) {
+        $group = $this->currentUser->getGroup();
+            if ($group) {
+                $browse = $group->getRespondentBrowseScreen();
+
+                if ($browse) {
+                    // All are arrays, so easy to set
+                    $this->autofilterParameters = $browse->getAutofilterParameters() + $this->autofilterParameters;
+
+                    $autoSnippets = $browse->getAutofilterSnippets();
+                    if (false !== $autoSnippets) {
+                        $this->autofilterSnippets = $autoSnippets;
+                    }
+                }
+            }
+        }
+        parent::autofilterAction($resetMvc);
+    }
+
+    /**
      * Action to change a users
      */
     public function changeOrganizationAction()
@@ -532,6 +558,29 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      */
     public function indexAction()
     {
+        $group = $this->currentUser->getGroup();
+        if ($group) {
+            $browse = $group->getRespondentBrowseScreen();
+
+            if ($browse) {
+                // All are arrays, so easy to set
+                $this->autofilterParameters = $browse->getAutofilterParameters() + $this->autofilterParameters;
+                $this->indexParameters      = $browse->getStartStopParameters() + $this->indexParameters;
+
+                $autoSnippets = $browse->getAutofilterSnippets();
+                if (false !== $autoSnippets) {
+                    $this->autofilterSnippets = $autoSnippets;
+                }
+                $startSnippets = $browse->getStartSnippets();
+                if (false !== $startSnippets) {
+                    $this->indexStartSnippets = $startSnippets;
+                }
+                $stopSnippets = $browse->getStopSnippets();
+                if (false !== $stopSnippets) {
+                    $this->indexStopSnippets = $stopSnippets;
+                }
+            }
+        }
         if ($this->currentUser->hasPrivilege('pr.respondent.multiorg') ||
                 $this->currentOrganization->canHaveRespondents()) {
             parent::indexAction();

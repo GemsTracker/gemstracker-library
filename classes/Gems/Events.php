@@ -60,7 +60,7 @@ class Gems_Events extends \Gems_Loader_TargetLoaderAbstract
     protected $util;
 
     /**
-     * Lookup event class for an event type. This class or interfce should at the very least
+     * Lookup event class for an event type. This class or interface should at the very least
      * implement the EventInterface.
      *
      * @see \Gems_Event_EventInterface

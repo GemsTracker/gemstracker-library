@@ -48,6 +48,12 @@ class Group extends \Gems_Registry_CachedArrayTargetAbstract
 
     /**
      *
+     * @var \Gems\Screens\BrowseScreenInterface
+     */
+    protected $_respondentBrowseScreen;
+
+    /**
+     *
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
@@ -102,6 +108,16 @@ class Group extends \Gems_Registry_CachedArrayTargetAbstract
     }
 
     /**
+     * Return default new use group, if it exists
+     *
+     * @return string
+     */
+    public function getDefaultNewStaffGroup()
+    {
+        return $this->_get('ggp_default_group');
+    }
+
+    /**
      * Get the group id.
      *
      * @return int
@@ -119,6 +135,22 @@ class Group extends \Gems_Registry_CachedArrayTargetAbstract
     public function getName()
     {
         return $this->_get('ggp_name');
+    }
+
+    /**
+     *
+     * @return \Gems\Screens\BrowseScreenInterface
+     */
+    public function getRespondentBrowseScreen()
+    {
+        if ($this->_respondentBrowseScreen || (! $this->_has('ggp_respondent_browse'))) {
+            return $this->_respondentBrowseScreen;
+        }
+        $screenLoader = $this->loader->getScreenLoader();
+
+        $this->_respondentBrowseScreen = $screenLoader->loadRespondentBrowseScreen($this->_get('ggp_respondent_browse'));
+
+        return $this->_respondentBrowseScreen;
     }
 
     /**

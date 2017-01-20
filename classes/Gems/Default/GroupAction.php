@@ -146,11 +146,13 @@ class Gems_Default_GroupAction extends \Gems_Controller_ModelSnippetActionAbstra
         $tpa = new \MUtil_Model_Type_ConcatenatedRow(',', ', ');
         $tpa->apply($model, 'ggp_may_set_groups');
 
-        $yesNo = $this->util->getTranslated()->getYesNo();
-        $model->set('ggp_group_active', 'label', $this->_('Active'),
-                'elementClass', 'Checkbox',
-                'multiOptions', $yesNo
+        $model->set('ggp_default_group', 'label', $this->_('Default groups'),
+                'description', $this->_('Default group when creating new staff member'),
+                'elementClass', 'Select',
+                'multiOptions', $dbLookup->getGroups()
                 );
+
+        $yesNo = $this->util->getTranslated()->getYesNo();
         $model->set('ggp_staff_members', 'label', $this->_('Staff'),
                 'elementClass', 'Checkbox',
                 'multiOptions', $yesNo
@@ -159,7 +161,6 @@ class Gems_Default_GroupAction extends \Gems_Controller_ModelSnippetActionAbstra
                 'elementClass', 'Checkbox',
                 'multiOptions', $yesNo
                 );
-
         $model->set('ggp_allowed_ip_ranges', 'label', $this->_('Allowed IP Ranges'),
                 'description', $this->_('Separate with | example: 10.0.0.0-10.0.0.255 (subnet masks are not supported)'),
                 'maxlength', 500,
@@ -167,7 +168,26 @@ class Gems_Default_GroupAction extends \Gems_Controller_ModelSnippetActionAbstra
                 'validator', new \Gems_Validate_IPRanges()
                 );
 
+        $model->set('ggp_group_active', 'label', $this->_('Active'),
+                'elementClass', 'Checkbox',
+                'multiOptions', $yesNo
+                );
+
         if ($detailed) {
+            $html = \MUtil_Html::create()->h4($this->_('Screen settings'));
+            $model->set('screensettings', 'label', ' ',
+                    'default', $html,
+                    'elementClass', 'Html',
+                    'value', $html
+                    );
+
+            $screenLoader = $this->loader->getScreenLoader();
+            $model->set('ggp_respondent_browse', 'label', $this->_('Respondent browse screen'),
+                    'default', 'Gems\\Screens\\Respondent\\Browse\\ProjectDefaultBrowse',
+                    'elementClass', 'Radio',
+                    'multiOptions', $screenLoader->listRespondentBrowseScreens()
+                    );
+
             $maskStore = $this->loader->getUserMaskStore();
 
             $maskStore->addMaskSettingsToModel($model, 'ggp_mask_settings');

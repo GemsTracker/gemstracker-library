@@ -1229,6 +1229,9 @@ UPDATE gems__log_setup
 ALTER TABLE gems__groups ADD
     ggp_may_set_groups varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null AFTER ggp_role;
 
+ALTER TABLE gems__groups ADD
+    ggp_default_group bigint unsigned null AFTER ggp_may_set_groups;
+
 UPDATE gems__groups INNER JOIN gems__roles ON ggp_role = grl_name
     SET ggp_role = grl_id_role;
 
@@ -1249,9 +1252,13 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.group.switch
     WHERE grl_privileges LIKE '%,pr.group%'
         AND grl_privileges NOT LIKE '%,pr.group.switch%';
 
--- PATCH: Add mask settings to groups
+-- PATCH: Add mask and repsondent settings to groups
 ALTER TABLE gems__groups ADD
     ggp_mask_settings text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null
+    AFTER ggp_allowed_ip_ranges;
+
+ALTER TABLE gems__groups ADD
+    ggp_respondent_browse varchar(254) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null
     AFTER ggp_allowed_ip_ranges;
 
 -- PATCH: Store replacement tokens in gems_token_replacements

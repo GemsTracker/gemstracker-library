@@ -821,6 +821,20 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * Return default new use group, if it exists
+     *
+     * @return string
+     */
+    public function getDefaultNewStaffGroup()
+    {
+        $group = $this->getGroup();
+
+        if ($group) {
+            return $group->getDefaultNewStaffGroup();
+        }
+    }
+
+    /**
      * Return true if this user has a password.
      *
      * @return boolean

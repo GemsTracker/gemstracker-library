@@ -11,7 +11,9 @@ Interface improvements:
     Editing staff and organizations uses defaults for smoother creation
 Rights:
     The types of staff that a user can create/edit are determined at the group level
+    A default can be set at group level for new users
     Roles only determine what menu items are allowed, you no longer need to have a right to assign it to another staff
+    Respondent (search) screen now changeable by group
     Private data can now be hidden or (partially) masked for groups, e.g. researchers need not see patient names
     Added "site administrator" role and group between local admin and super admin
     Administrators may now have the right to switch the used group to any they may set

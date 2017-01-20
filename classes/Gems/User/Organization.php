@@ -33,7 +33,7 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
      *
      * @var array
      */
-    protected $_cacheTags = array('organization');
+    protected $_cacheTags = array('organization', 'organizations');
 
     /**
      * The default organization data for 'no organization'.

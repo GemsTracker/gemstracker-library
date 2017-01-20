@@ -20,26 +20,8 @@ namespace Gems\Snippets\Respondent;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 Mar 16, 2016 4:54:15 PM
  */
-class RespondentTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
+class RespondentTableSnippet extends RespondentTableSnippetAbstract
 {
-    /**
-     *
-     * @var \Gems_User_User
-     */
-    protected $currentUser;
-
-    /**
-     *
-     * @var \Gems_Loader
-     */
-    protected $loader;
-
-    /**
-     *
-     * @var \MUtil_Model_ModelAbstract
-     */
-    protected $model;
-
     /**
      * Add first columns (group) from the model to the bridge that creates the browse table.
      *
@@ -164,7 +146,7 @@ class RespondentTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
                 $bridge->addMultiSort('grs_zipcode', $br, 'grs_city');
                 return;
             }
-            
+
             $citysep  = \MUtil_Html::raw('&nbsp;&nbsp;');
 
             $bridge->addMultiSort('grs_address_1', $br, 'grs_zipcode', $citysep, 'grs_city');
@@ -226,64 +208,4 @@ class RespondentTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
      */
     protected function addBrowseColumn5(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     { }
-
-    /**
-     * Adds columns from the model to the bridge that creates the browse table.
-     *
-     * Overrule this function to add different columns to the browse table, without
-     * having to recode the core table building code.
-     *
-     * @param \MUtil_Model_Bridge_TableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
-     * @return void
-     */
-    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
-    {
-        if ($this->columns) {
-            parent::addBrowseTableColumns($bridge, $model);
-            return;
-        }
-        if ($model->has('row_class')) {
-            $bridge->getTable()->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);
-        }
-
-        if ($this->showMenu) {
-            $showMenuItems = $this->getShowMenuItems();
-
-            foreach ($showMenuItems as $menuItem) {
-                $bridge->addItemLink($menuItem->toActionLinkLower($this->request, $bridge));
-            }
-        }
-
-        // make sure search results are highlighted
-        $this->applyTextMarker();
-
-        $this->addBrowseColumn1($bridge, $model);
-        $this->addBrowseColumn2($bridge, $model);
-        $this->addBrowseColumn3($bridge, $model);
-        $this->addBrowseColumn4($bridge, $model);
-        $this->addBrowseColumn5($bridge, $model);
-
-        if ($this->showMenu) {
-            $editMenuItems = $this->getEditMenuItems();
-
-            foreach ($editMenuItems as $menuItem) {
-                $bridge->addItemLink($menuItem->toActionLinkLower($this->request, $bridge));
-            }
-        }
-    }
-
-    /**
-     * Creates the model
-     *
-     * @return \MUtil_Model_ModelAbstract
-     */
-    protected function createModel()
-    {
-        if (! $this->model instanceof \Gems_Model_RespondentModel) {
-            $this->model = $this->loader->getModels()->createRespondentModel();
-            $this->model->applyBrowseSettings();
-        }
-        return $this->model;
-    }
 }

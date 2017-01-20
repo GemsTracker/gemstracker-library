@@ -226,6 +226,7 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
 
 
         $this->set('gsf_id_primary_group',     'label', $this->_('Primary function'),
+                'default', $this->currentUser->getDefaultNewStaffGroup(),
                 'multiOptions', $editing ? $this->currentUser->getAllowedStaffGroups() : $dbLookup->getStaffGroups()
                 );
 

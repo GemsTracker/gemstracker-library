@@ -230,15 +230,6 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
     }
 
     /**
-     *
-     * @return \Gems\User\Mask\MaskStore
-     */
-    public function getUserMaskStore()
-    {
-        return $this->_getClass('maskStore', 'User\\Mask\\MaskStore');
-    }
-
-    /**
      * Get the project specific menu or general Gems menu otherwise
      *
      * @return \Gems_Menu
@@ -333,6 +324,15 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
     public function getRoles(\GemsEscort $escort)
     {
         return $this->_getClass('roles', null, array($escort));
+    }
+
+    /**
+     *
+     * @return \Gems\Screens\ScreenLoader
+     */
+    public function getScreenLoader()
+    {
+        return $this->_getClass('screenLoader', 'Screens\ScreenLoader');
     }
 
     /**
@@ -432,6 +432,15 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
     public function getUserLoader()
     {
         return $this->_getClass('userLoader', 'User_UserLoader');
+    }
+
+    /**
+     *
+     * @return \Gems\User\Mask\MaskStore
+     */
+    public function getUserMaskStore()
+    {
+        return $this->_getClass('maskStore', 'User\\Mask\\MaskStore');
     }
 
     /**
