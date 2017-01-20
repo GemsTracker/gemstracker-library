@@ -1203,7 +1203,7 @@ ALTER TABLE gems__tracks ADD
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.token.correct')
     WHERE grl_privileges NOT LIKE '%,pr.token.correct%' AND grl_privileges LIKE '%,pr.token.delete%';
 
--- PATCH: Add change resp org right
+-- PATCH: Add change respondent change organization right
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.respondent.change-org')
     WHERE grl_privileges NOT LIKE '%,pr.respondent.change-org%' AND grl_name = 'admin';
 
@@ -1252,7 +1252,7 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.group.switch
     WHERE grl_privileges LIKE '%,pr.group%'
         AND grl_privileges NOT LIKE '%,pr.group.switch%';
 
--- PATCH: Add mask and repsondent settings to groups
+-- PATCH: Add mask and respondent settings to groups
 ALTER TABLE gems__groups ADD
     ggp_mask_settings text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null
     AFTER ggp_allowed_ip_ranges;
