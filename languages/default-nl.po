@@ -5323,7 +5323,7 @@ msgstr "Tabel met minimale informatie"
 
 #: gemstracker/gemstracker/classes/Gems/Screens/Respondent/Browse/NoAddressBrowse.php:41
 msgid "Browse without address"
-msgstr "Tabel met adres"
+msgstr "Tabel zonder adres"
 
 #: gemstracker/gemstracker/classes/Gems/Screens/Respondent/Browse/ProjectDefaultBrowse.php:43
 msgid "(default project specific table display)"
