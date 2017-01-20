@@ -62,16 +62,18 @@ class ScreenLoader extends \Gems_Loader_TargetLoaderAbstract
      */
     protected function _getScreenDirs($screenType)
     {
+        $paths = [];
+        if (DIRECTORY_SEPARATOR == '/') {
+            $screenDir = str_replace('\\', DIRECTORY_SEPARATOR, $screenType);
+        } else {
+            $screenDir = $screenType;
+        }
         foreach ($this->_dirs as $name => $dir) {
             $prefix = $name . '\\Screens\\'. $screenType . '\\';
-            $fullPath = $dir . DIRECTORY_SEPARATOR . 'Screens' . DIRECTORY_SEPARATOR . $screenType;
+            $fullPath = $dir . DIRECTORY_SEPARATOR . 'Screens' . DIRECTORY_SEPARATOR . $screenDir;
             if (file_exists($fullPath)) {
                 $paths[$prefix] = $fullPath;
             }
-        }
-        $fullPath = APPLICATION_PATH . '/Screens/' . strtolower($screenType);
-        if (file_exists($fullPath)) {
-            $paths[''] = $fullPath;
         }
 
         return $paths;

@@ -146,7 +146,7 @@ class Gems_Default_GroupAction extends \Gems_Controller_ModelSnippetActionAbstra
         $tpa = new \MUtil_Model_Type_ConcatenatedRow(',', ', ');
         $tpa->apply($model, 'ggp_may_set_groups');
 
-        $model->set('ggp_default_group', 'label', $this->_('Default groups'),
+        $model->set('ggp_default_group', 'label', $this->_('Default group'),
                 'description', $this->_('Default group when creating new staff member'),
                 'elementClass', 'Select',
                 'multiOptions', $dbLookup->getGroups()

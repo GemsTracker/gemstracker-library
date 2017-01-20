@@ -210,7 +210,7 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
         } else {
             $this->set('name',                 'label', $this->_('Name'));
         }
-        $this->setIfExists('gsf_job_title', 'label', $this->_('Functie'));
+        $this->setIfExists('gsf_job_title', 'label', $this->_('Function'));
 
 
         $this->set('gsf_gender',               'label', $this->_('Gender'),
