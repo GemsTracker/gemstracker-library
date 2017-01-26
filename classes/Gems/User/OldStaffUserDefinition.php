@@ -172,12 +172,22 @@ class Gems_User_OldStaffUserDefinition extends \Gems_User_UserDefinitionAbstract
 
         try {
             // Fails before patch has run...
-            return $this->db->fetchRow($select2, array($login_name), \Zend_Db::FETCH_ASSOC);
+            $result = $this->db->fetchRow($select2, array($login_name), \Zend_Db::FETCH_ASSOC);
 
         } catch (\Zend_Db_Exception $e) {
             // So then we try the old method
-            return $this->db->fetchRow($select, array($login_name), \Zend_Db::FETCH_ASSOC);
+            $result = $this->db->fetchRow($select, array($login_name), \Zend_Db::FETCH_ASSOC);
         }
+        
+        /*
+         * Handle the case that we have a login record, but no matching userdata (ie. user is inactive)
+         * if you want some kind of auto-register you should change this
+         */
+        if ($result == false) {
+            $result = \Gems_User_NoLoginDefinition::getNoLoginDataFor($login_name, $organization);
+        }
+
+        return $result;
     }
 
     /**
