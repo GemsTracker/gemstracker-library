@@ -39,6 +39,12 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
      * @var string The LS version dependent field name for anonymized surveys
      */
     protected $_anonymizedField = 'private';
+    
+    /**
+     *
+     * @var string The field that holds the token attribute descriptions in the surveys table
+     */
+    protected $_attributeDescriptionsField = 'attributedescriptions';
 
     /**
      * A map containing attributename => databasefieldname mappings
@@ -540,6 +546,10 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
                             \MUtil_Echo::r($e);
                         }
                     }
+                    
+                    if ($this->fixTokenAttributeDescriptions($sourceSurveyId)) {
+                        $messages[] = sprintf($this->_("Updated token attribute descriptions for '%s'"), $surveyor_title);
+                    }
                 } else {
                     $surveyor_status .= 'No token table created. ';
                 }
@@ -711,6 +721,42 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
         }
 
         return $result;
+    }
+    
+    /**
+     * Fix the tokenattribute descriptions
+     * 
+     * When new token attributes are added, make sure the attributedescriptions field
+     * in the surveys table is updated to prevent problems when using these fields
+     * in LimeSurvey. For example by referencing them on screen.
+     * 
+     * @param int $sourceSurveyId
+     * @return boolean
+     */
+    protected function fixTokenAttributeDescriptions($sourceSurveyId)
+    {
+        $lsDb = $this->getSourceDatabase();
+        
+        $fieldData = array();
+        foreach($this->_attributeMap as $fieldName)
+        {
+            // Only add the attribute fields
+            if (substr($fieldName, 0, 10) == 'attribute_') {
+                $fieldData[$fieldName] = array(
+                    'description' => $fieldName,
+                    'mandatory'   => 'N',
+                    'show_register'=> 'N',
+                    'cpdbmap' => ''
+                );
+            }
+        }
+        
+        // We always have fields, so no need to check for empty. Just json_encode the data
+        $fields = array(
+            $this->_attributeDescriptionsField => json_encode($fieldData)
+                );
+        
+        return (boolean) $lsDb->update($this->_getSurveysTableName(), $fields, $lsDb->quoteInto('sid = ?', $sourceSurveyId));
     }
 
     /**
