@@ -44,7 +44,7 @@ class Gems_Versions
      */
     public final function getGemsVersion()
     {
-        return $this->getMainVersion() . '.2';
+        return '1.8.2';
     }
 
     /**
@@ -54,7 +54,8 @@ class Gems_Versions
      */
     public function getMainVersion()
     {
-        return '1.8';
+        $gemsVersion = $this->getGemsVersion();
+        return substr($gemsVersion, 0, strrpos($gemsVersion, '.'));
     }
 
     /**
