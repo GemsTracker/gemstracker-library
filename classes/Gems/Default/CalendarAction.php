@@ -163,6 +163,11 @@ class Gems_Default_CalendarAction extends \Gems_Controller_ModelSnippetActionAbs
                 ->startImport();
 
         $raw    = $translator->translateRowValues($data, 1);
+        if (false === $raw) {
+            // No patient found
+            echo "Patient does not exist";
+            exit(0);
+        }
         $row    = $translator->validateRowValues($raw, 1);
         $errors = $translator->getRowErrors(1);
 
