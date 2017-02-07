@@ -2186,7 +2186,6 @@ class GemsEscort extends \MUtil_Application_Escort
                    $incoming = false;
                 }
                 if ($incoming) {
-                    \MUtil_Echo::track(\MUtil_String::stripToHost($incoming));
                     if (! $this->isAllowedHost($incoming)) {
                         throw new \Gems_Exception("Invalid source host, possible CSRF attack", 403);
                     }
