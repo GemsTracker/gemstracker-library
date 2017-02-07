@@ -1669,6 +1669,38 @@ class GemsEscort extends \MUtil_Application_Escort
     }
 
     /**
+     * Is the host name one allowed by the system
+     *
+     * @param string $fullHost
+     * @return boolean
+     */
+    public function isAllowedHost($fullHost)
+    {
+        $host = \MUtil_String::stripToHost($fullHost);
+
+        if (isset($_SERVER['HTTP_HOST'])) {
+            if ($host == \MUtil_String::stripToHost($_SERVER['HTTP_HOST'])) {
+                return true;
+            }
+        }
+        if (isset($this->project)) {
+            foreach ($this->project->getAllowedHosts() as $allowedHost) {
+                if ($host == \MUtil_String::stripToHost($allowedHost)) {
+                    return true;
+                }
+            }
+        }
+        $loader = $this->getLoader();
+        foreach ($loader->getUserLoader()->getOrganizationUrls() as $url => $orgId) {
+            if ($host == \MUtil_String::stripToHost($url)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Return a hashed version of the input value.
      *
      * @deprecated Since 1.5
@@ -1742,12 +1774,10 @@ class GemsEscort extends \MUtil_Application_Escort
     public function postDispatch(\Zend_Controller_Request_Abstract $request)
     {
         if ($request->isDispatched()) {
-
-            $response = \Zend_Controller_Front::getInstance()->getResponse();
-            $response->setHeader('X-UA-Compatible', 'IE=edge,chrome=1', true);
+            $this->response->setHeader('X-UA-Compatible', 'IE=edge,chrome=1', true);
 
             if ($this->project->offsetExists('x-frame')) {
-                $response->setHeader('X-Frame-Options', $this->project->offsetGet('x-frame'), true);
+                $this->response->setHeader('X-Frame-Options', $this->project->offsetGet('x-frame'), true);
             }
 
             // Only when we need to render the layout, we run the layout prepare
@@ -1801,7 +1831,7 @@ class GemsEscort extends \MUtil_Application_Escort
                 $this->view->jQuery()->clearOnLoadActions();
                 $this->view->inlineScript()->exchangeArray(array());
                 if (!empty($content)) {
-                    $response->appendBody($content);
+                    $this->response->appendBody($content);
                 }
             }
         }
@@ -2145,6 +2175,23 @@ class GemsEscort extends \MUtil_Application_Escort
         if (isset($menuItem)) {
             $menuItem->applyHiddenParameters($request, $source);
             $menu->setCurrent($menuItem);
+        }
+        if ($request instanceof \Zend_Controller_Request_Http) {
+            if ($request->isPost()) {
+                if (isset($_SERVER['HTTP_ORIGIN'])) {
+                    $incoming = $_SERVER['HTTP_ORIGIN'];
+                } elseif (isset($_SERVER['HTTP_REFERER'])) {
+                    $incoming = $_SERVER['HTTP_REFERER'];
+                } else {
+                   $incoming = false;
+                }
+                if ($incoming) {
+                    \MUtil_Echo::track(\MUtil_String::stripToHost($incoming));
+                    if (! $this->isAllowedHost($incoming)) {
+                        throw new \Gems_Exception("Invalid source host, possible CSRF attack", 403);
+                    }
+                }
+            }
         }
     }
 

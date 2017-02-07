@@ -256,6 +256,20 @@ class Gems_Project_ProjectSettings extends \ArrayObject
     }
 
     /**
+     * Array of hosts allowed to post data to this project
+     *
+     * @return array
+     */
+    public function getAllowedHosts()
+    {
+        if (isset($this['allowedSourceHosts'])) {
+            return (array) $this['allowedSourceHosts'];
+        }
+
+        return array();
+    }
+
+    /**
      * Calculate the delay between surveys being asked for this request. Zero means forward
      * at once, a negative value means wait forever.
      *
