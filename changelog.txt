@@ -20,6 +20,7 @@ Rights:
 Security:
     The full Gems version number is only displayed after login
     All recalculate, check, synchronize, patch and run commands are set to logged
+    New security headers and meta tags can be set from the project.ini
 Programmability:
     Before field save events allows changing the fields after their new values have been calculated
     Respondent changed events can be set at the organization level

@@ -792,6 +792,26 @@ class Gems_Project_ProjectSettings extends \ArrayObject
     }
 
     /**
+     * Get additional meta headers
+     *
+     * @return array Of http-equiv => content values for meta tags
+     */
+    public function getMetaHeaders()
+    {
+        if ($this->offsetExists('meta') && is_array($this->meta)) {
+            $meta = $this->meta;
+        } else {
+            $meta = [];
+        }
+        if (!array_key_exists('Content-Type', $meta)) {
+            $meta['Content-Type'] = 'text/html;charset=UTF-8';
+        }
+
+        // Remove null/empty values, this allow you to remove the Content-Type by making it empty.
+        return array_filter($meta);
+    }
+
+    /**
      * The response database with a table with one row for each token answer.
      *
      * @return \Zend_Db_Adapter_Abstract
@@ -829,6 +849,26 @@ class Gems_Project_ProjectSettings extends \ArrayObject
         }
 
         return $this->_responsesDb;
+    }
+
+    /**
+     * Get additional response headers
+     *
+     * @return array Of name => value for HTTP response headers
+     */
+    public function getResponseHeaders()
+    {
+        if ($this->offsetExists('headers') && is_array($this->headers)) {
+            $headers = $this->headers;
+        } else {
+            $headers = [];
+        }
+        if (!array_key_exists('X-UA-Compatible', $headers)) {
+            $headers['X-UA-Compatible'] = 'IE=edge,chrome=1';
+        }
+
+        // Remove null/empty values, this allow you to remove the X-UA-Compatible by making it empty.
+        return array_filter($headers);
     }
 
     /**

@@ -649,7 +649,12 @@ class GemsEscort extends \MUtil_Application_Escort
         $view->addHelperPath('Gems/View/Helper', 'Gems_View_Helper');
         $view->headTitle($this->project->getName());
         $view->setEncoding('UTF-8');
-        $view->headMeta()->appendHttpEquiv('Content-Type', 'text/html;charset=UTF-8');
+
+        $metas    = $this->project->getMetaHeaders();
+        $headMeta = $view->headMeta();
+        foreach ($metas as $httpEquiv => $content) {
+            $headMeta->appendHttpEquiv($httpEquiv, $content);
+        }
 
         if ($this->useHtml5) {
             $view->doctype(\Zend_View_Helper_Doctype::HTML5);
@@ -1774,10 +1779,9 @@ class GemsEscort extends \MUtil_Application_Escort
     public function postDispatch(\Zend_Controller_Request_Abstract $request)
     {
         if ($request->isDispatched()) {
-            $this->response->setHeader('X-UA-Compatible', 'IE=edge,chrome=1', true);
-
-            if ($this->project->offsetExists('x-frame')) {
-                $this->response->setHeader('X-Frame-Options', $this->project->offsetGet('x-frame'), true);
+            $headers = $this->project->getResponseHeaders();
+            foreach ($headers as $name => $value) {
+                $this->response->setHeader($name, $value, true);
             }
 
             // Only when we need to render the layout, we run the layout prepare
