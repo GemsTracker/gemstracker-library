@@ -9,6 +9,11 @@ php:
 # Commands to be run before your environment runs.
 install: composer install --dev
 
+# Try if composer cache will speed up the build
+cache:
+ directories:
+    - $HOME/.composer/cache/files
+
 # omitting "script:" will default to phpunit
 script: phpunit --configuration tests/phpunit.xml --coverage-clover build/logs/clover.xml
 
