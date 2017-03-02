@@ -18,42 +18,55 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.2
  */
-class Gems_Task_Db_CreateNewTable extends \Gems_Task_TaskAbstract
+class Gems_Task_Db_CreateNewTable extends \MUtil_Task_TaskAbstract
 {
     /**
      * @var \Zend_Db_Adapter_Abstract
      */
-    public $db;
+    protected $db;
 
     /**
      * @var \Gems_Model_DbaModel
      */
-    public $dbaModel;
+    protected $dbaModel;
 
     /**
      * @var GemsEscort
      */
-    public $escort;
+    protected $escort;
 
     /**
      * @var \Gems_Project_ProjectSettings
      */
-    public $project;
+    protected $project;
 
+    /**
+     * Should be called after answering the request to allow the Target
+     * to check if all required registry values have been set correctly.
+     *
+     * @return boolean False if required values are missing.
+     */
     public function execute($tableData = array())
     {
-        $this->_batch->addToCounter('createTableStep');
+        $batch = $this->getBatch();
+        $batch->addToCounter('createTableStep');
 
         $result = $this->dbaModel->runScript($tableData);
-        $result[] = sprintf($this->translate->_('Finished %s creation script for object %d of %d'), $this->translate->_(strtolower($tableData['type'])), $this->_batch->getCounter('createTableStep'), $this->_batch->getCounter('NewTableCount')) . '<br/>';
+        $result[] = sprintf(
+                $this->_('Finished %s %s creation script for object %d of %d'),
+                $tableData['name'],
+                $this->_(strtolower($tableData['type'])),
+                $batch->getCounter('createTableStep'),
+                $batch->getCounter('NewTableCount')
+                );
 
         if (count($result)>0) {
             foreach ($result as $result)
             {
-                $this->_batch->addMessage($result);
+                $batch->addMessage($result);
             }
             //Perform a clean cache only when needed
-            $this->_batch->setTask('CleanCache', 'cleancache'); //If already scheduled, don't reschedule
+            $batch->setTask('CleanCache', 'cleancache'); //If already scheduled, don't reschedule
         }
     }
 

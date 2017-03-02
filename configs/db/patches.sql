@@ -1261,23 +1261,5 @@ ALTER TABLE gems__groups ADD
     ggp_respondent_browse varchar(254) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null
     AFTER ggp_allowed_ip_ranges;
 
--- PATCH: Store replacement tokens in gems_token_replacements
-INSERT ignore INTO gems__token_replacements (gtrp_id_token_new, gtrp_id_token_old, gtrp_created, gtrp_created_by)
-    SELECT nw.gto_id_token, pr.gto_id_token, nw.gto_created, nw.gto_created_by
-        FROM gems__tokens AS nw INNER JOIN
-            gems__tokens AS pr ON
-                nw.gto_id_respondent_track = pr.gto_id_respondent_track AND
-                nw.gto_id_round            = pr.gto_id_round AND
-                nw.gto_round_order         = pr.gto_round_order AND
-                pr.gto_created             = (
-                    SELECT MAX(prpr.gto_created)
-                    FROM gems__tokens AS prpr
-                    WHERE nw.gto_id_respondent_track = prpr.gto_id_respondent_track AND
-                        nw.gto_id_round            = prpr.gto_id_round AND
-                        nw.gto_round_order         = prpr.gto_round_order AND
-                        nw.gto_created             > prpr.gto_created
-                    )
-    WHERE nw.gto_id_token NOT IN (SELECT gtrp_id_token_new FROM gems__token_replacements);
-
 -- PATCH: Activate job title as default staff element
 ALTER TABLE gems__staff ADD gsf_job_title varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' after gsf_gender;

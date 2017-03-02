@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-07 19:52+0100\n"
+"POT-Creation-Date: 2017-03-02 14:36+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -1763,7 +1763,6 @@ msgid "Starting %d object creation scripts."
 msgstr "Aanvang %d object aanmaak scripts."
 
 #: gemstracker/gemstracker/classes/Gems/Default/DatabaseAction.php:632
-#: gemstracker/gemstracker/classes/Gems/Task/Db/CreateNewTable.php:48
 #, php-format
 msgid "Finished %s creation script for object %d of %d"
 msgstr "Klaar met %s aanmaak script voor object %d van %d"
@@ -1965,12 +1964,12 @@ msgstr "Bestanden die klaarstaan om te importeren"
 #: gemstracker/gemstracker/classes/Gems/Default/StaffAction.php:147
 #: gemstracker/gemstracker/classes/Gems/Default/StaffAction.php:161
 #: gemstracker/gemstracker/classes/Gems/Default/StaffLogAction.php:68
-#: gemstracker/gemstracker/classes/GemsEscort.php:2120
+#: gemstracker/gemstracker/classes/GemsEscort.php:2124
 msgid "No access to page"
 msgstr "Geen toegang tot pagina"
 
 #: gemstracker/gemstracker/classes/Gems/Default/GroupAction.php:78
-#: gemstracker/gemstracker/classes/GemsEscort.php:2122
+#: gemstracker/gemstracker/classes/GemsEscort.php:2126
 #, php-format
 msgid "Access to the %s/%s page is not allowed for your current group: %s."
 msgstr "U heeft geen toegang tot de %s/%s pagina. Uw huidige groep is: %s."
@@ -4304,7 +4303,7 @@ msgid "Change password"
 msgstr "Uw wachtwoord"
 
 #: gemstracker/gemstracker/classes/Gems/Menu.php:225
-#: gemstracker/gemstracker/classes/GemsEscort.php:1024
+#: gemstracker/gemstracker/classes/GemsEscort.php:1029
 msgid "Logoff"
 msgstr "Uitloggen"
 
@@ -4810,7 +4809,7 @@ msgstr "Afspraak"
 #: gemstracker/gemstracker/classes/Gems/Model/AppointmentModel.php:185
 #: gemstracker/gemstracker/classes/Gems/Model/AppointmentModel.php:226
 #: gemstracker/gemstracker/classes/Gems/Model/AppointmentModel.php:229
-#: gemstracker/gemstracker/classes/GemsEscort.php:1405
+#: gemstracker/gemstracker/classes/GemsEscort.php:1410
 msgid "dd-mm-yyyy hh:mm"
 msgstr "dd-mm-jjjj uu:mm"
 
@@ -6988,6 +6987,11 @@ msgstr "U mag uw wachtwoord niet wijzigen."
 msgid "Adding patchlevel %d"
 msgstr "Patchniveau %d wordt toegevoegd"
 
+#: gemstracker/gemstracker/classes/Gems/Task/Db/CreateNewTable.php:56
+#, php-format
+msgid "Finished %s %s creation script for object %d of %d"
+msgstr "Klaar met %s %s aanmaak script voor object %d van %d"
+
 #: gemstracker/gemstracker/classes/Gems/Task/Db/ExecuteOnePatch.php:74
 #, php-format
 msgid "%d patch(es) executed."
@@ -7370,6 +7374,17 @@ msgstr "%d wachtwoorden versleuteld in tabel %s."
 #, php-format
 msgid "No passwords found in table %s."
 msgstr "Geen wachtwoorden gevonden in tabel %s."
+
+#: gemstracker/gemstracker/classes/Gems/Task/Updates/FillTokenReplacementsTask.php:100
+msgid "No token replacements to create"
+msgstr "Geen kenmerk vervanging aan te maken"
+
+#: gemstracker/gemstracker/classes/Gems/Task/Updates/FillTokenReplacementsTask.php:110
+#, php-format
+msgid "Created %d token replacement"
+msgid_plural "Created %d token replacements"
+msgstr[0] "%d kenmerk vervanging aangemaakt"
+msgstr[1] "%d kenmerk vervangingen aangemaakt"
 
 #: gemstracker/gemstracker/classes/Gems/Tracker/ChangeTracker.php:59
 #: gemstracker/gemstracker/classes/Gems/Tracker/Engine/TrackEngineAbstract.php:406
@@ -8449,16 +8464,16 @@ msgstr "Vragenlijsten synchroniseren voor alle bronnen."
 #: gemstracker/gemstracker/classes/Gems/Upgrades.php:254
 #: gemstracker/gemstracker/classes/Gems/Upgrades.php:268
 #: gemstracker/gemstracker/classes/Gems/Upgrades.php:282
-#: gemstracker/gemstracker/classes/Gems/Upgrades.php:296
-#: gemstracker/gemstracker/classes/Gems/Upgrades.php:310
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:299
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:314
 msgid "Make sure to read the changelog as it contains important instructions"
 msgstr "Lees de wijzigingen, er kunnen belangrijke aanwijzingen in staan"
 
 #: gemstracker/gemstracker/classes/Gems/Upgrades.php:255
 #: gemstracker/gemstracker/classes/Gems/Upgrades.php:269
 #: gemstracker/gemstracker/classes/Gems/Upgrades.php:283
-#: gemstracker/gemstracker/classes/Gems/Upgrades.php:297
-#: gemstracker/gemstracker/classes/Gems/Upgrades.php:311
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:300
+#: gemstracker/gemstracker/classes/Gems/Upgrades.php:315
 msgid ""
 "Check the Code compatibility report for any issues with project specific "
 "code!"
@@ -8996,37 +9011,37 @@ msgstr "De heer/Mevrouw"
 msgid "Path %s not writable"
 msgstr "Pad %s niet schrijfbaar"
 
-#: gemstracker/gemstracker/classes/GemsEscort.php:820
+#: gemstracker/gemstracker/classes/GemsEscort.php:825
 msgid " > "
 msgstr " | "
 
-#: gemstracker/gemstracker/classes/GemsEscort.php:1022
+#: gemstracker/gemstracker/classes/GemsEscort.php:1027
 #, php-format
 msgid "You are logged in as %s"
 msgstr "Ingelogd als %s"
 
-#: gemstracker/gemstracker/classes/GemsEscort.php:1028
+#: gemstracker/gemstracker/classes/GemsEscort.php:1033
 msgid "You are not logged in"
 msgstr "U bent niet ingelogd"
 
-#: gemstracker/gemstracker/classes/GemsEscort.php:1252
+#: gemstracker/gemstracker/classes/GemsEscort.php:1257
 #, php-format
 msgid "User: %s"
 msgstr "Login: %s"
 
-#: gemstracker/gemstracker/classes/GemsEscort.php:1283
+#: gemstracker/gemstracker/classes/GemsEscort.php:1288
 msgid "version"
 msgstr "versie"
 
-#: gemstracker/gemstracker/classes/GemsEscort.php:1386
+#: gemstracker/gemstracker/classes/GemsEscort.php:1391
 msgid "dd-mm-yyyy"
 msgstr "dd-mm-jjjj"
 
-#: gemstracker/gemstracker/classes/GemsEscort.php:1417
+#: gemstracker/gemstracker/classes/GemsEscort.php:1422
 msgid "hh:mm"
 msgstr "uu:mm"
 
-#: gemstracker/gemstracker/classes/GemsEscort.php:1896
+#: gemstracker/gemstracker/classes/GemsEscort.php:1900
 msgid ""
 "Take note: your session has expired, your inputs were not saved. Please "
 "check the input data and try again"
@@ -9034,31 +9049,31 @@ msgstr ""
 "Let op: uw sessie is verlopen, uw invoer is niet opgeslagen. Controleer uw "
 "gegevens en probeer a.u.b. opnieuw."
 
-#: gemstracker/gemstracker/classes/GemsEscort.php:2083
+#: gemstracker/gemstracker/classes/GemsEscort.php:2087
 msgid "Please check back later."
 msgstr "Probeer het later opnieuw."
 
-#: gemstracker/gemstracker/classes/GemsEscort.php:2085
 #: gemstracker/gemstracker/classes/GemsEscort.php:2089
-#: gemstracker/gemstracker/classes/GemsEscort.php:2090
+#: gemstracker/gemstracker/classes/GemsEscort.php:2093
+#: gemstracker/gemstracker/classes/GemsEscort.php:2094
 msgid "System is in maintenance mode"
 msgstr "Systeem is in onderhoudsmodus"
 
-#: gemstracker/gemstracker/classes/GemsEscort.php:2101
+#: gemstracker/gemstracker/classes/GemsEscort.php:2105
 msgid "No access to site."
 msgstr "Geen toegang tot website."
 
-#: gemstracker/gemstracker/classes/GemsEscort.php:2103
-#: gemstracker/gemstracker/classes/GemsEscort.php:2167
+#: gemstracker/gemstracker/classes/GemsEscort.php:2107
+#: gemstracker/gemstracker/classes/GemsEscort.php:2171
 msgid "You have no access to this site."
 msgstr "U heeft geen toegang tot deze website."
 
-#: gemstracker/gemstracker/classes/GemsEscort.php:2149
-#: gemstracker/gemstracker/classes/GemsEscort.php:2165
+#: gemstracker/gemstracker/classes/GemsEscort.php:2153
+#: gemstracker/gemstracker/classes/GemsEscort.php:2169
 msgid "You are no longer logged in."
 msgstr "U bent niet meer ingelogd."
 
-#: gemstracker/gemstracker/classes/GemsEscort.php:2150
+#: gemstracker/gemstracker/classes/GemsEscort.php:2154
 msgid "You must login to access this page."
 msgstr "U moet ingelogd zijn voor toegang tot deze pagina."
 
