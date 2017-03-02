@@ -131,7 +131,7 @@ class GemsEscort extends \MUtil_Application_Escort
         // FIRE BUG
         $firebug = $application->getOption('firebug');
         $this->_startFirebird = $firebug['log'];
-
+        
         // START SESSIE
         $sessionOptions['name']            = GEMS_PROJECT_NAME_UC . '_' . md5(APPLICATION_PATH) . '_SESSID';
         $sessionOptions['cookie_path']     = strtr(dirname($_SERVER['SCRIPT_NAME']), '\\', '/');
@@ -1682,12 +1682,12 @@ class GemsEscort extends \MUtil_Application_Escort
     public function isAllowedHost($fullHost)
     {
         $host = \MUtil_String::stripToHost($fullHost);
-
-        if (isset($_SERVER['HTTP_HOST'])) {
-            if ($host == \MUtil_String::stripToHost($_SERVER['HTTP_HOST'])) {
+        $request = $this->request;
+        if ($request instanceof \Zend_Controller_Request_Http) {
+            if ($host == \MUtil_String::stripToHost($request->getServer('HTTP_HOST'))) {
                 return true;
             }
-        }
+        }        
         if (isset($this->project)) {
             foreach ($this->project->getAllowedHosts() as $allowedHost) {
                 if ($host == \MUtil_String::stripToHost($allowedHost)) {
@@ -2182,13 +2182,7 @@ class GemsEscort extends \MUtil_Application_Escort
         }
         if ($request instanceof \Zend_Controller_Request_Http) {
             if ($request->isPost()) {
-                if (isset($_SERVER['HTTP_ORIGIN'])) {
-                    $incoming = $_SERVER['HTTP_ORIGIN'];
-                } elseif (isset($_SERVER['HTTP_REFERER'])) {
-                    $incoming = $_SERVER['HTTP_REFERER'];
-                } else {
-                   $incoming = false;
-                }
+                $incoming = $request->getServer('HTTP_ORIGIN', $request->getServer('HTTP_REFERRER', false));
                 if ($incoming) {
                     if (! $this->isAllowedHost($incoming)) {
                         throw new \Gems_Exception("Invalid source host, possible CSRF attack", 403);
