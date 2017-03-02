@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-02 14:37+0100\n"
+"POT-Creation-Date: 2017-03-02 14:58+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -447,16 +447,16 @@ msgstr "Subject match"
 msgid "Appointment subject"
 msgstr "Appointment subject"
 
-#: gemstracker/gemstracker/classes/Gems/Controller/Action/Helper/BatchRunner.php:57
+#: gemstracker/gemstracker/classes/Gems/Controller/Action/Helper/BatchRunner.php:58
 msgid "Prepare recheck"
 msgstr "Prepare recheck"
 
-#: gemstracker/gemstracker/classes/Gems/Controller/Action/Helper/BatchRunner.php:64
+#: gemstracker/gemstracker/classes/Gems/Controller/Action/Helper/BatchRunner.php:66
 #, php-format
 msgid "Start %s jobs"
 msgstr "Start %s jobs"
 
-#: gemstracker/gemstracker/classes/Gems/Controller/Action/Helper/BatchRunner.php:67
+#: gemstracker/gemstracker/classes/Gems/Controller/Action/Helper/BatchRunner.php:69
 #: gemstracker/gemstracker/classes/Gems/Controller/ModelSnippetActionAbstract.php:384
 #: gemstracker/gemstracker/classes/Gems/Default/ExportSurveysAction.php:52
 msgid "Nothing to do."
@@ -3735,8 +3735,8 @@ msgstr "Checking round assignments for all tracks."
 
 #: gemstracker/gemstracker/classes/Gems/Default/TrackMaintenanceAction.php:190
 #, php-format
-msgid "Checking round assignments for track '%s'."
-msgstr "Checking round assignments for track '%s'."
+msgid "Checking round assignments for track %d '%s'."
+msgstr "Checking round assignments for track %d '%s'."
 
 #: gemstracker/gemstracker/classes/Gems/Default/TrackMaintenanceAction.php:287
 msgid "Recalculating fields for all tracks."
@@ -3744,8 +3744,8 @@ msgstr "Recalculating fields for all tracks."
 
 #: gemstracker/gemstracker/classes/Gems/Default/TrackMaintenanceAction.php:305
 #, php-format
-msgid "Recalculating fields for track '%s'."
-msgstr "Recalculating fields for track '%s'."
+msgid "Recalculating fields for track %d '%s'."
+msgstr "Recalculating fields for track %d '%s'."
 
 #: gemstracker/gemstracker/classes/Gems/Default/TrackMaintenanceWithEngineActionAbstract.php:60
 msgid "Missing track identifier."
@@ -7293,11 +7293,11 @@ msgstr "%d passwords encrypted for table %s."
 msgid "No passwords found in table %s."
 msgstr "No passwords found in table %s."
 
-#: gemstracker/gemstracker/classes/Gems/Task/Updates/FillTokenReplacementsTask.php:100
+#: gemstracker/gemstracker/classes/Gems/Task/Updates/FillTokenReplacementsTask.php:98
 msgid "No token replacements to create"
 msgstr "No token replacements to create"
 
-#: gemstracker/gemstracker/classes/Gems/Task/Updates/FillTokenReplacementsTask.php:110
+#: gemstracker/gemstracker/classes/Gems/Task/Updates/FillTokenReplacementsTask.php:108
 #, php-format
 msgid "Created %d token replacement"
 msgid_plural "Created %d token replacements"
@@ -9512,6 +9512,12 @@ msgid "%s, one import problem found, continuing check."
 msgid_plural "%s, %d import problems found, continuing check."
 msgstr[0] "%s, one import problem found, continuing check."
 msgstr[1] "%s, %d import problems found, continuing check."
+
+#~ msgid "Checking round assignments for track '%s'."
+#~ msgstr "Checking round assignments for track '%s'."
+
+#~ msgid "Recalculating fields for track '%s'."
+#~ msgstr "Recalculating fields for track '%s'."
 
 #~ msgid "No letters, ':' or '\\' are allowed after '<' or '&' character."
 #~ msgstr "No letters, ':' or '\\' are allowed after '<' or '&' character."

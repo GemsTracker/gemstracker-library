@@ -90,8 +90,6 @@ class FillTokenReplacementsTask extends \MUtil_Task_TaskAbstract
     {
         $row = $this->_stmt->fetch();
 
-        \MUtil_Echo::track($row);
-
         $batch = $this->getBatch();
         $count = $batch->getCounter('inserted_token_replacements');
 
