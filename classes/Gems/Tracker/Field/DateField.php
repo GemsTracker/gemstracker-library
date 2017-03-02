@@ -120,6 +120,13 @@ class DateField extends FieldAbstract
             }
         }
 
+        if ($currentValue instanceof \MUtil_Date) {
+            return $currentValue;
+        }
+        if ($currentValue) {
+            return \MUtil_Date::ifDate($currentValue, array($this->getDateFormat(), $this->getStorageFormat()));
+        }
+
         return $currentValue;
     }
 
