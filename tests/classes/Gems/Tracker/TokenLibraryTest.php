@@ -55,7 +55,7 @@ class TokenLibraryTest extends \PHPUnit_Framework_TestCase {
             ['abcd_efgh', 'abcd-efgh'], // Check invalid char instead of dash
             ['.abcd_efgh', 'abcd-efgh'], // Check invalid char at start of token
             ['ab.cd_efgh', 'abcd-efgh'], // Check invalid char before end of token but not at dash
-            //['abcd_efgh.', 'abcd-efgh'], // Check invalid char at end of token
+            ['abcd_efgh.', 'abcd-efgh'], // Check invalid char at end of token
             ["\tabcd_efgh", 'abcd-efgh'], // Check tab in front of token
         ];
     }
