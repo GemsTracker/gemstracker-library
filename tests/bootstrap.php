@@ -7,7 +7,7 @@
  * @version $Id: bootstrap.php 361 2011-07-28 14:58:34Z michiel $
  * @package Gems
  */
-
+//ini_set('xdebug.max_nesting_level', 500);
 defined('GEMS_TIMEZONE') || define('GEMS_TIMEZONE', 'Europe/Amsterdam');
 date_default_timezone_set(GEMS_TIMEZONE);
 
@@ -15,8 +15,8 @@ date_default_timezone_set(GEMS_TIMEZONE);
  * Setup environment
  */
 define('APPLICATION_ENV', 'testing');
-define('GEMS_PROJECT_NAME', 'Gems');
-define('GEMS_PROJECT_NAME_UC',  'Gems');
+define('GEMS_PROJECT_NAME', 'Test');
+define('GEMS_PROJECT_NAME_UC',  'Test');
 
 define('GEMS_TEST_DIR', __DIR__);
 define('GEMS_ROOT_DIR', dirname(GEMS_TEST_DIR));

@@ -658,7 +658,8 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
             }  else {
                 echo "No changes to patient $patientId.";
             }
-            exit(0);
+            
+            return;
         }
     }
 
