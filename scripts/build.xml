@@ -50,7 +50,7 @@
                     <regexp pattern="CHARSET\s+[^\s,;]+\s*" replace="" ignoreCase="true"/>
                     <regexp pattern="COLLATE\s*[^\s,;]+\s*" replace="" ignoreCase="true"/>
                     <regexp pattern="ENUM\s[^)]+\)\s*" replace="" ignoreCase="true"/>
-                    <regexp pattern="SET\s[^)]+\)\s*" replace="" ignoreCase="true"/>
+                    <regexp pattern="SET\s?\([^)]+\)\s*" replace="" ignoreCase="true"/>
                     <regexp pattern="UNSIGNED\s*" replace="" ignoreCase="true"/>
                     <regexp pattern="(\s)(DATETIME|DATE|TIMESTAMP)(\s|,)" replace="\1TEXT\3" ignoreCase="true"/>
                     <regexp pattern="\s+DEFAULT\s+NULL(\s+|,)" replace="\1" ignoreCase="true"/>
