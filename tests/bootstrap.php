@@ -48,7 +48,7 @@ if (file_exists(dirname(__FILE__) . '/../vendor/autoload.php')) {
     set_include_path(
         GEMS_TEST_DIR . '/classes' . PATH_SEPARATOR .
         GEMS_TEST_DIR . '/library' . PATH_SEPARATOR .
-        GEMS_ROOT_DIR . '/classes'
+        GEMS_LIBRARY_DIR . '/classes' . PATH_SEPARATOR . get_include_path()
         );
 
     require_once dirname(__FILE__) . '/../vendor/autoload.php';
@@ -59,7 +59,7 @@ if (file_exists(dirname(__FILE__) . '/../vendor/autoload.php')) {
     set_include_path(
         GEMS_TEST_DIR . '/classes' . PATH_SEPARATOR .
         GEMS_TEST_DIR . '/library' . PATH_SEPARATOR .
-        GEMS_LIBRARY_DIR . '/classes'
+        GEMS_LIBRARY_DIR . '/classes' . PATH_SEPARATOR . get_include_path()
         );
 
     // Try to set the correct include path (if needed)
