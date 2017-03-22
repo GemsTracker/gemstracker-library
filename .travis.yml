@@ -19,4 +19,4 @@ install: composer install
 script: phpunit --configuration tests/phpunit.xml --coverage-clover build/logs/clover.xml
 
 after_script:
-  - if [[ "$WITH_COVERAGE" == "true" ]]; then vendor/bin/test-reporter; fi
+  - if [[ "$WITH_COVERAGE" == "true" ]]; then bin/test-reporter; fi
