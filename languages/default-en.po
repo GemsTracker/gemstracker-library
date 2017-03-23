@@ -3515,7 +3515,7 @@ msgstr "Resetting values for template %s to defaults failed"
 #: gemstracker/gemstracker/classes/Gems/Default/TokenAction.php:50
 #, php-format
 msgid "Surveys assigned to respondent %s"
-msgstr "Surveys assigned to paitent %s"
+msgstr "Surveys assigned to patient %s"
 
 #: gemstracker/gemstracker/classes/Gems/Default/TokenPlanAction.php:30
 msgid "Token planning"
