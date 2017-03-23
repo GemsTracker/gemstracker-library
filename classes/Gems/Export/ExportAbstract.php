@@ -180,7 +180,17 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
      */
     protected function addFile()
     {
-        $tempFilename       = GEMS_ROOT_DIR . '/var/tmp/export-' . md5(time() . rand());
+        $exportTempDir = GEMS_ROOT_DIR . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR;
+
+        if (! is_dir($exportTempDir)) {
+            $oldmask = umask(0777);
+            if (! @mkdir($exportTempDir, 0777, true)) {
+                $this->throwLastError(sprintf($this->translate->_("Could not create '%s' directory."), $exportTempDir));
+            }
+            umask($oldmask);
+        }
+
+        $tempFilename       = $exportTempDir . 'export-' . md5(time() . rand());
         $this->tempFilename = $tempFilename;
         $basename           = $this->cleanupName($this->model->getName());
         $filename           = $basename;
