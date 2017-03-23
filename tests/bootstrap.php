@@ -51,7 +51,10 @@ if (file_exists(dirname(__FILE__) . '/../vendor/autoload.php')) {
         GEMS_LIBRARY_DIR . '/classes' . PATH_SEPARATOR . get_include_path()
         );
 
-    require_once dirname(__FILE__) . '/../vendor/autoload.php';
+    /* @var $autoloader Composer\Autoload\ClassLoader */
+    $autoloader = require dirname(__FILE__) . '/../vendor/autoload.php';
+    
+    $autoloader->setUseIncludePath(true);
 } else {
     /**
      * Setup include path
