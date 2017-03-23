@@ -77,7 +77,7 @@ class RespondentControllerTest extends ControllerTestAbstract {
         $body = $this->getResponse()->getBody();
         $this->assertEquals('Changes to patient 1001303 saved.', $body, 'simple-api: Inserting a new patient failed');
         //Save this for the next test
-        $this->saveTables(['gems__respondents', 'gems__respondent2org'], 'RespondentControllerTest_testSimpleApi2');
+        //$this->saveTables(['gems__respondents', 'gems__respondent2org'], 'RespondentControllerTest_testSimpleApi2');
     }
 
     /**
@@ -105,7 +105,7 @@ class RespondentControllerTest extends ControllerTestAbstract {
         $this->dispatch('/respondent/simple-api');
         $body = $this->getResponse()->getBody();
         $this->assertEquals('No changes to patient 1001303.', $body, 'simple-api: unchanged patient failed');
-        $this->saveTables(['gems__respondents', 'gems__respondent2org'], 'RespondentControllerTest_testSimpleApi3');        
+        //$this->saveTables(['gems__respondents', 'gems__respondent2org'], 'RespondentControllerTest_testSimpleApi3');        
     }
     
     /**

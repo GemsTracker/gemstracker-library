@@ -100,7 +100,9 @@ class ControllerTestAbstract extends \Zend_Test_PHPUnit_ControllerTestCase {
     {
         $path      = $this->getPath();
         $testcase  = $this->getName();
-        $className = basename(get_class($this));
+        // Just basename fails on linux systems
+        $classParts = explode('\\', get_class($this));
+        $className = end($classParts);
         $classFile = $path . DIRECTORY_SEPARATOR . $className . '.xml';
         $testFile  = $path . DIRECTORY_SEPARATOR . $className . '_' . $testcase . '.xml';
         if (file_exists($testFile)) {
