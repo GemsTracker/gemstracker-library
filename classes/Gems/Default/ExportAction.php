@@ -68,6 +68,16 @@ class Gems_Default_ExportAction extends \Gems_Controller_ModelSnippetActionAbstr
         $this->_searchFilter['gr2o_reception_code'] = 'OK';
         $this->_searchFilter['grc_success'] = 1;
 
+        if (isset($this->_searchFilter['ids'])) {
+            $idStrings = $this->_searchFilter['ids'];
+
+            $idArray = preg_split('/[\s,;]+/', $idStrings, -1, PREG_SPLIT_NO_EMPTY);
+
+            if ($idArray) {
+                $this->_searchFilter['gto_id_respondent'] = $idArray;
+            }
+        }
+
         return $this->_searchFilter;
     }
 
