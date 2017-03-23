@@ -102,7 +102,6 @@ class ExportSurveysFormSnippet extends \MUtil_Snippets_SnippetAbstract
             array('label' => $this->_('Survey'), 'multiOptions' => $surveys)
             );
         $elements['gto_id_survey']->setRequired(true);
-        $elements['gto_id_survey']->setSeparator('');
 
         if (\MUtil_Bootstrap::enabled()) {
             $element = new \MUtil_Bootstrap_Form_Element_ToggleCheckboxes('toggleSurvey', array('selector'=>'input[name^=gto_id_survey]'));
