@@ -148,6 +148,11 @@ class ExportSurveysFormSnippet extends \MUtil_Snippets_SnippetAbstract
                 ->setDescription($this->_("Not respondent nr, but respondent id as exported here. Separate multiple id's with , or ;"));
         $elements[] = $element;
 
+        $element = $this->form->createElement('checkbox', 'incomplete');
+        $element->setLabel($this->_('Include incomplete surveys'));
+        $element->setDescription($this->_('Include surveys that have been started but have not been checked as completed'));
+        $elements['incomplete'] = $element;
+
         $element = $this->form->createElement('checkbox', 'column_identifiers');
         $element->setLabel($this->_('Column Identifiers'));
         $element->setDescription($this->_('Prefix the column labels with an identifier. (A) Answers, (TF) Trackfields, (D) Description'));

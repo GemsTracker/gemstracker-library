@@ -64,6 +64,10 @@ class Gems_Default_ExportAction extends \Gems_Controller_ModelSnippetActionAbstr
         $this->_searchFilter = parent::getSearchFilter($useRequest);
 
         $this->_searchFilter[] = 'gto_start_time IS NOT NULL';
+        if (!isset($this->_searchFilter['incomplete']) || !$this->_searchFilter['incomplete']) {
+            $this->_searchFilter[] = 'gto_completion_time IS NOT NULL';
+        }
+
         $this->_searchFilter['gco_code'] = 'consent given';
         $this->_searchFilter['gr2o_reception_code'] = 'OK';
         $this->_searchFilter['grc_success'] = 1;

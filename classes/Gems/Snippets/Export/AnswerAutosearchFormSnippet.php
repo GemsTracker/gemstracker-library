@@ -92,6 +92,12 @@ class AnswerAutosearchFormSnippet extends \Gems_Snippets_AutosearchFormSnippet
         
         $elements[] = null;
 
+        $element = $this->form->createElement('checkbox', 'incomplete');
+        $element->setLabel($this->_('Include incomplete surveys'));
+        $element->getDecorator('Label')->setOption('placement', \Zend_Form_Decorator_Abstract::APPEND);
+        $element->setDescription($this->_('Include surveys that have been started but have not been checked as completed'));
+        $elements['incomplete'] = $element;
+
         $element = $this->form->createElement('checkbox', 'column_identifiers');
         $element->setLabel($this->_('Column Identifiers'));
         $element->getDecorator('Label')->setOption('placement', \Zend_Form_Decorator_Abstract::APPEND);
