@@ -133,7 +133,7 @@ class RespondentControllerTest extends ControllerTestAbstract {
         $this->dispatch('/respondent/simple-api');
         $body = $this->getResponse()->getBody();
         $this->assertEquals('Changes to patient 1001303 saved.', $body, 'simple-api: Changed patient failed');
-        $this->saveTables(['gems__respondents', 'gems__respondent2org'], 'RespondentControllerTest_testSimpleApi3');        
+        //$this->saveTables(['gems__respondents', 'gems__respondent2org'], 'RespondentControllerTest_testSimpleApi3');        
     }
 
 }

@@ -105,7 +105,6 @@ class ControllerTestAbstract extends \Zend_Test_PHPUnit_ControllerTestCase {
         $className = end($classParts);
         $classFile = $path . DIRECTORY_SEPARATOR . $className . '.xml';
         $testFile  = $path . DIRECTORY_SEPARATOR . $className . '_' . $testcase . '.xml';
-        echo $testFile . ' ' . $classFile;
         if (file_exists($testFile)) {
             return new \PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet($testFile);
         }
