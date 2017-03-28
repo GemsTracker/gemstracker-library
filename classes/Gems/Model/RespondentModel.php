@@ -768,6 +768,22 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                     $newPatient = $patients[1];
                 }
                 
+                // Due to key contraints the respondent id's should be different but check anyway
+                if ($oldPatient['grs_id_user'] !== $newPatient['grs_id_user']) {
+                    // It could be that the 'old' patient has a ssn, this could lead to problems later
+                    // To prevent this we clear the ssn for the old patient
+                    if (!empty($oldPatient['grs_ssn'])) {
+                        $oldPatient['grs_ssn'] = '';
+                        $changed = $this->db->update(
+                                'gems__respondents',  
+                                ['grs_ssn' => null], 
+                                ['grs_id_user = ?' => $oldPatient['grs_id_user']]
+                                );
+                        // We seem to be unable to save an empty ssn
+                        //$this->save($oldPatient);
+                    }
+                }
+                
                 $tables = array(
                     'gems__respondent2track'              => ['gr2t_id_user',      'gr2t_id_organization'],
                     'gems__tokens'                        => ['gto_id_respondent', 'gto_id_organization'],
