@@ -56,7 +56,7 @@ class ControllerTestAbstract extends \Zend_Test_PHPUnit_ControllerTestCase {
         /* @var $connection \PDO */
         $connection->sqliteCreateFunction('concat', array(__CLASS__, 'sqlFunctionConcat'));
         $connection->sqliteCreateFunction('concat_ws', array(__CLASS__, 'sqlFunctionConcatWs'));
-
+        
         if ($sqlFiles = $this->getInitSql()) {
             foreach ($sqlFiles as $file) {
                 $sql = file_get_contents($file);
@@ -99,7 +99,7 @@ class ControllerTestAbstract extends \Zend_Test_PHPUnit_ControllerTestCase {
     protected function getDataSet()
     {
         $path      = $this->getPath();
-        $testcase  = $this->getName();
+        $testcase  = $this->getName(false);
         // Just basename fails on linux systems
         $classParts = explode('\\', get_class($this));
         $className = end($classParts);

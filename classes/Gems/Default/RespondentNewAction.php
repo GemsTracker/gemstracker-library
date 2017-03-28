@@ -634,14 +634,44 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
         $importLoader = $this->loader->getImportLoader();
         $model        = $this->getModel();
         $translator   = new \Gems_Model_Translator_RespondentTranslator($this->_('Direct import'));
-
+        
         $this->source->applySource($translator);
         $translator->setTargetModel($model)
                 ->startImport();
 
-        $raw    = $translator->translateRowValues($data, 1);
+        $raw    = $translator->translateRowValues($data, 1);        
+        $errors = array();
+        
+        // First check if we need to merge
+        if (array_key_exists('oldpid', $raw)) {
+            $oldPid = $raw['oldpid'];
+            if (array_key_exists('gr2o_patient_nr', $raw) && array_key_exists('gr2o_id_organization', $raw)) {
+                $newPid = $raw['gr2o_patient_nr'];
+                $orgId  = (int) $raw['gr2o_id_organization'];
+                $result = $model->merge($newPid, $oldPid, $orgId);
+                switch ($result) {
+                    case \Gems\Model\MergeResult::BOTH:
+                        echo sprintf("%s merged to %s\n", $oldPid, $newPid);
+                        break;
+                    
+                    case \Gems\Model\MergeResult::FIRST:
+                        echo sprintf("%s not found, nothing to merge\n", $oldPid);
+                        break;
+                    
+                    case \Gems\Model\MergeResult::SECOND:
+                        echo sprintf("%s renamed to %s\n", $oldPid, $newPid);
+                        break;
+
+                    default:
+                        break;
+                }
+            } else {
+                $errors[] = 'To merge you need at least oldpid, gr2o_patient_nr and gr2o_id_organization.';
+            }
+        }
+        
         $row    = $translator->validateRowValues($raw, 1);
-        $errors = $translator->getRowErrors(1);
+        $errors = array_merge($errors, $translator->getRowErrors(1));
 
         if ($errors) {
             echo "ERRORS Occured:\n" . implode("\n", $errors);
