@@ -841,7 +841,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
             }
 
             if ((!$id) &&
-                    isset($newValues['grs_ssn']) &&
+                    isset($newValues['grs_ssn']) && !empty($newValues['grs_ssn']) &&
                     ($this->hashSsn !== self::SSN_HIDE)) {
 
                 if (self::SSN_HASH === $this->hashSsn) {
