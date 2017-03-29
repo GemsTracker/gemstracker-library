@@ -27,8 +27,14 @@ class ControllerTestAbstract extends \Zend_Test_PHPUnit_ControllerTestCase {
                     ]
                 ]
             ]
-        ]));
-
+        ]));        
+        
+        // Add our test loader dirs
+        $dirs = $config->loaderDirs->toArray();
+        $config->loaderDirs = 
+                [GEMS_PROJECT_NAME_UC => GEMS_TEST_DIR . "/classes/" . GEMS_PROJECT_NAME_UC] + 
+                $dirs;
+        
         // Create application, bootstrap, and run
         $application = new \Zend_Application(APPLICATION_ENV, $config);
 

@@ -277,6 +277,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
                 case 'create':
                 case 'edit':
                 case 'import':
+                case 'simple-api':
                     $model->applyEditSettings($action == 'create');
                     break;
 
@@ -660,6 +661,8 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
                     
                     case \Gems\Model\MergeResult::SECOND:
                         echo sprintf("%s renamed to %s\n", $oldPid, $newPid);
+                        // After a rename, we need to refetch the ids
+                        $raw    = $translator->translateRowValues($data, 1); 
                         break;
 
                     default:
@@ -669,7 +672,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
                 $errors[] = 'To merge you need at least oldpid, gr2o_patient_nr and gr2o_id_organization.';
             }
         }
-        
+            
         $row    = $translator->validateRowValues($raw, 1);
         $errors = array_merge($errors, $translator->getRowErrors(1));
 
