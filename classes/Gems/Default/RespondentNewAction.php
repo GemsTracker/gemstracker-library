@@ -310,12 +310,13 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
 
         $this->addSnippets($this->exportSnippets, $params);
 
+        $this->html->h2($this->_('Export respondent archive'));
+        
         //Now show the export form
         $export = $this->loader->getRespondentExport();
-        $form = $export->getForm();
-        $this->html->h2($this->_('Export respondent archive'));
-        $div = $this->html->div(array('id' => 'mainform'));
-        $div[] = $form;
+        $form   = $export->getForm();
+        $div    = $this->html->div(array('id' => 'mainform'));
+        $div[]  = $form;
 
         $request = $this->getRequest();
 
@@ -329,7 +330,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
                     'gr2o_patient_nr'      => $respondent->getPatientNumber()
                     )
                 );
-            $export->render($patients, $this->getRequest()->getParam('group'), $this->getRequest()->getParam('format'));
+            $export->render($patients, $request->getParam('group'), $request->getParam('format'));
         }
     }
 
@@ -635,14 +636,14 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
         $importLoader = $this->loader->getImportLoader();
         $model        = $this->getModel();
         $translator   = new \Gems_Model_Translator_RespondentTranslator($this->_('Direct import'));
-        
+
         $this->source->applySource($translator);
         $translator->setTargetModel($model)
                 ->startImport();
 
-        $raw    = $translator->translateRowValues($data, 1);        
+        $raw    = $translator->translateRowValues($data, 1);
         $errors = array();
-        
+
         // First check if we need to merge
         if (array_key_exists('oldpid', $raw)) {
             $oldPid = $raw['oldpid'];
@@ -654,15 +655,15 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
                     case \Gems\Model\MergeResult::BOTH:
                         echo sprintf("%s merged to %s\n", $oldPid, $newPid);
                         break;
-                    
+
                     case \Gems\Model\MergeResult::FIRST:
                         echo sprintf("%s not found, nothing to merge\n", $oldPid);
                         break;
-                    
+
                     case \Gems\Model\MergeResult::SECOND:
                         echo sprintf("%s renamed to %s\n", $oldPid, $newPid);
                         // After a rename, we need to refetch the ids
-                        $raw    = $translator->translateRowValues($data, 1); 
+                        $raw    = $translator->translateRowValues($data, 1);
                         break;
 
                     default:
@@ -672,7 +673,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
                 $errors[] = 'To merge you need at least oldpid, gr2o_patient_nr and gr2o_id_organization.';
             }
         }
-            
+
         $row    = $translator->validateRowValues($raw, 1);
         $errors = array_merge($errors, $translator->getRowErrors(1));
 
@@ -691,7 +692,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
             }  else {
                 echo "No changes to patient $patientId.";
             }
-            
+
             return;
         }
     }

@@ -20,6 +20,13 @@
 class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstract
 {
     /**
+     * Group answers
+     *
+     * @var boolean
+     */
+    protected $_group;
+
+    /**
      * @var \Gems_Pdf
      */
     protected $_pdf;
@@ -263,7 +270,7 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
             }
 
             $showToken = false;
-            if ($engine->getTrackType() == 'S' || !$groupSurveys) {
+            if (! $groupSurveys) {
                 // For single survey tracks or when $groupSurvey === false we show all tokens
                 $showToken = true;
             } else {
@@ -274,7 +281,7 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
                     $surveys[$token->getSurveyId()] = 1;
                 }
             }
-
+            
             if ($showToken) {
                 $params = array(
                     'token'          => $token,
@@ -424,9 +431,10 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
     {
         parent::afterRegistry();
 
-        $this->_pdf   = $this->loader->getPdf();
-        $this->escort = \GemsEscort::getInstance();
-        $this->html   = new \MUtil_Html_Sequence();
+        $this->_pdf    = $this->loader->getPdf();
+        $this->escort  = \GemsEscort::getInstance();
+        $this->html    = new \MUtil_Html_Sequence();
+        $this->request = \Zend_Controller_Front::getInstance()->getRequest();
 
         // Do not know why, but for some reason menu is not loaded automatically.
         $this->menu   = $this->loader->getMenu();
@@ -511,7 +519,7 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
         if ($this->escort instanceof \Gems_Project_Layout_MultiLayoutInterface) {
             $this->escort->layoutSwitch();
         }
-        $this->escort->postDispatch(\Zend_Controller_Front::getInstance()->getRequest());
+        $this->escort->postDispatch($this->request);
 
         \Zend_Controller_Action_HelperBroker::getExistingHelper('layout')->disableLayout();
         \Zend_Controller_Action_HelperBroker::getExistingHelper('viewRenderer')->setNoRender(true);
