@@ -469,7 +469,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     {
         try {
             $select = $this->db->select();
-            $select->from('gems__user_login_attempts', array('UNIX_TIMESTAMP(gula_block_until) - UNIX_TIMESTAMP() AS wait'))
+            $select->from('gems__user_login_attempts', new \Zend_Db_Expr('UNIX_TIMESTAMP(gula_block_until) - UNIX_TIMESTAMP() AS wait'))
                     ->where('gula_block_until is not null')
                     ->where('gula_login = ?', $this->getLoginName())
                     ->where('gula_id_organization = ?', $this->getCurrentOrganizationId())
