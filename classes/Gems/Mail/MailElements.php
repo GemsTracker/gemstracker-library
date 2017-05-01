@@ -214,7 +214,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
         }
         $options['nohidden'] = true;
 
-        return $this->_form->createElement('exhibitor', 'preview_html', $options);
+        return $this->_form->createElement('Html', 'preview_html', $options);
     }
 
     /**
@@ -227,7 +227,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
         $options['label']       = $this->translate->_('Preview Text');
         $options['nohidden']    = true;
 
-        return $this->_form->createElement('exhibitor', 'preview_text', $options);
+        return $this->_form->createElement('Html', 'preview_text', $options);
     }
 
     /**
