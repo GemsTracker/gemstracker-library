@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ../../..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.0.1\n"
 "X-Poedit-SearchPath-0: gemstracker/gemstracker/classes\n"
 "X-Poedit-SearchPath-1: gemstracker/gemstracker/languages\n"
 "X-Poedit-SearchPath-2: magnafacta/mutil/src\n"
@@ -3497,7 +3497,7 @@ msgstr "Vragenlijstexportcode"
 #: gemstracker/gemstracker/classes/Gems/Tracker/Snippets/ExportTrackSnippetAbstract.php:382
 msgid "A unique code indentifying this survey during track import"
 msgstr ""
-"Een unieke code die deze vragnlijst identificeert bij de trajectimport."
+"Een unieke code die deze vragenlijst identificeert bij de trajectimport."
 
 #: gemstracker/gemstracker/classes/Gems/Default/SurveyMaintenanceAction.php:515
 msgid "Before answering"
