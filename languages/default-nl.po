@@ -7188,7 +7188,7 @@ msgstr ""
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Import/CheckTrackFieldImportTask.php:78
 #, php-format
 msgid "No gtf_id_order specified for field at line %d."
-msgstr "Geen gtf_id_order opgegeven voor de organisaite op regel %d."
+msgstr "Geen gtf_id_order opgegeven voor de organisatie op regel %d."
 
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Import/CheckTrackFieldImportTask.php:90
 #, php-format
@@ -7257,17 +7257,17 @@ msgstr "\"traject\" gegevens gevonden op regel %d."
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Import/CheckTrackOrganizationImportTask.php:51
 #, php-format
 msgid "No gor_id_organization not specified for organization at line %d."
-msgstr "Geen gor_id_organization opgegeven voor de organisaite op regel %d."
+msgstr "Geen gor_id_organization opgegeven voor de organisatie op regel %d."
 
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Import/CheckTrackOrganizationImportTask.php:73
 #, php-format
 msgid "No gor_name not specified for organization at line %d."
-msgstr "Geen gor_name opgegeven voor de organisaite op regel %d."
+msgstr "Geen gor_name opgegeven voor de organisatie op regel %d."
 
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Import/CheckTrackRoundImportTask.php:49
 #, php-format
 msgid "No gro_id_order specified for round at line %d."
-msgstr "Geen gro_id_order opgegeven voor de organisaite op regel %d."
+msgstr "Geen gro_id_order opgegeven voor de organisatie op regel %d."
 
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Import/CheckTrackRoundImportTask.php:58
 #, php-format
@@ -7307,7 +7307,7 @@ msgstr "(sla rondes over)"
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Import/CheckTrackSurveyImportTask.php:176
 #, php-format
 msgid "No gsu_export_code specified for survey at line %d."
-msgstr "Geen gsu_export_code opgegeven voor de organisaite op regel %d."
+msgstr "Geen gsu_export_code opgegeven voor de organisatie op regel %d."
 
 #: gemstracker/gemstracker/classes/Gems/Task/Tracker/Import/CheckVersionImportTask.php:56
 #, php-format

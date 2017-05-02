@@ -95,7 +95,7 @@ class CheckTrackImportTask extends \MUtil_Task_TaskAbstract
                 }
                 if (isset($trackData['gtr_beforefieldupdate_event']) && $trackData['gtr_beforefieldupdate_event']) {
                     try {
-                        $events->loadTrackFieldUpdateEvent($trackData['gtr_beforefieldupdate_event']);
+                        $events->loadBeforeTrackFieldUpdateEvent($trackData['gtr_beforefieldupdate_event']);
                     } catch (\Gems_Exception_Coding $ex) {
                         $batch->addToCounter('import_errors');
                         $batch->addMessage(sprintf(
