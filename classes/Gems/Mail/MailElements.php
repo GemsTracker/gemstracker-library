@@ -254,7 +254,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
         if ($target) {
             $query .= ' AND gems__comm_templates.gct_target = ?';
         }
-        $query .= ' GROUP BY gems__comm_templates.gct_id_template';
+        $query .= ' GROUP BY gems__comm_templates.gct_id_template ORDER BY gems__comm_templates.gct_name';
 
         if ($target) {
             $options['multiOptions'] = $this->db->fetchPairs($query, $target);
