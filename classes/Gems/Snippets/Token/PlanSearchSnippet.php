@@ -252,7 +252,7 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
      */
     protected function getAllTrackTypes($allowedOrgs, array $data)
     {
-        return $this->util->getTrackData()->getActiveTracks($allowedOrgs);
+        return $this->util->getTrackData()->getActiveTracks(array_keys($allowedOrgs));
     }
 
     /**
