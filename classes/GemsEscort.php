@@ -291,10 +291,10 @@ class GemsEscort extends \MUtil_Application_Escort
             $useCache = "File";
         }
         if ($useCache === 'apc' && extension_loaded('apc') && ini_get('apc.enabled')) {
-            $cacheBackend = 'Apc';
-            $cacheBackendOptions = array();
             //Add path to the prefix as APC is a SHARED cache
             $cachePrefix .= md5(APPLICATION_PATH);
+            $cacheBackendOptions = array('cache_id_prefix' => $cachePrefix);
+            $cacheBackend = new \Gems\Cache\Backend\Apc($cacheBackendOptions);            
             $exists = true;
         } else {
             $cacheBackend = 'File';
