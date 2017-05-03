@@ -33,6 +33,7 @@ class TextareaField extends FieldAbstract
     protected function addModelSettings(array &$settings)
     {
         $settings['elementClass'] = 'Textarea';
-        $settings['size']         = '40';
+        $settings['cols']         = '60';
+        $settings['rows']         = '5';
     }
 }
