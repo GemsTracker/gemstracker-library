@@ -26,6 +26,13 @@ class Gems_Snippets_Tracker_Compliance_ComplianceSearchFormSnippet extends \Gems
      * @var \Gems_Loader
      */
     protected $loader;
+    
+    /**
+     * Should the filler be shown?
+     * 
+     * @var bool
+     */
+    protected $showFiller = true;
 
     /**
      * Returns a text element for autosearch. Can be overruled.
@@ -60,15 +67,17 @@ class Gems_Snippets_Tracker_Compliance_ComplianceSearchFormSnippet extends \Gems
 
         $elements[] = null;
 
-        $sql = "SELECT DISTINCT ggp_id_group, ggp_name
-                    FROM gems__groups INNER JOIN gems__surveys ON ggp_id_group = gsu_id_primary_group
-                        INNER JOIN gems__rounds ON gsu_id_survey = gro_id_survey
-                        INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
-                    WHERE ggp_group_active = 1 AND
-                        gro_active=1 AND
-                        gtr_active=1
-                    ORDER BY ggp_name";
-        $elements[] = $this->_createSelectElement('gsu_id_primary_group', $sql, $this->_('(all fillers)'));
+        if ($this->showFiller) {
+            $sql = "SELECT DISTINCT ggp_id_group, ggp_name
+                        FROM gems__groups INNER JOIN gems__surveys ON ggp_id_group = gsu_id_primary_group
+                            INNER JOIN gems__rounds ON gsu_id_survey = gro_id_survey
+                            INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
+                        WHERE ggp_group_active = 1 AND
+                            gro_active=1 AND
+                            gtr_active=1
+                        ORDER BY ggp_name";
+            $elements[] = $this->_createSelectElement('gsu_id_primary_group', $sql, $this->_('(all fillers)'));
+        }
 
         return $elements;
     }

@@ -53,6 +53,13 @@ class Gems_Default_FieldOverviewAction extends \Gems_Controller_ModelSnippetActi
         'Generic\\ContentTitleSnippet',
         'Tracker_Compliance_ComplianceSearchFormSnippet'
         );
+    
+    /**
+     *  We don't want the filler to show as it is irrelevant to this overview
+     */
+    protected $indexParameters = array(
+        'showFiller'    => false
+        );
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
