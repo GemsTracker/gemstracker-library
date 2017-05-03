@@ -456,6 +456,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
             'consent'     => $this->_('Consent'),
             'date'        => $this->_('Date'),
             'text'        => $this->_('Free text'),
+            'textarea'    => $this->_('Long free text'),
             'location'    => $this->_('Location'),
             'datetime'    => $this->_('Moment in time'),
             'procedure'   => $this->_('Procedure'),
