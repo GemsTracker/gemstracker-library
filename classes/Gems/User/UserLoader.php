@@ -397,10 +397,25 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Returns the current organization according to the current site url.
      *
-     * @static array $url An array of url => orgId values
      * @return int An organization id or null
      */
     public function getOrganizationIdByUrl()
+    {
+        $urls    = $this->getOrganizationUrls();
+        $current = $this->util->getCurrentURI();
+
+        if (isset($urls[$current])) {
+            return $urls[$current];
+        }
+    }
+
+    /**
+     * Returns the current organization according to the current site url.
+     *
+     * @static array $urls An array of url => orgId values
+     * @return array url => orgId
+     */
+    public function getOrganizationUrls()
     {
         static $urls;
 
@@ -417,7 +432,11 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
             if ($cacheId === false || $urls === false) {
                 $urls = array();
                 try {
-                    $data = $this->db->fetchPairs("SELECT gor_id_organization, gor_url_base FROM gems__organizations WHERE gor_active=1 AND gor_url_base IS NOT NULL");
+                    $data = $this->db->fetchPairs(
+                            "SELECT gor_id_organization, gor_url_base
+                                FROM gems__organizations
+                                WHERE gor_active=1 AND gor_url_base IS NOT NULL"
+                            );
                 } catch (\Zend_Db_Exception $zde) {
                     // Table might not be filled
                     $data = array();
@@ -437,11 +456,7 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
             // \MUtil_Echo::track($urls);
         }
 
-        $current = $this->util->getCurrentURI();
-
-        if (isset($urls[$current])) {
-            return $urls[$current];
-        }
+        return $urls;
     }
 
     /**

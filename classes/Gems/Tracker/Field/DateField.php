@@ -37,6 +37,13 @@ class DateField extends FieldAbstract
     protected $phpDateTimeFormat = 'j M Y';
 
     /**
+     * The model type
+     *
+     * @var int
+     */
+    protected $type = \MUtil_Model::TYPE_DATE;
+
+    /**
      * The format string for outputting dates
      *
      * @var string
@@ -55,6 +62,7 @@ class DateField extends FieldAbstract
         $settings['elementClass']  = 'Date';
         $settings['dateFormat']    = $this->getDateFormat();
         $settings['storageFormat'] = $this->getStorageFormat();
+        $settings['type']          = $this->type;
     }
 
     /**
@@ -115,10 +123,11 @@ class DateField extends FieldAbstract
         if ($currentValue instanceof \MUtil_Date) {
             return $currentValue;
         }
-
         if ($currentValue) {
             return \MUtil_Date::ifDate($currentValue, array($this->getDateFormat(), $this->getStorageFormat()));
         }
+
+        return $currentValue;
     }
 
     /**

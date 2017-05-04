@@ -46,8 +46,8 @@ set_include_path(
     get_include_path());
 
 // Set up autoload.
-if (file_exists(dirname(__FILE__) . '/../vendor/autoload.php')) {
-    require_once dirname(__FILE__) . '/../vendor/autoload.php';
+if (file_exists(VENDOR_DIR . '/autoload.php')) {
+    require_once VENDOR_DIR . '/autoload.php';
 } else {
     // Try to set the correct include path (if needed)
     $paths = array(

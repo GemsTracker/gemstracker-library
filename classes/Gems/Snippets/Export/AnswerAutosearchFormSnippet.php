@@ -75,6 +75,15 @@ class AnswerAutosearchFormSnippet extends \Gems_Snippets_AutosearchFormSnippet
 
         $elements[] = null;
 
+        $element = $this->form->createElement('textarea', 'ids');
+        $element->setLabel($this->_('Respondent id\'s'))
+            ->setAttrib('cols', 60)
+            ->setAttrib('rows', 4)
+            ->setDescription($this->_("Not respondent nr, but respondent id as exported here. Separate multiple id's with , or ;"));
+        $elements['ids'] = $element;
+
+        $elements[] = null;
+
         $element = $this->form->createElement('checkbox', 'add_track_fields');
         $element->setLabel($this->_('Track fields'));
         $element->getDecorator('Label')->setOption('placement', \Zend_Form_Decorator_Abstract::APPEND);
@@ -82,6 +91,12 @@ class AnswerAutosearchFormSnippet extends \Gems_Snippets_AutosearchFormSnippet
         $elements['tid_fields'] = $element;
         
         $elements[] = null;
+
+        $element = $this->form->createElement('checkbox', 'incomplete');
+        $element->setLabel($this->_('Include incomplete surveys'));
+        $element->getDecorator('Label')->setOption('placement', \Zend_Form_Decorator_Abstract::APPEND);
+        $element->setDescription($this->_('Include surveys that have been started but have not been checked as completed'));
+        $elements['incomplete'] = $element;
 
         $element = $this->form->createElement('checkbox', 'column_identifiers');
         $element->setLabel($this->_('Column Identifiers'));

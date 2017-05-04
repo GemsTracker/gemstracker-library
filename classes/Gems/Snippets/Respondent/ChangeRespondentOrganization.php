@@ -330,8 +330,8 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
                     $start . '_changed_by' => $userId,
                     ];
                 $where = [
-                    $respIdField => $fromRespId,
-                    $orgIdField  => $fromOrgId,
+                    "$respIdField = ?" => $fromRespId,
+                    "$orgIdField = ?" => $fromOrgId,
                     ];
                 $changed += $this->db->update($tableName, $values, $where);
             }

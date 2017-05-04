@@ -722,6 +722,116 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
     {
         return $this->currentUser->hasPrivilege('pr.respondent.multiorg');
     }
+    
+    /**
+     * Merge two patients (in the same organization)
+     * 
+     * @param string $newPid
+     * @param string $oldPid
+     * @param int $orgId
+     * 
+     * @return \Gems\Model\MergeResult | false The result or false in case of failure
+     */
+    public function merge($newPid, $oldPid, $orgId)
+    {
+        $patients = $this->load(array(
+            'gr2o_id_organization' => $orgId,
+            'gr2o_patient_nr' => array($oldPid, $newPid)
+            ));
+        
+        $cnt = count($patients);
+        
+        switch ($cnt) {
+            case 1:
+                // We only have one, check if it is the new number
+                $patient = reset($patients);
+                if ($patient['gr2o_patient_nr'] == $newPid) {
+                    return \Gems\Model\MergeResult::FIRST;
+                }
+                
+                // Not the new number, we can simply rename
+                $patient['gr2o_patient_nr'] = $newPid;
+                $copyKey = $this->getKeyCopyName('gr2o_patient_nr');
+                $patient[$copyKey] = $oldPid;
+                $this->save($patient);
+                return \Gems\Model\MergeResult::SECOND;
+                break;
+                
+            case 2:
+                // We really need to merge all related records for the patients
+                $patient = $patients[0];
+                if ($patient['gr2o_patient_nr'] == $newPid) {
+                    $newPatient = $patient;
+                    $oldPatient = $patients[1];
+                } else {
+                    $oldPatient = $patient;
+                    $newPatient = $patients[1];
+                }
+                
+                // Due to key contraints the respondent id's should be different but check anyway
+                if ($oldPatient['grs_id_user'] !== $newPatient['grs_id_user']) {
+                    // It could be that the 'old' patient has a ssn, this could lead to problems later
+                    // To prevent this we clear the ssn for the old patient
+                    if (!empty($oldPatient['grs_ssn'])) {
+                        $oldPatient['grs_ssn'] = '';
+                        $changed = $this->db->update(
+                                'gems__respondents',  
+                                ['grs_ssn' => null], 
+                                ['grs_id_user = ?' => $oldPatient['grs_id_user']]
+                                );
+                        // We seem to be unable to save an empty ssn
+                        //$this->save($oldPatient);
+                    }
+                }
+                
+                $tables = array(
+                    'gems__respondent2track'              => ['gr2t_id_user',      'gr2t_id_organization'],
+                    'gems__tokens'                        => ['gto_id_respondent', 'gto_id_organization'],
+                    'gems__appointments'                  => ['gap_id_user',       'gap_id_organization'],
+                    'gems__log_respondent_communications' => ['grco_id_to',        'grco_organization'],
+                    'gems__respondent_relations'          => ['grr_id_respondent', null],
+                    'gems__log_activity'                  => ['gla_respondent_id', 'gla_organization']
+                );
+
+                $changed   = 0;
+                $currentTs = new \MUtil_Db_Expr_CurrentTimestamp();
+                $userId    = $this->currentUser->getUserId();
+
+                foreach ($tables as $tableName => $settings) {
+                    list($respIdField, $orgIdField) = $settings;
+
+                    $start = \MUtil_String::beforeChars($respIdField, '_');
+
+                    $values = [
+                        $respIdField           => $newPatient['grs_id_user'],
+                        $start . '_changed'    => $currentTs,
+                        $start . '_changed_by' => $userId,
+                        ];
+                    
+                    if ($tableName == 'gems__log_activity') {
+                        unset($values[$start . '_changed']);
+                        unset($values[$start . '_changed_by']);
+                    }
+                    
+                    $where = [];
+                    $where["$respIdField = ?"] = $oldPatient['grs_id_user'];
+                    if (!is_null($orgIdField)) {
+                        $where["$orgIdField = ?"] = $orgId;
+                    };
+                    $changed += $this->db->update($tableName, $values, $where);
+                }
+                
+                return \Gems\Model\MergeResult::BOTH;
+                break;
+            
+            default:
+                // Not found
+                return \Gems\Model\MergeResult::NONE;
+                break;
+        }
+        
+        return false;
+    }
 
     /**
      * Save a single model item.
@@ -747,7 +857,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
             }
 
             if ((!$id) &&
-                    isset($newValues['grs_ssn']) &&
+                    isset($newValues['grs_ssn']) && !empty($newValues['grs_ssn']) &&
                     ($this->hashSsn !== self::SSN_HIDE)) {
 
                 if (self::SSN_HASH === $this->hashSsn) {

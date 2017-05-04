@@ -153,6 +153,7 @@ CREATE TABLE "gems__chart_config" (
 )  ;
 CREATE TABLE gems__comm_jobs (
         gcj_id_job bigint not null ,
+        gcj_id_order      int not null default 10,
 
         gcj_id_message bigint not null,
 
@@ -244,10 +245,10 @@ We remind you that for your proper treatment at [b]{organization}[/b] you are re
 Click on [url={token_url}]this link[/url] to start or go to [url]{site_ask_url}[/url] and enter your token "{token}".
 
 {organization_signature}'),
-    (17, 'en', 'Password re,
+    (17, 'en', 'Password reset requested', 'To set a new password for the [b]{organization}[/b] site [b]{project}[/b], please click on this link:\n{reset_url}'),
     (17, 'nl', 'Wachtwoord opnieuw instellen aangevraagd', 'Om een nieuw wachtwoord in te stellen voor de [b]{organization}[/b] site [b]{project}[/b], klik op deze link:\n{reset_url}'),
     (18, 'en', 'New account created', 'A new account has been created for the [b]{organization}[/b] site [b]{project}[/b].
-To ,
+To set your password and activate the account please click on this link:\n{reset_url}'),
     (18, 'nl', 'Nieuw account aangemaakt', 'Een nieuw account is aangemaakt voor de [b]{organization}[/b] site [b]{project}[/b].
 Om uw wachtwoord te kiezen en uw account te activeren, klik op deze link:\n{reset_url}');
 CREATE TABLE gems__consents (
@@ -273,33 +274,43 @@ INSERT INTO gems__consents
     ('Unknown', 30, 'do not use', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
 CREATE TABLE gems__groups (
-      ggp_id_group bigint not null ,
-      ggp_name varchar(30) not null,
-      ggp_description varchar(50) not null,
+        ggp_id_group              bigint not null ,
+        ggp_name                  varchar(30) not null,
+        ggp_description           varchar(50) not null,
 
-      ggp_role varchar(150) not null default 'respondent',
-      -- The ggp_role value(s) determines someones roles as not null default 1,
-      ggp_staff_members TINYINT(1) not null default 0,
-      ggp_respondent_members TINYINT(1) not null default 1,
-      ggp_allowed_ip_ranges text,
+        ggp_role                  varchar(150) not null default 'respondent',
+        -- The ggp_role value(s) determines someones roles as set in the bootstrap
 
-      ggp_changed TEXT not null default current_timestamp,
-      ggp_changed_by bigint not null,
-      ggp_created TEXT not null,
-      ggp_created_by bigint not null,
+        ggp_may_set_groups        varchar(250),
+        ggp_default_group         bigint,
 
-      PRIMARY KEY(ggp_id_group)
-   )
-   ;
+        ggp_group_active          TINYINT(1) not null default 1,
+        ggp_staff_members         TINYINT(1) not null default 0,
+        ggp_respondent_members    TINYINT(1) not null default 1,
+        ggp_allowed_ip_ranges     text,
 
--- Default group
+        ggp_respondent_browse     varchar(255),
+
+        ggp_mask_settings         text,
+
+        ggp_changed               TEXT not null default current_timestamp,
+        ggp_changed_by            bigint not null,
+        ggp_created               TEXT not null,
+        ggp_created_by            bigint not null,
+
+        PRIMARY KEY(ggp_id_group)
+    )
+    ;
+
+-- Default groups
 INSERT ignore INTO gems__groups
-   (ggp_id_group, ggp_name, ggp_description, ggp_role, ggp_group_active, ggp_staff_members, ggp_respondent_members, ggp_changed_by, ggp_created, ggp_created_by)
-   VALUES
-   (800, 'Super Administrators', 'Super administrators with access to the whole site', 'super', 1, 1, 0, 0, current_timestamp, 0),
-   (801, 'Local Admins', 'Local Administrators', 'admin', 1, 1, 0, 0, current_timestamp, 0),
-   (802, 'Staff', 'Health care staff', 'staff', 1, 1, 0, 0, current_timestamp, 0),
-   (803, 'Respondents', 'Respondents', 'respondent', 1, 0, 1, 0, current_timestamp, 0);
+    (ggp_id_group, ggp_name, ggp_description, ggp_role, ggp_may_set_groups, ggp_group_active, ggp_staff_members, ggp_respondent_members, ggp_changed_by, ggp_created, ggp_created_by)
+    VALUES
+    (900, 'Super Administrators', 'Super administrators with access to the whole site', 809, '900,901,902,903', 1, 1, 0, 0, current_timestamp, 0),
+    (901, 'Site Admins', 'Site Administrators', 808, '901,902,903', 1, 1, 0, 0, current_timestamp, 0),
+    (902, 'Local Admins', 'Local Administrators', 807, '903', 1, 1, 0, 0, current_timestamp, 0),
+    (903, 'Staff', 'Health care staff', 804,, 1, 1, 0, 0, current_timestamp, 0),
+    (904, 'Respondents', 'Respondents', 802,, 1, 0, 1, 0, current_timestamp, 0);
 
 CREATE TABLE gems__locations (
         glo_id_location     bigint not null ,
@@ -418,8 +429,7 @@ INSERT INTO gems__log_setup (gls_name, gls_when_no_user, gls_on_action, gls_on_p
         ('index.login',                         0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('index.logoff',                        0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('index.resetpassword',                 1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-        ('index.resetpassword',                 1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-		('project-information.maintenance',     1, 1, 1, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('project-information.maintenance',     1, 1, 1, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('respondent.show',                     0, 1, 0, 0, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('source.attributes',                   0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('source.attributes-all',               0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
@@ -431,19 +441,19 @@ INSERT INTO gems__log_setup (gls_name, gls_when_no_user, gls_on_action, gls_on_p
         ('survey-maintenance.check-all',        0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('token.answered',                      1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('token.data-changed',                  1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-		('track.check-all-answers',             1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-		('track.check-all-tracks',              1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-		('track.check-token-answers',           1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-		('track.check-track',                   1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-		('track.check-track-answers',           1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('track.check-all-answers',             1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('track.check-all-tracks',              1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('track.check-token-answers',           1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('track.check-track',                   1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('track.check-track-answers',           1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('track.delete-track',                  0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('track.edit-track',                    0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-		('track.recalc-all-fields',             1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-		('track.recalc-fields',                 1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('track.recalc-all-fields',             1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('track.recalc-fields',                 1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('track-maintenance.check-all',         0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('track-maintenance.check-track',       0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-		('track-maintenance.export',            1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-		('track-maintenance.import',            1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('track-maintenance.export',            1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('track-maintenance.import',            1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('track-maintenance.recalc-all-fields', 0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('track-maintenance.recalc-fields',     0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('upgrade.execute-all',                 0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
@@ -487,28 +497,29 @@ CREATE TABLE gems__openrosaforms (
     )
     ;
 CREATE TABLE gems__organizations (
-        gor_id_organization  bigint not null ,
+        gor_id_organization         bigint not null ,
 
-        gor_name             varchar(50)   not null,
-        gor_code             varchar(20),
-        gor_user_class       varchar(30)   not null default 'StaffUser',
-        gor_location         varchar(255),
-        gor_url              varchar(127),
-        gor_url_base         varchar(1270),
-        gor_task             varchar(50),
+        gor_name                    varchar(50)   not null,
+        gor_code                    varchar(20),
+        gor_user_class              varchar(30)   not null default 'StaffUser',
+        gor_location                varchar(255),
+        gor_url                     varchar(127),
+        gor_url_base                varchar(1270),
+        gor_task                    varchar(50),
 
-        gor_provider_id      varchar(10),
+        gor_provider_id             varchar(10),
 
-        -- A comma separated list of organization numbers that can look at respondents in this organization
-        gor_accessible_by    text,
+        -- A : separated list of organization numbers that can look at respondents in this organization
+        gor_accessible_by           text,
 
-        gor_contact_name     varchar(50),
-        gor_contact_email    varchar(127),
-        gor_welcome          text,
-        gor_signature        text,
+        gor_contact_name            varchar(50),
+        gor_contact_email           varchar(127),
+        gor_welcome                 text,
+        gor_signature               text,
 
-        gor_style            varchar(15)  not null default 'gems',
-        gor_iso_lang         char(2) not null default 'en',
+        gor_style                   varchar(15)  not null default 'gems',
+        gor_resp_change_event       varchar(128) ,
+        gor_iso_lang                char(2) not null default 'en',
 
         gor_has_login               TINYINT(1) not null default 1,
         gor_has_respondents         TINYINT(1) not null default 0,
@@ -519,10 +530,10 @@ CREATE TABLE gems__organizations (
         gor_allowed_ip_ranges       text,
         gor_active                  TINYINT(1) not null default 1,
 
-        gor_changed          TEXT not null default current_timestamp,
-        gor_changed_by       bigint not null,
-        gor_created          TEXT not null,
-        gor_created_by       bigint not null,
+        gor_changed                 TEXT not null default current_timestamp,
+        gor_changed_by              bigint not null,
+        gor_created                 TEXT not null,
+        gor_created_by              bigint not null,
 
         PRIMARY KEY(gor_id_organization)
     )
@@ -567,7 +578,7 @@ CREATE TABLE gems__patch_levels (
 
 INSERT INTO gems__patch_levels (gpl_level, gpl_created)
    VALUES
-   (59, CURRENT_TIMESTAMP);
+   (61, CURRENT_TIMESTAMP);
 
 CREATE TABLE gems__radius_config (
         grcfg_id                bigint(11) NOT NULL ,
@@ -614,27 +625,26 @@ INSERT INTO gems__reception_codes (grc_id_reception_code, grc_description, grc_s
     ('stop', 'Stopped participating', 0, 2, 0, 1, 1, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
 CREATE TABLE gems__respondent2org (
-        gr2o_patient_nr varchar(15) not null,
-        gr2o_id_organization bigint not null,
+        gr2o_patient_nr         varchar(15) not null,
+        gr2o_id_organization    bigint not null,
 
-        gr2o_id_user bigint not null,
+        gr2o_id_user            bigint not null,
 
-        -- gr2o_id_physician bigint
-        --,
+        -- gr2o_id_physician       bigint,
 
-        -- gr2o_treatment varchar(200),
-        gr2o_mailable TINYINT(1) not null default 1,
-        gr2o_comments text,
+        -- gr2o_treatment          varchar(200),
+        gr2o_mailable           TINYINT(1) not null default 1,
+        gr2o_comments           text,
 
-        gr2o_consent varchar(20) not null default 'Unknown',
-        gr2o_reception_code varchar(20) default 'OK' not null,
+        gr2o_consent            varchar(20) not null default 'Unknown',
+        gr2o_reception_code     varchar(20) default 'OK' not null,
 
-        gr2o_opened TEXT not null default current_timestamp,
-        gr2o_opened_by bigint not null,
-        gr2o_changed TEXT not null,
-        gr2o_changed_by bigint not null,
-        gr2o_created TEXT not null,
-        gr2o_created_by bigint not null,
+        gr2o_opened             TEXT not null default current_timestamp,
+        gr2o_opened_by          bigint not null,
+        gr2o_changed            TEXT not null,
+        gr2o_changed_by         bigint not null,
+        gr2o_created            TEXT not null,
+        gr2o_created_by         bigint not null,
 
         PRIMARY KEY (gr2o_patient_nr, gr2o_id_organization),
         UNIQUE (gr2o_id_user, gr2o_id_organization)
@@ -704,42 +714,42 @@ CREATE TABLE gems__respondent2track2field (
 
 
 CREATE TABLE gems__respondents (
-      grs_id_user                bigint not null,
+        grs_id_user                bigint not null,
 
-      grs_ssn                    varchar(128) unique,
+        grs_ssn                    varchar(128) unique,
 
-      grs_iso_lang               char(2) not null default 'nl',
+        grs_iso_lang               char(2) not null default 'nl',
 
-      grs_email                  varchar(100),
+        grs_email                  varchar(100),
 
-      -- grs_initials_name          varchar(30) ,
-      grs_first_name             varchar(30) ,
-      -- grs_surname_prefix         varchar(10) ,
-      grs_last_name              varchar(50) ,
-      -- grs_partner_surname_prefix varchar(10) ,
-      -- grs_partner_last_name      varchar(50) ,
-      grs_gender                 char(1) not null default 'U',
-      grs_birthday               TEXT,
+        -- grs_initials_name          varchar(30) ,
+        grs_first_name             varchar(30) ,
+        -- grs_surname_prefix         varchar(10) ,
+        grs_last_name              varchar(50) ,
+        -- grs_partner_surname_prefix varchar(10) ,
+        -- grs_partner_last_name      varchar(50) ,
+        grs_gender                 char(1) not null default 'U',
+        grs_birthday               TEXT,
 
-      grs_address_1              varchar(80) ,
-      grs_address_2              varchar(80) ,
-      grs_zipcode                varchar(10) ,
-      grs_city                   varchar(40) ,
-      -- grs_region                 varchar(40) ,
-      grs_iso_country            char(2) not null default 'NL',
-      grs_phone_1                varchar(25) ,
-      grs_phone_2                varchar(25) ,
-      -- grs_phone_3                varchar(25) ,
-      -- grs_phone_4                varchar(25) ,
+        grs_address_1              varchar(80) ,
+        grs_address_2              varchar(80) ,
+        grs_zipcode                varchar(10) ,
+        grs_city                   varchar(40) ,
+        -- grs_region                 varchar(40) ,
+        grs_iso_country            char(2) not null default 'NL',
+        grs_phone_1                varchar(25) ,
+        grs_phone_2                varchar(25) ,
+        -- grs_phone_3                varchar(25) ,
+        -- grs_phone_4                varchar(25) ,
 
-      grs_changed                TEXT not null default current_timestamp,
-      grs_changed_by             bigint not null,
-      grs_created                TEXT not null,
-      grs_created_by             bigint not null,
+        grs_changed                TEXT not null default current_timestamp,
+        grs_changed_by             bigint not null,
+        grs_created                TEXT not null,
+        grs_created_by             bigint not null,
 
-      PRIMARY KEY(grs_id_user)
-   )
-   ;
+        PRIMARY KEY(grs_id_user)
+    )
+    ;
 
 
 CREATE TABLE gems__respondent_relations (
@@ -840,12 +850,12 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     VALUES
     (804, 'staff', 'staff', '801',
     'pr.option.edit,pr.option.password,
-    ,pr.plan,pr.plan.compliance,pr.plan.consent,pr.plan.overview,pr.plan.respondent,pr.plan.summary,pr.plan.token,
+    ,pr.plan.compliance,pr.plan.consent,pr.plan.overview,pr.plan.respondent,pr.plan.summary,pr.plan.token,
     ,pr.project,pr.project.questions,
     ,pr.respondent.create,pr.respondent.edit,pr.respondent.select-on-track,pr.respondent.who,
     ,pr.respondent-commlog,pr.respondent-log,
-    ,pr.survey,pr.survey.create,
-    ,pr.token,pr.token.answers,pr.token.delete,pr.token.edit,pr.token.mail,pr.token.print,
+    ,pr.survey,
+    ,pr.token,pr.token.answers,pr.token.correct,pr.token.delete,pr.token.edit,pr.token.mail,pr.token.print,
     ,pr.track,pr.track.answers,pr.track.create,pr.track.delete,pr.track.edit',
     CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
@@ -864,30 +874,31 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     (806, 'researcher', 'researcher',,
     'pr.contact.bugs,pr.contact.gems,pr.contact.support,
     ,pr.cron.job,
-    ,pr.export,
+    ,pr.export,pr.export.export,
     ,pr.islogin,
-    ,pr.plan.consent,pr.plan.consent.excel,
-	,pr.project-information.changelog,pr.contact,pr.export,pr.islogin,
+    ,pr.plan.consent,pr.plan.consent.export,
+	,pr.upgrade,
     ,pr.option.password,pr.option.edit,pr.organization-switch,
-	,pr.plan,pr.plan.compliance,pr.plan.consent,pr.plan.overview,pr.plan.respondent,pr.plan.summary,pr.plan.token',
+	,pr.plan.compliance,pr.plan.consent,pr.plan.overview,pr.plan.respondent,pr.plan.summary,pr.plan.token',
     CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
 INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_parents,
         grl_privileges,
         grl_changed, grl_changed_by, grl_created, grl_created_by)
     VALUES
-    (807, 'admin', 'admin', '801,803,804,805,806',
+    (807, 'admin', 'local admin', '801,803,804,805,806',
     'pr.comm.job,
-    ,pr.comm.template,pr.comm.template.create,pr.comm.template.delete,pr.comm.template.edit,pr.comm.template.log,
+    ,pr.comm.template,pr.comm.template.create,pr.comm.template.delete,pr.comm.template.edit,
     ,pr.consent,pr.consent.create,pr.consent.edit,
-    ,pr.export,pr.export-html,
+    ,pr.export,pr.export.export,pr.export-html,
     ,pr.group,
+    ,pr.mail.log,
     ,pr.organization,pr.organization-switch,
-    ,pr.plan.compliance.excel,pr.plan.overview.excel,
-    ,pr.plan.respondent,pr.plan.respondent.excel,pr.plan.summary.excel,pr.plan.token.excel,
+    ,pr.plan.compliance.export,pr.plan.overview.export,
+    ,pr.plan.respondent,pr.plan.respondent.export,pr.plan.summary.export,pr.plan.token.export,
     ,pr.project-information,
     ,pr.reception,pr.reception.create,pr.reception.edit,
-    ,pr.respondent.choose-org,pr.respondent.delete,pr.respondent.result,pr.respondent.show-deleted,pr.respondent.undelete,
+    ,pr.respondent.delete,pr.respondent.result,pr.respondent.show-deleted,pr.respondent.undelete,
     ,pr.role,
     ,pr.staff,pr.staff.create,pr.staff.deactivate,pr.staff.edit,pr.staff.reactivate,pr.staff.see.all,
     ,pr.staff-log,
@@ -896,27 +907,55 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     ,pr.token.mail.freetext,pr.token.undelete,
     ,pr.track.check,pr.track.insert,pr.track.undelete,
     ,pr.track-maintenance,pr.track-maintenance.create,pr.track-maintenance.edit,pr.track-maintenance.export,
-    ,pr.track-maintenance.import,pr.track-maintenance.merge,pr.track-maintenance.trackperorg',
+    ,pr.track-maintenance.import,pr.track-maintenance.trackperorg',
     CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
 INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_parents,
         grl_privileges,
         grl_changed, grl_changed_by, grl_created, grl_created_by)
     VALUES
-    (808, 'super', 'super', '801,803,804,805,806,807',
+    (809, 'siteadmin', 'site admin', '801,803,804,805,806,807',
+    'pr.comm.job,
+    ,pr.comm.template,pr.comm.template.create,pr.comm.template.delete,pr.comm.template.edit,
+    ,pr.consent,pr.consent.create,pr.consent.edit,
+    ,pr.export,pr.export.export,pr.export-html,
+    ,pr.group,
+    ,pr.mail.log,
+    ,pr.organization,pr.organization-switch,
+    ,pr.plan.compliance.export,pr.plan.overview.export,
+    ,pr.plan.respondent,pr.plan.respondent.export,pr.plan.summary.export,pr.plan.token.export,
+    ,pr.project-information,
+    ,pr.reception,pr.reception.create,pr.reception.edit,
+    ,pr.respondent.delete,pr.respondent.result,pr.respondent.show-deleted,pr.respondent.undelete,
+    ,pr.role,
+    ,pr.staff,pr.staff.create,pr.staff.deactivate,pr.staff.edit,pr.staff.edit.all,pr.staff.reactivate,pr.staff.see.all,
+    ,pr.staff-log,
+    ,pr.source,
+    ,pr.survey-maintenance,pr.survey-maintenance.answer-import,
+    ,pr.token.mail.freetext,pr.token.undelete,
+    ,pr.track.check,pr.track.insert,pr.track.undelete,
+    ,pr.track-maintenance,pr.track-maintenance.create,pr.track-maintenance.edit,pr.track-maintenance.export,
+    ,pr.track-maintenance.import,pr.track-maintenance.trackperorg',
+    CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
+
+INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_parents,
+        grl_privileges,
+        grl_changed, grl_changed_by, grl_created, grl_created_by)
+    VALUES
+    (808, 'super', 'super', '801,803,804,805,806,807,809',
     'pr.agenda-activity,pr.agenda-activity.cleanup,pr.agenda-activity.create,pr.agenda-activity.delete,pr.agenda-activity.edit,
     ,pr.agenda-filters,pr.agenda-filters.create,pr.agenda-filters.delete,pr.agenda-filters.edit,
     ,pr.agenda-procedure,pr.agenda-procedure.cleanup,pr.agenda-procedure.create,pr.agenda-procedure.delete,pr.agenda-procedure.edit,
     ,pr.agenda-staff,pr.agenda-staff.create,pr.agenda-staff.delete,pr.agenda-staff.edit,
     ,pr.comm.job.create,pr.comm.job.edit,pr.comm.job.delete,
-    ,pr.comm.server,pr.comm.server.create,pr.comm.server.delete,pr.comm.server.edit,
     ,pr.consent.delete,
-    ,pr.database,pr.database.create,pr.database.delete,pr.database.edit,pr.database.execute,pr.database.patches,
-	,pr.file-import,pr.file-import.auto,
+    ,pr.database,pr.database.create,pr.database.delete,pr.database.execute,pr.database.patches,
+	,pr.file-import,
     ,pr.group.create,pr.group.edit,
     ,pr.locations,pr.locations.cleanup,pr.locations.create,pr.locations.delete,pr.locations.edit,
     ,pr.log.files,pr.log.files.download,
-    ,pr.maintenance,pr.maintenance.clean-cache,pr.maintenance.maintenance-mode,
+    ,pr.mail.server,pr.mail.server.create,pr.mail.server.delete,pr.mail.server.edit,
+    ,pr.maintenance.clean-cache,pr.maintenance.maintenance-mode,
     ,pr.organization.create,pr.organization.edit,
     ,pr.plan.mail-as-application,pr.reception.delete,
     ,pr.respondent.multiorg,
@@ -929,7 +968,6 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     ,pr.track-maintenance.delete,
     ,pr.upgrade,pr.upgrade.all,pr.upgrade.one,pr.upgrade.from,pr.upgrade.to',
     CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
-
 CREATE TABLE gems__rounds (
         gro_id_round           bigint not null ,
 
@@ -1034,7 +1072,6 @@ CREATE TABLE gems__staff (
         gsf_last_failed			TEXT,
         -- end depreciated
 
-
         gsf_id_primary_group	bigint,
         gsf_iso_lang			char(2) not null default 'en',
         gsf_logout_on_survey	TINYINT(1) not null default 0,
@@ -1047,7 +1084,7 @@ CREATE TABLE gems__staff (
         gsf_last_name			varchar(30) ,
         gsf_gender				char(1) not null default 'U',
         -- gsf_birthday            TEXT,
-        -- gsf_function            varchar(40) ,
+        gsf_job_title           varchar(64) ,
 
         -- gsf_address_1           varchar(80) ,
         -- gsf_address_2           varchar(80) ,
@@ -1190,11 +1227,12 @@ CREATE TABLE gems__tokens (
 
         -- values initially filled from gems__rounds, but that might get different values later on, but but not now
         gto_round_order         int not null default 10,
+        gto_icon_file           varchar(100),
         gto_round_description   varchar(100),
 
         --- fields for relations
-        gto_id_relationfield  bigint(2),
-        gto_id_relation       bigint(2),
+        gto_id_relationfield    bigint(2),
+        gto_id_relation         bigint(2),
 
         -- real data
         gto_valid_from          TEXT,
@@ -1212,7 +1250,7 @@ CREATE TABLE gems__tokens (
         gto_completion_time     TEXT,
         gto_duration_in_sec     bigint(20),
         -- gto_followup_date       TEXT, -- deprecated
-        gto_result              varchar(20) ,
+        gto_result              varchar(255) ,
 
         gto_comment             text,
         gto_reception_code      varchar(20) default 'OK' not null,
@@ -1240,35 +1278,45 @@ CREATE TABLE gems__token_attempts (
     ;
 
 
+-- Created by Matijs de Jong <mjong@magnafacta.nl>
+CREATE TABLE gems__token_replacements (
+        gtrp_id_token_new           varchar(9) not null,
+        gtrp_id_token_old           varchar(9) not null,
+
+        gtrp_created                TEXT not null default CURRENT_TIMESTAMP,
+        gtrp_created_by             bigint not null,
+
+        PRIMARY KEY (gtrp_id_token_new)
+    )
+    ;
+
+
 CREATE TABLE gems__tracks (
-        gtr_id_track          int not null ,
-        gtr_track_name        varchar(40) not null unique,
+        gtr_id_track                int not null ,
+        gtr_track_name              varchar(40) not null unique,
 
-        gtr_track_info        varchar(250) ,
-        gtr_code              varchar(64),
+        gtr_track_info              varchar(250) ,
+        gtr_code                    varchar(64),
 
-        gtr_date_start        TEXT not null,
-        gtr_date_until        TEXT,
+        gtr_date_start              TEXT not null,
+        gtr_date_until              TEXT,
 
-        gtr_active            TINYINT(1) not null default 0,
-        gtr_survey_rounds     int not null default 0,
+        gtr_active                  TINYINT(1) not null default 0,
+        gtr_survey_rounds           int not null default 0,
 
-        -- deprecated since 1.7.1
-        gtr_track_type        char(1) not null default 'T',
-        -- end deprecated
+        gtr_track_class             varchar(64) not null,
+        gtr_beforefieldupdate_event varchar(128) ,
+        gtr_calculation_event       varchar(128) ,
+        gtr_completed_event         varchar(128) ,
+        gtr_fieldupdate_event       varchar(128) ,
 
-        gtr_track_class       varchar(64) not null,
-        gtr_calculation_event varchar(128) ,
-        gtr_completed_event   varchar(128) ,
-        gtr_fieldupdate_event varchar(128) ,
+        -- Yes, quick and dirty
+        gtr_organizations           varchar(250) ,
 
-        -- Yes, quick and dirty, will correct later (probably)
-        gtr_organizations     varchar(250) ,
-
-        gtr_changed           TEXT not null default current_timestamp,
-        gtr_changed_by        bigint not null,
-        gtr_created           TEXT not null,
-        gtr_created_by        bigint not null,
+        gtr_changed                 TEXT not null default current_timestamp,
+        gtr_changed_by              bigint not null,
+        gtr_created                 TEXT not null,
+        gtr_created_by              bigint not null,
 
         PRIMARY KEY (gtr_id_track)
     )

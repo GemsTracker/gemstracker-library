@@ -32,10 +32,10 @@ CREATE TABLE if not exists gems__groups (
 
 -- Default groups
 INSERT ignore INTO gems__groups
-    (ggp_id_group, ggp_name, ggp_description, ggp_role, ggp_may_set_groups, ggp_group_active, ggp_staff_members, ggp_respondent_members, ggp_visibility_setup, ggp_changed_by, ggp_created, ggp_created_by)
+    (ggp_id_group, ggp_name, ggp_description, ggp_role, ggp_may_set_groups, ggp_group_active, ggp_staff_members, ggp_respondent_members, ggp_changed_by, ggp_created, ggp_created_by)
     VALUES
-    (900, 'Super Administrators', 'Super administrators with access to the whole site', 809, '900,901,902,903', 1, 1, 0, '*', 0, current_timestamp, 0),
-    (901, 'Site Admins', 'Site Administrators', 808, '901,902,903', 1, 1, 0, '*', 0, current_timestamp, 0),
-    (902, 'Local Admins', 'Local Administrators', 807, '903', 1, 1, 0, '*', 0, current_timestamp, 0),
-    (903, 'Staff', 'Health care staff', 804, null, 1, 1, 0, '*', 0, current_timestamp, 0),
-    (904, 'Respondents', 'Respondents', 802, null, 1, 0, 1, '*', 0, current_timestamp, 0);
+    (900, 'Super Administrators', 'Super administrators with access to the whole site', 809, '900,901,902,903', 1, 1, 0, 0, current_timestamp, 0),
+    (901, 'Site Admins', 'Site Administrators', 808, '901,902,903', 1, 1, 0, 0, current_timestamp, 0),
+    (902, 'Local Admins', 'Local Administrators', 807, '903', 1, 1, 0, 0, current_timestamp, 0),
+    (903, 'Staff', 'Health care staff', 804, null, 1, 1, 0, 0, current_timestamp, 0),
+    (904, 'Respondents', 'Respondents', 802, null, 1, 0, 1, 0, current_timestamp, 0);

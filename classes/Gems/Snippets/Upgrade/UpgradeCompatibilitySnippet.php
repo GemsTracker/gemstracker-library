@@ -572,7 +572,37 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             $p->append('. Then run the script and check again for issues not fixed by the script.');
 
         } elseif (! $output) {
+            $this->html->h2('Code change report');
             $this->html->pInfo('No compatibility issues found in the code for this project.');
+        }
+    }
+
+    /**
+     * A reports on the project ini
+     */
+    protected function addProjectIniReport()
+    {
+        $h2     = $this->html->h2();
+        $issues = false;
+        if (! $this->project->offsetExists('headers')) {
+            $this->html->pInfo('No headers section found.');
+            $issues = true;
+        }
+        if (! $this->project->offsetExists('meta')) {
+            $this->html->pInfo('No meta headers section found.');
+            $issues = true;
+        }
+        if ($this->project->offsetExists('x-frame')) {
+            $this->html->pInfo('Stand alone X-Frame option is no longer in use, set in headers section instead.');
+            $issues = true;
+        }
+
+        if ($issues) {
+            $h2->append('Project.ini issues found');
+            $this->html->pInfo()->strong('See project.example.ini for examples of fixes.');
+        } else {
+            $h2->append('Project.ini report');
+            $this->html->pInfo('No compatibility issues found in project.ini.');
         }
     }
 
@@ -625,6 +655,8 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
                 ));
 
         $this->addEscortReport();
+
+        $this->addProjectIniReport();
 
         $this->addFileReports();
 

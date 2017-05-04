@@ -672,7 +672,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
                     $groupId
                     );
             $groupsAllowed = explode(',', $setGroups);
-        } catch (\Zend_Db_Statement_Mysqli_Exception $e) {
+        } catch (\Zend_Db_Exception $e) {
             // The database might not be updated
             $groupsAllowed = [];
         }

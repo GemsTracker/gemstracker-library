@@ -59,6 +59,12 @@ _("Must be the same as %fieldDescription%.");
 // MUtil_Validate_IsNot
 _("This value is not allowed.");
 
+// MUtil_Validate_NoScript
+_("Html tags may not be entered here.");
+
+// MUtil\Validate\NoTags
+_("No letters, ':' or '\\' are allowed directly after a '<' or '&' character.");
+
 // MUtil_Validate_NotEqualTo
 _('Values may not be the same.');
 

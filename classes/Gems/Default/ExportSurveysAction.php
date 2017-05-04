@@ -100,6 +100,10 @@ class Gems_Default_ExportSurveysAction extends \MUtil_Controller_Action
         }
 
         $filter[] = 'gto_start_time IS NOT NULL';
+        if (!isset($this->data['incomplete']) || !$this->data['incomplete']) {
+            $filter[] = 'gto_completion_time IS NOT NULL';
+        }
+
         $filter['gco_code'] = 'consent given';
         $filter['gr2o_reception_code'] = 'OK';
         $filter['grc_success'] = 1;

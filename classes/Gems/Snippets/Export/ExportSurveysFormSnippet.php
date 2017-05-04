@@ -102,7 +102,6 @@ class ExportSurveysFormSnippet extends \MUtil_Snippets_SnippetAbstract
             array('label' => $this->_('Survey'), 'multiOptions' => $surveys)
             );
         $elements['gto_id_survey']->setRequired(true);
-        $elements['gto_id_survey']->setSeparator('');
 
         if (\MUtil_Bootstrap::enabled()) {
             $element = new \MUtil_Bootstrap_Form_Element_ToggleCheckboxes('toggleSurvey', array('selector'=>'input[name^=gto_id_survey]'));
@@ -148,6 +147,11 @@ class ExportSurveysFormSnippet extends \MUtil_Snippets_SnippetAbstract
                 ->setAttrib('rows', 4)
                 ->setDescription($this->_("Not respondent nr, but respondent id as exported here. Separate multiple id's with , or ;"));
         $elements[] = $element;
+
+        $element = $this->form->createElement('checkbox', 'incomplete');
+        $element->setLabel($this->_('Include incomplete surveys'));
+        $element->setDescription($this->_('Include surveys that have been started but have not been checked as completed'));
+        $elements['incomplete'] = $element;
 
         $element = $this->form->createElement('checkbox', 'column_identifiers');
         $element->setLabel($this->_('Column Identifiers'));

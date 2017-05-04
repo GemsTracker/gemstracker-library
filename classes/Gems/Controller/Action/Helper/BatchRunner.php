@@ -5,7 +5,6 @@
  * @subpackage Controller_Action_Helper
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -42,6 +41,7 @@ class Gems_Controller_Action_Helper_BatchRunner extends \Zend_Controller_Action_
                 echo implode("\n", $echo);
             }
             if ($accessLog instanceof \Gems_AccessLog) {
+                array_unshift($messages, $title);
                 $accessLog->logChange($this->getRequest(), $messages, $echo);
             }
             exit;
@@ -53,11 +53,13 @@ class Gems_Controller_Action_Helper_BatchRunner extends \Zend_Controller_Action_
             $batchContainer->h3($title);
 
             if ($batch->isFinished()) {
-                $controller->addMessage($batch->getMessages(true), 'info');
+                $messages = array_values($batch->getMessages(true));
+                $controller->addMessage($messages, 'info');
                 $batchContainer->pInfo($batch->getRestartButton($controller->_('Prepare recheck'), array('class' => 'actionlink')));
                 if ($accessLog instanceof \Gems_AccessLog) {
+                    array_unshift($messages, $title);
                     $echo = array_filter(array_map('trim', preg_split('/<[^>]+>/', \MUtil_Echo::getOutput())));
-                    $accessLog->logChange($this->getRequest(), null, $echo);
+                    $accessLog->logChange($this->getRequest(), $messages, $echo);
                 }
             } else {
                 if ($batch->count()) {

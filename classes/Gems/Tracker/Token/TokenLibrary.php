@@ -155,36 +155,46 @@ class Gems_Tracker_Token_TokenLibrary extends \Gems_Registry_TargetAbstract
      */
     public function filter($token)
     {
+        // Apply replacements
         if ($this->tokenFrom) {
             $token = strtr($token, $this->tokenFrom, $this->tokenTo);
         }
+        
+        // If not case sensitive, convert to lowercase
         if (! $this->tokenCaseSensitive) {
             $token = strtolower($token);
         }
+        
+        // Filter out invalid chars
+        $tokenLength   = strlen($token);
+        $filteredToken = '';
+        
+        for ($tokenPos = 0; ($tokenPos < $tokenLength); $tokenPos++) {
+            if (strpos($this->tokenChars, $token[$tokenPos]) !== false) {
+                $filteredToken .= $token[$tokenPos];
+            }
+        }
 
+        // Now check against the format for fixed chars
         $formatLength = strlen($this->tokenFormat);
-        $tokenLength  = strlen($token);
+        $tokenLength  = strlen($filteredToken);
         $tokenPos     = 0;
         $resultToken  = '';
-
+        
         for ($formatPos = 0; ($formatPos < $formatLength) && ($tokenPos < $tokenLength); $formatPos++) {
             if ('\\' == $this->tokenFormat[$formatPos]) {
                 $formatPos++;
                 $resultToken .= $this->tokenFormat[$formatPos];
 
-            } else {
-                while (false === strpos($this->tokenChars, $token[$tokenPos])) {
-                    $tokenPos++;
-                    if ($tokenPos >= $tokenLength) {
-                        return $resultToken;
-                    }
-                }
-                $resultToken .= $token[$tokenPos];
+            } else {                
+                $resultToken .= $filteredToken[$tokenPos];
                 $tokenPos++;
             }
         }
+        
+        // Separate extra chars with a space and a questionmark
         if ($tokenPos < $tokenLength) {
-            $resultToken .= ' ?' . substr($token, $tokenPos);
+            $resultToken .= ' ?' . substr($filteredToken, $tokenPos);
         }
 
         return $resultToken;

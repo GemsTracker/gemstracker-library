@@ -41,7 +41,7 @@ class TrackSurveyExportTask extends TrackExportAbstract
         $data = $this->db->fetchRow($select);
         // \MUtil_Echo::track($data);
 
-        if ($data) {
+        if ($data && isset($data['gsu_export_code']) && $data['gsu_export_code']) {
             $count = $batch->addToCounter('surveys_exported');
 
             if ($count == 1) {

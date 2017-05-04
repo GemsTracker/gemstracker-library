@@ -91,7 +91,14 @@ class Gems_Util_DbLookup extends UtilAbstract
             WHERE ggp_group_active = 1 AND ggp_staff_members = 1
             ORDER BY ggp_name";
 
-        return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'groups');
+        try {
+            $staffGroups = $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'groups');
+        } catch (\Exception $exc) {
+            // Intentional fallthrough when no db present
+            $staffGroups = array();
+        }
+
+        return $staffGroups;
     }
 
     /**

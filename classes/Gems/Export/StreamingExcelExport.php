@@ -268,18 +268,51 @@ class StreamingExcelExport extends ExportAbstract
         $exportName = $this->getName();
         if (isset($this->data[$exportName]) && isset($this->data[$exportName]['format']) && in_array('formatDate', $this->data[$exportName]['format'])) {
             if ($value instanceof \MUtil_Date) {
-                $timestamp = $value->getTimestamp();
-
-                return ($timestamp/86400)+25569.4167;
-            } elseif (\MUtil_Date::ifDate($value, $dateFormat)) {
-                $date = new \MUtil_Date($value, $dateFormat);
-                $timestamp = $date->getTimestamp();
-
-                return ($timestamp/86400)+25569.4167;
+                $date = new \DateTime();
+                $date->setTimestamp($value->getTimestamp());
+                return $this->createExcelDate($date);
+            } elseif ($this->validateDate($value, \MUtil_Date::$zendToPhpFormats[$dateFormat])) {
+                $date = \DateTime::createFromFormat($value, \MUtil_Date::$zendToPhpFormats[$dateFormat]);
+                return $this->createExcelDate($date);
             }
         }
 
         return parent::filterDateFormat($value, $dateFormat, $columnName);
+    }
+
+    /**
+     * @param $value string Date value
+     * @param $dateFormat string date format as in the DateTime php class
+     * @return bool True if Date is valid
+     */
+    public function validateDate($value, $dateFormat)
+    {
+        $dateTime = \DateTime::createFromFormat($dateFormat, $value);
+        return $dateTime && $dateTime->format($dateFormat) === $value;
+    }
+
+    /**
+     * Create Excel date stamp from DateTime
+     *
+     * @param \DateTime $date
+     * @return float number of days since 1900-01-00
+     */
+    public function createExcelDate(\DateTime $date)
+    {
+        $day = clone $date;
+        $endDate = $day->setTime(0, 0, 0);
+        $startDate = new \DateTime('1970-01-01 00:00:00');
+        $diff = $endDate->diff($startDate)->format('%a');
+
+        if ($endDate < $startDate) {
+            $daysBetween = 25569 - $diff;
+        } else {
+            $daysBetween = 25569 + $diff;
+        }
+
+        $seconds = $date->getTimestamp() - $endDate->getTimestamp();
+
+        return (float)$daysBetween + ($seconds / 86400);
     }
 
     protected function filterHtml($result)

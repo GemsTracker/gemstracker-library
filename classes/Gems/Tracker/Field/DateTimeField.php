@@ -24,6 +24,13 @@ namespace Gems\Tracker\Field;
 class DateTimeField extends DateField
 {
     /**
+     * The model type
+     *
+     * @var int
+     */
+    protected $type = \MUtil_Model::TYPE_DATETIME;
+
+    /**
      * The format string for outputting dates
      *
      * @var string

@@ -187,7 +187,7 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
                 $where
                 );
 
-        $title = sprintf($this->_("Checking round assignments for track '%s'."), $track->getTrackName());
+        $title = sprintf($this->_("Checking round assignments for track %d '%s'."), $id, $track->getTrackName());
         $this->_helper->BatchRunner($batch, $title, $this->accesslog);
 
         $this->addSnippet('Track\\CheckRoundsInformation');
@@ -302,7 +302,7 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
                 $where
                 );
 
-        $title = sprintf($this->_("Recalculating fields for track '%s'."), $track->getTrackName(), $this->accesslog);
+        $title = sprintf($this->_("Recalculating fields for track %d '%s'."), $id, $track->getTrackName(), $this->accesslog);
         $this->_helper->BatchRunner($batch, $title, $this->accesslog);
 
         $this->addSnippet('Track\\RecalcFieldsInformation');
