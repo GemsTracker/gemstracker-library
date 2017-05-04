@@ -136,7 +136,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
      * @return array Default values in form
      */
     public function getDefaultFormValues() {}
-        
+
     /**
      * Add an export command with specific details. Can be batched.
      * @param array $data    Data submitted by export form
@@ -183,11 +183,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
         $exportTempDir = GEMS_ROOT_DIR . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR;
 
         if (! is_dir($exportTempDir)) {
-            $oldmask = umask(0777);
-            if (! @mkdir($exportTempDir, 0777, true)) {
-                $this->throwLastError(sprintf($this->translate->_("Could not create '%s' directory."), $exportTempDir));
-            }
-            umask($oldmask);
+            \MUtil_File::ensureDir($exportTempDir);
         }
 
         $tempFilename       = $exportTempDir . 'export-' . md5(time() . rand());
@@ -250,7 +246,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
      * @param string $filename The temporary filename while the file is being written
      */
     public function addFooter($filename) {}
-        
+
     /**
      * Clean a proposed filename up so it can be used correctly as a filename
      * @param  string $filename Proposed filename
@@ -279,7 +275,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
         } else {
             return call_user_func($functionName, $value);
         }
-    }    
+    }
 
     protected function filterHtml($result)
     {
@@ -311,8 +307,8 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
         }
 
         return $result;
-    }    
-    
+    }
+
     protected function filterItemDisplay($value, $functionName)
     {
         if (is_callable($functionName)) {
