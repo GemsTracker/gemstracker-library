@@ -335,6 +335,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
                 $filter = $this->loader->getUtil()->getDbLookup()->getFilterForMailJob($job);
                 $params['model'] = $model;
                 $params['filter'] = $filter;
+                $model->setSort(array('gto_valid_from' => SORT_ASC, 'gto_round_order' => SORT_ASC));
                 $this->addSnippet('TokenPlanTableSnippet', $params);
              }
         }
