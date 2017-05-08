@@ -25,10 +25,6 @@ class Gems_Default_ExportAction extends \Gems_Controller_ModelSnippetActionAbstr
             // Surveys have been selected       
             $exportModelSource = $this->loader->getExportModelSource($this->exportModelSource);
             $model = $exportModelSource->getModel($this->_searchFilter, $this->data);
-
-            if ($where = \Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($this->data, $this->db)) {
-                $model->addFilter(array($where));
-            }
         } else {
             $basicArray = array('gto_id_survey', 'gto_id_track', 'gto_round_description', 'gto_id_organization', 'gto_start_date', 'gto_end_date', 'gto_valid_from', 'gto_valid_until');
             
@@ -65,7 +61,14 @@ class Gems_Default_ExportAction extends \Gems_Controller_ModelSnippetActionAbstr
 
         $this->_searchFilter[] = 'gto_start_time IS NOT NULL';
         if (!isset($this->_searchFilter['incomplete']) || !$this->_searchFilter['incomplete']) {
-            $this->_searchFilter[] = 'gto_completion_time IS NOT NULL';
+            $this->_searchFilter[] = 'gto_completion_time IS NOT NULL';            
+        }
+        
+        if (isset($this->_searchFilter['dateused']) && $this->_searchFilter['dateused']) {
+            $where = \Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($this->_searchFilter, $this->db);
+            if ($where) {
+                $this->_searchFilter[] = $where;
+            }
         }
 
         $this->_searchFilter['gco_code'] = 'consent given';
