@@ -331,8 +331,10 @@ abstract class Gems_Menu_MenuAbstract
 
         $page->addPage($this->_('Run all'), 'pr.cron.job', 'comm-job', 'execute-all');
         $show = $page->findItem(array('controller' => 'comm-job', 'action' => 'show'));
-        $show->addPage($this->_('Run'), 'pr.cron.job', 'comm-job', 'execute')
+        $show->addPage($this->_('Preview'), 'pr.cron.job', 'comm-job', 'preview')
                 ->setModelParameters(1);
+        $show->addPage($this->_('Run'), 'pr.cron.job', 'comm-job', 'execute')
+                ->setModelParameters(1);        
 
         $ajaxPage = $this->addPage($this->_('Round Selection'), 'pr.comm.job', 'comm-job', 'roundselect', array('visible' => false));
         $ajaxPage = $this->addPage($this->_('Sort jobs'), 'pr.comm.job.edit', 'comm-job', 'sort', array('visible' => false));

@@ -39,7 +39,7 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract {
      * @param $respondentId Optional, execute for just one respondent
      * @param $organizationId Optional, execute for just one organization
      */
-    public function execute($jobId = null, $respondentId = null, $organizationId = null) {
+    public function execute($jobId = null, $respondentId = null, $organizationId = null, $preview = false) {
         $sql = $this->db->select()->from('gems__comm_jobs')
                     ->join('gems__comm_templates', 'gcj_id_message = gct_id_template')
                     ->where('gcj_active = 1')
@@ -53,7 +53,8 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract {
 
         $dbLookup   = $this->loader->getUtil()->getDbLookup();
         $mailLoader = $this->loader->getMailLoader();
-        $sendByMail = $job['gcj_id_user_as'];
+        $sendById   = $job['gcj_id_user_as'];
+        $sendByMail = $this->getUserEmail($sendById);
         $filter     = $dbLookup->getFilterForMailJob($job, $respondentId, $organizationId);
         $tracker    = $this->loader->getTracker();
         $model      = $tracker->getTokenModel();
@@ -99,7 +100,7 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract {
                     }
 
                     $mailer->setFrom($from);
-                    $mailer->setBy($sendByMail);
+                    $mailer->setBy($sendById);
 
                     try {
                         switch ($job['gcj_process_method']) {
@@ -117,7 +118,13 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract {
                                 if (!isset($sentMailAddresses[$respondentId][$email])) {  // When not mailed before
                                     $mail = true;
                                 } else {
-                                    $mailer->updateToken();
+                                    if (!$preview) {
+                                        $mailer->updateToken();
+                                    } else {
+                                        $this->getBatch()->addMessage(sprintf(
+                                            $this->_('Would be marked: %s %s'), $token->getPatientNumber(), $token->getSurveyName()
+                                        ));        
+                                    }
                                     $updates++;
                                 }
                                 break;
@@ -127,8 +134,14 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract {
                         }
 
                         if ($mail == true) {
-                            $mailer->setTemplate($job['gcj_id_message']);
-                            $mailer->send();
+                            if (!$preview) {
+                                $mailer->setTemplate($job['gcj_id_message']);
+                                $mailer->send();
+                            } else {
+                                $this->getBatch()->addMessage(sprintf(
+                                        $this->_('Would be sent: %s %s to %s using %s as sender'), $token->getPatientNumber(), $token->getSurveyName(), $email, $from
+                                ));
+                            }
 
                             $mails++;
                             $updates++;
@@ -147,13 +160,25 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract {
 
                         $errors++;
                     }
+                } else {
+                    if ($preview) {
+                        $this->getBatch()->addMessage(sprintf(
+                            $this->_('%s %s can not be sent because no email address is available.'), $token->getPatientNumber(), $token->getSurveyName()
+                        ));
+                    }
                 }
             }
         }
 
-        $this->getBatch()->addMessage(sprintf(
-                        $this->_('Sent %d e-mails with template %s, updated %d tokens.'), $mails, $job['gct_name'], $updates
-        ));
+        if ($preview) {
+            $this->getBatch()->addMessage(sprintf(
+                            $this->_('Would send %d e-mails with template %s, and update %d tokens.'), $mails, $job['gct_name'], $updates
+            ));
+        } else {
+            $this->getBatch()->addMessage(sprintf(
+                            $this->_('Sent %d e-mails with template %s, updated %d tokens.'), $mails, $job['gct_name'], $updates
+            ));    
+        }           
 
         if ($errors) {
             $this->getBatch()->addMessage(sprintf(

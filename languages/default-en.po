@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-03 12:17+0200\n"
+"POT-Creation-Date: 2017-05-09 14:12+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -182,7 +182,7 @@ msgstr "Determines what is filtered how."
 #: classes/Gems/Model/RespondentModel.php:269
 #: classes/Gems/Model/StaffModel.php:211
 #: classes/Gems/Model/TemplateModel.php:51
-#: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:132
+#: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:128
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:45
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:219
 #: classes/Gems/Tracker/Model/TrackModel.php:85
@@ -1105,7 +1105,7 @@ msgid "Job is only run when active."
 msgstr "Job is only run when active."
 
 #: classes/Gems/Default/CommJobAction.php:113
-#: classes/Gems/Task/Mail/ExecuteMailJobTask.php:98
+#: classes/Gems/Task/Mail/ExecuteMailJobTask.php:99
 msgid "From address used"
 msgstr "From address used"
 
@@ -1114,7 +1114,7 @@ msgid "From other"
 msgstr "From other"
 
 #: classes/Gems/Default/CommJobAction.php:124
-#: classes/Gems/Task/Mail/ExecuteMailJobTask.php:126
+#: classes/Gems/Task/Mail/ExecuteMailJobTask.php:133
 msgid "Processing Method"
 msgstr "Processing Method"
 
@@ -1166,7 +1166,7 @@ msgstr "(all surveys)"
 #: classes/Gems/Snippets/Respondent/RespondentSearchSnippet.php:86
 #: classes/Gems/Snippets/Staff/StaffSearchSnippet.php:53
 #: classes/Gems/Snippets/Token/PlanSearchSnippet.php:137
-#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:49
+#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:56
 #: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:49
 #: classes/Gems/Snippets/Tracker/TrackMaintenance/TrackMaintenanceSearchSnippet.php:58
 msgid "(all organizations)"
@@ -1273,17 +1273,17 @@ msgid "Email templates"
 msgstr "Email templates"
 
 #: classes/Gems/Default/ComplianceAction.php:74
-#: classes/Gems/Default/FieldOverviewAction.php:81
+#: classes/Gems/Default/FieldOverviewAction.php:88
 #: classes/Gems/Model/CommLogModel.php:135
 #: classes/Gems/Model/RespondentModel.php:267
 #: classes/Gems/Snippets/Agenda/AppointmentsTableSnippet.php:176
-#: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:130
+#: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:126
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:261
 msgid "Respondent nr"
 msgstr "Patient nr"
 
 #: classes/Gems/Default/ComplianceAction.php:75
-#: classes/Gems/Default/FieldOverviewAction.php:82
+#: classes/Gems/Default/FieldOverviewAction.php:89
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:135
 #: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:374
 #: classes/OpenRosa/Tracker/Source/OpenRosa/Form.php:561
@@ -1291,12 +1291,12 @@ msgid "Start date"
 msgstr "Start date"
 
 #: classes/Gems/Default/ComplianceAction.php:76
-#: classes/Gems/Default/FieldOverviewAction.php:83
+#: classes/Gems/Default/FieldOverviewAction.php:90
 msgid "End date"
 msgstr "End date"
 
 #: classes/Gems/Default/ComplianceAction.php:84
-#: classes/Gems/Default/FieldOverviewAction.php:91
+#: classes/Gems/Default/FieldOverviewAction.php:98
 #: classes/Gems/Default/FieldReportAction.php:114
 #: classes/Gems/Default/SummaryAction.php:117
 msgid "No track selected..."
@@ -1774,7 +1774,7 @@ msgid "Separate multiple commands with semicolons (;)."
 msgstr "Separate multiple commands with semicolons (;)."
 
 #: classes/Gems/Default/DatabaseAction.php:682
-#: classes/Gems/Menu/MenuAbstract.php:334
+#: classes/Gems/Menu/MenuAbstract.php:336
 msgid "Run"
 msgstr "Run"
 
@@ -1809,16 +1809,16 @@ msgstr "The data in table %s"
 msgid "Contents of %s %s"
 msgstr "Contents of %s %s"
 
-#: classes/Gems/Default/ExportAction.php:36
-#: classes/Gems/Default/ExportSurveysAction.php:319
+#: classes/Gems/Default/ExportAction.php:32
+#: classes/Gems/Default/ExportSurveysAction.php:185
 msgid "Please select a survey to start the export"
 msgstr "Please select a survey to start the export"
 
-#: classes/Gems/Default/FieldOverviewAction.php:137
+#: classes/Gems/Default/FieldOverviewAction.php:144
 msgid "Respondent Track fields"
 msgstr "Patient Track fields"
 
-#: classes/Gems/Default/FieldOverviewAction.php:148
+#: classes/Gems/Default/FieldOverviewAction.php:155
 msgid "track field"
 msgid_plural "track fields"
 msgstr[0] "track field"
@@ -1826,8 +1826,8 @@ msgstr[1] "track fields"
 
 #: classes/Gems/Default/FieldReportAction.php:139
 #: classes/Gems/Default/ReceptionAction.php:87 classes/Gems/Menu.php:369
-#: classes/Gems/Menu/MenuAbstract.php:694
-#: classes/Gems/Menu/MenuAbstract.php:815
+#: classes/Gems/Menu/MenuAbstract.php:696
+#: classes/Gems/Menu/MenuAbstract.php:817
 #: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:257
 #: classes/Gems/Tracker.php:696
 msgid "Tracks"
@@ -2437,7 +2437,7 @@ msgstr ""
 "account."
 
 #: classes/Gems/Default/OptionAction.php:207 classes/Gems/Menu.php:219
-#: classes/Gems/Menu/MenuAbstract.php:740
+#: classes/Gems/Menu/MenuAbstract.php:742
 msgid "Activity overview"
 msgstr "Activity overview"
 
@@ -2570,8 +2570,8 @@ msgstr "file not found"
 
 #: classes/Gems/Default/ProjectInformationAction.php:170
 #: classes/Gems/Default/ProjectInformationAction.php:178
-#: classes/Gems/Menu/MenuAbstract.php:652
-#: classes/Gems/Menu/MenuAbstract.php:658
+#: classes/Gems/Menu/MenuAbstract.php:654
+#: classes/Gems/Menu/MenuAbstract.php:660
 #, php-format
 msgid "Changelog %s"
 msgstr "Changelog %s"
@@ -2644,7 +2644,7 @@ msgid "Session content"
 msgstr "Session content"
 
 #: classes/Gems/Default/ProjectInformationAction.php:306
-#: classes/Gems/Menu/MenuAbstract.php:617
+#: classes/Gems/Menu/MenuAbstract.php:619
 msgid "Session"
 msgstr "Session"
 
@@ -3208,7 +3208,7 @@ msgid "Last synchronisation"
 msgstr "Last synchronisation"
 
 #: classes/Gems/Default/SourceAction.php:248
-#: classes/Gems/Menu/MenuAbstract.php:770
+#: classes/Gems/Menu/MenuAbstract.php:772
 msgid "Survey Sources"
 msgstr "Survey Sources"
 
@@ -3460,8 +3460,8 @@ msgid "]"
 msgstr "]"
 
 #: classes/Gems/Default/SurveyMaintenanceAction.php:604
-#: classes/Gems/Menu.php:447 classes/Gems/Menu/MenuAbstract.php:701
-#: classes/Gems/Menu/MenuAbstract.php:796
+#: classes/Gems/Menu.php:447 classes/Gems/Menu/MenuAbstract.php:703
+#: classes/Gems/Menu/MenuAbstract.php:798
 #: classes/Gems/Tracker/Model/TrackModel.php:88
 msgid "Surveys"
 msgstr "Surveys"
@@ -3735,7 +3735,7 @@ msgid "track per organisation"
 msgstr "track per organisation"
 
 #: classes/Gems/Default/TrackRoundsAction.php:202
-#: classes/Gems/Menu/MenuAbstract.php:849
+#: classes/Gems/Menu/MenuAbstract.php:851
 msgid "Rounds"
 msgstr "Rounds"
 
@@ -3883,11 +3883,6 @@ msgstr "Delimiter"
 msgid "Excel options"
 msgstr "Excel options"
 
-#: classes/Gems/Export/ExportAbstract.php:188 classes/Gems/Pdf.php:299
-#, php-format
-msgid "Could not create '%s' directory."
-msgstr "Could not create '%s' directory."
-
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:123
 msgid "Respondent ID"
 msgstr "Respondent ID"
@@ -4009,7 +4004,7 @@ msgid "Output format"
 msgstr "Output format"
 
 #: classes/Gems/Export/RespondentExport.php:474 classes/Gems/Menu.php:745
-#: classes/Gems/Menu/MenuAbstract.php:826 classes/Gems/Menu/SubMenuItem.php:512
+#: classes/Gems/Menu/MenuAbstract.php:828 classes/Gems/Menu/SubMenuItem.php:512
 #: classes/Gems/Snippets/Export/ExportFormSnippet.php:55
 #: classes/Gems/Snippets/Export/ExportSnippet.php:23
 #: classes/Gems/Snippets/Export/ExportSurveysFormSnippet.php:189
@@ -4068,7 +4063,7 @@ msgid "Link by patient id and completion date"
 msgstr "Link by patient id and completion date"
 
 #: classes/Gems/Mail/MailElements.php:149
-#: classes/Gems/Menu/MenuAbstract.php:836
+#: classes/Gems/Menu/MenuAbstract.php:838
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:145
 #: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:106
 msgid "Fields"
@@ -4202,7 +4197,7 @@ msgstr "Lost password"
 msgid "Your account"
 msgstr "Your account"
 
-#: classes/Gems/Menu.php:220 classes/Gems/Menu/MenuAbstract.php:631
+#: classes/Gems/Menu.php:220 classes/Gems/Menu/MenuAbstract.php:633
 #: classes/Gems/Menu/SubMenuItem.php:664
 #: classes/Gems/User/Mask/AddressMasker.php:70
 #: classes/Gems/User/Mask/AnyMasker.php:62
@@ -4237,8 +4232,9 @@ msgid "Add"
 msgstr "Add"
 
 #: classes/Gems/Menu.php:326 classes/Gems/Menu.php:478
-#: classes/Gems/Menu/MenuAbstract.php:686
-#: classes/Gems/Menu/MenuAbstract.php:698
+#: classes/Gems/Menu/MenuAbstract.php:334
+#: classes/Gems/Menu/MenuAbstract.php:688
+#: classes/Gems/Menu/MenuAbstract.php:700
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:151
 #: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:111
 msgid "Preview"
@@ -4258,12 +4254,12 @@ msgid "Check answers"
 msgstr "Check answers"
 
 #: classes/Gems/Menu.php:354 classes/Gems/Menu.php:416
-#: classes/Gems/Menu/MenuAbstract.php:828
+#: classes/Gems/Menu/MenuAbstract.php:830
 msgid "Check rounds"
 msgstr "Check rounds"
 
 #: classes/Gems/Menu.php:360 classes/Gems/Menu.php:421
-#: classes/Gems/Menu/MenuAbstract.php:831
+#: classes/Gems/Menu/MenuAbstract.php:833
 msgid "Recalculate fields"
 msgstr "Recalculate fields"
 
@@ -4271,7 +4267,7 @@ msgstr "Recalculate fields"
 msgid "Assignments"
 msgstr "Assignments"
 
-#: classes/Gems/Menu.php:400 classes/Gems/Menu/MenuAbstract.php:442
+#: classes/Gems/Menu.php:400 classes/Gems/Menu/MenuAbstract.php:444
 #: classes/Gems/Menu/SubMenuItem.php:442
 msgid "Delete"
 msgstr "Delete"
@@ -4289,11 +4285,11 @@ msgstr "Export track"
 msgid "Check all answers"
 msgstr "Check all answers"
 
-#: classes/Gems/Menu.php:440 classes/Gems/Menu/MenuAbstract.php:867
+#: classes/Gems/Menu.php:440 classes/Gems/Menu/MenuAbstract.php:869
 msgid "Check all rounds"
 msgstr "Check all rounds"
 
-#: classes/Gems/Menu.php:443 classes/Gems/Menu/MenuAbstract.php:868
+#: classes/Gems/Menu.php:443 classes/Gems/Menu/MenuAbstract.php:870
 msgid "Recalculate all fields"
 msgstr "Recalculate all fields"
 
@@ -4314,7 +4310,7 @@ msgstr "Print PDF"
 msgid "E-Mail now!"
 msgstr "E-Mail now!"
 
-#: classes/Gems/Menu.php:481 classes/Gems/Menu/MenuAbstract.php:500
+#: classes/Gems/Menu.php:481 classes/Gems/Menu/MenuAbstract.php:502
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:701
 msgid "Answers"
 msgstr "Answers"
@@ -4331,7 +4327,7 @@ msgstr "Export answers"
 msgid "Export archive"
 msgstr "Export archive"
 
-#: classes/Gems/Menu.php:497 classes/Gems/Menu/MenuAbstract.php:348
+#: classes/Gems/Menu.php:497 classes/Gems/Menu/MenuAbstract.php:350
 msgid "Communication log"
 msgstr "Communication log"
 
@@ -4351,7 +4347,7 @@ msgstr "Calendar"
 msgid "Overview"
 msgstr "Overview"
 
-#: classes/Gems/Menu.php:736 classes/Gems/Menu/MenuAbstract.php:616
+#: classes/Gems/Menu.php:736 classes/Gems/Menu/MenuAbstract.php:618
 msgid "Project"
 msgstr "Project"
 
@@ -4446,224 +4442,224 @@ msgstr "Turn Automatic Mail Jobs OFF"
 msgid "Run all"
 msgstr "Run all"
 
-#: classes/Gems/Menu/MenuAbstract.php:337
+#: classes/Gems/Menu/MenuAbstract.php:339
 msgid "Round Selection"
 msgstr "Round Selection"
 
-#: classes/Gems/Menu/MenuAbstract.php:338
+#: classes/Gems/Menu/MenuAbstract.php:340
 msgid "Sort jobs"
 msgstr "Sort"
 
-#: classes/Gems/Menu/MenuAbstract.php:341
+#: classes/Gems/Menu/MenuAbstract.php:343
 msgid "Servers"
 msgstr "Servers"
 
-#: classes/Gems/Menu/MenuAbstract.php:344
-#: classes/Gems/Menu/MenuAbstract.php:622
+#: classes/Gems/Menu/MenuAbstract.php:346
+#: classes/Gems/Menu/MenuAbstract.php:624
 msgid "Templates"
 msgstr "Templates"
 
-#: classes/Gems/Menu/MenuAbstract.php:396
+#: classes/Gems/Menu/MenuAbstract.php:398
 msgid "Single survey answers"
 msgstr "Single survey answers"
 
-#: classes/Gems/Menu/MenuAbstract.php:406
+#: classes/Gems/Menu/MenuAbstract.php:408
 msgid "Multiple surveys answers"
 msgstr "Multiple surveys answers"
 
-#: classes/Gems/Menu/MenuAbstract.php:415
+#: classes/Gems/Menu/MenuAbstract.php:417
 msgid "Respondent archives"
 msgstr "Patient archives"
 
-#: classes/Gems/Menu/MenuAbstract.php:441
+#: classes/Gems/Menu/MenuAbstract.php:443
 msgid "Are you sure you want to delete this file?"
 msgstr "Are you sure you want to delete this file?"
 
-#: classes/Gems/Menu/MenuAbstract.php:446
+#: classes/Gems/Menu/MenuAbstract.php:448
 msgid "Download"
 msgstr "Download"
 
-#: classes/Gems/Menu/MenuAbstract.php:501
+#: classes/Gems/Menu/MenuAbstract.php:503
 msgid "Importable"
 msgstr "Importable"
 
-#: classes/Gems/Menu/MenuAbstract.php:503
+#: classes/Gems/Menu/MenuAbstract.php:505
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:583
 msgid "Import file"
 msgstr "Import file"
 
-#: classes/Gems/Menu/MenuAbstract.php:506
+#: classes/Gems/Menu/MenuAbstract.php:508
 msgid "Imported files"
 msgstr "Imported files"
 
-#: classes/Gems/Menu/MenuAbstract.php:507
+#: classes/Gems/Menu/MenuAbstract.php:509
 msgid "Reimport file"
 msgstr "Reimport file"
 
-#: classes/Gems/Menu/MenuAbstract.php:510
+#: classes/Gems/Menu/MenuAbstract.php:512
 msgid "Imported failures"
 msgstr "Imported failures"
 
-#: classes/Gems/Menu/MenuAbstract.php:511
+#: classes/Gems/Menu/MenuAbstract.php:513
 msgid "Retry import"
 msgstr "Retry import"
 
-#: classes/Gems/Menu/MenuAbstract.php:523
+#: classes/Gems/Menu/MenuAbstract.php:525
 msgid "Log Setup"
 msgstr "Log Setup"
 
-#: classes/Gems/Menu/MenuAbstract.php:526
+#: classes/Gems/Menu/MenuAbstract.php:528
 msgid "Log"
 msgstr "Log"
 
-#: classes/Gems/Menu/MenuAbstract.php:533
+#: classes/Gems/Menu/MenuAbstract.php:535
 msgid "Log files"
 msgstr "Log files"
 
-#: classes/Gems/Menu/MenuAbstract.php:569
+#: classes/Gems/Menu/MenuAbstract.php:571
 msgid "Track Summary"
 msgstr "Track Summary"
 
-#: classes/Gems/Menu/MenuAbstract.php:573
+#: classes/Gems/Menu/MenuAbstract.php:575
 msgid "Track Compliance"
 msgstr "Track Compliance"
 
-#: classes/Gems/Menu/MenuAbstract.php:577
+#: classes/Gems/Menu/MenuAbstract.php:579
 msgid "Track Field Utilization"
 msgstr "Track Field Utilization"
 
-#: classes/Gems/Menu/MenuAbstract.php:581
+#: classes/Gems/Menu/MenuAbstract.php:583
 msgid "Track Field Content"
 msgstr "Track Field Content"
 
-#: classes/Gems/Menu/MenuAbstract.php:585
+#: classes/Gems/Menu/MenuAbstract.php:587
 msgid "By period"
 msgstr "By period"
 
-#: classes/Gems/Menu/MenuAbstract.php:586
+#: classes/Gems/Menu/MenuAbstract.php:588
 msgid "By token"
 msgstr "By token"
 
-#: classes/Gems/Menu/MenuAbstract.php:587
+#: classes/Gems/Menu/MenuAbstract.php:589
 msgid "By respondent"
 msgstr "By patient"
 
-#: classes/Gems/Menu/MenuAbstract.php:591
+#: classes/Gems/Menu/MenuAbstract.php:593
 msgid "Bulk mail"
 msgstr "Bulk mail"
 
-#: classes/Gems/Menu/MenuAbstract.php:595
+#: classes/Gems/Menu/MenuAbstract.php:597
 msgid "Respondent status"
 msgstr "Patient status"
 
-#: classes/Gems/Menu/MenuAbstract.php:613
+#: classes/Gems/Menu/MenuAbstract.php:615
 msgid "Errors"
 msgstr "Errors"
 
-#: classes/Gems/Menu/MenuAbstract.php:614
+#: classes/Gems/Menu/MenuAbstract.php:616
 msgid "PHP"
 msgstr "PHP"
 
-#: classes/Gems/Menu/MenuAbstract.php:615
+#: classes/Gems/Menu/MenuAbstract.php:617
 msgid "PHP Errors"
 msgstr "PHP Errors"
 
-#: classes/Gems/Menu/MenuAbstract.php:618
+#: classes/Gems/Menu/MenuAbstract.php:620
 msgid "Maintenance mode"
 msgstr "Maintenance mode"
 
-#: classes/Gems/Menu/MenuAbstract.php:619
+#: classes/Gems/Menu/MenuAbstract.php:621
 msgid "Clean cache"
 msgstr "Clean cache"
 
-#: classes/Gems/Menu/MenuAbstract.php:625
+#: classes/Gems/Menu/MenuAbstract.php:627
 msgid "Reset to default values"
 msgstr "Reset to default values"
 
-#: classes/Gems/Menu/MenuAbstract.php:629
+#: classes/Gems/Menu/MenuAbstract.php:631
 msgid "Upgrade"
 msgstr "Upgrade"
 
-#: classes/Gems/Menu/MenuAbstract.php:633
+#: classes/Gems/Menu/MenuAbstract.php:635
 msgid "Execute all"
 msgstr "Execute all"
 
-#: classes/Gems/Menu/MenuAbstract.php:635
+#: classes/Gems/Menu/MenuAbstract.php:637
 msgid "Execute this"
 msgstr "Execute this"
 
-#: classes/Gems/Menu/MenuAbstract.php:638
+#: classes/Gems/Menu/MenuAbstract.php:640
 msgid "Execute from here"
 msgstr "Execute from here"
 
-#: classes/Gems/Menu/MenuAbstract.php:641
+#: classes/Gems/Menu/MenuAbstract.php:643
 msgid "Execute to here"
 msgstr "Execute to here"
 
-#: classes/Gems/Menu/MenuAbstract.php:647
+#: classes/Gems/Menu/MenuAbstract.php:649
 msgid "Code compatibility report"
 msgstr "Code compatibility report"
 
-#: classes/Gems/Menu/MenuAbstract.php:730
+#: classes/Gems/Menu/MenuAbstract.php:732
 msgid "Reset password"
 msgstr "Reset password"
 
-#: classes/Gems/Menu/MenuAbstract.php:733
+#: classes/Gems/Menu/MenuAbstract.php:735
 msgid "Send Mail"
 msgstr "Send Mail"
 
-#: classes/Gems/Menu/MenuAbstract.php:779
+#: classes/Gems/Menu/MenuAbstract.php:781
 msgid "Check status"
 msgstr "Check status"
 
-#: classes/Gems/Menu/MenuAbstract.php:781
+#: classes/Gems/Menu/MenuAbstract.php:783
 msgid "Synchronize surveys"
 msgstr "Synchronize surveys"
 
-#: classes/Gems/Menu/MenuAbstract.php:783
-#: classes/Gems/Menu/MenuAbstract.php:801
+#: classes/Gems/Menu/MenuAbstract.php:785
+#: classes/Gems/Menu/MenuAbstract.php:803
 msgid "Check is answered"
 msgstr "Check is answered"
 
-#: classes/Gems/Menu/MenuAbstract.php:785
+#: classes/Gems/Menu/MenuAbstract.php:787
 msgid "Check attributes"
 msgstr "Check attributes"
 
-#: classes/Gems/Menu/MenuAbstract.php:788
+#: classes/Gems/Menu/MenuAbstract.php:790
 msgid "Synchronize all surveys"
 msgstr "Synchronize all surveys"
 
-#: classes/Gems/Menu/MenuAbstract.php:789
-#: classes/Gems/Menu/MenuAbstract.php:811
+#: classes/Gems/Menu/MenuAbstract.php:791
+#: classes/Gems/Menu/MenuAbstract.php:813
 msgid "Check all is answered"
 msgstr "Check all is answered"
 
-#: classes/Gems/Menu/MenuAbstract.php:790
+#: classes/Gems/Menu/MenuAbstract.php:792
 msgid "Check all attributes"
 msgstr "Check all attributes"
 
-#: classes/Gems/Menu/MenuAbstract.php:793
+#: classes/Gems/Menu/MenuAbstract.php:795
 msgid "Charts setup"
 msgstr "Charts setup"
 
-#: classes/Gems/Menu/MenuAbstract.php:804
-#: classes/Gems/Menu/MenuAbstract.php:812
+#: classes/Gems/Menu/MenuAbstract.php:806
+#: classes/Gems/Menu/MenuAbstract.php:814
 msgid "Import answers"
 msgstr "Import answers"
 
-#: classes/Gems/Menu/MenuAbstract.php:807
+#: classes/Gems/Menu/MenuAbstract.php:809
 msgid "PDF"
 msgstr "PDF"
 
-#: classes/Gems/Menu/MenuAbstract.php:823
+#: classes/Gems/Menu/MenuAbstract.php:825
 msgid "Copy"
 msgstr "Copy"
 
-#: classes/Gems/Menu/MenuAbstract.php:861
+#: classes/Gems/Menu/MenuAbstract.php:863
 msgid "Sort rounds"
 msgstr "Sort rounds"
 
-#: classes/Gems/Menu/MenuAbstract.php:863
+#: classes/Gems/Menu/MenuAbstract.php:865
 msgid "Tracks per org"
 msgstr "Tracks per org"
 
@@ -5177,12 +5173,17 @@ msgstr "No token defined in row %s."
 msgid "PDF Source File '%s' not found!"
 msgstr "PDF Source File '%s' not found!"
 
+#: classes/Gems/Pdf.php:299
+#, php-format
+msgid "Could not create '%s' directory."
+msgstr "Could not create '%s' directory."
+
 #: classes/Gems/Pdf.php:342
 #, php-format
 msgid " The error message is: %s"
 msgstr " The error message is: %s"
 
-#: classes/Gems/Pdf.php:374 classes/Gems/Pdf.php:382
+#: classes/Gems/Pdf.php:376 classes/Gems/Pdf.php:384
 #, php-format
 msgid "Unable to run PDF conversion (%s): \"%s\""
 msgstr "Unable to run PDF conversion (%s): \"%s\""
@@ -5393,7 +5394,7 @@ msgid "No appointments found."
 msgstr "No appointments found."
 
 #: classes/Gems/Snippets/Agenda/AppointmentsTableSnippet.php:169
-#: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:127
+#: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:123
 msgid "Time"
 msgstr "Time"
 
@@ -5561,7 +5562,7 @@ msgstr "(select a survey)"
 #: classes/Gems/Snippets/Export/SurveyAutosearchFormSnippet.php:49
 #: classes/Gems/Snippets/Mail/Log/MailLogSearchSnippet.php:55
 #: classes/Gems/Snippets/Mail/Log/RespondentMailLogSearchSnippet.php:74
-#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:44
+#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:51
 #: classes/Gems/Snippets/Tracker/Fields/FieldReportSearchSnippet.php:38
 #: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:44
 msgid "(select a track)"
@@ -5575,7 +5576,7 @@ msgstr "(select a round)"
 #: classes/Gems/Snippets/Export/AnswerAutosearchFormSnippet.php:68
 #: classes/Gems/Snippets/Export/ExportSurveysFormSnippet.php:134
 #: classes/Gems/Snippets/Export/SurveyAutosearchFormSnippet.php:66
-#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:55
+#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:62
 #: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:55
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:467
 msgid "Track start"
@@ -5584,7 +5585,7 @@ msgstr "Track start"
 #: classes/Gems/Snippets/Export/AnswerAutosearchFormSnippet.php:69
 #: classes/Gems/Snippets/Export/ExportSurveysFormSnippet.php:135
 #: classes/Gems/Snippets/Export/SurveyAutosearchFormSnippet.php:67
-#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:56
+#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:63
 #: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:56
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:468
 msgid "Track end"
@@ -6388,7 +6389,7 @@ msgid "Removed"
 msgstr "Removed"
 
 #: classes/Gems/Snippets/Token/PlanSearchSnippet.php:129
-#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:71
+#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:79
 #: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:87
 msgid "(all fillers)"
 msgstr "(all fillers)"
@@ -6920,18 +6921,38 @@ msgstr "Nothing to do, please create a mail job first."
 msgid "Mail job not found!"
 msgstr "Mail job not found!"
 
-#: classes/Gems/Task/Mail/ExecuteMailJobTask.php:98
-#: classes/Gems/Task/Mail/ExecuteMailJobTask.php:126
+#: classes/Gems/Task/Mail/ExecuteMailJobTask.php:99
+#: classes/Gems/Task/Mail/ExecuteMailJobTask.php:133
 #, php-format
 msgid "Invalid option for `%s`"
 msgstr "Invalid option for `%s`"
 
-#: classes/Gems/Task/Mail/ExecuteMailJobTask.php:155
+#: classes/Gems/Task/Mail/ExecuteMailJobTask.php:125
+#, php-format
+msgid "Would be marked: %s %s"
+msgstr "Would be marked: %s %s"
+
+#: classes/Gems/Task/Mail/ExecuteMailJobTask.php:142
+#, php-format
+msgid "Would be sent: %s %s to %s using %s as sender"
+msgstr "Would be sent: %s %s to %s using %s as sender"
+
+#: classes/Gems/Task/Mail/ExecuteMailJobTask.php:166
+#, php-format
+msgid "%s %s can not be sent because no email address is available."
+msgstr "%s %s can not be sent because no email address is available."
+
+#: classes/Gems/Task/Mail/ExecuteMailJobTask.php:175
+#, php-format
+msgid "Would send %d e-mails with template %s, and update %d tokens."
+msgstr "Would send %d e-mails with template %s, and update %d tokens."
+
+#: classes/Gems/Task/Mail/ExecuteMailJobTask.php:179
 #, php-format
 msgid "Sent %d e-mails with template %s, updated %d tokens."
 msgstr "Sent %d e-mails with template %s, updated %d tokens."
 
-#: classes/Gems/Task/Mail/ExecuteMailJobTask.php:160
+#: classes/Gems/Task/Mail/ExecuteMailJobTask.php:185
 #, php-format
 msgid ""
 "%d error(s) occurred while creating mails for template %s. Check error log "

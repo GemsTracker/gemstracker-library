@@ -183,7 +183,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
     /**
      * Execute a single mail job
      */
-    public function executeAction()
+    public function executeAction($preview = false)
     {
         $jobId = $this->getParam(\MUtil_Model::REQUEST_ID);
         $batch = $this->loader->getTaskRunnerBatch('commjob-execute-' . $jobId);
@@ -202,17 +202,17 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
             $job = $this->db->fetchOne($sql);
 
             if (!empty($job)) {
-                $batch->addTask('Mail\\ExecuteMailJobTask', $job);
+                $batch->addTask('Mail\\ExecuteMailJobTask', $job, null, null, $preview);
             }
         }
 
         if ($batch->isFinished()) {
             // Add the messages to the view and forward
             $messages = $batch->getMessages(true);
-            foreach ($messages as $message) {
-                $this->addMessage($message);
+            if (count($messages)) {
+                $this->addMessage($messages, 'info');
             }
-
+            
             $this->_reroute(array('action'=>'show'));
         }
 
@@ -309,6 +309,13 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
         parent::indexAction();
 
         $this->html->pInfo($this->_('With automatic mail jobs and a cron job on the server, mails can be sent without manual user action.'));
+    }
+    
+    /**
+     * Execute a single mail job
+     */
+    public function previewAction() {
+        $this->executeAction(true);
     }
 
     /**

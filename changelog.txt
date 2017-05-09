@@ -5,6 +5,7 @@ New features:
     Correct token button added to menu
     Memo field type for tracks
     (Re)import imported files
+    Preview option for automatic mailjobs
 Interface improvements:
     When a token is corrected links are visible when seeing the token to open the original / copy
     Improved interface for communication templates and automatic mail
