@@ -154,7 +154,7 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
      * - unless the key is an integer in which case the code is executed but the return value
      * is not stored.
      *
-     * @var array Mixed key => value array for snippet initialization
+     * @var array Mixed key => value array for snippet initialisation
      */
     protected $deleteParameters = array(
         'formTitle'     => null,
