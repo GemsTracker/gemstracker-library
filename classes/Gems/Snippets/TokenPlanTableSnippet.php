@@ -24,6 +24,8 @@ class Gems_Snippets_TokenPlanTableSnippet extends \Gems_Snippets_ModelTableSnipp
      * @var \GemsEscort
      */
     public $escort;
+    
+    public $showActionLinks = true;
 
     /**
      * Adds columns from the model to the bridge that creates the browse table.
@@ -45,16 +47,34 @@ class Gems_Snippets_TokenPlanTableSnippet extends \Gems_Snippets_ModelTableSnipp
         $model->set('respondent_name',       'label', $this->_('Name'));
 
         $HTML  = \MUtil_Html::create();
-
-        $bridge->setDefaultRowClass(\MUtil_Html_TableElement::createAlternateRowClass('even', 'even', 'odd', 'odd'));
-        $bridge->addColumn($this->getTokenLinks($bridge), ' ')->rowspan = 2; // Space needed because TableElement does not look at rowspans
+        
+        if ($this->showActionLinks) {
+            $rowClass = \MUtil_Html_TableElement::createAlternateRowClass('even', 'even', 'odd', 'odd');
+        } else {
+            $rowClass = 'odd';
+        }
+        $bridge->setDefaultRowClass($rowClass);
+        
+        if ($this->showActionLinks) {
+            $bridge->addColumn($this->getTokenLinks($bridge), ' ')->rowspan = 2; // Space needed because TableElement does not look at rowspans            
+        } else {
+            $bridge->tr(array('onlyWhenChanged' => true, 'class' => 'even'));
+            $bridge->addColumn(' ');
+        }
         $bridge->addSortable('gto_valid_from');
         $bridge->addSortable('gto_valid_until');
 
         $bridge->addMultiSort('gr2o_patient_nr', $HTML->raw('; '), 'respondent_name');
-        $bridge->addMultiSort('ggp_name', array($this->getActionLinks($bridge)));
+        if ($this->showActionLinks) {
+            $bridge->addMultiSort('ggp_name', array($this->getActionLinks($bridge)));
+        } else {
+            $bridge->addSortable('ggp_name');
+        }
 
         $bridge->tr();
+        if (!$this->showActionLinks) {
+            $bridge->addColumn($this->getTokenLinks($bridge), ' ');
+        }
         $bridge->addSortable('gto_mail_sent_date');
         $bridge->addSortable('gto_completion_time');
 
