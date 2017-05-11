@@ -72,7 +72,7 @@ class Gems_Default_ExportAction extends \Gems_Controller_ModelSnippetActionAbstr
         }
 
         $this->_searchFilter['gco_code'] = 'consent given';
-        $this->_searchFilter['gr2o_reception_code'] = 'OK';
+        //$this->_searchFilter['gr2o_reception_code'] = 'OK';
         $this->_searchFilter['grc_success'] = 1;
 
         if (isset($this->_searchFilter['ids'])) {

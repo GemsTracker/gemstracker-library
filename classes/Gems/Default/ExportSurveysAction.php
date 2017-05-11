@@ -105,7 +105,7 @@ class Gems_Default_ExportSurveysAction extends \MUtil_Controller_Action
         }
 
         $filter['gco_code'] = 'consent given';
-        $filter['gr2o_reception_code'] = 'OK';
+        //$filter['gr2o_reception_code'] = 'OK';
         $filter['grc_success'] = 1;
 
         if (isset($this->data['ids'])) {
