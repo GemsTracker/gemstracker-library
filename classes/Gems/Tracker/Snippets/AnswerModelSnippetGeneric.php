@@ -27,7 +27,7 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends \Gems_Snippets_Mod
      *
      * @var array
      */
-    protected $_fixedSort = array('grc_success' => SORT_DESC, 'gto_round_order' => SORT_ASC, 'gto_valid_from' => SORT_ASC);
+    protected $_fixedSort = array('grc_success' => SORT_DESC, 'gto_round_order' => SORT_ASC, 'gto_valid_from' => SORT_ASC, 'gto_completion_time' => SORT_ASC);
 
     /**
      * Empty or a \Gems_Tracker_Snippets_AnswerNameFilterInterface object that is
