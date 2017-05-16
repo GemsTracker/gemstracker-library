@@ -141,10 +141,10 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                 // Location split in 4 fields  latitude, longitude, altitude and accuracy.
                 $items         = explode(' ', $value);
                 if (count($items) == 4) {
-                    $answers[$modelName . '_lat'] = $items[0];
-                    $answers[$modelName . '_long'] = $items[1];
-                    $answers[$modelName . '_alt'] = $items[2];
-                    $answers[$modelName . '_acc'] = $items[3];
+                    $output[$modelName . '_lat']  = $items[0];
+                    $output[$modelName . '_long'] = $items[1];
+                    $output[$modelName . '_alt']  = $items[2];
+                    $output[$modelName . '_acc']  = $items[3];
                 }
                 break;
 
