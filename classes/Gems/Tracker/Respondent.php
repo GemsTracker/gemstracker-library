@@ -152,6 +152,33 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
     {
         return $this->_gemsData['gr2o_mailable'] && $this->_gemsData['grs_email'];
     }
+    
+    /**
+     * Returns current age or at a given date when supplied
+     * 
+     * @param \MUtil_Date|null $date
+     * @return int
+     */
+    public function getAge($date = null)
+    {      
+        $age = null;
+        if (is_null($date)) {
+            $date = new \MUtil_Date();
+        }
+        
+        if ($date instanceof \MUtil_Date) {
+            // Now calculate age
+            $birthDate = $this->getBirthDay();
+            if ($birthDate instanceof \MUtil_Date) {
+                $age = $date->get('Y') - $birthDate->get('Y');
+                if ($date->get('MMdd') < $birthDate->get('MMdd')) {
+                    $age--;
+                }
+            } 
+        }
+        
+        return $age;
+    }
 
     /**
      * Creates a copy of the data data
