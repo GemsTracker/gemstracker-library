@@ -12,6 +12,7 @@
 
 namespace Gems\Tracker\Model\Dependency;
 
+use Gems\Tracker\Field\FieldAbstract;
 use MUtil\Model\Dependency\DependencyAbstract;
 
 /**
@@ -32,7 +33,7 @@ class ValuesMaintenanceDependency extends DependencyAbstract
      *
      * @var array Of name => name
      */
-    protected $_dependentOn = array('gtf_field_type');
+    protected $_dependentOn = array('gtf_field_type', 'gtf_field_values');
 
     /**
      * Array of name => array(setting => setting) of fields with settings changed by this dependency
@@ -41,9 +42,20 @@ class ValuesMaintenanceDependency extends DependencyAbstract
      *
      * @var array of name => array(setting => setting)
      */
-    protected $_effecteds = array('gtf_field_values' => array(
-        'description', 'elementClass', 'formatFunction', 'label', 'minlength', 'rows', 'required',
-        ));
+    protected $_effecteds = array(
+        'gtf_field_values' => array(
+            'description', 'elementClass', 'formatFunction', 'label', 'minlength', 'rows', 'required',
+            ),
+        'gtf_field_default' => array(
+            'description', 'elementClass', 'label', 'multiOptions',
+            ),
+        );
+
+    /**
+     *
+     * @var \Gems_Util
+     */
+    protected $util;
 
     /**
      * Put each value on a separate line
@@ -78,14 +90,24 @@ class ValuesMaintenanceDependency extends DependencyAbstract
      */
     public function getChanges(array $context, $new)
     {
-        return array('gtf_field_values' => array(
-            'label'          => $this->_('Values'),
-            'description'    => $this->_('Separate multiple values with a vertical bar (|)'),
-            'elementClass'   => 'Textarea',
-            'formatFunction' => array($this, 'formatValues'),
-            'minlength'      => 4,
-            'rows'           => 4,
-            'required'       => true,
-            ));
+        $multi = explode(FieldAbstract::FIELD_SEP, $context['gtf_field_values']);
+
+        return array(
+            'gtf_field_values' => array(
+                'label'          => $this->_('Values'),
+                'description'    => $this->_('Separate multiple values with a vertical bar (|)'),
+                'elementClass'   => 'Textarea',
+                'formatFunction' => array($this, 'formatValues'),
+                'minlength'      => 4,
+                'rows'           => 4,
+                'required'       => true,
+                ),
+            'gtf_field_default' => array(
+                'label'        => $this->_('Default'),
+                'description'  => $this->_('Choose the default value'),
+                'elementClass' => 'Select',
+                'multiOptions' => $this->util->getTranslated()->getEmptyDropdownArray() + array_combine($multi, $multi),
+                ),
+            );
     }
 }

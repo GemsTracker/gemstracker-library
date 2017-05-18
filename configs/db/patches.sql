@@ -1273,3 +1273,8 @@ ALTER TABLE gems__groups ADD
 
 -- PATCH: Activate job title as default staff element
 ALTER TABLE gems__staff ADD gsf_job_title varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' after gsf_gender;
+
+-- PATCH: Add default to fields
+ALTER TABLE gems__track_fields ADD
+    gtf_field_default varchar(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null
+    AFTER gtf_field_values;

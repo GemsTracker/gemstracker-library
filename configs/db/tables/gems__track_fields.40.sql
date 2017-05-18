@@ -10,6 +10,7 @@ CREATE TABLE if not exists gems__track_fields (
         gtf_field_description   varchar(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
         gtf_field_values        text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gtf_field_default       varchar(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
         gtf_calculate_using     varchar(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
         gtf_field_type          varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,

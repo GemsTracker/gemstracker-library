@@ -42,7 +42,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
     const FIELD_SEP = '|';
 
     /**
-     * Should a type dependency be added uin _processRowAfterLoad?
+     * Should a type dependency be added in _processRowAfterLoad?
      *
      * @var boolean
      */
@@ -68,6 +68,8 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
         'location'    => 'FromAppointmentsMaintenanceDependency',
         'multiselect' => 'ValuesMaintenanceDependency',
         'select'      => 'ValuesMaintenanceDependency',
+        'text'        => 'DefaultTextDependency',
+        'textarea'    => 'DefaultTextDependency',
         'procedure'   => 'FromAppointmentsMaintenanceDependency',
         );
 
@@ -125,6 +127,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
 
         $model->addColumn(new \Zend_Db_Expr("'appointment'"), 'gtf_field_type');
         $model->addColumn(new \Zend_Db_Expr("NULL"), 'gtf_field_values');
+        $model->addColumn(new \Zend_Db_Expr("NULL"), 'gtf_field_default');
         $model->addColumn(new \Zend_Db_Expr("NULL"), 'gtf_calculate_using');
 
         $this->setKeys(array(
@@ -226,6 +229,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
                 );
         if ($detailed) {
             $this->set('gtf_field_values'); // Set order
+            $this->set('gtf_field_default'); // Set order
             $this->set('gtf_field_description'); // Set order
         }
         $this->set('gtf_field_code',    'label', $this->_('Field code'),
@@ -357,6 +361,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
         $this->set('gtf_field_code',        'elementClass', 'Text', 'minlength', 4);
         $this->set('gtf_field_description', 'elementClass', 'Text', 'size', 30);
         $this->set('gtf_field_values',      'elementClass', 'Hidden');
+        $this->set('gtf_field_default',     'elementClass', 'Hidden');
 
         $this->set('gtf_to_track_info',     'elementClass', 'CheckBox',
                 'onclick', 'this.form.submit();'
