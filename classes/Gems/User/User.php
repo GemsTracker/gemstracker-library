@@ -1588,6 +1588,9 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
             $codes[] = $this->getCurrentOrganization()->getCode();
             $codes[] = $this->getRoles();
             $codes[] = $this->_getVar('__user_definition');
+            if ($this->isStaff()) {
+                $codes[] = 'staff';
+            }
 
             return $checker->reportPasswordWeakness($this, $password, \MUtil_Ra::flatten($codes));
         }
