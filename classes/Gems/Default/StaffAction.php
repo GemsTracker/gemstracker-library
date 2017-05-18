@@ -177,6 +177,22 @@ class Gems_Default_StaffAction extends \Gems_Controller_ModelSnippetActionAbstra
     }
 
     /**
+     * Helper function to get the title for the deactivate action.
+     *
+     * @return $string
+     */
+    public function getDeactivateTitle()
+    {
+        $user = $this->getSelectedUser();
+
+        if ($user) {
+            return sprintf($this->_('Deactivate staff member %s'), $user->getLoginName());
+        }
+
+        return parent::getDeactivateTitle();
+    }
+
+    /**
      * Helper function to get the title for the index action.
      *
      * @return $string
@@ -196,6 +212,22 @@ class Gems_Default_StaffAction extends \Gems_Controller_ModelSnippetActionAbstra
         $user = $this->getSelectedUser();
 
         return sprintf($this->_('Send mail to: %s'), $user->getFullName());
+    }
+
+    /**
+     * Helper function to get the title for the reactivate action.
+     *
+     * @return $string
+     */
+    public function getReactivateTitle()
+    {
+        $user = $this->getSelectedUser();
+
+        if ($user) {
+            return sprintf($this->_('Reactivate staff member %s'), $user->getLoginName());
+        }
+
+        return parent::getReactivateTitle();
     }
 
     /**
@@ -239,6 +271,22 @@ class Gems_Default_StaffAction extends \Gems_Controller_ModelSnippetActionAbstra
         }
 
         return $user;
+    }
+
+    /**
+     * Helper function to get the title for the show action.
+     *
+     * @return $string
+     */
+    public function getShowTitle()
+    {
+        $user = $this->getSelectedUser();
+
+        if ($user) {
+            return sprintf($this->_('Show staff member %s'), $user->getLoginName());
+        }
+
+        return parent::getShowTitle();
     }
 
     /**

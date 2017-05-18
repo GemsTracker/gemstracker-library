@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -23,6 +22,12 @@
  */
 abstract class Gems_Snippets_ModelItemYesNoDeleteSnippetAbstract extends \MUtil_Snippets_ModelYesNoDeleteSnippetAbstract
 {
+    /**
+     *
+     * @var \Gems_AccessLog
+     */
+    protected $accesslog;
+
     /**
      * Shortfix to add class attribute
      *
@@ -128,6 +133,19 @@ abstract class Gems_Snippets_ModelItemYesNoDeleteSnippetAbstract extends \MUtil_
     protected function getTitle()
     {
         return $this->displayTitle;
+    }
+
+    /**
+     * Overrule this function if you want to perform a different
+     * action than deleting when the user choose 'yes'.
+     */
+    protected function performAction()
+    {
+        $data = $this->getModel()->loadFirst();
+
+        parent::performAction();
+
+        $this->accesslog->logChange($this->request, $this->getTitle(), $data);
     }
 
     /**

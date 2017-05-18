@@ -23,7 +23,9 @@ Rights:
 Security:
     The full Gems version number is only displayed after login
     All recalculate, check, synchronize, patch and run commands log the item they are started for
+    Delete, deactivate and reactivate actions are logged correctly
     New security headers and meta tags can be set from the project.ini
+    All staff users have to follow the password rules for staff, even if their role does not inherit staff
 Programmability:
     Before field save events allows changing the fields after their new values have been calculated
     Respondent changed events can be set at the organization level

@@ -1220,6 +1220,7 @@ ALTER TABLE gems__tokens CHANGE gto_result gto_result varchar(255) CHARACTER SET
 UPDATE gems__log_setup
     SET gls_on_change = 1
     WHERE gls_name LIKE '%recalc%' OR
+        gls_name LIKE '%eactivate%' OR
         gls_name LIKE '%check%' OR
         gls_name LIKE '%synchronize%' OR
         gls_name LIKE '%patch%' OR

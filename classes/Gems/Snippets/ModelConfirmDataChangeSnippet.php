@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ModelConfirmDataChangeSnippet.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Snippets;
@@ -25,6 +24,12 @@ use MUtil\Snippets\ModelConfirmDataChangeSnippetAbstract;
  */
 class ModelConfirmDataChangeSnippet extends ModelConfirmDataChangeSnippetAbstract
 {
+    /**
+     *
+     * @var \Gems_AccessLog
+     */
+    protected $accesslog;
+
     /**
      * Shortfix to add class attribute
      *
@@ -140,6 +145,21 @@ class ModelConfirmDataChangeSnippet extends ModelConfirmDataChangeSnippetAbstrac
     protected function getTitle()
     {
         return $this->displayTitle;
+    }
+
+    /**
+     * Overrule this function if you want to perform a different
+     * action than deleting when the user choose 'yes'.
+     */
+    protected function performAction()
+    {
+        parent::performAction();
+
+        $this->accesslog->logChange(
+                $this->request,
+                $this->getTitle(),
+                $this->saveData + $this->getModel()->loadFirst()
+                );
     }
 
     /**
