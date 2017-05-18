@@ -53,19 +53,19 @@ class RespondentDetailsSnippet extends \Gems_Snippets_RespondentDetailSnippetAbs
                 $this->_('Respondent'));
         }
         // ROW 1
-        if (! $this->currentUser->isFieldMaskedWhole('grs_birthday')) {
+        if ($this->model->has('grs_birthday') && (! $this->currentUser->isFieldMaskedWhole('grs_birthday'))) {
             $bridge->addItem('grs_birthday');
         }
-        if (! $this->currentUser->isFieldMaskedWhole('grs_phone_1')) {
+        if ($this->model->has('grs_phone_1') && (! $this->currentUser->isFieldMaskedWhole('grs_phone_1'))) {
             $bridge->addItem('grs_phone_1');
         }
 
         // ROW 2
-        if (! $this->currentUser->isFieldMaskedWhole('grs_email')) {
+        if ($this->model->has('grs_email') && (! $this->currentUser->isFieldMaskedWhole('grs_email'))) {
             $bridge->addItem('grs_email');
         }
         $address = [];
-        if (! $this->currentUser->isFieldMaskedWhole('grs_address_1')) {
+        if ($this->model->has('grs_address_1') && (! $this->currentUser->isFieldMaskedWhole('grs_address_1'))) {
             $address[] = $bridge->grs_address_1;
             $address[] = $br;
         }
@@ -73,11 +73,11 @@ class RespondentDetailsSnippet extends \Gems_Snippets_RespondentDetailSnippetAbs
             $address[] = $bridge->grs_address_2;
             $address[] = $bridge->itemIf('grs_address_2', $br);
         }
-        if (! $this->currentUser->isFieldMaskedWhole('grs_zipcode')) {
+        if ($this->model->has('grs_zipcode') && (! $this->currentUser->isFieldMaskedWhole('grs_zipcode'))) {
             $address[] = $bridge->grs_zipcode;
             $address[] = $bridge->itemIf('grs_zipcode', new \MUtil_Html_Raw('&nbsp;&nbsp;'));
         }
-        if (! $this->currentUser->isFieldMaskedWhole('grs_city')) {
+        if ($this->model->has('grs_city') && (! $this->currentUser->isFieldMaskedWhole('grs_city'))) {
             $address[] = $bridge->grs_city;
         }
         if ($address) {

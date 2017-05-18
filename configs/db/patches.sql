@@ -1259,8 +1259,17 @@ ALTER TABLE gems__groups ADD
     AFTER ggp_allowed_ip_ranges;
 
 ALTER TABLE gems__groups ADD
-    ggp_respondent_browse varchar(254) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null
+    ggp_respondent_browse varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null
     AFTER ggp_allowed_ip_ranges;
+
+ALTER TABLE gems__groups ADD
+    ggp_respondent_edit varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null
+    AFTER ggp_respondent_browse;
+
+ALTER TABLE gems__groups ADD
+    ggp_respondent_show varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null
+    AFTER ggp_respondent_edit;
+
 
 -- PATCH: Activate job title as default staff element
 ALTER TABLE gems__staff ADD gsf_job_title varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' after gsf_gender;

@@ -9,7 +9,9 @@
  * @license    New BSD License
  */
 
-namespace Gems\Screens;
+namespace Gems\Screens\Respondent\Show;
+
+use Gems\Screens\ShowScreenAbstract;
 
 /**
  *
@@ -17,19 +19,16 @@ namespace Gems\Screens;
  * @subpackage Screens\Respondent\Show
  * @copyright  Copyright (c) 2016, Erasmus MC and MagnaFacta B.V.
  * @license    New BSD License
- * @since      Class available since version 1.8.2 Jan 17, 2017 5:09:26 PM
+ * @since      Class available since version 1.8.2 Jan 20, 2017 3:52:09 PM
  */
-interface ShowScreenInterface extends ScreenInterface
+class GemsProjectShow extends ShowScreenAbstract
 {
     /**
      *
-     * @return array Added before all other parameters
+     * @return mixed Something to display as label. Can be an MUtil_Html element
      */
-    public function getParameters();
-
-    /**
-     *
-     * @return array Of snippets or false to use original
-     */
-    public function getSnippets();
+    public function getScreenLabel()
+    {
+        return $this->_('(default project respondent show)');
+    }
 }

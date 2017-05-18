@@ -187,6 +187,18 @@ class Gems_Default_GroupAction extends \Gems_Controller_ModelSnippetActionAbstra
                     'elementClass', 'Radio',
                     'multiOptions', $screenLoader->listRespondentBrowseScreens()
                     );
+            $screenLoader = $this->loader->getScreenLoader();
+            $model->set('ggp_respondent_edit', 'label', $this->_('Respondent edit screen'),
+                    'default', 'Gems\\Screens\\Respondent\\Edit\\ProjectDefaultEdit',
+                    'elementClass', 'Radio',
+                    'multiOptions', $screenLoader->listRespondentEditScreens()
+                    );
+            $screenLoader = $this->loader->getScreenLoader();
+            $model->set('ggp_respondent_show', 'label', $this->_('Respondent show screen'),
+                    'default', 'Gems\\Screens\\Respondent\\Show\\ProjectDefaultShow',
+                    'elementClass', 'Radio',
+                    'multiOptions', $screenLoader->listRespondentShowScreens()
+                    );
 
             $maskStore = $this->loader->getUserMaskStore();
 

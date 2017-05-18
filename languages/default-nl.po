@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-18 14:12+0200\n"
+"POT-Creation-Date: 2017-05-18 15:15+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -1000,7 +1000,7 @@ msgid "The survey for token %s is no longer active."
 msgstr "De vragenlijst voor kenmerk %s is niet meer in gebruik."
 
 #: gemstracker/gemstracker/classes/Gems/Default/CalendarAction.php:159
-#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:638
+#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:707
 #: gemstracker/gemstracker/classes/Gems/Import/ImportLoader.php:324
 #: gemstracker/gemstracker/classes/Gems/Import/ImportLoader.php:328
 #: gemstracker/gemstracker/classes/Gems/Import/ImportLoader.php:332
@@ -2007,7 +2007,7 @@ msgstr "Medewerkers"
 #: gemstracker/gemstracker/classes/Gems/Default/GroupAction.php:160
 #: gemstracker/gemstracker/classes/Gems/Default/ReceptionAction.php:83
 #: gemstracker/gemstracker/classes/Gems/Default/RespondentAction.php:476
-#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:384
+#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:428
 #: gemstracker/gemstracker/classes/Gems/Menu.php:727
 #: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:123
 msgid "Respondents"
@@ -2034,11 +2034,19 @@ msgstr "Scherm instellingen"
 msgid "Respondent browse screen"
 msgstr "Patiënt zoek scherm"
 
-#: gemstracker/gemstracker/classes/Gems/Default/GroupAction.php:208
+#: gemstracker/gemstracker/classes/Gems/Default/GroupAction.php:191
+msgid "Respondent edit screen"
+msgstr "Patiënt wijzig scherm"
+
+#: gemstracker/gemstracker/classes/Gems/Default/GroupAction.php:197
+msgid "Respondent show screen"
+msgstr "Patiënt toon scherm"
+
+#: gemstracker/gemstracker/classes/Gems/Default/GroupAction.php:220
 msgid "Administrative groups"
 msgstr "Beheer groepen"
 
-#: gemstracker/gemstracker/classes/Gems/Default/GroupAction.php:219
+#: gemstracker/gemstracker/classes/Gems/Default/GroupAction.php:231
 msgid "group"
 msgid_plural "groups"
 msgstr[0] "groep"
@@ -2947,12 +2955,12 @@ msgstr "Kies een ontvangstcode om te verwijderen."
 
 #: gemstracker/gemstracker/classes/Gems/Default/RespondentAction.php:346
 #: gemstracker/gemstracker/classes/Gems/Default/RespondentExportAction.php:38
-#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:313
+#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:357
 msgid "Export respondent archive"
 msgstr "Exporteer patiëntdossier"
 
 #: gemstracker/gemstracker/classes/Gems/Default/RespondentAction.php:471
-#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:554
+#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:598
 msgid "respondent"
 msgid_plural "respondents"
 msgstr[0] "patiënt"
@@ -2983,16 +2991,16 @@ msgid_plural "communication activities"
 msgstr[0] "Communicatie"
 msgstr[1] "Communicatie"
 
-#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:299
+#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:321
 msgid "Delete or stop respondent"
 msgstr "Verwijder of stop patiënt"
 
-#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:366
+#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:410
 #, php-format
 msgid "Edit respondent nr %s"
 msgstr "Wijzig patiënt nr %s"
 
-#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:369
+#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:413
 #, php-format
 msgid "Edit respondent nr %s: %s"
 msgstr "Wijzig patiënt nr %s: %s"
@@ -5356,6 +5364,22 @@ msgstr "(standaard project specifieke tabel weergave)"
 #: gemstracker/gemstracker/classes/Gems/Screens/Respondent/Browse/WithAddressBrowse.php:41
 msgid "Browse with address"
 msgstr "Tabel met adres"
+
+#: gemstracker/gemstracker/classes/Gems/Screens/Respondent/Edit/GemsDefaultEdit.php:55
+msgid "(default Gems respondent edit)"
+msgstr "(standaard Gems patiënt wijzig)"
+
+#: gemstracker/gemstracker/classes/Gems/Screens/Respondent/Edit/ProjectDefaultEdit.php:32
+msgid "(default project respondent edit)"
+msgstr "(standaard project patiënt wijzig)"
+
+#: gemstracker/gemstracker/classes/Gems/Screens/Respondent/Show/GemsDefaultShow.php:46
+msgid "(default Gems respondent show)"
+msgstr "(standaard Gems patiënt toon)"
+
+#: gemstracker/gemstracker/classes/Gems/Screens/Respondent/Show/GemsProjectShow.php:32
+msgid "(default project respondent show)"
+msgstr "(standaard project patiënt toon)"
 
 #: gemstracker/gemstracker/classes/Gems/Selector/DateSelectorAbstract.php:270
 msgid "<<"

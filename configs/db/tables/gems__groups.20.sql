@@ -16,6 +16,8 @@ CREATE TABLE if not exists gems__groups (
         ggp_allowed_ip_ranges     text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
         ggp_respondent_browse     varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
+        ggp_respondent_edit       varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
+        ggp_respondent_show       varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
 
         ggp_mask_settings         text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
 

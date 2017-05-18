@@ -21,5 +21,21 @@ namespace Gems\Screens;
  */
 interface EditScreenInterface extends ScreenInterface
 {
+    /**
+     *
+     * @return array Added before all other parameters
+     */
+    public function getCreateParameters();
 
+    /**
+     *
+     * @return array Added before all other parameters
+     */
+    public function getEditParameters();
+
+    /**
+     *
+     * @return array Of snippets or false to use original
+     */
+    public function getSnippets();
 }

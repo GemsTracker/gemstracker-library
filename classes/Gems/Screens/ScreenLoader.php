@@ -22,8 +22,8 @@ namespace Gems\Screens;
 class ScreenLoader extends \Gems_Loader_TargetLoaderAbstract
 {
     const RESPONDENT_BROWSE_SCREEN = 'Respondent\\Browse';
-    // const RESPONDENT_EDIT_SCREEN = 'Respondent/Browse';
-    // const RESPONDENT_SHOW_SCREEN = 'Respondent/Browse';
+    const RESPONDENT_EDIT_SCREEN   = 'Respondent\\Edit';
+    const RESPONDENT_SHOW_SCREEN   = 'Respondent\\Show';
 
     /**
      * Each screen type must implement an screen class or interface derived
@@ -35,6 +35,8 @@ class ScreenLoader extends \Gems_Loader_TargetLoaderAbstract
      */
     protected $_screenClasses = [
         self::RESPONDENT_BROWSE_SCREEN => 'Gems\\Screens\\BrowseScreenInterface',
+        self::RESPONDENT_EDIT_SCREEN   => 'Gems\\Screens\\EditScreenInterface',
+        self::RESPONDENT_SHOW_SCREEN   => 'Gems\\Screens\\ShowScreenInterface',
         ];
 
     /**
@@ -184,7 +186,25 @@ class ScreenLoader extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @param string $eventName
+     * @return array screenname => string
+     */
+    public function listRespondentEditScreens()
+    {
+        return $this->_listScreens(self::RESPONDENT_EDIT_SCREEN);
+    }
+
+    /**
+     *
+     * @return array screenname => string
+     */
+    public function listRespondentShowScreens()
+    {
+        return $this->_listScreens(self::RESPONDENT_SHOW_SCREEN);
+    }
+
+    /**
+     *
+     * @param string $screenName Name of the screen class
      * @return \Gems\Screens\Respondent\Browse
      */
     public function loadRespondentBrowseScreen($screenName)
@@ -192,4 +212,23 @@ class ScreenLoader extends \Gems_Loader_TargetLoaderAbstract
         return $this->_loadScreen($screenName, self::RESPONDENT_BROWSE_SCREEN);
     }
 
+    /**
+     *
+     * @param string $screenName Name of the screen class
+     * @return \Gems\Screens\Respondent\EditScreenInterface
+     */
+    public function loadRespondentEditScreen($screenName)
+    {
+        return $this->_loadScreen($screenName, self::RESPONDENT_EDIT_SCREEN);
+    }
+
+    /**
+     *
+     * @param string $screenName Name of the screen class
+     * @return \Gems\Screens\ShowScreenInterface
+     */
+    public function loadRespondentShowScreen($screenName)
+    {
+        return $this->_loadScreen($screenName, self::RESPONDENT_SHOW_SCREEN);
+    }
 }

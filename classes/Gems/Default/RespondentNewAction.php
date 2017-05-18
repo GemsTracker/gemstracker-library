@@ -256,6 +256,28 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
     }
 
     /**
+     * Action for showing a create new item page
+     */
+    public function createAction()
+    {
+        $group = $this->currentUser->getGroup();
+        if ($group) {
+            $edit = $group->getRespondentEditScreen();
+
+            if ($edit ) {
+                // All are arrays, so easy to set
+                $this->createParameters = $edit->getCreateParameters() + $this->createParameters;
+                $editSnippets = $edit->getSnippets();
+                if (false !== $editSnippets) {
+                    $this->createEditSnippets = $editSnippets;
+                }
+            }
+        }
+
+        parent::createAction();
+    }
+
+    /**
      * Creates a model for getModel(). Called only for each new $action.
      *
      * The parameters allow you to easily adapt the model to the current action. The $detailed
@@ -302,6 +324,28 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
     }
 
     /**
+     * Action for showing a edit item page with extra title
+     */
+    public function editAction()
+    {
+        $group = $this->currentUser->getGroup();
+        if ($group) {
+            $edit = $group->getRespondentEditScreen();
+
+            if ($edit ) {
+                // All are arrays, so easy to set
+                $this->editParameters = $edit->getEditParameters() + $this->editParameters;
+                $editSnippets = $edit->getSnippets();
+                if (false !== $editSnippets) {
+                    $this->createEditSnippets = $editSnippets;
+                }
+            }
+        }
+
+        parent::editAction();
+    }
+
+    /**
      * Action for dossier export
      */
     public function exportArchiveAction()
@@ -311,7 +355,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
         $this->addSnippets($this->exportSnippets, $params);
 
         $this->html->h2($this->_('Export respondent archive'));
-        
+
         //Now show the export form
         $export = $this->loader->getRespondentExport();
         $form   = $export->getForm();
@@ -628,6 +672,31 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
         return $this;
     }
 
+    /**
+     * Action for showing an item page with title
+     */
+    public function showAction()
+    {
+        $group = $this->currentUser->getGroup();
+        if ($group) {
+            $show = $group->getRespondentShowScreen();
+
+            if ($show) {
+                // All are arrays, so easy to set
+                $this->showParameters = $show->getParameters() + $this->showParameters;
+                $showSnippets = $show->getSnippets();
+                if (false !== $showSnippets) {
+                    $this->showSnippets = $showSnippets;
+                }
+            }
+        }
+
+        parent::showAction();
+    }
+
+    /**
+     * Action for a simple - usually command line - import
+     */
     public function simpleApiAction()
     {
         $this->disableLayout();
