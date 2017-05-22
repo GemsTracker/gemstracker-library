@@ -536,42 +536,7 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
     {
         parent::afterFormValidationFor($step);
 
-        if ($this->trackEngine) {
-            if (4 == $step) {
-                $import = $this->loadImportData();
-                $model  = $this->getModel();
-                $saves  = array();
-
-                $import['deactivateRounds'] = array();
-
-                foreach ($model->getCol('roundId') as $name => $roundId) {
-                    $round = $this->trackEngine->getRound($roundId);
-                    if (isset($this->formData[$name]) && $this->formData[$name] && $round instanceof Round) {
-                        switch ($this->formData[$name]) {
-                            case self::ROUND_DEACTIVATE:
-                                $import['deactivateRounds'][$roundId] = $round->getFullDescription();
-                                break;
-
-                            case self::ROUND_LEAVE:
-                                if (isset($import['roundOrderToLine'][$round->getRoundOrder()])) {
-                                    $lineNr = $import['roundOrderToLine'][$round->getRoundOrder()];
-                                    unset($import['rounds'][$lineNr]);
-                                }
-                                $import['roundOrders'][$round->getRoundOrder()] = $roundId;
-                                break;
-
-                            default:
-                                if (isset($import['roundOrderToLine'][$this->formData[$name]])) {
-                                    $lineNr = $import['roundOrderToLine'][$this->formData[$name]];
-                                    $import['rounds'][$lineNr]['gro_id_round'] = $roundId;
-                                }
-                                $import['roundOrders'][$this->formData[$name]] = $roundId;
-                                break;
-                        }
-                    }
-                }
-            }
-        } elseif (3 == $step) {
+        if (3 == $step) {
             $import = $this->loadImportData();
             $model  = $this->getModel();
             $saves  = array();
@@ -598,6 +563,41 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
                             $this->plural('%d export code changed', '%d export codes changed', $count),
                             $count
                             ));
+                }
+            }
+        }
+
+        if ($this->trackEngine && 4 == $step) {
+            $import = $this->loadImportData();
+            $model  = $this->getModel();
+            $saves  = array();
+
+            $import['deactivateRounds'] = array();
+
+            foreach ($model->getCol('roundId') as $name => $roundId) {
+                $round = $this->trackEngine->getRound($roundId);
+                if (isset($this->formData[$name]) && $this->formData[$name] && $round instanceof Round) {
+                    switch ($this->formData[$name]) {
+                        case self::ROUND_DEACTIVATE:
+                            $import['deactivateRounds'][$roundId] = $round->getFullDescription();
+                            break;
+
+                        case self::ROUND_LEAVE:
+                            if (isset($import['roundOrderToLine'][$round->getRoundOrder()])) {
+                                $lineNr = $import['roundOrderToLine'][$round->getRoundOrder()];
+                                unset($import['rounds'][$lineNr]);
+                            }
+                            $import['roundOrders'][$round->getRoundOrder()] = $roundId;
+                            break;
+
+                        default:
+                            if (isset($import['roundOrderToLine'][$this->formData[$name]])) {
+                                $lineNr = $import['roundOrderToLine'][$this->formData[$name]];
+                                $import['rounds'][$lineNr]['gro_id_round'] = $roundId;
+                            }
+                            $import['roundOrders'][$this->formData[$name]] = $roundId;
+                            break;
+                    }
                 }
             }
         }
