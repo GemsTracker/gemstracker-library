@@ -60,7 +60,7 @@
         "lib-curl": "*",
         "lib-openssl": "*",
         "lib-libxml": "*",
-        "magnafacta/mutil": "dev-master",
+        "magnafacta/mutil": "~1.8.2",
         "box/spout": "^2.7.1"
     },
     "require-dev": {
