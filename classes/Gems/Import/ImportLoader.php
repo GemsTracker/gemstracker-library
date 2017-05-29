@@ -158,7 +158,7 @@ class Gems_Import_ImportLoader extends \Gems_Loader_TargetLoaderAbstract
      */
     public function getFileImportMask()
     {
-        return '#^.*[.](txt|xml)$#';
+        return '#^.*[.](txt|xml|csv)$#';
     }
 
     /**

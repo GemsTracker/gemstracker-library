@@ -521,7 +521,7 @@ class Gems_Project_ProjectSettings extends \ArrayObject
         if ($this->offsetExists('fileImportRoot')) {
             return $this->offsetGet('fileImportRoot');
         }
-        return GEMS_ROOT_DIR . '\var\auto_import';
+        return GEMS_ROOT_DIR . DS . 'var' . DS .  'auto_import';
     }
 
     /**
