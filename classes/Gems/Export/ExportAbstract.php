@@ -270,7 +270,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
 
     protected function filterFormatFunction($value, $functionName)
     {
-        if (!is_array($functionName) && method_exists($this, $functionName)) {
+        if (is_string($functionName) && method_exists($this, $functionName)) {
             return call_user_func(array($this, $functionName), $value);
         } else {
             return call_user_func($functionName, $value);

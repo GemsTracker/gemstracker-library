@@ -75,7 +75,7 @@ class Apc extends \Zend_Cache_Backend_Apc
     public function clearAllByPrefix()
     {
         $prefix = $this->getOption('cache_id_prefix');
-        $iterator = new \APCIterator('user', "/^$prefix/" );
+        $iterator = new \APCIterator('user', "/^$prefix/", APC_ITER_KEY);
         return apc_delete($iterator);
     }
     
