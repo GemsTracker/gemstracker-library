@@ -75,98 +75,104 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract {
                 $mailer       = $mailLoader->getMailer('token', $tokenData);
                 /* @var $mailer \Gems_Mail_TokenMailer */
                 $token        = $mailer->getToken();
-                $email        = $token->getEmail();
-                $respondentId = $token->getRespondent()->getId();
-                $mail         = false;
-
-                if (!empty($email)) {
-                    // Set the from address to use in this job
-                    switch ($job['gcj_from_method']) {
-                        case 'O':   // Send on behalf of organization
-                            $organization = $mailer->getOrganization();
-                            $from         = $organization->getEmail(); //$organization->getName() . ' <' . $organization->getEmail() . '>';
-                            break;
-
-                        case 'U':   // Send on behalf of fixed user
-                            $from = $sendByMail;
-                            break;
-
-                        case 'F':   // Send on behalf of fixed email address
-                            $from = $job['gcj_from_fixed'];
-                            break;
-
-                        default:
-                            throw new \Gems_Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('From address used')));
-                    }
-
-                    $mailer->setFrom($from);
-                    $mailer->setBy($sendById);
-
-                    try {
-                        switch ($job['gcj_process_method']) {
-                            case 'M':   // Each token sends an email
-                                $mail   = true;
-                                break;
-
-                            case 'A':   // Only first token mailed and marked
-                                if (!isset($sentMailAddresses[$respondentId][$email])) {  // When not mailed before
-                                    $mail   = true;
-                                }
-                                break;
-
-                            case 'O':   // Only first token mailed, all marked
-                                if (!isset($sentMailAddresses[$respondentId][$email])) {  // When not mailed before
-                                    $mail = true;
-                                } else {
-                                    if (!$preview) {
-                                        $mailer->updateToken();
-                                    } else {
-                                        $this->getBatch()->addMessage(sprintf(
-                                            $this->_('Would be marked: %s %s'), $token->getPatientNumber(), $token->getSurveyName()
-                                        ));        
-                                    }
-                                    $updates++;
-                                }
-                                break;
-
-                            default:
-                                throw new \Gems_Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Processing Method')));
-                        }
-
-                        if ($mail == true) {
-                            if (!$preview) {
-                                $mailer->setTemplate($job['gcj_id_message']);
-                                $mailer->send();
-                            } else {
-                                $this->getBatch()->addMessage(sprintf(
-                                        $this->_('Would be sent: %s %s to %s using %s as sender'), $token->getPatientNumber(), $token->getSurveyName(), $email, $from
-                                ));
-                            }
-
-                            $mails++;
-                            $updates++;
-                            $sentMailAddresses[$respondentId][$email] = true;
-                        }
-
-                    } catch (\Zend_Mail_Exception $exception) {
-                        $fields = $mailer->getMailFields(false);
-
-                        $info = sprintf("Error mailing to %s respondent %s with email address %s.", $fields['organization'], $fields['full_name'], $fields['email']
-                        );
-
-                        // Use a gems exception to pass extra information to the log
-                        $gemsException = new \Gems_Exception($info, 0, $exception);
-                        \Gems_Log::getLogger()->logError($gemsException);
-
-                        $errors++;
-                    }
-                } else {
+                $email        = $token->getEmail();                
+                
+                if (empty($email)) {
                     if ($preview) {
                         $this->getBatch()->addMessage(sprintf(
                             $this->_('%s %s can not be sent because no email address is available.'), $token->getPatientNumber(), $token->getSurveyName()
                         ));
                     }
+                    // Skip to the next token now
+                    continue;
                 }
+                
+                $mail         = false;
+                $respondentId = $token->getRespondent()->getId();                
+                // Add the (optional) relationid to make it unique between respondent and relations
+                // Use separator that does not interfere with the numeric (and possible negative) values of both respondentid and relationid
+                $respondentId .= 'R' . $token->getRelationId();
+                
+                // Set the from address to use in this job
+                switch ($job['gcj_from_method']) {
+                    case 'O':   // Send on behalf of organization
+                        $organization = $mailer->getOrganization();
+                        $from         = $organization->getEmail(); //$organization->getName() . ' <' . $organization->getEmail() . '>';
+                        break;
+
+                    case 'U':   // Send on behalf of fixed user
+                        $from = $sendByMail;
+                        break;
+
+                    case 'F':   // Send on behalf of fixed email address
+                        $from = $job['gcj_from_fixed'];
+                        break;
+
+                    default:
+                        throw new \Gems_Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('From address used')));
+                }
+
+                $mailer->setFrom($from);
+                $mailer->setBy($sendById);
+
+                try {
+                    switch ($job['gcj_process_method']) {
+                        case 'M':   // Each token sends an email
+                            $mail   = true;
+                            break;
+
+                        case 'A':   // Only first token mailed and marked
+                            if (!isset($sentMailAddresses[$respondentId][$email])) {  // When not mailed before
+                                $mail   = true;
+                            }
+                            break;
+
+                        case 'O':   // Only first token mailed, all marked
+                            if (!isset($sentMailAddresses[$respondentId][$email])) {  // When not mailed before
+                                $mail = true;
+                            } else {
+                                if (!$preview) {
+                                    $mailer->updateToken();
+                                } else {
+                                    $this->getBatch()->addMessage(sprintf(
+                                        $this->_('Would be marked: %s %s'), $token->getPatientNumber(), $token->getSurveyName()
+                                    ));        
+                                }
+                                $updates++;
+                            }
+                            break;
+
+                        default:
+                            throw new \Gems_Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Processing Method')));
+                    }
+
+                    if ($mail == true) {
+                        if (!$preview) {
+                            $mailer->setTemplate($job['gcj_id_message']);
+                            $mailer->send();
+                        } else {
+                            $this->getBatch()->addMessage(sprintf(
+                                    $this->_('Would be sent: %s %s to %s using %s as sender'), $token->getPatientNumber(), $token->getSurveyName(), $email, $from
+                            ));
+                        }
+
+                        $mails++;
+                        $updates++;
+                        $sentMailAddresses[$respondentId][$email] = true;
+                    }
+
+                } catch (\Zend_Mail_Exception $exception) {
+                    $fields = $mailer->getMailFields(false);
+
+                    $info = sprintf("Error mailing to %s respondent %s with email address %s.", $fields['organization'], $fields['full_name'], $fields['email']
+                    );
+
+                    // Use a gems exception to pass extra information to the log
+                    $gemsException = new \Gems_Exception($info, 0, $exception);
+                    \Gems_Log::getLogger()->logError($gemsException);
+
+                    $errors++;
+                }                
             }
         }
 

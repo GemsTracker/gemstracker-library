@@ -147,7 +147,11 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
         // If you really want to see this information in the overview, uncomment for the shorter labels
         // $model->set('gcj_filter_days_between', 'label', $this->_('Interval'), 'validators[]', 'Digits');
         // $model->set('gcj_filter_max_reminders','label', $this->_('Max'), 'validators[]', 'Digits');
-
+        
+        $model->set('gcj_relation', 'label', $this->_('Relation'),
+                'multiOptions', $translated->getYesNo(), 'elementClass', 'Checkbox', 'required', true,
+                'description', $this->_('Send only when assigned to a relation.'));
+                
         $anyTrack[''] = $this->_('(all tracks)');
         $model->set('gcj_id_track', 'label', $this->_('Track'),
                 'multiOptions', $anyTrack + $dbTracks->getAllTracks(),

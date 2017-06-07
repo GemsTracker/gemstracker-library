@@ -212,7 +212,7 @@ class Gems_Util_DbLookup extends UtilAbstract
             'gsu_active'          => 1,
             'grc_success'         => 1,
         	'gto_completion_time' => NULL,
-        	'gto_valid_from <= CURRENT_DATE',
+        	'gto_valid_from <= CURRENT_TIMESTAMP',
             '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)'
         );
 
@@ -253,6 +253,10 @@ class Gems_Util_DbLookup extends UtilAbstract
         }
         if ($respondentId) {
             $filter['gto_id_respondent'] = $respondentId;
+        }
+        
+        if ($job['gcj_relation']) {
+            $filter[] = 'gto_id_relation > 0';
         }
 
         return $filter;
