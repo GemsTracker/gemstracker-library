@@ -258,7 +258,7 @@ class Gems_Util_DbLookup extends UtilAbstract
         if ($job['gcj_relation']) {
             $filter[] = 'gto_id_relation <> 0';
         } else {
-            $filter[] = '(gto_id_relation = 0 OR gro_id_relation IS NULL)';
+            $filter[] = '(gto_id_relation = 0 OR gto_id_relation IS NULL)';
         }
 
         return $filter;
