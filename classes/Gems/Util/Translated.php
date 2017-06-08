@@ -264,6 +264,20 @@ class Gems_Util_Translated extends \MUtil_Translate_TranslateableAbstract
             'A' => $this->_('Send one mail per respondent, mark only mailed tokens as sent.'),
             );
     }
+    
+    /**
+     * The options for bulk mail token processing.
+     *
+     * @return array
+     */
+    public function getBulkMailTargetOptions()
+    {
+        return array(
+            '0' => $this->_('(all fillers)'),
+            '1' => $this->_('Relation'),
+            '2' => $this->_('Respondent'),
+            );
+    }
 
     /**
      * The date calculation versus manual set

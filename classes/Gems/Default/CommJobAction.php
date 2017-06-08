@@ -148,9 +148,8 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
         // $model->set('gcj_filter_days_between', 'label', $this->_('Interval'), 'validators[]', 'Digits');
         // $model->set('gcj_filter_max_reminders','label', $this->_('Max'), 'validators[]', 'Digits');
         
-        $model->set('gcj_relation', 'label', $this->_('Relation'),
-                'multiOptions', $translated->getYesNo(), 'elementClass', 'Checkbox', 'required', true,
-                'description', $this->_('Send only when assigned to a relation.'));
+        $model->set('gcj_target', 'label', $this->_('Filler'), 
+                    'default', 0, 'multiOptions', $translated->getBulkMailTargetOptions());
                 
         $anyTrack[''] = $this->_('(all tracks)');
         $model->set('gcj_id_track', 'label', $this->_('Track'),

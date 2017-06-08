@@ -255,11 +255,13 @@ class Gems_Util_DbLookup extends UtilAbstract
             $filter['gto_id_respondent'] = $respondentId;
         }
         
-        if ($job['gcj_relation']) {
-            $filter[] = 'gto_id_relation <> 0';
-        } else {
+        if ($job['gcj_target'] == 1) {
+            // Only relations
             $filter[] = '(gto_id_relation = 0 OR gto_id_relation IS NULL)';
-        }
+        } elseif ($job['gcj_target'] == 2) {
+            // Only respondents
+            $filter[] = 'gto_id_relation <> 0';
+        }        
 
         return $filter;
     }
