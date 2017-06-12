@@ -181,7 +181,7 @@ abstract class ChangeReceptionCodeSnippetAbstract extends \Gems_Snippets_ModelFo
 
         if ($this->fixedReceptionCode) {
             if (! isset($receptionCodes[$this->fixedReceptionCode])) {
-                if ($this->fixedReceptionCode = $this->formData[$this->receptionCodeItem]) {
+                if ($this->fixedReceptionCode == $this->formData[$this->receptionCodeItem]) {
                     throw new \Gems_Exception($this->_('Already set to this reception code.'));
                 } else {
                     throw new \Gems_Exception(sprintf(

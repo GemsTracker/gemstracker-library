@@ -125,7 +125,7 @@ class PrefillAnswers extends \MUtil_Registry_TargetAbstract implements \Gems_Eve
                     $values    = array_intersect_key($answersUc, $flipRequests);
                     // Values now has the CP prefix requested answers that have a no-prefix match
                     // If this is not the complete set, we look for CP prefix matches to allow copy from start
-                    if (count($values) !== count($check)) {
+                    if (count($values) !== count($requests)) {
                         $missing = array_diff_key($flipRequests, $values);
                         foreach ($missing as $key => $value) {
                             $prefixKey = $prefix . $key;

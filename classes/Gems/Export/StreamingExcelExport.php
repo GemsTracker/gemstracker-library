@@ -272,7 +272,7 @@ class StreamingExcelExport extends ExportAbstract
                 $date->setTimestamp($value->getTimestamp());
                 return $this->createExcelDate($date);
             } elseif ($this->validateDate($value, \MUtil_Date::$zendToPhpFormats[$dateFormat])) {
-                $date = \DateTime::createFromFormat($value, \MUtil_Date::$zendToPhpFormats[$dateFormat]);
+                $date = \DateTime::createFromFormat(\MUtil_Date::$zendToPhpFormats[$dateFormat], $value);
                 return $this->createExcelDate($date);
             }
         }
@@ -288,7 +288,12 @@ class StreamingExcelExport extends ExportAbstract
     public function validateDate($value, $dateFormat)
     {
         $dateTime = \DateTime::createFromFormat($dateFormat, $value);
-        return $dateTime && $dateTime->format($dateFormat) === $value;
+        if ($dateTime) {
+            $writtenDate = str_replace('!', '', $dateTime->format($dateFormat));
+            return $writtenDate === $value;
+        }
+
+        return false;
     }
 
     /**

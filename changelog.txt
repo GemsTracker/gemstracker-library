@@ -6,6 +6,7 @@ New features:
     Memo field type for tracks
     (Re)import imported files
     Preview option for automatic mailjobs
+    Automatic mailjobs can now filter for relations, check your jobs!
     Answers from inactive patients can now be exported
 Interface improvements:
     When a token is corrected links are visible when seeing the token to open the original / copy

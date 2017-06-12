@@ -1278,3 +1278,6 @@ ALTER TABLE gems__staff ADD gsf_job_title varchar(64) CHARACTER SET 'utf8' COLLA
 ALTER TABLE gems__track_fields ADD
     gtf_field_default varchar(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null
     AFTER gtf_field_values;
+
+-- PATCH: Add fielfd for filtering mail jobs on target
+ALTER TABLE gems__comm_jobs ADD gcj_target TINYINT(1) NOT NULL DEFAULT '0' AFTER `gcj_filter_max_reminders`;
