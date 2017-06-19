@@ -26,13 +26,13 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
 {
     /**
      *
-     * @var array of \Gems_Agenda_Appointment
+     * @var \Gems_Agenda_Appointment[]
      */
     private $_appointments = array();
 
     /**
      *
-     * @var array of AppointmentFilterInterface
+     * @var AppointmentFilterInterface[]
      */
     private $_filters = array();
 
@@ -537,7 +537,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
      * Get the filters from the database
      *
      * @param $sql SQL statement
-     * @return array of AppointmentFilterInterface objects
+     * @return AppointmentFilterInterface[]
      */
     public function getFilters($sql)
     {
@@ -822,7 +822,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Load the filters from cache or elsewhere
      *
-     * @return array of AppointmentFilterInterface
+     * @return AppointmentFilterInterface[]
      */
     protected function loadDefaultFilters()
     {
@@ -925,7 +925,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     /**
      *
      * @param \Gems_Agenda_Appointment $appointment
-     * @return array of AppointmentFilterInterface
+     * @return AppointmentFilterInterface[]
      */
     public function matchFilters(\Gems_Agenda_Appointment $appointment)
     {
