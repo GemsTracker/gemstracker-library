@@ -32,23 +32,15 @@ class Gems_Tracker_Engine_AnyStepEngine extends \Gems_Tracker_Engine_StepEngineA
     protected function applySurveyListValidAfter(\MUtil_Model_ModelAbstract $model, array &$itemData)
     {
         $this->_ensureRounds();
-
-        if ($itemData['gro_id_round']) {
-            // Get the earlier rounds
-            $rounds = array();
-            foreach ($this->_rounds as $roundId => $round) {
-                if (($roundId == $itemData['gro_id_round']) || ($round['gro_id_order'] >= $itemData['gro_id_order'])) {
-                    break;
-                }
-                $rounds[$roundId] = $round;
+        
+        $rounds = array();
+        foreach ($this->_rounds as $roundId => $round) {
+            if (($roundId == $itemData['gro_id_round'])) {
+                continue;   // Skip self
             }
-
-        } else { // New item
-            $rounds = $this->_rounds;
-        }
-        foreach ($rounds as $roundId => $round) {
             $rounds[$roundId] = $this->getRound($roundId)->getFullDescription();
         }
+
         return $this->_applyOptions($model, 'gro_valid_after_id', $rounds, $itemData);
     }
 
@@ -90,32 +82,8 @@ class Gems_Tracker_Engine_AnyStepEngine extends \Gems_Tracker_Engine_StepEngineA
      */
     public function checkTokensFrom(\Gems_Tracker_RespondentTrack $respTrack, \Gems_Tracker_Token $startToken, $userId, \Gems_Tracker_Token $skipToken = null)
     {
-        $changed = parent::checkTokensFrom($respTrack, $startToken, $userId);
-
-        // Now loop back
-        $token = $startToken->getPreviousToken();
-        while ($token) {
-            // Change only not-completed tokens with a positive successcode where the end date is not set manually
-            if ($token->hasSuccesCode() &&
-                    (! ($token->isCompleted() || $token->isValidUntilManual())) &&
-                    ($token !== $skipToken)) {
-
-                // Only process the token when linked to a round
-                if(array_key_exists($token->getRoundId(), $this->_rounds)) {
-                    $round      = $this->_rounds[$token->getRoundId()];
-
-                    // Do not change valid from
-                    $validFrom  = $token->getValidFrom();
-
-                    $untilDate  = $this->getValidUntilDate($round['gro_valid_for_source'], $round['gro_valid_for_field'], $round['gro_valid_for_id'], $token, $respTrack, $validFrom);
-                    $validUntil = $this->calculateUntilDate($untilDate, $round['gro_valid_for_unit'], $round['gro_valid_for_length']);
-
-                    $changed    += $token->setValidFrom($validFrom, $validUntil, $userId);
-                }
-            }
-            $token = $token->getPreviousToken();
-        }
-
+        $changed = parent::checkTokensFrom($respTrack, $respTrack->getFirstToken(), $userId, $skipToken);
+        
         return $changed;
     }
 
