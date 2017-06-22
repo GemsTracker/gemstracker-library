@@ -49,6 +49,11 @@ class Gems_Mail_RespondentMailer extends \Gems_Mail_MailerAbstract
         $this->organizationId = $organizationId;
     }
 
+    protected function afterMail()
+    {
+        $this->logRespondentCommunication();
+    }
+
 	public function afterRegistry()
     {
         if (!$this->respondent) {
@@ -119,5 +124,41 @@ class Gems_Mail_RespondentMailer extends \Gems_Mail_MailerAbstract
         $this->addMailFields($this->getRespondentMailFields());
     }
 
+    /**
+     * Log the communication for the respondent.
+     */
+    protected function logRespondentCommunication()
+    {
+        $currentUserId                = $this->loader->getCurrentUser()->getUserId();
+        $changeDate                   = new \MUtil_Db_Expr_CurrentTimestamp();
 
+        $logData['grco_id_to']        = $this->respondent->getId();
+
+        if (! is_int($this->by)) {
+            $this->by = $currentUserId;
+        }
+
+        $logData['grco_id_by']        = $this->by;
+        $logData['grco_organization'] = $this->organizationId;
+
+        $logData['grco_method']       = 'email';
+        $logData['grco_topic']        = substr($this->applyFields($this->subject), 0, 120);
+
+        $to = array();
+        foreach($this->to as $name=> $address) {
+            $to[] = $name . '<'.$address.'>';
+        }
+
+        $logData['grco_address']      = substr(join(',', $to), 0, 120);
+        $logData['grco_sender']       = substr($this->from, 0, 120);
+
+        $logData['grco_id_message']   = $this->templateId ? $this->templateId : null;
+
+        $logData['grco_changed']      = $changeDate;
+        $logData['grco_changed_by']   = $this->by;
+        $logData['grco_created']      = $changeDate;
+        $logData['grco_created_by']   = $this->by;
+
+        $this->db->insert('gems__log_respondent_communications', $logData);
+    }
 }
