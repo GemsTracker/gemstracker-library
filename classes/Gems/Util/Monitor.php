@@ -57,7 +57,7 @@ class Monitor extends UtilAbstract
 
         if ($where) {
             $dbTo = $this->db->fetchCol(
-                    "SELECT DISTINCT gsf_email FROM gems__staff WHERE LENGTH(gsf_email) > 5 AND $where"
+                    "SELECT DISTINCT gsf_email FROM gems__staff WHERE LENGTH(gsf_email) > 5 AND gsf_active = 1 AND $where"
                     );
 
             if ($dbTo) {
