@@ -297,6 +297,7 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
      */
     protected $showTrackParameters = array(
         'contentTitle'      => 'getTrackTitle',
+        'extraFilter'       => 'getNoRespondentFilter',
         'multiTracks'       => 'isMultiTracks',
         'respondentTrack'   => 'getRespondentTrack',
         'respondentTrackId' => 'getRespondentTrackId',
@@ -835,6 +836,18 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
                 $respondent->getPatientNumber(),
                 $respondent->getFullName()
                 );
+    }
+
+    /**
+     * Get a blocking filter when no respondent is passed on
+     *
+     * @return array
+     */
+    public function getNoRespondentFilter()
+    {
+        if (! $this->getRespondentId()) {
+            return array('1 = 0');
+        }
     }
 
     /**

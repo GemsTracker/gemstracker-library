@@ -63,6 +63,8 @@ class SingleSurveyAvailableTracksSnippet extends AvailableTracksSnippet
      */
     public function hasHtmlOutput()
     {
-        return ! ($this->multiTracks || ($this->respondentTrack instanceof \Gems_Tracker_RespondentTrack));
+        return ($this->respondent instanceof \Gems_Tracker_Respondent) &&
+                $this->respondent->exists &&
+                (! ($this->multiTracks || ($this->respondentTrack instanceof \Gems_Tracker_RespondentTrack)));
     }
 }
