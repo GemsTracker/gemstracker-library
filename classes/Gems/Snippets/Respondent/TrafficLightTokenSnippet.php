@@ -23,13 +23,14 @@
  */
 class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnippet
 {
-    
+
     public $browse = false;
 
     /**
      * @var \MUtil_Html_Creator
      */
     public $creator             = null;
+
     protected $_fixedSort       = array(
         'gr2t_start_date'         => SORT_DESC,
         'gto_id_respondent_track' => SORT_DESC,
@@ -39,9 +40,11 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
         'forgroup'                => SORT_ASC,
         'gto_round_order'         => SORT_ASC
     );
+
     protected $_fixedFilter     = array(
         //'gto_valid_from <= NOW()'
     );
+
     protected $_completed       = 0;
     protected $_open            = 0;
     protected $_missed          = 0;
@@ -96,7 +99,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
      *
      * @param \Zend_View $view
      */
-    protected function _initView($view) 
+    protected function _initView($view)
     {
         $baseUrl = \GemsEscort::getInstance()->basepath->getBasePath();
 
@@ -199,15 +202,15 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
         return $tokenDiv;
     }
 
-    public function afterRegistry() 
+    public function afterRegistry()
     {
         parent::afterRegistry();
-        
+
         // Load the display dateformat
         $dateOptions       = \MUtil_Model_Bridge_FormBridge::getFixedOptions('date');
         $this->_dateFormat = $dateOptions['dateFormat'];
 
-        $this->creator = \Gems_Html::init();
+        $this->creator = \MUtil_Html::getCreator();
 
         // find the menu items only once for more efficiency
         $this->_trackAnswer  = $this->findMenuItem('track', 'answer');
@@ -228,9 +231,9 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
      * @param type $menuItem
      * @return \MUtil_Html_AElement
      */
-    public function createMenuLink($parameterSource, $controller, $action = 'index', $label = null, $menuItem = null) 
+    public function createMenuLink($parameterSource, $controller, $action = 'index', $label = null, $menuItem = null)
     {
-        if (!is_null($menuItem) || $menuItem = $this->findMenuItem($controller, $action)) {
+        if ((!is_null($menuItem)) || $menuItem = $this->findMenuItem($controller, $action)) {
             $item = $menuItem->toActionLinkLower($this->request, $parameterSource, $label);
             if (is_object($item)) {
                 $item->setAttrib('class', '');
@@ -239,7 +242,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
         }
     }
 
-    public function createModel() 
+    public function createModel()
     {
         $model = parent::createModel();
 
@@ -265,6 +268,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
             'gto_valid_from',
             'gto_valid_until',
             'gr2t_start_date',
+            'gto_id_track',
             'gtr_track_name',
             'gr2t_track_info',
             'gto_id_token',
@@ -318,11 +322,13 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                 $trackHeader  = $trackHeading->h3(array('class' => "panel-title",'renderClosingTag' => true));
 
                 $trackParameterSource = array(
-                        'gr2t_id_respondent_track' => $row['gto_id_respondent_track'],
-                        'gr2o_patient_nr'          => $row['gr2o_patient_nr'],
-                        'gr2o_id_organization'     => $row['gr2o_id_organization'],
-                        'can_edit'                 => 1
-                        );
+                    'gr2t_id_respondent_track' => $row['gto_id_respondent_track'],
+                    'gr2o_patient_nr'          => $row['gr2o_patient_nr'],
+                    'gr2o_id_organization'     => $row['gr2o_id_organization'],
+                    'gtr_id_track'             => $row['gto_id_track'],
+                    'can_edit'                 => 1,
+                    'track_can_be_created'     => 0,
+                    );
 
                 if (array_key_exists($row['gr2o_id_organization'], $allowedOrgs) && $this->_trackEdit) {
                     $editLink = \MUtil_Html::create('i', array(
@@ -334,7 +340,9 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                         ));
 
                     $link = $this->createMenuLink($trackParameterSource, 'track', 'edit-track', $editLink, $this->_trackEdit);
-                    $link->setAttrib('onClick', 'event.cancelBubble = true;');
+                    if ($link) {
+                        $link->setAttrib('onClick', 'event.cancelBubble = true;');
+                    }
                 } else {
                     // When org not allowed, dont add the link, so the track will just open
                     $link = \MUtil_Html::create('span', array('class' => 'fa fa-pencil', 'renderClosingTag' => true));
@@ -352,15 +360,17 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                 }
                 if (array_key_exists($row['gr2o_id_organization'], $allowedOrgs) && $this->_trackDelete) {
                     $deleteLink = \MUtil_Html::create('i', array(
-                        'class' => 'fa fa-trash deleteIcon',
+                        'class'            => 'fa fa-trash deleteIcon',
                         'renderClosingTag' => true,
                         'data-toggle'      => 'tooltip',
                         'data-placement'   => 'left',
                         'title'            => $this->_("Delete track")
                         ));
 
-                    $link = $this->createMenuLink($trackParameterSource, 'track', 'delete-track', $deleteLink, $this->_trackDelete)
-                                 ->setAttrib('onClick', 'event.cancelBubble = true;');
+                    $link = $this->createMenuLink($trackParameterSource, 'track', 'delete-track', $deleteLink, $this->_trackDelete);
+                    if ($link) {
+                        $link->setAttrib('onClick', 'event.cancelBubble = true;');
+                    }
                     $deleteTrackContainer[] = $link;
                 }
                 $trackHeader[]         = $deleteTrackContainer;
