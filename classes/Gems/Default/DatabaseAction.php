@@ -421,7 +421,7 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
     {
         $this->html->h3($this->_('Patch maintenance'));
 
-        $patcher  = new \Gems_Util_DatabasePatcher($this->db, 'patches.sql', $this->escort->getDatabasePaths());
+        $patcher  = new \Gems_Util_DatabasePatcher($this->db, 'patches.sql', $this->escort->getDatabasePaths(), $this->project->databaseFileEncoding);
         $tableSql = sprintf(
             'SELECT gpa_level AS `%s`, gpa_location AS `%s`, COUNT(*) AS `%s`, COUNT(*) - SUM(gpa_executed) AS `%s`, SUM(gpa_executed) AS `%s`, SUM(gpa_completed) AS `%s`, MAX(gpa_changed) AS `%s` FROM gems__patches GROUP BY gpa_level, gpa_location ORDER BY gpa_level DESC, gpa_location',
             $this->_('Level'),
