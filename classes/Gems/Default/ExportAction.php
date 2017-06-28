@@ -2,10 +2,28 @@
 
 class Gems_Default_ExportAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
+    /**
+     * The parameters used for the autofilter action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialisation
+     */
     protected $autofilterParameters = array('extraSort' => 'gto_start_time ASC');
 
+    /**
+     *
+     * @var \Zend_Db_Adapter_Abstract
+     */
     public $db;
 
+    /**
+     *
+     * @var \Zend_Controller_Request_Abstract
+     */
     public $request;
 
     /**
@@ -17,24 +35,44 @@ class Gems_Default_ExportAction extends \Gems_Controller_ModelSnippetActionAbstr
 
     protected $exportModelSource = 'AnswerExportModelSource';
 
+    /**
+     * Creates a model for getModel(). Called only for each new $action.
+     *
+     * The parameters allow you to easily adapt the model to the current action. The $detailed
+     * parameter was added, because the most common use of action is a split between detailed
+     * and summarized actions.
+     *
+     * @param boolean $detailed True when the current action is not in $summarizedActions.
+     * @param string $action The current action.
+     * @return \MUtil_Model_ModelAbstract
+     */
     protected function createModel($detailed, $action)
     {
         $this->data = $this->getSearchFilter();
 
         if (isset($this->_searchFilter['gto_id_survey']) && is_numeric($this->_searchFilter['gto_id_survey'])) {
-            // Surveys have been selected       
+            // Surveys have been selected
             $exportModelSource = $this->loader->getExportModelSource($this->exportModelSource);
             $model = $exportModelSource->getModel($this->_searchFilter, $this->data);
         } else {
             $basicArray = array('gto_id_survey', 'gto_id_track', 'gto_round_description', 'gto_id_organization', 'gto_start_date', 'gto_end_date', 'gto_valid_from', 'gto_valid_until');
-            
+
             $model = new \Gems_Model_PlaceholderModel('nosurvey', $basicArray);
             $model->set('gto_id_survey', 'label', $this->_('Please select a survey to start the export'));
         }
-        
+
         return $model;
     }
 
+    /**
+     * Returns the model for the current $action.
+     *
+     * The parameters allow you to easily adapt the model to the current action. The $detailed
+     * parameter was added, because the most common use of action is a split between detailed
+     * and summarized actions.
+     *
+     * @return \MUtil_Model_ModelAbstract
+     */
     public function getModel()
     {
         $model = parent::getModel();
@@ -61,9 +99,9 @@ class Gems_Default_ExportAction extends \Gems_Controller_ModelSnippetActionAbstr
 
         $this->_searchFilter[] = 'gto_start_time IS NOT NULL';
         if (!isset($this->_searchFilter['incomplete']) || !$this->_searchFilter['incomplete']) {
-            $this->_searchFilter[] = 'gto_completion_time IS NOT NULL';            
+            $this->_searchFilter[] = 'gto_completion_time IS NOT NULL';
         }
-        
+
         if (isset($this->_searchFilter['dateused']) && $this->_searchFilter['dateused']) {
             $where = \Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($this->_searchFilter, $this->db);
             if ($where) {
@@ -88,6 +126,9 @@ class Gems_Default_ExportAction extends \Gems_Controller_ModelSnippetActionAbstr
         return $this->_searchFilter;
     }
 
+    /**
+     * Action for selecting a survey to export
+     */
     public function indexAction()
     {
         $batch = $this->loader->getTaskRunnerBatch('export_data');
