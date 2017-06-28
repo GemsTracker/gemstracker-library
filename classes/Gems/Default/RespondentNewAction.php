@@ -147,6 +147,12 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
     public $deleteSnippets = array('Respondent\\RespondentDetailsSnippet', 'Respondent\\DeleteRespondentSnippet');
 
     /**
+     *
+     * @var boolean En/disable group screen switching
+     */
+    protected $enableScreens = true;
+
+    /**
      * The snippets used for the export action.
      *
      * @var mixed String or array of snippets name
@@ -220,8 +226,9 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      */
     public function autofilterAction($resetMvc = true)
     {
-        if ($resetMvc) {
-        $group = $this->currentUser->getGroup();
+        if ($resetMvc && $this->enableScreens) {
+            $group = $this->currentUser->getGroup();
+
             if ($group) {
                 $browse = $group->getRespondentBrowseScreen();
 
@@ -261,7 +268,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
     public function createAction()
     {
         $group = $this->currentUser->getGroup();
-        if ($group) {
+        if ($group && $this->enableScreens) {
             $edit = $group->getRespondentEditScreen();
 
             if ($edit ) {
@@ -329,7 +336,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
     public function editAction()
     {
         $group = $this->currentUser->getGroup();
-        if ($group) {
+        if ($group && $this->enableScreens) {
             $edit = $group->getRespondentEditScreen();
 
             if ($edit ) {
@@ -605,7 +612,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
     public function indexAction()
     {
         $group = $this->currentUser->getGroup();
-        if ($group) {
+        if ($group && $this->enableScreens) {
             $browse = $group->getRespondentBrowseScreen();
 
             if ($browse) {
@@ -678,7 +685,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
     public function showAction()
     {
         $group = $this->currentUser->getGroup();
-        if ($group) {
+        if ($group && $this->enableScreens) {
             $show = $group->getRespondentShowScreen();
 
             if ($show) {

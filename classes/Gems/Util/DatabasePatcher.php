@@ -34,6 +34,13 @@ class Gems_Util_DatabasePatcher
 
     /**
      *
+     * @var string
+     */
+    protected $encoding;
+
+
+    /**
+     *
      * @var array Of location => \Zend_Db_Adapter_Abstract db
      */
     protected $patch_databases;
@@ -50,9 +57,10 @@ class Gems_Util_DatabasePatcher
      * @param mixed $files Array of file names or single file name
      * @param array $databases Nested array with rowes containing path, name and db keys.
      */
-    public function __construct(\Zend_Db_Adapter_Abstract $db, $files, array $databases)
+    public function __construct(\Zend_Db_Adapter_Abstract $db, $files, array $databases, $encoding = null)
     {
         $this->db = $db;
+        $this->encoding = $encoding;
 
         foreach ((array) $files as $file) {
             foreach ($databases as $dbData) {
@@ -92,6 +100,9 @@ class Gems_Util_DatabasePatcher
     private function _loadPatchFile($file, $location, $minimumLevel, $maximumLevel)
     {
         if ($sql = file_get_contents($file)) {
+            if ($this->encoding && ($this->encoding !== mb_internal_encoding())) {
+                $sql = mb_convert_encoding($sql, mb_internal_encoding(), $this->encoding);
+            }
 
             $levels = preg_split('/--\s*(GEMS\s+)?VERSION:?\s*/', $sql);
 
@@ -268,6 +279,7 @@ class Gems_Util_DatabasePatcher
                             $tree[$level][$location][$name][$order]['gpa_id_patch']
                             );
 
+                    \MUtil_Echo::track($values, $where);
                     $this->db->update('gems__patches', $values, $where);
                     $changed++;
                 }
