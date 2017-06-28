@@ -279,7 +279,7 @@ class Gems_Util_DatabasePatcher
                             $tree[$level][$location][$name][$order]['gpa_id_patch']
                             );
 
-                    \MUtil_Echo::track($values, $where);
+                    // \MUtil_Echo::track($values, $where);
                     $this->db->update('gems__patches', $values, $where);
                     $changed++;
                 }
