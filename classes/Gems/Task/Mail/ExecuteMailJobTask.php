@@ -19,19 +19,25 @@ namespace Gems\Task\Mail;
  * @license    New BSD License
  * @since      Class available since version 1.7.3
  */
-class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract {
+class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
+{
+    /**
+     *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
 
     /**
      *
      * @var \Zend_Db_Adapter_Abstract
      */
-    public $db;
+    protected $db;
 
     /**
      *
      * @var \Gems_Loader
      */
-    public $loader;
+    protected $loader;
 
     /**
      *
@@ -39,7 +45,10 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract {
      * @param $respondentId Optional, execute for just one respondent
      * @param $organizationId Optional, execute for just one organization
      */
-    public function execute($jobId = null, $respondentId = null, $organizationId = null, $preview = false) {
+    public function execute($jobId = null, $respondentId = null, $organizationId = null, $preview = false)
+    {
+        $this->currentUser->disableMask();
+
         $sql = $this->db->select()->from('gems__comm_jobs')
                     ->join('gems__comm_templates', 'gcj_id_message = gct_id_template')
                     ->where('gcj_active = 1')
@@ -75,8 +84,8 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract {
                 $mailer       = $mailLoader->getMailer('token', $tokenData);
                 /* @var $mailer \Gems_Mail_TokenMailer */
                 $token        = $mailer->getToken();
-                $email        = $token->getEmail();                
-                
+                $email        = $token->getEmail();
+
                 if (empty($email)) {
                     if ($preview) {
                         $this->getBatch()->addMessage(sprintf(
@@ -86,13 +95,13 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract {
                     // Skip to the next token now
                     continue;
                 }
-                
+
                 $mail         = false;
-                $respondentId = $token->getRespondent()->getId();                
+                $respondentId = $token->getRespondent()->getId();
                 // Add the (optional) relationid to make it unique between respondent and relations
                 // Use separator that does not interfere with the numeric (and possible negative) values of both respondentid and relationid
                 $respondentId .= 'R' . $token->getRelationId();
-                
+
                 // Set the from address to use in this job
                 switch ($job['gcj_from_method']) {
                     case 'O':   // Send on behalf of organization
@@ -136,7 +145,7 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract {
                                 } else {
                                     $this->getBatch()->addMessage(sprintf(
                                         $this->_('Would be marked: %s %s'), $token->getPatientNumber(), $token->getSurveyName()
-                                    ));        
+                                    ));
                                 }
                                 $updates++;
                             }
@@ -172,25 +181,38 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract {
                     \Gems_Log::getLogger()->logError($gemsException);
 
                     $errors++;
-                }                
+                }
+
+                // Test by sending only one mail per run:
+                // break;
             }
         }
 
         if ($preview) {
             $this->getBatch()->addMessage(sprintf(
-                            $this->_('Would send %d e-mails with template %s, and update %d tokens.'), $mails, $job['gct_name'], $updates
-            ));
+                    $this->_('Would send %d e-mails with template %s, and update %d tokens.'),
+                    $mails,
+                    $job['gct_name'],
+                    $updates
+                    ));
         } else {
             $this->getBatch()->addMessage(sprintf(
-                            $this->_('Sent %d e-mails with template %s, updated %d tokens.'), $mails, $job['gct_name'], $updates
-            ));    
-        }           
+                    $this->_('Sent %d e-mails with template %s, updated %d tokens.'),
+                    $mails,
+                    $job['gct_name'],
+                    $updates
+                    ));
+        }
 
         if ($errors) {
             $this->getBatch()->addMessage(sprintf(
-                            $this->_('%d error(s) occurred while creating mails for template %s. Check error log for details.'), $errors, $job['gct_name']
-            ));
+                    $this->_('%d error(s) occurred while creating mails for template %s. Check error log for details.'),
+                    $errors,
+                    $job['gct_name']
+                    ));
         }
+
+        $this->currentUser->enableMask();
     }
 
     /**
@@ -199,7 +221,8 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract {
      * @param int $userId
      * @return string
      */
-    protected function getUserEmail($userId) {
+    protected function getUserEmail($userId)
+    {
         return $this->db->fetchOne("SELECT gsf_email FROM gems__staff WHERE gsf_id_user = ?", $userId);
     }
 

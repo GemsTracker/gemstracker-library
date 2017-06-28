@@ -72,6 +72,12 @@ class Group extends \Gems_Registry_CachedArrayTargetAbstract
 
     /**
      *
+     * @var boolean When true mask settings are used
+     */
+    protected $enableMasks = true;
+
+    /**
+     *
      * @var \Gems_Loader
      */
     protected $loader;
@@ -103,7 +109,11 @@ class Group extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function applyGroupToData(array $row)
     {
-        return $this->maskStore->maskRow($row);
+        if ($this->enableMasks) {
+            return $this->maskStore->maskRow($row);
+        } else {
+            return $row;
+        }
     }
 
     /**
@@ -114,7 +124,35 @@ class Group extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function applyGroupToModel(\MUtil_Model_ModelAbstract $model, $hideWhollyMasked)
     {
-        $this->maskStore->applyMaskDataToModel($model, $hideWhollyMasked);
+        if ($this->enableMasks) {
+            $this->maskStore->applyMaskDataToModel($model, $hideWhollyMasked);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Disable mask usage (call before any applyGroupToData() or applyGroupToModel()
+     * calls: doesn't work retroactively
+     *
+     * @return $this
+     */
+    public function disableMask()
+    {
+        $this->enableMasks = false;
+
+        return $this;
+    }
+
+    /**
+     * Enable mask usage (call before any applyGroupToData() or applyGroupToModel()
+     * calls: doesn't work retroactively
+     *
+     * @return $this
+     */
+    public function enableMask()
+    {
+        $this->enableMasks = true;
 
         return $this;
     }
@@ -224,7 +262,11 @@ class Group extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function isFieldInvisible($fieldName)
     {
-        return $this->maskStore->isFieldInvisible($fieldName);
+        if ($this->enableMasks) {
+            return $this->maskStore->isFieldInvisible($fieldName);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -234,7 +276,11 @@ class Group extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function isFieldMaskedPartial($fieldName)
     {
-        return $this->maskStore->isFieldMaskedPartial($fieldName);
+        if ($this->enableMasks) {
+            return $this->maskStore->isFieldMaskedPartial($fieldName);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -244,7 +290,11 @@ class Group extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function isFieldMaskedWhole($fieldName)
     {
-        return $this->maskStore->isFieldMaskedWhole($fieldName);
+        if ($this->enableMasks) {
+            return $this->maskStore->isFieldMaskedWhole($fieldName);
+        } else {
+            return false;
+        }
     }
 
     /**

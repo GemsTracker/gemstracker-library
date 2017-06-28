@@ -7,7 +7,6 @@
  * @author     Jasper van Gestel <jappie@dse.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -21,6 +20,10 @@
  */
 class Gems_Snippets_Mail_TokenMailFormSnippet extends \Gems_Snippets_Mail_MailFormSnippet
 {
+    /**
+     *
+     * @var \Gems_Util
+     */
     protected $util;
 
     /**
@@ -40,6 +43,7 @@ class Gems_Snippets_Mail_TokenMailFormSnippet extends \Gems_Snippets_Mail_MailFo
         $bridge->addExhibitor('round', array('label' => $this->_('Round')));
         $bridge->addExhibitor('survey', array('label' => $this->_('Survey')));
         $bridge->addExhibitor('last_contact', array('label' => $this->_('Last contact'), 'formatFunction' => $this->util->getTranslated()->formatDateNever));
+
         parent::addFormElements($bridge,$model);
     }
 }
