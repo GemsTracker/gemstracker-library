@@ -3,6 +3,12 @@
 class Gems_Default_ExportAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
+     *
+     * @var array
+     */
+    private $_searchFilter;
+
+    /**
      * The parameters used for the autofilter action.
      *
      * When the value is a function name of that object, then that functions is executed
@@ -13,6 +19,12 @@ class Gems_Default_ExportAction extends \Gems_Controller_ModelSnippetActionAbstr
      * @var array Mixed key => value array for snippet initialisation
      */
     protected $autofilterParameters = array('extraSort' => 'gto_start_time ASC');
+
+    /**
+     *
+     * @var \Gems_User_User
+     */
+    public $currentUser;
 
     /**
      *
@@ -33,6 +45,11 @@ class Gems_Default_ExportAction extends \Gems_Controller_ModelSnippetActionAbstr
      */
     protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Export\\AnswerAutosearchFormSnippet');
 
+    /**
+     * Class for export model source
+     *
+     * @var string
+     */
     protected $exportModelSource = 'AnswerExportModelSource';
 
     /**
@@ -48,12 +65,32 @@ class Gems_Default_ExportAction extends \Gems_Controller_ModelSnippetActionAbstr
      */
     protected function createModel($detailed, $action)
     {
-        $this->data = $this->getSearchFilter();
+        $filter = $this->getSearchFilter();
 
-        if (isset($this->_searchFilter['gto_id_survey']) && is_numeric($this->_searchFilter['gto_id_survey'])) {
+        if (isset($filter['gto_id_survey']) && is_numeric($filter['gto_id_survey'])) {
             // Surveys have been selected
             $exportModelSource = $this->loader->getExportModelSource($this->exportModelSource);
-            $model = $exportModelSource->getModel($this->_searchFilter, $this->data);
+            $model = $exportModelSource->getModel($filter, $filter);
+
+            $noExportColumns = $model->getColNames('noExport');
+            foreach($noExportColumns as $colName) {
+                $model->remove($colName, 'label');
+            }
+
+            $rightsExportColumns = $model->getCol('exportPrivilege');
+            foreach($rightsExportColumns as $colName => $privilege) {
+                $label = $model->get($colName, 'label');
+                $model->remove($colName, 'label');
+
+                if ($this->currentUser->hasPrivilege($privilege)) {
+                    if ($label) {
+                        $model->set($colName, 'exportOptionLabel', $label);
+                    }
+                } else {
+                    // If set directly remove this label as it would mean it would be selectable
+                    $model->remove($colName, 'exportOptionLabel');
+                }
+            }
         } else {
             $basicArray = array('gto_id_survey', 'gto_id_track', 'gto_round_description', 'gto_id_organization', 'gto_start_date', 'gto_end_date', 'gto_valid_from', 'gto_valid_until');
 
@@ -93,7 +130,9 @@ class Gems_Default_ExportAction extends \Gems_Controller_ModelSnippetActionAbstr
      */
     public function getSearchFilter($useRequest = false)
     {
-        $this->_searchFilter = array();
+        if (null !== $this->_searchFilter) {
+            return $this->_searchFilter;
+        }
 
         $this->_searchFilter = parent::getSearchFilter($useRequest);
 
@@ -110,7 +149,6 @@ class Gems_Default_ExportAction extends \Gems_Controller_ModelSnippetActionAbstr
         }
 
         $this->_searchFilter['gco_code'] = 'consent given';
-        //$this->_searchFilter['gr2o_reception_code'] = 'OK';
         $this->_searchFilter['grc_success'] = 1;
 
         if (isset($this->_searchFilter['ids'])) {
@@ -134,7 +172,7 @@ class Gems_Default_ExportAction extends \Gems_Controller_ModelSnippetActionAbstr
         $batch = $this->loader->getTaskRunnerBatch('export_data');
         $batch->reset();
 
-        $this->data['survey'] = $this->request->getParam('survey');
+        // $this->data['survey'] = $this->request->getParam('survey');
 
         parent::indexAction();
     }

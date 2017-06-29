@@ -173,7 +173,7 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return \Gems_Export
+     * @return \Gems_Export_ModelSource_ExportModelSourceAbstract
      */
     public function getExportModelSource($exportModelSourceName)
     {

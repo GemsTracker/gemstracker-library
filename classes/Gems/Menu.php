@@ -778,6 +778,9 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $this->addHiddenPrivilege('pr.staff.edit.all', $this->_(
                 'Grant right to edit staff members from all organizations.'
                 ));
+        $this->addHiddenPrivilege('pr.export.ignore-privacy', $this->_(
+                'Grant right to export personally identifying information with surveys.'
+                ));
         $this->addHiddenPrivilege('pr.staff.see.all', $this->_(
                 'Display all organizations in staff overview.'
                 ));

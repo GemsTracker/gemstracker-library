@@ -1,10 +1,26 @@
 <?php
 
+/**
+ *
+ * @package    Gems
+ * @subpackage Snippets\Export
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ */
+
 namespace Gems\Snippets\Export;
 
+/**
+ *
+ * @package    Gems
+ * @subpackage Snippets\Export
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.8.0
+ */
 class AnswerAutosearchFormSnippet extends \Gems_Snippets_AutosearchFormSnippet
 {
-
 	/**
      * Defines the value used for 'no round description'
      *
@@ -29,7 +45,6 @@ class AnswerAutosearchFormSnippet extends \Gems_Snippets_AutosearchFormSnippet
      */
     protected function getAutoSearchElements(array $data)
     {
-
     	$dbLookup      = $this->util->getDbLookup();
     	$translated    = $this->util->getTranslated();
     	$noRound       = array(self::NoRound => $this->_('No round description'));
@@ -89,7 +104,7 @@ class AnswerAutosearchFormSnippet extends \Gems_Snippets_AutosearchFormSnippet
         $element->getDecorator('Label')->setOption('placement', \Zend_Form_Decorator_Abstract::APPEND);
         $element->setDescription($this->_('Add track fields to export'));
         $elements['tid_fields'] = $element;
-        
+
         $elements[] = null;
 
         $element = $this->form->createElement('checkbox', 'incomplete');

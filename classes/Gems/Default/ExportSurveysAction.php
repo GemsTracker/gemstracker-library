@@ -37,7 +37,7 @@ class Gems_Default_ExportSurveysAction extends \MUtil_Controller_Action
                 $batch->autoStart = true;
             }
 
-                        
+
 
             if ($batch->run($this->request)) {
                 exit;
@@ -129,7 +129,6 @@ class Gems_Default_ExportSurveysAction extends \MUtil_Controller_Action
         $data = $this->request->getPost();
         $exportSession = new \Zend_Session_Namespace(get_class($this));
 
-        $exportData = array();
         if ($data) {
             $exportSession->data = $data;
             $exportData = $data;
@@ -152,7 +151,7 @@ class Gems_Default_ExportSurveysAction extends \MUtil_Controller_Action
             $models[$surveyId] = $this->getExportModel($exportModelSource, $currentFilter);
         }
 
-        return $models;        
+        return $models;
     }
 
     protected function getExportModel($exportModelSource, $filter)

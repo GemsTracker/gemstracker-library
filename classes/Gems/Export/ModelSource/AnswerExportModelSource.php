@@ -26,6 +26,11 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
      */
     protected $currentUser;
 
+    /**
+     * Current filter
+     *
+     * @var array
+     */
     protected $filter;
 
     /**
@@ -38,6 +43,10 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
      */
 	protected $locale;
 
+    /**
+     *
+     * @var \MUtil_Model_ModelAbstract
+     */
     protected $model;
 
     /**
@@ -103,7 +112,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
                 $model->set($attribute, 'label', $attribute);
             }
 
-            if (!$model->checkJoinExists('gems__respondent2org.gr2o_id_user', 'gems__tokens.gto_id_respondent')) {                        
+            if (!$model->checkJoinExists('gems__respondent2org.gr2o_id_user', 'gems__tokens.gto_id_respondent')) {
                 $model->addTable('gems__respondent2org', array(
                     'gems__respondent2org.gr2o_id_user' => 'gems__tokens.gto_id_respondent',
                     'gems__respondent2org.gr2o_id_organization' => 'gems__tokens.gto_id_organization'), 'gr2o'
@@ -151,7 +160,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
                 // Add relation fields
                 $model->set('gto_id_relation', 'label', $this->_('Relation ID'), 'type', \MUtil_Model::TYPE_NUMERIC);
                 $model->set('gtf_field_name', 'label', $this->_('Relation'), 'type', \MUtil_Model::TYPE_STRING);
-                
+
                 $prefixes['TF'] = array_diff($model->getItemNames(), $prefixes['A'], $prefixes['D']);
             }
 
@@ -166,7 +175,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
                 }
             }
             $this->model = $model;
-            
+
             // Exclude external fields from sorting
             foreach($this->model->getItemsUsed() as $item) {
                 if (!$this->model->get($item, 'table', 'column_expression')) {

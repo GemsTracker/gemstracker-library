@@ -3,18 +3,17 @@
 /**
  *
  * @package    Gems
- * @subpackage Snippets_Generic
+ * @subpackage Snippets
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
  * Display a search form that selects on typed text only
  *
  * @package    Gems
- * @subpackage Snippets_Generic
+ * @subpackage Snippets
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.5.6
@@ -22,7 +21,7 @@
 class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstract
 {
     /**
-     * Field name for perioe filters
+     * Field name for period filters
      */
     const PERIOD_DATE_USED = 'dateused';
 
