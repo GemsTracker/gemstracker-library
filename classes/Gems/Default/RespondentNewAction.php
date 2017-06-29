@@ -267,9 +267,20 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      */
     public function createAction()
     {
-        $group = $this->currentUser->getGroup();
-        if ($group && $this->enableScreens) {
-            $edit = $group->getRespondentEditScreen();
+        if ($this->enableScreens) {
+            $edit = false;
+            $org  = $this->getRespondent()->getOrganization();
+
+            if ($org) {
+                $edit = $org->getRespondentEditScreen();
+            }
+
+            if (! $edit) {
+                $group = $this->currentUser->getGroup();
+                if ($group) {
+                    $edit = $group->getRespondentEditScreen();
+                }
+            }
 
             if ($edit ) {
                 // All are arrays, so easy to set
@@ -335,9 +346,20 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      */
     public function editAction()
     {
-        $group = $this->currentUser->getGroup();
-        if ($group && $this->enableScreens) {
-            $edit = $group->getRespondentEditScreen();
+        if ($this->enableScreens) {
+            $edit = false;
+            $org  = $this->getRespondent()->getOrganization();
+
+            if ($org) {
+                $edit = $org->getRespondentEditScreen();
+            }
+
+            if (! $edit) {
+                $group = $this->currentUser->getGroup();
+                if ($group) {
+                    $edit = $group->getRespondentEditScreen();
+                }
+            }
 
             if ($edit ) {
                 // All are arrays, so easy to set
@@ -684,10 +706,20 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      */
     public function showAction()
     {
-        $group = $this->currentUser->getGroup();
-        if ($group && $this->enableScreens) {
-            $show = $group->getRespondentShowScreen();
+        if ($this->enableScreens) {
+            $show = false;
+            $org  = $this->getRespondent()->getOrganization();
+            if ($org) {
+                $show = $org->getRespondentShowScreen();
+            }
 
+            if (! $show) {
+                $group = $this->currentUser->getGroup();
+                if ($group) {
+                    $show = $group->getRespondentShowScreen();
+                }
+            }
+            
             if ($show) {
                 // All are arrays, so easy to set
                 $this->showParameters = $show->getParameters() + $this->showParameters;

@@ -78,5 +78,12 @@ class OrganizationEditSnippet extends \Gems_Snippets_ModelTabFormSnippetGeneric
             $this->formData['allowed'] = $display;
             $model->set('allowed', 'value', $display);
         }
+        // MultiOption null is ''.
+        if (! isset($this->formData['gor_respondent_edit'])) {
+            $this->formData['gor_respondent_edit'] = '';
+        }
+        if (! isset($this->formData['gor_respondent_show'])) {
+            $this->formData['gor_respondent_show'] = '';
+        }
     }
 }

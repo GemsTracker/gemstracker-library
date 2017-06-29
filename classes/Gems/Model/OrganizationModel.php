@@ -150,6 +150,19 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
             }
         }
 
+        $groupLevel   = [
+            '' => $this->_('Defer to user group setting'),
+            ];
+
+        $screenLoader = $this->loader->getScreenLoader();
+        $this->setIfExists('gor_respondent_edit', 'label', $this->_('Respondent edit screen'),
+                'multiOptions', $groupLevel + $screenLoader->listRespondentEditScreens()
+                );
+        $screenLoader = $this->loader->getScreenLoader();
+        $this->setIfExists('gor_respondent_show', 'label', $this->_('Respondent show screen'),
+                'multiOptions', $groupLevel + $screenLoader->listRespondentShowScreens()
+                );
+
         $this->setIfExists('gor_resp_change_event', 'label', $this->_('Respondent change event'),
                 'multiOptions', $this->loader->getEvents()->listRespondentChangedEvents()
                 );
@@ -193,7 +206,6 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
             'validator', new \Gems_Validate_IPRanges(),
             'maxlength', 500
             );
-
 
         if ($this->project->multiLocale) {
             $this->set('gor_name', 'description', 'ENGLISH please! Use translation file to translate.');
@@ -294,8 +306,17 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
             $this->setIfExists('gor_user_class', 'default', key($definitions), 'required', true/*, 'onchange', 'this.form.submit();'*/);
         }
 
-        // OTHER TAB
-        $this->setIfExists('gor_resp_change_event',  'tab', $this->_('Other'),
+        // INTERFACE TAB
+        $this->setIfExists('gor_respondent_edit', 'tab', $this->_('Interface'),
+                'default', '',
+                'elementClass', 'Radio'
+                );
+        $this->setIfExists('gor_respondent_show',
+                'default', '',
+                'elementClass', 'Radio'
+                );
+
+        $this->setIfExists('gor_resp_change_event',
                 'order', $this->getOrder('gor_user_class') + 1000
                 );
         $this->setIfExists('gor_iso_lang',

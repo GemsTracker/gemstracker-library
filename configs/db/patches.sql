@@ -1270,6 +1270,23 @@ ALTER TABLE gems__groups ADD
     ggp_respondent_show varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null
     AFTER ggp_respondent_edit;
 
+-- PATCH: Add respondent settings to organizations
+
+ALTER TABLE gems__organizations ADD
+    gor_respondent_edit varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null
+    AFTER gor_signature;
+
+ALTER TABLE gems__organizations ADD
+    gor_respondent_show varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null
+    AFTER gor_respondent_edit;
+
+UPDATE gems__organizations
+    SET gor_respondent_edit = ''
+    WHERE gor_respondent_edit IS NULL;
+
+UPDATE gems__organizations
+    SET gor_respondent_show = ''
+    WHERE gor_respondent_show IS NULL;
 
 -- PATCH: Activate job title as default staff element
 ALTER TABLE gems__staff ADD gsf_job_title varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' after gsf_gender;

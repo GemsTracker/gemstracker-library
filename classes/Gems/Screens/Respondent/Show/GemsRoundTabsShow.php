@@ -21,7 +21,7 @@ use Gems\Screens\ShowScreenAbstract;
  * @license    New BSD License
  * @since      Class available since version 1.8.2 Jan 20, 2017 3:52:09 PM
  */
-class GemsTimelineShow extends ShowScreenAbstract
+class GemsRoundTabsShow extends ShowScreenAbstract
 {
     /**
      *
@@ -43,7 +43,7 @@ class GemsTimelineShow extends ShowScreenAbstract
      */
     public function getScreenLabel()
     {
-        return $this->_('Timeline show respondent');
+        return $this->_('Rounds as tabs show');
     }
 
     /**
@@ -53,11 +53,10 @@ class GemsTimelineShow extends ShowScreenAbstract
     public function getSnippets()
     {
         return [
-            'Gems\\Snippets\\Generic\\ContentTitleSnippet',
-            'Gems\\Snippets\\Respondent\\MultiOrganizationTab',
-            'Gems\\Snippets\\Respondent\\RespondentDetailsSnippet',
-            'Gems\\Snippets\\Tracker\\AddTracksSnippet',
-            'Gems\\Snippets\\Respondent\\TrafficLightTokenSnippet',
+            'Generic_ContentTitleSnippet',
+            'Respondent\\RespondentDetailsSnippet',
+            'Respondent\\RoundsTabsSnippet',
+            'Token\\RoundTokenSnippet',
         ];
     }
 }

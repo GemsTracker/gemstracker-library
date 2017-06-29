@@ -51,6 +51,18 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
         );
 
     /**
+     *
+     * @var \Gems\Screens\EditScreenInterface
+     */
+    protected $_respondentEditScreen;
+
+    /**
+     *
+     * @var \Gems\Screens\ShowScreenInterface
+     */
+    protected $_respondentShowScreen;
+
+    /**
      * Required
      *
      * @var \Gems_Util_BasePath
@@ -62,6 +74,12 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
+
+    /**
+     *
+     * @var \Gems_Loader
+     */
+    protected $loader;
 
     /**
      *
@@ -354,6 +372,38 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
     public function getRespondentChangeEventClass()
     {
         return $this->_get('gor_resp_change_event');
+    }
+
+    /**
+     *
+     * @return \Gems\Screens\EditScreenInterface
+     */
+    public function getRespondentEditScreen()
+    {
+        if ($this->_respondentEditScreen || (! $this->_has('gor_respondent_edit'))) {
+            return $this->_respondentEditScreen;
+        }
+        $screenLoader = $this->loader->getScreenLoader();
+
+        $this->_respondentEditScreen = $screenLoader->loadRespondentEditScreen($this->_get('gor_respondent_edit'));
+
+        return $this->_respondentEditScreen;
+    }
+
+    /**
+     *
+     * @return \Gems\Screens\ShowScreenInterface
+     */
+    public function getRespondentShowScreen()
+    {
+        if ($this->_respondentShowScreen || (! $this->_has('gor_respondent_show'))) {
+            return $this->_respondentShowScreen;
+        }
+        $screenLoader = $this->loader->getScreenLoader();
+
+        $this->_respondentShowScreen = $screenLoader->loadRespondentShowScreen($this->_get('gor_respondent_show'));
+
+        return $this->_respondentShowScreen;
     }
 
     /**

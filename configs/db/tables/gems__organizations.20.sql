@@ -20,6 +20,9 @@ CREATE TABLE if not exists gems__organizations (
         gor_welcome                 text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'  null,
         gor_signature               text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
+        gor_respondent_edit         varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
+        gor_respondent_show         varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
+
         gor_style                   varchar(15)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'gems',
         gor_resp_change_event       varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
         gor_iso_lang                char(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'en',

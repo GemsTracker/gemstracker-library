@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-27 15:14+0200\n"
+"POT-Creation-Date: 2017-06-29 15:22+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ../../..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 2.0.2\n"
+"X-Generator: Poedit 1.8.11\n"
 "X-Poedit-SearchPath-0: gemstracker/gemstracker/classes\n"
 "X-Poedit-SearchPath-1: gemstracker/gemstracker/languages\n"
 "X-Poedit-SearchPath-2: magnafacta/mutil\n"
@@ -105,7 +105,7 @@ msgstr "Location"
 #: gemstracker/gemstracker/classes/Gems/Model/AppointmentModel.php:194
 #: gemstracker/gemstracker/classes/Gems/Model/AppointmentModel.php:245
 #: gemstracker/gemstracker/classes/Gems/Model/CommLogModel.php:141
-#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:139
+#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:142
 msgid "Subject"
 msgstr "Subject"
 
@@ -987,7 +987,7 @@ msgid "The survey for token %s is no longer active."
 msgstr "The survey for token %s is no longer active."
 
 #: gemstracker/gemstracker/classes/Gems/Default/CalendarAction.php:159
-#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:707
+#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:746
 #: gemstracker/gemstracker/classes/Gems/Import/ImportLoader.php:324
 #: gemstracker/gemstracker/classes/Gems/Import/ImportLoader.php:328
 #: gemstracker/gemstracker/classes/Gems/Import/ImportLoader.php:332
@@ -1005,7 +1005,7 @@ msgstr "Direct import"
 #: gemstracker/gemstracker/classes/Gems/Model/CommLogModel.php:142
 #: gemstracker/gemstracker/classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:117
 #: gemstracker/gemstracker/classes/Gems/Snippets/Export/ExportSurveysFormSnippet.php:80
-#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/TokenMailFormSnippet.php:39
+#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/TokenMailFormSnippet.php:42
 #: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/MinimalTableSnippet.php:104
 #: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/RespondentTableSnippet.php:101
 #: gemstracker/gemstracker/classes/Gems/Snippets/Survey/AnswerImportSnippet.php:132
@@ -1026,7 +1026,7 @@ msgstr "Track"
 #: gemstracker/gemstracker/classes/Gems/Default/SummaryAction.php:89
 #: gemstracker/gemstracker/classes/Gems/Export/RespondentExport.php:249
 #: gemstracker/gemstracker/classes/Gems/Snippets/Export/ExportSurveysFormSnippet.php:97
-#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/TokenMailFormSnippet.php:40
+#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/TokenMailFormSnippet.php:43
 #: gemstracker/gemstracker/classes/Gems/Snippets/Survey/Display/BarChartSnippet.php:203
 #: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:591
 #: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:658
@@ -1041,7 +1041,7 @@ msgstr "Round"
 #: gemstracker/gemstracker/classes/Gems/Export/RespondentExport.php:248
 #: gemstracker/gemstracker/classes/Gems/Model/CommLogModel.php:143
 #: gemstracker/gemstracker/classes/Gems/Snippets/Export/ExportSurveysFormSnippet.php:102
-#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/TokenMailFormSnippet.php:41
+#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/TokenMailFormSnippet.php:44
 #: gemstracker/gemstracker/classes/Gems/Snippets/Survey/AnswerImportSnippet.php:125
 #: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/TrackSurveyOverviewSnippet.php:94
 #: gemstracker/gemstracker/classes/Gems/Tracker/Engine/TrackEngineAbstract.php:861
@@ -1092,7 +1092,7 @@ msgstr ""
 
 #: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:104
 #: gemstracker/gemstracker/classes/Gems/Model/CommLogModel.php:149
-#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:134
+#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:137
 msgid "Template"
 msgstr "Template"
 
@@ -1109,7 +1109,7 @@ msgid "Job is only run when active."
 msgstr "Job is only run when active."
 
 #: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:113
-#: gemstracker/gemstracker/classes/Gems/Task/Mail/ExecuteMailJobTask.php:112
+#: gemstracker/gemstracker/classes/Gems/Task/Mail/ExecuteMailJobTask.php:121
 msgid "From address used"
 msgstr "From address used"
 
@@ -1118,7 +1118,7 @@ msgid "From other"
 msgstr "From other"
 
 #: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:124
-#: gemstracker/gemstracker/classes/Gems/Task/Mail/ExecuteMailJobTask.php:146
+#: gemstracker/gemstracker/classes/Gems/Task/Mail/ExecuteMailJobTask.php:155
 msgid "Processing Method"
 msgstr "Processing Method"
 
@@ -1211,7 +1211,6 @@ msgid "Use the 'By staff member' address"
 msgstr "Use the 'By staff member' address"
 
 #: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:271
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:298
 #: gemstracker/gemstracker/classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:180
 #: gemstracker/gemstracker/classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:288
 #: gemstracker/gemstracker/classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:354
@@ -1264,7 +1263,7 @@ msgstr "Optional code name to link the template to program code."
 
 #: gemstracker/gemstracker/classes/Gems/Default/CommTemplateAction.php:153
 #: gemstracker/gemstracker/classes/Gems/Model/LogModel.php:110
-#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:142
+#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:145
 msgid "Message"
 msgstr "Message"
 
@@ -1311,11 +1310,11 @@ msgstr "End date"
 msgid "No track selected..."
 msgstr "No track selected..."
 
-#: gemstracker/gemstracker/classes/Gems/Default/ComplianceAction.php:160
+#: gemstracker/gemstracker/classes/Gems/Default/ComplianceAction.php:161
 msgid "Compliance"
 msgstr "Compliance"
 
-#: gemstracker/gemstracker/classes/Gems/Default/ComplianceAction.php:171
+#: gemstracker/gemstracker/classes/Gems/Default/ComplianceAction.php:172
 #: gemstracker/gemstracker/classes/Gems/Default/FieldReportAction.php:316
 #: gemstracker/gemstracker/classes/Gems/Default/ProjectTracksAction.php:148
 #: gemstracker/gemstracker/classes/Gems/Default/TrackAction.php:1023
@@ -1823,7 +1822,7 @@ msgstr "The data in table %s"
 msgid "Contents of %s %s"
 msgstr "Contents of %s %s"
 
-#: gemstracker/gemstracker/classes/Gems/Default/ExportAction.php:32
+#: gemstracker/gemstracker/classes/Gems/Default/ExportAction.php:61
 #: gemstracker/gemstracker/classes/Gems/Default/ExportSurveysAction.php:185
 msgid "Please select a survey to start the export"
 msgstr "Please select a survey to start the export"
@@ -1998,19 +1997,19 @@ msgstr "Staff"
 #: gemstracker/gemstracker/classes/Gems/Default/GroupAction.php:160
 #: gemstracker/gemstracker/classes/Gems/Default/ReceptionAction.php:83
 #: gemstracker/gemstracker/classes/Gems/Default/RespondentAction.php:476
-#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:428
+#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:457
 #: gemstracker/gemstracker/classes/Gems/Menu.php:727
 #: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:123
 msgid "Respondents"
 msgstr "Patients"
 
 #: gemstracker/gemstracker/classes/Gems/Default/GroupAction.php:164
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:190
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:203
 msgid "Allowed IP Ranges"
 msgstr "Allowed IP Ranges"
 
 #: gemstracker/gemstracker/classes/Gems/Default/GroupAction.php:165
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:191
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:204
 msgid ""
 "Separate with | example: 10.0.0.0-10.0.0.255 (subnet masks are not supported)"
 msgstr ""
@@ -2025,10 +2024,12 @@ msgid "Respondent browse screen"
 msgstr "Patient browse screen"
 
 #: gemstracker/gemstracker/classes/Gems/Default/GroupAction.php:191
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:158
 msgid "Respondent edit screen"
 msgstr "Patient edit screen"
 
 #: gemstracker/gemstracker/classes/Gems/Default/GroupAction.php:197
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:162
 msgid "Respondent show screen"
 msgstr "Patient show screen"
 
@@ -2740,7 +2741,7 @@ msgstr "Survey #"
 #: gemstracker/gemstracker/classes/Gems/Default/ProjectTracksAction.php:101
 #: gemstracker/gemstracker/classes/Gems/Snippets/AutosearchFormSnippet.php:114
 #: gemstracker/gemstracker/classes/Gems/Snippets/Export/ExportSurveysFormSnippet.php:220
-#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:154
+#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:157
 #: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailModelFormSnippet.php:114
 #: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/AvailableTracksSnippet.php:107
 #: gemstracker/gemstracker/classes/Gems/Tracker/Model/TrackModel.php:92
@@ -2886,7 +2887,7 @@ msgid "Settings"
 msgstr "Settings"
 
 #: gemstracker/gemstracker/classes/Gems/Default/RespondentAction.php:197
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:156
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:169
 #: gemstracker/gemstracker/classes/Gems/Model/RespondentModel.php:379
 #: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:142
 #: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:255
@@ -2937,12 +2938,12 @@ msgstr "Choose a reception code to delete."
 
 #: gemstracker/gemstracker/classes/Gems/Default/RespondentAction.php:346
 #: gemstracker/gemstracker/classes/Gems/Default/RespondentExportAction.php:38
-#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:357
+#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:386
 msgid "Export respondent archive"
 msgstr "Export patient archive"
 
 #: gemstracker/gemstracker/classes/Gems/Default/RespondentAction.php:471
-#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:598
+#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:627
 msgid "respondent"
 msgid_plural "respondents"
 msgstr[0] "patient"
@@ -2971,16 +2972,16 @@ msgid_plural "communication activities"
 msgstr[0] "communication activity"
 msgstr[1] "communication activities"
 
-#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:321
+#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:339
 msgid "Delete or stop respondent"
 msgstr "Delete or stop patient"
 
-#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:410
+#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:439
 #, php-format
 msgid "Edit respondent nr %s"
 msgstr "Edit patient nr %s"
 
-#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:413
+#: gemstracker/gemstracker/classes/Gems/Default/RespondentNewAction.php:442
 #, php-format
 msgid "Edit respondent nr %s: %s"
 msgstr "Edit patient nr %s: %s"
@@ -3567,7 +3568,7 @@ msgstr "Round / Details"
 #: gemstracker/gemstracker/classes/Gems/Snippets/Export/SurveyAutosearchFormSnippet.php:68
 #: gemstracker/gemstracker/classes/Gems/Snippets/Token/PlanSearchSnippet.php:76
 #: gemstracker/gemstracker/classes/Gems/Snippets/TokenPlanTableSnippet.php:44
-#: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/Rounds/RoundsTableSnippet.php:113
+#: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/Rounds/RoundsTableSnippet.php:121
 #: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:57
 #: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:479
 #: gemstracker/gemstracker/classes/Gems/Tracker/Model/StandardTokenModel.php:297
@@ -3581,7 +3582,7 @@ msgstr "Valid from"
 #: gemstracker/gemstracker/classes/Gems/Snippets/Export/SurveyAutosearchFormSnippet.php:69
 #: gemstracker/gemstracker/classes/Gems/Snippets/Token/PlanSearchSnippet.php:77
 #: gemstracker/gemstracker/classes/Gems/Snippets/TokenPlanTableSnippet.php:45
-#: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/Rounds/RoundsTableSnippet.php:115
+#: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/Rounds/RoundsTableSnippet.php:123
 #: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:58
 #: gemstracker/gemstracker/classes/Gems/Tracker/Engine/StepEngineAbstract.php:480
 #: gemstracker/gemstracker/classes/Gems/Tracker/Model/StandardTokenModel.php:307
@@ -3991,7 +3992,7 @@ msgstr "Last page"
 #: gemstracker/gemstracker/classes/Gems/Menu.php:339
 #: gemstracker/gemstracker/classes/Gems/Menu.php:433
 #: gemstracker/gemstracker/classes/Gems/Model/CommLogModel.php:140
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:243
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:255
 #: gemstracker/gemstracker/classes/Gems/Model/Translator/TokenAnswerTranslator.php:89
 #: gemstracker/gemstracker/classes/Gems/Snippets/Ask/RedirectUntilGoodbyeSnippet.php:83
 #: gemstracker/gemstracker/classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:65
@@ -4130,7 +4131,7 @@ msgstr "Link by patient id and completion date"
 
 #: gemstracker/gemstracker/classes/Gems/Mail/MailElements.php:149
 #: gemstracker/gemstracker/classes/Gems/Menu/MenuAbstract.php:838
-#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:145
+#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:148
 #: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailModelFormSnippet.php:106
 msgid "Fields"
 msgstr "Fields"
@@ -4156,11 +4157,11 @@ msgid "Value"
 msgstr "Value"
 
 #: gemstracker/gemstracker/classes/Gems/Mail/MailElements.php:303
-#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:210
+#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:213
 msgid "no email adress"
 msgstr "no email adress"
 
-#: gemstracker/gemstracker/classes/Gems/Mail/RespondentMailer.php:76
+#: gemstracker/gemstracker/classes/Gems/Mail/RespondentMailer.php:81
 msgid "Respondent data not found"
 msgstr "Patient data not found"
 
@@ -4168,24 +4169,24 @@ msgstr "Patient data not found"
 msgid "staff data not found"
 msgstr "staff data not found"
 
-#: gemstracker/gemstracker/classes/Gems/Mail/TokenMailer.php:104
+#: gemstracker/gemstracker/classes/Gems/Mail/TokenMailer.php:97
 msgid "Token not found"
 msgstr "Token not found"
 
-#: gemstracker/gemstracker/classes/Gems/Mail/TokenMailer.php:275
-#: gemstracker/gemstracker/classes/Gems/Mail/TokenMailer.php:277
+#: gemstracker/gemstracker/classes/Gems/Mail/TokenMailer.php:270
+#: gemstracker/gemstracker/classes/Gems/Mail/TokenMailer.php:272
 #, php-format
 msgid "%d survey"
 msgid_plural "%d surveys"
 msgstr[0] "%d survey"
 msgstr[1] "%d surveys"
 
-#: gemstracker/gemstracker/classes/Gems/Mail/TokenMailer.php:320
+#: gemstracker/gemstracker/classes/Gems/Mail/TokenMailer.php:315
 msgid "Undefined relation"
 msgstr "Undefined relation"
 
-#: gemstracker/gemstracker/classes/Gems/Mail/TokenMailer.php:328
-#: gemstracker/gemstracker/classes/Gems/Mail/TokenMailer.php:351
+#: gemstracker/gemstracker/classes/Gems/Mail/TokenMailer.php:323
+#: gemstracker/gemstracker/classes/Gems/Mail/TokenMailer.php:346
 msgid "yourself"
 msgstr "yourself"
 
@@ -4226,7 +4227,7 @@ msgid "Consents"
 msgstr "Consents"
 
 #: gemstracker/gemstracker/classes/Gems/Menu.php:169
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:263
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:275
 msgid "Access"
 msgstr "Access"
 
@@ -4310,7 +4311,7 @@ msgstr "Add"
 #: gemstracker/gemstracker/classes/Gems/Menu/MenuAbstract.php:334
 #: gemstracker/gemstracker/classes/Gems/Menu/MenuAbstract.php:688
 #: gemstracker/gemstracker/classes/Gems/Menu/MenuAbstract.php:700
-#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:151
+#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:154
 #: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailModelFormSnippet.php:111
 msgid "Preview"
 msgstr "Preview"
@@ -4985,42 +4986,50 @@ msgstr "Accessible by"
 msgid "User Definition"
 msgstr "User Definition"
 
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:153
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:154
+msgid "Defer to user group setting"
+msgstr "Defer to user group setting"
+
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:166
 msgid "Respondent change event"
 msgstr "Patient change event"
 
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:160
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:173
 msgid "Style"
 msgstr "Style"
 
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:179
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:192
 msgid "Greeting"
 msgstr "Greeting"
 
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:180
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:182
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:193
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:195
 msgid "For emails and token forward screen."
 msgstr "For emails and token forward screen."
 
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:181
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:194
 msgid "Signature"
 msgstr "Signature"
 
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:183
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:196
 msgid "Create Account template"
 msgstr "Create Account template"
 
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:186
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:199
 msgid "Reset Password template"
 msgstr "Reset Password template"
 
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:243
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:255
 msgid "Email"
 msgstr "Email"
 
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:278
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:290
 msgid "Can access"
 msgstr "Can access"
+
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:310
+msgid "Interface"
+msgstr "Interface"
 
 #: gemstracker/gemstracker/classes/Gems/Model/RespondentModel.php:271
 #: gemstracker/gemstracker/classes/Gems/Model/RespondentModel.php:353
@@ -5124,7 +5133,7 @@ msgstr "Login Name"
 
 #: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:190
 #: gemstracker/gemstracker/classes/Gems/User/Form/OrganizationFormAbstract.php:206
-#: gemstracker/gemstracker/classes/Gems/User/User.php:1526
+#: gemstracker/gemstracker/classes/Gems/User/User.php:1562
 msgid "Username"
 msgstr "Username"
 
@@ -5304,9 +5313,13 @@ msgstr "(default project specific table display)"
 msgid "Browse with address"
 msgstr "Browse with address"
 
-#: gemstracker/gemstracker/classes/Gems/Screens/Respondent/Edit/GemsDefaultEdit.php:55
-msgid "(default Gems respondent edit)"
-msgstr "(default Gems patient edit)"
+#: gemstracker/gemstracker/classes/Gems/Screens/Respondent/Edit/GemsDefaultNoTabEdit.php:55
+msgid "(default Gems respondent no tab edit)"
+msgstr "(default Gems paitent no tab edit)"
+
+#: gemstracker/gemstracker/classes/Gems/Screens/Respondent/Edit/GemsDefaultTabbedEdit.php:55
+msgid "(default Gems respondent tabbed edit)"
+msgstr "(default Gems paitent tabbed edit)"
 
 #: gemstracker/gemstracker/classes/Gems/Screens/Respondent/Edit/ProjectDefaultEdit.php:32
 msgid "(default project respondent edit)"
@@ -5320,10 +5333,13 @@ msgstr "(default Gems patient show)"
 msgid "(default project respondent show)"
 msgstr "(default project patient show)"
 
+#: gemstracker/gemstracker/classes/Gems/Screens/Respondent/Show/GemsRoundTabsShow.php:46
+msgid "Rounds as tabs show"
+msgstr "Rounds as tabs show"
+
 #: gemstracker/gemstracker/classes/Gems/Screens/Respondent/Show/GemsTimelineShow.php:46
-#| msgid "(default Gems respondent show)"
-msgid "(default Gems timeline show)"
-msgstr "(default Gems timeline show)"
+msgid "Timeline show respondent"
+msgstr "Timeline show paitent"
 
 #: gemstracker/gemstracker/classes/Gems/Selector/DateSelectorAbstract.php:270
 msgid "<<"
@@ -5882,53 +5898,53 @@ msgstr "+"
 msgid "(select a status)"
 msgstr "(select a status)"
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:131
-#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/TokenBulkMailFormSnippet.php:80
-#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/TokenMailFormSnippet.php:37
+#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:134
+#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/TokenBulkMailFormSnippet.php:84
+#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/TokenMailFormSnippet.php:40
 msgid "To"
 msgstr "To"
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:132
+#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:135
 msgid "Prefered Language"
 msgstr "Prefered Language"
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:156
+#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:159
 msgid "Send"
 msgstr "Send"
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:161
+#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:164
 #: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailModelFormSnippet.php:124
 msgid "Available fields"
 msgstr "Available fields"
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:265
+#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:268
 msgid "Organization does not have an e-mail address."
 msgstr "Organization does not have an e-mail address."
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:281
+#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:284
 msgid "You do not have an e-mail address."
 msgstr "You do not have an e-mail address."
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:333
+#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:336
 msgid "On this test system all mail will be delivered to the from address."
 msgstr "On this test system all mail will be delivered to the from address."
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:387
+#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:390
 #, php-format
 msgid "Email %s "
 msgstr "Email %s "
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:461
+#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:464
 #: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailModelFormSnippet.php:167
 msgid "Subject:"
 msgstr "Subject:"
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:491
+#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:494
 #: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailModelFormSnippet.php:249
 msgid "Preview updated"
 msgstr "Preview updated"
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:494
+#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:497
 msgid "Mail sent"
 msgstr "Mail sent"
 
@@ -5955,34 +5971,34 @@ msgstr "Body required for %s part."
 msgid "Test mail sent to %s"
 msgstr "Test mail sent to %s"
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/TokenBulkMailFormSnippet.php:98
+#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/TokenBulkMailFormSnippet.php:102
 msgid "Survey has been taken."
 msgstr "Survey has been taken."
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/TokenBulkMailFormSnippet.php:101
+#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/TokenBulkMailFormSnippet.php:105
 msgid "Respondent does not have an e-mail address."
 msgstr "Patient does not have an e-mail address."
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/TokenBulkMailFormSnippet.php:104
+#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/TokenBulkMailFormSnippet.php:108
 msgid "Survey cannot be taken by a respondent."
 msgstr "Survey cannot be taken by a patient."
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/TokenBulkMailFormSnippet.php:106
+#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/TokenBulkMailFormSnippet.php:110
 msgid "Survey cannot be taken at this moment."
 msgstr "Survey cannot be taken at this moment."
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/TokenBulkMailFormSnippet.php:198
-#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/TokenBulkMailFormSnippet.php:216
+#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/TokenBulkMailFormSnippet.php:203
+#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/TokenBulkMailFormSnippet.php:221
 #, php-format
 msgid "Sending failed for token %s with reason: %s."
 msgstr "Sending failed for token %s with reason: %s."
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/TokenBulkMailFormSnippet.php:227
+#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/TokenBulkMailFormSnippet.php:232
 #, php-format
 msgid "Sent %d e-mails, updated %d tokens."
 msgstr "Sent %d e-mails, updated %d tokens."
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/TokenMailFormSnippet.php:42
+#: gemstracker/gemstracker/classes/Gems/Snippets/Mail/TokenMailFormSnippet.php:45
 #: gemstracker/gemstracker/classes/Gems/Tracker/Model/StandardTokenModel.php:319
 msgid "Last contact"
 msgstr "Last contact"
@@ -7037,42 +7053,42 @@ msgstr[1] "%d tokens imported."
 msgid "Nothing to do, please create a mail job first."
 msgstr "Nothing to do, please create a mail job first."
 
-#: gemstracker/gemstracker/classes/Gems/Task/Mail/ExecuteMailJobTask.php:51
+#: gemstracker/gemstracker/classes/Gems/Task/Mail/ExecuteMailJobTask.php:60
 msgid "Mail job not found!"
 msgstr "Mail job not found!"
 
-#: gemstracker/gemstracker/classes/Gems/Task/Mail/ExecuteMailJobTask.php:83
+#: gemstracker/gemstracker/classes/Gems/Task/Mail/ExecuteMailJobTask.php:92
 #, php-format
 msgid "%s %s can not be sent because no email address is available."
 msgstr "%s %s can not be sent because no email address is available."
 
-#: gemstracker/gemstracker/classes/Gems/Task/Mail/ExecuteMailJobTask.php:112
-#: gemstracker/gemstracker/classes/Gems/Task/Mail/ExecuteMailJobTask.php:146
+#: gemstracker/gemstracker/classes/Gems/Task/Mail/ExecuteMailJobTask.php:121
+#: gemstracker/gemstracker/classes/Gems/Task/Mail/ExecuteMailJobTask.php:155
 #, php-format
 msgid "Invalid option for `%s`"
 msgstr "Invalid option for `%s`"
 
-#: gemstracker/gemstracker/classes/Gems/Task/Mail/ExecuteMailJobTask.php:138
+#: gemstracker/gemstracker/classes/Gems/Task/Mail/ExecuteMailJobTask.php:147
 #, php-format
 msgid "Would be marked: %s %s"
 msgstr "Would be marked: %s %s"
 
-#: gemstracker/gemstracker/classes/Gems/Task/Mail/ExecuteMailJobTask.php:155
+#: gemstracker/gemstracker/classes/Gems/Task/Mail/ExecuteMailJobTask.php:164
 #, php-format
 msgid "Would be sent: %s %s to %s using %s as sender"
 msgstr "Would be sent: %s %s to %s using %s as sender"
 
-#: gemstracker/gemstracker/classes/Gems/Task/Mail/ExecuteMailJobTask.php:181
+#: gemstracker/gemstracker/classes/Gems/Task/Mail/ExecuteMailJobTask.php:193
 #, php-format
 msgid "Would send %d e-mails with template %s, and update %d tokens."
 msgstr "Would send %d e-mails with template %s, and update %d tokens."
 
-#: gemstracker/gemstracker/classes/Gems/Task/Mail/ExecuteMailJobTask.php:185
+#: gemstracker/gemstracker/classes/Gems/Task/Mail/ExecuteMailJobTask.php:200
 #, php-format
 msgid "Sent %d e-mails with template %s, updated %d tokens."
 msgstr "Sent %d e-mails with template %s, updated %d tokens."
 
-#: gemstracker/gemstracker/classes/Gems/Task/Mail/ExecuteMailJobTask.php:191
+#: gemstracker/gemstracker/classes/Gems/Task/Mail/ExecuteMailJobTask.php:209
 #, php-format
 msgid ""
 "%d error(s) occurred while creating mails for template %s. Check error log "
@@ -8512,7 +8528,7 @@ msgid "Trying upgrade for %s to level %s: %s"
 msgstr "Trying upgrade for %s to level %s: %s"
 
 #: gemstracker/gemstracker/classes/Gems/User/Form/ChangePasswordForm.php:180
-#: gemstracker/gemstracker/classes/Gems/User/User.php:1521
+#: gemstracker/gemstracker/classes/Gems/User/User.php:1557
 #, php-format
 msgid "%s is not correct."
 msgstr "%s is not correct."
@@ -8755,42 +8771,42 @@ msgstr "may not contain numbers"
 msgid "Shared secret"
 msgstr "Shared secret"
 
-#: gemstracker/gemstracker/classes/Gems/User/User.php:484
+#: gemstracker/gemstracker/classes/Gems/User/User.php:486
 #, php-format
 msgid "Your account is temporarily blocked, please wait a minute."
 msgid_plural "Your account is temporarily blocked, please wait %d minutes."
 msgstr[0] "Your account is temporarily blocked, please wait a minute."
 msgstr[1] "Your account is temporarily blocked, please wait %d minutes."
 
-#: gemstracker/gemstracker/classes/Gems/User/User.php:530
-#: gemstracker/gemstracker/classes/Gems/User/User.php:562
+#: gemstracker/gemstracker/classes/Gems/User/User.php:532
+#: gemstracker/gemstracker/classes/Gems/User/User.php:564
 #: gemstracker/gemstracker/languages/FakeTranslations.php:19
 msgid "You are not allowed to login from this location."
 msgstr "You are not allowed to login from this location."
 
-#: gemstracker/gemstracker/classes/Gems/User/User.php:1507
+#: gemstracker/gemstracker/classes/Gems/User/User.php:1543
 msgid "Your birthday"
 msgstr "Your birthday"
 
-#: gemstracker/gemstracker/classes/Gems/User/User.php:1611
+#: gemstracker/gemstracker/classes/Gems/User/User.php:1647
 msgid "Trying to send a password reset to a user that cannot be reset."
 msgstr "Trying to send a password reset to a user that cannot be reset."
 
-#: gemstracker/gemstracker/classes/Gems/User/User.php:1639
+#: gemstracker/gemstracker/classes/Gems/User/User.php:1675
 msgid "Unable to send e-mail."
 msgstr "Unable to send e-mail."
 
-#: gemstracker/gemstracker/classes/Gems/User/User.php:1766
-#: gemstracker/gemstracker/classes/Gems/User/User.php:1771
+#: gemstracker/gemstracker/classes/Gems/User/User.php:1802
+#: gemstracker/gemstracker/classes/Gems/User/User.php:1807
 msgid "No access to group"
 msgstr "No access to group"
 
-#: gemstracker/gemstracker/classes/Gems/User/User.php:1767
+#: gemstracker/gemstracker/classes/Gems/User/User.php:1803
 #, php-format
 msgid "You are not allowed to switch to the %s group."
 msgstr "You are not allowed to switch to the %s group."
 
-#: gemstracker/gemstracker/classes/Gems/User/User.php:1772
+#: gemstracker/gemstracker/classes/Gems/User/User.php:1808
 #, php-format
 msgid "You cannot switch to an inactive or non-existing group."
 msgstr "You cannot switch to an inactive or non-existing group."
@@ -9617,6 +9633,13 @@ msgid "%s, one import problem found, continuing check."
 msgid_plural "%s, %d import problems found, continuing check."
 msgstr[0] "%s, one import problem found, continuing check."
 msgstr[1] "%s, %d import problems found, continuing check."
+
+#~ msgid "(default Gems respondent edit)"
+#~ msgstr "(default Gems patient edit)"
+
+#~| msgid "(default Gems respondent show)"
+#~ msgid "(default Gems timeline show)"
+#~ msgstr "(default Gems timeline show)"
 
 #~ msgid "Send only when assigned to a relation."
 #~ msgstr "Send only when assigned to a relation."
