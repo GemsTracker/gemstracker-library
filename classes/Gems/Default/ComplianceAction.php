@@ -94,6 +94,7 @@ class Gems_Default_ComplianceAction extends \Gems_Controller_ModelSnippetActionA
         $select->from('gems__rounds', array('gro_id_round', 'gro_id_order', 'gro_round_description', 'gro_icon_file'))
                 ->joinInner('gems__surveys', 'gro_id_survey = gsu_id_survey', array('gsu_survey_name'))
                 ->where('gro_id_track = ?', $filter['gr2t_id_track'])
+                ->where('gsu_active = 1')   //Only active surveys
                 ->order('gro_id_order');
 
         if (isset($filter['gsu_id_primary_group']) && $filter['gsu_id_primary_group']) {
