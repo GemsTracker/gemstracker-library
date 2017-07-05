@@ -52,7 +52,7 @@ class ExcelExport extends ExportAbstract
                     'formatAnswer' => $this->_('Format answers')
                 ))
                 ->setBelongsTo($this->getName())
-                ->setSeparator('');
+                ->setSeparator(' ');
         $elements['format'] = $element;
 
         return $elements;
@@ -123,7 +123,7 @@ class ExcelExport extends ExportAbstract
         $this->data = $data;
         $this->modelId = $modelId;
         $this->model = $this->getModel();
-        
+
         $this->model->setFilter($filter + $this->model->getFilter());
         if ($this->model) {
 
@@ -133,7 +133,7 @@ class ExcelExport extends ExportAbstract
                 $this->_session = new \Zend_Session_Namespace(__CLASS__);
                 $rowNumber = $this->_session->rowNumber;
             }
-            
+
             // Reset internal rownumber when we move to a new file
             if ($filter = $this->model->getFilter()) {
                 if (array_key_exists('limit', $filter)) {
@@ -142,19 +142,19 @@ class ExcelExport extends ExportAbstract
                     }
                 }
             }
-            
+
             if (empty($rowNumber)) {
                 $rowNumber = 2;
             }
 
             $rows = $this->model->load();
-            
+
             $exportName = $this->getName();
 
             if (isset($this->data[$exportName]) && isset($this->data[$exportName]['format']) && in_array('formatAnswer', $this->data[$exportName]['format'])) {
                 // We want answer labels instead of codes
             } else {
-                // Skip formatting 
+                // Skip formatting
                $this->modelFilterAttributes = array('formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay');
             }
 
@@ -189,7 +189,7 @@ class ExcelExport extends ExportAbstract
         $activeSheet = $excelObject->getActiveSheet();
 
         $labeledCols = $this->getLabeledColumns();
-        
+
         foreach($labeledCols as $columnName) {
             // We could be missing data for a column, just skip it
             if (array_key_exists($columnName, $exportRow)) {
@@ -265,7 +265,7 @@ class ExcelExport extends ExportAbstract
     protected function getColumnHeaders()
     {
         $labeledCols = $this->getLabeledColumns();
-        
+
         $columnHeaders = array();
         foreach($labeledCols as $columnName) {
             $columnHeaders[$columnName] = strip_tags($this->model->get($columnName, 'label'));
@@ -280,7 +280,7 @@ class ExcelExport extends ExportAbstract
     protected function preprocessModel()
     {
         parent::preprocessModel();
-        
+
         $labeledCols = $this->getLabeledColumns();
         foreach($labeledCols as $columnName) {
             $options = array();

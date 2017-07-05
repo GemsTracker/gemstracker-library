@@ -5,7 +5,6 @@
  * @subpackage Form
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -164,7 +163,8 @@ class Gems_Form extends \MUtil_Form
      * @param mixed $submitUrl Url as \MUtil_Html_UrlArrayAttribute, array or string
      * @param mixed $targetId Id of html element whose content is replaced by the submit result: \MUtil_Html_ElementInterface or string
      */
-    public function setAutoSubmit($submitUrl, $targetId, $selective=false) {
+    public function setAutoSubmit($submitUrl, $targetId, $selective = false)
+    {
         // Filter out elements passed by type
         $args = \MUtil_Ra::args(func_get_args(),
             array(

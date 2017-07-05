@@ -1,24 +1,73 @@
 <?php
 
-class Gems_Default_ExportSurveysAction extends \MUtil_Controller_Action
-{
-    public $db;
+/**
+ *
+ * @package    Gems
+ * @subpackage Default
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2013 Erasmus MC
+ * @license    New BSD License
+ */
 
+/**
+ *
+ *
+ * @package    Gems
+ * @subpackage Default
+ * @copyright  Copyright (c) 2013 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.6.2
+ */
+class Gems_Default_ExportSurveysAction extends \Gems_Default_ExportActionAbstract
+{
+    /**
+     * The parameters used for the autofilter action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialisation
+     */
+    protected $autofilterParameters = array(
+        'containingId' => null,
+        'extraSort'    => 'gto_start_time ASC',
+        );
+
+    /**
+     * The snippets used for the autofilter action.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $autofilterSnippets = array('Export\\MultiSurveySearchFormSnippet');
+
+    /**
+     * The snippets used for the index action, before those in autofilter
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet');
+
+    /*
     protected $exportFormSnippets = 'Export\\ExportSurveysFormSnippet';
 
     protected $exportModelSource = 'AnswerExportModelSource';
 
     protected $exportDefaultSorts = array('gto_start_time');
+    //*/
 
-    protected function exportBatch()
+    /**
+     * Performs the export step
+     */
+    protected function exportBatch($data)
     {
-        $filter = $this->getFilter($this->data);
+        $filter = $this->getSearchFilter();
 
-        if ($this->data) {
-
+        if ($data) {
             $batch = $this->loader->getTaskRunnerBatch('export_surveys');
 
-            $models = $this->getExportModels($this->data['gto_id_survey'], $filter);
+            $models = $this->getExportModels($data['gto_id_survey'], $filter, $data);
 
             $batch->setVariable('model', $models);
 
@@ -28,11 +77,11 @@ class Gems_Default_ExportSurveysAction extends \MUtil_Controller_Action
 
                 $batch->setSessionVariable('files', array());
 
-                foreach($this->data['gto_id_survey'] as $surveyId) {
-                    $batch->addTask('Export_ExportCommand', $this->data['type'], 'addExport', $this->data, $surveyId);
+                foreach ($data['gto_id_survey'] as $surveyId) {
+                    $batch->addTask('Export_ExportCommand', $data['type'], 'addExport', $data, $surveyId);
                 }
 
-                $batch->addTask('addTask', 'Export_ExportCommand', $this->data['type'], 'finalizeFiles');
+                $batch->addTask('addTask', 'Export_ExportCommand', $data['type'], 'finalizeFiles');
 
                 $batch->autoStart = true;
             }
@@ -61,6 +110,9 @@ class Gems_Default_ExportSurveysAction extends \MUtil_Controller_Action
         }
     }
 
+    /**
+     * Performs the download step
+     */
     protected function exportDownload()
     {
         $this->view->layout()->disableLayout();
@@ -80,6 +132,74 @@ class Gems_Default_ExportSurveysAction extends \MUtil_Controller_Action
         exit;
     }
 
+    /**
+     *
+     * @return array
+     * /
+    protected function getExportData()
+    {
+        $data = $this->request->getPost();
+        $exportSession = new \Zend_Session_Namespace(get_class($this));
+
+        if ($data) {
+            $exportSession->data = $data;
+            $exportData = $data;
+        } elseif (isset($exportSession->data)) {
+            $exportData = $exportSession->data;
+        } else {
+            $exportData = [];
+        }
+
+        return $exportData;
+    }
+
+    /**
+     *
+     * @param type $exportModelSource
+     * @param array $filter
+     * @param array $data
+     * @return array
+     */
+    protected function getAnswerModel($exportModelSource, $filter, $data)
+    {
+        $model = $exportModelSource->getModel($filter, $data);
+        $noExportColumns = $model->getColNames('noExport');
+        foreach($noExportColumns as $colName) {
+            $model->remove($colName, 'label');
+        }
+        $model->applyParameters($filter, true);
+
+        $model->addSort($this->autofilterParameters['extraSort']);
+
+        return $model;
+    }
+
+    /**
+     *
+     * @param array $surveys
+     * @param array $filter
+     * @param array $data
+     * @return array
+     */
+    protected function getExportModels($surveys, $filter, $data)
+    {
+        $models = array();
+        $exportModelSource = $this->loader->getExportModelSource($this->exportModelSource);
+
+        foreach($surveys as $surveyId) {
+            $currentFilter = $filter;
+            $currentFilter['gto_id_survey'] = $surveyId;
+
+            $models[$surveyId] = $this->getAnswerModel($exportModelSource, $currentFilter, $data);
+        }
+
+        return $models;
+    }
+
+    /**
+     *
+     * @return type
+     * /
     protected function getFilter()
     {
         $filter = array();
@@ -124,70 +244,41 @@ class Gems_Default_ExportSurveysAction extends \MUtil_Controller_Action
         return $filter;
     }
 
-    protected function getExportData()
+    /**
+     * Helper function to get the title for the index action.
+     *
+     * @return $string
+     */
+    public function getIndexTitle()
     {
-        $data = $this->request->getPost();
-        $exportSession = new \Zend_Session_Namespace(get_class($this));
-
-        if ($data) {
-            $exportSession->data = $data;
-            $exportData = $data;
-        } elseif (isset($exportSession->data)) {
-            $exportData = $exportSession->data;
-        }
-
-        return $exportData;
+        return $this->_('Export data from a multiple surveys');
     }
 
-    protected function getExportModels($surveys, $filter)
-    {
-        $models = array();
-        $exportModelSource = $this->loader->getExportModelSource($this->exportModelSource);
-
-        foreach($surveys as $surveyId) {
-            $currentFilter = $filter;
-            $currentFilter['gto_id_survey'] = $surveyId;
-
-            $models[$surveyId] = $this->getExportModel($exportModelSource, $currentFilter);
-        }
-
-        return $models;
-    }
-
-    protected function getExportModel($exportModelSource, $filter)
-    {
-        $model = $exportModelSource->getModel($filter, $this->data);
-        $noExportColumns = $model->getColNames('noExport');
-        foreach($noExportColumns as $colName) {
-            $model->remove($colName, 'label');
-        }
-        $model->applyParameters($filter, true);
-
-        $model->addSort($this->exportDefaultSorts);
-
-        return $model;
-    }
-
+    /**
+     *
+     */
     public function indexAction()
     {
-        $this->initHtml();
-        $step = $this->request->getParam('step');
-        $this->data = $this->getExportData();
+        $step = $this->getParam('step') ?: ($this->request->isXmlHttpRequest() ? 'batch' : 'form');
 
-        if (!$step || $this->data && $step == 'form') {
-            $this->addSnippet($this->exportFormSnippets);
+        // \MUtil_Echo::track($step, $this->request->getParams());
+        if ($step == 'form') {
             $batch = $this->loader->getTaskRunnerBatch('export_surveys');
             $batch->reset();
-        } elseif ($step == 'batch') {
-            if ($this->data) {
-                if (!isset($this->data['gto_id_survey']) || empty($this->data['gto_id_survey'])) {
+            parent::indexAction();
+
+        } elseif ($step != 'download') {
+            $data = $this->getSearchData();
+            if ($data) {
+                if (!isset($data['gto_id_survey']) || empty($data['gto_id_survey'])) {
                     $this->addMessage($this->_('Please select a survey to start the export'), 'danger');
-                    $this->addSnippet($this->exportFormSnippets);
+                    parent::indexAction();
+
                 } else {
-                    $this->exportBatch();
+                    $this->exportBatch($data);
                 }
             } else {
-                $this->exportBatch();
+                $this->exportBatch($data);
             }
         } elseif ($step == 'download') {
             $this->exportDownload();
@@ -199,7 +290,7 @@ class Gems_Default_ExportSurveysAction extends \MUtil_Controller_Action
      *
      * @param boolean $reset Throws away any existing html output when true
      * @return void
-     */
+     * /
     public function initHtml($reset = false)
     {
         if (! $this->html) {
@@ -211,10 +302,10 @@ class Gems_Default_ExportSurveysAction extends \MUtil_Controller_Action
 
     /**
      * Stub for overruling default snippet loader initiation.
-     */
+     * /
     protected function loadSnippetLoader()
     {
         // Create the snippet with this controller as the parameter source
         $this->snippetLoader = $this->loader->getSnippetLoader($this);
-    }
+    } // */
 }

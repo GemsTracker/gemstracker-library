@@ -32,17 +32,17 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
     protected $db;
 
     /**
+     *
+     * @var string The id of a div that contains target that should be replaced.
+     */
+    protected $containingId;
+
+    /**
      * The default search data to use.
      *
      * @var array()
      */
     protected $defaultSearchData = array();
-
-    /**
-     *
-     * @var string The id of a div that contains target that should be replaced.
-     */
-    protected $containingId;
 
     /**
      * Optional string format for date
@@ -167,17 +167,65 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
      *
      * @param string $name  Name of the element
      * @param string $label Label for element
+     * @param string $description Optional description
      * @return \Zend_Form_Element_Checkbox
      */
-    protected function _createCheckboxElement($name, $label)
+    protected function _createCheckboxElement($name, $label, $description = null)
     {
         if ($name && $label) {
             $element = $this->form->createElement('checkbox', $name);
             $element->setLabel($label);
             $element->getDecorator('Label')->setOption('placement', \Zend_Form_Decorator_Abstract::APPEND);
 
+            if ($description) {
+                $element->setDescription($description);
+                $element->setAttrib('title', $description);
+            }
+
             return $element;
         }
+    }
+
+    /**
+     * Creates a \Zend_Form_Element_MultiCheckbox
+     *
+     * If $options is a string it is assumed to contain an SQL statement.
+     *
+     * @param string        $name    Name of the select element
+     * @param string|array  $options Can be a SQL select string or key/value array of options
+     * @param string        $toggleLabel Optional text for toggle all button
+     * @param mixed         $separator   Optional separator string
+     * @return array Of [\Zend_Form_Element_MultiCheckbox, [\MUtil_Bootstrap_Form_Element_ToggleCheckboxes]]
+     */
+    protected function _createMultiCheckBoxElement($name, $options, $toggleLabel = null, $separator = null)
+    {
+        $elements[$name] = $this->_createMultiElement('multiCheckbox', $name, $options, null);
+
+        if (! $elements[$name]) {
+            return [];
+        }
+
+        if (null === $separator) {
+            $separator = '<br/>';
+        }
+        $elements[$name]->setSeparator($separator);
+
+        if ($toggleLabel) {
+            $elements['break_' . $name] = \MUtil_Html::create('br');
+
+            $tName = 'toggle_' . $name;
+            $options = [
+                'label'    => $toggleLabel,
+                'selector' => "input[name^=$name]",
+                ];
+            if (\MUtil_Bootstrap::enabled()) {
+                $elements[$tName] = new \MUtil_Bootstrap_Form_Element_ToggleCheckboxes($tName, $options);
+            } else {
+                $elements[$tName] = new \Gems_JQuery_Form_Element_ToggleCheckboxes($tName, $options);
+            }
+        }
+
+        return $elements;
     }
 
     /**
@@ -352,8 +400,12 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
                 $form->populate($data);
             }
 
-            $href = $this->getAutoSearchHref();
-            $form->setAutoSubmit($href, $this->containingId);
+            if ($this->containingId) {
+                $href = $this->getAutoSearchHref();
+                if ($href) {
+                    $form->setAutoSubmit($href, $this->containingId);
+                }
+            }
 
             return $form;
         }

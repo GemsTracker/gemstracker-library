@@ -68,6 +68,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
         'EditTrackEngineSnippet'                  => 'Tracker\\EditTrackEngineSnippet',
         'EditTrackSnippet'                        => 'Tracker\\EditTrackSnippet',
         'EditTrackTokenSnippet'                   => 'Token\\EditTrackTokenSnippet',
+        'Export_SurveyAutosearchFormSnippet'      => 'Export\\AnswerAutosearchFormSnippet',
         'Organization_ChooseOrganizationSnippet'  => 'Organization\\ChooseOrganizationSnippet',
         'Organization_OrganizationEditSnippet'    => 'Organization\\OrganizationEditSnippet',
         'Organization_OrganizationTableSnippet'   => 'Organization\\OrganizationTableSnippet',

@@ -53,7 +53,8 @@ class CsvExport extends ExportAbstract
                     'formatVariable' => $this->_('Export labels instead of field names'),
                     'formatAnswer' => $this->_('Format answers')
                 ))
-                ->setBelongsTo($this->getName());
+                ->setBelongsTo($this->getName())
+                ->setSeparator(' ');
         $elements['format'] = $element;
 
         $element = $form->createElement('select', 'delimiter');
@@ -164,7 +165,7 @@ class CsvExport extends ExportAbstract
     protected function preprocessModel()
     {
         parent::preprocessModel();
-        
+
         $labeledCols = $this->getLabeledColumns();
         foreach($labeledCols as $columnName) {
             $options = array();
