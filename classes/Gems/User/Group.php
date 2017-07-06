@@ -193,7 +193,7 @@ class Group extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function getRespondentBrowseScreen()
     {
-        if ($this->_respondentBrowseScreen || (! $this->_has('ggp_respondent_browse'))) {
+        if ($this->_respondentBrowseScreen || (! $this->_get('ggp_respondent_browse'))) {
             return $this->_respondentBrowseScreen;
         }
         $screenLoader = $this->loader->getScreenLoader();
@@ -209,7 +209,7 @@ class Group extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function getRespondentEditScreen()
     {
-        if ($this->_respondentEditScreen || (! $this->_has('ggp_respondent_edit'))) {
+        if ($this->_respondentEditScreen || (! $this->_get('ggp_respondent_edit'))) {
             return $this->_respondentEditScreen;
         }
         $screenLoader = $this->loader->getScreenLoader();
@@ -225,7 +225,7 @@ class Group extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function getRespondentShowScreen()
     {
-        if ($this->_respondentShowScreen || (! $this->_has('ggp_respondent_show'))) {
+        if ($this->_respondentShowScreen || (! $this->_get('ggp_respondent_show'))) {
             return $this->_respondentShowScreen;
         }
         $screenLoader = $this->loader->getScreenLoader();

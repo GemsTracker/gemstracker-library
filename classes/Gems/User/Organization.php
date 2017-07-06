@@ -380,7 +380,7 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function getRespondentEditScreen()
     {
-        if ($this->_respondentEditScreen || (! $this->_has('gor_respondent_edit'))) {
+        if ($this->_respondentEditScreen || (! $this->_get('gor_respondent_edit'))) {
             return $this->_respondentEditScreen;
         }
         $screenLoader = $this->loader->getScreenLoader();
@@ -396,7 +396,7 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function getRespondentShowScreen()
     {
-        if ($this->_respondentShowScreen || (! $this->_has('gor_respondent_show'))) {
+        if ($this->_respondentShowScreen || (! $this->_get('gor_respondent_show'))) {
             return $this->_respondentShowScreen;
         }
         $screenLoader = $this->loader->getScreenLoader();
