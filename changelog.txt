@@ -7,7 +7,6 @@ New features:
     (Re)import imported files
     Preview option for automatic mailjobs
     Automatic mailjobs can now filter for relations, check your jobs!
-    Answers from inactive patients can now be exported
 Interface improvements:
     When a token is corrected links are visible when seeing the token to open the original / copy
     Improved interface for communication templates and automatic mail
@@ -15,6 +14,9 @@ Interface improvements:
     Editing staff and organizations uses extra defaults for smoother creation
     Different respondent search, edit and show screens can be set for a user group
     Different respondent edit and show screens can be set for each organization, overruling user group settings
+Export improvements:
+    Answers from inactive patients can now be exported
+    Depending on rights patient numbers, patient gender and birth year and month can be exported with answers
 Rights:
     The types of staff that a user can create/edit are determined at the group level
     A default group for new users can be set at the user group level

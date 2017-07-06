@@ -244,7 +244,7 @@ class Gems_Default_ExportMultiSurveysAction extends \Gems_Default_ExportSurveyAc
      */
     public function getIndexTitle()
     {
-        return $this->_('Export data from a multiple surveys');
+        return $this->_('Export data from multiple surveys');
     }
 
     /**
