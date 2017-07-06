@@ -44,7 +44,7 @@ class Gems_Default_ExportSurveyAction extends \Gems_Default_ExportSurveyActionAb
 
         if (isset($filter['gto_id_survey']) && is_numeric($filter['gto_id_survey'])) {
             // Surveys have been selected
-            $exportModelSource = $this->loader->getExportModelSource($this->exportModelSource);
+            $exportModelSource = $this->getExportModelSource();
             $model = $exportModelSource->getModel($filter, $filter);
 
             $noExportColumns = $model->getColNames('noExport');

@@ -20,6 +20,13 @@
 class Gems_Default_ExportSurveyActionAbstract extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
+     * Object for export model source
+     *
+     * @var \Gems_Export_ModelSource_ExportModelSourceAbstract
+     */
+    private $_exportModelSource;
+
+    /**
      *
      * @var array
      */
@@ -35,7 +42,10 @@ class Gems_Default_ExportSurveyActionAbstract extends \Gems_Controller_ModelSnip
      *
      * @var array Mixed key => value array for snippet initialisation
      */
-    protected $autofilterParameters = array('extraSort' => 'gto_start_time ASC');
+    protected $autofilterParameters = array(
+        'exportModelSource' => 'getExportModelSource',
+        'extraSort'         => 'gto_start_time ASC',
+        );
 
     /**
      *
@@ -61,7 +71,7 @@ class Gems_Default_ExportSurveyActionAbstract extends \Gems_Controller_ModelSnip
      *
      * @var string
      */
-    protected $exportModelSource = 'AnswerExportModelSource';
+    protected $exportModelSourceClass = 'AnswerExportModelSource';
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -81,6 +91,20 @@ class Gems_Default_ExportSurveyActionAbstract extends \Gems_Controller_ModelSnip
         $model = new \Gems_Model_PlaceholderModel('nosurvey', $basicArray);
 
         return $model;
+    }
+
+    /**
+     * Function to get a model source for this export
+     *
+     * @return \Gems_Export_ModelSource_ExportModelSourceAbstract
+     */
+    public function getExportModelSource()
+    {
+        if (! $this->_exportModelSource) {
+            $this->_exportModelSource = $this->loader->getExportModelSource($this->exportModelSourceClass);
+        }
+
+        return $this->_exportModelSource;
     }
 
     /**

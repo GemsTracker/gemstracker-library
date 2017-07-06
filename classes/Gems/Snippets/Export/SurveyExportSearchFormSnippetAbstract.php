@@ -32,6 +32,12 @@ abstract class SurveyExportSearchFormSnippetAbstract extends \Gems_Snippets_Auto
      */
     protected $currentUser;
 
+    /**
+     *
+     * @var \Gems_Export_ModelSource_ExportModelSourceAbstract
+     */
+    protected $exportModelSource;
+
 	/**
      *
      * @var \Gems_Loader
@@ -61,9 +67,9 @@ abstract class SurveyExportSearchFormSnippetAbstract extends \Gems_Snippets_Auto
                     $this->_('Toggle organizations'),
                     ' '
                     );
-        }
 
-        $elements[] = null;
+            $elements[] = null;
+        }
 
         $dates = array(
             'gto_start_date' => $this->_('Track start'),
@@ -130,18 +136,7 @@ abstract class SurveyExportSearchFormSnippetAbstract extends \Gems_Snippets_Auto
      */
     protected function getExtraFieldElements(array $data)
     {
-        $elements = [];
-
-        if (isset($data['gto_id_track']) && $data['gto_id_track']) {
-            $element = $this->_createCheckboxElement(
-                    'add_track_fields',
-                    $this->_('Track fields'),
-                    $this->_('Add track fields to export')
-                    );
-            $elements['tid_fields'] = $element;
-        }
-
-        return $elements;
+        return $this->exportModelSource->getExtraDataFormElements($this->form, $data);
     }
 
 	/**

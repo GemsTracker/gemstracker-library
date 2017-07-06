@@ -53,6 +53,12 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
 
     /**
      *
+     * @var \Gems_Form
+     */
+    protected $form;
+
+    /**
+     *
      * @var \Gems_Menu
      */
     protected $menu;

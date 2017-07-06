@@ -31,8 +31,9 @@ class Gems_Default_ExportMultiSurveysAction extends \Gems_Default_ExportSurveyAc
      * @var array Mixed key => value array for snippet initialisation
      */
     protected $autofilterParameters = array(
-        'containingId' => null,
-        'extraSort'    => 'gto_start_time ASC',
+        'containingId'      => null,
+        'exportModelSource' => 'getExportModelSource',
+        'extraSort'         => 'gto_start_time ASC',
         );
 
     /**
@@ -147,12 +148,12 @@ class Gems_Default_ExportMultiSurveysAction extends \Gems_Default_ExportSurveyAc
 
     /**
      *
-     * @param type $exportModelSource
+     * @param \Gems_Export_ModelSource_ExportModelSourceAbstract $exportModelSource
      * @param array $filter
      * @param array $data
      * @return array
      */
-    protected function getAnswerModel($exportModelSource, $filter, $data)
+    protected function getAnswerModel(\Gems_Export_ModelSource_ExportModelSourceAbstract $exportModelSource, array $filter, array $data)
     {
         $model = $exportModelSource->getModel($filter, $data);
         $noExportColumns = $model->getColNames('noExport');
@@ -173,10 +174,10 @@ class Gems_Default_ExportMultiSurveysAction extends \Gems_Default_ExportSurveyAc
      * @param array $data
      * @return array
      */
-    protected function getExportModels($surveys, $filter, $data)
+    protected function getExportModels(array $surveys, array $filter, array $data)
     {
         $models = array();
-        $exportModelSource = $this->loader->getExportModelSource($this->exportModelSource);
+        $exportModelSource = $this->getExportModelSource();
 
         foreach($surveys as $surveyId) {
             $currentFilter = $filter;
