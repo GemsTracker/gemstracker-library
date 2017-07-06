@@ -54,7 +54,7 @@ class Gems_Default_ExportSurveyActionAbstract extends \Gems_Controller_ModelSnip
      *
      * @var mixed String or array of snippets name
      */
-    // protected $indexStopSnippets = array('Export\\ExportFormSnippet');
+    // protected $indexStopSnippets = array();
 
     /**
      * Class for export model source

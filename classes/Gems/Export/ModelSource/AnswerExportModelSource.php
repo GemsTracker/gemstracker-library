@@ -185,5 +185,5 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
         }
 
 		return $this->model;
-}
+    }
 }

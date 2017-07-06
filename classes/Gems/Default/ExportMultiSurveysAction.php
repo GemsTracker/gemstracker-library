@@ -49,14 +49,6 @@ class Gems_Default_ExportMultiSurveysAction extends \Gems_Default_ExportSurveyAc
      */
     protected $indexStartSnippets = array('Generic\\ContentTitleSnippet');
 
-    /*
-    protected $exportFormSnippets = 'Export\\ExportSurveysFormSnippet';
-
-    protected $exportModelSource = 'AnswerExportModelSource';
-
-    protected $exportDefaultSorts = array('gto_start_time');
-    //*/
-
     /**
      * Performs the export step
      */
