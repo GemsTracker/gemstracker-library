@@ -19,7 +19,7 @@ namespace Gems\Snippets\Export;
  * @license    New BSD License
  * @since      Class available since version 1.8.2 04-Jul-2017 19:06:01
  */
-class MultiSurveySearchFormSnippet extends ExportAutosearchFormSnippetAbstract
+class MultiSurveysSearchFormSnippet extends SurveyExportSearchFormSnippetAbstract
 {
     /**
      *

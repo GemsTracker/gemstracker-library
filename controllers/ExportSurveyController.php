@@ -18,6 +18,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class ExportController extends Gems_Default_ExportAction
+class ExportSurveyController extends Gems_Default_ExportSurveyAction
 {
 }

@@ -18,7 +18,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Default_ExportSurveysAction extends \Gems_Default_ExportActionAbstract
+class Gems_Default_ExportMultiSurveysAction extends \Gems_Default_ExportSurveyActionAbstract
 {
     /**
      * The parameters used for the autofilter action.
@@ -40,7 +40,7 @@ class Gems_Default_ExportSurveysAction extends \Gems_Default_ExportActionAbstrac
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = array('Export\\MultiSurveySearchFormSnippet');
+    protected $autofilterSnippets = array('Export\\MultiSurveysSearchFormSnippet');
 
     /**
      * The snippets used for the index action, before those in autofilter
@@ -284,28 +284,4 @@ class Gems_Default_ExportSurveysAction extends \Gems_Default_ExportActionAbstrac
             $this->exportDownload();
         }
     }
-
-    /**
-     * Intializes the html component.
-     *
-     * @param boolean $reset Throws away any existing html output when true
-     * @return void
-     * /
-    public function initHtml($reset = false)
-    {
-        if (! $this->html) {
-            \Gems_Html::init();
-        }
-
-        parent::initHtml($reset);
-    }
-
-    /**
-     * Stub for overruling default snippet loader initiation.
-     * /
-    protected function loadSnippetLoader()
-    {
-        // Create the snippet with this controller as the parameter source
-        $this->snippetLoader = $this->loader->getSnippetLoader($this);
-    } // */
 }

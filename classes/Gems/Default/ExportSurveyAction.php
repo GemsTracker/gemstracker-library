@@ -18,14 +18,14 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Default_ExportAction extends \Gems_Default_ExportActionAbstract
+class Gems_Default_ExportSurveyAction extends \Gems_Default_ExportSurveyActionAbstract
 {
     /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Export\\AnswerAutosearchFormSnippet');
+    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Export\\SurveyExportSearchFormSnippet');
 
     /**
      * Creates a model for getModel(). Called only for each new $action.

@@ -17,7 +17,7 @@
  * @license    No free license, do not copy
  * @since      Class available since version 1.8.2 04-Jul-2017 18:57:11
  */
-class Gems_Default_ExportActionAbstract extends \Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_ExportSurveyActionAbstract extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
      *

@@ -17,7 +17,7 @@ namespace Gems\Snippets\Export;
  * @license    New BSD License
  * @since      Class available since version 1.8.2
  */
-abstract class ExportAutosearchFormSnippetAbstract extends \Gems_Snippets_AutosearchFormSnippet
+abstract class SurveyExportSearchFormSnippetAbstract extends \Gems_Snippets_AutosearchFormSnippet
 {
 	/**
      * Defines the value used for 'no round description'

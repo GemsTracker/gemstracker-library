@@ -68,7 +68,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
         'EditTrackEngineSnippet'                  => 'Tracker\\EditTrackEngineSnippet',
         'EditTrackSnippet'                        => 'Tracker\\EditTrackSnippet',
         'EditTrackTokenSnippet'                   => 'Token\\EditTrackTokenSnippet',
-        'Export_SurveyAutosearchFormSnippet'      => 'Export\\AnswerAutosearchFormSnippet',
+        'Export_SurveyAutosearchFormSnippet'      => 'Export\\SurveyExportSearchFormSnippet',
         'Organization_ChooseOrganizationSnippet'  => 'Organization\\ChooseOrganizationSnippet',
         'Organization_OrganizationEditSnippet'    => 'Organization\\OrganizationEditSnippet',
         'Organization_OrganizationTableSnippet'   => 'Organization\\OrganizationTableSnippet',
@@ -234,6 +234,15 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             case 'MailTemplateController':
             case 'SurveyController.php':
                 $messages[] = "You can delete this file. This controller is no longer in use.";
+                return;
+
+            case 'ExportController.php':
+                $messages[] = "This controller was renamed to ExportSurveyController.";
+                return;
+
+            case 'ExportSurveysController.php':
+                $messages[] = "This controller was renamed to ExportMultiSurveysController.";
+                $messages[] = "The new controller is a child of \Gems_Controller_ModelSnippetActionAbstract. Check your code for changes.";
                 return;
 
             case 'RespondentController.php':
