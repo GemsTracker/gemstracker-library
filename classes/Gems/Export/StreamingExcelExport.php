@@ -57,7 +57,7 @@ class StreamingExcelExport extends ExportAbstract
                 ->setMultiOptions(array(
                     'formatVariable'=> $this->_('Export labels instead of field names'),
                     'formatAnswer'  => $this->_('Format answers'),
-                    'formatDate'    => $this->_('Format dates as excel number easily convertable to date')
+                    'formatDate'    => $this->_('Format dates as Excel numbers easily convertable to date')
                 ))
                 ->setBelongsTo($this->getName())
                 ->setSeparator('');
@@ -91,7 +91,7 @@ class StreamingExcelExport extends ExportAbstract
 
         $header = $this->getColumnHeaders();
         if (isset($this->data[$exportName]) && isset($this->data[$exportName]['format']) && in_array('formatVariable', $this->data[$exportName]['format'])) {
-            $writer->addRow($header);    
+            $writer->addRow($header);
         } else {
             $writer->addRow(array_keys($header));
         }
@@ -111,11 +111,11 @@ class StreamingExcelExport extends ExportAbstract
         $this->data = $data;
         $this->modelId = $modelId;
         $this->model = $this->getModel();
-        
-        
+
+
         if ($this->model) {
             $this->model->setFilter($filter + $this->model->getFilter());
-            
+
             if ($this->batch) {
                 $rowNumber = $this->batch->getSessionVariable('rowNumber');
                 $iteration = $this->batch->getSessionVariable('iteration');
@@ -124,7 +124,7 @@ class StreamingExcelExport extends ExportAbstract
                 $rowNumber = $this->_session->rowNumber;
                 $iteration = $this->_session->iteration;
             }
-            
+
             // Reset internal rownumber when we move to a new file
             if ($filter = $this->model->getFilter()) {
                 if (array_key_exists('limit', $filter)) {
@@ -133,7 +133,7 @@ class StreamingExcelExport extends ExportAbstract
                     }
                 }
             }
-            
+
             if (empty($rowNumber)) {
                 $rowNumber = 2;
             }
@@ -141,23 +141,23 @@ class StreamingExcelExport extends ExportAbstract
             if (empty($iteration)) {
                 $iteration = 0;
             }
-            
+
             $filename = $tempFilename . '_' . $iteration . $this->fileExtension;
 
             $rows = $this->model->load();
-            
+
             $exportName = $this->getName();
 
             if (isset($this->data[$exportName]) && isset($this->data[$exportName]['format']) && in_array('formatAnswer', $this->data[$exportName]['format'])) {
                 // We want answer labels instead of codes
             } else {
-                // Skip formatting 
+                // Skip formatting
                $this->modelFilterAttributes = array('formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay');
             }
 
             $writer = WriterFactory::create(Type::XLSX);
             $writer->openToFile($filename);
-            
+
             foreach($rows as $row) {
                 $this->addRowWithCount($row, $writer, $rowNumber);
                 $rowNumber++;
@@ -201,7 +201,7 @@ class StreamingExcelExport extends ExportAbstract
      * @param string $filename The temporary filename while the file is being written
      */
     public function addFooter($filename)
-    {   
+    {
         $this->model = $this->getModel();
         $writer = WriterFactory::create(Type::XLSX);
         $writer->openToFile($filename);
@@ -338,7 +338,7 @@ class StreamingExcelExport extends ExportAbstract
     protected function getColumnHeaders()
     {
         $labeledCols = $this->getLabeledColumns();
-        
+
         $columnHeaders = array();
         foreach($labeledCols as $columnName) {
             $columnHeaders[$columnName] = strip_tags($this->model->get($columnName, 'label'));
@@ -353,7 +353,7 @@ class StreamingExcelExport extends ExportAbstract
     protected function preprocessModel()
     {
         parent::preprocessModel();
-        
+
         $labeledCols = $this->getLabeledColumns();
         foreach($labeledCols as $columnName) {
             $options = array();
