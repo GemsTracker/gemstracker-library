@@ -20,13 +20,13 @@
  * @since      Class available since version 1.4
  */
 class Gems_Default_CronAction extends \Gems_Controller_Action
-{  
+{
     /**
      *
      * @var \Gems_AccessLog
      */
     public $accesslog;
-    
+
     /**
      *
      * @var \Gems_User_User
@@ -71,13 +71,14 @@ class Gems_Default_CronAction extends \Gems_Controller_Action
      * @var \Gems_Util
      */
     public $util;
-    
+
     /**
      * Perform automatic job mail
      */
     public function commJob()
     {
         $batch = $this->loader->getTaskRunnerBatch('cron');
+        $batch->setMessageLogFile(GEMS_ROOT_DIR . '/var/logs/cron-job.log');
         $batch->minimalStepDurationMs = 3000; // 3 seconds max before sending feedback
         $batch->autoStart = true;
 
@@ -85,6 +86,7 @@ class Gems_Default_CronAction extends \Gems_Controller_Action
             // Check for unprocessed tokens
             $tracker = $this->loader->getTracker();
             $tracker->processCompletedTokens(null, $this->currentUser->getUserId());
+            $batch->addMessage($this->_("Starting mail jobs"));
             $batch->addTask('Mail\\AddAllMailJobsTask');
         }
 
