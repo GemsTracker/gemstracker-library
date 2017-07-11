@@ -147,10 +147,10 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
         // If you really want to see this information in the overview, uncomment for the shorter labels
         // $model->set('gcj_filter_days_between', 'label', $this->_('Interval'), 'validators[]', 'Digits');
         // $model->set('gcj_filter_max_reminders','label', $this->_('Max'), 'validators[]', 'Digits');
-        
-        $model->set('gcj_target', 'label', $this->_('Filler'), 
+
+        $model->set('gcj_target', 'label', $this->_('Filler'),
                     'default', 0, 'multiOptions', $translated->getBulkMailTargetOptions());
-                
+
         $anyTrack[''] = $this->_('(all tracks)');
         $model->set('gcj_id_track', 'label', $this->_('Track'),
                 'multiOptions', $anyTrack + $dbTracks->getAllTracks(),
@@ -215,7 +215,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
             if (count($messages)) {
                 $this->addMessage($messages, 'info');
             }
-            
+
             $this->_reroute(array('action'=>'show'));
         }
 
@@ -228,13 +228,14 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
     public function executeAllAction()
     {
         $batch = $this->loader->getTaskRunnerBatch('commjob-execute-all');
+        $batch->setMessageLogFile(GEMS_ROOT_DIR . '/var/logs/cron-job.log');
         $batch->minimalStepDurationMs = 3000; // 3 seconds max before sending feedback
 
         if (!$batch->isLoaded()) {
             // Check for unprocessed tokens
             $tracker = $this->loader->getTracker();
             $tracker->processCompletedTokens(null, $this->currentUser->getUserId());
-
+            $batch->addMessage($this->_("Starting mail jobs"));
             $batch->addTask('Mail\\AddAllMailJobsTask');
         }
 
@@ -313,7 +314,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
 
         $this->html->pInfo($this->_('With automatic mail jobs and a cron job on the server, mails can be sent without manual user action.'));
     }
-    
+
     /**
      * Execute a single mail job
      */
