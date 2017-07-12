@@ -158,9 +158,11 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
         $this->setIfExists('gor_respondent_edit', 'label', $this->_('Respondent edit screen'),
                 'multiOptions', $groupLevel + $screenLoader->listRespondentEditScreens()
                 );
-        $screenLoader = $this->loader->getScreenLoader();
         $this->setIfExists('gor_respondent_show', 'label', $this->_('Respondent show screen'),
                 'multiOptions', $groupLevel + $screenLoader->listRespondentShowScreens()
+                );
+        $this->setIfExists('gor_token_ask', 'label', $this->_('Token ask screen'),
+                'multiOptions', $screenLoader->listTokenAskScreens()
                 );
 
         $this->setIfExists('gor_resp_change_event', 'label', $this->_('Respondent change event'),
@@ -313,6 +315,11 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
                 );
         $this->setIfExists('gor_respondent_show',
                 'default', '',
+                'elementClass', 'Radio'
+                );
+
+        $this->setIfExists('gor_token_ask',
+                'default', 'Gems\\Screens\\Token\\Ask\\ProjectDefaultAsk',
                 'elementClass', 'Radio'
                 );
 

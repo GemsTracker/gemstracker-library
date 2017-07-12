@@ -1280,6 +1280,10 @@ ALTER TABLE gems__organizations ADD
     gor_respondent_show varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null
     AFTER gor_respondent_edit;
 
+ALTER TABLE gems__organizations ADD
+    gor_token_ask varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null
+    AFTER gor_respondent_show;
+
 UPDATE gems__organizations
     SET gor_respondent_edit = ''
     WHERE gor_respondent_edit IS NULL;
@@ -1287,6 +1291,10 @@ UPDATE gems__organizations
 UPDATE gems__organizations
     SET gor_respondent_show = ''
     WHERE gor_respondent_show IS NULL;
+
+UPDATE gems__organizations
+    SET gor_token_ask = 'Gems\\Screens\\Token\\Ask\\ProjectDefaultAsk'
+    WHERE gor_token_ask IS NULL;
 
 -- PATCH: Activate job title as default staff element
 ALTER TABLE gems__staff ADD gsf_job_title varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' after gsf_gender;

@@ -16,6 +16,7 @@ Interface improvements:
     Editing staff and organizations uses extra defaults for smoother creation
     Different respondent search, edit and show screens can be set for a user group
     Different respondent edit and show screens can be set for each organization, overruling user group settings
+    Different token ask screens can be set for each organization
 Export improvements:
     Answers from inactive patients can now be exported
     Depending on rights patient numbers, patient gender and birth year and month can be exported with answers

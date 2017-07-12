@@ -63,6 +63,12 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
     protected $_respondentShowScreen;
 
     /**
+     *
+     * @var \Gems\Screens\AskScreenInterface
+     */
+    protected $_tokenAskScreen;
+
+    /**
      * Required
      *
      * @var \Gems_Util_BasePath
@@ -433,6 +439,22 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
     public function getStyle()
     {
         return $this->_get('gor_style');
+    }
+
+    /**
+     *
+     * @return \Gems\Screens\AskScreenInterface
+     */
+    public function getTokenAskScreen()
+    {
+        if ($this->_tokenAskScreen || (! $this->_get('gor_token_ask'))) {
+            return $this->_tokenAskScreen;
+        }
+        $screenLoader = $this->loader->getScreenLoader();
+
+        $this->_tokenAskScreen = $screenLoader->loadTokenAskScreen($this->_get('gor_token_ask'));
+
+        return $this->_tokenAskScreen;
     }
 
     /**
