@@ -29,24 +29,6 @@ class Gems_Default_CronAction extends \Gems_Controller_Action
 
     /**
      *
-     * @var \Gems_User_User
-     */
-    public $currentUser;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    public $db;
-
-    /**
-     *
-     * @var GemsEscort
-     */
-    public $escort;
-
-    /**
-     *
      * @var \Gems_Loader
      */
     public $loader;
@@ -77,23 +59,12 @@ class Gems_Default_CronAction extends \Gems_Controller_Action
      */
     public function commJob()
     {
-        $batch = $this->loader->getTaskRunnerBatch('cron');
-        $batch->setMessageLogFile(GEMS_ROOT_DIR . '/var/logs/cron-job.log');
-        $batch->minimalStepDurationMs = 3000; // 3 seconds max before sending feedback
+        $batch = $this->loader->getMailLoader()->getCronBatch();
         $batch->autoStart = true;
 
-        if (!$batch->isLoaded()) {
-            // Check for unprocessed tokens
-            $tracker = $this->loader->getTracker();
-            $tracker->processCompletedTokens(null, $this->currentUser->getUserId());
-            $batch->addMessage($this->_("Starting mail jobs"));
-            $batch->addTask('Mail\\AddAllMailJobsTask');
-        }
+        $this->_helper->BatchRunner($batch, $this->_('Executing all cron jobs'), $this->accesslog);
 
-        $title = $this->_('Executing cron jobs');
-        $this->_helper->BatchRunner($batch, $title, $this->accesslog);
-
-        $this->html->br();
+        // $this->html->br();
     }
 
     /**
@@ -107,28 +78,6 @@ class Gems_Default_CronAction extends \Gems_Controller_Action
         // Redirect
         $request = $this->getRequest();
         $this->_reroute($this->menu->getCurrentParent()->toRouteUrl());
-    }
-
-    /**
-     * Returns the login name belonging to this user.
-     *
-     * @param int $userId
-     * @return string
-     */
-    protected function getUserLogin($userId)
-    {
-        return $this->db->fetchOne("SELECT gsf_login FROM gems__staff WHERE gsf_id_user = ?", $userId);
-    }
-
-    /**
-     * Returns the Email belonging to this user.
-     *
-     * @param int $userId
-     * @return string
-     */
-    protected function getUserEmail($userId)
-    {
-        return $this->db->fetchOne("SELECT gsf_email FROM gems__staff WHERE gsf_id_user = ?", $userId);
     }
 
     /**
@@ -148,7 +97,7 @@ class Gems_Default_CronAction extends \Gems_Controller_Action
     }
 
     /**
-     * Check job monitors
+     * Check all monitors
      */
     public function monitorAction()
     {

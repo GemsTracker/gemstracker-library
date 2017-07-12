@@ -8,7 +8,7 @@ New features:
 Automatic mail
     Preview option for automatic mailjobs
     Automatic mailjobs can now filter for relations, check your jobs!
-    Automatic mail execution is logged to logs\cron-job.log
+    Automatic mail execution can be logged to file when set in the project.ini
 Interface improvements:
     When a token is corrected links are visible when seeing the token to open the original / copy
     Improved interface for communication templates and automatic mail

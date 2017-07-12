@@ -223,10 +223,14 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
         return $this->_getClass('mailLoader', 'Mail_MailLoader');
     }
 
+    /**
+     * Get the possible mail targets
+     *
+     * @return Array  mail targets
+     */
     public function getMailTargets()
     {
-        $loader = $this->getMailLoader();
-        return $loader->getMailTargets();
+        return $this->getMailLoader()->getMailTargets();
     }
 
     /**
@@ -359,7 +363,7 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @param type $id
+     * @param string $id
      * @param \MUtil_Batch_Stack_Stackinterface $stack Optional different stack than session stack
      * @return \Gems_Task_TaskRunnerBatch
      */
