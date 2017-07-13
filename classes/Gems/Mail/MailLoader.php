@@ -24,7 +24,7 @@ use MUtil\Translate\TranslateableTrait;
 class Gems_Mail_MailLoader extends \Gems_Loader_TargetLoaderAbstract
 {
     use TranslateableTrait;
-    
+
     /**
      *
      * @var \Zend_Db_Adapter_Abstract
@@ -135,10 +135,11 @@ class Gems_Mail_MailLoader extends \Gems_Loader_TargetLoaderAbstract
      */
     protected function loadCronBatch(\Gems_Task_TaskRunnerBatch $batch)
     {
-        // Check for unprocessed tokens
-       $tracker = $this->loader->getTracker();
-       $tracker->loadCompletedTokensBatch($batch, null, $this->currentUser->getUserId());
        $batch->addMessage(sprintf($this->_("Starting %s mail jobs"), $this->project->getName()));
        $batch->addTask('Mail\\AddAllMailJobsTask');
+
+        // Check for unprocessed tokens, 
+       $tracker = $this->loader->getTracker();
+       $tracker->loadCompletedTokensBatch($batch, null, $this->currentUser->getUserId());
    }
 }
