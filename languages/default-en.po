@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-07 12:30+0200\n"
+"POT-Creation-Date: 2017-07-13 11:26+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ../../..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 2.0.2\n"
+"X-Generator: Poedit 1.8.11\n"
 "X-Poedit-SearchPath-0: gemstracker/gemstracker/classes\n"
 "X-Poedit-SearchPath-1: gemstracker/gemstracker/languages\n"
 "X-Poedit-SearchPath-2: magnafacta/mutil\n"
@@ -33,7 +33,7 @@ msgstr "; "
 #: gemstracker/gemstracker/classes/Gems/Default/AgendaActivityAction.php:114
 #: gemstracker/gemstracker/classes/Gems/Default/AgendaProcedureAction.php:114
 #: gemstracker/gemstracker/classes/Gems/Default/AgendaStaffAction.php:115
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:179
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:184
 #: gemstracker/gemstracker/classes/Gems/Default/ConsentPlanAction.php:131
 #: gemstracker/gemstracker/classes/Gems/Default/IndexAction.php:216
 #: gemstracker/gemstracker/classes/Gems/Export/ModelSource/AnswerExportModelSource.php:318
@@ -194,7 +194,7 @@ msgstr "Name"
 
 #: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:92
 #: gemstracker/gemstracker/classes/Gems/Agenda/AppointmentFilterModel.php:147
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:91
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:96
 #: gemstracker/gemstracker/classes/Gems/Default/ConsentAction.php:56
 #: gemstracker/gemstracker/classes/Gems/Default/DatabaseAction.php:214
 #: gemstracker/gemstracker/classes/Gems/Tracker/Engine/TrackEngineAbstract.php:865
@@ -212,7 +212,7 @@ msgstr "Execution order of the filters, lower numbers are executed first."
 #: gemstracker/gemstracker/classes/Gems/Default/AgendaActivityAction.php:130
 #: gemstracker/gemstracker/classes/Gems/Default/AgendaProcedureAction.php:130
 #: gemstracker/gemstracker/classes/Gems/Default/AgendaStaffAction.php:128
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:108
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:113
 #: gemstracker/gemstracker/classes/Gems/Default/GroupAction.php:171
 #: gemstracker/gemstracker/classes/Gems/Default/LocationAction.php:177
 #: gemstracker/gemstracker/classes/Gems/Default/ReceptionAction.php:73
@@ -965,7 +965,7 @@ msgstr ""
 msgid "The token %s does not exist (any more)."
 msgstr "The token %s does not exist (any more)."
 
-#: gemstracker/gemstracker/classes/Gems/Default/AskAction.php:204
+#: gemstracker/gemstracker/classes/Gems/Default/AskAction.php:214
 #, php-format
 msgid ""
 "Thank you for answering. At the moment we have no further surveys for you to "
@@ -974,14 +974,14 @@ msgstr ""
 "Thank you for answering. At the moment we have no further surveys for you to "
 "take."
 
-#: gemstracker/gemstracker/classes/Gems/Default/AskAction.php:209
+#: gemstracker/gemstracker/classes/Gems/Default/AskAction.php:219
 #, php-format
 msgid ""
 "The survey for token %s has been answered and no further surveys are open."
 msgstr ""
 "The survey for token %s has been answered and no further surveys are open."
 
-#: gemstracker/gemstracker/classes/Gems/Default/AskAction.php:338
+#: gemstracker/gemstracker/classes/Gems/Default/AskAction.php:348
 #, php-format
 msgid "The survey for token %s is no longer active."
 msgstr "The survey for token %s is no longer active."
@@ -997,7 +997,7 @@ msgid "Direct import"
 msgstr "Direct import"
 
 #: gemstracker/gemstracker/classes/Gems/Default/ChartconfigAction.php:36
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:155
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:160
 #: gemstracker/gemstracker/classes/Gems/Default/ProjectTracksAction.php:99
 #: gemstracker/gemstracker/classes/Gems/Export/RespondentExport.php:331
 #: gemstracker/gemstracker/classes/Gems/Export/RespondentExport.php:343
@@ -1021,7 +1021,7 @@ msgid "Track"
 msgstr "Track"
 
 #: gemstracker/gemstracker/classes/Gems/Default/ChartconfigAction.php:37
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:162
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:167
 #: gemstracker/gemstracker/classes/Gems/Default/SummaryAction.php:89
 #: gemstracker/gemstracker/classes/Gems/Export/RespondentExport.php:249
 #: gemstracker/gemstracker/classes/Gems/Snippets/Mail/TokenMailFormSnippet.php:43
@@ -1033,7 +1033,7 @@ msgid "Round"
 msgstr "Round"
 
 #: gemstracker/gemstracker/classes/Gems/Default/ChartconfigAction.php:38
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:173
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:178
 #: gemstracker/gemstracker/classes/Gems/Default/ProjectSurveysAction.php:110
 #: gemstracker/gemstracker/classes/Gems/Default/SummaryAction.php:90
 #: gemstracker/gemstracker/classes/Gems/Export/RespondentExport.php:248
@@ -1081,86 +1081,86 @@ msgid_plural "Chart configs"
 msgstr[0] "Chart config"
 msgstr[1] "Chart configs"
 
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:91
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:96
 msgid ""
 "Execution order of the communication jobs, lower numbers are executed first."
 msgstr ""
 "Execution order of the communication jobs, lower numbers are executed first."
 
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:104
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:109
 #: gemstracker/gemstracker/classes/Gems/Model/CommLogModel.php:149
 #: gemstracker/gemstracker/classes/Gems/Snippets/Mail/MailFormSnippet.php:137
 msgid "Template"
 msgstr "Template"
 
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:105
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:110
 msgid "By staff member"
 msgstr "By staff member"
 
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:107
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:112
 msgid "Used for logging and possibly from address."
 msgstr "Used for logging and possibly from address."
 
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:110
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:115
 msgid "Job is only run when active."
 msgstr "Job is only run when active."
 
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:113
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:118
 #: gemstracker/gemstracker/classes/Gems/Task/Mail/ExecuteMailJobTask.php:121
 msgid "From address used"
 msgstr "From address used"
 
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:118
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:123
 msgid "From other"
 msgstr "From other"
 
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:124
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:129
 #: gemstracker/gemstracker/classes/Gems/Task/Mail/ExecuteMailJobTask.php:155
 msgid "Processing Method"
 msgstr "Processing Method"
 
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:125
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:130
 msgid "Filter for"
 msgstr "Filter for"
 
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:131
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:136
 msgid "Days between reminders"
 msgstr "Days between reminders"
 
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:132
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:137
 msgid "Maximum reminders"
 msgstr "Maximum reminders"
 
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:139
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:144
 msgid "1 day means the reminder is send the next day"
 msgstr "1 day means the reminder is sent the next day"
 
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:143
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:148
 msgid "1 means only one reminder will be send"
 msgstr "1 means only one reminder will be sent"
 
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:151
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:156
 #: gemstracker/gemstracker/classes/Gems/Default/SummaryAction.php:102
 msgid "Filler"
 msgstr "Filler"
 
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:154
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:159
 #: gemstracker/gemstracker/classes/Gems/Snippets/Token/PlanSearchSnippet.php:96
 msgid "(all tracks)"
 msgstr "(all tracks)"
 
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:160
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:165
 #: gemstracker/gemstracker/classes/Gems/Snippets/Token/PlanSearchSnippet.php:103
 msgid "(all rounds)"
 msgstr "(all rounds)"
 
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:172
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:177
 #: gemstracker/gemstracker/classes/Gems/Snippets/Mail/Log/MailLogSearchSnippet.php:61
 #: gemstracker/gemstracker/classes/Gems/Snippets/Token/PlanSearchSnippet.php:109
 msgid "(all surveys)"
 msgstr "(all surveys)"
 
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:178
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:183
 #: gemstracker/gemstracker/classes/Gems/Default/RespondentAction.php:376
 #: gemstracker/gemstracker/classes/Gems/Snippets/Agenda/CalendarSearchSnippet.php:51
 #: gemstracker/gemstracker/classes/Gems/Snippets/Log/LogSearchSnippet.php:63
@@ -1176,62 +1176,68 @@ msgstr "(all surveys)"
 msgid "(all organizations)"
 msgstr "(all organizations)"
 
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:222
-msgid "Execute single mail job"
-msgstr "Execute single mail job"
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:204
+#, php-format
+msgid "Starting single %s mail job %s"
+msgstr "Starting single %s mail job %s"
 
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:241
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:235
+#, php-format
+msgid "Executing single mail job %s"
+msgstr "Executing single mail job %s"
+
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:245
 msgid "Execute all mail jobs"
 msgstr "Execute all mail jobs"
 
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:252
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:258
 msgid "First mail"
 msgstr "First mail"
 
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:253
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:259
 msgid "Reminder"
 msgstr "Reminder"
 
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:264
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:270
 msgid "Use organizational from address"
 msgstr "Use organizational from address"
 
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:267
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:273
 #, php-format
 msgid "Use site %s address"
 msgstr "Use site %s address"
 
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:270
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:276
 msgid "Use the 'By staff member' address"
 msgstr "Use the 'By staff member' address"
 
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:271
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:277
 #: gemstracker/gemstracker/classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:180
 #: gemstracker/gemstracker/classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:288
 #: gemstracker/gemstracker/classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:354
 msgid "Other"
 msgstr "Other"
 
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:283
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:289
 msgid "Automatic mail jobs"
 msgstr "Automatic mail jobs"
 
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:294
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:300
 msgid "automatic mail job"
 msgid_plural "automatic mail jobs"
 msgstr[0] "automatic mail job"
 msgstr[1] "automatic mail jobs"
 
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:304
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:310
 #, php-format
 msgid "Automatic mails have been turned off since %s."
 msgstr "Automatic mails have been turned off since %s."
 
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:308
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:314
 msgid "Turn Automatic Mail Jobs ON"
 msgstr "Turn Automatic Mail Jobs ON"
 
-#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:314
+#: gemstracker/gemstracker/classes/Gems/Default/CommJobAction.php:320
 msgid ""
 "With automatic mail jobs and a cron job on the server, mails can be sent "
 "without manual user action."
@@ -1515,15 +1521,15 @@ msgstr "Check our support site at %s."
 msgid "Or contact"
 msgstr "Or contact"
 
-#: gemstracker/gemstracker/classes/Gems/Default/CronAction.php:91
-msgid "Executing cron jobs"
-msgstr "Executing cron jobs"
+#: gemstracker/gemstracker/classes/Gems/Default/CronAction.php:65
+msgid "Executing all cron jobs"
+msgstr "Executing all cron jobs"
 
-#: gemstracker/gemstracker/classes/Gems/Default/CronAction.php:139
+#: gemstracker/gemstracker/classes/Gems/Default/CronAction.php:90
 msgid "Cannot run cron job in maintenance mode."
 msgstr "Cannot run cron job in maintenance mode."
 
-#: gemstracker/gemstracker/classes/Gems/Default/CronAction.php:141
+#: gemstracker/gemstracker/classes/Gems/Default/CronAction.php:92
 msgid "Cron jobs turned off."
 msgstr "Cron jobs turned off."
 
@@ -2006,12 +2012,12 @@ msgid "Respondents"
 msgstr "Patients"
 
 #: gemstracker/gemstracker/classes/Gems/Default/GroupAction.php:164
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:203
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:205
 msgid "Allowed IP Ranges"
 msgstr "Allowed IP Ranges"
 
 #: gemstracker/gemstracker/classes/Gems/Default/GroupAction.php:165
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:204
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:206
 msgid ""
 "Separate with | example: 10.0.0.0-10.0.0.255 (subnet masks are not supported)"
 msgstr ""
@@ -2031,7 +2037,7 @@ msgid "Respondent edit screen"
 msgstr "Patient edit screen"
 
 #: gemstracker/gemstracker/classes/Gems/Default/GroupAction.php:197
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:162
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:161
 msgid "Respondent show screen"
 msgstr "Patient show screen"
 
@@ -2887,7 +2893,7 @@ msgid "Settings"
 msgstr "Settings"
 
 #: gemstracker/gemstracker/classes/Gems/Default/RespondentAction.php:197
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:169
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:171
 #: gemstracker/gemstracker/classes/Gems/Model/RespondentModel.php:379
 #: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:142
 #: gemstracker/gemstracker/classes/Gems/Model/StaffModel.php:255
@@ -4038,7 +4044,7 @@ msgstr "Last page"
 #: gemstracker/gemstracker/classes/Gems/Menu.php:339
 #: gemstracker/gemstracker/classes/Gems/Menu.php:433
 #: gemstracker/gemstracker/classes/Gems/Model/CommLogModel.php:140
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:255
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:257
 #: gemstracker/gemstracker/classes/Gems/Model/Translator/TokenAnswerTranslator.php:89
 #: gemstracker/gemstracker/classes/Gems/Snippets/Ask/RedirectUntilGoodbyeSnippet.php:83
 #: gemstracker/gemstracker/classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:65
@@ -4114,7 +4120,6 @@ msgid "Export"
 msgstr "Export"
 
 #: gemstracker/gemstracker/classes/Gems/Export/StreamingExcelExport.php:60
-#| msgid "Format dates as excel number easily convertable to date"
 msgid "Format dates as Excel numbers easily convertable to date"
 msgstr "Format dates as Excel numbers easily convertable to date"
 
@@ -4197,6 +4202,11 @@ msgstr "Value"
 msgid "no email adress"
 msgstr "no email adress"
 
+#: gemstracker/gemstracker/classes/Gems/Mail/MailLoader.php:138
+#, php-format
+msgid "Starting %s mail jobs"
+msgstr "Starting %s mail jobs"
+
 #: gemstracker/gemstracker/classes/Gems/Mail/RespondentMailer.php:81
 msgid "Respondent data not found"
 msgstr "Patient data not found"
@@ -4263,7 +4273,7 @@ msgid "Consents"
 msgstr "Consents"
 
 #: gemstracker/gemstracker/classes/Gems/Menu.php:169
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:275
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:277
 msgid "Access"
 msgstr "Access"
 
@@ -5034,44 +5044,48 @@ msgstr "User Definition"
 msgid "Defer to user group setting"
 msgstr "Defer to user group setting"
 
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:166
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:164
+msgid "Token ask screen"
+msgstr "Token ask screen"
+
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:168
 msgid "Respondent change event"
 msgstr "Patient change event"
 
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:173
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:175
 msgid "Style"
 msgstr "Style"
 
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:192
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:194
 msgid "Greeting"
 msgstr "Greeting"
 
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:193
 #: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:195
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:197
 msgid "For emails and token forward screen."
 msgstr "For emails and token forward screen."
 
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:194
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:196
 msgid "Signature"
 msgstr "Signature"
 
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:196
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:198
 msgid "Create Account template"
 msgstr "Create Account template"
 
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:199
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:201
 msgid "Reset Password template"
 msgstr "Reset Password template"
 
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:255
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:257
 msgid "Email"
 msgstr "Email"
 
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:290
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:292
 msgid "Can access"
 msgstr "Can access"
 
-#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:310
+#: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:312
 msgid "Interface"
 msgstr "Interface"
 
@@ -5384,6 +5398,22 @@ msgstr "Rounds as tabs show"
 #: gemstracker/gemstracker/classes/Gems/Screens/Respondent/Show/GemsTimelineShow.php:46
 msgid "Timeline show respondent"
 msgstr "Timeline show paitent"
+
+#: gemstracker/gemstracker/classes/Gems/Screens/Token/Ask/ProjectDefaultAsk.php:32
+msgid "(default project specific token ask screen)"
+msgstr "(default project specific token ask screen)"
+
+#: gemstracker/gemstracker/classes/Gems/Screens/Token/Ask/RedirectUntilGoodbyeAsk.php:42
+msgid "Answer first open until finished"
+msgstr "Answer first open until finished"
+
+#: gemstracker/gemstracker/classes/Gems/Screens/Token/Ask/ShowAllOpenAsk.php:42
+msgid "Show all open tokens"
+msgstr "Show all open tokens"
+
+#: gemstracker/gemstracker/classes/Gems/Screens/Token/Ask/ShowFirstOpenAsk.php:42
+msgid "Show first open token only"
+msgstr "Show first open token only"
 
 #: gemstracker/gemstracker/classes/Gems/Selector/DateSelectorAbstract.php:270
 msgid "<<"
@@ -7082,7 +7112,7 @@ msgid_plural "%d tokens imported."
 msgstr[0] "%d token imported."
 msgstr[1] "%d tokens imported."
 
-#: gemstracker/gemstracker/classes/Gems/Task/Mail/AddAllMailJobsTask.php:72
+#: gemstracker/gemstracker/classes/Gems/Task/Mail/AddAllMailJobsTask.php:73
 msgid "Nothing to do, please create a mail job first."
 msgstr "Nothing to do, please create a mail job first."
 
@@ -9666,6 +9696,12 @@ msgid "%s, one import problem found, continuing check."
 msgid_plural "%s, %d import problems found, continuing check."
 msgstr[0] "%s, one import problem found, continuing check."
 msgstr[1] "%s, %d import problems found, continuing check."
+
+#~ msgid "Execute single mail job"
+#~ msgstr "Execute single mail job"
+
+#~ msgid "Executing cron jobs"
+#~ msgstr "Executing cron jobs"
 
 #~ msgid "Export data from a multiple surveys"
 #~ msgstr "Export data from a multiple surveys"
