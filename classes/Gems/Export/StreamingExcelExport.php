@@ -90,7 +90,9 @@ class StreamingExcelExport extends ExportAbstract
         $writer->openToFile($headerFilename);
 
         $header = $this->getColumnHeaders();
-        if (isset($this->data[$exportName]) && isset($this->data[$exportName]['format']) && in_array('formatVariable', $this->data[$exportName]['format'])) {
+        if (isset($this->data[$exportName]) &&
+                isset($this->data[$exportName]['format']) &&
+                in_array('formatVariable', (array) $this->data[$exportName]['format'])) {
             $writer->addRow($header);
         } else {
             $writer->addRow(array_keys($header));
@@ -148,7 +150,9 @@ class StreamingExcelExport extends ExportAbstract
 
             $exportName = $this->getName();
 
-            if (isset($this->data[$exportName]) && isset($this->data[$exportName]['format']) && in_array('formatAnswer', $this->data[$exportName]['format'])) {
+            if (isset($this->data[$exportName]) &&
+                    isset($this->data[$exportName]['format']) &&
+                    in_array('formatAnswer', (array) $this->data[$exportName]['format'])) {
                 // We want answer labels instead of codes
             } else {
                 // Skip formatting
@@ -266,7 +270,9 @@ class StreamingExcelExport extends ExportAbstract
     protected function filterDateFormat($value, $dateFormat, $columnName)
     {
         $exportName = $this->getName();
-        if (isset($this->data[$exportName]) && isset($this->data[$exportName]['format']) && in_array('formatDate', $this->data[$exportName]['format'])) {
+        if (isset($this->data[$exportName]) &&
+                isset($this->data[$exportName]['format']) &&
+                in_array('formatDate', (array) $this->data[$exportName]['format'])) {
             if ($value instanceof \MUtil_Date) {
                 $date = new \DateTime();
                 $date->setTimestamp($value->getTimestamp());
