@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -159,6 +158,28 @@ class Gems_Default_ComplianceAction extends \Gems_Controller_ModelSnippetActionA
     public function getIndexTitle()
     {
         return $this->_('Compliance');
+    }
+
+    /**
+     * Function to allow the creation of search defaults in code
+     *
+     * @see getSearchFilter()
+     *
+     * @return array
+     */
+    public function getSearchDefaults()
+    {
+        if (! isset($this->defaultSearchData['gr2t_id_organization'])) {
+            $orgs = $this->currentUser->getRespondentOrganizations();
+            if (count($orgs) > 1) {
+                $this->defaultSearchData['gr2t_id_organization'] = '';
+            } else {
+                reset($orgs);
+                $this->defaultSearchData['gr2t_id_organization'] = key($orgs);
+            }
+        }
+
+        return parent::getSearchDefaults();
     }
 
     /**

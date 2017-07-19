@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -130,7 +129,29 @@ class Gems_Default_SummaryAction extends \Gems_Controller_ModelSnippetActionAbst
         return $this->_('Summary');
     }
 
-    /**
+     /**
+     * Function to allow the creation of search defaults in code
+     *
+     * @see getSearchFilter()
+     *
+     * @return array
+     */
+    public function getSearchDefaults()
+    {
+        if (! isset($this->defaultSearchData['gto_id_organization'])) {
+            $orgs = $this->currentUser->getRespondentOrganizations();
+            if (count($orgs) > 1) {
+                $this->defaultSearchData['gto_id_organization'] = '';
+            } else {
+                reset($orgs);
+                $this->defaultSearchData['gto_id_organization'] = key($orgs);
+            }
+        }
+
+        return parent::getSearchDefaults();
+    }
+
+   /**
      * Select creation function, allowes overruling in child classes
      *
      * @return \Zend_Db_Select

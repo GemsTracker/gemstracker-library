@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -23,9 +22,9 @@ class Gems_Snippets_Tracker_Summary_SummarySearchFormSnippet extends \Gems_Snipp
 {
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems_User_User
      */
-    protected $loader;
+    protected $currentUser;
 
     /**
      * Returns a text element for autosearch. Can be overruled.
@@ -38,15 +37,17 @@ class Gems_Snippets_Tracker_Summary_SummarySearchFormSnippet extends \Gems_Snipp
      */
     protected function getAutoSearchElements(array $data)
     {
+        $orgs = $this->currentUser->getRespondentOrganizations();
+
         $elements[] = $this->_createSelectElement(
                 'gto_id_track',
-                $this->util->getTrackData()->getAllTracks(),
+                $this->util->getTrackData()->getTracksForOrgs($orgs),
                 $this->_('(select a track)')
                 );
 
-        $orgs = $this->loader->getCurrentUser()->getRespondentOrganizations();
         if (count($orgs) > 1) {
             $elements[] = $this->_createSelectElement('gto_id_organization', $orgs, $this->_('(all organizations)'));
+            // $elements[] = $this->_createMultiCheckBoxElement('gto_id_organization', $orgs, $this->_('Toggle'), ' ');
         }
 
         $elements[] = null;

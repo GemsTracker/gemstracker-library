@@ -429,6 +429,27 @@ class Gems_Util_TrackData extends UtilAbstract
     }
 
     /**
+     * Returns array (id => name) of all tracks accessible by this organisation, sorted alphabetically
+     *
+     * @param array $orgs orgId => org name
+     * @return array
+     */
+    public function getTracksForOrgs(array $orgs)
+    {
+        $orgWhere = "(INSTR(gtr_organizations, '|" .
+                implode("|') > 0 OR INSTR(gtr_organizations, '|", array_keys($orgs)) .
+                "|') > 0)";
+
+        $select = "SELECT gtr_id_track, gtr_track_name
+                    FROM gems__tracks
+                    WHERE gtr_track_class != 'SingleSurveyEngine' AND
+                        $orgWhere
+                    ORDER BY gtr_track_name";
+
+        return $this->db->fetchPairs($select);
+    }
+
+    /**
      * Returns array (id => name) of all track date fields, sorted alphabetically
      *
      * @return array

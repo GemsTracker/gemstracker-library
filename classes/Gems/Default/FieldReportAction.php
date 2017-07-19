@@ -306,6 +306,28 @@ class Gems_Default_FieldReportAction extends \Gems_Controller_ModelSnippetAction
     }
 
     /**
+     * Function to allow the creation of search defaults in code
+     *
+     * @see getSearchFilter()
+     *
+     * @return array
+     */
+    public function getSearchDefaults()
+    {
+        if (! isset($this->defaultSearchData['gr2t_id_organization'])) {
+            $orgs = $this->currentUser->getRespondentOrganizations();
+            if (count($orgs) > 1) {
+                $this->defaultSearchData['gr2t_id_organization'] = '';
+            } else {
+                reset($orgs);
+                $this->defaultSearchData['gr2t_id_organization'] = key($orgs);
+            }
+        }
+
+        return parent::getSearchDefaults();
+    }
+
+    /**
      * Helper function to allow generalized statements about the items in the model.
      *
      * @param int $count

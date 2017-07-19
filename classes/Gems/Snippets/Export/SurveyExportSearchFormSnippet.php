@@ -34,35 +34,41 @@ class SurveyExportSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
     {
      	$dbLookup = $this->util->getDbLookup();
 
+        // get the current selections
+        $roundDescr = isset($data['gto_round_description']) ? $data['gto_round_description'] : null;
+        $surveyId   = isset($data['gto_id_survey']) ? $data['gto_id_survey'] : null;
+        $trackId    = isset($data['gto_id_track']) ? $data['gto_id_track'] : null;
+
+        // Get the selection data
+        $rounds = $dbLookup->getRoundsForExport($trackId, $surveyId);
+        $surveys = $dbLookup->getSurveysForExport($trackId, $roundDescr);
+        if ($surveyId) {
+            $tracks = $this->util->getTrackData()->getTracksBySurvey($surveyId);
+        } else {
+            $tracks = $this->util->getTrackData()->getTracksForOrgs($this->currentUser->getRespondentOrganizations());
+        }
+
         $elements['gto_id_survey'] = $this->_createSelectElement(
             'gto_id_survey',
-            $dbLookup->getSurveysForExport(),
+            $surveys,
             $this->_('(select a survey)')
             );
-        $elements['gto_id_survey']->setAttrib('onchange', 'this.form.submit();');
-
-        if (isset($data['gto_id_survey'])) {
-            $tracks = $this->util->getTrackData()->getTracksBySurvey($data['gto_id_survey']);
-        } else {
-            $tracks = $this->util->getTrackData()->getAllTracks();
-        }
         $elements['gto_id_track'] = $this->_createSelectElement(
                 'gto_id_track',
                 $tracks,
                 $this->_('(select a track)')
                 );
-        $elements['gto_id_track']->setAttrib('onchange', 'this.form.submit();');
-
-
-        $rounds = $dbLookup->getRoundsForExport(
-                isset($data['gto_id_track']) ? $data['gto_id_track'] : null,
-                isset($data['gto_id_survey']) ? $data['gto_id_survey'] : null
-                );
-       	$elements[] = $this->_createSelectElement(
+       	$elements['gto_round_description'] = $this->_createSelectElement(
                 'gto_round_description',
                 [parent::NoRound => $this->_('No round description')] + $rounds,
                 $this->_('(select a round)')
                 );
+
+        foreach ($elements as $element) {
+            if ($element instanceof \Zend_Form_Element_Multi) {
+                $element->setAttrib('onchange', 'this.form.submit();');
+            }
+        }
 
         return $elements;
    }

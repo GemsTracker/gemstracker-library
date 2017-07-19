@@ -41,6 +41,7 @@ Bugs
     Blocked users were not blocked
     The APC Cache was cleared incorrectly
     The var/tmp directory is created when needed and it does not exist
+    Users can no longer export data from patients in other organizations
 Testing:
     On acceptance and demonstration mail only respondent mails are bounce, staff mails are sent to receiver
     Administrators may now have the right to switch the used group to any they may set

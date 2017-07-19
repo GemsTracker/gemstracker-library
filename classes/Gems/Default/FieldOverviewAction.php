@@ -53,7 +53,7 @@ class Gems_Default_FieldOverviewAction extends \Gems_Controller_ModelSnippetActi
         'Generic\\ContentTitleSnippet',
         'Tracker_Compliance_ComplianceSearchFormSnippet'
         );
-    
+
     /**
      *  We don't want the filler to show as it is irrelevant to this overview
      */
@@ -142,6 +142,28 @@ class Gems_Default_FieldOverviewAction extends \Gems_Controller_ModelSnippetActi
     public function getIndexTitle()
     {
         return $this->_('Respondent Track fields');
+    }
+
+    /**
+     * Function to allow the creation of search defaults in code
+     *
+     * @see getSearchFilter()
+     *
+     * @return array
+     */
+    public function getSearchDefaults()
+    {
+        if (! isset($this->defaultSearchData['gr2t_id_organization'])) {
+            $orgs = $this->currentUser->getRespondentOrganizations();
+            if (count($orgs) > 1) {
+                $this->defaultSearchData['gr2t_id_organization'] = '';
+            } else {
+                reset($orgs);
+                $this->defaultSearchData['gr2t_id_organization'] = key($orgs);
+            }
+        }
+
+        return parent::getSearchDefaults();
     }
 
     /**

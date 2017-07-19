@@ -134,18 +134,27 @@ class MultiSurveysSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
         $dbLookup      = $this->util->getDbLookup();
         $translated    = $this->util->getTranslated();
         // $noRound       = array(self::NoRound => $this->_('No round description'));
-        $empty         = $translated->getEmptyDropdownArray();
+        // $empty         = $translated->getEmptyDropdownArray();
+
+        // get the current selections
+        $roundDescr = isset($data['gto_round_description']) ? $data['gto_round_description'] : null;
+        // $surveyIds  = isset($data['gto_id_survey']) ? $data['gto_id_survey'] : null;
+        $trackId    = isset($data['gto_id_track']) ? $data['gto_id_track'] : null;
+
+        // Get the selection data
+        $rounds  = $dbLookup->getRoundsForExport($trackId);
+        $tracks  = $this->util->getTrackData()->getTracksForOrgs($this->currentUser->getRespondentOrganizations());
+        $surveys = $dbLookup->getSurveysForExport($trackId, $roundDescr, true);
 
         $elements['gto_id_track'] = $this->_createSelectElement(
                 'gto_id_track',
-                $this->util->getTrackData()->getAllTracks(),
+                $tracks,
                 $this->_('(any track)')
                 );
         $elements['gto_id_track']->setAttrib('onchange', 'this.form.submit();');
 
         $elements[] = \MUtil_Html::create('br');
 
-        $rounds = $dbLookup->getRoundsForExport(isset($data['gto_id_track']) ? $data['gto_id_track'] : null);
        	$elements['gto_round_description'] = $this->_createSelectElement(
                 'gto_round_description',
                 [self::NoRound => $this->_('No round description')] + $rounds,
@@ -155,17 +164,13 @@ class MultiSurveysSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
 
         $elements[] = \MUtil_Html::create('br');
 
-        $surveys = $dbLookup->getSurveysForExport(
-                isset($data['gto_id_track']) ? $data['gto_id_track'] : null,
-                isset($data['gto_round_description']) ? $data['gto_round_description'] : null,
-                true
-                );
         $elements = $elements + $this->_createMultiCheckBoxElement(
                 'gto_id_survey',
                 $surveys,
                 $this->_('Toggle surveys'),
                 ' '
                 );
+        
         return $elements;
     }
 }
