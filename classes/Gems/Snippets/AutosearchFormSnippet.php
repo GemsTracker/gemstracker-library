@@ -199,37 +199,39 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
      *
      * @param string        $name    Name of the select element
      * @param string|array  $options Can be a SQL select string or key/value array of options
-     * @param string        $toggleLabel Optional text for toggle all button
      * @param mixed         $separator   Optional separator string
+     * @param string        $toggleLabel Optional text for toggle all button, when false no button is added
+     * @param boolean       $breakBeforeToggle Enter a newline before the toggle button
      * @return array Of [\Zend_Form_Element_MultiCheckbox, [\MUtil_Bootstrap_Form_Element_ToggleCheckboxes]]
      */
-    protected function _createMultiCheckBoxElement($name, $options, $toggleLabel = null, $separator = null)
+    protected function _createMultiCheckBoxElements($name, $options, $separator = null, $toggleLabel = null, $breakBeforeToggle = false)
     {
         $elements[$name] = $this->_createMultiElement('multiCheckbox', $name, $options, null);
+        $decs = $elements[$name]->getDecorators();
 
         if (! $elements[$name]) {
             return [];
         }
 
         if (null === $separator) {
-            $separator = '<br/>';
+            $separator = ' ';
         }
         $elements[$name]->setSeparator($separator);
 
-        if ($toggleLabel) {
-            $elements['break_' . $name] = \MUtil_Html::create('br');
-
-            $tName = 'toggle_' . $name;
-            $options = [
-                'label'    => $toggleLabel,
-                'selector' => "input[name^=$name]",
-                ];
-            if (\MUtil_Bootstrap::enabled()) {
-                $elements[$tName] = new \MUtil_Bootstrap_Form_Element_ToggleCheckboxes($tName, $options);
-            } else {
-                $elements[$tName] = new \Gems_JQuery_Form_Element_ToggleCheckboxes($tName, $options);
-            }
+        if (false === $toggleLabel) {
+            return $elements;
         }
+
+        if ($breakBeforeToggle) {
+            $elements['break_' . $name] = \MUtil_Html::create('br');
+        }
+
+        $tName = 'toggle_' . $name;
+        $options = [
+            'label'    => $toggleLabel ? $toggleLabel : $this->_('Toggle'),
+            'selector' => "input[name^=$name]",
+            ];
+        $elements[$tName] = $this->form->createElement('ToggleCheckboxes', $tName, $options);
 
         return $elements;
     }
@@ -333,7 +335,7 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
      * That creates a distinct group of elements
      *
      * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return array Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.
+     * @return array Of (possible nested) \Zend_Form_Element's or static text to add to the html or null for group breaks.
      */
     protected function getAutoSearchElements(array $data)
     {
@@ -370,7 +372,7 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
                 $elements[] = $reset;
             }
 
-            foreach ($elements as $element) {
+            foreach (\MUtil_Ra::flatten($elements) as $element) {
                 if ($element instanceof \Zend_Form_Element) {
                     $appendLabel = false;
                     if ($element->getLabel()) {
@@ -397,6 +399,7 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
                 }
             }
 
+            // \MUtil_Echo::track($data);
             if ($this->request->isPost()) {
                 if (! $form->isValid($data)) {
                     $this->addMessage($form->getErrorMessages());

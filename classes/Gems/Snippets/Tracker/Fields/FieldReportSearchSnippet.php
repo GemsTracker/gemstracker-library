@@ -47,8 +47,7 @@ class Gems_Snippets_Tracker_Fields_FieldReportSearchSnippet extends \Gems_Snippe
                 );
 
         if (count($orgs) > 1) {
-            $elements[] = $this->_createSelectElement('gr2t_id_organization', $orgs, $this->_('(all organizations)'));
-            // $elements[] = $this->_createMultiCheckBoxElement('gr2t_id_organization', $orgs, $this->_('Toggle'), ' ');
+            $elements[] = $this->_createMultiCheckBoxElements('gr2t_id_organization', $orgs);
         }
 
         return $elements;

@@ -164,13 +164,8 @@ class MultiSurveysSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
 
         $elements[] = \MUtil_Html::create('br');
 
-        $elements = $elements + $this->_createMultiCheckBoxElement(
-                'gto_id_survey',
-                $surveys,
-                $this->_('Toggle surveys'),
-                ' '
-                );
-        
+        $elements[] = $this->_createMultiCheckBoxElements('gto_id_survey', $surveys);
+
         return $elements;
     }
 }

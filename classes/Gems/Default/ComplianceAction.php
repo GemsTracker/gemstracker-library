@@ -171,12 +171,7 @@ class Gems_Default_ComplianceAction extends \Gems_Controller_ModelSnippetActionA
     {
         if (! isset($this->defaultSearchData['gr2t_id_organization'])) {
             $orgs = $this->currentUser->getRespondentOrganizations();
-            if (count($orgs) > 1) {
-                $this->defaultSearchData['gr2t_id_organization'] = '';
-            } else {
-                reset($orgs);
-                $this->defaultSearchData['gr2t_id_organization'] = key($orgs);
-            }
+            $this->defaultSearchData['gr2t_id_organization'] = array_keys($orgs);
         }
 
         return parent::getSearchDefaults();

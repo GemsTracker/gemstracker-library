@@ -12,10 +12,11 @@ CREATE TABLE if not exists gems__appointments (
         -- one off A => Ambulatory, E => Emergency, F => Field, H => Home, I => Inpatient, S => Short stay, V => Virtual
         -- see http://wiki.hl7.org/index.php?title=PA_Patient_Encounter
 
+        -- Not implemented
         -- moodCode http://wiki.ihe.net/index.php?title=1.3.6.1.4.1.19376.1.5.3.1.4.14
         -- one of  PRMS Scheduled, ARQ requested but no date, EVN has occurred
-        gap_status              varchar(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'AC'
-                                references gems__agenda_statuscodes (gasc_code),
+
+        gap_status              varchar(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'AC';
         -- one off AB => Aborted, AC => active, CA => Cancelled, CO => completed
         -- see http://wiki.hl7.org/index.php?title=PA_Patient_Encounter
 

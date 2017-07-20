@@ -39,15 +39,15 @@ class Gems_Snippets_Tracker_Summary_SummarySearchFormSnippet extends \Gems_Snipp
     {
         $orgs = $this->currentUser->getRespondentOrganizations();
 
-        $elements[] = $this->_createSelectElement(
+        $elements['gto_id_track'] = $this->_createSelectElement(
                 'gto_id_track',
                 $this->util->getTrackData()->getTracksForOrgs($orgs),
                 $this->_('(select a track)')
                 );
+        $elements['gto_id_track']->setAttrib('onchange', 'this.form.submit();');
 
         if (count($orgs) > 1) {
-            $elements[] = $this->_createSelectElement('gto_id_organization', $orgs, $this->_('(all organizations)'));
-            // $elements[] = $this->_createMultiCheckBoxElement('gto_id_organization', $orgs, $this->_('Toggle'), ' ');
+            $elements[] = $this->_createMultiCheckBoxElements('gto_id_organization', $orgs, ' ');
         }
 
         $elements[] = null;
@@ -67,6 +67,7 @@ class Gems_Snippets_Tracker_Summary_SummarySearchFormSnippet extends \Gems_Snipp
         } else {
             $trackId = -1;
         }
+
         $sql = "SELECT ggp_name, ggp_name as label FROM (
                     SELECT DISTINCT ggp_name
                         FROM gems__groups INNER JOIN gems__surveys ON ggp_id_group = gsu_id_primary_group

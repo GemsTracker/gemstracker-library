@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: PlanSearchSnippet.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Snippets\Token;
@@ -87,7 +86,7 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
 
         $elements[] = $this->_('Select:');
         $elements[] = \MUtil_Html::create('br');
-        
+
         // Add track selection
         if ($this->multiTracks) {
             $elements[] = $this->_createSelectElement(
@@ -176,7 +175,7 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
     /**
      *
      * @param string $orgWhere
-     * @param array $data The $form field values (can be usefull, but no need to set them)
+     * @param array $data The $form field values (can be useful, but no need to set them)
      * @return mixed SQL string or array
      */
     protected function getAllGroups($allowedOrgs, array $data)
@@ -192,15 +191,15 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
                         gro_active=1 AND
                         gtr_active=1 AND
                         $orgWhere)
-                            
+
                 UNION DISTINCT
-                
+
                 (SELECT DISTINCT ggp_id_group, ggp_name
                     FROM gems__tokens
                     INNER JOIN gems__surveys ON (gto_id_survey = gsu_id_survey AND gsu_active = 1)
                     INNER JOIN gems__groups ON (gsu_id_primary_group = ggp_id_group AND ggp_group_active = 1)
                     INNER JOIN gems__tracks ON (gto_id_track = gtr_id_track AND gtr_active = 1)
-                    WHERE 
+                    WHERE
                         gto_id_round = 0 AND
                         gto_id_organization IN (" . implode(',', array_keys($allowedOrgs)) . ")
                 )
@@ -217,26 +216,26 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
     {
         $orgWhere    = "(INSTR(gtr_organizations, '|" .
                 implode("|') > 0 OR INSTR(gtr_organizations, '|", array_keys($allowedOrgs)) .
-                "|') > 0)";        
-        
+                "|') > 0)";
+
         /**
          * Explanation:
          *  Select all unique round descriptions for active rounds in active tracks
          *  Add to this the unique round descriptions for all tokens in active tracks with round id 0 (inserted round)
          */
         return "(SELECT DISTINCT gro_round_description, gro_round_description as gto_round_description
-                    FROM gems__rounds 
+                    FROM gems__rounds
                     INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
                     WHERE gro_active=1 AND
                         LENGTH(gro_round_description) > 0 AND
                         gtr_active=1 AND
                         $orgWhere)
                 UNION DISTINCT
-                
+
                 (SELECT DISTINCT gto_round_description as gro_round_description, gto_round_description
                     FROM gems__tokens
                     INNER JOIN gems__tracks ON (gto_id_track = gtr_id_track AND gtr_active = 1)
-                    WHERE 
+                    WHERE
                         gto_id_round = 0 AND
                         LENGTH(gto_round_description) > 0 AND
                         gto_id_organization IN (" . implode(',', array_keys($allowedOrgs)) . ")
@@ -265,8 +264,8 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
     {
         $orgWhere    = "(INSTR(gtr_organizations, '|" .
                 implode("|') > 0 OR INSTR(gtr_organizations, '|", array_keys($allowedOrgs)) .
-                "|') > 0)";      
-        
+                "|') > 0)";
+
         return "(SELECT DISTINCT gsu_id_survey, gsu_survey_name
                     FROM gems__surveys INNER JOIN gems__rounds ON gsu_id_survey = gro_id_survey
                         INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
@@ -274,14 +273,14 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
                         gro_active=1 AND
                         gtr_active=1 AND
                         $orgWhere)
-                    
+
                 UNION DISTINCT
-                
+
                 (SELECT DISTINCT gsu_id_survey, gsu_survey_name
                     FROM gems__tokens
                     INNER JOIN gems__surveys ON (gto_id_survey = gsu_id_survey AND gsu_active = 1)
                     INNER JOIN gems__tracks ON (gto_id_track = gtr_id_track AND gtr_active = 1)
-                    WHERE 
+                    WHERE
                         gto_id_round = 0 AND
                         gto_id_organization IN (" . implode(',', array_keys($allowedOrgs)) . ")
                 )

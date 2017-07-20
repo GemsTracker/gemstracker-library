@@ -140,12 +140,7 @@ class Gems_Default_SummaryAction extends \Gems_Controller_ModelSnippetActionAbst
     {
         if (! isset($this->defaultSearchData['gto_id_organization'])) {
             $orgs = $this->currentUser->getRespondentOrganizations();
-            if (count($orgs) > 1) {
-                $this->defaultSearchData['gto_id_organization'] = '';
-            } else {
-                reset($orgs);
-                $this->defaultSearchData['gto_id_organization'] = key($orgs);
-            }
+            $this->defaultSearchData['gto_id_organization'] = array_keys($orgs);
         }
 
         return parent::getSearchDefaults();
@@ -219,7 +214,7 @@ class Gems_Default_SummaryAction extends \Gems_Controller_ModelSnippetActionAbst
                 ->joinInner('gems__surveys', 'gro_id_survey = gsu_id_survey',
                         array('gsu_survey_name'))
                 ->joinInner('gems__groups', 'gsu_id_primary_group =  ggp_id_group', array())
-                ->joinLeft('gems__track_fields',  'gto_id_relationfield = gtf_id_field AND gtf_field_type = "relation"', array())
+                ->joinLeft('gems__track_fields', 'gto_id_relationfield = gtf_id_field AND gtf_field_type = "relation"', array())
                 ->group(array('gro_id_order', 'gro_round_description', 'gsu_survey_name', 'ggp_name'));
 
         return $select;
