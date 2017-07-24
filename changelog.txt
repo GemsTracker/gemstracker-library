@@ -37,6 +37,7 @@ Programmability:
     Before field save events allows changing the fields after their new values have been calculated
     Respondent changed events can be set at the organization level
     It is easier to change part of the display in ShowTrackTokenSnippet
+    Less compile now uses relativeUrls during compilation, added logoFile and logoHeight variables
 Bugs
     Blocked users were not blocked
     The APC Cache was cleared incorrectly
