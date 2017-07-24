@@ -83,10 +83,10 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
         $this->set('gor_task',                  'label', $this->_('Task'),
                 'description', sprintf($this->_('Task in %s project'), $projectName)
                 );
-        $this->set('gor_url',                   'label', $this->_('Url'));
-        $this->setIfExists('gor_url_base',      'label', $this->_("Default url's"),
+        $this->set('gor_url',                   'label', $this->_('Company url'));
+        $this->setIfExists('gor_url_base',      'label', $this->_("Login url's"),
                 'description', sprintf(
-                        $this->_("Always switch to this organization when %s is accessed from one of these space separated url's. The first is used for mails."),
+                        $this->_("Always switch to this organization when %s is accessed from one of these space separated url's. The first url is used for mails."),
                         $projectName
                         )
                 );
