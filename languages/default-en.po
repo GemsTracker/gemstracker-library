@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-24 15:31+0200\n"
+"POT-Creation-Date: 2017-07-24 16:10+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -4956,20 +4956,15 @@ msgid "Task in %s project"
 msgstr "Task in %s project"
 
 #: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:86
-#| msgid "Location url"
 msgid "Company url"
 msgstr "Company url"
 
 #: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:87
-#| msgid "Location url"
 msgid "Login url's"
 msgstr "Login url's"
 
 #: gemstracker/gemstracker/classes/Gems/Model/OrganizationModel.php:89
 #, php-format
-#| msgid ""
-#| "Always switch to this organization when %s is accessed from one of these "
-#| "space separated url's. The first is used for mails."
 msgid ""
 "Always switch to this organization when %s is accessed from one of these "
 "space separated url's. The first url is used for mails."
@@ -6788,6 +6783,16 @@ msgstr "New round"
 #: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/Buttons/TrackActionButtonRow.php:39
 msgid "Edit respondent"
 msgstr "Edit patient"
+
+#: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/Compliance/ComplianceTableSnippet.php:116
+#, php-format
+#| msgid "for respondents"
+msgid ""
+"%s\n"
+"%s for respondent %s"
+msgstr ""
+"%s\n"
+"%s for patient %s"
 
 #: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/DeleteTrackSnippet.php:113
 msgid "Restore tokens"
