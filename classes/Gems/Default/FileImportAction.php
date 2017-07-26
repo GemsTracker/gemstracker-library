@@ -42,6 +42,7 @@ class Gems_Default_FileImportAction extends \Gems_Default_FileActionAbstract
         $params['importLoader']            = $importLoader;
         $params['tempDirectory']           = $importLoader->getTempDirectory();
         $params['importTranslators']       = $importLoader->getTranslators($controller);
+        $params['routeAction']             = 'answers-import';  // Prevent going to a different action
 
         $this->addSnippets('Survey_AnswerImportSnippet', $params);
     }
