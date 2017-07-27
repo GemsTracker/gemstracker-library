@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-24 16:10+0200\n"
+"POT-Creation-Date: 2017-07-27 14:56+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ../../..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 2.0.3\n"
+"X-Generator: Poedit 1.8.11\n"
 "X-Poedit-SearchPath-0: gemstracker/gemstracker/classes\n"
 "X-Poedit-SearchPath-1: gemstracker/gemstracker/languages\n"
 "X-Poedit-SearchPath-2: magnafacta/mutil/src\n"
@@ -1292,7 +1292,7 @@ msgstr "Patient nr"
 #: gemstracker/gemstracker/classes/Gems/Default/ComplianceAction.php:74
 #: gemstracker/gemstracker/classes/Gems/Default/FieldOverviewAction.php:89
 #: gemstracker/gemstracker/classes/Gems/Export/ModelSource/AnswerExportModelSource.php:329
-#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:384
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:573
 #: gemstracker/gemstracker/classes/OpenRosa/Tracker/Source/OpenRosa/Form.php:561
 msgid "Start date"
 msgstr "Start date"
@@ -1952,7 +1952,7 @@ msgstr "Import the file."
 msgid "Checks this file for validity and then performs an import."
 msgstr "Checks this file for validity and then performs an import."
 
-#: gemstracker/gemstracker/classes/Gems/Default/FileImportAction.php:56
+#: gemstracker/gemstracker/classes/Gems/Default/FileImportAction.php:57
 msgid "Files ready for import"
 msgstr "Files ready for import"
 
@@ -3322,7 +3322,6 @@ msgstr[1] "staff members"
 
 #: gemstracker/gemstracker/classes/Gems/Default/SummaryAction.php:90
 #: gemstracker/gemstracker/classes/Gems/Selector/TokenByGroupDateSelector.php:112
-#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:162
 #: gemstracker/gemstracker/classes/Gems/Snippets/Token/PlanSearchSnippet.php:119
 #: gemstracker/gemstracker/classes/Gems/Util/TokenData.php:42
 msgid "Answered"
@@ -3343,6 +3342,7 @@ msgid "Open"
 msgstr "Open"
 
 #: gemstracker/gemstracker/classes/Gems/Default/SummaryAction.php:129
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:603
 msgid "Summary"
 msgstr "Summary"
 
@@ -3372,7 +3372,7 @@ msgstr "Average answer time: %s."
 #: gemstracker/gemstracker/classes/Gems/Default/SurveyMaintenanceAction.php:195
 #: gemstracker/gemstracker/classes/Gems/Default/SurveyMaintenanceAction.php:199
 #: gemstracker/gemstracker/classes/Gems/Default/SurveyMaintenanceAction.php:221
-#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:381
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:570
 #: gemstracker/gemstracker/classes/Gems/Util/Translated.php:117
 msgid "n/a"
 msgstr "n/a"
@@ -4427,7 +4427,6 @@ msgid "Correct answers"
 msgstr "Correct answers"
 
 #: gemstracker/gemstracker/classes/Gems/Menu.php:469
-#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:166
 msgid "Fill in"
 msgstr "Fill in"
 
@@ -5098,6 +5097,7 @@ msgstr "E-Mail"
 #: gemstracker/gemstracker/classes/Gems/Model/RespondentModel.php:272
 #: gemstracker/gemstracker/classes/Gems/Model/RespondentModel.php:355
 #: gemstracker/gemstracker/classes/Gems/Model/RespondentModel.php:475
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:377
 #: gemstracker/gemstracker/classes/Gems/Tracker/Model/RespondentTrackModel.php:170
 msgid "May be mailed"
 msgstr "May be mailed"
@@ -5371,11 +5371,11 @@ msgstr "Browse with address"
 
 #: gemstracker/gemstracker/classes/Gems/Screens/Respondent/Edit/GemsDefaultNoTabEdit.php:55
 msgid "(default Gems respondent no tab edit)"
-msgstr "(default Gems paitent no tab edit)"
+msgstr "(default Gems patient no tab edit)"
 
 #: gemstracker/gemstracker/classes/Gems/Screens/Respondent/Edit/GemsDefaultTabbedEdit.php:55
 msgid "(default Gems respondent tabbed edit)"
-msgstr "(default Gems paitent tabbed edit)"
+msgstr "(default Gems patient tabbed edit)"
 
 #: gemstracker/gemstracker/classes/Gems/Screens/Respondent/Edit/ProjectDefaultEdit.php:32
 msgid "(default project respondent edit)"
@@ -5395,7 +5395,7 @@ msgstr "Rounds as tabs show"
 
 #: gemstracker/gemstracker/classes/Gems/Screens/Respondent/Show/GemsTimelineShow.php:46
 msgid "Timeline show respondent"
-msgstr "Timeline show paitent"
+msgstr "Timeline show patient"
 
 #: gemstracker/gemstracker/classes/Gems/Screens/Token/Ask/ProjectDefaultAsk.php:32
 msgid "(default project specific token ask screen)"
@@ -6096,11 +6096,13 @@ msgid "Organizations that have no respondents"
 msgstr "Organizations that have no patients"
 
 #: gemstracker/gemstracker/classes/Gems/Snippets/ReceptionCode/ChangeReceptionCodeSnippetAbstract.php:110
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:144
 #, php-format
 msgid "Undelete %s!"
 msgstr "Undelete %s!"
 
 #: gemstracker/gemstracker/classes/Gems/Snippets/ReceptionCode/ChangeReceptionCodeSnippetAbstract.php:112
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:141
 #, php-format
 msgid "Delete %s!"
 msgstr "Delete %s!"
@@ -6273,32 +6275,39 @@ msgstr "empty"
 msgid "%s (%d open)"
 msgstr "%s (%d open)"
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:339
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:167
 #: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/Buttons/TrackActionButtonRow.php:40
 #: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/DeleteTrackSnippet.php:133
 msgid "Edit track"
 msgstr "Edit track"
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:367
-msgid "Delete track"
-msgstr "Delete track"
-
-#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:484
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:305
+#: gemstracker/gemstracker/classes/Gems/Tracker/Model/StandardTokenModel.php:326
+#: gemstracker/gemstracker/classes/Gems/Tracker/Token.php:1351
 #, php-format
-msgid "%s completed"
-msgstr "%s completed"
+msgid "Completed"
+msgstr "Completed"
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:491
-#, php-format
-msgid "%s open"
-msgstr "%s open"
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:376
+msgid "May not be mailed"
+msgstr "May not be mailed"
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:498
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:453
 #, php-format
 msgid "%s missed"
 msgstr "%s missed"
 
-#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:505
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:458
+#, php-format
+msgid "%s completed"
+msgstr "%s completed"
+
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:463
+#, php-format
+msgid "%s open"
+msgstr "%s open"
+
+#: gemstracker/gemstracker/classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:468
 #, php-format
 msgid "%s upcoming"
 msgstr "%s upcoming"
@@ -6786,7 +6795,6 @@ msgstr "Edit patient"
 
 #: gemstracker/gemstracker/classes/Gems/Snippets/Tracker/Compliance/ComplianceTableSnippet.php:116
 #, php-format
-#| msgid "for respondents"
 msgid ""
 "%s\n"
 "%s for respondent %s"
@@ -7916,11 +7924,6 @@ msgstr "Set valid until"
 msgid "Number of contact moments"
 msgstr "Number of contact moments"
 
-#: gemstracker/gemstracker/classes/Gems/Tracker/Model/StandardTokenModel.php:326
-#: gemstracker/gemstracker/classes/Gems/Tracker/Token.php:1351
-msgid "Completed"
-msgstr "Completed"
-
 #: gemstracker/gemstracker/classes/Gems/Tracker/Model/StandardTokenModel.php:330
 msgid "Duration in seconds"
 msgstr "Duration in seconds"
@@ -7957,11 +7960,11 @@ msgstr "Before field update"
 msgid "After field update"
 msgstr "After field update"
 
-#: gemstracker/gemstracker/classes/Gems/Tracker/RespondentTrack.php:757
+#: gemstracker/gemstracker/classes/Gems/Tracker/RespondentTrack.php:767
 msgid "Track stopped"
 msgstr "Track stopped"
 
-#: gemstracker/gemstracker/classes/Gems/Tracker/RespondentTrack.php:760
+#: gemstracker/gemstracker/classes/Gems/Tracker/RespondentTrack.php:770
 msgid "Track completed"
 msgstr "Track completed"
 
@@ -9375,59 +9378,59 @@ msgstr "Skipped by calculation"
 msgid "Stopped participating"
 msgstr "Stopped participating"
 
-#: magnafacta/mutil/src/MUtil/Date.php:170
+#: magnafacta/mutil/src/MUtil/Date.php:167
 #, php-format
 msgid "%s ago"
 msgstr "%s ago"
 
-#: magnafacta/mutil/src/MUtil/Date.php:173
+#: magnafacta/mutil/src/MUtil/Date.php:170
 #, php-format
 msgid "%s to go"
 msgstr "%s to go"
 
-#: magnafacta/mutil/src/MUtil/Date.php:184
+#: magnafacta/mutil/src/MUtil/Date.php:181
 msgid "second"
 msgid_plural "seconds"
 msgstr[0] "second"
 msgstr[1] "seconds"
 
-#: magnafacta/mutil/src/MUtil/Date.php:187
+#: magnafacta/mutil/src/MUtil/Date.php:184
 msgid "minute"
 msgid_plural "minutes"
 msgstr[0] "minute"
 msgstr[1] "minutes"
 
-#: magnafacta/mutil/src/MUtil/Date.php:190
+#: magnafacta/mutil/src/MUtil/Date.php:187
 msgid "hour"
 msgid_plural "hours"
 msgstr[0] "hour"
 msgstr[1] "hours"
 
-#: magnafacta/mutil/src/MUtil/Date.php:193
+#: magnafacta/mutil/src/MUtil/Date.php:190
 msgid "day"
 msgid_plural "days"
 msgstr[0] "day"
 msgstr[1] "days"
 
-#: magnafacta/mutil/src/MUtil/Date.php:196
+#: magnafacta/mutil/src/MUtil/Date.php:193
 msgid "week"
 msgid_plural "weeks"
 msgstr[0] "week"
 msgstr[1] "weeks"
 
-#: magnafacta/mutil/src/MUtil/Date.php:199
+#: magnafacta/mutil/src/MUtil/Date.php:196
 msgid "month"
 msgid_plural "months"
 msgstr[0] "month"
 msgstr[1] "months"
 
-#: magnafacta/mutil/src/MUtil/Date.php:202
+#: magnafacta/mutil/src/MUtil/Date.php:199
 msgid "year"
 msgid_plural "years"
 msgstr[0] "year"
 msgstr[1] "years"
 
-#: magnafacta/mutil/src/MUtil/Date.php:205
+#: magnafacta/mutil/src/MUtil/Date.php:202
 msgid "decade"
 msgid_plural "decades"
 msgstr[0] "decade"
@@ -9697,6 +9700,9 @@ msgid "%s, one import problem found, continuing check."
 msgid_plural "%s, %d import problems found, continuing check."
 msgstr[0] "%s, one import problem found, continuing check."
 msgstr[1] "%s, %d import problems found, continuing check."
+
+#~ msgid "Delete track"
+#~ msgstr "Delete track"
 
 #~ msgid "Url"
 #~ msgstr "Url"

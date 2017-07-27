@@ -53,11 +53,11 @@ class GemsTimelineShow extends ShowScreenAbstract
     public function getSnippets()
     {
         return [
-            'Gems\\Snippets\\Generic\\ContentTitleSnippet',
-            'Gems\\Snippets\\Respondent\\MultiOrganizationTab',
-            'Gems\\Snippets\\Respondent\\RespondentDetailsSnippet',
-            'Gems\\Snippets\\Tracker\\AddTracksSnippet',
-            'Gems\\Snippets\\Respondent\\TrafficLightTokenSnippet',
+            'Generic\\ContentTitleSnippet',
+            'Respondent\\MultiOrganizationTab',
+            'Respondent\\RespondentDetailsSnippet',
+            'Tracker\\AddTracksSnippet',
+            'Respondent\\TrafficLightTokenSnippet',
         ];
     }
 }
