@@ -25,7 +25,7 @@ interface Gems_Event_TrackFieldUpdateEventInterface extends \Gems_Event_EventInt
      *
      * Storing the changed $values is handled by the calling function.
      *
-     * @param \Gems_Tracker_RespondentTrack $respTrack Gems repsondent track object
+     * @param \Gems_Tracker_RespondentTrack $respTrack Gems respondent track object
      * @param int   $userId The current userId
      * @return void
      */
