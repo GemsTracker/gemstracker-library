@@ -1318,3 +1318,5 @@ INSERT INTO gems__comm_template_translations (gctt_id_template, gctt_lang, gctt_
 To log in with your organization account {login_name} please click on this link:\r\n{login_url}'),
     (@lastid, 'nl', 'Nieuw account aangemaakt', 'Er is voor u een nieuw account aangemaakt voor de [b]{organization}[/b] website [b]{project}[/b].
 Om in te loggen met uw organisatie account {login_name} klikt u op onderstaande link:\r\n{login_url}');
+
+-- GEMS VERSION: 61
