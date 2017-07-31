@@ -392,6 +392,24 @@ class Gems_Project_ProjectSettings extends \ArrayObject
     }
 
     /**
+     * The logfile for cron jobs
+     *
+     * @return string
+     */
+    public function getCronLogfile()
+    {
+        if (! ($this->offsetExists('cron') && isset($this->cron['logfile']))) {
+            return null;
+        }
+
+        $file = trim($this->cron['logfile']);
+        if (\MUtil_File::isRootPath($file)) {
+            return $file;
+        }
+        return GEMS_ROOT_DIR . '/var/logs/' . $file;
+    }
+
+    /**
      * Returns an (optional) default organization from the project settings
      *
      * @return int Organization number or -1 when not set

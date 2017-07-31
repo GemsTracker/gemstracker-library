@@ -22,8 +22,8 @@ namespace Gems\Task\Mail;
  * @license    New BSD License
  * @since      Class available since version 1.7.3
  */
-class AddAllMailJobsTask extends \MUtil_Task_TaskAbstract {
-
+class AddAllMailJobsTask extends \MUtil_Task_TaskAbstract
+{
     /**
      *
      * @var \Zend_Db_Adapter_Abstract
@@ -42,7 +42,8 @@ class AddAllMailJobsTask extends \MUtil_Task_TaskAbstract {
      * @param $respondentId Optional, execute for just one respondent
      * @param $organizationId Optional, execute for just one organization
      */
-    public function execute($respondentId = null, $organizationId = null) {
+    public function execute($respondentId = null, $organizationId = null)
+    {
         $sql = "SELECT gcj_id_job
             FROM gems__comm_jobs
             WHERE gcj_active = 1";
@@ -71,6 +72,6 @@ class AddAllMailJobsTask extends \MUtil_Task_TaskAbstract {
         } else {
             $this->getBatch()->addMessage($this->_('Nothing to do, please create a mail job first.'));
         }
+        $batch->addTask('Mail\\CronMailMonitorTask');
     }
-
 }

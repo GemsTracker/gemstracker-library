@@ -193,8 +193,18 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
                 $this->token->getOrganizationId()
                 );
 
+        $screen = $this->token->getOrganization()->getTokenAskScreen();
+        if ($screen) {
+            $params   = $screen->getParameters($this->token);
+            $snippets = $screen->getSnippets($this->token);
+            if (false !== $snippets) {
+                $this->forwardSnippets = $snippets;
+            }
+        }
+        $params['token'] = $this->token;
+
         // Display token when possible
-        if ($this->html->snippet($this->forwardSnippets, 'token', $this->token)) {
+        if ($this->html->snippet($this->forwardSnippets, $params)) {
             return;
         }
 

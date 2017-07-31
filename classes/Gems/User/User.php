@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+use Gems\User\Group;
+
 /**
  * User object that mimicks the old $this->session behaviour
  *
@@ -649,44 +651,37 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
-     * Retrieve an array of groups the user is allowed to assign: his own group and all groups
-     * he/she inherits rights from
+     * Disable mask usage (call before any applyGroupToData() or applyGroupToModel()
+     * calls: doesn't work retroactively
      *
-     * @param boolean $current Return the current list or the original list when true
-     * @return array
+     * @return $this
      */
-    public function getAllowedStaffGroups($current = true)
+    public function disableMask()
     {
-        // Always refresh because these values are otherwise not responsive to change
-        $dbLookup = $this->util->getDbLookup();
-        $groupId  = $this->getGroupId($current);
-        $groups   = $dbLookup->getActiveStaffGroups();
+        $group = $this->getGroup();
 
-        if ('master' === $this->getRole($current)) {
-            return $groups;
+        if ($group instanceof Group) {
+            $group->disableMask();
         }
 
-        try {
-            $setGroups     = $this->db->fetchOne(
-                    "SELECT ggp_may_set_groups FROM gems__groups WHERE ggp_id_group = ?",
-                    $groupId
-                    );
-            $groupsAllowed = explode(',', $setGroups);
-        } catch (\Zend_Db_Exception $e) {
-            // The database might not be updated
-            $groupsAllowed = [];
+        return $this;
+    }
+
+    /**
+     * Enable mask usage (call before any applyGroupToData() or applyGroupToModel()
+     * calls: doesn't work retroactively
+     *
+     * @return $this
+     */
+    public function enableMask()
+    {
+        $group = $this->getGroup();
+
+        if ($group instanceof Group) {
+            $group->enableMask();
         }
 
-        $result = array();
-
-        foreach ($groups as $id => $label) {
-            if ((in_array($id, $groupsAllowed))) {
-                $result[$id] = $groups[$id];
-            }
-        }
-        natsort($result);
-
-        return $result;
+        return $this;
     }
 
     /**
@@ -745,6 +740,47 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         }
         unset($output['master']);
         return $output;
+    }
+
+    /**
+     * Retrieve an array of groups the user is allowed to assign: his own group and all groups
+     * he/she inherits rights from
+     *
+     * @param boolean $current Return the current list or the original list when true
+     * @return array
+     */
+    public function getAllowedStaffGroups($current = true)
+    {
+        // Always refresh because these values are otherwise not responsive to change
+        $dbLookup = $this->util->getDbLookup();
+        $groupId  = $this->getGroupId($current);
+        $groups   = $dbLookup->getActiveStaffGroups();
+
+        if ('master' === $this->getRole($current)) {
+            return $groups;
+        }
+
+        try {
+            $setGroups     = $this->db->fetchOne(
+                    "SELECT ggp_may_set_groups FROM gems__groups WHERE ggp_id_group = ?",
+                    $groupId
+                    );
+            $groupsAllowed = explode(',', $setGroups);
+        } catch (\Zend_Db_Exception $e) {
+            // The database might not be updated
+            $groupsAllowed = [];
+        }
+
+        $result = array();
+
+        foreach ($groups as $id => $label) {
+            if ((in_array($id, $groupsAllowed))) {
+                $result[$id] = $groups[$id];
+            }
+        }
+        natsort($result);
+
+        return $result;
     }
 
     /**

@@ -18,7 +18,6 @@
  */
 class Gems_Export_ModelSource_DefaultExportModelSource extends \Gems_Export_ModelSource_ExportModelsourceAbstract
 {
-
 	/**
      * Get the model to export
      * @param  array  $filter Filter for the model

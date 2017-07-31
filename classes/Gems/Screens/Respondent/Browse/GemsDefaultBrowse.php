@@ -36,7 +36,7 @@ class GemsDefaultBrowse extends BrowseScreenAbstract
 
     /**
      *
-     * @return mixed Something to display as label. Can be an MUtil_Html element
+     * @return mixed Something to display as label. Can be an \MUtil_Html_HtmlElement
      */
     public function getScreenLabel()
     {

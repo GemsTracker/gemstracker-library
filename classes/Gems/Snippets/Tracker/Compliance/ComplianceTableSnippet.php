@@ -111,9 +111,12 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends \Gems_Snip
                 }
 
                 if ($model->get($name, 'noSort')) {
-                    $title = array(
-                        \MUtil_Lazy::method($tUtil, 'getStatusDescription', $bridge->$name),
-                        "\n" . $model->get($name, 'description')
+                    $title = \MUtil_Lazy::call(
+                            "sprintf",
+                            $this->_("%s\n%s for respondent %s"),
+                            \MUtil_Lazy::method($tUtil, 'getStatusDescription', $bridge->$name),
+                            $model->get($name, 'description'),
+                            $bridge->gr2o_patient_nr
                         );
                     $token = 'tok_' . substr($name, 5);
 

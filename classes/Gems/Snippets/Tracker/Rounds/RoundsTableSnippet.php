@@ -85,6 +85,14 @@ class RoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
         $model->get('gro_valid_for_length');
         $model->get('gro_valid_for_source');
         $model->get('gro_valid_for_unit');
+        
+        // We want to markt the row for inactive surveys so it visually stands out
+        $model->get('gsu_active');
+        $bridge->tr()->appendAttrib('class', \MUtil_Lazy::iif(
+            $bridge->gsu_active,
+            '',
+            'inactive'
+        ));
 
         parent::addBrowseTableColumns($bridge, $model);
     }

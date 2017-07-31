@@ -1,17 +1,17 @@
 <?php
+
 /**
  * @package    Gems
- * @subpackage Snippets
+ * @subpackage Snippets\Export
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
  * Header for html/pdf export of a survey
  *
  * @package    Gems
- * @subpackage Snippets
+ * @subpackage Snippets\Export
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.5.6

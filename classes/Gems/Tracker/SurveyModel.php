@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 use Gems\Tracker\Model\AddAnswersTransformer;
@@ -45,27 +44,32 @@ class Gems_Tracker_SurveyModel extends \Gems_Model_JoinModel
      */
     protected $survey;
 
-    public function getSurvey()
-    {
-        return $this->survey;
-    }
-
+    /**
+     *
+     * @param \Gems_Tracker_Survey $survey
+     * @param \Gems_Tracker_Source_SourceInterface $source
+     */
     public function __construct(\Gems_Tracker_Survey $survey, \Gems_Tracker_Source_SourceInterface $source)
     {
         parent::__construct($survey->getName(), 'gems__tokens', 'gto');
-        $this->addTable('gems__reception_codes',  array('gto_reception_code' => 'grc_id_reception_code'));
-        
-        // Add relations
-        $this->addLeftTable('gems__track_fields',         array('gto_id_relationfield' => 'gtf_id_field', 'gtf_field_type = "relation"'));       // Add relation fields
-        $this->addLeftTable('gems__respondent_relations', array('gto_id_relation' => 'grr_id', 'gto_id_respondent' => 'grr_id_respondent')); // Add relation
-        $this->set('grr_name', 'column_expression', new Zend_Db_Expr('CONCAT_WS(" ", gems__respondent_relations.grr_first_name, gems__respondent_relations.grr_last_name)'));
 
-        $this->addColumn(
-            'CASE WHEN grc_success = 1 AND gto_valid_from <= CURRENT_TIMESTAMP AND gto_completion_time IS NULL AND (gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP) THEN 1 ELSE 0 END',
-            'can_be_taken');
-        $this->addColumn(
-            "CASE WHEN grc_success = 1 THEN '' ELSE 'deleted' END",
-            'row_class');
+        $this->addTable('gems__reception_codes',  array('gto_reception_code' => 'grc_id_reception_code'));
+
+        // Add relations
+        // Add relation fields
+        $this->addLeftTable('gems__track_fields',         array('gto_id_relationfield' => 'gtf_id_field', 'gtf_field_type = "relation"'));
+        // Add relation itself
+        $this->addLeftTable('gems__respondent_relations', array('gto_id_relation' => 'grr_id', 'gto_id_respondent' => 'grr_id_respondent'));
+
+        $this->addColumn(new Zend_Db_Expr(
+                'CONCAT_WS(" ", gems__respondent_relations.grr_first_name, gems__respondent_relations.grr_last_name)'
+                ), 'grr_name');
+        $this->addColumn(new Zend_Db_Expr(
+                'CASE WHEN grc_success = 1 AND gto_valid_from <= CURRENT_TIMESTAMP AND gto_completion_time IS NULL AND (gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP) THEN 1 ELSE 0 END'
+                ), 'can_be_taken');
+        $this->addColumn(new Zend_Db_Expr(
+                "CASE WHEN grc_success = 1 THEN '' ELSE 'deleted' END"
+                ), 'row_class');
 
         $this->source = $source;
         $this->survey = $survey;
@@ -73,49 +77,23 @@ class Gems_Tracker_SurveyModel extends \Gems_Model_JoinModel
     }
 
     /**
-     * Returns a nested array containing the items requested.
+     * Does the real work
      *
-     * @param array $filter Filter array, num keys contain fixed expresions, text keys are equal or one of filters
-     * @param array $sort Sort array field name => sort type
-     * @return array Nested array or false
+     * @return void
      */
-    /*protected function _load(array $filter, array $sort)
-    {
-        return $this->addAnswers(parent::_load($filter, $sort));
-    }*/
-
-    /**
-     * Returns a nested array containing the items requested, including answers.
-     *
-     * @param array $inputRows Nested rows with Gems token information
-     * @return array Nested array or false
-     */
-    protected function addAnswers(array $inputRows)
-    {
-        $resultRows = $inputRows;
-        $tokens = \MUtil_Ra::column('gto_id_token', $inputRows);
-
-        // \MUtil_Echo::track($tokens);
-        /*$answerRows = $this->source->getRawTokenAnswerRows(array('token' => $tokens), $this->survey->getSurveyId());
-        $emptyRow   = array_fill_keys($this->getItemNames(), null);
-        $resultRows = array();
-
-        foreach ($inputRows as $row) {
-            $tokenId = $row['gto_id_token'];
-
-            if (isset($answerRows[$tokenId])) {
-                $resultRows[$tokenId] = $row + $answerRows[$tokenId] + $emptyRow;
-            } else {
-                $resultRows[$tokenId] = $row + $emptyRow;
-            }
-        }*/
-        return $resultRows;
-    }
-
     protected function addAnswersToModel()
     {
         $transformer = new AddAnswersTransformer($this->survey, $this->source);
         $this->addTransformer($transformer);
+    }
+
+    /**
+     *
+     * @return \Gems_Tracker_Survey
+     */
+    public function getSurvey()
+    {
+        return $this->survey;
     }
 
     /**
@@ -127,46 +105,4 @@ class Gems_Tracker_SurveyModel extends \Gems_Model_JoinModel
     {
         return false;
     }
-
-    /**
-     * Returns an array containing the first requested item.
-     *
-     * @param mixed $filter True to use the stored filter, array to specify a different filter
-     * @param mixed $sort True to use the stored sort, array to specify a different sort
-     * @return array An array or false
-     */
-    /*public function loadFirst($filter = true, $sort = true)
-    {
-        if ($firstResult = parent::loadFirst($filter, $sort)) {
-            $result = $this->addAnswers(array($firstResult));
-        } else {
-            $result = array();
-        }
-        return reset($result);
-    }*/
-
-    /**
-     * Returns a \Traversable spewing out arrays containing the items requested.
-     *
-     * @param mixed $filter True to use the stored filter, array to specify a different filter
-     * @param mixed $sort True to use the stored sort, array to specify a different sort
-     * @return \Traversable
-     */
-    /*public function loadIterator($filter = true, $sort = true)
-    {
-        return $this->addAnswers(parent::loadIterator($filter, $sort));
-    }*/
-
-    /**
-     * Returns a \Zend_Paginator for the items in the model
-     *
-     * @param mixed $filter True to use the stored filter, array to specify a different filter
-     * @param mixed $sort True to use the stored sort, array to specify a different sort
-     * @return \Zend_Paginator
-     */
-    /*public function loadPaginator($filter = true, $sort = true)
-    {
-        // Do not use a select paginator for the moment, till we can add addAnswers()
-        return \Zend_Paginator::factory($this->load($filter, $sort));
-    }*/
 }

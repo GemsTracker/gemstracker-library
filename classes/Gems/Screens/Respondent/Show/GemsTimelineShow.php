@@ -39,11 +39,11 @@ class GemsTimelineShow extends ShowScreenAbstract
 
     /**
      *
-     * @return mixed Something to display as label. Can be an MUtil_Html element
+     * @return mixed Something to display as label. Can be an \MUtil_Html_HtmlElement
      */
     public function getScreenLabel()
     {
-        return $this->_('(default Gems timeline show)');
+        return $this->_('Timeline show respondent');
     }
 
     /**
@@ -53,11 +53,11 @@ class GemsTimelineShow extends ShowScreenAbstract
     public function getSnippets()
     {
         return [
-            'Gems\\Snippets\\Generic\\ContentTitleSnippet',
-            'Gems\\Snippets\\Respondent\\MultiOrganizationTab',
-            'Gems\\Snippets\\Respondent\\RespondentDetailsSnippet',
-            'Gems\\Snippets\\Tracker\\AddTracksSnippet',
-            'Gems\\Snippets\\Respondent\\TrafficLightTokenSnippet',
+            'Generic\\ContentTitleSnippet',
+            'Respondent\\MultiOrganizationTab',
+            'Respondent\\RespondentDetailsSnippet',
+            'Tracker\\AddTracksSnippet',
+            'Respondent\\TrafficLightTokenSnippet',
         ];
     }
 }

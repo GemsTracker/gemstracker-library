@@ -21,7 +21,7 @@ use Gems\Screens\EditScreenAbstract;
  * @license    New BSD License
  * @since      Class available since version 1.8.2 Jan 20, 2017 3:52:09 PM
  */
-class GemsDefaultEdit extends EditScreenAbstract
+class GemsDefaultTabbedEdit extends EditScreenAbstract
 {
     /**
      *
@@ -48,11 +48,11 @@ class GemsDefaultEdit extends EditScreenAbstract
 
     /**
      *
-     * @return mixed Something to display as label. Can be an MUtil_Html element
+     * @return mixed Something to display as label. Can be an \MUtil_Html_HtmlElement
      */
     public function getScreenLabel()
     {
-        return $this->_('(default Gems respondent edit)');
+        return $this->_('(default Gems respondent tabbed edit)');
     }
 
     /**

@@ -186,7 +186,7 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends \Gems_Snippets_ModelFormSn
         $options = array('label' => $this->_('Save'),
                   'attribs' => array('class' => $this->buttonClass)
                 );
-        return $form->createElement('submit', 'save_button', $options);
+        return $form->createElement('submit', $this->saveButtonId , $options);
     }
 
     /**

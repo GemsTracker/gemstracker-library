@@ -131,7 +131,7 @@ class GemsEscort extends \MUtil_Application_Escort
         // FIRE BUG
         $firebug = $application->getOption('firebug');
         $this->_startFirebird = $firebug['log'];
-        
+
         // START SESSIE
         $sessionOptions['name']            = GEMS_PROJECT_NAME_UC . '_' . md5(APPLICATION_PATH) . '_SESSID';
         $sessionOptions['cookie_path']     = strtr(dirname($_SERVER['SCRIPT_NAME']), '\\', '/');
@@ -294,7 +294,7 @@ class GemsEscort extends \MUtil_Application_Escort
             //Add path to the prefix as APC is a SHARED cache
             $cachePrefix .= md5(APPLICATION_PATH);
             $cacheBackendOptions = array('cache_id_prefix' => $cachePrefix);
-            $cacheBackend = new \Gems\Cache\Backend\Apc($cacheBackendOptions);            
+            $cacheBackend = new \Gems\Cache\Backend\Apc($cacheBackendOptions);
             $exists = true;
         } else {
             $cacheBackend = 'File';
@@ -427,7 +427,7 @@ class GemsEscort extends \MUtil_Application_Escort
      *
      * Use $this->basepath to access afterwards
      *
-     * @return \Gems_Loader
+     * @return \Gems_Util_BasePath
      */
     protected function _initBasepath()
     {
@@ -1687,7 +1687,7 @@ class GemsEscort extends \MUtil_Application_Escort
             if ($host == \MUtil_String::stripToHost($request->getServer('HTTP_HOST'))) {
                 return true;
             }
-        }        
+        }
         if (isset($this->project)) {
             foreach ($this->project->getAllowedHosts() as $allowedHost) {
                 if ($host == \MUtil_String::stripToHost($allowedHost)) {

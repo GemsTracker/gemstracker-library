@@ -293,6 +293,10 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $rPage->addAction($this->_('Change organization'), 'pr.respondent.change-org', 'change-organization')
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
+        
+        $rPage->addAction(null, null, 'overview')
+                ->setNamedParameters($params)
+                ->setHiddenOrgId($orgId);
 
         $rPage->addPage($this->_('View survey'), 'pr.track.insert', 'track', 'view-survey', array('button_only' => true))
                     ->setNamedParameters($params)
@@ -777,6 +781,12 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
                 ));
         $this->addHiddenPrivilege('pr.staff.edit.all', $this->_(
                 'Grant right to edit staff members from all organizations.'
+                ));
+        $this->addHiddenPrivilege('pr.export.add-resp-nr', $this->_(
+                'Grant right to export respondent numbers with survey answers.'
+                ));
+        $this->addHiddenPrivilege('pr.export.gender-age', $this->_(
+                'Grant right to export gender and age information with survey answers.'
                 ));
         $this->addHiddenPrivilege('pr.staff.see.all', $this->_(
                 'Display all organizations in staff overview.'

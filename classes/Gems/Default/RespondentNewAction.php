@@ -180,6 +180,25 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      * @var \Gems_Loader
      */
     public $loader;
+    
+    /**
+     * The parameters used for the overview action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $overviewParameters = array();
+    
+    /**
+     * The snippets used for the overview action.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $overviewSnippets   = array('Respondent\\RespondentOverviewSnippet');
 
     /**
      * The parameters used for the show action
@@ -267,9 +286,20 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      */
     public function createAction()
     {
-        $group = $this->currentUser->getGroup();
-        if ($group && $this->enableScreens) {
-            $edit = $group->getRespondentEditScreen();
+        if ($this->enableScreens) {
+            $edit = false;
+            $org  = $this->getRespondent()->getOrganization();
+
+            if ($org) {
+                $edit = $org->getRespondentEditScreen();
+            }
+
+            if (! $edit) {
+                $group = $this->currentUser->getGroup();
+                if ($group) {
+                    $edit = $group->getRespondentEditScreen();
+                }
+            }
 
             if ($edit ) {
                 // All are arrays, so easy to set
@@ -335,9 +365,20 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      */
     public function editAction()
     {
-        $group = $this->currentUser->getGroup();
-        if ($group && $this->enableScreens) {
-            $edit = $group->getRespondentEditScreen();
+        if ($this->enableScreens) {
+            $edit = false;
+            $org  = $this->getRespondent()->getOrganization();
+
+            if ($org) {
+                $edit = $org->getRespondentEditScreen();
+            }
+
+            if (! $edit) {
+                $group = $this->currentUser->getGroup();
+                if ($group) {
+                    $edit = $group->getRespondentEditScreen();
+                }
+            }
 
             if ($edit ) {
                 // All are arrays, so easy to set
@@ -678,16 +719,41 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
 
         return $this;
     }
+    
+    /**
+     * Action for showing overview for a patient
+     */
+    public function overviewAction() {
+        if ($this->overviewSnippets) {
+            $params = $this->_processParameters($this->overviewParameters);
+
+            $menuList          = $this->menu->getMenuList();
+            $menuList->addParameterSources($this->request, $this->menu->getParameterSource());
+            $menuList->addCurrentParent($this->_('Cancel'));
+            $params['buttons'] = $menuList;
+            $this->addSnippets($this->overviewSnippets, $params);
+        }
+    }
 
     /**
      * Action for showing an item page with title
      */
     public function showAction()
     {
-        $group = $this->currentUser->getGroup();
-        if ($group && $this->enableScreens) {
-            $show = $group->getRespondentShowScreen();
+        if ($this->enableScreens) {
+            $show = false;
+            $org  = $this->getRespondent()->getOrganization();
+            if ($org) {
+                $show = $org->getRespondentShowScreen();
+            }
 
+            if (! $show) {
+                $group = $this->currentUser->getGroup();
+                if ($group) {
+                    $show = $group->getRespondentShowScreen();
+                }
+            }
+            
             if ($show) {
                 // All are arrays, so easy to set
                 $this->showParameters = $show->getParameters() + $this->showParameters;

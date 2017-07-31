@@ -1,12 +1,11 @@
 <?php
+
 /**
- * Short description of file
  *
  * @package    Gems
  * @subpackage JQuery
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**

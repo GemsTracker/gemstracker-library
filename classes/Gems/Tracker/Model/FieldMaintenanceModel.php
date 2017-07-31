@@ -237,7 +237,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
                 );
 
         $this->set('htmlUse',
-                'elementClass', 'Exhibitor',
+                'elementClass', 'Exhibitor', 'nohidden', true,
                 'value', \MUtil_Html::create('h3', $this->_('Field use'))
                 );
         $this->set('gtf_to_track_info', 'label', $this->_('In description'),
@@ -260,7 +260,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
                 );
 
         $this->set('htmlCalc',
-                'elementClass', 'None',
+                'elementClass', 'None', 'nohidden', true,
                 'value', \MUtil_Html::create('h3', $this->_('Field calculation'))
                 );
 

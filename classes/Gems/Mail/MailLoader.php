@@ -10,6 +10,8 @@
  * @version    $Id$
  */
 
+use MUtil\Translate\TranslateableTrait;
+
 /**
  *
  *
@@ -19,8 +21,10 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Mail_MailLoader extends \Gems_Loader_LoaderAbstract
+class Gems_Mail_MailLoader extends \Gems_Loader_TargetLoaderAbstract
 {
+    use TranslateableTrait;
+
     /**
      *
      * @var \Zend_Db_Adapter_Abstract
@@ -36,6 +40,18 @@ class Gems_Mail_MailLoader extends \Gems_Loader_LoaderAbstract
 
     /**
      *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
+    /**
+     *
+     * @var \Gems_Loader
+     */
+    protected $loader;
+
+    /**
+     *
      * @var array Define the mail target options
      */
     protected $mailTargets = array(
@@ -44,6 +60,28 @@ class Gems_Mail_MailLoader extends \Gems_Loader_LoaderAbstract
         'token' => 'Token',
         'staffPassword' => 'Password reset',
     );
+
+    /**
+     *
+     * @var \Gems_Project_ProjectSettings
+     */
+    protected $project;
+
+    /**
+     * Perform automatic job mail
+     */
+    public function getCronBatch($id = 'cron')
+    {
+        $batch = $this->loader->getTaskRunnerBatch($id);
+        $batch->setMessageLogFile($this->project->getCronLogfile());
+        $batch->minimalStepDurationMs = 3000; // 3 seconds max before sending feedback
+
+        if (! $batch->isLoaded()) {
+            $this->loadCronBatch($batch);
+        }
+
+        return $batch;
+    }
 
     /**
      * Return the mail elements helper class
@@ -62,7 +100,6 @@ class Gems_Mail_MailLoader extends \Gems_Loader_LoaderAbstract
      */
     public function getMailer($target = null, $id = false, $orgId = false)
     {
-
         if(isset($this->mailTargets[$target])) {
             $target = ucfirst($target);
             return $this->_loadClass($target.'Mailer', true, array($id, $orgId));
@@ -72,8 +109,9 @@ class Gems_Mail_MailLoader extends \Gems_Loader_LoaderAbstract
     }
 
     /**
-     * Get the possible mailtargets
-     * @return Array  mailtargets
+     * Get the possible mail targets
+     *
+     * @return Array  mail targets
      */
     public function getMailTargets()
     {
@@ -82,6 +120,7 @@ class Gems_Mail_MailLoader extends \Gems_Loader_LoaderAbstract
 
     /**
      * Get default mailform
+     *
      * @return \Gems_Mail_MailForm
      */
     public function getMailForm()
@@ -89,4 +128,18 @@ class Gems_Mail_MailLoader extends \Gems_Loader_LoaderAbstract
         return $this->_loadClass('MailForm');
     }
 
+    /**
+     * Perform the actions and load the tasks needed to start the cron batch
+     *
+     * @param \Gems_Task_TaskRunnerBatch $batch
+     */
+    protected function loadCronBatch(\Gems_Task_TaskRunnerBatch $batch)
+    {
+       $batch->addMessage(sprintf($this->_("Starting %s mail jobs"), $this->project->getName()));
+       $batch->addTask('Mail\\AddAllMailJobsTask');
+
+        // Check for unprocessed tokens, 
+       $tracker = $this->loader->getTracker();
+       $tracker->loadCompletedTokensBatch($batch, null, $this->currentUser->getUserId());
+   }
 }

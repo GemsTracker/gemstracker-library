@@ -7,7 +7,6 @@
  * @author     Jasper van Gestel <jappie@dse.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -21,6 +20,12 @@
  */
 class Gems_Mail_RespondentMailer extends \Gems_Mail_MailerAbstract
 {
+    /**
+     *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
     /**
      * @var \Gems_Loader
      */

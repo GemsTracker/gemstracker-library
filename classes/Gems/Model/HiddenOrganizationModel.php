@@ -46,7 +46,7 @@ class Gems_Model_HiddenOrganizationModel extends \Gems_Model_JoinModel
         parent::afterRegistry();
 
         $this->refreshGroupSettings();
-   }
+    }
 
     /**
      * Stores the fields that can be used for sorting or filtering in the

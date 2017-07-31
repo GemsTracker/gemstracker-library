@@ -73,7 +73,8 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
 
     /**
      * Project Object
-     * @var
+     *
+     * @var \Gems_Project_ProjectSettings
      */
     protected $project;
 
@@ -106,6 +107,10 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
      */
     protected $to = array();
 
+    /**
+     *
+     * @var \Gems_Util
+     */
     protected $util;
 
     /**
@@ -180,11 +185,12 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
      * @param  boolean $marked      Return the mailfields with their markers
      * @return Array                List of the mailfields and their values
      */
-    public function getMailFields($marked=true) {
+    public function getMailFields($marked=true)
+    {
         if ($marked) {
             if (! $this->markedMailFields) {
                 $this->markedMailFields = $this->markMailFields($this->mailFields);
-                }
+            }
             return $this->markedMailFields;
         } else {
             return $this->mailFields;

@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -130,7 +129,24 @@ class Gems_Default_SummaryAction extends \Gems_Controller_ModelSnippetActionAbst
         return $this->_('Summary');
     }
 
-    /**
+     /**
+     * Function to allow the creation of search defaults in code
+     *
+     * @see getSearchFilter()
+     *
+     * @return array
+     */
+    public function getSearchDefaults()
+    {
+        if (! isset($this->defaultSearchData['gto_id_organization'])) {
+            $orgs = $this->currentUser->getRespondentOrganizations();
+            $this->defaultSearchData['gto_id_organization'] = array_keys($orgs);
+        }
+
+        return parent::getSearchDefaults();
+    }
+
+   /**
      * Select creation function, allowes overruling in child classes
      *
      * @return \Zend_Db_Select
@@ -198,7 +214,7 @@ class Gems_Default_SummaryAction extends \Gems_Controller_ModelSnippetActionAbst
                 ->joinInner('gems__surveys', 'gro_id_survey = gsu_id_survey',
                         array('gsu_survey_name'))
                 ->joinInner('gems__groups', 'gsu_id_primary_group =  ggp_id_group', array())
-                ->joinLeft('gems__track_fields',  'gto_id_relationfield = gtf_id_field AND gtf_field_type = "relation"', array())
+                ->joinLeft('gems__track_fields', 'gto_id_relationfield = gtf_id_field AND gtf_field_type = "relation"', array())
                 ->group(array('gro_id_order', 'gro_round_description', 'gsu_survey_name', 'ggp_name'));
 
         return $select;

@@ -24,6 +24,7 @@ class ScreenLoader extends \Gems_Loader_TargetLoaderAbstract
     const RESPONDENT_BROWSE_SCREEN = 'Respondent\\Browse';
     const RESPONDENT_EDIT_SCREEN   = 'Respondent\\Edit';
     const RESPONDENT_SHOW_SCREEN   = 'Respondent\\Show';
+    const TOKEN_ASK_SCREEN         = 'Token\\Ask';
 
     /**
      * Each screen type must implement an screen class or interface derived
@@ -37,6 +38,7 @@ class ScreenLoader extends \Gems_Loader_TargetLoaderAbstract
         self::RESPONDENT_BROWSE_SCREEN => 'Gems\\Screens\\BrowseScreenInterface',
         self::RESPONDENT_EDIT_SCREEN   => 'Gems\\Screens\\EditScreenInterface',
         self::RESPONDENT_SHOW_SCREEN   => 'Gems\\Screens\\ShowScreenInterface',
+        self::TOKEN_ASK_SCREEN         => 'Gems\\Screens\\AskScreenInterface',
         ];
 
     /**
@@ -204,6 +206,15 @@ class ScreenLoader extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
+     * @return array screenname => string
+     */
+    public function listTokenAskScreens()
+    {
+        return $this->_listScreens(self::TOKEN_ASK_SCREEN);
+    }
+
+    /**
+     *
      * @param string $screenName Name of the screen class
      * @return \Gems\Screens\Respondent\Browse
      */
@@ -230,5 +241,15 @@ class ScreenLoader extends \Gems_Loader_TargetLoaderAbstract
     public function loadRespondentShowScreen($screenName)
     {
         return $this->_loadScreen($screenName, self::RESPONDENT_SHOW_SCREEN);
+    }
+
+    /**
+     *
+     * @param string $screenName Name of the screen class
+     * @return \Gems\Screens\AskScreenInterface
+     */
+    public function loadTokenAskScreen($screenName)
+    {
+        return $this->_loadScreen($screenName, self::TOKEN_ASK_SCREEN);
     }
 }

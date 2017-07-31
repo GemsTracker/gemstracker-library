@@ -90,7 +90,7 @@ class RedirectUntilGoodbyeSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAb
         $p = $html->pInfo()->spaced();
         if ($this->wasAnswered) {
             $p->append($this->_('Thanks for answering our questions.'));
-        } elseif (! $this->isValid) {
+        } elseif (! $this->token->isCurrentlyValid()) {
             if ($this->token->isExpired()) {
                 $this->addMessage($this->_('This survey has expired. You can no longer answer it.'));
             } else {

@@ -334,7 +334,7 @@ abstract class Gems_Menu_MenuAbstract
         $show->addPage($this->_('Preview'), 'pr.cron.job', 'comm-job', 'preview')
                 ->setModelParameters(1);
         $show->addPage($this->_('Run'), 'pr.cron.job', 'comm-job', 'execute')
-                ->setModelParameters(1);        
+                ->setModelParameters(1);
 
         $ajaxPage = $this->addPage($this->_('Round Selection'), 'pr.comm.job', 'comm-job', 'roundselect', array('visible' => false));
         $ajaxPage = $this->addPage($this->_('Sort jobs'), 'pr.comm.job.edit', 'comm-job', 'sort', array('visible' => false));
@@ -395,7 +395,7 @@ abstract class Gems_Menu_MenuAbstract
         $export = $this->addContainer($label);
 
         // EXPORT
-        $surveyExport = $export->addPage($this->_('Single survey answers'), 'pr.export', 'export', 'index');
+        $surveyExport = $export->addPage($this->_('Single survey answers'), 'pr.export', 'export-survey', 'index');
         $surveyExport->addAutofilterAction();
 
         $surveyExport->addExportAction();
@@ -407,7 +407,7 @@ abstract class Gems_Menu_MenuAbstract
         $batchExport = $export->addPage(
                 $this->_('Multiple surveys answers'),
                 'pr.export',
-                'export-surveys',
+                'export-multi-surveys',
                 'index'
                 );
 

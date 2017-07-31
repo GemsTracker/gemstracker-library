@@ -51,6 +51,24 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
         );
 
     /**
+     *
+     * @var \Gems\Screens\EditScreenInterface
+     */
+    protected $_respondentEditScreen;
+
+    /**
+     *
+     * @var \Gems\Screens\ShowScreenInterface
+     */
+    protected $_respondentShowScreen;
+
+    /**
+     *
+     * @var \Gems\Screens\AskScreenInterface
+     */
+    protected $_tokenAskScreen;
+
+    /**
      * Required
      *
      * @var \Gems_Util_BasePath
@@ -62,6 +80,12 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
+
+    /**
+     *
+     * @var \Gems_Loader
+     */
+    protected $loader;
 
     /**
      *
@@ -357,6 +381,38 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
     }
 
     /**
+     *
+     * @return \Gems\Screens\EditScreenInterface
+     */
+    public function getRespondentEditScreen()
+    {
+        if ($this->_respondentEditScreen || (! $this->_get('gor_respondent_edit'))) {
+            return $this->_respondentEditScreen;
+        }
+        $screenLoader = $this->loader->getScreenLoader();
+
+        $this->_respondentEditScreen = $screenLoader->loadRespondentEditScreen($this->_get('gor_respondent_edit'));
+
+        return $this->_respondentEditScreen;
+    }
+
+    /**
+     *
+     * @return \Gems\Screens\ShowScreenInterface
+     */
+    public function getRespondentShowScreen()
+    {
+        if ($this->_respondentShowScreen || (! $this->_get('gor_respondent_show'))) {
+            return $this->_respondentShowScreen;
+        }
+        $screenLoader = $this->loader->getScreenLoader();
+
+        $this->_respondentShowScreen = $screenLoader->loadRespondentShowScreen($this->_get('gor_respondent_show'));
+
+        return $this->_respondentShowScreen;
+    }
+
+    /**
      * Get the template id for the reset password mail
      *
      * @return  integer Template ID
@@ -383,6 +439,22 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
     public function getStyle()
     {
         return $this->_get('gor_style');
+    }
+
+    /**
+     *
+     * @return \Gems\Screens\AskScreenInterface
+     */
+    public function getTokenAskScreen()
+    {
+        if ($this->_tokenAskScreen || (! $this->_get('gor_token_ask'))) {
+            return $this->_tokenAskScreen;
+        }
+        $screenLoader = $this->loader->getScreenLoader();
+
+        $this->_tokenAskScreen = $screenLoader->loadTokenAskScreen($this->_get('gor_token_ask'));
+
+        return $this->_tokenAskScreen;
     }
 
     /**

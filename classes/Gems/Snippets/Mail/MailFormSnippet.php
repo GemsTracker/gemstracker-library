@@ -7,7 +7,6 @@
  * @author     Jasper van Gestel <jappie@dse.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -81,6 +80,10 @@ class Gems_Snippets_Mail_MailFormSnippet extends \MUtil_Snippets_ModelSnippetAbs
      */
     protected $menu;
 
+    /**
+     *
+     * @var \MUtil_Model_ModelAbstract
+     */
     protected $model;
 
     /**
@@ -500,7 +503,8 @@ class Gems_Snippets_Mail_MailFormSnippet extends \MUtil_Snippets_ModelSnippetAbs
         return true;
     }
 
-    protected function sendMail() {
+    protected function sendMail()
+    {
         $this->mailer->setFrom($this->fromOptions[$this->formData['from']]);
         $this->mailer->setSubject($this->formData['subject']);
         $this->mailer->setBody(htmlspecialchars_decode($this->formData['mailBody']), 'Bbcode');

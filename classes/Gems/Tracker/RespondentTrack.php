@@ -287,8 +287,18 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         return $output;
     }
 
-    private function _updateTrack(array $values, $userId)
+    /**
+     * Save the values if any have been changed
+     *
+     * @param array $values
+     * @param int $userId
+     * @return int
+     */
+    protected function _updateTrack(array $values, $userId  = null)
     {
+        if (null === $userId) {
+            $userId = $this->currentUser->getUserId();
+        }
         // \MUtil_Echo::track($values);
         if ($this->tracker->filterChangesOnly($this->_respTrackData, $values)) {
             $where = $this->db->quoteInto('gr2t_id_respondent_track = ?', $this->_respTrackId);
@@ -826,6 +836,9 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
 
     /**
      * Returns the field data for this respondent track id.
+     *
+     * The values of fields with a field code occur twice: once using the field
+     * id and once useing the code name.
      *
      * @return array of the existing field values for this respondent track
      */
@@ -1440,6 +1453,20 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         }
 
         return $this->_fieldData;
+    }
+
+    /**
+     * Set the mailability for this respondent track.
+     *
+     * @param boolean $mailable Should this respondent track be st to mailable
+     * @param int $userId The current user
+     * @return int 1 if the token has changed, 0 otherwise
+     */
+    public function setMailable($mailable)
+    {
+        $values['gr2t_mailable'] = $mailable ? 1 : 0;
+
+        return $this->_updateTrack($values, $this->currentUser->getUserId());
     }
 
     /**

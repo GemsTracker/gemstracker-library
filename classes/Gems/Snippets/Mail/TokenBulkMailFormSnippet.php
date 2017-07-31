@@ -7,7 +7,6 @@
  * @author     Jasper van Gestel <jappie@dse.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -29,9 +28,14 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends \Gems_Snippets_Mail_Ma
 
     protected $otherTokenData;
 
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     */
     public function afterRegistry()
     {
-
         //\MUtil_Echo::track($this->multipleTokenData);
         $this->identifier = $this->getSingleTokenData();
 
@@ -168,7 +172,8 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends \Gems_Snippets_Mail_Ma
         }
     }
 
-    protected function sendMail() {
+    protected function sendMail()
+    {
         $mails = 0;
         $updates = 0;
         $sentMailAddresses = array();

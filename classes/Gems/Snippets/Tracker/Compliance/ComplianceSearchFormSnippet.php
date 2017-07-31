@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -23,13 +22,13 @@ class Gems_Snippets_Tracker_Compliance_ComplianceSearchFormSnippet extends \Gems
 {
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems_User_User
      */
-    protected $loader;
-    
+    protected $currentUser;
+
     /**
      * Should the filler be shown?
-     * 
+     *
      * @var bool
      */
     protected $showFiller = true;
@@ -45,15 +44,16 @@ class Gems_Snippets_Tracker_Compliance_ComplianceSearchFormSnippet extends \Gems
      */
     protected function getAutoSearchElements(array $data)
     {
+        $orgs = $this->currentUser->getRespondentOrganizations();
+
         $elements[] = $this->_createSelectElement(
                 'gr2t_id_track',
-                $this->util->getTrackData()->getAllTracks(),
+                $this->util->getTrackData()->getTracksForOrgs($orgs),
                 $this->_('(select a track)')
                 );
 
-        $orgs = $this->loader->getCurrentUser()->getRespondentOrganizations();
         if (count($orgs) > 1) {
-            $elements[] = $this->_createSelectElement('gr2t_id_organization', $orgs, $this->_('(all organizations)'));
+            $elements[] = $this->_createMultiCheckBoxElements('gr2t_id_organization', $orgs);
         }
 
         $elements[] = null;

@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -94,6 +93,7 @@ class Gems_Default_ComplianceAction extends \Gems_Controller_ModelSnippetActionA
         $select->from('gems__rounds', array('gro_id_round', 'gro_id_order', 'gro_round_description', 'gro_icon_file'))
                 ->joinInner('gems__surveys', 'gro_id_survey = gsu_id_survey', array('gsu_survey_name'))
                 ->where('gro_id_track = ?', $filter['gr2t_id_track'])
+                ->where('gsu_active = 1')   //Only active surveys
                 ->order('gro_id_order');
 
         if (isset($filter['gsu_id_primary_group']) && $filter['gsu_id_primary_group']) {
@@ -158,6 +158,23 @@ class Gems_Default_ComplianceAction extends \Gems_Controller_ModelSnippetActionA
     public function getIndexTitle()
     {
         return $this->_('Compliance');
+    }
+
+    /**
+     * Function to allow the creation of search defaults in code
+     *
+     * @see getSearchFilter()
+     *
+     * @return array
+     */
+    public function getSearchDefaults()
+    {
+        if (! isset($this->defaultSearchData['gr2t_id_organization'])) {
+            $orgs = $this->currentUser->getRespondentOrganizations();
+            $this->defaultSearchData['gr2t_id_organization'] = array_keys($orgs);
+        }
+
+        return parent::getSearchDefaults();
     }
 
     /**

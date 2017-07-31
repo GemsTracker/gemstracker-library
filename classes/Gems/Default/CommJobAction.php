@@ -55,6 +55,11 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
      */
     protected $roundDescriptionQuery = "SELECT gro_round_description, gro_round_description FROM gems__rounds WHERE gro_id_track = ? GROUP BY gro_round_description";
 
+    /**
+     * The automatically filtered result
+     *
+     * @param $resetMvc When true only the filtered resulsts
+     */
     public function autofilterAction($resetMvc = true)
     {
         parent::autofilterAction($resetMvc);
@@ -147,10 +152,10 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
         // If you really want to see this information in the overview, uncomment for the shorter labels
         // $model->set('gcj_filter_days_between', 'label', $this->_('Interval'), 'validators[]', 'Digits');
         // $model->set('gcj_filter_max_reminders','label', $this->_('Max'), 'validators[]', 'Digits');
-        
-        $model->set('gcj_target', 'label', $this->_('Filler'), 
+
+        $model->set('gcj_target', 'label', $this->_('Filler'),
                     'default', 0, 'multiOptions', $translated->getBulkMailTargetOptions());
-                
+
         $anyTrack[''] = $this->_('(all tracks)');
         $model->set('gcj_id_track', 'label', $this->_('Track'),
                 'multiOptions', $anyTrack + $dbTracks->getAllTracks(),
@@ -188,14 +193,22 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
      */
     public function executeAction($preview = false)
     {
-        $jobId = $this->getParam(\MUtil_Model::REQUEST_ID);
+        $jobId = intval($this->getParam(\MUtil_Model::REQUEST_ID));
+
         $batch = $this->loader->getTaskRunnerBatch('commjob-execute-' . $jobId);
+        $batch->setMessageLogFile($this->project->getCronLogfile());
         $batch->minimalStepDurationMs = 3000; // 3 seconds max before sending feedback
 
         if (!$batch->isLoaded() && !is_null(($jobId))) {
+            $batch->addMessage(sprintf(
+                    $this->_('Starting single %s mail job %s'),
+                    $this->project->getName(),
+                    $jobId
+                    ));
+
             // Check for unprocessed tokens
             $tracker = $this->loader->getTracker();
-            $tracker->processCompletedTokens(null, $this->currentUser->getUserId());
+            $tracker->loadCompletedTokensBatch($batch, null, $this->currentUser->getUserId());
 
             // We could skip this, but a check before starting the batch is better
             $sql = $this->db->select()->from('gems__comm_jobs', array('gcj_id_job'))
@@ -215,11 +228,11 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
             if (count($messages)) {
                 $this->addMessage($messages, 'info');
             }
-            
+
             $this->_reroute(array('action'=>'show'));
         }
 
-        $this->_helper->BatchRunner($batch, $this->_('Execute single mail job'), $this->accesslog);
+        $this->_helper->BatchRunner($batch, sprintf($this->_('Executing single mail job %s'), $jobId), $this->accesslog);
     }
 
     /**
@@ -227,18 +240,11 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
      */
     public function executeAllAction()
     {
-        $batch = $this->loader->getTaskRunnerBatch('commjob-execute-all');
-        $batch->minimalStepDurationMs = 3000; // 3 seconds max before sending feedback
-
-        if (!$batch->isLoaded()) {
-            // Check for unprocessed tokens
-            $tracker = $this->loader->getTracker();
-            $tracker->processCompletedTokens(null, $this->currentUser->getUserId());
-
-            $batch->addTask('Mail\\AddAllMailJobsTask');
-        }
-
-        $this->_helper->BatchRunner($batch, $this->_('Execute all mail jobs'), $this->accesslog);
+        $this->_helper->BatchRunner(
+                $this->loader->getMailLoader()->getCronBatch('commjob-execute-all'),
+                $this->_('Execute all mail jobs'),
+                $this->accesslog
+                );
     }
 
     /**
@@ -313,7 +319,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
 
         $this->html->pInfo($this->_('With automatic mail jobs and a cron job on the server, mails can be sent without manual user action.'));
     }
-    
+
     /**
      * Execute a single mail job
      */

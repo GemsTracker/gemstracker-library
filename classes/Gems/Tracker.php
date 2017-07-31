@@ -839,6 +839,64 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
     }
 
     /**
+     * Checks the token table to see if there are any answered surveys to be processed and loads those tasks
+     *
+     * If the survey was started (and the token was forwarded to limesurvey) we need to check
+     * if is was completed. If so, we might want to check the track the survey is in to enable
+     * or disable future rounds
+     *
+     * Does not reflect changes to tracks or rounds.
+     *
+     * @param \Gems_Task_TaskRunnerBatch $batch The batch to load
+     * @param int $respondentId   Id of the respondent to check for or NULL
+     * @param int $userId         Id of the user who takes the action (for logging)
+     * @param int $orgId          Optional Id of the organization to check for
+     * @param boolean $quickCheck Check only tokens with recent gto_start_time's
+     * @return bool               Did we find new answers?
+     */
+    public function loadCompletedTokensBatch(\Gems_Task_TaskRunnerBatch $batch, $respondentId = null, $userId = null, $orgId = null, $quickCheck = false)
+    {
+        $userId = $this->_checkUserId($userId);
+
+        $tokenSelect = $this->getTokenSelect(array('gto_id_token'));
+        $tokenSelect->onlyActive($quickCheck)
+                    ->forRespondent($respondentId)
+                    ->andSurveys(array('gsu_surveyor_id'))
+                    ->forWhere('gsu_surveyor_active = 1')
+                    ->order('gsu_surveyor_id');
+
+        if (null !== $orgId) {
+            $tokenSelect->forWhere('gto_id_organization = ?', $orgId);
+        }
+
+        $statement = $tokenSelect->getSelect()->query();
+        //Process one row at a time to prevent out of memory errors for really big resultsets
+        $tokens = array();
+        $tokencount = 0;
+        $activeId = 0;
+        $maxCount = 100;    // Arbitrary value, change as needed
+        while ($tokenData = $statement->fetch()) {
+            $tokenId = $tokenData['gto_id_token'];
+            $surveyorId = $tokenData['gsu_surveyor_id'];
+            if ($activeId <> $surveyorId || count($tokens) > $maxCount) {
+                // Flush
+                if (count($tokens)> 0) {
+                    $batch->addTask('Tracker_BulkCheckTokenCompletion', $tokens, $userId);
+                }
+
+                $activeId = $surveyorId;
+                $tokens = array();
+            }
+            $tokens[] = $tokenId;
+
+            $batch->addToCounter('tokens');
+        }
+        if (count($tokens)> 0) {
+            $batch->addTask('Tracker_BulkCheckTokenCompletion', $tokens, $userId);
+        }
+    }
+
+    /**
      * Checks the token table to see if there are any answered surveys to be processed
      *
      * If the survey was started (and the token was forwarded to limesurvey) we need to check
@@ -858,43 +916,7 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
         $batch = $this->loader->getTaskRunnerBatch('completed');
 
         if (! $batch->isLoaded()) {
-            $userId = $this->_checkUserId($userId);
-            $tokenSelect = $this->getTokenSelect(array('gto_id_token'));
-            $tokenSelect->onlyActive($quickCheck)
-                        ->forRespondent($respondentId)
-                        ->andSurveys(array('gsu_surveyor_id'))
-                        ->forWhere('gsu_surveyor_active = 1')
-                        ->order('gsu_surveyor_id');
-
-            if (null !== $orgId) {
-                $tokenSelect->forWhere('gto_id_organization = ?', $orgId);
-            }
-
-            $statement = $tokenSelect->getSelect()->query();
-            //Process one row at a time to prevent out of memory errors for really big resultsets
-            $tokens = array();
-            $tokencount = 0;
-            $activeId = 0;
-            $maxCount = 100;    // Arbitrary value, change as needed
-            while ($tokenData = $statement->fetch()) {
-                $tokenId = $tokenData['gto_id_token'];
-                $surveyorId = $tokenData['gsu_surveyor_id'];
-                if ($activeId <> $surveyorId || count($tokens) > $maxCount) {
-                    // Flush
-                    if (count($tokens)> 0) {
-                        $batch->addTask('Tracker_BulkCheckTokenCompletion', $tokens, $userId);
-                    }
-
-                    $activeId = $surveyorId;
-                    $tokens = array();
-                }
-                $tokens[] = $tokenId;
-
-                $batch->addToCounter('tokens');
-            }
-            if (count($tokens)> 0) {
-                $batch->addTask('Tracker_BulkCheckTokenCompletion', $tokens, $userId);
-            }
+            $this->loadCompletedTokensBatch($batch, $respondentId, $userId, $orgId, $quickCheck);
         }
 
         $batch->runAll();

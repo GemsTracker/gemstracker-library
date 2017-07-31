@@ -7,7 +7,6 @@
  * @author     Jasper van Gestel <jappie@dse.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -44,6 +43,7 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
      * @var \Gems_Tracker_Token
      */
 	protected $token;
+
 	protected $tokenIdentifier;
 
     /**
@@ -51,13 +51,6 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
      * @var \Zend_Translate $translate
      */
 	protected $translate;
-
-    /**
-     *
-     * @var \Gems_User;
-     */
-    protected $user;
-
 
 	public function __construct($tokenIdentifier)
 	{
@@ -84,7 +77,7 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
         }
 
         parent::afterRegistry();
-        
+
         if ($this->token && $this->token->hasRelation() && $relation = $this->token->getRelation()) {
             // If we have a token with a relation, remove the respondent and use relation in to field
             $this->to = array();
@@ -183,7 +176,8 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
     protected function loadMailFields()
     {
         parent::loadMailFields();
-        $this->mailFields = $this->tokenMailFields() + $this->mailFields;   // Prefer out fields over the ones from the super class
+
+        $this->mailFields = $this->tokenMailFields() + $this->mailFields;   // Prefer our fields over the ones from the super class
     }
 
     /**
@@ -229,7 +223,8 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
      * Sets the ID of the user who sent the mail
      * @param [type] $userId [description]
      */
-    public function setBy($userId) {
+    public function setBy($userId)
+    {
         $this->by = $userId;
     }
 
@@ -297,7 +292,7 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
                 }
                 $result[$key] = $data;
             }
-            
+
             if ($this->token->hasRelation()) {
                 $allFields = $this->getMailFields(false);
                 // Set about to patient name

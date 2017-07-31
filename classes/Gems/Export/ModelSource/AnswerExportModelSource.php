@@ -7,7 +7,6 @@
  * @author     Jasper van Gestel <jvangestel@gmail.com>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: AnswerExportModelSource.php 2451 2015-03-09 18:03:25Z matijsdejong $
  */
 
 /**
@@ -22,11 +21,28 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
 {
     /**
      *
+     * @var \Gems_Model_RespondentModel
+     */
+    private $_respModel;
+
+    /**
+     *
      * @var \Gems_User_User
      */
     protected $currentUser;
 
+    /**
+     * Current filter
+     *
+     * @var array
+     */
     protected $filter;
+
+    /**
+     *
+     * @var \Gems_Form
+     */
+    protected $form;
 
     /**
      * @var \Gems_Loader
@@ -38,7 +54,186 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
      */
 	protected $locale;
 
+    /**
+     *
+     * @var \MUtil_Model_ModelAbstract
+     */
     protected $model;
+
+    /**
+     * Extensible function for added project specific data extensions
+     *
+     * @param \MUtil_Model_ModelAbstract $model
+     * @param array $data
+     * @param array $prefixes
+     */
+    protected function _addExtraDataToExportModel(\MUtil_Model_ModelAbstract $model, array $data, array &$prefixes)
+    {
+        $this->_addExtraRespondentNumber($model, $data, $prefixes);
+        $this->_addExtraGenderAge($model, $data, $prefixes);
+        $this->_addExtraTrackFields($model, $data, $prefixes);
+    }
+
+    /**
+     *
+     * @param \MUtil_Model_ModelAbstract $model
+     * @param array $data
+     * @param array $prefixes
+     */
+    protected function _addExtraGenderAge(\MUtil_Model_ModelAbstract $model, array $data, array &$prefixes)
+    {
+        if ($this->currentUser->hasPrivilege('pr.export.gender-age')) {
+            $checkTable = false;
+            if (isset($data['export_resp_gender']) && $data['export_resp_gender']) {
+                $model->set('grs_gender', 'label', $this->getRespondentModel()->get('grs_gender', 'label'),
+                        'type', \MUtil_Model::TYPE_STRING
+                        );
+
+                $prefixes['P'][] = 'grs_gender';
+                $checkTable = true;
+            }
+            if (isset($data['export_birth_year']) && $data['export_birth_year']) {
+                if (! $model->has('grs_birthyear')) {
+                    $model->addColumn('YEAR(grs_birthday)', 'grs_birthyear');
+                }
+                $model->set('grs_birthyear', 'label', $this->_('Birth year'), 'type', \MUtil_Model::TYPE_NUMERIC);
+
+                $prefixes['P'][] = 'grs_birthyear';
+                $checkTable = true;
+            }
+            if (isset($data['export_birth_month']) && $data['export_birth_month']) {
+                if (! $model->has('grs_birthmonth')) {
+                    $model->addColumn('MONTH(grs_birthday)', 'grs_birthmonth');
+                }
+                $model->set('grs_birthmonth', 'label', $this->_('Birth month'), 'type', \MUtil_Model::TYPE_NUMERIC);
+
+                $prefixes['P'][] = 'grs_birthmonth';
+                $checkTable = true;
+            }
+
+            if ($checkTable) {
+                if (!$model->checkJoinExists('gems__respondents.grs_id_user', 'gems__tokens.gto_id_respondent')) {
+                    $model->addTable('gems__respondents', array(
+                        'gems__respondents.grs_id_user' => 'gems__tokens.gto_id_respondent',
+                        ), 'grs');
+                }
+            }
+        }
+    }
+
+    /**
+     *
+     * @param \MUtil_Model_ModelAbstract $model
+     * @param array $data
+     * @param array $prefixes
+     */
+    protected function _addExtraRespondentNumber(\MUtil_Model_ModelAbstract $model, array $data, array &$prefixes)
+    {
+        if ($this->currentUser->hasPrivilege('pr.export.add-resp-nr')) {
+            if (isset($data['export_resp_nr']) && $data['export_resp_nr']) {
+                $model->set('gr2o_patient_nr', 'label', $this->getRespondentModel()->get('gr2o_patient_nr', 'label'),
+                        'type', \MUtil_Model::TYPE_STRING
+                        );
+
+                $prefixes['P'][] = 'gr2o_patient_nr';
+            }
+        }
+    }
+
+    /**
+     *
+     * @param \MUtil_Model_ModelAbstract $model
+     * @param array $data
+     * @param array $prefixes
+     */
+    protected function _addExtraTrackFields(\MUtil_Model_ModelAbstract $model, array $data, array &$prefixes)
+    {
+        if (isset($data['gto_id_track']) && $data['gto_id_track'] && isset($data['add_track_fields']) && $data['add_track_fields'] == 1) {
+            $engine = $this->loader->getTracker()->getTrackEngine($data['gto_id_track']);
+            $engine->addFieldsToModel($model, false, 'gto_id_respondent_track');
+
+            // Add relation fields
+            $model->set('gto_id_relation', 'label', $this->_('Relation ID'), 'type', \MUtil_Model::TYPE_NUMERIC);
+            $model->set('gtf_field_name', 'label', $this->_('Relation'), 'type', \MUtil_Model::TYPE_STRING);
+
+            $prefixes['TF'] = array_diff($model->getItemNames(), $prefixes['A'], $prefixes['D'], $prefixes['P']);
+        }
+    }
+
+    /**
+     * Creates a \Zend_Form_Element_Select
+     *
+     * If $options is a string it is assumed to contain an SQL statement.
+     *
+     * @param string $name  Name of the element
+     * @param string $label Label for element
+     * @param string $description Optional description
+     * @return \Zend_Form_Element_Checkbox
+     */
+    protected function _createCheckboxElement($name, $label, $description = null)
+    {
+        if ($name && $label) {
+            $element = $this->form->createElement('checkbox', $name);
+            $element->setLabel($label);
+            $element->getDecorator('Label')->setOption('placement', \Zend_Form_Decorator_Abstract::APPEND);
+
+            if ($description) {
+                $element->setDescription($description);
+                $element->setAttrib('title', $description);
+            }
+
+            return $element;
+        }
+    }
+
+	/**
+	 * Get form elements for the specific Export
+     *
+	 * @param  \Gems_Form $form existing form type
+	 * @param  array data existing options set in the form
+	 * @return array of form elements
+	 */
+	public function getExtraDataFormElements(\Gems_Form $form, $data)
+	{
+        $this->form = $form;
+        $elements   = [];
+
+        if (isset($data['gto_id_track']) && $data['gto_id_track']) {
+            $elements['add_track_fields'] = $this->_createCheckboxElement(
+                    'add_track_fields',
+                    $this->_('Track fields'),
+                    $this->_('Add track fields to export')
+                    );
+        }
+        if ($this->currentUser->hasPrivilege('pr.export.add-resp-nr')) {
+            $elements['export_resp_nr'] = $this->_createCheckboxElement(
+                    'export_resp_nr',
+                    $this->getRespondentModel()->get('gr2o_patient_nr', 'label'),
+                    $this->_('Add respondent nr to export')
+                    );
+        }
+        if ($this->currentUser->hasPrivilege('pr.export.gender-age')) {
+            $elements['export_resp_gender'] = $this->_createCheckboxElement(
+                    'export_resp_gender',
+                    $this->_('Respondent gender'),
+                    $this->_('Add respondent gender to export')
+                    );
+
+            $elements['export_birth_year'] = $this->_createCheckboxElement(
+                    'export_birth_year',
+                    $this->_('Respondent birth year'),
+                    $this->_('Add respondent birth year to export')
+                    );
+
+            $elements['export_birth_month'] = $this->_createCheckboxElement(
+                    'export_birth_month',
+                    $this->_('Respondent birth month'),
+                    $this->_('Add respondent birth month to export')
+                    );
+        }
+
+        return $elements;
+	}
 
     /**
      * Get the model to export
@@ -49,13 +244,12 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
 	public function getModel($filter = array(), $data = array())
 	{
         if ($filter !== $this->filter || !$this->model) {
-
             $this->filter = $filter;
 
     		$surveyId = $filter['gto_id_survey'];
-            $language    = $this->locale->getLanguage();
+            $language = $this->locale->getLanguage();
 
-            $survey      = $this->loader->getTracker()->getSurvey($surveyId);
+            $survey   = $this->loader->getTracker()->getSurvey($surveyId);
             $model = $survey->getAnswerModel($language);
 
             $source = $survey->getSource();
@@ -103,7 +297,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
                 $model->set($attribute, 'label', $attribute);
             }
 
-            if (!$model->checkJoinExists('gems__respondent2org.gr2o_id_user', 'gems__tokens.gto_id_respondent')) {                        
+            if (!$model->checkJoinExists('gems__respondent2org.gr2o_id_user', 'gems__tokens.gto_id_respondent')) {
                 $model->addTable('gems__respondent2org', array(
                     'gems__respondent2org.gr2o_id_user' => 'gems__tokens.gto_id_respondent',
                     'gems__respondent2org.gr2o_id_organization' => 'gems__tokens.gto_id_organization'), 'gr2o'
@@ -122,8 +316,8 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
 
             $model->set('respondentid',        'label', $this->_('Respondent ID'), 'type', \MUtil_Model::TYPE_NUMERIC);
             $model->set('organizationid',      'label', $this->_('Organization'), 'type', \MUtil_Model::TYPE_NUMERIC,
-                                                    'multiOptions', $this->currentUser->getAllowedOrganizations()
-            );
+                    'multiOptions', $this->currentUser->getAllowedOrganizations()
+                    );
             // Add Consent
             $model->set('consentcode',              'label', $this->_('Consent'), 'type', \MUtil_Model::TYPE_STRING);
             $model->set('resptrackid',              'label', $this->_('Respondent track ID'), 'type', \MUtil_Model::TYPE_NUMERIC);
@@ -141,19 +335,9 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
 
             $model->set('gto_id_token',                       'label', $this->_('Token'));
 
-            $prefixes['D'] = array_diff($model->getItemNames(), $prefixes['A']);
+            $prefixes['D'] = array_diff($model->getItemNames(), $prefixes['A'], $model->getItemsFor('table', 'gems__respondent2org'));
 
-            if (isset($data['gto_id_track']) && $data['gto_id_track'] && isset($data['add_track_fields']) && $data['add_track_fields'] == 1) {
-            	$trackId = $filter['gto_id_track'];
-            	$engine = $this->loader->getTracker()->getTrackEngine($trackId);
-            	$engine->addFieldsToModel($model, false, 'gto_id_respondent_track');
-
-                // Add relation fields
-                $model->set('gto_id_relation', 'label', $this->_('Relation ID'), 'type', \MUtil_Model::TYPE_NUMERIC);
-                $model->set('gtf_field_name', 'label', $this->_('Relation'), 'type', \MUtil_Model::TYPE_STRING);
-                
-                $prefixes['TF'] = array_diff($model->getItemNames(), $prefixes['A'], $prefixes['D']);
-            }
+            $this->_addExtraDataToExportModel($model, $data, $prefixes);
 
             if (isset($data['column_identifiers']) && $data['column_identifiers'] == 1) {
 
@@ -166,7 +350,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
                 }
             }
             $this->model = $model;
-            
+
             // Exclude external fields from sorting
             foreach($this->model->getItemsUsed() as $item) {
                 if (!$this->model->get($item, 'table', 'column_expression')) {
@@ -176,5 +360,18 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
         }
 
 		return $this->model;
-}
+    }
+
+    /**
+     *
+     * @return \Gems_Model_RespondentModel
+     */
+    protected function getRespondentModel()
+    {
+        if (! $this->_respModel) {
+            $this->_respModel = $this->loader->getModels()->getRespondentModel(true);
+        }
+
+        return $this->_respModel;
+    }
 }

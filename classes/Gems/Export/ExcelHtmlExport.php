@@ -47,7 +47,7 @@ class ExcelHtmlExport extends ExportAbstract
                     'formatAnswer' => $this->_('Format answers')
                 ))
                 ->setBelongsTo($this->getName())
-                ->setSeparator('');
+                ->setSeparator(' ');
         $elements['format'] = $element;
 
         return $elements;
@@ -170,7 +170,7 @@ class ExcelHtmlExport extends ExportAbstract
             $result = null;
             if (array_key_exists($columnName, $exportRow)) {
                 $result = $exportRow[$columnName];
-            }            
+            }
             $type = $this->model->get($columnName, 'type');
             switch ($type) {
                 case \MUtil_Model::TYPE_DATE:
