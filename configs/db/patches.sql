@@ -1304,5 +1304,17 @@ ALTER TABLE gems__track_fields ADD
     gtf_field_default varchar(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null
     AFTER gtf_field_values;
 
--- PATCH: Add fielfd for filtering mail jobs on target
+-- PATCH: Add field for filtering mail jobs on target
 ALTER TABLE gems__comm_jobs ADD gcj_target TINYINT(1) NOT NULL DEFAULT '0' AFTER `gcj_filter_max_reminders`;
+
+-- PATCH: Add communication template for Radius accounts
+INSERT INTO gems__comm_templates (gct_id_template, gct_name, gct_target, gct_code, gct_changed, gct_changed_by, gct_created, gct_created_by)
+    VALUES
+    (null, 'Linked account created', 'staff', 'linkedAccountCreated', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
+SET @lastid = LAST_INSERT_ID();
+INSERT INTO gems__comm_template_translations (gctt_id_template, gctt_lang, gctt_subject, gctt_body)
+    VALUES
+    (@lastid, 'en', 'New account created', 'A new account has been created for the [b]{organization}[/b] website [b]{project}[/b].
+To log in with your organization account {login_name} please click on this link:\r\n{login_url}'),
+    (@lastid, 'nl', 'Nieuw account aangemaakt', 'Er is voor u een nieuw account aangemaakt voor de [b]{organization}[/b] website [b]{project}[/b].
+Om in te loggen met uw organisatie account {login_name} klikt u op onderstaande link:\r\n{login_url}');
