@@ -32,4 +32,8 @@ Click on [url={token_url}]this link[/url] to start or go to [url]{site_ask_url}[
     (18, 'en', 'New account created', 'A new account has been created for the [b]{organization}[/b] site [b]{project}[/b].
 To set your password and activate the account please click on this link:\n{reset_url}'),
     (18, 'nl', 'Nieuw account aangemaakt', 'Een nieuw account is aangemaakt voor de [b]{organization}[/b] site [b]{project}[/b].
-Om uw wachtwoord te kiezen en uw account te activeren, klik op deze link:\n{reset_url}');
+Om uw wachtwoord te kiezen en uw account te activeren, klik op deze link:\n{reset_url}'),
+    (19, 'en', 'New account created', 'A new account has been created for the [b]{organization}[/b] website [b]{project}[/b].
+To log in with your organization account {login_name} please click on this link:\r\n{login_url}'),
+    (19, 'nl', 'Nieuw account aangemaakt', 'Er is voor u een nieuw account aangemaakt voor de [b]{organization}[/b] website [b]{project}[/b].
+Om in te loggen met uw organisatie account {login_name} klikt u op onderstaande link:\r\n{login_url}');
