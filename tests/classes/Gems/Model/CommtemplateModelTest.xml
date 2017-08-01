@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<dataset>
+    <gems__comm_templates gct_id_template="1" gct_name = "abc" gct_target="Staff" gct_code="code" gct_changed="2000-01-15" gct_changed_by="1" gct_created="2000-01-15" gct_created_by="1"/>
+    <gems__comm_template_translations gctt_id_template = "1" gctt_lang = "en" gctt_subject = "subject_en" gctt_body = "body_en"/>
+    <gems__comm_template_translations gctt_id_template = "1" gctt_lang = "nl" gctt_subject = "subject_nl" gctt_body = "body_nl"/>
+</dataset>
