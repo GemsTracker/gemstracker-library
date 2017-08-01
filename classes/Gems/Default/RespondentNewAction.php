@@ -180,7 +180,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      * @var \Gems_Loader
      */
     public $loader;
-    
+
     /**
      * The parameters used for the overview action.
      *
@@ -192,7 +192,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      * @var array Mixed key => value array for snippet initialization
      */
     protected $overviewParameters = array();
-    
+
     /**
      * The snippets used for the overview action.
      *
@@ -237,6 +237,16 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      * @var \MUtil_Registry_SourceInterface
      */
     public $source;
+
+    /**
+     * The actions that should result in the survey return being set.
+     *
+     * @var array
+     */
+    protected $tokenReturnActions = array(
+        'index',
+        'show',
+    );
 
     /**
      * The automatically filtered result
@@ -694,8 +704,12 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
     {
         parent::init();
 
-        // Tell the system where to return to after a survey has been taken
-        $this->currentUser->setSurveyReturn($this->getRequest());
+        $request = $this->getRequest();
+
+        if (in_array($request->getActionName(), $this->tokenReturnActions)) {
+            // Tell the system where to return to after a survey has been taken
+            $this->currentUser->setSurveyReturn($request);
+        }
     }
 
     /**
@@ -719,7 +733,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
 
         return $this;
     }
-    
+
     /**
      * Action for showing overview for a patient
      */
@@ -753,7 +767,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
                     $show = $group->getRespondentShowScreen();
                 }
             }
-            
+
             if ($show) {
                 // All are arrays, so easy to set
                 $this->showParameters = $show->getParameters() + $this->showParameters;
