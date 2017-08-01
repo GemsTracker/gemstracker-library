@@ -82,11 +82,11 @@ class Gems_User_OldStaffUserDefinition extends \Gems_User_UserDefinitionAbstract
     }
 
     /**
-     * Returns an initialized \Zend_Auth_Adapter_Interface
+     * Returns an initialized Zend\Authentication\Adapter\AdapterInterface
      *
      * @param \Gems_User_User $user
      * @param string $password
-     * @return \Zend_Auth_Adapter_Interface
+     * @return Zend\Authentication\Adapter\AdapterInterface
      */
     public function getAuthAdapter(\Gems_User_User $user, $password)
     {

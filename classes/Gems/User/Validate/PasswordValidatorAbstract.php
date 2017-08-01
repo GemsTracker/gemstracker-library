@@ -10,6 +10,8 @@
  * @version    $Id$
  */
 
+use Zend\Authentication\Result;
+
 /**
  * Performs replacement of standard login failure texts
  *
@@ -23,7 +25,7 @@ abstract class Gems_User_Validate_PasswordValidatorAbstract implements \Zend_Val
 {
     /**
      *
-     * @var \Zend_Auth_Result
+     * @var Zend\Authentication\Result
      */
     private $_authResult = null;
 
@@ -85,10 +87,10 @@ abstract class Gems_User_Validate_PasswordValidatorAbstract implements \Zend_Val
     /**
      * Set the result for this validator
      *
-     * @param \Zend_Auth_Result $result
+     * @param Zend\Authentication\Result $result
      * @return boolean True when valid
      */
-    protected function setAuthResult(\Zend_Auth_Result $result)
+    protected function setAuthResult(Result $result)
     {
         $this->_authResult = $result;
 
