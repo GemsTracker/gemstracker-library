@@ -44,10 +44,11 @@ interface Gems_User_UserDefinitionInterface
     public function canSetPassword(\Gems_User_User $user = null);
 
     /**
-     * Returns an initialized \Zend_Auth_Adapter_Interface
+     * Returns an initialized Zend\Authentication\Adapter\AdapterInterface
      *
      * @param \Gems_User_User $user
-     * @return \Zend_Auth_Adapter_Interface
+     * @param string $password
+     * @return Zend\Authentication\Adapter\AdapterInterface
      */
     public function getAuthAdapter(\Gems_User_User $user, $password);
 

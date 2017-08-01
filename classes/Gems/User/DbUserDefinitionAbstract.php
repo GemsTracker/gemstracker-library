@@ -10,6 +10,12 @@
  * @version    $Id$
  */
 
+use Zend\Authentication\Adapter\AdapterInterface;
+use Zend\Authentication\Adapter\DbTable\CredentialTreatmentAdapter;
+use Zend\Authentication\Adapter\DbTable\CallbackCheckAdapter;
+use Zend\Db\Adapter\Adapter;
+use Zend\Db\Sql\Sql;
+
 /**
  * A standard, database stored user as of version 1.5.
  *
@@ -22,10 +28,22 @@
 abstract class Gems_User_DbUserDefinitionAbstract extends \Gems_User_UserDefinitionAbstract
 {
     /**
+     * If passwords also need to be checked with the old hash method
+     * @var boolean
+     */
+    protected $checkOldHashes = true;
+
+    /**
      *
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
+
+    /**
+     *
+     * @var  int The hash algorithm used for password_hash
+     */
+    protected $hashAlgorithm = PASSWORD_DEFAULT;
 
     /**
      * The time period in hours a reset key is valid for this definition.
@@ -81,27 +99,138 @@ abstract class Gems_User_DbUserDefinitionAbstract extends \Gems_User_UserDefinit
     }
 
     /**
-     * Returns an initialized \Zend_Auth_Adapter_Interface
+     * Checks if the current users hashed password uses the current hash algorithm. 
+     * If not it rehashes and saves the current password
+     * @param  \Gems_User_User  $user     Current logged in user
+     * @param  integer          $password Raw password
+     * @return boolean          password has been rehashed
+     */
+    public function checkRehash(\Gems_User_User $user, $password) {
+        $this->getNewDb();
+
+        $model = new \MUtil_Model_TableModel('gems__user_passwords');
+
+        $filter = [
+            'gup_id_user' => $user->getUserLoginId()
+        ];
+
+        $row = $model->loadFirst($filter);
+
+        if ($row && password_needs_rehash($row['gup_password'], $this->getHashAlgorithm(), $this->getHashOptions())) {
+            $data['gup_id_user']         = $user->getUserLoginId();
+            $data['gup_password'] = $this->hashPassword($password);
+
+            $model = new \MUtil_Model_TableModel('gems__user_passwords');
+            \Gems_Model::setChangeFieldsByPrefix($model, 'gup', $user->getUserId());
+
+            $model->save($data);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns an initialized Zend\Authentication\Adapter\AdapterInterface
      *
      * @param \Gems_User_User $user
      * @param string $password
-     * @return \Zend_Auth_Adapter_Interface
+     * @return Zend\Authentication\Adapter\AdapterInterface
      */
     public function getAuthAdapter(\Gems_User_User $user, $password)
     {
-        $adapter = new \Zend_Auth_Adapter_DbTable($this->db, 'gems__user_passwords', 'gul_login', 'gup_password');
+        $this->getNewDb();
 
-        $pwd_hash = $this->hashPassword($password);
+        $credentialValidationCallback = $this->getCredentialValidationCallback();
+
+        $adapter = new CallbackCheckAdapter($this->db, 'gems__user_passwords', 'gul_login', 'gup_password', $credentialValidationCallback);
 
         $select = $adapter->getDbSelect();
         $select->join('gems__user_logins', 'gup_id_user = gul_id_user', array())
                ->where('gul_can_login = 1')
-               ->where('gul_id_organization = ?', $user->getBaseOrganizationId());
+               ->where(array('gul_id_organization ' => $user->getBaseOrganizationId()));
 
         $adapter->setIdentity($user->getLoginName())
-                ->setCredential($pwd_hash);
+                ->setCredential($password);
 
         return $adapter;
+    }
+
+    /**
+     * get the credential validation callback function for the callback check adapter
+     * @return callback Function
+     */
+    public function getCredentialValidationCallback()
+    {
+        if ($this->checkOldHashes) {
+            $credentialValidationCallback = function($dbCredential, $requestCredential) {
+                if (password_verify($requestCredential, $dbCredential)) {
+                    return true;
+                } elseif ($dbCredential == $this->hashOldPassword($requestCredential)) {
+                    return true;
+                }
+
+                return false;
+            };
+        } else {
+            $credentialValidationCallback = function($dbCredential, $requestCredential) {
+                if (password_verify($requestCredential, $dbCredential)) {
+                    return true;
+                }
+
+                return false;
+            };
+        }
+
+        return $credentialValidationCallback;
+    }
+
+    /**
+     * Get the current password hash algorithm 
+     * Currently defaults to BCRYPT in PHP 5.5-7.2
+     * 
+     * @return string 
+     */
+    public function getHashAlgorithm()
+    {
+        return $this->hashAlgorithm;
+    }
+
+    /**
+     * Get the current hash options
+     * Default: 
+     * cost => 10  // higher numbers will make the hash slower but stronger.
+     * 
+     * @return array Current password hash options
+     */
+    public function getHashOptions()
+    {
+        return [];
+    }
+
+    /**
+     * Create a Zend DB 2 Adapter needed for the Zend\Authentication library
+     * @return Zend\Db\Adapter\Adapter Zend Db Adapter
+     */
+    protected function getNewDb()
+    {
+        if (!$this->db instanceof Adapter) {
+            $config = Zend_Controller_Front::getInstance()->getParam('bootstrap');
+            $resources = $config->getOption('resources');
+            $dbConfig = array(
+                'driver'   => $resources['db']['adapter'],
+                'hostname' => $resources['db']['params']['host'],
+                'database' => $resources['db']['params']['dbname'],
+                'username' => $resources['db']['params']['username'],
+                'password' => $resources['db']['params']['password'],
+                'charset'  => $resources['db']['params']['charset'],
+            );
+
+            $this->db = new Adapter($dbConfig);
+        }
+
+        return $this->db;
     }
 
     /**
@@ -128,7 +257,7 @@ abstract class Gems_User_DbUserDefinitionAbstract extends \Gems_User_UserDefinit
             // Keep using the key.
             $data['gup_reset_key'] = $row['gup_reset_key'];
         } else {
-            $data['gup_reset_key'] = $this->hashPassword(time() . $user->getEmailAddress());
+            $data['gup_reset_key'] = hash('sha256', time() . $user->getEmailAddress());
         }
         $data['gup_reset_requested'] = new \MUtil_Db_Expr_CurrentTimestamp();
 
@@ -140,7 +269,7 @@ abstract class Gems_User_DbUserDefinitionAbstract extends \Gems_User_UserDefinit
                 return $data['gup_reset_key'];
 
             } catch (\Zend_Db_Exception $zde) {
-                $data['gup_reset_key'] = $this->hashPassword(time() . $user->getEmailAddress());
+                $data['gup_reset_key'] = hash('sha256', time() . $user->getEmailAddress());
             }
         }
     }
@@ -197,6 +326,17 @@ abstract class Gems_User_DbUserDefinitionAbstract extends \Gems_User_UserDefinit
      * @return string
      */
     protected function hashPassword($password)
+    {
+        return password_hash($password, $this->getHashAlgorithm(), $this->getHashOptions());
+    }
+
+    /**
+     * Allow overruling of password hashing.
+     *
+     * @param string $password
+     * @return string
+     */
+    protected function hashOldPassword($password)
     {
         return $this->project->getValueHash($password);
     }
