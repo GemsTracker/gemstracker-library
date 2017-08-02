@@ -31,7 +31,7 @@ abstract class Gems_User_DbUserDefinitionAbstract extends \Gems_User_UserDefinit
      * If passwords also need to be checked with the old hash method
      * @var boolean
      */
-    protected $checkOldHashes = true;
+    public $checkOldHashes = true;
 
     /**
      *
@@ -319,7 +319,7 @@ abstract class Gems_User_DbUserDefinitionAbstract extends \Gems_User_UserDefinit
      * @param string $password
      * @return string
      */
-    protected function hashPassword($password)
+    public function hashPassword($password)
     {
         return password_hash($password, $this->getHashAlgorithm(), $this->getHashOptions());
     }
@@ -330,7 +330,7 @@ abstract class Gems_User_DbUserDefinitionAbstract extends \Gems_User_UserDefinit
      * @param string $password
      * @return string
      */
-    protected function hashOldPassword($password)
+    public function hashOldPassword($password)
     {
         return $this->project->getValueHash($password);
     }
