@@ -9,6 +9,11 @@
 
 include_once 'Radius/radius.class.php';
 
+use Zend\Authentication\Result;
+use Zend\Authentication\Adapter\AdapterInterface;
+use Zend\Authentication\Exception\RuntimeException;
+
+
 /**
  * Implements Radius authentication using Pure PHP radius class as downloaded
  * from http://www.phpkode.com/scripts/item/pure-php-radius-class/
@@ -25,7 +30,7 @@ include_once 'Radius/radius.class.php';
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_Adapter_Radius implements \Zend_Auth_Adapter_Interface
+class Gems_User_Adapter_Radius implements AdapterInterface
 {
 	/**
 	 * $_identity - Identity value
@@ -129,10 +134,7 @@ class Gems_User_Adapter_Radius implements \Zend_Auth_Adapter_Interface
 		if (!is_array($config)) {
 			$exception = "Constructor should be passed and array with at least ip and sharedsecret.";
 
-			/**
-			 * @see \Zend_Auth_Adapter_Exception
-			 */
-			throw new \Zend_Auth_Adapter_Exception($exception);
+			throw new RuntimeException($exception);
 		}
 
 		foreach ($config as $key => $value) {
@@ -187,23 +189,23 @@ class Gems_User_Adapter_Radius implements \Zend_Auth_Adapter_Interface
 	}
 
 	/**
-	 * authenticate() - defined by \Zend_Auth_Adapter_Interface.  This method is called to
+	 * authenticate() - defined by Zend\Authentication\Adapter\AdapterInterface.  This method is called to
 	 * attempt an authenication.  Previous to this call, this adapter would have already
 	 * been configured with all necessary information to successfully connect to a Radius
 	 * server and attempt to find a record matching the provided identity.
 	 *
-	 * @throws \Zend_Auth_Adapter_Exception if answering the authentication query is impossible
-	 * @return \Zend_Auth_Result
+	 * @throws \Zend\Authentication\Adapter\Exception\ExceptionInterface If authentication cannot be performed
+	 * @return Zend\Authentication\Result
 	 */
 	public function authenticate()
 	{
 		$this->_authenticateSetup();
 
 		if ($this->_radius->AccessRequest($this->_identity,$this->_credential)) {
-			$this->_authenticateResultInfo['code'] = \Zend_Auth_Result::SUCCESS;
+			$this->_authenticateResultInfo['code'] = Result::SUCCESS;
 			$this->_authenticateResultInfo['messages'][] = 'Authentication successful.';
 		} else {
-			$this->_authenticateResultInfo['code'] = \Zend_Auth_Result::FAILURE;
+			$this->_authenticateResultInfo['code'] = Result::FAILURE;
 			$this->_authenticateResultInfo['messages'][] = 'Authentication failed.';
 		}
 
@@ -240,7 +242,7 @@ class Gems_User_Adapter_Radius implements \Zend_Auth_Adapter_Interface
 		}
 
 		$this->_authenticateResultInfo = array(
-            'code'     => \Zend_Auth_Result::FAILURE,
+            'code'     => Result::FAILURE,
             'identity' => $this->_identity,
             'messages' => array()
 		);
@@ -251,17 +253,17 @@ class Gems_User_Adapter_Radius implements \Zend_Auth_Adapter_Interface
 	}
 
 	/**
-	 * _authenticateCreateAuthResult() - This method creates a \Zend_Auth_Result object
+	 * _authenticateCreateAuthResult() - This method creates a Zend\Authentication\Result object
 	 * from the information that has been collected during the authenticate() attempt.
 	 *
-	 * @return \Zend_Auth_Result
+	 * @return Zend\Authentication\Result
 	 */
 	protected function _authenticateCreateAuthResult()
 	{
-		return new \Zend_Auth_Result(
-		$this->_authenticateResultInfo['code'],
-		$this->_authenticateResultInfo['identity'],
-		$this->_authenticateResultInfo['messages']
+		return new Result(
+			$this->_authenticateResultInfo['code'],
+			$this->_authenticateResultInfo['identity'],
+			$this->_authenticateResultInfo['messages']
 		);
 	}
 }
