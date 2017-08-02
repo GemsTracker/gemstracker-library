@@ -81,8 +81,10 @@ CREATE TABLE gems__appointments (
         -- one off A => Ambulatory, E => Emergency, F => Field, H => Home, I => Inpatient, S => Short stay, V => Virtual
         -- see http://wiki.hl7.org/index.php?title=PA_Patient_Encounter
 
+        -- Not implemented
         -- moodCode http://wiki.ihe.net/index.php?title=1.3.6.1.4.1.19376.1.5.3.1.4.14
         -- one of  PRMS Scheduled, ARQ requested but no TEXT, EVN has occurred
+
         gap_status              varchar(2) not null default 'AC',
         -- one off AB => Aborted, AC => active, CA => Cancelled, CO => completed
         -- see http://wiki.hl7.org/index.php?title=PA_Patient_Encounter
@@ -180,6 +182,7 @@ CREATE TABLE gems__comm_jobs (
         gcj_filter_max_reminders INT NOT NULL DEFAULT 3,
 
         -- Optional filters
+        gcj_target tinyint(1) NOT NULL DEFAULT '0',
         gcj_id_organization bigint,
         gcj_id_track        int,
         gcj_round_description varchar(100),
@@ -216,7 +219,8 @@ INSERT INTO gems__comm_templates (gct_id_template, gct_name, gct_target, gct_cod
     (15, 'Questions for your treatement at {organization}', 'token',,CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
     (16, 'Reminder: your treatement at {organization}', 'token',,CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
     (17, 'Global Password reset', 'staffPassword', 'passwordReset', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-    (18, 'Global Account created', 'staffPassword', 'accountCreate', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
+    (18, 'Global Account created', 'staffPassword', 'accountCreate', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+    (19, 'Linked account created', 'staff', 'linkedAccountCreated', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
 CREATE TABLE gems__comm_template_translations (
       gctt_id_template  bigint not null,
@@ -250,7 +254,11 @@ Click on [url={token_url}]this link[/url] to start or go to [url]{site_ask_url}[
     (18, 'en', 'New account created', 'A new account has been created for the [b]{organization}[/b] site [b]{project}[/b].
 To set your password and activate the account please click on this link:\n{reset_url}'),
     (18, 'nl', 'Nieuw account aangemaakt', 'Een nieuw account is aangemaakt voor de [b]{organization}[/b] site [b]{project}[/b].
-Om uw wachtwoord te kiezen en uw account te activeren, klik op deze link:\n{reset_url}');
+Om uw wachtwoord te kiezen en uw account te activeren, klik op deze link:\n{reset_url}'),
+    (19, 'en', 'New account created', 'A new account has been created for the [b]{organization}[/b] website [b]{project}[/b].
+To log in with your organization account {login_name} please click on this link:\r\n{login_url}'),
+    (19, 'nl', 'Nieuw account aangemaakt', 'Er is voor u een nieuw account aangemaakt voor de [b]{organization}[/b] website [b]{project}[/b].
+Om in te loggen met uw organisatie account {login_name} klikt u op onderstaande link:\r\n{login_url}');
 CREATE TABLE gems__consents (
       gco_description varchar(20) not null,
       gco_order smallint not null default 10,
@@ -290,6 +298,8 @@ CREATE TABLE gems__groups (
         ggp_allowed_ip_ranges     text,
 
         ggp_respondent_browse     varchar(255),
+        ggp_respondent_edit       varchar(255),
+        ggp_respondent_show       varchar(255),
 
         ggp_mask_settings         text,
 
@@ -517,6 +527,10 @@ CREATE TABLE gems__organizations (
         gor_welcome                 text,
         gor_signature               text,
 
+        gor_respondent_edit         varchar(255),
+        gor_respondent_show         varchar(255),
+        gor_token_ask               varchar(255),
+
         gor_style                   varchar(15)  not null default 'gems',
         gor_resp_change_event       varchar(128) ,
         gor_iso_lang                char(2) not null default 'en',
@@ -578,7 +592,7 @@ CREATE TABLE gems__patch_levels (
 
 INSERT INTO gems__patch_levels (gpl_level, gpl_created)
    VALUES
-   (61, CURRENT_TIMESTAMP);
+   (62, CURRENT_TIMESTAMP);
 
 CREATE TABLE gems__radius_config (
         grcfg_id                bigint(11) NOT NULL ,
@@ -1373,6 +1387,7 @@ CREATE TABLE gems__track_fields (
         gtf_field_description   varchar(200),
 
         gtf_field_values        text,
+        gtf_field_default       varchar(50),
         gtf_calculate_using     varchar(50) ,
 
         gtf_field_type          varchar(20) not null,

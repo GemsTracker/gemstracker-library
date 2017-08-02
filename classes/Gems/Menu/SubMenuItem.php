@@ -481,6 +481,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
     /**
      * Add a standard edit action to the current menu item
      *
+     * @deprecated Since 1.8.1
      * @return \Gems_Menu_SubmenuItem
      */
     public function addExcelAction()
@@ -628,7 +629,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
         if (null === $pdfImg) {
             $pdfImg = \MUtil_Html::create()->img(array(
                 'class'  => 'rightFloat',
-                'src'    => 'pdf_small.gif',
+                // 'src'    => 'pdf_small.gif',
                 // 'width'  => 17,  // Removed as HCU layout uses smaller icon.
                 // 'height' => 17,
                 'alt'    => ''));

@@ -90,10 +90,11 @@ CREATE TABLE if not exists gems__appointments (
         -- one off A => Ambulatory, E => Emergency, F => Field, H => Home, I => Inpatient, S => Short stay, V => Virtual
         -- see http://wiki.hl7.org/index.php?title=PA_Patient_Encounter
 
+        -- Not implemented
         -- moodCode http://wiki.ihe.net/index.php?title=1.3.6.1.4.1.19376.1.5.3.1.4.14
         -- one of  PRMS Scheduled, ARQ requested but no date, EVN has occurred
-        gap_status              varchar(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'AC'
-                                references gems__agenda_statuscodes (gasc_code),
+
+        gap_status              varchar(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'AC',
         -- one off AB => Aborted, AC => active, CA => Cancelled, CO => completed
         -- see http://wiki.hl7.org/index.php?title=PA_Patient_Encounter
 
@@ -180,6 +181,7 @@ CREATE TABLE IF NOT EXISTS `gems__chart_config` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=101;
 CREATE TABLE if not exists gems__comm_jobs (
         gcj_id_job bigint unsigned not null auto_increment,
+        gcj_id_order      int not null default 10,
 
         gcj_id_message bigint unsigned not null
                 references gems__comm_templates (gct_id_template),
@@ -208,6 +210,7 @@ CREATE TABLE if not exists gems__comm_jobs (
         gcj_filter_max_reminders INT UNSIGNED NOT NULL DEFAULT 3,
 
         -- Optional filters
+        gcj_target tinyint(1) NOT NULL DEFAULT '0',
         gcj_id_organization bigint unsigned null references gems__organizations (gor_id_organization),
         gcj_id_track        int unsigned null references gems__tracks (gtr_id_track),
         gcj_round_description varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
@@ -248,7 +251,8 @@ INSERT INTO gems__comm_templates (gct_id_template, gct_name, gct_target, gct_cod
     (15, 'Questions for your treatement at {organization}', 'token', null,CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
     (16, 'Reminder: your treatement at {organization}', 'token', null,CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
     (17, 'Global Password reset', 'staffPassword', 'passwordReset', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-    (18, 'Global Account created', 'staffPassword', 'accountCreate', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
+    (18, 'Global Account created', 'staffPassword', 'accountCreate', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+    (19, 'Linked account created', 'staff', 'linkedAccountCreated', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
 CREATE TABLE if not exists gems__comm_template_translations (
       gctt_id_template  bigint unsigned not null,
@@ -283,7 +287,11 @@ Click on [url={token_url}]this link[/url] to start or go to [url]{site_ask_url}[
     (18, 'en', 'New account created', 'A new account has been created for the [b]{organization}[/b] site [b]{project}[/b].
 To set your password and activate the account please click on this link:\n{reset_url}'),
     (18, 'nl', 'Nieuw account aangemaakt', 'Een nieuw account is aangemaakt voor de [b]{organization}[/b] site [b]{project}[/b].
-Om uw wachtwoord te kiezen en uw account te activeren, klik op deze link:\n{reset_url}');
+Om uw wachtwoord te kiezen en uw account te activeren, klik op deze link:\n{reset_url}'),
+    (19, 'en', 'New account created', 'A new account has been created for theÂ [b]{organization}[/b]Â websiteÂ [b]{project}[/b].
+To log in with your organization account {login_name}Â please click on this link:\r\n{login_url}'),
+    (19, 'nl', 'Nieuw account aangemaakt', 'Er is voor u een nieuw account aangemaakt voor deÂ [b]{organization}[/b] websiteÂ [b]{project}[/b].
+Om in te loggen met uw organisatie accountÂ {login_name} klikt u op onderstaande link:\r\n{login_url}');
 CREATE TABLE if not exists gems__consents (
       gco_description varchar(20) not null,
       gco_order smallint not null default 10,
@@ -308,37 +316,47 @@ INSERT INTO gems__consents
     ('Unknown', 30, 'do not use', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
 CREATE TABLE if not exists gems__groups (
-      ggp_id_group bigint unsigned not null auto_increment,
-      ggp_name varchar(30) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
-      ggp_description varchar(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
+        ggp_id_group              bigint unsigned not null auto_increment,
+        ggp_name                  varchar(30) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
+        ggp_description           varchar(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
 
-      ggp_role varchar(150) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'respondent',
-      -- The ggp_role value(s) determines someones roles as set in the bootstrap
+        ggp_role                  varchar(150) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'respondent',
+        -- The ggp_role value(s) determines someones roles as set in the bootstrap
 
-      ggp_group_active TINYINT(1) not null default 1,
-      ggp_staff_members TINYINT(1) not null default 0,
-      ggp_respondent_members TINYINT(1) not null default 1,
-      ggp_allowed_ip_ranges text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        ggp_may_set_groups        varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
+        ggp_default_group         bigint unsigned null,
 
-      ggp_changed timestamp not null default current_timestamp on update current_timestamp,
-      ggp_changed_by bigint unsigned not null,
-      ggp_created timestamp not null,
-      ggp_created_by bigint unsigned not null,
+        ggp_group_active          TINYINT(1) not null default 1,
+        ggp_staff_members         TINYINT(1) not null default 0,
+        ggp_respondent_members    TINYINT(1) not null default 1,
+        ggp_allowed_ip_ranges     text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
-      PRIMARY KEY(ggp_id_group)
-   )
-   ENGINE=InnoDB
-   AUTO_INCREMENT = 800
-   CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+        ggp_respondent_browse     varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
+        ggp_respondent_edit       varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
+        ggp_respondent_show       varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
 
--- Default group
+        ggp_mask_settings         text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
+
+        ggp_changed               timestamp not null default current_timestamp on update current_timestamp,
+        ggp_changed_by            bigint unsigned not null,
+        ggp_created               timestamp not null,
+        ggp_created_by            bigint unsigned not null,
+
+        PRIMARY KEY(ggp_id_group)
+    )
+    ENGINE=InnoDB
+    AUTO_INCREMENT = 800
+    CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+
+-- Default groups
 INSERT ignore INTO gems__groups
-   (ggp_id_group, ggp_name, ggp_description, ggp_role, ggp_group_active, ggp_staff_members, ggp_respondent_members, ggp_changed_by, ggp_created, ggp_created_by)
-   VALUES
-   (800, 'Super Administrators', 'Super administrators with access to the whole site', 'super', 1, 1, 0, 0, current_timestamp, 0),
-   (801, 'Local Admins', 'Local Administrators', 'admin', 1, 1, 0, 0, current_timestamp, 0),
-   (802, 'Staff', 'Health care staff', 'staff', 1, 1, 0, 0, current_timestamp, 0),
-   (803, 'Respondents', 'Respondents', 'respondent', 1, 0, 1, 0, current_timestamp, 0);
+    (ggp_id_group, ggp_name, ggp_description, ggp_role, ggp_may_set_groups, ggp_group_active, ggp_staff_members, ggp_respondent_members, ggp_changed_by, ggp_created, ggp_created_by)
+    VALUES
+    (900, 'Super Administrators', 'Super administrators with access to the whole site', 809, '900,901,902,903', 1, 1, 0, 0, current_timestamp, 0),
+    (901, 'Site Admins', 'Site Administrators', 808, '901,902,903', 1, 1, 0, 0, current_timestamp, 0),
+    (902, 'Local Admins', 'Local Administrators', 807, '903', 1, 1, 0, 0, current_timestamp, 0),
+    (903, 'Staff', 'Health care staff', 804, null, 1, 1, 0, 0, current_timestamp, 0),
+    (904, 'Respondents', 'Respondents', 802, null, 1, 0, 1, 0, current_timestamp, 0);
 
 CREATE TABLE if not exists gems__locations (
         glo_id_location     bigint unsigned not null auto_increment,
@@ -473,8 +491,7 @@ INSERT INTO gems__log_setup (gls_name, gls_when_no_user, gls_on_action, gls_on_p
         ('index.login',                         0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('index.logoff',                        0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('index.resetpassword',                 1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-        ('index.resetpassword',                 1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-		('project-information.maintenance',     1, 1, 1, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('project-information.maintenance',     1, 1, 1, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('respondent.show',                     0, 1, 0, 0, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('source.attributes',                   0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('source.attributes-all',               0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
@@ -486,19 +503,19 @@ INSERT INTO gems__log_setup (gls_name, gls_when_no_user, gls_on_action, gls_on_p
         ('survey-maintenance.check-all',        0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('token.answered',                      1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('token.data-changed',                  1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-		('track.check-all-answers',             1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-		('track.check-all-tracks',              1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-		('track.check-token-answers',           1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-		('track.check-track',                   1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-		('track.check-track-answers',           1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('track.check-all-answers',             1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('track.check-all-tracks',              1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('track.check-token-answers',           1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('track.check-track',                   1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('track.check-track-answers',           1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('track.delete-track',                  0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('track.edit-track',                    0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-		('track.recalc-all-fields',             1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-		('track.recalc-fields',                 1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('track.recalc-all-fields',             1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('track.recalc-fields',                 1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('track-maintenance.check-all',         0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('track-maintenance.check-track',       0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-		('track-maintenance.export',            1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-		('track-maintenance.import',            1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('track-maintenance.export',            1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('track-maintenance.import',            1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('track-maintenance.recalc-all-fields', 0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('track-maintenance.recalc-fields',     0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('upgrade.execute-all',                 0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
@@ -547,28 +564,33 @@ CREATE TABLE IF NOT EXISTS gems__openrosaforms (
     DEFAULT CHARSET=utf8
     COLLATE=utf8_unicode_ci;
 CREATE TABLE if not exists gems__organizations (
-        gor_id_organization  bigint unsigned not null auto_increment,
+        gor_id_organization         bigint unsigned not null auto_increment,
 
-        gor_name             varchar(50)   CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
-        gor_code             varchar(20)   CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
-        gor_user_class       varchar(30)   CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'StaffUser',
-        gor_location         varchar(255)   CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
-        gor_url              varchar(127)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
-        gor_url_base         varchar(1270) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
-        gor_task             varchar(50)   CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gor_name                    varchar(50)   CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
+        gor_code                    varchar(20)   CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gor_user_class              varchar(30)   CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'StaffUser',
+        gor_location                varchar(255)   CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gor_url                     varchar(127)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gor_url_base                varchar(1270) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gor_task                    varchar(50)   CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
-        gor_provider_id      varchar(10)   CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gor_provider_id             varchar(10)   CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
-        -- A comma separated list of organization numbers that can look at respondents in this organization
-        gor_accessible_by    text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        -- A : separated list of organization numbers that can look at respondents in this organization
+        gor_accessible_by           text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
-        gor_contact_name     varchar(50)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
-        gor_contact_email    varchar(127) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
-        gor_welcome          text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'  null,
-        gor_signature        text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gor_contact_name            varchar(50)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gor_contact_email           varchar(127) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gor_welcome                 text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'  null,
+        gor_signature               text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
-        gor_style            varchar(15)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'gems',
-        gor_iso_lang         char(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'en',
+        gor_respondent_edit         varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
+        gor_respondent_show         varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
+        gor_token_ask               varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
+
+        gor_style                   varchar(15)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'gems',
+        gor_resp_change_event       varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        gor_iso_lang                char(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'en',
 
         gor_has_login               TINYINT(1) not null default 1,
         gor_has_respondents         TINYINT(1) not null default 0,
@@ -579,10 +601,10 @@ CREATE TABLE if not exists gems__organizations (
         gor_allowed_ip_ranges       text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
         gor_active                  TINYINT(1) not null default 1,
 
-        gor_changed          timestamp not null default current_timestamp on update current_timestamp,
-        gor_changed_by       bigint unsigned not null,
-        gor_created          timestamp not null,
-        gor_created_by       bigint unsigned not null,
+        gor_changed                 timestamp not null default current_timestamp on update current_timestamp,
+        gor_changed_by              bigint unsigned not null,
+        gor_created                 timestamp not null,
+        gor_created_by              bigint unsigned not null,
 
         PRIMARY KEY(gor_id_organization),
         KEY (gor_code)
@@ -633,7 +655,7 @@ CREATE TABLE if not exists gems__patch_levels (
 
 INSERT INTO gems__patch_levels (gpl_level, gpl_created)
    VALUES
-   (59, CURRENT_TIMESTAMP);
+   (62, CURRENT_TIMESTAMP);
 
 CREATE TABLE if not exists gems__radius_config (
         grcfg_id                bigint(11) NOT NULL auto_increment,
@@ -685,31 +707,28 @@ INSERT INTO gems__reception_codes (grc_id_reception_code, grc_description, grc_s
     ('stop', 'Stopped participating', 0, 2, 0, 1, 1, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
 CREATE TABLE if not exists gems__respondent2org (
-        gr2o_patient_nr varchar(15) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
-        gr2o_id_organization bigint unsigned not null
-                references gems__organizations (gor_id_organization),
+        gr2o_patient_nr         varchar(15) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
+        gr2o_id_organization    bigint unsigned not null references gems__organizations (gor_id_organization),
 
-        gr2o_id_user bigint unsigned not null
-                references gems__respondents (grs_id_user),
+        gr2o_id_user            bigint unsigned not null references gems__respondents (grs_id_user),
 
-        -- gr2o_id_physician bigint unsigned null
-        --       references gems_staff (gsf_id_user),
+        -- gr2o_id_physician       bigint unsigned null references gems_staff (gsf_id_user),
 
-        -- gr2o_treatment varchar(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
-        gr2o_mailable TINYINT(1) not null default 1,
-        gr2o_comments text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        -- gr2o_treatment          varchar(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gr2o_mailable           TINYINT(1) not null default 1,
+        gr2o_comments           text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
-        gr2o_consent varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'Unknown'
-                references gems__consents (gco_description),
-        gr2o_reception_code varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' default 'OK' not null
-                references gems__reception_codes (grc_id_reception_code),
+        gr2o_consent            varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'Unknown'
+                                references gems__consents (gco_description),
+        gr2o_reception_code     varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' default 'OK' not null
+                                references gems__reception_codes (grc_id_reception_code),
 
-        gr2o_opened timestamp not null default current_timestamp on update current_timestamp,
-        gr2o_opened_by bigint unsigned not null,
-        gr2o_changed timestamp not null,
-        gr2o_changed_by bigint unsigned not null,
-        gr2o_created timestamp not null,
-        gr2o_created_by bigint unsigned not null,
+        gr2o_opened             timestamp not null default current_timestamp on update current_timestamp,
+        gr2o_opened_by          bigint unsigned not null,
+        gr2o_changed            timestamp not null,
+        gr2o_changed_by         bigint unsigned not null,
+        gr2o_created            timestamp not null,
+        gr2o_created_by         bigint unsigned not null,
 
         PRIMARY KEY (gr2o_patient_nr, gr2o_id_organization),
         UNIQUE KEY (gr2o_id_user, gr2o_id_organization),
@@ -798,45 +817,45 @@ CREATE TABLE if not exists gems__respondent2track2field (
 
 
 CREATE TABLE if not exists gems__respondents (
-      grs_id_user                bigint unsigned not null auto_increment references gems__user_ids (gui_id_user),
+        grs_id_user                bigint unsigned not null auto_increment references gems__user_ids (gui_id_user),
 
-      grs_ssn                    varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null unique key,
+        grs_ssn                    varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null unique key,
 
-      grs_iso_lang               char(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'nl',
+        grs_iso_lang               char(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'nl',
 
-      grs_email                  varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        grs_email                  varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
-      -- grs_initials_name          varchar(30) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-      grs_first_name             varchar(30) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-      -- grs_surname_prefix         varchar(10) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-      grs_last_name              varchar(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-      -- grs_partner_surname_prefix varchar(10) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-      -- grs_partner_last_name      varchar(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-      grs_gender                 char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'U',
-      grs_birthday               date,
+        -- grs_initials_name          varchar(30) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        grs_first_name             varchar(30) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        -- grs_surname_prefix         varchar(10) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        grs_last_name              varchar(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        -- grs_partner_surname_prefix varchar(10) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        -- grs_partner_last_name      varchar(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        grs_gender                 char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'U',
+        grs_birthday               date,
 
-      grs_address_1              varchar(80) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-      grs_address_2              varchar(80) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-      grs_zipcode                varchar(10) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-      grs_city                   varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-      -- grs_region                 varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-      grs_iso_country            char(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'NL',
-      grs_phone_1                varchar(25) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-      grs_phone_2                varchar(25) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-      -- grs_phone_3                varchar(25) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-      -- grs_phone_4                varchar(25) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        grs_address_1              varchar(80) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        grs_address_2              varchar(80) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        grs_zipcode                varchar(10) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        grs_city                   varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        -- grs_region                 varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        grs_iso_country            char(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'NL',
+        grs_phone_1                varchar(25) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        grs_phone_2                varchar(25) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        -- grs_phone_3                varchar(25) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        -- grs_phone_4                varchar(25) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
-      grs_changed                timestamp not null default current_timestamp on update current_timestamp,
-      grs_changed_by             bigint unsigned not null,
-      grs_created                timestamp not null,
-      grs_created_by             bigint unsigned not null,
+        grs_changed                timestamp not null default current_timestamp on update current_timestamp,
+        grs_changed_by             bigint unsigned not null,
+        grs_created                timestamp not null,
+        grs_created_by             bigint unsigned not null,
 
-      PRIMARY KEY(grs_id_user),
-      INDEX (grs_email)
-   )
-   ENGINE=InnoDB
-   AUTO_INCREMENT = 30001
-   CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+        PRIMARY KEY(grs_id_user),
+        INDEX (grs_email)
+    )
+    ENGINE=InnoDB
+    AUTO_INCREMENT = 30001
+    CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
 
 
 CREATE TABLE IF NOT EXISTS gems__respondent_relations (
@@ -941,12 +960,12 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     VALUES
     (804, 'staff', 'staff', '801',
     'pr.option.edit,pr.option.password,
-    ,pr.plan,pr.plan.compliance,pr.plan.consent,pr.plan.overview,pr.plan.respondent,pr.plan.summary,pr.plan.token,
+    ,pr.plan.compliance,pr.plan.consent,pr.plan.overview,pr.plan.respondent,pr.plan.summary,pr.plan.token,
     ,pr.project,pr.project.questions,
     ,pr.respondent.create,pr.respondent.edit,pr.respondent.select-on-track,pr.respondent.who,
     ,pr.respondent-commlog,pr.respondent-log,
-    ,pr.survey,pr.survey.create,
-    ,pr.token,pr.token.answers,pr.token.delete,pr.token.edit,pr.token.mail,pr.token.print,
+    ,pr.survey,
+    ,pr.token,pr.token.answers,pr.token.correct,pr.token.delete,pr.token.edit,pr.token.mail,pr.token.print,
     ,pr.track,pr.track.answers,pr.track.create,pr.track.delete,pr.track.edit',
     CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
@@ -965,30 +984,31 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     (806, 'researcher', 'researcher', null,
     'pr.contact.bugs,pr.contact.gems,pr.contact.support,
     ,pr.cron.job,
-    ,pr.export,
+    ,pr.export,pr.export.export,
     ,pr.islogin,
-    ,pr.plan.consent,pr.plan.consent.excel,
-	,pr.project-information.changelog,pr.contact,pr.export,pr.islogin,
+    ,pr.plan.consent,pr.plan.consent.export,
+	,pr.upgrade,
     ,pr.option.password,pr.option.edit,pr.organization-switch,
-	,pr.plan,pr.plan.compliance,pr.plan.consent,pr.plan.overview,pr.plan.respondent,pr.plan.summary,pr.plan.token',
+	,pr.plan.compliance,pr.plan.consent,pr.plan.overview,pr.plan.respondent,pr.plan.summary,pr.plan.token',
     CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
 INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_parents,
         grl_privileges,
         grl_changed, grl_changed_by, grl_created, grl_created_by)
     VALUES
-    (807, 'admin', 'admin', '801,803,804,805,806',
+    (807, 'admin', 'local admin', '801,803,804,805,806',
     'pr.comm.job,
-    ,pr.comm.template,pr.comm.template.create,pr.comm.template.delete,pr.comm.template.edit,pr.comm.template.log,
+    ,pr.comm.template,pr.comm.template.create,pr.comm.template.delete,pr.comm.template.edit,
     ,pr.consent,pr.consent.create,pr.consent.edit,
-    ,pr.export,pr.export-html,
+    ,pr.export,pr.export.export,pr.export-html,
     ,pr.group,
+    ,pr.mail.log,
     ,pr.organization,pr.organization-switch,
-    ,pr.plan.compliance.excel,pr.plan.overview.excel,
-    ,pr.plan.respondent,pr.plan.respondent.excel,pr.plan.summary.excel,pr.plan.token.excel,
+    ,pr.plan.compliance.export,pr.plan.overview.export,
+    ,pr.plan.respondent,pr.plan.respondent.export,pr.plan.summary.export,pr.plan.token.export,
     ,pr.project-information,
     ,pr.reception,pr.reception.create,pr.reception.edit,
-    ,pr.respondent.choose-org,pr.respondent.delete,pr.respondent.result,pr.respondent.show-deleted,pr.respondent.undelete,
+    ,pr.respondent.delete,pr.respondent.result,pr.respondent.show-deleted,pr.respondent.undelete,
     ,pr.role,
     ,pr.staff,pr.staff.create,pr.staff.deactivate,pr.staff.edit,pr.staff.reactivate,pr.staff.see.all,
     ,pr.staff-log,
@@ -997,27 +1017,55 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     ,pr.token.mail.freetext,pr.token.undelete,
     ,pr.track.check,pr.track.insert,pr.track.undelete,
     ,pr.track-maintenance,pr.track-maintenance.create,pr.track-maintenance.edit,pr.track-maintenance.export,
-    ,pr.track-maintenance.import,pr.track-maintenance.merge,pr.track-maintenance.trackperorg',
+    ,pr.track-maintenance.import,pr.track-maintenance.trackperorg',
     CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
 INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_parents,
         grl_privileges,
         grl_changed, grl_changed_by, grl_created, grl_created_by)
     VALUES
-    (808, 'super', 'super', '801,803,804,805,806,807',
+    (809, 'siteadmin', 'site admin', '801,803,804,805,806,807',
+    'pr.comm.job,
+    ,pr.comm.template,pr.comm.template.create,pr.comm.template.delete,pr.comm.template.edit,
+    ,pr.consent,pr.consent.create,pr.consent.edit,
+    ,pr.export,pr.export.export,pr.export-html,
+    ,pr.group,
+    ,pr.mail.log,
+    ,pr.organization,pr.organization-switch,
+    ,pr.plan.compliance.export,pr.plan.overview.export,
+    ,pr.plan.respondent,pr.plan.respondent.export,pr.plan.summary.export,pr.plan.token.export,
+    ,pr.project-information,
+    ,pr.reception,pr.reception.create,pr.reception.edit,
+    ,pr.respondent.delete,pr.respondent.result,pr.respondent.show-deleted,pr.respondent.undelete,
+    ,pr.role,
+    ,pr.staff,pr.staff.create,pr.staff.deactivate,pr.staff.edit,pr.staff.edit.all,pr.staff.reactivate,pr.staff.see.all,
+    ,pr.staff-log,
+    ,pr.source,
+    ,pr.survey-maintenance,pr.survey-maintenance.answer-import,
+    ,pr.token.mail.freetext,pr.token.undelete,
+    ,pr.track.check,pr.track.insert,pr.track.undelete,
+    ,pr.track-maintenance,pr.track-maintenance.create,pr.track-maintenance.edit,pr.track-maintenance.export,
+    ,pr.track-maintenance.import,pr.track-maintenance.trackperorg',
+    CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
+
+INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_parents,
+        grl_privileges,
+        grl_changed, grl_changed_by, grl_created, grl_created_by)
+    VALUES
+    (808, 'super', 'super', '801,803,804,805,806,807,809',
     'pr.agenda-activity,pr.agenda-activity.cleanup,pr.agenda-activity.create,pr.agenda-activity.delete,pr.agenda-activity.edit,
     ,pr.agenda-filters,pr.agenda-filters.create,pr.agenda-filters.delete,pr.agenda-filters.edit,
     ,pr.agenda-procedure,pr.agenda-procedure.cleanup,pr.agenda-procedure.create,pr.agenda-procedure.delete,pr.agenda-procedure.edit,
     ,pr.agenda-staff,pr.agenda-staff.create,pr.agenda-staff.delete,pr.agenda-staff.edit,
     ,pr.comm.job.create,pr.comm.job.edit,pr.comm.job.delete,
-    ,pr.comm.server,pr.comm.server.create,pr.comm.server.delete,pr.comm.server.edit,
     ,pr.consent.delete,
-    ,pr.database,pr.database.create,pr.database.delete,pr.database.edit,pr.database.execute,pr.database.patches,
-	,pr.file-import,pr.file-import.auto,
+    ,pr.database,pr.database.create,pr.database.delete,pr.database.execute,pr.database.patches,
+	,pr.file-import,
     ,pr.group.create,pr.group.edit,
     ,pr.locations,pr.locations.cleanup,pr.locations.create,pr.locations.delete,pr.locations.edit,
     ,pr.log.files,pr.log.files.download,
-    ,pr.maintenance,pr.maintenance.clean-cache,pr.maintenance.maintenance-mode,
+    ,pr.mail.server,pr.mail.server.create,pr.mail.server.delete,pr.mail.server.edit,
+    ,pr.maintenance.clean-cache,pr.maintenance.maintenance-mode,
     ,pr.organization.create,pr.organization.edit,
     ,pr.plan.mail-as-application,pr.reception.delete,
     ,pr.respondent.multiorg,
@@ -1030,7 +1078,6 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     ,pr.track-maintenance.delete,
     ,pr.upgrade,pr.upgrade.all,pr.upgrade.one,pr.upgrade.from,pr.upgrade.to',
     CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
-
 CREATE TABLE if not exists gems__rounds (
         gro_id_round           bigint unsigned not null auto_increment,
 
@@ -1142,7 +1189,6 @@ CREATE TABLE if not exists gems__staff (
         gsf_last_failed			timestamp null,
         -- end depreciated
 
-
         gsf_id_primary_group	bigint unsigned references gems__groups (ggp_id_group),
         gsf_iso_lang			char(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'en'
 								references gems__languages (gml_iso_lang),
@@ -1157,7 +1203,7 @@ CREATE TABLE if not exists gems__staff (
         gsf_gender				char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'
 								not null default 'U',
         -- gsf_birthday            date,
-        -- gsf_function            varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        gsf_job_title           varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
         -- gsf_address_1           varchar(80) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
         -- gsf_address_2           varchar(80) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
@@ -1313,11 +1359,12 @@ CREATE TABLE if not exists gems__tokens (
 
         -- values initially filled from gems__rounds, but that might get different values later on, but but not now
         gto_round_order         int not null default 10,
+        gto_icon_file           varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
         gto_round_description   varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
         --- fields for relations
-        gto_id_relationfield  bigint(2) null default null,
-        gto_id_relation       bigint(2) null default null,
+        gto_id_relationfield    bigint(2) null default null,
+        gto_id_relation         bigint(2) null default null,
 
         -- real data
         gto_valid_from          datetime,
@@ -1335,7 +1382,7 @@ CREATE TABLE if not exists gems__tokens (
         gto_completion_time     datetime,
         gto_duration_in_sec     bigint(20) unsigned NULL,
         -- gto_followup_date       date, -- deprecated
-        gto_result              varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        gto_result              varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
         gto_comment             text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
         gto_reception_code      varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' default 'OK' not null
@@ -1380,40 +1427,52 @@ CREATE TABLE if not exists gems__token_attempts (
     CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
 
 
+-- Created by Matijs de Jong <mjong@magnafacta.nl>
+CREATE TABLE if not exists gems__token_replacements (
+        gtrp_id_token_new           varchar(9) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
+        gtrp_id_token_old           varchar(9) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
+
+        gtrp_created                timestamp not null default CURRENT_TIMESTAMP,
+        gtrp_created_by             bigint unsigned not null,
+
+        PRIMARY KEY (gtrp_id_token_new),
+        INDEX (gtrp_id_token_old)
+    )
+    ENGINE=InnoDB
+    auto_increment = 30000
+    CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+
+
 CREATE TABLE if not exists gems__tracks (
-        gtr_id_track          int unsigned not null auto_increment,
-        gtr_track_name        varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null unique key,
+        gtr_id_track                int unsigned not null auto_increment,
+        gtr_track_name              varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null unique key,
 
-        gtr_track_info        varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-        gtr_code              varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gtr_track_info              varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        gtr_code                    varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
-        gtr_date_start        date not null,
-        gtr_date_until        date null,
+        gtr_date_start              date not null,
+        gtr_date_until              date null,
 
-        gtr_active            TINYINT(1) not null default 0,
-        gtr_survey_rounds     int unsigned not null default 0,
+        gtr_active                  TINYINT(1) not null default 0,
+        gtr_survey_rounds           int unsigned not null default 0,
 
-        -- deprecated since 1.7.1
-        gtr_track_type        char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'T',
-        -- end deprecated
+        gtr_track_class             varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
+        gtr_beforefieldupdate_event varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        gtr_calculation_event       varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        gtr_completed_event         varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        gtr_fieldupdate_event       varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
-        gtr_track_class       varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
-        gtr_calculation_event varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-        gtr_completed_event   varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-        gtr_fieldupdate_event varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        -- Yes, quick and dirty
+        gtr_organizations           varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
-        -- Yes, quick and dirty, will correct later (probably)
-        gtr_organizations     varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-
-        gtr_changed           timestamp not null default current_timestamp on update current_timestamp,
-        gtr_changed_by        bigint unsigned not null,
-        gtr_created           timestamp not null,
-        gtr_created_by        bigint unsigned not null,
+        gtr_changed                 timestamp not null default current_timestamp on update current_timestamp,
+        gtr_changed_by              bigint unsigned not null,
+        gtr_created                 timestamp not null,
+        gtr_created_by              bigint unsigned not null,
 
         PRIMARY KEY (gtr_id_track),
         INDEX (gtr_track_name),
         INDEX (gtr_active),
-        INDEX (gtr_track_type),
         INDEX (gtr_track_class)
     )
     ENGINE=InnoDB
@@ -1475,6 +1534,7 @@ CREATE TABLE if not exists gems__track_fields (
         gtf_field_description   varchar(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
         gtf_field_values        text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gtf_field_default       varchar(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
         gtf_calculate_using     varchar(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
         gtf_field_type          varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
