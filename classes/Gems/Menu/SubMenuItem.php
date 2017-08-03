@@ -624,17 +624,19 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
 
     public function addPdfButton($label, $privilege, $controller = null, $action = 'pdf', array $other = array())
     {
+		/*
         static $pdfImg;
 
         if (null === $pdfImg) {
             $pdfImg = \MUtil_Html::create()->img(array(
                 'class'  => 'rightFloat',
-                // 'src'    => 'pdf_small.gif',
+                'src'    => 'pdf_small.gif',
                 // 'width'  => 17,  // Removed as HCU layout uses smaller icon.
                 // 'height' => 17,
                 'alt'    => ''));
         }
-
+		// */
+		
         if (null === $controller) {
             $controller = $this->get('controller');
         }
@@ -642,7 +644,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
         $other = $other + array(
             'button_only' => true,
             'class'       => 'pdf',
-            'icon'        => $pdfImg,
+            // 'icon'        => $pdfImg,
             'target'      => '_blank',
             'type'        => 'application/pdf');
 
