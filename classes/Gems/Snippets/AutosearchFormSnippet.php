@@ -207,7 +207,6 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
     protected function _createMultiCheckBoxElements($name, $options, $separator = null, $toggleLabel = null, $breakBeforeToggle = false)
     {
         $elements[$name] = $this->_createMultiElement('multiCheckbox', $name, $options, null);
-        $decs = $elements[$name]->getDecorators();
 
         if (! $elements[$name]) {
             return [];
