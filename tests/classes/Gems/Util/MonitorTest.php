@@ -52,6 +52,9 @@ class MonitorTest extends \Gems_Test_DbTestAbstract
 
         $this->transport = new \Zend_Mail_Transport_File($options);
         \Zend_Mail::setDefaultTransport($this->transport);
+        
+        // Make sure the lock file can be written, not a problem outside test situations
+        \MUtil_File::ensureDir(GEMS_ROOT_DIR . '/var/settings');
     }
 
     /**
