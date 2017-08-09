@@ -21,7 +21,7 @@ use Gems\Screens\ShowScreenAbstract;
  * @license    New BSD License
  * @since      Class available since version 1.8.2 Jan 20, 2017 3:52:09 PM
  */
-class GemsProjectShow extends ShowScreenAbstract
+class GemsProjectDefaultShow extends ShowScreenAbstract
 {
     /**
      *
