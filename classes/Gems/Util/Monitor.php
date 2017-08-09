@@ -51,13 +51,13 @@ class Monitor extends UtilAbstract
      * @param string $where Optional, a gems__staff SQL WHERE statement
      * @return boolean
      */
-    protected function _getMailTo($monitorName, $where = null)
+    protected function _getMailTo($monitorName, $where = null, $joins = '')
     {
         $projTo = $this->project->getMonitorTo($monitorName);
 
         if ($where) {
             $dbTo = $this->db->fetchCol(
-                    "SELECT DISTINCT gsf_email FROM gems__staff WHERE LENGTH(gsf_email) > 5 AND gsf_active = 1 AND $where"
+                    "SELECT DISTINCT gsf_email FROM gems__staff $joins WHERE LENGTH(gsf_email) > 5 AND gsf_active = 1 AND $where"
                     );
 
             if ($dbTo) {
@@ -126,13 +126,17 @@ class Monitor extends UtilAbstract
 
         $roles = $this->util->getDbLookup()->getRolesByPrivilege('pr.maintenance.maintenance-mode');
         if ($roles) {
-            $where = 'gsf_id_primary_group IN (SELECT ggp_id_group FROM gems__groups WHERE ggp_role IN (' .
+            $joins = "JOIN gems__groups ON gsf_id_primary_group = ggp_id_group 
+                      JOIN gems__roles ON ggp_role = grl_id_role";
+
+            $where = 'grl_name IN (' .
                     implode(', ', array_map(array($this->db, 'quote'), array_keys($roles))) .
-                    '))';
+                    ')';
         } else {
+            $joins = '';
             $where = null;
         }
-        $to = $this->_getMailTo('maintenancemode', $where);
+        $to = $this->_getMailTo('maintenancemode', $where, $joins);
 
         if (! $to) {
             return true;
