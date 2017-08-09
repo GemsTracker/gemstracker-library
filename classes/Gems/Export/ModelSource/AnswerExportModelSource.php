@@ -69,9 +69,9 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
      */
     protected function _addExtraDataToExportModel(\MUtil_Model_ModelAbstract $model, array $data, array &$prefixes)
     {
+        $this->_addExtraTrackFields($model, $data, $prefixes);      // Create the first 'P' fields after this
         $this->_addExtraRespondentNumber($model, $data, $prefixes);
-        $this->_addExtraGenderAge($model, $data, $prefixes);
-        $this->_addExtraTrackFields($model, $data, $prefixes);
+        $this->_addExtraGenderAge($model, $data, $prefixes);        
     }
 
     /**
@@ -156,7 +156,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
             $model->set('gto_id_relation', 'label', $this->_('Relation ID'), 'type', \MUtil_Model::TYPE_NUMERIC);
             $model->set('gtf_field_name', 'label', $this->_('Relation'), 'type', \MUtil_Model::TYPE_STRING);
 
-            $prefixes['TF'] = array_diff($model->getItemNames(), $prefixes['A'], $prefixes['D'], $prefixes['P']);
+            $prefixes['TF'] = array_diff($model->getItemNames(), $prefixes['A'], $prefixes['D']);
         }
     }
 
