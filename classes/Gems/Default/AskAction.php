@@ -53,6 +53,13 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
     public $locale;
 
     /**
+     * Snippets displayed when maintenance mode is on
+     *
+     * @var array
+     */
+    protected $maintenanceModeSnippets = ['Ask\\MaintenanceModeAskSnippet'];
+
+    /**
      * The current token ID
      *
      * set by _initToken()
@@ -184,6 +191,11 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
             return;
         }
 
+        if ($this->util->getMaintenanceLock()->isLocked()) {
+            $this->addSnippet($this->maintenanceModeSnippets, ['token' => $this->token]);
+            return;
+        }
+
         /****************************
          * Update open tokens first *
          ****************************/
@@ -232,6 +244,11 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
      */
     public function indexAction()
     {
+        if ($this->util->getMaintenanceLock()->isLocked()) {
+            $this->addSnippet($this->maintenanceModeSnippets);
+            return;
+        }
+
         // Make sure to return to the forward screen
         $this->currentUser->setSurveyReturn();
 
