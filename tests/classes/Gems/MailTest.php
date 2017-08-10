@@ -29,13 +29,20 @@ class Gem_MailTest extends \PHPUnit_Framework_TestCase {
         $this->object = new Gems_Mail();
         
         $options = array(
-            'path' => realpath(dirname(__FILE__) . '/../../tmp'),
+            'path' => GEMS_TEST_DIR . '/tmp',
             'callback' => array($this, '_getFileName')
             );
         
         $this->transport = new Zend_Mail_Transport_File($options);
-        $this->object->setDefaultTransport($this->transport);
-        
+        $this->object->setDefaultTransport($this->transport);        
+    }
+    
+    public function tearDown()
+    {
+        $filename = GEMS_TEST_DIR . '/tmp/' . $this->_getFileName();
+        if (file_exists($filename)) {
+            unlink($filename);
+        }
     }
        
     /**
@@ -63,5 +70,6 @@ class Gem_MailTest extends \PHPUnit_Framework_TestCase {
         $this->object->setFrom('test@gemstracker.org', 'test');
         $this->object->setBodyText('test');
         $this->object->send($this->transport);
+        $this->assertFileExists(GEMS_TEST_DIR . '/tmp/' . $this->_getFileName());
     }
 }
