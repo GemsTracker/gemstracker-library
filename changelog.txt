@@ -40,6 +40,7 @@ Programmability:
     Less compile now uses relativeUrls during compilation, added logoFile and logoHeight variables
 Bugs
     Blocked users were not blocked
+    Surveys could be answered during maintenance mode 
     The APC Cache was cleared incorrectly
     The var/tmp directory is created when needed and it does not exist
     Users can no longer export data from patients in other organizations

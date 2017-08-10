@@ -62,6 +62,17 @@ class GemsEscort extends \MUtil_Application_Escort
     private $_startFirebird;
 
     /**
+     * A nested array containing the pages accessible to everyone in maintenance mode
+     *
+     * @var array Nested controllername => [actions]
+     */
+    protected $maintenanceAccessiblePages = [
+        'index' => ['index', 'login', 'logoff', 'resetpassword'],
+        'ask' => ['index', 'forward', 'return', 'token'],
+        'contact'=> ['index', 'about', 'gems', 'bugs', 'support'],
+    ];
+
+    /**
      * Set to true for bootstrap projects. Needs html5 set to true as well
      * @var boolean
      */
@@ -930,7 +941,11 @@ class GemsEscort extends \MUtil_Application_Escort
                             'value' => base64_encode($currentUri))
                         );
 
-                $select = $formDiv->select(array('name' => "group", 'onchange' => "javascript:this.form.submit();", 'class' => 'form-control'));
+                $select = $formDiv->select([
+                    'class'    => 'form-control',
+                    'name'     => "group",
+                    'onchange' => "javascript:this.form.submit();",
+                    ]);
                 foreach ($groups as $id => $name) {
                     $selected = '';
                     if ($id == $currentId) {
@@ -2063,6 +2078,8 @@ class GemsEscort extends \MUtil_Application_Escort
         $user   = $this->_container->currentUser;
         $user->setRequest($request);
 
+        $action       = $request->getActionName();
+        $controller   = $request->getControllerName();
         $organization = $user->getCurrentOrganization();
         $organization->applyToMenuSource($source);
 
@@ -2079,25 +2096,23 @@ class GemsEscort extends \MUtil_Application_Escort
          * directory with the name lock.txt
          */
         if ($this->getUtil()->getMaintenanceLock()->isLocked()) {
-            if ($user->isActive() &&
-                    (! $user->hasPrivilege('pr.maintenance.maintenance-mode'))) {
-                //Still allow logoff so we can relogin as master
-                if (!('index' == $request->getControllerName() && 'logoff' == $request->getActionName())) {
-                    $this->setError(
-                            $this->_('Please check back later.'),
-                            401,
-                            $this->_('System is in maintenance mode'));
-                }
-                $user->unsetAsCurrentUser();
-            } else {
-                $this->addMessage($this->_('System is in maintenance mode'));
+            if ($user->hasPrivilege('pr.maintenance.maintenance-mode', false)) {
                 \MUtil_Echo::r($this->_('System is in maintenance mode'));
+
+            } elseif (! (isset($this->maintenanceAccessiblePages[$controller]) &&
+                    is_array($this->maintenanceAccessiblePages[$controller]) &&
+                    in_array($action, $this->maintenanceAccessiblePages[$controller]))) {
+                
+                $this->addMessage($this->_('The page you requested is currently inaccessible.'));
+                $this->setError($this->_('Please check back later.'), 401);
+
+                $user->unsetAsCurrentUser();
             }
+            $this->addMessage($this->_('System is in maintenance mode'));
         }
 
         // Gems does not use index/index
-        $action = $request->getActionName();
-        if (('index' == $request->getControllerName()) &&
+        if (('index' == $controller) &&
                 (('index' == $action) || ($user->isActive() && ('login' == $action)))) {
             // Instead Gems routes to the first available menu item when this is the request target
             if (! $user->gotoStartPage($menu, $request)) {
@@ -2111,10 +2126,7 @@ class GemsEscort extends \MUtil_Application_Escort
 
         } else {
             //find first allowed item in the menu
-            $menuItem = $menu->find(array(
-                'action'       => $request->getActionName(),
-                'controller'   => $request->getControllerName(),
-                ));
+            $menuItem = $menu->find(['action' => $action, 'controller' => $controller]);
 
             // Display error when not having the right priviliges
             if (! ($menuItem && $menuItem->get('allowed'))) {
@@ -2124,8 +2136,8 @@ class GemsEscort extends \MUtil_Application_Escort
                             $this->_('No access to page'),
                             403,
                             sprintf($this->_('Access to the %s/%s page is not allowed for your current group: %s.'),
-                                    $request->getControllerName(),
-                                    $request->getActionName(),
+                                    $controller,
+                                    $action,
                                     $user->getGroup()->getName()),
                             true);
 
@@ -2135,25 +2147,23 @@ class GemsEscort extends \MUtil_Application_Escort
                         $this->setError(
                                 'No access to page.',
                                 401,
-                                sprintf('Controller "%s" action "%s" is not accessible.',
-                                        $request->getControllerName(),
-                                        $request->getActionName()),
+                                sprintf('Controller "%s" action "%s" is not accessible.', $controller, $action),
                                 true);
                         return;
                     }
 
-                    if ($request->getActionName() == 'autofilter') {
+                    if ($action == 'autofilter') {
                         // Throw an exception + HTTP 401 when an autofilter is called
                         throw new \Gems_Exception("Session expired", 401);
                     }
-                    $menuItem = $menu->findFirst(array('allowed' => true, 'visible' => true));
+                    $menuItem = $menu->findFirst(['allowed' => true, 'visible' => true]);
                     if ($menuItem) {
                         // Do not store previous request & show message when the intended action is logoff
-                        if (! ($request->getControllerName() == 'index' && $request->getActionName() == 'logoff')) {
+                        if (! ($controller == 'index' && $action == 'logoff')) {
                             $this->addMessage($this->_('You are no longer logged in.'));
                             $this->addMessage($this->_('You must login to access this page.'));
 
-                            if (! \MUtil_String::contains($request->getControllerName() . $request->getActionName(), '.')) {
+                            if (! \MUtil_String::contains($controller . $action, '.')) {
                                 // save original request, we will redirect back once the user succesfully logs in
                                 $staticSession = $this->getStaticSession();
                                 $staticSession->previousRequestParameters = $request->getParams();
