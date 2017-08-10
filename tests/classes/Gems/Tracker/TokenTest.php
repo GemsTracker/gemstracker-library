@@ -1,26 +1,9 @@
 <?php
 
 /**
+ * Description of Gems_Tracker_TokenTest
  *
- * Test class for Gems_Tracker_Token
- *
- * @package    Gems
- * @subpackage Test
- * @author     Michiel Rook <michiel@touchdownconsulting.nl>
- * @copyright  Copyright (c) 2012 Erasmus MC
- * @license    New BSD License
- * @version    $Id$
- */
-
-/**
- * Test class for Gems_Tracker_Token
- *
- * @package    Gems
- * @subpackage Tracker
- * @author     Michiel Rook <michiel@touchdownconsulting.nl>
- * @copyright  Copyright (c) 2012 Erasmus MC
- * @license    New BSD License
- * @version    $Id$
+ * @author Menno Dekker <menno.dekker@erasmusmc.nl>
  */
 class Gems_Tracker_TokenTest extends Gems_Test_DbTestAbstract
 {

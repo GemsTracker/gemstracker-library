@@ -51,13 +51,13 @@ class Monitor extends UtilAbstract
      * @param string $where Optional, a gems__staff SQL WHERE statement
      * @return boolean
      */
-    protected function _getMailTo($monitorName, $where = null)
+    protected function _getMailTo($monitorName, $where = null, $joins = '')
     {
         $projTo = $this->project->getMonitorTo($monitorName);
 
         if ($where) {
             $dbTo = $this->db->fetchCol(
-                    "SELECT DISTINCT gsf_email FROM gems__staff WHERE LENGTH(gsf_email) > 5 AND gsf_active = 1 AND $where"
+                    "SELECT DISTINCT gsf_email FROM gems__staff $joins WHERE LENGTH(gsf_email) > 5 AND gsf_active = 1 AND $where"
                     );
 
             if ($dbTo) {
@@ -105,40 +105,62 @@ class Monitor extends UtilAbstract
     {
         return new MonitorJob($this->project->getName() . ' cron mail');
     }
-
+    
     /**
-     * Start the cron mail monitor
-     *
-     * @return boolean True when the job was started
+     * Return the mail template to use for sending CronMailMonitor messages
+     * 
+     * @param string $locale The locale to use for the message
+     * 
+     * @return array with elements $subject and $messageBbText
      */
-    public function reverseMaintenanceMonitor()
+    public function getCronMailTemplate($locale)
     {
-        $job  = new MonitorJob($this->project->getName() . ' maintenance mode');
-        $lock = $this->util->getMaintenanceLock();
+        switch ($locale) {
+            case 'nl':
+                $subject = "{name} opdracht draait al meer dan {periodHours} uur niet";
+                $messageBbText = "L.S.,
 
-        if ($lock->isLocked()) {
-            $job->stop();
-            $lock->unlock();
-            return false;
+De [b]{name}[/b] opdracht heeft op {setTime} voor het laatst gedraait en zou voor {firstCheck} opnieuw gedraait moeten hebben.
+
+Dit is waarschuwing nummer [b]{mailCount}[/b]. Controleer s.v.p. wat verkeerd gegaan is.
+
+Dit is een automatische waarschuwing.";
+                break;
+
+            default:
+                $subject = "{name} job has not run for over {periodHours} hours";
+                $messageBbText = "L.S.,
+
+The [b]{name}[/b] job ran at {setTime} for the last time and should have run again before {firstCheck}.
+
+This is notice number {mailCount}. Please check what went wrong.
+
+This messages was send automatically.";
+                break;
         }
-
-        $lock->lock();
-
-        $roles = $this->util->getDbLookup()->getRolesByPrivilege('pr.maintenance.maintenance-mode');
-        if ($roles) {
-            $where = 'gsf_id_primary_group IN (SELECT ggp_id_group FROM gems__groups WHERE ggp_role IN (' .
-                    implode(', ', array_map(array($this->db, 'quote'), array_keys($roles))) .
-                    '))';
-        } else {
-            $where = null;
-        }
-        $to = $this->_getMailTo('maintenancemode', $where);
-
-        if (! $to) {
-            return true;
-        }
-
-        switch ($this->project->getLocaleDefault()) {
+        
+        return array($ubject, $messageBbText);
+    }
+    
+    public function getReverseMaintenanceMonitor()
+    {
+       return new MonitorJob($this->project->getName() . ' maintenance mode'); 
+    }
+    
+    /**
+     * Return the mail template to use for sending ReverseMaintenanceMonitor messages
+     * 
+     * There are two messages, the message when the maintenance mode is first turned on
+     * and the one that is sent after the set amount of time when the maintenance mode
+     * is still turned on.
+     * 
+     * @param string $locale The locale to use for the message
+     * 
+     * @return array with elements $initSubject, $initBbText, $subject and $messageBbText
+     */
+    public function getReverseMaintenanceMonitorTemplate($locale)
+    {
+        switch ($locale) {
             case 'nl':
                 $initSubject = "{name} is aangezet";
                 $initBbText = "L.S.,
@@ -181,6 +203,48 @@ This messages was send automatically.";
 
         }
 
+        return array($initSubject, $initBbText, $subject, $messageBbText);
+    }
+
+    /**
+     * Start the cron mail monitor
+     *
+     * @return boolean True when the job was started
+     */
+    public function reverseMaintenanceMonitor()
+    {
+        $job  = $this->getReverseMaintenanceMonitor();
+        $lock = $this->util->getMaintenanceLock();
+
+        if ($lock->isLocked()) {
+            $job->stop();
+            $lock->unlock();
+            return false;
+        }
+
+        $lock->lock();
+
+        $roles = $this->util->getDbLookup()->getRolesByPrivilege('pr.maintenance.maintenance-mode');
+        if ($roles) {
+            $joins = "JOIN gems__groups ON gsf_id_primary_group = ggp_id_group 
+                      JOIN gems__roles ON ggp_role = grl_id_role";
+
+            $where = 'grl_name IN (' .
+                    implode(', ', array_map(array($this->db, 'quote'), array_keys($roles))) .
+                    ')';
+        } else {
+            $joins = '';
+            $where = null;
+        }
+        $to = $this->_getMailTo('maintenancemode', $where, $joins);
+
+        if (! $to) {
+            return true;
+        }
+
+        $locale = $this->project->getLocaleDefault();
+        list($initSubject, $initBbText, $subject, $messageBbText) = $this->getReverseMaintenanceMonitorTemplate($locale);
+        
         $job->setFrom($this->project->getMonitorFrom('maintenancemode'))
                 ->setMessage($messageBbText)
                 ->setPeriod($this->project->getMonitorPeriod('maintenancemode'))
@@ -209,29 +273,8 @@ This messages was send automatically.";
 
         $job = $this->getCronMailMonitor();
 
-        switch ($this->project->getLocaleDefault()) {
-            case 'nl':
-                $subject = "{name} opdracht draait al meer dan {periodHours} uur niet";
-                $messageBbText = "L.S.,
-
-De [b]{name}[/b] opdracht heeft op {setTime} voor het laatst gedraait en zou voor {firstCheck} opnieuw gedraait moeten hebben.
-
-Dit is waarschuwing nummer [b]{mailCount}[/b]. Controleer s.v.p. wat verkeerd gegaan is.
-
-Dit is een automatische waarschuwing.";
-                break;
-
-            default:
-                $subject = "{name} job has not run for over {periodHours} hours";
-                $messageBbText = "L.S.,
-
-The [b]{name}[/b] job ran at {setTime} for the last time and should have run again before {firstCheck}.
-
-This is notice number {mailCount}. Please check what went wrong.
-
-This messages was send automatically.";
-                break;
-        }
+        $locale = $this->project->getLocaleDefault();
+        list($subject, $messageBbText) = $this->getCronMailTemplate($locale);        
 
         $job->setFrom($this->project->getMonitorFrom('cronmail'))
                 ->setMessage($messageBbText)

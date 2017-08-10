@@ -150,6 +150,8 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
                 }
             }
         }
+        
+        ksort($icons);  // Sort by key
 
         return $icons;
     }

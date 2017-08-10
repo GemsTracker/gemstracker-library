@@ -1,27 +1,9 @@
 <?php
-require_once 'ControllerTestAbstract.php';
 
 /**
+ * Description of Gems_UtilTest
  *
- * @package    Gems
- * @subpackage Util
- * @author     Michiel Rook <michiel@touchdownconsulting.nl>
- * @copyright  Copyright (c) 2011 Erasmus MC
- * @license    New BSD License
- * @version    $Id$
- */
-
-/**
- * Test class for Gems_Util
- *
- * As this class depends on all sorts of stuff being loaded we extend the IndexControllerTest
- *
- * @author     Michiel Rook <michiel@touchdownconsulting.nl>
- * @package    Gems
- * @subpackage Util
- * @copyright  Copyright (c) 2011 Erasmus MC
- * @license    New BSD License
- * @since      Class available since version 1.0
+ * @author Menno Dekker <menno.dekker@erasmusmc.nl>
  */
 class Gems_UtilTest extends \Gems_Test_TestAbstract
 {
