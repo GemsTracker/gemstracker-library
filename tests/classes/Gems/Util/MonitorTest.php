@@ -56,6 +56,19 @@ class MonitorTest extends \Gems_Test_DbTestAbstract
         // Make sure the lock file can be written, not a problem outside test situations
         \MUtil_File::ensureDir(GEMS_ROOT_DIR . '/var/settings');
     }
+    
+    public static function tearDownAfterClass()
+    {
+        // Now we cleanup the mess we made so we don't harm other tests
+        // Since we are in a static method we can not use this to acces the objects
+        $path = GEMS_ROOT_DIR . '/var/settings/';
+        $files = ['lock.txt', 'monitor.json'];
+        foreach ($files as $file) {
+            if (file_exists($path . $file)) { 
+                unlink($path . $file);
+            }
+        }        
+    }
 
     /**
      * Return filename to use for writing emails for this test
