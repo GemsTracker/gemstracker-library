@@ -195,7 +195,7 @@ class Gems_Default_GroupAction extends \Gems_Controller_ModelSnippetActionAbstra
                     );
             $screenLoader = $this->loader->getScreenLoader();
             $model->set('ggp_respondent_show', 'label', $this->_('Respondent show screen'),
-                    'default', 'Gems\\Screens\\Respondent\\Show\\ProjectDefaultShow',
+                    'default', 'Gems\\Screens\\Respondent\\Show\\GemsProjectDefaultShow',
                     'elementClass', 'Radio',
                     'multiOptions', $screenLoader->listRespondentShowScreens()
                     );

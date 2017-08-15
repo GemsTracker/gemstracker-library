@@ -257,10 +257,10 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
 
         foreach ($fieldMap as $key => $code) {
             if ($code) {
-                if (isset($newFieldData[$code])) {
+                if (array_key_exists($code, $newFieldData)) {
                     $output[$key]  = $newFieldData[$code];
                     $output[$code] = $newFieldData[$code];
-                } elseif (isset($newFieldData[$key])) {
+                } elseif (array_key_exists($key, $newFieldData)) {
                     $output[$key]  = $newFieldData[$key];
                     $output[$code] = $newFieldData[$key];
                 } elseif (isset($oldFieldData[$code])) {
