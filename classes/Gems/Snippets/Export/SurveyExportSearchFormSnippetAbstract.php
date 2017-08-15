@@ -67,8 +67,8 @@ abstract class SurveyExportSearchFormSnippetAbstract extends \Gems_Snippets_Auto
         }
 
         $dates = array(
-            'gto_start_date' => $this->_('Track start'),
-            'gto_end_date'   => $this->_('Track end'),
+            'gr2t_start_date' => $this->_('Track start'),
+            'gr2t_end_date'   => $this->_('Track end'),
             'gto_valid_from'  => $this->_('Valid from'),
             'gto_valid_until' => $this->_('Valid until'),
             );
