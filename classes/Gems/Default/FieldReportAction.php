@@ -121,7 +121,10 @@ class Gems_Default_FieldReportAction extends \Gems_Controller_ModelSnippetAction
         $tracker      = $this->loader->getTracker();
         $this->engine = $tracker->getTrackEngine($this->trackId);
 
-        $orgs           = $this->currentUser->getRespondentOrgFilter();
+        $orgs         = $this->currentUser->getRespondentOrgFilter();
+        if (isset($filter['gr2t_id_organization'])) {
+            $orgs = array_intersect($orgs, $filter['gr2t_id_organization']);
+        }
         $this->orgWhere = " AND gr2t_id_organization IN (" . implode(", ", $orgs) . ")";
 
         $sql     = "SELECT COUNT(*)
