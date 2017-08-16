@@ -98,7 +98,7 @@ class ValuesMaintenanceDependency extends DependencyAbstract
                 'description'    => $this->_('Separate multiple values with a vertical bar (|)'),
                 'elementClass'   => 'Textarea',
                 'formatFunction' => array($this, 'formatValues'),
-                'minlength'      => 4,
+                'minlength'      => 3,// At least two single chars and a separator
                 'rows'           => 4,
                 'required'       => true,
                 ),
