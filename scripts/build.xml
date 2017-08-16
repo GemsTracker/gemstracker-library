@@ -41,6 +41,7 @@
                     <regexp pattern=",\s*(INDEX|KEY)\s+\w+\s*\([^)]+\)" replace="" ignoreCase="true"/>
 					<regexp pattern=",\s*[^PRIMARY]\sKEY\s*\([^)]+\)" replace="" multiline="true" ignoreCase="true"/>
 					<regexp pattern="/\*.*\*/" replace="" multiline="true" ignoreCase="true"/>
+                    <regexp pattern="(\s)BIGINT(\s)" replace="\1INTEGER\2" ignoreCase="true"/>  <!-- For primary key auto number -->
                     <regexp pattern="(\s)BOOLEAN(\s)" replace="\1TINYINT(1)\2" ignoreCase="true"/>
                     <regexp pattern="ENGINE=[^\s,;]+\s*" replace="" ignoreCase="true"/>
                     <regexp pattern="DEFAULT\s+CHARSET\s*=\s*[^\s,;]+\s+COLLATE\s*=\s*[^\s,;]+" replace="" ignoreCase="true"/>

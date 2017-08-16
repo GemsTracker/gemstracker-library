@@ -180,4 +180,17 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
 
         $this->assertArrayWithDateMatch($expected, $actual, '', 1, 0);
     }
+    
+    /**
+     * What happens with a field with a default value, when we create without providing data?
+     */
+    public function testCreateTrackDefaultFields()
+    {
+        $respondentTrack = $this->loader->getTracker()->createRespondentTrack(1234, 1, 1, 1);
+
+        $actual = $expected = $respondentTrack->getFieldData();
+        $expected['f__1'] = $expected['code'] = 'default';
+
+        $this->assertArrayWithDateMatch($expected, $actual, '', 1, 0);
+    }
 }

@@ -1,9 +1,9 @@
 
 CREATE TABLE gems__agenda_activities (
-        gaa_id_activity     bigint not null ,
+        gaa_id_activity     INTEGER not null ,
         gaa_name            varchar(250) ,
 
-        gaa_id_organization bigint,
+        gaa_id_organization INTEGER,
 
         gaa_name_for_resp   varchar(50) ,
         gaa_match_to        varchar(250) ,
@@ -13,9 +13,9 @@ CREATE TABLE gems__agenda_activities (
         gaa_filter          TINYINT(1) not null default 0,
 
         gaa_changed         TEXT not null default current_timestamp,
-        gaa_changed_by      bigint not null,
+        gaa_changed_by      INTEGER not null,
         gaa_created         TEXT not null default '0000-00-00 00:00:00',
-        gaa_created_by      bigint not null,
+        gaa_created_by      INTEGER not null,
 
         PRIMARY KEY (gaa_id_activity)
     )
@@ -23,10 +23,10 @@ CREATE TABLE gems__agenda_activities (
 
 
 CREATE TABLE gems__agenda_procedures (
-        gapr_id_procedure    bigint not null ,
+        gapr_id_procedure    INTEGER not null ,
         gapr_name            varchar(250) ,
 
-        gapr_id_organization bigint,
+        gapr_id_organization INTEGER,
 
         gapr_name_for_resp   varchar(50) ,
         gapr_match_to        varchar(250) ,
@@ -36,9 +36,9 @@ CREATE TABLE gems__agenda_procedures (
         gapr_filter          TINYINT(1) not null default 0,
 
         gapr_changed         TEXT not null default current_timestamp,
-        gapr_changed_by      bigint not null,
+        gapr_changed_by      INTEGER not null,
         gapr_created         TEXT not null default '0000-00-00 00:00:00',
-        gapr_created_by      bigint not null,
+        gapr_created_by      INTEGER not null,
 
         PRIMARY KEY (gapr_id_procedure)
     )
@@ -46,12 +46,12 @@ CREATE TABLE gems__agenda_procedures (
 
 
 CREATE TABLE gems__agenda_staff (
-        gas_id_staff        bigint not null ,
+        gas_id_staff        INTEGER not null ,
         gas_name            varchar(250) ,
         gas_function        varchar(50) ,
 
-        gas_id_organization bigint not null,
-        gas_id_user         bigint,
+        gas_id_organization INTEGER not null,
+        gas_id_user         INTEGER,
 
         gas_match_to        varchar(250) ,
 
@@ -59,9 +59,9 @@ CREATE TABLE gems__agenda_staff (
         gas_filter          TINYINT(1) not null default 0,
 
         gas_changed         TEXT not null default current_timestamp,
-        gas_changed_by      bigint not null,
+        gas_changed_by      INTEGER not null,
         gas_created         TEXT not null default '0000-00-00 00:00:00',
-        gas_created_by      bigint not null,
+        gas_created_by      INTEGER not null,
 
         PRIMARY KEY (gas_id_staff)
     )
@@ -69,9 +69,9 @@ CREATE TABLE gems__agenda_staff (
 
 
 CREATE TABLE gems__appointments (
-        gap_id_appointment      bigint not null ,
-        gap_id_user             bigint not null,
-        gap_id_organization     bigint not null,
+        gap_id_appointment      INTEGER not null ,
+        gap_id_user             INTEGER not null,
+        gap_id_organization     INTEGER not null,
 
         gap_source              varchar(20) not null default 'manual',
         gap_id_in_source        varchar(40),
@@ -92,19 +92,19 @@ CREATE TABLE gems__appointments (
         gap_admission_time      TEXT not null,
         gap_discharge_time      TEXT,
 
-        gap_id_attended_by      bigint,
-        gap_id_referred_by      bigint,
-        gap_id_activity         bigint,
-        gap_id_procedure        bigint,
-        gap_id_location         bigint,
+        gap_id_attended_by      INTEGER,
+        gap_id_referred_by      INTEGER,
+        gap_id_activity         INTEGER,
+        gap_id_procedure        INTEGER,
+        gap_id_location         INTEGER,
 
         gap_subject             varchar(250),
         gap_comment             TEXT,
 
         gap_changed             TEXT not null default current_timestamp,
-        gap_changed_by          bigint not null,
+        gap_changed_by          INTEGER not null,
         gap_created             TEXT not null,
-        gap_created_by          bigint not null,
+        gap_created_by          INTEGER not null,
 
         PRIMARY KEY (gap_id_appointment),
         UNIQUE (gap_id_in_source, gap_id_organization, gap_source)
@@ -112,7 +112,7 @@ CREATE TABLE gems__appointments (
     ;
 
 CREATE TABLE gems__appointment_filters (
-        gaf_id                  bigint not null,
+        gaf_id                  INTEGER not null,
         gaf_class               varchar(200) not null,
 
         gaf_manual_name         varchar(200),
@@ -129,9 +129,9 @@ CREATE TABLE gems__appointment_filters (
         gaf_active              TINYINT(1) not null default 1,
 
         gaf_changed             TEXT not null default current_timestamp,
-        gaf_changed_by          bigint not null,
+        gaf_changed_by          INTEGER not null,
         gaf_created             TEXT not null default '0000-00-00 00:00:00',
-        gaf_created_by          bigint not null,
+        gaf_created_by          INTEGER not null,
 
         PRIMARY KEY (gaf_id)
     )
@@ -146,20 +146,20 @@ CREATE TABLE "gems__chart_config" (
   "gcc_description" varchar(64),
 
   "gcc_changed"          TEXT not null default current_timestamp,
-  "gcc_changed_by"       bigint not null,
+  "gcc_changed_by"       INTEGER not null,
   "gcc_created"          TEXT not null,
-  "gcc_created_by"       bigint not null,
+  "gcc_created_by"       INTEGER not null,
 
   PRIMARY KEY ("gcc_id")
 
 )  ;
 CREATE TABLE gems__comm_jobs (
-        gcj_id_job bigint not null ,
+        gcj_id_job INTEGER not null ,
         gcj_id_order      int not null default 10,
 
-        gcj_id_message bigint not null,
+        gcj_id_message INTEGER not null,
 
-        gcj_id_user_as bigint not null,
+        gcj_id_user_as INTEGER not null,
 
         gcj_active TINYINT(1) not null default 1,
 
@@ -183,31 +183,31 @@ CREATE TABLE gems__comm_jobs (
 
         -- Optional filters
         gcj_target tinyint(1) NOT NULL DEFAULT '0',
-        gcj_id_organization bigint,
+        gcj_id_organization INTEGER,
         gcj_id_track        int,
         gcj_round_description varchar(100),
         gcj_id_survey       int,
 
         gcj_changed TEXT not null default current_timestamp,
-        gcj_changed_by bigint not null,
+        gcj_changed_by INTEGER not null,
         gcj_created TEXT not null default '0000-00-00 00:00:00',
-        gcj_created_by bigint not null,
+        gcj_created_by INTEGER not null,
 
         PRIMARY KEY (gcj_id_job)
    )
    ;
 
 CREATE TABLE gems__comm_templates (
-      gct_id_template bigint not null ,
+      gct_id_template INTEGER not null ,
 
       gct_name        varchar(100) not null,
       gct_target      varchar(32) not null,
       gct_code        varchar(64),
 
       gct_changed     TEXT not null default current_timestamp,
-      gct_changed_by  bigint not null,
+      gct_changed_by  INTEGER not null,
       gct_created     TEXT not null default '0000-00-00 00:00:00',
-      gct_created_by  bigint not null,
+      gct_created_by  INTEGER not null,
 
       PRIMARY KEY (gct_id_template),
       UNIQUE (gct_name)
@@ -223,7 +223,7 @@ INSERT INTO gems__comm_templates (gct_id_template, gct_name, gct_target, gct_cod
     (19, 'Linked account created', 'staff', 'linkedAccountCreated', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
 CREATE TABLE gems__comm_template_translations (
-      gctt_id_template  bigint not null,
+      gctt_id_template  INTEGER not null,
       gctt_lang      varchar(2) not null,
       gctt_subject      varchar(100),
       gctt_body         text,
@@ -265,9 +265,9 @@ CREATE TABLE gems__consents (
       gco_code varchar(20) not null default 'do not use',
 
       gco_changed TEXT not null default current_timestamp,
-      gco_changed_by bigint not null,
+      gco_changed_by INTEGER not null,
       gco_created TEXT not null,
-      gco_created_by bigint not null,
+      gco_created_by INTEGER not null,
 
       PRIMARY KEY (gco_description)
     )
@@ -282,7 +282,7 @@ INSERT INTO gems__consents
     ('Unknown', 30, 'do not use', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
 CREATE TABLE gems__groups (
-        ggp_id_group              bigint not null ,
+        ggp_id_group              INTEGER not null ,
         ggp_name                  varchar(30) not null,
         ggp_description           varchar(50) not null,
 
@@ -290,7 +290,7 @@ CREATE TABLE gems__groups (
         -- The ggp_role value(s) determines someones roles as set in the bootstrap
 
         ggp_may_set_groups        varchar(250),
-        ggp_default_group         bigint,
+        ggp_default_group         INTEGER,
 
         ggp_group_active          TINYINT(1) not null default 1,
         ggp_staff_members         TINYINT(1) not null default 0,
@@ -304,9 +304,9 @@ CREATE TABLE gems__groups (
         ggp_mask_settings         text,
 
         ggp_changed               TEXT not null default current_timestamp,
-        ggp_changed_by            bigint not null,
+        ggp_changed_by            INTEGER not null,
         ggp_created               TEXT not null,
-        ggp_created_by            bigint not null,
+        ggp_created_by            INTEGER not null,
 
         PRIMARY KEY(ggp_id_group)
     )
@@ -323,7 +323,7 @@ INSERT ignore INTO gems__groups
     (904, 'Respondents', 'Respondents', 802,, 1, 0, 1, 0, current_timestamp, 0);
 
 CREATE TABLE gems__locations (
-        glo_id_location     bigint not null ,
+        glo_id_location     INTEGER not null ,
         glo_name            varchar(40) ,
 
         -- Yes, quick and dirty, will correct later (probably)
@@ -350,22 +350,22 @@ CREATE TABLE gems__locations (
         glo_filter          TINYINT(1) not null default 0,
 
         glo_changed         TEXT not null default current_timestamp,
-        glo_changed_by      bigint not null,
+        glo_changed_by      INTEGER not null,
         glo_created         TEXT not null default '0000-00-00 00:00:00',
-        glo_created_by      bigint not null,
+        glo_created_by      INTEGER not null,
 
         PRIMARY KEY (glo_id_location)
     )
     ;
 
 CREATE TABLE gems__log_activity (
-        gla_id              bigint not null ,
+        gla_id              INTEGER not null ,
 
         gla_action          int not null,
-        gla_respondent_id   bigint,
+        gla_respondent_id   INTEGER,
 
-        gla_by              bigint,
-        gla_organization    bigint not null,
+        gla_by              INTEGER,
+        gla_organization    INTEGER not null,
         gla_role            varchar(20) not null,
 
         gla_changed         TINYINT(1) not null default 0,
@@ -382,11 +382,11 @@ CREATE TABLE gems__log_activity (
 
 
 CREATE TABLE gems__log_respondent_communications (
-        grco_id_action    bigint not null ,
+        grco_id_action    INTEGER not null ,
 
-        grco_id_to        bigint not null,
-        grco_id_by        bigint default 0,
-        grco_organization bigint not null,
+        grco_id_to        INTEGER not null,
+        grco_id_by        INTEGER default 0,
+        grco_organization INTEGER not null,
 
         grco_id_token     varchar(9),
 
@@ -396,12 +396,12 @@ CREATE TABLE gems__log_respondent_communications (
         grco_sender       varchar(120),
         grco_comments     varchar(120),
 
-        grco_id_message   bigint,
+        grco_id_message   INTEGER,
 
         grco_changed      TEXT not null default current_timestamp,
-        grco_changed_by   bigint not null,
+        grco_changed_by   INTEGER not null,
         grco_created      TEXT not null,
-        grco_created_by   bigint not null,
+        grco_created_by   INTEGER not null,
 
         PRIMARY KEY (grco_id_action)
     )
@@ -418,9 +418,9 @@ CREATE TABLE gems__log_setup (
         gls_on_change       TINYINT(1) not null default 1,
 
         gls_changed         TEXT not null default current_timestamp,
-        gls_changed_by      bigint not null,
+        gls_changed_by      INTEGER not null,
         gls_created         TEXT not null,
-        gls_created_by      bigint not null,
+        gls_created_by      INTEGER not null,
 
         PRIMARY KEY (gls_id_action)
     )
@@ -483,9 +483,9 @@ CREATE TABLE gems__mail_servers (
         gms_encryption varchar(20),
 
         gms_changed    TEXT not null default current_timestamp,
-        gms_changed_by bigint not null,
+        gms_changed_by INTEGER not null,
         gms_created    TEXT not null default '0000-00-00 00:00:00',
-        gms_created_by bigint not null,
+        gms_created_by INTEGER not null,
 
         PRIMARY KEY (gms_from)
     )
@@ -507,7 +507,7 @@ CREATE TABLE gems__openrosaforms (
     )
     ;
 CREATE TABLE gems__organizations (
-        gor_id_organization         bigint not null ,
+        gor_id_organization         INTEGER not null ,
 
         gor_name                    varchar(50)   not null,
         gor_code                    varchar(20),
@@ -538,16 +538,16 @@ CREATE TABLE gems__organizations (
         gor_has_login               TINYINT(1) not null default 1,
         gor_has_respondents         TINYINT(1) not null default 0,
         gor_add_respondents         TINYINT(1) not null default 1,
-        gor_respondent_group        bigint,
-        gor_create_account_template bigint,
-        gor_reset_pass_template     bigint,
+        gor_respondent_group        INTEGER,
+        gor_create_account_template INTEGER,
+        gor_reset_pass_template     INTEGER,
         gor_allowed_ip_ranges       text,
         gor_active                  TINYINT(1) not null default 1,
 
         gor_changed                 TEXT not null default current_timestamp,
-        gor_changed_by              bigint not null,
+        gor_changed_by              INTEGER not null,
         gor_created                 TEXT not null,
-        gor_created_by              bigint not null,
+        gor_created_by              INTEGER not null,
 
         PRIMARY KEY(gor_id_organization)
     )
@@ -619,9 +619,9 @@ CREATE TABLE gems__reception_codes (
       grc_active            TINYINT(1) not null default 1,
 
       grc_changed    TEXT not null default current_timestamp,
-      grc_changed_by bigint not null,
+      grc_changed_by INTEGER not null,
       grc_created    TEXT not null,
-      grc_created_by bigint not null,
+      grc_created_by INTEGER not null,
 
       PRIMARY KEY (grc_id_reception_code)
    )
@@ -640,11 +640,11 @@ INSERT INTO gems__reception_codes (grc_id_reception_code, grc_description, grc_s
 
 CREATE TABLE gems__respondent2org (
         gr2o_patient_nr         varchar(15) not null,
-        gr2o_id_organization    bigint not null,
+        gr2o_id_organization    INTEGER not null,
 
-        gr2o_id_user            bigint not null,
+        gr2o_id_user            INTEGER not null,
 
-        -- gr2o_id_physician       bigint,
+        -- gr2o_id_physician       INTEGER,
 
         -- gr2o_treatment          varchar(200),
         gr2o_mailable           TINYINT(1) not null default 1,
@@ -654,11 +654,11 @@ CREATE TABLE gems__respondent2org (
         gr2o_reception_code     varchar(20) default 'OK' not null,
 
         gr2o_opened             TEXT not null default current_timestamp,
-        gr2o_opened_by          bigint not null,
+        gr2o_opened_by          INTEGER not null,
         gr2o_changed            TEXT not null,
-        gr2o_changed_by         bigint not null,
+        gr2o_changed_by         INTEGER not null,
         gr2o_created            TEXT not null,
-        gr2o_created_by         bigint not null,
+        gr2o_created_by         INTEGER not null,
 
         PRIMARY KEY (gr2o_patient_nr, gr2o_id_organization),
         UNIQUE (gr2o_id_user, gr2o_id_organization)
@@ -667,9 +667,9 @@ CREATE TABLE gems__respondent2org (
 
 
 CREATE TABLE gems__respondent2track (
-        gr2t_id_respondent_track    bigint not null ,
+        gr2t_id_respondent_track    INTEGER not null ,
 
-        gr2t_id_user                bigint not null,
+        gr2t_id_user                INTEGER not null,
         gr2t_id_track               int not null,
 
         gr2t_track_info             varchar(250) ,
@@ -677,7 +677,7 @@ CREATE TABLE gems__respondent2track (
         gr2t_end_date               TEXT,
         gr2t_end_date_manual        TINYINT(1) not null default 0,
 
-        gr2t_id_organization        bigint not null,
+        gr2t_id_organization        INTEGER not null,
 
         gr2t_mailable               TINYINT(1) not null default 1,
         gr2t_active                 TINYINT(1) not null default 1,
@@ -688,23 +688,23 @@ CREATE TABLE gems__respondent2track (
         gr2t_comment                varchar(250),
 
         gr2t_changed                TEXT not null default current_timestamp,
-        gr2t_changed_by             bigint not null,
+        gr2t_changed_by             INTEGER not null,
         gr2t_created                TEXT not null,
-        gr2t_created_by             bigint not null,
+        gr2t_created_by             INTEGER not null,
 
         PRIMARY KEY (gr2t_id_respondent_track)
     )
     ;
 
 CREATE TABLE gems__respondent2track2appointment (
-        gr2t2a_id_respondent_track  bigint not null,
-        gr2t2a_id_app_field         bigint not null,
-        gr2t2a_id_appointment       bigint,
+        gr2t2a_id_respondent_track  INTEGER not null,
+        gr2t2a_id_app_field         INTEGER not null,
+        gr2t2a_id_appointment       INTEGER,
 
         gr2t2a_changed              TEXT not null default current_timestamp,
-        gr2t2a_changed_by           bigint not null,
+        gr2t2a_changed_by           INTEGER not null,
         gr2t2a_created              TEXT not null,
-        gr2t2a_created_by           bigint not null,
+        gr2t2a_created_by           INTEGER not null,
 
         PRIMARY KEY(gr2t2a_id_respondent_track, gr2t2a_id_app_field)
     )
@@ -712,15 +712,15 @@ CREATE TABLE gems__respondent2track2appointment (
 
 
 CREATE TABLE gems__respondent2track2field (
-        gr2t2f_id_respondent_track bigint not null,
-        gr2t2f_id_field bigint not null,
+        gr2t2f_id_respondent_track INTEGER not null,
+        gr2t2f_id_field INTEGER not null,
 
         gr2t2f_value text,
 
         gr2t2f_changed TEXT not null default current_timestamp,
-        gr2t2f_changed_by bigint not null,
+        gr2t2f_changed_by INTEGER not null,
         gr2t2f_created TEXT not null,
-        gr2t2f_created_by bigint not null,
+        gr2t2f_created_by INTEGER not null,
 
         PRIMARY KEY(gr2t2f_id_respondent_track,gr2t2f_id_field)
     )
@@ -728,7 +728,7 @@ CREATE TABLE gems__respondent2track2field (
 
 
 CREATE TABLE gems__respondents (
-        grs_id_user                bigint not null,
+        grs_id_user                INTEGER not null,
 
         grs_ssn                    varchar(128) unique,
 
@@ -757,9 +757,9 @@ CREATE TABLE gems__respondents (
         -- grs_phone_4                varchar(25) ,
 
         grs_changed                TEXT not null default current_timestamp,
-        grs_changed_by             bigint not null,
+        grs_changed_by             INTEGER not null,
         grs_created                TEXT not null,
-        grs_created_by             bigint not null,
+        grs_created_by             INTEGER not null,
 
         PRIMARY KEY(grs_id_user)
     )
@@ -789,9 +789,9 @@ CREATE TABLE gems__respondent_relations (
         grr_active                  TINYINT(1) not null default 1,
 
         grr_changed                 TEXT not null default current_timestamp,
-        grr_changed_by              bigint not null,
+        grr_changed_by              INTEGER not null,
         grr_created                 TEXT not null,
-        grr_created_by              bigint not null,
+        grr_created_by              INTEGER not null,
 
         PRIMARY KEY (grr_id)
     )
@@ -799,7 +799,7 @@ CREATE TABLE gems__respondent_relations (
     ;
 
 CREATE TABLE gems__roles (
-      grl_id_role bigint not null ,
+      grl_id_role INTEGER not null ,
       grl_name varchar(30) not null,
       grl_description varchar(50) not null,
 
@@ -810,9 +810,9 @@ CREATE TABLE gems__roles (
       -- The grl_privilege is a comma-separated list of privileges for this role
 
       grl_changed TEXT not null default current_timestamp,
-      grl_changed_by bigint not null,
+      grl_changed_by INTEGER not null,
       grl_created TEXT not null,
-      grl_created_by bigint not null,
+      grl_created_by INTEGER not null,
 
       PRIMARY KEY(grl_id_role)
    )
@@ -983,12 +983,12 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     ,pr.upgrade,pr.upgrade.all,pr.upgrade.one,pr.upgrade.from,pr.upgrade.to',
     CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 CREATE TABLE gems__rounds (
-        gro_id_round           bigint not null ,
+        gro_id_round           INTEGER not null ,
 
-        gro_id_track           bigint not null,
+        gro_id_track           INTEGER not null,
         gro_id_order           int not null default 10,
 
-        gro_id_survey          bigint not null,
+        gro_id_survey          INTEGER not null,
 
         --- fields for relations
         gro_id_relationfield   bigint(2),
@@ -1002,14 +1002,14 @@ CREATE TABLE gems__rounds (
         gro_changed_event      varchar(128),
         gro_display_event      varchar(128),
 
-        gro_valid_after_id     bigint,
+        gro_valid_after_id     INTEGER,
         gro_valid_after_source varchar(12) not null default 'tok',
         gro_valid_after_field  varchar(64) not null
                                default 'gto_valid_from',
         gro_valid_after_unit   char(1) not null default 'M',
         gro_valid_after_length int not null default 0,
 
-        gro_valid_for_id       bigint,
+        gro_valid_for_id       INTEGER,
         gro_valid_for_source   varchar(12) not null default 'nul',
         gro_valid_for_field    varchar(64),
         gro_valid_for_unit     char(1) not null default 'M',
@@ -1022,9 +1022,9 @@ CREATE TABLE gems__rounds (
         gro_code               varchar(64),
 
         gro_changed            TEXT not null default current_timestamp,
-        gro_changed_by         bigint not null,
+        gro_changed_by         INTEGER not null,
         gro_created            TEXT not null,
-        gro_created_by         bigint not null,
+        gro_created_by         INTEGER not null,
 
         PRIMARY KEY (gro_id_round)
     )
@@ -1073,10 +1073,10 @@ CREATE TABLE gems__sources (
 -- Table containing the project staff
 --
 CREATE TABLE gems__staff (
-        gsf_id_user				bigint not null,
+        gsf_id_user				INTEGER not null,
 
         gsf_login				varchar(20) not null,
-        gsf_id_organization		bigint not null,
+        gsf_id_organization		INTEGER not null,
 
         gsf_active				TINYINT(1) default 1,
 
@@ -1086,7 +1086,7 @@ CREATE TABLE gems__staff (
         gsf_last_failed			TEXT,
         -- end depreciated
 
-        gsf_id_primary_group	bigint,
+        gsf_id_primary_group	INTEGER,
         gsf_iso_lang			char(2) not null default 'en',
         gsf_logout_on_survey	TINYINT(1) not null default 0,
 		gsf_mail_watcher		TINYINT(1) not null default 0,
@@ -1116,9 +1116,9 @@ CREATE TABLE gems__staff (
         -- end depreciated
 
         gsf_changed				TEXT not null default current_timestamp,
-        gsf_changed_by			bigint not null,
+        gsf_changed_by			INTEGER not null,
         gsf_created				TEXT not null,
-        gsf_created_by			bigint not null,
+        gsf_created_by			INTEGER not null,
 
         PRIMARY KEY (gsf_id_user),
         UNIQUE (gsf_login, gsf_id_organization)
@@ -1127,15 +1127,15 @@ CREATE TABLE gems__staff (
 
 
 CREATE TABLE gems__staff2groups (
-        gs2g_id_user bigint not null,
-        gs2g_id_group bigint not null,
+        gs2g_id_user INTEGER not null,
+        gs2g_id_group INTEGER not null,
 
         gs2g_active TINYINT(1) not null default 1,
 
         gs2g_changed TEXT not null default current_timestamp,
-        gs2g_changed_by bigint not null,
+        gs2g_changed_by INTEGER not null,
         gs2g_created TEXT not null,
-        gs2g_created_by bigint not null,
+        gs2g_created_by INTEGER not null,
 
         PRIMARY KEY (gs2g_id_user, gs2g_id_group)
     )
@@ -1160,7 +1160,7 @@ CREATE TABLE gems__surveys (
         gsu_active                  TINYINT(1) not null default 0,
         gsu_status                  varchar(127) ,
 
-        gsu_id_primary_group        bigint,
+        gsu_id_primary_group        INTEGER,
 
         gsu_insertable              TINYINT(1) not null default 0,
         gsu_valid_for_unit          char(1) not null default 'M',
@@ -1176,9 +1176,9 @@ CREATE TABLE gems__surveys (
         gsu_export_code             varchar(64),
 
         gsu_changed                 TEXT not null default current_timestamp,
-        gsu_changed_by              bigint not null,
+        gsu_changed_by              INTEGER not null,
         gsu_created                 TEXT not null,
-        gsu_created_by              bigint not null,
+        gsu_created_by              INTEGER not null,
 
         PRIMARY KEY(gsu_id_survey)
     )
@@ -1199,9 +1199,9 @@ CREATE TABLE gems__survey_questions (
         gsq_description     text ,
 
         gsq_changed         TEXT not null default current_timestamp,
-        gsq_changed_by      bigint not null,
+        gsq_changed_by      INTEGER not null,
         gsq_created         TEXT not null,
-        gsq_created_by      bigint not null,
+        gsq_created_by      INTEGER not null,
 
         PRIMARY KEY (gsq_id_survey, gsq_name)
     )
@@ -1217,9 +1217,9 @@ CREATE TABLE gems__survey_question_options (
         gsqo_label          varchar(100) ,
 
         gsqo_changed        TEXT not null default current_timestamp,
-        gsqo_changed_by     bigint not null,
+        gsqo_changed_by     INTEGER not null,
         gsqo_created        TEXT not null,
-        gsqo_created_by     bigint not null,
+        gsqo_created_by     INTEGER not null,
 
         PRIMARY KEY (gsqo_id_survey, gsqo_name, gsqo_order)
     )
@@ -1228,16 +1228,16 @@ CREATE TABLE gems__survey_question_options (
 CREATE TABLE gems__tokens (
         gto_id_token            varchar(9) not null,
 
-        gto_id_respondent_track bigint not null,
-        gto_id_round            bigint not null,
+        gto_id_respondent_track INTEGER not null,
+        gto_id_round            INTEGER not null,
 
         -- non-changing fields calculated from previous two:
-        gto_id_respondent       bigint not null,
-        gto_id_organization     bigint not null,
-        gto_id_track            bigint not null,
+        gto_id_respondent       INTEGER not null,
+        gto_id_organization     INTEGER not null,
+        gto_id_track            INTEGER not null,
 
         -- values initially filled from gems__rounds, but that may get different values later on
-        gto_id_survey           bigint not null,
+        gto_id_survey           INTEGER not null,
 
         -- values initially filled from gems__rounds, but that might get different values later on, but but not now
         gto_round_order         int not null default 10,
@@ -1272,9 +1272,9 @@ CREATE TABLE gems__tokens (
         gto_return_url          varchar(250),
 
         gto_changed             TEXT not null default current_timestamp,
-        gto_changed_by          bigint not null,
+        gto_changed_by          INTEGER not null,
         gto_created             TEXT not null,
-        gto_created_by          bigint not null,
+        gto_created_by          INTEGER not null,
 
         PRIMARY KEY (gto_id_token)
     )
@@ -1282,7 +1282,7 @@ CREATE TABLE gems__tokens (
 
 
 CREATE TABLE gems__token_attempts (
-        gta_id_attempt bigint not null ,
+        gta_id_attempt INTEGER not null ,
         gta_id_token varchar(9) not null,
         gta_ip_address varchar(64) not null,
         gta_datetime TEXT not null default current_timestamp,
@@ -1298,7 +1298,7 @@ CREATE TABLE gems__token_replacements (
         gtrp_id_token_old           varchar(9) not null,
 
         gtrp_created                TEXT not null default CURRENT_TIMESTAMP,
-        gtrp_created_by             bigint not null,
+        gtrp_created_by             INTEGER not null,
 
         PRIMARY KEY (gtrp_id_token_new)
     )
@@ -1328,9 +1328,9 @@ CREATE TABLE gems__tracks (
         gtr_organizations           varchar(250) ,
 
         gtr_changed                 TEXT not null default current_timestamp,
-        gtr_changed_by              bigint not null,
+        gtr_changed_by              INTEGER not null,
         gtr_created                 TEXT not null,
-        gtr_created_by              bigint not null,
+        gtr_created_by              INTEGER not null,
 
         PRIMARY KEY (gtr_id_track)
     )
@@ -1338,7 +1338,7 @@ CREATE TABLE gems__tracks (
 
 
 CREATE TABLE gems__track_appointments (
-        gtap_id_app_field       bigint not null ,
+        gtap_id_app_field       INTEGER not null ,
         gtap_id_track           int not null,
 
         gtap_id_order           int not null default 10,
@@ -1352,7 +1352,7 @@ CREATE TABLE gems__track_appointments (
         gtap_required           TINYINT(1) not null default false,
         gtap_readonly           TINYINT(1) not null default false,
 
-        gtap_filter_id          bigint,
+        gtap_filter_id          INTEGER,
         -- deprecated
         gtap_after_next         TINYINT(1) not null default 1,
         -- deprecated
@@ -1364,12 +1364,12 @@ CREATE TABLE gems__track_appointments (
         gtap_uniqueness         tinyint not null default 0,
 
         gtap_create_track       TINYINT(1) not null default 0,
-        gtap_create_wait_days   bigint signed not null default 182,
+        gtap_create_wait_days   INTEGER signed not null default 182,
 
         gtap_changed            TEXT not null default current_timestamp,
-        gtap_changed_by         bigint not null,
+        gtap_changed_by         INTEGER not null,
         gtap_created            TEXT not null,
-        gtap_created_by         bigint not null,
+        gtap_created_by         INTEGER not null,
 
         PRIMARY KEY (gtap_id_app_field)
     )
@@ -1377,7 +1377,7 @@ CREATE TABLE gems__track_appointments (
 
 
 CREATE TABLE gems__track_fields (
-        gtf_id_field            bigint not null ,
+        gtf_id_field            INTEGER not null ,
         gtf_id_track            int not null,
 
         gtf_id_order            int not null default 10,
@@ -1398,9 +1398,9 @@ CREATE TABLE gems__track_fields (
         gtf_readonly            TINYINT(1) not null default false,
 
         gtf_changed             TEXT not null default current_timestamp,
-        gtf_changed_by          bigint not null,
+        gtf_changed_by          INTEGER not null,
         gtf_created             TEXT not null,
-        gtf_created_by          bigint not null,
+        gtf_created_by          INTEGER not null,
 
         PRIMARY KEY (gtf_id_field)
     )
@@ -1410,7 +1410,7 @@ CREATE TABLE gems__track_fields (
 -- Support table for generating unique staff/respondent id's
 --
 CREATE TABLE gems__user_ids (
-        gui_id_user          bigint not null,
+        gui_id_user          INTEGER not null,
 
         gui_created          TEXT not null,
 
@@ -1421,18 +1421,18 @@ CREATE TABLE gems__user_ids (
 -- Table containing the users that are allowed to login
 --
 CREATE TABLE gems__user_logins (
-        gul_id_user          bigint not null ,
+        gul_id_user          INTEGER not null ,
 
         gul_login            varchar(30) not null,
-        gul_id_organization  bigint not null,
+        gul_id_organization  INTEGER not null,
 
         gul_user_class       varchar(30) not null default 'NoLogin',
         gul_can_login        TINYINT(1) not null default 0,
 
         gul_changed          TEXT not null default current_timestamp,
-        gul_changed_by       bigint not null,
+        gul_changed_by       INTEGER not null,
         gul_created          TEXT not null,
-        gul_created_by       bigint not null,
+        gul_created_by       INTEGER not null,
 
         PRIMARY KEY (gul_id_user),
         UNIQUE (gul_login, gul_id_organization)
@@ -1444,7 +1444,7 @@ CREATE TABLE gems__user_logins (
 --
 CREATE TABLE gems__user_login_attempts (
         gula_login            varchar(30) not null,
-        gula_id_organization  bigint not null,
+        gula_id_organization  INTEGER not null,
 
     	gula_failed_logins    int(11) not null default 0,
         gula_last_failed      TEXT,
@@ -1457,7 +1457,7 @@ CREATE TABLE gems__user_login_attempts (
 -- Table containing the users that are allowed to login
 --
 CREATE TABLE gems__user_passwords (
-        gup_id_user          bigint not null,
+        gup_id_user          INTEGER not null,
 
         gup_password         varchar(32),
         gup_reset_key        varchar(64),
@@ -1466,9 +1466,9 @@ CREATE TABLE gems__user_passwords (
         gup_last_pwd_change      TEXT not null default 0,  -- Can only have on current_timestamp so default to 0
 
         gup_changed          TEXT not null default current_timestamp,
-        gup_changed_by       bigint not null,
+        gup_changed_by       INTEGER not null,
         gup_created          TEXT not null,
-        gup_created_by       bigint not null,
+        gup_created_by       INTEGER not null,
 
         PRIMARY KEY (gup_id_user),
         UNIQUE (gup_reset_key)

@@ -47,6 +47,13 @@ abstract class Gems_Test_DbTestAbstract extends \Zend_Test_PHPUnit_DatabaseTestC
         parent::setUp();
 
         $this->db = $this->getConnection()->getConnection();
+        $connection = $this->getConnection()->getConnection()->getConnection();
+        
+        // Now add some utility functions that sqlite does not have. Copied from
+        // Drupal: https://github.com/drupal/drupal/blob/8.4.x/core/lib/Drupal/Core/Database/Driver/sqlite/Connection.php
+        /* @var $connection \PDO */
+        $connection->sqliteCreateFunction('concat', array(__CLASS__, 'sqlFunctionConcat'));
+        $connection->sqliteCreateFunction('concat_ws', array(__CLASS__, 'sqlFunctionConcatWs'));
 
         \Zend_Registry::set('db', $this->db);
         \Zend_Db_Table::setDefaultAdapter($this->db);
@@ -95,5 +102,32 @@ abstract class Gems_Test_DbTestAbstract extends \Zend_Test_PHPUnit_DatabaseTestC
 
         // For successful testing of the complete tokens class, we need more tables
         return array($path . 'sqllite/create-lite.sql');
+    }
+    
+    /**
+     * SQLite compatibility implementation for the CONCAT() SQL function.
+     */
+    public static function sqlFunctionConcat() {
+        $args = func_get_args();
+        return implode('', $args);
+    }
+
+    /**
+     * SQLite compatibility implementation for the CONCAT_WS() SQL function.
+     *
+     * @see http://dev.mysql.com/doc/refman/5.6/en/string-functions.html#function_concat-ws
+     */
+    public static function sqlFunctionConcatWs() {
+        $args = func_get_args();
+        $separator = array_shift($args);
+        // If the separator is NULL, the result is NULL.
+        if ($separator === FALSE || is_null($separator)) {
+            return NULL;
+        }
+        // Skip any NULL values after the separator argument.
+        $args = array_filter($args, function ($value) {
+            return !is_null($value);
+        });
+        return implode($separator, $args);
     }
 }
