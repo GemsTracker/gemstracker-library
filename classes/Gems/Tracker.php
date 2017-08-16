@@ -241,7 +241,6 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
     public function createRespondentTrack($respondentId, $organizationId, $trackId, $userId, $respTrackData = array(), array $trackFieldsData = array())
     {
         $trackEngine = $this->getTrackEngine($trackId);
-        $fieldsDef   = $trackEngine->getFieldsDefinition();
 
         // Process $respTrackData and gr2t_start_date values
         if ($respTrackData && (! is_array($respTrackData))) {
@@ -254,12 +253,6 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
         }
         $respTrackData['gr2t_id_user']         = $respondentId;
         $respTrackData['gr2t_id_organization'] = $organizationId;
-
-        // Process track fields.
-        $usedFields = $fieldsDef->processBeforeSave($trackFieldsData, $respTrackData);
-        if ($usedFields && (! array_key_exists('gr2t_track_info', $respTrackData))) {
-            $respTrackData['gr2t_track_info'] = $fieldsDef->calculateFieldsInfo($usedFields);
-        }
 
         // Create the filter values for creating the track
         $filter['gtr_id_track'] = $trackId;
@@ -276,10 +269,8 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
         // Load the track object using only id (otherwise wrong respondent data is loaded)
         $respTrack      = $this->getRespondentTrack($respTrackData['gr2t_id_respondent_track']);
 
-        // Save the fields
-        if ($usedFields) {
-            $fieldsDef->saveFields($respTrack->getRespondentTrackId(), $usedFields);
-        }
+        // Save the fields, this also updates track info in needed
+        $respTrack->setFieldData($trackFieldsData);
 
         // Create the actual tokens!!!!
         $trackEngine->checkRoundsFor($respTrack, $userId);
