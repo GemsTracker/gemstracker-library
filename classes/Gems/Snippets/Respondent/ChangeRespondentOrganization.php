@@ -112,9 +112,8 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
         $sql  = "SELECT gr2o_id_organization, gr2o_patient_nr FROM gems__respondent2org WHERE gr2o_id_user = ?";
 
         $availableOrganizations = $this->util->getDbLookup()->getOrganizationsWithRespondents();
-        $copyOption             = $this->formData['change_method'] == 'copy';
+        $shareOption            = $this->formData['change_method'] == 'share';
         $disabled               = array();
-        $disablePatientNumber   = false;
         $existingOrgs           = $this->db->fetchPairs($sql, $this->respondent->getId());
         foreach ($availableOrganizations as $orgId => &$orgName) {
             $orglabel = \MUtil_Html::create('spaced');
@@ -129,16 +128,15 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
                         $existingOrgs[$orgId]
                         ));
 
-                if ($copyOption) {
-                    $disablePatientNumber = $this->formData['gems__respondent2org'] = $orgId;
-                } else {
+                if ($shareOption) {      
+                    // Only disable when we just share the patient and he already exists
                     $disabled[] = $orgId;
                 }
             }
 
             $orgName = $orglabel->render($this->view);
         }
-
+        
         $bridge->addRadio('gr2o_id_organization',
                 'label', $this->_('New organization'),
                 'disable', $disabled,
@@ -150,7 +148,17 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
                         $this->_('You cannot change to this organization')
                         )
                 );
-
+        
+        if (in_array($this->formData['gr2o_id_organization'], $disabled)) {
+            // Selected organization is now unavailable, reset selection
+            $this->formData['gr2o_id_organization'] = null;
+        }
+        
+        // Only allow to set a patient number when not exists in selected destination organization
+        $disablePatientNumber = array_key_exists($this->formData['gr2o_id_organization'], $existingOrgs);
+        if ($disablePatientNumber) {
+            $this->formData['gr2o_patient_nr'] = $existingOrgs[$this->formData['gr2o_id_organization']];
+        }
         $bridge->addText('gr2o_patient_nr', 'label', $this->_('New respondent nr'),
                 'disabled', $disablePatientNumber ? 'disabled' : null
                 );
@@ -210,7 +218,7 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
                 $model = $this->respondent->getRespondentModel();
 
             } else {
-                $model = $this->loader->getModels()->getRespondentModel(true);;
+                $model = $this->loader->getModels()->getRespondentModel(true);
             }
             $model->applyDetailSettings();
         }
