@@ -144,7 +144,7 @@ class OrganizationControllerTest extends ControllerTestAbstract
                 ]
             ],
             [
-                'OrganizationController-Export-expected#4.xml',
+                'OrganizationController-Export-expected#3.xml',
                 'StreamingExcelExport',
                 [
                     'format'    => [
