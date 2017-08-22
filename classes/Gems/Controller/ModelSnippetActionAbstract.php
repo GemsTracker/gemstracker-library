@@ -363,9 +363,12 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
                 $batch->autoStart = true;
             }
 
-
-
-            if ($batch->run($this->request)) {
+            if (MUtil_Console::isConsole()) {
+                // This is for unit tests, if we want to be able to really export from 
+                // cli we need to place the exported file somewhere. 
+                // This is out of scope for now.
+                $batch->runContinuous();
+            } elseif ($batch->run($this->request)) {
                 exit;
             } else {
                 $controller = $this;
