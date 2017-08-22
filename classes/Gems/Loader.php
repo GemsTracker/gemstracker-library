@@ -391,15 +391,6 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return \Gems_Export
-     */
-    public function getTestExport()
-    {
-        return $this->_getClass('excelExport', 'Export_ExcelExport');
-    }
-
-    /**
-     *
      * @return \Gems_Tracker_TrackerInterface
      */
     public function getTracker()
