@@ -63,7 +63,7 @@ class Gems_Export extends \Gems_Loader_TargetLoaderAbstract
      */
     protected $_defaults = array(
         'exportmodelsource' => 'AnswerExportModelSource',
-        'type' => 'ExcelExport'
+        'type' => 'StreamingExcelExport'
     );
 
     /**

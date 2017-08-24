@@ -1398,6 +1398,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
             return 0;
         }
 
+        //\MUtil_Echo::track($fieldData);
         $this->_fieldData = $this->_mergeFieldValues($fieldData, $this->getFieldData(), $trackEngine);
 
         $changed = $trackEngine->getFieldsDefinition()->saveFields($this->_respTrackId, $this->_fieldData);

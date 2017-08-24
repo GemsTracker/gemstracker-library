@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataset>
+    <gems__organizations
+        gor_id_organization="10"
+        gor_name="testorg"
+        gor_changed_by="1"
+        gor_created_by="1"
+        gor_accessible_by="::"
+        gor_created="2017-08-09"
+    />
+    <gems__organizations
+        gor_id_organization="11"
+        gor_name="testorg2"
+        gor_changed_by="1"
+        gor_created_by="1"
+        gor_accessible_by=":10:12:"
+        gor_created="2017-08-09"
+    />
+    <gems__organizations
+        gor_id_organization="12"
+        gor_name="testorg2"
+        gor_changed_by="1"
+        gor_created_by="1"
+        gor_accessible_by=""
+        gor_created="2017-08-09"
+    />
+</dataset>
