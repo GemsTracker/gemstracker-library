@@ -109,7 +109,7 @@ class RespondentModelTest extends AbstractModelTest {
                 ->will($this->returnValue(1));
 
         GemsEscort::getInstance()->currentUser = $currentUser;
-        $this->currentUser                      = $currentUser;
+        $this->currentUser                     = $currentUser;
     }
 
     protected function setUpApplication() {
