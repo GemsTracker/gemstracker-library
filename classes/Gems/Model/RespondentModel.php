@@ -559,6 +559,60 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
 
         return $this;
     }
+    
+    /**
+     * Copy a respondent to a new organization
+     * 
+     * If you want to share a respondent(id) with another organization use this
+     * method. 
+     * 
+     * @param int $fromOrgId            Id of the sending organization
+     * @param string $fromPid           Respondent number of the sending organization
+     * @param int $toOrgId              Id of the receiving organization
+     * @param string $toPid             Respondent number of the sending organization
+     * @param bool $keepConsent         Should new organization inherit the consent of the old organization or not?
+     * @return array The new respondent
+     * @throws \Gems_Exception
+     */
+    public function copyToOrg($fromOrgId, $fromPid, $toOrgId, $toPid, $keepConsent = false)
+    {
+        // Maybe we should disable masking, just to be sure
+        $this->currentUser->disableMask();
+
+        // Do some sanity checks
+        $fromPatient = $this->loadFirst(['gr2o_id_organization' => $fromOrgId, 'gr2o_patient_nr' => $fromPid]);
+        if (empty($fromPatient)) {
+            throw new \Gems_Exception($this->_('Respondent not found in sending organization.'));
+        }
+
+        $toPatientByPid        = $this->loadFirst(['gr2o_id_organization' => $toOrgId, 'gr2o_patient_nr' => $toPid]);
+        $toPatientByRespondent = $this->loadFirst(['gr2o_id_organization' => $toOrgId, 'gr2o_id_user' => $fromPatient['gr2o_id_user']]);
+        if (!empty($toPatientByPid) && empty($toPatientByRespondent)) {
+            // Could be the same, or someone else... just return an error for now maybe offer to mark as duplicate and merge records later on
+            throw new \Gems_Exception($this->_('Respondent with requested respondent number already exists in receiving organization.'));
+        }
+        if (!empty($toPatientByRespondent)) {
+            // No action needed, maybe also report the number we found?
+            throw new \Gems_Exception($this->_('Respondent already exists in destination organization, but with different respondent number.'));
+        }
+
+        // Ready to go, unset consent if needed
+        $toPatient = $fromPatient;
+        if (!$keepConsent) {
+            unset($toPatient['gr2o_consent']);
+        }
+
+        // And save the record
+        $toPatient['gr2o_patient_nr']      = $toPid;
+        $toPatient['gr2o_id_organization'] = $toOrgId;
+        $toPatient['gr2o_reception_code']  = \GemsEscort::RECEPTION_OK;        
+        $result = $this->save($toPatient);
+
+        // Now re-enable the mask feature
+        $this->currentUser->enableMask();
+
+        return $result;
+    }
 
     /**
      * Count the number of tracks the respondent has for this organization
@@ -726,6 +780,10 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
     /**
      * Merge two patients (in the same organization)
      * 
+     * A respondent can only exist twice in the same organization when the respondent
+     * has multiple respondent id's. When ssn is set correctly this can not happen 
+     * so probably one with and one without or both without ssn.
+     * 
      * @param string $newPid
      * @param string $oldPid
      * @param int $orgId
@@ -734,13 +792,19 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
      */
     public function merge($newPid, $oldPid, $orgId)
     {
-        $patients = $this->load(array(
+        // Maybe we should disable masking, just to be sure
+        $this->currentUser->disableMask();
+
+        $patients = $this->load([
             'gr2o_id_organization' => $orgId,
-            'gr2o_patient_nr' => array($oldPid, $newPid)
-            ));
-        
+            'gr2o_patient_nr'      => array($oldPid, $newPid)
+        ]);
+
+        // Now re-enable the mask feature
+        $this->currentUser->enableMask();
+
         $cnt = count($patients);
-        
+
         switch ($cnt) {
             case 1:
                 // We only have one, check if it is the new number
@@ -749,11 +813,8 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                     return \Gems\Model\MergeResult::FIRST;
                 }
                 
-                // Not the new number, we can simply rename
-                $patient['gr2o_patient_nr'] = $newPid;
-                $copyKey = $this->getKeyCopyName('gr2o_patient_nr');
-                $patient[$copyKey] = $oldPid;
-                $this->save($patient);
+                // Not the new number, we can simply move
+                $this->move($orgId, $oldPid, $orgId, $newPid);
                 return \Gems\Model\MergeResult::SECOND;
                 break;
                 
@@ -831,6 +892,46 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         }
         
         return false;
+    }
+    
+    /** 
+     * Move a respondent to a new organization and/or change it's number
+     * 
+     * This not be a copy, it will be renamed. Use copyToOrg if you want to make a copy.
+     * 
+     * @param int $fromOrgId            Id of the sending organization
+     * @param string $fromPid           Respondent number of the sending organization
+     * @param int $toOrgId              Id of the receiving organization
+     * @param string $toPid             Respondent number of the sending organization
+     * @return array The new respondent
+     */
+    public function move($fromOrgId, $fromPid, $toOrgId, $toPid)
+    {
+        // Maybe we should disable masking, just to be sure
+        $this->currentUser->disableMask();
+        
+        $patient = $this->loadFirst([
+            'gr2o_id_organization' => $fromOrgId,
+            'gr2o_patient_nr'      => $fromPid
+        ]);       
+        
+        if ($fromPid !== $toPid) {
+            $patient['gr2o_patient_nr'] = $toPid;
+            $copyKey = $this->getKeyCopyName('gr2o_patient_nr');
+            $patient[$copyKey] = $fromPid;
+        }
+        if ($fromOrgId !== $toOrgId) {
+            $patient['gr2o_id_organization'] = $toOrgId;
+            $copyKey = $this->getKeyCopyName('gr2o_id_organization');
+            $patient[$copyKey] = $fromOrgId;
+        }
+        
+        $result = $this->save($patient);
+        
+        // Now re-enable the mask feature
+        $this->currentUser->enableMask();
+        
+        return $result;
     }
 
     /**

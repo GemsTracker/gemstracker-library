@@ -350,7 +350,7 @@ class Gems_Util_DbLookup extends UtilAbstract
     }
 
     /**
-     * Returns a list of the organizations that have respondents.
+     * Returns a list of the organizations that (can) have respondents.
      *
      * @return array List of the active organizations
      */

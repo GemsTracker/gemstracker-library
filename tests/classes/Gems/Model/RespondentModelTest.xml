@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<dataset>
+    <gems__respondents grs_id_user="123" grs_changed="2000-01-15" grs_changed_by="1" grs_created="2000-01-15" grs_created_by="1"/>
+    <gems__respondent2org 
+        gr2o_patient_nr="o1p1" 
+        gr2o_id_organization="1" 
+        gr2o_id_user="123" 
+        gr2o_opened="2000-01-15" 
+        gr2o_opened_by="1" 
+        gr2o_changed="2000-01-15" 
+        gr2o_changed_by="1" 
+        gr2o_created="2000-01-15" 
+        gr2o_created_by="1"
+    />
+    <gems__organizations 
+        gor_id_organization = "1" 
+        gor_name = "org1"
+        gor_created="2000-01-15" 
+        gor_created_by = "1"
+        gor_changed_by = "1"
+        gor_changed="2000-01-15" 
+    />
+    <gems__organizations 
+        gor_id_organization = "3" 
+        gor_name = "org3"
+        gor_created="2000-01-15" 
+        gor_created_by = "1"
+        gor_changed_by = "1"
+        gor_changed="2000-01-15" 
+    />
+</dataset>
