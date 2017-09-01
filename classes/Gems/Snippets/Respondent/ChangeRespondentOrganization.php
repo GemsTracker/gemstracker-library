@@ -293,7 +293,7 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
 
             case 'move':
                 $this->_changed = $this->saveTo($fromOrgId, $fromPid, $toOrgId, $toPatientId);
-                $this->_changed += $this->saveMoveTracks($fromOrgId, $fromRespId, $toOrgId, $toPatientId, false);
+                $this->_changed += $this->saveMoveTracks($fromOrgId, $fromRespId, $toOrgId, $toPatientId, true);
                 break;
 
             default:
