@@ -179,8 +179,10 @@ class Gems_Tracker_Engine_AnyStepEngine extends \Gems_Tracker_Engine_StepEngineA
 
         switch ($fieldSource) {
             case parent::ANSWER_TABLE:
-                if ($prev = $respTrack->getActiveRoundToken($prevRoundId, $token) && $prev->isCompleted()) {
-                    $date = $prev->getAnswerDateTime($fieldName);
+                if ($prev = $respTrack->getActiveRoundToken($prevRoundId, $token)) {
+                    if ($prev->isCompleted()) {
+                        $date = $prev->getAnswerDateTime($fieldName);
+                    }
                 }
                 break;
 
