@@ -12,3 +12,4 @@ ratings:
   - "**.inc"
 exclude_paths:
 - tests/**/*
+- classes/Gems/User/Adapter/Radius/radius.class.php
