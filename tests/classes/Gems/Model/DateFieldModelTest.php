@@ -43,7 +43,7 @@ class Gems_Model_DateFieldModelTest extends MUtil_Model_AbstractModelTest
     protected function getModel()
     {
         if (! $this->_model) {
-            $this->_model = new MUtil_Model_TableModel('gems__respondents');
+            $this->_model = new MUtil_Model_TableModel('dfmt');
             $this->_model->set('grs_birthday', 'storageFormat', 'yyyy-MM-dd');
             $this->_model->set('grs_birthday', 'dateFormat', Zend_Date::DATE_MEDIUM);
             $this->_model->setOnSave('grs_birthday', array($this->_model, 'formatSaveDate'));

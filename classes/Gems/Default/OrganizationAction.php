@@ -144,10 +144,13 @@ class Gems_Default_OrganizationAction extends \Gems_Controller_ModelSnippetActio
 
     public function getEditTitle()
     {
-        $data = $this->getModel()->loadFirst();
-
-        //Add location to the subject
-        $subject = sprintf('%s - %s', $data['gor_name'], $data['gor_location']);
+        $data    = $this->getModel()->loadFirst();
+        $subject = $data['gor_name'];
+        
+        //Add location to the subject when not empty
+        if (!empty($data['gor_location'])) {
+            $subject .= ' - ' . $data['gor_location'];
+        }
 
         return sprintf($this->_('Edit %s %s'), $this->getTopic(1), $subject);
     }
@@ -161,7 +164,7 @@ class Gems_Default_OrganizationAction extends \Gems_Controller_ModelSnippetActio
     {
         return $this->_('Participating organizations');
     }
-
+    
     /**
      * Get the filter to use with the model for searching including model sorts, etc..
      *
