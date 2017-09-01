@@ -112,9 +112,8 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
         $sql  = "SELECT gr2o_id_organization, gr2o_patient_nr FROM gems__respondent2org WHERE gr2o_id_user = ?";
 
         $availableOrganizations = $this->util->getDbLookup()->getOrganizationsWithRespondents();
-        $copyOption             = $this->formData['change_method'] == 'copy';
+        $shareOption            = $this->formData['change_method'] == 'share';
         $disabled               = array();
-        $disablePatientNumber   = false;
         $existingOrgs           = $this->db->fetchPairs($sql, $this->respondent->getId());
         foreach ($availableOrganizations as $orgId => &$orgName) {
             $orglabel = \MUtil_Html::create('spaced');
@@ -129,16 +128,15 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
                         $existingOrgs[$orgId]
                         ));
 
-                if ($copyOption) {
-                    $disablePatientNumber = $this->formData['gems__respondent2org'] = $orgId;
-                } else {
+                if ($shareOption) {      
+                    // Only disable when we just share the patient and he already exists
                     $disabled[] = $orgId;
                 }
             }
 
             $orgName = $orglabel->render($this->view);
         }
-
+        
         $bridge->addRadio('gr2o_id_organization',
                 'label', $this->_('New organization'),
                 'disable', $disabled,
@@ -150,7 +148,17 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
                         $this->_('You cannot change to this organization')
                         )
                 );
-
+        
+        if (in_array($this->formData['gr2o_id_organization'], $disabled)) {
+            // Selected organization is now unavailable, reset selection
+            $this->formData['gr2o_id_organization'] = null;
+        }
+        
+        // Only allow to set a patient number when not exists in selected destination organization
+        $disablePatientNumber = array_key_exists($this->formData['gr2o_id_organization'], $existingOrgs);
+        if ($disablePatientNumber) {
+            $this->formData['gr2o_patient_nr'] = $existingOrgs[$this->formData['gr2o_id_organization']];
+        }
         $bridge->addText('gr2o_patient_nr', 'label', $this->_('New respondent nr'),
                 'disabled', $disablePatientNumber ? 'disabled' : null
                 );
@@ -210,7 +218,7 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
                 $model = $this->respondent->getRespondentModel();
 
             } else {
-                $model = $this->loader->getModels()->getRespondentModel(true);;
+                $model = $this->loader->getModels()->getRespondentModel(true);
             }
             $model->applyDetailSettings();
         }
@@ -268,23 +276,24 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
         $this->beforeSave();
 
         $fromOrgId   = $this->request->getParam(\MUtil_Model::REQUEST_ID2);
+        $fromPid     = $this->request->getParam(\MUtil_Model::REQUEST_ID1);
         $fromRespId  = $this->respondent->getId();
         $toOrgId     = $this->formData['gr2o_id_organization'];
         $toPatientId = $this->formData['gr2o_patient_nr'];
 
         switch ($this->formData['change_method']) {
             case 'share':
-                $this->_changed = $this->saveShare($fromOrgId, $fromRespId, $toOrgId, $toPatientId);
+                $this->_changed = $this->saveShare($fromOrgId, $fromPid, $toOrgId, $toPatientId);
                 break;
 
             case 'copy':
-                $this->_changed = $this->saveShare($fromOrgId, $fromRespId, $toOrgId, $toPatientId);
+                $this->_changed = $this->saveShare($fromOrgId, $fromPid, $toOrgId, $toPatientId);
                 $this->_changed += $this->saveMoveTracks($fromOrgId, $fromRespId, $toOrgId, $toPatientId, false);
                 break;
 
             case 'move':
-                $this->_changed = $this->saveTo($fromOrgId, $fromRespId, $toOrgId, $toPatientId);
-                $this->_changed += $this->saveMoveTracks($fromOrgId, $fromRespId, $toOrgId, $toPatientId, false);
+                $this->_changed = $this->saveTo($fromOrgId, $fromPid, $toOrgId, $toPatientId);
+                $this->_changed += $this->saveMoveTracks($fromOrgId, $fromRespId, $toOrgId, $toPatientId, true);
                 break;
 
             default:
@@ -341,7 +350,8 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
     }
 
     /**
-     *
+     * Copy the respondent
+     * 
      * @param int $fromOrgId
      * @param int $fromRespId
      * @param int $toOrgId
@@ -350,32 +360,20 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
      */
     protected function saveShare($fromOrgId, $fromRespId, $toOrgId, $toPatientId)
     {
-        $row = $this->db->fetchRow("SELECT * FROM gems__respondent2org WHERE gr2o_id_user = ?", $fromRespId);
-
-        if (! $row) {
+        $model = $this->getModel();
+        try {
+            $result = $model->copyToOrg($fromOrgId, $fromRespId, $toOrgId, $toPatientId, $this->keepConsent);
+        } catch (Exception $exc) {
+            // Maybe we could do something with the error...
             return 0;
         }
-
-        unset($row['gr2o_opened'], $row['gr2o_opened_by'], $row['gr2o_created'], $row['gr2o_created_by']);
-
-        if (! $this->keepConsent) {
-            unset($row['gr2o_consent']);
-        }
-
-        $row['gr2o_patient_nr']      = $toPatientId;
-        $row['gr2o_id_organization'] = $toOrgId;
-        $row['gr2o_reception_code']  = \GemsEscort::RECEPTION_OK;
-
-        $model = $this->getModel();
-        $model->save($row);
-
-        $this->loader->getOrganization($toOrgId)->setHasRespondents($this->currentUser->getUserId());
 
         return $model->getChanged();
     }
 
     /**
-     *
+     * Move the respondent
+     * 
      * @param int $fromOrgId
      * @param int $fromRespId
      * @param int $toOrgId
@@ -384,21 +382,10 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
      */
     protected function saveTo($fromOrgId, $fromRespId, $toOrgId, $toPatientId)
     {
-        $userId = $this->currentUser->getUserId();
-        $values = [
-            'gr2o_patient_nr'      => $toPatientId,
-            'gr2o_id_organization' => $toOrgId,
-            'gr2o_changed'         => new \MUtil_Db_Expr_CurrentTimestamp(),
-            'gr2o_changed_by'      => $userId,
-            ];
-        $where = ['gr2o_id_user = ?' => $fromRespId, 'gr2o_id_organization = ?' => $fromOrgId];
-
-        $output = $this->db->update('gems__respondent2org', $values, $where);
-
-        $this->loader->getOrganization($fromOrgId)->checkHasRespondents($userId);
-        $this->loader->getOrganization($toOrgId)->setHasRespondents($userId);
-
-        return $output;
+        $model = $this->getModel();
+        $model->move($fromOrgId, $fromRespId, $toOrgId, $toPatientId);
+        
+        return $model->getChanged();
     }
 
     /**
