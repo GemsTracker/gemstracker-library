@@ -105,7 +105,7 @@ abstract class FieldAbstract extends \MUtil_Translate_TranslateableAbstract impl
      */
     public function calculateFieldValue($currentValue, array $fieldData, array $trackData)
     {
-        if ((null === $currentValue) && isset($this->_fieldDefinition['gtf_field_default'])) {
+        if ((null === $currentValue || $currentValue==='') && isset($this->_fieldDefinition['gtf_field_default'])) {
             return $this->_fieldDefinition['gtf_field_default'];
         }
 
