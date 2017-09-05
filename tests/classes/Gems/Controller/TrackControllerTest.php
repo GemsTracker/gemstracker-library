@@ -97,6 +97,7 @@ class TrackControllerTest extends ControllerTestAbstract
             'datecode' => null,
         ];
         $this->assertEquals($expected, $actual);
+        \MUtil_Batch_BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
     }
 
 }
