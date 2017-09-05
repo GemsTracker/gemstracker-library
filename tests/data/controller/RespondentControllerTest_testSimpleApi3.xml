@@ -5,6 +5,7 @@
 		grs_iso_lang="nl"
 		grs_email="email@email.com"
 		grs_first_name="Ria"
+                grs_surname_prefix="van"
 		grs_last_name="Veen-de Vries"
 		grs_gender="F"
 		grs_birthday="1965-04-11"
