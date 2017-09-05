@@ -608,10 +608,6 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             $this->html->pInfo('Stand alone X-Frame option is no longer in use, set in headers section instead.');
             $issues = true;
         }
-        if ($this->project->offsetExists('jquerycss')) {
-            $this->html->pInfo('Separate JQuery CSS no longer in use. Remove jquerycss setting.');
-            $issues = true;
-        }
 
         if ($issues) {
             $h2->append('Project.ini issues found');

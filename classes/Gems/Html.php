@@ -59,7 +59,8 @@ class Gems_Html
         // \MUtil_Html::$verbose = true;
 
         // Set the image directories
-        \MUtil_Html_ImgElement::addImageDir('gems-responsive/images/icons');
+        \MUtil_Html_ImgElement::addImageDir('gems/images');
+        \MUtil_Html_ImgElement::addImageDir('gems/icons');
         $escort = \GemsEscort::getInstance();
         if (isset($escort->project->imagedir)) {
             \MUtil_Html_ImgElement::addImageDir($escort->project->imagedir);
