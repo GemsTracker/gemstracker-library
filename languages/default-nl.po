@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-22 16:26+0200\n"
+"POT-Creation-Date: 2017-09-05 10:23+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -528,7 +528,7 @@ msgid "%2$u %1$s deleted"
 msgstr "%2$u %1$s verwijderd"
 
 #: classes/Gems/Controller/BrowseEditAction.php:438
-#: classes/Gems/Default/OrganizationAction.php:152
+#: classes/Gems/Default/OrganizationAction.php:155
 #: classes/Gems/Default/TemplateAction.php:57
 #, php-format
 msgid "Edit %s %s"
@@ -674,20 +674,22 @@ msgstr "%s is onbekend."
 msgid "Back"
 msgstr "Terug"
 
+# this is niet te vertalen dus invullen 'subject' achterwege gelaten
 #: classes/Gems/Controller/ModelSnippetActionAbstract.php:465
 #, php-format
 msgid "Do you want to deactivate this %s?"
-msgstr "Wilt u dit %s deactiveren?"
+msgstr "Wilt u doorgaan met deactiveren?"
 
 #: classes/Gems/Controller/ModelSnippetActionAbstract.php:475
 #, php-format
 msgid "Deactivate %s"
 msgstr "Deactiveer %s"
 
+# this is niet te vertalen dus invullen 'subject' achterwege gelaten
 #: classes/Gems/Controller/ModelSnippetActionAbstract.php:485
 #, php-format
 msgid "Do you want to delete this %s?"
-msgstr "Weet u zeker dat deze %s verwijderd moet worden?"
+msgstr "Wilt u doorgaan met verwijderen?"
 
 #: classes/Gems/Controller/ModelSnippetActionAbstract.php:518
 msgid "No data found."
@@ -698,10 +700,11 @@ msgstr "Geen gegevens gevonden."
 msgid "No %s found..."
 msgstr "Geen %s gevonden..."
 
+# this is niet te vertalen dus invullen 'subject' achterwege gelaten
 #: classes/Gems/Controller/ModelSnippetActionAbstract.php:651
 #, php-format
 msgid "Do you want to reactivate this %s?"
-msgstr "Wilt u dit %s heractiveren?"
+msgstr "Wilt u doorgaan met heractiveren?"
 
 #: classes/Gems/Controller/ModelSnippetActionAbstract.php:661
 #, php-format
@@ -2505,11 +2508,11 @@ msgstr "Ontoegankelijke of onbekende organisatie"
 msgid "Access to this page is not allowed for current role: %s."
 msgstr "U heeft geen toegang tot deze pagina. Uw huidige rol is: %s."
 
-#: classes/Gems/Default/OrganizationAction.php:162
+#: classes/Gems/Default/OrganizationAction.php:165
 msgid "Participating organizations"
 msgstr "Deelnemende organisaties"
 
-#: classes/Gems/Default/OrganizationAction.php:217
+#: classes/Gems/Default/OrganizationAction.php:220
 msgid "organization"
 msgid_plural "organizations"
 msgstr[0] "organisatie"
@@ -5179,6 +5182,23 @@ msgstr "Ingevoerd op"
 msgid "Creation by"
 msgstr "Ingevoerd door"
 
+#: classes/Gems/Model/RespondentModel.php:585
+msgid "Respondent not found in sending organization."
+msgstr "Patiënt niet gevonden in bronorganisatie."
+
+#: classes/Gems/Model/RespondentModel.php:592
+msgid ""
+"Respondent with requested respondent number already exists in receiving "
+"organization."
+msgstr "Patiënt met gevraagd nummer niet gevonden in doelorganisatie."
+
+#: classes/Gems/Model/RespondentModel.php:596
+msgid ""
+"Respondent already exists in destination organization, but with different "
+"respondent number."
+msgstr ""
+"Patiënt bestaat als in doelorganisatie maar heeft daar een ander nummer."
+
 #: classes/Gems/Model/RespondentNlModel.php:35
 #: classes/Gems/Model/RespondentNlModel.php:36
 #: classes/Gems/Model/StaffModel.php:199
@@ -6207,53 +6227,53 @@ msgstr "Verplaats alle trajecten  en verwijder uit oude organisatie"
 msgid "Change method"
 msgstr "Veranderingsmethode"
 
-#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:124
+#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:123
 msgid "Is current organization."
 msgstr "Is huidige organisatie."
 
-#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:128
+#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:127
 #, php-format
 msgid "Exists already with respondent nr %s."
 msgstr "Bestaat al met patiënt nr %s."
 
-#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:143
+#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:141
 msgid "New organization"
 msgstr "Nieuwe organisatie"
 
-#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:150
+#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:148
 msgid "You cannot change to this organization"
 msgstr "Veranderen naar deze organisatie is niet mogelijk"
 
-#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:154
+#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:162
 msgid "New respondent nr"
 msgstr "Nieuw patiënt nr"
 
-#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:172
+#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:180
 #, php-format
 msgid "Shared %s with %s as %s"
 msgstr "%s met %s gedeelt als %s"
 
-#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:176
+#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:184
 #, php-format
 msgid "Moved %s with tracks to %s as %s"
 msgstr "Verplaatst %s met traject naar %s als %s"
 
-#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:179
+#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:187
 #, php-format
 msgid "Moved %s to %s as %s"
 msgstr "%s naar %s verplaatst als %s"
 
-#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:231
+#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:239
 #, php-format
 msgid "Change organization of respondent nr %s"
 msgstr "Wijzig organisatie van patiënt nr %s"
 
-#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:236
+#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:244
 #, php-format
 msgid "Change organization of respondent nr %s: %s"
 msgstr "Wijzig organisatie van patiënt nr %s: %s"
 
-#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:241
+#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:249
 msgid "Change organization of respondent"
 msgstr "Organisatie van patiënt wijzigen"
 
@@ -9466,59 +9486,59 @@ msgstr "Overgeslagen door een berekening"
 msgid "Stopped participating"
 msgstr "Patiënt stopt met deelnemen"
 
-#: vendor/magnafacta/mutil/src/MUtil/Date.php:161
+#: vendor/magnafacta/mutil/src/MUtil/Date.php:167
 #, php-format
 msgid "%s ago"
 msgstr "%s geleden"
 
-#: vendor/magnafacta/mutil/src/MUtil/Date.php:164
+#: vendor/magnafacta/mutil/src/MUtil/Date.php:170
 #, php-format
 msgid "%s to go"
 msgstr "over %s"
 
-#: vendor/magnafacta/mutil/src/MUtil/Date.php:175
+#: vendor/magnafacta/mutil/src/MUtil/Date.php:181
 msgid "second"
 msgid_plural "seconds"
 msgstr[0] "seconde"
 msgstr[1] "seconden"
 
-#: vendor/magnafacta/mutil/src/MUtil/Date.php:178
+#: vendor/magnafacta/mutil/src/MUtil/Date.php:184
 msgid "minute"
 msgid_plural "minutes"
 msgstr[0] "minuut"
 msgstr[1] "minuten"
 
-#: vendor/magnafacta/mutil/src/MUtil/Date.php:181
+#: vendor/magnafacta/mutil/src/MUtil/Date.php:187
 msgid "hour"
 msgid_plural "hours"
 msgstr[0] "uur"
 msgstr[1] "uur"
 
-#: vendor/magnafacta/mutil/src/MUtil/Date.php:184
+#: vendor/magnafacta/mutil/src/MUtil/Date.php:190
 msgid "day"
 msgid_plural "days"
 msgstr[0] "dag"
 msgstr[1] "dagen"
 
-#: vendor/magnafacta/mutil/src/MUtil/Date.php:187
+#: vendor/magnafacta/mutil/src/MUtil/Date.php:193
 msgid "week"
 msgid_plural "weeks"
 msgstr[0] "week"
 msgstr[1] "weken"
 
-#: vendor/magnafacta/mutil/src/MUtil/Date.php:190
+#: vendor/magnafacta/mutil/src/MUtil/Date.php:196
 msgid "month"
 msgid_plural "months"
 msgstr[0] "maand"
 msgstr[1] "maanden"
 
-#: vendor/magnafacta/mutil/src/MUtil/Date.php:193
+#: vendor/magnafacta/mutil/src/MUtil/Date.php:199
 msgid "year"
 msgid_plural "years"
 msgstr[0] "jaar"
 msgstr[1] "jaren"
 
-#: vendor/magnafacta/mutil/src/MUtil/Date.php:196
+#: vendor/magnafacta/mutil/src/MUtil/Date.php:202
 msgid "decade"
 msgid_plural "decades"
 msgstr[0] "decennium"

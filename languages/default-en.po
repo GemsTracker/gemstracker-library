@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-22 16:25+0200\n"
+"POT-Creation-Date: 2017-09-05 10:34+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -523,7 +523,7 @@ msgid "%2$u %1$s deleted"
 msgstr "%2$u %1$s deleted"
 
 #: classes/Gems/Controller/BrowseEditAction.php:438
-#: classes/Gems/Default/OrganizationAction.php:152
+#: classes/Gems/Default/OrganizationAction.php:155
 #: classes/Gems/Default/TemplateAction.php:57
 #, php-format
 msgid "Edit %s %s"
@@ -2482,11 +2482,11 @@ msgstr "Inaccessible or unknown organization"
 msgid "Access to this page is not allowed for current role: %s."
 msgstr "Access to this page is not allowed for current role: %s."
 
-#: classes/Gems/Default/OrganizationAction.php:162
+#: classes/Gems/Default/OrganizationAction.php:165
 msgid "Participating organizations"
 msgstr "Participating organizations"
 
-#: classes/Gems/Default/OrganizationAction.php:217
+#: classes/Gems/Default/OrganizationAction.php:220
 msgid "organization"
 msgid_plural "organizations"
 msgstr[0] "organization"
@@ -5114,6 +5114,26 @@ msgstr "Creation date"
 msgid "Creation by"
 msgstr "Creation by"
 
+#: classes/Gems/Model/RespondentModel.php:585
+msgid "Respondent not found in sending organization."
+msgstr "Respondent not found in sending organization."
+
+#: classes/Gems/Model/RespondentModel.php:592
+msgid ""
+"Respondent with requested respondent number already exists in receiving "
+"organization."
+msgstr ""
+"Respondent with requested respondent number already exists in receiving "
+"organization."
+
+#: classes/Gems/Model/RespondentModel.php:596
+msgid ""
+"Respondent already exists in destination organization, but with different "
+"respondent number."
+msgstr ""
+"Respondent already exists in destination organization, but with different "
+"respondent number."
+
 #: classes/Gems/Model/RespondentNlModel.php:35
 #: classes/Gems/Model/RespondentNlModel.php:36
 #: classes/Gems/Model/StaffModel.php:199
@@ -6137,53 +6157,53 @@ msgstr "Move tracks and remove from old organization"
 msgid "Change method"
 msgstr "Change method"
 
-#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:124
+#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:123
 msgid "Is current organization."
 msgstr "Is current organization."
 
-#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:128
+#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:127
 #, php-format
 msgid "Exists already with respondent nr %s."
 msgstr "Exists already with patient nr %s."
 
-#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:143
+#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:141
 msgid "New organization"
 msgstr "New organization"
 
-#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:150
+#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:148
 msgid "You cannot change to this organization"
 msgstr "You cannot change to this organization"
 
-#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:154
+#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:162
 msgid "New respondent nr"
 msgstr "New patient nr"
 
-#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:172
+#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:180
 #, php-format
 msgid "Shared %s with %s as %s"
 msgstr "Shared %s with %s as %s"
 
-#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:176
+#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:184
 #, php-format
 msgid "Moved %s with tracks to %s as %s"
 msgstr "Moved %s with tracks to %s as %s"
 
-#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:179
+#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:187
 #, php-format
 msgid "Moved %s to %s as %s"
 msgstr "Moved %s to %s as %s"
 
-#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:231
+#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:239
 #, php-format
 msgid "Change organization of respondent nr %s"
 msgstr "Change organization of patient nr %s"
 
-#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:236
+#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:244
 #, php-format
 msgid "Change organization of respondent nr %s: %s"
 msgstr "Change organization of patient nr %s: %s"
 
-#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:241
+#: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:249
 msgid "Change organization of respondent"
 msgstr "Change organization of patient"
 
@@ -9354,59 +9374,59 @@ msgstr "Skipped by calculation"
 msgid "Stopped participating"
 msgstr "Stopped participating"
 
-#: vendor/magnafacta/mutil/src/MUtil/Date.php:161
+#: vendor/magnafacta/mutil/src/MUtil/Date.php:167
 #, php-format
 msgid "%s ago"
 msgstr "%s ago"
 
-#: vendor/magnafacta/mutil/src/MUtil/Date.php:164
+#: vendor/magnafacta/mutil/src/MUtil/Date.php:170
 #, php-format
 msgid "%s to go"
 msgstr "%s to go"
 
-#: vendor/magnafacta/mutil/src/MUtil/Date.php:175
+#: vendor/magnafacta/mutil/src/MUtil/Date.php:181
 msgid "second"
 msgid_plural "seconds"
 msgstr[0] "second"
 msgstr[1] "seconds"
 
-#: vendor/magnafacta/mutil/src/MUtil/Date.php:178
+#: vendor/magnafacta/mutil/src/MUtil/Date.php:184
 msgid "minute"
 msgid_plural "minutes"
 msgstr[0] "minute"
 msgstr[1] "minutes"
 
-#: vendor/magnafacta/mutil/src/MUtil/Date.php:181
+#: vendor/magnafacta/mutil/src/MUtil/Date.php:187
 msgid "hour"
 msgid_plural "hours"
 msgstr[0] "hour"
 msgstr[1] "hours"
 
-#: vendor/magnafacta/mutil/src/MUtil/Date.php:184
+#: vendor/magnafacta/mutil/src/MUtil/Date.php:190
 msgid "day"
 msgid_plural "days"
 msgstr[0] "day"
 msgstr[1] "days"
 
-#: vendor/magnafacta/mutil/src/MUtil/Date.php:187
+#: vendor/magnafacta/mutil/src/MUtil/Date.php:193
 msgid "week"
 msgid_plural "weeks"
 msgstr[0] "week"
 msgstr[1] "weeks"
 
-#: vendor/magnafacta/mutil/src/MUtil/Date.php:190
+#: vendor/magnafacta/mutil/src/MUtil/Date.php:196
 msgid "month"
 msgid_plural "months"
 msgstr[0] "month"
 msgstr[1] "months"
 
-#: vendor/magnafacta/mutil/src/MUtil/Date.php:193
+#: vendor/magnafacta/mutil/src/MUtil/Date.php:199
 msgid "year"
 msgid_plural "years"
 msgstr[0] "year"
 msgstr[1] "years"
 
-#: vendor/magnafacta/mutil/src/MUtil/Date.php:196
+#: vendor/magnafacta/mutil/src/MUtil/Date.php:202
 msgid "decade"
 msgid_plural "decades"
 msgstr[0] "decade"
