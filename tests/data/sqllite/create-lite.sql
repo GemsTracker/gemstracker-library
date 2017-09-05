@@ -738,7 +738,7 @@ CREATE TABLE gems__respondents (
 
         -- grs_initials_name          varchar(30) ,
         grs_first_name             varchar(30) ,
-        -- grs_surname_prefix         varchar(10) ,
+        grs_surname_prefix         varchar(10) ,
         grs_last_name              varchar(50) ,
         -- grs_partner_surname_prefix varchar(10) ,
         -- grs_partner_last_name      varchar(50) ,
