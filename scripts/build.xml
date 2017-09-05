@@ -1,15 +1,16 @@
 <?xml version="1.0"?>
 <project name="Gems SQL Creation Scripts" default="build">
 
-    <fileset id="sql-creation-scripts" dir="../configs/db/tables">
-		<include name="*.sql"/>
+    <fileset id="sql-creation-scripts" dir="../configs">
+		<include name="db/tables/*.sql"/>
+		<include name="db_response_data/tables/*.sql"/>
     </fileset>
 
     <!-- Merge SQL creation scripts -->
 	<target name="sql-merge">
-        <mkdir dir="sql/"/>
-        <delete file="sql/create-all.sql"/>
-        <append destFile="sql/create-all.sql">
+        <mkdir dir="../tests/data/sqlite"/>
+        <delete file="../tests/data/sqlite/create-lite.sql"/>
+        <append destFile="../tests/data/sqlite/create-lite.sql">
             <fileset refid="sql-creation-scripts"/>
             <filterchain>
                 <iconvfilter inputencoding="ISO-8859-1" outputencoding="UTF-8" />
@@ -50,7 +51,7 @@
                     <regexp pattern="CHARACTER\s+SET\s*[^\s,;]+\s*" replace="" ignoreCase="true"/>
                     <regexp pattern="CHARSET\s+[^\s,;]+\s*" replace="" ignoreCase="true"/>
                     <regexp pattern="COLLATE\s*[^\s,;]+\s*" replace="" ignoreCase="true"/>
-                    <regexp pattern="ENUM\s[^)]+\)\s*" replace="" ignoreCase="true"/>
+                    <regexp pattern="\sENUM(\s|\()[^)]+\)\s*" replace=" VARCHAR(100) " ignoreCase="true"/>
                     <regexp pattern="SET\s?\([^)]+\)\s*" replace="" ignoreCase="true"/>
                     <regexp pattern="UNSIGNED\s*" replace="" ignoreCase="true"/>
                     <regexp pattern="(\s)(DATETIME|DATE|TIMESTAMP)(\s|,)" replace="\1TEXT\3" ignoreCase="true"/>

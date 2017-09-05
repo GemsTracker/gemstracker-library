@@ -116,8 +116,14 @@ abstract class Gems_User_DbUserDefinitionAbstract extends \Gems_User_UserDefinit
         \Gems_Model::setChangeFieldsByPrefix($model, 'gup', $user->getUserId());
 
         $data['gup_id_user'] = $user->getUserLoginId();
+        $filter = $data;
 
-        $row = $model->loadFirst($data + array('DATE_ADD(gup_reset_requested, INTERVAL ' . $this->hoursResetKeyIsValid . ' HOUR) >= CURRENT_TIMESTAMP'));
+        if ((0 == ($this->hoursResetKeyIsValid % 24)) || \Zend_Session::$_unitTestEnabled) {
+            $filter[] = 'ADDDATE(gup_reset_requested, ' . intval($this->hoursResetKeyIsValid / 24) . ') >= CURRENT_TIMESTAMP';
+        } else {
+            $filter[] = 'DATE_ADD(gup_reset_requested, INTERVAL ' . $this->hoursResetKeyIsValid . ' HOUR) >= CURRENT_TIMESTAMP';
+        }
+        $row = $model->loadFirst($filter);
         if ($row && $row['gup_reset_key']) {
             // Keep using the key.
             $data['gup_reset_key'] = $row['gup_reset_key'];
@@ -154,7 +160,7 @@ abstract class Gems_User_DbUserDefinitionAbstract extends \Gems_User_UserDefinit
             $result = $this->db->fetchRow($select, array($login_name, $organization), \Zend_Db::FETCH_ASSOC);
         } catch (\Zend_Db_Statement_Exception $e) {
             // \MUtil_Echo::track($e->getMessage());
-            
+
             // Yeah ugly. Can be removed when all projects have been oatched to 1.6.2
             $sql = $select->__toString();
             $sql = str_replace('gup_last_pwd_change', 'gup_changed', $sql);

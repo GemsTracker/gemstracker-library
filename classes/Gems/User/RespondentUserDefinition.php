@@ -30,6 +30,16 @@ class Gems_User_RespondentUserDefinition extends \Gems_User_DbUserDefinitionAbst
      */
     protected function getUserSelect($login_name, $organization)
     {
+        if ((0 == ($this->hoursResetKeyIsValid % 24)) || \Zend_Session::$_unitTestEnabled) {
+            $resetExpr = 'CASE WHEN ADDDATE(gup_reset_requested, ' .
+                    intval($this->hoursResetKeyIsValid / 24) .
+                    ') >= CURRENT_TIMESTAMP THEN 1 ELSE 0 END';
+        } else {
+            $resetExpr = 'CASE WHEN DATE_ADD(gup_reset_requested, INTERVAL ' .
+                    $this->hoursResetKeyIsValid .
+                    ' HOUR) >= CURRENT_TIMESTAMP THEN 1 ELSE 0 END';
+        }
+
         // 'user_group'       => 'gsf_id_primary_group', 'user_logout'      => 'gsf_logout_on_survey',
         $select = new \Zend_Db_Select($this->db);
         $select->from('gems__user_logins', array(
@@ -59,9 +69,7 @@ class Gems_User_RespondentUserDefinition extends \Gems_User_DbUserDefinitionAbst
                     ))
                ->joinLeft('gems__user_passwords', 'gul_id_user = gup_id_user', array(
                    'user_password_reset' => 'gup_reset_required',
-                   'user_resetkey_valid' => new \Zend_Db_Expr('CASE WHEN DATE_ADD(gup_reset_requested, INTERVAL ' .
-                        $this->hoursResetKeyIsValid .
-                        ' HOUR) >= CURRENT_TIMESTAMP THEN 1 ELSE 0 END'),
+                   'user_resetkey_valid' => new \Zend_Db_Expr($resetExpr),
                     'user_password_last_changed' => 'gup_last_pwd_change',
                   ))
                ->joinLeft('gems__reception_codes', 'gr2o_reception_code = grc_id_reception_code', array())
