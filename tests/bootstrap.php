@@ -48,9 +48,9 @@ if (file_exists(dirname(__FILE__) . '/../vendor/autoload.php')) {
     set_include_path(
         GEMS_TEST_DIR . '/classes' . PATH_SEPARATOR .
         GEMS_TEST_DIR . '/library' . PATH_SEPARATOR .
-        GEMS_LIBRARY_DIR . '/classes' . PATH_SEPARATOR// . get_include_path()
+        GEMS_LIBRARY_DIR . '/classes' . PATH_SEPARATOR . get_include_path()
         );
-
+    
     /* @var $autoloader Composer\Autoload\ClassLoader */
     $autoloader = require dirname(__FILE__) . '/../vendor/autoload.php';
     
