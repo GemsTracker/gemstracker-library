@@ -30,6 +30,16 @@ class Gems_User_StaffUserDefinition extends \Gems_User_DbUserDefinitionAbstract
      */
     protected function getUserSelect($login_name, $organization)
     {
+        if ((0 == ($this->hoursResetKeyIsValid % 24)) || \Zend_Session::$_unitTestEnabled) {
+            $resetExpr = 'CASE WHEN ADDDATE(gup_reset_requested, ' .
+                    intval($this->hoursResetKeyIsValid / 24) .
+                    ') >= CURRENT_TIMESTAMP THEN 1 ELSE 0 END';
+        } else {
+            $resetExpr = 'CASE WHEN DATE_ADD(gup_reset_requested, INTERVAL ' .
+                    $this->hoursResetKeyIsValid .
+                    ' HOUR) >= CURRENT_TIMESTAMP THEN 1 ELSE 0 END';
+        }
+
         /**
          * Read the needed parameters from the different tables, lots of renames
          * for compatibility accross implementations.
@@ -57,9 +67,7 @@ class Gems_User_StaffUserDefinition extends \Gems_User_DbUserDefinitionAbstract
                    ))
                ->joinLeft('gems__user_passwords', 'gul_id_user = gup_id_user', array(
                    'user_password_reset' => 'gup_reset_required',
-                   'user_resetkey_valid' => new \Zend_Db_Expr('CASE WHEN DATE_ADD(gup_reset_requested, INTERVAL ' .
-                        $this->hoursResetKeyIsValid .
-                        ' HOUR) >= CURRENT_TIMESTAMP THEN 1 ELSE 0 END'),
+                   'user_resetkey_valid' => new \Zend_Db_Expr($resetExpr),
                    'user_password_last_changed' => 'gup_last_pwd_change',
                    ))
                ->where('ggp_group_active = 1')

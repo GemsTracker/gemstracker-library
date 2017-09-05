@@ -1,14 +1,15 @@
 <?php
 
 class ControllerTestAbstract extends \Zend_Test_PHPUnit_ControllerTestCase {
-    
+
     /**
      *
      * @var Set to no to work without an initilised database
      */
     public $useDatabase = true;
 
-    public function setUp() {
+    public function setUp()
+    {
         $iniFile = APPLICATION_PATH . '/configs/application.example.ini';
 
         if (!file_exists($iniFile)) {
@@ -27,22 +28,22 @@ class ControllerTestAbstract extends \Zend_Test_PHPUnit_ControllerTestCase {
                     ]
                 ]
             ]
-        ]));        
-        
+        ]));
+
         // Add our test loader dirs
         $dirs = $config->loaderDirs->toArray();
-        $config->loaderDirs = 
-                [GEMS_PROJECT_NAME_UC => GEMS_TEST_DIR . "/classes/" . GEMS_PROJECT_NAME_UC] + 
+        $config->loaderDirs =
+                [GEMS_PROJECT_NAME_UC => GEMS_TEST_DIR . "/classes/" . GEMS_PROJECT_NAME_UC] +
                 $dirs;
-        
+
         // Create application, bootstrap, and run
         $application = new \Zend_Application(APPLICATION_ENV, $config);
 
         $this->bootstrap = $application;
-        
+
         if ($this->useDatabase){
             $this->_setupDatabase();
-        }        
+        }
 
         // Run the bootstrap
         parent::setUp();
@@ -51,7 +52,8 @@ class ControllerTestAbstract extends \Zend_Test_PHPUnit_ControllerTestCase {
     /**
      * Setup test database and load fixture
      */
-    protected function _setupDatabase() {
+    protected function _setupDatabase()
+    {
         $db = $this->bootstrap->getBootstrap()->getPluginResource('db')->getDbAdapter();
 
         \Zend_Db_Table_Abstract::setDefaultAdapter($db);
@@ -60,9 +62,10 @@ class ControllerTestAbstract extends \Zend_Test_PHPUnit_ControllerTestCase {
         // Now add some utility functions that sqlite does not have. Copied from
         // Drupal: https://github.com/drupal/drupal/blob/8.4.x/core/lib/Drupal/Core/Database/Driver/sqlite/Connection.php
         /* @var $connection \PDO */
+        $connection->sqliteCreateFunction('adddate', array(__CLASS__, 'sqlFunctionAddDate'));
         $connection->sqliteCreateFunction('concat', array(__CLASS__, 'sqlFunctionConcat'));
         $connection->sqliteCreateFunction('concat_ws', array(__CLASS__, 'sqlFunctionConcatWs'));
-        
+
         if ($sqlFiles = $this->getInitSql()) {
             foreach ($sqlFiles as $file) {
                 $sql = file_get_contents($file);
@@ -90,16 +93,17 @@ class ControllerTestAbstract extends \Zend_Test_PHPUnit_ControllerTestCase {
      *
      * At the moment we only set a salt in the project resource
      */
-    protected function _fixSetup() {
+    protected function _fixSetup()
+    {
         $project = $this->bootstrap->getBootstrap()->getResource('project');
         $project->salt = 'TESTCASE';
     }
 
     /**
      * Used to setup database for an indivudual testcase
-     * 
+     *
      * Will use <classname>_<testname>.xml or <classname>.xml
-     * 
+     *
      * @return \PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet | null
      */
     protected function getDataSet()
@@ -117,13 +121,13 @@ class ControllerTestAbstract extends \Zend_Test_PHPUnit_ControllerTestCase {
         if (file_exists($classFile)) {
             return new \PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet($classFile);
         }
-        
+
         return null;
     }
-    
+
     /**
      * Return the files needed to setup the database
-     * 
+     *
      * @return array
      */
     protected function getInitSql()
@@ -133,20 +137,20 @@ class ControllerTestAbstract extends \Zend_Test_PHPUnit_ControllerTestCase {
         // For successful testing of the complete tokens class, we need more tables
         return array($path . 'sqllite/create-lite.sql');
     }
-    
+
     /**
      * Get the path to use for database files
-     * 
+     *
      * @return string
      */
     public function getPath()
     {
         return $this->_path;
     }
-    
+
     /**
      * Helper function to create xml files to seed the database.
-     * 
+     *
      * @param array $tables    Array of tablenames to save
      * @param string $filename Filename to use, without .xml
      */
@@ -165,15 +169,27 @@ class ControllerTestAbstract extends \Zend_Test_PHPUnit_ControllerTestCase {
             \PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet::write($dataset, $path . DIRECTORY_SEPARATOR . $filename . '.xml');
         }
     }
-    
+
     /**
      * Get the path to use for database files
-     * 
+     *
      * @return string
      */
     public function setPath($path)
     {
         $this->_path = $path;
+    }
+
+    /**
+     * SQLite compatibility implementation for the MySQL ADDATE() SQL function, when not using INTERVAL syntax.
+     */
+    public static function sqlFunctionAddDate($dateTime, $days)
+    {
+        $date = new \DateTime($dateTime);
+
+        $date->add(new \DateInterval('P' . $days . 'D'));
+
+        return $date->format('Y-m-d H:i:s');
     }
 
     /**
