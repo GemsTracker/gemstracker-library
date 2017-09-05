@@ -63,6 +63,10 @@ class EditTrackSnippet extends \Gems_Tracker_Snippets_EditTrackSnippetAbstract
         if ($this->createData) {
             $this->respondentTrackId = $this->formData['gr2t_id_respondent_track'];
             $this->respondentTrack   = $this->loader->getTracker()->getRespondentTrack($this->formData);
+            
+            // Explicitly save the fields as the transformer in the model only handles
+            // before save event (like default values) for existing respondenttracks
+            $this->respondentTrack->setFieldData($this->formData);
 
             // Create the actual tokens!!!!
             $this->trackEngine->checkRoundsFor($this->respondentTrack, $this->userId);

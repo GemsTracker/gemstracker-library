@@ -192,5 +192,6 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
         $expected['f__1'] = $expected['code'] = 'default';
 
         $this->assertArrayWithDateMatch($expected, $actual, '', 1, 0);
+        \MUtil_Batch_BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
     }
 }
