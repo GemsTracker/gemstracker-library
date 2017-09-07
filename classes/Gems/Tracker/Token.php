@@ -623,9 +623,18 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         $values['gto_valid_until_manual']  = $this->_gemsData['gto_valid_until_manual'];
         $values['gto_mail_sent_date']      = $this->_gemsData['gto_mail_sent_date'];
         $values['gto_comment']             = $newComment;
+        
+        $newValues = $otherValues + $values;
+        // Now make sure there are no more date objects
+        foreach($newValues as &$value)
+        {
+            if ($value instanceof \Zend_Date) {
+                $value = $value->getIso();
+            }
+        }
 
-        $tokenId = $this->tracker->createToken($otherValues + $values, $userId);
-
+        $tokenId = $this->tracker->createToken($newValues, $userId);
+        
         $replacementLog['gtrp_id_token_new'] = $tokenId;
         $replacementLog['gtrp_id_token_old'] = $this->_tokenId;
         $replacementLog['gtrp_created']      = new \MUtil_Db_Expr_CurrentTimestamp();
