@@ -88,7 +88,7 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
      * @var \Zend_View
      */
     protected $view;
-
+    
     /**
      * Hook that allows actions when data was saved
      *
@@ -159,7 +159,8 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
         parent::loadForm();
         
         if ($this->fixedReceptionCode == 'redo' && $this->token->isExpired()) {
-            $this->addMessage($this->_("Watch out! Token is currently expired and you won't be able to answer it unless you change the valid from date."));
+            $messenger = $this->getMessenger();
+            $this->addMessage($this->_("Watch out! Token is currently expired and you won't be able to answer it unless you change the valid from date."), 'danger');
         }
     }
 
