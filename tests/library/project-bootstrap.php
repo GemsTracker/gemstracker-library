@@ -29,50 +29,16 @@ if (!is_writable( session_save_path())) {
  * Setup include path
  */
 set_include_path(
-    GEMS_TEST_DIR . '/library' . PATH_SEPARATOR .    //Test folder
-    GEMS_TEST_DIR . '/classes' . PATH_SEPARATOR .    //Test folder
-    GEMS_LIBRARY_DIR . '/classes' . PATH_SEPARATOR .
+    GEMS_ROOT_DIR . '/test/classes' . PATH_SEPARATOR .
     GEMS_ROOT_DIR . '/application/classes' . PATH_SEPARATOR .
-    get_include_path());
-
-
-/**
- * Setup include path
- */
-set_include_path(
     GEMS_TEST_DIR . '/classes' . PATH_SEPARATOR .
     GEMS_TEST_DIR . '/library' . PATH_SEPARATOR .
     GEMS_ROOT_DIR . '/classes' . PATH_SEPARATOR .
+    GEMS_LIBRARY_DIR . '/classes' . PATH_SEPARATOR .
     get_include_path());
 
 // Set up autoload.
-if (file_exists(VENDOR_DIR . '/autoload.php')) {
-    require_once VENDOR_DIR . '/autoload.php';
-} else {
-    // Try to set the correct include path (if needed)
-    $paths = array(
-        'magnafacta/mutil/src',
-        'magnafacta/mutil/tests',
-        'zendframework/zendframework1/library',
-        'zendframework/zf1-extras/library',
-    );
-    $start = realpath(dirname(__FILE__) . '/../../../') . '/';
-    foreach ($paths as $path) {
-        $dir = realpath($start . $path);
-
-        if (file_exists($dir) && (false===strpos(get_include_path(), $dir))) {
-            set_include_path($dir . PATH_SEPARATOR . get_include_path());
-        }
-    }
-    require_once "Zend/Loader/Autoloader.php";
-
-    $autoloader = \Zend_Loader_Autoloader::getInstance();
-    $autoloader->registerNamespace('MUtil_');
-    $autoloader->registerNamespace('Gems_');
-    $autoloader->registerNameSpace(GEMS_PROJECT_NAME_UC . '_');
-    // $autoloader->registerNameSpace('ZFDebug_');
-}
-
+require_once VENDOR_DIR . '/autoload.php';
 
 \Zend_Session::start();
 \Zend_Session::$_unitTestEnabled = true;
