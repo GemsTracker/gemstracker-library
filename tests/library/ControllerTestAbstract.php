@@ -63,6 +63,7 @@ class ControllerTestAbstract extends \Zend_Test_PHPUnit_ControllerTestCase {
         // Drupal: https://github.com/drupal/drupal/blob/8.4.x/core/lib/Drupal/Core/Database/Driver/sqlite/Connection.php
         /* @var $connection \PDO */
         $connection->sqliteCreateFunction('adddate', array(__CLASS__, 'sqlFunctionAddDate'));
+        $connection->sqliteCreateFunction('char_length', array(__CLASS__, 'sqlFunctionCharLength'));
         $connection->sqliteCreateFunction('concat', array(__CLASS__, 'sqlFunctionConcat'));
         $connection->sqliteCreateFunction('concat_ws', array(__CLASS__, 'sqlFunctionConcatWs'));
 
@@ -190,6 +191,13 @@ class ControllerTestAbstract extends \Zend_Test_PHPUnit_ControllerTestCase {
         $date->add(new \DateInterval('P' . $days . 'D'));
 
         return $date->format('Y-m-d H:i:s');
+    }
+    
+    /**
+     * SQLite compatibility implementation for the CHAR_LENGTH() SQL function.
+     */
+    public static function sqlFunctionCharLength($subject) {
+        return mb_strlen($subject);
     }
 
     /**
