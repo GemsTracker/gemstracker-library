@@ -1459,8 +1459,8 @@ CREATE TABLE gems__user_login_attempts (
 CREATE TABLE gems__user_passwords (
         gup_id_user          INTEGER not null,
 
-        gup_password         varchar(32),
-        gup_reset_key        varchar(64),
+        gup_password         varchar(255),
+        gup_reset_key        char(64),
         gup_reset_requested  TEXT,
         gup_reset_required   TINYINT(1) not null default 0,
         gup_last_pwd_change      TEXT not null default 0,  -- Can only have on current_timestamp so default to 0
