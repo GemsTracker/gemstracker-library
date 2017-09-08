@@ -1,0 +1,53 @@
+gems__groups:
+  -
+    ggp_id_group: 903
+    ggp_name: "Staff"
+    ggp_description: "Health care staff"
+    ggp_role: 804
+    ggp_group_active: 1
+    ggp_staff_members: 1
+    ggp_respondent_members: 0
+    ggp_changed: "2017-07-31 15:00:50"
+    ggp_changed_by: 0
+    ggp_created: "2017-07-31 15:00:50"
+    ggp_created_by: 0
+gems__staff:
+  -
+    gsf_id_user: 00000001
+    gsf_login: "testuser"
+    gsf_id_organization: 70
+    gsf_active: 1
+    gsf_failed_logins: 0
+    gsf_id_primary_group: 903
+    gsf_iso_lang: "nl"
+    gsf_logout_on_survey: 0
+    gsf_mail_watcher: 0
+    gsf_email: "test@test.test"
+    gsf_first_name: "Test"
+    gsf_last_name: "User"
+    gsf_gender: "F"
+    gsf_changed: "2017-01-01 00:00:00"
+    gsf_changed_by: 1
+    gsf_created: 2017-01-01 00:00:00"
+    gsf_created_by: 1
+gems__user_logins:
+  -
+    gul_id_user: 10001
+    gul_login: "testuser"
+    gul_id_organization: 70
+    gul_user_class: "StaffUser"
+    gul_can_login: 1
+    gul_changed: "2017-01-01 00:00:00"
+    gul_changed_by: 1
+    gul_created: "2017-01-01 00:00:00"
+    gul_created_by: 1
+gems__user_passwords:
+  -
+    gup_id_user: 10001
+    gup_password: $2y$10$VqFZx3FKo8/lRdWDLqSzku1THapsOd0kk0CzerWghHSNC2iRLjx2S
+    gup_reset_required: 0
+    gup_last_pwd_change: "2017-09-08 00:00:00"
+    gup_changed: "2017-09-08 00:00:00"
+    gup_changed_by: 0
+    gup_created: "2017-09-08 00:00:00"
+    gup_created_by: 0
