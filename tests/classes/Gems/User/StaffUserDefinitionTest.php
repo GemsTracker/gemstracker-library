@@ -62,7 +62,6 @@ class StaffUserDefinitionTest extends \Gems_Test_Db2TestAbstract
 
         // Add hashed password with current settings to the database
         $hashedPassword = $this->userDefinition->hashPassword($this->testPassword);
-        $db = $this->db;
         $this->db->query(
             "UPDATE gems__user_passwords SET gup_password = '$hashedPassword'",
             Zend\Db\Adapter\Adapter::QUERY_MODE_EXECUTE
