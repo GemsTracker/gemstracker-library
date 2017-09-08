@@ -85,7 +85,7 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
         $this->addLeftTable('gems__respondent_relations', array('gto_id_relation' => 'grr_id', 'gto_id_respondent' => 'grr_id_respondent')); // Add relation
 
         $this->addColumn(
-            "CASE WHEN CHAR_LENGTH(gsu_survey_name) > 30 THEN CONCAT(SUBSTRING(gsu_survey_name, 1, 28), '...') ELSE gsu_survey_name END",
+            "CASE WHEN CHAR_LENGTH(gsu_survey_name) > 30 THEN CONCAT(SUBSTR(gsu_survey_name, 1, 28), '...') ELSE gsu_survey_name END",
             'survey_short',
             'gsu_survey_name');
         $this->addColumn(
@@ -224,12 +224,12 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
             $this->addLeftTable('gems__staff', array('gto_by' => 'gems__staff_2.gsf_id_user'));
             $this->addColumn(new \Zend_Db_Expr('CASE
                 WHEN gems__staff_2.gsf_id_user IS NULL THEN COALESCE(gems__track_fields.gtf_field_name, gems__groups.ggp_name)
-                ELSE COALESCE(CONCAT_WS(
+                ELSE CONCAT_WS(
                     " ",
                     CONCAT(COALESCE(gems__staff_2.gsf_last_name, "-"), ","),
                     gems__staff_2.gsf_first_name,
                     gems__staff_2.gsf_surname_prefix
-                    ))
+                    )
                 END'), 'ggp_name');
         } else {
             $this->set('ggp_name', 'column_expression', new \Zend_Db_Expr('COALESCE(gems__track_fields.gtf_field_name, gems__groups.ggp_name)'));
