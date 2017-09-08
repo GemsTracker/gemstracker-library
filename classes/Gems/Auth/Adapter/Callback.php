@@ -7,6 +7,9 @@
  * @version    $Id$
  */
 
+use Zend\Authentication\Adapter\AdapterInterface;
+use Zend\Authentication\Result;
+
 /**
  * A wrapper to use any valid callback for authentication
  *
@@ -16,7 +19,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Auth_Adapter_Callback implements \Zend_Auth_Adapter_Interface
+class Gems_Auth_Adapter_Callback implements AdapterInterface
 {
     /**
      * The callback to use
@@ -42,9 +45,9 @@ class Gems_Auth_Adapter_Callback implements \Zend_Auth_Adapter_Interface
     /**
      * Create an auth adapter from a callback
      *
-     * Ideally the callback should return a \Zend_Auth_Result, when not it should
+     * Ideally the callback should return a Result, when not it should
      * return true or false and in that case this adapter will wrap the result
-     * in a \Zend_Auth_Result
+     * in a Result
      *
      * @param callback $callback A valid callback
      * @param string $identity The identity to use
@@ -60,16 +63,16 @@ class Gems_Auth_Adapter_Callback implements \Zend_Auth_Adapter_Interface
     /**
      * Perform the authenticate attempt
      *
-     * @return \Zend_Auth_Result
+     * @return Result
      */
     public function authenticate()
     {
         $result = call_user_func_array($this->_callback, $this->_params);
-        if ( !($result instanceof \Zend_Auth_Result)) {
+        if ( !($result instanceof Result)) {
             if ($result === true) {
-                $result = new \Zend_Auth_Result(\Zend_Auth_Result::SUCCESS, $this->_identity);
+                $result = new Result(Result::SUCCESS, $this->_identity);
             } else {
-                $result = new \Zend_Auth_Result(\Zend_Auth_Result::FAILURE_CREDENTIAL_INVALID, $this->_identity);
+                $result = new Result(Result::FAILURE_CREDENTIAL_INVALID, $this->_identity);
             }
         }
         return $result;

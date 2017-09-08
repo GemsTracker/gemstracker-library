@@ -1319,3 +1319,8 @@ To log in with your organization account {login_name} please click on this link:
 Om in te loggen met uw organisatie account {login_name} klikt u op onderstaande link:\r\n{login_url}');
 
 -- GEMS VERSION: 61
+
+-- PATCH: Make the password field larger and make the password reset key field fixed size
+ALTER TABLE `gems__user_passwords`
+    CHANGE `gup_password` `gup_password` varchar(255) COLLATE 'utf8_general_ci' NULL AFTER `gup_id_user`,
+    CHANGE `gup_reset_key` `gup_reset_key` char(64) COLLATE 'utf8_general_ci' NULL AFTER `gup_password`;
