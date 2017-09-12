@@ -181,7 +181,7 @@ class Gems_Util_TrackData extends UtilAbstract
             	CONCAT(
             		SUBSTR(CONCAT_WS(
             			" - ", gsu_survey_name, CASE WHEN LENGTH(TRIM(gsu_survey_description)) = 0 THEN NULL ELSE gsu_survey_description END
-            		), 0, 50),
+            		), 1, 50),
         			CASE WHEN gsu_active = 1 THEN " (' . $this->translate->_('Active') . ')" ELSE " (' . $this->translate->_('Inactive') . ')" END
     			)
             	FROM gems__surveys ORDER BY gsu_survey_name';
