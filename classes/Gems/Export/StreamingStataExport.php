@@ -286,6 +286,9 @@ class StreamingStataExport extends ExportAbstract
 
             $writer->startElement('v');
             $writer->writeAttribute('varname', $variableName);
+            if (is_array($exportRow[$columnName])) {
+                $exportRow[$columnName] = join(', ', $exportRow[$columnName]);
+            }
             $writer->text($exportRow[$columnName]);
             // End v
             $writer->endElement();
