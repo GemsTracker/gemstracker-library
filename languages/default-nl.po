@@ -6251,7 +6251,7 @@ msgstr "Nieuw patiënt nr"
 #: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:180
 #, php-format
 msgid "Shared %s with %s as %s"
-msgstr "%s met %s gedeelt als %s"
+msgstr "%s met %s gedeeld als %s"
 
 #: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:184
 #, php-format
