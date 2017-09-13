@@ -363,8 +363,9 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
         $model = $this->getModel();
         try {
             $result = $model->copyToOrg($fromOrgId, $fromRespId, $toOrgId, $toPatientId, $this->keepConsent);
-        } catch (Exception $exc) {
+        } catch (\Exception $exc) {
             // Maybe we could do something with the error...
+            $this->addMessage($exc->getMessage());
             return 0;
         }
 
@@ -383,7 +384,12 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
     protected function saveTo($fromOrgId, $fromRespId, $toOrgId, $toPatientId)
     {
         $model = $this->getModel();
-        $model->move($fromOrgId, $fromRespId, $toOrgId, $toPatientId);
+        try {
+            $model->move($fromOrgId, $fromRespId, $toOrgId, $toPatientId);    
+        } catch (\Exception $exc) {
+            $this->addMessage($exc->getMessage());
+            return 0;
+        }        
         
         return $model->getChanged();
     }
