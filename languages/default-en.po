@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-05 10:34+0200\n"
+"POT-Creation-Date: 2017-09-13 08:59+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -3311,13 +3311,13 @@ msgstr "Answered"
 #: classes/Gems/Selector/TokenByGroupDateSelector.php:102
 #: classes/Gems/Snippets/Token/PlanSearchSnippet.php:120
 #: classes/Gems/Snippets/Token/TokenTabsSnippet.php:70
-#: classes/Gems/Tracker/Token.php:1357
+#: classes/Gems/Tracker/Token.php:1366
 msgid "Missed"
 msgstr "Missed"
 
 #: classes/Gems/Default/SummaryAction.php:92
 #: classes/Gems/Snippets/Token/PlanSearchSnippet.php:113
-#: classes/Gems/Tracker/Token.php:1363
+#: classes/Gems/Tracker/Token.php:1372
 msgid "Open"
 msgstr "Open"
 
@@ -5119,6 +5119,10 @@ msgid "Respondent not found in sending organization."
 msgstr "Respondent not found in sending organization."
 
 #: classes/Gems/Model/RespondentModel.php:592
+msgid "Respondent already exists in destination organization."
+msgstr "Respondent already exists in destination organization."
+
+#: classes/Gems/Model/RespondentModel.php:596
 msgid ""
 "Respondent with requested respondent number already exists in receiving "
 "organization."
@@ -5126,13 +5130,21 @@ msgstr ""
 "Respondent with requested respondent number already exists in receiving "
 "organization."
 
-#: classes/Gems/Model/RespondentModel.php:596
+#: classes/Gems/Model/RespondentModel.php:600
 msgid ""
 "Respondent already exists in destination organization, but with different "
 "respondent number."
 msgstr ""
 "Respondent already exists in destination organization, but with different "
 "respondent number."
+
+#: classes/Gems/Model/RespondentModel.php:944
+msgid ""
+"Respondent already exists in destination, please delete current record "
+"manually if needed."
+msgstr ""
+"Respondent already exists in destination, please delete current record "
+"manually if needed."
 
 #: classes/Gems/Model/RespondentNlModel.php:35
 #: classes/Gems/Model/RespondentNlModel.php:36
@@ -6300,7 +6312,7 @@ msgstr "Edit track"
 
 #: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:305
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:326
-#: classes/Gems/Tracker/Token.php:1351
+#: classes/Gems/Tracker/Token.php:1360
 #, php-format
 msgid "Completed"
 msgstr "Completed"
@@ -6525,7 +6537,7 @@ msgstr "Show tracks"
 msgid "Show token"
 msgstr "Show token"
 
-#: classes/Gems/Snippets/Token/DeleteTrackTokenSnippet.php:162
+#: classes/Gems/Snippets/Token/DeleteTrackTokenSnippet.php:163
 msgid ""
 "Watch out! Token is currently expired and you won't be able to answer it "
 "unless you change the valid from date."
@@ -6533,31 +6545,31 @@ msgstr ""
 "Watch out! Token is currently expired and you won't be able to answer it "
 "unless you change the valid from date."
 
-#: classes/Gems/Snippets/Token/DeleteTrackTokenSnippet.php:192
+#: classes/Gems/Snippets/Token/DeleteTrackTokenSnippet.php:193
 #, php-format
 msgid "Token %s restored."
 msgstr "Token %s restored."
 
-#: classes/Gems/Snippets/Token/DeleteTrackTokenSnippet.php:194
+#: classes/Gems/Snippets/Token/DeleteTrackTokenSnippet.php:195
 #, php-format
 msgid "Token %s deleted."
 msgstr "Token %s deleted."
 
-#: classes/Gems/Snippets/Token/DeleteTrackTokenSnippet.php:197
+#: classes/Gems/Snippets/Token/DeleteTrackTokenSnippet.php:198
 #, php-format
 msgid "Redo of token %s."
 msgstr "Redo of token %s."
 
-#: classes/Gems/Snippets/Token/DeleteTrackTokenSnippet.php:200
+#: classes/Gems/Snippets/Token/DeleteTrackTokenSnippet.php:201
 msgid "Old comment:"
 msgstr "Old comment:"
 
-#: classes/Gems/Snippets/Token/DeleteTrackTokenSnippet.php:225
+#: classes/Gems/Snippets/Token/DeleteTrackTokenSnippet.php:226
 #, php-format
 msgid "Created this token %s as replacement for token %s."
 msgstr "Created this token %s as replacement for token %s."
 
-#: classes/Gems/Snippets/Token/DeleteTrackTokenSnippet.php:247
+#: classes/Gems/Snippets/Token/DeleteTrackTokenSnippet.php:248
 #: classes/Gems/Snippets/Token/EditTrackTokenSnippet.php:141
 #, php-format
 msgid "%d token changed by recalculation."
@@ -8545,7 +8557,7 @@ msgstr "%s: %s"
 msgid "- %s"
 msgstr "- %s"
 
-#: classes/Gems/Tracker/Token.php:1359 classes/Gems/Tracker/Token.php:1361
+#: classes/Gems/Tracker/Token.php:1368 classes/Gems/Tracker/Token.php:1370
 msgid "Future"
 msgstr "Future"
 
