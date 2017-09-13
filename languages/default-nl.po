@@ -5208,7 +5208,7 @@ msgid ""
 "Respondent already exists in destination, please delete current record "
 "manually if needed."
 msgstr ""
-"Patiënt bestaat als in doelorganisatie, verwijder huidige patiënt handmatig "
+"Patiënt bestaat al in doelorganisatie, verwijder huidige patiënt handmatig "
 "indien gewenst."
 
 #: classes/Gems/Model/RespondentNlModel.php:35
