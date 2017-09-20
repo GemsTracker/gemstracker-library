@@ -120,10 +120,10 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
             $orglabel->strong($orgName);
             if ($orgId == $this->formData['orig_org_id']) {
                 $disabled[] = $orgId;
-                $orglabel->emp($this->_('Is current organization.'));
+                $orglabel->em($this->_('Is current organization.'));
 
             } elseif (isset($existingOrgs[$orgId])) {
-                $orglabel->emp(sprintf(
+                $orglabel->em(sprintf(
                         $this->_('Exists already with respondent nr %s.'),
                         $existingOrgs[$orgId]
                         ));
