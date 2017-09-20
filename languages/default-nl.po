@@ -6225,7 +6225,7 @@ msgstr "Ontvangstcode %s bestaat niet."
 
 #: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:100
 msgid "Share between both organizations, keep tracks in old"
-msgstr "Deel tussen beide organisaties, traject blijven in oude"
+msgstr "Deel tussen beide organisaties, trajecten blijven in oude"
 
 #: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:101
 msgid "Move tracks but keep in both organization"
@@ -7902,7 +7902,7 @@ msgstr ""
 
 #: classes/Gems/Tracker/Model/Dependency/DefaultTextDependency.php:73
 msgid "Enter a default value"
-msgstr "Geen een standaardwaarde op"
+msgstr "Geef een standaardwaarde op"
 
 #: classes/Gems/Tracker/Model/Dependency/FromAppointmentsMaintenanceDependency.php:131
 msgid "Calculate from"
