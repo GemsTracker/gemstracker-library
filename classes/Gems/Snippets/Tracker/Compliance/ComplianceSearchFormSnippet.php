@@ -53,7 +53,15 @@ class Gems_Snippets_Tracker_Compliance_ComplianceSearchFormSnippet extends \Gems
                 );
 
         if (count($orgs) > 1) {
-            $elements[] = $this->_createMultiCheckBoxElements('gr2t_id_organization', $orgs);
+            if ($this->orgIsMultiCheckbox) {
+                $elements[] = $this->_createMultiCheckBoxElements('gr2t_id_organization', $orgs);
+            } else {
+                $elements[] = $this->_createSelectElement(
+                        'gr2t_id_organization',
+                        $orgs,
+                        $this->_('(all organizations)')
+                        );
+            }
         }
 
         $elements[] = null;
