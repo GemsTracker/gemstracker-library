@@ -68,6 +68,13 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
      * @var \MUtil_Model_ModelAbstract
      */
     protected $model;
+    
+    /**
+     * Should the organization element be displayed as a multicheckbox or not?
+     *
+     * @var boolean
+     */
+    protected $orgIsMultiCheckbox = true;
 
     /**
      *
