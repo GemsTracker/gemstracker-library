@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-13 08:59+0200\n"
+"POT-Creation-Date: 2017-09-21 13:26+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -509,7 +509,7 @@ msgid "Cancel"
 msgstr "Annuleren"
 
 #: classes/Gems/Controller/BrowseEditAction.php:384
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:445
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:444
 #: classes/Gems/Snippets/FormSnippetAbstract.php:238
 #: classes/Gems/Snippets/ModelFormSnippetAbstract.php:361
 #, php-format
@@ -517,7 +517,7 @@ msgid "New %s..."
 msgstr "Nieuwe %s..."
 
 #: classes/Gems/Controller/BrowseEditAction.php:417
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:495
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:494
 #, php-format
 msgid "Delete %s"
 msgstr "Verwijder %s"
@@ -535,7 +535,7 @@ msgid "Edit %s %s"
 msgstr "Bewerk %s %s"
 
 #: classes/Gems/Controller/BrowseEditAction.php:440
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:505
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:504
 #: classes/Gems/Snippets/FormSnippetAbstract.php:240
 #: classes/Gems/Snippets/ModelFormSnippetAbstract.php:363
 #, php-format
@@ -675,48 +675,48 @@ msgid "Back"
 msgstr "Terug"
 
 # this is niet te vertalen dus invullen 'subject' achterwege gelaten
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:465
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:464
 #, php-format
 msgid "Do you want to deactivate this %s?"
 msgstr "Wilt u doorgaan met deactiveren?"
 
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:475
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:474
 #, php-format
 msgid "Deactivate %s"
 msgstr "Deactiveer %s"
 
 # this is niet te vertalen dus invullen 'subject' achterwege gelaten
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:485
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:484
 #, php-format
 msgid "Do you want to delete this %s?"
 msgstr "Wilt u doorgaan met verwijderen?"
 
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:518
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:517
 msgid "No data found."
 msgstr "Geen gegevens gevonden."
 
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:641
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:640
 #, php-format
 msgid "No %s found..."
 msgstr "Geen %s gevonden..."
 
 # this is niet te vertalen dus invullen 'subject' achterwege gelaten
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:651
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:650
 #, php-format
 msgid "Do you want to reactivate this %s?"
 msgstr "Wilt u doorgaan met heractiveren?"
 
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:661
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:660
 #, php-format
 msgid "Reactivate %s"
 msgstr "Heractiveer %s"
 
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:671
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:670
 #, php-format
 msgid "Showing %s"
 msgstr "Toon %s"
 
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:707
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:706
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/FormSnippetAbstract.php:386
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:420
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/WizardFormSnippetAbstract.php:438
@@ -1198,63 +1198,68 @@ msgstr "(alle organisaties)"
 msgid "Starting single %s mail job %s"
 msgstr "Start één %s email opdracht %s"
 
-#: classes/Gems/Default/CommJobAction.php:235
+#: classes/Gems/Default/CommJobAction.php:240
+#, php-format
+msgid "Preview single mail job %s"
+msgstr "Preview email opdracht %s"
+
+#: classes/Gems/Default/CommJobAction.php:242
 #, php-format
 msgid "Executing single mail job %s"
 msgstr "Email opdracht %s uitvoeren"
 
-#: classes/Gems/Default/CommJobAction.php:245
+#: classes/Gems/Default/CommJobAction.php:255
 msgid "Execute all mail jobs"
 msgstr "Alle email opdrachten uitvoeren"
 
-#: classes/Gems/Default/CommJobAction.php:258
+#: classes/Gems/Default/CommJobAction.php:268
 msgid "First mail"
 msgstr "Eerste email"
 
-#: classes/Gems/Default/CommJobAction.php:259
+#: classes/Gems/Default/CommJobAction.php:269
 msgid "Reminder"
 msgstr "Herinnering"
 
-#: classes/Gems/Default/CommJobAction.php:270
+#: classes/Gems/Default/CommJobAction.php:280
 msgid "Use organizational from address"
 msgstr "Gebruik vanaf adres van organisatie"
 
-#: classes/Gems/Default/CommJobAction.php:273
+#: classes/Gems/Default/CommJobAction.php:283
 #, php-format
 msgid "Use site %s address"
 msgstr "Gebruik %s adres van de site"
 
-#: classes/Gems/Default/CommJobAction.php:276
+#: classes/Gems/Default/CommJobAction.php:286
 msgid "Use the 'By staff member' address"
 msgstr "Gebruik 'Door medewerker' adres"
 
-#: classes/Gems/Default/CommJobAction.php:277
+#: classes/Gems/Default/CommJobAction.php:287
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:180
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:288
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:354
 msgid "Other"
 msgstr "Overige"
 
-#: classes/Gems/Default/CommJobAction.php:289
+#: classes/Gems/Default/CommJobAction.php:299
 msgid "Automatic mail jobs"
 msgstr "Automatische email opdrachten"
 
-#: classes/Gems/Default/CommJobAction.php:300
+#: classes/Gems/Default/CommJobAction.php:310
 msgid "automatic mail job"
 msgid_plural "automatic mail jobs"
 msgstr[0] "automatische email opdracht"
 msgstr[1] "automatische email opdrachten"
 
-#: classes/Gems/Default/CommJobAction.php:310
+#: classes/Gems/Default/CommJobAction.php:320
 #, php-format
 msgid "Automatic mails have been turned off since %s."
 msgstr "Automatische email opdrachten staan sinds %s uit."
 
-#: classes/Gems/Default/CommJobAction.php:314
+#: classes/Gems/Default/CommJobAction.php:324
 msgid "Turn Automatic Mail Jobs ON"
 msgstr "Automatische email opdrachten AANzetten"
 
-#: classes/Gems/Default/CommJobAction.php:320
+#: classes/Gems/Default/CommJobAction.php:330
 msgid ""
 "With automatic mail jobs and a cron job on the server, mails can be sent "
 "without manual user action."

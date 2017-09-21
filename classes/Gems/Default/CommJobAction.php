@@ -220,6 +220,10 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
             if (!empty($job)) {
                 $batch->addTask('Mail\\ExecuteMailJobTask', $job, null, null, $preview);
             }
+            
+            if ($preview === true) {
+                $batch->autoStart = true;
+            }
         }
 
         if ($batch->isFinished()) {
@@ -231,8 +235,14 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
 
             $this->_reroute(array('action'=>'show'));
         }
+        
+        if ($preview === true) {
+            $title = sprintf($this->_('Preview single mail job %s'), $jobId);
+        } else {
+            $title = sprintf($this->_('Executing single mail job %s'), $jobId);
+        }
 
-        $this->_helper->BatchRunner($batch, sprintf($this->_('Executing single mail job %s'), $jobId), $this->accesslog);
+        $this->_helper->BatchRunner($batch, $title, $this->accesslog);
     }
 
     /**
