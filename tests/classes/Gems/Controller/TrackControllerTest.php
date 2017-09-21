@@ -99,5 +99,36 @@ class TrackControllerTest extends ControllerTestAbstract
         $this->assertEquals($expected, $actual);
         \MUtil_Batch_BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
     }
+    
+    /*public function testCorrect() {        
+        $req = $this->getRequest();
+        $req->setParam('id', 'abcd-efgh');
+        
+        // First get the csrf token
+        $this->dispatch('/track/correct');
+        $body = $this->getResponse()->getBody();
+        if (preg_match('/name="no_csrf" value="(.*?)" id="no_csrf"/', $body, $matches)) {
+            $csrf = $matches[1];
+        } else {
+            $this->fail('Unable to obtain csrf token');
+        }
+        if (preg_match('/id="save_button" value="(.*?)"/', $body, $matches)) {
+            $submit = $matches[1];
+        } else {
+            $this->fail('Unable to obtain submit button');
+        }
+
+        $this->resetResponse();
+
+        // Now submit the form
+        $req->setPost([
+            'no_csrf' => $csrf,
+            'save_button' => $submit
+                ]);
+        $req->setMethod('post');
+        $this->dispatch('/track/correct');
+        $body = $this->getResponse()->getBody();
+        echo $body;
+    }*/
 
 }
