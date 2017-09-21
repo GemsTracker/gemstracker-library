@@ -123,7 +123,7 @@ class Gems_Default_FieldReportAction extends \Gems_Controller_ModelSnippetAction
 
         $orgs         = $this->currentUser->getRespondentOrgFilter();
         if (isset($filter['gr2t_id_organization'])) {
-            $orgs = array_intersect($orgs, $filter['gr2t_id_organization']);
+            $orgs = array_intersect($orgs, (array) $filter['gr2t_id_organization']);
         }
         $this->orgWhere = " AND gr2t_id_organization IN (" . implode(", ", $orgs) . ")";
 

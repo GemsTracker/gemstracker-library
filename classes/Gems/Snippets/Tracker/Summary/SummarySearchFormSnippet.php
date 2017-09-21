@@ -47,7 +47,15 @@ class Gems_Snippets_Tracker_Summary_SummarySearchFormSnippet extends \Gems_Snipp
         $elements['gto_id_track']->setAttrib('onchange', 'this.form.submit();');
 
         if (count($orgs) > 1) {
-            $elements[] = $this->_createMultiCheckBoxElements('gto_id_organization', $orgs, ' ');
+            if ($this->orgIsMultiCheckbox) {
+                $elements[] = $this->_createMultiCheckBoxElements('gto_id_organization', $orgs, ' ');
+            } else {
+                $elements[] = $this->_createSelectElement(
+                        'gto_id_organization',
+                        $orgs,
+                        $this->_('(all organizations)')
+                        );
+            }
         }
 
         $elements[] = null;
