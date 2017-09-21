@@ -98,7 +98,7 @@ class Gems_Default_SummaryAction extends \Gems_Controller_ModelSnippetActionAbst
         // $model->set('removed',  'label', $this->_('Removed'),  'tdClass', 'deleted centerAlign',
         //         'thClass', 'centerAlign');
 
-        $model->set('ggp_name',  'label', $this->_('Filler'), 'column_expression', new \Zend_Db_Expr('COALESCE(gems__track_fields.gtf_field_name, gems__groups.ggp_name)'));
+        $model->set('ggp_name',  'label', $this->_('Filler'));
 
         $filter = $this->getSearchFilter($action !== 'export');
         if (! (isset($filter['gto_id_organization']) && $filter['gto_id_organization'])) {
