@@ -49,27 +49,29 @@
 <?php
 
 ?>
-        <div class="row">
+        <div class="content">
             <?php if ($this->navigation || $this->menuHtml || $this->subnav) { ?>
-            <div id="menu" role="navigation" class="col-sm-2">
-                <?php if ($this->subnav) {
-                    echo $this->subnav->render($this);
-                } elseif ($this->menuHtml) {
-                    echo $this->menuHtml;
-                } ?>
-            </div>
-            <div class="col-sm-10">
+            <div id="main-container" class="include-menu">
             <?php } else { ?>
-            <div class="col-sm-10">
-            <?php } ?>
+            <div id="main-container">
+                <?php } ?>
                 <div id="main" class="container-fluid">
-            <?php
+                    <?php
                     if ($this->main) {
                         echo $this->main->render($this);
                     }
                     echo $this->layout()->content; ?>
                 </div>
-            </div>            
+            </div>
+            <?php if ($this->navigation || $this->menuHtml || $this->subnav ) { ?>
+                <div id="menu" role="navigation">
+                    <?php if ($this->subnav) {
+                        echo $this->subnav->render($this);
+                    } elseif ($this->menuHtml) {
+                        echo $this->menuHtml;
+                    } ?>
+                </div>
+            <?php } ?>
         </div>
 
 
