@@ -44,6 +44,13 @@ class Gems_Default_StaffAction extends \Gems_Controller_ModelSnippetActionAbstra
      * @var array Mixed key => value array for snippet initialization
      */
     protected $createEditParameters = array('routeAction' => 'reset');
+    
+    /**
+     * The snippets used for the create and edit actions.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $createEditSnippets = 'Staff\\StaffCreateEditSnippet';
 
     /**
      *
