@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-21 13:26+0200\n"
+"POT-Creation-Date: 2017-10-04 14:47+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -543,17 +543,17 @@ msgid "Edit %s"
 msgstr "Bewerk %s"
 
 #: classes/Gems/Controller/BrowseEditAction.php:543
-#: classes/Gems/Snippets/AutosearchFormSnippet.php:342
+#: classes/Gems/Snippets/AutosearchFormSnippet.php:349
 msgid "Free search text"
 msgstr "Vrije zoek tekst"
 
 #: classes/Gems/Controller/BrowseEditAction.php:625
-#: classes/Gems/Snippets/AutosearchFormSnippet.php:439
+#: classes/Gems/Snippets/AutosearchFormSnippet.php:446
 msgid "Reset search"
 msgstr "Herstart zoeken"
 
 #: classes/Gems/Controller/BrowseEditAction.php:636
-#: classes/Gems/Snippets/AutosearchFormSnippet.php:455
+#: classes/Gems/Snippets/AutosearchFormSnippet.php:462
 #: classes/Gems/Snippets/Database/StructuralChanges.php:77
 msgid "Search"
 msgstr "Zoeken"
@@ -1189,6 +1189,9 @@ msgstr "(alle vragenlijsten)"
 #: classes/Gems/Snippets/Respondent/RespondentSearchSnippet.php:86
 #: classes/Gems/Snippets/Staff/StaffSearchSnippet.php:53
 #: classes/Gems/Snippets/Token/PlanSearchSnippet.php:136
+#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:62
+#: classes/Gems/Snippets/Tracker/Fields/FieldReportSearchSnippet.php:56
+#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:56
 #: classes/Gems/Snippets/Tracker/TrackMaintenance/TrackMaintenanceSearchSnippet.php:58
 msgid "(all organizations)"
 msgstr "(alle organisaties)"
@@ -1974,8 +1977,8 @@ msgid "Files ready for import"
 msgstr "Bestanden die klaarstaan om te importeren"
 
 #: classes/Gems/Default/GroupAction.php:76
-#: classes/Gems/Default/StaffAction.php:147
-#: classes/Gems/Default/StaffAction.php:161
+#: classes/Gems/Default/StaffAction.php:154
+#: classes/Gems/Default/StaffAction.php:168
 #: classes/Gems/Default/StaffLogAction.php:68 classes/GemsEscort.php:2136
 msgid "No access to page"
 msgstr "Geen toegang tot pagina"
@@ -2007,7 +2010,7 @@ msgid "Default group when creating new staff member"
 msgstr "Standaard medewerker groep bij het aanmaken van een nieuwe medewerker"
 
 #: classes/Gems/Default/GroupAction.php:156
-#: classes/Gems/Default/StaffAction.php:202 classes/Gems/Menu.php:179
+#: classes/Gems/Default/StaffAction.php:209 classes/Gems/Menu.php:179
 #: classes/Gems/Model/LogModel.php:105 classes/Gems/Tracker.php:689
 msgid "Staff"
 msgstr "Medewerkers"
@@ -2762,7 +2765,7 @@ msgid "Survey #"
 msgstr "Vragenlijsten"
 
 #: classes/Gems/Default/ProjectTracksAction.php:101
-#: classes/Gems/Snippets/AutosearchFormSnippet.php:119
+#: classes/Gems/Snippets/AutosearchFormSnippet.php:126
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:157
 #: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:114
 #: classes/Gems/Snippets/Tracker/AvailableTracksSnippet.php:107
@@ -3300,41 +3303,41 @@ msgstr "Synchroniseer de %s bron."
 msgid "Synchronize all sources."
 msgstr "Synchroniseer alle bronnen."
 
-#: classes/Gems/Default/StaffAction.php:148
+#: classes/Gems/Default/StaffAction.php:155
 #: classes/Gems/Default/StaffLogAction.php:69
 #, php-format
 msgid "You have no right to access users from the organization %s."
 msgstr "U heeft geen toegangrecht tot gebruikers van de %s organisatie."
 
-#: classes/Gems/Default/StaffAction.php:162
+#: classes/Gems/Default/StaffAction.php:169
 #, php-format
 msgid "In the %s group you have no right to change users in the %s group."
 msgstr ""
 "In de %s groep heeft u niet het recht om gebruikers in de %s groep te "
 "wijzigen."
 
-#: classes/Gems/Default/StaffAction.php:189
+#: classes/Gems/Default/StaffAction.php:196
 #, php-format
 msgid "Deactivate staff member %s"
 msgstr "Deactiveer medewerker %s"
 
-#: classes/Gems/Default/StaffAction.php:214
+#: classes/Gems/Default/StaffAction.php:221
 #: classes/Gems/Default/TokenSearchActionAbstract.php:131
 #, php-format
 msgid "Send mail to: %s"
 msgstr "Email verzenden naar: %s"
 
-#: classes/Gems/Default/StaffAction.php:227
+#: classes/Gems/Default/StaffAction.php:234
 #, php-format
 msgid "Reactivate staff member %s"
 msgstr "Heractiveer medewerker %s"
 
-#: classes/Gems/Default/StaffAction.php:286
+#: classes/Gems/Default/StaffAction.php:293
 #, php-format
 msgid "Show staff member %s"
 msgstr "Toon medewerker %s"
 
-#: classes/Gems/Default/StaffAction.php:300
+#: classes/Gems/Default/StaffAction.php:307
 msgid "staff member"
 msgid_plural "staff members"
 msgstr[0] "medewerker"
@@ -3597,7 +3600,7 @@ msgstr "Ronde / Details"
 #: classes/Gems/Snippets/Token/PlanSearchSnippet.php:75
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:44
 #: classes/Gems/Snippets/Tracker/Rounds/RoundsTableSnippet.php:121
-#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:58
+#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:66
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:485
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:297
 msgid "Valid from"
@@ -3609,7 +3612,7 @@ msgstr "Geldig vanaf"
 #: classes/Gems/Snippets/Token/PlanSearchSnippet.php:76
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:45
 #: classes/Gems/Snippets/Tracker/Rounds/RoundsTableSnippet.php:123
-#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:59
+#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:67
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:486
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:307
 msgid "Valid until"
@@ -4164,33 +4167,33 @@ msgstr ""
 msgid "Error in tab \"%s\""
 msgstr "Fout in tabblad \"%s\""
 
-#: classes/Gems/Html.php:141
+#: classes/Gems/Html.php:142
 msgid "<< First"
 msgstr "<< Eerste"
 
-#: classes/Gems/Html.php:142
+#: classes/Gems/Html.php:143
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/WizardFormSnippetAbstract.php:336
 msgid "< Previous"
 msgstr "< Terug"
 
-#: classes/Gems/Html.php:143
+#: classes/Gems/Html.php:144
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/WizardFormSnippetAbstract.php:317
 msgid "Next >"
 msgstr "Verder >"
 
-#: classes/Gems/Html.php:144
+#: classes/Gems/Html.php:145
 msgid "Last >>"
 msgstr "Laatste >>"
 
-#: classes/Gems/Html.php:145
+#: classes/Gems/Html.php:146
 msgid " | "
 msgstr " | "
 
-#: classes/Gems/Html.php:149
+#: classes/Gems/Html.php:150
 msgid "to"
 msgstr "tot"
 
-#: classes/Gems/Html.php:150
+#: classes/Gems/Html.php:151
 msgid "of"
 msgstr "van"
 
@@ -5805,19 +5808,19 @@ msgid_plural ""
 msgstr[0] "Na deze vragenlijst hebben we nog één andere vragenlijst voor u."
 msgstr[1] "Na deze vragenlijst hebben we nog %d andere vragenlijsten voor u."
 
-#: classes/Gems/Snippets/AutosearchFormSnippet.php:127
+#: classes/Gems/Snippets/AutosearchFormSnippet.php:134
 msgid "For date"
 msgstr "Met datum"
 
-#: classes/Gems/Snippets/AutosearchFormSnippet.php:136
+#: classes/Gems/Snippets/AutosearchFormSnippet.php:143
 msgid "from"
 msgstr "vanaf"
 
-#: classes/Gems/Snippets/AutosearchFormSnippet.php:165
+#: classes/Gems/Snippets/AutosearchFormSnippet.php:172
 msgid "until"
 msgstr "tot"
 
-#: classes/Gems/Snippets/AutosearchFormSnippet.php:230
+#: classes/Gems/Snippets/AutosearchFormSnippet.php:237
 #: classes/Gems/Snippets/Survey/Display/FullAnswerToggleSnippet.php:53
 #: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:134
 msgid "Toggle"
@@ -5919,15 +5922,15 @@ msgid "(select a round)"
 msgstr "(selecteer een ronde)"
 
 #: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:70
-#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:62
-#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:56
+#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:70
+#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:64
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:473
 msgid "Track start"
 msgstr "Traject start"
 
 #: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:71
-#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:63
-#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:57
+#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:71
+#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:65
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:474
 msgid "Track end"
 msgstr "Traject einde"
@@ -6438,6 +6441,15 @@ msgstr "overerft van %s"
 msgid "this role"
 msgstr "deze rol"
 
+#: classes/Gems/Snippets/Staff/StaffCreateEditSnippet.php:47
+#, php-format
+msgid ""
+"User with id %s already exists but is deleted, do you want to reactivate the "
+"account?"
+msgstr ""
+"Gebruiker met inlognaam %s bestaat al maar is verwijderd, wilt u het account "
+"opnieuw activeren?"
+
 #: classes/Gems/Snippets/Staff/StaffSearchSnippet.php:47
 msgid "(all functions)"
 msgstr "(alle functies)"
@@ -6699,8 +6711,8 @@ msgid "Removed"
 msgstr "Verwijderd"
 
 #: classes/Gems/Snippets/Token/PlanSearchSnippet.php:128
-#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:79
-#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:89
+#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:87
+#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:97
 #: classes/Gems/Util/Translated.php:276
 msgid "(all fillers)"
 msgstr "(alle invullers)"
@@ -7268,7 +7280,7 @@ msgstr "Ongeldige keuze voor `%s`"
 #: classes/Gems/Task/Mail/ExecuteMailJobTask.php:147
 #, php-format
 msgid "Would be marked: %s %s"
-msgstr "Te marken als verzonden: %s %s"
+msgstr "Te markeren als verzonden: %s %s"
 
 #: classes/Gems/Task/Mail/ExecuteMailJobTask.php:164
 #, php-format
@@ -8754,8 +8766,8 @@ msgstr "Afdwingen passwordregels"
 #: classes/Gems/User/Form/ChangePasswordForm.php:358
 msgid "Choose a non-compliant password to force a password change at login."
 msgstr ""
-"Indien een wachtwoord niet aan de regels voldoet, moet een nieuw "
-"opgegevenworden bij de eerste login."
+"Indien een wachtwoord niet aan de regels voldoet, moet een nieuw wachtwoord "
+"gekozen worden bij de eerste login."
 
 #: classes/Gems/User/Form/ChangePasswordForm.php:380
 msgid "Password rules"
@@ -10001,13 +10013,6 @@ msgstr "Neem contact op met systeembeheer"
 
 #~ msgid "You are not allowed to edit this staff member."
 #~ msgstr "U mag deze medewerker niet wijzigen."
-
-#~ msgid ""
-#~ "User with id %s already exists but is deleted, do you want to reactivate "
-#~ "the account?"
-#~ msgstr ""
-#~ "Gebruiker met inlognaam %s bestaat al maar is verwijderd, wilt u het "
-#~ "account opnieuw activeren?"
 
 #~ msgid "data"
 #~ msgstr "data"
