@@ -45,4 +45,20 @@ class MultiselectField extends FieldAbstract
         $settings['elementClass'] = 'MultiCheckbox';
         $settings['multiOptions'] = array_combine($multi, $multi);
     }
+
+    /**
+     * Converting the field value when saving to a respondent track
+     *
+     * @param array $currentValue The current value
+     * @param array $fieldData The other values loaded so far
+     * @return mixed the new value
+     */
+    public function onFieldDataSave($currentValue, array $fieldData)
+    {
+        if (is_array($currentValue)) {
+            return implode(parent::FIELD_SEP, $currentValue);
+        }
+
+        return $currentValue;
+    }
 }
