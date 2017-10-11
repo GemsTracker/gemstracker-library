@@ -261,10 +261,6 @@ class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstr
         $select->where('grc_for_surveys = ?', self::APPLY_DO)
                 ->where('grc_redo_survey = ?', self::REDO_NONE);
 
-        $pairs = $this->_translateAndSort($this->db->fetchPairs($select));
-
-        asort($pairs);
-
-        return ;
+        return $this->_translateAndSort($this->db->fetchPairs($select));
     }
 }
