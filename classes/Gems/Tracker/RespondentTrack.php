@@ -274,7 +274,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
                     $output[$code] = null;
                 }
             } else {
-                if (isset($newFieldData[$key])) {
+                if (array_key_exists($key, $newFieldData)) {
                     $output[$key]  = $newFieldData[$key];
                 } elseif (isset($oldFieldData[$key])) {
                     $output[$key]  = $oldFieldData[$key];
