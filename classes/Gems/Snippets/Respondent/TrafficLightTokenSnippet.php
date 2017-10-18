@@ -495,9 +495,11 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
         if (!$this->_isCompleted($token)) return;
         
         $dropUp = $toolsDiv->div(array('class' => 'dropdown dropup pull-right', 'renderClosingTag' => true));
-        $correctLink = $this->createMenuLink($token + ['is_completed' => 1, 'grc_success' => 1], 'track', 'answer', $correctIcon, $this->_tokenCorrect);
-        $this->_addTooltip($correctLink, ucfirst($this->_tokenCorrect->get('label')));
-        $dropUp->append($correctLink);
+        $correctLink = $this->createMenuLink($token + ['is_completed' => 1, 'grc_success' => 1], 'track', 'correct', $correctIcon, $this->_tokenCorrect);
+        if ($correctLink) {
+            $this->_addTooltip($correctLink, ucfirst($this->_tokenCorrect->get('label')));
+            $dropUp->append($correctLink);
+        }
         return;
     }
     
