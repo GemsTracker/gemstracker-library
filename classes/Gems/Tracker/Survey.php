@@ -178,6 +178,25 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
             return 0;
         }
     }
+    
+    /**
+     * Calculate a hash for this survey, taking into account the questions and answers
+     * 
+     * @return string
+     */
+    public function calculateHash()
+    {
+        foreach($this->getAnswerModel('en')->getItemsOrdered() as $item) {
+                $result = $answerModel->get($item, ['label', 'type', 'multiOptions', 'parent_question', 'thClass', 'group', 'description']);
+                if (array_key_exists('label', $result)) {
+                    $items[$item] = $result;
+                }
+        }
+
+        $hash = md5(serialize($items));
+        
+        return $hash;
+    }
 
     /**
      * Should be called after answering the request to allow the Target
@@ -329,6 +348,15 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
     public function getGroupId()
     {
         return $this->_gemsSurvey['gsu_id_primary_group'];
+    }
+    
+    /**
+     *
+     * @return string The hash of survey questions/answers
+     */
+    public function getHash()
+    {
+        return array_key_exists('gsu_hash', $this->_gemsSurvey) ? $this->_gemsSurvey['gsu_hash'] : null;        
     }
 
     /**
@@ -606,6 +634,19 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
         // Keep the pattern of this object identical to that of others,
         // i.e. use an _update function
         return $this->_updateSurvey($values, $userId);
+    }
+    
+    /**
+     * 
+     * @param string $hash The hash for this survey
+     * @param int $userId The current user
+     */
+    public function setHash($hash, $userId)
+    {
+        if ($this->getHash() !== $hash && array_key_exists('gsu_hash', $this->_gemsSurvey)) {
+            $values['gsu_hash'] = $hash;        
+            $this->_updateSurvey($values, $userId);
+        }
     }
 
     /**

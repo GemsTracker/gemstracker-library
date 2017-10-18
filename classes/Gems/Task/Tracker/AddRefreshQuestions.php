@@ -59,6 +59,14 @@ class Gems_Task_Tracker_AddRefreshQuestions extends \MUtil_Task_TaskAbstract
 
         // Now save the questions
         $answerModel = $survey->getAnswerModel('en');
+        
+        $hash = $survey->calculateHash();
+        
+        if ($survey->getHash() === $hash) {
+            return;
+        }
+        
+        $survey->setHash($hash, $this->loader->getCurrentUser()->getUserId());
 
         foreach ($answerModel->getItemsOrdered() as $order => $name) {
             if (true === $answerModel->get($name, 'survey_question')) {
@@ -70,6 +78,21 @@ class Gems_Task_Tracker_AddRefreshQuestions extends \MUtil_Task_TaskAbstract
         if ($this->project->hasResponseDatabase()) {
             $this->replaceCreateView($survey, $answerModel);
         }
+    }
+    
+    protected function render($result)
+    {
+        if ($result instanceof \MUtil_Html_HtmlInterface) {
+            $viewRenderer = \Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
+            if (null === $viewRenderer->view) {
+                $viewRenderer->initView();
+            }
+            $view = $viewRenderer->view;
+
+            $result = $result->render($view);
+        }
+
+        return $result;
     }
 
     /**

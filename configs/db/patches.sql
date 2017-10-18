@@ -1319,3 +1319,5 @@ To log in with your organization account {login_name} please click on this link:
 Om in te loggen met uw organisatie account {login_name} klikt u op onderstaande link:\r\n{login_url}');
 
 -- GEMS VERSION: 61
+-- PATCH: Save survey questions/answers hash
+ALTER TABLE gems__surveys ADD gsu_hash CHAR(32) NULL DEFAULT NULL AFTER `gsu_export_code`;
