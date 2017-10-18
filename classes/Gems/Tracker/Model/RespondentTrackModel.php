@@ -195,7 +195,8 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
             'formatFunction', $formatDate);
         $this->set('gr2t_track_info',      'label', $this->_('Description'));
         $this->set('gr2t_comment',         'label', $this->_('Comment'));
-
+        $this->set('grc_description',      'label', $this->_('Reception code'),
+                'elementClass', 'Exhibitor');
         $this->refreshGroupSettings();
 
         return $this;
