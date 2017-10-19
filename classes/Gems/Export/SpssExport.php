@@ -252,6 +252,9 @@ GET DATA
      */
     public function formatString($input)
     {
+        if (is_array($input)) {
+            $input = join(', ', $input);
+        }
         $output = strip_tags($input);
         $output = str_replace(array("'", "\r", "\n"), array("''", ' ', ' '), $output);
         //$output = "'" . $output . "'";

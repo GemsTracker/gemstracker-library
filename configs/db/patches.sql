@@ -1318,7 +1318,9 @@ To log in with your organization account {login_name} please click on this link:
     ((select gct_id_template from gems__comm_templates where gct_code='linkedAccountCreated'), 'nl', 'Nieuw account aangemaakt', 'Er is voor u een nieuw account aangemaakt voor de [b]{organization}[/b] website [b]{project}[/b].
 Om in te loggen met uw organisatie account {login_name} klikt u op onderstaande link:\r\n{login_url}');
 
--- GEMS VERSION: 61
+-- GEMS VERSION: 61    
+-- PATCH: Save survey questions/answers hash
+ALTER TABLE gems__surveys ADD gsu_hash CHAR(32) NULL DEFAULT NULL AFTER `gsu_export_code`;
 
 -- PATCH: Make the password field larger and make the password reset key field fixed size
 ALTER TABLE `gems__user_passwords`

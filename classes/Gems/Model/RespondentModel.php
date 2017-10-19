@@ -587,6 +587,10 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
 
         $toPatientByPid        = $this->loadFirst(['gr2o_id_organization' => $toOrgId, 'gr2o_patient_nr' => $toPid]);
         $toPatientByRespondent = $this->loadFirst(['gr2o_id_organization' => $toOrgId, 'gr2o_id_user' => $fromPatient['gr2o_id_user']]);
+        if (!empty($toPatientByPid) && $toPatientByPid['gr2o_id_user'] = $fromPatient['gr2o_id_user']) {
+            // We already have the same respondent, nothing to do
+            throw new \Gems_Exception($this->_('Respondent already exists in destination organization.'));
+        }
         if (!empty($toPatientByPid) && empty($toPatientByRespondent)) {
             // Could be the same, or someone else... just return an error for now maybe offer to mark as duplicate and merge records later on
             throw new \Gems_Exception($this->_('Respondent with requested respondent number already exists in receiving organization.'));
@@ -910,23 +914,35 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         // Maybe we should disable masking, just to be sure
         $this->currentUser->disableMask();
         
-        $patient = $this->loadFirst([
+        $patientFrom = $this->loadFirst([
             'gr2o_id_organization' => $fromOrgId,
             'gr2o_patient_nr'      => $fromPid
-        ]);       
+        ]);
+        $patientTo = $this->loadFirst([
+            'gr2o_id_organization' => $toOrgId,
+            'gr2o_patient_nr'      => $toPid
+        ]);
         
         if ($fromPid !== $toPid) {
-            $patient['gr2o_patient_nr'] = $toPid;
+            $patientFrom['gr2o_patient_nr'] = $toPid;
             $copyKey = $this->getKeyCopyName('gr2o_patient_nr');
-            $patient[$copyKey] = $fromPid;
+            $patientFrom[$copyKey] = $fromPid;
         }
         if ($fromOrgId !== $toOrgId) {
-            $patient['gr2o_id_organization'] = $toOrgId;
+            $patientFrom['gr2o_id_organization'] = $toOrgId;
             $copyKey = $this->getKeyCopyName('gr2o_id_organization');
-            $patient[$copyKey] = $fromOrgId;
+            $patientFrom[$copyKey] = $fromOrgId;
         }
         
-        $result = $this->save($patient);
+        if (empty($patientTo)) {
+            $result = $this->save($patientFrom);
+        } else {
+            // already exists, return current patient
+            // we can not delete the other records, maybe mark as inactive or throw an error
+            $result = $patientTo;
+            $this->currentUser->enableMask();
+            throw new \Gems_Exception($this->_('Respondent already exists in destination, please delete current record manually if needed.'));
+        }        
         
         // Now re-enable the mask feature
         $this->currentUser->enableMask();

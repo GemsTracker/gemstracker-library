@@ -398,7 +398,6 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
             $this->_helper->viewRenderer->setNoRender(true);
             $batch = $this->loader->getTaskRunnerBatch('export_data');
             $file = $batch->getSessionVariable('file');
-            print_r($file);
             foreach($file['headers'] as $header) {
                 header($header);
             }

@@ -194,4 +194,36 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
         $this->assertArrayWithDateMatch($expected, $actual, '', 1, 0);
         \MUtil_Batch_BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
     }
+    
+    /**
+     * Test if settings fields via code works
+     */
+    public function testSetFieldToEmptyWithCode()
+    {
+        $respondentTrack = $this->loader->getTracker()->getRespondentTrack(1);
+
+        $expected = array(
+            'f__1' => 'newvalue',
+            'code' => 'newvalue',
+            'f__2' => '',
+            'datecode' => '',
+            );
+        $actual = $respondentTrack->setFieldData(array('code' => 'newvalue', 'datecode' => null));
+        $this->assertArrayWithDateMatch($expected, $actual, '', 1, 0);
+    }
+    
+    /**
+     * Test if settings fields via code works
+     */
+    public function testSetFieldToEmptyWithoutCode()
+    {
+        $respondentTrack = $this->loader->getTracker()->getRespondentTrack(2);
+
+        $expected = array(
+            'f__3' => 'newvalue',
+            'f__4' => '',
+            );
+        $actual = $respondentTrack->setFieldData(array('f__3' => 'newvalue', 'f__4' => null));
+        $this->assertArrayWithDateMatch($expected, $actual, '', 1, 0);
+    }
 }

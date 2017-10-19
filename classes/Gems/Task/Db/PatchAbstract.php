@@ -33,6 +33,12 @@ abstract class Gems_Task_Db_PatchAbstract extends \MUtil_Task_TaskAbstract
     protected $patcher;
 
     /**
+     *
+     * @var \Gems_Project_ProjectSettings
+     */
+    protected $project;
+
+    /**
      * Now we have the requests answered, add the DatabasePatcher as it needs the db object
      *
      * @return boolean
@@ -42,7 +48,7 @@ abstract class Gems_Task_Db_PatchAbstract extends \MUtil_Task_TaskAbstract
         $escort = \GemsEscort::getInstance();
 
         //As an upgrade almost always includes executing db patches, make a DatabasePatcher object available
-        $this->patcher = new \Gems_Util_DatabasePatcher($this->db, 'patches.sql', $escort->getDatabasePaths());
+        $this->patcher = new \Gems_Util_DatabasePatcher($this->db, 'patches.sql', $escort->getDatabasePaths(), $this->project->databaseFileEncoding);
 
         return parent::checkRegistryRequestsAnswers();
     }

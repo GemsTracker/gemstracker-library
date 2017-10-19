@@ -216,11 +216,20 @@ class Gems_Util_DbLookup extends UtilAbstract
             '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)'
         );
 
-        if ($job['gcj_filter_mode'] == 'R') {
-            $filter[] = 'gto_mail_sent_date <= DATE_SUB(CURRENT_DATE, INTERVAL ' . $job['gcj_filter_days_between'] . ' DAY)';
-            $filter[] = 'gto_mail_sent_num <= ' . $job['gcj_filter_max_reminders'];
-        } else {
-            $filter['gto_mail_sent_date'] = NULL;
+        switch ($job['gcj_filter_mode']) {
+            case 'E':   // Reminder before expiry
+                $filter[] = 'gto_mail_sent_date < CURRENT_DATE() AND CURRENT_DATE() = DATE(DATE_SUB(gto_valid_until, INTERVAL ' . $job['gcj_filter_days_between'] . ' DAY))';
+                break;
+            
+            case 'R':   // Reminder after first email
+                $filter[] = 'gto_mail_sent_date <= DATE_SUB(CURRENT_DATE, INTERVAL ' . $job['gcj_filter_days_between'] . ' DAY)';
+                $filter[] = 'gto_mail_sent_num <= ' . $job['gcj_filter_max_reminders'];
+                break;
+
+            case 'N':   // First email
+            default:
+                $filter['gto_mail_sent_date'] = NULL;
+                break;
         }
         if ($job['gcj_id_organization']) {
             if ($organizationId && ($organizationId !== $job['gcj_id_organization'])) {

@@ -133,15 +133,17 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
             // Only show reminder fields when needed
             $switches = array(
                 'R' => array(
-                        'gcj_filter_days_between'     => array('elementClass' => 'Text', 'label' => $this->_('Days between reminders')),
+                        'gcj_filter_days_between'     => array('elementClass' => 'Text', 'label' => $this->_('Days between reminders'),'description', $this->_('1 day means the reminder is send the next day')),
                         'gcj_filter_max_reminders'    => array('elementClass' => 'Text', 'label' => $this->_('Maximum reminders'))
+                    ),
+                'E' => array(
+                        'gcj_filter_days_between'     => array('elementClass' => 'Text', 'label' => $this->_('Days before expiration'),'description', ''),
                     )
                 );
             $model->addDependency(array('ValueSwitchDependency', $switches), 'gcj_filter_mode');
 
             $model->set('gcj_filter_days_between', 'label', '',
                     'elementClass', 'Hidden',
-                    'description', $this->_('1 day means the reminder is send the next day'),
                     'validators[]', 'Digits');
             $model->set('gcj_filter_max_reminders','label', '',
                     'elementClass', 'Hidden',
@@ -220,6 +222,10 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
             if (!empty($job)) {
                 $batch->addTask('Mail\\ExecuteMailJobTask', $job, null, null, $preview);
             }
+            
+            if ($preview === true) {
+                $batch->autoStart = true;
+            }
         }
 
         if ($batch->isFinished()) {
@@ -231,8 +237,14 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
 
             $this->_reroute(array('action'=>'show'));
         }
+        
+        if ($preview === true) {
+            $title = sprintf($this->_('Preview single mail job %s'), $jobId);
+        } else {
+            $title = sprintf($this->_('Executing single mail job %s'), $jobId);
+        }
 
-        $this->_helper->BatchRunner($batch, sprintf($this->_('Executing single mail job %s'), $jobId), $this->accesslog);
+        $this->_helper->BatchRunner($batch, $title, $this->accesslog);
     }
 
     /**
@@ -256,7 +268,8 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
     {
         return array(
             'N' => $this->_('First mail'),
-            'R' => $this->_('Reminder'),
+            'R' => $this->_('Reminder after first email'),
+            'E' => $this->_('Reminder before expiration'),
         );
     }
 

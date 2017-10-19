@@ -120,10 +120,10 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
             $orglabel->strong($orgName);
             if ($orgId == $this->formData['orig_org_id']) {
                 $disabled[] = $orgId;
-                $orglabel->emp($this->_('Is current organization.'));
+                $orglabel->em($this->_('Is current organization.'));
 
             } elseif (isset($existingOrgs[$orgId])) {
-                $orglabel->emp(sprintf(
+                $orglabel->em(sprintf(
                         $this->_('Exists already with respondent nr %s.'),
                         $existingOrgs[$orgId]
                         ));
@@ -363,8 +363,9 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
         $model = $this->getModel();
         try {
             $result = $model->copyToOrg($fromOrgId, $fromRespId, $toOrgId, $toPatientId, $this->keepConsent);
-        } catch (Exception $exc) {
+        } catch (\Exception $exc) {
             // Maybe we could do something with the error...
+            $this->addMessage($exc->getMessage());
             return 0;
         }
 
@@ -383,7 +384,12 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
     protected function saveTo($fromOrgId, $fromRespId, $toOrgId, $toPatientId)
     {
         $model = $this->getModel();
-        $model->move($fromOrgId, $fromRespId, $toOrgId, $toPatientId);
+        try {
+            $model->move($fromOrgId, $fromRespId, $toOrgId, $toPatientId);    
+        } catch (\Exception $exc) {
+            $this->addMessage($exc->getMessage());
+            return 0;
+        }        
         
         return $model->getChanged();
     }
