@@ -6232,7 +6232,7 @@ msgstr "Pas op! U kan zelf deze verandering niet ongedaan maken!"
 
 #: classes/Gems/Snippets/ReceptionCode/ChangeReceptionCodeSnippetAbstract.php:185
 msgid "Already set to this reception code."
-msgstr "Al ingestelt op deze ontvangstcode."
+msgstr "Al ingesteld op deze ontvangstcode."
 
 #: classes/Gems/Snippets/ReceptionCode/ChangeReceptionCodeSnippetAbstract.php:188
 #, php-format
