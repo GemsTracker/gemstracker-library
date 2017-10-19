@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+use Zend\Authentication\Result;
+
 /**
  *
  *
@@ -56,7 +58,7 @@ class Gems_User_Validate_GetUserPasswordValidator extends \Gems_User_Validate_Pa
         if ($user instanceof \Gems_User_User) {
             $result = $user->authenticate($value);
         } else {
-            $result = new \Zend_Auth_Result(\Zend_Auth_Result::FAILURE_UNCATEGORIZED, null);
+            $result = new Result(Result::FAILURE_UNCATEGORIZED, null);
         }
 
         return $this->setAuthResult($result);

@@ -10,6 +10,8 @@
  */
 
 use Gems\User\Group;
+use Zend\Authentication\Result;
+use Zend\Authentication\Adapter\AdapterInterface;
 
 /**
  * User object that mimicks the old $this->session behaviour
@@ -24,7 +26,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
 {
     /**
      *
-     * @var \Zend_Auth_Result
+     * @var Zend\Authentication\Result
      */
     protected $_authResult;
 
@@ -236,9 +238,9 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     /**
      * Process everything after authentication.
      *
-     * @param \Zend_Auth_Result $result
+     * @param Zend\Authentication\Result $result
      */
-    protected function afterAuthorization(\Zend_Auth_Result $result, $lastAuthorizer = null)
+    protected function afterAuthorization(Result $result, $lastAuthorizer = null)
     {
         try {
             $select = $this->db->select();
@@ -410,7 +412,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      *
      * @param string $password The password to test
      * @param boolean $testPassword Set to false to test the non-password checks only
-     * @return \Zend_Auth_Result
+     * @return Zend\Authentication\Result
      */
     public function authenticate($password, $testPassword = true)
     {
@@ -422,34 +424,39 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
                 $result = call_user_func($result);
             }
 
-            if ($result instanceof \Zend_Auth_Adapter_Interface) {
+            if ($result instanceof AdapterInterface) {
                 $result = $result->authenticate();
             }
 
-            if ($result instanceof \Zend_Auth_Result) {
+            if ($result instanceof Result) {
                 if (! $result->isValid()) {
                     break;
                 }
             } else {
                 if (true === $result) {
-                    $result = new \Zend_Auth_Result(\Zend_Auth_Result::SUCCESS, $this->getLoginName());
+                    $result = new Result(Result::SUCCESS, $this->getLoginName());
 
                 } else {
                     // Always a fail when not true
                     if ($result === false) {
-                        $code   = \Zend_Auth_Result::FAILURE_CREDENTIAL_INVALID;
+                        $code   = Result::FAILURE_CREDENTIAL_INVALID;
                         $result = array();
                     } else {
-                        $code   = \Zend_Auth_Result::FAILURE_UNCATEGORIZED;
+                        $code   = Result::FAILURE_UNCATEGORIZED;
                         if (is_string($result)) {
                             $result = array($result);
                         }
                     }
-                    $result = new \Zend_Auth_Result($code, $this->getLoginName(), $result);
+                    $result = new Result($code, $this->getLoginName(), $result);
                     break;
                 }
             }
         }
+
+        if ($result->isValid() && $this->definition instanceof \Gems_User_DbUserDefinitionAbstract) {
+            $this->definition->checkRehash($this, $password);
+        }
+
 
         $this->afterAuthorization($result, $lastAuthorizer);
 
@@ -463,9 +470,9 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      * Checks if the user is allowed to login or is blocked
      *
      * An adapter authorizes and if the end resultis boolean, string or array
-     * it is converted into a \Zend_Auth_Result.
+     * it is converted into a Zend\Authenticate\Result.
      *
-     * @return mixed \Zend_Auth_Adapter_Interface|\Zend_Auth_Result|boolean|string|array
+     * @return mixed Zend\Authentication\Adapter\AdapterInterface|Zend\Authenticate\Result|boolean|string|array
      */
     protected function authorizeBlock()
     {
@@ -510,9 +517,9 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      * according to the group he is in
      *
      * An adapter authorizes and if the end resultis boolean, string or array
-     * it is converted into a \Zend_Auth_Result.
+     * it is converted into a Zend\Authenticate\Result.
      *
-     * @return mixed \Zend_Auth_Adapter_Interface|\Zend_Auth_Result|boolean|string|array
+     * @return mixed Zend\Authentication\Adapter\AdapterInterface|Zend\Authenticate\Result|boolean|string|array
      */
     protected function authorizeIp()
     {
@@ -537,9 +544,9 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      * according to his BASE organization
      *
      * An adapter authorizes and if the end resultis boolean, string or array
-     * it is converted into a \Zend_Auth_Result.
+     * it is converted into a Zend\Authenticate\Result.
      *
-     * @return mixed \Zend_Auth_Adapter_Interface|\Zend_Auth_Result|boolean|string|array
+     * @return mixed Zend\Authentication\Adapter\AdapterInterface|Zend\Authenticate\Result|boolean|string|array
      */
     protected function authorizeOrgIp()
     {
@@ -1497,11 +1504,11 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      * Load the callables | results needed to authenticate/authorize this user
      *
      * A callable will be called, then an adapter authorizes and if the end result
-     * is boolean, string or array it is converted into a \Zend_Auth_Result.
+     * is boolean, string or array it is converted into a Zend\Authenticate\Result.
      *
      * @param string $password
      * @param boolean $testPassword Set to false to test on the non-password checks only
-     * @return array Of Callable|\Zend_Auth_Adapter_Interface|\Zend_Auth_Result|boolean|string|array
+     * @return array Of Callable|Zend\Authentication\Adapter\AdapterInterface|Zend\Authenticate\Result|boolean|string|array
      */
     protected function loadAuthorizers($password, $testPassword = true)
     {

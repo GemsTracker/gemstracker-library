@@ -1,0 +1,10 @@
+gems__user_passwords:
+  -
+    gup_id_user: 10001
+    gup_password: $2y$10$VqFZx3FKo8/lRdWDLqSzku1THapsOd0kk0CzerWghHSNC2iRLjx2S
+    gup_reset_required: 0
+    gup_last_pwd_change: "2017-09-08 00:00:00"
+    gup_changed: "2017-09-08 00:00:00"
+    gup_changed_by: 0
+    gup_created: "2017-09-08 00:00:00"
+    gup_created_by: 0
