@@ -34,6 +34,10 @@ class Gems_Snippets_Mail_MailFormSnippet extends \MUtil_Snippets_ModelSnippetAbs
      */
     protected $db;
 
+    /**
+     *
+     * @var \Gems_Form
+     */
     protected $form;
 
     /**
@@ -492,7 +496,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends \MUtil_Snippets_ModelSnippetAbs
         if ($this->request->isPost()) {
             if (!empty($this->formData['preview'])) {
                 $this->addMessage($this->_('Preview updated'));
-            } elseif (!empty($this->formData['send'])) {
+            } elseif (!empty($this->formData['send']) && $this->form->isValid($this->formData, false)) {
                 $this->sendMail();
                 $this->addMessage($this->_('Mail sent'));
                 $this->setAfterSendRoute();
