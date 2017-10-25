@@ -390,7 +390,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
      *                             'icon', 'privilege', 'target', 'type', 'button_only'.
      * @param array  $otherReact    Array of extra options for reactivate item, e.g. 'visible', 'allowed', 'class',
      *                             'icon', 'privilege', 'target', 'type', 'button_only'.
-     * @return array of \Gems_Menu_SubmenuItem
+     * @return \Gems_Menu_SubmenuItem[]
      */
     public function addDeReactivateAction($checkField, $deactivateOn = 1, $reactivateOn = 1, array $otherDeact = array(), array $otherReact = array())
     {

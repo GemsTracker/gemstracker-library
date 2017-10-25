@@ -583,7 +583,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
     /**
      * Get the possible translators for the import snippet.
      *
-     * @return array of \MUtil_Model_ModelTranslatorInterface objects
+     * @return \MUtil_Model_ModelTranslatorInterface[]
      */
     public function getImportTranslators()
     {

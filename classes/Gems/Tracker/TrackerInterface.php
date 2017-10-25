@@ -140,7 +140,7 @@ interface Gems_Tracker_TrackerInterface
      * @param int $respondentId
      * @param int $organizationId
      * @param mixed $order The column(s) and direction to order by
-     * @return array of \Gems_Tracker_RespondentTrack
+     * @return \Gems_Tracker_RespondentTrack[]
      */
     public function getRespondentTracks($respondentId, $organizationId, $order = array('gr2t_start_date'));
 

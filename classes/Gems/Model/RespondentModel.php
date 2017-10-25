@@ -1049,21 +1049,18 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
      * @param int $organizationId
      * @param string $newCode     String or \Gems_Util_ReceptionCode
      * @param int $respondentId   Pass when at hand, is looked up otherwise
-     * @param string $oldCode     Pass when at hand as tring or \Gems_Util_ReceptionCode, is looked up otherwise
+     * @param string $oldCode     Pass when at hand as string or \Gems_Util_ReceptionCode, is looked up otherwise
      * @return \Gems_Util_ReceptionCode The new code reception code object for further processing
      */
     public function setReceptionCode($patientId, $organizationId, $newCode, $respondentId = null, $oldCode = null)
     {
-        if ($newCode instanceof \Gems_Util_ReceptionCode) {
-            $code    = $newCode;
-            $newCode = $code->getCode();
-        } else {
-            $code    = $this->util->getReceptionCode($newCode);
+        if (!$newCode instanceof \Gems_Util_ReceptionCode) {
+            $newCode = $this->util->getReceptionCode($newCode);
         }
         $userId = $this->currentUser->getUserId();
 
         // Perform actual save, but not for simple stop codes.
-        if ($code->isForRespondents()) {
+        if ($newCode->isForRespondents()) {
             if (null === $oldCode) {
                 $oldCode = $this->getReceptionCode($patientId, $organizationId, $respondentId);
             }
@@ -1072,8 +1069,8 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
             }
 
             // If the code wasn't set already
-            if ($oldCode !== $newCode) {
-                $values['gr2o_reception_code'] = $newCode;
+            if ($oldCode !== $newCode->getCode()) {
+                $values['gr2o_reception_code'] = $newCode->getCode();
                 $values['gr2o_changed']        = new \MUtil_Db_Expr_CurrentTimestamp();
                 $values['gr2o_changed_by']     = $userId;
 
@@ -1092,7 +1089,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         }
 
         // Is the respondent really removed
-        if (! $code->isSuccess()) {
+        if (! $newCode->isSuccess()) {
             // Only check for $respondentId when it is really needed
             if (null === $respondentId) {
                 $respondentId = $this->util->getDbLookup()->getRespondentId($patientId, $organizationId);
@@ -1102,17 +1099,17 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
             // the responsiblilty to handle it correctly is on the sub objects now.
             $tracks = $this->loader->getTracker()->getRespondentTracks($respondentId, $organizationId);
             foreach ($tracks as $track) {
-                if ($track->setReceptionCode($code, null, $userId)) {
+                if ($track->setReceptionCode($newCode, null, $userId)) {
                     $this->addChanged();
                 }
             }
         }
 
-        if ($code->isForRespondents()) {
+        if ($newCode->isForRespondents()) {
             $this->handleRespondentChanged($patientId, $organizationId, $respondentId);
         }
 
-        return $code;
+        return $newCode;
     }
 
     /**

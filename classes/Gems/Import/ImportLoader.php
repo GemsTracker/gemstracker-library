@@ -301,7 +301,7 @@ class Gems_Import_ImportLoader extends \Gems_Loader_TargetLoaderAbstract
      *
      * @param string $controller Name of controller (or other id)
      * @param string $filename Optional, name of file to import
-     * @return array of \MUtil_Model_ModelTranslatorInterface objects
+     * @return \MUtil_Model_ModelTranslatorInterface[]
      */
     public function getTranslators($controller, $filename = null)
     {

@@ -446,7 +446,7 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
      * @param int $respondentId
      * @param int $organizationId
      * @param mixed $order The column(s) and direction to order by
-     * @return array of \Gems_Tracker_RespondentTrack
+     * @return \Gems_Tracker_RespondentTrack[]
      */
     public function getRespondentTracks($respondentId, $organizationId, $order = array('gr2t_start_date'))
     {
@@ -753,7 +753,7 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
      * @see getTrackEngineClassNames()
      *
      * @static $dummyClasses Cache array
-     * @return array Of \Gems_Tracker_Engine_TrackEngineInterface
+     * @return \Gems_Tracker_Engine_TrackEngineInterface[]
      */
     public function getTrackEngineClasses()
     {

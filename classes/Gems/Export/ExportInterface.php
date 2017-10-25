@@ -26,7 +26,7 @@ interface Gems_Export_ExportInterface
      *
      * @param type $form
      * @param type $data
-     * @return array of \Zend_Form_Element
+     * @return \Zend_Form_Element[]
      */
     public function getFormElements(&$form, &$data);
 

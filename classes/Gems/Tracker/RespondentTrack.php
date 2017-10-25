@@ -1055,7 +1055,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
      * Returns all the tokens in this track
      *
      * @param boolean $refresh When true, always reload
-     * @return array of \Gems_Tracker_Token
+     * @return \Gems_Tracker_Token[]
      */
     public function getTokens($refresh = false)
     {
@@ -1502,7 +1502,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
 
         // Stopcodes have a different logic.
         if ($code->isStopCode()) {
-            // Cascade stop to tokens
+            // Cascade stop to unanswered tokens
             foreach ($this->getTokens() as $token) {
                 if ($token->hasSuccesCode() && (! $token->isCompleted())) {
                     $changed += $token->setReceptionCode($code, $comment, $userId);

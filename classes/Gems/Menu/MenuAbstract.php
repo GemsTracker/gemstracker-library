@@ -951,7 +951,7 @@ abstract class Gems_Menu_MenuAbstract
 
     /**
      *
-     * @return array of type \Gems_Menu_SubMenuItem
+     * @return \Gems_Menu_SubMenuItem[]
      */
     public function getChildren()
     {
