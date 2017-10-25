@@ -325,9 +325,13 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
             $model->set('gtr_track_name',           'label', $this->_('Track name'));
             $model->set('gr2t_track_info',          'label', $this->_('Track description'));
 
-            $model->set('submitdate',               'label', $this->_('Submit date'));
-            $model->set('startdate',                'label', $this->_('Start date'));
-            $model->set('datestamp',                'label', $this->_('Datestamp'));
+            // These are limesurvey fields, replace them with GemsTracker fields
+            //$model->set('submitdate',               'label', $this->_('Submit date'));
+            //$model->set('startdate',                'label', $this->_('Start date'));
+            //$model->set('datestamp',                'label', $this->_('Datestamp'));
+            $model->set('gto_completion_time',      'label', $this->_('Submit date'));
+            $model->set('gto_start_time',           'label', $this->_('Start date'));
+            
             $model->set('gto_valid_from',           'label', $this->_('Valid from'));
             $model->set('gto_valid_until',          'label', $this->_('Valid until'));
             $model->set('startlanguage',            'label', $this->_('Start language'));
