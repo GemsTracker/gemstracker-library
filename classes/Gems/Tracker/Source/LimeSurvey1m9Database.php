@@ -907,7 +907,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
         // Not a question but it is a valid date choice
         // $results['submitdate'] = $this->_('Submitdate');
 
-        $results = $results + $this->_getFieldMap($sourceSurveyId, $language)->getQuestionList('D');
+        $results = $this->_getFieldMap($sourceSurveyId, $language)->getQuestionList('D');
 
         // Prevent html output in date lists
         foreach($results as $key => &$value)
