@@ -1328,5 +1328,5 @@ ALTER TABLE `gems__user_passwords`
     CHANGE `gup_reset_key` `gup_reset_key` char(64) COLLATE 'utf8_general_ci' NULL AFTER `gup_password`;
 
 -- PATCH: Move date source answer submitdate to token gto_completion_time
-UPDATE `gems__rounds` SET gto_valid_after_source = 'tok', gto_valid_after_field = 'gto_completion_time' where gto_valid_after_source = 'ans' AND gto_valid_after_field = 'submitdate';
-UPDATE `gems__rounds` SET gto_valid_for_source = 'tok', gto_valid_for_field = 'gto_completion_time' where gto_valid_for_source = 'ans' AND gto_valid_for_field = 'submitdate';
+UPDATE `gems__rounds` SET gro_valid_after_source = 'tok', gro_valid_after_field = 'gto_completion_time' where gro_valid_after_source = 'ans' AND gro_valid_after_field = 'submitdate';
+UPDATE `gems__rounds` SET gro_valid_for_source = 'tok', gro_valid_for_field = 'gto_completion_time' where gro_valid_for_source = 'ans' AND gro_valid_for_field = 'submitdate';
