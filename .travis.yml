@@ -14,6 +14,14 @@ install: composer install
 #cache:
 # directories:
 #    - $HOME/.composer/cache/files
+before_script:
+  - if [[ "$WITH_COVERAGE" == "true" ]];
+    then
+        curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter;
+        chmod +x ./cc-test-reporter;
+        ./cc-test-reporter before-build;
+    fi
+  
 
 # omitting "script:" will default to phpunit
 script: 
@@ -23,7 +31,9 @@ script:
     fi
 
 after_script:
-  - if [[ "$WITH_COVERAGE" == "true" ]]; then bin/test-reporter; fi
+  - if [[ "$WITH_COVERAGE" == "true" ]]; then 
+        ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT;
+    fi
 addons:
     code_climate:
         repo_token: $CODECLIMATE_REPO_TOKEN
