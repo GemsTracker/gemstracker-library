@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-26 10:05+0200\n"
+"POT-Creation-Date: 2017-10-26 10:12+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -4071,6 +4071,7 @@ msgid "Track description"
 msgstr "Trajectomschrijving"
 
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:332
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:488
 msgid "Submit time"
 msgstr "Invuldatum"
 
@@ -7708,10 +7709,6 @@ msgstr "%s min %s %s"
 msgid "%s"
 msgstr "%s"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:488
-msgid "Completion time"
-msgstr "Datum invullen"
-
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:552
 msgid "Valid from calculation"
 msgstr "Berekening datum geldig vanaf"
@@ -9850,6 +9847,9 @@ msgstr "Er trad een fout op!"
 #: views/scripts/error/error.phtml:37
 msgid "Please contact system administration"
 msgstr "Neem contact op met systeembeheer"
+
+#~ msgid "Completion time"
+#~ msgstr "Datum invullen"
 
 #~ msgid "Submit date"
 #~ msgstr "Invuldatum"
