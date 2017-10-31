@@ -68,7 +68,7 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
         $this->addTable(
                 'gems__respondent2org',
                 array('gap_id_user' => 'gr2o_id_user', 'gap_id_organization' => 'gr2o_id_organization'),
-                'gr20',
+                'gr2o',
                 false
                 );
 
