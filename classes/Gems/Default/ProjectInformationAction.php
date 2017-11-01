@@ -242,6 +242,7 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
         $buttonList = $this->menu->getMenuList();
         $buttonList->addParameterSources($request)
                 ->addByController($request->getControllerName(), 'maintenance', $label)
+                ->addByController($request->getControllerName(), 'monitor')
                 ->addByController($request->getControllerName(), 'cacheclean');
 
         // $this->html->buttonDiv($buttonList);

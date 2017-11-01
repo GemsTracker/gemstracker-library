@@ -48,7 +48,8 @@ class MonitorSnippet extends \MUtil_Snippets_SnippetAbstract
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
         $seq = $this->getHtmlSequence();
-                
+        
+        $data = $this->getReadableData();
         $tableContainer = \MUtil_Html::create()->div(array('class' => 'table-container'));
         $table = \MUtil_Html_TableElement::createArray($data, $this->caption);
         $table->class = 'browser table';
@@ -70,13 +71,13 @@ class MonitorSnippet extends \MUtil_Snippets_SnippetAbstract
         $job  = $this->monitorJob;
         $data = $job->getArrayCopy();
         
-        $data['firstCeck'] = date(MonitorJob::$monitorDateFormat, $data['firstCeck']);
+        $data['firstCheck'] = date(MonitorJob::$monitorDateFormat, $data['firstCheck']);
         $data['checkTime'] = date(MonitorJob::$monitorDateFormat, $data['checkTime']);
         $data['setTime'] = date(MonitorJob::$monitorDateFormat, $data['setTime']);
         $period = $data['period'];
-        $mins = $time % 3600;
+        $mins = $period % 3600;
         $secs = $mins % 60;
-        $hours = ($time - $mins) / 3600;
+        $hours = ($period - $mins) / 3600;
         $mins = ($mins - $secs) / 60;
         $data['period'] = sprintf('%2d:%02d:%02d',$hours,$mins,$secs);
         
