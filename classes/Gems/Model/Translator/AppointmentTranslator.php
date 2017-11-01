@@ -157,28 +157,28 @@ class Gems_Model_Translator_AppointmentTranslator extends \Gems_Model_Translator
                     );
             $skip = $skip || (false === $row['gap_id_attended_by']);
         }
-        if (isset($row['gas_name_referred_by'])) {
+        if (!$skip && isset($row['gas_name_referred_by'])) {
             $row['gap_id_referred_by'] = $this->_agenda->matchHealthcareStaff(
                     $row['gas_name_referred_by'],
                     $row[$this->orgIdField]
                     );
             $skip = $skip || (false === $row['gap_id_referred_by']);
         }
-        if (isset($row['gaa_name'])) {
+        if (!$skip && isset($row['gaa_name'])) {
             $row['gap_id_activity'] = $this->_agenda->matchActivity(
                     $row['gaa_name'],
                     $row[$this->orgIdField]
                     );
             $skip = $skip || (false === $row['gap_id_activity']);
         }
-        if (isset($row['gapr_name'])) {
+        if (!$skip && isset($row['gapr_name'])) {
             $row['gap_id_procedure'] = $this->_agenda->matchProcedure(
                     $row['gapr_name'],
                     $row[$this->orgIdField]
                     );
             $skip = $skip || (false === $row['gap_id_procedure']);
         }
-        if (isset($row['glo_name'])) {
+        if (!$skip && isset($row['glo_name'])) {
             $location = $this->_agenda->matchLocation(
                     $row['glo_name'],
                     $row[$this->orgIdField]

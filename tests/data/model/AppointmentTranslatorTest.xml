@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataset>
+	<gems__agenda_staff
+		gas_id_staff="1"
+		gas_name="Include"
+		gas_id_organization="70"
+		gas_match_to="Include"
+		gas_active="1"
+		gas_filter="0"
+		gas_changed="2017-11-01 14:27:21"
+		gas_changed_by="1"
+		gas_created="2017-11-01 14:27:21"
+		gas_created_by="1"
+	/>
+	<gems__agenda_staff
+		gas_id_staff="2"
+		gas_name="Exclude"
+		gas_id_organization="70"
+		gas_match_to="Exclude"
+		gas_active="1"
+		gas_filter="1"
+		gas_changed="2017-11-01 14:27:21"
+		gas_changed_by="1"
+		gas_created="2017-11-01 14:27:21"
+		gas_created_by="1"
+	/>
+</dataset>
