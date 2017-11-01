@@ -48,16 +48,19 @@ class MonitorSnippet extends \MUtil_Snippets_SnippetAbstract
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
         $seq = $this->getHtmlSequence();
-        
-        $data = $this->getReadableData();
-        $tableContainer = \MUtil_Html::create()->div(array('class' => 'table-container'));
-        $table = \MUtil_Html_TableElement::createArray($data, $this->caption);
-        $table->class = 'browser table';
-        $tableContainer[] = $table;
-        
         $seq->h3($this->title);
-        $seq[] = $tableContainer;
-                
+
+        $data = $this->getReadableData();
+        if (empty($data)) {
+            $seq[] = sprintf($this->_('No monitorjob found for %s'), $this->monitorJob->getName());
+        } else {
+            $tableContainer   = \MUtil_Html::create()->div(array('class' => 'table-container'));
+            $table            = \MUtil_Html_TableElement::createArray($data, $this->caption);
+            $table->class     = 'browser table';
+            $tableContainer[] = $table;
+            $seq[]            = $tableContainer;
+        }
+
         return $seq;
     }
     
@@ -70,6 +73,9 @@ class MonitorSnippet extends \MUtil_Snippets_SnippetAbstract
     {
         $job  = $this->monitorJob;
         $data = $job->getArrayCopy();
+        
+        // Skip when job is not started
+        if ($data['seTime'] == 0) return;
         
         $data['firstCheck'] = date(MonitorJob::$monitorDateFormat, $data['firstCheck']);
         $data['checkTime'] = date(MonitorJob::$monitorDateFormat, $data['checkTime']);

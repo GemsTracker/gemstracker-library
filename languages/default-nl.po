@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-01 10:21+0100\n"
+"POT-Creation-Date: 2017-11-01 12:25+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -1560,7 +1560,7 @@ msgid "Cron jobs turned off."
 msgstr "Cron opdrachten uitgezet."
 
 #: classes/Gems/Default/DatabaseAction.php:82
-#: classes/Gems/Default/ProjectInformationAction.php:287
+#: classes/Gems/Default/ProjectInformationAction.php:314
 #: classes/Gems/Task/CleanCache.php:43
 msgid "Cache cleaned"
 msgstr "Cache opgeschoond"
@@ -1705,7 +1705,7 @@ msgid "Finished"
 msgstr "Afgerond"
 
 #: classes/Gems/Default/DatabaseAction.php:438
-#: classes/Gems/Default/ProjectInformationAction.php:78
+#: classes/Gems/Default/ProjectInformationAction.php:81
 msgid "Gems build"
 msgstr "Gems bouwnummer"
 
@@ -2537,178 +2537,178 @@ msgstr[1] "organisaties"
 msgid "Planning overview"
 msgstr "Planning overzicht"
 
-#: classes/Gems/Default/ProjectInformationAction.php:75
+#: classes/Gems/Default/ProjectInformationAction.php:78
 msgid "Project name"
 msgstr "Project naam"
 
-#: classes/Gems/Default/ProjectInformationAction.php:76
+#: classes/Gems/Default/ProjectInformationAction.php:79
 msgid "Project version"
 msgstr "Project versie"
 
-#: classes/Gems/Default/ProjectInformationAction.php:77
+#: classes/Gems/Default/ProjectInformationAction.php:80
 msgid "Gems version"
 msgstr "Gems versie"
 
-#: classes/Gems/Default/ProjectInformationAction.php:79
+#: classes/Gems/Default/ProjectInformationAction.php:82
 msgid "Gems project"
 msgstr "Gems project"
 
-#: classes/Gems/Default/ProjectInformationAction.php:80
+#: classes/Gems/Default/ProjectInformationAction.php:83
 msgid "Gems web directory"
 msgstr "Gems web folder"
 
-#: classes/Gems/Default/ProjectInformationAction.php:81
+#: classes/Gems/Default/ProjectInformationAction.php:84
 msgid "Gems root directory"
 msgstr "Gems start folder"
 
-#: classes/Gems/Default/ProjectInformationAction.php:82
+#: classes/Gems/Default/ProjectInformationAction.php:85
 msgid "Gems code directory"
 msgstr "Gems code folder"
 
-#: classes/Gems/Default/ProjectInformationAction.php:83
+#: classes/Gems/Default/ProjectInformationAction.php:86
 msgid "Gems variable directory"
 msgstr "Gems variabelen folder"
 
-#: classes/Gems/Default/ProjectInformationAction.php:84
+#: classes/Gems/Default/ProjectInformationAction.php:87
 msgid "MUtil version"
 msgstr "MUtil versie"
 
-#: classes/Gems/Default/ProjectInformationAction.php:85
+#: classes/Gems/Default/ProjectInformationAction.php:88
 msgid "Zend version"
 msgstr "Zend versie"
 
-#: classes/Gems/Default/ProjectInformationAction.php:86
+#: classes/Gems/Default/ProjectInformationAction.php:89
 msgid "Application environment"
 msgstr "Applicatie omgeving"
 
-#: classes/Gems/Default/ProjectInformationAction.php:87
+#: classes/Gems/Default/ProjectInformationAction.php:90
 msgid "Application baseuri"
 msgstr "Applicatie baseuri"
 
-#: classes/Gems/Default/ProjectInformationAction.php:88
+#: classes/Gems/Default/ProjectInformationAction.php:91
 msgid "Application directory"
 msgstr "Applicatie folder"
 
-#: classes/Gems/Default/ProjectInformationAction.php:89
+#: classes/Gems/Default/ProjectInformationAction.php:92
 msgid "Application encoding"
 msgstr "Applicatie tekenset"
 
-#: classes/Gems/Default/ProjectInformationAction.php:90
+#: classes/Gems/Default/ProjectInformationAction.php:93
 msgid "PHP version"
 msgstr "PHP versie"
 
-#: classes/Gems/Default/ProjectInformationAction.php:91
+#: classes/Gems/Default/ProjectInformationAction.php:94
 msgid "Server Hostname"
 msgstr "Webserver naam"
 
-#: classes/Gems/Default/ProjectInformationAction.php:92
+#: classes/Gems/Default/ProjectInformationAction.php:95
 msgid "Server OS"
 msgstr "Server besturingssysteem"
 
-#: classes/Gems/Default/ProjectInformationAction.php:93
+#: classes/Gems/Default/ProjectInformationAction.php:96
 msgid "Time on server"
 msgstr "De tijd op de server"
 
-#: classes/Gems/Default/ProjectInformationAction.php:96
+#: classes/Gems/Default/ProjectInformationAction.php:99
 msgid "Session directory"
 msgstr "Sessie opslag folder"
 
-#: classes/Gems/Default/ProjectInformationAction.php:97
+#: classes/Gems/Default/ProjectInformationAction.php:100
 msgid "Temporary files directory"
 msgstr "Tijdelijke bestanden folder"
 
-#: classes/Gems/Default/ProjectInformationAction.php:100
+#: classes/Gems/Default/ProjectInformationAction.php:103
 msgid "System Drive"
 msgstr "Systeem Schijf"
 
-#: classes/Gems/Default/ProjectInformationAction.php:140
+#: classes/Gems/Default/ProjectInformationAction.php:166
 msgid "empty file"
 msgstr "leeg bestand"
 
-#: classes/Gems/Default/ProjectInformationAction.php:143
+#: classes/Gems/Default/ProjectInformationAction.php:169
 msgid "file content not readable"
 msgstr "inhoud van het bestand niet leesbaar"
 
-#: classes/Gems/Default/ProjectInformationAction.php:147
+#: classes/Gems/Default/ProjectInformationAction.php:173
 msgid "file not found"
 msgstr "bestand niet gevonden"
 
-#: classes/Gems/Default/ProjectInformationAction.php:176
-#: classes/Gems/Default/ProjectInformationAction.php:184
+#: classes/Gems/Default/ProjectInformationAction.php:202
+#: classes/Gems/Default/ProjectInformationAction.php:210
 #: classes/Gems/Menu/MenuAbstract.php:656
 #: classes/Gems/Menu/MenuAbstract.php:662
 #, php-format
 msgid "Changelog %s"
 msgstr "Wijzigingen %s"
 
-#: classes/Gems/Default/ProjectInformationAction.php:191
+#: classes/Gems/Default/ProjectInformationAction.php:217
 msgid "Logged errors"
 msgstr "Opgeslagen foutmeldingen"
 
-#: classes/Gems/Default/ProjectInformationAction.php:191
+#: classes/Gems/Default/ProjectInformationAction.php:217
 msgid "Empty logfile"
 msgstr "Verwijder alle foutmeldingen"
 
-#: classes/Gems/Default/ProjectInformationAction.php:208
+#: classes/Gems/Default/ProjectInformationAction.php:234
 #, php-format
 msgid "%s - does not exist"
 msgstr "%s - bestaat niet"
 
-#: classes/Gems/Default/ProjectInformationAction.php:215
+#: classes/Gems/Default/ProjectInformationAction.php:241
 #, php-format
 msgid "%s - no disk information available"
 msgstr "%s - informatie over schijf niet beschikbaar"
 
-#: classes/Gems/Default/ProjectInformationAction.php:221
+#: classes/Gems/Default/ProjectInformationAction.php:247
 #, php-format
 msgid "%s - %s free of %s = %d%% available"
 msgstr "%s - %s vrij van %s = %d%% beschikbaar"
 
-#: classes/Gems/Default/ProjectInformationAction.php:231
+#: classes/Gems/Default/ProjectInformationAction.php:257
 msgid "Project information"
 msgstr "Project informatie"
 
-#: classes/Gems/Default/ProjectInformationAction.php:237
+#: classes/Gems/Default/ProjectInformationAction.php:263
 msgid "Turn Maintenance Mode OFF"
 msgstr "Onderhoudsmodus UITzetten"
 
-#: classes/Gems/Default/ProjectInformationAction.php:239
+#: classes/Gems/Default/ProjectInformationAction.php:265
 msgid "Turn Maintenance Mode ON"
 msgstr "Onderhoudsmodus AANzetten"
 
-#: classes/Gems/Default/ProjectInformationAction.php:249
+#: classes/Gems/Default/ProjectInformationAction.php:276
 msgid "Version information"
 msgstr "Versie informatie"
 
-#: classes/Gems/Default/ProjectInformationAction.php:261
+#: classes/Gems/Default/ProjectInformationAction.php:288
 msgid "Maintenance mode set ON"
 msgstr "Onderhoudsmodus staat AAN"
 
-#: classes/Gems/Default/ProjectInformationAction.php:263
+#: classes/Gems/Default/ProjectInformationAction.php:290
 msgid "Maintenance mode set OFF"
 msgstr "Onderhoudsmodus staat UIT"
 
-#: classes/Gems/Default/ProjectInformationAction.php:295
+#: classes/Gems/Default/ProjectInformationAction.php:322
 msgid "Server PHP Info"
 msgstr "Server PHP Info"
 
-#: classes/Gems/Default/ProjectInformationAction.php:305
+#: classes/Gems/Default/ProjectInformationAction.php:332
 msgid "Logged PHP errors"
 msgstr "Opgeslagen PHP foutmeldingen"
 
-#: classes/Gems/Default/ProjectInformationAction.php:305
+#: classes/Gems/Default/ProjectInformationAction.php:332
 msgid "Empty PHP error file"
 msgstr "Leeg PHP foutbestand"
 
-#: classes/Gems/Default/ProjectInformationAction.php:317
+#: classes/Gems/Default/ProjectInformationAction.php:344
 msgid "Project settings"
 msgstr "Project instellingen"
 
-#: classes/Gems/Default/ProjectInformationAction.php:324
+#: classes/Gems/Default/ProjectInformationAction.php:351
 msgid "Session content"
 msgstr "Sessie inhoud"
 
-#: classes/Gems/Default/ProjectInformationAction.php:325
+#: classes/Gems/Default/ProjectInformationAction.php:352
 #: classes/Gems/Menu/MenuAbstract.php:620
 msgid "Session"
 msgstr "Sessie"
@@ -6177,6 +6177,11 @@ msgstr "Contactdatum"
 #: classes/Gems/Snippets/MonitorSnippet.php:44
 msgid "Monitorjob overview"
 msgstr "Monitortaak overzicht"
+
+#: classes/Gems/Snippets/MonitorSnippet.php:55
+#, php-format
+msgid "No monitorjob found for %s"
+msgstr "Geen monitortaak gevonden voor %s"
 
 #: classes/Gems/Snippets/Organization/ChooseOrganizationSnippet.php:63
 msgid "Choose an organization"
