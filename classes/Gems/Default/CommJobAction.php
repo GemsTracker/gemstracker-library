@@ -42,6 +42,12 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
      * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
+    
+    protected $monitorParameters = array(
+        'monitorJob' => 'getMailMonitorJob'
+    );
+    
+    protected $monitorSnippets = 'MonitorSnippet';
 
     /**
      *
@@ -301,6 +307,11 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
     {
         return $this->_('Automatic mail jobs');
     }
+    
+    public function getMailMonitorJob()
+    {
+        return $this->loader->getUtil()->getMonitor()->getCronMailMonitor();
+    }
 
     /**
      * Helper function to allow generalized statements about the items in the model.
@@ -331,6 +342,14 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
         parent::indexAction();
 
         $this->html->pInfo($this->_('With automatic mail jobs and a cron job on the server, mails can be sent without manual user action.'));
+    }
+    
+    public function monitorAction() {
+        if ($this->monitorSnippets) {
+            $params = $this->_processParameters($this->monitorParameters);
+
+            $this->addSnippets($this->monitorSnippets, $params);
+        }
     }
 
     /**

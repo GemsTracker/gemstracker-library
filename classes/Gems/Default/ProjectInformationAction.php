@@ -36,6 +36,12 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
      * @var \Gems_Menu
      */
     public $menu;
+    
+    protected $monitorParameters = array(
+        'monitorJob' => 'getMaintenanceMonitorJob'
+    );
+    
+    protected $monitorSnippets = 'MonitorSnippet';
 
     /**
      *
@@ -184,6 +190,11 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
 
         $this->_showText($this->_('Logged errors'), GEMS_ROOT_DIR . '/var/logs/errors.log', $this->_('Empty logfile'));
     }
+    
+    public function getMaintenanceMonitorJob()
+    {
+        return $this->loader->getUtil()->getMonitor()->getReverseMaintenanceMonitor();
+    }
 
     /**
      * Tell all about it
@@ -260,6 +271,14 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
         // Redirect
         $request = $this->getRequest();
         $this->_reroute(array($request->getActionKey() => 'index'));
+    }
+    
+    public function monitorAction() {
+        if ($this->monitorSnippets) {
+            $params = $this->_processParameters($this->monitorParameters);
+
+            $this->addSnippets($this->monitorSnippets, $params);
+        }
     }
 
     public function cachecleanAction()

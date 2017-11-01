@@ -328,6 +328,7 @@ abstract class Gems_Menu_MenuAbstract
         // AUTOMATIC COMMUNICATION CONTROLLER
         $page = $setup->addBrowsePage($this->_('Automatic mail'), 'pr.comm.job', 'comm-job');
         $page->addButtonOnly($this->_('Turn Automatic Mail Jobs OFF'), 'pr.comm.job', 'cron', 'cron-lock');
+        $page->addButtonOnly($this->_('Monitor'), 'pr.comm.job', 'comm-job', 'monitor');
 
         $page->addPage($this->_('Run all'), 'pr.cron.job', 'comm-job', 'execute-all');
         $show = $page->findItem(array('controller' => 'comm-job', 'action' => 'show'));
@@ -351,7 +352,7 @@ abstract class Gems_Menu_MenuAbstract
         $page->addAutofilterAction();
         $page->addExportAction();
         $page->addShowAction();
-
+        
         return $setup;
     }
 
@@ -618,6 +619,7 @@ abstract class Gems_Menu_MenuAbstract
         $page->addAction($this->_('Project'),    null, 'project');
         $page->addAction($this->_('Session'),    null, 'session');
         $page->addButtonOnly($this->_('Maintenance mode'), 'pr.maintenance.maintenance-mode', 'project-information', 'maintenance');
+        $page->addButtonOnly($this->_('Monitor'), 'pr.maintenance.maintenance-mode', 'project-information', 'monitor');
         $page->addButtonOnly($this->_('Clean cache'), 'pr.maintenance.clean-cache', 'project-information', 'cacheclean');
 
         // TEMPLATES CONTROLLER

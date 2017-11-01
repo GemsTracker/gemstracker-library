@@ -103,7 +103,7 @@ class Monitor extends UtilAbstract
      */
     public function getCronMailMonitor()
     {
-        return new MonitorJob($this->project->getName() . ' cron mail');
+        return MonitorJob::getJob($this->project->getName() . ' cron mail');
     }
     
     /**
@@ -120,7 +120,7 @@ class Monitor extends UtilAbstract
                 $subject = "{name} opdracht draait al meer dan {periodHours} uur niet";
                 $messageBbText = "L.S.,
 
-De [b]{name}[/b] opdracht heeft op {setTime} voor het laatst gedraait en zou voor {firstCheck} opnieuw gedraait moeten hebben.
+De [b]{name}[/b] opdracht heeft op {setTime} voor het laatst gedraaid en zou voor {firstCheck} opnieuw gedraaid moeten hebben.
 
 Dit is waarschuwing nummer [b]{mailCount}[/b]. Controleer s.v.p. wat verkeerd gegaan is.
 
@@ -144,7 +144,7 @@ This messages was send automatically.";
     
     public function getReverseMaintenanceMonitor()
     {
-       return new MonitorJob($this->project->getName() . ' maintenance mode'); 
+       return MonitorJob::getJob($this->project->getName() . ' maintenance mode');
     }
     
     /**
