@@ -139,7 +139,7 @@ This messages was send automatically.";
                 break;
         }
         
-        return array($ubject, $messageBbText);
+        return array($subject, $messageBbText);
     }
     
     public function getReverseMaintenanceMonitor()
