@@ -142,6 +142,104 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
 
         $this->initTranslateable();
     }
+    
+    /**
+     * Add HealthcareStaff to the table
+     * 
+     * Override this method for other defaults
+     * 
+     * @param string $name
+     * @param int $organizationId
+     * @return array
+     */
+    public function addHealthcareStaff($name, $organizationId)
+    {
+        $model = new \MUtil_Model_TableModel('gems__agenda_staff');
+        \Gems_Model::setChangeFieldsByPrefix($model, 'gas');
+
+        $values = array(
+            'gas_name'            => $name,
+            'gas_id_organization' => $organizationId,
+            'gas_match_to'        => $name,
+            'gas_active'          => 1,
+            'gas_filter'          => 0,
+        );
+
+        $result = $model->save($values);
+
+        $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('staff'));
+        
+        return $result;
+    }
+    
+    /**
+     * 
+     * @param type $name
+     * @param type $organizationId
+     * @param array $matches
+     * @return array
+     */
+    public function addLocation($name, $organizationId, $matches)
+    {
+        if (empty($matches)) {
+            // A new match
+            $values = array(
+                'glo_name'          => $name,
+                'glo_organizations' => ':' . $organizationId . ':',
+                'glo_match_to'      => $name,
+                'glo_active'        => 1,
+                'glo_filter'        => 0,
+            );
+        } else {
+            // Update
+            $first = reset($matches[$name]);
+
+            // Change this match, add this organization
+            $values = array(
+                'glo_id_location'   => $first['glo_id_location'],
+                'glo_organizations' => ':' . implode(':', array_keys($matches[$name])) . ':' .
+                    $organizationId . ':'
+            );            
+        }
+        
+        $model = new \MUtil_Model_TableModel('gems__locations');
+        \Gems_Model::setChangeFieldsByPrefix($model, 'glo');
+
+        $result = $model->save($values);
+
+        $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('location', 'locations'));
+        
+        return $result;
+    }
+    
+    /**
+     * Add Procedure to the table
+     * 
+     * Override this method for other defaults
+     * 
+     * @param string $name
+     * @param int $organizationId
+     * @return array
+     */
+    public function addProcedure($name, $organizationId)
+    {
+        $model = new \MUtil_Model_TableModel('gems__agenda_procedures');
+        \Gems_Model::setChangeFieldsByPrefix($model, 'gapr');
+
+        $values = array(
+            'gapr_name'            => $name,
+            'gapr_id_organization' => $organizationId,
+            'gapr_match_to'        => $name,
+            'gapr_active'          => 1,
+            'gapr_filter'          => 0,
+        );
+
+        $result = $model->save($values);
+
+        $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('procedure', 'procedures'));
+        
+        return $result;
+    }
 
     /**
      * Dynamically load and create a [Gems|Project]_Agenda_ class
@@ -985,21 +1083,8 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         if (! $create) {
             return null;
         }
-
-        $model = new \MUtil_Model_TableModel('gems__agenda_staff');
-        \Gems_Model::setChangeFieldsByPrefix($model, 'gas');
-
-        $values = array(
-            'gas_name'            => $name,
-            'gas_id_organization' => $organizationId,
-            'gas_match_to'        => $name,
-            'gas_active'          => 1,
-            'gas_filter'          => 0,
-        );
-
-        $result = $model->save($values);
-
-        $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('staff'));
+        
+        $result = $this->addHealthcareStaff($name, $organizationId);
 
         return $result['gas_id_staff'];
     }
@@ -1038,43 +1123,22 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
             if ($organizationId) {
                 if (isset($matches[$name][$organizationId])) {
                     return $matches[$name][$organizationId];
-                } else {
-                    $first = reset($matches[$name]);
-
-                    // Change this match, add this organization
-                    $values = array(
-                        'glo_id_location'   => $first['glo_id_location'],
-                        'glo_organizations' => ':' . implode(':', array_keys($matches[$name])) . ':' .
-                            $organizationId . ':',
-                        'glo_filter'        => $first['glo_filter'],
-                    );
                 }
+                // Not in this organization, if we create we update the record                
             } else {
                 // Return the first location among the organizations
                 return reset($matches[$name]);
             }
         } else {
-            // A new match
-            $values = array(
-                'glo_name'          => $name,
-                'glo_organizations' => ':' . $organizationId . ':',
-                'glo_match_to'      => $name,
-                'glo_active'        => 1,
-                'glo_filter'        => 0,
-            );
+            $matches[$name] = null;            
         }
 
         if (! $create) {
             return null;
         }
-
-        $model = new \MUtil_Model_TableModel('gems__locations');
-        \Gems_Model::setChangeFieldsByPrefix($model, 'glo');
-
-        $result = $model->save($values);
-
-        $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('location', 'locations'));
-
+        
+        $result = $this->addLocation($name, $organizationId, $matches[$name]);
+        
         return $result;
     }
 
@@ -1124,21 +1188,8 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         if (! $create) {
             return null;
         }
-
-        $model = new \MUtil_Model_TableModel('gems__agenda_procedures');
-        \Gems_Model::setChangeFieldsByPrefix($model, 'gapr');
-
-        $values = array(
-            'gapr_name'            => $name,
-            'gapr_id_organization' => $organizationId,
-            'gapr_match_to'        => $name,
-            'gapr_active'          => 1,
-            'gapr_filter'          => 0,
-        );
-
-        $result = $model->save($values);
-
-        $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('procedure', 'procedures'));
+        
+        $result = $this->addProcedure($name, $organizationId);
 
         return $result['gapr_id_procedure'];
     }
