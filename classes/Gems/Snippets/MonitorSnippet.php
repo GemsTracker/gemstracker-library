@@ -24,11 +24,19 @@ use MUtil\Util\MonitorJob;
 class MonitorSnippet extends \MUtil_Snippets_SnippetAbstract
 {
     public $caption;
+    
+    public $confirmParameter = 'delete';
     /**
      *
      * @var MonitorJob
      */
     public $monitorJob;
+    
+    /**
+     *
+     * @var \Zend_Controller_Request_Abstract
+     */
+    protected $request;
     
     public $title;
     
@@ -49,6 +57,12 @@ class MonitorSnippet extends \MUtil_Snippets_SnippetAbstract
     {
         $seq = $this->getHtmlSequence();
         $seq->h3($this->title);
+        
+        if ($this->request->getParam($this->confirmParameter)) {
+            $this->monitorJob->stop();
+            // Now clear the job so it is empty
+            $this->monitorJob = MonitorJob::getJob($this->monitorJob->getName());
+        }
 
         $data = $this->getReadableData();
         if (empty($data)) {
@@ -59,6 +73,8 @@ class MonitorSnippet extends \MUtil_Snippets_SnippetAbstract
             $table->class     = 'browser table';
             $tableContainer[] = $table;
             $seq[]            = $tableContainer;
+            
+            $seq->actionLink(array($this->confirmParameter => 1), $this->_('Delete'));
         }
 
         return $seq;
@@ -75,7 +91,7 @@ class MonitorSnippet extends \MUtil_Snippets_SnippetAbstract
         $data = $job->getArrayCopy();
         
         // Skip when job is not started
-        if ($data['seTime'] == 0) return;
+        if ($data['setTime'] == 0) return;
         
         $data['firstCheck'] = date(MonitorJob::$monitorDateFormat, $data['firstCheck']);
         $data['checkTime'] = date(MonitorJob::$monitorDateFormat, $data['checkTime']);
