@@ -183,8 +183,8 @@ class Gems_Model_Translator_AppointmentTranslator extends \Gems_Model_Translator
                     $row['glo_name'],
                     $row[$this->orgIdField]
                     );
-            $row['gap_id_location'] = $location['glo_id_location'];
-            $skip = $skip || $location['glo_filter'];
+            $row['gap_id_location'] = is_null($location) ? null : $location['glo_id_location'];
+            $skip = $skip || is_null($location) || $location['glo_filter'];
         }
         if ($skip) {
             return null;

@@ -144,6 +144,33 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     }
     
     /**
+     * Add Activities to the table
+     * 
+     * Override this method for other defaults
+     * 
+     * @param string $name
+     * @param int $organizationId
+     * @return array
+     */
+    public function addActivity($name, $organizationId)
+    {
+        $model = new \MUtil_Model_TableModel('gems__agenda_activities');
+        \Gems_Model::setChangeFieldsByPrefix($model, 'gaa');
+
+        $values = array(
+            'gaa_name'            => $name,
+            'gaa_id_organization' => $organizationId,
+            'gaa_match_to'        => $name,
+            'gaa_active'          => 1,
+            'gaa_filter'          => 0,
+        );
+
+        $result = $model->save($values);
+
+        $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('activity', 'activities'));
+    }
+    
+    /**
      * Add HealthcareStaff to the table
      * 
      * Override this method for other defaults
@@ -1001,23 +1028,10 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         if (! $create) {
             return null;
         }
+        
+        $result = $this->addActivity($name, $organizationId);        
 
-        $model = new \MUtil_Model_TableModel('gems__agenda_activities');
-        \Gems_Model::setChangeFieldsByPrefix($model, 'gaa');
-
-        $values = array(
-            'gaa_name'            => $name,
-            'gaa_id_organization' => $organizationId,
-            'gaa_match_to'        => $name,
-            'gaa_active'          => 1,
-            'gaa_filter'          => 0,
-        );
-
-        $result = $model->save($values);
-
-        $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('activity', 'activities'));
-
-        return $result['gaa_id_activity'];
+        return $result['gaa_filter'] ? false : $result['gaa_id_activity'];
     }
 
     /**
@@ -1086,7 +1100,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         
         $result = $this->addHealthcareStaff($name, $organizationId);
 
-        return $result['gas_id_staff'];
+        return $result['gas_filter'] ? false : $result['gas_id_staff'];
     }
 
     /**
@@ -1191,7 +1205,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         
         $result = $this->addProcedure($name, $organizationId);
 
-        return $result['gapr_id_procedure'];
+        return $result['gapr_filter'] ? false : $result['gapr_id_procedure'];
     }
 
     /**
