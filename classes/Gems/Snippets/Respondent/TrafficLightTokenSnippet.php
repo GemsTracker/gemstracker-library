@@ -302,11 +302,12 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
 
         if (!empty($tokenLink)) {
             if ($this->_isCompleted($tokenData)) {
-                $this->_addTooltip($tokenLink, sprintf($this->_('Completed') . ': %s', $tokenData['gto_completion_time']->get($this->_dateTimeFormat)), 'auto top');
+                $tooltip = sprintf($this->_('Completed') . ': %s', $tokenData['gto_completion_time']->get($this->_dateTimeFormat));
                 $this->_completed++;
                 $tokenDiv->appendAttrib('class', ' success');
                 $tokenLink->target = 'inline';
             } else {
+                $tooltip = sprintf($this->_('Open until %s'), $tokenData['gto_valid_until']->get($this->_dateTimeFormat));
                 $this->_open++;
                 $tokenDiv->appendAttrib('class', ' warning');
                 $tokenLink->target = '_self'; //$tokenData['gto_id_token'];
@@ -314,9 +315,11 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
             $tokenDiv[] = $tokenLink;
         } else {
             if ($this->_isMissed($tokenData)) {
+                $tooltip = sprintf($this->_('Missed since %s'), $tokenData['gto_valid_until']->get($this->_dateTimeFormat));
                 $this->_missed++;
                 $tokenDiv->appendAttrib('class', ' danger');
             } else {
+                $tooltip = sprintf($this->_('Valid from %s'), $tokenData['gto_valid_until']->get($this->_dateTimeFormat));
                 $this->_future++;
                 $tokenDiv->appendAttrib('class', ' info');
             }
@@ -331,6 +334,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
             //$tokenLink = $tokenDiv->a('#', $status);
         }
         
+        $this->_addTooltip($tokenLink, $tooltip, 'auto top');        
         $tokenLink[] = $tokenData['gsu_survey_name'];
 
         return $tokenDiv;
@@ -416,16 +420,16 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
         if (!is_null($progressDiv)) {
             $total = $this->_completed + $this->_open + $this->_missed;
             if (!$this->_missed == 0) {
-                $progressDiv->div(array('class' => 'danger'))->append($this->_missed);
+                $progressDiv->div($this->_missed, array('class' => 'danger'));
             }
             if (!$this->_completed == 0) {
-                $progressDiv->div(array('class' => 'success'))->append($this->_completed);
+                $progressDiv->div($this->_completed, array('class' => 'success'));
             }
             if (!$this->_open == 0) {
-                $progressDiv->div(array('class' => 'warning'))->append($this->_open);
+                $progressDiv->div($this->_open, array('class' => 'warning'));
             }
             if (!$this->_future == 0) {
-                $progressDiv->div(array('class' => 'info'))->append($this->_future);
+                $progressDiv->div($this->_future, array('class' => 'info'));
             }
         }
 
@@ -613,13 +617,13 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                     'target' => 'inline',
                     $summaryIcon,
                     'class' => 'pull-right' ));
-                $day->h4(array($summaryLink, ucfirst($description)));
-                $day->h5($date);
+                $day->h5(array($summaryLink, ucfirst($description)));
+                $day->h6($date);
 
                 $doelgroep = null;
             } elseif (isset($day) && $lastDate !== $date) {
                 // When we have a new start date, add the date and start a new group
-                $day->h5($date);
+                $day->h6($date);
                 $lastDate = $date;
                 $doelgroep = null;
             }
@@ -629,7 +633,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                 $doelgroep    = $row['forgroup'];
                 $doelgroepDiv = $day->div(array('class' => 'actor', 'renderClosingTag' => true));
                 $minIcon      = \MUtil_Html::create('span', array('class' => 'fa fa-plus-square', 'renderClosingTag' => true));
-                $title        = $doelgroepDiv->h5(array($minIcon, $doelgroep));
+                $title        = $doelgroepDiv->h6(array($minIcon, $doelgroep));
                 $progressDiv  = $doelgroepDiv->div(array('class' => 'zplegenda', 'renderClosingTag' => true));
                 $tokenDiv     = $doelgroepDiv->div(array('class' => 'zpitems', 'renderClosingTag' => true));
             }
