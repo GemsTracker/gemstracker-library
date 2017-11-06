@@ -319,7 +319,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                 $this->_missed++;
                 $tokenDiv->appendAttrib('class', ' danger');
             } else {
-                $tooltip = sprintf($this->_('Valid from %s'), $tokenData['gto_valid_until']->get($this->_dateTimeFormat));
+                $tooltip = sprintf($this->_('Valid from %s'), $tokenData['gto_valid_from']->get($this->_dateTimeFormat));
                 $this->_future++;
                 $tokenDiv->appendAttrib('class', ' info');
             }
