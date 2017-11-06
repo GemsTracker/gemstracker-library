@@ -267,11 +267,12 @@ This messages was send automatically.";
     {
         $to = $this->_getMailTo('cronmail', 'gsf_mail_watcher = 1');
 
+        $job = $this->getCronMailMonitor();
+        
         if (! $to) {
+            $job->stop();
             return false;
         }
-
-        $job = $this->getCronMailMonitor();
 
         $locale = $this->project->getLocaleDefault();
         list($subject, $messageBbText) = $this->getCronMailTemplate($locale);        
