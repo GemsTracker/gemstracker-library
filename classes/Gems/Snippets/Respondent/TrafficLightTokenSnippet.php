@@ -313,7 +313,11 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                 $tokenDiv->appendAttrib('class', ' success');
                 $tokenLink->target = 'inline';
             } else {
-                $tooltip = sprintf($this->_('Open until %s'), $tokenData['gto_valid_until']->get($this->_dateTimeFormat));
+                if (is_null($tokenData['gto_valid_until'])) {
+                    $tooltip = $this->_('Does not expire');
+                } else {
+                    $tooltip = sprintf($this->_('Open until %s'), $tokenData['gto_valid_until']->get($this->_dateTimeFormat));
+                }
                 $this->_open++;
                 $tokenDiv->appendAttrib('class', ' warning');
                 $tokenLink->target = '_self'; //$tokenData['gto_id_token'];
@@ -324,7 +328,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                 $tooltip = sprintf($this->_('Missed since %s'), $tokenData['gto_valid_until']->get($this->_dateTimeFormat));
                 $this->_missed++;
                 $tokenDiv->appendAttrib('class', ' danger');
-            } else {
+            } else {                
                 $tooltip = sprintf($this->_('Valid from %s'), $tokenData['gto_valid_from']->get($this->_dateTimeFormat));
                 $this->_future++;
                 $tokenDiv->appendAttrib('class', ' info');
