@@ -46,10 +46,10 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
     protected $_open            = 0;
     protected $_missed          = 0;
     protected $_future          = 0;
-    protected $_track_completed = 0;
-    protected $_track_open      = 0;
-    protected $_track_missed    = 0;
-    protected $_track_future    = 0;
+    protected $_completedTrack  = 0;
+    protected $_openTrack       = 0;
+    protected $_missedTrack     = 0;
+    protected $_futureTrack     = 0;
 
     /**
      * The display format for the date
@@ -428,7 +428,6 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
 
     protected function finishGroup($progressDiv) {
         if (!is_null($progressDiv)) {
-            $total = $this->_completed + $this->_open + $this->_missed;
             if (!$this->_missed == 0) {
                 $progressDiv->div($this->_missed, array('class' => 'danger'));
             }
@@ -443,10 +442,10 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
             }
         }
 
-        $this->_track_missed    = $this->_track_missed + $this->_missed;
-        $this->_track_completed = $this->_track_completed + $this->_completed;
-        $this->_track_open      = $this->_track_open + $this->_open;
-        $this->_track_future    = $this->_track_future + $this->_future;
+        $this->_missedTrack    = $this->_missedTrack + $this->_missed;
+        $this->_completedTrack = $this->_completedTrack + $this->_completed;
+        $this->_openTrack      = $this->_openTrack + $this->_open;
+        $this->_futureTrack    = $this->_futureTrack + $this->_future;
 
         $this->_completed = 0;
         $this->_missed    = 0;
@@ -458,34 +457,34 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
 
     protected function finishTrack($progressDiv) {
         if (!is_null($progressDiv)) {
-            $total = max($this->_track_completed + $this->_track_open + $this->_track_missed + $this->_track_future, 1);
+            $total = max($this->_completedTrack + $this->_openTrack + $this->_missedTrack + $this->_futureTrack, 1);
 
-            $div = $progressDiv->div($this->_track_missed, array(
+            $div = $progressDiv->div($this->_missedTrack, array(
                 'class'            => 'progress-bar progress-bar-danger',
-                'style'            => 'width: ' . $this->_track_missed / $total * 100 . '%;',
+                'style'            => 'width: ' . $this->_missedTrack / $total * 100 . '%;',
                 'renderClosingTag' => true));
-            $this->_addTooltip($div, sprintf($this->_("%s missed"), $this->_track_missed) , 'top');
-            $div = $progressDiv->div($this->_track_completed, array(
+            $this->_addTooltip($div, sprintf($this->_("%s missed"), $this->_missedTrack) , 'top');
+            $div = $progressDiv->div($this->_completedTrack, array(
                 'class'            => 'progress-bar progress-bar-success',
-                'style'            => 'width: ' . $this->_track_completed / $total * 100 . '%;',
+                'style'            => 'width: ' . $this->_completedTrack / $total * 100 . '%;',
                 'renderClosingTag' => true));
-            $this->_addTooltip($div, sprintf($this->_("%s completed"), $this->_track_completed), 'top');
-            $div = $progressDiv->div($this->_track_open, array(
+            $this->_addTooltip($div, sprintf($this->_("%s completed"), $this->_completedTrack), 'top');
+            $div = $progressDiv->div($this->_openTrack, array(
                 'class'            => 'progress-bar progress-bar-warning',
-                'style'            => 'width: ' . $this->_track_open / $total * 100 . '%;',
+                'style'            => 'width: ' . $this->_openTrack / $total * 100 . '%;',
                 'renderClosingTag' => true));
-            $this->_addTooltip($div, sprintf($this->_("%s open"), $this->_track_open), 'top');
-            $div = $progressDiv->div($this->_track_future, array(
+            $this->_addTooltip($div, sprintf($this->_("%s open"), $this->_openTrack), 'top');
+            $div = $progressDiv->div($this->_futureTrack, array(
                 'class'            => 'progress-bar progress-bar-info',
-                'style'            => 'width: ' . $this->_track_future / $total * 100 . '%;',
+                'style'            => 'width: ' . $this->_futureTrack / $total * 100 . '%;',
                 'renderClosingTag' => true));
-            $this->_addTooltip($div, sprintf($this->_("%s upcoming"), $this->_track_future), 'top');
+            $this->_addTooltip($div, sprintf($this->_("%s upcoming"), $this->_futureTrack), 'top');
         }
 
-        $this->_track_missed    = 0;
-        $this->_track_completed = 0;
-        $this->_track_open      = 0;
-        $this->_track_future    = 0;
+        $this->_missedTrack    = 0;
+        $this->_completedTrack = 0;
+        $this->_openTrack      = 0;
+        $this->_futureTrack    = 0;
 
         return;
     }        
@@ -533,6 +532,8 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
         $respTrackId     = 0;
         $today           = $now->get($this->_dateFormat);
         $trackProgress   = null;
+        $minIcon         = \MUtil_Html::create('span', array('class' => 'fa fa-plus-square', 'renderClosingTag' => true));
+        $summaryIcon     = \MUtil_Html::create('i', array('class' => 'fa fa-list-alt fa-fw', 'renderClosingTag' => true));
 
         // The normal loop
         foreach ($data as $row)
@@ -615,7 +616,6 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                     $class .= ' today';
                 }
                 $day = $subcontainer->div(array('class' => $class, 'renderClosingTag' => true));
-                $summaryIcon = \MUtil_Html::create('i', array('class' => 'fa fa-list-alt fa-fw', 'renderClosingTag' => true));
                 $this->_addTooltip($summaryIcon, $this->_('Summary'), 'auto top');
                 $summaryLink = \MUtil_Html::create('a', array(
                     'href' => array(
@@ -639,11 +639,10 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
             }
 
             if ($doelgroep !== $row['forgroup']) {
-                $progressDiv  = $this->finishGroup($progressDiv);
+                $this->finishGroup($progressDiv);
                 $doelgroep    = $row['forgroup'];
-                $doelgroepDiv = $day->div(array('class' => 'actor', 'renderClosingTag' => true));
-                $minIcon      = \MUtil_Html::create('span', array('class' => 'fa fa-plus-square', 'renderClosingTag' => true));
-                $title        = $doelgroepDiv->h6(array($minIcon, $doelgroep));
+                $doelgroepDiv = $day->div(array('class' => 'actor', 'renderClosingTag' => true));                
+                $doelgroepDiv->h6(array($minIcon, $doelgroep));
                 $progressDiv  = $doelgroepDiv->div(array('class' => 'zplegenda', 'renderClosingTag' => true));
                 $tokenDiv     = $doelgroepDiv->div(array('class' => 'zpitems', 'renderClosingTag' => true));
             }
