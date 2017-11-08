@@ -91,9 +91,9 @@ class RespondentTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
 
         $HTML = \MUtil_Html::create();
 
-        $roundDescription[] = $HTML->if($bridge->gto_round_description, $HTML->small(' [', $bridge->gto_round_description, ']'));
-        $roundDescription[] = $HTML->small(' [', $bridge->createSortLink('gto_round_description'), ']');
-
+        $model->set('gto_round_description', 'tableDisplay', 'smallData');
+        $model->set('gr2t_track_info', 'tableDisplay', 'smallData');
+        
         $roundIcon[] = \MUtil_Lazy::iif($bridge->gto_icon_file, \MUtil_Html::create('img', array('src' => $bridge->gto_icon_file, 'class' => 'icon')),
                 \MUtil_Lazy::iif($bridge->gro_icon_file, \MUtil_Html::create('img', array('src' => $bridge->gro_icon_file, 'class' => 'icon'))));
 
@@ -103,11 +103,10 @@ class RespondentTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
         } else {
             $track1 = $bridge->gtr_track_name;
         }
-        $track[] = array($track1, $HTML->if($bridge->gr2t_track_info, $HTML->small(' [', $bridge->gr2t_track_info, ']')));
-        $track[] = array($bridge->createSortLink('gtr_track_name'), $HTML->small(' [', $bridge->createSortLink('gr2t_track_info'), ']'));
+        $track = array($track1, $bridge->createSortLink('gtr_track_name'));        
 
-        $bridge->addMultiSort($track);
-        $bridge->addMultiSort('gsu_survey_name', $roundDescription, $roundIcon);
+        $bridge->addMultiSort($track, 'gr2t_track_info');
+        $bridge->addMultiSort('gsu_survey_name', 'gto_round_description', $roundIcon);
         $bridge->addSortable('ggp_name');
         $bridge->addSortable('calc_used_date', null, $HTML->if($bridge->is_completed, 'disabled date', 'enabled date'));
         $bridge->addSortable('gto_changed');
