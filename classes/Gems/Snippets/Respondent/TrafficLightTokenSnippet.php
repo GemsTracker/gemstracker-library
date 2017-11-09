@@ -307,7 +307,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                 $tooltip = array(sprintf($this->_('Completed') . ': %s', $tokenData['gto_completion_time']->get($this->_dateTimeFormat)));
                 if (!empty($tokenData['gto_result'])) {
                     $tooltip[] = \MUtil_Html::raw('<br/>');
-                    $tooltip[] = sprintf($this->_('Answer') .': %s', $tokenData['gto_result']);
+                    $tooltip[] = sprintf($this->_('Result') .': %s', $tokenData['gto_result']);
                 }
                 $this->_completed++;
                 $tokenDiv->appendAttrib('class', ' success');
