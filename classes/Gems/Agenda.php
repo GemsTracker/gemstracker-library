@@ -219,12 +219,12 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
             );
         } else {
             // Update
-            $first = reset($matches[$name]);
+            $first = reset($matches);
 
             // Change this match, add this organization
             $values = array(
                 'glo_id_location'   => $first['glo_id_location'],
-                'glo_organizations' => ':' . implode(':', array_keys($matches[$name])) . ':' .
+                'glo_organizations' => ':' . implode(':', array_keys($matches)) . ':' .
                     $organizationId . ':'
             );            
         }
