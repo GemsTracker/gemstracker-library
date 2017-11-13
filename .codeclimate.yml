@@ -1,9 +1,4 @@
-engines:
-  sonar-php:
-    enabled: true
-    config:
-      tests_patterns:
-        - tests/**        
+engines:       
   fixme:
     enabled: true
   phpmd:
