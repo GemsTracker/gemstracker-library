@@ -70,7 +70,7 @@ class AppointmentField extends FieldAbstract
      *
      * @var string
      */
-    protected $appointmentTimeFormat = 'dd MMM yyyy HH:MM';
+    protected $appointmentTimeFormat = 'dd MMM yyyy HH:mm';
 
     /**
      *
