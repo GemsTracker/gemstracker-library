@@ -176,7 +176,7 @@ class RespondentOverviewSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
             }
             if (!empty($scores)) {
                 $repeater = new \MUtil_Lazy_RepeatableByKeyValue($scores);
-                $div      = \MUtil_Html::create('div')->setRepeater($repeater)->setAttrib('class', 'row');
+                $div      = \MUtil_Html::create('div')->setRepeater($repeater)->setAttrib('class', 'row overviewtable');
                 $div->div($repeater->key, array('class' => 'col-md-6'))->setOnEmpty(\MUtil_Html::raw('empty'));
                 $div->div($repeater->value, array('class' => 'col-md-6', 'renderWithoutContent'=>false));
                 return $div;
