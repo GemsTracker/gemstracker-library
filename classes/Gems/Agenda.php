@@ -168,6 +168,8 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         $result = $model->save($values);
 
         $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('activity', 'activities'));
+        
+        return $result;
     }
     
     /**
@@ -292,7 +294,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
      */
     public function createAppointmentSelect($fields = '*')
     {
-        return $this->_loadClass('AppointmentSelect', true, array());
+        return $this->_loadClass('AppointmentSelect', true, array($fields));
     }
 
     /**
@@ -852,7 +854,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     public function getStatusKeysActiveDbQuoted()
     {
         $codes = array();
-        foreach ($this->getStatusCodesActive() as $key => $label) {
+        foreach ($this->getStatusKeysActive() as $key) {
             $codes[] = $this->db->quote($key);
         }
         return new \Zend_Db_Expr(implode(", ", $codes));
@@ -876,7 +878,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     public function getStatusKeysInactiveDbQuoted()
     {
         $codes = array();
-        foreach ($this->getStatusCodesInactive() as $key => $label) {
+        foreach ($this->getStatusKeysInactive() as $key) {
             $codes[] = $this->db->quote($key);
         }
         return new \Zend_Db_Expr(implode(", ", $codes));
