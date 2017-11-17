@@ -74,7 +74,18 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends \Gems_Mode
      * @var int
      */
     protected $_trackId;
-
+    
+    /**
+     * Datetime import formats
+     *
+     * @var array
+     */
+    public $datetimeFormats = array(
+        \Zend_Date::ISO_8601, 
+        'yyyy-MM-dd HH:mm:ss', 
+        'yyyy-MM-dd'
+        );
+    
     /**
      *
      * @var \Zend_Db_Adapter_Abstract
