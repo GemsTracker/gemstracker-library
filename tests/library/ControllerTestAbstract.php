@@ -73,7 +73,9 @@ class ControllerTestAbstract extends \Zend_Test_PHPUnit_ControllerTestCase {
                 $statements = explode(';', $sql);
                 foreach ($statements as $sql) {
                     if (!strpos(strtoupper($sql), 'INSERT INTO') && !strpos(strtoupper($sql), 'INSERT IGNORE') && !strpos(strtoupper($sql), 'UPDATE ')) {
-                        $stmt = $connection->exec($sql);
+                        if (!empty($sql)) {
+                            $stmt = $db->exec($sql);                            
+                        }
                     }
                 }
             }

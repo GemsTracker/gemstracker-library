@@ -319,20 +319,20 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
             $source->offsetSet('show_answers', $this->_gemsData['gto_completion_time'] ? 1 : 0);
             $source->offsetSet('gto_reception_code', $this->_gemsData['gto_reception_code']);
 
-            $rc = $this->getReceptionCode();
-            $source->offsetSet('grc_success', $rc->isSuccess() ? 1 : 0);
-            if ($rc->isSuccess() &&
+            $receptionCode = $this->getReceptionCode();
+            $source->offsetSet('grc_success', $receptionCode->isSuccess() ? 1 : 0);
+            if ($receptionCode->isSuccess() &&
                     (! $this->_gemsData['gto_completion_time']) &&
                     ($validFrom = $this->getValidFrom())) {
 
                 $validUntil = $this->getValidUntil();
                 $today = new \MUtil_Date();
 
-                $can_be_taken = $validFrom->isEarlier($today) && ($validUntil ? $validUntil->isLater($today) : true);
+                $canBeTaken = $validFrom->isEarlier($today) && ($validUntil ? $validUntil->isLater($today) : true);
             } else {
-                $can_be_taken = false;
+                $canBeTaken = false;
             }
-            $source->offsetSet('can_be_taken', $can_be_taken);
+            $source->offsetSet('can_be_taken', $canBeTaken);
         }
         return $this;
     }
@@ -901,7 +901,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         // If we have a relation, return that address
         if ($this->hasRelation()) {
             if ($relation = $this->getRelation()) {
-                return $this->getRelation()->getEmail();
+                return $relation->getEmail();
             }
 
             return null;
@@ -1827,7 +1827,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                 $values['gto_completion_time'] = null;
             }
         }
-        $changed = $this->_updateToken($values, $userId);
+        $this->_updateToken($values, $userId);
 
         $survey = $this->getSurvey();
         $source = $survey->getSource();
@@ -1975,7 +1975,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
      */
     protected function toResponseDatabase($userId)
     {
-        $db = $this->project->getResponseDatabase();
+        $responseDb = $this->project->getResponseDatabase();
 
         // WHY EXPLANATION!!
         //
@@ -1995,9 +1995,9 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                 $responses['datestamp']);
 
         // first read current responses to differentiate between insert and update
-        $responseSelect = $db->select()->from('gemsdata__responses', array('gdr_answer_id', 'gdr_response'))
+        $responseSelect = $responseDb->select()->from('gemsdata__responses', array('gdr_answer_id', 'gdr_response'))
                 ->where('gdr_id_token = ?', $this->_tokenId);
-        $currentResponses = $db->fetchPairs($responseSelect);
+        $currentResponses = $responseDb->fetchPairs($responseSelect);
 
         if (! $currentResponses) {
             $currentResponses = array();
@@ -2008,7 +2008,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         $sql = "UPDATE gemsdata__responses
             SET `gdr_response` = ?, `gdr_changed` = ?, `gdr_changed_by` = ?
             WHERE gdr_id_token = ? AND gdr_answer_id = ? AND gdr_answer_row = 1";
-        $stmt = $db->prepare($sql);
+        $statement = $responseDb->prepare($sql);
 
         $inserts = array();
         foreach ($responses as $fieldName => $response) {
@@ -2023,7 +2023,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                 if ($currentResponses[$fieldName] != $response) {
                     try {
                         // \MUtil_Echo::track($sql, $rValues['gdr_id_token'], $fieldName, $response);
-                        $stmt->execute(array(
+                        $statement->execute(array(
                             $response,
                             $rValues['gdr_changed'],
                             $rValues['gdr_changed_by'],
@@ -2045,18 +2045,19 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
             // \MUtil_Echo::track($inserts);
             try {
                 $fields = array_keys(reset($inserts));
-                $fields = array_map(array($db, 'quoteIdentifier'), $fields);
+                $fields = array_map(array($responseDb, 'quoteIdentifier'), $fields);
                 $sql = 'INSERT INTO gemsdata__responses (' .
                         implode(', ', $fields) . ') VALUES (' .
                         implode(', ', array_fill(1, count($fields), '?')) . ')';
 
                 // \MUtil_Echo::track($sql);
-                $stmt = $db->prepare($sql);
+                $statement = $responseDb->prepare($sql);
 
                 foreach($inserts as $insert) {
                     // \MUtil_Echo::track($insert);
-                    $stmt->execute($insert);
+                    $statement->execute($insert);
                 }
+                
             } catch (\Zend_Db_Statement_Exception $e) {
                 error_log($e->getMessage());
                 \Gems_Log::getLogger()->logError($e);
