@@ -59,12 +59,24 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends \Gems_Snip
      */
     protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
-        $aElem = new \MUtil_Html_AElement($href);
-        $aElem->setOnEmpty('');
+        // Add link to patient to overview
+        $menuItems = $this->findMenuItems('respondent', 'show');
+        if ($menuItems) {
+            $menuItem = reset($menuItems);
+            if ($menuItem instanceof \Gems_Menu_SubMenuItem) {
+                $href = $menuItem->toHRefAttribute($bridge);
 
-        // Make sure org is known
-        $model->get('gr2o_id_organization');
-        $model->set('gr2o_patient_nr', 'itemDisplay', $aElem);
+                if ($href) {
+                    $aElem = new \MUtil_Html_AElement($href);
+                    $aElem->setOnEmpty('');
+
+                    // Make sure org is known
+                    $model->get('gr2o_id_organization');
+
+                    $model->set('gr2o_patient_nr', 'itemDisplay', $aElem);
+                }
+            }
+        }
                     
         $tUtil = $this->util->getTokenData();
         $table = $bridge->getTable();
