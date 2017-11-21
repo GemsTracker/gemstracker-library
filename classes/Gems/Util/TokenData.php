@@ -106,4 +106,52 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
             END
             ");
     }
+
+    /**
+     * Returns the decription to add to the answer
+     *
+     * @param string $value Character
+     * @return string
+     */
+    public function getStatusIcon($value)
+    {
+        static $status;
+        if (is_null($status)) {           
+            $spanU = \MUtil_Html::create('span', array('class' => 'fa-stack', 'renderClosingTag' => true));
+            $spanU->i(array('class' => 'fa fa-circle fa-stack-2x', 'renderClosingTag' => true));
+            $spanU->i(array('class' => 'fa fa-question fa-stack-1x fa-inverse', 'renderClosingTag' => true));
+            
+            $spanW = \MUtil_Html::create('span', array('class' => 'fa-stack', 'renderClosingTag' => true));
+            $spanW->i(array('class' => 'fa fa-circle fa-stack-2x', 'renderClosingTag' => true));
+            
+            $spanO = \MUtil_Html::create('span', array('class' => 'fa-stack', 'renderClosingTag' => true));
+            $spanO->i(array('class' => 'fa fa-circle fa-stack-2x', 'renderClosingTag' => true));
+            $spanO->i(array('class' => 'fa fa-arrow-up fa-stack-1x fa-inverse', 'renderClosingTag' => true));
+            
+            $spanA = \MUtil_Html::create('span', array('class' => 'fa-stack', 'renderClosingTag' => true));
+            $spanA->i(array('class' => 'fa fa-circle fa-stack-2x', 'renderClosingTag' => true));
+            $spanA->i(array('class' => 'fa fa-check fa-stack-1x fa-inverse', 'renderClosingTag' => true));
+            
+            $spanM = \MUtil_Html::create('span', array('class' => 'fa-stack', 'renderClosingTag' => true));
+            $spanM->i(array('class' => 'fa fa-circle fa-stack-2x', 'renderClosingTag' => true));
+            
+            $spanD = \MUtil_Html::create('span', array('class' => 'fa-stack', 'renderClosingTag' => true));
+            $spanD->i(array('class' => 'fa fa-times fa-stack-2x', 'renderClosingTag' => true));
+            
+            $status = array(                
+            'U' => $spanU,
+            'W' => $spanW,
+            'O' => $spanO,
+            'A' => $spanA,
+            'M' => $spanM,
+            'D' => $spanD,
+            );
+        }
+
+        if (isset($status[$value])) {
+            return $status[$value];
+        }
+
+        return $status['D'];
+    }
 }

@@ -59,6 +59,13 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends \Gems_Snip
      */
     protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
+        $aElem = new \MUtil_Html_AElement($href);
+        $aElem->setOnEmpty('');
+
+        // Make sure org is known
+        $model->get('gr2o_id_organization');
+        $model->set('gr2o_patient_nr', 'itemDisplay', $aElem);
+                    
         $tUtil = $this->util->getTokenData();
         $table = $bridge->getTable();
         $table->appendAttrib('class', 'compliance');
@@ -111,12 +118,16 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends \Gems_Snip
                 }
 
                 if ($model->get($name, 'noSort')) {
+                    $result = 'res_' . substr($name, 5);
                     $title = \MUtil_Lazy::call(
                             "sprintf",
-                            $this->_("%s\n%s for respondent %s"),
+                            $this->_("%s\n%s for respondent %s %s"),
                             \MUtil_Lazy::method($tUtil, 'getStatusDescription', $bridge->$name),
                             $model->get($name, 'description'),
-                            $bridge->gr2o_patient_nr
+                            $bridge->gr2o_patient_nr,
+                            \MUtil_Lazy::iif($bridge->$result, 
+                                    \MUtil_Lazy::call("sprintf", "\n" . $this->_('Result') . ': %s', $bridge->$result),
+                                    '')
                         );
                     $token = 'tok_' . substr($name, 5);
 
@@ -139,9 +150,9 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends \Gems_Snip
                                             $href,
                                             'onclick' => 'event.cancelBubble = true;',
                                             'title' => $title,
-                                            $bridge->$name,
+                                            \MUtil_Lazy::method($tUtil, 'getStatusIcon', $bridge->$name)
                                             ),
-                                        $bridge->$name
+                                        \MUtil_Lazy::method($tUtil, 'getStatusIcon', $bridge->$name)
                                         ),
                                 'class'   => array('round', \MUtil_Lazy::method($tUtil, 'getStatusClass', $bridge->$name)),
                                 'title'   => $title,
@@ -151,7 +162,7 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends \Gems_Snip
                             array($label, 'title' => $model->get($name, 'description'), 'class' => 'round')
                             );
                 } else {
-                    $tds = $bridge->addSortable($name, $label);
+                        $tds = $bridge->addSortable($name, $label);
                 }
                 if ($class) {
                     $tds->appendAttrib('class', $class);
