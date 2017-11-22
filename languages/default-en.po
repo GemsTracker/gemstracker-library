@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-06 13:21+0100\n"
+"POT-Creation-Date: 2017-11-22 14:23+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -14,14 +14,14 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 1.8.9\n"
+"X-Generator: Poedit 2.0.4\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
 "X-Poedit-SearchPath-3: layouts\n"
 "X-Poedit-SearchPath-4: vendor/magnafacta/mutil/src/MUtil\n"
 
-#: classes/Gems/Agenda.php:463 classes/Gems/Agenda/Appointment.php:211
+#: classes/Gems/Agenda.php:465 classes/Gems/Agenda/Appointment.php:211
 #: classes/Gems/Agenda/AppointmentFilterModel.php:167
 #: classes/Gems/Agenda/AppointmentFilterModel.php:185
 #: classes/Gems/Tracker/Model/Dependency/FromAppointmentsMaintenanceDependency.php:91
@@ -29,7 +29,7 @@ msgstr ""
 msgid "; "
 msgstr "; "
 
-#: classes/Gems/Agenda.php:594
+#: classes/Gems/Agenda.php:596
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:81
 #: classes/Gems/Default/AgendaActivityAction.php:114
 #: classes/Gems/Default/AgendaProcedureAction.php:114
@@ -53,12 +53,12 @@ msgstr "; "
 msgid "Organization"
 msgstr "Organization"
 
-#: classes/Gems/Agenda.php:600
+#: classes/Gems/Agenda.php:602
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:82
 msgid "Source of appointment"
 msgstr "Source of appointment"
 
-#: classes/Gems/Agenda.php:603
+#: classes/Gems/Agenda.php:605
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:83
 #: classes/Gems/Model/AppointmentModel.php:188
 #: classes/Gems/Model/AppointmentModel.php:235
@@ -66,13 +66,13 @@ msgstr "Source of appointment"
 msgid "With"
 msgstr "With"
 
-#: classes/Gems/Agenda.php:609
+#: classes/Gems/Agenda.php:611
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:84
 #: classes/Gems/Model/AppointmentModel.php:237
 msgid "Referrer"
 msgstr "Referrer"
 
-#: classes/Gems/Agenda.php:615
+#: classes/Gems/Agenda.php:617
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:85
 #: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:95
 #: classes/Gems/Default/AgendaActivityAction.php:108
@@ -81,14 +81,14 @@ msgstr "Referrer"
 msgid "Activity"
 msgstr "Activity"
 
-#: classes/Gems/Agenda.php:621
+#: classes/Gems/Agenda.php:623
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:86
 #: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:100
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:467
 msgid "Procedure"
 msgstr "Procedure"
 
-#: classes/Gems/Agenda.php:627
+#: classes/Gems/Agenda.php:629
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:87
 #: classes/Gems/Default/DatabaseAction.php:215
 #: classes/Gems/Default/LocationAction.php:129
@@ -99,7 +99,7 @@ msgstr "Procedure"
 msgid "Location"
 msgstr "Location"
 
-#: classes/Gems/Agenda.php:633
+#: classes/Gems/Agenda.php:635
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:88
 #: classes/Gems/Default/CommTemplateAction.php:141
 #: classes/Gems/Default/CommTemplateAction.php:146
@@ -110,47 +110,47 @@ msgstr "Location"
 msgid "Subject"
 msgstr "Subject"
 
-#: classes/Gems/Agenda.php:811
+#: classes/Gems/Agenda.php:813
 msgid "Active appointment"
 msgstr "Active"
 
-#: classes/Gems/Agenda.php:812
+#: classes/Gems/Agenda.php:814
 msgid "Completed appointment"
 msgstr "Completed"
 
-#: classes/Gems/Agenda.php:828
+#: classes/Gems/Agenda.php:830
 msgid "Aborted appointment"
 msgstr "Show"
 
-#: classes/Gems/Agenda.php:829
+#: classes/Gems/Agenda.php:831
 msgid "Cancelled appointment"
 msgstr "Cancelled"
 
-#: classes/Gems/Agenda.php:893
+#: classes/Gems/Agenda.php:895
 msgid "Ambulatory"
 msgstr "Ambulatory"
 
-#: classes/Gems/Agenda.php:894
+#: classes/Gems/Agenda.php:896
 msgid "Emergency"
 msgstr "Emergency"
 
-#: classes/Gems/Agenda.php:895 classes/Gems/Mail/MailElements.php:293
+#: classes/Gems/Agenda.php:897 classes/Gems/Mail/MailElements.php:293
 msgid "Field"
 msgstr "Field"
 
-#: classes/Gems/Agenda.php:896
+#: classes/Gems/Agenda.php:898
 msgid "Home"
 msgstr "Home"
 
-#: classes/Gems/Agenda.php:897
+#: classes/Gems/Agenda.php:899
 msgid "Inpatient"
 msgstr "Inpatient"
 
-#: classes/Gems/Agenda.php:898
+#: classes/Gems/Agenda.php:900
 msgid "Short stay"
 msgstr "Short stay"
 
-#: classes/Gems/Agenda.php:899
+#: classes/Gems/Agenda.php:901
 msgid "Virtual"
 msgstr "Virtual"
 
@@ -1308,7 +1308,7 @@ msgstr "Patient nr"
 
 #: classes/Gems/Default/ComplianceAction.php:74
 #: classes/Gems/Default/FieldOverviewAction.php:89
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:579
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:590
 #: classes/OpenRosa/Tracker/Source/OpenRosa/Form.php:561
 msgid "Start date"
 msgstr "Start date"
@@ -1325,11 +1325,11 @@ msgstr "End date"
 msgid "No track selected..."
 msgstr "No track selected..."
 
-#: classes/Gems/Default/ComplianceAction.php:160
+#: classes/Gems/Default/ComplianceAction.php:162
 msgid "Compliance"
 msgstr "Compliance"
 
-#: classes/Gems/Default/ComplianceAction.php:188
+#: classes/Gems/Default/ComplianceAction.php:190
 #: classes/Gems/Default/FieldReportAction.php:336
 #: classes/Gems/Default/ProjectTracksAction.php:148
 #: classes/Gems/Default/TrackAction.php:1023
@@ -1727,6 +1727,9 @@ msgid "Query"
 msgstr "Query"
 
 #: classes/Gems/Default/DatabaseAction.php:479
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:310
+#: classes/Gems/Snippets/Tracker/Compliance/ComplianceTableSnippet.php:141
+#, php-format
 msgid "Result"
 msgstr "Result"
 
@@ -3338,7 +3341,7 @@ msgstr "Open"
 
 #: classes/Gems/Default/SummaryAction.php:129
 #: classes/Gems/Snippets/Respondent/RespondentOverviewSnippet.php:147
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:609
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:619
 msgid "Summary"
 msgstr "Summary"
 
@@ -3369,7 +3372,7 @@ msgstr "Average answer time: %s."
 #: classes/Gems/Default/SurveyMaintenanceAction.php:199
 #: classes/Gems/Default/SurveyMaintenanceAction.php:221
 #: classes/Gems/Snippets/Respondent/RespondentOverviewSnippet.php:167
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:576
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:587
 #: classes/Gems/Util/Translated.php:117
 msgid "n/a"
 msgstr "n/a"
@@ -4061,7 +4064,7 @@ msgid "Enter the particulars concerning the assignment to this respondent."
 msgstr "Enter the particulars concerning the assignment to this patient."
 
 #: classes/Gems/Export/RespondentExport.php:334
-#: classes/Gems/Snippets/Token/RespondentTokenSnippet.php:114
+#: classes/Gems/Snippets/Token/RespondentTokenSnippet.php:113
 #: classes/Gems/Snippets/Token/RoundTokenSnippet.php:84
 #: classes/Gems/Snippets/Track/TracksSnippet.php:95
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:134
@@ -5069,7 +5072,7 @@ msgstr "E-Mail"
 #: classes/Gems/Model/RespondentModel.php:272
 #: classes/Gems/Model/RespondentModel.php:355
 #: classes/Gems/Model/RespondentModel.php:475
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:381
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:391
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:170
 msgid "May be mailed"
 msgstr "May be mailed"
@@ -5240,23 +5243,23 @@ msgstr ""
 msgid "Compiled %s file(s)"
 msgstr "Compiled %s file(s)"
 
-#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:220
+#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:231
 #: classes/Gems/Snippets/Token/PlanSearchSnippet.php:78
 #: classes/OpenRosa/Tracker/Source/OpenRosa/Form.php:564
 msgid "Completion date"
 msgstr "Completion date"
 
-#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:254
+#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:265
 #, php-format
 msgid "No token found for %s."
 msgstr "No token found for %s."
 
-#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:404
+#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:415
 #, php-format
 msgid "Token %s is completed."
 msgstr "Token %s is completed."
 
-#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:429
+#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:440
 #, php-format
 msgid "No track for inserting found for %s."
 msgstr "No track for inserting found for %s."
@@ -6153,13 +6156,13 @@ msgid "Organizations that have no respondents"
 msgstr "Organizations that have no patients"
 
 #: classes/Gems/Snippets/ReceptionCode/ChangeReceptionCodeSnippetAbstract.php:110
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:144
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:145
 #, php-format
 msgid "Undelete %s!"
 msgstr "Undelete %s!"
 
 #: classes/Gems/Snippets/ReceptionCode/ChangeReceptionCodeSnippetAbstract.php:112
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:141
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:142
 #, php-format
 msgid "Delete %s!"
 msgstr "Delete %s!"
@@ -6336,54 +6339,59 @@ msgstr "empty"
 msgid "%s (%d open)"
 msgstr "%s (%d open)"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:167
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:168
 #: classes/Gems/Snippets/Tracker/Buttons/TrackActionButtonRow.php:40
 #: classes/Gems/Snippets/Tracker/DeleteTrackSnippet.php:133
 msgid "Edit track"
 msgstr "Edit track"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:305
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:307
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:326
 #: classes/Gems/Tracker/Token.php:1360
 #, php-format
 msgid "Completed"
 msgstr "Completed"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:310
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:317
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:704
+msgid "Does not expire"
+msgstr "Does not expire"
+
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:319
 #, php-format
 msgid "Open until %s"
 msgstr "Open until %s"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:318
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:328
 #, php-format
 msgid "Missed since %s"
 msgstr "Missed since %s"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:322
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:332
 #, php-format
 msgid "Valid from %s"
 msgstr "Valid from %s"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:380
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:390
 msgid "May not be mailed"
 msgstr "May not be mailed"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:457
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:466
 #, php-format
 msgid "%s missed"
 msgstr "%s missed"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:462
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:471
 #, php-format
 msgid "%s completed"
 msgstr "%s completed"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:467
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:476
 #, php-format
 msgid "%s open"
 msgstr "%s open"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:472
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:481
 #, php-format
 msgid "%s upcoming"
 msgstr "%s upcoming"
@@ -6692,7 +6700,7 @@ msgstr "(all staff)"
 msgid "Contact moments"
 msgstr "Contact moments"
 
-#: classes/Gems/Snippets/Token/RespondentTokenSnippet.php:120
+#: classes/Gems/Snippets/Token/RespondentTokenSnippet.php:119
 #: classes/Gems/Snippets/Token/RoundTokenSnippet.php:89
 #: classes/Gems/Snippets/Tracker/TrackTokenOverviewSnippet.php:110
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:333
@@ -6886,14 +6894,14 @@ msgstr "New round"
 msgid "Edit respondent"
 msgstr "Edit patient"
 
-#: classes/Gems/Snippets/Tracker/Compliance/ComplianceTableSnippet.php:116
+#: classes/Gems/Snippets/Tracker/Compliance/ComplianceTableSnippet.php:136
 #, php-format
 msgid ""
 "%s\n"
-"%s for respondent %s"
+"%s for respondent %s %s"
 msgstr ""
 "%s\n"
-"%s for patient %s"
+"%s for patient %s %s"
 
 #: classes/Gems/Snippets/Tracker/DeleteTrackSnippet.php:113
 msgid "Restore tokens"
@@ -7694,10 +7702,6 @@ msgstr "Date calculation"
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:613
 msgid "Valid for calculation"
 msgstr "Valid for calculation"
-
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:704
-msgid "Does not expire"
-msgstr "Does not expire"
 
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:707
 msgid "Use an answer from a survey."
