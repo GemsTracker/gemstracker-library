@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-22 14:23+0100\n"
+"POT-Creation-Date: 2017-11-27 12:22+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 2.0.4\n"
+"X-Generator: Poedit 1.8.9\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
@@ -877,8 +877,8 @@ msgid "When checked appointments with this staff member are not imported."
 msgstr "When checked appointments with this staff member are not imported."
 
 #: classes/Gems/Default/AgendaStaffAction.php:151
-msgid "Agenda healtcare provider"
-msgstr "Agenda healtcare provider"
+msgid "Agenda healthcare provider"
+msgstr "Agenda healthcare provider"
 
 #: classes/Gems/Default/AgendaStaffAction.php:195
 msgid "healthcare staff"
@@ -1308,7 +1308,7 @@ msgstr "Patient nr"
 
 #: classes/Gems/Default/ComplianceAction.php:74
 #: classes/Gems/Default/FieldOverviewAction.php:89
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:590
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:601
 #: classes/OpenRosa/Tracker/Source/OpenRosa/Form.php:561
 msgid "Start date"
 msgstr "Start date"
@@ -1727,7 +1727,7 @@ msgid "Query"
 msgstr "Query"
 
 #: classes/Gems/Default/DatabaseAction.php:479
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:310
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:317
 #: classes/Gems/Snippets/Tracker/Compliance/ComplianceTableSnippet.php:141
 #, php-format
 msgid "Result"
@@ -3341,7 +3341,7 @@ msgstr "Open"
 
 #: classes/Gems/Default/SummaryAction.php:129
 #: classes/Gems/Snippets/Respondent/RespondentOverviewSnippet.php:147
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:619
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:630
 msgid "Summary"
 msgstr "Summary"
 
@@ -3372,7 +3372,7 @@ msgstr "Average answer time: %s."
 #: classes/Gems/Default/SurveyMaintenanceAction.php:199
 #: classes/Gems/Default/SurveyMaintenanceAction.php:221
 #: classes/Gems/Snippets/Respondent/RespondentOverviewSnippet.php:167
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:587
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:598
 #: classes/Gems/Util/Translated.php:117
 msgid "n/a"
 msgstr "n/a"
@@ -4535,8 +4535,8 @@ msgid "Procedures"
 msgstr "Procedures"
 
 #: classes/Gems/Menu/MenuAbstract.php:227
-msgid "Healtcare staff"
-msgstr "Healtcare staff"
+msgid "Healthcare staff"
+msgstr "Healthcare staff"
 
 #: classes/Gems/Menu/MenuAbstract.php:253
 msgid "Clean up"
@@ -4956,8 +4956,8 @@ msgid "Optional code name to link the organization to program code."
 msgstr "Optional code name to link the organization to program code."
 
 #: classes/Gems/Model/OrganizationModel.php:96
-msgid "Healtcare provider id"
-msgstr "Healtcare provider id"
+msgid "Healthcare provider id"
+msgstr "Healthcare provider id"
 
 #: classes/Gems/Model/OrganizationModel.php:97
 msgid "An interorganizational id used for import and export."
@@ -5072,7 +5072,7 @@ msgstr "E-Mail"
 #: classes/Gems/Model/RespondentModel.php:272
 #: classes/Gems/Model/RespondentModel.php:355
 #: classes/Gems/Model/RespondentModel.php:475
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:391
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:402
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:170
 msgid "May be mailed"
 msgstr "May be mailed"
@@ -6156,13 +6156,13 @@ msgid "Organizations that have no respondents"
 msgstr "Organizations that have no patients"
 
 #: classes/Gems/Snippets/ReceptionCode/ChangeReceptionCodeSnippetAbstract.php:110
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:145
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:151
 #, php-format
 msgid "Undelete %s!"
 msgstr "Undelete %s!"
 
 #: classes/Gems/Snippets/ReceptionCode/ChangeReceptionCodeSnippetAbstract.php:112
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:142
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:148
 #, php-format
 msgid "Delete %s!"
 msgstr "Delete %s!"
@@ -6339,59 +6339,59 @@ msgstr "empty"
 msgid "%s (%d open)"
 msgstr "%s (%d open)"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:168
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:174
 #: classes/Gems/Snippets/Tracker/Buttons/TrackActionButtonRow.php:40
 #: classes/Gems/Snippets/Tracker/DeleteTrackSnippet.php:133
 msgid "Edit track"
 msgstr "Edit track"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:307
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:314
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:326
 #: classes/Gems/Tracker/Token.php:1360
 #, php-format
 msgid "Completed"
 msgstr "Completed"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:317
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:327
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:704
 msgid "Does not expire"
 msgstr "Does not expire"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:319
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:329
 #, php-format
 msgid "Open until %s"
 msgstr "Open until %s"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:328
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:338
 #, php-format
 msgid "Missed since %s"
 msgstr "Missed since %s"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:332
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:342
 #, php-format
 msgid "Valid from %s"
 msgstr "Valid from %s"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:390
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:401
 msgid "May not be mailed"
 msgstr "May not be mailed"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:466
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:477
 #, php-format
 msgid "%s missed"
 msgstr "%s missed"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:471
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:482
 #, php-format
 msgid "%s completed"
 msgstr "%s completed"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:476
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:487
 #, php-format
 msgid "%s open"
 msgstr "%s open"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:481
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:492
 #, php-format
 msgid "%s upcoming"
 msgstr "%s upcoming"
@@ -9765,6 +9765,15 @@ msgstr "An error occurred!"
 #: views/scripts/error/error.phtml:37
 msgid "Please contact system administration"
 msgstr "Please contact system administration"
+
+#~ msgid "Agenda healtcare provider"
+#~ msgstr "Agenda healtcare provider"
+
+#~ msgid "Healtcare staff"
+#~ msgstr "Healtcare staff"
+
+#~ msgid "Healtcare provider id"
+#~ msgstr "Healtcare provider id"
 
 #~ msgid "Completion time"
 #~ msgstr "Completion time"

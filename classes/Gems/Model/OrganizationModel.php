@@ -93,7 +93,7 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
         $this->setIfExists('gor_code',             'label', $this->_('Organization code'),
                 'description', $this->_('Optional code name to link the organization to program code.')
                 );
-        $this->set('gor_provider_id',           'label', $this->_('Healtcare provider id'),
+        $this->set('gor_provider_id',           'label', $this->_('Healthcare provider id'),
                 'description', $this->_('An interorganizational id used for import and export.')
                 );
 

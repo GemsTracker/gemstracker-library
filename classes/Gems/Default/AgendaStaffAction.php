@@ -148,7 +148,7 @@ class Gems_Default_AgendaStaffAction extends \Gems_Controller_ModelSnippetAction
      */
     public function getIndexTitle()
     {
-        return $this->_('Agenda healtcare provider');
+        return $this->_('Agenda healthcare provider');
     }
 
     /**
