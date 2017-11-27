@@ -94,6 +94,12 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
      * @var \Gems_Menu_SubMenuItem
      */
     protected $_tokenPreview;
+    
+    /**
+     *
+     * @var \Gems_Menu_SubMenuItem
+     */
+    protected $_tokenShow;
 
     /**
      *
@@ -274,7 +280,8 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
             'gr2t_mailable',        // For mail icon
             'gr2t_reception_code',  // For deleted tracks
             'gr2t_comment',         // For deleted tracks
-            'gto_result'
+            'gto_result',
+            'ggp_respondent_members' // For edit vs take (respondent / staff)
         );
         foreach ($items as $item)
         {
@@ -313,6 +320,9 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                 $tokenDiv->appendAttrib('class', ' success');
                 $tokenLink->target = 'inline';
             } else {
+                if ($tokenData['ggp_respondent_members'] == 1) {
+                    $tokenLink = $this->createMenuLink($tokenData + array('id_type' => 'token', 'grc_success' => 1), 'track', 'edit', '', $this->_tokenEdit);
+                }
                 if (is_null($tokenData['gto_valid_until'])) {
                     $tooltip = $this->_('Does not expire');
                 } else {
@@ -385,6 +395,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
         $this->_tokenDelete  = $this->findMenuItem('track', 'delete');
         $this->_tokenEdit    = $this->findMenuItem('track', 'edit');
         $this->_tokenPreview = $this->findMenuItem('track', 'questions');
+        $this->_tokenShow    = $this->findMenuItem('track', 'show');
 
         // Initialize the tooltips
         $this->textNotMailable = $this->_("May not be mailed");
