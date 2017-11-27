@@ -321,7 +321,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                 $tokenLink->target = 'inline';
             } else {
                 if ($tokenData['ggp_respondent_members'] == 1) {
-                    $tokenLink = $this->createMenuLink($tokenData + array('id_type' => 'token', 'grc_success' => 1), 'track', 'edit', '', $this->_tokenEdit);
+                    $tokenLink = $this->createMenuLink($tokenData, 'track', 'show', '', $this->_tokenShow);
                 }
                 if (is_null($tokenData['gto_valid_until'])) {
                     $tooltip = $this->_('Does not expire');
