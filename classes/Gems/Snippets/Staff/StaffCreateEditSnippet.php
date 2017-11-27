@@ -68,6 +68,8 @@ class StaffCreateEditSnippet extends ModelFormSnippetGeneric
         
         if (!$user->canSetPassword()) {
             $this->routeAction = 'index';
+            $this->resetRoute = true;
+            $this->afterSaveRouteKeys = false;
         }
         
         return parent::setAfterSaveRoute();
