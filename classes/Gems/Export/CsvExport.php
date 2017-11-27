@@ -101,7 +101,7 @@ class CsvExport extends ExportAbstract
                 $this->delimiter = $this->data[$name]['delimiter'];
             }
 
-            fputcsv($file, $labels, $this->delimiter, "'");
+            fputcsv($file, $labels, $this->delimiter, '"');
         }
 
         fclose($file);
@@ -136,7 +136,7 @@ class CsvExport extends ExportAbstract
         $exportRow   = $this->filterRow($row);
         $labeledCols = $this->getLabeledColumns();
         $exportRow   = array_replace(array_flip($labeledCols), $exportRow);
-        fputcsv($file, $exportRow, $this->delimiter, "'");
+        fputcsv($file, $exportRow, $this->delimiter, '"');
     }
 
     /**
@@ -157,8 +157,7 @@ class CsvExport extends ExportAbstract
             $input = join(', ', $input);
         }
         $output = strip_tags($input);
-        $output = str_replace(array("'", "\r", "\n"), array("''", ' ', ' '), $output);
-        //$output = "'" . $output . "'";
+        $output = str_replace(array("\r", "\n"), array(' ', ' '), $output);
         return $output;
     }
 
