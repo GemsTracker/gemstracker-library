@@ -71,7 +71,7 @@ class Gems_Task_Import_SaveAnswerTask extends \MUtil_Task_TaskAbstract
         // \MUtil_Echo::track($row);
         if ($row) {
             $answers = $row;
-            $double  = false;
+            $prevAnswers  = false;
             $token   = null;
             $tracker = $this->loader->getTracker();
             $userId  = $this->loader->getCurrentUser()->getUserId();
@@ -98,23 +98,7 @@ class Gems_Task_Import_SaveAnswerTask extends \MUtil_Task_TaskAbstract
                 $token = $tracker->getToken($row['token']);
 
                 if ($token->exists && $token->isCompleted() && $token->getReceptionCode()->isSuccess()) {
-                    $currentAnswers = $token->getRawAnswers();
-                    $usedAnswers    = array_intersect_key($answers, $currentAnswers);
-                    // \MUtil_Echo::track($currentAnswers, $answers, $usedAnswers);
-
-                    if ($usedAnswers) {
-                        foreach ($usedAnswers as $name => $value) {
-                            if ((null === $answers[$name]) || ($answers[$name] == $this->targetModel->get($name, 'default'))) {
-                                // There is no value to set, so do not set the value
-                                unset($answers[$name]);
-                            } elseif (! ((null === $value) || ($value == $this->targetModel->get($name, 'default')))) {
-                                // The value was already set
-                                $double = true;
-                                // But no break because of previous unsets
-                                // break;
-                            }
-                        }
-                    }
+                    $prevAnswers = true;
                 }
             }
             if (! ($token && $token->exists)) {
@@ -125,7 +109,7 @@ class Gems_Task_Import_SaveAnswerTask extends \MUtil_Task_TaskAbstract
             }
 
             if ($answers) {
-                if ($double) {
+                if ($prevAnswers) {
                     if (\Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_OVERWRITE == $tokenCompletion) {
                         $code = $this->util->getReceptionCode('redo');
 
