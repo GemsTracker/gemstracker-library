@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-27 12:23+0100\n"
+"POT-Creation-Date: 2017-12-05 16:24+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -7263,42 +7263,42 @@ msgstr "Klaar met %s %s aanmaak script voor object %d van %d"
 msgid "%d patch(es) executed."
 msgstr "%d patch(es) uitgevoerd."
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:135
-#: classes/Gems/Task/Import/SaveAnswerTask.php:168
+#: classes/Gems/Task/Import/SaveAnswerTask.php:119
+#: classes/Gems/Task/Import/SaveAnswerTask.php:152
 msgid "Previous comments:"
 msgstr "Vorige opmerkingen:"
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:139
-#: classes/Gems/Task/Import/SaveAnswerTask.php:161
+#: classes/Gems/Task/Import/SaveAnswerTask.php:123
+#: classes/Gems/Task/Import/SaveAnswerTask.php:145
 #, php-format
 msgid "Token %s overwritten by import."
 msgstr "Kenmerk %s overschreven door import."
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:145
+#: classes/Gems/Task/Import/SaveAnswerTask.php:129
 #, php-format
 msgid "%d token overwrote an existing token."
 msgid_plural "%d tokens overwrote existing tokens."
 msgstr[0] "%d kenmerk overschreef een bestaand kenmerk."
 msgstr[1] "%d kenmerken overschreven bestaande kenmerken."
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:172
+#: classes/Gems/Task/Import/SaveAnswerTask.php:156
 #, php-format
 msgid "More answers for token %s by import."
 msgstr "Meer antwoorden voor kenmerk %s middels import."
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:178
+#: classes/Gems/Task/Import/SaveAnswerTask.php:162
 #, php-format
 msgid "%d token was imported as a new extra token."
 msgid_plural "%d tokens were imported as a new extra token."
 msgstr[0] "%d kenmerk geïmporteerd als nieuw extra kenmerk."
 msgstr[1] "%d kenmerken geïmporteerd als nieuw extra kenmerk."
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:190
+#: classes/Gems/Task/Import/SaveAnswerTask.php:174
 #, php-format
 msgid "Additional answers in imported token %s."
 msgstr "Additionele antwoorden zitten in het geïmporteerde kenmerk %s."
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:212
+#: classes/Gems/Task/Import/SaveAnswerTask.php:196
 #, php-format
 msgid "%d token imported."
 msgid_plural "%d tokens imported."
@@ -9776,13 +9776,12 @@ msgid "Date value using ISO 8601: yyyy-mm-dd"
 msgstr "Een datum volgens ISO 8601: yyyy-mm-dd"
 
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:811
-msgid "Datetime value using ISO 8601: yyyy-mm-ddThh:mm::ss[+-hh:mm]"
-msgstr ""
-"Een datum + tijd waarde volgens ISO 8601: yyyy-mm-ddThh:mm::ss[+-hh:mm]"
+msgid "Datetime value using ISO 8601: yyyy-mm-ddThh:mm:ss[+-hh:mm]"
+msgstr "Een datum + tijd waarde volgens ISO 8601: jjjj-mm-ddTuu:mm:ss[+-uu:mm]"
 
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:815
-msgid "Time value using ISO 8601: hh:mm::ss[+-hh:mm]"
-msgstr "Een tijd volgens ISO 8601: hh:mm::ss[+-hh:mm]"
+msgid "Time value using ISO 8601: hh:mm:ss[+-hh:mm]"
+msgstr "Een tijd volgens ISO 8601: uu:mm::ss[+-uu:mm]"
 
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:823
 #, php-format
@@ -9881,6 +9880,13 @@ msgstr "Er trad een fout op!"
 #: views/scripts/error/error.phtml:37
 msgid "Please contact system administration"
 msgstr "Neem contact op met systeembeheer"
+
+#~ msgid "Datetime value using ISO 8601: yyyy-mm-ddThh:mm::ss[+-hh:mm]"
+#~ msgstr ""
+#~ "Een datum + tijd waarde volgens ISO 8601: yyyy-mm-ddThh:mm::ss[+-hh:mm]"
+
+#~ msgid "Time value using ISO 8601: hh:mm::ss[+-hh:mm]"
+#~ msgstr "Een tijd volgens ISO 8601: hh:mm::ss[+-hh:mm]"
 
 #~ msgid "Agenda healtcare provider"
 #~ msgstr "Agenda zorgverleners"
