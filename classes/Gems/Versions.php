@@ -44,7 +44,7 @@ class Gems_Versions
      */
     public final function getGemsVersion()
     {
-        return '1.8.3';
+        return '1.8.3-p1';
     }
 
     /**
