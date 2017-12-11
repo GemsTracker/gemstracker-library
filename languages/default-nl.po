@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-05 16:24+0100\n"
+"POT-Creation-Date: 2017-12-11 11:13+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -341,7 +341,7 @@ msgstr "%s like \"%s\""
 #: classes/Gems/Default/SurveyMaintenanceAction.php:448
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:911
 #: classes/Gems/Tracker/Model/TrackModel.php:137
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:531
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:532
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:847
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:1005
 msgid ", "
@@ -8571,57 +8571,62 @@ msgstr ""
 "De vragenlijst '%s' is niet meer actief. De vragenlijst is verwijderd uit "
 "LimeSurvey!"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:503
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:504
 #, php-format
 msgid "Corrected anonymization for survey '%s'"
 msgstr "Anonimizatie gecorrigeerd van vragenlijst '%s'"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:535
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:536
 #, php-format
 msgid "Added to token table '%s' the field(s): %s"
 msgstr "Toegevoegd aan kenmerk tabel '%s', de velden: %s"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:540
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:541
 #, php-format
 msgid "Attribute fields not created for token table for '%s'"
 msgstr "Attribuut velden voor de kenmerk tabel '%s' zijn niet toegevoegd"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:541
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:542
 #, php-format
 msgid "Required fields: %s"
 msgstr "Verplicht veld: %s"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:551
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:552
 #, php-format
 msgid "Updated token attribute descriptions for '%s'"
 msgstr "Token attribuut omschrijvingen bijgewerkt voor '%s'"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:570
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:571
 #, php-format
 msgid "The status of the '%s' survey has changed."
 msgstr "De status van de vragenlijst '%s' is veranderd."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:576
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:577
 #, php-format
 msgid "Survey '%s' IS NO LONGER ACTIVE!!!"
 msgstr "De vragenlijst '%s' IS NIET MEER ACTIEF!!!"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:582
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:583
 #, php-format
 msgid "The status of the '%s' survey has changed to '%s'."
 msgstr "De status van de vragenlijst '%s' is veranderd naar '%s'."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:585
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:586
 #, php-format
 msgid "The status warning for the '%s' survey was removed."
 msgstr "De status waarschuwing voor de vragenlijst '%s' is verdwenen."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:591
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:592
 #, php-format
 msgid "The name of the '%s' survey has changed to '%s'."
 msgstr "De naam van de vragenlijst '%s' is veranderd in '%s'."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:602
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:597
+#, php-format
+msgid "The description of the '%s' survey has changed to '%s'."
+msgstr "De omschrijving van de vragenlijst '%s' is veranderd naar '%s'."
+
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:609
 #: classes/OpenRosa/Tracker/Source/OpenRosa.php:676
 #, php-format
 msgid "Imported the '%s' survey."
