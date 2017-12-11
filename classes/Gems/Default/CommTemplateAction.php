@@ -144,7 +144,7 @@ class Gems_Default_CommTemplateAction extends \Gems_Controller_ModelSnippetActio
                     );
         } else {
             $translationModel->set('gctt_subject', 'label', $this->_('Subject'),
-                    'size', 50,
+                    'size', 100,
                     'formatFunction', $markEmptyCall
                     );
         }
