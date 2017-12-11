@@ -485,7 +485,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
             $lsSurvey = $lsDb->fetchRow($select);
 
             $surveyor_title = substr(\MUtil_Html::removeMarkup(html_entity_decode($lsSurvey['surveyls_title'])), 0, 100);
-            $surveyor_desciption = strtr(substr(\MUtil_Html::removeMarkup(html_entity_decode($lsSurvey['surveyls_description'])), 0, 100), "\xA0\xC2", '  ');
+            $surveyor_description = substr(\MUtil_Html::removeMarkup(html_entity_decode($lsSurvey['surveyls_description'])), 0, 100);
             $surveyor_status = '';
 
             // ANONIMIZATION
@@ -592,14 +592,14 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
                     $messages[] = sprintf($this->_('The name of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $surveyor_title);
                 }
                 
-                if ($survey->getDescription() != $surveyor_desciption) {
-                    $values['gsu_survey_description'] = $surveyor_desciption;
-                    $messages[] = sprintf($this->_('The description of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $surveyor_desciption);
+                if ($survey->getDescription() != $surveyor_description) {
+                    $values['gsu_survey_description'] = $surveyor_description;
+                    $messages[] = sprintf($this->_('The description of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $surveyor_description);
                 }                
 
             } else { // New record
                 $values['gsu_survey_name']        = $surveyor_title;
-                $values['gsu_survey_description'] = $surveyor_desciption;
+                $values['gsu_survey_description'] = $surveyor_description;
                 $values['gsu_surveyor_active']    = $surveyor_active ? 1 : 0;
                 $values['gsu_active']             = 0;
                 $values['gsu_status']             = $surveyor_status ? $surveyor_status : 'OK';
