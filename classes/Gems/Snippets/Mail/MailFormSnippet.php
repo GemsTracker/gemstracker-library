@@ -143,7 +143,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends \MUtil_Snippets_ModelSnippetAbs
         if ($this->templateOnly) {
             $bridge->addHidden('subject');
         } else {
-            $bridge->addText('subject', 'label', $this->_('Subject'), 'size', 50);
+            $bridge->addText('subject', 'label', $this->_('Subject'), 'size', 100);
         }
 
         $mailBody = $bridge->addElement($this->mailElements->createBodyElement('mailBody', $this->_('Message'), $model->get('gctt_body', 'required'), $this->templateOnly));
