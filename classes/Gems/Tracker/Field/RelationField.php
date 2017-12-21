@@ -44,21 +44,21 @@ class RelationField extends FieldAbstract
      *
      * @var string
      */
-    protected $_sql = "SELECT grr_id,
-                    CONCAT(
-                        COALESCE(CONCAT(grr_type, ' '), ''),
+    protected $_sql = "SELECT grr_id,                    
                         CASE WHEN gsf_id_user IS NULL
-                            THEN CONCAT(
-                                COALESCE(CONCAT(grr_first_name, ' '), ''),
-                                COALESCE(grr_last_name, '')
+                            THEN CONCAT_WS(' ',
+                                grr_type,
+                                grr_first_name,
+                                grr_last_name
                                 )
-                            ELSE CONCAT(
-                                COALESCE(CONCAT(gsf_first_name, ' '), ''),
-                                COALESCE(CONCAT(gsf_surname_prefix, ' '), ''),
-                                COALESCE(gsf_last_name, '')
+                            ELSE CONCAT_WS(' ',
+                                grr_type,
+                                gsf_first_name,
+                                gsf_surname_prefix,
+                                gsf_last_name
                                 )
                         END
-                        ) AS name
+                        AS name
                 FROM gems__respondent_relations LEFT JOIN gems__staff ON gsf_id_user = grr_id_staff
                 ";
     /**
