@@ -676,6 +676,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
      */
     public function getCodeFields()
     {
+        $fieldDef  = $this->getTrackEngine()->getFieldsDefinition();
         $codes   = $this->tracker->getAllCodeFields();
         $results = array_fill_keys($codes, null);
 
@@ -683,7 +684,12 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         if ($this->_fieldData) {
             foreach ($this->_fieldData as $id => $value) {
                 if (isset($codes[$id])) {
-                    $results[$codes[$id]] = $value;
+                    $displayValue = $value;
+                    $field = $fieldDef->getFieldByCode($codes[$id]);
+                    if (!is_null($field)) {
+                        $displayValue = $field->calculateFieldInfo($value, $this->_fieldData);
+                    }
+                    $results[$codes[$id]] = $displayValue;
                 }
             }
         }

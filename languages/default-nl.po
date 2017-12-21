@@ -3898,8 +3898,8 @@ msgid ""
 "or RD for Respondent (only age/sex/birthdate)"
 msgstr ""
 "Geef antwoorden door voor vragen die beginnen met de code: TF voor "
-"trackfield, CP voor vorige antwoorden en RD voor Patiënt (alleen leeftijd/"
-"sex/geboortedatum)"
+"trackfield, CP voor vorige antwoorden en RD voor Patiënt (alleen age/sex/"
+"birthdate)"
 
 #: classes/Gems/Event/Survey/Completed/BmiCalculation.php:32
 msgid "Bmi Calculation"
