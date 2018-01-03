@@ -658,6 +658,7 @@ class GemsEscort extends \MUtil_Application_Escort
         $view->addHelperPath('MUtil/View/Helper', 'MUtil_View_Helper');
         $view->addHelperPath('MUtil/Less/View/Helper', 'MUtil_Less_View_Helper');
         $view->addHelperPath('Gems/View/Helper', 'Gems_View_Helper');
+        $view->addScriptPath(GEMS_LIBRARY_DIR . '/views/scripts');
         $view->headTitle($this->project->getName());
         $view->setEncoding('UTF-8');
 
@@ -2102,7 +2103,7 @@ class GemsEscort extends \MUtil_Application_Escort
             } elseif (! (isset($this->maintenanceAccessiblePages[$controller]) &&
                     is_array($this->maintenanceAccessiblePages[$controller]) &&
                     in_array($action, $this->maintenanceAccessiblePages[$controller]))) {
-                
+
                 $this->addMessage($this->_('The page you requested is currently inaccessible.'));
                 $this->setError($this->_('Please check back later.'), 401);
 

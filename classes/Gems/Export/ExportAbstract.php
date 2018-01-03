@@ -390,6 +390,10 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
                     }
                 }
 
+                if ($result instanceof \MUtil_Date) {
+                    $result = $this->filterDateFormat($result, 'yyyy-MM-dd HH:mm:ss', $columnName);
+                }
+
                 $result = $this->filterHtml($result);
 
                 $exportRow[$columnName] = $result;

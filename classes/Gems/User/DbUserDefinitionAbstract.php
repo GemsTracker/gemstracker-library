@@ -105,22 +105,21 @@ abstract class Gems_User_DbUserDefinitionAbstract extends \Gems_User_UserDefinit
     }
 
     /**
-     * Checks if the current users hashed password uses the current hash algorithm. 
+     * Checks if the current users hashed password uses the current hash algorithm.
      * If not it rehashes and saves the current password
      * @param  \Gems_User_User  $user     Current logged in user
      * @param  integer          $password Raw password
      * @return boolean          password has been rehashed
      */
-    public function checkRehash(\Gems_User_User $user, $password) {
-        //$db = $this->getDb2();
-
+    public function checkRehash(\Gems_User_User $user, $password)
+    {
         $model = new \MUtil_Model_TableModel('gems__user_passwords');
+        if ($model->get('gup_password', 'maxlength') < 255) {
+            // Do not save if storage not long enough
+            return false;
+        }
 
-        $filter = [
-            'gup_id_user' => $user->getUserLoginId()
-        ];
-
-        $row = $model->loadFirst($filter);
+        $row = $model->loadFirst(['gup_id_user' => $user->getUserLoginId()]);
 
         if ($row && password_needs_rehash($row['gup_password'], $this->getHashAlgorithm(), $this->getHashOptions())) {
             $data['gup_id_user']         = $user->getUserLoginId();
@@ -164,30 +163,6 @@ abstract class Gems_User_DbUserDefinitionAbstract extends \Gems_User_UserDefinit
     }
 
     /**
-     * Create a Zend DB 2 Adapter needed for the Zend\Authentication library
-     * @return Zend\Db\Adapter\Adapter Zend Db Adapter
-     */
-    protected function getDb2()
-    {
-        if (!$this->db2 instanceof Adapter) {
-            $config = Zend_Controller_Front::getInstance()->getParam('bootstrap');
-            $resources = $config->getOption('resources');
-            $dbConfig = array(
-                'driver'   => $resources['db']['adapter'],
-                'hostname' => $resources['db']['params']['host'],
-                'database' => $resources['db']['params']['dbname'],
-                'username' => $resources['db']['params']['username'],
-                'password' => $resources['db']['params']['password'],
-                'charset'  => $resources['db']['params']['charset'],
-            );
-
-            $this->db2 = new Adapter($dbConfig);
-        }
-
-        return $this->db2;
-    }
-
-    /**
      * get the credential validation callback function for the callback check adapter
      * @return callback Function
      */
@@ -217,10 +192,34 @@ abstract class Gems_User_DbUserDefinitionAbstract extends \Gems_User_UserDefinit
     }
 
     /**
-     * Get the current password hash algorithm 
+     * Create a Zend DB 2 Adapter needed for the Zend\Authentication library
+     * @return Zend\Db\Adapter\Adapter Zend Db Adapter
+     */
+    protected function getDb2()
+    {
+        if (!$this->db2 instanceof Adapter) {
+            $config = Zend_Controller_Front::getInstance()->getParam('bootstrap');
+            $resources = $config->getOption('resources');
+            $dbConfig = array(
+                'driver'   => $resources['db']['adapter'],
+                'hostname' => $resources['db']['params']['host'],
+                'database' => $resources['db']['params']['dbname'],
+                'username' => $resources['db']['params']['username'],
+                'password' => $resources['db']['params']['password'],
+                'charset'  => $resources['db']['params']['charset'],
+            );
+
+            $this->db2 = new Adapter($dbConfig);
+        }
+
+        return $this->db2;
+    }
+
+    /**
+     * Get the current password hash algorithm
      * Currently defaults to BCRYPT in PHP 5.5-7.2
-     * 
-     * @return string 
+     *
+     * @return string
      */
     public function getHashAlgorithm()
     {
@@ -229,9 +228,9 @@ abstract class Gems_User_DbUserDefinitionAbstract extends \Gems_User_UserDefinit
 
     /**
      * Get the current hash options
-     * Default: 
+     * Default:
      * cost => 10  // higher numbers will make the hash slower but stronger.
-     * 
+     *
      * @return array Current password hash options
      */
     public function getHashOptions()

@@ -105,7 +105,8 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
     {
         $expected = array(
             'f__1' => 'code',
-            'f__2' => 'datecode'
+            'f__2' => 'datecode',
+            'f__5' => 'rel'
             );
 
         $this->assertEquals($expected, $this->tracker->getTrackEngine(1)->getFieldCodes());
@@ -121,7 +122,9 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
             'f__1' => 'test',
             'code' => 'test',
             'f__2' => $date,
-            'datecode' => $date
+            'datecode' => $date,
+            'f__5' => 21,
+            'rel'  => 21
             );
         $actual = $respondentTrack->getFieldData();
 
@@ -140,7 +143,9 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
             'f__1' => 'newvalue',
             'code' => 'newvalue',
             'f__2' => $date,
-            'datecode' => $date
+            'datecode' => $date,
+            'f__5' => 21,
+            'rel'  => 21
             );
         $actual = $respondentTrack->setFieldData(array('code' => 'newvalue', 'datecode' => $date));
 
@@ -160,7 +165,9 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
             'f__1' => 'newvalue',
             'code' => 'newvalue',
             'f__2' => $date,
-            'datecode' => $date
+            'datecode' => $date,
+            'f__5' => 21,
+            'rel'  => 21
             );
         $actual = $respondentTrack->setFieldData(array('code' => 'newvalue', 'datecode' => $date->toString('yyyy-MM-dd')));
 
@@ -207,6 +214,8 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
             'code' => 'newvalue',
             'f__2' => '',
             'datecode' => '',
+            'f__5' => 21,
+            'rel'  => 21
             );
         $actual = $respondentTrack->setFieldData(array('code' => 'newvalue', 'datecode' => null));
         $this->assertArrayWithDateMatch($expected, $actual, '', 1, 0);
@@ -225,5 +234,20 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
             );
         $actual = $respondentTrack->setFieldData(array('f__3' => 'newvalue', 'f__4' => null));
         $this->assertArrayWithDateMatch($expected, $actual, '', 1, 0);
+    }
+    
+    public function testGetCodeFields()
+    {
+        $respondentTrack = $this->loader->getTracker()->getRespondentTrack(1);
+        
+        $actual = $respondentTrack->getCodeFields();
+        
+        $date = new MUtil_Date('2010-10-08', 'yyyy-MM-dd');
+        $expected = array(
+            'code' => 'test',
+            'datecode' => $date->toString('dd MMM yyyy'),
+            'rel'  => 'Johnny Walker'
+            );
+        $this->assertEquals($expected, $actual);
     }
 }

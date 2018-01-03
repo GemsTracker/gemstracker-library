@@ -676,22 +676,23 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
      */
     public function getCodeFields()
     {
-        $fieldDef  = $this->getTrackEngine()->getFieldsDefinition();
-        $codes   = $this->tracker->getAllCodeFields();
-        $results = array_fill_keys($codes, null);
+        $fieldDef = $this->getTrackEngine()->getFieldsDefinition();
+        $codes    = $this->tracker->getAllCodeFields();
+        $results  = array_fill_keys($codes, null);
 
         $this->_ensureFieldData();
-        if ($this->_fieldData) {
-            foreach ($this->_fieldData as $id => $value) {
-                if (isset($codes[$id])) {
-                    $displayValue = $value;
-                    $field = $fieldDef->getFieldByCode($codes[$id]);
-                    if (!is_null($field)) {
-                        $displayValue = $field->calculateFieldInfo($value, $this->_fieldData);
-                    }
-                    $results[$codes[$id]] = $displayValue;
-                }
+
+        foreach ($this->_fieldData as $id => $value) {
+            if (!isset($codes[$id])) {
+                continue;
             }
+            
+            $fieldCode           = $codes[$id];
+            $results[$fieldCode] = $value;
+            $field               = $fieldDef->getFieldByCode($fieldCode);
+            if (!is_null($field)) {
+                $results[$fieldCode] = $field->calculateFieldInfo($value, $this->_fieldData);
+            }            
         }
 
         return $results;

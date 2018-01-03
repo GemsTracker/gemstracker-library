@@ -3,6 +3,7 @@
     <gems__tracks gtr_id_track="1" gtr_track_class="AnyStepEngine" gtr_track_name="Test Track" gtr_date_start="2000-01-01 00:00:00" gtr_changed_by="1" gtr_created="2012-09-07" gtr_created_by="1"/>
     <gems__track_fields gtf_id_field = "1" gtf_id_track="1" gtf_field_name="Name" gtf_field_code="code" gtf_field_type="text" gtf_field_default="default" gtf_to_track_info="0" gtf_changed_by="1" gtf_created="2012-09-07" gtf_created_by="1"/>
     <gems__track_fields gtf_id_field = "2" gtf_id_track="1" gtf_field_name="DateName" gtf_field_code="datecode" gtf_field_type="date" gtf_to_track_info="0" gtf_changed_by="1" gtf_created="2012-09-07" gtf_created_by="1"/>
+    <gems__track_fields gtf_id_field = "5" gtf_id_track="1" gtf_field_name="Relation" gtf_field_code="rel" gtf_field_type="relation" gtf_to_track_info="0" gtf_changed_by="1" gtf_created="2012-09-07" gtf_created_by="1"/>
     
     <gems__tracks gtr_id_track="2" gtr_track_class="AnyStepEngine" gtr_track_name="Test Track 2" gtr_date_start="2000-01-01 00:00:00" gtr_changed_by="1" gtr_created="2012-09-07" gtr_created_by="1"/>
     <gems__track_fields gtf_id_field = "3" gtf_id_track="2" gtf_field_name="Name"  gtf_field_type="text" gtf_field_default="default" gtf_to_track_info="0" gtf_changed_by="1" gtf_created="2012-09-07" gtf_created_by="1"/>
@@ -11,6 +12,7 @@
     <gems__respondent2track gr2t_track_info = "" gr2t_id_respondent_track="1" gr2t_id_track="1" gr2t_id_user="1234" gr2t_id_organization="1" gr2t_changed_by="1" gr2t_created="2012-09-07" gr2t_created_by="1"/>
     <gems__respondent2track2field gr2t2f_id_respondent_track="1" gr2t2f_id_field="1" gr2t2f_value="test" gr2t2f_changed_by="1" gr2t2f_created="2012-09-07" gr2t2f_created_by="1"/>
     <gems__respondent2track2field gr2t2f_id_respondent_track="1" gr2t2f_id_field="2" gr2t2f_value="2010-10-08" gr2t2f_changed_by="1" gr2t2f_created="2012-09-07" gr2t2f_created_by="1"/>
+    <gems__respondent2track2field gr2t2f_id_respondent_track="1" gr2t2f_id_field="5" gr2t2f_value="21" gr2t2f_changed_by="1" gr2t2f_created="2012-09-07" gr2t2f_created_by="1"/>
     
     <gems__respondent2track gr2t_track_info = "" gr2t_id_respondent_track="2" gr2t_id_track="2" gr2t_id_user="1234" gr2t_id_organization="1" gr2t_changed_by="1" gr2t_created="2012-09-07" gr2t_created_by="1"/>
     <gems__respondent2track2field gr2t2f_id_respondent_track="2" gr2t2f_id_field="3" gr2t2f_value="test" gr2t2f_changed_by="1" gr2t2f_created="2012-09-07" gr2t2f_created_by="1"/>
@@ -19,4 +21,5 @@
     <gems__respondents grs_id_user="1234" grs_changed_by="1" grs_created="2012-09-07" grs_created_by="1"/>
     <gems__respondent2org gr2o_id_user="1234" gr2o_id_organization="1" gr2o_consent="ok" gr2o_patient_nr="abc"
         gr2o_opened_by="1" gr2o_changed="2012-09-07" gr2o_changed_by="1" gr2o_created="2012-09-07" gr2o_created_by="1"/>
+    <gems__respondent_relations grr_id="21" grr_id_respondent="1234" grr_first_name="Johnny" grr_last_name="Walker" grr_changed_by="1" grr_created="2017-12-21" grr_created_by="1"/>
 </dataset>
