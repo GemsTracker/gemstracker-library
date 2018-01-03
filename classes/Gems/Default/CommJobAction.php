@@ -72,7 +72,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
 
         //If allowed, add the sort action
         if ($this->menu->findAllowedController($this->getRequest()->getControllerName(), 'sort')) {
-            $buttons = $this->_helper->SortableTable('sort', 'rid');
+            $buttons = $this->_helper->SortableTable('sort', 'id');
             // First element is the wrapper
             $this->html[0]->append($buttons);
         }
