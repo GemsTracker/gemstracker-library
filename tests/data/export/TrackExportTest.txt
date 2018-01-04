@@ -1,0 +1,28 @@
+
+track
+gtr_track_name	gtr_track_info	gtr_code	gtr_date_start	gtr_date_until	gtr_track_class	gtr_beforefieldupdate_event	gtr_calculation_event	gtr_completed_event	gtr_fieldupdate_event
+Test Track			2000-01-01 00:00:00		AnyStepEngine				
+
+organizations
+gor_id_organization	gor_name
+1	testorg
+
+fields
+gtf_id_order	gtf_field_name	gtf_field_code	gtf_field_description	gtf_field_values	gtf_field_default	gtf_calculate_using	gtf_field_type	gtf_to_track_info	gtf_track_info_label	gtf_required	gtf_readonly
+10	Name	code			default		text	0	false	false	false
+gtf_id_order	gtf_field_name	gtf_field_code	gtf_field_description	gtf_field_values	gtf_field_default	gtf_calculate_using	gtf_field_type	gtf_to_track_info	gtf_track_info_label	gtf_required	gtf_readonly
+20	DateName	datecode					date	0	false	false	false
+gtf_id_order	gtf_field_name	gtf_field_code	gtf_field_description	gtf_field_values	gtf_field_default	gtf_calculate_using	gtf_field_type	gtf_to_track_info	gtf_track_info_label	gtf_required	gtf_readonly
+30	Relation	rel					relation	0	false	false	false
+
+surveys
+gsu_export_code	gsu_survey_name	gsu_survey_description	gsu_surveyor_id
+export1	test survey1		
+export2	test survey2		
+
+rounds
+gro_id_order	gro_id_relationfield	gro_round_description	gro_icon_file	gro_changed_event	gro_display_event	gro_valid_after_source	gro_valid_after_field	gro_valid_after_unit	gro_valid_after_length	gro_valid_for_source	gro_valid_for_field	gro_valid_for_unit	gro_valid_for_length	gro_organizations	gro_code	survey_export_code	valid_after	valid_for
+10						tok	gto_valid_from	M	0	nul		M	0			export1		
+11						tok	gto_valid_from	M	0	nul		M	0			export2		
+12						tok	gto_valid_from	M	0	nul		M	0			export2		
+13						tok	gto_valid_from	M	0	nul		M	0			export1		

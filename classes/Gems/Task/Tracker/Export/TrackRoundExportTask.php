@@ -43,7 +43,7 @@ class TrackRoundExportTask extends TrackExportAbstract
             'gro_valid_after_source', 'gro_valid_after_field', 'gro_valid_after_unit', 'gro_valid_after_length',
             'gro_valid_for_source', 'gro_valid_for_field', 'gro_valid_for_unit', 'gro_valid_for_length',
             'gro_organizations', 'gro_code',
-            ))  ->joinInner('gems__surveys', 'gro_id_survey = gsu_id_survey', array(
+            ))  ->joinInner('gems__surveys', 'gems__rounds.gro_id_survey = gsu_id_survey', array(
                 'survey_export_code' => 'gsu_export_code',
                 )) // gro_id_survey
                 ->joinLeft('gems__rounds AS va', 'gems__rounds.gro_valid_after_id = va.gro_id_round', array(
