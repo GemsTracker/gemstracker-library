@@ -55,7 +55,10 @@ class TrackExportTest extends \Gems_Test_DbTestAbstract {
         \Zend_Registry::getInstance()->set('project', $project);
         
         $translate = new \MUtil_Translate_Adapter_Potemkin();
-        \Zend_Registry::getInstance()->set('translate', $translate);        
+        \Zend_Registry::getInstance()->set('translate', $translate);
+        
+        $cache      = \Zend_Cache::factory('Core', 'Static', array('caching' => false), array('disable_caching' => true));
+        \Zend_Registry::getInstance()->set('cache', $cache);
     }    
 
     protected function setUpApplication()
@@ -98,7 +101,7 @@ class TrackExportTest extends \Gems_Test_DbTestAbstract {
         $batch = $this->loader->getTaskRunnerBatch('track_export_' . $trackId);
         $formData = [
             'orgs' => 1,
-            'fields' => ['f__1', 'f__2', 'f__3'],
+            'fields' => ['f__1', 'f__2', 'f__3', 'a__4'],
             'rounds' => [10, 20, 30, 40],
             'surveys' => [1,2]
         ];        

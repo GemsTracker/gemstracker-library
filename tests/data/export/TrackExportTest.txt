@@ -14,6 +14,8 @@ gtf_id_order	gtf_field_name	gtf_field_code	gtf_field_description	gtf_field_value
 20	DateName	datecode					date	0	false	false	false
 gtf_id_order	gtf_field_name	gtf_field_code	gtf_field_description	gtf_field_values	gtf_field_default	gtf_calculate_using	gtf_field_type	gtf_to_track_info	gtf_track_info_label	gtf_required	gtf_readonly
 30	Relation	rel					relation	0	false	false	false
+gtf_id_order	gtf_field_name	gtf_field_code	gtf_field_description	gtf_to_track_info	gtf_track_info_label	gtf_required	gtf_readonly	gtf_after_next	gtf_min_diff_length	gtf_min_diff_unit	gtf_max_diff_exists	gtf_max_diff_length	gtf_max_diff_unit	gtf_uniqueness	gtf_create_track	gtf_create_wait_days	gtf_field_type	gtf_field_values	gtf_field_default	gtf_calculate_using
+40	Appointemnt	app1		0	false	false	false	1	1	D	0	0	D	0	0	182	appointment			
 
 surveys
 gsu_export_code	gsu_survey_name	gsu_survey_description	gsu_surveyor_id
@@ -22,7 +24,7 @@ export2	test survey2
 
 rounds
 gro_id_order	gro_id_relationfield	gro_round_description	gro_icon_file	gro_changed_event	gro_display_event	gro_valid_after_source	gro_valid_after_field	gro_valid_after_unit	gro_valid_after_length	gro_valid_for_source	gro_valid_for_field	gro_valid_for_unit	gro_valid_for_length	gro_organizations	gro_code	survey_export_code	valid_after	valid_for
-10						tok	gto_valid_from	M	0	nul		M	0			export1		
-11						tok	gto_valid_from	M	0	nul		M	0			export2		
-12						tok	gto_valid_from	M	0	nul		M	0			export2		
-13						tok	gto_valid_from	M	0	nul		M	0			export1		
+10	-1					rtr	gr2t_start_date	D	0	tok	gto_valid_from	W	1			export1		
+11						rtr	{f20}	D	0	app	{f40}	D	-1			export2		
+12						rtr	10	D	1	tok	gto_valid_from	W	1			export2		
+13	{f30}					rtr	gr2t_start_date	D	0	tok	gto_valid_from	W	1			export1		
