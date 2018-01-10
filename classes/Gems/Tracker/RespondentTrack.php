@@ -587,9 +587,6 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         // Execute any defined functions
         $count = $this->handleTrackCalculation($userId);
 
-        // Update token completion count.
-        $this->_checkTrackCount($userId);
-
         $engine = $this->getTrackEngine();
 
         $this->db->beginTransaction();
@@ -602,6 +599,9 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
             $count += $engine->checkTokensFromStart($this, $userId);
         }
         $this->db->commit();
+        
+        // Update token completion count and possible enddate
+        $this->_checkTrackCount($userId);
 
         return $count;
     }
