@@ -20,6 +20,12 @@
  */
 class Gems_Mail_RespondentMailer extends \Gems_Mail_MailerAbstract
 {
+
+    /**
+     * @var User ID of user who sent the mail
+     */
+    protected $by;
+    
     /**
      *
      * @var \Gems_User_User

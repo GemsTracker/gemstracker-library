@@ -67,10 +67,11 @@ abstract class SurveyExportSearchFormSnippetAbstract extends \Gems_Snippets_Auto
         }
 
         $dates = array(
-            'gr2t_start_date' => $this->_('Track start'),
-            'gr2t_end_date'   => $this->_('Track end'),
-            'gto_valid_from'  => $this->_('Valid from'),
-            'gto_valid_until' => $this->_('Valid until'),
+            'gr2t_start_date'     => $this->_('Track start'),
+            'gr2t_end_date'       => $this->_('Track end'),
+            'gto_valid_from'      => $this->_('Valid from'),
+            'gto_valid_until'     => $this->_('Valid until'),
+            'gto_completion_time' => $this->_('Completion date'),
             );
         // $dates = 'gto_valid_from';
         $this->_addPeriodSelectors($elements, $dates, 'gto_valid_from');

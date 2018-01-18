@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-11 11:10+0100\n"
+"POT-Creation-Date: 2018-01-18 11:15+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -1971,11 +1971,11 @@ msgstr "Files ready for import"
 #: classes/Gems/Default/GroupAction.php:76
 #: classes/Gems/Default/StaffAction.php:154
 #: classes/Gems/Default/StaffAction.php:168
-#: classes/Gems/Default/StaffLogAction.php:68 classes/GemsEscort.php:2136
+#: classes/Gems/Default/StaffLogAction.php:68 classes/GemsEscort.php:2137
 msgid "No access to page"
 msgstr "No access to page"
 
-#: classes/Gems/Default/GroupAction.php:78 classes/GemsEscort.php:2138
+#: classes/Gems/Default/GroupAction.php:78 classes/GemsEscort.php:2139
 #, php-format
 msgid "Access to the %s/%s page is not allowed for your current group: %s."
 msgstr "Access to the %s/%s page is not allowed for your current group: %s."
@@ -4016,9 +4016,13 @@ msgid "Track description"
 msgstr "Track description"
 
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:332
+#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:231
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:74
+#: classes/Gems/Snippets/Token/PlanSearchSnippet.php:78
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:488
-msgid "Submit time"
-msgstr "Submit time"
+#: classes/OpenRosa/Tracker/Source/OpenRosa/Form.php:564
+msgid "Completion date"
+msgstr "Completion date"
 
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:333
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:487
@@ -4313,7 +4317,7 @@ msgstr "Show"
 msgid "Change password"
 msgstr "Change password"
 
-#: classes/Gems/Menu.php:225 classes/GemsEscort.php:1044
+#: classes/Gems/Menu.php:225 classes/GemsEscort.php:1045
 msgid "Logoff"
 msgstr "Logoff"
 
@@ -4814,7 +4818,7 @@ msgstr "Appointment"
 
 #: classes/Gems/Model/AppointmentModel.php:185
 #: classes/Gems/Model/AppointmentModel.php:226
-#: classes/Gems/Model/AppointmentModel.php:229 classes/GemsEscort.php:1425
+#: classes/Gems/Model/AppointmentModel.php:229 classes/GemsEscort.php:1426
 msgid "dd-mm-yyyy hh:mm"
 msgstr "dd-mm-yyyy hh:mm"
 
@@ -5243,12 +5247,6 @@ msgstr ""
 msgid "Compiled %s file(s)"
 msgstr "Compiled %s file(s)"
 
-#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:231
-#: classes/Gems/Snippets/Token/PlanSearchSnippet.php:78
-#: classes/OpenRosa/Tracker/Source/OpenRosa/Form.php:564
-msgid "Completion date"
-msgstr "Completion date"
-
 #: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:265
 #, php-format
 msgid "No token found for %s."
@@ -5610,7 +5608,7 @@ msgid "(all locations)"
 msgstr "(all locations)"
 
 #: classes/Gems/Snippets/Ask/MaintenanceModeAskSnippet.php:42
-#: classes/GemsEscort.php:2100 classes/GemsEscort.php:2111
+#: classes/GemsEscort.php:2101 classes/GemsEscort.php:2112
 msgid "System is in maintenance mode"
 msgstr "System is in maintenance mode"
 
@@ -5885,11 +5883,11 @@ msgstr "Track start"
 msgid "Track end"
 msgstr "Track end"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:81
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:82
 msgid "Respondent id's"
 msgstr "Respondent id's"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:84
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:85
 msgid ""
 "Not respondent nr, but respondent id as exported here. Separate multiple "
 "id's with , or ;"
@@ -5897,25 +5895,25 @@ msgstr ""
 "Not patient nr, but respondent id as exported here. Separate multiple id's "
 "with , or ;"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:89
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:90
 msgid "Output"
 msgstr "Output"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:92
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:93
 msgid "Include incomplete surveys"
 msgstr "Include incomplete surveys"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:93
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:94
 msgid ""
 "Include surveys that have been started but have not been checked as completed"
 msgstr ""
 "Include surveys that have been started but have not been checked as completed"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:97
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:98
 msgid "Column Identifiers"
 msgstr "Column Identifiers"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:98
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:99
 msgid ""
 "Prefix the column labels with an identifier. (A) Answers, (TF) Trackfields, "
 "(D) Description"
@@ -5923,23 +5921,23 @@ msgstr ""
 "Prefix the column labels with an identifier. (A) Answers, (TF) Trackfields, "
 "(D) Description"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:102
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:103
 msgid "Show parent"
 msgstr "Show parent"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:103
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:104
 msgid "Show the parent column even if it doesn't have answers"
 msgstr "Show the parent column even if it doesn't have answers"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:107
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:108
 msgid "Prefix child"
 msgstr "Prefix child"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:108
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:109
 msgid "Prefix the child column labels with parent question label"
 msgstr "Prefix the child column labels with parent question label"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:115
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:116
 msgid "Add to export"
 msgstr "Add to export"
 
@@ -8050,11 +8048,11 @@ msgstr "Before field update"
 msgid "After field update"
 msgstr "After field update"
 
-#: classes/Gems/Tracker/RespondentTrack.php:767
+#: classes/Gems/Tracker/RespondentTrack.php:774
 msgid "Track stopped"
 msgstr "Track stopped"
 
-#: classes/Gems/Tracker/RespondentTrack.php:770
+#: classes/Gems/Tracker/RespondentTrack.php:777
 msgid "Track completed"
 msgstr "Track completed"
 
@@ -9167,37 +9165,37 @@ msgstr "Mr./Mrs."
 msgid "Path %s not writable"
 msgstr "Path %s not writable"
 
-#: classes/GemsEscort.php:836
+#: classes/GemsEscort.php:837
 msgid " > "
 msgstr " > "
 
-#: classes/GemsEscort.php:1042
+#: classes/GemsEscort.php:1043
 #, php-format
 msgid "You are logged in as %s"
 msgstr "You are logged in as %s"
 
-#: classes/GemsEscort.php:1048
+#: classes/GemsEscort.php:1049
 msgid "You are not logged in"
 msgstr "You are not logged in"
 
-#: classes/GemsEscort.php:1272
+#: classes/GemsEscort.php:1273
 #, php-format
 msgid "User: %s"
 msgstr "User: %s"
 
-#: classes/GemsEscort.php:1303
+#: classes/GemsEscort.php:1304
 msgid "version"
 msgstr "version"
 
-#: classes/GemsEscort.php:1406
+#: classes/GemsEscort.php:1407
 msgid "dd-mm-yyyy"
 msgstr "dd-mm-yyyy"
 
-#: classes/GemsEscort.php:1437
+#: classes/GemsEscort.php:1438
 msgid "hh:mm"
 msgstr "hh:mm"
 
-#: classes/GemsEscort.php:1915
+#: classes/GemsEscort.php:1916
 msgid ""
 "Take note: your session has expired, your inputs were not saved. Please "
 "check the input data and try again"
@@ -9205,27 +9203,27 @@ msgstr ""
 "Take note: your session has expired, your inputs were not saved. Please "
 "check the input data and try again"
 
-#: classes/GemsEscort.php:2106
+#: classes/GemsEscort.php:2107
 msgid "The page you requested is currently inaccessible."
 msgstr "The page you requested is currently inaccessible."
 
-#: classes/GemsEscort.php:2107
+#: classes/GemsEscort.php:2108
 msgid "Please check back later."
 msgstr "Please check back later."
 
-#: classes/GemsEscort.php:2120
+#: classes/GemsEscort.php:2121
 msgid "No access to site."
 msgstr "No access to site."
 
-#: classes/GemsEscort.php:2122 classes/GemsEscort.php:2181
+#: classes/GemsEscort.php:2123 classes/GemsEscort.php:2182
 msgid "You have no access to this site."
 msgstr "You have no access to this site."
 
-#: classes/GemsEscort.php:2163 classes/GemsEscort.php:2179
+#: classes/GemsEscort.php:2164 classes/GemsEscort.php:2180
 msgid "You are no longer logged in."
 msgstr "You are no longer logged in."
 
-#: classes/GemsEscort.php:2164
+#: classes/GemsEscort.php:2165
 msgid "You must login to access this page."
 msgstr "You must login to access this page."
 
@@ -9770,6 +9768,9 @@ msgstr "An error occurred!"
 #: views/scripts/error/error.phtml:37
 msgid "Please contact system administration"
 msgstr "Please contact system administration"
+
+#~ msgid "Submit time"
+#~ msgstr "Submit time"
 
 #~ msgid "Datetime value using ISO 8601: yyyy-mm-ddThh:mm::ss[+-hh:mm]"
 #~ msgstr "Datetime value using ISO 8601: yyyy-mm-ddThh:mm::ss[+-hh:mm]"

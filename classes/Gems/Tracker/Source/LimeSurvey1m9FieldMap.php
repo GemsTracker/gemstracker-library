@@ -55,7 +55,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
      *
      * @var \Zend_Db_Adapter_Abstract
      */
-    protected $ldDb;
+    protected $lsDb;
 
     protected $tableMetaData;
 
