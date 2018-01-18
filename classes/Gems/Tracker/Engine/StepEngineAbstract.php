@@ -485,7 +485,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
                     'gto_valid_from'      => $this->_('Valid from'),
                     'gto_valid_until'     => $this->_('Valid until'),
                     'gto_start_time'      => $this->_('Start time'),
-                    'gto_completion_time' => $this->_('Submit time'),
+                    'gto_completion_time' => $this->_('Completion date'),
                     );
 
         }
