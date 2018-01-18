@@ -118,6 +118,17 @@ class Gems_User_RadiusUserDefinition extends \Gems_User_StaffUserDefinition impl
 
         return $adapter;
     }
+    
+    /**
+     * We never need a rehash
+     * 
+     * @param \Gems_User_User $user
+     * @param type $password
+     * @return boolean
+     */
+    public function checkRehash(\Gems_User_User $user, $password) {
+        return false;
+    }
 
     /**
      * Return the number of changed records for the save performed
