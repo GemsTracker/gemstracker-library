@@ -186,7 +186,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
         $trackData = $this->util->getTrackData();
 
         if (! $this->surveyList) {
-            $this->surveyList = $trackData->getInsertableSurveys();
+            $this->surveyList = $trackData->getInsertableSurveys($this->request->getParam(\MUtil_Model::REQUEST_ID2));
         }
 
         $model->set('gto_id_survey',   'label', $this->_('Suvey to insert'),

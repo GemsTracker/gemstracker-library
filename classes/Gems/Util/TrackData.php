@@ -237,19 +237,26 @@ class Gems_Util_TrackData extends UtilAbstract
      * Retrieve an array of key/value pairs for gsu_id_survey and gsu_survey_name
      * that are active and are insertable
      *
+     * @param int $organizationId Optional organization id
      * @return array
      */
-    public function getInsertableSurveys()
+    public function getInsertableSurveys($organizationId = null)
     {
-        $cacheId = __CLASS__ . '_' . __FUNCTION__;
+        $cacheId = __CLASS__ . '_' . __FUNCTION__ . '_' . $organizationId;
 
         if ($results = $this->cache->load($cacheId)) {
             return $results;
         }
 
+        if (null === $organizationId) {
+            $orgWhere = '';
+        } else {
+            $orgId    = intval($organizationId);
+            $orgWhere = "AND gsu_insert_organizations LIKE '%|$orgId|%'";
+        }
         $select = "SELECT gsu_id_survey, gsu_survey_name
             FROM gems__surveys
-            WHERE gsu_active = 1 AND gsu_insertable = 1
+            WHERE gsu_active = 1 AND gsu_insertable = 1 $orgWhere
             ORDER BY gsu_survey_name";
 
         $results = $this->db->fetchPairs($select);
@@ -259,8 +266,8 @@ class Gems_Util_TrackData extends UtilAbstract
 
     /**
      *
-     * @param type $respId
-     * @param type $orgId
+     * @param int $respId
+     * @param int $orgId
      */
     public function getRespondentTokenFilter($respId, $orgId = null)
     {
