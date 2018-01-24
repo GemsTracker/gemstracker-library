@@ -355,8 +355,8 @@ class Gems_Pdf extends \Gems_Registry_TargetAbstract
     {
         \MUtil_File::ensureDir(GEMS_ROOT_DIR . '/var/tmp');
 
-        $tempInputFilename  = GEMS_ROOT_DIR . '/var/tmp/export-' . md5(time() . rand()) . '.html';
-        $tempOutputFilename = GEMS_ROOT_DIR . '/var/tmp/export-' . md5(time() . rand()) . '.pdf';
+        $tempInputFilename  = '../var/tmp/export-' . md5(time() . rand()) . '.html';
+        $tempOutputFilename = '../var/tmp/export-' . md5(time() . rand()) . '.pdf';
 
         file_put_contents($tempInputFilename, $content);
 
