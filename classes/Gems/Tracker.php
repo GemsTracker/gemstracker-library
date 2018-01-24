@@ -452,6 +452,7 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
     {
         $select = $this->db->select()
                 ->from('gems__respondent2track')
+                ->joinInner('gems__tracks', 'gr2t_id_track = gtr_id_track')
                 ->joinInner('gems__reception_codes', 'gr2t_reception_code = grc_id_reception_code')
                 ->where('gr2t_id_user = ? AND gr2t_id_organization = ?');
         if (!is_null($order)) {
