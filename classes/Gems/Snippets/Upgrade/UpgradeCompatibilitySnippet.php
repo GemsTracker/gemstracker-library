@@ -311,13 +311,41 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
      * @param string $content
      * @param array $messages
      */
+    protected function _checkDepreciations(\SplFileInfo $fileinfo, $content, array &$messages)
+    {
+        $matches = [];
+        if (preg_match('/\\s@deprecated\\s+([^\\n]+)/', $content, $matches)) {
+            $gemsVersion = $this->loader->getVersions()->getGemsVersion();
+
+            array_shift($matches);
+            foreach($matches as $match) {
+                $version = trim(\MUtil_String::stripStringLeft($match, 'since version'));
+
+                if (\MUtil_String::contains($version, ' ')) {
+                    list($version, $comment) = explode(' ', $version, 2);
+                } else {
+                    $comment = '';
+                }
+                if (version_compare($gemsVersion, $version, '>')) {
+                    $messages[] = "This file has a deprecated statement: " . $version . ' ' . $comment;
+                }
+            }
+        }
+    }
+
+    /**
+     *
+     * @param \SplFileInfo $fileinfo
+     * @param string $content
+     * @param array $messages
+     */
     protected function _checkSnippetsChanged(\SplFileInfo $fileinfo, $content, array &$messages)
     {
         $filePathName = $fileinfo->getPathname();
 
         foreach ($this->movedSnippets as $oldSnippet => $newSnippet) {
-            if (\MUtil_String::endsWith($filePathName, str_replace('\\', DIRECTORY_SEPARATOR, $oldSnippet) . '.php') &&
-                    (! \MUtil_String::endsWith($filePathName, str_replace('\\', DIRECTORY_SEPARATOR, $newSnippet) . '.php'))) {
+            if (\MUtil_String::endsWith($filePathName, str_replace('\\', DIRECTORY_SEPARATOR, 'Snippets\\' . $oldSnippet) . '.php') &&
+                    (! \MUtil_String::endsWith($filePathName, str_replace('\\', DIRECTORY_SEPARATOR, 'Snippets\\' . $newSnippet) . '.php'))) {
 
                 if ($newSnippet) {
                     $messages[] = "This snippet is moved to $newSnippet.";
@@ -547,6 +575,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
 
         $this->_checkTablesChanged($fileinfo, $content, $messages);
         $this->_checkVariablesChanged($fileinfo, $content, $messages);
+        $this->_checkDepreciations($fileinfo, $content, $messages);
 
         if (! $messages) {
             return false;

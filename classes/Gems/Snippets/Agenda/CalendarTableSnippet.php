@@ -70,7 +70,7 @@ class Gems_Snippets_Agenda_CalendarTableSnippet extends \Gems_Snippets_ModelTabl
 
         // Row with dates and patient data
         $bridge->tr(array('onlyWhenChanged' => true, 'class' => 'time middleAlign'));
-        $td =$bridge->addSortable('gap_admission_time');
+        $td = $bridge->addSortable('gap_admission_time');
         $td->append(' ');
         $td->img()->src = 'stopwatch.png';
         $td->title = $bridge->date_only; // Add title, to make sure row displays when time is same as time for previous day

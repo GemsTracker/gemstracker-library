@@ -71,7 +71,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
     {
         $this->_addExtraTrackFields($model, $data, $prefixes);      // Create the first 'P' fields after this
         $this->_addExtraRespondentNumber($model, $data, $prefixes);
-        $this->_addExtraGenderAge($model, $data, $prefixes);        
+        $this->_addExtraGenderAge($model, $data, $prefixes);
     }
 
     /**
@@ -321,6 +321,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
             // Add Consent
             $model->set('consentcode',              'label', $this->_('Consent'), 'type', \MUtil_Model::TYPE_STRING);
             $model->set('resptrackid',              'label', $this->_('Respondent track ID'), 'type', \MUtil_Model::TYPE_NUMERIC);
+            $model->set('gto_round_order',          'label', $this->_('Round order'));
             $model->set('gto_round_description',    'label', $this->_('Round description'));
             $model->set('gtr_track_name',           'label', $this->_('Track name'));
             $model->set('gr2t_track_info',          'label', $this->_('Track description'));
@@ -331,7 +332,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
             //$model->set('datestamp',                'label', $this->_('Datestamp'));
             $model->set('gto_completion_time',      'label', $this->_('Completion date'));
             $model->set('gto_start_time',           'label', $this->_('Start time'));
-            
+
             $model->set('gto_valid_from',           'label', $this->_('Valid from'));
             $model->set('gto_valid_until',          'label', $this->_('Valid until'));
             $model->set('startlanguage',            'label', $this->_('Start language'));
