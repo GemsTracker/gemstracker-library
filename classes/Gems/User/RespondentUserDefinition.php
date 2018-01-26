@@ -7,11 +7,10 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
- * A standard, database stored and authenticate staff user as of version 1.5.
+ * A standard, database stored and authenticate respondent user as of version 1.5.
  *
  * @package    Gems
  * @subpackage User
@@ -59,6 +58,7 @@ class Gems_User_RespondentUserDefinition extends \Gems_User_DbUserDefinitionAbst
                     'user_gender'         => 'grs_gender',
                     'user_locale'         => 'grs_iso_lang',
                     'user_birthday'       => 'grs_birthday',
+                    'user_zip'            => 'grs_zipcode',
                     ))
                ->join('gems__organizations', 'gr2o_id_organization = gor_id_organization', array(
                     'user_group' => 'gor_respondent_group',

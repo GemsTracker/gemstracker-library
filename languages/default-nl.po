@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-18 11:14+0100\n"
+"POT-Creation-Date: 2018-01-26 15:22+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 1.8.9\n"
+"X-Generator: Poedit 2.0.6\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
@@ -678,7 +678,7 @@ msgstr "Terug"
 #: classes/Gems/Controller/ModelSnippetActionAbstract.php:464
 #, php-format
 msgid "Do you want to deactivate this %s?"
-msgstr "Wilt u doorgaan met deactiveren?"
+msgstr "Wilt u doorgaan met deactiveren %s?"
 
 #: classes/Gems/Controller/ModelSnippetActionAbstract.php:474
 #, php-format
@@ -689,7 +689,7 @@ msgstr "Deactiveer %s"
 #: classes/Gems/Controller/ModelSnippetActionAbstract.php:484
 #, php-format
 msgid "Do you want to delete this %s?"
-msgstr "Wilt u doorgaan met verwijderen?"
+msgstr "Wilt u doorgaan met verwijderen %s?"
 
 #: classes/Gems/Controller/ModelSnippetActionAbstract.php:517
 msgid "No data found."
@@ -704,7 +704,7 @@ msgstr "Geen %s gevonden..."
 #: classes/Gems/Controller/ModelSnippetActionAbstract.php:650
 #, php-format
 msgid "Do you want to reactivate this %s?"
-msgstr "Wilt u doorgaan met heractiveren?"
+msgstr "Wilt u doorgaan met reactiveren %s?"
 
 #: classes/Gems/Controller/ModelSnippetActionAbstract.php:660
 #, php-format
@@ -1881,7 +1881,7 @@ msgstr[1] "trajectvelden"
 #: classes/Gems/Menu/MenuAbstract.php:698
 #: classes/Gems/Menu/MenuAbstract.php:819
 #: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:257
-#: classes/Gems/Tracker.php:687
+#: classes/Gems/Tracker.php:688
 msgid "Tracks"
 msgstr "Trajecten"
 
@@ -2021,7 +2021,7 @@ msgstr "Standaard medewerker groep bij het aanmaken van een nieuwe medewerker"
 
 #: classes/Gems/Default/GroupAction.php:156
 #: classes/Gems/Default/StaffAction.php:209 classes/Gems/Menu.php:179
-#: classes/Gems/Model/LogModel.php:105 classes/Gems/Tracker.php:689
+#: classes/Gems/Model/LogModel.php:105 classes/Gems/Tracker.php:690
 msgid "Staff"
 msgstr "Medewerkers"
 
@@ -2443,7 +2443,7 @@ msgid "TLS"
 msgstr "TLS"
 
 #: classes/Gems/Default/MailServerAction.php:64
-#: classes/Gems/User/RadiusUserDefinition.php:143
+#: classes/Gems/User/RadiusUserDefinition.php:154
 msgid "Port"
 msgstr "Poort"
 
@@ -2464,13 +2464,13 @@ msgstr "Wachtwoord"
 #: classes/Gems/Default/SourceAction.php:205
 #: classes/Gems/User/Form/ChangePasswordForm.php:275
 #: classes/Gems/User/Form/ChangePasswordForm.php:326
-#: classes/Gems/User/RadiusUserDefinition.php:149
+#: classes/Gems/User/RadiusUserDefinition.php:160
 msgid "Repeat password"
 msgstr "Herhaal wachtwoord"
 
 #: classes/Gems/Default/MailServerAction.php:75
 #: classes/Gems/Default/SourceAction.php:212
-#: classes/Gems/User/RadiusUserDefinition.php:146
+#: classes/Gems/User/RadiusUserDefinition.php:157
 msgid "Enter only when changing"
 msgstr "Alleen invoeren om het wachtwoord te wijzigen"
 
@@ -2772,7 +2772,7 @@ msgstr[1] "vragenlijsten"
 #: classes/Gems/Default/ProjectTracksAction.php:100
 #: classes/Gems/Snippets/Tracker/AvailableTracksSnippet.php:106
 msgid "Survey #"
-msgstr "Vragenlijsten"
+msgstr "Vragenlijst #"
 
 #: classes/Gems/Default/ProjectTracksAction.php:101
 #: classes/Gems/Snippets/AutosearchFormSnippet.php:126
@@ -3595,7 +3595,7 @@ msgstr "Per kenmerk plannen"
 #: classes/Gems/Snippets/Respondent/DetailsWithAssignmentsSnippet.php:93
 #: classes/Gems/Snippets/Respondent/RespondentDetailsSnippet.php:53
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:42
-#: classes/Gems/Tracker.php:688 classes/Gems/Util/Translated.php:278
+#: classes/Gems/Tracker.php:689 classes/Gems/Util/Translated.php:278
 msgid "Respondent"
 msgstr "Patiënt"
 
@@ -3605,7 +3605,7 @@ msgid "Round / Details"
 msgstr "Ronde / Details"
 
 #: classes/Gems/Default/TokenSearchActionAbstract.php:97
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:335
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:336
 #: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:72
 #: classes/Gems/Snippets/Token/PlanSearchSnippet.php:75
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:44
@@ -3617,7 +3617,7 @@ msgid "Valid from"
 msgstr "Geldig vanaf"
 
 #: classes/Gems/Default/TokenSearchActionAbstract.php:98
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:336
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:337
 #: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:73
 #: classes/Gems/Snippets/Token/PlanSearchSnippet.php:76
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:45
@@ -3827,7 +3827,7 @@ msgid "Missing track identifier."
 msgstr "Ontbrekende traject identificatie."
 
 #: classes/Gems/Default/TrackOverviewAction.php:108
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:325
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:326
 msgid "Track name"
 msgstr "Traject naam"
 
@@ -4064,16 +4064,20 @@ msgid "Respondent track ID"
 msgstr "Patiënt traject ID"
 
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:324
+msgid "Round order"
+msgstr "Ronde volgorde"
+
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:325
 msgid "Round description"
 msgstr "Ronde omschrijving"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:326
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:327
 #: classes/Gems/Snippets/Respondent/MinimalTableSnippet.php:105
 #: classes/Gems/Snippets/Respondent/RespondentTableSnippet.php:102
 msgid "Track description"
 msgstr "Trajectomschrijving"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:332
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:333
 #: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:231
 #: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:74
 #: classes/Gems/Snippets/Token/PlanSearchSnippet.php:78
@@ -4082,20 +4086,20 @@ msgstr "Trajectomschrijving"
 msgid "Completion date"
 msgstr "Datum ingevuld op"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:333
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:334
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:487
 msgid "Start time"
 msgstr "Startdatum"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:337
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:338
 msgid "Start language"
 msgstr "Aanvangstaal"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:338
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:339
 msgid "Last page"
 msgstr "Laatste pagina"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:340
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:341
 #: classes/Gems/Export/RespondentExport.php:250 classes/Gems/Menu.php:224
 #: classes/Gems/Menu.php:343 classes/Gems/Menu.php:437
 #: classes/Gems/Model/CommLogModel.php:140
@@ -4261,7 +4265,7 @@ msgstr "geen email adres"
 msgid "Starting %s mail jobs"
 msgstr "Start %s email opdrachten"
 
-#: classes/Gems/Mail/RespondentMailer.php:81
+#: classes/Gems/Mail/RespondentMailer.php:87
 msgid "Respondent data not found"
 msgstr "Patiënt gegevens niet gevonden"
 
@@ -4984,7 +4988,7 @@ msgid "Data"
 msgstr "Data"
 
 #: classes/Gems/Model/LogModel.php:119
-#: classes/Gems/User/RadiusUserDefinition.php:142
+#: classes/Gems/User/RadiusUserDefinition.php:153
 msgid "IP address"
 msgstr "IP adres"
 
@@ -5261,7 +5265,7 @@ msgstr "Login Naam"
 
 #: classes/Gems/Model/StaffModel.php:190
 #: classes/Gems/User/Form/OrganizationFormAbstract.php:206
-#: classes/Gems/User/User.php:1569
+#: classes/Gems/User/User.php:1585
 msgid "Username"
 msgstr "Gebruikersnaam"
 
@@ -8582,7 +8586,7 @@ msgstr "Toegevoegd aan kenmerk tabel '%s', de velden: %s"
 #: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:541
 #, php-format
 msgid "Attribute fields not created for token table for '%s'"
-msgstr "Attribuut velden voor de kenmerk tabel '%s' zijn niet toegevoegd"
+msgstr "Attribuut velden niet toegevoegd voor de kenmerk tabel '%s'"
 
 #: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:542
 #, php-format
@@ -8770,7 +8774,7 @@ msgid "Trying upgrade for %s to level %s: %s"
 msgstr "Probeert upgrade voor %s naar niveau %s: %s"
 
 #: classes/Gems/User/Form/ChangePasswordForm.php:180
-#: classes/Gems/User/User.php:1564
+#: classes/Gems/User/User.php:1565 classes/Gems/User/User.php:1580
 #, php-format
 msgid "%s is not correct."
 msgstr "%s is onjuist."
@@ -9012,7 +9016,7 @@ msgstr[1] "moet minstens %d cijfers bevatten"
 msgid "may not contain numbers"
 msgstr "mag geen getallen bevatten"
 
-#: classes/Gems/User/RadiusUserDefinition.php:145
+#: classes/Gems/User/RadiusUserDefinition.php:156
 msgid "Shared secret"
 msgstr "Shared secret"
 
@@ -9034,24 +9038,28 @@ msgstr "U kunt vanaf deze locatie niet inloggen."
 msgid "Your birthday"
 msgstr "Uw geboortedatum"
 
-#: classes/Gems/User/User.php:1654
+#: classes/Gems/User/User.php:1573
+msgid "Your zipcode"
+msgstr "Uw postcode"
+
+#: classes/Gems/User/User.php:1670
 msgid "Trying to send a password reset to a user that cannot be reset."
 msgstr "Het wachtwoord voor deze gebruiker kan niet gewijzigd worden."
 
-#: classes/Gems/User/User.php:1682
+#: classes/Gems/User/User.php:1698
 msgid "Unable to send e-mail."
 msgstr "Verzenden email mislukt."
 
-#: classes/Gems/User/User.php:1809 classes/Gems/User/User.php:1814
+#: classes/Gems/User/User.php:1825 classes/Gems/User/User.php:1830
 msgid "No access to group"
 msgstr "Geen toegang tot deze groep"
 
-#: classes/Gems/User/User.php:1810
+#: classes/Gems/User/User.php:1826
 #, php-format
 msgid "You are not allowed to switch to the %s group."
 msgstr "U mag niet naar de %s groep switchen."
 
-#: classes/Gems/User/User.php:1815
+#: classes/Gems/User/User.php:1831
 #, php-format
 msgid "You cannot switch to an inactive or non-existing group."
 msgstr "U mag niet switchen naar een inactieve of niet-bestaande groep."
@@ -9779,12 +9787,13 @@ msgid "Date value using ISO 8601: yyyy-mm-dd"
 msgstr "Een datum volgens ISO 8601: yyyy-mm-dd"
 
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:811
-msgid "Datetime value using ISO 8601: yyyy-mm-ddThh:mm:ss[+-hh:mm]"
-msgstr "Een datum + tijd waarde volgens ISO 8601: jjjj-mm-ddTuu:mm:ss[+-uu:mm]"
+msgid "Datetime value using ISO 8601: yyyy-mm-ddThh:mm::ss[+-hh:mm]"
+msgstr ""
+"Een datum + tijd waarde volgens ISO 8601: yyyy-mm-ddThh:mm::ss[+-hh:mm]"
 
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:815
-msgid "Time value using ISO 8601: hh:mm:ss[+-hh:mm]"
-msgstr "Een tijd volgens ISO 8601: uu:mm::ss[+-uu:mm]"
+msgid "Time value using ISO 8601: hh:mm::ss[+-hh:mm]"
+msgstr "Een tijd volgens ISO 8601: hh:mm::ss[+-hh:mm]"
 
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:823
 #, php-format
@@ -9884,15 +9893,15 @@ msgstr "Er trad een fout op!"
 msgid "Please contact system administration"
 msgstr "Neem contact op met systeembeheer"
 
+#~ msgid "Datetime value using ISO 8601: yyyy-mm-ddThh:mm:ss[+-hh:mm]"
+#~ msgstr ""
+#~ "Een datum + tijd waarde volgens ISO 8601: jjjj-mm-ddTuu:mm:ss[+-uu:mm]"
+
+#~ msgid "Time value using ISO 8601: hh:mm:ss[+-hh:mm]"
+#~ msgstr "Een tijd volgens ISO 8601: uu:mm::ss[+-uu:mm]"
+
 #~ msgid "Submit time"
 #~ msgstr "Invuldatum"
-
-#~ msgid "Datetime value using ISO 8601: yyyy-mm-ddThh:mm::ss[+-hh:mm]"
-#~ msgstr ""
-#~ "Een datum + tijd waarde volgens ISO 8601: yyyy-mm-ddThh:mm::ss[+-hh:mm]"
-
-#~ msgid "Time value using ISO 8601: hh:mm::ss[+-hh:mm]"
-#~ msgstr "Een tijd volgens ISO 8601: hh:mm::ss[+-hh:mm]"
 
 #~ msgid "Agenda healtcare provider"
 #~ msgstr "Agenda zorgverleners"

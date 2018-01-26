@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-18 11:15+0100\n"
+"POT-Creation-Date: 2018-01-26 15:22+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 1.8.9\n"
+"X-Generator: Poedit 2.0.6\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
@@ -1863,7 +1863,7 @@ msgstr[1] "track fields"
 #: classes/Gems/Menu/MenuAbstract.php:698
 #: classes/Gems/Menu/MenuAbstract.php:819
 #: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:257
-#: classes/Gems/Tracker.php:687
+#: classes/Gems/Tracker.php:688
 msgid "Tracks"
 msgstr "Tracks"
 
@@ -2003,7 +2003,7 @@ msgstr "Default group when creating new staff member"
 
 #: classes/Gems/Default/GroupAction.php:156
 #: classes/Gems/Default/StaffAction.php:209 classes/Gems/Menu.php:179
-#: classes/Gems/Model/LogModel.php:105 classes/Gems/Tracker.php:689
+#: classes/Gems/Model/LogModel.php:105 classes/Gems/Tracker.php:690
 msgid "Staff"
 msgstr "Staff"
 
@@ -2417,7 +2417,7 @@ msgid "TLS"
 msgstr "TLS"
 
 #: classes/Gems/Default/MailServerAction.php:64
-#: classes/Gems/User/RadiusUserDefinition.php:143
+#: classes/Gems/User/RadiusUserDefinition.php:154
 msgid "Port"
 msgstr "Port"
 
@@ -2438,13 +2438,13 @@ msgstr "Password"
 #: classes/Gems/Default/SourceAction.php:205
 #: classes/Gems/User/Form/ChangePasswordForm.php:275
 #: classes/Gems/User/Form/ChangePasswordForm.php:326
-#: classes/Gems/User/RadiusUserDefinition.php:149
+#: classes/Gems/User/RadiusUserDefinition.php:160
 msgid "Repeat password"
 msgstr "Repeat password"
 
 #: classes/Gems/Default/MailServerAction.php:75
 #: classes/Gems/Default/SourceAction.php:212
-#: classes/Gems/User/RadiusUserDefinition.php:146
+#: classes/Gems/User/RadiusUserDefinition.php:157
 msgid "Enter only when changing"
 msgstr "Enter only when changing the password"
 
@@ -3554,7 +3554,7 @@ msgstr "Token planning"
 #: classes/Gems/Snippets/Respondent/DetailsWithAssignmentsSnippet.php:93
 #: classes/Gems/Snippets/Respondent/RespondentDetailsSnippet.php:53
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:42
-#: classes/Gems/Tracker.php:688 classes/Gems/Util/Translated.php:278
+#: classes/Gems/Tracker.php:689 classes/Gems/Util/Translated.php:278
 msgid "Respondent"
 msgstr "Patient"
 
@@ -3564,7 +3564,7 @@ msgid "Round / Details"
 msgstr "Round / Details"
 
 #: classes/Gems/Default/TokenSearchActionAbstract.php:97
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:335
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:336
 #: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:72
 #: classes/Gems/Snippets/Token/PlanSearchSnippet.php:75
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:44
@@ -3576,7 +3576,7 @@ msgid "Valid from"
 msgstr "Valid from"
 
 #: classes/Gems/Default/TokenSearchActionAbstract.php:98
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:336
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:337
 #: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:73
 #: classes/Gems/Snippets/Token/PlanSearchSnippet.php:76
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:45
@@ -3776,7 +3776,7 @@ msgid "Missing track identifier."
 msgstr "Missing track identifier."
 
 #: classes/Gems/Default/TrackOverviewAction.php:108
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:325
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:326
 msgid "Track name"
 msgstr "Track name"
 
@@ -4006,16 +4006,21 @@ msgid "Respondent track ID"
 msgstr "Patient track ID"
 
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:324
+#| msgid "Round code"
+msgid "Round order"
+msgstr "Round order"
+
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:325
 msgid "Round description"
 msgstr "Round description"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:326
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:327
 #: classes/Gems/Snippets/Respondent/MinimalTableSnippet.php:105
 #: classes/Gems/Snippets/Respondent/RespondentTableSnippet.php:102
 msgid "Track description"
 msgstr "Track description"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:332
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:333
 #: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:231
 #: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:74
 #: classes/Gems/Snippets/Token/PlanSearchSnippet.php:78
@@ -4024,20 +4029,20 @@ msgstr "Track description"
 msgid "Completion date"
 msgstr "Completion date"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:333
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:334
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:487
 msgid "Start time"
 msgstr "Start time"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:337
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:338
 msgid "Start language"
 msgstr "Start language"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:338
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:339
 msgid "Last page"
 msgstr "Last page"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:340
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:341
 #: classes/Gems/Export/RespondentExport.php:250 classes/Gems/Menu.php:224
 #: classes/Gems/Menu.php:343 classes/Gems/Menu.php:437
 #: classes/Gems/Model/CommLogModel.php:140
@@ -4201,7 +4206,7 @@ msgstr "no email adress"
 msgid "Starting %s mail jobs"
 msgstr "Starting %s mail jobs"
 
-#: classes/Gems/Mail/RespondentMailer.php:81
+#: classes/Gems/Mail/RespondentMailer.php:87
 msgid "Respondent data not found"
 msgstr "Patient data not found"
 
@@ -4917,7 +4922,7 @@ msgid "Data"
 msgstr "Data"
 
 #: classes/Gems/Model/LogModel.php:119
-#: classes/Gems/User/RadiusUserDefinition.php:142
+#: classes/Gems/User/RadiusUserDefinition.php:153
 msgid "IP address"
 msgstr "IP address"
 
@@ -5196,7 +5201,7 @@ msgstr "Login Name"
 
 #: classes/Gems/Model/StaffModel.php:190
 #: classes/Gems/User/Form/OrganizationFormAbstract.php:206
-#: classes/Gems/User/User.php:1569
+#: classes/Gems/User/User.php:1585
 msgid "Username"
 msgstr "Username"
 
@@ -8674,7 +8679,7 @@ msgid "Trying upgrade for %s to level %s: %s"
 msgstr "Trying upgrade for %s to level %s: %s"
 
 #: classes/Gems/User/Form/ChangePasswordForm.php:180
-#: classes/Gems/User/User.php:1564
+#: classes/Gems/User/User.php:1565 classes/Gems/User/User.php:1580
 #, php-format
 msgid "%s is not correct."
 msgstr "%s is not correct."
@@ -8913,7 +8918,7 @@ msgstr[1] "should contain at least %d numbers"
 msgid "may not contain numbers"
 msgstr "may not contain numbers"
 
-#: classes/Gems/User/RadiusUserDefinition.php:145
+#: classes/Gems/User/RadiusUserDefinition.php:156
 msgid "Shared secret"
 msgstr "Shared secret"
 
@@ -8933,24 +8938,29 @@ msgstr "You are not allowed to login from this location."
 msgid "Your birthday"
 msgstr "Your birthday"
 
-#: classes/Gems/User/User.php:1654
+#: classes/Gems/User/User.php:1573
+#| msgid "Round code"
+msgid "Your zipcode"
+msgstr "Your zipcode"
+
+#: classes/Gems/User/User.php:1670
 msgid "Trying to send a password reset to a user that cannot be reset."
 msgstr "Trying to send a password reset to a user that cannot be reset."
 
-#: classes/Gems/User/User.php:1682
+#: classes/Gems/User/User.php:1698
 msgid "Unable to send e-mail."
 msgstr "Unable to send e-mail."
 
-#: classes/Gems/User/User.php:1809 classes/Gems/User/User.php:1814
+#: classes/Gems/User/User.php:1825 classes/Gems/User/User.php:1830
 msgid "No access to group"
 msgstr "No access to group"
 
-#: classes/Gems/User/User.php:1810
+#: classes/Gems/User/User.php:1826
 #, php-format
 msgid "You are not allowed to switch to the %s group."
 msgstr "You are not allowed to switch to the %s group."
 
-#: classes/Gems/User/User.php:1815
+#: classes/Gems/User/User.php:1831
 #, php-format
 msgid "You cannot switch to an inactive or non-existing group."
 msgstr "You cannot switch to an inactive or non-existing group."
@@ -9664,12 +9674,12 @@ msgid "Date value using ISO 8601: yyyy-mm-dd"
 msgstr "Date value using ISO 8601: yyyy-mm-dd"
 
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:811
-msgid "Datetime value using ISO 8601: yyyy-mm-ddThh:mm:ss[+-hh:mm]"
-msgstr "Datetime value using ISO 8601: yyyy-mm-ddThh:mm:ss[+-hh:mm]"
+msgid "Datetime value using ISO 8601: yyyy-mm-ddThh:mm::ss[+-hh:mm]"
+msgstr "Datetime value using ISO 8601: yyyy-mm-ddThh:mm::ss[+-hh:mm]"
 
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:815
-msgid "Time value using ISO 8601: hh:mm:ss[+-hh:mm]"
-msgstr "Time value using ISO 8601: hh:mm:ss[+-hh:mm]"
+msgid "Time value using ISO 8601: hh:mm::ss[+-hh:mm]"
+msgstr "Time value using ISO 8601: hh:mm::ss[+-hh:mm]"
 
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:823
 #, php-format
@@ -9769,14 +9779,14 @@ msgstr "An error occurred!"
 msgid "Please contact system administration"
 msgstr "Please contact system administration"
 
+#~ msgid "Datetime value using ISO 8601: yyyy-mm-ddThh:mm:ss[+-hh:mm]"
+#~ msgstr "Datetime value using ISO 8601: yyyy-mm-ddThh:mm:ss[+-hh:mm]"
+
+#~ msgid "Time value using ISO 8601: hh:mm:ss[+-hh:mm]"
+#~ msgstr "Time value using ISO 8601: hh:mm:ss[+-hh:mm]"
+
 #~ msgid "Submit time"
 #~ msgstr "Submit time"
-
-#~ msgid "Datetime value using ISO 8601: yyyy-mm-ddThh:mm::ss[+-hh:mm]"
-#~ msgstr "Datetime value using ISO 8601: yyyy-mm-ddThh:mm::ss[+-hh:mm]"
-
-#~ msgid "Time value using ISO 8601: hh:mm::ss[+-hh:mm]"
-#~ msgstr "Time value using ISO 8601: hh:mm::ss[+-hh:mm]"
 
 #~ msgid "Agenda healtcare provider"
 #~ msgstr "Agenda healtcare provider"

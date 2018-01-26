@@ -1552,7 +1552,8 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
             $birthdayElem = new \Gems_JQuery_Form_Element_DatePicker('birthday');
             $birthdayElem->setLabel($label)
                     ->setOptions(\MUtil_Model_Bridge_FormBridge::getFixedOptions('date'))
-                    ->setStorageFormat(\Zend_Date::ISO_8601);
+                    ->setRequired(true)
+                    ->setStorageFormat('yyyy-MM-dd');
 
             if ($format = $birthdayElem->getDateFormat()) {
                 $valueFormatted = \MUtil_Date::format($value, $format, $birthdayElem->getStorageFormat());
@@ -1565,7 +1566,22 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
             $birthdayElem->addValidator($validator);
 
             return array($label => $birthdayElem);
-        } // */
+        }
+        // CHECK ON SOMEONES ZIP
+        // Zips are usually not defined for staff but they do exist for respondents
+        if ($value = $this->_getVar('user_zip')) {
+            $label    = $this->_('Your zipcode');
+
+            $zipElem = new Text('zipcode');
+            $zipElem->setLabel($label)
+                    ->setRequired(true);
+
+            $validator = new \Zend_Validate_Identical($value);
+            $validator->setMessage(sprintf($this->_('%s is not correct.'), $label), \Zend_Validate_Identical::NOT_SAME);
+            $zipElem->addValidator($validator);
+
+            return array($label => $zipElem);
+        }
         return array($this->_('Username') => $this->getLoginName());
     }
 
