@@ -1323,11 +1323,13 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      */
     public function hasPrivilege($privilege, $current = true)
     {
-        return (! $this->acl) || $this->acl->isAllowed(
-                $current ? $this->getRole() : $this->_getVar('user_role'),
-                null,
-                $privilege
-                );
+        if (! $this->acl) {
+            return true;
+        }
+        if ($current) {
+            return $this->acl->isAllowed($this->getRole(), null, $privilege);
+        }
+        return $this->acl->isAllowed($this->_getVar('user_role'), null, $privilege);
     }
 
     /**
@@ -1806,6 +1808,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     /**
      * (Temporarily) the group of the current user.
      *
+     * @param int $groupId
      * @return self
      */
     public function setGroupTemp($groupId)
@@ -1831,9 +1834,6 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
                         $this->_('You cannot switch to an inactive or non-existing group.')
                         ));
             }
-        }
-        if ($this->_hasVar('current_user_group')) {
-            return $this->_getVar('current_user_group');
         }
         return $this;
     }
