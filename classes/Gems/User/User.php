@@ -1535,7 +1535,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
 
     /**
      * Returns an array of elements for check fields during password reset and/or
-     * 'label name' => 'required value' pairs. vor asking extra questions before allowing
+     * 'label name' => 'required value' pairs. For asking extra questions before allowing
      * a password change.
      *
      * Default is asking for the username but you can e.g. ask for someones birthday.
@@ -1545,7 +1545,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     protected function loadResetPasswordCheckFields()
     {
         // CHECK ON SOMEONES BIRTHDAY
-        // Birthdays are usually not defined for staff but the do exist for respondents
+        // Birthdays are usually not defined for staff but they do exist for respondents
         if ($value = $this->_getVar('user_birthday')) {
             $label    = $this->_('Your birthday');
 
@@ -1564,7 +1564,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
             $validator->setMessage(sprintf($this->_('%s is not correct.'), $label), \Zend_Validate_Identical::NOT_SAME);
             $birthdayElem->addValidator($validator);
 
-            return array($birthdayElem);
+            return array($label => $birthdayElem);
         } // */
         return array($this->_('Username') => $this->getLoginName());
     }
