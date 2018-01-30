@@ -143,6 +143,8 @@ class PrefillAnswers extends \MUtil_Registry_TargetAbstract implements \Gems_Eve
                 }
             }
         } while ($prev = $prev->getPreviousToken());
+        
+        return [];
     }
 
     /**
