@@ -256,6 +256,28 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
 
         return $missed;
     }
+    
+    /**
+     * Are we past the valid from date but before the valid until date?
+     *
+     * @param array $tokenData
+     * @return boolean
+     */
+    protected function _isValid($tokenData) {
+        $valid = false;
+
+        if (isset($tokenData['gto_valid_from'])) {
+            $date = $tokenData['gto_valid_from'];
+            if ($date instanceof \MUtil_Date) {
+                $now = new \MUtil_Date();
+                if ($now->getTimestamp() - $date->getTimestamp() > 0 && !$this->_isMissed($tokenData)) {
+                    $valid = true;
+                }
+            }
+        }
+
+        return $valid;
+    }
 
     protected function _loadData() {
         $model = $this->getModel();
@@ -302,57 +324,55 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
         $this->addTokenIcon($toolsDiv, $tokenData);
         
         $tokenLink = null;
-
+        
         if ($this->_isCompleted($tokenData)) {
             $tokenLink = $this->createMenuLink($tokenData, 'track', 'answer', '', $this->_trackAnswer);
-        } else {
+            $tooltip = array(sprintf($this->_('Completed') . ': %s', $tokenData['gto_completion_time']->get($this->_dateTimeFormat)));
+            if (!empty($tokenData['gto_result'])) {
+                $tooltip[] = \MUtil_Html::raw('<br/>');
+                $tooltip[] = sprintf($this->_('Result') .': %s', $tokenData['gto_result']);
+            }
+            $this->_completed++;
+            $tokenDiv->appendAttrib('class', ' success');
+            
+        } elseif ($this->_isValid ($tokenData)) {
             $tokenLink = $this->createMenuLink($tokenData, 'ask', 'take', '', $this->_takeSurvey);
+            if ($tokenData['ggp_respondent_members'] == 1) {
+                $tokenLink = $this->createMenuLink($tokenData, 'track', 'show', '', $this->_tokenShow);
+            }
+            if (is_null($tokenData['gto_valid_until'])) {
+                $tooltip = $this->_('Does not expire');
+            } else {
+                $tooltip = sprintf($this->_('Open until %s'), $tokenData['gto_valid_until']->get($this->_dateTimeFormat));
+            }
+            $this->_open++;
+            $tokenDiv->appendAttrib('class', ' warning');
+            
+        } elseif ($this->_isMissed($tokenData)) {
+            $tokenLink = $this->createMenuLink($tokenData + array('id_type' => 'token', 'grc_success' => 1), 'track', 'edit', '', $this->_tokenEdit);
+            $tooltip = sprintf($this->_('Missed since %s'), $tokenData['gto_valid_until']->get($this->_dateTimeFormat));
+            $this->_missed++;
+            $tokenDiv->appendAttrib('class', ' danger');
+                
+        } else {
+            $tokenLink = $this->createMenuLink($tokenData + array('id_type' => 'token', 'grc_success' => 1), 'track', 'edit', '', $this->_tokenEdit);
+            $tooltip = sprintf($this->_('Valid from %s'), $tokenData['gto_valid_from']->get($this->_dateTimeFormat));
+            $this->_future++;
+            $tokenDiv->appendAttrib('class', ' info');
+            
         }
 
         if (!empty($tokenLink)) {
             if ($this->_isCompleted($tokenData)) {
-                $tooltip = array(sprintf($this->_('Completed') . ': %s', $tokenData['gto_completion_time']->get($this->_dateTimeFormat)));
-                if (!empty($tokenData['gto_result'])) {
-                    $tooltip[] = \MUtil_Html::raw('<br/>');
-                    $tooltip[] = sprintf($this->_('Result') .': %s', $tokenData['gto_result']);
-                }
-                $this->_completed++;
-                $tokenDiv->appendAttrib('class', ' success');
                 $tokenLink->target = 'inline';
             } else {
-                if ($tokenData['ggp_respondent_members'] == 1) {
-                    $tokenLink = $this->createMenuLink($tokenData, 'track', 'show', '', $this->_tokenShow);
-                }
-                if (is_null($tokenData['gto_valid_until'])) {
-                    $tooltip = $this->_('Does not expire');
-                } else {
-                    $tooltip = sprintf($this->_('Open until %s'), $tokenData['gto_valid_until']->get($this->_dateTimeFormat));
-                }
-                $this->_open++;
-                $tokenDiv->appendAttrib('class', ' warning');
-                $tokenLink->target = '_self'; //$tokenData['gto_id_token'];
-            }
-            $tokenDiv[] = $tokenLink;
-        } else {
-            if ($this->_isMissed($tokenData)) {
-                $tooltip = sprintf($this->_('Missed since %s'), $tokenData['gto_valid_until']->get($this->_dateTimeFormat));
-                $this->_missed++;
-                $tokenDiv->appendAttrib('class', ' danger');
-            } else {                
-                $tooltip = sprintf($this->_('Valid from %s'), $tokenData['gto_valid_from']->get($this->_dateTimeFormat));
-                $this->_future++;
-                $tokenDiv->appendAttrib('class', ' info');
-            }
-
-            $tokenLink = $this->createMenuLink($tokenData + array('id_type' => 'token', 'grc_success' => 1), 'track', 'edit', '', $this->_tokenEdit);
-            if (!empty($tokenLink)) {
                 $tokenLink->target = '_self';
-            } else {
-                $tokenLink = \MUtil_Html::create()->a('#', '');
             }
-            $tokenDiv[] = $tokenLink;
-            //$tokenLink = $tokenDiv->a('#', $status);
+        } else {
+            $tokenDiv->appedAttrib('class', 'disabled');
+            $tokenLink = $this->creator->div(array('class'=>'disabled'));
         }
+        $tokenDiv[] = $tokenLink;
         
         $this->_addTooltip($tokenLink, $tooltip, 'auto top');        
         $tokenLink[] = $tokenData['gsu_survey_name'];
