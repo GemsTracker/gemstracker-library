@@ -144,7 +144,11 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
             $this->cache->save($tracks, $cacheId, array('surveys', 'tracks'));
         }
 
-        $div = \MUtil_Html::create()->div(array('class' => 'toolbox btn-group'));
+        if ($trackType != 'tracks') {
+            $div = \MUtil_Html::create()->div(array('class' => 'btn-group'));
+        } else {
+            $div = \MUtil_Html::create()->div(array('class' => 'toolbox btn-group'));
+        }
 
         $menuIndex  = $this->menu->findController('track', 'index');
 
@@ -248,10 +252,10 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
         parent::afterRegistry();
 
         if ($this->showForRespondents && is_bool($this->showForRespondents)) {
-            $this->showForRespondents = $this->_('by Respondents');
+            $this->showForRespondents = $this->_('Respondents');
         }
         if ($this->showForStaff && is_bool($this->showForStaff)) {
-            $this->showForStaff = $this->_('by Staff');
+            $this->showForStaff = $this->_('Staff');
         }
         if ($this->showForTracks && is_bool($this->showForTracks)) {
             $this->showForTracks = $this->_('Tracks');
@@ -287,20 +291,27 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
                 $output       = true;
             }
         }
-        if ($this->showForRespondents) {
-            $dropdown = $this->_getTracks('respondents', $pageRef, $this->showForRespondents);
-            if ($dropdown) {
-                $addToLists[] = $dropdown;
-                $output       = true;
+        if ($this->showForRespondents || $this->showForStaff) {
+            $div = \MUtil_Html::create()->div(array('class' => 'toolbox btn-group'));
+            $div->button($this->_('Surveys for'), array('class' => 'toolanchor btn', 'type' => 'button'));
+            
+            if ($this->showForRespondents) {
+                $dropdown = $this->_getTracks('respondents', $pageRef, $this->showForRespondents);
+                if ($dropdown) {
+                    $div[] = $dropdown;
+                    $output       = true;
+                }
             }
-        }
-        if ($this->showForStaff) {
-            $dropdown = $this->_getTracks('staff', $pageRef, $this->showForStaff);
-            if ($dropdown) {
-                $addToLists[] = $dropdown;
-                $output       = true;
+            if ($this->showForStaff) {
+                $dropdown = $this->_getTracks('staff', $pageRef, $this->showForStaff);
+                if ($dropdown) {
+                    $div[] = $dropdown;
+                    $output       = true;
+                }
             }
+            $addToLists[] = $div;
         }
+        
         if ($output) {
             return $addToLists;
         }
