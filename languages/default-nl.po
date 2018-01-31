@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-18 11:14+0100\n"
+"POT-Creation-Date: 2018-01-31 09:49+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -1880,8 +1880,8 @@ msgstr[1] "trajectvelden"
 #: classes/Gems/Default/ReceptionAction.php:87 classes/Gems/Menu.php:373
 #: classes/Gems/Menu/MenuAbstract.php:698
 #: classes/Gems/Menu/MenuAbstract.php:819
-#: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:257
-#: classes/Gems/Tracker.php:687
+#: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:261
+#: classes/Gems/Tracker.php:688
 msgid "Tracks"
 msgstr "Trajecten"
 
@@ -2021,7 +2021,9 @@ msgstr "Standaard medewerker groep bij het aanmaken van een nieuwe medewerker"
 
 #: classes/Gems/Default/GroupAction.php:156
 #: classes/Gems/Default/StaffAction.php:209 classes/Gems/Menu.php:179
-#: classes/Gems/Model/LogModel.php:105 classes/Gems/Tracker.php:689
+#: classes/Gems/Model/LogModel.php:105
+#: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:258
+#: classes/Gems/Tracker.php:690
 msgid "Staff"
 msgstr "Medewerkers"
 
@@ -2030,6 +2032,7 @@ msgstr "Medewerkers"
 #: classes/Gems/Default/RespondentAction.php:476
 #: classes/Gems/Default/RespondentNewAction.php:486 classes/Gems/Menu.php:731
 #: classes/Gems/Model/OrganizationModel.php:123
+#: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:255
 msgid "Respondents"
 msgstr "Patiënten"
 
@@ -3595,7 +3598,7 @@ msgstr "Per kenmerk plannen"
 #: classes/Gems/Snippets/Respondent/DetailsWithAssignmentsSnippet.php:93
 #: classes/Gems/Snippets/Respondent/RespondentDetailsSnippet.php:53
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:42
-#: classes/Gems/Tracker.php:688 classes/Gems/Util/Translated.php:278
+#: classes/Gems/Tracker.php:689 classes/Gems/Util/Translated.php:278
 msgid "Respondent"
 msgstr "Patiënt"
 
@@ -4261,7 +4264,7 @@ msgstr "geen email adres"
 msgid "Starting %s mail jobs"
 msgstr "Start %s email opdrachten"
 
-#: classes/Gems/Mail/RespondentMailer.php:81
+#: classes/Gems/Mail/RespondentMailer.php:87
 msgid "Respondent data not found"
 msgstr "Patiënt gegevens niet gevonden"
 
@@ -4395,7 +4398,7 @@ msgid "View survey"
 msgstr "Bekijk vragenlijst"
 
 #: classes/Gems/Menu.php:324 classes/Gems/Menu.php:378
-#: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:260
+#: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:264
 msgid "Add"
 msgstr "Voeg toe"
 
@@ -6940,21 +6943,17 @@ msgstr "Trajecten met deze afspraak"
 msgid "No tracks use this appointment"
 msgstr "Geen traject gebruikt deze afspraak"
 
-#: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:206
+#: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:210
 msgid "info"
 msgstr "info"
 
-#: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:234
+#: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:238
 msgid "None available"
 msgstr "Niet beschikbaar"
 
-#: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:251
-msgid "by Respondents"
-msgstr "voor Patiënten"
-
-#: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:254
-msgid "by Staff"
-msgstr "voor Medewerkers"
+#: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:296
+msgid "Surveys for"
+msgstr "Vragenlijsten voor"
 
 #: classes/Gems/Snippets/Tracker/Buttons/NewFieldButtonRow.php:35
 msgid "New field"
@@ -9883,6 +9882,12 @@ msgstr "Er trad een fout op!"
 #: views/scripts/error/error.phtml:37
 msgid "Please contact system administration"
 msgstr "Neem contact op met systeembeheer"
+
+#~ msgid "by Respondents"
+#~ msgstr "voor Patiënten"
+
+#~ msgid "by Staff"
+#~ msgstr "voor Medewerkers"
 
 #~ msgid "Submit time"
 #~ msgstr "Invuldatum"
