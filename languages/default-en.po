@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-26 15:22+0100\n"
+"POT-Creation-Date: 2018-01-31 09:27+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 1.8.9\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
@@ -1862,7 +1862,7 @@ msgstr[1] "track fields"
 #: classes/Gems/Default/ReceptionAction.php:87 classes/Gems/Menu.php:373
 #: classes/Gems/Menu/MenuAbstract.php:698
 #: classes/Gems/Menu/MenuAbstract.php:819
-#: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:257
+#: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:261
 #: classes/Gems/Tracker.php:688
 msgid "Tracks"
 msgstr "Tracks"
@@ -2003,7 +2003,9 @@ msgstr "Default group when creating new staff member"
 
 #: classes/Gems/Default/GroupAction.php:156
 #: classes/Gems/Default/StaffAction.php:209 classes/Gems/Menu.php:179
-#: classes/Gems/Model/LogModel.php:105 classes/Gems/Tracker.php:690
+#: classes/Gems/Model/LogModel.php:105
+#: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:258
+#: classes/Gems/Tracker.php:690
 msgid "Staff"
 msgstr "Staff"
 
@@ -2012,6 +2014,7 @@ msgstr "Staff"
 #: classes/Gems/Default/RespondentAction.php:476
 #: classes/Gems/Default/RespondentNewAction.php:486 classes/Gems/Menu.php:731
 #: classes/Gems/Model/OrganizationModel.php:123
+#: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:255
 msgid "Respondents"
 msgstr "Patients"
 
@@ -4006,7 +4009,6 @@ msgid "Respondent track ID"
 msgstr "Patient track ID"
 
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:324
-#| msgid "Round code"
 msgid "Round order"
 msgstr "Round order"
 
@@ -4340,7 +4342,7 @@ msgid "View survey"
 msgstr "View survey"
 
 #: classes/Gems/Menu.php:324 classes/Gems/Menu.php:378
-#: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:260
+#: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:264
 msgid "Add"
 msgstr "Add"
 
@@ -5201,7 +5203,7 @@ msgstr "Login Name"
 
 #: classes/Gems/Model/StaffModel.php:190
 #: classes/Gems/User/Form/OrganizationFormAbstract.php:206
-#: classes/Gems/User/User.php:1585
+#: classes/Gems/User/User.php:1587
 msgid "Username"
 msgstr "Username"
 
@@ -6869,21 +6871,17 @@ msgstr "Tracks using this appointment"
 msgid "No tracks use this appointment"
 msgstr "No tracks use this appointment"
 
-#: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:206
+#: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:210
 msgid "info"
 msgstr "info"
 
-#: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:234
+#: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:238
 msgid "None available"
 msgstr "None available"
 
-#: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:251
-msgid "by Respondents"
-msgstr "by Patients"
-
-#: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:254
-msgid "by Staff"
-msgstr "by Staff"
+#: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:296
+msgid "Surveys for"
+msgstr "Surveys for"
 
 #: classes/Gems/Snippets/Tracker/Buttons/NewFieldButtonRow.php:35
 msgid "New field"
@@ -8679,7 +8677,7 @@ msgid "Trying upgrade for %s to level %s: %s"
 msgstr "Trying upgrade for %s to level %s: %s"
 
 #: classes/Gems/User/Form/ChangePasswordForm.php:180
-#: classes/Gems/User/User.php:1565 classes/Gems/User/User.php:1580
+#: classes/Gems/User/User.php:1567 classes/Gems/User/User.php:1582
 #, php-format
 msgid "%s is not correct."
 msgstr "%s is not correct."
@@ -8934,33 +8932,32 @@ msgstr[1] "Your account is temporarily blocked, please wait %d minutes."
 msgid "You are not allowed to login from this location."
 msgstr "You are not allowed to login from this location."
 
-#: classes/Gems/User/User.php:1550
+#: classes/Gems/User/User.php:1552
 msgid "Your birthday"
 msgstr "Your birthday"
 
-#: classes/Gems/User/User.php:1573
-#| msgid "Round code"
+#: classes/Gems/User/User.php:1575
 msgid "Your zipcode"
 msgstr "Your zipcode"
 
-#: classes/Gems/User/User.php:1670
+#: classes/Gems/User/User.php:1672
 msgid "Trying to send a password reset to a user that cannot be reset."
 msgstr "Trying to send a password reset to a user that cannot be reset."
 
-#: classes/Gems/User/User.php:1698
+#: classes/Gems/User/User.php:1700
 msgid "Unable to send e-mail."
 msgstr "Unable to send e-mail."
 
-#: classes/Gems/User/User.php:1825 classes/Gems/User/User.php:1830
+#: classes/Gems/User/User.php:1828 classes/Gems/User/User.php:1833
 msgid "No access to group"
 msgstr "No access to group"
 
-#: classes/Gems/User/User.php:1826
+#: classes/Gems/User/User.php:1829
 #, php-format
 msgid "You are not allowed to switch to the %s group."
 msgstr "You are not allowed to switch to the %s group."
 
-#: classes/Gems/User/User.php:1831
+#: classes/Gems/User/User.php:1834
 #, php-format
 msgid "You cannot switch to an inactive or non-existing group."
 msgstr "You cannot switch to an inactive or non-existing group."
@@ -9674,12 +9671,12 @@ msgid "Date value using ISO 8601: yyyy-mm-dd"
 msgstr "Date value using ISO 8601: yyyy-mm-dd"
 
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:811
-msgid "Datetime value using ISO 8601: yyyy-mm-ddThh:mm::ss[+-hh:mm]"
-msgstr "Datetime value using ISO 8601: yyyy-mm-ddThh:mm::ss[+-hh:mm]"
+msgid "Datetime value using ISO 8601: yyyy-mm-ddThh:mm:ss[+-hh:mm]"
+msgstr "Datetime value using ISO 8601: yyyy-mm-ddThh:mm:ss[+-hh:mm]"
 
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:815
-msgid "Time value using ISO 8601: hh:mm::ss[+-hh:mm]"
-msgstr "Time value using ISO 8601: hh:mm::ss[+-hh:mm]"
+msgid "Time value using ISO 8601: hh:mm:ss[+-hh:mm]"
+msgstr "Time value using ISO 8601: hh:mm:ss[+-hh:mm]"
 
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:823
 #, php-format
@@ -9779,11 +9776,17 @@ msgstr "An error occurred!"
 msgid "Please contact system administration"
 msgstr "Please contact system administration"
 
-#~ msgid "Datetime value using ISO 8601: yyyy-mm-ddThh:mm:ss[+-hh:mm]"
-#~ msgstr "Datetime value using ISO 8601: yyyy-mm-ddThh:mm:ss[+-hh:mm]"
+#~ msgid "by Respondents"
+#~ msgstr "by Patients"
 
-#~ msgid "Time value using ISO 8601: hh:mm:ss[+-hh:mm]"
-#~ msgstr "Time value using ISO 8601: hh:mm:ss[+-hh:mm]"
+#~ msgid "by Staff"
+#~ msgstr "by Staff"
+
+#~ msgid "Datetime value using ISO 8601: yyyy-mm-ddThh:mm::ss[+-hh:mm]"
+#~ msgstr "Datetime value using ISO 8601: yyyy-mm-ddThh:mm::ss[+-hh:mm]"
+
+#~ msgid "Time value using ISO 8601: hh:mm::ss[+-hh:mm]"
+#~ msgstr "Time value using ISO 8601: hh:mm::ss[+-hh:mm]"
 
 #~ msgid "Submit time"
 #~ msgstr "Submit time"
