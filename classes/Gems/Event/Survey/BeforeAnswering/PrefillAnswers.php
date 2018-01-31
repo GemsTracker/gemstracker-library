@@ -199,7 +199,7 @@ class PrefillAnswers extends \MUtil_Registry_TargetAbstract implements \Gems_Eve
 
         // Read fieldcodes and convert to uppercase since requests are uppercase too
         $respondentTrack = $token->getRespondentTrack();
-        $fieldCodes      = $respondentTrack->getFieldData();
+        $fieldCodes      = $respondentTrack->getCodeFields();
         $keysMixed       = array_keys($fieldCodes);
         $keysUpper       = array_change_key_case($fieldCodes, CASE_UPPER);
         $fieldCodesMap   = array_combine(array_keys($keysUpper), $keysMixed);

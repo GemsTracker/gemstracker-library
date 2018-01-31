@@ -87,7 +87,7 @@ class PrefillAnswersTest extends \PHPUnit_Framework_TestCase
                 ->will($this->returnValue($respondent));
 
         $respondentTrack->expects($this->any())
-                ->method('getFieldData')
+                ->method('getCodeFields')
                 ->will($this->returnValue($trackFields));
 
         $this->assertEquals($result, $this->event->processTokenInsertion($token));
