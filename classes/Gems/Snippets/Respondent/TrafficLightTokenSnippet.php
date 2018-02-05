@@ -654,7 +654,9 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                         'action' => 'overview',
                         'gto_id_respondent_track' => $row['gto_id_respondent_track'],
                         'gto_round_description' => urlencode(str_replace('/', '&#47;', $description)),
-                        ) + $this->request->getParams(),
+                        'gto_id_respondent' => $row['gto_id_respondent'],
+                        'gto_id_organization' => $row['gto_id_organizaiton']
+                        ),
                     'target' => 'inline',
                     $summaryIcon,
                     'class' => 'pull-right' ));
