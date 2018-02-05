@@ -33,6 +33,13 @@ class Gems_Default_TokenAction extends \Gems_Default_TokenSearchActionAbstract
      * @var mixed String or array of snippets name
      */
     protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Token\\TokenSearchSnippet');
+    
+    /**
+     * The snippets used for the autofilter action.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $autofilterSnippets = 'Token\\RespondentPlanTokenSnippet';
 
     /**
      *

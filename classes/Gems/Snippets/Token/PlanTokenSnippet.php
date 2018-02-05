@@ -7,13 +7,12 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 namespace Gems\Snippets\Token;
 
 /**
- * Snippet for showing the all tokens for a single respondent.
+ * Snippet for showing the tokens for the applied filter over multiple respondents.
  *
  * @package    Gems
  * @subpackage Snippets\Token
