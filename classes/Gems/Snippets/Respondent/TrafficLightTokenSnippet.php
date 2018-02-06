@@ -654,8 +654,9 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                         'action' => 'overview',
                         'gto_id_respondent_track' => $row['gto_id_respondent_track'],
                         'gto_round_description' => urlencode(str_replace('/', '&#47;', $description)),
-                        'gto_id_respondent' => $row['gto_id_respondent'],
-                        'gto_id_organization' => $row['gto_id_organizaiton']
+                        'gr2o_patient_nr' => $row['gr2o_patient_nr'],
+                        'gr2o_id_organization' => $row['gr2o_id_organization'],
+                        'RouteReset' => true
                         ),
                     'target' => 'inline',
                     $summaryIcon,
