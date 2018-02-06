@@ -191,7 +191,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
 
                     $values = array();
                     $values['period_1'] = $date->get(\Zend_Date::YEAR);
-                    $values['period_2'] = $date->get(\Zend_Date::WEEK);
+                    $values['period_2'] = (int) $date->get(\Zend_Date::WEEK);   // Use constant but drop leading zero
                     // When monday is in the previous year, add one to the year
                     if ($date->get(\Zend_Date::DAY_OF_YEAR)>14 && $date->get(\Zend_Date::WEEK) == 1) {
                         $values['period_1'] =  $values['period_1'] + 1;
