@@ -1330,3 +1330,10 @@ ALTER TABLE `gems__user_passwords`
 -- PATCH: Move date source answer submitdate to token gto_completion_time
 UPDATE `gems__rounds` SET gro_valid_after_source = 'tok', gro_valid_after_field = 'gto_completion_time' where gro_valid_after_source = 'ans' AND gro_valid_after_field = 'submitdate';
 UPDATE `gems__rounds` SET gro_valid_for_source = 'tok', gro_valid_for_field = 'gto_completion_time' where gro_valid_for_source = 'ans' AND gro_valid_for_field = 'submitdate';
+
+-- GEMS VERSION: 62
+-- PATCH: Allow field overviews
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.plan.fields')
+    WHERE grl_privileges LIKE '%pr.plan.summary%' AND grl_privileges NOT LIKE '%,pr.plan.fields%';
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.plan.fields.export')
+    WHERE grl_privileges LIKE '%pr.plan.summary.export%' AND grl_privileges NOT LIKE '%,pr.plan.fields.export%';

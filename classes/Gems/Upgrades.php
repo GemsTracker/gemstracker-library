@@ -50,6 +50,7 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
         $this->register('Upgrade172to181', 'Upgrade from 1.7.2 to 1.8.1');
         $this->register('Upgrade181to182', 'Upgrade from 1.8.1 to 1.8.2');
         $this->register('Upgrade182to183', 'Upgrade from 1.8.2 to 1.8.3');
+        $this->register('Upgrade183to184', 'Upgrade from 1.8.3 to 1.8.4');
         /**
          * To have the new_project updated to the highest level, update
          *
@@ -309,6 +310,21 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
     {
         $this->_batch->addTask('Db_CreateNewTables');
         $this->_batch->addTask('Db_AddPatches', 61);
+
+        // Use AddTask task to execute after patches
+        $this->_batch->addTask('AddTask', 'Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
+        $this->_batch->addTask('AddTask', 'Echo', $this->_('Check the Code compatibility report for any issues with project specific code!'));
+
+        return true;
+    }
+    
+    /**
+     * To upgrade to 1.8.4
+     */
+    public function Upgrade183to184()
+    {
+        $this->_batch->addTask('Db_CreateNewTables');
+        $this->_batch->addTask('Db_AddPatches', 62);
 
         // Use AddTask task to execute after patches
         $this->_batch->addTask('AddTask', 'Echo', $this->_('Make sure to read the changelog as it contains important instructions'));

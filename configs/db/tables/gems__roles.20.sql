@@ -67,7 +67,7 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     VALUES
     (804, 'staff', 'staff', '801',
     'pr.option.edit,pr.option.password,
-    ,pr.plan.compliance,pr.plan.consent,pr.plan.overview,pr.plan.respondent,pr.plan.summary,pr.plan.token,
+    ,pr.plan.compliance,pr.plan.consent,pr.plan.overview,pr.plan.fields,pr.plan.respondent,pr.plan.summary,pr.plan.token,
     ,pr.project,pr.project.questions,
     ,pr.respondent.create,pr.respondent.edit,pr.respondent.select-on-track,pr.respondent.who,
     ,pr.respondent-commlog,pr.respondent-log,
@@ -96,7 +96,7 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     ,pr.plan.consent,pr.plan.consent.export,
 	,pr.upgrade,
     ,pr.option.password,pr.option.edit,pr.organization-switch,
-	,pr.plan.compliance,pr.plan.consent,pr.plan.overview,pr.plan.respondent,pr.plan.summary,pr.plan.token',
+	,pr.plan.compliance,pr.plan.consent,pr.plan.overview,pr.plan.fields,pr.plan.respondent,pr.plan.summary,pr.plan.token',
     CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
 INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_parents,
@@ -111,7 +111,7 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     ,pr.group,
     ,pr.mail.log,
     ,pr.organization,pr.organization-switch,
-    ,pr.plan.compliance.export,pr.plan.overview.export,
+    ,pr.plan.compliance.export,pr.plan.overview.export,pr.plan.fields.export,
     ,pr.plan.respondent,pr.plan.respondent.export,pr.plan.summary.export,pr.plan.token.export,
     ,pr.project-information,
     ,pr.reception,pr.reception.create,pr.reception.edit,
@@ -139,7 +139,7 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     ,pr.group,
     ,pr.mail.log,
     ,pr.organization,pr.organization-switch,
-    ,pr.plan.compliance.export,pr.plan.overview.export,
+    ,pr.plan.compliance.export,pr.plan.overview.export,pr.plan.fields.export,
     ,pr.plan.respondent,pr.plan.respondent.export,pr.plan.summary.export,pr.plan.token.export,
     ,pr.project-information,
     ,pr.reception,pr.reception.create,pr.reception.edit,
