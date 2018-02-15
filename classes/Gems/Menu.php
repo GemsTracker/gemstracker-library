@@ -293,7 +293,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $rPage->addAction($this->_('Change organization'), 'pr.respondent.change-org', 'change-organization')
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
-        
+
         $rPage->addAction(null, null, 'overview')
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
@@ -484,7 +484,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
                 ->setParameterFilter(\Gems_Model::ID_TYPE, 'token');
         $tkPage->addActionButton($this->_('Answers'), 'pr.token.answers', 'answer')
                 ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
-                ->setParameterFilter('is_completed', 1, \Gems_Model::ID_TYPE, 'token')
+                ->setParameterFilter('gto_in_source', 1, \Gems_Model::ID_TYPE, 'token')
                 ->set('target', \MUtil_Model::REQUEST_ID);
         $tkPage->addAction($this->_('(Re)check answers'), 'pr.token.answers', 'check-token-answers')
                 ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')

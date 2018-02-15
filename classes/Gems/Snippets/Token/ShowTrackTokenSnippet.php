@@ -23,6 +23,12 @@ namespace Gems\Snippets\Token;
 class ShowTrackTokenSnippet extends \Gems_Tracker_Snippets_ShowTokenSnippetAbstract
 {
     /**
+     *
+     * @var \Gems_Util
+     */
+    protected $util;
+
+    /**
      * Adds third block to fifth group group of rows showing completion data
      *
      * Overrule this function to add different columns to the browse table, without
@@ -108,6 +114,25 @@ class ShowTrackTokenSnippet extends \Gems_Tracker_Snippets_ShowTokenSnippetAbstr
                 $td->append(' ');
             }
         }
+
+        $bridge->table->appendAttrib('class', 'compliance');
+        // Token status
+        $tData = $this->util->getTokenData();
+        $bridge->tr();
+        $bridge->tdh($this->_('Status'));
+        $td = $bridge->td([
+            'colspan' => 2,
+            'skiprowclass' => true,
+            'class' => \MUtil_Lazy::method($tData, 'getStatusClass', $bridge->token_status),
+            ]);
+        $td->append(
+                \MUtil_Lazy::method($tData, 'getStatusIcon', $bridge->token_status),
+                ' ',
+                \MUtil_Lazy::method($tData, 'getStatusDescription', $bridge->token_status)
+                );
+
+        // Buttons
+        $bridge->gto_in_source;
         $buttons = $links->getActionLinks(true,
                 'ask', 'take',
                 'pdf', 'show',

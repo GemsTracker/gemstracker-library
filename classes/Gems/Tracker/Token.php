@@ -317,6 +317,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
             $source->offsetSet('gsu_id_survey', $this->_gemsData['gto_id_survey']);
             $source->offsetSet('is_completed', $this->_gemsData['gto_completion_time'] ? 1 : 0);
             $source->offsetSet('show_answers', $this->_gemsData['gto_completion_time'] ? 1 : 0);
+            $source->offsetSet('gto_in_source', $this->_gemsData['gto_in_source']);
             $source->offsetSet('gto_reception_code', $this->_gemsData['gto_reception_code']);
 
             $receptionCode = $this->getReceptionCode();
@@ -623,7 +624,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         $values['gto_valid_until_manual']  = $this->_gemsData['gto_valid_until_manual'];
         $values['gto_mail_sent_date']      = $this->_gemsData['gto_mail_sent_date'];
         $values['gto_comment']             = $newComment;
-        
+
         $newValues = $otherValues + $values;
         // Now make sure there are no more date objects
         foreach($newValues as &$value)
@@ -634,7 +635,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         }
 
         $tokenId = $this->tracker->createToken($newValues, $userId);
-        
+
         $replacementLog['gtrp_id_token_new'] = $tokenId;
         $replacementLog['gtrp_id_token_old'] = $this->_tokenId;
         $replacementLog['gtrp_created']      = new \MUtil_Db_Expr_CurrentTimestamp();
@@ -2057,7 +2058,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                     // \MUtil_Echo::track($insert);
                     $statement->execute($insert);
                 }
-                
+
             } catch (\Zend_Db_Statement_Exception $e) {
                 error_log($e->getMessage());
                 \Gems_Log::getLogger()->logError($e);

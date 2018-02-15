@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+use Gems\Screens\ProcessModelInterface;
+
 /**
  *
  *
@@ -390,7 +392,11 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
                 }
             }
 
-            if ($edit ) {
+            if ($edit) {
+                if ($edit instanceof ProcessModelInterface) {
+                    $edit->processModel($this->getModel());
+                }
+
                 // All are arrays, so easy to set
                 $this->editParameters = $edit->getEditParameters() + $this->editParameters;
                 $editSnippets = $edit->getSnippets();
@@ -667,6 +673,10 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
             $browse = $group->getRespondentBrowseScreen();
 
             if ($browse) {
+                if ($browse instanceof ProcessModelInterface) {
+                    $browse->processModel($this->getModel());
+                }
+
                 // All are arrays, so easy to set
                 $this->autofilterParameters = $browse->getAutofilterParameters() + $this->autofilterParameters;
                 $this->indexParameters      = $browse->getStartStopParameters() + $this->indexParameters;
@@ -769,6 +779,10 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
             }
 
             if ($show) {
+                if ($show instanceof ProcessModelInterface) {
+                    $show->processModel($this->getModel());
+                }
+
                 // All are arrays, so easy to set
                 $this->showParameters = $show->getParameters() + $this->showParameters;
                 $showSnippets = $show->getSnippets();

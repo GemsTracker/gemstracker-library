@@ -239,6 +239,7 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
         } else {
             $this->addColumn(new \Zend_Db_Expr('NULL'), 'calc_result', 'gto_result');
         }
+        $this->addColumn($this->util->getTokenData()->getStatusExpression(), 'token_status');
     }
 
     /**
