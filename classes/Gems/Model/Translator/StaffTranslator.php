@@ -61,14 +61,22 @@ class Gems_Model_Translator_StaffTranslator extends \Gems_Model_Translator_Strai
         if (! $row) {
             return false;
         }
-
+        
+        // Default to active and can login
+        if (!isset($row['gsf_active'])) {
+            $row['gsf_active'] = 1;
+        }        
+        if (!isset($row['gul_can_login'])) {
+            $row['gul_can_login'] = 1;
+        }
+        
+        // Make sure we have an organization
         if (!isset($row['gsf_id_organization'])) {
             $row['gsf_id_organization'] = $this->_organization->getId();
-            
-            if (!isset($row['gul_user_class'])) {
-                $row['gul_user_class'] = $this->_organization->get('gor_user_class');
-            }
-        } elseif (!isset($row['gul_user_class'])) {
+        }
+        
+        // Use organization default userclass is not specified
+        if (!isset($row['gul_user_class'])) {
             $row['gul_user_class'] = $this->loader->getUserLoader()->getOrganization($row['gsf_id_organization'])->get('gor_user_class');
         }
 
