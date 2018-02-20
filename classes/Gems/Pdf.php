@@ -305,37 +305,11 @@ class Gems_Pdf extends \Gems_Registry_TargetAbstract
     }
 
     /**
-     * Rename existing file.
+     * Helper function for error handling
      *
-     * @param string $source
-     * @param string $destination
-     * @return string
-     * /
-    public function rename($source, $destination)
-    {
-        if (file_exists($source)) {
-            $dir = dirname($destination);
-            if (! is_dir($dir)) {
-                $oldmask = umask(0777);
-                if (! @mkdir($dir, 0777, true)) {
-                    $this->throwLastError("Could not create '$dir' directory.");
-                }
-                umask($oldmask);
-            }
-            if (file_exists($destination)) {
-                if (! unlink($destination)) {
-                    $this->throwLastError("Could not remove existing '$destination' file.");
-                }
-            }
-            if (! rename($source, $destination)) {
-                $this->throwLastError("Could not rename '$source' to '$destination'.");
-            }
-
-        } else {
-            $this->throwLastError("Source file '$source' does not exist.");
-        }
-    } */
-
+     * @param string $msg
+     * @throws \Gems_Exception_Coding
+     */
     protected function throwLastError($msg)
     {
         if ($last = \MUtil_Error::getLastPhpErrorMessage()) {
@@ -355,13 +329,14 @@ class Gems_Pdf extends \Gems_Registry_TargetAbstract
     {
         \MUtil_File::ensureDir(GEMS_ROOT_DIR . '/var/tmp');
 
-        if (DIRECTORY_SEPARATOR == '\\') {
-            // Running on Windows
-            $tempInputFilename  = '../var/tmp/export-' . md5(time() . rand()) . '.html';
-            $tempOutputFilename = '../var/tmp/export-' . md5(time() . rand()) . '.pdf';
-        } else {
-            $tempInputFilename  = GEMS_ROOT_DIR . '/var/tmp/export-' . md5(time() . rand()) . '.html';
-            $tempOutputFilename = GEMS_ROOT_DIR . '/var/tmp/export-' . md5(time() . rand()) . '.pdf';
+        $tempInputFilename  = GEMS_ROOT_DIR . '/var/tmp/export-' . md5(time() . rand()) . '.html';
+        $tempOutputFilename = GEMS_ROOT_DIR . '/var/tmp/export-' . md5(time() . rand()) . '.pdf';
+
+        if (\MUtil_File::isOnWindows()) {
+            // Running on Windows, remove drive letter as that will not work with some
+            // html to pdf converters.
+            $tempInputFilename  = strtr(\MUtil_File::removeWindowsDriveLetter($tempInputFilename), '\\', '/');
+            $tempOutputFilename = strtr(\MUtil_File::removeWindowsDriveLetter($tempOutputFilename), '\\', '/');
         }
 
         file_put_contents($tempInputFilename, $content);
@@ -372,6 +347,8 @@ class Gems_Pdf extends \Gems_Registry_TargetAbstract
 
         $command = sprintf($this->_pdfExportCommand, escapeshellarg($tempInputFilename),
             escapeshellarg($tempOutputFilename));
+
+        // error_log($command);
 
         $lastLine = exec($command, $outputLines, $return);
 
