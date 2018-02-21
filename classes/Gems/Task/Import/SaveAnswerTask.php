@@ -134,9 +134,6 @@ class Gems_Task_Import_SaveAnswerTask extends \MUtil_Task_TaskAbstract
                         $oldToken = $token;
                         $token = $tracker->getToken($replacementTokenId);
 
-                        // Add the old answers to the new answer set as the new answers OVERWRITE the old data
-                        $answers = $answers + $currentAnswers;
-
                         // Make sure the Next token is set right
                         $oldToken->setNextToken($token);
 
