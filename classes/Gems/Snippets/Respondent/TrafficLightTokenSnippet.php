@@ -369,7 +369,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                 $tokenLink->target = '_self';
             }
         } else {
-            $tokenDiv->appedAttrib('class', 'disabled');
+            $tokenDiv->appendAttrib('class', 'disabled');
             $tokenLink = $this->creator->div(array('class'=>'disabled'));
         }
         $tokenDiv[] = $tokenLink;
