@@ -51,10 +51,10 @@ class PlanRespondentSnippet extends PlanTokenSnippet
      */
     protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
+        $tData = $this->util->getTokenData();
+
         $bridge->gr2t_id_respondent_track; // Data needed for edit button
         $bridge->gr2o_id_organization; // Data needed for edit button
-
-        $HTML = \MUtil_Html::create();
 
         // Get the buttons
         $respMenu = $this->menu->findAllowedController('respondent', 'show');
@@ -97,14 +97,19 @@ class PlanRespondentSnippet extends PlanTokenSnippet
         }
 
         $bridge->tr(array('class' => array('odd', $bridge->row_class), 'title' => $bridge->gto_comment));
-        $bridge->addColumn($this->createShowTokenButton($bridge))->class = 'rightAlign';
+        $col = $bridge->addColumn(
+                [$tData->getTokenStatusLinkForBridge($bridge), ' ', $tData->getTokenShowLinkForBridge($bridge, true)],
+                ' '); // Space needed because TableElement does not look at rowspans
+        $col->rowspan = 2;
+        $col->class = 'rightAlign';
+
         $bridge->addSortable('gto_valid_from');
         $bridge->addSortable('gto_valid_until');
         $model->set('gto_round_description', 'tableDisplay', 'smallData');
         $bridge->addMultiSort('gsu_survey_name', 'gto_round_description')->colspan = 2;
 
         $bridge->tr(array('class' => array('odd', $bridge->row_class), 'title' => $bridge->gto_comment));
-        $bridge->addColumn();
+        // $bridge->addColumn();
         $bridge->addSortable('gto_mail_sent_date');
         $bridge->addSortable('gto_completion_time');
         $bridge->addSortable('gto_id_token');

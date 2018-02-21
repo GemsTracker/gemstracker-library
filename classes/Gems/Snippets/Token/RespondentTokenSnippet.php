@@ -93,9 +93,11 @@ class RespondentTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
 
         $model->set('gto_round_description', 'tableDisplay', 'smallData');
         $model->set('gr2t_track_info', 'tableDisplay', 'smallData');
-        
+
         $roundIcon[] = \MUtil_Lazy::iif($bridge->gto_icon_file, \MUtil_Html::create('img', array('src' => $bridge->gto_icon_file, 'class' => 'icon')),
                 \MUtil_Lazy::iif($bridge->gro_icon_file, \MUtil_Html::create('img', array('src' => $bridge->gro_icon_file, 'class' => 'icon'))));
+
+        $bridge->td($this->util->getTokenData()->getTokenStatusLinkForBridge($bridge, false));
 
         if ($menuItem = $this->findMenuItem('track', 'show-track')) {
             $href = $menuItem->toHRefAttribute($this->request, $bridge);
@@ -103,7 +105,7 @@ class RespondentTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
         } else {
             $track1 = $bridge->gtr_track_name;
         }
-        $track = array($track1, $bridge->createSortLink('gtr_track_name'));        
+        $track = array($track1, $bridge->createSortLink('gtr_track_name'));
 
         $bridge->addMultiSort($track, 'gr2t_track_info');
         $bridge->addMultiSort('gsu_survey_name', 'gto_round_description', $roundIcon);
@@ -121,18 +123,7 @@ class RespondentTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
 
         $bridge->useRowHref = false;
 
-        $actionLinks[] = $this->createMenuLink($bridge, 'track',  'answer');
-        $actionLinks[] = array(
-            $bridge->ggp_staff_members->if($this->createMenuLink($bridge, 'ask', 'take'), $bridge->calc_id_token->strtoupper()),
-            'class' => $bridge->ggp_staff_members->if(null, $bridge->calc_id_token->if('token')));
-        // calc_id_token is empty when the survey has been completed
-
-        // Remove nulls
-        $actionLinks = array_filter($actionLinks);
-        if ($actionLinks) {
-            $bridge->addItemLink($actionLinks);
-        }
-
+        $this->addActionLinks($bridge);
         $this->addTokenLinks($bridge);
     }
 

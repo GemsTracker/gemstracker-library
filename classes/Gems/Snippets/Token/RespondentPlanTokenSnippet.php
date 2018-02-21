@@ -34,6 +34,9 @@ class RespondentPlanTokenSnippet extends PlanTokenSnippet
      */
     protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
+        $br    = \MUtil_Html::create('br');
+        $tData = $this->util->getTokenData();
+
         // Add link to patient to overview
         $menuItems = $this->findMenuItems('respondent', 'show');
         if ($menuItems) {
@@ -61,7 +64,9 @@ class RespondentPlanTokenSnippet extends PlanTokenSnippet
         $tr1->appendAttrib('class', $bridge->row_class);
         $tr1->appendAttrib('title', $bridge->gto_comment);
 
-        $bridge->addColumn($this->createShowTokenButton($bridge), ' ')->rowspan = 2; // Space needed because TableElement does not look at rowspans
+        $bridge->addColumn(
+                [$tData->getTokenStatusLinkForBridge($bridge), $br, $tData->getTokenShowLinkForBridge($bridge, true)],
+                ' ')->rowspan = 2; // Space needed because TableElement does not look at rowspans
         $bridge->addSortable('gto_valid_from');
         $bridge->addSortable('gto_valid_until');
 

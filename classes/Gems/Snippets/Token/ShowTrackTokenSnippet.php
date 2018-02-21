@@ -115,20 +115,12 @@ class ShowTrackTokenSnippet extends \Gems_Tracker_Snippets_ShowTokenSnippetAbstr
             }
         }
 
-        $bridge->table->appendAttrib('class', 'compliance');
         // Token status
-        $tData = $this->util->getTokenData();
         $bridge->tr();
         $bridge->tdh($this->_('Status'));
-        $td = $bridge->td([
-            'colspan' => 2,
-            'skiprowclass' => true,
-            'class' => \MUtil_Lazy::method($tData, 'getStatusClass', $bridge->token_status),
-            ]);
-        $td->append(
-                \MUtil_Lazy::method($tData, 'getStatusIcon', $bridge->token_status),
-                ' ',
-                \MUtil_Lazy::method($tData, 'getStatusDescription', $bridge->token_status)
+        $td = $bridge->td(
+                ['colspan' => 2, 'skiprowclass' => true],
+                $this->util->getTokenData()->getTokenStatusShowForBridge($bridge, true)
                 );
 
         // Buttons

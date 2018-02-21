@@ -298,6 +298,16 @@ class Group extends \Gems_Registry_CachedArrayTargetAbstract
     }
 
     /**
+     * Is this a staff group
+     * 
+     * @return boolean
+     */
+    public function isStaff()
+    {
+        return (boolean) $this->_get('ggp_staff_members');
+    }
+
+    /**
      * Load the data when the cache is empty.
      *
      * @param mixed $id

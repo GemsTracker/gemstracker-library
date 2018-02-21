@@ -61,6 +61,9 @@ class PlanTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
      */
     protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
+        $br    = \MUtil_Html::create('br');
+        $tData = $this->util->getTokenData();
+
         // Add link to patient to overview
         $menuItems = $this->findMenuItems('respondent', 'show');
         if ($menuItems) {
@@ -88,7 +91,9 @@ class PlanTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
         $tr1->appendAttrib('class', $bridge->row_class);
         $tr1->appendAttrib('title', $bridge->gto_comment);
 
-        $bridge->addColumn($this->createShowTokenButton($bridge), ' ')->rowspan = 2; // Space needed because TableElement does not look at rowspans
+        $bridge->addColumn(
+                [$tData->getTokenStatusLinkForBridge($bridge), $br, $tData->getTokenShowLinkForBridge($bridge, true)],
+                ' ')->rowspan = 2; // Space needed because TableElement does not look at rowspans
         $bridge->addSortable('gto_valid_from');
         $bridge->addSortable('gto_valid_until');
 
@@ -137,7 +142,31 @@ class PlanTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
      */
     public function createActionButtons(\MUtil_Model_Bridge_TableBridge $bridge)
     {
-        // Get the other token buttons
+         $tData = $this->util->getTokenData();
+
+        // Action links
+        $actionLinks[] = $tData->getTokenAskLinkForBridge($bridge, true);
+        $actionLinks[] = $tData->getTokenEmailLinkForBridge($bridge);
+        $actionLinks[] = $tData->getTokenAnswerLinkForBridge($bridge);
+
+        $output = [];
+        foreach ($actionLinks as $actionLink) {
+            if ($actionLink) {
+                $output[] = ' ';
+                $output[] = \MUtil_Html::create(
+                        'div',
+                        $actionLink,
+                        ['class' => 'rightFloat', 'renderWithoutContent' => false, 'style' => 'clear: right;']
+                        );
+            }
+        }
+
+        return $output;
+
+        if ($actionLinks) {
+            $bridge->addItemLink($actionLinks);
+        }
+       // Get the other token buttons
         $menuItems = $this->menu->findAll(
                 array('controller' => 'track', 'action' => array('email', 'answer'), 'allowed' => true)
                 );
@@ -172,13 +201,10 @@ class PlanTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
      */
     protected function createShowTokenButton(\MUtil_Model_Bridge_TableBridge $bridge)
     {
-        // Get the token buttons
-        $item = $this->menu->findAllowedController('track', 'show');
-        if ($item) {
-            $button = $item->toActionLink($this->request, $bridge, $this->_('+'));
-            $button->title = $bridge->gto_id_token->strtoupper();
+        $link = $this->util->getTokenData()->getTokenShowLinkForBridge($bridge, true);
 
-            return $button;
+        if ($link) {
+            return $link;
         }
     }
 }

@@ -76,6 +76,8 @@ class TrackTokenOverviewSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
      */
     protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
+        $tData = $this->util->getTokenData();
+
         // Signal the bridge that we need these values
         $bridge->gr2t_id_respondent_track;
         $bridge->gr2o_patient_nr;
@@ -86,11 +88,8 @@ class TrackTokenOverviewSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
                         array($bridge->row_class , ' inserted')
                         ));
 
-        $title = \MUtil_Html::create()->strong($this->_('+'));
-
-        $showLinks[] = $this->createMenuLink($bridge, 'track',  'show', $title);
-        // Remove nulls
-        $showLinks   = array_filter($showLinks);
+        // Add token status
+        $bridge->td($tData->getTokenStatusLinkForBridge($bridge, false));
 
         // Columns
         $bridge->addSortable('gsu_survey_name')
@@ -105,30 +104,14 @@ class TrackTokenOverviewSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
         $bridge->addSortable('gto_completion_time', null, 'date');
         $bridge->addSortable('gto_valid_until',     null, 'date');
 
+        // Rights depended score column
         if ($this->currentUser->hasPrivilege('pr.respondent.result') &&
                 (! $this->currentUser->isFieldMaskedWhole('gto_result'))) {
             $bridge->addSortable('gto_result', $this->_('Score'), 'date');
         }
-        $actionLinks[] = $this->createMenuLink($bridge, 'track',  'answer');
-        $actionLinks[] = array($bridge->ggp_staff_members->if(
-                    $this->createMenuLink($bridge, 'ask', 'take'),
-                    $bridge->can_be_taken->if($bridge->calc_id_token->strtoupper())),
-            'class' => $bridge->ggp_staff_members->if(null, $bridge->calc_id_token->if('token')));
 
-        // Remove nulls
-        $actionLinks   = array_filter($actionLinks);
-        if ($actionLinks) {
-            $bridge->addItemLink($actionLinks);
-        }
-
-        if ($showLinks) {
-            foreach ($showLinks as $showLink) {
-                if ($showLink) {
-                    $showLink->title = array($this->_('Token'), $bridge->gto_id_token->strtoupper());
-                }
-            }
-            $bridge->addItemLink($showLinks);
-        }
+        $this->addActionLinks($bridge);
+        $this->addTokenLinks($bridge);
     }
 
     /**

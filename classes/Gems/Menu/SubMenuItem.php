@@ -316,9 +316,9 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
      */
     public function addAction($label, $privilege = null, $action = 'index', array $other = array())
     {
-        $other['label'] = $label;
+        $other['label']      = $label;
         $other['controller'] = $this->get('controller');
-        $other['action'] = $action;
+        $other['action']     = $action;
 
         if (null === $privilege) {
             $privilege = $this->get('privilege');
@@ -636,7 +636,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
                 'alt'    => ''));
         }
 		// */
-		
+
         if (null === $controller) {
             $controller = $this->get('controller');
         }
@@ -820,6 +820,16 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
     public function getParent()
     {
         return $this->_parent;
+    }
+
+    /**
+     * Get the privilege associated with this menu item
+     *
+     * @return string
+     */
+    public function getPrivilege()
+    {
+        return $this->get('privilege', null);
     }
 
     /**

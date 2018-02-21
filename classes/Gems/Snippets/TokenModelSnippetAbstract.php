@@ -23,6 +23,13 @@
 class Gems_Snippets_TokenModelSnippetAbstract extends \Gems_Snippets_ModelTableSnippetAbstract
 {
     /**
+     * Shortfix to add class attribute
+     *
+     * @var string
+     */
+    protected $class = 'browser table compliance';
+
+    /**
      *
      * @var \Gems_User_User
      */
@@ -43,25 +50,40 @@ class Gems_Snippets_TokenModelSnippetAbstract extends \Gems_Snippets_ModelTableS
 
     /**
      *
+     * @var \Gems_Util
+     */
+    protected $util;
+
+    /**
+     *
+     * @param \MUtil_Model_Bridge_TableBridge $bridge
+     */
+    protected function addActionLinks(\MUtil_Model_Bridge_TableBridge $bridge)
+    {
+        $tData = $this->util->getTokenData();
+        
+        // Action links
+        $actionLinks[] = $tData->getTokenAskLinkForBridge($bridge);
+        $actionLinks[] = $tData->getTokenAnswerLinkForBridge($bridge);
+
+        // Remove nulls
+        $actionLinks = array_filter($actionLinks);
+        if ($actionLinks) {
+            $bridge->addItemLink($actionLinks);
+        }
+    }
+
+    /**
+     *
      * @param \MUtil_Model_Bridge_TableBridge $bridge
      */
     protected function addTokenLinks(\MUtil_Model_Bridge_TableBridge $bridge)
     {
-        $title = \MUtil_Html::create()->strong($this->_('+'));
+        $link = $this->util->getTokenData()->getTokenShowLinkForBridge($bridge, true);
 
-        $showLinks[]   = $this->createMenuLink($bridge, 'track',  'show', $title);
-
-        // Remove nulls
-        $showLinks   = array_filter($showLinks);
-
-        if ($showLinks) {
-            foreach ($showLinks as $showLink) {
-                if ($showLink) {
-                    $showLink->title = array($this->_('Token'), $bridge->gto_id_token->strtoupper());
-                }
-            }
+        if ($link) {
+            $bridge->addItemLink($link);
         }
-        $bridge->addItemLink($showLinks);
     }
 
     /**

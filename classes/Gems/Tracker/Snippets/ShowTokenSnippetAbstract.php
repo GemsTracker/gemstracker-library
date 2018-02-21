@@ -25,7 +25,7 @@ abstract class Gems_Tracker_Snippets_ShowTokenSnippetAbstract extends \MUtil_Sni
      *
      * @var string
      */
-    protected $class = 'displayer table table-bordered table-condensed';
+    protected $class = 'displayer table table-bordered table-condensed compliance';
 
     /**
      *

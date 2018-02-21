@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -21,6 +20,88 @@
  */
 class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
 {
+    /**
+     *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
+    /**
+     *
+     * @var \Gems_Loader
+     */
+    protected $loader;
+
+    /**
+     *
+     * @var \Gems_Menu
+     */
+    protected $menu;
+
+    /**
+     *
+     * @staticvar \Gems_Menu_SubMenuItem $menuItem
+     * @return \Gems_Menu_SubMenuItem
+     */
+    protected function _getAnswerMenuItem()
+    {
+        static $menuItem;
+
+        if (! $menuItem) {
+            $menuItem = $this->menu->findController('track', 'answer');
+        }
+
+        return $menuItem;
+    }
+
+    /**
+     *
+     * @staticvar \Gems_Menu_SubMenuItem $menuItem
+     * @return \Gems_Menu_SubMenuItem
+     */
+    protected function _getAskMenuItem()
+    {
+        static $menuItem;
+
+        if (! $menuItem) {
+            $menuItem = $this->menu->findController('ask', 'take');
+        }
+
+        return $menuItem;
+    }
+
+    /**
+     *
+     * @staticvar \Gems_Menu_SubMenuItem $menuItem
+     * @return \Gems_Menu_SubMenuItem
+     */
+    protected function _getEmailMenuItem()
+    {
+        static $menuItem;
+
+        if (! $menuItem) {
+            $menuItem = $this->menu->findController('track', 'email');
+        }
+
+        return $menuItem;
+    }
+
+    /**
+     *
+     * @staticvar \Gems_Menu_SubMenuItem $menuItem
+     * @return \Gems_Menu_SubMenuItem
+     */
+    protected function _getShowMenuItem()
+    {
+        static $menuItem;
+
+        if (! $menuItem) {
+            $menuItem = $this->menu->findController('track', 'show');
+        }
+
+        return $menuItem;
+    }
+
     /**
      * Returns a status code => decription array
      *
@@ -172,5 +253,262 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
         }
 
         return $status['D'];
+    }
+
+    /**
+     * Generate a menu link for answers pop-up
+     *
+     * @param string $tokenId
+     * @param string $tokenStatus
+     * @return \MUtil_Html_AElement
+     */
+    public function getTokenAnswerLink($tokenId, $tokenStatus)
+    {
+        if ('A' == $tokenStatus || 'P' == $tokenStatus || 'I' == $tokenStatus) {
+            $menuItem = $this->_getAnswerMenuItem();
+
+            $link = $menuItem->toActionLinkLower([
+                'gto_id_token' => $tokenId,
+                'gto_in_source' => 1,
+                \Gems_Model::ID_TYPE => 'token',
+            ]);
+
+            $link->title = sprintf($this->_('See answers for token %s'), strtoupper($tokenId));
+
+            return $link;
+        }
+    }
+
+    /**
+     * De a lazy answer link for bridges
+     *
+     * @param \MUtil_Model_Bridge_TableBridgeAbstract $bridge
+     * @return \MUtil_Lazy_Call
+     */
+    public function getTokenAnswerLinkForBridge(\MUtil_Model_Bridge_TableBridgeAbstract $bridge)
+    {
+        if (! $this->currentUser->hasPrivilege($this->_getAnswerMenuItem()->getPrivilege())) {
+            return null;
+        }
+
+        return \MUtil_Lazy::method($this, 'getTokenAnswerLink', $bridge->gto_id_token, $bridge->token_status);
+    }
+
+    /**
+     * Generate a menu link for answers pop-up
+     *
+     * @param string $tokenId
+     * @param string $tokenStatus
+     * @param boolean $staffToken Is token answerable by staff
+     * @return \MUtil_Html_AElement
+     */
+    public function getTokenAskLink($tokenId, $tokenStatus, $staffToken)
+    {
+        if ('O' == $tokenStatus || 'P' == $tokenStatus) {
+            if ($staffToken) {
+                $menuItem = $this->_getAskMenuItem();
+
+                if ('P' == $tokenStatus) {
+                    $link = $menuItem->toActionLink(
+                            strtolower($this->_('Continue')),
+                            [
+                                'gto_id_token' => $tokenId,
+                                'can_be_taken' => 1,
+                                \Gems_Model::ID_TYPE => 'token',
+                            ]);
+                } else {
+                    $link = $menuItem->toActionLinkLower([
+                        'gto_id_token' => $tokenId,
+                        'can_be_taken' => 1,
+                        \Gems_Model::ID_TYPE => 'token',
+                    ]);
+                }
+                $link->title = sprintf($this->_('Answer token %s'), strtoupper($tokenId));
+
+                return $link;
+            }
+
+            return $this->getTokenCopyLink($tokenId, $tokenStatus);
+        }
+    }
+
+    /**
+     * De a lazy answer link for bridges
+     *
+     * @param \MUtil_Model_Bridge_TableBridgeAbstract $bridge
+     * @param boolean $forceButton Always show a button
+     * @return \MUtil_Lazy_Call
+     */
+    public function getTokenAskLinkForBridge(\MUtil_Model_Bridge_TableBridgeAbstract $bridge, $forceButton = false)
+    {
+        if ($this->currentUser->hasPrivilege($this->_getAskMenuItem()->getPrivilege())) {
+            if ($forceButton) {
+                $method = \MUtil_Lazy::method($this, 'getTokenAskLink', $bridge->gto_id_token, $bridge->token_status, true);
+            } else {
+                $method = \MUtil_Lazy::method($this, 'getTokenAskLink',
+                        $bridge->gto_id_token, $bridge->token_status, $bridge->ggp_staff_members
+                        );
+            }
+        } else {
+            $method = \MUtil_Lazy::method($this, 'getTokenCopyLink',
+                    $bridge->gto_id_token, $bridge->token_status
+                    );
+        }
+
+        return [
+            $method,
+            'class' => \MUtil_Lazy::method($this, 'getTokenCopyLinkClass',
+                    $bridge->token_status, $bridge->ggp_staff_members
+                    ),
+            ];
+    }
+
+    /**
+     * Generate a token item with (in the future) a copy to clipboard button
+     *
+     * @param string $tokenId
+     * @param string $tokenStatus
+     * @return string
+     */
+    public function getTokenCopyLink($tokenId, $tokenStatus)
+    {
+        if ('O' == $tokenStatus || 'P' == $tokenStatus) {
+            return $tokenId . ' ';
+        }
+    }
+
+    /**
+     * Generate a token item with (in the future) a copy to clipboard button
+     *
+     * @param string $tokenId
+     * @param string $tokenStatus
+     * @param boolean $staffToken Is token answerable by staff
+     * @return string
+     */
+    public function getTokenCopyLinkClass($tokenStatus, $staffToken)
+    {
+        if (('O' == $tokenStatus || 'P' == $tokenStatus) && ! $staffToken) {
+            return 'token';
+        }
+    }
+
+    /**
+     * Generate a menu link for email screen
+     *
+     * @param string $tokenId
+     * @param string $tokenStatus
+     * @param boolean $canMail
+     * @return \MUtil_Html_AElement
+     */
+    public function getTokenEmailLink($tokenId, $tokenStatus, $canMail)
+    {
+        if ($canMail && ('O' == $tokenStatus || 'P' == $tokenStatus)) {
+            $menuItem = $this->_getEmailMenuItem();
+
+            $link = $menuItem->toActionLinkLower([
+                'gto_id_token' => $tokenId,
+                'can_be_taken' => 1,
+                'can_email'    => 1,
+                \Gems_Model::ID_TYPE => 'token',
+            ]);
+
+            $link->title = sprintf($this->_('Send email for token %s'), strtoupper($tokenId));
+
+            return $link;
+        }
+    }
+
+    /**
+     * De a lazy answer link for bridges
+     *
+     * @param \MUtil_Model_Bridge_TableBridgeAbstract $bridge
+     * @return \MUtil_Lazy_Call
+     */
+    public function getTokenEmailLinkForBridge(\MUtil_Model_Bridge_TableBridgeAbstract $bridge)
+    {
+        if (! $this->currentUser->hasPrivilege($this->_getEmailMenuItem()->getPrivilege())) {
+            return null;
+        }
+
+        return \MUtil_Lazy::method($this, 'getTokenEmailLink',
+                $bridge->gto_id_token, $bridge->token_status, $bridge->can_email);
+    }
+    /**
+     * Generate a menu link for answers pop-up
+     *
+     * @param string $tokenId
+     * @param boolean $plusLabel Show plus instead of label
+     * @return \MUtil_Html_AElement
+     */
+    public function getTokenShowLink($tokenId, $plusLabel)
+    {
+        $menuItem = $this->_getShowMenuItem();
+
+        if ($plusLabel) {
+            $link = $menuItem->toActionLink(
+                    \MUtil_Html::create()->strong($this->_('+')),
+                    [
+                        'gto_id_token' => $tokenId,
+                        \Gems_Model::ID_TYPE => 'token',
+                    ]
+                    );
+        } else {
+            $link = $menuItem->toActionLinkLower([
+                'gto_id_token' => $tokenId,
+                \Gems_Model::ID_TYPE => 'token',
+            ]);
+        }
+
+        $link->title = sprintf($this->_('Inspect token %s'), strtoupper($tokenId));
+
+        return $link;
+    }
+
+    /**
+     * De a lazy show link for bridges
+     *
+     * @param \MUtil_Model_Bridge_TableBridgeAbstract $bridge
+     * @param boolean $plusLabel Show plus instead of label
+     * @return \MUtil_Lazy_Call
+     */
+    public function getTokenShowLinkForBridge(\MUtil_Model_Bridge_TableBridgeAbstract $bridge, $plusLabel = true)
+    {
+        if (! $this->currentUser->hasPrivilege($this->_getShowMenuItem()->getPrivilege())) {
+            return null;
+        }
+
+        return \MUtil_Lazy::method($this, 'getTokenShowLink', $bridge->gto_id_token, $plusLabel);
+    }
+
+    /**
+     * De a lazy status show link for bridges
+     *
+     * @param \MUtil_Model_Bridge_TableBridgeAbstract $bridge
+     * @param boolean $addDescription Add the description after the icon
+     * @return \MUtil_Lazy_Call
+     */
+    public function getTokenStatusLinkForBridge(\MUtil_Model_Bridge_TableBridgeAbstract $bridge, $addDescription = false)
+    {
+        return $this->getTokenStatusShowForBridge($bridge, $addDescription);
+    }
+
+    /**
+     * De a lazy status show link for bridges
+     *
+     * @param \MUtil_Model_Bridge_TableBridgeAbstract $bridge
+     * @param boolean $addDescription Add the description after the icon
+     * @return \MUtil_Lazy_Call
+     */
+    public function getTokenStatusShowForBridge(\MUtil_Model_Bridge_TableBridgeAbstract $bridge, $addDescription = false)
+    {
+        $output['class'] = \MUtil_Lazy::method($this, 'getStatusClass', $bridge->token_status);
+        $output[] = \MUtil_Lazy::method($this, 'getStatusIcon', $bridge->token_status);
+
+        if ($addDescription) {
+            $output[] = ' ';
+            $output[] = \MUtil_Lazy::method($this, 'getStatusDescription', $bridge->token_status);
+        }
+
+        return $output;
     }
 }

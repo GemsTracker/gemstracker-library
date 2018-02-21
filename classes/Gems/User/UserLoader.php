@@ -319,7 +319,7 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
      * Group::$_noGroup when the database does not yet exist.
      *
      * @param int $groupId Group id
-     * @return \Gems\User\Grou[
+     * @return \Gems\User\Group
      */
     public function getGroup($groupId)
     {
