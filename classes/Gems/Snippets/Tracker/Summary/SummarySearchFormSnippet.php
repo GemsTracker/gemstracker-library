@@ -71,12 +71,12 @@ class Gems_Snippets_Tracker_Summary_SummarySearchFormSnippet extends \Gems_Snipp
 
         $elements[] = null;
         if (isset($data['gto_id_track']) && !empty($data['gto_id_track'])) {
-            $trackId = $data['gto_id_track'];
+            $trackId = (int) $data['gto_id_track'];
         } else {
             $trackId = -1;
         }
 
-        $sql = "SELECT ggp_name, ggp_name as label FROM (
+        $sql = $this->db->quoteInto("SELECT ggp_name, ggp_name as label FROM (
                     SELECT DISTINCT ggp_name
                         FROM gems__groups INNER JOIN gems__surveys ON ggp_id_group = gsu_id_primary_group
                             INNER JOIN gems__rounds ON gsu_id_survey = gro_id_survey
@@ -84,16 +84,16 @@ class Gems_Snippets_Tracker_Summary_SummarySearchFormSnippet extends \Gems_Snipp
                         WHERE ggp_group_active = 1 AND
                             gro_active=1 AND
                             gtr_active=1 AND
-                            gtr_id_track = $trackId
+                            gtr_id_track = ?
 
                 UNION ALL
 
                     SELECT DISTINCT gtf_field_name as ggp_name
                         FROM gems__track_fields
                         WHERE gtf_field_type = 'relation' AND
-                            gtf_id_track = $trackId
+                            gtf_id_track = ?
                 ) AS tmpTable
-                ORDER BY ggp_name";
+                ORDER BY ggp_name", $trackId);
         $elements[] = $this->_createSelectElement('ggp_name', $sql, $this->_('(all fillers)'));
 
         return $elements;
