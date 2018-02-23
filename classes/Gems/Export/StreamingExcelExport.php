@@ -336,6 +336,8 @@ class StreamingExcelExport extends ExportAbstract
             } else {
                 $result = (double) $result;
             }
+        } else {
+            $result = $this->filterCsvInjection($result);
         }
 
         return $result;

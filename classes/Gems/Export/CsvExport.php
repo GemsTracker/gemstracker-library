@@ -140,13 +140,7 @@ class CsvExport extends ExportAbstract
     }
 
     /**
-     * Formatting of strings for SPSS export. Enclose in single quotes and escape single quotes
-     * with a single quote
-     *
-     * Example:
-     * This isn't hard to understand
-     * ==>
-     * 'This isn''t hard to understand'
+     * Formatting of strings for CSV export.
      *
      * @param type $input
      * @return string
@@ -158,6 +152,9 @@ class CsvExport extends ExportAbstract
         }
         $output = strip_tags($input);
         $output = str_replace(array("\r", "\n"), array(' ', ' '), $output);
+        
+        $output = $this->filterCsvInjection($output);
+        
         return $output;
     }
 

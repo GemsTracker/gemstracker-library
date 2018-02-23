@@ -260,6 +260,29 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
 
         return \MUtil_File::cleanupName($filename);
     }
+    
+    /**
+     * Single point for mitigating csv injection vulnerabilities
+     * 
+     * https://www.owasp.org/index.php/CSV_Injection 
+     * 
+     * @param string $input
+     * @return string
+     */
+    protected function filterCsvInjection($input)
+    {
+        // Try to prevent csv injection
+        $dangers = ['=', '+', '-', '@'];
+        
+        // Trim leading spaces for our test
+        $trimmed = trim($input);
+        
+        if (strlen($trimmed)>1 && in_array($trimmed[0], $dangers)) {
+            return "'" . $input;
+        }  else {
+            return $input;
+        }
+    }
 
     protected function filterDateFormat($value, $dateFormat, $columnName)
     {
