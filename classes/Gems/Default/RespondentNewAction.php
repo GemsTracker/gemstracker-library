@@ -301,6 +301,9 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
         if ($this->enableScreens) {
             $edit = false;
             $org  = $this->getRespondent()->getOrganization();
+            if (! $org) {
+                $org = $this->currentOrganization;
+            }
 
             if ($org) {
                 $edit = $org->getRespondentEditScreen();
@@ -314,6 +317,10 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
             }
 
             if ($edit ) {
+                if ($edit instanceof ProcessModelInterface) {
+                    $edit->processModel($this->getModel());
+                }
+
                 // All are arrays, so easy to set
                 $this->createParameters = $edit->getCreateParameters() + $this->createParameters;
                 $editSnippets = $edit->getSnippets();
