@@ -120,7 +120,9 @@ class ShowTrackTokenSnippet extends \Gems_Tracker_Snippets_ShowTokenSnippetAbstr
         $bridge->tdh($this->_('Status'));
         $td = $bridge->td(
                 ['colspan' => 2, 'skiprowclass' => true],
-                $this->util->getTokenData()->getTokenStatusShowForBridge($bridge, true)
+                $this->util->getTokenData()->getTokenStatusShowForBridge($bridge),
+                ' ',
+                $this->util->getTokenData()->getTokenStatusDescriptionForBridge($bridge)
                 );
 
         // Buttons

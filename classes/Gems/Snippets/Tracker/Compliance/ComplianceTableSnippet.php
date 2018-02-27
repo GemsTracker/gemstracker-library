@@ -77,7 +77,7 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends \Gems_Snip
                 }
             }
         }
-                    
+
         $tUtil = $this->util->getTokenData();
         $table = $bridge->getTable();
         $table->appendAttrib('class', 'compliance');
@@ -131,46 +131,12 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends \Gems_Snip
 
                 if ($model->get($name, 'noSort')) {
                     $result = 'res_' . substr($name, 5);
-                    $title = \MUtil_Lazy::call(
-                            "sprintf",
-                            $this->_("%s\n%s for respondent %s %s"),
-                            \MUtil_Lazy::method($tUtil, 'getStatusDescription', $bridge->$name),
-                            $model->get($name, 'description'),
-                            $bridge->gr2o_patient_nr,
-                            \MUtil_Lazy::iif($bridge->$result, 
-                                    \MUtil_Lazy::call("sprintf", "\n" . $this->_('Result') . ': %s', $bridge->$result),
-                                    '')
-                        );
                     $token = 'tok_' . substr($name, 5);
 
-                    $href = new \MUtil_Html_HrefArrayAttribute(array(
-                        $this->request->getControllerKey() => 'track', // This code is only used for tracks :)
-                        $this->request->getActionKey()     => 'show',
-                        \MUtil_Model::REQUEST_ID            => $bridge->$token,
-                        ));
-                    $href->setRouteReset();
-
-                    $onclick = new \MUtil_Html_OnClickArrayAttribute();
-                    $onclick->addUrl($href)
-                            ->addCancelBubble();
-
                     $tds   = $bridge->addColumn(
-                            array(
-                                \MUtil_Html_AElement::iflink(
-                                        $bridge->$token,
-                                        array(
-                                            $href,
-                                            'onclick' => 'event.cancelBubble = true;',
-                                            'title' => $title,
-                                            \MUtil_Lazy::method($tUtil, 'getStatusIcon', $bridge->$name)
-                                            ),
-                                        \MUtil_Lazy::method($tUtil, 'getStatusIcon', $bridge->$name)
-                                        ),
-                                'class'   => array('round', \MUtil_Lazy::method($tUtil, 'getStatusClass', $bridge->$name)),
-                                'title'   => $title,
-                                // onclick is needed because the link does not fill the whole cell
-                                'onclick' => \MUtil_Lazy::iff($bridge->$token, $onclick),
-                                ),
+                            \MUtil_Lazy::method($tUtil, 'getTokenStatusLink',
+                                    $bridge->$token, $bridge->$name, $bridge->gr2o_patient_nr, null,
+                                    $model->get($name, 'description'), $bridge->$result),
                             array($label, 'title' => $model->get($name, 'description'), 'class' => 'round')
                             );
                 } else {

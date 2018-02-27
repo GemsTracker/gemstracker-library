@@ -246,6 +246,10 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
             'M' => $spanM,
             'D' => $spanD,
             );
+
+            foreach ($status as $val => $stat) {
+                $stat->appendAttrib('class', $this->getStatusClass($val));
+            }
         }
 
         if (isset($status[$value])) {
@@ -433,6 +437,7 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
         return \MUtil_Lazy::method($this, 'getTokenEmailLink',
                 $bridge->gto_id_token, $bridge->token_status, $bridge->can_email);
     }
+
     /**
      * Generate a menu link for answers pop-up
      *
@@ -481,34 +486,109 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
-     * De a lazy status show link for bridges
+     * De a lazy status description text for bridges
      *
      * @param \MUtil_Model_Bridge_TableBridgeAbstract $bridge
      * @param boolean $addDescription Add the description after the icon
      * @return \MUtil_Lazy_Call
      */
-    public function getTokenStatusLinkForBridge(\MUtil_Model_Bridge_TableBridgeAbstract $bridge, $addDescription = false)
+    public function getTokenStatusDescriptionForBridge(\MUtil_Model_Bridge_TableBridgeAbstract $bridge, $addDescription = false)
     {
-        return $this->getTokenStatusShowForBridge($bridge, $addDescription);
+        return \MUtil_Lazy::method($this, 'getStatusDescription', $bridge->token_status);
+    }
+
+    /**
+     * Generate a menu link for answers pop-up
+     *
+     * @param string $tokenId
+     * @param string $tokenStatus
+     * @param string $patientNr
+     * @param string $roundDescr
+     * @param string $surveyName
+     * @param string $result
+     * @return \MUtil_Html_AElement
+     */
+    public function getTokenStatusLink($tokenId, $tokenStatus, $patientNr, $roundDescr, $surveyName, $result)
+    {
+        $menuItem = $this->_getShowMenuItem();
+
+        if ($tokenId && $menuItem) {
+            $href = $menuItem->toHRefAttribute([
+                'gto_id_token' => $tokenId,
+                \Gems_Model::ID_TYPE => 'token',
+            ]);
+
+            $link = \MUtil_Html::create('a', $href, [
+                'onclick' => 'event.cancelBubble = true;',
+            ]);
+
+            // $link->title = sprintf($this->_('Inspect token %s'), strtoupper($tokenId));
+        } else {
+            $link = \MUtil_Html::create('span', [
+                'onclick' => 'event.cancelBubble = true;',
+            ]);
+        }
+
+        $link->append($this->getStatusIcon($tokenStatus));
+        $link->title = $this->getTokenStatusTitle($tokenId, $tokenStatus, $patientNr, $roundDescr, $surveyName, $result);
+
+        return $link;
+    }
+
+    /**
+     *
+     * @param string $tokenId
+     * @param string $tokenStatus
+     * @param string $patientNr
+     * @param string $roundDescr
+     * @param string $surveyName
+     * @param string $result
+     * @return string
+     */
+    public function getTokenStatusTitle($tokenId, $tokenStatus, $patientNr, $roundDescr, $surveyName, $result)
+    {
+        $title = sprintf($this->_('Token %s: %s'), strtoupper($tokenId), $this->getStatusDescription($tokenStatus));
+        if ($roundDescr) {
+            $title .= sprintf("\n" . $this->_('Round') . ': %s', $roundDescr);
+        }
+        if ($surveyName) {
+            $title .= "\n" . $surveyName;
+        }
+        if (!empty($patientNr)) {
+            $title .= sprintf("\n" . $this->_('Respondent id: %s'), $patientNr);
+        }
+        if ((!empty($result)) && $this->currentUser->hasPrivilege('pr.respondent.result')) {
+            $title .= sprintf("\n" . $this->_('Result: %s'), $result);
+        }
+
+        return $title;
     }
 
     /**
      * De a lazy status show link for bridges
      *
      * @param \MUtil_Model_Bridge_TableBridgeAbstract $bridge
-     * @param boolean $addDescription Add the description after the icon
      * @return \MUtil_Lazy_Call
      */
-    public function getTokenStatusShowForBridge(\MUtil_Model_Bridge_TableBridgeAbstract $bridge, $addDescription = false)
+    public function getTokenStatusLinkForBridge(\MUtil_Model_Bridge_TableBridgeAbstract $bridge)
     {
-        $output['class'] = \MUtil_Lazy::method($this, 'getStatusClass', $bridge->token_status);
-        $output[] = \MUtil_Lazy::method($this, 'getStatusIcon', $bridge->token_status);
-
-        if ($addDescription) {
-            $output[] = ' ';
-            $output[] = \MUtil_Lazy::method($this, 'getStatusDescription', $bridge->token_status);
+        if (! $this->currentUser->hasPrivilege($this->_getShowMenuItem()->getPrivilege())) {
+            return $this->getTokenStatusShowForBridge($bridge);
         }
 
-        return $output;
+        return \MUtil_Lazy::method($this, 'getTokenStatusLink',
+                $bridge->gto_id_token, $bridge->token_status, $bridge->gr2o_patient_nr,
+                $bridge->gto_round_description, $bridge->gsu_survey_name, $bridge->gto_result);
+    }
+
+    /**
+     * De a lazy status show link for bridges
+     *
+     * @param \MUtil_Model_Bridge_TableBridgeAbstract $bridge
+     * @return \MUtil_Lazy_Call
+     */
+    public function getTokenStatusShowForBridge(\MUtil_Model_Bridge_TableBridgeAbstract $bridge)
+    {
+        return \MUtil_Lazy::method($this, 'getStatusIcon', $bridge->token_status);
     }
 }
