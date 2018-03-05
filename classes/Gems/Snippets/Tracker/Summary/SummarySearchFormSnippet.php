@@ -94,7 +94,7 @@ class Gems_Snippets_Tracker_Summary_SummarySearchFormSnippet extends \Gems_Snipp
                             gtf_id_track = ?
                 ) AS tmpTable
                 ORDER BY ggp_name", $trackId);
-        $elements[] = $this->_createSelectElement('ggp_name', $sql, $this->_('(all fillers)'));
+        $elements[] = $this->_createSelectElement('fillerfilter', $sql, $this->_('(all fillers)'));
 
         return $elements;
     }
