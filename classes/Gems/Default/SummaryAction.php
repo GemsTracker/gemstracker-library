@@ -98,7 +98,7 @@ class Gems_Default_SummaryAction extends \Gems_Controller_ModelSnippetActionAbst
         // $model->set('removed',  'label', $this->_('Removed'),  'tdClass', 'deleted centerAlign',
         //         'thClass', 'centerAlign');
 
-        $model->set('ggp_name',  'label', $this->_('Filler'));
+        $model->set('filler',  'label', $this->_('Filler'));
 
         $filter = $this->getSearchFilter($action !== 'export');
         if (! (isset($filter['gto_id_organization']) && $filter['gto_id_organization'])) {
@@ -162,7 +162,10 @@ class Gems_Default_SummaryAction extends \Gems_Controller_ModelSnippetActionAbst
             )");
         $fields['missed']   = new \Zend_Db_Expr('SUM(
             CASE
-            WHEN grc_success = 1 AND gto_completion_time IS NULL AND gto_valid_until < CURRENT_TIMESTAMP
+            WHEN grc_success = 1 AND 
+                 gto_completion_time IS NULL AND 
+                 gto_valid_until < CURRENT_TIMESTAMP AND
+                 (gto_valid_from IS NOT NULL AND gto_valid_from <= CURRENT_TIMESTAMP)
             THEN 1 ELSE 0 END
             )');
         $fields['open']   = new \Zend_Db_Expr('SUM(
@@ -204,7 +207,7 @@ class Gems_Default_SummaryAction extends \Gems_Controller_ModelSnippetActionAbst
             )');
         // */
 
-        $fields['ggp_name'] = new \Zend_Db_Expr('COALESCE(gems__track_fields.gtf_field_name, gems__groups.ggp_name)');
+        $fields['filler'] = new \Zend_Db_Expr('COALESCE(gems__track_fields.gtf_field_name, gems__groups.ggp_name)');
 
         $select = $this->db->select();
         $select->from('gems__tokens', $fields)
@@ -215,7 +218,12 @@ class Gems_Default_SummaryAction extends \Gems_Controller_ModelSnippetActionAbst
                         array('gsu_survey_name'))
                 ->joinInner('gems__groups', 'gsu_id_primary_group =  ggp_id_group', array())
                 ->joinLeft('gems__track_fields', 'gto_id_relationfield = gtf_id_field AND gtf_field_type = "relation"', array())
-                ->group(array('gro_id_order', 'gro_round_description', 'gsu_survey_name', 'ggp_name'));
+                ->group(array('gro_id_order', 'gro_round_description', 'gsu_survey_name', 'filler'));
+        
+        $filter = $this->getSearchFilter();
+        if (array_key_exists('fillerfilter', $filter)) {
+            $select->having('filler = ?', $filter['fillerfilter']);
+        }
 
         return $select;
     }
