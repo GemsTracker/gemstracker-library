@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -591,11 +590,11 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
                     $values['gsu_survey_name'] = $surveyor_title;
                     $messages[] = sprintf($this->_('The name of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $surveyor_title);
                 }
-                
+
                 if ($survey->getDescription() != $surveyor_description) {
                     $values['gsu_survey_description'] = $surveyor_description;
                     $messages[] = sprintf($this->_('The description of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $surveyor_description);
-                }                
+                }
 
             } else { // New record
                 $values['gsu_survey_name']        = $surveyor_title;
@@ -604,7 +603,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
                 $values['gsu_active']             = 0;
                 $values['gsu_status']             = $surveyor_status ? $surveyor_status : 'OK';
                 $values['gsu_surveyor_id']        = $sourceSurveyId;
-                $values['gsu_id_source']          = $this->getId();                
+                $values['gsu_id_source']          = $this->getId();
 
                 $messages[] = sprintf($this->_('Imported the \'%s\' survey.'), $surveyor_title);
             }
@@ -925,19 +924,15 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
     }
 
     /**
-     * Returns an array of arrays with the structure:
-     *      question => string,
-     *      class    => question|question_sub
-     *      group    => is for grouping
-     *      type     => (optional) source specific type
-     *      answers  => string for single types,
-     *                  array for selection of,
-     *                  nothing for no answer
+     * Returns an array containing fieldname => label for each answerable question in the survey.
+     *
+     * Used in dropdown list etc..
      *
      * @param string $language   (ISO) language string
      * @param int $surveyId Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
-     * @return array Nested array
+     * @return array fieldname => label
+     * @deprecated since version 1.8.4 remove in 1.8.5
      */
     public function getFullQuestionList($language, $surveyId, $sourceSurveyId = null)
     {

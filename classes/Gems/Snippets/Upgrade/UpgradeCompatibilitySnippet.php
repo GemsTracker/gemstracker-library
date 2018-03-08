@@ -191,6 +191,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
                 'getAppointmentFieldVale'   => 'getAppointmentFieldValue',
                 'getAvailableMailTemplates' => 'CommTemplateUtil->getCommTemplatesForTarget',
                 'getGroup'                  => 'getGroupId', // REMOVE IN 1.8.3
+                'getFullQuestionList'       => 'getQuestionInformation',
                 'hasAllowedRole'            => 'inAllowedGroup',
                 'refreshAllowedStaffGroups' => null,
                 ),

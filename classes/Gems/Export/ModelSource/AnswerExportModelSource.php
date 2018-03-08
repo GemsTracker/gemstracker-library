@@ -253,7 +253,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
             $model = $survey->getAnswerModel($language);
 
             $source = $survey->getSource();
-            $questions = $source->getFullQuestionList($language, $surveyId, $survey->getSourceSurveyId());
+            $questions = $source->getQuestionList($language, $surveyId, $survey->getSourceSurveyId());
             foreach($questions as $questionName => $label ) {
                 if ($parent = $model->get($questionName, 'parent_question')) {
                     if ($model->get($parent, 'type') === \MUtil_Model::TYPE_NOVALUE) {

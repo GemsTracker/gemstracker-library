@@ -1,14 +1,12 @@
 <?php
 
 /**
- * Short description of file
  *
  * @package    Gems
  * @subpackage OpenRosa
  * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: OpenRosa.php 215 2011-07-12 08:52:54Z michiel $
  */
 
 /**
@@ -268,6 +266,27 @@ class OpenRosa_Tracker_Source_OpenRosa extends \Gems_Tracker_Source_SourceAbstra
 
         return $result;
 
+    }
+
+    /**
+     * Returns an array of arrays with the structure:
+     *      question => string,
+     *      class    => question|question_sub
+     *      group    => is for grouping
+     *      type     => (optional) source specific type
+     *      answers  => string for single types,
+     *                  array for selection of,
+     *                  nothing for no answer
+     *
+     * @param string $language   (ISO) language string
+     * @param int $surveyId Gems Survey Id
+     * @param string $sourceSurveyId Optional Survey Id used by source
+     * @return array Nested array
+     * @deprecated since version 1.8.4 remove in 1.8.5
+     */
+    public function getFullQuestionList($language, $surveyId, $sourceSurveyId = null)
+    {
+        return $this->getQuestionList($language, $surveyId, $sourceSurveyId);
     }
 
     /**
