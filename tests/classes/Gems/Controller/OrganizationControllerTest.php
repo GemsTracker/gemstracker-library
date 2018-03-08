@@ -98,9 +98,9 @@ class OrganizationControllerTest extends ControllerTestAbstract
                 $actual = file_get_contents('zip://'. $fileInfo->getPathname() . '#xl/worksheets/sheet1.xml');
             } else {
                 $actual = file_get_contents($fileInfo->getPathname());
-            }    
-            $this->assertEquals($expected, $actual);
+            }
             unlink($fileInfo->getPathname());
+            $this->assertEquals($expected, $actual);            
         }
 
         $this->reset();
