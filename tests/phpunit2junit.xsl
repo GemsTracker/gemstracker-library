@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-<xsl:template match="/">
-    <xsl:element name="testsuites">
-        <xsl:for-each select="//testsuite[string-length(@name)>0]">
-                 <xsl:copy-of select="." />
-        </xsl:for-each>
-    </xsl:element>
+
+<xsl:template match="@*|node()">
+    <xsl:copy>
+        <xsl:apply-templates select="@*|node()"/>
+    </xsl:copy>
 </xsl:template>
+
+<xsl:template match="//testsuite[string-length(@name)=0]|//testsuite[contains(@name,'::')]">
+    <xsl:apply-templates/>
+</xsl:template>
+   
 </xsl:stylesheet>
