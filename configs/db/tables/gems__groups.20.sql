@@ -29,7 +29,7 @@ CREATE TABLE if not exists gems__groups (
         PRIMARY KEY(ggp_id_group)
     )
     ENGINE=InnoDB
-    AUTO_INCREMENT = 800
+    AUTO_INCREMENT = 900
     CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
 
 -- Default groups
