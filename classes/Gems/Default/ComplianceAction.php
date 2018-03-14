@@ -45,7 +45,7 @@ class Gems_Default_ComplianceAction extends \Gems_Controller_ModelSnippetActionA
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStopSnippets = array('Tracker_TokenStatusLegenda', 'Generic\\CurrentButtonRowSnippet');
+    protected $indexStopSnippets = array('Tracker_TokenStatusLegenda', 'Generic\\CurrentSiblingsButtonRowSnippet');
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
