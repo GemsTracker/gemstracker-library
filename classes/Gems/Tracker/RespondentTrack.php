@@ -599,7 +599,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
             $count += $engine->checkTokensFromStart($this, $userId);
         }
         $this->db->commit();
-        
+
         // Update token completion count and possible enddate
         $this->_checkTrackCount($userId);
 
@@ -672,7 +672,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
      * Return all possible code fields with the values filled for those that exist for this track,
      * optionally with a prefix
      *
-     * @return array [prefix]code => value
+     * @return array code => value
      */
     public function getCodeFields()
     {
@@ -686,13 +686,13 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
             if (!isset($codes[$id])) {
                 continue;
             }
-            
+
             $fieldCode           = $codes[$id];
             $results[$fieldCode] = $value;
             $field               = $fieldDef->getFieldByCode($fieldCode);
             if (!is_null($field)) {
                 $results[$fieldCode] = $field->calculateFieldInfo($value, $this->_fieldData);
-            }            
+            }
         }
 
         return $results;

@@ -7,6 +7,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Event\Survey\Completed;
+
 /**
  * Displays the variables and their values to help create a new calculation
  *
@@ -20,8 +22,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.1
  */
-class Gems_Event_Survey_Completed_DisplayVars extends \Gems_Event_EventCalculations
-    implements \Gems_Event_SurveyCompletedEventInterface
+class CopyCodesToTrackFields extends \Gems_Event_EventCalculations implements \Gems_Event_SurveyCompletedEventInterface
 {
 
     /**
@@ -31,7 +32,7 @@ class Gems_Event_Survey_Completed_DisplayVars extends \Gems_Event_EventCalculati
      */
     public function getEventName()
     {
-        return $this->_("Echo the survey answers for testing");
+        return $this->_("Copy answers to track fields with the same trackfield code");
     }
 
     /**
@@ -44,8 +45,24 @@ class Gems_Event_Survey_Completed_DisplayVars extends \Gems_Event_EventCalculati
      */
     public function processTokenData(\Gems_Tracker_Token $token)
     {
-        $result = var_export($token->getRawAnswers(), true);
-        \MUtil_Echo::r($result, $token->getTokenId());
+        if ($token->getReceptionCode()->isSuccess() && $token->isCompleted()) {
+            $respTrack = $token->getRespondentTrack();
+            $fields    = $respTrack->getCodeFields();
+            $answers   = $token->getRawAnswers();
+            $newFields = [];
+
+            foreach ($fields as $code => $value) {
+                if (isset($answers[$code]) && ($answers[$code] != $value)) {
+                    $newFields[$code] = $answers[$code];
+                }
+            }
+
+            if ($newFields) {
+                // \MUtil_Echo::track($answers, $newFields);
+                $respTrack->setFieldData($newFields);
+            }
+        }
+
         return false;
     }
 }

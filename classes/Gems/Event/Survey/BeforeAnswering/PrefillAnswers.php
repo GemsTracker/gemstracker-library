@@ -20,15 +20,8 @@ namespace Gems\Event\Survey\BeforeAnswering;
  * @license    New BSD License
  * @since      Class available since version 1.8.2
  */
-class PrefillAnswers extends \MUtil_Registry_TargetAbstract implements \Gems_Event_SurveyBeforeAnsweringEventInterface
+class PrefillAnswers extends \MUtil_Translate_TranslateableAbstract implements \Gems_Event_SurveyBeforeAnsweringEventInterface
 {
-
-    /**
-     * Set as this is a \MUtil_Registry_TargetInterface
-     *
-     * @var \Zend_Translate $translate
-     */
-    protected $translate;
     protected $prefixes     = [
         'TF' => 'getTrackFields',
         'CP' => 'getCopyFields',
@@ -48,7 +41,7 @@ class PrefillAnswers extends \MUtil_Registry_TargetAbstract implements \Gems_Eve
      */
     public function getEventName()
     {
-        return $this->translate->_('Fill survey question when code starts with: TF for trackfield, CP for survey or RD for Respondent (only age/sex/birthdate)');
+        return $this->_('Fill survey question when code starts with: TF for trackfield, CP for survey or RD for Respondent (only age/sex/birthdate)');
     }
 
     /**
@@ -92,14 +85,14 @@ class PrefillAnswers extends \MUtil_Registry_TargetAbstract implements \Gems_Eve
 
     /**
      * Tries to fulfill request to copy fields
-     * 
+     *
      * Copy fields will be fulfilled by searching the track in reverse
      *  - first to see if there is a field without the CP prefix
      *  - then if there are fields with the CP prefix
      * And only return the match when (in the end) ALL fields are found. If not
      * it will start again for the next answered token to the same survey, or
      * survey with the same code as the requesting token.
-     * 
+     *
      * @param array $requests
      * @return array
      */
@@ -109,7 +102,7 @@ class PrefillAnswers extends \MUtil_Registry_TargetAbstract implements \Gems_Eve
         $token      = $this->token;
         $surveyCode = $token->getSurvey()->getCode();
         $surveyId   = $token->getSurveyId();
-        
+
         $flipRequests = array_flip($requests);
 
         // Check from the last token back, we need to find the last answered token.
@@ -143,13 +136,13 @@ class PrefillAnswers extends \MUtil_Registry_TargetAbstract implements \Gems_Eve
                 }
             }
         } while ($prev = $prev->getPreviousToken());
-        
+
         return [];
     }
 
     /**
      * Tries to fulfill request to respondent fields
-     * 
+     *
      * @param array $requests
      * @return array
      */
@@ -188,7 +181,7 @@ class PrefillAnswers extends \MUtil_Registry_TargetAbstract implements \Gems_Eve
 
     /**
      * Tries to fulfill request to track fields
-     * 
+     *
      * @param array $requests
      * @return array
      */
