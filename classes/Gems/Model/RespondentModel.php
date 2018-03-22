@@ -432,7 +432,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         $translated = $this->util->getTranslated();
         $ucfirst    = new \Zend_Filter_Callback('ucfirst');
 
-        if ($this->hashSsn !== self::SSN_HIDE) {
+        if ($create && ($this->hashSsn !== self::SSN_HIDE)) {
             $onblur = new \MUtil_Html_JavascriptArrayAttribute('onblur');
             $onblur->addSubmitOnChange('this.value');
 
@@ -559,13 +559,13 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
 
         return $this;
     }
-    
+
     /**
      * Copy a respondent to a new organization
-     * 
+     *
      * If you want to share a respondent(id) with another organization use this
-     * method. 
-     * 
+     * method.
+     *
      * @param int $fromOrgId            Id of the sending organization
      * @param string $fromPid           Respondent number of the sending organization
      * @param int $toOrgId              Id of the receiving organization
@@ -609,7 +609,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         // And save the record
         $toPatient['gr2o_patient_nr']      = $toPid;
         $toPatient['gr2o_id_organization'] = $toOrgId;
-        $toPatient['gr2o_reception_code']  = \GemsEscort::RECEPTION_OK;        
+        $toPatient['gr2o_reception_code']  = \GemsEscort::RECEPTION_OK;
         $result = $this->save($toPatient);
 
         // Now re-enable the mask feature
@@ -780,18 +780,18 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
     {
         return $this->currentUser->hasPrivilege('pr.respondent.multiorg');
     }
-    
+
     /**
      * Merge two patients (in the same organization)
-     * 
+     *
      * A respondent can only exist twice in the same organization when the respondent
-     * has multiple respondent id's. When ssn is set correctly this can not happen 
+     * has multiple respondent id's. When ssn is set correctly this can not happen
      * so probably one with and one without or both without ssn.
-     * 
+     *
      * @param string $newPid
      * @param string $oldPid
      * @param int $orgId
-     * 
+     *
      * @return \Gems\Model\MergeResult | false The result or false in case of failure
      */
     public function merge($newPid, $oldPid, $orgId)
@@ -816,12 +816,12 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                 if ($patient['gr2o_patient_nr'] == $newPid) {
                     return \Gems\Model\MergeResult::FIRST;
                 }
-                
+
                 // Not the new number, we can simply move
                 $this->move($orgId, $oldPid, $orgId, $newPid);
                 return \Gems\Model\MergeResult::SECOND;
                 break;
-                
+
             case 2:
                 // We really need to merge all related records for the patients
                 $patient = $patients[0];
@@ -832,7 +832,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                     $oldPatient = $patient;
                     $newPatient = $patients[1];
                 }
-                
+
                 // Due to key contraints the respondent id's should be different but check anyway
                 if ($oldPatient['grs_id_user'] !== $newPatient['grs_id_user']) {
                     // It could be that the 'old' patient has a ssn, this could lead to problems later
@@ -840,15 +840,15 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                     if (!empty($oldPatient['grs_ssn'])) {
                         $oldPatient['grs_ssn'] = '';
                         $changed = $this->db->update(
-                                'gems__respondents',  
-                                ['grs_ssn' => null], 
+                                'gems__respondents',
+                                ['grs_ssn' => null],
                                 ['grs_id_user = ?' => $oldPatient['grs_id_user']]
                                 );
                         // We seem to be unable to save an empty ssn
                         //$this->save($oldPatient);
                     }
                 }
-                
+
                 $tables = array(
                     'gems__respondent2track'              => ['gr2t_id_user',      'gr2t_id_organization'],
                     'gems__tokens'                        => ['gto_id_respondent', 'gto_id_organization'],
@@ -872,12 +872,12 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                         $start . '_changed'    => $currentTs,
                         $start . '_changed_by' => $userId,
                         ];
-                    
+
                     if ($tableName == 'gems__log_activity') {
                         unset($values[$start . '_changed']);
                         unset($values[$start . '_changed_by']);
                     }
-                    
+
                     $where = [];
                     $where["$respIdField = ?"] = $oldPatient['grs_id_user'];
                     if (!is_null($orgIdField)) {
@@ -885,24 +885,24 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                     };
                     $changed += $this->db->update($tableName, $values, $where);
                 }
-                
+
                 return \Gems\Model\MergeResult::BOTH;
                 break;
-            
+
             default:
                 // Not found
                 return \Gems\Model\MergeResult::NONE;
                 break;
         }
-        
+
         return false;
     }
-    
-    /** 
+
+    /**
      * Move a respondent to a new organization and/or change it's number
-     * 
+     *
      * This not be a copy, it will be renamed. Use copyToOrg if you want to make a copy.
-     * 
+     *
      * @param int $fromOrgId            Id of the sending organization
      * @param string $fromPid           Respondent number of the sending organization
      * @param int $toOrgId              Id of the receiving organization
@@ -913,7 +913,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
     {
         // Maybe we should disable masking, just to be sure
         $this->currentUser->disableMask();
-        
+
         $patientFrom = $this->loadFirst([
             'gr2o_id_organization' => $fromOrgId,
             'gr2o_patient_nr'      => $fromPid
@@ -922,7 +922,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
             'gr2o_id_organization' => $toOrgId,
             'gr2o_patient_nr'      => $toPid
         ]);
-        
+
         if ($fromPid !== $toPid) {
             $patientFrom['gr2o_patient_nr'] = $toPid;
             $copyKey = $this->getKeyCopyName('gr2o_patient_nr');
@@ -933,7 +933,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
             $copyKey = $this->getKeyCopyName('gr2o_id_organization');
             $patientFrom[$copyKey] = $fromOrgId;
         }
-        
+
         if (empty($patientTo)) {
             $result = $this->save($patientFrom);
         } else {
@@ -942,11 +942,11 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
             $result = $patientTo;
             $this->currentUser->enableMask();
             throw new \Gems_Exception($this->_('Respondent already exists in destination, please delete current record manually if needed.'));
-        }        
-        
+        }
+
         // Now re-enable the mask feature
         $this->currentUser->enableMask();
-        
+
         return $result;
     }
 

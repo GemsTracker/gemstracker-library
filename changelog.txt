@@ -1,5 +1,7 @@
 1.8.3 => 1.8.5
 =================
+New features
+    New before answering and after completion events synchronize track fields with code the same as answer codes
 Interface improvements:
     Added token states incomplete and partially answered
     Answers of partially answered tokens can be seen
