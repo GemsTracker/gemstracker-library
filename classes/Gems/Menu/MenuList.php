@@ -245,9 +245,12 @@ class Gems_Menu_MenuList extends \MUtil_ArrayString implements \MUtil_Html_HtmlI
         $results = new \MUtil_Html_Sequence();
         $results->setGlue($this->getGlue());
 
-        for ($i = 1; $i < $count; $i++) {
-            if ($result = $this->getActionLink($args[$i], $args[++$i], $remove)) {
-                $results->append($result);
+        for ($i = 1; $i < $count; $i += 2) {
+            $controller = $args[$i];
+            $action     = $args[$i + 1];
+            $result     = $this->getActionLink($controller, $action, $remove);
+            if ($result) {
+                $results[$this->_getKey($controller, $action)] = $result;
             }
         }
 

@@ -101,6 +101,7 @@ abstract class Gems_Tracker_Snippets_ShowTokenSnippetAbstract extends \MUtil_Sni
     {
         $model = $this->token->getModel();
 
+        $model->applyFormatting();
         if ($this->useFakeForm && $this->token->hasSuccesCode() && (! $this->token->isCompleted())) {
             $model->set('gto_id_token', 'formatFunction', array(__CLASS__, 'makeFakeForm'));
         } else {

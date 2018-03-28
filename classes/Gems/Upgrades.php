@@ -317,7 +317,7 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
 
         return true;
     }
-    
+
     /**
      * To upgrade to 1.8.4
      */
@@ -325,6 +325,7 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
     {
         $this->_batch->addTask('Db_CreateNewTables');
         $this->_batch->addTask('Db_AddPatches', 62);
+        $this->_batch->addTask('Updates_CompileTemplates');
 
         // Use AddTask task to execute after patches
         $this->_batch->addTask('AddTask', 'Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
