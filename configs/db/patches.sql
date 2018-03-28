@@ -1318,7 +1318,7 @@ To log in with your organization account {login_name} please click on this link:
     ((select gct_id_template from gems__comm_templates where gct_code='linkedAccountCreated'), 'nl', 'Nieuw account aangemaakt', 'Er is voor u een nieuw account aangemaakt voor de [b]{organization}[/b] website [b]{project}[/b].
 Om in te loggen met uw organisatie account {login_name} klikt u op onderstaande link:\r\n{login_url}');
 
--- GEMS VERSION: 61    
+-- GEMS VERSION: 61
 -- PATCH: Save survey questions/answers hash
 ALTER TABLE gems__surveys ADD gsu_hash CHAR(32) NULL DEFAULT NULL AFTER `gsu_export_code`;
 
@@ -1337,3 +1337,13 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.plan.fields'
     WHERE grl_privileges LIKE '%pr.plan.summary%' AND grl_privileges NOT LIKE '%,pr.plan.fields%';
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.plan.fields.export')
     WHERE grl_privileges LIKE '%pr.plan.summary.export%' AND grl_privileges NOT LIKE '%,pr.plan.fields.export%';
+
+-- PATCH: Update empty group interface settings
+UPDATE gems__groups SET ggp_respondent_browse = 'Gems\\Screens\\Respondent\\Browse\\ProjectDefaultBrowse'
+    WHERE ggp_respondent_browse IS NULL;
+
+UPDATE gems__groups SET ggp_respondent_edit = 'Gems\\Screens\\Respondent\\Edit\\ProjectDefaultEdit'
+    WHERE ggp_respondent_edit IS NULL;
+
+UPDATE gems__groups SET ggp_respondent_show = 'Gems\\Screens\\Respondent\\Show\\GemsProjectDefaultShow'
+    WHERE ggp_respondent_show IS NULL;
