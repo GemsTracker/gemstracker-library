@@ -450,7 +450,8 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                         array('gr2o_patient_nr', 'gr2o_id_organization'),
                         array('gr2o_id_user' => 'grs_id_user', 'gr2o_id_organization')
                         ),
-                'validators[regex]', new Zend_Validate_Regex('/^[^\/\\%&]*$/')  // Between start and end no \/%& allowed
+                'validators[regex]', new Zend_Validate_Regex('/^[^\/\\%&]*$/'), // Between start and end no \/%& allowed
+                'validators[csvinj]', 'NoCsvInjectionChars'
                 );
         $this->set('grs_id_user');
 
@@ -478,9 +479,22 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                 'separator', ' '
                 );
 
-        $this->setIfExists('grs_first_name', 'filter', $ucfirst);
-        $this->setIfExists('grs_last_name',  'filter', $ucfirst, 'required', true);
-        $this->setIfExists('grs_partner_last_name',  'filter', new \Zend_Filter_Callback('ucfirst'));
+        $this->setIfExists('grs_first_name', 'filter', $ucfirst,
+                'validators[csvinj]', 'NoCsvInjectionChars'
+                );
+        $this->setIfExists('grs_surname_prefix',
+                'validators[csvinj]', 'NoCsvInjectionChars'
+                );
+        $this->setIfExists('grs_last_name',  'filter', $ucfirst,
+                'required', true,
+                'validators[csvinj]', 'NoCsvInjectionChars'
+                );
+        $this->setIfExists('grs_partner_surname_prefix',
+                'validators[csvinj]', 'NoCsvInjectionChars'
+                );
+        $this->setIfExists('grs_partner_last_name',  'filter', new \Zend_Filter_Callback('ucfirst'),
+                'validators[csvinj]', 'NoCsvInjectionChars'
+                );
 
         $this->setIfExists('grs_gender',
                 'elementClass', 'Radio',

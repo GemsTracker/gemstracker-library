@@ -6,7 +6,10 @@ Interface improvements:
     Added token states incomplete and partially answered
     Answers of partially answered tokens can be seen
     Token status is shown in show token screen
-
+Security
+    CSV Injection protection
+    Enhanced parameter filtering for added security (#298)
+    
 1.8.2 => 1.8.3
 =================
 Automatic mail

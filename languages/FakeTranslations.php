@@ -59,6 +59,9 @@ _("Must be the same as %fieldDescription%.");
 // MUtil_Validate_IsNot
 _("This value is not allowed.");
 
+// MUtil\Validate\NoCsvInjectionChars
+_("The characters =, + and | are not allowed here.");
+
 // MUtil_Validate_NoScript
 _("Html tags may not be entered here.");
 

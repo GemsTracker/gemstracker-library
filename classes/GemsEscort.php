@@ -10,6 +10,8 @@
  * @license    New BSD License
  */
 
+use \MUtil\Controller\Router\Rewrite;
+
 /**
  * Project Application Core code
  *
@@ -172,6 +174,56 @@ class GemsEscort extends \MUtil_Application_Escort
     }
 
     /**
+     * Check all parameters for security violations
+     *
+     * All variables are checked for name contents: the <>=%&"' characters should not occur in the name.
+     *
+     * The non-post variables are checked for value contents as well: after a <>&% there should not occur
+     * a frame, script or img stext.
+     *
+     * @param array $params
+     * @param array $posts
+     */
+    protected function _checkParameters(array $params, array $posts)
+    {
+        foreach ($params as $key => $value) {
+            $rest = strpbrk($key, '<>=%&"\'');
+            if (false !== $rest) {
+                $this->setError(
+                        $this->_('Illegal request parameter'),
+                        422,
+                        sprintf($this->_('Illegal character %s in parameter name.'), $rest[0]),
+                        true
+                        );
+            }
+            if ($value && (! is_object($value)) && (! array_key_exists($key, $posts))) {
+                foreach ((array) $value as $val) {
+                    $rest = strpbrk($val, '<>%&');
+                    if (false !== $rest) {
+                        if (false !== stripos($val, 'iframe')) {
+                            $check = 'iframe';
+                        } elseif (false !== stripos($val, 'script')) {
+                            $check = 'script';
+                        } elseif (false !== stripos($val, 'img')) {
+                            $check = 'img';
+                        } else {
+                            $check = false;
+                        }
+                        if ($check) {
+                            $this->setError(
+                                    $this->_('Illegal request parameter'),
+                                    422,
+                                    sprintf($this->_('Illegal parameter value containing the text "%s" after a %s character.'), $check, $rest[0]),
+                                    true
+                                    );
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+        /**
      * Function to maintain uniformity of access to variables from the bootstrap object.
      * Copies all variables to the target object.
      *
@@ -1332,6 +1384,24 @@ class GemsEscort extends \MUtil_Application_Escort
     }
 
     /**
+     * Adds one or more messages to the session based message store.
+     *
+     * @param mixed $message_args Can be an array or multiple argemuents. Each sub element is a single message string
+     * @return \MUtil_Controller_Action
+     */
+    public function addMessage($message_args)
+    {
+        $messages  = \MUtil_Ra::flatten(func_get_args());
+        $messenger = $this->getMessenger();
+
+        foreach ($messages as $message) {
+            $messenger->addMessage($message);
+        }
+
+        return $this;
+    }
+
+    /**
      * Hook 2: Called in $this->run().
      *
      * This->init() has ran and the constructor has finisched so all _init{name} and application.ini
@@ -1492,6 +1562,20 @@ class GemsEscort extends \MUtil_Application_Escort
             $this->setException(new \Gems_Exception_Coding(
                     'No database registered in ' . GEMS_PROJECT_NAME . 'Application.ini for key resources.db.')
                     );
+        }
+
+        if (($request instanceof \Zend_Controller_Request_Http) && $request->isPost()) {
+            $posts = $request->getPost();
+        } else {
+            $posts = [];
+        }
+
+        $this->_checkParameters($request->getParams(), $posts);
+
+        // Empty params are filtered from request, only saved when using special router
+        $router = Zend_Controller_Front::getInstance()->getRouter();
+        if ($router instanceof Rewrite) {
+            $this->_checkParameters($router->getAllParams(), $posts);
         }
     }
 
@@ -2029,7 +2113,6 @@ class GemsEscort extends \MUtil_Application_Escort
         }
     }
 
-
     /**
      * Hook 4: Called in $this->setResponse.
      *
@@ -2192,9 +2275,9 @@ class GemsEscort extends \MUtil_Application_Escort
             $menu->setCurrent($menuItem);
         }
         if ($request instanceof \Zend_Controller_Request_Http) {
-            if ($request->isPost()) {
-                $incoming = $request->getServer('HTTP_ORIGIN', $request->getServer('HTTP_REFERRER', false));
-                if ($incoming) {
+            if ($request->isPost() || ($user->isActive() && $user->isCurrentUser())) {
+                $incoming = $request->getServer('HTTP_ORIGIN', $request->getServer('HTTP_REFERER', false));
+                 if ($incoming) {
                     if (! $this->isAllowedHost($incoming)) {
                         throw new \Gems_Exception("Invalid source host, possible CSRF attack", 403);
                     }
@@ -2255,23 +2338,5 @@ class GemsEscort extends \MUtil_Application_Escort
         } else {
             throw $e;
         }
-    }
-
-    /**
-     * Adds one or more messages to the session based message store.
-     *
-     * @param mixed $message_args Can be an array or multiple argemuents. Each sub element is a single message string
-     * @return \MUtil_Controller_Action
-     */
-    public function addMessage($message_args)
-    {
-        $messages  = \MUtil_Ra::flatten(func_get_args());
-        $messenger = $this->getMessenger();
-
-        foreach ($messages as $message) {
-            $messenger->addMessage($message);
-        }
-
-        return $this;
     }
 }
