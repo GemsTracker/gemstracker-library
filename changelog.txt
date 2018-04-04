@@ -1,4 +1,4 @@
-1.8.3 => 1.8.5
+1.8.3 => 1.8.4
 =================
 New features
     New before answering and after completion events synchronize track fields with code the same as answer codes
@@ -9,7 +9,7 @@ Interface improvements:
 Security
     CSV Injection protection
     Enhanced parameter filtering for added security (#298)
-    
+
 1.8.2 => 1.8.3
 =================
 Automatic mail
