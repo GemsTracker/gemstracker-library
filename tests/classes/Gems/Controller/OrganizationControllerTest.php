@@ -92,6 +92,9 @@ class OrganizationControllerTest extends ControllerTestAbstract
         $expected = file_get_contents($this->getPath() . '/' . $expectedFile);
         $datasetName = $this->getDataSetAsString(false);
         
+        // Make sure there is exactly one exported file
+        $this->assertEquals(1, $iterator->count(), sprintf('Number of files does not match expected.', $iterator->count()));
+        
         foreach ($iterator as $fileName => $fileInfo) {
             if ($type == "StreamingExcelExport") {
                 // We extract the sheet1 and compare that to the saved (expected) sheet1
