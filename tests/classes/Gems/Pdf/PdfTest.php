@@ -40,7 +40,7 @@ class Gems_Pdf_PdfTest extends Gems_Test_TestAbstract {
           $pdf->render(false, $stream);
           fclose($stream);
          */
-        
+         
         // This will trigger the warning in #812: Warning when printing a survey pdf that was created using Word
         // This warning will cause the test to fail
         $pdf->render();
