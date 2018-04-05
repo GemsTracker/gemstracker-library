@@ -198,6 +198,12 @@ class GemsEscort extends \MUtil_Application_Escort
             }
             if ($value && (! is_object($value)) && (! array_key_exists($key, $posts))) {
                 foreach ((array) $value as $val) {
+                    // Quickfix
+                    // If $val is an array the strpbrk fails. This is true for export options
+                    // If the elements of the array should be checked too, feel free to do so
+                    if (is_array($val)) {
+                        continue;
+                    }
                     $rest = strpbrk($val, '<>%&');
                     if (false !== $rest) {
                         if (false !== stripos($val, 'iframe')) {
