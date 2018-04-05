@@ -116,7 +116,12 @@ class Gems_Pdf extends \Gems_Registry_TargetAbstract
 
         foreach (array('Title', 'Subject', 'Keywords') as $name) {
             if (isset($pdf->properties[$name])) {
-                $value = rtrim($pdf->properties[$name]) . ' ' . $token;
+                $orgValue = $pdf->properties[$name];
+                if (mb_detect_encoding($orgValue) === false) {
+                    // Assume UTF-16
+                    mb_convert_encoding($orgValue, mb_internal_encoding(), 'UTF-16');
+                }
+                $value = rtrim($orgValue) . ' ' . $token;
             } else {
                 $value = $token;
             }
@@ -126,6 +131,7 @@ class Gems_Pdf extends \Gems_Registry_TargetAbstract
         $pdf->properties['ModDate']  = 'D:' . str_replace(':', "'", date('YmdHisP')) . "'";
         $pdf->properties['Producer'] = $this->project->getName();       // Avoid warning on Word with a (R) symbol
         $pdf->properties['Creator']  = $this->project->getName();       // Avoid warning on Word with a (R) symbol
+        $pdf->properties['Author']   = $this->project->getName();       // Avoid warning on Word with a (R) symbol
     }
 
     /**
@@ -244,8 +250,11 @@ class Gems_Pdf extends \Gems_Registry_TargetAbstract
      */
     protected function getSurveyPdf($surveyId)
     {
-        $filename = $this->db->fetchOne('SELECT gsu_survey_pdf FROM gems__surveys WHERE gsu_id_survey = ?', $surveyId);
+        $row = $this->db->fetchRow('SELECT gsu_survey_pdf, gsu_survey_name FROM gems__surveys WHERE gsu_id_survey = ?', $surveyId);
 
+        $filename   = $row['gsu_survey_pdf'];
+        $surveyname = $row['gsu_survey_name'];
+        
         if (! $filename) {
             $filename = $surveyId . '.pdf';
         }
@@ -257,7 +266,10 @@ class Gems_Pdf extends \Gems_Registry_TargetAbstract
             $this->throwLastError(sprintf($this->translate->_("PDF Source File '%s' not found!"), $filename));
         }
 
-        return \Zend_Pdf::load($filepath);
+        $pdf = \Zend_Pdf::load($filepath);
+        $pdf->properties['Title'] = $surveyname;
+
+        return $pdf;
     }
 
     /**
