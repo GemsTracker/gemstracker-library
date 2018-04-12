@@ -57,6 +57,8 @@ class RespondentPlanTokenSnippet extends PlanTokenSnippet
             }
         }
 
+        $model->get('gtr_track_name');
+        $model->get('gr2t_track_info');
         $model->set('gto_id_token', 'formatFunction', 'strtoupper');
 
         $bridge->setDefaultRowClass(\MUtil_Html_TableElement::createAlternateRowClass('even', 'even', 'odd', 'odd'));
@@ -88,7 +90,7 @@ class RespondentPlanTokenSnippet extends PlanTokenSnippet
             $model->set('gr2t_track_info', 'tableDisplay', 'smallData');
             $bridge->addMultiSort('gtr_track_name', 'gr2t_track_info');
         } else {
-            $bridge->addiSortable('gr2t_track_info');
+            $bridge->addSortable('gr2t_track_info');
         }
         $bridge->addSortable('assigned_by');
     }
