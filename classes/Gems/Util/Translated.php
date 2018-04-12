@@ -1,7 +1,7 @@
 <?php
 
 /**
- * 
+ *
  * @package    Gems
  * @subpackage Util
  * @copyright  Copyright (c) 2011 Erasmus MC
@@ -204,7 +204,7 @@ class Gems_Util_Translated extends \MUtil_Translate_TranslateableAbstract
                     }
                 }
 
-                return date($this->phpDateFormatString, $dateTime->getTimestamp()); //  . ' (' . $days . ')';
+                return $dateTime->getDateTime()->format($this->phpDateFormatString);
         }
     }
 
@@ -264,7 +264,7 @@ class Gems_Util_Translated extends \MUtil_Translate_TranslateableAbstract
             'A' => $this->_('Send one mail per respondent, mark only mailed tokens as sent.'),
             );
     }
-    
+
     /**
      * The options for bulk mail token processing.
      *
