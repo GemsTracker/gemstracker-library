@@ -46,9 +46,6 @@ class OrganizationTableSnippet extends \Gems_Snippets_ModelTableSnippetGeneric
     {
         $bridge->tr()->class = $bridge->row_class;
 
-        // Make sure this is loaded
-        $bridge->gor_id_organization;
-
         if ($showMenuItem = $this->getShowMenuItem()) {
             $bridge->addItemLink($showMenuItem->toActionLinkLower($this->request, $bridge));
         }

@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TokenSearchActionAbstract.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 /**
@@ -68,6 +67,13 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
      * @var mixed String or array of snippets name
      */
     protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Token\\PlanSearchSnippet');
+
+    /**
+     * The snippets used for the index action, after those in autofilter
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $indexStopSnippets = array('Tracker_TokenStatusLegenda');
 
     /**
      *

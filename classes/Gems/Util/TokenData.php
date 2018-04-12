@@ -159,7 +159,7 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
-     * Returns the decription to add to the answer
+     * Returns the description to add to the answer
      *
      * @param string $value Character
      * @return string
@@ -194,6 +194,34 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
             ELSE 'O'
             END
             ");
+    }
+
+    /**
+     * Returns the SQL Expression
+     *
+     * @param string $value Character
+     * @return string
+     */
+    public function getStatusExpressionFor($value)
+    {
+        switch ($value) {
+            case 'D':
+                return 'gto_id_token IS NULL OR grc_success = 0';
+            case 'A':
+                return 'grc_success = 1 AND gto_completion_time IS NOT NULL';
+            case 'U':
+                return 'grc_success = 1 AND gto_valid_from IS NULL';
+            case 'W':
+                return 'grc_success = 1 AND gto_valid_from > CURRENT_TIMESTAMP';
+            case 'I':
+                return 'grc_success = 1 AND gto_in_source = 1 AND gto_valid_until < CURRENT_TIMESTAMP';
+            case 'M':
+                return 'grc_success = 1 AND gto_in_source = 0 AND gto_valid_until < CURRENT_TIMESTAMP';
+            case 'P':
+                return 'grc_success = 1 AND gto_completion_time IS NULL AND (gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP) AND gto_in_source = 1';
+            case 'O':
+                return 'grc_success = 1 AND gto_completion_time IS NULL AND (gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP) AND gto_in_source = 0';
+        }
     }
 
     /**

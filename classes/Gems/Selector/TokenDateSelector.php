@@ -43,6 +43,12 @@ class Gems_Selector_TokenDateSelector extends \Gems_Selector_DateSelectorAbstrac
 
     /**
      *
+     * @var array Every tokenData status displayed in table
+     */
+    protected $statiUsed = ['O', 'P', 'I', 'M', 'A'];
+
+    /**
+     *
      * @param string $name
      * @return \Gems_Selector_SelectorField
      */
@@ -67,31 +73,12 @@ class Gems_Selector_TokenDateSelector extends \Gems_Selector_DateSelectorAbstrac
                 ->setLabel($this->_('Activated surveys'))
                 ->setToCount("gto_id_token");
 
-        $this->addField('todo')
-                ->setLabel($this->_('Unanswered surveys'))
-                ->setToSumWhen("gto_completion_time IS NULL AND (gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP) AND gto_in_source = 0");
-
-        $this->addField('going')
-                ->setLabel($this->_('Partially completed'))
-                ->setToSumWhen("gto_completion_time IS NULL AND (gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP) AND gto_in_source = 1");
-        /*
-        $this->addField('adleft')
-                ->setLabel($this->_('Time left in days - average'))
-                ->setToAverage("CASE WHEN gto_valid_until IS NOT NULL AND gto_valid_until >= CURRENT_TIMESTAMP THEN DATEDIFF(gto_valid_until, CURRENT_TIMESTAMP) ELSE NULL END", 2);
-        // */
-
-        $this->addField('missed')
-                ->setLabel($this->_('Expired surveys'))
-                ->setToSumWhen("gto_completion_time IS NULL AND gto_valid_until < CURRENT_TIMESTAMP");
-
-        $this->addField('done')
-                ->setLabel($this->_('Answered surveys'))
-                ->setToSumWhen("gto_completion_time IS NOT NULL");
-        /*
-        $this->addField('adur')
-                ->setLabel($this->_('Answer time in days - average'))
-                ->setToAverage("gto_completion_time - gto_valid_from", 2);
-        // */
+        $tUtil = $this->util->getTokenData();
+        foreach ($this->statiUsed as $key) {
+            $this->addField('stat_' . $key)
+                    ->setLabel([$tUtil->getStatusIcon($key), ' ', $tUtil->getStatusDescription($key)])
+                    ->setToSumWhen($tUtil->getStatusExpressionFor($key));
+        }
     }
 
     /**

@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 namespace Gems\Snippets\Token;
@@ -25,11 +24,18 @@ namespace Gems\Snippets\Token;
 class TokenDateSelectorSnippet extends \MUtil_Snippets_SnippetAbstract
 {
     /**
+     * Shortfix to add class attribute
+     *
+     * @var string
+     */
+    protected $class = 'compliance';
+
+    /**
      *
      * @var \Gems_Selector_DateSelectorAbstract
      */
     protected $dateSelector;
-    
+
     /**
      * Required
      *
@@ -43,7 +49,7 @@ class TokenDateSelectorSnippet extends \MUtil_Snippets_SnippetAbstract
      * @var array
      */
     protected $searchData;
-    
+
     /**
      * The $request param that stores the ascending sort
      *
@@ -74,20 +80,20 @@ class TokenDateSelectorSnippet extends \MUtil_Snippets_SnippetAbstract
         if ($this->sortParamDesc) {
             $this->dateSelector->getModel()->setSortParamDesc($this->sortParamDesc);
         }
-        
+
         $model = $this->dateSelector->getModel();
         $filter = $model->getFilter();
-        
+
         // Unset sorts from the filter
         unset($filter[$model->getSortParamAsc()]);
         unset($filter[$model->getSortParamDesc()]);
-        
+
         // Unset items and page (from paginator)
         unset($filter['page']);
         unset($filter['items']);
 
         $model->setFilter($filter);
-        
+
         return $this->dateSelector->getTable($this->searchData);
     }
 
@@ -103,7 +109,7 @@ class TokenDateSelectorSnippet extends \MUtil_Snippets_SnippetAbstract
      * @return boolean
      */
     public function hasHtmlOutput()
-    {        
+    {
         return (boolean) $this->dateSelector;
     }
-    }
+}

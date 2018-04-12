@@ -2,13 +2,11 @@
 
 /**
  *
- *
  * @package    Gems
  * @subpackage Selector
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -383,7 +381,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
 
     /**
      * Prcesses the filter for the date selector and return the filter to use instead
-     * 
+     *
      * @param \Zend_Controller_Request_Abstract $request
      * @param array $filter
      * @param string $dateField
@@ -453,7 +451,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
         if (! $this->_model) {
             $this->_model = $this->createModel();
         }
-        
+
         return $this->_model;
     }
 
@@ -495,9 +493,9 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
         $this->dateType   = $this->processFilterName(self::DATE_TYPE, $request, $filter, $defaults);
 
         unset($filter[self::DATE_FACTOR], $filter[self::DATE_GROUP], $filter[self::DATE_TYPE]);
-               
+
         $model = $this->getModel();
-        
+
         return $filter;
     }
 

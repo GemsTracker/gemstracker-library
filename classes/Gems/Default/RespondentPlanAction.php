@@ -28,6 +28,13 @@ class Gems_Default_RespondentPlanAction extends \Gems_Default_TokenSearchActionA
     protected $autofilterSnippets = 'Token\\PlanRespondentSnippet';
 
     /**
+     * The snippets used for the index action, after those in autofilter
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $indexStopSnippets = array('Tracker_TokenStatusLegenda');
+
+    /**
      * Creates a model for getModel(). Called only for each new $action.
      *
      * The parameters allow you to easily adapt the model to the current action. The $detailed

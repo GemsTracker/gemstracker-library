@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -22,6 +21,13 @@
 class Gems_Default_TokenAction extends \Gems_Default_TokenSearchActionAbstract
 {
     /**
+     * The snippets used for the autofilter action.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $autofilterSnippets = 'Token\\RespondentPlanTokenSnippet';
+
+    /**
      *
      * @var \Zend_Db_Adapter_Abstract
      */
@@ -33,13 +39,13 @@ class Gems_Default_TokenAction extends \Gems_Default_TokenSearchActionAbstract
      * @var mixed String or array of snippets name
      */
     protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Token\\TokenSearchSnippet');
-    
+
     /**
-     * The snippets used for the autofilter action.
+     * The snippets used for the index action, after those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = 'Token\\RespondentPlanTokenSnippet';
+    protected $indexStopSnippets = array('Tracker_TokenStatusLegenda');
 
     /**
      *

@@ -101,7 +101,7 @@ class PlanRespondentSnippet extends PlanTokenSnippet
                 [$tData->getTokenStatusLinkForBridge($bridge), ' ', $tData->getTokenShowLinkForBridge($bridge, true)],
                 ' '); // Space needed because TableElement does not look at rowspans
         $col->rowspan = 2;
-        $col->class = 'rightAlign';
+        $col->class = 'right-text';
 
         $bridge->addSortable('gto_valid_from');
         $bridge->addSortable('gto_valid_until');
