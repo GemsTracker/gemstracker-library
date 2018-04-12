@@ -57,8 +57,6 @@ class RespondentPlanTokenSnippet extends PlanTokenSnippet
             }
         }
 
-        $model->get('gtr_track_name');
-        $model->get('gr2t_track_info');
         $model->set('gto_id_token', 'formatFunction', 'strtoupper');
 
         $bridge->setDefaultRowClass(\MUtil_Html_TableElement::createAlternateRowClass('even', 'even', 'odd', 'odd'));
@@ -77,7 +75,7 @@ class RespondentPlanTokenSnippet extends PlanTokenSnippet
 
         $model->set('gto_round_description', 'tableDisplay', 'smallData');
         $bridge->addMultiSort('gsu_survey_name', 'gto_round_description');
-        $bridge->addMultiSort('ggp_name', array($this->createActionButtons($bridge)));
+        $bridge->addMultiSort('ggp_name', array(\MUtil_Lazy::method($this, 'createActionButtons', $bridge)));
 
         $tr2 = $bridge->tr();
         $tr2->appendAttrib('class', $bridge->row_class);
