@@ -172,7 +172,7 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
                 'datefrom'    => $today,
                 'dateused'    => '_gto_valid_from gto_valid_until',
                 'dateuntil'   => $today,
-                'main_filter' => 'all',
+                'main_filter' => '',
             );
         }
 
@@ -200,14 +200,17 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
             $filter['gto_id_organization'] = $this->currentUser->getRespondentOrgFilter();
         }
         $filter['gsu_active']  = 1;
-        $filter['grc_success'] = 1; // Overruled with success
+
+        if (isset($filter['filter_status']) && $filter['filter_status']) {
+            // $filter[] = $this->util->getTokenData()->getStatusExpressionFor($filter['filter_status']);
+
+            // unset($filter['filter_status']);
+        } else {
+            $filter['grc_success'] = 1; // Delete unless overruled by filter status
+        }
 
         if (isset($filter['main_filter'])) {
             switch ($filter['main_filter']) {
-                case 'answered':
-                    $filter[] = 'gto_completion_time IS NOT NULL';
-                    break;
-
                 case 'hasnomail':
                     $filter[] = sprintf(
                             "(grs_email IS NULL OR grs_email = '' OR grs_email NOT RLIKE '%s') AND
@@ -218,36 +221,10 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
                     $filter['gto_completion_time'] = null;
                     break;
 
-                case 'missed':
-                    $filter[] = 'gto_valid_from <= CURRENT_TIMESTAMP';
-                    $filter[] = 'gto_valid_until < CURRENT_TIMESTAMP';
-                    $filter['gto_completion_time'] = null;
-                    break;
-
                 case 'notmailed':
                     $filter['gto_mail_sent_date'] = null;
                     $filter[] = '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)';
                     $filter['gto_completion_time'] = null;
-                    break;
-
-                case 'open':
-                    $filter['gto_completion_time'] = null;
-                    $filter[] = 'gto_valid_from <= CURRENT_TIMESTAMP';
-                    $filter[] = '(gto_valid_until >= CURRENT_TIMESTAMP OR gto_valid_until IS NULL)';
-                    break;
-
-                // case 'other':
-                //    $filter[] = "grs_email IS NULL OR grs_email = '' OR ggp_respondent_members = 0";
-                //    $filter['can_email'] = 0;
-                //    $filter[] = '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)';
-                //    break;
-
-                case 'removed':
-                    $filter['grc_success'] = 0;
-                    break;
-
-                case 'toanswer':
-                    $filter[] = 'gto_completion_time IS NULL';
                     break;
 
                 case 'tomail':

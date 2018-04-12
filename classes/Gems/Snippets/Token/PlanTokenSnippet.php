@@ -62,7 +62,6 @@ class PlanTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
     protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
         $br    = \MUtil_Html::create('br');
-        $tData = $this->util->getTokenData();
 
         // Add link to patient to overview
         $menuItems = $this->findMenuItems('respondent', 'show');
@@ -92,12 +91,7 @@ class PlanTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
         $tr1->appendAttrib('title', $bridge->gto_comment);
 
         $bridge->addColumn(
-                [
-                    'class' => 'text-right',
-                    $tData->getTokenStatusLinkForBridge($bridge),
-                    ' ',
-                    $tData->getTokenShowLinkForBridge($bridge, true)
-                ],
+                $this->createInfoPlusCol($bridge),
                 ' ')->rowspan = 2; // Space needed because TableElement does not look at rowspans
         $bridge->addSortable('gto_valid_from');
         $bridge->addSortable('gto_valid_until');
@@ -106,7 +100,7 @@ class PlanTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
         // $bridge->addSortable('gto_mail_sent_num', $this->_('Contact moments'))->rowspan = 2;
 
         $this->addRespondentCell($bridge, $model);
-        $bridge->addMultiSort('ggp_name', array($this->createActionButtons($bridge)));
+        $bridge->addMultiSort('ggp_name', [$this->createActionButtons($bridge)]);
 
         $tr2 = $bridge->tr();
         $tr2->appendAttrib('class', $bridge->row_class);
@@ -147,18 +141,18 @@ class PlanTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
      */
     public function createActionButtons(\MUtil_Model_Bridge_TableBridge $bridge)
     {
-         $tData = $this->util->getTokenData();
+        $tData = $this->util->getTokenData();
 
         // Action links
-        $actionLinks[] = $tData->getTokenAskLinkForBridge($bridge, true);
-        $actionLinks[] = $tData->getTokenEmailLinkForBridge($bridge);
-        $actionLinks[] = $tData->getTokenAnswerLinkForBridge($bridge);
+        $actionLinks['ask']    = $tData->getTokenAskLinkForBridge($bridge, true);
+        $actionLinks['email']  = $tData->getTokenEmailLinkForBridge($bridge);
+        $actionLinks['answer'] = $tData->getTokenAnswerLinkForBridge($bridge);
 
         $output = [];
-        foreach ($actionLinks as $actionLink) {
+        foreach ($actionLinks as $key => $actionLink) {
             if ($actionLink) {
                 $output[] = ' ';
-                $output[] = \MUtil_Html::create(
+                $output[$key] = \MUtil_Html::create(
                         'div',
                         $actionLink,
                         ['class' => 'rightFloat', 'renderWithoutContent' => false, 'style' => 'clear: right;']
@@ -167,35 +161,24 @@ class PlanTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
         }
 
         return $output;
+    }
 
-        if ($actionLinks) {
-            $bridge->addItemLink($actionLinks);
-        }
-       // Get the other token buttons
-        $menuItems = $this->menu->findAll(
-                array('controller' => 'track', 'action' => array('email', 'answer'), 'allowed' => true)
-                );
-        if ($menuItems) {
-            $buttons = $menuItems->toActionLink($this->request, $bridge);
-            $buttons->appendAttrib('class', 'rightFloat');
-        } else {
-            $buttons = null;
-        }
-        // Add the ask button
-        $menuItem = $this->menu->find(array('controller' => 'ask', 'action' => 'take', 'allowed' => true));
-        if ($menuItem) {
-            $askLink = $menuItem->toActionLink($this->request, $bridge);
-            $askLink->appendAttrib('class', 'rightFloat');
+    /**
+     * Returns a '+' token button
+     *
+     * @param \MUtil_Model_Bridge_TableBridge $bridge
+     * @return \MUtil_Html_AElement
+     */
+    protected function createInfoPlusCol(\MUtil_Model_Bridge_TableBridge $bridge)
+    {
+        $tData = $this->util->getTokenData();
 
-            if ($buttons) {
-                // Show previous link if show, otherwise show ask link
-                $buttons = array($buttons, $askLink);
-            } else {
-                $buttons = $askLink;
-            }
-        }
-
-        return $buttons;
+        return [
+            'class' => 'text-right',
+            $tData->getTokenStatusLinkForBridge($bridge),
+            ' ',
+            $tData->getTokenShowLinkForBridge($bridge, true)
+            ];
     }
 
     /**

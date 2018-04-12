@@ -84,60 +84,61 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
 
         $allowedOrgs = $this->getOrganizationList($data);
 
-        $elements[] = $this->_('Select:');
-        $elements[] = \MUtil_Html::create('br');
-
-        // Add track selection
-        if ($this->multiTracks) {
-            $elements[] = $this->_createSelectElement(
-                    'gto_id_track',
-                    $this->getAllTrackTypes($allowedOrgs, $data),
-                    $this->_('(all tracks)')
-                    );
-        }
-
-        $elements[] = $this->_createSelectElement(
-                'gto_round_description',
-                $this->getAllTrackRounds($allowedOrgs, $data),
-                $this->_('(all rounds)')
-                );
-
-        $elements[] = $this->_createSelectElement(
-                'gto_id_survey',
-                $this->getAllSurveys($allowedOrgs, $data),
-                $this->_('(all surveys)')
-                );
-
-        $options = array(
-            'all'       => $this->_('(all actions)'),
-            'open'      => $this->_('Open'),
-            'notmailed' => $this->_('Not emailed'),
-            'tomail'    => $this->_('To email'),
-            'toremind'  => $this->_('Needs reminder'),
-            'hasnomail' => $this->_('Missing email'),
-            'toanswer'  => $this->_('Yet to Answer'),
-            'answered'  => $this->_('Answered'),
-            'missed'    => $this->_('Missed'),
-            'removed'   => $this->_('Removed'),
-            );
-        $elements[] = $this->_createSelectElement('main_filter', $options);
-
-        $elements[] = $this->_createSelectElement(
-                'gsu_id_primary_group',
-                $this->getAllGroups($allowedOrgs, $data),
-                $this->_('(all fillers)')
-                );
+        $elements['select_title'] = $this->_('Select:');
+        $elements['break1']       = \MUtil_Html::create('br');
 
         // Select organisation
         if (count($allowedOrgs) > 1) {
-            $elements[] = $this->_createSelectElement(
+            $elements['gto_id_organization'] = $this->_createSelectElement(
                     'gto_id_organization',
                     $allowedOrgs,
                     $this->_('(all organizations)')
                     );
         }
 
-        $elements[] = $this->_createSelectElement(
+        // Add track selection
+        if ($this->multiTracks) {
+            $elements['gto_id_track'] = $this->_createSelectElement(
+                    'gto_id_track',
+                    $this->getAllTrackTypes($allowedOrgs, $data),
+                    $this->_('(all tracks)')
+                    );
+        }
+
+        $elements['gto_round_description'] = $this->_createSelectElement(
+                'gto_round_description',
+                $this->getAllTrackRounds($allowedOrgs, $data),
+                $this->_('(all rounds)')
+                );
+
+        $elements['gto_id_survey'] = $this->_createSelectElement(
+                'gto_id_survey',
+                $this->getAllSurveys($allowedOrgs, $data),
+                $this->_('(all surveys)')
+                );
+
+        $elements['break2'] = \MUtil_Html::create('br');
+
+        // Add status selection
+        $elements['token_status'] = $this->_createSelectElement(
+                'token_status',
+                $this->getEveryStatus(),
+                $this->_('(every status)')
+                );
+
+        $elements['main_filter'] = $this->_createSelectElement(
+                'main_filter',
+                $this->getEveryOption(),
+                $this->_('(all actions)')
+                );
+
+        $elements['gsu_id_primary_group'] = $this->_createSelectElement(
+                'gsu_id_primary_group',
+                $this->getAllGroups($allowedOrgs, $data),
+                $this->_('(all fillers)')
+                );
+
+        $elements['gr2t_created_by'] = $this->_createSelectElement(
                 'gr2t_created_by',
                 $this->getAllCreators($allowedOrgs, $data),
                 $this->_('(all staff)')
@@ -285,6 +286,31 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
                         gto_id_organization IN (" . implode(',', array_keys($allowedOrgs)) . ")
                 )
                 ORDER BY gsu_survey_name";
+    }
+
+    /**
+     * The sued options
+     *
+     * @return array
+     */
+    protected function getEveryOption()
+    {
+        return [
+            'notmailed' => $this->_('Not emailed'),
+            'tomail'    => $this->_('To email'),
+            'toremind'  => $this->_('Needs reminder'),
+            'hasnomail' => $this->_('Missing email'),
+        ];
+    }
+
+    /**
+     * The used status actions
+     *
+     * @return array
+     */
+    protected function getEveryStatus()
+    {
+        return $this->util->getTokenData()->getEveryStatus();
     }
 
     /**

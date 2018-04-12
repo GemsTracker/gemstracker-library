@@ -312,9 +312,12 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
                 ]);
             }
 
-            $link->title = sprintf($this->_('See answers for token %s'), strtoupper($tokenId));
+            if ($link) {
+                $link->title = sprintf($this->_('See answers for token %s'), strtoupper($tokenId));
 
-            return $link;
+                return $link;
+            }
+
         }
     }
 
@@ -377,9 +380,11 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
                         ]);
                     }
                 }
-                $link->title = sprintf($this->_('Answer token %s'), strtoupper($tokenId));
+                if ($link) {
+                    $link->title = sprintf($this->_('Answer token %s'), strtoupper($tokenId));
 
-                return $link;
+                    return $link;
+                }
             }
 
             return $this->getTokenCopyLink($tokenId, $tokenStatus);
@@ -425,7 +430,6 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
     public function getTokenAskLinkForBridge(\MUtil_Model_Bridge_TableBridgeAbstract $bridge, $forceButton = false, $keepCaps = false)
     {
         $method = $this->getTokenAskButtonForBridge($bridge, $forceButton, $keepCaps);
-        \MUtil_Echo::convertClassToName($method);
 
         if (! $method) {
             $method = \MUtil_Lazy::method($this, 'getTokenCopyLink',
@@ -490,9 +494,11 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
                 \Gems_Model::ID_TYPE => 'token',
             ]);
 
-            $link->title = sprintf($this->_('Send email for token %s'), strtoupper($tokenId));
+            if ($link) {
+                $link->title = sprintf($this->_('Send email for token %s'), strtoupper($tokenId));
 
-            return $link;
+                return $link;
+            }
         }
     }
 
@@ -539,7 +545,9 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
             ]);
         }
 
-        $link->title = sprintf($this->_('Inspect token %s'), strtoupper($tokenId));
+        if ($link) {
+            $link->title = sprintf($this->_('Inspect token %s'), strtoupper($tokenId));
+        }
 
         return $link;
     }
@@ -604,10 +612,12 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
             ]);
         }
 
-        $link->append($this->getStatusIcon($tokenStatus));
-        $link->title = $this->getTokenStatusTitle($tokenId, $tokenStatus, $patientNr, $roundDescr, $surveyName, $result);
+        if ($link) {
+            $link->append($this->getStatusIcon($tokenStatus));
+            $link->title = $this->getTokenStatusTitle($tokenId, $tokenStatus, $patientNr, $roundDescr, $surveyName, $result);
 
-        return $link;
+            return $link;
+        }
     }
 
     /**

@@ -98,10 +98,9 @@ class PlanRespondentSnippet extends PlanTokenSnippet
 
         $bridge->tr(array('class' => array('odd', $bridge->row_class), 'title' => $bridge->gto_comment));
         $col = $bridge->addColumn(
-                [$tData->getTokenStatusLinkForBridge($bridge), ' ', $tData->getTokenShowLinkForBridge($bridge, true)],
+                $this->createInfoPlusCol($bridge),
                 ' '); // Space needed because TableElement does not look at rowspans
         $col->rowspan = 2;
-        $col->class = 'right-text';
 
         $bridge->addSortable('gto_valid_from');
         $bridge->addSortable('gto_valid_until');
@@ -113,6 +112,6 @@ class PlanRespondentSnippet extends PlanTokenSnippet
         $bridge->addSortable('gto_mail_sent_date');
         $bridge->addSortable('gto_completion_time');
         $bridge->addSortable('gto_id_token');
-        $bridge->addMultiSort('ggp_name', array($this->createActionButtons($bridge)));
+        $bridge->addMultiSort('ggp_name', [$this->createActionButtons($bridge)]);
     }
 }

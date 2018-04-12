@@ -65,7 +65,7 @@ class RespondentPlanTokenSnippet extends PlanTokenSnippet
         $tr1->appendAttrib('title', $bridge->gto_comment);
 
         $bridge->addColumn(
-                [$tData->getTokenStatusLinkForBridge($bridge), $br, $tData->getTokenShowLinkForBridge($bridge, true)],
+                $this->createInfoPlusCol($bridge),
                 ' ')->rowspan = 2; // Space needed because TableElement does not look at rowspans
         $bridge->addSortable('gto_valid_from');
         $bridge->addSortable('gto_valid_until');
@@ -75,7 +75,7 @@ class RespondentPlanTokenSnippet extends PlanTokenSnippet
 
         $model->set('gto_round_description', 'tableDisplay', 'smallData');
         $bridge->addMultiSort('gsu_survey_name', 'gto_round_description');
-        $bridge->addMultiSort('ggp_name', array(\MUtil_Lazy::method($this, 'createActionButtons', $bridge)));
+        $bridge->addMultiSort('ggp_name', [$this->createActionButtons($bridge)]);
 
         $tr2 = $bridge->tr();
         $tr2->appendAttrib('class', $bridge->row_class);

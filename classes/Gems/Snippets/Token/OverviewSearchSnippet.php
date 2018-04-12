@@ -43,6 +43,9 @@ class OverviewSearchSnippet extends PlanSearchSnippet
     {
         $elements = parent::getAutoSearchElements($data);
 
+        // Has no function here
+        unset($elements['token_status']);
+
         $elements[] = new \Zend_Form_Element_Hidden(\Gems_Selector_DateSelectorAbstract::DATE_FACTOR);
         $elements[] = new \Zend_Form_Element_Hidden(\Gems_Selector_DateSelectorAbstract::DATE_GROUP);
         $elements[] = new \Zend_Form_Element_Hidden(\Gems_Selector_DateSelectorAbstract::DATE_TYPE);
