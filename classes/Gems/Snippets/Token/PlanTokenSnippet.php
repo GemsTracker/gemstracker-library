@@ -92,7 +92,13 @@ class PlanTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
         $tr1->appendAttrib('title', $bridge->gto_comment);
 
         $bridge->addColumn(
-                [$tData->getTokenStatusLinkForBridge($bridge), $br, $tData->getTokenShowLinkForBridge($bridge, true)],
+                \MUtil_Html::create(
+                        'div',
+                        ['class' => 'rightFloat'],
+                        $tData->getTokenStatusLinkForBridge($bridge),
+                        ' ',
+                        $tData->getTokenShowLinkForBridge($bridge, true)
+                        ),
                 ' ')->rowspan = 2; // Space needed because TableElement does not look at rowspans
         $bridge->addSortable('gto_valid_from');
         $bridge->addSortable('gto_valid_until');

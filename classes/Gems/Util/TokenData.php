@@ -207,31 +207,29 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
         static $status;
         if (is_null($status)) {
             $spanU = \MUtil_Html::create('span', array('class' => 'fa-stack', 'renderClosingTag' => true));
-            $spanU->i(array('class' => 'fa fa-circle fa-stack-2x', 'renderClosingTag' => true));
-            $spanU->i(array('class' => 'fa fa-question fa-stack-1x fa-inverse', 'renderClosingTag' => true));
+            $spanU->i(array('class' => 'fa fa-question-circle fa-stack-2x', 'renderClosingTag' => true));
 
             $spanW = \MUtil_Html::create('span', array('class' => 'fa-stack', 'renderClosingTag' => true));
             $spanW->i(array('class' => 'fa fa-circle fa-stack-2x', 'renderClosingTag' => true));
+            $spanW->i(array('class' => 'fa fa-ellipsis-h fa-stack-1x fa-inverse', 'renderClosingTag' => true));
 
             $spanO = \MUtil_Html::create('span', array('class' => 'fa-stack', 'renderClosingTag' => true));
-            $spanO->i(array('class' => 'fa fa-circle fa-stack-2x', 'renderClosingTag' => true));
-            $spanO->i(array('class' => 'fa fa-arrow-up fa-stack-1x fa-inverse', 'renderClosingTag' => true));
+            $spanO->i(array('class' => 'fa fa-play-circle fa-stack-2x', 'renderClosingTag' => true));
 
             $spanA = \MUtil_Html::create('span', array('class' => 'fa-stack', 'renderClosingTag' => true));
-            $spanA->i(array('class' => 'fa fa-circle fa-stack-2x', 'renderClosingTag' => true));
-            $spanA->i(array('class' => 'fa fa-check fa-stack-1x fa-inverse', 'renderClosingTag' => true));
+            $spanA->i(array('class' => 'fa fa-check-circle fa-stack-2x', 'renderClosingTag' => true));
 
             $spanP = \MUtil_Html::create('span', array('class' => 'fa-stack', 'renderClosingTag' => true));
             $spanP->i(array('class' => 'fa fa-circle fa-stack-2x', 'renderClosingTag' => true));
-            $spanP->i(array('class' => 'fa fa-arrow-right fa-stack-1x fa-inverse', 'renderClosingTag' => true));
+            $spanP->i(array('class' => 'fa fa-pause fa-stack-1x fa-inverse', 'renderClosingTag' => true));
 
             $spanI = \MUtil_Html::create('span', array('class' => 'fa-stack', 'renderClosingTag' => true));
             $spanI->i(array('class' => 'fa fa-circle fa-stack-2x', 'renderClosingTag' => true));
-            // $spanI->i(array('class' => 'fa fa-arrow-right fa-stack-1x fa-inverse', 'renderClosingTag' => true));
-            $spanI->i(array('class' => 'fa fa-exclamation-triangle fa-stack-1x fa-inverse', 'renderClosingTag' => true));
+            $spanI->i(array('class' => 'fa fa-stop fa-stack-1x fa-inverse', 'renderClosingTag' => true));
 
             $spanM = \MUtil_Html::create('span', array('class' => 'fa-stack', 'renderClosingTag' => true));
             $spanM->i(array('class' => 'fa fa-circle fa-stack-2x', 'renderClosingTag' => true));
+            $spanM->i(array('class' => 'fa fa-lock fa-stack-1x fa-inverse', 'renderClosingTag' => true));
 
             $spanD = \MUtil_Html::create('span', array('class' => 'fa-stack', 'renderClosingTag' => true));
             $spanD->i(array('class' => 'fa fa-times fa-stack-2x', 'renderClosingTag' => true));
