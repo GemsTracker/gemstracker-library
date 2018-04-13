@@ -232,7 +232,24 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
      */
     public function getStatusIcon($value)
     {
+        $status = $this->getStatusIcons();
+
+        if (isset($status[$value])) {
+            return $status[$value];
+        }
+
+        return $status['D'];
+    }
+
+    /**
+     * Returns the status icons in an array
+     *
+     * @return array
+     */
+    public function getStatusIcons()
+    {
         static $status;
+
         if (is_null($status)) {
             $spanU = \MUtil_Html::create('span', array('class' => 'fa-stack', 'renderClosingTag' => true));
             $spanU->i(array('class' => 'fa fa-question-circle fa-stack-2x', 'renderClosingTag' => true));
@@ -263,14 +280,14 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
             $spanD->i(array('class' => 'fa fa-times fa-stack-2x', 'renderClosingTag' => true));
 
             $status = array(
-            'U' => $spanU,
-            'W' => $spanW,
-            'O' => $spanO,
-            'A' => $spanA,
-            'P' => $spanP,
-            'I' => $spanI,
-            'M' => $spanM,
-            'D' => $spanD,
+                'U' => $spanU,
+                'W' => $spanW,
+                'O' => $spanO,
+                'A' => $spanA,
+                'P' => $spanP,
+                'I' => $spanI,
+                'M' => $spanM,
+                'D' => $spanD,
             );
 
             foreach ($status as $val => $stat) {
@@ -278,11 +295,7 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
             }
         }
 
-        if (isset($status[$value])) {
-            return $status[$value];
-        }
-
-        return $status['D'];
+        return $status;
     }
 
     /**
