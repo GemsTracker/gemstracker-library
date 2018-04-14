@@ -169,8 +169,15 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $cont = $setup->addContainer($this->_('Access'));
         // ROLES CONTROLLER
         $page = $cont->addBrowsePage($this->_('Roles'), 'pr.role', 'role');
-        $page->addAction($this->_('Assigned'),   null, 'overview');
-        $page->addAction($this->_('Privileges'), null, 'privilege');
+
+        // ASSIGNED CONTROLLER
+        $assiPage = $page->addPage($this->_('Assigned'), 'pr.role', 'role-overview', 'index');
+        $assiPage->addExportAction(); 
+        
+        // PRIVILEGES CONTROLLER
+        $privPage = $page->addPage($this->_('Privileges'), 'pr.role', 'privileges', 'index');
+        $privPage->addExportAction();
+
         // GROUPS CONTROLLER
         $cont->addGroupsPage($this->_('Groups'));
         // ORGANIZATIONS CONTROLLER
