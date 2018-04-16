@@ -316,50 +316,57 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
     public function addToken($tokenData) {
         // We add all data we need so no database calls needed to load the token
         $tokenDiv = $this->creator->div(array('class' => 'zpitem', 'renderClosingTag' => true));
+        $innerDiv = $tokenDiv->div(array('class' => 'tokenwrapper', 'renderClosingTag' => true));
         
         $toolsDiv = $this->creator->div(array('class' => 'tools', 'renderClosingTag' => true));
-        $tokenDiv[] = $toolsDiv;
+        $innerDiv[] = $toolsDiv;
 
         $this->getEditanswers($toolsDiv, $tokenData);
         $this->addTokenIcon($toolsDiv, $tokenData);
         
+        $tokenClass = $this->util->getTokenData()->getStatusClass($tokenData['token_status']);
+                
         $tokenLink = null;
         
-        if ($this->_isCompleted($tokenData)) {
-            $tokenLink = $this->createMenuLink($tokenData, 'track', 'answer', '', $this->_trackAnswer);
-            $tooltip = array(sprintf($this->_('Completed') . ': %s', $tokenData['gto_completion_time']->get($this->_dateTimeFormat)));
-            if (!empty($tokenData['gto_result'])) {
-                $tooltip[] = \MUtil_Html::raw('<br/>');
-                $tooltip[] = sprintf($this->_('Result') .': %s', $tokenData['gto_result']);
-            }
-            $this->_completed++;
-            $tokenDiv->appendAttrib('class', ' success');
-            
-        } elseif ($this->_isValid ($tokenData)) {
-            $tokenLink = $this->createMenuLink($tokenData, 'ask', 'take', '', $this->_takeSurvey);
-            if ($tokenData['ggp_respondent_members'] == 1) {
-                $tokenLink = $this->createMenuLink($tokenData, 'track', 'show', '', $this->_tokenShow);
-            }
-            if (is_null($tokenData['gto_valid_until'])) {
-                $tooltip = $this->_('Does not expire');
-            } else {
-                $tooltip = sprintf($this->_('Open until %s'), $tokenData['gto_valid_until']->get($this->_dateTimeFormat));
-            }
-            $this->_open++;
-            $tokenDiv->appendAttrib('class', ' warning');
-            
-        } elseif ($this->_isMissed($tokenData)) {
-            $tokenLink = $this->createMenuLink($tokenData + array('id_type' => 'token', 'grc_success' => 1), 'track', 'edit', '', $this->_tokenEdit);
-            $tooltip = sprintf($this->_('Missed since %s'), $tokenData['gto_valid_until']->get($this->_dateTimeFormat));
-            $this->_missed++;
-            $tokenDiv->appendAttrib('class', ' danger');
+        switch ($tokenData['token_status']) {
+            case 'A': // Answered
+                $tokenLink = $this->createMenuLink($tokenData + array('gto_in_source' => 1), 'track', 'answer', '', $this->_trackAnswer);
+                $tooltip = array(sprintf($this->_('Completed') . ': %s', $tokenData['gto_completion_time']->get($this->_dateTimeFormat)));
+                if (!empty($tokenData['gto_result'])) {
+                    $tooltip[] = \MUtil_Html::raw('<br/>');
+                    $tooltip[] = sprintf($this->_('Result') .': %s', $tokenData['gto_result']);
+                }
+                $this->_completed++;
+                break;
                 
-        } else {
-            $tokenLink = $this->createMenuLink($tokenData + array('id_type' => 'token', 'grc_success' => 1), 'track', 'edit', '', $this->_tokenEdit);
-            $tooltip = sprintf($this->_('Valid from %s'), $tokenData['gto_valid_from']->get($this->_dateTimeFormat));
-            $this->_future++;
-            $tokenDiv->appendAttrib('class', ' info');
+            case 'O': // Open
+            case 'P': // Partial
+                $tokenLink = $this->createMenuLink($tokenData, 'ask', 'take', '', $this->_takeSurvey);
+                if ($tokenData['ggp_respondent_members'] == 1) {
+                    $tokenLink = $this->createMenuLink($tokenData, 'track', 'show', '', $this->_tokenShow);
+                }
+                if (is_null($tokenData['gto_valid_until'])) {
+                    $tooltip = $this->_('Does not expire');
+                } else {
+                    $tooltip = sprintf($this->_('Open until %s'), $tokenData['gto_valid_until']->get($this->_dateTimeFormat));
+                }
+                $this->_open++;
+                break;
+                
+            case 'M': // Missed
+            case 'I': // Incomplete
+                $tokenLink = $this->createMenuLink($tokenData + array('id_type' => 'token', 'grc_success' => 1), 'track', 'edit', '', $this->_tokenEdit);
+                $tooltip = sprintf($this->_('Missed since %s'), $tokenData['gto_valid_until']->get($this->_dateTimeFormat));
+                $this->_missed++;
+                break;
             
+            case 'W': //Waiting
+                $tokenLink = $this->createMenuLink($tokenData + array('id_type' => 'token', 'grc_success' => 1), 'track', 'edit', '', $this->_tokenEdit);
+                $tooltip = sprintf($this->_('Valid from %s'), $tokenData['gto_valid_from']->get($this->_dateTimeFormat));
+                $this->_future++;
+
+            default:
+                break;
         }
 
         if (!empty($tokenLink)) {
@@ -369,10 +376,11 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                 $tokenLink->target = '_self';
             }
         } else {
-            $tokenDiv->appendAttrib('class', 'disabled');
+            $tokenClass .= ' disabled';
             $tokenLink = $this->creator->div(array('class'=>'disabled'));
         }
-        $tokenDiv[] = $tokenLink;
+        $tokenDiv->appendAttrib('class', $tokenClass);
+        $innerDiv[] = $tokenLink;
         
         $this->_addTooltip($tokenLink, $tooltip, 'auto top');        
         $tokenLink[] = $tokenData['gsu_survey_name'];
@@ -460,16 +468,16 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
     protected function finishGroup($progressDiv) {
         if (!is_null($progressDiv)) {
             if (!$this->_missed == 0) {
-                $progressDiv->div($this->_missed, array('class' => 'danger'));
+                $progressDiv->div($this->_missed, array('class' => 'missed'));
             }
             if (!$this->_completed == 0) {
-                $progressDiv->div($this->_completed, array('class' => 'success'));
+                $progressDiv->div($this->_completed, array('class' => 'answered'));
             }
             if (!$this->_open == 0) {
-                $progressDiv->div($this->_open, array('class' => 'warning'));
+                $progressDiv->div($this->_open, array('class' => 'open'));
             }
             if (!$this->_future == 0) {
-                $progressDiv->div($this->_future, array('class' => 'info'));
+                $progressDiv->div($this->_future, array('class' => 'waiting'));
             }
         }
 
@@ -491,22 +499,22 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
             $total = max($this->_completedTrack + $this->_openTrack + $this->_missedTrack + $this->_futureTrack, 1);
 
             $div = $progressDiv->div($this->_missedTrack, array(
-                'class'            => 'progress-bar progress-bar-danger',
+                'class'            => 'progress-bar missed',
                 'style'            => 'width: ' . $this->_missedTrack / $total * 100 . '%;',
                 'renderClosingTag' => true));
             $this->_addTooltip($div, sprintf($this->_("%s missed"), $this->_missedTrack) , 'top');
             $div = $progressDiv->div($this->_completedTrack, array(
-                'class'            => 'progress-bar progress-bar-success',
+                'class'            => 'progress-bar answered',
                 'style'            => 'width: ' . $this->_completedTrack / $total * 100 . '%;',
                 'renderClosingTag' => true));
             $this->_addTooltip($div, sprintf($this->_("%s completed"), $this->_completedTrack), 'top');
             $div = $progressDiv->div($this->_openTrack, array(
-                'class'            => 'progress-bar progress-bar-warning',
+                'class'            => 'progress-bar open',
                 'style'            => 'width: ' . $this->_openTrack / $total * 100 . '%;',
                 'renderClosingTag' => true));
             $this->_addTooltip($div, sprintf($this->_("%s open"), $this->_openTrack), 'top');
             $div = $progressDiv->div($this->_futureTrack, array(
-                'class'            => 'progress-bar progress-bar-info',
+                'class'            => 'progress-bar waiting',
                 'style'            => 'width: ' . $this->_futureTrack / $total * 100 . '%;',
                 'renderClosingTag' => true));
             $this->_addTooltip($div, sprintf($this->_("%s upcoming"), $this->_futureTrack), 'top');
