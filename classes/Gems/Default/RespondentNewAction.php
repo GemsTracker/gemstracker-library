@@ -513,7 +513,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
     }
 
     /**
-     * The organisations whose tokens are shown.
+     * The organizations whose tokens are shown.
      *
      * When true: show tokens for all organisations, false: only current organisation, array => those organisations
      *
@@ -521,14 +521,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      */
     public function getOtherOrgs()
     {
-        // Do not show data from other orgs
-        return false;
-
-        // Do show data from all other orgs
-        // return true;
-
-        // Return the organisations the user is allowed to see.
-        // return array_keys($this->currentUser->getAllowedOrganizations());
+        return $this->util->getOtherOrgsFor($this->getRespondent()->getOrganizationId());
     }
 
     /**

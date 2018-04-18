@@ -3,9 +3,11 @@
 New features
     New before answering and after completion events synchronize track fields with code the same as answer codes
 Interface improvements:
-    Added token states incomplete and partially answered
+    Added token states incomplete and partially answered (#280)
     Answers of partially answered tokens can be seen
     Token status is shown in show token screen
+Programmability
+    Projects can allow organizations to look into each others tokens and trakcs (#300)
 Security
     CSV Injection protection
     Enhanced parameter filtering for added security (#298)

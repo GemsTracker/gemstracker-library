@@ -220,7 +220,7 @@ class Gems_Util_DbLookup extends UtilAbstract
             case 'E':   // Reminder before expiry
                 $filter[] = 'gto_mail_sent_date < CURRENT_DATE() AND CURRENT_DATE() = DATE(DATE_SUB(gto_valid_until, INTERVAL ' . $job['gcj_filter_days_between'] . ' DAY))';
                 break;
-            
+
             case 'R':   // Reminder after first email
                 $filter[] = 'gto_mail_sent_date <= DATE_SUB(CURRENT_DATE, INTERVAL ' . $job['gcj_filter_days_between'] . ' DAY)';
                 $filter[] = 'gto_mail_sent_num <= ' . $job['gcj_filter_max_reminders'];
@@ -264,14 +264,14 @@ class Gems_Util_DbLookup extends UtilAbstract
         if ($respondentId) {
             $filter['gto_id_respondent'] = $respondentId;
         }
-        
+
         if ($job['gcj_target'] == 1) {
             // Only relations
             $filter[] = 'gto_id_relation <> 0';
         } elseif ($job['gcj_target'] == 2) {
-            // Only respondents            
+            // Only respondents
             $filter[] = '(gto_id_relation = 0 OR gto_id_relation IS NULL)';
-        }        
+        }
 
         return $filter;
     }
@@ -324,8 +324,6 @@ class Gems_Util_DbLookup extends UtilAbstract
      */
     public function getOrganizationsByCode($code = null)
     {
-        static $organizations = array();
-
         if (is_null($code)) {
             return $this->getOrganizations();
         }
@@ -478,7 +476,7 @@ class Gems_Util_DbLookup extends UtilAbstract
             }
         }
         asort($roles);
-        
+
         return $roles;
     }
 

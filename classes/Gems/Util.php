@@ -269,6 +269,26 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * The organizations whose tokens and tracks are shown for this organization
+     *
+     * When true: show tokens for all organizations, false: only current organisation, array => those organisations
+     *
+     * @param int $organizationId Optional, uses current user when empty
+     * @return boolean|array
+     */
+    public function getOtherOrgsFor($forOrgId = null)
+    {
+        // Do not show data from other orgs
+        return false;
+
+        // Do show data from all other orgs
+        // return true;
+
+        // Return the organisations the user is allowed to see.
+        // return array_keys($this->currentUser->getAllowedOrganizations());
+    }
+
+    /**
      * Returns a single reception code object.
      *
      * @param string $code

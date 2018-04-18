@@ -64,6 +64,7 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
         'extraFilter'     => 'getRespondentFilter',
         'menuEditActions' => array('edit-track'),
         'menuShowActions' => array('show-track'),
+        'respondent'      => 'getRespondent',
         );
 
     /**
@@ -72,7 +73,7 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
      * @var mixed String or array of snippets name
      */
     protected $autofilterSnippets = array(
-        'ModelTableSnippetGeneric',
+        'Tracker\\TrackTableSnippet',
         'Tracker\\Buttons\\TrackIndexButtonRow',
         'Tracker\\AvailableTracksSnippet',
         );

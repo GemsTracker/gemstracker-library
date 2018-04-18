@@ -116,7 +116,13 @@ class Gems_Default_TokenAction extends \Gems_Default_TokenSearchActionAbstract
 
         // Survey action data
         $data['gto_id_respondent']   = $this->getRespondentId();
-        $data['gto_id_organization'] = $this->_getParam(\MUtil_Model::REQUEST_ID2);
+        
+        $orgsFor = $this->util->getOtherOrgsFor($this->_getParam(\MUtil_Model::REQUEST_ID2));
+        if (is_array($orgsFor)) {
+            $data['gto_id_organization'] = $orgsFor;
+        } elseif (true !== $orgsFor) {
+            $data['gto_id_organization'] = $this->_getParam(\MUtil_Model::REQUEST_ID2);
+        }
 
         return $data;
     }
