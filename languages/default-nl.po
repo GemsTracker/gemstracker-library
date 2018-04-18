@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.0.4\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
@@ -207,7 +207,7 @@ msgstr "Volgorde"
 #: classes/Gems/Agenda/AppointmentFilterModel.php:148
 msgid "Execution order of the filters, lower numbers are executed first."
 msgstr ""
-"Volgorde waarin de filters geevalueeerd worden, het laagste getal wordt als "
+"Volgorde waarin de filters gecontroleerd worden, het laagste getal wordt als "
 "eerste eerste gecontroleerd."
 
 #: classes/Gems/Agenda/AppointmentFilterModel.php:95
@@ -436,8 +436,8 @@ msgstr "Maar niet als"
 #, php-format
 msgid "But skip when this text is found - use %%-sign as well."
 msgstr ""
-"Maar overslaan als deze tekst in de procuduren zit - ook hier kan je het %%-"
-"teken gebruiken."
+"Maar overslaan als deze tekst gevonden wordt - ook hier kan je het %%-teken "
+"gebruiken."
 
 #: classes/Gems/Agenda/Filter/SubjectModelDependency.php:43
 #, php-format
