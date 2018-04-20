@@ -154,55 +154,49 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
     /**
      * Only return true when no open track exists
      * 
-     * @param type $filter
+     * @param \Gems\Agenda\AppointmentFilterInterface $filter
      * @param Array[]\Gems_Tracker_RespondentTrack[] $existingTracks
      * @return boolean
      */
     protected function createWhenNoOpen($filter, $existingTracks)
     {
         $trackId     = $filter->getTrackId();
+        $createTrack = true;
 
-        if (!array_key_exists($trackId, $existingTracks)) {
-            return true;
-        }        
+        $tracks = array_key_exists($trackId, $existingTracks) ? $existingTracks[$trackId] : [];
         
-        foreach($existingTracks[$trackId] as $respTrack) {            
-            if (!($respTrack instanceof \Gems_Tracker_RespondentTrack)) {
-                continue;
-            }
-            
+        foreach($tracks as $respTrack) {
             /* @var $respTrack \Gems_Tracker_RespondentTrack */
+            if (!$respTrack->hasSuccesCode()) {
+                continue;
+            }            
+            
+            // If an open track of this type exists: do not create a new one
+            if ($respTrack->isOpen()) {
+                $createTrack = false;
+                break;
+            }
 
-            if ($respTrack->hasSuccesCode()) {
-                // \MUtil_Echo::track($trackId, $respTrack->isOpen());
-                // An open track of this type exists: do not create a new one
-                if ($respTrack->isOpen()) {
-                    return false;
-                }
+            // A closed tracks exist.
+            // Is there one that ended less than wait days ago
+            $curr = $this->getAdmissionTime();
+            $end  = $respTrack->getEndDate();
+            $wait = $filter->getWaitDays();
+            if (($wait === null) || (! $curr) || (! $end) || ($curr->diffDays($end) <= $wait)) {
+                $createTrack = false;
+                break;
+            }
 
-                // A closed tracks exist.
-                // Is there one that ended less than wait days ago
-                $curr = $this->getAdmissionTime();
-                $end  = $respTrack->getEndDate();
-                $wait = $filter->getWaitDays();
-
-                if (($wait === null) || (! $curr) || (! $end) || ($curr->diffDays($end) <= $wait)) {
-                    // \MUtil_Echo::track($trackId, $curr->diffDays($end), $wait);
-                    return false;
-                }
-                // \MUtil_Echo::track($trackId, $curr->diffDays($end), $wait);
-
-                // Track has already been assigned
-                $data = $respTrack->getFieldData();
-                if (isset($data[$filter->getFieldId()]) &&
-                        ($this->getId() == $data[$filter->getFieldId()])) {
-                    // \MUtil_Echo::track($data[$filter->getFieldId()]);
-                    return false;
-                }
+            // Track has already been assigned
+            $data = $respTrack->getFieldData();
+            if (isset($data[$filter->getFieldId()]) &&
+                    ($this->getId() == $data[$filter->getFieldId()])) {
+                $createTrack = false;
+                break;
             }
         }
         
-        return true;
+        return $createTrack;
     }
 
     /**
