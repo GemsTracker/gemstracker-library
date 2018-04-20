@@ -160,48 +160,49 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
      */
     protected function createWhenNoOpen($filter, $existingTracks)
     {
-        $createTrack = true;
         $trackId     = $filter->getTrackId();
 
-        if (isset($existingTracks[$trackId])) {
-            foreach($existingTracks[$trackId] as $respTrack) {
-                /* @var $respTrack \Gems_Tracker_RespondentTrack */
-                if ($respTrack instanceof \Gems_Tracker_RespondentTrack) {
-                    if ($respTrack->hasSuccesCode()) {
-                        // \MUtil_Echo::track($trackId, $respTrack->isOpen());
-                        // An open track of this type exists: do not create a new one
-                        if ($respTrack->isOpen()) {
-                            $createTrack = false;
-                            break;
-                        }
+        if (!array_key_exists($trackId, $existingTracks)) {
+            return true;
+        }        
+        
+        foreach($existingTracks[$trackId] as $respTrack) {            
+            if (!($respTrack instanceof \Gems_Tracker_RespondentTrack)) {
+                continue;
+            }
+            
+            /* @var $respTrack \Gems_Tracker_RespondentTrack */
 
-                        // A closed tracks exist.
-                        // Is there one that ended less than wait days ago
-                        $curr = $this->getAdmissionTime();
-                        $end  = $respTrack->getEndDate();
-                        $wait = $filter->getWaitDays();
+            if ($respTrack->hasSuccesCode()) {
+                // \MUtil_Echo::track($trackId, $respTrack->isOpen());
+                // An open track of this type exists: do not create a new one
+                if ($respTrack->isOpen()) {
+                    return false;
+                }
 
-                        if (($wait === null) || (! $curr) || (! $end) || ($curr->diffDays($end) <= $wait)) {
-                            // \MUtil_Echo::track($trackId, $curr->diffDays($end), $wait);
-                            $createTrack = false;
-                            break;
-                        }
-                        // \MUtil_Echo::track($trackId, $curr->diffDays($end), $wait);
+                // A closed tracks exist.
+                // Is there one that ended less than wait days ago
+                $curr = $this->getAdmissionTime();
+                $end  = $respTrack->getEndDate();
+                $wait = $filter->getWaitDays();
 
-                        // Track has already been assigned
-                        $data = $respTrack->getFieldData();
-                        if (isset($data[$filter->getFieldId()]) &&
-                                ($this->getId() == $data[$filter->getFieldId()])) {
-                            // \MUtil_Echo::track($data[$filter->getFieldId()]);
-                            $createTrack = false;
-                            break;
-                        }
-                    }
+                if (($wait === null) || (! $curr) || (! $end) || ($curr->diffDays($end) <= $wait)) {
+                    // \MUtil_Echo::track($trackId, $curr->diffDays($end), $wait);
+                    return false;
+                }
+                // \MUtil_Echo::track($trackId, $curr->diffDays($end), $wait);
+
+                // Track has already been assigned
+                $data = $respTrack->getFieldData();
+                if (isset($data[$filter->getFieldId()]) &&
+                        ($this->getId() == $data[$filter->getFieldId()])) {
+                    // \MUtil_Echo::track($data[$filter->getFieldId()]);
+                    return false;
                 }
             }
         }
-
-        return $createTrack;
+        
+        return true;
     }
 
     /**
@@ -586,7 +587,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
                     $filter->isCreator()) {
 
                 $method = $this->getCreatorCheckMethod($filter->getCreatorType());
-                $createTrack = $this->method($filter, $existingTracks);
+                $createTrack = $this->$method($filter, $existingTracks);
                 
                 // \MUtil_Echo::track($trackId, $createTrack, $filter->getName(), $filter->getSqlWhere(), $filter->getFilterId());
                 if ($createTrack) {
