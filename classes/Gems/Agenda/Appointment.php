@@ -123,9 +123,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
         
         // Check for tracks that should be created
         foreach ($filters as $filter) {
-            if (!$filter->isCreator()) {
-                continue;
-            }
+            if (!$filter->isCreator()) { continue; }
 
             // Find the method to use for this creator type
             $method      = $this->getCreatorCheckMethod($filter->getCreatorType());
@@ -180,7 +178,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
      * @param Array[]\Gems_Tracker_RespondentTrack[] $existingTracks
      * @return boolean
      */
-    protected function createAlways($filter, $existingTracks)
+    public function createAlways($filter, $existingTracks)
     {
         return true;
     }
@@ -195,7 +193,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
      * @param Array[]\Gems_Tracker_RespondentTrack[] $existingTracks
      * @return boolean
      */
-    protected function createNever($filter, $existingTracks)
+    public function createNever($filter, $existingTracks)
     {
         return false;
     }
@@ -207,7 +205,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
      * @param Array[]\Gems_Tracker_RespondentTrack[] $existingTracks
      * @return boolean
      */
-    protected function createWhenNoOpen($filter, $existingTracks)
+    public function createWhenNoOpen($filter, $existingTracks)
     {
         $trackId     = $filter->getTrackId();
         $createTrack = true;
@@ -216,9 +214,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
         
         foreach($tracks as $respTrack) {
             /* @var $respTrack \Gems_Tracker_RespondentTrack */
-            if (!$respTrack->hasSuccesCode()) {
-                continue;
-            }            
+            if (!$respTrack->hasSuccesCode()) { continue; }            
             
             // If an open track of this type exists: do not create a new one
             if ($respTrack->isOpen()) {
@@ -231,7 +227,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
             $curr = $this->getAdmissionTime();
             $end  = $respTrack->getEndDate();
             $wait = $filter->getWaitDays();
-            if (($wait === null) || (! $curr) || (! $end) || ($curr->diffDays($end) <= $wait)) {
+            if (($wait === null) || (! $end) || ($curr->diffDays($end) <= $wait)) {
                 $createTrack = false;
                 break;
             }
@@ -256,7 +252,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
     public function getActivityDescription()
     {
         if (! (isset($this->_gemsData['gap_id_activity']) && $this->_gemsData['gap_id_activity'])) {
-            return null;
+            $this->_gemsData['gaa_name'] = null;
         }
         if (!array_key_exists('gaa_name', $this->_gemsData)) {
             $sql = "SELECT gaa_name FROM gems__agenda_activities WHERE gaa_id_activity = ?";
@@ -371,7 +367,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
     public function getLocationDescription()
     {
         if (! (isset($this->_gemsData['gap_id_location']) && $this->_gemsData['gap_id_location'])) {
-            return null;
+            $this->_gemsData['glo_name'] = null;
         }
         if (!array_key_exists('glo_name', $this->_gemsData)) {
             $sql = "SELECT glo_name FROM gems__locations WHERE glo_id_location = ?";
@@ -516,7 +512,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
-     * Return true when the satus is active
+     * Return true when the status is active
      *
      * @return type
      */
