@@ -108,6 +108,55 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
             }
         }
     }
+    
+    /**
+     * Check if a track should be created for any of the filters
+     * 
+     * @param \Gems\Agenda\AppointmentFilterInterface[] $filters
+     * @param array $existingTracks
+     * @param \Gems_Tracker $tracker
+     * @return int Number of tokenchanges
+     */
+    protected function checkCreateTracks($filters, $existingTracks, $tracker)
+    {
+        $tokenChanges = 0;
+        
+        // Check for tracks that should be created
+        foreach ($filters as $filter) {
+            if (!$filter->isCreator()) {
+                continue;
+            }
+
+            // Find the method to use for this creator type
+            $method      = $this->getCreatorCheckMethod($filter->getCreatorType());
+            $createTrack = $this->$method($filter, $existingTracks);
+
+            // \MUtil_Echo::track($trackId, $createTrack, $filter->getName(), $filter->getSqlWhere(), $filter->getFilterId());
+            if ($createTrack) {
+                $trackData = array('gr2t_comment' => sprintf(
+                        $this->_('Track created by %s filter'),
+                        $filter->getName()
+                        ));
+
+                $fields    = array($filter->getFieldId() => $this->getId());
+                $trackId   = $filter->getTrackId();
+                $respTrack = $tracker->createRespondentTrack(
+                        $this->getRespondentId(),
+                        $this->getOrganizationId(),
+                        $trackId,
+                        $this->currentUser->getUserId(),
+                        $trackData,
+                        $fields
+                        );
+
+                $existingTracks[$trackId][] = $respTrack;
+
+                $tokenChanges += $respTrack->getCount();
+            }
+        }
+        
+        return $tokenChanges;        
+    }
 
     /**
      * Should be called after answering the request to allow the Target
@@ -515,9 +564,8 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
     public function updateTracks()
     {
         $tokenChanges = 0;
-        $tracker      = $this->loader->getTracker();
-        $userId       = $this->currentUser->getUserId();
-
+        $tracker      = $this->loader->getTracker();        
+        
         // Find all the fields that use this agenda item
         $select = $this->db->select();
         $select->from('gems__respondent2track2appointment', array('gr2t2a_id_respondent_track'))
@@ -552,6 +600,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
         $respTracks = $this->db->fetchPairs($select);
 
         // \MUtil_Echo::track($respTracks);
+        $existingTracks = array();
         if ($respTracks) {
             foreach ($respTracks as $respTrackId => $trackId) {
                 $respTrack = $tracker->getRespondentTrack($respTrackId);
@@ -563,50 +612,12 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
                 // Store the track for creation checking
                 $existingTracks[$trackId][] = $respTrack;
             }
-        } else {
-            $existingTracks = array();
-            $respTracks = array();
         }
-        // \MUtil_Echo::track($tokenChanges);
-
-        // Never create tracks for inactive appointments and for appointments in the past
-        if ((! $this->isActive()) || $this->getAdmissionTime()->isEarlierOrEqual(new \MUtil_Date())) {
-            return $tokenChanges;
-        }
-        // \MUtil_Echo::track(count($filters));
-
-        // Check for tracks that should be created
-        foreach ($filters as $filter) {
-            if (($filter instanceof AppointmentFilterInterface) &&
-                    $filter->isCreator()) {
-
-                $method = $this->getCreatorCheckMethod($filter->getCreatorType());
-                $createTrack = $this->$method($filter, $existingTracks);
-                
-                // \MUtil_Echo::track($trackId, $createTrack, $filter->getName(), $filter->getSqlWhere(), $filter->getFilterId());
-                if ($createTrack) {
-                    $trackData = array('gr2t_comment' => sprintf(
-                            $this->_('Track created by %s filter'),
-                            $filter->getName()
-                            ));
-
-                    $fields = array($filter->getFieldId() => $this->getId());
-
-                    $respTrack = $tracker->createRespondentTrack(
-                            $this->getRespondentId(),
-                            $this->getOrganizationId(),
-                            $trackId,
-                            $userId,
-                            $trackData,
-                            $fields
-                            );
-
-                    $existingTracks[$trackId][] = $respTrack;
-
-                    $tokenChanges += $respTrack->getCount();
-                }
-            }
-        }
+        
+        // Only check if we need to create when this appointment is active and today or later
+        if ($this->isActive() && $this->getAdmissionTime()->isLaterOrEqual(new \MUtil_Date())) {
+            $tokenChanges += $this->checkCreateTracks($filters, $existingTracks, $tracker);
+        }       
 
         return $tokenChanges;
     }
