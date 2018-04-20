@@ -25,7 +25,7 @@ CREATE TABLE if not exists gems__track_appointments (
         gtap_max_diff_unit      char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'D',
         gtap_uniqueness         tinyint unsigned not null default 0,
 
-        gtap_create_track       boolean not null default 0,
+        gtap_create_track       int not null default 0,
         gtap_create_wait_days   bigint signed not null default 182,
 
         gtap_changed            timestamp not null default current_timestamp on update current_timestamp,

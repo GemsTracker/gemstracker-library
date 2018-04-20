@@ -93,6 +93,16 @@ abstract class AppointmentFilterAbstract extends \MUtil_Translate_TranslateableA
             return $this->_data['gtap_id_app_field'];
         }
     }
+    
+    /**
+     * Return the type of track creator this filter is
+     * 
+     * @return int
+     */
+    public function getCreatorType()
+    {
+        return $this->_data['gtap_create_track'];
+    }
 
     /**
      * The field id as it is recognized be the track engine

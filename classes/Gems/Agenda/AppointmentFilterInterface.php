@@ -37,6 +37,13 @@ interface AppointmentFilterInterface
      * @return int
      */
     public function getAppointmentFieldId();
+    
+    /**
+     * Return the type of track creator this filter is
+     * 
+     * @return int
+     */
+    public function getCreatorType();
 
     /**
      * The field id as it is recognized be the track engine

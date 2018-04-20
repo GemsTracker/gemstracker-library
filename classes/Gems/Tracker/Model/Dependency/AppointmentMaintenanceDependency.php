@@ -183,11 +183,7 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
     //                 3 => $this->_('Appointment may not be used in any other track.'),
                     ),
                 );
-            $output['gtf_create_track'] = array(
-                'elementClass' => 'Checkbox',
-                'label'        => $this->_('Create track'),
-                'onclick'      => 'this.form.submit();',
-                );
+            $output['gtf_create_track'] = $this->loader->getAgenda()->getTrackCreateElement();
 
             if ($context['gtf_create_track']) {
                 $output['gtf_create_wait_days'] = array(

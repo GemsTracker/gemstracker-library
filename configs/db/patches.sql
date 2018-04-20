@@ -1347,3 +1347,7 @@ UPDATE gems__groups SET ggp_respondent_edit = 'Gems\\Screens\\Respondent\\Edit\\
 
 UPDATE gems__groups SET ggp_respondent_show = 'Gems\\Screens\\Respondent\\Show\\GemsProjectDefaultShow'
     WHERE ggp_respondent_show IS NULL;
+
+--PATCH: Change create track from boolean to int
+ALTER TABLE  `gems__track_appointments` 
+    CHANGE  `gtap_create_track`  `gtap_create_track` INT( 1 ) NOT NULL DEFAULT  '0';

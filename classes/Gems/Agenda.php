@@ -883,6 +883,28 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         }
         return new \Zend_Db_Expr(implode(", ", $codes));
     }
+    
+    /**
+     * Get the element that allows to create a track from an appointment
+     * 
+     * When adding a new type, make sure to modify \Gems_Agenda_Appointment too
+     * @see \Gems_Agenda_Appointment::getCreatorCheckMethod()
+     * 
+     * @return array
+     */
+    public function getTrackCreateElement()
+    {
+        return array(
+                'elementClass' => 'Radio',
+                'multiOptions' => [
+                    0 => $this->_('Never'),
+                    1 => $this->_('When no open track exists'),
+                    2 => $this->_('Always')
+                    ],
+                'label'        => $this->_('Create track'),
+                'onclick'      => 'this.form.submit();',
+                );
+    }
 
     /**
      * Get the type codes for agenda items
