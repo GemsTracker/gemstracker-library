@@ -83,6 +83,33 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
             // loading occurs in checkRegistryRequestAnswers
         }
     }
+    
+    /**
+     * Create a new track for this appointment and the given filter
+     * 
+     * @param \Gems\Agenda\AppointmentFilterInterface $filter
+     * @param \Gems_Tracker $tracker
+     */
+    protected function _createTrack($filter, $tracker)
+    {
+        $trackData = array('gr2t_comment' => sprintf(
+                        $this->_('Track created by %s filter'),
+                        $filter->getName()
+                        ));
+
+        $fields    = array($filter->getFieldId() => $this->getId());
+        $trackId   = $filter->getTrackId();
+        $respTrack = $tracker->createRespondentTrack(
+                $this->getRespondentId(),
+                $this->getOrganizationId(),
+                $trackId,
+                $this->currentUser->getUserId(),
+                $trackData,
+                $fields
+                );
+        
+        return $respTrack;
+    }
 
     /**
      * Makes sure the respondent data is part of the $this->_gemsData
@@ -115,6 +142,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
      * @param \Gems\Agenda\AppointmentFilterInterface[] $filters
      * @param array $existingTracks
      * @param \Gems_Tracker $tracker
+     * 
      * @return int Number of tokenchanges
      */
     protected function checkCreateTracks($filters, $existingTracks, $tracker)
@@ -126,28 +154,24 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
             if (!$filter->isCreator()) { continue; }
 
             // Find the method to use for this creator type
-            $method      = $this->getCreatorCheckMethod($filter->getCreatorType());
-            $createTrack = $this->$method($filter, $existingTracks);
+            $method      = $this->getCreatorCheckMethod($filter->getCreatorType());                        
+            $trackId     = $filter->getTrackId();
+            $tracks      = array_key_exists($trackId, $existingTracks) ? $existingTracks[$trackId] : [];
+        
+            foreach($tracks as $respTrack) {
+                /* @var $respTrack \Gems_Tracker_RespondentTrack */
+                if (!$respTrack->hasSuccesCode()) { continue; }
+                
+                $createTrack = $this->$method($filter, $respTrack);
+                if ($createTrack === false) { 
+                    break;  // Stop checking                        
+                }
+            }
 
             // \MUtil_Echo::track($trackId, $createTrack, $filter->getName(), $filter->getSqlWhere(), $filter->getFilterId());
             if ($createTrack) {
-                $trackData = array('gr2t_comment' => sprintf(
-                        $this->_('Track created by %s filter'),
-                        $filter->getName()
-                        ));
-
-                $fields    = array($filter->getFieldId() => $this->getId());
-                $trackId   = $filter->getTrackId();
-                $respTrack = $tracker->createRespondentTrack(
-                        $this->getRespondentId(),
-                        $this->getOrganizationId(),
-                        $trackId,
-                        $this->currentUser->getUserId(),
-                        $trackData,
-                        $fields
-                        );
-
-                $existingTracks[$trackId][] = $respTrack;
+                $respTrack = $this->_createTrack($filter, $tracker);
+                $existingTracks[$$trackId][] = $respTrack;
 
                 $tokenChanges += $respTrack->getCount();
             }
@@ -172,15 +196,44 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
     }
     
     /**
-     * Always report the track should be created 
+     * Has the track ended <wait days> ago?
      * 
-     * @param type $filter
-     * @param Array[]\Gems_Tracker_RespondentTrack[] $existingTracks
+     * @param \Gems\Agenda\AppointmentFilterInterface $filter
+     * @param \Gems_Tracker_RespondentTrack $respTrack
+     * 
      * @return boolean
      */
-    public function createAlways($filter, $existingTracks)
+    public function createAfterWaitDays($filter, $respTrack)
+    {        
+        $createTrack = true;
+        $curr        = $this->getAdmissionTime();
+        $end         = $respTrack->getEndDate();
+        $wait        = $filter->getWaitDays();
+
+        if ( (! $end) || ($curr->diffDays($end) <= $wait)) {
+                $createTrack = false;
+        }
+        
+        return $createTrack;
+    }    
+    
+    /**
+     * Always report the track should be created 
+     * 
+     * @param \Gems\Agenda\AppointmentFilterInterface $filter
+     * @param \Gems_Tracker_RespondentTrack $respTrack
+     * 
+     * @return boolean
+     */
+    public function createAlways($filter, $respTrack)
     {
-        return true;
+        $createTrack = $this->createAfterWaitDays($filter, $respTrack);
+        
+        if ($createTrack) {
+            $createTrack = $this->createWhenNotInThisTrack($filter, $respTrack);
+        }
+        
+        return $createTrack;
     }
     
     /**
@@ -189,58 +242,58 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
      * This should never be called as 0 is not a creator, the code is here just
      * to make sure calling without checking has the correct result
      * 
-     * @param type $filter
-     * @param Array[]\Gems_Tracker_RespondentTrack[] $existingTracks
+     * @param \Gems\Agenda\AppointmentFilterInterface $filter
+     * @param \Gems_Tracker_RespondentTrack $respTrack
+     * 
      * @return boolean
      */
-    public function createNever($filter, $existingTracks)
+    public function createNever()
     {
         return false;
     }
     
     /**
+     * Create when current appointment is not assigned to this field already
+     * 
+     * @param \Gems\Agenda\AppointmentFilterInterface $filter
+     * @param \Gems_Tracker_RespondentTrack $respTrack
+     * 
+     * @return boolean
+     */
+    public function createWhenNotInThisTrack($filter, $respTrack)
+    {
+        $createTrack = true;
+        
+        $data = $respTrack->getFieldData();
+        if (isset($data[$filter->getFieldId()]) &&
+                ($this->getId() == $data[$filter->getFieldId()])) {
+            $createTrack = false;
+        }
+        
+        return $createTrack;
+    }
+            
+    /**
      * Only return true when no open track exists
      * 
      * @param \Gems\Agenda\AppointmentFilterInterface $filter
-     * @param Array[]\Gems_Tracker_RespondentTrack[] $existingTracks
+     * @param \Gems_Tracker_RespondentTrack $respTrack
+     * 
      * @return boolean
      */
-    public function createWhenNoOpen($filter, $existingTracks)
+    public function createWhenNoOpen($filter, $respTrack)
     {
-        $trackId     = $filter->getTrackId();
-        $createTrack = true;
+        // If an open track of this type exists: do not create a new one
+        $createTrack = !$respTrack->isOpen();
 
-        $tracks = array_key_exists($trackId, $existingTracks) ? $existingTracks[$trackId] : [];
-        
-        foreach($tracks as $respTrack) {
-            /* @var $respTrack \Gems_Tracker_RespondentTrack */
-            if (!$respTrack->hasSuccesCode()) { continue; }            
-            
-            // If an open track of this type exists: do not create a new one
-            if ($respTrack->isOpen()) {
-                $createTrack = false;
-                break;
-            }
-
-            // A closed tracks exist.
-            // Is there one that ended less than wait days ago
-            $curr = $this->getAdmissionTime();
-            $end  = $respTrack->getEndDate();
-            $wait = $filter->getWaitDays();
-            if (($wait === null) || (! $end) || ($curr->diffDays($end) <= $wait)) {
-                $createTrack = false;
-                break;
-            }
-
-            // Track has already been assigned
-            $data = $respTrack->getFieldData();
-            if (isset($data[$filter->getFieldId()]) &&
-                    ($this->getId() == $data[$filter->getFieldId()])) {
-                $createTrack = false;
-                break;
-            }
+        if ($createTrack) {
+            $createTrack = $this->createAfterWaitDays($filter, $respTrack);
         }
         
+        if ($createTrack) {
+            $createTrack = $this->createWhenNotInThisTrack($filter, $respTrack);
+        }
+
         return $createTrack;
     }
 

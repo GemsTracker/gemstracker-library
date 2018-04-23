@@ -1,106 +1,85 @@
 <?php
+
 /**
  * Description of AppointmentTest
  *
  * @author Menno Dekker <menno.dekker@erasmusmc.nl>
  */
-class AppointmentTest  extends PHPUnit_Framework_TestCase {
+class AppointmentTest extends PHPUnit_Framework_TestCase
+{
 
-    protected $appointment;
-    
-    public function setUp() {
-        parent::setUp();
-        
-        $this->appointment = new \Gems_Agenda_Appointment(1);
+    /**
+     * Get a mock for the respondentTrack
+     * 
+     * @param \MUtil_Date|null $endDate
+     *
+     * @return \Gems_Tracker_RespondentTrack
+     */
+    protected function _getRespondentTrack($endDate = null)
+    {
+        $respTrack = $this->getMockBuilder('Gems_Tracker_RespondentTrack')
+                ->disableOriginalConstructor()
+                ->getMock();
+
+        $respTrack->expects($this->any())
+                ->method('getEndDate')
+                ->will($this->returnValue($endDate));
+
+        return $respTrack;
     }
-    
-    protected function _checkCreate($type, $methodAsked, $expected, $filter = null, $existingTracks = []) {
-        if (is_null($filter)) {
-            $filter = new \Gems\Agenda\Filter\SubjectAppointmentFilter();
-            $filter->exchangeArray(['gtap_create_track'=>$type]);
+
+    /**
+     * 
+     * @dataProvider createAfterWaitDays_NoEndDateProvider
+     * @param type $endDate
+     * @param type $waitDays
+     */
+    public function testCreateAfterWaitDays_NoEndDate($expected, $waitDays, $endDate)
+    {
+        $appointmentDate = new \MUtil_Date('2018-01-01', 'yyyy-MM-dd');
+
+        if ($endDate) {
+            $trackEndDate = clone $appointmentDate;
+            $trackEndDate->subDay(5);
+            $respTrack    = $this->_getRespondentTrack($trackEndDate);
+        } else {
+            $respTrack = $this->_getRespondentTrack();
         }
-        
-        $this->assertEquals($methodAsked, $this->appointment->getCreatorCheckMethod($type));
-        $this->assertEquals($expected, $this->appointment->$methodAsked($filter, $existingTracks));
-    }
-    
-    public function testCreateAlways()
-    {
-        $this->_checkCreate(2, 'createAlways', true);
-    }
-    
-    public function testCreateNever()
-    {
-        $this->_checkCreate(0, 'createNever', false);        
-    }
-    
-    public function testCreateWhenNoOpen_NoTrack()
-    {
-        // When no track exists
-        $this->_checkCreate(1, 'createWhenNoOpen', true);
-    }
-    
-    public function testCreateWhenNoOpen_OtherTrackId()
-    {
-        // When no track exists
-        $this->_checkCreate(1, 'createWhenNoOpen', true);
-        
-        // When track exists, but for a different id
-        $existingTracks[9][] = 1;
+
+        $appointment = new \Gems_Agenda_Appointment([
+            'gap_id_appointment' => 1,
+            'gap_admission_time' => $appointmentDate
+        ]);
+
         $filter = new \Gems\Agenda\Filter\SubjectAppointmentFilter();
         $filter->exchangeArray([
-            'gtap_create_track'=>1,
-            'gtap_id_track' => 2
-            ]);
-        
-        $this->assertEquals(true, $this->appointment->createWhenNoOpen($filter, $existingTracks));        
+            'gtap_create_track'     => 1,
+            'gtap_id_track'         => 2,
+            'gtap_create_wait_days' => $waitDays
+        ]);
+
+        $this->assertEquals($expected, $appointment->createAfterWaitDays($filter, $respTrack));
     }
-    
-    public function testCreateWhenNoOpen_NoSuccess() {
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+
+    public function createAfterWaitDays_NoEndDateProvider()
+    {
+        return [
+            [false, 2, false],
+            [true, 2, true],
+            [false, 5, true],
+            [false, 6, true],
+        ];
     }
-    
-    public function testCreateWhenNoOpen_NotOpen() {
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+
+    public function testCreateNever()
+    {
+        $appointment = new \Gems_Agenda_Appointment(1);
+        $filter      = new \Gems\Agenda\Filter\SubjectAppointmentFilter();
+        $filter->exchangeArray(['gtap_create_track' => 0]);
+
+        $respTrack = $this->_getRespondentTrack();
+
+        $this->assertEquals(false, $appointment->createNever($filter, $respTrack));
     }
-    
-    public function testCreateWhenNoOpen_NoWaitDays() {
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
-    
-    public function testCreateWhenNoOpen_NeEndDate() {
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
-    
-    public function testCreateWhenNoOpen_LessThanWaitDays() {
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
-    
-    public function testCreateWhenNoOpen_EqualsWaitDays() {
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
-    
-    public function testCreateWhenNoOpen_AlreadyAssgined() {
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
-    
-    public function testCreateWhenNoOpen_Create() {
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
+
 }
