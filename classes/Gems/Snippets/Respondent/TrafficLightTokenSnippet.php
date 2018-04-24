@@ -232,7 +232,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
      * @return boolean
      */
     protected function _isCompleted($tokenData) {
-        return isset($tokenData['gto_completion_time']) && $tokenData['gto_completion_time'];
+        return ($tokenData['token_status'] == "A");
     }
 
     /**
@@ -242,19 +242,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
      * @return boolean
      */
     protected function _isMissed($tokenData) {
-        $missed = false;
-
-        if (isset($tokenData['gto_valid_until'])) {
-            $date = $tokenData['gto_valid_until'];
-            if ($date instanceof \MUtil_Date) {
-                $now = new \MUtil_Date();
-                if ($now->getTimestamp() - $date->getTimestamp() > 0) {
-                    $missed = true;
-                }
-            }
-        }
-
-        return $missed;
+        return in_array($tokenData['token_status'], ['M', 'I']);
     }
     
     /**
@@ -264,19 +252,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
      * @return boolean
      */
     protected function _isValid($tokenData) {
-        $valid = false;
-
-        if (isset($tokenData['gto_valid_from'])) {
-            $date = $tokenData['gto_valid_from'];
-            if ($date instanceof \MUtil_Date) {
-                $now = new \MUtil_Date();
-                if ($now->getTimestamp() - $date->getTimestamp() > 0 && !$this->_isMissed($tokenData)) {
-                    $valid = true;
-                }
-            }
-        }
-
-        return $valid;
+        return in_array($tokenData['token_status'], ['O', 'P']);
     }
 
     protected function _loadData() {
@@ -337,6 +313,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                     $tooltip[] = sprintf($this->_('Result') .': %s', $tokenData['gto_result']);
                 }
                 $this->_completed++;
+                $tokenLink->target = 'inline';
                 break;
                 
             case 'O': // Open
@@ -369,13 +346,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                 break;
         }
 
-        if (!empty($tokenLink)) {
-            if ($this->_isCompleted($tokenData)) {
-                $tokenLink->target = 'inline';
-            } else {
-                $tokenLink->target = '_self';
-            }
-        } else {
+        if (empty($tokenLink)) {
             $tokenClass .= ' disabled';
             $tokenLink = $this->creator->div(array('class'=>'disabled'));
         }
@@ -466,19 +437,21 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
     }    
 
     protected function finishGroup($progressDiv) {
-        if (!is_null($progressDiv)) {
-            if (!$this->_missed == 0) {
-                $progressDiv->div($this->_missed, array('class' => 'missed'));
-            }
-            if (!$this->_completed == 0) {
-                $progressDiv->div($this->_completed, array('class' => 'answered'));
-            }
-            if (!$this->_open == 0) {
-                $progressDiv->div($this->_open, array('class' => 'open'));
-            }
-            if (!$this->_future == 0) {
-                $progressDiv->div($this->_future, array('class' => 'waiting'));
-            }
+        if (is_null($progressDiv)) {
+            return;
+        }
+        
+        if ($this->_missed > 0) {
+            $progressDiv->div($this->_missed, array('class' => 'missed'));
+        }
+        if ($this->_completed > 0) {
+            $progressDiv->div($this->_completed, array('class' => 'answered'));
+        }
+        if ($this->_open > 0) {
+            $progressDiv->div($this->_open, array('class' => 'open'));
+        }
+        if ($this->_future > 0) {
+            $progressDiv->div($this->_future, array('class' => 'waiting'));
         }
 
         $this->_missedTrack    = $this->_missedTrack + $this->_missed;
@@ -490,8 +463,6 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
         $this->_missed    = 0;
         $this->_open      = 0;
         $this->_future    = 0;
-
-        return;
     }
 
     protected function finishTrack($progressDiv) {
