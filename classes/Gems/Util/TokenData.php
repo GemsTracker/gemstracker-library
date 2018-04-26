@@ -214,9 +214,9 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
             case 'W':
                 return 'grc_success = 1 AND gto_valid_from > CURRENT_TIMESTAMP';
             case 'I':
-                return 'grc_success = 1 AND gto_in_source = 1 AND gto_valid_until < CURRENT_TIMESTAMP';
+                return 'grc_success = 1 AND gto_completion_time IS NULL AND gto_in_source = 1 AND gto_valid_until < CURRENT_TIMESTAMP';
             case 'M':
-                return 'grc_success = 1 AND gto_in_source = 0 AND gto_valid_until < CURRENT_TIMESTAMP';
+                return 'grc_success = 1 AND gto_completion_time IS NULL AND gto_in_source = 0 AND gto_valid_until < CURRENT_TIMESTAMP';
             case 'P':
                 return 'grc_success = 1 AND gto_completion_time IS NULL AND (gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP) AND gto_in_source = 1';
             case 'O':

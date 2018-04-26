@@ -89,7 +89,7 @@ class TrackTokenOverviewSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
                         ));
 
         // Add token status
-        $bridge->td($tData->getTokenStatusLinkForBridge($bridge, false));
+        $bridge->td($tData->getTokenStatusLinkForBridge($bridge, false))->appendAttrib('class', 'text-right');
 
         // Columns
         $bridge->addSortable('gsu_survey_name')
