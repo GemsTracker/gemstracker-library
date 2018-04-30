@@ -1499,6 +1499,14 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         if (! $this->_gemsData['gto_in_source']) {
             $values['gto_start_time'] = new \MUtil_Db_Expr_CurrentTimestamp();
             $values['gto_in_source']  = 1;
+            
+            $oldTokenId = $this->getCopiedFrom();
+            if ($oldTokenId) {
+                $oldToken = $this->tracker->getToken($oldTokenId);
+                if ($oldToken->getReceptionCode()->hasRedoCopyCode()) {
+                    $this->setRawAnswers($oldToken->getRawAnswers()); 
+                }
+            }
         }
         $values['gto_by']         = $userId;
         $values['gto_return_url'] = $this->calculateReturnUrl();

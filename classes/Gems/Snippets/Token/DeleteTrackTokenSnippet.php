@@ -235,9 +235,11 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
                 $this->token->setNextToken($newToken);
 
                 // Copy answers when requested.
+                /* Copy moved to \Gems_Track_Token->getUrl()
                 if ($code->hasRedoCopyCode()) {
                     $newToken->setRawAnswers($this->token->getRawAnswers());
                 }
+                */
             }
         }
 
