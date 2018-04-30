@@ -42,7 +42,7 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends \Gems_Snippets_Mod
      *
      * @var string
      */
-    protected $class = 'browser table answer';
+    protected $class = 'browser table answer compliance';
 
     /**
      *
@@ -116,6 +116,12 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends \Gems_Snippets_Mod
     protected $tokenId;
 
     /**
+     *
+     * @var \Gems_Util
+     */
+    protected $util;
+
+    /**
      * Adds columns from the model to the bridge that creates the browse table.
      *
      * Overrule this function to add different columns to the browse table, without
@@ -135,7 +141,11 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends \Gems_Snippets_Mod
         }
 
         $bridge->th($this->_('Status'));
-        $td = $bridge->tdh(\MUtil_Lazy::first($bridge->grc_description, $this->_('OK')));
+        $td = $bridge->tdh([
+            $this->util->getTokenData()->getTokenStatusLinkForBridge($bridge),
+            ' ',
+            \MUtil_Lazy::first($bridge->grc_description, $this->_('OK')),
+            ]);
         $td->appendAttrib('class', $selectedClass);
 
         $bridge->th($this->_('Question'));
@@ -251,6 +261,8 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends \Gems_Snippets_Mod
     protected function createModel()
     {
         $model = $this->token->getSurveyAnswerModel($this->locale->getLanguage());
+
+        $model->addColumn($this->util->getTokenData()->getStatusExpression(), 'token_status');
 
         $model->set('gto_valid_from', 'dateFormat', $this->dateFormat);
         $model->set('gto_completion_time', 'dateFormat', $this->dateFormat);

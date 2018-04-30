@@ -285,7 +285,7 @@ class ShowTrackTokenSnippet extends \Gems_Tracker_Snippets_ShowTokenSnippetAbstr
      * @param \Gems_Menu_MenuList $links
      * @return boolean True when there was row output
      */
-    protected function addTrackGroup(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model, \Gems_Menu_MenuList $links)
+    protected function addTrackGroup(\Gems_Model_Bridge_ThreeColumnTableBridge $bridge, \MUtil_Model_ModelAbstract $model, \Gems_Menu_MenuList $links)
     {
         $item = $this->menu->findAllowedController('track', 'show-track');
         if ($item) {
@@ -311,7 +311,7 @@ class ShowTrackTokenSnippet extends \Gems_Tracker_Snippets_ShowTokenSnippetAbstr
      * @param \Gems_Menu_MenuList $links
      * @return boolean True when there was row output
      */
-    protected function addValidFromBlock(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model, \Gems_Menu_MenuList $links)
+    protected function addValidFromBlock(\Gems_Model_Bridge_ThreeColumnTableBridge $bridge, \MUtil_Model_ModelAbstract $model, \Gems_Menu_MenuList $links)
     {
         // Editable part (INFO / VALID FROM / UNTIL / E-MAIL
         $button = $links->getActionLink($this->request->getControllerName(), 'edit', true);
