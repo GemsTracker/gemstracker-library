@@ -179,7 +179,7 @@ class Gems_Tracker_Token_TokenValidator extends \MUtil_Registry_TargetAbstract i
         }
 
         $token = $this->tracker->getToken($value);
-        if ($token && $token->exists) {
+        if ($token && $token->exists && $token->getReceptionCode()->isSuccess()) {
             $currentDate = new \MUtil_Date();
 
             if ($completionTime = $token->getCompletionTime()) {
