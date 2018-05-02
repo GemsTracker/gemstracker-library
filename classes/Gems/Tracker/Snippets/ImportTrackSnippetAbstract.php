@@ -246,7 +246,7 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
         $form = $bridge->getForm();
 
         $surveyHeader = $form->createElement('Html', 'sheader1');
-        $surveyHeader->h2($this->_('Survey export code links'));
+        $surveyHeader->h3($this->_('Survey export code links'));
         $form->addElement($surveyHeader);
 
         $surveySubHeader = $form->createElement('Html', 'sheader2');
@@ -301,7 +301,7 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
             if ($this->nextDisabled) {
                 $element->pInfo($this->_('Errors occurred during import!'));
             } else {
-                $element->h2($this->_('Track created successfully!'));
+                $element->h3($this->_('Track created successfully!'));
                 $element->pInfo($this->_('Click the "Finish" button to see the track.'));
             }
         } else {
@@ -393,7 +393,7 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
             if ($this->nextDisabled) {
                 $element->pInfo($this->_('Import errors occurred!'));
             } else {
-                $element->h2($this->_('Import checks OK!'));
+                $element->h3($this->_('Import checks OK!'));
                 $element->pInfo($this->_('Click the "Next" button to continue.'));
             }
         } else {
@@ -490,7 +490,7 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
             if ($this->nextDisabled) {
                 $element->pInfo($this->_('Merge errors occurred!'));
             } else {
-                $element->h2($this->_('Tracks mergeded successfully!'));
+                $element->h3($this->_('Tracks mergeded successfully!'));
                 $element->pInfo($this->_('Click the "Finish" button to see the merged track.'));
             }
         } else {
