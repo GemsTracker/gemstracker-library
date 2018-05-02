@@ -33,7 +33,7 @@ class Gems_Snippets_Export_ReportHeaderSnippet extends \MUtil_Snippets_SnippetAb
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
         $html = $this->getHtmlSequence();
-        $html->h1($this->_('Respondent report'));
+        $html->h2($this->_('Respondent report'));
 
         $table = $html->table(array('class' => 'browser'));
 

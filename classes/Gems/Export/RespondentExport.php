@@ -340,7 +340,7 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
         $trackModel->setFilter(array('gr2t_id_respondent_track' => $respTrack->getRespondentTrackId()));
         $trackData = $trackModel->loadFirst();
 
-        $this->html->h3($this->_('Track') . ' ' . $trackData['gtr_track_name']);
+        $this->html->h4($this->_('Track') . ' ' . $trackData['gtr_track_name']);
 
         $bridge = $trackModel->getBridgeFor('itemTable', array('class' => 'browser table'));
         $bridge->setRepeater(\MUtil_Lazy::repeat(array($trackData)));

@@ -506,7 +506,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
      */
     protected function addEscortReport()
     {
-        $this->html->h2('Project and escort class report');
+        $this->html->h3('Project and escort class report');
 
         $escortClass   = get_class($this->escort);
         $foundNone     = true;
@@ -582,7 +582,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             return false;
         }
 
-        $this->html->h2(sprintf('Report on file %s', substr($fileinfo->getPathname(), strlen(GEMS_ROOT_DIR) + 1)));
+        $this->html->h3(sprintf('Report on file %s', substr($fileinfo->getPathname(), strlen(GEMS_ROOT_DIR) + 1)));
         foreach ($messages as $message) {
             $this->html->pInfo($message);
         }
@@ -603,7 +603,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             $output = $this->addFileReport($filename) || $output;
         }
         if ($this->appNamespaceError) {
-            $sCode->h2('Code change issues found');
+            $sCode->h3('Code change issues found');
             $sCode->pInfo('The application code has code change issues. You can try to fix them by running this phing script:');
             $sCode->pre(
                     'cd ' . APPLICATION_PATH . "\n" .
@@ -614,7 +614,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             $p->append('. Then run the script and check again for issues not fixed by the script.');
 
         } elseif (! $output) {
-            $this->html->h2('Code change report');
+            $this->html->h3('Code change report');
             $this->html->pInfo('No compatibility issues found in the code for this project.');
         }
     }
@@ -624,7 +624,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
      */
     protected function addProjectIniReport()
     {
-        $h2     = $this->html->h2();
+        $h3     = $this->html->h3();
         $issues = false;
         if (! $this->project->offsetExists('headers')) {
             $this->html->pInfo('No headers section found.');
@@ -644,10 +644,10 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
         }
 
         if ($issues) {
-            $h2->append('Project.ini issues found');
+            $h3->append('Project.ini issues found');
             $this->html->pInfo()->strong('See project.example.ini for examples of fixes.');
         } else {
-            $h2->append('Project.ini report');
+            $h3->append('Project.ini report');
             $this->html->pInfo('No compatibility issues found in project.ini.');
         }
     }
@@ -694,7 +694,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
         $this->html = $this->getHtmlSequence();
 
         $versions = $this->loader->getVersions();
-        $this->html->h1(sprintf(
+        $this->html->h2(sprintf(
                 'Upgrade compatibility report for GemsTracker %s, build %d',
                 $versions->getGemsVersion(),
                 $versions->getBuild()

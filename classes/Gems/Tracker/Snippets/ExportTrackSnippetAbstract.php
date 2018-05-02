@@ -117,7 +117,7 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
                 $this->_('%s track export. Step %d of %d.'),
                 $this->trackEngine->getTrackName(),
                 $step,
-                $this->getStepCount()), 'h1');
+                $this->getStepCount()), 'h2');
 
         switch ($step) {
             case 2:

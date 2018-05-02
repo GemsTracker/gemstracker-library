@@ -64,7 +64,7 @@ class Gems_Snippets_Export_RespondentSnippet extends \MUtil_Snippets_SnippetAbst
         $tableContainer = \MUtil_Html::create()->div(array('class' => 'table-container'));
         $tableContainer[] = $bridge->getTable();
 
-        $html->h2($this->_('Respondent information') . ': ' . $respondentId);
+        $html->h3($this->_('Respondent information') . ': ' . $respondentId);
         $html[] = $tableContainer;
         $html->hr();
 

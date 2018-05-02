@@ -106,7 +106,7 @@ class StructuralChanges extends \MUtil_Snippets_SnippetAbstract
         $seq->append($this->_getSelectForm());
 
         $div = $seq->div(array('id' => 'autofilter_target'));
-        $div->h1(sprintf($this->_('Structural changes in patch level %d'), $patchLevel));
+        $div->h2(sprintf($this->_('Structural changes in patch level %d'), $patchLevel));
         $div->pInfo($this->_('Download: '))
                 ->a(
                         array('download' => 1, 'gpa_level' => $patchLevel),
@@ -120,11 +120,11 @@ class StructuralChanges extends \MUtil_Snippets_SnippetAbstract
 
         foreach ($this->getStructuralPatches($patchLevel) as $patch) {
             if ($patch['gpa_location'] != $lastLocation) {
-                $div->h2(sprintf($this->_('Group %s'), $patch['gpa_location']));
+                $div->h3(sprintf($this->_('Group %s'), $patch['gpa_location']));
                 $lastLocation = $patch['gpa_location'];
             }
             if ($patch['gpa_name'] != $lastName) {
-                $div->h3(sprintf($this->_('Patch %s'), $patch['gpa_name']));
+                $div->h4(sprintf($this->_('Patch %s'), $patch['gpa_name']));
                 $lastName = $patch['gpa_name'];
             }
             $div->pre(wordwrap($patch['gpa_sql'], 80, "\n    "));

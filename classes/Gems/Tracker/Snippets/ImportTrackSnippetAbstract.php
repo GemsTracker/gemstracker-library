@@ -323,7 +323,7 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
      */
     protected function addStepElementsFor(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model, $step)
     {
-        $this->displayHeader($bridge, $this->getFormTitle($step), 'h1');
+        $this->displayHeader($bridge, $this->getFormTitle($step), 'h2');
 
         switch ($step) {
             case 2:

@@ -144,7 +144,7 @@ class Gems_Default_UpgradeAction extends \Gems_Controller_Action
      */
     public function indexAction()
     {
-        $this->html->h3($this->getTopicTitle());
+        $this->html->h2($this->getTopicTitle());
 
         $displayColumns = array('link'     => '',
                                 'context'  => $this->_('Context'),
@@ -170,7 +170,7 @@ class Gems_Default_UpgradeAction extends \Gems_Controller_Action
      */
     public function showAction()
     {
-        $this->html->h3($this->getTopicTitle());
+        $this->html->h2($this->getTopicTitle());
 
         $context = $this->_getParam('id', 'gems');
         $this->_upgrades->setContext($context);

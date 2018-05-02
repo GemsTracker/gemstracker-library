@@ -35,7 +35,7 @@ class ContentTitleSnippet extends \MUtil_Snippets_SnippetAbstract
      *
      * @var string
      */
-    protected $tagName = 'h3';
+    protected $tagName = 'h2';
 
     /**
      * Create the snippets content
