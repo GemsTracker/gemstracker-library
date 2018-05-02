@@ -313,27 +313,22 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
     {
         if ('A' == $tokenStatus || 'P' == $tokenStatus || 'I' == $tokenStatus) {
             $menuItem = $this->_getAnswerMenuItem();
+            $label    = $menuItem->get('label');
 
-            if ($keepCaps) {
-                $link = $menuItem->toActionLink([
+            $link = $menuItem->toActionLink(
+                ($keepCaps ? $label : strtolower($label)),
+                [
                     'gto_id_token' => $tokenId,
                     'gto_in_source' => 1,
                     \Gems_Model::ID_TYPE => 'token',
                 ]);
-            } else {
-                $link = $menuItem->toActionLinkLower([
-                    'gto_id_token' => $tokenId,
-                    'gto_in_source' => 1,
-                    \Gems_Model::ID_TYPE => 'token',
-                ]);
-            }
 
             if ($link) {
                 $link->title = sprintf($this->_('See answers for token %s'), strtoupper($tokenId));
 
                 return $link;
             }
-
+            
         }
     }
 
@@ -369,33 +364,22 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
     public function getTokenAskButton($tokenId, $tokenStatus, $staffToken, $keepCaps)
     {
         if ('O' == $tokenStatus || 'P' == $tokenStatus) {
-            if ($staffToken) {
+            if (!$staffToken) {
                 $menuItem = $this->_getAskMenuItem();
+                $label    = $menuItem->get('label');
 
                 if ('P' == $tokenStatus) {
                     $label = $this->_('Continue');
-                    $link = $menuItem->toActionLink(
-                            ($keepCaps ? $label : strtolower($label)),
-                            [
-                                'gto_id_token' => $tokenId,
-                                'can_be_taken' => 1,
-                                \Gems_Model::ID_TYPE => 'token',
-                            ]);
-                } else {
-                    if ($keepCaps) {
-                        $link = $menuItem->toActionLink([
-                            'gto_id_token' => $tokenId,
-                            'can_be_taken' => 1,
-                            \Gems_Model::ID_TYPE => 'token',
-                        ]);
-                    } else {
-                        $link = $menuItem->toActionLinkLower([
-                            'gto_id_token' => $tokenId,
-                            'can_be_taken' => 1,
-                            \Gems_Model::ID_TYPE => 'token',
-                        ]);
-                    }
                 }
+                
+                $link = $menuItem->toActionLink(
+                    ($keepCaps ? $label : strtolower($label)),
+                    [
+                        'gto_id_token' => $tokenId,
+                        'can_be_taken' => 1,
+                        \Gems_Model::ID_TYPE => 'token',
+                    ]);
+                
                 if ($link) {
                     $link->title = sprintf($this->_('Answer token %s'), strtoupper($tokenId));
 
