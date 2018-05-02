@@ -141,6 +141,6 @@ class Gems_Tracker_Source_LimeSurvey2m00Database extends \Gems_Tracker_Source_Li
         } else {
             $start .= 'index.php?r=';
         }
-        return $start . 'survey/index/sid/' . $sourceSurveyId . '/token/' . $tokenId . $langUrl;
+        return $start . 'survey/index/sid/' . $sourceSurveyId . '/token/' . $tokenId . $langUrl . '/newtest/Y';
     }
 }
