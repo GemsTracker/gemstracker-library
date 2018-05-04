@@ -1,14 +1,13 @@
 <?php
 
 /**
- * The organization model
+ * The Respondent Relation model
  *
  * @package    Gems
  * @subpackage Model
  * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: RespondentRelationModel.php 2763 2015-10-30 18:33:48Z matijsdejong $
  */
 
 /**
@@ -26,12 +25,6 @@ class Gems_Model_RespondentRelationModel extends \Gems_Model_JoinModel {
      */
     protected $loader;
 
-    /**
-     *
-     * @var \Zend_Translate
-     */
-    protected $translate;
-
     public function __construct($name = null, $startTable = null, $fieldPrefix = null, $saveable = null) {
         parent::__construct('respondent_relation', 'gems__respondent_relations', 'grr');
 
@@ -43,11 +36,6 @@ class Gems_Model_RespondentRelationModel extends \Gems_Model_JoinModel {
 
         // Do not really delete but make inactive so we can always display old relations
         $this->setDeleteValues('grr_active', 0);
-    }
-
-    public function _($text, $locale = null)
-    {
-        return $this->translate->getAdapter()->_($text, $locale);
     }
 
     public function applyBrowseSettings()
