@@ -1,3 +1,3 @@
-*.php text eol=auto
+*.php text=auto
 
 /tests/data/controller/* text eol=lf
