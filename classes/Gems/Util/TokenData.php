@@ -364,7 +364,7 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
     public function getTokenAskButton($tokenId, $tokenStatus, $staffToken, $keepCaps)
     {
         if ('O' == $tokenStatus || 'P' == $tokenStatus) {
-            if (!$staffToken) {
+            if ($staffToken) {
                 $menuItem = $this->_getAskMenuItem();
                 $label    = $menuItem->get('label');
 
