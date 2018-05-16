@@ -28,6 +28,11 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
     const APPOINTMENT_ID = 'aid';
 
     /**
+     * Request key for episodes of care
+     */
+    const EPISODE_ID = 'eid';
+
+    /**
      * Request key for track fields
      */
     const FIELD_ID = 'fid';
@@ -140,6 +145,16 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
     public function createAppointmentModel()
     {
         return $this->_loadClass('AppointmentModel', true);
+    }
+
+    /**
+     * Load project specific application model or general Gems model otherwise
+     *
+     * @return \Gems_Model_AppointmentModel
+     */
+    public function createEpisodeOfCareModel()
+    {
+        return $this->_loadClass('EpisodeOfCareModel', true);
     }
 
     /**

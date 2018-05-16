@@ -4,6 +4,8 @@ CREATE TABLE if not exists gems__appointments (
         gap_id_user             bigint unsigned not null references gems__respondents (grs_id_user),
         gap_id_organization     bigint unsigned not null references gems__organizations (gor_id_organization),
 
+        gap_id_episode          bigint unsigned null references gems__episodes_of_care (gec_episode_of_care_id),
+
         gap_source              varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'manual',
         gap_id_in_source        varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
         gap_manual_edit         boolean not null default 0,

@@ -1349,5 +1349,9 @@ UPDATE gems__groups SET ggp_respondent_show = 'Gems\\Screens\\Respondent\\Show\\
     WHERE ggp_respondent_show IS NULL;
 
 --PATCH: Change create track from boolean to int
-ALTER TABLE  `gems__track_appointments` 
+ALTER TABLE  `gems__track_appointments`
     CHANGE  `gtap_create_track`  `gtap_create_track` INT( 1 ) NOT NULL DEFAULT  '0';
+
+-- PATCH: Add care episodes to appointments
+ALTER TABLE  gems__appointments
+    ADD gap_id_episode bigint unsigned null AFTER gap_id_organization;

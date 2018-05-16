@@ -238,6 +238,7 @@ class Gems_Default_AppointmentAction extends \Gems_Default_RespondentChildAction
 
         return $this->_respondent;
     }
+
     /**
      * Helper function to allow generalized statements about the items in the model.
      *

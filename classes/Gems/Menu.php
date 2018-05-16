@@ -303,6 +303,17 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
                     ->addNamedParameters(\Gems_Model::SURVEY_ID, 'gsu_id_survey')
                     ->setHiddenOrgId($orgId);
 
+        // Add "episodes of care"
+        $epiParams = array(\Gems_Model::EPISODE_ID => 'gec_episode_of_care_id'); // + $params;
+        $epage = $rPage->addPage($this->_('Episodes'), 'pr.episodes', 'care-episode');
+        $epage->setNamedParameters($params)
+                ->setHiddenOrgId($orgId);
+        $epage->addAutofilterAction();
+        $epage->addCreateAction()->setNamedParameters($params)->setHiddenOrgId($orgId);
+        $epage = $epage->addShowAction()->setNamedParameters($epiParams);
+        $epage->addEditAction()->setNamedParameters($epiParams);
+        $epage->addDeleteAction()->setNamedParameters($epiParams);
+
         // Add "appointments"
         $appParams = array(\Gems_Model::APPOINTMENT_ID => 'gap_id_appointment'); // + $params;
         $apage = $rPage->addPage($this->_('Appointments'), 'pr.appointments', 'appointment');

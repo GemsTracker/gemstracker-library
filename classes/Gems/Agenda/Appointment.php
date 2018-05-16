@@ -83,10 +83,10 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
             // loading occurs in checkRegistryRequestAnswers
         }
     }
-    
+
     /**
      * Create a new track for this appointment and the given filter
-     * 
+     *
      * @param \Gems\Agenda\AppointmentFilterInterface $filter
      * @param \Gems_Tracker $tracker
      */
@@ -107,7 +107,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
                 $trackData,
                 $fields
                 );
-        
+
         return $respTrack;
     }
 
@@ -135,36 +135,36 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
             }
         }
     }
-    
+
     /**
      * Check if a track should be created for any of the filters
-     * 
+     *
      * @param \Gems\Agenda\AppointmentFilterInterface[] $filters
      * @param array $existingTracks
      * @param \Gems_Tracker $tracker
-     * 
+     *
      * @return int Number of tokenchanges
      */
     protected function checkCreateTracks($filters, $existingTracks, $tracker)
     {
         $tokenChanges = 0;
-        
+
         // Check for tracks that should be created
         foreach ($filters as $filter) {
             if (!$filter->isCreator()) { continue; }
 
             // Find the method to use for this creator type
-            $method      = $this->getCreatorCheckMethod($filter->getCreatorType());                        
+            $method      = $this->getCreatorCheckMethod($filter->getCreatorType());
             $trackId     = $filter->getTrackId();
             $tracks      = array_key_exists($trackId, $existingTracks) ? $existingTracks[$trackId] : [];
-        
+
             foreach($tracks as $respTrack) {
                 /* @var $respTrack \Gems_Tracker_RespondentTrack */
                 if (!$respTrack->hasSuccesCode()) { continue; }
-                
+
                 $createTrack = $this->$method($filter, $respTrack);
-                if ($createTrack === false) { 
-                    break;  // Stop checking                        
+                if ($createTrack === false) {
+                    break;  // Stop checking
                 }
             }
 
@@ -176,8 +176,8 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
                 $tokenChanges += $respTrack->getCount();
             }
         }
-        
-        return $tokenChanges;        
+
+        return $tokenChanges;
     }
 
     /**
@@ -194,17 +194,17 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
 
         return $this->exists;
     }
-    
+
     /**
      * Has the track ended <wait days> ago?
-     * 
+     *
      * @param \Gems\Agenda\AppointmentFilterInterface $filter
      * @param \Gems_Tracker_RespondentTrack $respTrack
-     * 
+     *
      * @return boolean
      */
     public function createAfterWaitDays($filter, $respTrack)
-    {        
+    {
         $createTrack = true;
         $curr        = $this->getAdmissionTime();
         $end         = $respTrack->getEndDate();
@@ -213,72 +213,72 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
         if ( (! $end) || ($curr->diffDays($end) <= $wait)) {
                 $createTrack = false;
         }
-        
+
         return $createTrack;
-    }    
-    
+    }
+
     /**
-     * Always report the track should be created 
-     * 
+     * Always report the track should be created
+     *
      * @param \Gems\Agenda\AppointmentFilterInterface $filter
      * @param \Gems_Tracker_RespondentTrack $respTrack
-     * 
+     *
      * @return boolean
      */
     public function createAlways($filter, $respTrack)
     {
         $createTrack = $this->createAfterWaitDays($filter, $respTrack);
-        
+
         if ($createTrack) {
             $createTrack = $this->createWhenNotInThisTrack($filter, $respTrack);
         }
-        
+
         return $createTrack;
     }
-    
+
     /**
      * Always return the track should NOT be created
-     * 
+     *
      * This should never be called as 0 is not a creator, the code is here just
      * to make sure calling without checking has the correct result
-     * 
+     *
      * @param \Gems\Agenda\AppointmentFilterInterface $filter
      * @param \Gems_Tracker_RespondentTrack $respTrack
-     * 
+     *
      * @return boolean
      */
     public function createNever()
     {
         return false;
     }
-    
+
     /**
      * Create when current appointment is not assigned to this field already
-     * 
+     *
      * @param \Gems\Agenda\AppointmentFilterInterface $filter
      * @param \Gems_Tracker_RespondentTrack $respTrack
-     * 
+     *
      * @return boolean
      */
     public function createWhenNotInThisTrack($filter, $respTrack)
     {
         $createTrack = true;
-        
+
         $data = $respTrack->getFieldData();
         if (isset($data[$filter->getFieldId()]) &&
                 ($this->getId() == $data[$filter->getFieldId()])) {
             $createTrack = false;
         }
-        
+
         return $createTrack;
     }
-            
+
     /**
      * Only return true when no open track exists
-     * 
+     *
      * @param \Gems\Agenda\AppointmentFilterInterface $filter
      * @param \Gems_Tracker_RespondentTrack $respTrack
-     * 
+     *
      * @return boolean
      */
     public function createWhenNoOpen($filter, $respTrack)
@@ -289,7 +289,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
         if ($createTrack) {
             $createTrack = $this->createAfterWaitDays($filter, $respTrack);
         }
-        
+
         if ($createTrack) {
             $createTrack = $this->createWhenNotInThisTrack($filter, $respTrack);
         }
@@ -365,10 +365,10 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
     {
         return $this->_gemsData['gap_comment'];
     }
-    
+
     /**
      * Get method to call to check track creation
-     * 
+     *
      * @param int $type
      * @return string The method to call in this class
      */
@@ -379,7 +379,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
             1 => 'createWhenNoOpen',
             2 => 'createAlways'
         ];
-        
+
         // No checks, when type does not exists this is an error we want to be thrown
         return $methods[$type];
     }
@@ -400,6 +400,15 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
         $results[] = $this->getSubject();
 
         return implode($this->_('; '), array_filter($results));
+    }
+
+    /**
+     *
+     * @return int
+     */
+    public function getEpisodeId()
+    {
+        return $this->_gemsData['gap_id_episode'];
     }
 
     /**
@@ -601,7 +610,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
         if ($this->currentUser instanceof \Gems_User_User) {
             $this->_gemsData = $this->currentUser->applyGroupMask($this->_gemsData);
         }
-        
+
         return $this;
     }
 
@@ -613,8 +622,8 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
     public function updateTracks()
     {
         $tokenChanges = 0;
-        $tracker      = $this->loader->getTracker();        
-        
+        $tracker      = $this->loader->getTracker();
+
         // Find all the fields that use this agenda item
         $select = $this->db->select();
         $select->from('gems__respondent2track2appointment', array('gr2t2a_id_respondent_track'))
@@ -662,11 +671,11 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
                 $existingTracks[$trackId][] = $respTrack;
             }
         }
-        
+
         // Only check if we need to create when this appointment is active and today or later
         if ($this->isActive() && $this->getAdmissionTime()->isLaterOrEqual(new \MUtil_Date())) {
             $tokenChanges += $this->checkCreateTracks($filters, $existingTracks, $tracker);
-        }       
+        }
 
         return $tokenChanges;
     }

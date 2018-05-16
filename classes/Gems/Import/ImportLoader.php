@@ -97,7 +97,7 @@ class Gems_Import_ImportLoader extends \Gems_Loader_TargetLoaderAbstract
             case 'calendar':
                 $model = $this->loader->getModels()->createAppointmentModel();
                 $this->applySource($model);
-                $model->applyEditSettings(null);
+                $model->applyEditSettings();
                 return $model;
 
             default:

@@ -44,6 +44,12 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
+     * @var string
+     */
+    public $episodeDisplayFormat = 'dd-MM-yyyy';
+
+    /**
+     *
      * @var \Zend_Cache_Core
      */
     protected $cache;
@@ -142,12 +148,12 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
 
         $this->initTranslateable();
     }
-    
+
     /**
      * Add Activities to the table
-     * 
+     *
      * Override this method for other defaults
-     * 
+     *
      * @param string $name
      * @param int $organizationId
      * @return array
@@ -168,15 +174,15 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         $result = $model->save($values);
 
         $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('activity', 'activities'));
-        
+
         return $result;
     }
-    
+
     /**
      * Add HealthcareStaff to the table
-     * 
+     *
      * Override this method for other defaults
-     * 
+     *
      * @param string $name
      * @param int $organizationId
      * @return array
@@ -197,12 +203,12 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         $result = $model->save($values);
 
         $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('staff'));
-        
+
         return $result;
     }
-    
+
     /**
-     * 
+     *
      * @param type $name
      * @param type $organizationId
      * @param array $matches
@@ -228,24 +234,24 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
                 'glo_id_location'   => $first['glo_id_location'],
                 'glo_organizations' => ':' . implode(':', array_keys($matches)) . ':' .
                     $organizationId . ':'
-            );            
+            );
         }
-        
+
         $model = new \MUtil_Model_TableModel('gems__locations');
         \Gems_Model::setChangeFieldsByPrefix($model, 'glo');
 
         $result = $model->save($values);
 
         $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('location', 'locations'));
-        
+
         return $result;
     }
-    
+
     /**
      * Add Procedure to the table
-     * 
+     *
      * Override this method for other defaults
-     * 
+     *
      * @param string $name
      * @param int $organizationId
      * @return array
@@ -266,7 +272,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         $result = $model->save($values);
 
         $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('procedure', 'procedures'));
-        
+
         return $result;
     }
 
@@ -468,7 +474,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Get an appointment object
      *
-     * @param mixed $appointmentData Appointment id or array containing appintment data
+     * @param mixed $appointmentData Appointment id or array containing appointment data
      * @return \Gems_Agenda_Appointment
      */
     public function getAppointment($appointmentData)
@@ -546,6 +552,88 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
             $results[$row['gap_id_appointment']] = $this->getAppointmentDisplay($row);
         }
         return $results;
+    }
+
+    /**
+     * Get an appointment object
+     *
+     * @param mixed $episodeData Episode id or array containing episode data
+     * @return \Gems\Agenda\EpisodeOfCare
+     */
+    public function getEpisodeOfCare($episodeData)
+    {
+        if (! $episodeData) {
+            throw new \Gems_Exception_Coding('Provide at least the episode id when requesting an episode of care.');
+        }
+
+        if (is_array($episodeData)) {
+             if (!isset($episodeData['gec_episode_of_care_id'])) {
+                 throw new \Gems_Exception_Coding(
+                         '$episodeData array should atleast have a key "gec_episode_of_care_id" containing the requested episode id'
+                         );
+             }
+            $episodeId = $episodeData['gap_id_appointment'];
+        } else {
+            $episodeId = $episodeData;
+        }
+        // \MUtil_Echo::track($appointmentId, $appointmentData);
+
+        return $this->_loadClass('episodeOfCare', true, array($episodeData));
+    }
+
+    /**
+     * Get the status codes for all episode of care  items
+     *
+     * @return array code => label
+     */
+    public function getEpisodeStatusCodes()
+    {
+        $codes = $this->getEpisodeStatusCodesActive() +
+                $this->getEpisodeStatusCodesInactive();
+
+        asort($codes);
+
+        return $codes;
+    }
+
+    /**
+     * Get the status codes for active episode of care items
+     *
+     * see https://www.hl7.org/fhir/episodeofcare.html
+     *
+     * @return array code => label
+     */
+    public function getEpisodeStatusCodesActive()
+    {
+        // A => active, C => Cancelled, E => Error, F => Finished, O => Onhold, P => Planned, W => Waitlist
+        $codes = array(
+            'A' => $this->_('Active'),
+            'F' => $this->_('Finished'),
+            'O' => $this->_('On hold'),
+            'P' => $this->_('Planned'),
+            'W' => $this->_('Waitlist'),
+        );
+
+        asort($codes);
+
+        return $codes;
+    }
+
+    /**
+     * Get the status codes for inactive episode of care items
+     *
+     * @return array code => label
+     */
+    public function getEpisodeStatusCodesInactive()
+    {
+        $codes = array(
+            'C' => $this->_('Cancelled'),
+            'E' => $this->_('Erroneous input'),
+        );
+
+        asort($codes);
+
+        return $codes;
     }
 
     /**
@@ -883,13 +971,13 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         }
         return new \Zend_Db_Expr(implode(", ", $codes));
     }
-    
+
     /**
      * Get the element that allows to create a track from an appointment
-     * 
+     *
      * When adding a new type, make sure to modify \Gems_Agenda_Appointment too
      * @see \Gems_Agenda_Appointment::getCreatorCheckMethod()
-     * 
+     *
      * @return array
      */
     public function getTrackCreateElement()
@@ -1052,8 +1140,8 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         if (! $create) {
             return null;
         }
-        
-        $result = $this->addActivity($name, $organizationId);        
+
+        $result = $this->addActivity($name, $organizationId);
 
         return $result['gaa_filter'] ? false : $result['gaa_id_activity'];
     }
@@ -1121,7 +1209,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         if (! $create) {
             return null;
         }
-        
+
         $result = $this->addHealthcareStaff($name, $organizationId);
 
         return $result['gas_filter'] ? false : $result['gas_id_staff'];
@@ -1162,21 +1250,21 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
                 if (isset($matches[$name][$organizationId])) {
                     return $matches[$name][$organizationId];
                 }
-                // Not in this organization, if we create we update the record                
+                // Not in this organization, if we create we update the record
             } else {
                 // Return the first location among the organizations
                 return reset($matches[$name]);
             }
         } else {
-            $matches[$name] = null;            
+            $matches[$name] = null;
         }
 
         if (! $create) {
             return null;
         }
-        
+
         $result = $this->addLocation($name, $organizationId, $matches[$name]);
-        
+
         return $result;
     }
 
@@ -1226,7 +1314,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         if (! $create) {
             return null;
         }
-        
+
         $result = $this->addProcedure($name, $organizationId);
 
         return $result['gapr_filter'] ? false : $result['gapr_id_procedure'];

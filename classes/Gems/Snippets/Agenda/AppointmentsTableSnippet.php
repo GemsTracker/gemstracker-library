@@ -46,6 +46,12 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends \Gems_Snippets_Model
 
     /**
      *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
+    /**
+     *
      * @var \Gems_Loader
      */
     protected $loader;
@@ -94,6 +100,7 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends \Gems_Snippets_Model
         } else {
             $editButton = null;
         }
+        $episode = $this->currentUser->hasPrivilege('pr.episodes');
 
         $br    = \MUtil_Html::create('br');
 
@@ -106,6 +113,9 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends \Gems_Snippets_Model
         }
         if ($this->sortableLinks) {
             $bridge->addMultiSort(array($bridge->date_only), $br, 'gap_admission_time')->class = 'date';
+            if ($episode) {
+                $bridge->addMultiSort('gap_id_episode');
+            }
             $bridge->addMultiSort('gap_subject', $br, 'glo_name');
             $bridge->addMultiSort('gaa_name', $br, 'gapr_name');
             $bridge->addMultiSort('gor_name', $br, 'glo_name');
@@ -115,6 +125,9 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends \Gems_Snippets_Model
                     $br,
                     array($bridge->gap_admission_time, $model->get('gap_admission_time', 'label'))
                     );
+            if ($episode) {
+                $bridge->addMultiSort(array($bridge->gap_id_episode, $model->get('gap_id_episode', 'label')));
+            }
             $bridge->addMultiSort(
                     array($bridge->gap_subject, $model->get('gap_subject', 'label')),
                     $br,

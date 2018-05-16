@@ -185,6 +185,10 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
                 'description', $this->_('dd-mm-yyyy hh:mm'));
         $this->setIfExists('gap_status',             'label', $this->_('Type'),
                 'multiOptions', $agenda->getStatusCodes());
+
+        $this->setIfExists('gap_id_episode',        'label', $this->_('Episode'),
+                'formatFunction', [$this, 'showEpisode']);
+
         $this->setIfExists('gas_name',              'label', $this->_('With'));
         //  $this->setIfExists('ref_staff.gas_name',    'label', $this->_('By'));
         $this->setIfExists('gaa_name',              'label', $this->_('Activities'));
@@ -200,7 +204,7 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
                     'row_class'
                     );
         }
-        
+
         $this->refreshGroupSettings();
 
         return $this;
@@ -209,11 +213,10 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
     /**
      * Set those settings needed for the detailed display
      *
-     * @param mixed $locale The locale for the settings
      * @param boolean $setMulti When false organization dependent multi options are nor filled.
      * @return \Gems_Model_AppointmentModel
      */
-    public function applyDetailSettings($locale = null, $setMulti = true)
+    public function applyDetailSettings($setMulti = true)
     {
         $this->resetOrder();
 
@@ -231,6 +234,8 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
                 'multiOptions', $agenda->getTypeCodes());
         $this->setIfExists('gap_status',          'label', $this->_('Status'),
                 'multiOptions', $agenda->getStatusCodes());
+        $this->setIfExists('gap_id_episode',        'label', $this->_('Episode'),
+                'formatFunction', [$this, 'showEpisode']);
 
         $this->setIfExists('gap_id_attended_by',  'label', $this->_('With'),
                 'multiOptions', $empty + $agenda->getHealthcareStaff());
@@ -260,12 +265,11 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
      * Set those values needed for editing
      *
      * @param int $orgId The id of the current organization
-     * @param mixed $locale The locale for the settings
      * @return \Gems_Model_AppointmentModel
      */
-    public function applyEditSettings($orgId, $locale = null)
+    public function applyEditSettings($orgId)
     {
-        $this->applyDetailSettings($locale, false);
+        $this->applyDetailSettings(false);
 
         $agenda = $this->loader->getAgenda();
         $empty  = $this->util->getTranslated()->getEmptyDropdownArray();
@@ -359,6 +363,22 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
         $this->autoTrackUpdate = $value;
 
         return $this;
+    }
+
+    /**
+     * Display the episode
+     * @param int $episodeId
+     * @return string
+     */
+    public function showEpisode($episodeId)
+    {
+        if ($episodeId) {
+            $episode = $this->loader->getAgenda()->getEpisodeOfCare($episodeId);
+
+            if ($episode->exists) {
+                return $episode->getDisplayString();
+            }
+        }
     }
 
     /**

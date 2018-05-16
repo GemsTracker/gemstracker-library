@@ -172,6 +172,9 @@ class MaskStore extends \Gems_Loader_TargetLoaderAbstract
             'gto_result'    => 'mask',
             'gr2t_comment'  => 'mask',
             'gap_comment'   => 'mask',
+            'gec_subject'   => 'mask',
+            'gec_comment'   => 'mask',
+            'gec_diagnosis' => 'mask',
             ];
     }
 
