@@ -72,6 +72,8 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
         $this->_addExtraTrackFields($model, $data, $prefixes);      // Create the first 'P' fields after this
         $this->_addExtraRespondentNumber($model, $data, $prefixes);
         $this->_addExtraGenderAge($model, $data, $prefixes);
+        $this->_addExtraTokenReceptionCode($model, $data, $prefixes);
+        $this->_addExtraTrackReceptionCode($model, $data, $prefixes);
     }
 
     /**
@@ -146,6 +148,20 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
      * @param array $data
      * @param array $prefixes
      */
+    protected function _addExtraTokenReceptionCode(\MUtil_Model_ModelAbstract $model, array $data, array &$prefixes)
+    {
+        if (isset($data['export_token_reception_code']) && $data['export_token_reception_code']) {
+
+            $model->set('gto_reception_code', 'label', $this->_('Token reception code'));
+        }
+    }
+
+    /**
+     *
+     * @param \MUtil_Model_ModelAbstract $model
+     * @param array $data
+     * @param array $prefixes
+     */
     protected function _addExtraTrackFields(\MUtil_Model_ModelAbstract $model, array $data, array &$prefixes)
     {
         if (isset($data['gto_id_track']) && $data['gto_id_track'] && isset($data['add_track_fields']) && $data['add_track_fields'] == 1) {
@@ -157,6 +173,20 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
             $model->set('gtf_field_name', 'label', $this->_('Relation'), 'type', \MUtil_Model::TYPE_STRING);
 
             $prefixes['TF'] = array_diff($model->getItemNames(), $prefixes['A'], $prefixes['D']);
+        }
+    }
+
+    /**
+     *
+     * @param \MUtil_Model_ModelAbstract $model
+     * @param array $data
+     * @param array $prefixes
+     */
+    protected function _addExtraTrackReceptionCode(\MUtil_Model_ModelAbstract $model, array $data, array &$prefixes)
+    {
+        if (isset($data['export_track_reception_code']) && $data['export_track_reception_code']) {
+
+            $model->set('gr2t_reception_code', 'label', $this->_('Track reception code'));
         }
     }
 
@@ -232,8 +262,20 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
                     );
         }
 
+        $elements['export_track_reception_code'] = $this->_createCheckboxElement(
+            'export_track_reception_code',
+            $this->_('Track reception code'),
+            $this->_('Add reception code of track')
+        );
+
+        $elements['export_token_reception_code'] = $this->_createCheckboxElement(
+            'export_token_reception_code',
+            $this->_('Token reception code'),
+            $this->_('Add reception code of token')
+        );
+
         return $elements;
-	}
+    }
 
     /**
      * Get the model to export
