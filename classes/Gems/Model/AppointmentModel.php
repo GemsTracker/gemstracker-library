@@ -186,8 +186,10 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
         $this->setIfExists('gap_status',             'label', $this->_('Type'),
                 'multiOptions', $agenda->getStatusCodes());
 
-        $this->setIfExists('gap_id_episode',        'label', $this->_('Episode'),
-                'formatFunction', [$this, 'showEpisode']);
+        if ($this->currentUser->hasPrivilege('pr.episodes')) {
+            $this->setIfExists('gap_id_episode',        'label', $this->_('Episode'),
+                    'formatFunction', [$this, 'showEpisode']);
+        }
 
         $this->setIfExists('gas_name',              'label', $this->_('With'));
         //  $this->setIfExists('ref_staff.gas_name',    'label', $this->_('By'));
@@ -234,8 +236,11 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
                 'multiOptions', $agenda->getTypeCodes());
         $this->setIfExists('gap_status',          'label', $this->_('Status'),
                 'multiOptions', $agenda->getStatusCodes());
-        $this->setIfExists('gap_id_episode',        'label', $this->_('Episode'),
-                'formatFunction', [$this, 'showEpisode']);
+        if ($this->currentUser->hasPrivilege('pr.episodes')) {
+            $this->setIfExists('gap_id_episode',        'label', $this->_('Episode'),
+                    'formatFunction', [$this, 'showEpisode'],
+                    'required', false);
+        }
 
         $this->setIfExists('gap_id_attended_by',  'label', $this->_('With'),
                 'multiOptions', $empty + $agenda->getHealthcareStaff());

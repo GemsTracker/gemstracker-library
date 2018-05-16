@@ -572,7 +572,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
                          '$episodeData array should atleast have a key "gec_episode_of_care_id" containing the requested episode id'
                          );
              }
-            $episodeId = $episodeData['gap_id_appointment'];
+            $episodeId = $episodeData['gec_episode_of_care_id'];
         } else {
             $episodeId = $episodeData;
         }
@@ -634,6 +634,43 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         asort($codes);
 
         return $codes;
+    }
+
+    /**
+     * Get the episodes for a respondent
+     *
+     * @param \Gems_Tracker_Respondent $respondent
+     * @return array of $epsiodeId => \Gems\Agenda\EpisodeOfCare
+     */
+    public function getEpisodesFor(\Gems_Tracker_Respondent $respondent)
+    {
+        return $this->getEpisodesForRespId($respondent->getId(), $respondent->getOrganizationId());
+    }
+
+    /**
+     * Get the episodes for a respondent
+     *
+     * @param int $respondentId
+     * @param int $orgId
+     * @return array of $epsiodeId => \Gems\Agenda\EpisodeOfCare
+     */
+    public function getEpisodesForRespId($respondentId, $orgId)
+    {
+        $select = $this->db->select();
+        $select->from('gems__episodes_of_care')
+                ->where('gec_id_user = ?', $respondentId)
+                ->where('gec_id_organization = ?', $orgId)
+                ->order('gec_startdate DESC');
+
+        $episodes = $this->db->fetchAll($select);
+        $output   = [];
+
+        foreach ($episodes as $episodeData) {
+            $episode = $this->getEpisodeOfCare($episodeData);
+            $output[$episode->getId()] = $episode;
+        }
+
+        return $output;
     }
 
     /**

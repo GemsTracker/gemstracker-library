@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+use \Gems\Agenda\EpisodeOfCare;
 
 /**
  *
@@ -22,6 +23,12 @@ class Gems_Snippets_Agenda_AppointmentFormSnippet extends \Gems_Snippets_ModelFo
 {
     /**
      *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
+    /**
+     *
      * @var GemsLoader
      */
     protected $loader;
@@ -31,6 +38,17 @@ class Gems_Snippets_Agenda_AppointmentFormSnippet extends \Gems_Snippets_ModelFo
      * @var \MUtil_Model_ModelAbstract
      */
     protected $model;
+
+    /**
+     *
+     * @var \Gems_Tracker_Respondent
+     */
+    protected $respondent;
+
+    /**
+     * @var \Gems_Util
+     */
+    protected $util;
 
     /**
      * Hook that allows actions when data was saved
@@ -65,6 +83,18 @@ class Gems_Snippets_Agenda_AppointmentFormSnippet extends \Gems_Snippets_ModelFo
         }
         $this->model->set('gap_admission_time', 'formatFunction', array($this, 'displayDate'));
         $this->model->set('gap_discharge_time', 'formatFunction', array($this, 'displayDate'));
+
+        if ($this->currentUser->hasPrivilege('pr.episodes')) {
+            $options = $this->util->getTranslated()->getEmptyDropdownArray();
+
+            foreach ($this->loader->getAgenda()->getEpisodesFor($this->respondent) as $id => $episode) {
+                if ($episode instanceof EpisodeOfCare) {
+                    $options[$id] = $episode->getDisplayString();
+                }
+            }
+
+            $this->model->set('gap_id_episode', 'multiOptions', $options);
+        }
 
         return $this->model;
     }

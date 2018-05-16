@@ -102,9 +102,9 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends \Gems_Snippets_Model
         }
         $episode = $this->currentUser->hasPrivilege('pr.episodes');
 
-        $br    = \MUtil_Html::create('br');
+        $br      = \MUtil_Html::create('br');
 
-        $table = $bridge->getTable();
+        $table   = $bridge->getTable();
         $table->appendAttrib('class', 'calendar');
 
         $bridge->tr()->appendAttrib('class', $bridge->row_class);

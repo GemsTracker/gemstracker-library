@@ -73,7 +73,7 @@ class EpisodeOfCare extends \MUtil_Translate_TranslateableAbstract
     {
         if (is_array($episodeData)) {
             $this->_gemsData      = $episodeData;
-            $this->_episodeId = $episodeData['gap_id_appointment'];
+            $this->_episodeId = $episodeData['gec_episode_of_care_id'];
             if ($this->currentUser instanceof \Gems_User_User) {
                 $this->_gemsData = $this->currentUser->applyGroupMask($this->_gemsData);
             }
