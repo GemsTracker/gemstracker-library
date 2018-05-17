@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -230,5 +229,19 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends \Gems_Snippets_Model
                 // $this->_timeImg,
                 \MUtil_Date::format($value, 'HH:mm ' . \Zend_Date::WEEKDAY_SHORT, $this->_dateStorageFormat)
                 );
+    }
+    /**
+     * Overrule to implement snippet specific filtering and sorting.
+     *
+     * @param \MUtil_Model_ModelAbstract $model
+     */
+    protected function processFilterAndSort(\MUtil_Model_ModelAbstract $model)
+    {
+        parent::processFilterAndSort($model);
+
+        $eid = $this->request->getParam(\Gems_Model::EPISODE_ID);
+        if ($eid) {
+            $model->addFilter(['gap_id_episode' => $eid]);
+        }
     }
 }

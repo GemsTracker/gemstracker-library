@@ -53,7 +53,13 @@ class EpisodeOfCareModel extends \Gems_Model_JoinModel
                 false
                 );
 
-        $this->addColumn(new \Zend_Db_Expr("'episodes_of_care'"), \Gems_Model::ID_TYPE);
+        $this->addColumn(new \Zend_Db_Expr("'careepisodes'"), \Gems_Model::ID_TYPE);
+        $this->addColumn(
+                new \Zend_Db_Expr(
+                        "(SELECT COUNT(*) FROM gems__appointments WHERE gap_id_episode = gec_episode_of_care_id)"
+                        ),
+                'appointment_count');
+
         $this->setKeys(array(\Gems_Model::EPISODE_ID => 'gec_episode_of_care_id'));
     }
 
@@ -143,6 +149,8 @@ class EpisodeOfCareModel extends \Gems_Model_JoinModel
         $this->setIfExists('gec_subject',   'label', $this->_('Subject'));
         $this->setIfExists('gec_diagnosis', 'label', $this->_('Diagnosis'));
 
+        $this->set('appointment_count',     'label', $this->_('Appointments'));
+
         $this->refreshGroupSettings();
 
         return $this;
@@ -181,6 +189,7 @@ class EpisodeOfCareModel extends \Gems_Model_JoinModel
         $this->setIfExists('gec_subject',        'label', $this->_('Subject'));
         $this->setIfExists('gec_comment',        'label', $this->_('Comment'));
         $this->setIfExists('gec_diagnosis',      'label', $this->_('Diagnosis'));
+        $this->set('appointment_count',     'label', $this->_('Appointments'));
 
         $this->refreshGroupSettings();
 
@@ -217,6 +226,7 @@ class EpisodeOfCareModel extends \Gems_Model_JoinModel
         $this->setIfExists('gec_comment',         'elementClass', 'Textarea',
                 'rows', 5);
         $this->setIfExists('gec_diagnosis',       'required', true);
+        $this->set('appointment_count',           'elementClass', 'Exhibitor');
 
         return $this;
     }

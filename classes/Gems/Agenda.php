@@ -12,6 +12,7 @@
 
 use Gems\Agenda\AppointmentFilterInterface;
 use Gems\Agenda\AppointmentSelect;
+use Gems\Agenda\EpisodeOfCare;
 
 /**
  *
@@ -637,14 +638,34 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Get the options list episodes for episodes
+     *
+     * @param array $episodes
+     * @return array of $epsiodeId => Description
+     */
+    public function getEpisodesAsOptions(array $episodes)
+    {
+        $options = [];
+
+        foreach ($episodes as $id => $episode) {
+            if ($episode instanceof EpisodeOfCare) {
+                $options[$id] = $episode->getDisplayString();
+            }
+        }
+
+        return $options;
+    }
+
+    /**
      * Get the episodes for a respondent
      *
      * @param \Gems_Tracker_Respondent $respondent
+     * @param $where mixed Optional extra string or array filter
      * @return array of $epsiodeId => \Gems\Agenda\EpisodeOfCare
      */
-    public function getEpisodesFor(\Gems_Tracker_Respondent $respondent)
+    public function getEpisodesFor(\Gems_Tracker_Respondent $respondent, $where = null)
     {
-        return $this->getEpisodesForRespId($respondent->getId(), $respondent->getOrganizationId());
+        return $this->getEpisodesForRespId($respondent->getId(), $respondent->getOrganizationId(), $where);
     }
 
     /**
@@ -652,15 +673,31 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
      *
      * @param int $respondentId
      * @param int $orgId
+     * @param $where mixed Optional extra string or array filter
      * @return array of $epsiodeId => \Gems\Agenda\EpisodeOfCare
      */
-    public function getEpisodesForRespId($respondentId, $orgId)
+    public function getEpisodesForRespId($respondentId, $orgId, $where = null)
     {
         $select = $this->db->select();
         $select->from('gems__episodes_of_care')
                 ->where('gec_id_user = ?', $respondentId)
                 ->where('gec_id_organization = ?', $orgId)
                 ->order('gec_startdate DESC');
+
+        if ($where) {
+            if (is_array($where)) {
+                foreach ($where as $expr => $param) {
+                    if (is_int($expr)) {
+                        $select->where($param);
+                    } else {
+                        $select->where($expr, $param);
+                    }
+                }
+            } else {
+                $select->where($where);
+            }
+        }
+        // \MUtil_Echo::track($select->__toString());
 
         $episodes = $this->db->fetchAll($select);
         $output   = [];

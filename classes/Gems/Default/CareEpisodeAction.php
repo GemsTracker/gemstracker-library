@@ -55,6 +55,28 @@ class Gems_Default_CareEpisodeAction extends \Gems_Default_RespondentChildAction
         );
 
     /**
+     * The parameters used for the show action
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $showParameters = [
+        'bridgeMode' => \MUtil_Model_Bridge_BridgeAbstract::MODE_ROWS,   // Prevent lazyness
+        'respondent' => 'getRespondent',
+        ];
+
+    /**
+     * The snippets used for the show action
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $showSnippets = ['Generic\\ContentTitleSnippet', 'ModelItemTableSnippetGeneric', 'Agenda_AppointmentsTableSnippet'];
+
+    /**
      * Creates a model for getModel(). Called only for each new $action.
      *
      * The parameters allow you to easily adapt the model to the current action. The $detailed
@@ -103,9 +125,9 @@ class Gems_Default_CareEpisodeAction extends \Gems_Default_RespondentChildAction
         $patientId  = $respondent->getPatientNumber();
         if ($patientId) {
             if ($this->currentUser->areAllFieldsMaskedWhole('grs_first_name', 'grs_surname_prefix', 'grs_last_name')) {
-                return sprintf($this->_('Episoded of care for respondent number %s'), $patientId);
+                return sprintf($this->_('Episodes of care for respondent number %s'), $patientId);
             }
-            return sprintf($this->_('Episoded of care for respondent number %s: %s'), $patientId, $respondent->getName());
+            return sprintf($this->_('Episodes of care for respondent number %s: %s'), $patientId, $respondent->getName());
         }
         return $this->getIndexTitle();
     }
@@ -154,6 +176,18 @@ class Gems_Default_CareEpisodeAction extends \Gems_Default_RespondentChildAction
      */
     public function getTopic($count = 1)
     {
-        return $this->plural('episode of care', 'episodes of care', $count);
+        $respondent = $this->getRespondent();
+        $patientId  = $respondent->getPatientNumber();
+        if ($patientId) {
+            if ($this->currentUser->areAllFieldsMaskedWhole('grs_first_name', 'grs_surname_prefix', 'grs_last_name')) {
+                $for = sprintf($this->_('for respondent number %s'), $patientId);
+            } else {
+                $for = sprintf($this->_('for respondent number %s'), $patientId);
+            }
+            $for = ' ' . $for;
+        } else {
+            $for = '';
+        }
+        return $this->plural('episode of care', 'episodes of care', $count) . $for;
     }
 }

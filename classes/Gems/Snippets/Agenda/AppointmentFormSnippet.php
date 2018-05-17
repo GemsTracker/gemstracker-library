@@ -9,8 +9,6 @@
  * @license    New BSD License
  */
 
-use \Gems\Agenda\EpisodeOfCare;
-
 /**
  *
  * @package    Gems
@@ -83,18 +81,6 @@ class Gems_Snippets_Agenda_AppointmentFormSnippet extends \Gems_Snippets_ModelFo
         }
         $this->model->set('gap_admission_time', 'formatFunction', array($this, 'displayDate'));
         $this->model->set('gap_discharge_time', 'formatFunction', array($this, 'displayDate'));
-
-        if ($this->currentUser->hasPrivilege('pr.episodes')) {
-            $options = $this->util->getTranslated()->getEmptyDropdownArray();
-
-            foreach ($this->loader->getAgenda()->getEpisodesFor($this->respondent) as $id => $episode) {
-                if ($episode instanceof EpisodeOfCare) {
-                    $options[$id] = $episode->getDisplayString();
-                }
-            }
-
-            $this->model->set('gap_id_episode', 'multiOptions', $options);
-        }
 
         return $this->model;
     }

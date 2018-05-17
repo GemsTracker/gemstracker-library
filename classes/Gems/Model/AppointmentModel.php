@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -51,6 +50,12 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
      * @var \Gems_Loader
      */
     protected $loader;
+
+    /**
+     *
+     * @var \Gems_Menu
+     */
+    protected $menu;
 
     /**
      * @var \Gems_Util
@@ -289,6 +294,10 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
         $this->setIfExists('gap_id_procedure',    'multiOptions', $empty + $agenda->getProcedures($orgId));
         $this->setIfExists('gap_id_location',     'multiOptions', $empty + $agenda->getLocations($orgId));
 
+        if ($this->currentUser->hasPrivilege('pr.episodes')) {
+            $this->setIfExists('gap_id_episode', 'multiOptions', $empty);
+            $this->addDependency('AppointmentCareEpisodeDependency');
+        }
         return $this;
     }
 
@@ -377,13 +386,29 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
      */
     public function showEpisode($episodeId)
     {
-        if ($episodeId) {
-            $episode = $this->loader->getAgenda()->getEpisodeOfCare($episodeId);
-
-            if ($episode->exists) {
-                return $episode->getDisplayString();
-            }
+        if (! $episodeId) {
+            return null;
         }
+        $episode = $this->loader->getAgenda()->getEpisodeOfCare($episodeId);
+
+        if (! $episode->exists) {
+            return $episodeId;
+        }
+
+        $episodeItem = $this->menu->findAllowedController('care-episode', 'show');
+        if ($episodeItem) {
+            $href = $episodeItem->toHRefAttribute(['gec_episode_of_care_id' => $episodeId]);
+        } else {
+            $href = false;
+        }
+
+        if (! $href) {
+            return $episode->getDisplayString();
+        }
+
+        $onclick = new \MUtil_Html_OnClickArrayAttribute();
+        $onclick->addCancelBubble(true);
+        return \MUtil_Html::create('a', $href, $episode->getDisplayString(), $onclick);
     }
 
     /**

@@ -5,7 +5,7 @@
  * @package    Gems
  * @subpackage Model\Dependency
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2016, Erasmus MC and MagnaFacta B.V.
+ * @copyright  Copyright (c) 2018, Erasmus MC and MagnaFacta B.V.
  * @license    New BSD License
  */
 
@@ -17,11 +17,11 @@ use MUtil\Model\Dependency\DependencyAbstract;
  *
  * @package    Gems
  * @subpackage Model\Dependency
- * @copyright  Copyright (c) 2016, Erasmus MC and MagnaFacta B.V.
+ * @copyright  Copyright (c) 2018, Erasmus MC and MagnaFacta B.V.
  * @license    New BSD License
- * @since      Class available since version 1.8.2 Jan 2, 2017 5:33:40 PM
+ * @since      Class available since version 1.8.3 May 17, 2018 12:02:38 PM
  */
-class StaffUserClassDependency extends DependencyAbstract
+class AppointmentCareEpisodeDependency extends DependencyAbstract
 {
     /**
      * Array of setting => setting of setting changed by this dependency
@@ -40,7 +40,7 @@ class StaffUserClassDependency extends DependencyAbstract
      *
      * @var array Of name => name
      */
-    protected $_dependentOn = array('gsf_id_organization');
+    protected $_dependentOn = array('gap_id_user', 'gap_id_organization', 'gap_admission_time');
 
     /**
      * Array of name => array(setting => setting) of fields with settings changed by this dependency
@@ -50,13 +50,19 @@ class StaffUserClassDependency extends DependencyAbstract
      *
      * @var array of name => array(setting => setting)
      */
-    protected $_effecteds = array('gul_user_class');
+    protected $_effecteds = array('gap_id_episode');
 
     /**
      *
      * @var \Gems_Loader
      */
     protected $loader;
+
+    /**
+     *
+     * @var \Gems_Loader
+     */
+    protected $util;
 
     /**
      * Returns the changes that must be made in an array consisting of
@@ -80,12 +86,28 @@ class StaffUserClassDependency extends DependencyAbstract
      */
     public function getChanges(array $context, $new)
     {
-        if (isset($context['gsf_id_organization'])) {
-            $org = $this->loader->getOrganization($context['gsf_id_organization']);
+        $agenda  = $this->loader->getAgenda();
+        $options = $this->util->getTranslated()->getEmptyDropdownArray();
 
-            if ($org instanceof \Gems_User_Organization) {
-                return ['gul_user_class' => ['multiOptions' => $org->getAllowedUserClasses()]];
+        if (isset($context['gap_id_user'], $context['gap_id_organization'])) {
+            if (isset($context['gap_admission_time'])) {
+                if ($context['gap_admission_time'] instanceof \MUtil_Date) {
+                    $admission = $context['gap_admission_time']->toString(\Gems_Tracker::DB_DATE_FORMAT);
+                } elseif ($context['gap_admission_time'] instanceof \DateTimeInterface) {
+                    $admission = $context['gap_admission_time']->format('Y-m-d');
+                } else {
+                    $admission = $context['gap_admission_time'];
+                }
+                $where['gec_startdate <= ?'] = $admission;
+                $where['gec_enddate IS NULL OR gec_enddate > ?'] = $admission;
+            } else {
+                $where = null;
             }
+
+            $options = $options + $agenda->getEpisodesAsOptions(
+                    $agenda->getEpisodesForRespId($context['gap_id_user'], $context['gap_id_organization'], $where)
+                    );
         }
+        return ['gap_id_episode' => ['multiOptions' => $options]];
     }
 }
