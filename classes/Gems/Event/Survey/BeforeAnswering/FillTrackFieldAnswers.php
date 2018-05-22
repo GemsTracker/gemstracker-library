@@ -46,11 +46,11 @@ class FillTrackFieldAnswers extends \MUtil_Translate_TranslateableAbstract imple
             $respTrack = $token->getRespondentTrack();
             $fields    = $respTrack->getCodeFields();
             $questions = $token->getSurvey()->getQuestionList(null);
-            $result    = [];
+            $results   = [];
 
             foreach ($codes as $code => $value) {
                 if (isset($questions[$code]) && ($questions[$code] != $value)) {
-                    $result[$code] = $value;
+                    $results[$code] = $value;
                 }
             }
 

@@ -140,20 +140,7 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
             if ($this->buttons) {
                 $bridge->tfrow($this->buttons, array('class' => 'centerAlign'));
             } else {
-                $menuList = $this->menu->getCurrentMenuList($this->request, $this->_('Cancel'));
-                $menuList->addParameterSources($bridge);
-                
-                if ($this->addCurrentParent) {
-                    $menuList->addCurrentParent($this->_('Cancel'));
-                }
-                if ($this->addCurrentSiblings) {
-                    $menuList->addCurrentSiblings($this->anyParameterSiblings);
-                }
-                if ($this->addCurrentChildren) {
-                    $menuList->addCurrentChildren();
-                }
-
-                $bridge->tfrow($menuList, array('class' => 'centerAlign'));
+                $bridge->tfrow($this->getMenuList($bridge), array('class' => 'centerAlign'));
             }
         }
     }
@@ -286,6 +273,29 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
         $container = \MUtil_Html::create()->div(array('class' => 'table-container'));
         $container[] = $bridge->getTable();
         return $container;
+    }
+
+    /**
+     *
+     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
+     * @return void
+     */
+    protected function getMenuList(\MUtil_Model_Bridge_VerticalTableBridge $bridge)
+    {
+        $menuList = $this->menu->getCurrentMenuList($this->request, $this->_('Cancel'));
+        $menuList->addParameterSources($bridge);
+
+        if ($this->addCurrentParent) {
+            $menuList->addCurrentParent($this->_('Cancel'));
+        }
+        if ($this->addCurrentSiblings) {
+            $menuList->addCurrentSiblings($this->anyParameterSiblings);
+        }
+        if ($this->addCurrentChildren) {
+            $menuList->addCurrentChildren();
+        }
+
+        return $menuList;
     }
 
     /**
