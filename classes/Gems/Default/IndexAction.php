@@ -319,6 +319,9 @@ class Gems_Default_IndexAction extends \Gems_Controller_Action
             $user = $this->loader->getUserLoader()->getUserByResetKey($key);
 
             if ($user->hasValidResetKey()) {
+                // Signal the reqset required so the maxage check is disabled while validating
+                $user->setPasswordResetRequired(true);
+                
                 $form = $user->getChangePasswordForm(array('askOld' => false, 'askCheck' => true, 'labelWidthFactor' => $this->labelWidthFactor));
 
                 $result = $user->authenticate(null, false);
