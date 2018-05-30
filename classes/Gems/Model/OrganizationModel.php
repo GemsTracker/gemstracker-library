@@ -203,10 +203,7 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
                 'multiOptions', $staffTemplates);
 
         $this->setIfExists('gor_allowed_ip_ranges', 'label', $this->_('Allowed IP Ranges'),
-            'description', $this->_('Separate with | example: 10.0.0.0-10.0.0.255 (subnet masks are not supported)'),
-            'size', 50,
-            'validator', new \Gems_Validate_IPRanges(),
-            'maxlength', 500
+            'description', $this->_('Separate with | example: 10.0.0.0-10.0.0.255 (subnet masks are not supported)')
             );
 
         if ($this->project->multiLocale) {
@@ -294,10 +291,10 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
                 );
 
         $this->setIfExists('gor_allowed_ip_ranges',
-                'size', 50,
-                'validator', new \Gems_Validate_IPRanges(),
-                'maxlength', 500
-                );
+            'elementClass', 'Textarea',
+            'rows', 4,
+            'validator', new \Gems_Validate_IPRanges()
+            );
         $this->setIfExists('gor_user_class');
 
         $definitions = $this->get('gor_user_class', 'multiOptions');
