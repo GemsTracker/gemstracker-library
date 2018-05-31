@@ -87,8 +87,11 @@ class Gems_Tracker_Token_TokenSelect
                                 'gems__tokens.gto_reception_code = grc_id_reception_code',
                                 $fields);
 
+        // Some queries use multiple token tables
+        $expr = str_replace('gto_', 'gems__tokens.gto_', (string) $this->util->getTokenData()->getStatusExpression());
+
         $this->sql_select->columns(
-                ['token_status' => $this->util->getTokenData()->getStatusExpression()],
+                ['token_status' => new \Zend_Db_Expr($expr)],
                 'gems__tokens'
                 );
 
