@@ -7,7 +7,6 @@
  * @author     Menno Dekker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -35,12 +34,20 @@ class Gems_Tracker_Token_TokenSelect
 
     /**
      *
+     * @var \Gems_Util
+     */
+    protected $util;
+
+    /**
+     *
      * @param \Zend_Db_Adapter_Abstract $db Adapter to use
      * @param type $fields Optional select fieldlist
      */
-    public function __construct(\Zend_Db_Adapter_Abstract $db, $fields = "*")
+    public function __construct(\Zend_Db_Adapter_Abstract $db, $fields = "*", \Gems_Util $util)
     {
-        $this->db = $db;
+        $this->db   = $db;
+        $this->util = $util;
+
         $this->sql_select = $this->db->select();
         $this->sql_select->from('gems__tokens', $fields);
     }
@@ -69,6 +76,7 @@ class Gems_Tracker_Token_TokenSelect
     }
 
     /**
+     * Add reception codes and token status calculation
      *
      * @param string|array $fields
      * @return \Gems_Tracker_Token_TokenSelect
@@ -78,6 +86,11 @@ class Gems_Tracker_Token_TokenSelect
         $this->sql_select->join('gems__reception_codes',
                                 'gems__tokens.gto_reception_code = grc_id_reception_code',
                                 $fields);
+
+        $this->sql_select->columns(
+                ['token_status' => $this->util->getTokenData()->getStatusExpression()],
+                'gems__tokens'
+                );
 
         return $this;
     }

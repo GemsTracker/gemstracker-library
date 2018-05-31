@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -131,12 +130,10 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends \Gems_Snip
 
                 if ($model->get($name, 'noSort')) {
                     $result = 'res_' . substr($name, 5);
-                    $token = 'tok_' . substr($name, 5);
+                    $token  = 'tok_' . substr($name, 5);
 
                     $tds   = $bridge->addColumn(
-                            \MUtil_Lazy::method($tUtil, 'getTokenStatusLink',
-                                    $bridge->$token, $bridge->$name, $bridge->gr2o_patient_nr, null,
-                                    $model->get($name, 'description'), $bridge->$result),
+                            \MUtil_Lazy::method($tUtil, 'getTokenStatusLinkForTokenId', $bridge->$token),
                             array($label, 'title' => $model->get($name, 'description'), 'class' => 'round')
                             );
                 } else {
