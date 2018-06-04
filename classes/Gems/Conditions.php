@@ -137,7 +137,7 @@ class Conditions extends \Gems_Loader_TargetLoaderAbstract
                                     $this->applySource($event);
                                 }
 
-                                $results[$conditionName] = trim($event->getEventName()) . $name;
+                                $results[$conditionName] = trim($event->getName()) . $name;
                             }
                             // \MUtil_Echo::track($eventName);
                         }

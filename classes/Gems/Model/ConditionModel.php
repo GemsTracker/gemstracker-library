@@ -19,7 +19,7 @@ namespace Gems\Model;
  * @license    New BSD License
  * @since      Class available since version 1.8.4
  */
-class ConditionModel extends \MUtil_Model_TableModel
+class ConditionModel extends \Gems_Model_JoinModel
 {
 /**
      *
@@ -81,10 +81,16 @@ class ConditionModel extends \MUtil_Model_TableModel
         
         $yesNo = $this->util->getTranslated()->getYesNo();
 
+        
+        $types = $conditions->getConditionTypes();
+        reset($types);
+        $default = key($types);
         $this->set('gcon_type', 'label', $this->_('Type'),
                 'description', $this->_('Determines where the condition can be applied.'),
-                'multiOptions', $conditions->getConditionTypes()
+                'multiOptions', $types,
+                'default', $default
                 );
+
         $this->set('gcon_class', 'label', $this->_('Condition'),
                 'multiOptions', []
                 );
@@ -94,7 +100,7 @@ class ConditionModel extends \MUtil_Model_TableModel
                 'multiOptions', $yesNo
                 );
                 
-        $this->addDependency('Condition\\\TypeDependency');
+        $this->addDependency('Condition\\TypeDependency');
 
         return $this;
     }
@@ -106,32 +112,27 @@ class ConditionModel extends \MUtil_Model_TableModel
      */
     public function applyDetailSettings()
     {
-        $this->loadFilterDependencies(true);
+        $this->applyBrowseSettings();
 
         $yesNo = $this->util->getTranslated()->getYesNo();
 
         $this->resetOrder();
 
-        $this->set('gcon_class', 'label', $this->_('Filter type'),
-                'description', $this->_('Determines what is filtered how.'),
-                'multiOptions', $this->filterOptions
-                );
-        $this->set('gcon_manual_name', 'label', $this->_('Manual name'),
-                'description', $this->_('A name for this filter. The calculated name is used otherwise.'));
-        $this->set('gcon_calc_name', 'label', $this->_('Calculated name'));
-        $this->set('gcon_id_order', 'label', $this->_('Order'),
-                'description', $this->_('Execution order of the filters, lower numbers are executed first.')
-                );
-
+        $this->set('gcon_type');
+        $this->set('gcon_class');
+        $this->set('gcon_name', 'description', $this->_('A name for this condition.'));
+        
         // Set the order
-        $this->set('gcon_filter_text1');
-        $this->set('gcon_filter_text2');
-        $this->set('gcon_filter_text3');
-        $this->set('gcon_filter_text4');
+        $this->set('gcon_condition_text1');
+        $this->set('gcon_condition_text2');
+        $this->set('gcon_condition_text3');
+        $this->set('gcon_condition_text4');
 
         $this->set('gcon_active', 'label', $this->_('Active'),
                 'multiOptions', $yesNo
                 );
+        
+        $this->set('condition_help', 'label', $this->_('Help'), 'elementClass', 'Exhibitor');
 
         $this->addColumn(new \Zend_Db_Expr(sprintf(
                 "(SELECT COALESCE(GROUP_CONCAT(gtr_track_name, '%s', gtap_field_name
@@ -164,6 +165,8 @@ class ConditionModel extends \MUtil_Model_TableModel
                 'description', $this->_('The use of this filter in other filters.'),
                 'elementClass', 'Exhibitor'
                 );
+        
+        $this->addDependency('Condition\\ClassDependency');
 
         return $this;
     }
@@ -177,52 +180,12 @@ class ConditionModel extends \MUtil_Model_TableModel
     {
         $this->applyDetailSettings();
 
-        reset($this->filterOptions);
-        $default = key($this->filterOptions);
-        $this->set('gcon_class',         'default', $default, 'onchange', 'this.form.submit();');
-
         // gcon_id is not needed for some validators
         $this->set('gcon_id',            'elementClass', 'Hidden');
 
-        $this->set('gcon_calc_name',     'elementClass', 'Exhibitor');
-        $this->setOnSave('gcon_calc_name', array($this, 'calcultateName'));
         $this->set('gcon_active',        'elementClass', 'Checkbox');
-
-        if ($create) {
-            $default = $this->db->fetchOne("SELECT MAX(gcon_id_order) FROM gems__appointment_filters");
-            $this->set('gcon_id_order', 'default', intval($default) + 10);
-        }
-
+        
         return $this;
-    }
-
-    /**
-     * Load filter dependencies into model and populate the filterOptions
-     *
-     * @return array filterClassName => Label
-     */
-    protected function loadFilterDependencies($activateDependencies = true)
-    {
-        if (! $this->filterOptions) {
-            $maxLength = $this->get('gcon_calc_name', 'maxlength');
-
-            $this->filterOptions = array();
-            foreach ($this->filterDependencies as $dependencyClass) {
-                $dependency = $this->agenda->newFilterObject($dependencyClass);
-                if ($dependency instanceof FilterModelDependencyAbstract) {
-
-                    $this->filterOptions[$dependency->getFilterClass()] = $dependency->getFilterName();
-
-                    if ($activateDependencies) {
-                        $dependency->setMaximumCalcLength($maxLength);
-                        $this->addDependency($dependency);
-                    }
-                }
-            }
-            asort($this->filterOptions);
-        }
-
-        return $this->filterOptions;
     }
     
 }
