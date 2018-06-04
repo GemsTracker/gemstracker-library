@@ -9,7 +9,7 @@
  * @license    New BSD License
  */
 
-namespace Gems\Condition;
+namespace Gems\Model\Dependency\Condition;
 
 /**
  *

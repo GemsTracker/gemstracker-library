@@ -9,7 +9,7 @@
  * @license    New BSD License
  */
 
-namespace Gems\Condition;
+namespace Gems\Model\Dependency\Condition;
 
 /**
  *
@@ -48,7 +48,9 @@ class TypeDependency extends \MUtil\Model\Dependency\DependencyAbstract
      *
      * @var array of name => array(setting => setting)
      */
-    protected $_effecteds = array('gcon_class');
+    protected $_effecteds = [
+        'gcon_class' => ['multiOptions', 'default']
+        ];
 
     /**
      *
@@ -88,9 +90,11 @@ class TypeDependency extends \MUtil\Model\Dependency\DependencyAbstract
         $options    = $this->util->getTranslated()->getEmptyDropdownArray();
 
         if (isset($context['gcon_type'])) {
-            $options = $options + $conditions->listConditionsForType($context['gcon_type']);
+            $options = $conditions->listConditionsForType($context['gcon_type']);
+            reset($options);
+            $default = key($options);            
         }
-        return ['gcon_class' => ['multiOptions' => $options]];
+        return ['gcon_class' => ['multiOptions' => $options, 'default' => 'default']];
     }
 
 }
