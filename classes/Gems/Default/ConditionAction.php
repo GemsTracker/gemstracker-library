@@ -69,7 +69,7 @@ class Gems_Default_ConditionAction extends \Gems_Controller_ModelSnippetActionAb
      */
     protected function createModel($detailed, $action)
     {
-        $model = $this->loader->getModels()->getCondtionModel();
+        $model = $this->loader->getModels()->getConditionModel();
 
         if ($detailed) {
             if (('edit' == $action) || ('create' == $action)) {

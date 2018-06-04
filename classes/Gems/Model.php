@@ -252,7 +252,7 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
      * @param array|mixed $styles
      * @return \Gems\Model\ConditionModel
      */
-    public function getCondtionModel()
+    public function getConditionModel()
     {
         $model = $this->_loadClass('ConditionModel', true);
 

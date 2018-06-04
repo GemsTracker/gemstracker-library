@@ -11,7 +11,14 @@
 
 namespace Gems;
 
+use Gems\Condition\ConditionInterface;
+use Gems\Condition\RoundConditionInterface;
+use Gems_Exception_Coding;
+use Gems_Loader;
+use Gems_Loader_TargetLoaderAbstract;
+use Gems_Util;
 use MUtil\Translate\TranslateableTrait;
+use MUtil_Registry_TargetInterface;
 
 /**
  * Per project overruleable condition processing engine
@@ -22,7 +29,7 @@ use MUtil\Translate\TranslateableTrait;
  * @license    New BSD License
  * @since      Class available since version 1.8.4
  */
-class Conditions extends \Gems_Loader_TargetLoaderAbstract
+class Conditions extends Gems_Loader_TargetLoaderAbstract
 {
     use TranslateableTrait;
     
@@ -32,7 +39,7 @@ class Conditions extends \Gems_Loader_TargetLoaderAbstract
      * Each condition type must implement a condition class or interface derived
      * from ConditionInterface specified in this array.
      *
-     * @see \Gems\Condition\ConditionInterface
+     * @see ConditionInterface
      *
      * @var array containing eventType => eventClass for all condition classes
      */
@@ -57,13 +64,13 @@ class Conditions extends \Gems_Loader_TargetLoaderAbstract
     
     /**
      *
-     * @var \Gems_Loader
+     * @var Gems_Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \Gems_Util
+     * @var Gems_Util
      */
     protected $util;
 
@@ -71,7 +78,7 @@ class Conditions extends \Gems_Loader_TargetLoaderAbstract
      * Lookup condition class for an event type. This class or interface should at the very least
      * implement the ConditionInterface.
      *
-     * @see \Gems\Condition\ConditionInterface
+     * @see ConditionInterface
      *
      * @param string $conditionType The type (i.e. lookup directory) to find the associated class for
      * @return string Class/interface name associated with the type
@@ -81,7 +88,7 @@ class Conditions extends \Gems_Loader_TargetLoaderAbstract
         if (isset($this->_conditionClasses[$conditionType])) {
             return $this->_conditionClasses[$conditionType];
         } else {
-            throw new \Gems_Exception_Coding("No condition class exists for condition type '$conditionType'.");
+            throw new Gems_Exception_Coding("No condition class exists for condition type '$conditionType'.");
         }
     }
 
@@ -106,9 +113,9 @@ class Conditions extends \Gems_Loader_TargetLoaderAbstract
      * Returns a list of selectable conditions with an empty element as the first option.
      *
      * @param string $conditionType The type (i.e. lookup directory with an associated class) of the conditions to list
-     * @return \Gems\Condition\ConditionInterface or more specific a $conditionClass type object
+     * @return ConditionInterface or more specific a $conditionClass type object
      */
-    protected function _listEvents($conditionType)
+    protected function _listConditions($conditionType)
     {
         $results    = array();
         $conditionClass = $this->_getConditionClass($conditionType);
@@ -139,7 +146,7 @@ class Conditions extends \Gems_Loader_TargetLoaderAbstract
                             $event = new $conditionName();
 
                             if ($event instanceof $conditionClass) {
-                                if ($event instanceof \MUtil_Registry_TargetInterface) {
+                                if ($event instanceof MUtil_Registry_TargetInterface) {
                                     $this->applySource($event);
                                 }
 
@@ -162,23 +169,23 @@ class Conditions extends \Gems_Loader_TargetLoaderAbstract
      *
      * @param string $conditionName The class name of the individual event to load
      * @param string $conditionType The type (i.e. lookup directory with an associated class) of the event
-     * @return \Gems_tracker_TrackerEventInterface or more specific a $eventClass type object
+     * @return ConditionInterface or more specific a $eventClass type object
      */
-    protected function _loadEvent($conditionName, $conditionType)
+    protected function _loadCondition($conditionName, $conditionType)
     {
         $conditionClass = $this->_getConditionClass($conditionType);
 
         if (! class_exists($conditionName, true)) {
-            throw new \Gems_Exception_Coding("The condition '$conditionName' of type '$conditionType' can not be found");
+            throw new Gems_Exception_Coding("The condition '$conditionName' of type '$conditionType' can not be found");
         }
 
         $condition = new $conditionName();
 
         if (! $condition instanceof $conditionClass) {
-            throw new \Gems_Exception_Coding("The condition '$conditionName' of type '$conditionType' is not an instance of '$conditionClass'.");
+            throw new Gems_Exception_Coding("The condition '$conditionName' of type '$conditionType' is not an instance of '$conditionClass'.");
         }
 
-        if ($condition instanceof \MUtil_Registry_TargetInterface) {
+        if ($condition instanceof MUtil_Registry_TargetInterface) {
             $this->applySource($condition);
         }
 
@@ -194,14 +201,16 @@ class Conditions extends \Gems_Loader_TargetLoaderAbstract
     
     public function getConditionsFor($conditionType)
     {
-        $model = $this->loader->getModels()->getCondtionModel();
+        $model = $this->loader->getModels()->getConditionModel();
+
         $filter = [
             'gcon_type' => $conditionType,
             'gcon_active' => 1
             ];
+        
         $model->trackUsage();
-        $model->set('gcon_id');
-        $model->set('gcon_name');
+        $model->get('gcon_id');
+        $model->get('gcon_name');
         $conditions = $model->load($filter, ['gcon_name']);
         
         $output = $this->util->getTranslated()->getEmptyDropdownArray();
@@ -224,7 +233,7 @@ class Conditions extends \Gems_Loader_TargetLoaderAbstract
      */
     public function listConditionsForType($conditionType)
     {
-        return $this->_listEvents($conditionType);
+        return $this->_listConditions($conditionType);
     }
 
     /**
@@ -233,26 +242,47 @@ class Conditions extends \Gems_Loader_TargetLoaderAbstract
      */
     public function listRoundConditions()
     {
-        return $this->_listEvents(self::ROUND_CONDITION);
+        return $this->_listConditions(self::ROUND_CONDITION);
     }
     
     /**
      *
      * @param string $conditionName
-     * @return \Gems\Condition\RoundConditionInterface
+     * @return ConditionInterface
      */
     public function loadConditionForType($conditionType, $conditionName)
     {
-        return $this->_loadEvent($conditionName, $conditionType);
+        return $this->_loadCondition($conditionName, $conditionType);
+    }
+    
+    /**
+     * 
+     * @param type $conditionId
+     * @return ConditionInterface
+     */
+    public function loadCondition($conditionId)            
+    {
+        $model = $this->loader->getModels()->getConditionModel();
+        
+        $conditionData = $model->loadFirst(['gcon_id' => $conditionId]);
+        
+        if ($conditionData) {
+            $condition = $this->loadConditionForType($conditionData['gcon_type'], $conditionData['gcon_class']);
+            $condition->exchangeArray($conditionData);
+            
+            return $condition;
+        }
+        
+        throw new Gems_Exception_Coding('Unable to load requested condition');
     }
 
     /**
      *
      * @param string $conditionName
-     * @return \Gems\Condition\RoundConditionInterface
+     * @return RoundConditionInterface
      */
     public function loadRoundCondition($conditionName)
     {
-        return $this->_loadEvent($conditionName, self::ROUND_CONDITION);
+        return $this->_loadCondition($conditionName, self::ROUND_CONDITION);
     }
 }
