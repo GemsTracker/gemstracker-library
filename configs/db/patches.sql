@@ -1355,3 +1355,7 @@ ALTER TABLE  `gems__track_appointments`
 -- PATCH: Add care episodes to appointments
 ALTER TABLE  gems__appointments
     ADD gap_id_episode bigint unsigned null AFTER gap_id_organization;
+
+-- PATCH: Introducing conditions for rounds
+ALTER TABLE gems__rounds
+    ADD gro_condition bigint unsigned null AFTER gro_valid_for_length;

@@ -32,6 +32,8 @@ CREATE TABLE if not exists gems__rounds (
         gro_valid_for_unit     char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'M',
         gro_valid_for_length   int not null default 0,
 
+        gro_condition          bigint unsigned null references gems__conditions (gcon_id),
+
         -- Yes, quick and dirty, will correct later (probably)
         gro_organizations     varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
