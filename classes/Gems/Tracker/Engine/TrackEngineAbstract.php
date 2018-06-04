@@ -910,6 +910,12 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
                 );
         $tp = new \MUtil_Model_Type_ConcatenatedRow('|', $this->_(', '));
         $tp->apply($model, 'organizations');
+        
+        $model->set('gro_condition', 
+                'label', $this->_('Condition'), 
+                'elementClass', 'Select', 
+                'multiOptions', $this->loader->getConditions()->getConditionsFor(Gems\Conditions::ROUND_CONDITION)
+                );
 
         switch ($action) {
             case 'create':

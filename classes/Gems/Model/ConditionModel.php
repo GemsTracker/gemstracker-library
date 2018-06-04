@@ -134,7 +134,7 @@ class ConditionModel extends \Gems_Model_JoinModel
         
         $this->set('condition_help', 'label', $this->_('Help'), 'elementClass', 'Exhibitor');
 
-        $this->addColumn(new \Zend_Db_Expr(sprintf(
+        /*$this->addColumn(new \Zend_Db_Expr(sprintf(
                 "(SELECT COALESCE(GROUP_CONCAT(gtr_track_name, '%s', gtap_field_name
                                     ORDER BY gtr_track_name, gtap_id_order SEPARATOR '%s'), '%s')
                     FROM gems__track_appointments INNER JOIN gems__tracks ON gtap_id_track = gtr_id_track
@@ -165,7 +165,7 @@ class ConditionModel extends \Gems_Model_JoinModel
                 'description', $this->_('The use of this filter in other filters.'),
                 'elementClass', 'Exhibitor'
                 );
-        
+        */
         $this->addDependency('Condition\\ClassDependency');
 
         return $this;

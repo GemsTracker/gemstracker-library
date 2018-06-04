@@ -49,8 +49,7 @@ class ClassDependency extends \MUtil\Model\Dependency\DependencyAbstract
      * @var array of name => array(setting => setting)
      */
     protected $_effecteds = [
-        'condition_name' => ['value'], 
-        'condition_help' => ['']
+        'condition_help' => ['value']
         ];
 
     /**
@@ -93,11 +92,10 @@ class ClassDependency extends \MUtil\Model\Dependency\DependencyAbstract
             $condition = $conditions->loadConditionForType($context['gcon_type'],$context['gcon_class']);
             
             $changes = [
-                'condition_name' => ['value' => $condition->getName()],
-                'condition_help' => ['value' => $condition->getHelp()],
+                'condition_help' => ['value' => \MUtil_Html::raw('pre' . $condition->getHelp() . '</pre>')],
             ];
             
-            foreach($condition->getModelFields() as $field => $fieldChanges) {
+            foreach($condition->getModelFields($context, $new) as $field => $fieldChanges) {
                 $changes['gcon_condition_' . $field] = $fieldChanges;
             }
             

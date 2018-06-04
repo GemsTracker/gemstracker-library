@@ -43,7 +43,7 @@ interface ConditionInterface
      *
      * @return array textN => array(modelFieldName => fieldValue)
      */
-    public function getModelFields();    
+    public function getModelFields($context, $new);    
     
     /**
      * Get the name to use in dropdowns for this condition

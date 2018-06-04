@@ -25,8 +25,7 @@ class AgeCondition extends RoundConditionAbstract
 {
     public function getHelp()
     {
-        return $this->_($text);
-        
+        return $this->_("Round will be valid when respondent is:\n - At least minimum age\n - But no older than maximum age");        
     }
     
     public function getModelFields()

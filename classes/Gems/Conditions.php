@@ -54,10 +54,16 @@ class Conditions extends \Gems_Loader_TargetLoaderAbstract
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
     protected $cascade = 'Condition';
+    
+    /**
+     *
+     * @var \Gems_Loader
+     */
+    protected $loader;
 
     /**
      *
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     protected $util;
 
@@ -184,6 +190,27 @@ class Conditions extends \Gems_Loader_TargetLoaderAbstract
         parent::afterRegistry();
 
         $this->initTranslateable();
+    }
+    
+    public function getConditionsFor($conditionType)
+    {
+        $model = $this->loader->getModels()->getCondtionModel();
+        $filter = [
+            'gcon_type' => $conditionType,
+            'gcon_active' => 1
+            ];
+        $model->trackUsage();
+        $model->set('gcon_id');
+        $model->set('gcon_name');
+        $conditions = $model->load($filter, ['gcon_name']);
+        
+        $output = $this->util->getTranslated()->getEmptyDropdownArray();
+        
+        foreach($conditions as $condition) {
+            $output[$condition['gcon_id']] = $condition['gcon_name'];
+        }
+        
+        return $output;
     }
     
     public function getConditionTypes()
