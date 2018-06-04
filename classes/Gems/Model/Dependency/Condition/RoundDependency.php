@@ -90,12 +90,18 @@ class RoundDependency extends \MUtil\Model\Dependency\DependencyAbstract
 
         if (isset($context['gro_condition'])) {
             $condition = $conditions->loadCondition($context['gro_condition']);
+            $validator = new \Zend_Validate_Callback();
+            $validator->setCallback([$condition, 'isValid']);
+            $validator->setOptions([$context['gro_id_track'], ['gro_id_round']]);
             
             return [                
                 'condition_display' => [
                     'elementClass' => 'Exhibitor',
                     'value' => $condition->getRoundDisplay($context['gro_id_track'], ['gro_id_round'])
-                ]                
+                ],
+                'gro_condition' => [
+                    'Validator' => $validator
+                ]
             ];
         }
         

@@ -938,6 +938,8 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
                         'multiOptions', $translated->getYesNo(),
                         'elementClass', 'radio'
                         );
+                
+                $model->addDependency('Condition\\RoundDependency');
 
                 break;
 
