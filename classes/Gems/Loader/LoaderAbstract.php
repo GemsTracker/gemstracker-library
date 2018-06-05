@@ -48,7 +48,7 @@ class Gems_Loader_LoaderAbstract extends \MUtil_Registry_Source
      *
      * @var array Of prefix => path strings for class lookup
      */
-    protected $_dirs;
+    protected $_dirs = array();
 
     /**
      *
@@ -78,7 +78,14 @@ class Gems_Loader_LoaderAbstract extends \MUtil_Registry_Source
             $this->_dirs = $dirs;
         }
 
-        $this->_loader = new \MUtil_Loader_PluginLoader($this->_dirs);
+        if ($container instanceof \Zalt\Loader\ProjectOverloader) {
+            $this->_loader = $container;
+            if ($this->cascade) {
+                $this->_loader = $this->_loader->createSubFolderOverloader($this->cascade);
+            }
+        } else {
+            $this->_loader = new \MUtil_Loader_PluginLoader($this->_dirs);
+        }
 
         if (\MUtil_Registry_Source::$verbose) {
             \MUtil_Echo::r($this->_dirs, '$this->_dirs in ' . get_class($this) . '->' . __FUNCTION__ . '():');
@@ -158,13 +165,29 @@ class Gems_Loader_LoaderAbstract extends \MUtil_Registry_Source
      */
     protected function _loadClass($name, $create = false, array $arguments = array())
     {
-        $className = $this->_loader->load($name);
+        if ($this->_loader instanceof Zalt\Loader\ProjectOverloader) {
+            $className = $this->_loader->find($name);
+         } else {
+            $className = $this->_loader->load($name);
+        }
 
         // \MUtil_Echo::track($className);
 
         if (is_subclass_of($className, __CLASS__)) {
             $create    = true;
-            $arguments = array($this->_containers[0], $this->_dirs);
+            $arguments = array();
+
+            if (isset($this->_containers[0])) {
+                $arguments[] = $this->_containers[0];
+            } else {
+                $arguments[] = null;
+            }
+
+            $arguments[] = $this->_dirs;
+
+            if ($this->_loader instanceof Zalt\Loader\ProjectOverloader) {
+                $arguments[] = $this->_loader;
+            }
 
         } elseif (is_subclass_of($className, 'MUtil_Registry_TargetInterface')) {
             $create = true;
@@ -174,7 +197,13 @@ class Gems_Loader_LoaderAbstract extends \MUtil_Registry_Source
             return new \MUtil_Lazy_StaticCall($className);
         }
 
-        $obj = $this->_loader->createClass($className, $arguments);
+
+
+        if ($this->_loader instanceof Zalt\Loader\ProjectOverloader) {
+            $obj = $this->_loader->create($className, ...$arguments);
+        } else {
+            $obj = $this->_loader->createClass($className, $arguments);
+        }
 
         if ($obj instanceof \MUtil_Registry_TargetInterface) {
             if ((! $this->applySource($obj)) && parent::$verbose) {
