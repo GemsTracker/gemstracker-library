@@ -28,7 +28,7 @@ class AgeCondition extends RoundConditionAbstract
         return $this->_("Round will be valid when respondent is:\n - At least minimum age\n - But no older than maximum age");        
     }
     
-    public function getModelFields()
+    public function getModelFields($context, $new)
     {
         return [
             'text1' => ['label' => $this->_('Minimum age'), 'elementClass' => 'text'],
@@ -51,8 +51,8 @@ class AgeCondition extends RoundConditionAbstract
 
     public function getRoundDisplay($trackId, $roundId)
     {
-        $minAge = $this->_data['gcon_filter_text1'];
-        $maxAge = $this->_data['gcon_filter_text3'];
+        $minAge = $this->_data['gcon_condition_text1'];
+        $maxAge = $this->_data['gcon_condition_text3'];
         
         return sprintf(
                 $this->_('Respondent age between %s and %s'),

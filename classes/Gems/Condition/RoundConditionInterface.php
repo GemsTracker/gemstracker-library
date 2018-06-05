@@ -31,19 +31,6 @@ interface RoundConditionInterface extends ConditionInterface
     public function getRoundDisplay($trackId, $roundId);
        
     /**
-     * Short text explaining why this condition is not valid for this
-     * track and round combination
-     * 
-     * @see $this->isValid()
-     * 
-     * @param int $trackId
-     * @param int $roundId
-     * 
-     * @return string
-     */
-    public function getNotValidReason($trackId, $roundId);
-   
-    /**
      * Is the condition for this round (token) valid or not
      * 
      * This is the actual implementation of the condition
@@ -52,19 +39,6 @@ interface RoundConditionInterface extends ConditionInterface
      * 
      * @return bool
      */
-    public function isRoundValid(\Gems_Tracker_Token $token);
-    
-    /**
-     * Can this condition be applied to this track/round
-     * 
-     * This helps to prevent people assigning conditions to tracks/rounds that
-     * can never fulfill the condition (trackfield not available for example)
-     * 
-     * @param type $trackId
-     * @param type $roundId
-     * 
-     * @return bool
-     */
-    public function isValid($trackId, $roundId);
+    public function isRoundValid(\Gems_Tracker_Token $token);    
 
 }

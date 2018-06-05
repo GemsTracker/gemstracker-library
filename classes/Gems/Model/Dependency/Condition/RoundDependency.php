@@ -38,7 +38,7 @@ class RoundDependency extends \MUtil\Model\Dependency\DependencyAbstract
      *
      * @var array Of name => name
      */
-    protected $_dependentOn = array('gro_condition');
+    protected $_dependentOn = array('gro_condition', 'gro_id_track', 'gro_id_round');
 
     /**
      * Array of name => array(setting => setting) of fields with settings changed by this dependency
@@ -49,7 +49,8 @@ class RoundDependency extends \MUtil\Model\Dependency\DependencyAbstract
      * @var array of name => array(setting => setting)
      */
     protected $_effecteds = [
-        'condition_dispay' => ['value', 'elementClass']
+        'condition_dispay' => ['value', 'elementClass'],
+        'gro_condition'    => ['validator']
         ];
 
     /**
@@ -92,15 +93,15 @@ class RoundDependency extends \MUtil\Model\Dependency\DependencyAbstract
             $condition = $conditions->loadCondition($context['gro_condition']);
             $validator = new \Zend_Validate_Callback();
             $validator->setCallback([$condition, 'isValid']);
-            $validator->setOptions([$context['gro_id_track'], ['gro_id_round']]);
+            $validator->setMessage($condition->getNotValidReason($context['gro_condition'], $context), $validator::INVALID_VALUE);                    
             
             return [                
                 'condition_display' => [
                     'elementClass' => 'Exhibitor',
-                    'value' => $condition->getRoundDisplay($context['gro_id_track'], ['gro_id_round'])
+                    'value' => $condition->getRoundDisplay($context['gro_id_track'], $context['gro_id_round'])
                 ],
                 'gro_condition' => [
-                    'Validator' => $validator
+                    'validator' => $validator
                 ]
             ];
         }

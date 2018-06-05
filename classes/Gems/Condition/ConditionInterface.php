@@ -51,5 +51,30 @@ interface ConditionInterface
      * @return string
      */
     public function getName();
+    
+    /**
+     * Short text explaining why this condition is not valid
+     * 
+     * @see $this->isValid()
+     * 
+     * @param int $value The id of the condition
+     * @param array $context The other variables in the form
+     * 
+     * @return string
+     */
+    public function getNotValidReason($value, $context);
+    
+    /**
+     * Can this condition be applied to this track/round
+     * 
+     * This helps to prevent people assigning conditions to places where the
+     * condition can never be fulfilled (trackfield not available for example)
+     * 
+     * @param int $value The id of the condition
+     * @param array $context The other variables in the form
+     * 
+     * @return bool
+     */
+    public function isValid($value, $context);
 
 }
