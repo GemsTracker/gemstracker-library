@@ -104,7 +104,9 @@ class Gems_Tracker_Source_LimeSurvey2m00Database extends \Gems_Tracker_Source_Li
                     $language,
                     $this->getSourceDatabase(),
                     $this->translate,
-                    $this->addDatabasePrefix(''));
+                    $this->addDatabasePrefix(''),
+                    $this->cache
+            );
         }
 
         return $this->_fieldMaps[$sourceSurveyId][$language];
