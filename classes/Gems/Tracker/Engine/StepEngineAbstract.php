@@ -355,21 +355,21 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
                 if (!$valid && $token->getReceptionCode()->isSuccess()) {
                     $message = sprintf($this->_('Skipped by condition %s: %s'),
                             $condition->getName(),
-                            $condition->getRoundDescription($token->getTrackId(), $token->getRoundId())
+                            $condition->getRoundDisplay($token->getTrackId(), $token->getRoundId())
                             );
                     
                     $skipCode = $this->util->getReceptionCodeLibrary()->getSkipString();
-                    $token->setReceptionCode('skip', $message, $userid);
+                    $token->setReceptionCode('skip', $message, $userId);
                 }
                 
                 if ($valid && $token->getReceptionCode()->getCode() == 'skip') {
                     $message = sprintf($this->_('Activated by condition %s: %s'),
                             $condition->getName(),
-                            $condition->getRoundDescription($token->getTrackId(), $token->getRoundId())
+                            $condition->getRoundDisplay($token->getTrackId(), $token->getRoundId())
                             );
                     
                     $OKCode = $this->util->getReceptionCodeLibrary()->getOKString();
-                    $token->setReceptionCode($OKCode, $message, $userid);
+                    $token->setReceptionCode($OKCode, $message, $userId);
                 }                
                 
             }

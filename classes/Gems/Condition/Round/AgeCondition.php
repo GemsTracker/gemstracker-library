@@ -63,6 +63,9 @@ class AgeCondition extends RoundConditionAbstract
     
     public function isRoundValid(\Gems_Tracker_Token $token)
     {
+        $minAge = $this->_data['gcon_condition_text1'];
+        $maxAge = $this->_data['gcon_condition_text3'];
+        
         $validFrom = $token->getValidFrom();
         if (!is_null($validFrom)) {
             $respondent = $token->getRespondent();
