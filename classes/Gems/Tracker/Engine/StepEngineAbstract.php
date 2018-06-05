@@ -286,58 +286,94 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
         $token = $startToken;
         while ($token) {
             // \MUtil_Echo::track($token->getTokenId());
+            //Only process the token when linked to a round
+            if (array_key_exists($token->getRoundId(), $this->_rounds)) {
+                $round = $this->_rounds[$token->getRoundId()];
+            } else {
+                $round = false;
+            }
 
             // Change only not-completed tokens with a positive successcode where at least one date
             // is not set by user input
             if ($token->hasSuccesCode() &&
                     (! $token->isCompleted()) &&
                     (! ($token->isValidFromManual() && $token->isValidUntilManual())) &&
-                    ($token !== $skipToken)) {
+                    ($token !== $skipToken) && 
+                    $round) {
 
-                //Only process the token when linked to a round
-                if (array_key_exists($token->getRoundId(), $this->_rounds)) {
-                    $round      = $this->_rounds[$token->getRoundId()];
-
-                    if ($token->isValidFromManual()) {
-                        $validFrom = $token->getValidFrom();
-                    } else {
-                        $fromDate   = $this->getValidFromDate(
-                                $round['gro_valid_after_source'],
-                                $round['gro_valid_after_field'],
-                                $round['gro_valid_after_id'],
-                                $token,
-                                $respTrack
-                                );
-                        $validFrom  = $this->calculateFromDate(
-                                $fromDate,
-                                $round['gro_valid_after_unit'],
-                                $round['gro_valid_after_length']
-                                );
-                    }
-
-                    // \MUtil_Echo::track($round, (string) $fromDate, $validFrom);
-
-                    if ($token->isValidUntilManual()) {
-                        $validUntil = $token->getValidUntil();
-                    } else {
-                        $untilDate  = $this->getValidUntilDate(
-                                $round['gro_valid_for_source'],
-                                $round['gro_valid_for_field'],
-                                $round['gro_valid_for_id'],
-                                $token,
-                                $respTrack,
-                                $validFrom
-                                );
-                        $validUntil = $this->calculateUntilDate(
-                                $untilDate,
-                                $round['gro_valid_for_unit'],
-                                $round['gro_valid_for_length']
-                                );
-                    }
-
-                    $changed    += $token->setValidFrom($validFrom, $validUntil, $userId);
+                if ($token->isValidFromManual()) {
+                    $validFrom = $token->getValidFrom();
+                } else {
+                    $fromDate   = $this->getValidFromDate(
+                            $round['gro_valid_after_source'],
+                            $round['gro_valid_after_field'],
+                            $round['gro_valid_after_id'],
+                            $token,
+                            $respTrack
+                            );
+                    $validFrom  = $this->calculateFromDate(
+                            $fromDate,
+                            $round['gro_valid_after_unit'],
+                            $round['gro_valid_after_length']
+                            );
                 }
+
+                // \MUtil_Echo::track($round, (string) $fromDate, $validFrom);
+
+                if ($token->isValidUntilManual()) {
+                    $validUntil = $token->getValidUntil();
+                } else {
+                    $untilDate  = $this->getValidUntilDate(
+                            $round['gro_valid_for_source'],
+                            $round['gro_valid_for_field'],
+                            $round['gro_valid_for_id'],
+                            $token,
+                            $respTrack,
+                            $validFrom
+                            );
+                    $validUntil = $this->calculateUntilDate(
+                            $untilDate,
+                            $round['gro_valid_for_unit'],
+                            $round['gro_valid_for_length']
+                            );
+                }
+
+                $changed    += $token->setValidFrom($validFrom, $validUntil, $userId);
             }
+            
+            if ($round && 
+                !empty($round['gro_condition']) &&
+                ($token->getReceptionCode()->isSuccess() || $token->getReceptionCode()->getCode() == 'skip')) {
+                
+                // There is a round condition, we should evaluate it
+                $conditions  = $this->loader->getConditions();
+                $conditionId = $round['gro_condition'];
+                $condition   = $conditions->loadCondition($conditionId);
+                
+                $valid = $condition->isRoundValid($token);
+                
+                if (!$valid && $token->getReceptionCode()->isSuccess()) {
+                    $message = sprintf($this->_('Skipped by condition %s: %s'),
+                            $condition->getName(),
+                            $condition->getRoundDescription($token->getTrackId(), $token->getRoundId())
+                            );
+                    
+                    $skipCode = $this->util->getReceptionCodeLibrary()->getSkipString();
+                    $token->setReceptionCode('skip', $message, $userid);
+                }
+                
+                if ($valid && $token->getReceptionCode()->getCode() == 'skip') {
+                    $message = sprintf($this->_('Activated by condition %s: %s'),
+                            $condition->getName(),
+                            $condition->getRoundDescription($token->getTrackId(), $token->getRoundId())
+                            );
+                    
+                    $OKCode = $this->util->getReceptionCodeLibrary()->getOKString();
+                    $token->setReceptionCode($OKCode, $message, $userid);
+                }                
+                
+            }
+            
             $token = $token->getNextToken();
         }
 
