@@ -88,11 +88,11 @@ class ClassDependency extends \MUtil\Model\Dependency\DependencyAbstract
     {
         $conditions = $this->loader->getConditions();
 
-        if (isset($context['gcon_type'],$context['gcon_class'])) {
+        if (isset($context['gcon_type'],$context['gcon_class']) && !empty($context['gcon_class'])) {
             $condition = $conditions->loadConditionForType($context['gcon_type'],$context['gcon_class']);
             
             $changes = [
-                'condition_help' => ['value' => \MUtil_Html::raw('pre' . $condition->getHelp() . '</pre>')],
+                'condition_help' => ['value' => \MUtil_Html::raw('<pre>' . $condition->getHelp() . '</pre>')],
             ];
             
             foreach($condition->getModelFields($context, $new) as $field => $fieldChanges) {

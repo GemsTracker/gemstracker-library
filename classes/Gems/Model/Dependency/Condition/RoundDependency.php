@@ -89,10 +89,10 @@ class RoundDependency extends \MUtil\Model\Dependency\DependencyAbstract
     {
         $conditions = $this->loader->getConditions();
 
-        if (isset($context['gro_condition'])) {
+        if (isset($context['gro_condition']) && !empty($context['gro_condition'])) {
             $condition = $conditions->loadCondition($context['gro_condition']);
-            $validator = new \Zend_Validate_Callback();
-            $validator->setCallback([$condition, 'isValid']);
+            $callback  = [$condition, 'isValid'];
+            $validator = new \Zend_Validate_Callback($callback);
             $validator->setMessage($condition->getNotValidReason($context['gro_condition'], $context), $validator::INVALID_VALUE);                    
             
             return [                

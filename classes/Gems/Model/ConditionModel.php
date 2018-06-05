@@ -120,7 +120,9 @@ class ConditionModel extends \Gems_Model_JoinModel
 
         $this->set('gcon_type');
         $this->set('gcon_class');
-        $this->set('gcon_name', 'description', $this->_('A name for this condition.'));
+        $this->set('gcon_name', 'description', $this->_('A name for this condition, will be used to select it when applying the condition.'));
+        
+        $this->set('condition_help', 'label', $this->_('Help'), 'elementClass', 'Exhibitor');
         
         // Set the order
         $this->set('gcon_condition_text1');
@@ -132,8 +134,6 @@ class ConditionModel extends \Gems_Model_JoinModel
                 'multiOptions', $yesNo
                 );
         
-        $this->set('condition_help', 'label', $this->_('Help'), 'elementClass', 'Exhibitor');
-
         /*$this->addColumn(new \Zend_Db_Expr(sprintf(
                 "(SELECT COALESCE(GROUP_CONCAT(gtr_track_name, '%s', gtap_field_name
                                     ORDER BY gtr_track_name, gtap_id_order SEPARATOR '%s'), '%s')

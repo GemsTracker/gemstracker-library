@@ -43,7 +43,7 @@ class AgeCondition extends RoundConditionAbstract
         return $this->_('Respondent age');
     }
 
-    public function getNotValidReason($trackId, $roundId)
+    public function getNotValidReason($conditionId, $context)
     {
         // Always available
         return '';
@@ -73,12 +73,10 @@ class AgeCondition extends RoundConditionAbstract
         return true;
     }
 
-    public function isValid($trackId, $roundId)
+    public function isValid($conditionId, $context)
     {
         // Always available
         return true;
-    }
-
-    
+    }   
 
 }
