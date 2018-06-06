@@ -263,6 +263,47 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
             return $date;
         }
     }
+    
+    /**
+     * Check if the token should be enabled / disabled due to conditions
+     * 
+     * @param \GemS_Tracker_Token $token
+     * @param array $round
+     * @param int   $userId Id of the user who takes the action (for logging)
+     * @return int The number of tokens changed by this code
+     */
+    protected function checkTokenCondition(\GemS_Tracker_Token $token, $round, $userId)
+    {
+        $changed  = 0;
+        $message  = '';
+        $skipCode = $this->util->getReceptionCodeLibrary()->getSkipString();
+        
+        if (!empty($round['gro_condition']) && 
+            !$token->isCompleted() && 
+            ($token->getReceptionCode()->isSuccess() || $token->getReceptionCode()->getCode() == $skipCode)) {
+            
+            $condition   = $this->loader->getConditions()->loadCondition($round['gro_condition']);
+            $valid       = $condition->isRoundValid($token);            
+
+            if (!$valid && $token->getReceptionCode()->isSuccess()) {
+                $message = $this->_('Skipped by condition %s: %s');
+            }
+
+            if ($valid && $token->getReceptionCode()->getCode() == $skipCode) {
+                $message = $this->_('Activated by condition %s: %s');
+            }
+            
+            if (!empty($message)) {
+                $changed = 1;
+                
+                $token->setReceptionCode($this->util->getReceptionCodeLibrary()->getOKString(), 
+                        sprintf($message, $condition->getName(), $condition->getRoundDisplay($token->getTrackId(), $token->getRoundId())),
+                        userId);
+            }
+        }
+        
+        return $changed;
+    }
 
     /**
      * Check the valid from and until dates in the track starting at a specified token
@@ -292,6 +333,8 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
             } else {
                 $round = false;
             }
+            
+            $changes = 0;
 
             // Change only not-completed tokens with a positive successcode where at least one date
             // is not set by user input
@@ -338,42 +381,15 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
                             );
                 }
 
-                $changed    += $token->setValidFrom($validFrom, $validUntil, $userId);
+                $changes += $token->setValidFrom($validFrom, $validUntil, $userId);
             }
             
-            if ($round && 
-                !empty($round['gro_condition']) &&
-                ($token->getReceptionCode()->isSuccess() || $token->getReceptionCode()->getCode() == 'skip')) {
-                
-                // There is a round condition, we should evaluate it
-                $conditions  = $this->loader->getConditions();
-                $conditionId = $round['gro_condition'];
-                $condition   = $conditions->loadCondition($conditionId);
-                
-                $valid = $condition->isRoundValid($token);
-                
-                if (!$valid && $token->getReceptionCode()->isSuccess()) {
-                    $message = sprintf($this->_('Skipped by condition %s: %s'),
-                            $condition->getName(),
-                            $condition->getRoundDisplay($token->getTrackId(), $token->getRoundId())
-                            );
-                    
-                    $skipCode = $this->util->getReceptionCodeLibrary()->getSkipString();
-                    $token->setReceptionCode('skip', $message, $userId);
-                }
-                
-                if ($valid && $token->getReceptionCode()->getCode() == 'skip') {
-                    $message = sprintf($this->_('Activated by condition %s: %s'),
-                            $condition->getName(),
-                            $condition->getRoundDisplay($token->getTrackId(), $token->getRoundId())
-                            );
-                    
-                    $OKCode = $this->util->getReceptionCodeLibrary()->getOKString();
-                    $token->setReceptionCode($OKCode, $message, $userId);
-                }                
-                
-            }
+            if ($round) {
+                $changes += $this->checkTokenCondition($token, $round, $userId); 
+            }                
             
+            // If condition changed and dates changed, we only signal one change
+            $changed += min($changes, 1);
             $token = $token->getNextToken();
         }
 
@@ -689,6 +705,8 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
                     );
 
             // Continue with last round level items
+            $model->set('gro_condition');
+            $model->set('condition_display');
             $model->set('gro_active');
             $model->set('gro_changed_event');
         } else {

@@ -49,7 +49,7 @@ class RoundDependency extends \MUtil\Model\Dependency\DependencyAbstract
      * @var array of name => array(setting => setting)
      */
     protected $_effecteds = [
-        'condition_dispay' => ['value', 'elementClass'],
+        'condition_display' => ['value', 'elementClass'],
         'gro_condition'    => ['validator']
         ];
 

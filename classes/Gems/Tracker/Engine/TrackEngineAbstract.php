@@ -916,6 +916,10 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
                 'elementClass', 'Select', 
                 'multiOptions', $this->loader->getConditions()->getConditionsFor(Gems\Conditions::ROUND_CONDITION)
                 );
+        
+        $model->set('condition_display', 'label', $this->_('Condition help'), 'elementClass', 'Hidden');
+        
+        $model->addDependency('Condition\\RoundDependency');
 
         switch ($action) {
             case 'create':
@@ -938,8 +942,6 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
                         'multiOptions', $translated->getYesNo(),
                         'elementClass', 'radio'
                         );
-                
-                $model->addDependency('Condition\\RoundDependency');
 
                 break;
 
