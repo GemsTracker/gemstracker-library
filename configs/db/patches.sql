@@ -1355,3 +1355,12 @@ ALTER TABLE  `gems__track_appointments`
 -- PATCH: Add care episodes to appointments
 ALTER TABLE  gems__appointments
     ADD gap_id_episode bigint unsigned null AFTER gap_id_organization;
+
+
+-- PATCH: Add respondent organisation email and fill with existing data from respondents
+ALTER TABLE `gems__respondent2org`
+	ADD `gr2o_email` varchar(100) COLLATE 'utf8_general_ci' NULL AFTER `gr2o_id_user`;
+
+UPDATE gems__respondent2org
+	INNER JOIN gems__respondents ON grs_id_user = gr2o_id_user
+	SET gr2o_email = grs_email;
