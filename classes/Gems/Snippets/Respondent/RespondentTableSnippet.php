@@ -69,15 +69,15 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
      */
     protected function addBrowseColumn2(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
-        if ($this->currentUser->isFieldMaskedWhole('name') && $this->currentUser->isFieldMaskedWhole('grs_email')) {
+        if ($this->currentUser->isFieldMaskedWhole('name') && $this->currentUser->isFieldMaskedWhole('gr2o_email')) {
             return;
         }
 
         $br = \MUtil_Html::create('br');
 
-        $model->setIfExists('grs_email', 'formatFunction', array('MUtil_Html_AElement', 'ifmail'));
+        $model->setIfExists('gr2o_email', 'formatFunction', array('MUtil_Html_AElement', 'ifmail'));
 
-        $bridge->addMultiSort('name', $br, 'grs_email');
+        $bridge->addMultiSort('name', $br, 'gr2o_email');
     }
 
     /**

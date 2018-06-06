@@ -647,6 +647,7 @@ CREATE TABLE gems__respondent2org (
         -- gr2o_id_physician       INTEGER,
 
         -- gr2o_treatment          varchar(200),
+        gr2o_email              varchar(100),
         gr2o_mailable           TINYINT(1) not null default 1,
         gr2o_comments           text,
 
@@ -734,7 +735,7 @@ CREATE TABLE gems__respondents (
 
         grs_iso_lang               char(2) not null default 'nl',
 
-        grs_email                  varchar(100),
+        -- grs_email                  varchar(100),
 
         -- grs_initials_name          varchar(30) ,
         grs_first_name             varchar(30) ,

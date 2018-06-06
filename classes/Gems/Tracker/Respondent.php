@@ -150,7 +150,7 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
      */
     public function canBeMailed()
     {
-        return $this->_gemsData['gr2o_mailable'] && $this->_gemsData['grs_email'];
+        return $this->_gemsData['gr2o_mailable'] && $this->_gemsData['gr2o_email'];
     }
 
     /**
@@ -217,7 +217,7 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
      */
     public function getEmailAddress()
     {
-        return $this->_gemsData['grs_email'];
+        return $this->_gemsData['gr2o_email'];
     }
 
     /**

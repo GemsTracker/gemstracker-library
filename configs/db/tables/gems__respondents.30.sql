@@ -6,7 +6,7 @@ CREATE TABLE if not exists gems__respondents (
 
         grs_iso_lang               char(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'nl',
 
-        grs_email                  varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        -- grs_email                  varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
         -- grs_initials_name          varchar(30) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
         grs_first_name             varchar(30) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
@@ -34,7 +34,7 @@ CREATE TABLE if not exists gems__respondents (
         grs_created_by             bigint unsigned not null,
 
         PRIMARY KEY(grs_id_user),
-        INDEX (grs_email)
+        --INDEX (grs_email)
     )
     ENGINE=InnoDB
     AUTO_INCREMENT = 30001

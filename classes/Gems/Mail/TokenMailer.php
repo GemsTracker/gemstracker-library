@@ -106,7 +106,7 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
         $organizationId = $this->loader->getCurrentUser()->getCurrentOrganizationId();
 
         $filter['gto_id_organization'] = $organizationId;
-        $filter[] = 'grs_email IS NOT NULL';
+        $filter[] = 'gr2o_email IS NOT NULL';
 
         // Without sorting we get the fastest load times
         $sort = false;

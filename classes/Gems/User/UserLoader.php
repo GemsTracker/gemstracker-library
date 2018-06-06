@@ -682,7 +682,7 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
         if ($isEmail && $this->allowRespondentEmailLogin) {
             $rows = $this->db->fetchAll(
                     "SELECT gr2o_patient_nr, gr2o_id_organization FROM gems__respondent2org  "
-                    . "INNER JOIN gems__respondents WHERE gr2o_id_user = grs_id_user AND grs_email = ?",
+                    . "INNER JOIN gems__respondents WHERE gr2o_id_user = grs_id_user AND gr2o_email = ?",
                     $login_name
                     );
             if ($rows) {

@@ -58,7 +58,7 @@ class Gems_Communication_RespondentModelWriter implements \Gems_Communication_Re
             $data = $this->_model->loadNew();
         }
 
-        unset($data['grs_email']);
+        unset($data['gr2o_email']);
 
         $data['gr2o_patient_nr'] = $respondent->getPatientId();
         $data['grs_first_name'] = $respondent->getFirstName();

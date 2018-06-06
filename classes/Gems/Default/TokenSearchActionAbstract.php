@@ -118,7 +118,7 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
         $model->setFilter($this->getSearchFilter(false));
 
         $sort = array(
-            'grs_email'          => SORT_ASC,
+            'gr2o_email'          => SORT_ASC,
             'grs_first_name'     => SORT_ASC,
             'grs_surname_prefix' => SORT_ASC,
             'grs_last_name'      => SORT_ASC,
@@ -213,7 +213,7 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
             switch ($filter['main_filter']) {
                 case 'hasnomail':
                     $filter[] = sprintf(
-                            "(grs_email IS NULL OR grs_email = '' OR grs_email NOT RLIKE '%s') AND
+                            "(gr2o_email IS NULL OR gr2o_email = '' OR gr2o_email NOT RLIKE '%s') AND
                                 ggp_respondent_members = 1",
                             str_replace('\'', '\\\'', trim(\MUtil_Validate_SimpleEmail::EMAIL_REGEX, '/'))
                             );
@@ -229,13 +229,13 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
 
                 case 'tomail':
                     $filter[] = sprintf(
-                            "grs_email IS NOT NULL AND
-                                grs_email != '' AND
-                                grs_email RLIKE '%s' AND
+                            "gr2o_email IS NOT NULL AND
+                                gr2o_email != '' AND
+                                gr2o_email RLIKE '%s' AND
                                 ggp_respondent_members = 1",
                             str_replace('\'', '\\\'', trim(\MUtil_Validate_SimpleEmail::EMAIL_REGEX, '/'))
                             );
-                    //$filter[] = "grs_email IS NOT NULL AND grs_email != '' AND ggp_respondent_members = 1";
+                    //$filter[] = "gr2o_email IS NOT NULL AND gr2o_email != '' AND ggp_respondent_members = 1";
                     $filter['gto_mail_sent_date'] = null;
                     $filter[] = '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)';
                     $filter['gto_completion_time'] = null;

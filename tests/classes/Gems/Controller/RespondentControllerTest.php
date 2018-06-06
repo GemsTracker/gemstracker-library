@@ -67,7 +67,7 @@ class RespondentControllerTest extends ControllerTestAbstract {
             'grs_gender'           => 'F',
             'grs_birthday'         => '1965-04-11',
             'grs_ssn'              => '',
-            'grs_email'            => 'email@email.com',
+            'gr2o_email'            => 'email@email.com',
             // Just for the unit test as we don't have a default value
             'gr2o_opened_by'       => '0',
         ];
@@ -96,7 +96,7 @@ class RespondentControllerTest extends ControllerTestAbstract {
             'grs_gender'           => 'F',
             'grs_birthday'         => '1965-04-11',
             'grs_ssn'              => '',
-            'grs_email'            => 'email@email.com',
+            'gr2o_email'            => 'email@email.com',
             // Just for the unit test as we don't have a default value
             'gr2o_opened_by'       => '0',
         ];
@@ -124,7 +124,7 @@ class RespondentControllerTest extends ControllerTestAbstract {
             'grs_gender'           => 'F',
             'grs_birthday'         => '1965-04-11',
             'grs_ssn'              => '',
-            'grs_email'            => 'email@email.com',
+            'gr2o_email'            => 'email@email.com',
             // Just for the unit test as we don't have a default value
             'gr2o_opened_by'       => '0',
         ];
@@ -157,7 +157,7 @@ class RespondentControllerTest extends ControllerTestAbstract {
             'grs_gender'           => 'F',
             'grs_birthday'         => '1965-04-11',
             'grs_ssn'              => '',
-            'grs_email'            => 'email@email.com',
+            'gr2o_email'            => 'email@email.com',
             // Just for the unit test as we don't have a default value
             'gr2o_opened_by'       => '0',
         ];

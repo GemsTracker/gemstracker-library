@@ -93,7 +93,7 @@ class DetailsWithAssignmentsSnippet extends \Gems_Snippets_RespondentDetailSnipp
             $this->_('Respondent'));
         $bridge->addItem('grs_gender');
         $bridge->addItem('grs_birthday');
-        $bridge->addItem('grs_email');
+        $bridge->addItem('gr2o_email');
         $bridge->addItem('gr2o_created');
         $bridge->addItem('gr2o_created_by');
 

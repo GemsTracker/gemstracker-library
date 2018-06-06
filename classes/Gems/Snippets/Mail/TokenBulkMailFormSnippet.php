@@ -101,7 +101,7 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends \Gems_Snippets_Mail_Ma
             if ($tokenData['gto_completion_time']) {
                 $title = $this->_('Survey has been taken.');
                 $menuFind = array('controller' => 'track', 'action' => 'answer');
-            } elseif (! $tokenData['grs_email']) {
+            } elseif (! $tokenData['gr2o_email']) {
                 $title = $this->_('Respondent does not have an e-mail address.');
                 $menuFind = array('controller' => 'respondent', 'action' => 'edit');
             } elseif ($tokenData['ggp_respondent_members'] == 0) {

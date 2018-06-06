@@ -61,8 +61,8 @@ class RespondentDetailsSnippet extends \Gems_Snippets_RespondentDetailSnippetAbs
         }
 
         // ROW 2
-        if ($this->model->has('grs_email') && (! $this->currentUser->isFieldMaskedWhole('grs_email'))) {
-            $bridge->addItem('grs_email');
+        if ($this->model->has('gr2o_email') && (! $this->currentUser->isFieldMaskedWhole('gr2o_email'))) {
+            $bridge->addItem('gr2o_email');
         }
         $address = [];
         if ($this->model->has('grs_address_1') && (! $this->currentUser->isFieldMaskedWhole('grs_address_1'))) {
