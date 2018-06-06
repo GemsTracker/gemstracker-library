@@ -499,6 +499,11 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
             }
 
             if (isset($this->formData['rounds']) && is_array($this->formData['rounds'])) {
+                $this->_batch->addTask(
+                            'Tracker\\Export\\TrackRoundConditionExportTask',
+                            $trackId
+                            );
+                
                 foreach ($this->formData['rounds'] as $roundId) {
                     $this->_batch->addTask(
                             'Tracker\\Export\\TrackRoundExportTask',

@@ -73,7 +73,7 @@ class ConditionModel extends \Gems_Model_JoinModel
     /**
      * Set those settings needed for the browse display
      *
-     * @return \Gems_Agenda_AppointmentFilterModelAbstract
+     * @return \Gems\Model\ConditionModel
      */
     public function applyBrowseSettings()
     {
@@ -108,7 +108,7 @@ class ConditionModel extends \Gems_Model_JoinModel
     /**
      * Set those settings needed for the detailed display
      *
-     * @return \Gems_Agenda_AppointmentFilterModelAbstract
+     * @return \Gems\Model\ConditionModel
      */
     public function applyDetailSettings()
     {
@@ -174,7 +174,7 @@ class ConditionModel extends \Gems_Model_JoinModel
     /**
      * Set those values needed for editing
      *
-     * @return \Gems_Agenda_AppointmentFilterModelAbstract
+     * @return \Gems\Model\ConditionModel
      */
     public function applyEditSettings($create = false)
     {

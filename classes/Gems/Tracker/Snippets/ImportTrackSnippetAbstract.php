@@ -788,6 +788,14 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
                         $surveyData
                         );
             }
+            
+            foreach ($import['conditions'] as $lineNr => $roundData) {
+                $batch->addTask(
+                        'Tracker\\Import\\CheckTrackRoundConditionImportTask',
+                        $lineNr,
+                        $roundData
+                        );
+            }
 
             foreach ($import['rounds'] as $lineNr => $roundData) {
                 $batch->addTask(
@@ -834,6 +842,14 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
                         'Tracker\\Import\\CreateTrackFieldImportTask',
                         $lineNr,
                         $fieldData
+                        );
+            }
+            
+            foreach ($import['conditions'] as $lineNr => $roundData) {
+                $batch->addTask(
+                        'Tracker\\Import\\CreateTrackRoundConditionImportTask',
+                        $lineNr,
+                        $roundData
                         );
             }
 
@@ -887,6 +903,14 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
                         'Tracker\\Import\\CreateTrackFieldImportTask',
                         $lineNr,
                         $fieldData
+                        );
+            }
+            
+            foreach ($import['conditions'] as $lineNr => $roundData) {
+                $batch->addTask(
+                        'Tracker\\Import\\CreateTrackRoundConditionImportTask',
+                        $lineNr,
+                        $roundData
                         );
             }
 
