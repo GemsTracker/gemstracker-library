@@ -60,7 +60,7 @@ class CreateTrackRoundImportTask extends \MUtil_Task_TaskAbstract
 
         $fieldCodes  = isset($import['fieldCodes'])  ? $import['fieldCodes']  : array();
         $roundOrders = isset($import['roundOrders']) ? $import['roundOrders'] : array();
-        $conditions  = isset($import['conditions'])  ? $import['conditions']  : array();
+        $conditions  = isset($import['importConditions'])  ? $import['importConditions']  : array();
         $tracker     = $this->loader->getTracker();
         $trackEngine = $tracker->getTrackEngine($import['trackId']);
         $model       = $trackEngine->getRoundModel(true, 'create');
@@ -132,7 +132,7 @@ class CreateTrackRoundImportTask extends \MUtil_Task_TaskAbstract
         }
         if (isset($roundData['gro_condition']) && $roundData['gro_condition']) {
             if (isset($conditions[$roundData['gro_condition']]) && $conditions[$roundData['gro_condition']]) {
-                $roundData['gro_condition'] = $conditions[$conditionId];
+                $roundData['gro_condition'] = $conditions[$roundData['gro_condition']];
             } else {
                 // This should not happen!
                 $roundData['gro_condition'] = null;

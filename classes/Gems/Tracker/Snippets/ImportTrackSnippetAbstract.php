@@ -789,11 +789,11 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
                         );
             }
             
-            foreach ($import['conditions'] as $lineNr => $roundData) {
+            foreach ($import['conditions'] as $lineNr => $conditionData) {
                 $batch->addTask(
                         'Tracker\\Import\\CheckTrackRoundConditionImportTask',
                         $lineNr,
-                        $roundData
+                        $conditionData
                         );
             }
 
@@ -845,11 +845,11 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
                         );
             }
             
-            foreach ($import['conditions'] as $lineNr => $roundData) {
+            foreach ($import['conditions'] as $lineNr => $conditionData) {
                 $batch->addTask(
                         'Tracker\\Import\\CreateTrackRoundConditionImportTask',
                         $lineNr,
-                        $roundData
+                        $conditionData
                         );
             }
 
@@ -906,11 +906,11 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
                         );
             }
             
-            foreach ($import['conditions'] as $lineNr => $roundData) {
+            foreach ($import['conditions'] as $lineNr => $conditionData) {
                 $batch->addTask(
                         'Tracker\\Import\\CreateTrackRoundConditionImportTask',
                         $lineNr,
-                        $roundData
+                        $conditionData
                         );
             }
 
@@ -957,6 +957,7 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
             'organizations' => false,
             'fields'        => true,
             'surveys'       => false,
+            'conditions'    => false,
             'rounds'        => false,
             );
     }

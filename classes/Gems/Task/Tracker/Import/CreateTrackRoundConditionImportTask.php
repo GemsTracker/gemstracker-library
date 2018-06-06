@@ -54,11 +54,11 @@ class CreateTrackRoundConditionImportTask extends \MUtil_Task_TaskAbstract
         // Try to find by classname and options
         $filter = [
             'gcon_class' => $conditionData['gcon_class'],
-            'gcon_condition_text1' => $conditionData['gcon_condition_text_1'],
-            'gcon_condition_text2' => $conditionData['gcon_condition_text_2'],
-            'gcon_condition_text3' => $conditionData['gcon_condition_text_3'],
-            'gcon_condition_text4' => $conditionData['gcon_condition_text_4']
-                ];        
+            'gcon_condition_text1' => $conditionData['gcon_condition_text1'],
+            'gcon_condition_text2' => $conditionData['gcon_condition_text2'],
+            'gcon_condition_text3' => $conditionData['gcon_condition_text3'],
+            'gcon_condition_text4' => $conditionData['gcon_condition_text4']
+                ];
         $found  = $model->loadFirst($filter);
         
         if (!$found) {
@@ -70,6 +70,6 @@ class CreateTrackRoundConditionImportTask extends \MUtil_Task_TaskAbstract
                 
         $conditionSaved = $model->save($conditionData);
 
-        $import['conditions'][$conditionData['gcon_id']] = $conditionSaved['gcon_id'];
+        $import['importConditions'][$conditionId] = $conditionSaved['gcon_id'];
     }
 }

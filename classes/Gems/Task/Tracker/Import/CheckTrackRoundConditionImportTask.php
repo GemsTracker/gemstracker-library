@@ -41,7 +41,7 @@ class CheckTrackRoundConditionImportTask extends \MUtil_Task_TaskAbstract
         $import     = $batch->getVariable('import');
 
         if (isset($conditionData['gcon_id']) && $conditionData['gcon_id']) {
-            $import['conditions'][$conditionData['gcon_id']] = false;
+            $import['importConditions'][$conditionData['gcon_id']] = false;
         } else {
             $batch->addToCounter('import_errors');
             $batch->addMessage(sprintf(
