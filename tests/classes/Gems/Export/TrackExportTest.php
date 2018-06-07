@@ -136,6 +136,11 @@ class TrackExportTest extends \Gems_Test_DbTestAbstract {
                     );
         }
         
+        $batch->addTask(
+                'Tracker\\Export\\TrackRoundConditionExportTask',
+                $trackId
+                );
+
         foreach ($formData['rounds'] as $roundId) {
             $batch->addTask(
                     'Tracker\\Export\\TrackRoundExportTask',
