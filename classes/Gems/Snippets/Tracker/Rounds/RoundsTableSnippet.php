@@ -131,7 +131,9 @@ class RoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
             $this->columns[90] = array('gro_display_event');
         }
         $this->columns[100] = array('gro_code');
-        $this->columns[110] = array('organizations');
+        $this->columns[110] = array('condition_display');
+        // Organizations can possibly be replaced with a condition
+        $this->columns[120] = array('organizations');        
     }
 
     /**

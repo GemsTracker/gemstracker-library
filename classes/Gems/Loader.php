@@ -141,6 +141,15 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
     {
         return $this->_getClass('agenda');
     }
+    
+    /**
+     *
+     * @return \Gems\Conditions
+     */
+    public function getConditions()
+    {
+        return $this->_getClass('conditions');
+    }
 
     /**
      *

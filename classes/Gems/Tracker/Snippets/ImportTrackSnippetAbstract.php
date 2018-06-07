@@ -788,6 +788,14 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
                         $surveyData
                         );
             }
+            
+            foreach ($import['conditions'] as $lineNr => $conditionData) {
+                $batch->addTask(
+                        'Tracker\\Import\\CheckTrackRoundConditionImportTask',
+                        $lineNr,
+                        $conditionData
+                        );
+            }
 
             foreach ($import['rounds'] as $lineNr => $roundData) {
                 $batch->addTask(
@@ -834,6 +842,14 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
                         'Tracker\\Import\\CreateTrackFieldImportTask',
                         $lineNr,
                         $fieldData
+                        );
+            }
+            
+            foreach ($import['conditions'] as $lineNr => $conditionData) {
+                $batch->addTask(
+                        'Tracker\\Import\\CreateTrackRoundConditionImportTask',
+                        $lineNr,
+                        $conditionData
                         );
             }
 
@@ -889,6 +905,14 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
                         $fieldData
                         );
             }
+            
+            foreach ($import['conditions'] as $lineNr => $conditionData) {
+                $batch->addTask(
+                        'Tracker\\Import\\CreateTrackRoundConditionImportTask',
+                        $lineNr,
+                        $conditionData
+                        );
+            }
 
             foreach ($import['rounds'] as $lineNr => $roundData) {
                 $batch->addTask(
@@ -933,6 +957,7 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
             'organizations' => false,
             'fields'        => true,
             'surveys'       => false,
+            'conditions'    => false,
             'rounds'        => false,
             );
     }
