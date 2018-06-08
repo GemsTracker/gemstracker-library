@@ -107,61 +107,20 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
         }
 
         return $paths;
-    }
-
+    }    
+    
     /**
      * Returns a list of selectable conditions with an empty element as the first option.
-     *
+     * 
      * @param string $conditionType The type (i.e. lookup directory with an associated class) of the conditions to list
      * @return ConditionInterface or more specific a $conditionClass type object
      */
     protected function _listConditions($conditionType)
     {
-        $results    = array();
-        $conditionClass = $this->_getConditionClass($conditionType);
-        $paths      = $this->_getConditionDirs($conditionType);
-
-        foreach ($paths as $prefix => $path) {
-            if (file_exists($path)) {
-                $eDir = dir($path);
-                $parts = explode('_', $prefix, 2);
-                if ($name = reset($parts)) {
-                    $name = ' (' . $name . ')';
-                }
-
-                while (false !== ($filename = $eDir->read())) {
-                    if ('.php' === substr($filename, -4)) {
-                        $conditionName = $prefix . substr($filename, 0, -4);
-
-                        // Take care of double definitions
-                        if (! isset($results[$conditionName])) {
-                            $eventNsName = '\\' . strtr($conditionName, '_', '\\');
-                            if (! (class_exists($conditionName, false) || class_exists($eventNsName, false))) {
-                                include($path . '/' . $filename);
-                            }
-
-                            if ((! class_exists($conditionName, false)) && class_exists($eventNsName, false)) {
-                                $conditionName = $eventNsName;
-                            }
-                            $event = new $conditionName();
-
-                            if ($event instanceof $conditionClass) {
-                                if ($event instanceof MUtil_Registry_TargetInterface) {
-                                    $this->applySource($event);
-                                }
-
-                                $results[$conditionName] = trim($event->getName()) . $name;
-                            }
-                            // \MUtil_Echo::track($eventName);
-                        }
-                    }
-                }
-            }
-        }
-        natcasesort($results);
-        $results = $this->util->getTranslated()->getEmptyDropdownArray() + $results;
-        // \MUtil_Echo::track($paths, $results);
-        return $results;
+        $classType = $this->_getConditionClass($conditionType);
+        $paths     = $this->_getConditionDirs($conditionType);
+        
+        return $this->util->getTranslated()->getEmptyDropdownArray() + $this->listClasses($classType, $paths);
     }
 
     /**
@@ -226,6 +185,8 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
     {
         return $this->_conditionTypes;
     }
+    
+    
     
     /**
      *
