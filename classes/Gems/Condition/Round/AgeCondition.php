@@ -69,7 +69,7 @@ class AgeCondition extends RoundConditionAbstract
         $validFrom = $token->getValidFrom();
         if (!is_null($validFrom)) {
             $respondent = $token->getRespondent();
-            $age = $respondent->getAge($token->getValidFrom());
+            $age = $respondent->getAge($validFrom);
             return ($age >= $minAge && $age <= $maxAge);
         }
         
