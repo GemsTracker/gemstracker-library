@@ -33,7 +33,11 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
 {
     use TranslateableTrait;
     
-    const ROUND_CONDITION = 'Round';
+    const COMPARATOR         = 'Comparator';
+    const COMPARATOR_BETWEEN = 'BETWEEN';
+    const COMPARATOR_EQUALS  = 'EQUALS';
+    
+    const ROUND_CONDITION  = 'Round';
 
     /**
      * Each condition type must implement a condition class or interface derived
@@ -44,7 +48,8 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
      * @var array containing eventType => eventClass for all condition classes
      */
     protected $_conditionClasses = array(
-        self::ROUND_CONDITION => 'Gems\\Condition\\RoundConditionInterface',        
+        self::COMPARATOR      => 'Gems\\Condition\\Comparator\\ComparatorInterface',
+        self::ROUND_CONDITION => 'Gems\\Condition\\RoundConditionInterface',
     );
     
     /**
@@ -73,6 +78,12 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
      * @var Gems_Util
      */
     protected $util;
+    
+    public function __construct($container, array $dirs) {
+        parent::__construct($container, $dirs);
+        
+        $this->addRegistryContainer(array('conditions' => $this));
+    }
 
     /**
      * Lookup condition class for an event type. This class or interface should at the very least
@@ -124,7 +135,7 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
     }
 
     /**
-     * Loads and initiates a condition class and returns the class (without triggering the cvondition itself).
+     * Loads and initiates a condition class and returns the class (without triggering the condition itself).
      *
      * @param string $conditionName The class name of the individual event to load
      * @param string $conditionType The type (i.e. lookup directory with an associated class) of the event
@@ -186,8 +197,6 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
         return $this->_conditionTypes;
     }
     
-    
-    
     /**
      *
      * @return array eventname => string
@@ -204,6 +213,18 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
     public function listRoundConditions()
     {
         return $this->_listConditions(self::ROUND_CONDITION);
+    }
+    
+    /**
+     * Load a comparator
+     * 
+     * @param type $name
+     * @param type $options
+     * @return \Gems\Condition\Comparator\ComparatorInterface
+     */
+    public function loadComparator($name, $options = array())
+    {
+        return $this->_loadClass('Comparator\\' . $name, true, [$options]);
     }
     
     /**

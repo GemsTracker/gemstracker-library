@@ -91,7 +91,6 @@ class ScreenLoader extends \Gems_Loader_TargetLoaderAbstract
      */
     protected function _listScreens($screenType)
     {
-        $results     = array();
         $screenClass = $this->_getScreenClass($screenType);
         $paths       = $this->_getScreenDirs($screenType);
         

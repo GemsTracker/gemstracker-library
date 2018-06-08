@@ -38,7 +38,14 @@ class ClassDependency extends \MUtil\Model\Dependency\DependencyAbstract
      *
      * @var array Of name => name
      */
-    protected $_dependentOn = array('gcon_type', 'gcon_class');
+    protected $_dependentOn = array(
+        'gcon_type', 
+        'gcon_class', 
+        'gcon_condition_text1',
+        'gcon_condition_text2',
+        'gcon_condition_text3',
+        'gcon_condition_text4',
+        );
 
     /**
      * Array of name => array(setting => setting) of fields with settings changed by this dependency
@@ -49,7 +56,11 @@ class ClassDependency extends \MUtil\Model\Dependency\DependencyAbstract
      * @var array of name => array(setting => setting)
      */
     protected $_effecteds = [
-        'condition_help' => ['value']
+        'condition_help' => ['value'],
+        'gcon_condition_text1' => ['label', 'elementClass', 'multiOptions', 'value'],
+        'gcon_condition_text2' => ['label', 'elementClass', 'multiOptions', 'value'],
+        'gcon_condition_text3' => ['label', 'elementClass', 'multiOptions', 'value'],
+        'gcon_condition_text4' => ['label', 'elementClass', 'multiOptions', 'value'],
         ];
 
     /**

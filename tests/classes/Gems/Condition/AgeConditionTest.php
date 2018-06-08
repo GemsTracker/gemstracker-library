@@ -29,7 +29,7 @@ class AgeConditionTest extends \PHPUnit_Framework_TestCase {
     public function setUp() {
         parent::setUp();
         
-        $this->conditions = new \Gems\Conditions([], ['Gems_' => GEMS_ROOT_DIR . '/classes/Gems']);
+        $this->conditions = new \Gems\Conditions([], ['Gems' => GEMS_ROOT_DIR . '/classes/Gems']);
         
         $this->condition = $this->conditions->loadRoundCondition('\\Gems\\Condition\\Round\\AgeCondition');
     }

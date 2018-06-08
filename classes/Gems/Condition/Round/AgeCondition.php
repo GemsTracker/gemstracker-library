@@ -51,14 +51,9 @@ class AgeCondition extends RoundConditionAbstract
 
     public function getRoundDisplay($trackId, $roundId)
     {
-        $minAge = $this->_data['gcon_condition_text1'];
-        $maxAge = $this->_data['gcon_condition_text3'];
+        $comparator = $this->getComparator(\Gems\Conditions::COMPARATOR_BETWEEN, [$this->_data['gcon_condition_text1'], $this->_data['gcon_condition_text3']]);
         
-        return sprintf(
-                $this->_('Respondent age between %s and %s'),
-                $minAge,
-                $maxAge
-                );
+        return $comparator->getDescription($this->_('Respondent age'));
     }
     
     public function isRoundValid(\Gems_Tracker_Token $token)
@@ -70,7 +65,8 @@ class AgeCondition extends RoundConditionAbstract
         if (!is_null($validFrom)) {
             $respondent = $token->getRespondent();
             $age = $respondent->getAge($validFrom);
-            return ($age >= $minAge && $age <= $maxAge);
+            $comparator = $this->getComparator(\Gems\Conditions::COMPARATOR_BETWEEN, [$this->_data['gcon_condition_text1'], $this->_data['gcon_condition_text3']]);
+            return $comparator->isValid($age);
         }
         
         return true;
