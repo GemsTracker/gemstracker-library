@@ -38,8 +38,7 @@ interface ConditionInterface
     public function getHelp();
     
     /**
-     * Get the settings for the gcon_condition_textN fields without the 
-     * gcon_connection prefix
+     * Get the settings for the gcon_condition_textN fields 
      *
      * @return array textN => array(modelFieldName => fieldValue)
      */

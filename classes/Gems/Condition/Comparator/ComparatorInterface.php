@@ -34,6 +34,11 @@ interface ComparatorInterface
     public function getDescription($subject);
     
     /**
+     * The number of parameters this comparator expects
+     */
+    public function getNumParams();
+    
+    /**
      * IS the comparision valid?
      * 
      * Settings should already be in place by the construtor.

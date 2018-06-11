@@ -106,10 +106,6 @@ class ClassDependency extends \MUtil\Model\Dependency\DependencyAbstract
                 'condition_help' => ['value' => \MUtil_Html::raw('<pre>' . $condition->getHelp() . '</pre>')],
             ];
             
-            foreach($condition->getModelFields($context, $new) as $field => $fieldChanges) {
-                $changes['gcon_condition_' . $field] = $fieldChanges;
-            }
-            
             return $changes;
         }
         

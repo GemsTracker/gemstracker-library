@@ -24,11 +24,16 @@ class Equals extends ComparatorAbstract {
         return sprintf(
                 $this->_('%s equals %s'),
                 ucfirst($subject),
-                $this->_options['gcon_condition_text1']);
+                $this->_options[0]);
+    }
+    
+    public function getNumParams()
+    {
+        return 1;
     }
 
     public function isValid($value) {
-        return $value == $this->_options['gcon_condition_text1'];
+        return $value == $this->_options[0];
     }
 
 }

@@ -31,10 +31,10 @@ class AgeCondition extends RoundConditionAbstract
     public function getModelFields($context, $new)
     {
         return [
-            'text1' => ['label' => $this->_('Minimum age'), 'elementClass' => 'text'],
-            'text2' => ['label' => null, 'elementClass' => 'Hidden'],
-            'text3' => ['label' => $this->_('Maximum age'), 'elementClass' => 'text'],
-            'text4' => ['label' => null, 'elementClass' => 'Hidden'],
+            'gcon_condition_text1' => ['label' => $this->_('Minimum age'), 'elementClass' => 'text'],
+            'gcon_condition_text2' => ['label' => null, 'elementClass' => 'Hidden'],
+            'gcon_condition_text3' => ['label' => $this->_('Maximum age'), 'elementClass' => 'text'],
+            'gcon_condition_text4' => ['label' => null, 'elementClass' => 'Hidden'],
         ];
     }
 

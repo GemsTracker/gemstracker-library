@@ -19,24 +19,21 @@ namespace Gems\Condition\Comparator;
  * @license    New BSD License
  * @since      Class available since version 1.8.4
  */
-class Between extends ComparatorAbstract {
-
+class NotEquals extends ComparatorAbstract {
     public function getDescription($subject) {
         return sprintf(
-                $this->_('%s <= %s <= %s'),
-                $this->_options[0],
-                $subject,
-                $this->_options[1]
-                );
+                $this->_('%s does not equal %s'),
+                ucfirst($subject),
+                $this->_options[0]);
     }
     
     public function getNumParams()
     {
-        return 2;
+        return 1;
     }
 
     public function isValid($value) {
-        return $this->_options[0] <= $value && $value <= $this->_options[1];
+        return $value != $this->_options[0];
     }
 
 }

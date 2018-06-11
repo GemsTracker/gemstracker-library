@@ -36,6 +36,7 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
     const COMPARATOR         = 'Comparator';
     const COMPARATOR_BETWEEN = 'Between';
     const COMPARATOR_EQUALS  = 'Equals';
+    const COMPARATOR_NOT     = 'NotEquals';
     
     const ROUND_CONDITION  = 'Round';
 

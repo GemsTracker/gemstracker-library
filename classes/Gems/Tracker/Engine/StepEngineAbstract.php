@@ -284,21 +284,22 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
             
             $condition   = $this->loader->getConditions()->loadCondition($round['gro_condition']);
             $valid       = $condition->isRoundValid($token);            
+            $oldStatus   = $token->getReceptionCode()->isSuccess() ? true : false;
 
-            if (!$valid && $token->getReceptionCode()->isSuccess()) {
-                $message = $this->_('Skipped by condition %s: %s');
-            }
-
-            if ($valid && $token->getReceptionCode()->getCode() == $skipCode) {
-                $message = $this->_('Activated by condition %s: %s');
-            }
-            
-            if (!empty($message)) {
+            if ($valid !== $oldStatus) {
+                if (!$valid) {
+                    $message = $this->_('Skipped by condition %s: %s');
+                    $newCode = $skipCode;
+                } else {
+                    $message = $this->_('Activated by condition %s: %s');
+                    $newCode = $this->util->getReceptionCodeLibrary()->getOKString();
+                }
+                
                 $changed = 1;
                 
-                $token->setReceptionCode($this->util->getReceptionCodeLibrary()->getOKString(), 
+                $token->setReceptionCode($newCode, 
                         sprintf($message, $condition->getName(), $condition->getRoundDisplay($token->getTrackId(), $token->getRoundId())),
-                        userId);
+                        $userId);
             }
         }
         
