@@ -163,8 +163,8 @@ class Gems_Default_GroupAction extends \Gems_Controller_ModelSnippetActionAbstra
                 );
         $model->set('ggp_allowed_ip_ranges', 'label', $this->_('Allowed IP Ranges'),
                 'description', $this->_('Separate with | example: 10.0.0.0-10.0.0.255 (subnet masks are not supported)'),
-                'maxlength', 500,
-                'size', 50,
+                'elementClass', 'Textarea',
+                'rows', 4,
                 'validator', new \Gems_Validate_IPRanges()
                 );
 
