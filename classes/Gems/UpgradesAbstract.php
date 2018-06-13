@@ -110,35 +110,34 @@ class Gems_UpgradesAbstract extends \Gems_Loader_TargetLoaderAbstract
      * to execute.
      *
      * @param string $context The context to execute the upgrades for
-     * @param int|null $to The level to upgrade to
-     * @param int|null $from The level to start the upgrade on
+     * @param int|null $toLevel The level to upgrade to
+     * @param int|null $fromLevel The level to start the upgrade on
      * @return false|int The achieved upgrade level or false on failure
      */
-    public function execute($context, $to = null, $from = null)
+    public function execute($context, $toLevel = null, $fromLevel = null)
     {
-        if(is_null($to)) {
-            $to = $this->getMaxLevel($context);
+        if(is_null($toLevel)) {
+            $toLevel = $this->getMaxLevel($context);
         }
-        if(is_null($from)) {
-            $from = $this->getNextLevel($context);
+        if(is_null($fromLevel)) {
+            $fromLevel = $this->getNextLevel($context);
 
-            if ($from > $to) {
+            if ($fromLevel > $toLevel) {
                 $this->addMessage($this->_('Already at max. level.'));
-                return $to;
+                return $toLevel;
             }
         }
-        $from = max(1, intval($from));
-        $to   = intval($to);
+        $fromLevel = max(1, intval($fromLevel));
+        $toLevel   = intval($toLevel);
 
-        $this->addMessage(sprintf($this->_('Trying upgrade for %s from level %s to level %s'), $context, $from, $to));
+        $this->addMessage(sprintf($this->_('Trying upgrade for %s from level %s to level %s'), $context, $fromLevel, $toLevel));
 
-        $success = false;
+        $success  = false;
         $upgrades = $this->_upgradeStack[$context];
         ksort($upgrades);
-        $this->_upgradeStack[$context] = $upgrades;
-        foreach($this->_upgradeStack[$context] as $level => $upgrade) {
-            if (($level >= $from && $level <= $to))  {
-                $this->addMessage(sprintf($this->_('Trying upgrade for %s to level %s: %s'), $context, $level, $this->_upgradeStack[$context][$level]['info']));
+        foreach($upgrades as $level => $upgrade) {
+            if (($level >= $fromLevel && $level <= $toLevel))  {
+                $this->addMessage(sprintf($this->_('Trying upgrade for %s to level %s: %s'), $context, $level, $upgrade['info']));
                 if (call_user_func($upgrade['upgrade'])) {
                     $success = $level;
                 } else {
@@ -273,7 +272,7 @@ class Gems_UpgradesAbstract extends \Gems_Loader_TargetLoaderAbstract
     public function getUpgradesInfo($requestedContext = null)
     {
         $result = array();
-        foreach($this->_upgradeStack as $context => $content) {
+        foreach(array_keys($this->_upgradeStack) as $context) {
             $row = array();
             $row['context'] = $context;
             $row['maxLevel'] =  $this->getMaxLevel($context);
@@ -299,7 +298,7 @@ class Gems_UpgradesAbstract extends \Gems_Loader_TargetLoaderAbstract
         touch($this->upgradeFile);
         $this->_info = new \Zend_Config_Ini($this->upgradeFile, null, array('allowModifications' => true));
         
-        foreach($this->_upgradeStack as $context => $content) {
+        foreach(array_keys($this->_upgradeStack) as $context) {
             $maxLevel = $this->getMaxLevel($context);
             $this->setLevel($context, $maxLevel, true);
         }
@@ -323,26 +322,28 @@ class Gems_UpgradesAbstract extends \Gems_Loader_TargetLoaderAbstract
         if (is_string($callback)) {
             $callback = array($this, $callback);
         }
-        if (is_callable($callback)) {
-            if (! $context) {
-                $context = $this->getContext();
-            }
-
-            if (!isset($this->_upgradeStack[$context])) {
-                $this->_upgradeStack[$context] = array();
-            }
-
-            if (is_null($index)) {
-                $index = $this->getMaxLevel($context);
-                $index++;
-            }
-
-            $this->_upgradeStack[$context][$index]['upgrade'] = $callback;
-            $this->_upgradeStack[$context][$index]['info']    = $info;
-
-            return true;
+        
+        if (!is_callable($callback)) {
+            return false;
         }
-        return false;
+        
+        if (!$context) {
+            $context = $this->getContext();
+        }
+
+        if (!isset($this->_upgradeStack[$context])) {
+            $this->_upgradeStack[$context] = array();
+        }
+
+        if (is_null($index)) {
+            $index = $this->getMaxLevel($context);
+            $index++;
+        }
+
+        $this->_upgradeStack[$context][$index]['upgrade'] = $callback;
+        $this->_upgradeStack[$context][$index]['info']    = $info;
+
+        return true;        
     }
 
     /**
