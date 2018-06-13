@@ -3,10 +3,11 @@
 /**
  * @package    Gems
  * @subpackage Upgrades
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @copyright  Copyright (c) 2018 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+use MUtil\Translate\TranslateableTrait;
 
 /**
  * This class can take care of handling upgrades that can not be achieved by a
@@ -15,12 +16,14 @@
  *
  * @package    Gems
  * @subpackage Upgrades
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @copyright  Copyright (c) 2018 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
 class Gems_UpgradesAbstract extends \Gems_Loader_TargetLoaderAbstract
 {
+    use TranslateableTrait;
+    
     protected $_context = null;
 
     protected $_upgradeStack = array();
@@ -66,36 +69,9 @@ class Gems_UpgradesAbstract extends \Gems_Loader_TargetLoaderAbstract
      */
     public $project;
 
-    /**
-     * @var \Zend_Translate_Adapter
-     */
-    public $translate;
-
     public function __construct()
     {
-        $this->originalFile = GEMS_ROOT_DIR . str_replace('/', DIRECTORY_SEPARATOR , '/var/settings/upgrades.ini');
         $this->upgradeFile = GEMS_ROOT_DIR . str_replace('/', DIRECTORY_SEPARATOR , '/var/settings/upgrades_' . APPLICATION_ENV . '.ini');
-        if(!file_exists($this->originalFile)) {
-            touch($this->originalFile);
-        }
-        if(!file_exists($this->upgradeFile)) {
-            touch($this->upgradeFile);
-        }
-        $this->_info = new \Zend_Config_Ini($this->originalFile, null, array('allowModifications' => true));
-        // Merge the environment config file
-        $this->_info->merge(new \Zend_Config_Ini($this->upgradeFile, null, array('allowModifications' => true)));
-    }
-
-    /**
-     * Proxy to the translate object
-     *
-     * @param string $messageId
-     * @param type $locale
-     * @return string
-     */
-    protected function _($messageId, $locale = null)
-    {
-        return $this->translate->_($messageId, $locale);
     }
 
     /**
@@ -106,6 +82,16 @@ class Gems_UpgradesAbstract extends \Gems_Loader_TargetLoaderAbstract
     protected function addMessage($message)
     {
         $this->_batch->addMessage($message);
+    }
+    
+    public function afterRegistry()
+    {
+        parent::afterRegistry();
+        
+        if(!file_exists($this->upgradeFile)) {
+            $this->initUpgradeFile();
+        }
+        $this->_info = new \Zend_Config_Ini($this->upgradeFile, null, array('allowModifications' => true));        
     }
 
      /**
@@ -187,7 +173,9 @@ class Gems_UpgradesAbstract extends \Gems_Loader_TargetLoaderAbstract
         if(isset($this->_info->$context)) {
             return intval($this->_info->$context);
         } else {
-            return 0;
+            $level = $this->getMaxLevel($context);
+            $this->setLevel($context, $level);
+            return $level;
         }
     }
 
@@ -235,13 +223,15 @@ class Gems_UpgradesAbstract extends \Gems_Loader_TargetLoaderAbstract
         //Get all the levels
         $currentContext = $this->_upgradeStack[$context];
         ksort($currentContext);
-        $levels = array_keys($this->_upgradeStack[$context]);
+        $levels = array_keys($currentContext);
         //Find the index of the current one
         $current = array_search($level, $levels);
 
         //And if it is present, return the next level
-        $current++;
-        if (isset($levels[$current])) return $levels[$current];
+        if ($current !== false) {
+            $current++;
+            if (isset($levels[$current])) return $levels[$current];
+        }
 
         //Else return current level +1 (doesn't exist anyway)
         return ++$level;
@@ -299,6 +289,21 @@ class Gems_UpgradesAbstract extends \Gems_Loader_TargetLoaderAbstract
             }
         }
     }
+    
+    /**
+     * When upgrade file does not exist, create it and default to the max
+     * level since no upgrades should be needed after a clean install
+     */
+    protected function initUpgradeFile()
+    {
+        touch($this->upgradeFile);
+        $this->_info = new \Zend_Config_Ini($this->upgradeFile, null, array('allowModifications' => true));
+        
+        foreach($this->_upgradeStack as $context => $content) {
+            $maxLevel = $this->getMaxLevel($context);
+            $this->setLevel($context, $maxLevel, true);
+        }
+    }
 
     /**
      * Register an upgrade in the stack, it can be executed by using $this->execute
@@ -323,12 +328,7 @@ class Gems_UpgradesAbstract extends \Gems_Loader_TargetLoaderAbstract
                 $context = $this->getContext();
             }
 
-            if (isset($this->_upgradeStack[$context])) {
-                $key = array_search($callback, $this->_upgradeStack[$context]);
-                if ($key !== false) {
-                    $index = $key;
-                }
-            } else {
+            if (!isset($this->_upgradeStack[$context])) {
                 $this->_upgradeStack[$context] = array();
             }
 
