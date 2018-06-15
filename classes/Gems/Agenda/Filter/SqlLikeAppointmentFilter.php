@@ -76,7 +76,7 @@ class SqlLikeAppointmentFilter extends AppointmentFilterAbstract
                 $this->_activities = true;
             }
 
-            if ($this->_data['gaf_filter_text2'] || $this->_data['gaf_filter_text2']) {
+            if ($this->_data['gaf_filter_text2'] || $this->_data['gaf_filter_text3']) {
                 $sqlProcedures = "SELECT gapr_id_procedure, gapr_id_procedure
                     FROM gems__agenda_procedures
                     WHERE gapr_active = 1 ";
