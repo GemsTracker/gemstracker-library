@@ -36,7 +36,7 @@ class AndModelDependency extends FilterModelDependencyAbstract
      * @var \Gems_Agenda
      */
     protected $agenda;
-
+    
     /**
      *
      * @var \Gems_Util
@@ -52,7 +52,7 @@ class AndModelDependency extends FilterModelDependencyAbstract
     public function afterRegistry()
     {
         $this->_filters = $this->util->getTranslated()->getEmptyDropdownArray() + $this->agenda->getFilterList();
-
+        
         parent::afterRegistry();
     }
 
@@ -81,7 +81,7 @@ class AndModelDependency extends FilterModelDependencyAbstract
         }
 
         if ($output) {
-            return ucfirst(implode($this->_(' AND '), $output));
+            return ucfirst(implode($this->getGlue(), $output));
         } else {
             return $this->_('empty filter');
         }
@@ -105,6 +105,16 @@ class AndModelDependency extends FilterModelDependencyAbstract
     public function getFilterName()
     {
         return $this->_('AND filter combination');
+    }
+    
+    /**
+     * Get the translated glue for the calculated name
+     *
+     * @return string
+     */
+    public function getGlue()
+    {
+        return $this->_(' AND ');
     }
 
     /**

@@ -24,33 +24,10 @@ use Gems\Agenda\AppointmentSubFilterAbstract;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 16-okt-2014 16:56:07
  */
-class OrAppointmentFilter extends AppointmentSubFilterAbstract
+class OrAppointmentFilter extends AndAppointmentFilter
 {
-    /**
-     * Generate a where statement to filter the appointment model
-     *
-     * @return string
-     */
-    public function getSqlWhere()
-    {
-        $wheres = array();
-
-        foreach ($this->_subFilters as $filterObject) {
-            if ($filterObject instanceof AppointmentFilterInterface) {
-                $where = $filterObject->getSqlWhere();
-                if ($where && ($where !== parent::NO_MATCH_SQL)) {
-                    $wheres[] = $where;
-                }
-            }
-        }
-
-        if ($wheres) {
-            return implode(' OR ', $wheres);
-        } else {
-            return parent::NO_MATCH_SQL;
-        }
-    }
-
+    protected $glue = ' OR ';
+    
     /**
      * Check a filter for a match
      *
