@@ -659,9 +659,9 @@ class GemsEscort extends \MUtil_Application_Escort
         //Now if we have a project specific language file, add it
         $projectLanguageDir = APPLICATION_PATH . '/languages/';
         if (file_exists($projectLanguageDir)) {
-            $options['content'] = $projectLanguageDir;
+            $options['content']        = $projectLanguageDir;
             $options['disableNotices'] = true;
-            $projectTranslations = new \Zend_Translate($options);
+            $projectTranslations       = new \Zend_Translate($options);
             //But only when it has the requested language
             if ($projectTranslations->isAvailable($language)) {
                 $translate->addTranslation(array('content' => $projectTranslations));
@@ -672,7 +672,7 @@ class GemsEscort extends \MUtil_Application_Escort
         $translate->setLocale($language);
         \Zend_Registry::set('Zend_Translate', $translate);
 
-        // Fix for _init resourcea being case insensitive
+        // Fix for _init resource being case insensitive
         $container = $this->getContainer();
         $adapter   = $translate->getAdapter();
         $container->translateAdapter = $adapter;
@@ -784,9 +784,8 @@ class GemsEscort extends \MUtil_Application_Escort
      **/
     protected function _initZFDebug()
     {
-        if ((APPLICATION_ENV === 'production') || (APPLICATION_ENV === 'acceptance') ||
-                (array_key_exists('HTTP_USER_AGENT', $_SERVER) && false !== strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6.'))) {
-            // Never on on production systems, never for IE 6
+        if ((APPLICATION_ENV === 'production') || (APPLICATION_ENV === 'acceptance') || Zend_Session::$_unitTestEnabled ) {
+            // Never on on production systems
             return;
         }
 
@@ -811,11 +810,11 @@ class GemsEscort extends \MUtil_Application_Escort
                 'Exception')
         );
 
-        $debug = new \ZFDebug_Controller_Plugin_Debug($options);
+        $debugPlugin = new \ZFDebug_Controller_Plugin_Debug($options);
 
         $this->bootstrap('frontController');
         $frontController = $this->getResource('frontController');
-        $frontController->registerPlugin($debug);
+        $frontController->registerPlugin($debugPlugin);
     }
 
     /**
@@ -919,23 +918,22 @@ class GemsEscort extends \MUtil_Application_Escort
     protected function _layoutCss()
     {
         // Set CSS stylescheet(s)
-        if (isset($this->project->css)) {
-            $projectCss = (array) $this->project->css;
-            $projectCss = array_reverse($projectCss);
-            foreach ($projectCss as $css) {
-                if (is_array($css)) {
-                    $media = $css['media'];
-                    $url = $css['url'];
-                } else {
-                    $url = $css;
-                    $media = 'all';
-                }
-                // When exporting to pdf, we need full urls
-                if (substr($url,0,4) == 'http') {
-                    $this->view->headLink()->prependStylesheet($url, $media);
-                } else {
-                    $this->view->headLink()->prependStylesheet($this->view->serverUrl() . $this->basepath->getBasePath() . '/' . $url, $media);
-                }
+        $projectCss = isset($this->project->css) ? (array) $this->project->css : [];
+        $projectCss = array_reverse($projectCss);
+        
+        foreach ($projectCss as $css) {
+            if (is_array($css)) {
+                $media = $css['media'];
+                $url = $css['url'];
+            } else {
+                $url = $css;
+                $media = 'all';
+            }
+            // When exporting to pdf, we need full urls
+            if (substr($url,0,4) == 'http') {
+                $this->view->headLink()->prependStylesheet($url, $media);
+            } else {
+                $this->view->headLink()->prependStylesheet($this->view->serverUrl() . $this->basepath->getBasePath() . '/' . $url, $media);
             }
         }
     }
@@ -977,46 +975,9 @@ class GemsEscort extends \MUtil_Application_Escort
 
             if (count($groups) > 1) {
                 // Group switcher
-                $groupSwitch  = \MUtil_Html::create('div', $args, array('id' => 'groups'));
-                $currentId    = $this->currentUser->getGroupId();
-                $params       = $this->request->getparams();
-                unset($params['error_handler']);    // If present, this is an object and causes a warning
-                unset($params[\MUtil_Model::AUTOSEARCH_RESET]);
-                if ($this->request instanceof \Zend_Controller_Request_Http) {
-                    // Use only get params, not post as it is an url
-                    $params = array_diff_key($params, $this->request->getPost());
-                }
-
-                $currentUri = $this->view->url($params, null, true);
-                // \MUtil_Echo::track($currentUri, $this->request->getParams());
-
-                $url = $this->view->url(array('controller' => 'group', 'action' => 'change-ui'), null, false);
-
-                $formDiv = $groupSwitch->form(array('method' => 'get', 'action' => $url))->div();
-                $formDiv->input(
-                        array(
-                            'type'  => "hidden",
-                            'name'  => "current_uri",
-                            'value' => base64_encode($currentUri))
-                        );
-
-                $select = $formDiv->select([
-                    'class'    => 'form-control',
-                    'name'     => "group",
-                    'onchange' => "javascript:this.form.submit();",
-                    ]);
-                foreach ($groups as $id => $name) {
-                    $selected = '';
-                    if ($id == $currentId) {
-                        $selected = array('selected' => "selected");
-                    }
-                    $select->option(array('value' => $id), $name, $selected);
-                }
-
-                return $groupSwitch;
+                return $this->getUiSwitcher($groups, $this->currentUser->getGroupId(), 'groups', 'group', 'group', $args);
             }
         }
-        return;
     }
 
     /**
@@ -1033,10 +994,10 @@ class GemsEscort extends \MUtil_Application_Escort
             $jquery = $this->view->jQuery();
             $jquery->uiEnable(); // enable user interface
 
-            if (isset($this->project->jquerycss)) {
-                foreach ((array) $this->project->jquerycss as $css) {
-                    $jquery->addStylesheet($this->basepath->getBasePath() . '/' . $css);
-                }
+            $jqueryCss = isset($this->project->jquerycss) ? (array) $this->project->jquerycss : [];
+            
+            foreach ($jqueryCss as $css) {
+                $jquery->addStylesheet($this->basepath->getBasePath() . '/' . $css);
             }
 
             return true;
@@ -1124,8 +1085,6 @@ class GemsEscort extends \MUtil_Application_Escort
         if ($this->menu && $this->menu->isVisible()) {
             return $this->menu->toActiveBranchElement();
         }
-
-        return null;
     }
 
     /**
@@ -1144,8 +1103,6 @@ class GemsEscort extends \MUtil_Application_Escort
             // of the dispatchloop is used and make \Zend_Navigation object
             return $this->menu->render($this->view);
         }
-
-        return null;
     }
 
     /**
@@ -1161,8 +1118,6 @@ class GemsEscort extends \MUtil_Application_Escort
         if ($this->menu && $this->menu->isVisible()) {
             return $this->menu->toTopLevelElement();
         }
-
-        return null;
     }
 
     /**
@@ -1172,12 +1127,12 @@ class GemsEscort extends \MUtil_Application_Escort
      * @return mixed If null nothing is set, otherwise the name of
      * the function is used as \Zend_View variable name.
      */
-    protected function _layoutMessages(array $args = null)
+    protected function _layoutMessages()
     {
         // Do not trust $messenger being set in the view,
         // after a reroute we have to reinitiate te $messenger.
         $messenger = $this->getMessenger();
-        return $this->view->messenger->showMessages();
+        return $messenger->showMessages();
     }
 
     /**
@@ -1227,42 +1182,9 @@ class GemsEscort extends \MUtil_Application_Escort
         if ($this->currentUser->isActive() && ($orgs = $this->currentUser->getAllowedOrganizations())) {
             if (count($orgs) > 1) {
                 // Organization switcher
-                $orgSwitch  = \MUtil_Html::create('div', $args, array('id' => 'organizations'));
-                $currentId  = $this->currentUser->getCurrentOrganizationId();
-                $params     = $this->request->getparams();
-                unset($params['error_handler']);    // If present, this is an object and causes a warning
-                unset($params[\MUtil_Model::AUTOSEARCH_RESET]);
-                if ($this->request instanceof \Zend_Controller_Request_Http) {
-                    // Use only get params, not post as it is an url
-                    $params = array_diff_key($params, $this->request->getPost());
-                }
-
-                $currentUri = $this->view->url($params, null, true);
-                // \MUtil_Echo::track($currentUri, $this->request->getParams());
-
-                $url = $this->view->url(array('controller' => 'organization', 'action' => 'change-ui'), null, false);
-
-                $formDiv = $orgSwitch->form(array('method' => 'get', 'action' => $url))->div();
-                $formDiv->input(
-                        array(
-                            'type'  => "hidden",
-                            'name'  => "current_uri",
-                            'value' => base64_encode($currentUri))
-                        );
-
-                $select = $formDiv->select(array('name' => "org", 'onchange' => "javascript:this.form.submit();", 'class' => 'form-control'));
-                foreach ($orgs as $id => $org) {
-                    $selected = '';
-                    if ($id == $currentId) {
-                        $selected = array('selected' => "selected");
-                    }
-                    $select->option(array('value' => $id), $org, $selected);
-                }
-
-                return $orgSwitch;
+                return $this->getUiSwitcher($orgs, $this->currentUser->getCurrentOrganizationId(), 'organizations', 'org', 'organization', $args);
             }
         }
-        return;
     }
 
     /**
@@ -1378,13 +1300,14 @@ class GemsEscort extends \MUtil_Application_Escort
      */
     protected function _updateVariable($name)
     {
-        if ($this->_copyDestinations) {
-            $names = (array) $name;
+        if (!$this->_copyDestinations) {
+            return;
+        }
+        $names = (array) $name;
 
-            foreach ($this->_copyDestinations as $object) {
-                foreach ($names as $key) {
-                    $object->$key = $this->_container->$key;
-                }
+        foreach ($this->_copyDestinations as $object) {
+            foreach ($names as $key) {
+                $object->$key = $this->_container->$key;
             }
         }
     }
@@ -1392,10 +1315,10 @@ class GemsEscort extends \MUtil_Application_Escort
     /**
      * Adds one or more messages to the session based message store.
      *
-     * @param mixed $message_args Can be an array or multiple argemuents. Each sub element is a single message string
+     * @param mixed ...$messages Can be an array or multiple argements. Each sub element is a single message string
      * @return \MUtil_Controller_Action
      */
-    public function addMessage($message_args)
+    public function addMessage()
     {
         $messages  = \MUtil_Ra::flatten(func_get_args());
         $messenger = $this->getMessenger();
@@ -1530,11 +1453,10 @@ class GemsEscort extends \MUtil_Application_Escort
      * Creates an object of the specified className seareching the loader dirs path
      *
      * @param string $className
-     * @param mixed $paramOne Optional
-     * @param mixed $paramTwo Optional
+     * @param mixed ...$arguments Optional parameters
      * @return object
      */
-    protected function createProjectClass($className, $paramOne = null, $paramTwo = null)
+    protected function createProjectClass($className)
     {
         $arguments = func_get_args();
         array_shift($arguments);
@@ -1698,9 +1620,55 @@ class GemsEscort extends \MUtil_Application_Escort
         }
         return $this->view->messenger;
     }
+    
+    /**
+     * 
+     * @param array $items Array of id=>item
+     * @param string $currentId Id of currently selected item
+     * @param string $elementId Id to set on the returned element
+     * @param string $elementName The name of the select element
+     * @param string $controller The controller to redirect to
+     * @param array $args Optional list of arguments
+     * @param string $action Optional action
+     * @return \MUTil_Html
+     */
+    protected function getUiSwitcher($items, $currentId, $elementId, $elementName, $controller, array $args = null, $action = 'change-ui')
+    {
+        $uiSwitch  = \MUtil_Html::create('div', $args, array('id' => $elementId));
+        $params    = $this->request->getparams();
+        unset($params['error_handler']);    // If present, this is an object and causes a warning
+        unset($params[\MUtil_Model::AUTOSEARCH_RESET]);
+        if ($this->request instanceof \Zend_Controller_Request_Http) {
+            // Use only get params, not post as it is an url
+            $params = array_diff_key($params, $this->request->getPost());
+        }
 
+        $currentUri = $this->view->url($params, null, true);
+        $url        = $this->view->url(array('controller' => $controller, 'action' => $action), null, false);
 
+        $formDiv = $uiSwitch->form(array('method' => 'get', 'action' => $url))->div();
+        $formDiv->input([
+            'type'  => "hidden",
+            'name'  => "current_uri",
+            'value' => base64_encode($currentUri)
+        ]);
 
+        $select = $formDiv->select([
+            'class'    => 'form-control',
+            'name'     => $elementName,
+            'onchange' => "javascript:this.form.submit();",
+        ]);
+        foreach ($items as $elementId => $name) {
+            $selected = '';
+            if ($elementId == $currentId) {
+                $selected = array('selected' => "selected");
+            }
+            $select->option(array('value' => $elementId), $name, $selected);
+        }
+
+        return $uiSwitch;
+    }
+    
     /**
      * Type access to $this->util
      *
@@ -1893,37 +1861,11 @@ class GemsEscort extends \MUtil_Application_Escort
             // Only when we need to render the layout, we run the layout prepare
             if (\Zend_Controller_Action_HelperBroker::hasHelper('layout') &&
                     \Zend_Controller_Action_HelperBroker::getExistingHelper('layout')->isEnabled()) {
-
+                
                 // Per project layout preparation
-                if (isset($this->project->layoutPrepare)) {
-                    foreach ($this->project->layoutPrepare as $prepare => $type) {
-                        if ($type) {
-                            $function = '_layout' . ucfirst($prepare);
-
-                            if (isset($this->project->layoutPrepareArgs, $this->project->layoutPrepareArgs[$prepare])) {
-                                $args = $this->project->layoutPrepareArgs[$prepare];
-                            } else {
-                                $args = array();
-                            }
-
-                            $result = $this->$function($args);
-
-                            // When a result is returned, add it to the view,
-                            // according to the type method
-                            if (null !== $result) {
-                                if (is_numeric($type)) {
-                                    $this->view->$prepare = $result;
-                                } else {
-                                    if (!isset($this->view->$type)) {
-                                        $this->view->$type  = new \MUtil_Html_Sequence();
-                                    }
-                                    $sequence           = $this->view->$type;
-                                    $sequence[$prepare] = $result;
-                                }
-                            }
-                        }
-                    }
-                }
+                $layoutFuncs = isset($this->project->layoutPrepare) ? $this->project->layoutPrepare : [];
+                $layoutArgs  = isset($this->project->layoutPrepareArgs) ? $this->project->layoutPrepareArgs : [];
+                $this->prepareLayout($layoutFuncs, $layoutArgs);
             }
 
             // For AJAX calls we sometimes need to add JQuery onload scripts since otherwise they won't get rendered:
@@ -2039,6 +1981,38 @@ class GemsEscort extends \MUtil_Application_Escort
 
             $layout->setLayoutPath(GEMS_LIBRARY_DIR . "/layouts/scripts");
             $layout->setLayout('cli');
+        }
+    }
+    
+    /**
+     * 
+     * @param array $layoutFuncs
+     * @param array $layoutArgs
+     */
+    protected function prepareLayout($layoutFuncs, $layoutArgs)
+    {
+        foreach ($layoutFuncs as $prepare => $type) {
+            if (!$type) {
+                continue;
+            }
+            $function = '_layout' . ucfirst($prepare);
+            $args     = isset($layoutArgs[$prepare]) ? $layoutArgs[$prepare] : [];
+            $result   = $this->$function($args);
+
+            // When a result is returned, add it to the view,
+            // according to the type method
+            if (is_null($result)) {
+                continue;
+            }
+            if (is_numeric($type)) {
+                $this->view->$prepare = $result;
+            } else {
+                if (!isset($this->view->$type)) {
+                    $this->view->$type = new \MUtil_Html_Sequence();
+                }
+                $sequence           = $this->view->$type;
+                $sequence[$prepare] = $result;
+            }
         }
     }
 
