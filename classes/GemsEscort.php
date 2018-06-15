@@ -194,42 +194,33 @@ class GemsEscort extends \MUtil_Application_Escort
                         422,
                         sprintf($this->_('Illegal character %s in parameter name.'), $rest[0]),
                         true
-                        );
+                );
             }
-            if ($value && (! is_object($value)) && (! array_key_exists($key, $posts))) {
+            if ($value && (!is_object($value)) && (!array_key_exists($key, $posts))) {
                 foreach ((array) $value as $val) {
                     // Quickfix
-                    // If $val is an array the strpbrk fails. This is true for export options
+                    // If $val is an array preg_match fails. This is true for export options
                     // If the elements of the array should be checked too, feel free to do so
                     if (is_array($val)) {
                         continue;
                     }
-                    $rest = strpbrk($val, '<>%&');
-                    if (false !== $rest) {
-                        if (false !== stripos($val, 'iframe')) {
-                            $check = 'iframe';
-                        } elseif (false !== stripos($val, 'script')) {
-                            $check = 'script';
-                        } elseif (false !== stripos($val, 'img')) {
-                            $check = 'img';
-                        } else {
-                            $check = false;
-                        }
-                        if ($check) {
-                            $this->setError(
-                                    $this->_('Illegal request parameter'),
-                                    422,
-                                    sprintf($this->_('Illegal parameter value containing the text "%s" after a %s character.'), $check, $rest[0]),
-                                    true
-                                    );
-                        }
+                    // Find not allowed words after <>%&
+                    $checks  = ['iframe', 'img', 'script'];
+                    $pattern = '/([<>%&])(' . join('|', $checks) . ')/i';
+                    if (preg_match($pattern, $val, $matches)) {
+                        $this->setError(
+                                $this->_('Illegal request parameter'),
+                                422,
+                                sprintf($this->_('Illegal parameter value containing the text "%s" after a %s character.'), $matches[2], $matches[1]),
+                                true
+                        );
                     }
                 }
             }
         }
     }
 
-        /**
+    /**
      * Function to maintain uniformity of access to variables from the bootstrap object.
      * Copies all variables to the target object.
      *
@@ -1565,12 +1556,10 @@ class GemsEscort extends \MUtil_Application_Escort
         if ($this->project->hasResponseDatabase()) {
             $path = GEMS_LIBRARY_DIR . '/configs/db_response_data';
             if (file_exists($path)) {
-                $dbResponse = $this->project->getResponseDatabase();
-                $config     = $dbResponse->getConfig();
                 $paths[] = array(
                     'path' => $path,
                     'name' => 'gemsdata',
-                    'db'   => $dbResponse,
+                    'db'   => $this->project->getResponseDatabase(),
                     );
             }
         }
