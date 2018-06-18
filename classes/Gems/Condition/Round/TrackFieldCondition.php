@@ -37,7 +37,7 @@ class TrackFieldCondition extends RoundConditionAbstract
     public function afterRegistry()
     {
         parent::afterRegistry();
-        if ($this->loader && !$this->$tracker) {
+        if ($this->loader && !$this->tracker) {
             $this->tracker = $this->loader->getTracker();
         }
     }
