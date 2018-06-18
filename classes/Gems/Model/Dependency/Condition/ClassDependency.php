@@ -104,7 +104,7 @@ class ClassDependency extends \MUtil\Model\Dependency\DependencyAbstract
             
             $changes = [
                 'condition_help' => ['value' => \MUtil_Html::raw('<pre>' . $condition->getHelp() . '</pre>')],
-            ];
+            ] + $condition->getModelFields($context, $new);
             
             return $changes;
         }

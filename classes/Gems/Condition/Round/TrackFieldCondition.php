@@ -71,15 +71,16 @@ class TrackFieldCondition extends RoundConditionAbstract
             'gcon_condition_text4' => ['elementClass' => 'Hidden'],
         ];
 
-        if (isset($context['gcon_condition_text1']) && $context['gcon_condition_text1']) {
-            $comparator = $this->getComparator($comparator, []);
+        if (isset($context['gcon_condition_text2']) && $context['gcon_condition_text2']) {
+            $comparator = $this->getComparator($context['gcon_condition_text2'], []);
             
             switch ($comparator->getNumParams()) {
-                case 1:
-                    $result['gcon_condition_text3'] = ['label' => $this->_('Param1'), 'elementClass' => 'text'];
-
                 case 2:
                     $result['gcon_condition_text4'] = ['label' => $this->_('Param2'), 'elementClass' => 'text'];
+                    // intentional fall through
+                    
+                case 1:
+                    $result['gcon_condition_text3'] = ['label' => $this->_('Param1'), 'elementClass' => 'text'];                
 
                 default:
                     break;
@@ -108,8 +109,11 @@ class TrackFieldCondition extends RoundConditionAbstract
 
         $fieldText  = sprintf($this->_('Field `%s`'), $field);
 
-        $comparatorDescription = $this->getComparator($comparator, [$param1, $param2])
-                ->getDescription($fieldText);
+        $comparatorDescription = '';
+        if (!empty($comparator)) {
+            $comparatorDescription = $this->getComparator($comparator, [$param1, $param2])
+                    ->getDescription($fieldText);
+        }
 
         return $comparatorDescription;
     }
