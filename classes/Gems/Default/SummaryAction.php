@@ -162,8 +162,8 @@ class Gems_Default_SummaryAction extends \Gems_Controller_ModelSnippetActionAbst
             )");
         $fields['missed']   = new \Zend_Db_Expr('SUM(
             CASE
-            WHEN grc_success = 1 AND 
-                 gto_completion_time IS NULL AND 
+            WHEN grc_success = 1 AND
+                 gto_completion_time IS NULL AND
                  gto_valid_until < CURRENT_TIMESTAMP AND
                  (gto_valid_from IS NOT NULL AND gto_valid_from <= CURRENT_TIMESTAMP)
             THEN 1 ELSE 0 END
@@ -219,7 +219,7 @@ class Gems_Default_SummaryAction extends \Gems_Controller_ModelSnippetActionAbst
                 ->joinInner('gems__groups', 'gsu_id_primary_group =  ggp_id_group', array())
                 ->joinLeft('gems__track_fields', 'gto_id_relationfield = gtf_id_field AND gtf_field_type = "relation"', array())
                 ->group(array('gro_id_order', 'gro_round_description', 'gsu_survey_name', 'filler'));
-        
+
         $filter = $this->getSearchFilter();
         if (array_key_exists('fillerfilter', $filter)) {
             $select->having('filler = ?', $filter['fillerfilter']);

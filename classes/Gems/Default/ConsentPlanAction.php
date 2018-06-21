@@ -34,6 +34,20 @@ class Gems_Default_ConsentPlanAction extends \Gems_Controller_ModelSnippetAction
     public $db;
 
     /**
+     * The parameters used for the index action minus those in autofilter.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $indexParameters = [
+        'addCurrentSiblings' => false,
+        ];
+
+    /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
@@ -63,7 +77,10 @@ class Gems_Default_ConsentPlanAction extends \Gems_Controller_ModelSnippetAction
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = 'ModelTableSnippetGeneric';
+    protected $showSnippets = [
+        'ModelTableSnippetGeneric',
+        'Generic\\CurrentSiblingsButtonRowSnippet'
+        ];
 
     /**
      * @var \Gems_Util

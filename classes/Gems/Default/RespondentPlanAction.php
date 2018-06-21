@@ -32,7 +32,10 @@ class Gems_Default_RespondentPlanAction extends \Gems_Default_TokenSearchActionA
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStopSnippets = array('Tracker_TokenStatusLegenda');
+    protected $indexStopSnippets = [
+        'Tracker_TokenStatusLegenda',
+        'Generic\\CurrentSiblingsButtonRowSnippet',
+        ];
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
