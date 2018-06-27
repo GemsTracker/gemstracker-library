@@ -56,7 +56,8 @@ class AgeCondition extends RoundConditionAbstract
                 ];
         
         if (!array_key_exists($context['gcon_condition_text2'], $ageUnits)) {
-            $value = key(reset($ageUnits));
+            reset($ageUnits);
+            $value = key($ageUnits);
         } else {
             $value = $context['gcon_condition_text2'];
         }
