@@ -161,28 +161,29 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
      */
     public function getAge($date = null, $months = false)
     {
-        $age = null;
+        $age       = null;
+        $birthDate = $this->getBirthDay();
+        
         if (is_null($date)) {
             $date = new \MUtil_Date();
+        }        
+        
+        if (!($birthDate instanceof \MUtil_Date) || !($date instanceof \MUtil_Date)) {
+            return null;
         }
-
-        if ($date instanceof \MUtil_Date) {
-            // Now calculate age
-            $birthDate = $this->getBirthDay();
-            if ($birthDate instanceof \MUtil_Date) {
-                if ($months) {
-                    $age = $date->diffMonths($birthDate);                
-                    if ($date->get('dd') < $birthDate->get('dd')) {
-                        $age--;
-                    }                    
-                } else {
-                    $age = $date->diffYears($birthDate);
-                    if ($date->get('MMdd') < $birthDate->get('MMdd')) {
-                        $age--;
-                    }
-                }
+        
+        // Now calculate age         
+        if ($months) {
+            $age = $date->diffMonths($birthDate);                
+            if ($date->get('dd') < $birthDate->get('dd')) {
+                $age--;
+            }                    
+        } else {
+            $age = $date->diffYears($birthDate);
+            if ($date->get('MMdd') < $birthDate->get('MMdd')) {
+                $age--;
             }
-        }
+        }        
 
         return $age;
     }

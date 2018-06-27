@@ -40,4 +40,22 @@ class AutosearchInRespondentSnippet extends \Gems_Snippets_AutosearchFormSnippet
 
         return $elements;
     }
+    
+    /**
+     * Return the fixed parameters
+     * 
+     * Normally these are the hidden parameters like ID
+     * 
+     * @return array
+     */
+    protected function getFixedParams()
+    {
+        $neededParams = parent::getFixedParams();
+        
+        $neededParams[] = \MUtil_Model::REQUEST_ID1;
+        $neededParams[] = \MUtil_Model::REQUEST_ID2;
+        
+        return $neededParams;
+        
+    }
 }

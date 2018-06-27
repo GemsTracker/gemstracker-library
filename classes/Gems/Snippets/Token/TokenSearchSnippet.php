@@ -207,6 +207,24 @@ class TokenSearchSnippet extends PlanSearchSnippet
                 $data['gto_id_respondent']
                 );
     }
+    
+    /**
+     * Return the fixed parameters
+     * 
+     * Normally these are the hidden parameters like ID
+     * 
+     * @return array
+     */
+    protected function getFixedParams()
+    {
+        $neededParams = parent::getFixedParams();
+        
+        $neededParams[] = \MUtil_Model::REQUEST_ID1;
+        $neededParams[] = \MUtil_Model::REQUEST_ID2;
+        
+        return $neededParams;
+        
+    }
 
     /**
      *
