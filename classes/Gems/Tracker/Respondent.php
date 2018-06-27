@@ -161,7 +161,6 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
      */
     public function getAge($date = null, $months = false)
     {
-        $age       = null;
         $birthDate = $this->getBirthDay();
         
         if (is_null($date)) {
@@ -174,16 +173,15 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
         
         // Now calculate age         
         if ($months) {
-            $age = $date->diffMonths($birthDate);                
-            if ($date->get('dd') < $birthDate->get('dd')) {
-                $age--;
-            }                    
+            $age  = $date->diffMonths($birthDate);                
+            $unit = 'dd';        
         } else {
-            $age = $date->diffYears($birthDate);
-            if ($date->get('MMdd') < $birthDate->get('MMdd')) {
-                $age--;
-            }
-        }        
+            $age  = $date->diffYears($birthDate);
+            $unit = 'MMdd';
+        }
+        if ($date->get($unit) < $birthDate->get($unit)) {
+            $age--;
+        } 
 
         return $age;
     }
