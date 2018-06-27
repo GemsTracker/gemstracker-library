@@ -28,11 +28,42 @@ class AgeCondition extends RoundConditionAbstract
         return $this->_("Round will be valid when respondent is:\n - At least minimum age\n - But no older than maximum age");        
     }
     
+    /**
+     * 
+     * @return \Gems\Condition\Comparator\ComparatorInterface
+     */
+    protected function getActiveComparator()
+    {
+        $minAge = $this->_data['gcon_condition_text1'];
+        $maxAge = $this->_data['gcon_condition_text3'];
+        
+        if (trim($minAge) == '') {
+            $comparator = $this->getComparator(\Gems\Conditions::COMPARATOR_EQUALLESS, [$this->_data['gcon_condition_text3']]);
+        } elseif (trim($maxAge) == '') {
+            $comparator = $this->getComparator(\Gems\Conditions::COMPARATOR_EQUALMORE, [$this->_data['gcon_condition_text1']]);
+        } else {
+            $comparator = $this->getComparator(\Gems\Conditions::COMPARATOR_BETWEEN, [$this->_data['gcon_condition_text1'], $this->_data['gcon_condition_text3']]);
+        }
+        
+        return $comparator;
+    }
+    
     public function getModelFields($context, $new)
     {
+        $ageUnits = [
+            'Y' => $this->_('Years'),
+            'M' => $this->_('Months'),
+                ];
+        
+        if (!array_key_exists($context['gcon_condition_text2'], $ageUnits)) {
+            $value = key(reset($ageUnits));
+        } else {
+            $value = $context['gcon_condition_text2'];
+        }
+        
         return [
             'gcon_condition_text1' => ['label' => $this->_('Minimum age'), 'elementClass' => 'text'],
-            'gcon_condition_text2' => ['label' => null, 'elementClass' => 'Hidden'],
+            'gcon_condition_text2' => ['label' => $this->_('Age in'), 'elementClass' => 'Select', 'multiOptions' => $ageUnits, 'value' => $value],
             'gcon_condition_text3' => ['label' => $this->_('Maximum age'), 'elementClass' => 'text'],
             'gcon_condition_text4' => ['label' => null, 'elementClass' => 'Hidden'],
         ];
@@ -51,21 +82,30 @@ class AgeCondition extends RoundConditionAbstract
 
     public function getRoundDisplay($trackId, $roundId)
     {
-        $comparator = $this->getComparator(\Gems\Conditions::COMPARATOR_BETWEEN, [$this->_data['gcon_condition_text1'], $this->_data['gcon_condition_text3']]);
+        $comparator = $this->getActiveComparator();
+        $unitHelp   = '';
+        if ($this->_data['gcon_condition_text3'] == 'M') {
+                $unitHelp = $this->_(' (age in months');
+        }
         
-        return $comparator->getDescription($this->_('Respondent age'));
+        return $comparator->getDescription($this->_('Respondent age')) . $unitHelp;
     }
     
     public function isRoundValid(\Gems_Tracker_Token $token)
     {
-        $minAge = $this->_data['gcon_condition_text1'];
-        $maxAge = $this->_data['gcon_condition_text3'];
+        $minAge  = $this->_data['gcon_condition_text1'];        
+        $maxAge  = $this->_data['gcon_condition_text3'];
+        $ageUnit = $this->_data['gcon_condition_text2'];
         
         $validFrom = $token->getValidFrom();
         if (!is_null($validFrom)) {
             $respondent = $token->getRespondent();
-            $age = $respondent->getAge($validFrom);
-            $comparator = $this->getComparator(\Gems\Conditions::COMPARATOR_BETWEEN, [$this->_data['gcon_condition_text1'], $this->_data['gcon_condition_text3']]);
+            $months = false;
+            if ($ageUnit == 'M') {
+                $months = true;
+            }
+            $age = $respondent->getAge($validFrom, $months);
+            $comparator = $this->getActiveComparator();
             return $comparator->isValid($age);
         }
         

@@ -41,18 +41,12 @@ class AgeConditionTest extends \PHPUnit_Framework_TestCase {
      */
     protected function _getTokenMock($date = true)
     {
-        $respondent = $this->getMockBuilder('Gems_Tracker_Respondent')
-                ->disableOriginalConstructor()
-                ->getMock();
-        
-        $respondent->expects($this->any())
-                ->method('getBirthday')
-                ->will($this->returnValue(new \MUtil_Date('2000-01-15', 'yyyy-MM-dd')));
-        
-        $respondent->expects($this->any())
-                ->method('getAge')
-                ->will($this->returnValue(10));
-        
+        $ageTen = new \MUtil_Date();
+        $ageTen->sub(10, 'y');
+        $respondent = new \Gems_Tracker_Respondent(1,1);
+        $respondentData = ['grs_birthday' => $ageTen];
+        $respondent->answerRegistryRequest('_gemsData', $respondentData);
+                
         $token = $this->getMockBuilder('Gems_Tracker_Token')
                 ->disableOriginalConstructor()
                 ->getMock();
@@ -62,7 +56,7 @@ class AgeConditionTest extends \PHPUnit_Framework_TestCase {
                 ->will($this->returnValue($respondent));
         
         if ($date) {
-            $validFrom = new \MUtil_Date('2010-01-16', 'yyyy-MM-dd');
+            $validFrom = new \MUtil_Date();
         } else {
             $validFrom = null;
         }
@@ -174,4 +168,39 @@ class AgeConditionTest extends \PHPUnit_Framework_TestCase {
         $this->assertTrue($this->isValid($config, false));
     }
     
+    public function testOnlyMaxAge()
+    {
+        $config = [
+            'gcon_condition_text1' => '',
+            'gcon_condition_text2' => '',
+            'gcon_condition_text3' => 20,
+            'gcon_condition_text4' => '',
+        ];
+        
+        $this->assertTrue($this->isValid($config));
+    }
+    
+    public function testOnlyMinAge()
+    {
+        $config = [
+            'gcon_condition_text1' => '11',
+            'gcon_condition_text2' => '',
+            'gcon_condition_text3' => '',
+            'gcon_condition_text4' => '',
+        ];
+        
+        $this->assertFalse($this->isValid($config));
+    }
+    
+    public function testMonthsOk()
+    {
+        $config = [
+            'gcon_condition_text1' => 100,
+            'gcon_condition_text2' => 'M',
+            'gcon_condition_text3' => 200,
+            'gcon_condition_text4' => '',
+        ];
+        
+        $this->assertTrue($this->isValid($config));
+    }
 }

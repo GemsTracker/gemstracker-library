@@ -33,10 +33,12 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
 {
     use TranslateableTrait;
     
-    const COMPARATOR         = 'Comparator';
-    const COMPARATOR_BETWEEN = 'Between';
-    const COMPARATOR_EQUALS  = 'Equals';
-    const COMPARATOR_NOT     = 'NotEquals';
+    const COMPARATOR           = 'Comparator';
+    const COMPARATOR_BETWEEN   = 'Between';
+    const COMPARATOR_EQUALS    = 'Equals';
+    const COMPARATOR_EQUALLESS = 'EqualLess';
+    const COMPARATOR_EQUALMORE = 'EqualMore';
+    const COMPARATOR_NOT       = 'NotEquals';
     
     const ROUND_CONDITION  = 'Round';
 
