@@ -61,11 +61,12 @@ class LoginStatusTracker
     protected function _getDefaults()
     {
         return [
-            'passwordAuthenticated' => false,
-            'passwordResetting'     => false,
-            'passwordText'          => null,
-            'userName'              => null,
-            'userOrganization'      => null,
+            'passwordAuthenticated'  => false,
+            'passwordResetting'      => false,
+            'passwordText'           => null,
+            'twofactorAuthenticated' => false,
+            'userName'               => null,
+            'userOrganization'       => null,
             ];
     }
 
@@ -126,7 +127,7 @@ class LoginStatusTracker
      */
     public function isAuthenticated()
     {
-        return $this->isPasswordAuthenticated();
+        return $this->isPasswordAuthenticated() && $this->isTwoFactorAuthenticated();
     }
 
     /**
@@ -155,7 +156,17 @@ class LoginStatusTracker
      */
     public function isReady()
     {
-        return $this->isAuthenticated() && (! $this->getUser()->isPasswordResetRequired());
+        return $this->isAuthenticated() && (! $this->isPasswordResetActive());
+    }
+
+    /**
+     * Has the two factor authentication occured
+     *
+     * @return boolean
+     */
+    public function isTwoFactorAuthenticated()
+    {
+        return $this->_session->data['twofactorAuthenticated'] && $this->hasUser();
     }
 
     /**
@@ -190,6 +201,18 @@ class LoginStatusTracker
     public function setPasswordText($password)
     {
         $this->_session->data['passwordText'] = $password;
+        return $this;
+    }
+
+    /**
+     *
+     * @param boolean $value
+     * @return $this
+     */
+    public function setTwoFactorAuthenticated($value = true)
+    {
+        $this->_session->data['twofactorAuthenticated'] = $value;
+
         return $this;
     }
 

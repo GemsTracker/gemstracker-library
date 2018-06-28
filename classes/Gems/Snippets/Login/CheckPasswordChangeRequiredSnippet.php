@@ -52,6 +52,29 @@ class CheckPasswordChangeRequiredSnippet extends PasswordResetSnippet
     protected $reportRules = true;
 
     /**
+     * Use the default form table layout
+     *
+     * @var boolean
+     */
+    protected $useTableLayout = false;
+
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * This function is no needed if the classes are setup correctly
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    {
+        parent::afterRegistry();
+
+        $this->routeController = $this->request->getControllerName();
+        $this->routeAction     = $this->request->getActionName();
+    }
+
+    /**
      * The place to check if the data set in the snippet is valid
      * to generate the snippet.
      *
@@ -64,18 +87,15 @@ class CheckPasswordChangeRequiredSnippet extends PasswordResetSnippet
      */
     public function hasHtmlOutput()
     {
-        \MUtil_Echo::track($this->loginStatusTracker->isPasswordResetActive());
         if (! $this->loginStatusTracker->isAuthenticated()) {
             return false;
         }
 
         $this->user = $this->loginStatusTracker->getUser();
-
         if (! $this->user->canSetPassword()) {
             return false;
         }
 
-        \MUtil_Echo::track($this->loginStatusTracker->isPasswordResetActive());
         if (! $this->loginStatusTracker->isPasswordResetActive()) {
             $messages = $this->user->reportPasswordWeakness($this->loginStatusTracker->getPasswordText());
             if ($messages) {
@@ -88,11 +108,11 @@ class CheckPasswordChangeRequiredSnippet extends PasswordResetSnippet
                 $this->loginStatusTracker->setPasswordResetActive(true);
             }
         }
-        \MUtil_Echo::track($this->loginStatusTracker->isPasswordResetActive());
-        $this->user->setPasswordResetRequired($this->loginStatusTracker->isPasswordResetActive());
 
-        if ($this->user->isPasswordResetRequired()) {
-            return parent::hasHtmlOutput();
+        if ($this->loginStatusTracker->isPasswordResetActive()) {
+            // Skip parent::hasHtmlOutput()
+            // will trigger an error loop
+            return $this->processForm();
         }
 
         return false;

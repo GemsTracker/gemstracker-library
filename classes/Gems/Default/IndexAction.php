@@ -85,8 +85,9 @@ class Gems_Default_IndexAction extends \Gems_Controller_Action
      */
     protected $loginSnippets = [
         'Login\\UserLoginFormSnippet',
-        'Login\\SetAsCurrentUserSnippet',
+        // 'Login\\TwoFactorSnippet',
         'Login\\CheckPasswordChangeRequiredSnippet',
+        'Login\\SetAsCurrentUserSnippet',
         'Login\\RedirectToRequestSnippet',
         'Login\\GotoStartPageSnippet',
         ];
@@ -131,7 +132,7 @@ class Gems_Default_IndexAction extends \Gems_Controller_Action
      * @see $useRawOutput
      * @var boolean $useHtmlView
      */
-    public $useHtmlView = false;
+    public $useHtmlView = true;
 
     /**
      *

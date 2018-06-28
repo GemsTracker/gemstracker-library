@@ -1258,7 +1258,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      */
     public function gotoStartPage(\Gems_Menu $menu, \Zend_Controller_Request_Abstract $request)
     {
-        if ($this->isPasswordResetRequired()) {
+        if (false && $this->isPasswordResetRequired()) {
             // Set menu OFF
             // This code may be obsolete from 1.8.4
             $menu->setVisible(false);

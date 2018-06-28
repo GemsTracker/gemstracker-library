@@ -52,7 +52,7 @@ class SetAsCurrentUserSnippet extends \MUtil_Snippets_SnippetAbstract
      */
     public function hasHtmlOutput()
     {
-        if ($this->loginStatusTracker->isAuthenticated()) {
+        if ($this->loginStatusTracker->isReady()) {
             $user = $this->loginStatusTracker->getUser();
             $user->setAsCurrentUser();
 
