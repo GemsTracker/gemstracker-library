@@ -1260,6 +1260,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     {
         if ($this->isPasswordResetRequired()) {
             // Set menu OFF
+            // This code may be obsolete from 1.8.4
             $menu->setVisible(false);
 
             $menuItem = $menu->findController('option', 'change-password');

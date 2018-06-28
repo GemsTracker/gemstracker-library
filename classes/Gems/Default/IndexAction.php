@@ -21,10 +21,27 @@
 class Gems_Default_IndexAction extends \Gems_Controller_Action
 {
     /**
+     * Gems only parameters used for the login action. Can be overruled
+     * by setting $this->loginParameters
+     *
+     * @var array Mixed key => value array for snippet initializPdfation
+     */
+    private $_loginDefaultParameters = [
+        'loginForm'          => 'createLoginForm',
+        'loginStatusTracker' => 'getLoginStatusTracker',
+    ];
+
+    /**
      *
      * @var \Gems_AccessLog
      */
     public $accesslog;
+
+    /**
+     *
+     * @var \Gems_Util_BasePath
+     */
+    public $basepath;
 
     /**
      *
@@ -48,6 +65,31 @@ class Gems_Default_IndexAction extends \Gems_Controller_Action
      * @var boolean
      */
     protected $layeredLogin = false;
+
+    /**
+     * The parameters used for the index action
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $loginParameters = [];
+
+    /**
+     * The snippets used for the login action
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $loginSnippets = [
+        'Login\\UserLoginFormSnippet',
+        'Login\\SetAsCurrentUserSnippet',
+        'Login\\CheckPasswordChangeRequiredSnippet',
+        'Login\\RedirectToRequestSnippet',
+        'Login\\GotoStartPageSnippet',
+        ];
 
     /**
      * For small numbers of organizations a multiline selectbox will be nice. This
@@ -78,6 +120,56 @@ class Gems_Default_IndexAction extends \Gems_Controller_Action
      * @var boolean
      */
     protected $showTokenButton = true;
+
+    /**
+     * Set to true in child class for automatic creation of $this->html.
+     *
+     * To initiate the use of $this->html from the code call $this->initHtml()
+     *
+     * Overrules $useRawOutput.
+     *
+     * @see $useRawOutput
+     * @var boolean $useHtmlView
+     */
+    public $useHtmlView = false;
+
+    /**
+     *
+     * @var \Gems_Util
+     */
+    public $util;
+
+    /**
+     *
+     * @param array $input
+     * @return array
+     */
+    protected function _processParameters(array $input)
+    {
+        $output = array();
+
+        foreach ($input as $key => $value) {
+            if (is_string($value) && method_exists($this, $value)) {
+                $value = $this->$value($key);
+
+                if (is_integer($key) || ($value === null)) {
+                    continue;
+                }
+            }
+            $output[$key] = $value;
+        }
+
+        return $output;
+    }
+
+    /**
+     *
+     */
+    public function checkMonitors()
+    {
+        // Check job monitors
+        $this->util->getMonitor()->checkMonitors();
+    }
 
     /**
      * Returns a login form
@@ -206,6 +298,15 @@ class Gems_Default_IndexAction extends \Gems_Controller_Action
     }
 
     /**
+     *
+     * @return \Gems\User\LoginStatusTracker
+     */
+    public function getLoginStatusTracker()
+    {
+        return $this->loader->getUserLoader()->getLoginStatusTracker();
+    }
+
+    /**
      * Modify this to set a new title for the top organization element
      * if you use layered login
      *
@@ -226,6 +327,14 @@ class Gems_Default_IndexAction extends \Gems_Controller_Action
      */
     public function loginAction()
     {
+        if ($this->loginSnippets && $this->useHtmlView) {
+            $params = $this->_processParameters($this->loginParameters + $this->_loginDefaultParameters);
+
+            $this->addSnippets($this->loginSnippets, $params);
+
+            return;
+        }
+
         $request = $this->getRequest();
         $form    = $this->createLoginForm();
 
@@ -321,7 +430,7 @@ class Gems_Default_IndexAction extends \Gems_Controller_Action
             if ($user->hasValidResetKey()) {
                 // Signal the reqset required so the maxage check is disabled while validating
                 $user->setPasswordResetRequired(true);
-                
+
                 $form = $user->getChangePasswordForm(array('askOld' => false, 'askCheck' => true, 'labelWidthFactor' => $this->labelWidthFactor));
 
                 $result = $user->authenticate(null, false);

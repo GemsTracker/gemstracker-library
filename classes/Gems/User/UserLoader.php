@@ -360,6 +360,22 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     *
+     * @staticvar \Gems\User\LoginStatusTracker $statusTracker
+     * @return \Gems\User\LoginStatusTracker
+     */
+    public function getLoginStatusTracker()
+    {
+        static $statusTracker;
+
+        if (! $statusTracker) {
+            $statusTracker = $this->_loadClass('LoginStatusTracker', true, [$this]);
+        }
+
+        return $statusTracker;
+    }
+
+    /**
      * Returns an organization object, initiated from the database or from
      * self::$_noOrganization when the database does not yet exist.
      *
