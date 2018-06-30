@@ -85,7 +85,7 @@ class Gems_Default_IndexAction extends \Gems_Controller_Action
      */
     protected $loginSnippets = [
         'Login\\UserLoginFormSnippet',
-        // 'Login\\TwoFactorSnippet',
+        'Login\\TwoFactorCheckSnippet',
         'Login\\CheckPasswordChangeRequiredSnippet',
         'Login\\SetAsCurrentUserSnippet',
         'Login\\RedirectToRequestSnippet',
@@ -331,7 +331,12 @@ class Gems_Default_IndexAction extends \Gems_Controller_Action
         if ($this->loginSnippets && $this->useHtmlView) {
             $params = $this->_processParameters($this->loginParameters + $this->_loginDefaultParameters);
 
-            $this->addSnippets($this->loginSnippets, $params);
+            $sparams['request']           = $this->getRequest();
+            $sparams['snippetList']       = $this->loginSnippets;
+            $sparams['snippetLoader']     = $this->getSnippetLoader();
+            $sparams['snippetParameters'] = $params;
+
+            $this->addSnippets('SequenceSnippet', $sparams);
 
             return;
         }

@@ -61,10 +61,8 @@ class LoginStatusTracker
     protected function _getDefaults()
     {
         return [
-            'passwordAuthenticated'  => false,
             'passwordResetting'      => false,
             'passwordText'           => null,
-            'twofactorAuthenticated' => false,
             'userName'               => null,
             'userOrganization'       => null,
             ];
@@ -121,64 +119,12 @@ class LoginStatusTracker
     }
 
     /**
-     * The user is know and has been authenticated
-     *
-     * @return boolean
-     */
-    public function isAuthenticated()
-    {
-        return $this->isPasswordAuthenticated() && $this->isTwoFactorAuthenticated();
-    }
-
-    /**
-     * The password is known and authenticated
-     *
-     * @return boolean
-     */
-    public function isPasswordAuthenticated()
-    {
-        return $this->_session->data['passwordAuthenticated'] && $this->hasUser();
-    }
-
-    /**
      *
      * @return boolean
      */
     public function isPasswordResetActive()
     {
         return $this->_session->data['passwordResetting'];
-    }
-
-    /**
-     * The user is authenticated and has no other processing actions hanging
-     *
-     * @return boolean
-     */
-    public function isReady()
-    {
-        return $this->isAuthenticated() && (! $this->isPasswordResetActive());
-    }
-
-    /**
-     * Has the two factor authentication occured
-     *
-     * @return boolean
-     */
-    public function isTwoFactorAuthenticated()
-    {
-        return $this->_session->data['twofactorAuthenticated'] && $this->hasUser();
-    }
-
-    /**
-     *
-     * @param boolean $value
-     * @return $this
-     */
-    public function setPasswordAuthenticated($value = true)
-    {
-        $this->_session->data['passwordAuthenticated'] = $value;
-
-        return $this;
     }
 
     /**
@@ -201,18 +147,6 @@ class LoginStatusTracker
     public function setPasswordText($password)
     {
         $this->_session->data['passwordText'] = $password;
-        return $this;
-    }
-
-    /**
-     *
-     * @param boolean $value
-     * @return $this
-     */
-    public function setTwoFactorAuthenticated($value = true)
-    {
-        $this->_session->data['twofactorAuthenticated'] = $value;
-
         return $this;
     }
 

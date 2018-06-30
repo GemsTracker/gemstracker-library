@@ -99,10 +99,6 @@ class UserLoginFormSnippet extends FormSnippetAbstract
      */
     protected function processForm()
     {
-        if ($this->loginStatusTracker->isPasswordAuthenticated()) {
-            return false;
-        }
-
         // Check job monitors as long as the login form is being processed
         $this->util->getMonitor()->checkMonitors();
 
@@ -128,7 +124,7 @@ class UserLoginFormSnippet extends FormSnippetAbstract
                  */
                 \Gems_Cookies::setLocale($user->getLocale(), $this->basepath->getBasePath());
 
-                $this->loginStatusTracker->setPasswordAuthenticated(true)
+                $this->loginStatusTracker
                         ->setPasswordText($this->loginForm->getPasswordText())
                         ->setUser($user);
 

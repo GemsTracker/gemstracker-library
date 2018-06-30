@@ -48,11 +48,11 @@ class Gems_User_ProjectUserDefinition extends \Gems_User_UserDefinitionAbstract
     /**
      * Returns the data for a user object. It may be empty if the user is unknown.
      *
-     * @param string $login_name
+     * @param string $loginName
      * @param int $organization
      * @return array Of data to fill the user with.
      */
-    public function getUserData($login_name, $organization)
+    public function getUserData($loginName, $organization)
     {
         $orgs = null;
 
@@ -65,11 +65,15 @@ class Gems_User_ProjectUserDefinition extends \Gems_User_UserDefinitionAbstract
             // Table might not exist or be empty, so do something failsafe
             $orgs = array($organization => 'create db first');
         }
+        $login     = $this->project->getSuperAdminName();
+        $twoFactor = $this->project->getSuperAdminTwoFactor();
 
         return array(
             'user_id'                => \Gems_User_UserLoader::SYSTEM_USER_ID,
-            'user_login'             => $login_name,
-            'user_name'              => $login_name,
+            'user_login'             => $login,
+            'user_two_factor_key'    => $twoFactor,
+            'user_enable_2factor'    => $twoFactor ? 1 : 0,
+            'user_name'              => $login,
             'user_group'             => 800,
             'user_role'              => 'master',
             'user_style'             => 'gems',

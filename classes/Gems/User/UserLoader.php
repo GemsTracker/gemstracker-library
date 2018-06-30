@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+use Gems\User\TwoFactor\TwoFactorAuthenticatorInterface;
+
 /**
  * Loads users.
  *
@@ -35,7 +37,6 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
      */
     const USER_CONSOLE    = 'ConsoleUser';
     const USER_NOLOGIN    = 'NoLogin';
-    const USER_OLD_STAFF  = 'OldStaffUser';
     const USER_PROJECT    = 'ProjectUser';
     const USER_RADIUS     = 'RadiusUser';
     const USER_RESPONDENT = 'RespondentUser';
@@ -208,6 +209,13 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
         if (! isset($values['user_resetkey_valid'])) {
             $values['user_resetkey_valid'] = false;
         }
+        if (! isset($values['user_two_factor_key'])) {
+            $values['user_two_factor_key'] = null;
+        }
+        if (! isset($values['user_enable_2factor'])) {
+            $values['user_enable_2factor'] = null;
+        }
+
 
         if ($defName) {
             $values['__user_definition'] = $defName;
@@ -499,6 +507,25 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Get TwoFactorAuthenticatorInterface class
+     *
+     * @return Gems\User\TwoFactor\TwoFactorAuthenticatorInterface
+     */
+    public function getTwoFactorAuthenticator($className)
+    {
+        $object = $this->_loadClass('TwoFactor_' . $className, true);
+
+        if (! $object instanceof TwoFactorAuthenticatorInterface) {
+            throw new \Gems_Exception_Coding(sprintf(
+                    'The authenticator class %s should be an instance of TwoFactorAuthenticatorInterface.',
+                    $className
+                    ));
+        }
+
+        return $object;
+    }
+
+    /**
      * Returns a user object, that may be empty if no user exist.
      *
      * @param string $login_name
@@ -536,15 +563,10 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
         }
 
         $select = $this->db->select();
-        if ('os' == substr($resetKey, 0, 2)) {
-            // Oldstaff reset key!
-            $select->from('gems__staff', array(new \Zend_Db_Expr("'" . self::USER_OLD_STAFF . "' AS user_class"), 'gsf_id_organization', 'gsf_login'))
-                    ->where('gsf_reset_key = ?', substr($resetKey, 2));
-        } else {
-            $select->from('gems__user_passwords', array())
-                    ->joinLeft('gems__user_logins', 'gup_id_user = gul_id_user', array("gul_user_class", 'gul_id_organization', 'gul_login'))
-                    ->where('gup_reset_key = ?', $resetKey);
-        }
+        $select->from('gems__user_passwords', array())
+                ->joinLeft('gems__user_logins', 'gup_id_user = gul_id_user', array("gul_user_class", 'gul_id_organization', 'gul_login'))
+                ->where('gup_reset_key = ?', $resetKey);
+
         if ($row = $this->db->fetchRow($select, null, \Zend_Db::FETCH_NUM)) {
             // \MUtil_Echo::track($row);
             return $this->loadUser($row[0], $row[1], $row[2]);
@@ -608,38 +630,6 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
 
         } catch (\Zend_Db_Exception $e) {
             // Intentional fall through
-        }
-
-        // Fail over for pre 1.5 projects
-        //
-        // No login as other organization or with e-mail possible for first login, before running of upgrade / patches
-        //
-        // Test code voor old user, code for password 'guest' is: 084e0343a0486ff05530df6c705c8bb4,
-        // for 'test4': 86985e105f79b95d6bc918fb45ec7727
-        $sql = "SELECT gsf_id_user
-            FROM gems__staff INNER JOIN
-                    gems__organizations ON gsf_id_organization = gor_id_organization
-                    WHERE gor_active = 1 AND gsf_active = 1 AND gsf_login = ? AND gsf_id_organization = ?";
-
-        if ($user_id = $this->db->fetchOne($sql, array($login_name, $organization))) {
-            // Move user to new staff.
-            $values['gul_login']           = $login_name;
-            $values['gul_id_organization'] = $organization;
-            $values['gul_user_class']      = self::USER_OLD_STAFF; // Old staff as password is still in gems__staff
-            $values['gul_can_login']       = 1;
-            $values['gul_changed']         = new \MUtil_Db_Expr_CurrentTimestamp();
-            $values['gul_changed_by']      = $user_id;
-            $values['gul_created']         = $values['gul_changed'];
-            $values['gul_created_by']      = $user_id;
-
-            try {
-                $this->db->insert('gems__user_logins', $values);
-            } catch (\Zend_Db_Exception $e) {
-                // Fall through as this does not work if the database upgrade did not run
-                // \MUtil_Echo::r($e);
-            }
-
-            return $this->loadUser(self::USER_OLD_STAFF, $organization, $login_name);
         }
 
         return $this->loadUser(self::USER_NOLOGIN, $organization, $login_name);

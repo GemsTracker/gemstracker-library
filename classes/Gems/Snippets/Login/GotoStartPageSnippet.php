@@ -66,11 +66,12 @@ class GotoStartPageSnippet extends \MUtil_Snippets_SnippetAbstract
      */
     public function getRedirectRoute()
     {
-        if ($this->loginStatusTracker->isReady()) {
-            return [
-                $this->request->getControllerKey() => null,
-                $this->request->getActionKey() => null,
-                ];
-        }
+        // Clean up
+        $this->loginStatusTracker->destroySession();
+
+        return [
+            $this->request->getControllerKey() => null,
+            $this->request->getActionKey() => null,
+            ];
     }
 }

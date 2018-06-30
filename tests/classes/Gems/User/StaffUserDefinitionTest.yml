@@ -17,7 +17,6 @@ gems__staff:
     gsf_login: "testuser"
     gsf_id_organization: 70
     gsf_active: 1
-    gsf_failed_logins: 0
     gsf_id_primary_group: 903
     gsf_iso_lang: "nl"
     gsf_logout_on_survey: 0

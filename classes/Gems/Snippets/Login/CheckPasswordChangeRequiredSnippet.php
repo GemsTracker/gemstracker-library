@@ -75,6 +75,22 @@ class CheckPasswordChangeRequiredSnippet extends PasswordResetSnippet
     }
 
     /**
+     * When hasHtmlOutput() is false a snippet user should check
+     * for a redirectRoute.
+     *
+     * When hasHtmlOutput() is true this functions should not be called.
+     *
+     * @see Zend_Controller_Action_Helper_Redirector
+     *
+     * @return mixed Nothing or either an array or a string that is acceptable for Redector->gotoRoute()
+     */
+    public function getRedirectRoute()
+    {
+        // Never deviate
+        return null;
+    }
+
+    /**
      * The place to check if the data set in the snippet is valid
      * to generate the snippet.
      *
@@ -87,12 +103,8 @@ class CheckPasswordChangeRequiredSnippet extends PasswordResetSnippet
      */
     public function hasHtmlOutput()
     {
-        if (! $this->loginStatusTracker->isAuthenticated()) {
-            return false;
-        }
-
         $this->user = $this->loginStatusTracker->getUser();
-        if (! $this->user->canSetPassword()) {
+        if (! ($this->user && $this->user->canSetPassword())) {
             return false;
         }
 
@@ -111,11 +123,11 @@ class CheckPasswordChangeRequiredSnippet extends PasswordResetSnippet
 
         if ($this->loginStatusTracker->isPasswordResetActive()) {
             // Skip parent::hasHtmlOutput()
-            // will trigger an error loop
-            return $this->processForm();
+            // will trigger an error loop because you can only your password if set as current user
+            $this->processForm();
         }
 
-        return false;
+        return $this->loginStatusTracker->isPasswordResetActive();
     }
     /**
      * When there is a redirectRoute this function will execute it.
@@ -126,7 +138,7 @@ class CheckPasswordChangeRequiredSnippet extends PasswordResetSnippet
      */
     public function redirectRoute()
     {
-        // Not used
+        // Always stay in index/login
         return null;
     }
 
@@ -141,5 +153,16 @@ class CheckPasswordChangeRequiredSnippet extends PasswordResetSnippet
 
         $this->user->setPasswordResetRequired(false);
         $this->loginStatusTracker->setPasswordResetActive(false);
+    }
+
+    /**
+     * Set what to do when the form is 'finished'.
+     *
+     * #param array $params Url items to set for this route
+     * @return MUtil_Snippets_ModelFormSnippetAbstract (continuation pattern)
+     */
+    protected function setAfterSaveRoute(array $params = array())
+    {
+        return $this;
     }
 }

@@ -10,6 +10,7 @@
  */
 
 use Gems\User\Group;
+use Gems\User\TwoFactor\TwoFactorAuthenticatorInterface;
 use Zend\Authentication\Result;
 use Zend\Authentication\Adapter\AdapterInterface;
 
@@ -24,6 +25,12 @@ use Zend\Authentication\Adapter\AdapterInterface;
  */
 class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
 {
+    /**
+     *
+     * @var TwoFactorAuthenticatorInterface
+     */
+    protected $_authenticator;
+
     /**
      *
      * @var Zend\Authentication\Result
@@ -55,6 +62,12 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
+
+    /**
+     *
+     * @var string
+     */
+    protected $defaultAuthenticatorClass = 'GoogleAuthenticator';
 
     /**
      * Required, set in constructor
@@ -600,6 +613,16 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     public function canResetPassword()
     {
         return $this->isActive() && $this->definition->canResetPassword($this);
+    }
+
+    /**
+     * Return true if the two factor can be set.
+     *
+     * @return boolean
+     */
+    public function canSaveTwoFactorKey()
+    {
+        return $this->definition->canSaveTwoFactorKey();
     }
 
     /**
@@ -1217,6 +1240,45 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     *
+     * @return TwoFactorAuthenticatorInterface
+     */
+    public function getTwoFactorAuthenticator()
+    {
+        if (! $this->_authenticator instanceof TwoFactorAuthenticatorInterface) {
+            if ($this->_hasVar('user_two_factor_key')) {
+                $authClass = \MUtil_String::beforeChars(
+                        $this->_getVar('user_two_factor_key'),
+                        TwoFactorAuthenticatorInterface::SEPERATOR
+                        );
+
+            } else {
+                $authClass = $this->defaultAuthenticatorClass;
+            }
+
+            $this->_authenticator = $this->userLoader->getTwoFactorAuthenticator($authClass);
+        }
+
+        return $this->_authenticator;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function getTwoFactorKey()
+    {
+        if ($this->_hasVar('user_two_factor_key')) {
+            list($class, $key) = explode(
+                    TwoFactorAuthenticatorInterface::SEPERATOR,
+                    $this->_getVar('user_two_factor_key'),
+                    2
+                    );
+        }
+        return $key;
+    }
+
+    /**
      * Returns the user id, that identifies this user within this installation.
      *
      * One user id might be connected to multiple logins for multiple organizations.
@@ -1344,6 +1406,15 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         $roles = $this->getRoles();
 
         return (isset($roles[$role]));
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    public function hasTwoFactor()
+    {
+        return (boolean) $this->_getVar('user_two_factor_key');
     }
 
     /**
@@ -1501,6 +1572,15 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     public function isStaff()
     {
         return (boolean) $this->_getVar('user_staff');
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    public function isTwoFactorEnabled()
+    {
+        return (boolean) $this->_getVar('user_enable_2factor') && $this->hasTwoFactor();
     }
 
     /**
@@ -1918,6 +1998,36 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
 
         return $this;
     }
+
+    /**
+     *
+     * @param string TwoFactorAuthenticatorInterface $authenticator
+     * @param string $newKey
+     * @param boolean $enabled
+     * @return $this
+     */
+    public function setTwoFactorKey(TwoFactorAuthenticatorInterface $authenticator, $newKey, $enabled = null)
+    {
+        // Make sure the authclass is part of the data
+        $authClass = get_class($authenticator);
+        $authFind  = '\\User\\TwoFactor\\';
+        $pos = strrpos($authClass, $authFind);
+        if ($pos) {
+            $authClass = substr($authClass, $pos + strlen($authFind));
+        }
+
+        $newValue = $authClass . TwoFactorAuthenticatorInterface::SEPERATOR . $newKey;
+
+        $this->_setVar('user_two_factor_key', $newValue);
+        if (null !== $enabled) {
+            $this->_setVar('user_enable_2factor', $enabled ? 1 : 0);
+        }
+
+        $this->definition->setTwoFactorKey($this, $newValue, $enabled);
+
+        return $this;
+    }
+
 
     /**
      * Unsets this user as the current user.

@@ -84,10 +84,6 @@ ALTER TABLE `gems__rounds` CHANGE `gro_round_description` `gro_round_description
 UPDATE gems__surveys SET gsu_active = 0 WHERE gsu_id_primary_group IS NULL AND gsu_active = 1;
 
 -- GEMS VERSION: 35
--- PATCH: Add gsf_reset_key and 'gsf_reset_req columns
-ALTER TABLE `gems__staff` ADD `gsf_reset_key` varchar(64) NULL AFTER `gsf_phone_1`;
-ALTER TABLE `gems__staff` ADD `gsf_reset_req`timestamp NULL AFTER `gsf_reset_key`;
-
 -- PATCH: Add gtr_organizations to tracks
 ALTER TABLE `gems__tracks` ADD `gtr_organizations` VARCHAR(250) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `gtr_track_type` ;
 UPDATE gems__tracks
@@ -98,11 +94,6 @@ UPDATE gems__tracks
 ALTER TABLE `gems__tracks` ADD `gtr_track_model` VARCHAR(64) NOT NULL DEFAULT 'TrackModel' AFTER `gtr_track_type`;
 ALTER TABLE `gems__rounds` ADD `gro_used_date_order` INT(4) NULL AFTER `gro_used_date`,
     ADD `gro_used_date_field` VARCHAR(16) NULL AFTER `gro_used_date_order`;
-
--- GEMS VERSION: 36
--- PATCH: Store number of failed login attempts
-ALTER TABLE `gems__staff` ADD `gsf_failed_logins` int(11) unsigned not null default 0 AFTER `gsf_active`;
-ALTER TABLE `gems__staff` ADD `gsf_last_failed` timestamp null AFTER `gsf_failed_logins`;
 
 -- GEMS VERSION: 37
 -- PATCH: Allow duplicate location name across patch levels
@@ -292,8 +283,6 @@ INSERT INTO gems__user_logins (gul_login, gul_id_organization, gul_user_class,
 
 ALTER TABLE `gems__staff` CHANGE `gsf_id_user` `gsf_id_user` BIGINT( 20 ) UNSIGNED NOT NULL;
 
-ALTER TABLE `gems__staff` CHANGE `gsf_password` `gsf_password` VARCHAR( 32 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-
 ALTER TABLE `gems__staff` ADD UNIQUE `gesf_login` (`gsf_login`, `gsf_id_organization`);
 
 ALTER TABLE gems__organizations ADD gor_style varchar(15) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'gems' AFTER gor_signature;
@@ -388,7 +377,6 @@ ALTER TABLE gems__user_logins CHANGE gul_can_login gul_can_login boolean not nul
 
 -- PATCH: make reset keys unique so we now whose key it is
 ALTER TABLE `gems__user_passwords` ADD UNIQUE KEY (gup_reset_key);
-ALTER TABLE `gems__staff` ADD UNIQUE KEY (gsf_reset_key);
 
 -- GEMS VERSION: 47
 -- PATCH: Add return url to tokens
@@ -1044,9 +1032,6 @@ UPDATE gems__roles
     SET grl_privileges = REPLACE(grl_privileges, ',pr.staff.delete', ',pr.staff.deactivate,pr.staff.reactivate')
     WHERE grl_privileges LIKE '%,pr.staff.delete%';
 
--- PATCH: Old database structures cleanup
-ALTER IGNORE TABLE gems__staff DROP KEY gsf_reset_key;
-
 -- PATCH: Speedup of queries
 ALTER IGNORE TABLE gems__surveys ADD INDEX (gsu_id_primary_group);
 ALTER IGNORE TABLE gems__surveys DROP INDEX gsu_id_primary_group_2; -- Undo double creation
@@ -1359,3 +1344,25 @@ ALTER TABLE  gems__appointments
 -- PATCH: Introducing conditions for rounds
 ALTER TABLE gems__rounds
     ADD gro_condition bigint unsigned null AFTER gro_valid_for_length;
+
+-- PATCH: Introducing two factor authentication
+ALTER TABLE gems__user_logins
+    ADD gul_two_factor_key varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null
+    AFTER gul_can_login;
+
+ALTER TABLE gems__user_logins
+    ADD gul_enable_2factor boolean not null default 1
+    AFTER gul_two_factor_key;
+
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.option.2factor')
+    WHERE grl_privileges NOT LIKE '%,pr.option.2factor%' AND grl_name = 'super';
+
+-- PATCH: Clean up old staff password columns
+ALTER TABLE gems__staff
+    DROP COLUMN gsf_password,
+    DROP COLUMN gsf_failed_logins,
+    DROP COLUMN gsf_last_failed;
+
+ALTER TABLE gems__staff
+    DROP COLUMN gsf_reset_key,
+    DROP COLUMN gsf_reset_req;

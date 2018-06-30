@@ -12,6 +12,7 @@
 namespace Gems\Snippets\Login;
 
 use Gems\Snippets\FormSnippetAbstract;
+use Gems\User\Validate\TwoFactorAuthenticateValidator;
 
 /**
  *
@@ -21,13 +22,25 @@ use Gems\Snippets\FormSnippetAbstract;
  * @license    New BSD License
  * @since      Class available since version 1.8.4 28-Jun-2018 18:46:31
  */
-class TwoFactorSnippet extends FormSnippetAbstract
+class TwoFactorCheckSnippet extends FormSnippetAbstract
 {
+    /**
+     *
+     * @var boolean
+     */
+    private $_result = false;
+
     /**
      *
      * @var \Gems\User\LoginStatusTracker
      */
     protected $loginStatusTracker;
+
+    /**
+     *
+     * @var \Gems_User_User
+     */
+    protected $user;
 
     /**
      * Add the elements to the form
@@ -47,7 +60,11 @@ class TwoFactorSnippet extends FormSnippetAbstract
             ];
 
         $element = $form->createElement('Text', 'TwoFactor', $options);
-        $element->addValidator(new \Zend_Validate_InArray(['111111']));
+        $element->addValidator(new TwoFactorAuthenticateValidator(
+                $this->user->getTwoFactorAuthenticator(),
+                $this->user->getTwoFactorKey(),
+                $this->translate
+                ));
 
         $form->addElement($element);
     }
@@ -66,6 +83,10 @@ class TwoFactorSnippet extends FormSnippetAbstract
 
         $this->routeController = $this->request->getControllerName();
         $this->routeAction     = $this->request->getActionName();
+
+        if ($this->loginStatusTracker->hasUser()) {
+            $this->user = $this->loginStatusTracker->getUser();
+        }
     }
 
     /**
@@ -102,11 +123,13 @@ class TwoFactorSnippet extends FormSnippetAbstract
      */
     public function hasHtmlOutput()
     {
-        if ($this->loginStatusTracker->isTwoFactorAuthenticated()) {
-            return false;
+        if ($this->user && $this->user->isTwoFactorEnabled()) {
+            parent::hasHtmlOutput();
+
+            return ! $this->_result;
         }
 
-        return parent::hasHtmlOutput();
+        return false;
     }
 
     /**
@@ -116,8 +139,6 @@ class TwoFactorSnippet extends FormSnippetAbstract
      */
     protected function saveData()
     {
-        parent::saveData();
-
-        $this->loginStatusTracker->setTwoFactorAuthenticated(true);
+        $this->_result = true;
     }
 }

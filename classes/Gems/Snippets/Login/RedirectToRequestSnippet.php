@@ -66,13 +66,16 @@ class RedirectToRequestSnippet extends \MUtil_Snippets_SnippetAbstract
      */
     public function getRedirectRoute()
     {
-        if ($this->loginStatusTracker->isReady()) {
-            // Retrieve these before the session is reset
-            $staticSession = \GemsEscort::getInstance()->getStaticSession();
+        // Retrieve these before the session is reset
+        $staticSession = \GemsEscort::getInstance()->getStaticSession();
 
-            if ($staticSession && is_array($staticSession->previousRequestParameters)) {
-                return $staticSession->previousRequestParameters;
-            }
+        if ($staticSession && is_array($staticSession->previousRequestParameters)) {
+            $url = $staticSession->previousRequestParameters;
+
+            $staticSession->unsetAll();
+            $this->loginStatusTracker->destroySession();
+
+            return $url;
         }
     }
 }
