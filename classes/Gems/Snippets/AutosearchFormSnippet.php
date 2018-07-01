@@ -68,7 +68,7 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
      * @var \MUtil_Model_ModelAbstract
      */
     protected $model;
-    
+
     /**
      * Should the organization element be displayed as a multicheckbox or not?
      *
@@ -466,12 +466,12 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
     {
         return $this->form->createElement('submit', $this->searchButtonId, array('label' => $this->_('Search'), 'class' => 'button small'));
     }
-    
+
     /**
      * Return the fixed parameters
-     * 
+     *
      * Normally these are the hidden parameters like ID
-     * 
+     *
      * @return array
      */
     protected function getFixedParams()

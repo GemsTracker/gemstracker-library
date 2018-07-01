@@ -86,6 +86,14 @@ class UserLoginFormSnippet extends FormSnippetAbstract
      */
     protected function createForm($options = null)
     {
+        // Make sure the reset parameter is removed
+        $url = [
+            (string) $this->basepath,
+            $this->request->getControllerName(),
+            $this->request->getActionName(),
+            ];
+        $this->loginForm->setAction(implode('/', array_filter($url)));
+
         return $this->loginForm;
     }
 

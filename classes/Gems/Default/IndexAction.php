@@ -29,6 +29,7 @@ class Gems_Default_IndexAction extends \Gems_Controller_Action
     private $_loginDefaultParameters = [
         'loginForm'          => 'createLoginForm',
         'loginStatusTracker' => 'getLoginStatusTracker',
+        'resetParam'         => 'reset',
     ];
 
     /**
@@ -229,6 +230,7 @@ class Gems_Default_IndexAction extends \Gems_Controller_Action
      * Function for overruling the display of the login form.
      *
      * @param \Gems_User_Form_LoginForm $form
+     * @deprecated since version 1.8.4 no longer in use with 2FA login
      */
     protected function displayLoginForm(\Gems_User_Form_LoginForm $form)
     {
@@ -332,6 +334,7 @@ class Gems_Default_IndexAction extends \Gems_Controller_Action
             $params = $this->_processParameters($this->loginParameters + $this->_loginDefaultParameters);
 
             $sparams['request']           = $this->getRequest();
+            $sparams['resetParam']        = $params['resetParam'];
             $sparams['snippetList']       = $this->loginSnippets;
             $sparams['snippetLoader']     = $this->getSnippetLoader();
             $sparams['snippetParameters'] = $params;

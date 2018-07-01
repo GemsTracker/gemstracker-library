@@ -37,10 +37,37 @@ class TwoFactorCheckSnippet extends FormSnippetAbstract
     protected $loginStatusTracker;
 
     /**
+     * A parameter that if true resets the queue
+     *
+     * @var string
+     */
+    protected $resetParam;
+
+    /**
      *
      * @var \Gems_User_User
      */
     protected $user;
+
+    /**
+     * Simple default function for making sure there is a $this->_saveButton.
+     *
+     * As the save button is not part of the model - but of the interface - it
+     * does deserve it's own function.
+     */
+    protected function addCancelButton()
+    {
+        $cancelUrl  = [
+            $this->request->getControllerKey() => $this->request->getControllerName(),
+            $this->request->getActionKey()     => $this->request->getActionName(),
+            $this->resetParam                  => 1,
+        ];
+
+        $element = $this->_form->createElement('html', 'reset');
+        $element->setLabel(html_entity_decode('&nbsp;'));
+        $element->setValue(\Gems_Html::actionLink($cancelUrl, $this->_('Cancel login')));
+        $this->_form->addElement($element);
+    }
 
     /**
      * Add the elements to the form
@@ -52,11 +79,12 @@ class TwoFactorCheckSnippet extends FormSnippetAbstract
         $this->saveLabel = $this->_('Check code');
 
         $options = [
-            'label' => $this->_('Enter authenticator code'),
-            'maxlength' => 6,
-            'minlength' => 6,
-            'required' => true,
-            'size' => 8,
+            'label'       => $this->_('Enter authenticator code'),
+            'description' => $this->_('From the Google app on your phone.'),
+            'maxlength'   => 6,
+            'minlength'   => 6,
+            'required'    => true,
+            'size'        => 8,
             ];
 
         $element = $form->createElement('Text', 'TwoFactor', $options);
@@ -67,6 +95,19 @@ class TwoFactorCheckSnippet extends FormSnippetAbstract
                 ));
 
         $form->addElement($element);
+    }
+
+    /**
+     * Simple default function for making sure there is a $this->_saveButton.
+     *
+     * As the save button is not part of the model - but of the interface - it
+     * does deserve it's own function.
+     */
+    protected function addSaveButton()
+    {
+        parent::addSaveButton();
+
+        $this->addCancelButton();
     }
 
     /**
