@@ -45,7 +45,7 @@ class LoginStatusTracker
      */
     public function __construct(\Gems_User_UserLoader $userLoader)
     {
-        $this->_session = new \Zend_Session_Namespace(__CLASS__);
+        $this->_session = new \Zend_Session_Namespace(__CLASS__ . GEMS_PROJECT_NAME . '.sessionStatic');
 
         if (! $this->_session->data) {
             $this->_session->data = $this->_getDefaults();
@@ -74,15 +74,6 @@ class LoginStatusTracker
     public function destroySession()
     {
         $this->_session->unsetAll();
-    }
-
-    /**
-     *
-     * @return boolean
-     */
-    public function hasUser()
-    {
-        return $this->_session->data['userName'] && $this->_session->data['userOrganization'];
     }
 
     /**
@@ -116,6 +107,16 @@ class LoginStatusTracker
                     );
         }
         return $this->_user;
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    public function hasUser()
+    {
+        // Add $this->_user here as the session reset may loose the session data
+        return $this->_user || ($this->_session->data['userName'] && $this->_session->data['userOrganization']);
     }
 
     /**

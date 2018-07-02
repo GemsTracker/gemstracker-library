@@ -23,6 +23,12 @@ class RedirectToRequestSnippet extends \MUtil_Snippets_SnippetAbstract
 {
     /**
      *
+     * @var array
+     */
+    private $_redirectUrl = null;
+
+    /**
+     *
      * @var \Gems\User\LoginStatusTracker
      */
     protected $loginStatusTracker;
@@ -80,6 +86,12 @@ class RedirectToRequestSnippet extends \MUtil_Snippets_SnippetAbstract
      */
     public function getRedirectRoute()
     {
+        if (null !== $this->_redirectUrl) {
+            return $this->_redirectUrl;
+        }
+
+        $this->_redirectUrl = false;
+
         // Retrieve these before the session is reset
         $staticSession = \GemsEscort::getInstance()->getStaticSession();
 
@@ -89,13 +101,17 @@ class RedirectToRequestSnippet extends \MUtil_Snippets_SnippetAbstract
             $staticSession->unsetAll();
             $this->loginStatusTracker->destroySession();
 
-            if ($this->menu->findAllowedController(
+            $menuItem = $this->menu->findController(
                     $url[$this->request->getControllerKey()],
                     $url[$this->request->getActionKey()]
-                    )) {
+                    );
 
-                return $url;
+            if ($this->loginStatusTracker->hasUser() &&
+                    $this->loginStatusTracker->getUser()->hasPrivilege($menuItem->getPrivilege())) {
+                $this->_redirectUrl = $url;
             }
         }
+
+        return $this->_redirectUrl;
     }
 }
