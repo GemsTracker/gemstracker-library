@@ -29,9 +29,23 @@ class RedirectToRequestSnippet extends \MUtil_Snippets_SnippetAbstract
 
     /**
      *
+     * @var \Gems_Menu
+     */
+    protected $menu;
+
+    /**
+     *
      * @var \Zend_Controller_Request_Abstract
      */
     protected $request;
+
+    /**
+     * Variable to either keep or throw away the request data
+     * not specified in the route.
+     *
+     * @var boolean True then the route is reset
+     */
+    public $resetRoute = true;
 
     /**
      * The place to check if the data set in the snippet is valid
@@ -75,7 +89,13 @@ class RedirectToRequestSnippet extends \MUtil_Snippets_SnippetAbstract
             $staticSession->unsetAll();
             $this->loginStatusTracker->destroySession();
 
-            return $url;
+            if ($this->menu->findAllowedController(
+                    $url[$this->request->getControllerKey()],
+                    $url[$this->request->getActionKey()]
+                    )) {
+
+                return $url;
+            }
         }
     }
 }
