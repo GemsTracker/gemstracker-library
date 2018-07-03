@@ -911,7 +911,7 @@ class GemsEscort extends \MUtil_Application_Escort
         // Set CSS stylescheet(s)
         $projectCss = isset($this->project->css) ? (array) $this->project->css : [];
         $projectCss = array_reverse($projectCss);
-        
+
         foreach ($projectCss as $css) {
             if (is_array($css)) {
                 $media = $css['media'];
@@ -986,7 +986,7 @@ class GemsEscort extends \MUtil_Application_Escort
             $jquery->uiEnable(); // enable user interface
 
             $jqueryCss = isset($this->project->jquerycss) ? (array) $this->project->jquerycss : [];
-            
+
             foreach ($jqueryCss as $css) {
                 $jquery->addStylesheet($this->basepath->getBasePath() . '/' . $css);
             }
@@ -1609,9 +1609,9 @@ class GemsEscort extends \MUtil_Application_Escort
         }
         return $this->view->messenger;
     }
-    
+
     /**
-     * 
+     *
      * @param array $items Array of id=>item
      * @param string $currentId Id of currently selected item
      * @param string $elementId Id to set on the returned element
@@ -1657,7 +1657,7 @@ class GemsEscort extends \MUtil_Application_Escort
 
         return $uiSwitch;
     }
-    
+
     /**
      * Type access to $this->util
      *
@@ -1850,7 +1850,7 @@ class GemsEscort extends \MUtil_Application_Escort
             // Only when we need to render the layout, we run the layout prepare
             if (\Zend_Controller_Action_HelperBroker::hasHelper('layout') &&
                     \Zend_Controller_Action_HelperBroker::getExistingHelper('layout')->isEnabled()) {
-                
+
                 // Per project layout preparation
                 $layoutFuncs = isset($this->project->layoutPrepare) ? $this->project->layoutPrepare : [];
                 $layoutArgs  = isset($this->project->layoutPrepareArgs) ? $this->project->layoutPrepareArgs : [];
@@ -1972,9 +1972,9 @@ class GemsEscort extends \MUtil_Application_Escort
             $layout->setLayout('cli');
         }
     }
-    
+
     /**
-     * 
+     *
      * @param array $layoutFuncs
      * @param array $layoutArgs
      */
@@ -2246,7 +2246,7 @@ class GemsEscort extends \MUtil_Application_Escort
         if ($request instanceof \Zend_Controller_Request_Http) {
             if ($request->isPost() || ($user->isActive() && $user->isCurrentUser())) {
                 $incoming = $request->getServer('HTTP_ORIGIN', $request->getServer('HTTP_REFERER', false));
-                 if ($incoming) {
+                if ($incoming) {
                     if (! $this->isAllowedHost($incoming)) {
                         throw new \Gems_Exception("Invalid source host, possible CSRF attack", 403);
                     }

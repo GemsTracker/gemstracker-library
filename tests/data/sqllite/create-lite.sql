@@ -1142,12 +1142,6 @@ CREATE TABLE gems__staff (
 
         gsf_active				TINYINT(1) default 1,
 
-        -- depreciated
-        gsf_password			varchar(32),
-    	gsf_failed_logins		int(11) default 0,
-        gsf_last_failed			TEXT,
-        -- end depreciated
-
         gsf_id_primary_group	INTEGER,
         gsf_iso_lang			char(2) not null default 'en',
         gsf_logout_on_survey	TINYINT(1) not null default 0,
@@ -1171,11 +1165,6 @@ CREATE TABLE gems__staff (
         gsf_phone_1				varchar(25) ,
         -- gsf_phone_2             varchar(25) ,
         -- gsf_phone_3             varchar(25) ,
-
-        -- depreciated
-        gsf_reset_key			varchar(64),
-        gsf_reset_req			TEXT,
-        -- end depreciated
 
         gsf_changed				TEXT not null default current_timestamp,
         gsf_changed_by			INTEGER not null,
@@ -1474,6 +1463,9 @@ CREATE TABLE gems__user_logins (
 
         gul_user_class       varchar(30) not null default 'NoLogin',
         gul_can_login        TINYINT(1) not null default 0,
+
+        gul_two_factor_key   varchar(100),
+        gul_enable_2factor   TINYINT(1) not null default 1,
 
         gul_changed          TEXT not null default current_timestamp,
         gul_changed_by       INTEGER not null,
