@@ -13,6 +13,8 @@
  * @version    $Id: Form.php 215 2011-07-12 08:52:54Z michiel $
  */
 
+namespace OpenRosa\Tracker\Source;
+
 /**
  * Helper for OpenRosa forms
  *
@@ -25,19 +27,36 @@
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-class OpenRosa_Tracker_Source_OpenRosa_Form
+class Form
 {
     /**
      * @var \Gems_Model_JoinModel
      */
     private $model;
+
     private $bind;
+    private $bindRoot = '/data/';
     private $instance;
     private $body;
     private $deviceIdField;
     private $formID;
     private $formVersion;
+    private $groupLabels;
     private $title;
+
+    /**
+     * @var \Zend_Db
+     */
+    protected $db;
+
+    /**
+     * @var \Zend_Translate_Adapter
+     */
+    protected $translate;
+
+    protected $mainTablePrefix = 'orf';
+
+    protected $relatedTablePrefix = 'orfr';
 
     /**
      * @var SimpleXmlElement
@@ -49,9 +68,11 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
      *
      * @param string $file the sanitized filename (absolute path)
      */
-    public function __construct($file)
+    public function __construct($file, \Zend_Db_Adapter_Abstract $db, \Zend_Translate $translate)
     {
-        $this->translate = \Zend_Registry::getInstance()->get('Zend_Translate');
+        $this->db = $db;
+        $this->translate = $translate;
+
         if (!file_exists($file)) {
             throw new \Gems_Exception_Coding(sprintf($this->translate->_('File not found: %s'), $file));
         }
@@ -63,13 +84,18 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
         }
         $this->_xml = $xml;
 
+        $hChildren   = $this->_xml->children('h', true);
+        $bindElement = $hChildren->head->children()->model->instance->children();
+        $this->bindRoot = '/' . $bindElement->getName() . '/';
+
+        //\MUtil_Echo::track($xml->asXML());
         //For working with the namespaces:
         //$xml->children('h', true)->head->children()->model->bind
         //use namespace h children for the root element, and find h:head, then use no namespace children
         //and find model->bind so we get h:head/model/bind elements
-        $this->bind     = $this->flattenBind($this->_xml->children('h', true)->head->children()->model->bind);
-        $this->body     = $this->flattenBody($xml->children('h', true)->body->children(), $context        = '');
-        $this->instance = $this->flattenInstance($this->_xml->children('h', true)->head->children()->model->instance->data->children());
+        $this->bind     = $this->flattenBind($hChildren->head->children()->model->bind);
+        $this->body     = $this->flattenBody($hChildren->body->children(), '');
+        $this->instance = $this->flattenInstance($bindElement->children());
     }
 
     /**
@@ -82,7 +108,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
      */
     protected function _getBindName($name)
     {
-        return '/data/' . $name;
+        return $this->bindRoot . $name;
     }
 
     /**
@@ -91,15 +117,21 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
      * @param string $tablePrefix
      * @return string
      */
-    protected function _getFinalSql($tablePrefix)
+    protected function _getFinalSql($tablePrefix, $repeat = false)
     {
         $db = \Zend_Registry::getInstance()->get('db');
 
-        return $db->quoteIdentifier($tablePrefix . '_changed') . " timestamp NOT NULL,\n"
+        $sqlSuffix = $db->quoteIdentifier($tablePrefix . '_changed') . " timestamp NOT NULL,\n"
             . $db->quoteIdentifier($tablePrefix . '_changed_by') . " bigint(20) NOT NULL,\n"
             . $db->quoteIdentifier($tablePrefix . '_created') . " timestamp NOT NULL,\n"
-            . $db->quoteIdentifier($tablePrefix . '_created_by') . " bigint(20) NOT NULL,\n"
-            . 'PRIMARY KEY  (`' . $tablePrefix . '_id`)) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;';
+            . $db->quoteIdentifier($tablePrefix . '_created_by') . " bigint(20) NOT NULL,\n";
+        if ($repeat) {
+            $sqlSuffix .= 'PRIMARY KEY  (`' . $tablePrefix . '_id`, `' . $tablePrefix . '_response_id`)) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;';
+        } else {
+            $sqlSuffix .= 'PRIMARY KEY  (`' . $tablePrefix . '_id`)) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;';
+        }
+
+        return $sqlSuffix;
     }
 
     /**
@@ -156,21 +188,33 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
         return $output;
     }
 
+    public function getInstance()
+    {
+        return $this->instance;
+    }
+
     private function createTable()
     {
-        $db          = \Zend_Registry::getInstance()->get('db');
         $nested      = false;
 
         $mainTableName   = $this->getTableName();
         $mainTablePrefix = 'orf';
-        $mainSql = 'CREATE TABLE IF NOT EXISTS ' . $db->quoteIdentifier($mainTableName) . ' ('
-            . $db->quoteIdentifier($mainTablePrefix . '_id') . " bigint(20) NOT NULL auto_increment,\n";
+        $mainSql = 'CREATE TABLE IF NOT EXISTS ' . $this->db->quoteIdentifier($mainTableName) . ' ('
+            . $this->db->quoteIdentifier($mainTablePrefix . '_id') . " bigint(20) NOT NULL auto_increment,\n";
 
         $relatedTablePrefix = 'orfr';
-        $relatedTableName   = $this->getRelatedTableName();
-        $relatedSql = 'CREATE TABLE IF NOT EXISTS ' . $db->quoteIdentifier($relatedTableName) . ' ('
-            . $db->quoteIdentifier($relatedTablePrefix . '_id') . " bigint(20) NOT NULL auto_increment,\n"
-            . $db->quoteIdentifier($relatedTablePrefix . '_response_id') . " bigint(20) NOT NULL,\n";
+        $repeats = $this->getRepeats();
+
+        foreach($repeats as $repeatName) {
+            $relatedTableName = $this->getRelatedTableName($repeatName);
+            $relatedSqlArray[$repeatName] = 'CREATE TABLE IF NOT EXISTS ' . $this->db->quoteIdentifier($relatedTableName) . ' ('
+                . $this->db->quoteIdentifier($relatedTablePrefix . '_id') . " bigint(20) NOT NULL,\n"
+                . $this->db->quoteIdentifier($relatedTablePrefix . '_response_id') . " bigint(20) NOT NULL,\n";
+        }
+
+        if (!isset($this->instance['token'])) {
+            $mainSql .= "  " . $this->db->quoteIdentifier('token') . " varchar(9) DEFAULT NOT NULL,\n";
+        }
 
         foreach ($this->instance as $name => $element) {
             $sql = '';
@@ -211,7 +255,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                     $items         = $this->body[$bindName]['item'];
                     foreach ($items as $key => $value) {
                         $multiName = $mysqlName . '_' . $key;
-                        $sql .= "  " . $db->quoteIdentifier($multiName) . " {$field['type']}{$field['size']} DEFAULT 0 NOT NULL,\n";
+                        $sql .= "  " . $this->db->quoteIdentifier($multiName) . " {$field['type']}{$field['size']} DEFAULT 0 NOT NULL,\n";
                     }
                     //So we don't get an extra field
                     unset($field['type']);
@@ -245,14 +289,14 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                     $field['size'] = '(11,7)';
                     $field['type'] = 'decimal';
                     $items         = $this->body[$bindName]['item'];
-                    $answers[$mysqlName . '_lat'] = $items[0];
-                    $answers[$mysqlName . '_long'] = $items[1];
-                    $answers[$mysqlName . '_alt'] = $items[2];
-                    $answers[$mysqlName . '_acc'] = $items[3];
-                    $sql .= "  " . $db->quoteIdentifier($mysqlName . '_lat') . " {$field['type']}{$field['size']} DEFAULT 0 NOT NULL,\n";
-                    $sql .= "  " . $db->quoteIdentifier($mysqlName . '_long') . " {$field['type']}{$field['size']} DEFAULT 0 NOT NULL,\n";
-                    $sql .= "  " . $db->quoteIdentifier($mysqlName . '_alt') . " int DEFAULT 0 NOT NULL,\n";
-                    $sql .= "  " . $db->quoteIdentifier($mysqlName . '_acc') . " int DEFAULT 0 NOT NULL,\n";
+                    //$answers[$mysqlName . '_lat'] = $items[0];
+                    //$answers[$mysqlName . '_long'] = $items[1];
+                    //$answers[$mysqlName . '_alt'] = $items[2];
+                    //$answers[$mysqlName . '_acc'] = $items[3];
+                    $sql .= "  " . $this->db->quoteIdentifier($mysqlName . '_lat') . " {$field['type']}{$field['size']} DEFAULT 0 NOT NULL,\n";
+                    $sql .= "  " . $this->db->quoteIdentifier($mysqlName . '_long') . " {$field['type']}{$field['size']} DEFAULT 0 NOT NULL,\n";
+                    $sql .= "  " . $this->db->quoteIdentifier($mysqlName . '_alt') . " int DEFAULT 0 NOT NULL,\n";
+                    $sql .= "  " . $this->db->quoteIdentifier($mysqlName . '_acc') . " int DEFAULT 0 NOT NULL,\n";
 
                     //So we don't get an extra field
                     unset($field['type']);
@@ -265,23 +309,25 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
             }
 
             if (isset($field['type'])) {
-                $sql .= "  " . $db->quoteIdentifier($mysqlName) . " {$field['type']}{$field['size']} DEFAULT NULL,\n";
+                $sql .= "  " . $this->db->quoteIdentifier($mysqlName) . " {$field['type']}{$field['size']} DEFAULT NULL,\n";
             }
 
             if (array_key_exists($bindName, $this->body) && array_key_exists('repeat', $this->body[$bindName])) { // CHECK NESTED
                 $nested = true;
-                $relatedSql .= $sql;
+                $relatedSqlArray[$this->body[$bindName]['repeat']] .= $sql;
             } else {
                 $mainSql .= $sql;
             }
         }
 
         $mainSql .= $this->_getFinalSql($mainTablePrefix);
-        $db->query($mainSql);
+        $this->db->query($mainSql);
 
         if ($nested) {
-            $relatedSql .= $this->_getFinalSql($relatedTablePrefix);
-            $db->query($relatedSql);
+            foreach($relatedSqlArray as $repeatName => $relatedSql) {
+                $relatedSql .= $this->_getFinalSql($relatedTablePrefix, true);
+                $this->db->query($relatedSql);
+            }
         }
 
         return new \Gems_Model_JoinModel($this->getFormID(), $mainTableName, $mainTablePrefix);
@@ -290,6 +336,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
     private function flattenAnswers($xml, $parent = '')
     {
         $output = array();
+        $model = $this->getModel();
         foreach ($xml as $name => $element) {
             if (!empty($parent)) {
                 $elementName = $parent . '_' . $name;
@@ -297,7 +344,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                 $elementName = $name;
             }
             if (count($element->children()) > 0) {
-                if ($this->getModel()->get($elementName, 'type') == Mutil_Model::TYPE_CHILD_MODEL) {
+                if ($model->get($elementName, 'type') == Mutil_Model::TYPE_CHILD_MODEL) {
                     // Now do something :)
                     $output[$elementName][] = $this->flattenInstance($element, $elementName);
                 } else {
@@ -345,7 +392,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                     if (!empty($elementContext)) {
                         $elementContext .= '/';
                     } else {
-                        $elementContext = '/data/';
+                        $elementContext = $this->bindRoot;
                     }
                     if (substr($value, 0, 1) == '/') {
                         $elementContext    = '';
@@ -395,6 +442,9 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                 case 'repeat':
                 case 'group':
                 default:
+                    if (isset($result['context'], $result['label'])) {
+                        $this->groupLabels[$result['context']] = $result['label'];
+                    }
                     unset($result['context']);
                     unset($result['name']);
                     $subarray = $this->flattenBody($element->children(), $elementContext);
@@ -402,12 +452,11 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                     unset($subarray['label']);
                     unset($subarray['hint']);
                     unset($subarray['name']);
-
                     // If it is a repeat element, we need to do something special when data is coming in
                     if ($elementName == 'repeat') {
                         foreach($subarray as $key => &$info)
                         {
-                            $info['repeat'] = substr($elementContext, 6);
+                            $info['repeat'] = substr($elementContext, strlen($this->bindRoot));
                         }
                     }
                     $result   = $result + $subarray;
@@ -470,7 +519,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
         if (empty($this->formID)) {
             foreach ($this->_xml->children('h', true)->head->children()->model->instance->children() as $element) {
                 if (!empty($element->attributes()->id)) {
-                    $this->formID = $element->attributes()->id;
+                    $this->formID = $element->attributes()->id->__toString();
                     break;
                 }
             }
@@ -507,7 +556,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
         if (empty($this->model)) {
             try {
                 $model = new \Gems_Model_JoinModel($this->getFormID(), $this->getTableName(), 'orf');
-            } catch (Exception $exc) {
+            } catch (\Exception $exc) {
                 //Failed, now create the table as it obviously doesn't exist
                 $model = $this->createTable();
             }
@@ -515,8 +564,10 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
             // Initially no repeated groups
             $nested = false;
 
+            $relatedModels = [];
+
             // Add submit date, this is the date the form was uploaded
-            $model->set('orf_created', 'label', $this->translate->_('Date received'));
+            //$model->set('orf_created', 'label', $this->translate->_('Date received'));
 
             //Now we have the table, let's add some multi options etc.
             $checkBox[1] = $this->translate->_('Checked');
@@ -534,16 +585,33 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                 $modelName = str_replace('/', '_', $name);
 
                 if (array_key_exists($bindName, $this->body) && array_key_exists('repeat', $this->body[$bindName])) { // CHECK NESTED
-                    if ($nested === false) {
-                        $nested = true;
-                        $nestedName = $this->body[$bindName]['repeat'];
-                        $relatedModel = new \Gems_Model_JoinModel($nestedName, $this->getRelatedTableName(), 'orfr');
+                    $nestedName = $this->body[$bindName]['repeat'];
+                    $nested = true;
 
-                        // Add some meta information to make export a little easier
-                        $model->setMeta('nested', true);
-                        $model->setMeta('nestedName', $nestedName);
+                    if (!isset($relatedModels[$nestedName])) {
+
+                        try {
+                            $nestedTable = $this->getRelatedTableName($nestedName);
+                            $relatedModels[$nestedName] = new \Gems_Model_JoinModel($nestedName, $nestedTable, 'orfr');
+                        } catch (\Exception $exc) {
+                            $nestedTable = $this->getRelatedTableName();
+                            $relatedModels[$nestedName] = new \Gems_Model_JoinModel($nestedName, $nestedTable, 'orfr');
+                        }
+
+                        $relatedModels[$nestedName]->setSort(array('orfr_id' => SORT_ASC));
+                        $relatedNames[$nestedTable] = $nestedName;
+
+                        $groupKey = substr($bindName, 0, -strlen(\MUtil_String::stripStringLeft($name, $nestedName)));
+                        if (isset($this->groupLabels[$groupKey])) {
+                            $model->set($nestedName, 'label', $this->groupLabels[$groupKey]);
+                        }
                     }
-                    $modelToUse = $relatedModel;
+
+                    // Add some meta information to make export a little easier
+                    $model->setMeta('nested', true);
+                    $model->setMeta('nestedNames', $relatedNames);
+
+                    $modelToUse = $relatedModels[$nestedName];
                 }
 
                 switch ($bindInfo['type']) {
@@ -576,6 +644,20 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                             }
                         }
                         $modelToUse->set($modelName, 'label', $label);
+                        if ($bindInfo['type'] == 'date') {
+                            $modelToUse->set($modelName,
+                                'type', \MUtil_Model::TYPE_DATE,
+                                'dateFormat', 'dd-MM-yyyy',
+                                'storageFormat', 'yyyy-MM-dd',
+                                'elementClass', 'date');
+                        } else {
+                            $modelToUse->set($modelName,
+                                'type', \MUtil_Model::TYPE_DATETIME,
+                                'dateFormat', 'dd-MM-yyyy HH:mm',
+                                'storageFormat', 'yyyy-MM-dd HH:mm:ss',
+                                'elementClass', 'date');
+                        }
+
                         break;
 
 
@@ -612,6 +694,9 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                                     $modelToUse->setOnLoad($modelName, array($this,'formatImg'));
                                 }
                             }
+                            if ('multiline' == $bodyElement['attribs']->appearance) {
+                                $modelToUse->set($modelName, 'elementClass', 'Textarea', 'rows', 4);
+                            }
                         }
 
                     default:
@@ -629,11 +714,12 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                 }
             }
             if ($nested) {
-                $model->addModel($relatedModel, array('orf_id' => 'orfr_response_id'));
+                foreach($relatedModels as $relatedModel) {
+                    $model->addModel($relatedModel, array('orf_id' => 'orfr_response_id'));
+                }
             }
             $this->model = $model;
         }
-
         return $this->model;
     }
 
@@ -642,9 +728,32 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
      *
      * @return string
      */
-    public function getRelatedTableName()
+    public function getRelatedTableName($repeatName = null)
     {
-        return $this->getTableName() . '_related';
+        if ($repeatName) {
+            return $this->getTableName() . '_related_' . $repeatName;
+        } else {
+            return $this->getTableName() . '_related';
+        }
+    }
+
+    public function getRepeats()
+    {
+        $repeats = array();
+        foreach($this->instance as $name => $element) {
+            $bindName = $this->_getBindName($name);
+            if (array_key_exists($bindName, $this->body) && array_key_exists('repeat', $this->body[$bindName])) {
+                $repeats[$this->body[$bindName]['repeat']] = true;
+            }
+        }
+        return array_keys($repeats);
+    }
+
+    public function getTableIdField()
+    {
+        $idName = $this->mainTablePrefix . '_id';
+
+        return $idName;
     }
 
     public function getTableName()
@@ -692,30 +801,30 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
         //Now we should parse the response, extract the options given for a (multi)select
         $output = array();
         foreach ($this->instance as $name => $element) {
-                $bindName = $this->_getBindName($name);
-                if (array_key_exists($bindName, $this->bind)) {
-                    $bindInfo = $this->bind[$bindName];
-                } else {
-                    $bindInfo['type'] = 'string';
-                }
+            $bindName = $this->_getBindName($name);
+            if (array_key_exists($bindName, $this->bind)) {
+                $bindInfo = $this->bind[$bindName];
+            } else {
+                $bindInfo['type'] = 'string';
+            }
 
-                if (array_key_exists($bindName, $this->body) && array_key_exists('repeat', $this->body[$bindName])) { // CHECK NESTED
-                    // We found a field that should go into the nested record
-                    // Now process all answers
-                    $group = $this->body[$bindName]['repeat'];
-                    foreach($answers[$group] as $idx => $element)
-                    {
-                        if (!array_key_exists($group, $output)) {
-                            $output[$group] = array();
-                        }
-                        if (!array_key_exists($idx, $output[$group])) {
-                            $output[$group][$idx] = array();
-                        }
-                        $output[$group][$idx] = $output[$group][$idx] + $this->_processAnswer($name, $element, $bindInfo['type']);
+            if (array_key_exists($bindName, $this->body) && array_key_exists('repeat', $this->body[$bindName])) { // CHECK NESTED
+                // We found a field that should go into the nested record
+                // Now process all answers
+                $group = $this->body[$bindName]['repeat'];
+                foreach($answers[$group] as $idx => $element)
+                {
+                    if (!array_key_exists($group, $output)) {
+                        $output[$group] = array();
                     }
-                } else {
-                    $output = $output + $this->_processAnswer($name, $answers, $bindInfo['type']);
+                    if (!array_key_exists($idx, $output[$group])) {
+                        $output[$group][$idx] = array();
+                    }
+                    $output[$group][$idx] = $output[$group][$idx] + $this->_processAnswer($name, $element, $bindInfo['type']);
                 }
+            } else {
+                $output = $output + $this->_processAnswer($name, $answers, $bindInfo['type']);
+            }
         }
 
         $output['orf_id'] = null;
@@ -729,7 +838,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
         // @@TODO: make hook for respondentID lookup too
         if (isset($answers['token'])) {
             // We receveid a form linked to a token, signal the 'inSource' for this token.
-            $loader = GemsEscort::getInstance()->getLoader();
+            $loader = \GemsEscort::getInstance()->getLoader();
             $token = $loader->getTracker()->getToken($answers['token']);
             $token->getUrl($loader->getCurrentUser()->getLocale(), $loader->getCurrentUser()->getUserId());
         }
@@ -743,18 +852,27 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
         //       and still check if one is logged in
         if (!empty($value)) {
             return \MUtil_Html_ImgElement::img(array(
-                        'src' => array(
-                            'controller' => 'openrosa',
-                            'action'     => 'image',
-                            'id'         => $this->formID,
-                            'version'    => $this->formVersion,
-                            'resp'       => $context['orf_id'],
-                            'field'      => str_replace('.', '_', $value)
-                            ),
-                        'width' => '350px;'
-                ));
+                'src' => array(
+                    'controller' => 'openrosa',
+                    'action'     => 'image',
+                    'id'         => $this->formID,
+                    'version'    => $this->formVersion,
+                    'resp'       => $context['orf_id'],
+                    'field'      => str_replace('.', '_', $value)
+                ),
+                'width' => '350px;'
+            ));
         } else {
             return $value;
+        }
+    }
+
+    public function testTable()
+    {
+        try {
+            $model = $this->createTable();
+        } catch (\Exception $exc) {
+
         }
     }
 }
