@@ -14,6 +14,7 @@ Programmability
 Security
     CSV Injection protection
     Enhanced parameter filtering for added security (#298)
+    Two factor authentication for users (#237)
 
 1.8.2 => 1.8.3
 =================

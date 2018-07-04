@@ -89,6 +89,12 @@ class Group extends \Gems_Registry_CachedArrayTargetAbstract
     protected $maskStore;
 
     /**
+     *
+     * @var \Gems_Util
+     */
+    protected $util;
+
+    /**
      * Called after the check that all required registry values
      * have been set correctly has run.
      *
@@ -299,12 +305,28 @@ class Group extends \Gems_Registry_CachedArrayTargetAbstract
 
     /**
      * Is this a staff group
-     * 
+     *
      * @return boolean
      */
     public function isStaff()
     {
         return (boolean) $this->_get('ggp_staff_members');
+    }
+
+    /**
+     * Should a user be authorized using two factor authentication?
+     *
+     * @param string $ipAddress
+     * @return boolean
+     */
+    public function isTwoFactorRequired($ipAddress)
+    {
+        \MUtil_Echo::track($this->_get('ggp_2factor_status'), inet_pton($ipAddress), $ipAddress, $this->_get('ggp_no_2factor_ip_ranges'));
+        if (! $this->_get('ggp_2factor_status')) {
+            return false;
+        }
+        // Required when not in range
+        return ! $this->util->isAllowedIP($ipAddress, $this->_get('ggp_no_2factor_ip_ranges'));
     }
 
     /**

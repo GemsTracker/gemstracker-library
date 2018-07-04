@@ -953,15 +953,26 @@ class Gems_Project_ProjectSettings extends \ArrayObject
     }
 
     /**
-     * Checks the super admin password, if it exists
+     * Get the super admin two factor authentication ip exclude range
      *
-     * @param string $password
-     * @return boolean True if the password is correct.
+     * @return string
      */
-    public function getSuperAdminTwoFactor()
+    public function getSuperAdminTwoFactorIpExclude()
     {
-        if ($this->offsetExists('admin') && isset($this->admin['twoFactor'])) {
-            return trim($this->admin['twoFactor']);
+        if ($this->offsetExists('admin') && isset($this->admin['2fa'], $this->admin['2fa']['exclude'])) {
+            return trim($this->admin['2fa']['exclude']);
+        }
+    }
+
+    /**
+     * Get the super admin two factor authentication key
+     *
+     * @return string
+     */
+    public function getSuperAdminTwoFactorKey()
+    {
+        if ($this->offsetExists('admin') && isset($this->admin['2fa'], $this->admin['2fa']['key'])) {
+            return trim($this->admin['2fa']['key']);
         }
     }
 

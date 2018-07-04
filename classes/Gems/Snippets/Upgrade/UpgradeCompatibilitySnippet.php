@@ -187,14 +187,20 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
         }
 
         $obsFunctions = array(
-            'Gems_User_User' => array(
+            'Gems\Agenda\Filter\FieldLikeAppointmentFilter' => [
                 'getAppointmentFieldVale'   => 'getAppointmentFieldValue',
-                'getAvailableMailTemplates' => 'CommTemplateUtil->getCommTemplatesForTarget',
-                'getGroup'                  => 'getGroupId', // REMOVE IN 1.8.3
+                ],
+            'Gems_Tracker_Survey' => [
                 'getFullQuestionList'       => 'getQuestionInformation',
+                ],
+            'Gems_Mail_MailLoader' => [
+                'getAvailableMailTemplates' => 'CommTemplateUtil->getCommTemplatesForTarget',
+                ],
+            'Gems_User_User' => [
+                'getGroup'                  => 'getGroupId', // REMOVE IN 1.8.3
                 'hasAllowedRole'            => 'inAllowedGroup',
                 'refreshAllowedStaffGroups' => null,
-                ),
+                ],
         );
         foreach ($obsFunctions as $className => $functions) {
             foreach ($functions as $funcName => $replacement) {
@@ -377,10 +383,16 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
     protected function _checkTablesChanged(\SplFileInfo $fileinfo, $content, array &$messages)
     {
         $obsoleteFields = array(
-            'gtr_track_type',
-            'gtr_track_name'        => 'calc_track_name',
+            'gr2o_email'            => 'grs_email',
             'gr2t_track_info'       => 'calc_track_info',
             'gto_round_description' => 'calc_round_description',
+            'gsf_password',
+            'gsf_failed_logins',
+            'gsf_last_failed',
+            'gsf_reset_key',
+            'gsf_reset_req',
+            'gtr_track_type',
+            'gtr_track_name'        => 'calc_track_name',
             );
 
         foreach ($obsoleteFields as $replacement => $old) {
@@ -632,7 +644,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
         }
         if ($this->project->offsetExists('meta')) {
             if (! (isset($this->project['meta']['Content-Security-Policy']) &&
-                    \MUtil_String::contains($this->project['meta']['Content-Security-Policy'], ' chart.googleapis.com '))) {
+                    \MUtil_String::contains($this->project['meta']['Content-Security-Policy'], ' chart.googleapis.com'))) {
                 $this->html->pInfo('The meta.Content-Security-Policy setting default-src "chart.googleapis.com" for Two Factor Authentication is missing.');
                 $issues = true;
             }

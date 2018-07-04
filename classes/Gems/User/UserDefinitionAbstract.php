@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+use Gems\User\Group;
 
 /**
  * Base class for all user definitions.
@@ -90,6 +91,17 @@ abstract class Gems_User_UserDefinitionAbstract extends \MUtil_Registry_TargetAb
     }
 
     /**
+     * Return true if the user has a password.
+     *
+     * @param \Gems_User_User $user The user to check
+     * @return boolean
+     */
+    public function hasPassword(\Gems_User_User $user)
+    {
+        return false;
+    }
+
+    /**
      * Returns true when users using this definition are staff members.
      *
      * Used only when the definition does not return a user_staff field.
@@ -102,13 +114,17 @@ abstract class Gems_User_UserDefinitionAbstract extends \MUtil_Registry_TargetAb
     }
 
     /**
-     * Return true if the user has a password.
+     * Should this user be authorized using two factor authentication?
      *
-     * @param \Gems_User_User $user The user to check
+     * @param string $ipAddress
+     * @param Group $group
      * @return boolean
      */
-    public function hasPassword(\Gems_User_User $user)
+    public function isTwoFactorRequired($ipAddress, Group $group = null)
     {
+        if ($group) {
+            return $group->isTwoFactorRequired($ipAddress);
+        }
         return false;
     }
 

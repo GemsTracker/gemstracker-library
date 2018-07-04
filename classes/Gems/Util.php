@@ -367,7 +367,7 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
      */
     public function isAllowedIP($ip, $ipRanges = "")
     {
-        if (!strlen($ipRanges)) {
+        if (! ($ip && strlen($ipRanges))) {
             return true;
         }
 

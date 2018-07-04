@@ -50,6 +50,21 @@ class TwoFactorCheckSnippet extends FormSnippetAbstract
     protected $user;
 
     /**
+     *
+     * @return string
+     */
+    protected function _getIp()
+    {
+        //In unit test REMOTE_ADDR is not available and will return null
+        // E.g. command line user
+        if (! $this->request instanceof \Zend_Controller_Request_Http) {
+            return false;
+        }
+
+        return $this->request->getServer('REMOTE_ADDR');
+    }
+
+    /**
      * Simple default function for making sure there is a $this->_saveButton.
      *
      * As the save button is not part of the model - but of the interface - it
@@ -164,7 +179,7 @@ class TwoFactorCheckSnippet extends FormSnippetAbstract
      */
     public function hasHtmlOutput()
     {
-        if ($this->user && $this->user->isTwoFactorEnabled()) {
+        if ($this->user && $this->user->isTwoFactorRequired($this->_getIp())) {
             parent::hasHtmlOutput();
 
             return ! $this->_result;

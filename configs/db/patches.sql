@@ -1357,6 +1357,16 @@ ALTER TABLE gems__user_logins
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.option.2factor')
     WHERE grl_privileges NOT LIKE '%,pr.option.2factor%' AND grl_name = 'super';
 
+ALTER TABLE gems__groups
+    ADD ggp_2factor_status tinyint not null default 0
+    AFTER ggp_allowed_ip_ranges;
+
+ALTER TABLE gems__groups
+    ADD ggp_no_2factor_ip_ranges text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null
+    AFTER ggp_2factor_status;
+
+UPDATE gems__groups SET ggp_no_2factor_ip_ranges = '127.0.0.1|::1' WHERE ggp_no_2factor_ip_ranges IS NULL;
+
 -- PATCH: Clean up old staff password columns
 ALTER TABLE gems__staff
     DROP COLUMN gsf_password,

@@ -291,7 +291,7 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
                 );
         if ($detailed) {
         $this->setIfExists('gul_enable_2factor', 'label', $this->_('Two factor enabled'),
-                    'description', $this->_('You can only enable/disable two factor authentication, not set the key.'),
+                    'description', $this->_('You can only enable/disable two factor authentication, not install a key.'),
                     'elementClass', 'Checkbox',
                     'multiOptions', $yesNo
                 );

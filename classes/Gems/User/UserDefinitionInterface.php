@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+use Gems\User\Group;
 
 /**
  *
@@ -84,6 +85,14 @@ interface Gems_User_UserDefinitionInterface
     public function getUserData($login_name, $organization);
 
     /**
+     * Return true if the user has a password.
+     *
+     * @param \Gems_User_User $user The user to check
+     * @return boolean
+     */
+    public function hasPassword(\Gems_User_User $user);
+
+    /**
      * Returns true when users using this definition are staff members.
      *
      * Used only when the definition does not return a user_staff field.
@@ -93,12 +102,13 @@ interface Gems_User_UserDefinitionInterface
     public function isStaff();
 
     /**
-     * Return true if the user has a password.
+     * Should this user be authorized using two factor authentication?
      *
-     * @param \Gems_User_User $user The user to check
+     * @param string $ipAddress
+     * @param Group $group
      * @return boolean
      */
-    public function hasPassword(\Gems_User_User $user);
+    public function isTwoFactorRequired($ipAddress, Group $group = null);
 
     /**
      * Set the password, if allowed for this user type.

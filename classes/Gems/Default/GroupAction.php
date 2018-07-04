@@ -31,9 +31,10 @@ class Gems_Default_GroupAction extends \Gems_Controller_ModelSnippetActionAbstra
      * @var array Mixed key => value array for snippet initialization
      */
     protected $autofilterParameters = array(
-        'extraSort'   => array(
+        'columns'     => 'getBrowseColumns',
+        'extraSort'   => [
             'ggp_name' => SORT_ASC,
-            ),
+            ],
         );
 
     /**
@@ -164,6 +165,18 @@ class Gems_Default_GroupAction extends \Gems_Controller_ModelSnippetActionAbstra
         $model->set('ggp_allowed_ip_ranges', 'label', $this->_('Allowed IP Ranges'),
                 'description', $this->_('Separate with | example: 10.0.0.0-10.0.0.255 (subnet masks are not supported)'),
                 'elementClass', 'Textarea',
+                'itemDisplay', [$this, 'ipWrap'],
+                'rows', 4,
+                'validator', new \Gems_Validate_IPRanges()
+                );
+        $model->setIfExists('ggp_2factor_status', 'label', $this->_('Two factor status'),
+                'multiOptions', ['Optional', 'Required when not exempt']
+                );
+        $model->setIfExists('ggp_no_2factor_ip_ranges', 'label', $this->_('Two factor exempt IP Ranges'),
+                'description', $this->_('Separate with | example: 10.0.0.0-10.0.0.255 (subnet masks are not supported)'),
+                'default', '127.0.0.1|::1',
+                'elementClass', 'Textarea',
+                'itemDisplay', [$this, 'ipWrap'],
                 'rows', 4,
                 'validator', new \Gems_Validate_IPRanges()
                 );
@@ -211,6 +224,28 @@ class Gems_Default_GroupAction extends \Gems_Controller_ModelSnippetActionAbstra
     }
 
     /**
+     * Set column usage to use for the browser.
+     *
+     * Must be an array of arrays containing the input for TableBridge->setMultisort()
+     *
+     * @return array or false
+     */
+    public function getBrowseColumns()
+    {
+        $br = \MUtil_Html::create('br');
+        return [
+            ['ggp_name', $br, 'ggp_role'],
+            ['ggp_description'],
+            ['ggp_may_set_groups'],
+            ['ggp_default_group', $br, 'ggp_group_active'],
+            ['ggp_staff_members', $br, 'ggp_respondent_members'],
+            ['ggp_allowed_ip_ranges'],
+            ['ggp_2factor_status'],
+            ['ggp_no_2factor_ip_ranges'],
+            ];
+    }
+
+    /**
      * Helper function to get the title for the index action.
      *
      * @return $string
@@ -229,5 +264,15 @@ class Gems_Default_GroupAction extends \Gems_Controller_ModelSnippetActionAbstra
     public function getTopic($count = 1)
     {
         return $this->plural('group', 'groups', $count);
+    }
+
+    /**
+     *
+     * @param string $value
+     * @return string
+     */
+    public function ipWrap($value)
+    {
+        return \MUtil_Lazy::call('str_replace', '|', ' | ', $value);
     }
 }

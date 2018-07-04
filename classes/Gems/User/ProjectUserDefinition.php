@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+use Gems\User\Group;
 
 /**
  * The user defined in the project.ini by admin.user and admin.pwd.
@@ -31,6 +32,12 @@ class Gems_User_ProjectUserDefinition extends \Gems_User_UserDefinitionAbstract
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
+
+    /**
+     *
+     * @var \Gems_Util
+     */
+    protected $util;
 
     /**
      * Returns an initialized Zend\Authentication\Adapter\AdapterInterface
@@ -66,7 +73,7 @@ class Gems_User_ProjectUserDefinition extends \Gems_User_UserDefinitionAbstract
             $orgs = array($organization => 'create db first');
         }
         $login     = $this->project->getSuperAdminName();
-        $twoFactor = $this->project->getSuperAdminTwoFactor();
+        $twoFactor = $this->project->getSuperAdminTwoFactorKey();
 
         return array(
             'user_id'                => \Gems_User_UserLoader::SYSTEM_USER_ID,
@@ -82,5 +89,24 @@ class Gems_User_ProjectUserDefinition extends \Gems_User_UserDefinitionAbstract
             'user_blockable'         => false,
             '__allowedOrgs'          => $orgs
             );
+    }
+
+    /**
+     * Should this user be authorized using two factor authentication?
+     *
+     * @param string $ipAddress
+     * @param Group $group
+     * @return boolean
+     */
+    public function isTwoFactorRequired($ipAddress, Group $group = null)
+    {
+        if (! $this->project->getSuperAdminTwoFactorKey()) {
+            return false;
+        }
+        $tfExclude = $this->project->getSuperAdminTwoFactorIpExclude();
+        if (! $tfExclude) {
+            return true;
+        }
+        return $this->util->isAllowedIP($ipAddress, $tfExclude);
     }
 }

@@ -17,7 +17,7 @@ use Gems_Snippets_ModelFormSnippetGeneric as ModelFormSnippetGeneric;
  */
 class StaffCreateEditSnippet extends ModelFormSnippetGeneric
 {
-    
+
     /**
      *
      * @var \Gems_Loader
@@ -30,7 +30,7 @@ class StaffCreateEditSnippet extends ModelFormSnippetGeneric
         if ($element = $form->getElement('gsf_login')) {
             $errors = $element->getErrors();
             if (array_search('recordFound', $errors) !== false) {
-                //We have a duplicate login!		
+                //We have a duplicate login!
                 $model  = $this->getModel();
                 $model->setFilter(array(
                     'gsf_login'           => $form->getValue('gsf_login'),
@@ -39,9 +39,9 @@ class StaffCreateEditSnippet extends ModelFormSnippetGeneric
                 $result = $model->load();
 
                 if (count($result) == 1) {
-                    $result = array_shift($result); //Get the first (only) row		
+                    $result = array_shift($result); //Get the first (only) row
                     if (($result['gsf_active'] == 0) || ($result['gul_can_login'] == 0)) {
-                        //Ok we try to add an inactive user...		
+                        //Ok we try to add an inactive user...
                         //now ask if this is the one we would like to reactivate?
 
                         $this->addMessage(sprintf($this->_('User with id %s already exists but is deleted, do you want to reactivate the account?'), $result['gsf_login']));
@@ -53,7 +53,7 @@ class StaffCreateEditSnippet extends ModelFormSnippetGeneric
 
                         return;
                     } else {
-                        //User is active... this is a real duplicate so continue the flow		
+                        //User is active... this is a real duplicate so continue the flow
                     }
                 }
             }
@@ -61,17 +61,17 @@ class StaffCreateEditSnippet extends ModelFormSnippetGeneric
 
         parent::onInValid();
     }
-    
+
     public function setAfterSaveRoute()
     {
         $user = $this->loader->getUser($this->formData['gsf_login'], $this->formData['gsf_id_organization']);
-        
+
         if (!$user->canSetPassword()) {
-            $this->routeAction = 'index';
+            $this->routeAction = 'show';
             $this->resetRoute = true;
-            $this->afterSaveRouteKeys = false;
+            $this->afterSaveRouteKeys = true;
         }
-        
+
         return parent::setAfterSaveRoute();
     }
 

@@ -1575,12 +1575,24 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * Can this user be authorized using two factor authentication?
      *
      * @return boolean
      */
     public function isTwoFactorEnabled()
     {
         return (boolean) $this->_getVar('user_enable_2factor') && $this->hasTwoFactor();
+    }
+
+    /**
+     * Should this user be authorized using two factor authentication?
+     *
+     * @param string $ipAddress
+     * @return boolean
+     */
+    public function isTwoFactorRequired($ipAddress)
+    {
+        return $this->isTwoFactorEnabled() && $this->definition->isTwoFactorRequired($ipAddress, $this->getGroup());
     }
 
     /**
