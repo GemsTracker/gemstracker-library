@@ -163,7 +163,7 @@ class Gems_Default_GroupAction extends \Gems_Controller_ModelSnippetActionAbstra
                 'multiOptions', $yesNo
                 );
         $model->set('ggp_allowed_ip_ranges', 'label', $this->_('Allowed IP Ranges'),
-                'description', $this->_('Separate with | example: 10.0.0.0-10.0.0.255 (subnet masks are not supported)'),
+                'description', $this->_('Separate with | examples: 10.0.0.0-10.0.0.255, 10.10.*.*, 10.10.151.1 or 10.10.151.1/25'),
                 'elementClass', 'Textarea',
                 'itemDisplay', [$this, 'ipWrap'],
                 'rows', 4,
@@ -173,7 +173,7 @@ class Gems_Default_GroupAction extends \Gems_Controller_ModelSnippetActionAbstra
                 'multiOptions', ['Optional', 'Required when not exempt']
                 );
         $model->setIfExists('ggp_no_2factor_ip_ranges', 'label', $this->_('Two factor exempt IP Ranges'),
-                'description', $this->_('Separate with | example: 10.0.0.0-10.0.0.255 (subnet masks are not supported)'),
+                'description', $this->_('Separate with | examples: 10.0.0.0-10.0.0.255, 10.10.*.*, 10.10.151.1 or 10.10.151.1/25'),
                 'default', '127.0.0.1|::1',
                 'elementClass', 'Textarea',
                 'itemDisplay', [$this, 'ipWrap'],

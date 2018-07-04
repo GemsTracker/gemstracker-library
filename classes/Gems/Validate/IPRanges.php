@@ -5,8 +5,10 @@
  * @author     Michiel Rook <michiel@touchdownconsulting.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+use IPLib\Factory as IpFactory;
+use IPLib\Range\RangeInterface;
 
 /**
  * Not used anymore, checked if we could use soap connection. As soap is no longer a reliable
@@ -52,14 +54,14 @@ class Gems_Validate_IPRanges extends \Zend_Validate_Abstract
 
         foreach ($ranges as $range) {
             if (($sep = strpos($range, '-')) !== false) {
-                $min = ip2long(substr($range, 0, $sep));
-                $max = ip2long(substr($range, $sep + 1));
+                $range = IpFactory::rangeFromBoundaries(substr($range, 0, $sep), substr($range, $sep + 1));
 
-                if ($min === false || $max === false) {
-                    $result = false;
-                }
-            } else if (ip2long($range) === false) {
+            } else {
+                $range = IpFactory::rangeFromString($range);
+            }
+            if (! $range instanceof RangeInterface) {
                 $result = false;
+                break;
             }
         }
 

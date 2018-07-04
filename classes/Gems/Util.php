@@ -9,6 +9,10 @@
  * @license    New BSD License
  */
 
+use IPLib\Factory as IpFactory;
+use IPLib\Address\AddressInterface;
+use IPLib\Range\RangeInterface;
+
 /**
  * Class for general utility functions and access to general utility classes.
  *
@@ -359,7 +363,7 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
      *
      * Multiple addresses/ranges are separated by a colon,
      * an individual range takes the form of
-     * 10.0.0.0-10.0.0.255 (subnet masks are not supported)
+     * Separate with | examples: 10.0.0.0-10.0.0.255, 10.10.*.*, 10.10.151.1 or 10.10.151.1/25
      *
      * @param  string $ip
      * @param  string $ipRanges
@@ -367,29 +371,27 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
      */
     public function isAllowedIP($ip, $ipRanges = "")
     {
-        if (! ($ip && strlen($ipRanges))) {
+        $address = IpFactory::addressFromString($ip);
+        if (! (($address instanceof AddressInterface) && strlen($ipRanges))) {
             return true;
         }
-
-        $ipLong = ip2long($ip);
+        $aType = $address->getAddressType();
 
         $ranges = explode('|', $ipRanges);
-
         foreach ($ranges as $range) {
             if (($sep = strpos($range, '-')) !== false) {
-                $min = ip2long(substr($range, 0, $sep));
-                $max = ip2long(substr($range, $sep + 1));
+                $rangeIF = IpFactory::rangeFromBoundaries(substr($range, 0, $sep), substr($range, $sep + 1));
 
-                if ($min <= $ipLong && $ipLong <= $max) {
-                    return true;
-                }
             } else {
-                if ($ipLong == ip2long($range)) {
-                    return true;
-                }
+                $rangeIF = IpFactory::rangeFromString($range);
+            }
+
+            if (($rangeIF instanceof RangeInterface) &&
+                    $rangeIF->getAddressType() == $aType &&
+                    $rangeIF->contains($address)) {
+                return true;
             }
         }
-
         return false;
     }
 }

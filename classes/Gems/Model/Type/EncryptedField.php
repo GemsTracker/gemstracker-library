@@ -13,7 +13,15 @@
  * @author     175780
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ */
+
+/**
+ *
+ * @package    Gems
+ * @subpackage Model\Type
+ * @copyright  Copyright (c) 2017, Erasmus MC and MagnaFacta B.V.
+ * @license    New BSD License
+ * @since      Class available since version 1.7
  */
 class Gems_Model_Type_EncryptedField
 {
@@ -31,12 +39,17 @@ class Gems_Model_Type_EncryptedField
     protected $project;
 
     /**
-     * Shoudl the value be masked?
+     * Should the value be masked?
      *
      * @var boolean
      */
     protected $valueMask;
 
+    /**
+     *
+     * @param \Gems_Project_ProjectSettings $project
+     * @param boolean $valueMask
+     */
     public function __construct(\Gems_Project_ProjectSettings $project, $valueMask = true)
     {
         $this->project   = $project;

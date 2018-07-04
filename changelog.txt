@@ -8,6 +8,7 @@ New features
 Interface improvements:
     Added token states incomplete and partially answered (#280)
     Answers of partially answered tokens can be seen (#280)
+    IP Filters can use subnet masks and asterisk range notations, including IP6 addresses (#28)
     Token status is shown in show token screen
 Programmability
     Projects can allow organizations to look into each others tokens and tracks (#300)

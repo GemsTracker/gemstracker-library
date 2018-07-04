@@ -107,6 +107,6 @@ class Gems_User_ProjectUserDefinition extends \Gems_User_UserDefinitionAbstract
         if (! $tfExclude) {
             return true;
         }
-        return $this->util->isAllowedIP($ipAddress, $tfExclude);
+        return ! $this->util->isAllowedIP($ipAddress, $tfExclude);
     }
 }

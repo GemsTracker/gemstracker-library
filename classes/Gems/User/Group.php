@@ -321,7 +321,6 @@ class Group extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function isTwoFactorRequired($ipAddress)
     {
-        \MUtil_Echo::track($this->_get('ggp_2factor_status'), inet_pton($ipAddress), $ipAddress, $this->_get('ggp_no_2factor_ip_ranges'));
         if (! $this->_get('ggp_2factor_status')) {
             return false;
         }
