@@ -172,10 +172,12 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
 
         // ASSIGNED CONTROLLER
         $assiPage = $page->addPage($this->_('Assigned'), 'pr.role', 'role-overview', 'index');
+        $assiPage->addAutofilterAction();
         $assiPage->addExportAction(); 
         
         // PRIVILEGES CONTROLLER
         $privPage = $page->addPage($this->_('Privileges'), 'pr.role', 'privileges', 'index');
+        $privPage->addAutofilterAction();                
         $privPage->addExportAction();
 
         // GROUPS CONTROLLER
