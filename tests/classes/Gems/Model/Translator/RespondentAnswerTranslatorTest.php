@@ -74,8 +74,9 @@ class RespondentAnswerTranslatorTest extends ControllerTestAbstract {
         $lsDb           = \Zend_Db_Table_Abstract::getDefaultAdapter();
         $translate      = $this->getTranslate();
         $tablePrefix    = '';
+        $cache          = \Zend_Cache::factory('Core', 'Static', array('caching' => false), array('disable_caching' => true));
 
-        $fieldmap = new \Gems_Tracker_Source_LimeSurvey1m9FieldMap($sourceSurveyId, $language, $lsDb, $translate, $tablePrefix);
+        $fieldmap = new \Gems_Tracker_Source_LimeSurvey1m9FieldMap($sourceSurveyId, $language, $lsDb, $translate, $tablePrefix, $cache);
 
 
         // Create a simple array model to apply to fieldmap to
