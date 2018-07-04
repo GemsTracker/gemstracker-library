@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: StaffSearchSnippet.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Snippets\Staff;
@@ -54,10 +53,15 @@ class StaffSearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
                 $elements[] = $elementO;
             }
 
-            $optionsA = $this->util->getTranslated()->getYesNo();
+            $optionsA = $this->model->get('gsf_active', 'multiOptions');
             $elementA = $this->_createSelectElement('gsf_active', $optionsA, $this->_('(both)'));
             $elementA->setLabel($this->model->get('gsf_active', 'label'));
             $elements[] = $elementA;
+
+            $optionsT = $this->model->get('has_2factor', 'multiOptions');;
+            $elementT = $this->_createSelectElement('has_2factor', $optionsT, $this->_('(all)'));
+            $elementT->setLabel($this->model->get('has_2factor', 'label'));
+            $elements[] = $elementT;
         }
 
         return $elements;

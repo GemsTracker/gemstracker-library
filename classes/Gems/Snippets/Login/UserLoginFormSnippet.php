@@ -98,6 +98,16 @@ class UserLoginFormSnippet extends FormSnippetAbstract
     }
 
     /**
+     * Retrieve the header title to display
+     *
+     * @return string
+     */
+    protected function getTitle()
+    {
+        return $this->_('Login');
+    }
+
+    /**
      * Step by step form processing
      *
      * Returns false when $this->afterSaveRouteUrl is set during the

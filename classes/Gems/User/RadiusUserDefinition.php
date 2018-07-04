@@ -1,10 +1,10 @@
 <?php
 /**
+ *
  * @package    Gems
  * @subpackage User
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -90,6 +90,18 @@ class Gems_User_RadiusUserDefinition extends \Gems_User_StaffUserDefinition impl
     }
 
     /**
+     * We never need a rehash
+     *
+     * @param \Gems_User_User $user
+     * @param type $password
+     * @return boolean
+     */
+    public function checkRehash(\Gems_User_User $user, $password)
+    {
+        return false;
+    }
+
+    /**
      * Returns an initialized Zend\Authentication\Adapter\AdapterInterface
      *
      * @param \Gems_User_User $user
@@ -117,17 +129,6 @@ class Gems_User_RadiusUserDefinition extends \Gems_User_StaffUserDefinition impl
                 ->setCredential($password);
 
         return $adapter;
-    }
-
-    /**
-     * We never need a rehash
-     *
-     * @param \Gems_User_User $user
-     * @param type $password
-     * @return boolean
-     */
-    public function checkRehash(\Gems_User_User $user, $password) {
-        return false;
     }
 
     /**
@@ -300,6 +301,7 @@ class Gems_User_RadiusUserDefinition extends \Gems_User_StaffUserDefinition impl
      */
     public function setPassword(\Gems_User_User $user, $password)
     {
+        throw new \Gems_Exception_Coding(sprintf('The password cannot be set for %s users.', get_class($this)));
         return $this;
     }
 }

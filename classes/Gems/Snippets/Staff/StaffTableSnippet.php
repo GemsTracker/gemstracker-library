@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: StaffTableSnippet.php 2493 2015-04-15 16:29:48Z matijsdejong $
  */
 
 namespace Gems\Snippets\Staff;
@@ -69,8 +68,8 @@ class StaffTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
             $this->columns = array(
                 10 => array('gsf_login', $br, 'gsf_id_primary_group'),
                 20 => array('name', $br, 'gsf_email'),
-                30 => array('gsf_id_organization'),
-                40 => array('gsf_gender', $br, 'gsf_active'),
+                30 => array('gsf_id_organization', $br, 'gsf_gender'),
+                40 => array('gsf_active', $br, 'has_2factor'),
             );
         }
 
