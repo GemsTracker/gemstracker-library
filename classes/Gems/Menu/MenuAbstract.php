@@ -352,7 +352,7 @@ abstract class Gems_Menu_MenuAbstract
         $page->addAutofilterAction();
         $page->addExportAction();
         $page->addShowAction();
-        
+
         return $setup;
     }
 
@@ -579,7 +579,7 @@ abstract class Gems_Menu_MenuAbstract
 
         $page = $infoPage->addPage($this->_('Track Field Utilization'), 'pr.plan.fields', 'field-report', 'index');
         $page->addAutofilterAction();
-        // $page->addExcelAction();
+        $page->addExportAction();
 
         $page = $infoPage->addPage($this->_('Track Field Content'), 'pr.plan.fields', 'field-overview', 'index');
         $page->addAutofilterAction();
@@ -795,6 +795,9 @@ abstract class Gems_Menu_MenuAbstract
 
         // ADD CHART SETUP CONTROLLER
         $setup->addBrowsePage($this->_('Charts setup'), 'pr.chartsetup', 'chartconfig');
+
+        // ADD CONDITIONS CONTROLLER
+        $setup->addBrowsePage($this->_('Conditions setup'), 'pr.conditions', 'condition');
 
         // SURVEY MAINTENANCE CONTROLLER
         $page = $setup->addPage($this->_('Surveys'), 'pr.survey-maintenance', 'survey-maintenance');

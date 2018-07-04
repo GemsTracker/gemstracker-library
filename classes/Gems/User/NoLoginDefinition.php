@@ -36,19 +36,19 @@ class Gems_User_NoLoginDefinition extends \Gems_User_UserDefinitionAbstract
     /**
      * Returns the data for a no login user object.
      *
-     * @param string $login_name
+     * @param string $loginName
      * @param int $organization
      * @return array Of data to fill the user with.
      */
-    public static function getNoLoginDataFor($login_name, $organization)
+    public static function getNoLoginDataFor($loginName, $organization)
     {
         return array(
-            'user_id'          => 0,
-            'user_login'       => $login_name,
-            'user_name'        => $login_name,
-            'user_base_org_id' => $organization,
-            'user_active'      => false,
-            'user_role'        => 'nologin',
+            'user_id'             => 0,
+            'user_login'          => $loginName,
+            'user_name'           => $loginName,
+            'user_base_org_id'    => $organization,
+            'user_active'         => false,
+            'user_role'           => 'nologin',
             );
     }
 

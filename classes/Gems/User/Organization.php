@@ -537,7 +537,7 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
     }
 
     /**
-     * Set this organization as teh one currently active
+     * Set this organization as the one currently active
      *
      * @return \Gems_User_Organization (continuation pattern)
      */

@@ -22,9 +22,13 @@ gsu_export_code	gsu_survey_name	gsu_survey_description	gsu_surveyor_id
 export1	test survey1		
 export2	test survey2		
 
+conditions
+gcon_id	gcon_type	gcon_class	gcon_name	gcon_condition_text1	gcon_condition_text2	gcon_condition_text3	gcon_condition_text4
+1000	Round	\Gems\Condition\Round\AgeCondition	AgeCondition test	5		50	
+
 rounds
-gro_id_order	gro_id_relationfield	gro_round_description	gro_icon_file	gro_changed_event	gro_display_event	gro_valid_after_source	gro_valid_after_field	gro_valid_after_unit	gro_valid_after_length	gro_valid_for_source	gro_valid_for_field	gro_valid_for_unit	gro_valid_for_length	gro_organizations	gro_code	survey_export_code	valid_after	valid_for
-10	-1					rtr	gr2t_start_date	D	0	tok	gto_valid_from	W	1			export1		
-11						rtr	{f20}	D	0	app	{f40}	D	-1			export2		
-12						rtr	10	D	1	tok	gto_valid_from	W	1			export2		
-13	{f30}					rtr	gr2t_start_date	D	0	tok	gto_valid_from	W	1			export1		
+gro_id_order	gro_id_relationfield	gro_round_description	gro_icon_file	gro_changed_event	gro_display_event	gro_valid_after_source	gro_valid_after_field	gro_valid_after_unit	gro_valid_after_length	gro_valid_for_source	gro_valid_for_field	gro_valid_for_unit	gro_valid_for_length	gro_organizations	gro_code	gro_condition	survey_export_code	valid_after	valid_for
+10	-1					rtr	gr2t_start_date	D	0	tok	gto_valid_from	W	1			1000	export1		
+11						rtr	{f20}	D	0	app	{f40}	D	-1				export2		
+12						rtr	10	D	1	tok	gto_valid_from	W	1				export2		
+13	{f30}					rtr	gr2t_start_date	D	0	tok	gto_valid_from	W	1				export1		

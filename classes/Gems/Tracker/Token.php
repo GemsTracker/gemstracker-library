@@ -1268,6 +1268,16 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     }
 
     /**
+     * The result value
+     *
+     * @return string
+     */
+    public function getResult()
+    {
+        return $this->_gemsData['gto_result'];
+    }
+
+    /**
      * The full return url for a redirect
      *
      * @return string
@@ -1355,6 +1365,9 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
      */
     public function getStatus()
     {
+        return $this->util->getTokenData()->getStatusDescription($this->getStatusCode());
+
+        /*
         $today  = new \Zend_Date();
 
         if ($this->isCompleted()) {
@@ -1374,7 +1387,17 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
             }
         }
 
-        return $status;
+        return $status; // */
+    }
+
+    /**
+     * Returns token status code
+     *
+     * @return string Token status code in one letter
+     */
+    public function getStatusCode()
+    {
+        return $this->_gemsData['token_status'];
     }
 
     /**
@@ -1499,12 +1522,12 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         if (! $this->_gemsData['gto_in_source']) {
             $values['gto_start_time'] = new \MUtil_Db_Expr_CurrentTimestamp();
             $values['gto_in_source']  = 1;
-            
+
             $oldTokenId = $this->getCopiedFrom();
             if ($oldTokenId) {
                 $oldToken = $this->tracker->getToken($oldTokenId);
                 if ($oldToken->getReceptionCode()->hasRedoCopyCode()) {
-                    $this->setRawAnswers($oldToken->getRawAnswers()); 
+                    $this->setRawAnswers($oldToken->getRawAnswers());
                 }
             }
         }

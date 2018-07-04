@@ -1,3 +1,4 @@
 *.php text=auto
 
 /tests/data/controller/* text eol=lf
+/tests/data/export/* text eol=crlf

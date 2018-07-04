@@ -665,7 +665,7 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
      */
     public function getTokenSelect($fields = '*')
     {
-        return $this->_loadClass('Token_TokenSelect', true, array($this->db, $fields));
+        return $this->_loadClass('Token_TokenSelect', true, array($this->db, $fields, $this->loader->getUtil()));
     }
 
     /**

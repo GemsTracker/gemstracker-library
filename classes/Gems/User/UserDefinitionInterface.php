@@ -33,9 +33,16 @@ interface Gems_User_UserDefinitionInterface
     public function canResetPassword(\Gems_User_User $user = null);
 
     /**
+     * Return true if the two factor can be set.
+     *
+     * @return boolean
+     */
+    public function canSaveTwoFactorKey();
+
+    /**
      * Return true if the password can be set.
      *
-     * Returns the setting for the definition whan no user is passed, otherwise
+     * Returns the setting for the definition when no user is passed, otherwise
      * returns the answer for this specific user.
      *
      * @param \Gems_User_User $user Optional, the user whose password might change
@@ -101,4 +108,12 @@ interface Gems_User_UserDefinitionInterface
      * @return \Gems_User_UserDefinitionInterface (continuation pattern)
      */
     public function setPassword(\Gems_User_User $user, $password);
+
+    /**
+     *
+     * @param \Gems_User_User $user The user whose password to change
+     * @param string $newKey
+     * @return $this
+     */
+    public function setTwoFactorKey(\Gems_User_User $user, $newKey);
 }

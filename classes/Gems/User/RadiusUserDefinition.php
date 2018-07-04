@@ -118,10 +118,10 @@ class Gems_User_RadiusUserDefinition extends \Gems_User_StaffUserDefinition impl
 
         return $adapter;
     }
-    
+
     /**
      * We never need a rehash
-     * 
+     *
      * @param \Gems_User_User $user
      * @param type $password
      * @return boolean
@@ -195,7 +195,9 @@ class Gems_User_RadiusUserDefinition extends \Gems_User_StaffUserDefinition impl
          */
         $select = new \Zend_Db_Select($this->db);
         $select->from('gems__user_logins', array(
-                    'user_login_id' => 'gul_id_user',
+                    'user_login_id'       => 'gul_id_user',
+                    'user_two_factor_key' => 'gul_two_factor_key',
+                    'user_enable_2factor' => 'gul_enable_2factor'
                     ))
                 ->join('gems__staff', 'gul_login = gsf_login AND gul_id_organization = gsf_id_organization', array(
                     'user_id'             => 'gsf_id_user',

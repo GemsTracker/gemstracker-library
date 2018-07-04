@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -124,6 +123,16 @@ class Gems_User_Form_LoginForm extends \Gems_User_Form_OrganizationFormAbstract
         }
 
         return $element;
+    }
+
+    /**
+     * Returns the password entered
+     *
+     * @return string
+     */
+    public function getPasswordText()
+    {
+        return $this->request->getParam($this->passwordFieldName);
     }
 
     /**

@@ -104,51 +104,10 @@ class Gems_Events extends \Gems_Loader_TargetLoaderAbstract
      */
     protected function _listEvents($eventType)
     {
-        $results    = array();
-        $eventClass = $this->_getEventClass($eventType);
-        $paths      = $this->_getEventDirs($eventType);
-
-        foreach ($paths as $prefix => $path) {
-            if (file_exists($path)) {
-                $eDir = dir($path);
-                $parts = explode('_', $prefix, 2);
-                if ($name = reset($parts)) {
-                    $name = ' (' . $name . ')';
-                }
-
-                while (false !== ($filename = $eDir->read())) {
-                    if ('.php' === substr($filename, -4)) {
-                        $eventName = $prefix . substr($filename, 0, -4);
-
-                        // Take care of double definitions
-                        if (! isset($results[$eventName])) {
-                            $eventNsName = '\\' . strtr($eventName, '_', '\\');
-                            if (! (class_exists($eventName, false) || class_exists($eventNsName, false))) {
-                                include($path . '/' . $filename);
-                            }
-
-                            if ((! class_exists($eventName, false)) && class_exists($eventNsName, false)) {
-                                $eventName = $eventNsName;
-                            }
-                            $event = new $eventName();
-
-                            if ($event instanceof $eventClass) {
-                                if ($event instanceof \MUtil_Registry_TargetInterface) {
-                                    $this->applySource($event);
-                                }
-
-                                $results[$eventName] = trim($event->getEventName()) . $name;
-                            }
-                            // \MUtil_Echo::track($eventName);
-                        }
-                    }
-                }
-            }
-        }
-        natcasesort($results);
-        $results = $this->util->getTranslated()->getEmptyDropdownArray() + $results;
-        // \MUtil_Echo::track($paths, $results);
-        return $results;
+        $classType = $this->_getEventClass($eventType);
+        $paths     = $this->_getEventDirs($eventType);
+        
+        return $this->util->getTranslated()->getEmptyDropdownArray() + $this->listClasses($classType, $paths, 'getEventName');
     }
 
     /**

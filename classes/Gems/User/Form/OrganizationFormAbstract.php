@@ -74,6 +74,18 @@ abstract class Gems_User_Form_OrganizationFormAbstract extends \Gems_Form_AutoLo
      */
     protected $util;
 
+    /**
+     * Get the organization id that has been currently entered
+     * 
+     * @return int
+     */
+    public function getActiveOrganizationId()
+    {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            return $request->getParam($this->organizationFieldName);
+        }
+    }
 
     /**
      * Returns the organization id that should currently be used for this form.

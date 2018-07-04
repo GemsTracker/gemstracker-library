@@ -46,6 +46,27 @@ class Gems_User_Form_LayeredLoginForm extends \Gems_User_Form_LoginForm
     public $childOrganizationDescription = null;
 
     /**
+     * Get the organization id that has been currently entered
+     *
+     * @return int
+     */
+    public function getActiveOrganizationId()
+    {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $orgId = parent::getActiveOrganizationId();
+            $topId = $request->getParam($this->topOrganizationFieldName);
+
+            $children = $this->getChildOrganisations($topId);
+            if ($orgId && isset($children[$orgId])) {
+                return $orgId;
+            }
+
+            return $topId;
+        }
+    }
+
+    /**
      * Return array of organizations that are a child of the given parentId
      *
      * @param int $parentId
@@ -53,15 +74,27 @@ class Gems_User_Form_LayeredLoginForm extends \Gems_User_Form_LoginForm
      */
     public function getChildOrganisations($parentId = null)
     {
+        static $children;
+
         if (is_null($parentId)) {
             return array();
         }
 
-        $organizations = $this->db->fetchPairs('SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active=1 AND gor_has_login=1 AND (gor_accessible_by LIKE ' . $this->db->quote('%:' . $parentId . ':%') . ' OR gor_id_organization = ' . $this->db->quote($parentId) .  ') ORDER BY gor_name');
+        if (! isset($children[$parentId])) {
+            $organizations = $this->db->fetchPairs(
+                    'SELECT gor_id_organization, gor_name
+                        FROM gems__organizations
+                        WHERE gor_active=1 AND gor_has_login=1 AND
+                            (gor_accessible_by LIKE ' . $this->db->quote('%:' . $parentId . ':%') . ' OR
+                                gor_id_organization = ' . $this->db->quote($parentId) .  ')
+                            ORDER BY gor_name');
 
-        natsort($organizations);
+            natsort($organizations);
 
-        return $organizations;
+            $children[$parentId] = $organizations;
+        }
+
+        return $children[$parentId];
     }
 
     /**
@@ -88,9 +121,14 @@ class Gems_User_Form_LayeredLoginForm extends \Gems_User_Form_LoginForm
             return $orgId;
         }
 
-        $orgs = array_keys($this->getChildOrganisations($this->getCurrentTopOrganizationId()));
-        $firstId = reset($orgs);
+        $curOrg = $userLoader->getCurrentUser()->getCurrentOrganizationId();
+        $orgs   = $this->getChildOrganisations($this->getCurrentTopOrganizationId());
+        if (isset($orgs[$curOrg])) {
+            return $curOrg;
+        }
 
+        $orgIds = array_keys($orgs);
+        $firstId = reset($orgIds);
         return $firstId;
     }
 

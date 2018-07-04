@@ -630,7 +630,13 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             $this->html->pInfo('No headers section found.');
             $issues = true;
         }
-        if (! $this->project->offsetExists('meta')) {
+        if ($this->project->offsetExists('meta')) {
+            if (! (isset($this->project['meta']['Content-Security-Policy']) &&
+                    \MUtil_String::contains($this->project['meta']['Content-Security-Policy'], ' chart.googleapis.com '))) {
+                $this->html->pInfo('The meta.Content-Security-Policy setting default-src "chart.googleapis.com" for Two Factor Authentication is missing.');
+                $issues = true;
+            }
+        } else {
             $this->html->pInfo('No meta headers section found.');
             $issues = true;
         }

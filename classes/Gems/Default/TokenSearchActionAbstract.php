@@ -73,7 +73,10 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStopSnippets = array('Tracker_TokenStatusLegenda');
+    protected $indexStopSnippets = [
+        'Tracker_TokenStatusLegenda',
+        'Generic\\CurrentSiblingsButtonRowSnippet',
+        ];
 
     /**
      *

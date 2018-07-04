@@ -64,8 +64,8 @@ class AddAllMailJobsTask extends \MUtil_Task_TaskAbstract
 
         $jobs = $this->db->fetchAll($sql);
 
+        $batch = $this->getBatch();
         if ($jobs) {
-            $batch = $this->getBatch();
             foreach ($jobs as $job) {
                 $batch->addTask('Mail\\ExecuteMailJobTask', $job['gcj_id_job'], $respondentId, $organizationId);
             }

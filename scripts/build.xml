@@ -8,9 +8,9 @@
 
     <!-- Merge SQL creation scripts -->
 	<target name="sql-merge">
-        <mkdir dir="../tests/data/sqlite"/>
-        <delete file="../tests/data/sqlite/create-lite.sql"/>
-        <append destFile="../tests/data/sqlite/create-lite.sql">
+        <mkdir dir="../tests/data/sqllite"/>
+        <delete file="../tests/data/sqllite/create-lite.sql"/>
+        <append destFile="../tests/data/sqllite/create-lite.sql">
             <fileset refid="sql-creation-scripts"/>
             <filterchain>
                 <iconvfilter inputencoding="ISO-8859-1" outputencoding="UTF-8" />

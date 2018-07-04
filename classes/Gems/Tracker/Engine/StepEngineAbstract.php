@@ -263,6 +263,48 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
             return $date;
         }
     }
+    
+    /**
+     * Check if the token should be enabled / disabled due to conditions
+     * 
+     * @param \GemS_Tracker_Token $token
+     * @param array $round
+     * @param int   $userId Id of the user who takes the action (for logging)
+     * @return int The number of tokens changed by this code
+     */
+    protected function checkTokenCondition(\GemS_Tracker_Token $token, $round, $userId)
+    {
+        $changed  = 0;
+        $message  = '';
+        $skipCode = $this->util->getReceptionCodeLibrary()->getSkipString();
+        
+        if (!empty($round['gro_condition']) && 
+            !$token->isCompleted() && 
+            ($token->getReceptionCode()->isSuccess() || $token->getReceptionCode()->getCode() == $skipCode)) {
+            
+            $condition   = $this->loader->getConditions()->loadCondition($round['gro_condition']);
+            $valid       = $condition->isRoundValid($token);            
+            $oldStatus   = $token->getReceptionCode()->isSuccess() ? true : false;
+
+            if ($valid !== $oldStatus) {
+                if (!$valid) {
+                    $message = $this->_('Skipped by condition %s: %s');
+                    $newCode = $skipCode;
+                } else {
+                    $message = $this->_('Activated by condition %s: %s');
+                    $newCode = $this->util->getReceptionCodeLibrary()->getOKString();
+                }
+                
+                $changed = 1;
+                
+                $token->setReceptionCode($newCode, 
+                        sprintf($message, $condition->getName(), $condition->getRoundDisplay($token->getTrackId(), $token->getRoundId())),
+                        $userId);
+            }
+        }
+        
+        return $changed;
+    }
 
     /**
      * Check the valid from and until dates in the track starting at a specified token
@@ -286,58 +328,69 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
         $token = $startToken;
         while ($token) {
             // \MUtil_Echo::track($token->getTokenId());
+            //Only process the token when linked to a round
+            if (array_key_exists($token->getRoundId(), $this->_rounds)) {
+                $round = $this->_rounds[$token->getRoundId()];
+            } else {
+                $round = false;
+            }
+            
+            $changes = 0;
 
             // Change only not-completed tokens with a positive successcode where at least one date
             // is not set by user input
             if ($token->hasSuccesCode() &&
                     (! $token->isCompleted()) &&
                     (! ($token->isValidFromManual() && $token->isValidUntilManual())) &&
-                    ($token !== $skipToken)) {
+                    ($token !== $skipToken) && 
+                    $round) {
 
-                //Only process the token when linked to a round
-                if (array_key_exists($token->getRoundId(), $this->_rounds)) {
-                    $round      = $this->_rounds[$token->getRoundId()];
-
-                    if ($token->isValidFromManual()) {
-                        $validFrom = $token->getValidFrom();
-                    } else {
-                        $fromDate   = $this->getValidFromDate(
-                                $round['gro_valid_after_source'],
-                                $round['gro_valid_after_field'],
-                                $round['gro_valid_after_id'],
-                                $token,
-                                $respTrack
-                                );
-                        $validFrom  = $this->calculateFromDate(
-                                $fromDate,
-                                $round['gro_valid_after_unit'],
-                                $round['gro_valid_after_length']
-                                );
-                    }
-
-                    // \MUtil_Echo::track($round, (string) $fromDate, $validFrom);
-
-                    if ($token->isValidUntilManual()) {
-                        $validUntil = $token->getValidUntil();
-                    } else {
-                        $untilDate  = $this->getValidUntilDate(
-                                $round['gro_valid_for_source'],
-                                $round['gro_valid_for_field'],
-                                $round['gro_valid_for_id'],
-                                $token,
-                                $respTrack,
-                                $validFrom
-                                );
-                        $validUntil = $this->calculateUntilDate(
-                                $untilDate,
-                                $round['gro_valid_for_unit'],
-                                $round['gro_valid_for_length']
-                                );
-                    }
-
-                    $changed    += $token->setValidFrom($validFrom, $validUntil, $userId);
+                if ($token->isValidFromManual()) {
+                    $validFrom = $token->getValidFrom();
+                } else {
+                    $fromDate   = $this->getValidFromDate(
+                            $round['gro_valid_after_source'],
+                            $round['gro_valid_after_field'],
+                            $round['gro_valid_after_id'],
+                            $token,
+                            $respTrack
+                            );
+                    $validFrom  = $this->calculateFromDate(
+                            $fromDate,
+                            $round['gro_valid_after_unit'],
+                            $round['gro_valid_after_length']
+                            );
                 }
+
+                // \MUtil_Echo::track($round, (string) $fromDate, $validFrom);
+
+                if ($token->isValidUntilManual()) {
+                    $validUntil = $token->getValidUntil();
+                } else {
+                    $untilDate  = $this->getValidUntilDate(
+                            $round['gro_valid_for_source'],
+                            $round['gro_valid_for_field'],
+                            $round['gro_valid_for_id'],
+                            $token,
+                            $respTrack,
+                            $validFrom
+                            );
+                    $validUntil = $this->calculateUntilDate(
+                            $untilDate,
+                            $round['gro_valid_for_unit'],
+                            $round['gro_valid_for_length']
+                            );
+                }
+
+                $changes += $token->setValidFrom($validFrom, $validUntil, $userId);
             }
+            
+            if ($round) {
+                $changes += $this->checkTokenCondition($token, $round, $userId); 
+            }                
+            
+            // If condition changed and dates changed, we only signal one change
+            $changed += min($changes, 1);
             $token = $token->getNextToken();
         }
 
@@ -653,6 +706,8 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
                     );
 
             // Continue with last round level items
+            $model->set('gro_condition');
+            $model->set('condition_display');
             $model->set('gro_active');
             $model->set('gro_changed_event');
         } else {

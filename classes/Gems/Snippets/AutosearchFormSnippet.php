@@ -68,7 +68,7 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
      * @var \MUtil_Model_ModelAbstract
      */
     protected $model;
-    
+
     /**
      * Should the organization element be displayed as a multicheckbox or not?
      *
@@ -432,7 +432,12 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
      */
     protected function getAutoSearchHref()
     {
-        return \MUtil_Html::attrib('href', array('action' => 'autofilter', $this->model->getTextFilter() => null, 'RouteReset' => true));
+        // We should add hidden parameters to the url
+        $neededParams = $this->getFixedParams();
+        $searchData   = $this->getSearchData();
+        $fixedParams  = array_intersect_key($searchData, array_flip($neededParams));
+        $href = array('action' => 'autofilter', $this->model->getTextFilter() => null, 'RouteReset' => true) + $fixedParams;
+        return \MUtil_Html::attrib('href', $href);
     }
 
     /**
@@ -460,6 +465,18 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
     protected function getAutoSearchSubmit()
     {
         return $this->form->createElement('submit', $this->searchButtonId, array('label' => $this->_('Search'), 'class' => 'button small'));
+    }
+
+    /**
+     * Return the fixed parameters
+     *
+     * Normally these are the hidden parameters like ID
+     *
+     * @return array
+     */
+    protected function getFixedParams()
+    {
+        return [];
     }
 
     /**

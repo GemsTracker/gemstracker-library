@@ -91,12 +91,14 @@ class ShowRoundStepSnippet extends \Gems_Tracker_Snippets_ShowRoundSnippetAbstra
         if ($model->has('gro_valid_after_length', 'label')) {
             $bridge->addItem(array($bridge->gro_valid_after_length, ' ', $bridge->gro_valid_after_unit), $model->get('gro_valid_after_length', 'label'));
         }
-
+        
         $bridge->addItem($model->get('valid_for', 'value'));
         $this->_addIf(array('gro_valid_for_source', 'gro_valid_for_id', 'gro_valid_for_field'), $bridge, $model);
         if ($model->has('gro_valid_for_length', 'label')) {
             $bridge->addItem(array($bridge->gro_valid_for_length, ' ', $bridge->gro_valid_for_unit), $model->get('gro_valid_after_length', 'label'));
         }
+        
+        $bridge->addItem('condition_display');
 
         $bridge->addItem('gro_active');
         // Preven empty row when no changed events exist

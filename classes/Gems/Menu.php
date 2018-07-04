@@ -220,6 +220,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $logPage->addAction($this->_('Show'), 'pr.option.edit', 'show-log')
                 ->setNamedParameters(\Gems_Model::LOG_ITEM_ID, 'gla_id');
         $optionPage->addAction($this->_('Change password'), 'pr.option.password', 'change-password');
+        $optionPage->addAction($this->_('Two factor setup'), 'pr.option.2factor', 'two-factor');
 
         $this->addAskPage($this->_('Token'));
         $this->addPage($this->_('Logoff'), 'pr.islogin', 'index', 'logoff');

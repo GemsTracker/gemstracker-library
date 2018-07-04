@@ -91,6 +91,16 @@ abstract class Gems_User_DbUserDefinitionAbstract extends \Gems_User_UserDefinit
     }
 
     /**
+     * Return true if the two factor can be set.
+     *
+     * @return boolean
+     */
+    public function canSaveTwoFactorKey()
+    {
+        return true;
+    }
+
+   /**
      * Return true if the password can be set.
      *
      * Returns the setting for the definition whan no user is passed, otherwise
@@ -295,12 +305,20 @@ abstract class Gems_User_DbUserDefinitionAbstract extends \Gems_User_UserDefinit
         } catch (\Zend_Db_Statement_Exception $e) {
             // \MUtil_Echo::track($e->getMessage());
 
-            // Yeah ugly. Can be removed when all projects have been oatched to 1.6.2
+            // Yeah ugly. Can be removed when all projects have been patched to 1.8.4
             $sql = $select->__toString();
-            $sql = str_replace('gup_last_pwd_change', 'gup_changed', $sql);
+            $sql = str_replace(['`gems__user_logins`.`gul_two_factor_key`', '`gems__user_logins`.`gul_enable_2factor`'], 'NULL', $sql);
+            // \MUtil_Echo::track($sql);
+            try {
+                // Next try
+                $result = $this->db->fetchRow($sql, array($login_name, $organization), \Zend_Db::FETCH_ASSOC);
+            } catch (\Zend_Db_Statement_Exception $e) {
+                // Can be removed when all projects have been patched to 1.6.2
+                $sql = str_replace('gup_last_pwd_change', 'gup_changed', $sql);
 
-            // Next try
-            $result = $this->db->fetchRow($sql, array($login_name, $organization), \Zend_Db::FETCH_ASSOC);
+                // Last try
+                $result = $this->db->fetchRow($sql, array($login_name, $organization), \Zend_Db::FETCH_ASSOC);
+            }
         }
 
 
@@ -391,6 +409,30 @@ abstract class Gems_User_DbUserDefinitionAbstract extends \Gems_User_UserDefinit
 
         $model = new \MUtil_Model_TableModel('gems__user_passwords');
         \Gems_Model::setChangeFieldsByPrefix($model, 'gup', $user->getUserId());
+
+        $model->save($data);
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param \Gems_User_User $user The user whose key to set
+     * @param string $newKey
+     * @param boolean $enabled Optional, only set when not null
+     * @return $this
+     */
+    public function setTwoFactorKey(\Gems_User_User $user, $newKey, $enabled = null)
+    {
+        $data['gul_id_user']        = $user->getUserLoginId();
+        $data['gul_two_factor_key'] = $newKey;
+
+        if (null !== $enabled) {
+            $data['gul_enable_2factor'] = $enabled ? 1 : 0;
+        }
+
+        $model = new \MUtil_Model_TableModel('gems__user_logins');
+        \Gems_Model::setChangeFieldsByPrefix($model, 'gul', $user->getUserId());
 
         $model->save($data);
 

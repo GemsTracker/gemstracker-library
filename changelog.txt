@@ -4,6 +4,7 @@ New features
     Appointments can now be grouped into HL7 care episodes (#306)
     New before answering and after completion events synchronize track fields with code the same as answer codes
     More options for appointments to create a track (#294)
+    Conditions can determine if a round is applicable or not (#42), this reduces the need for track events
 Interface improvements:
     Added token states incomplete and partially answered (#280)
     Answers of partially answered tokens can be seen (#280)

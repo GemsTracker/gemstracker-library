@@ -104,12 +104,12 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
      * @param int $organizationId Organization id
      * @param int $respondentId   Optional respondent id, used when patient id is empty
      */
-	public function __construct($patientId, $organizationId, $respondentId = null)
+    public function __construct($patientId, $organizationId, $respondentId = null)
     {
         $this->patientId      = $patientId;
         $this->organizationId = $organizationId;
         $this->respondentId   = $respondentId;
-	}
+    }
 
     /**
      * Called after the check that all required registry values
@@ -159,23 +159,29 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
      * @param \MUtil_Date|null $date
      * @return int
      */
-    public function getAge($date = null)
+    public function getAge($date = null, $months = false)
     {
-        $age = null;
+        $birthDate = $this->getBirthDay();
+        
         if (is_null($date)) {
             $date = new \MUtil_Date();
+        }        
+        
+        if (!($birthDate instanceof \MUtil_Date) || !($date instanceof \MUtil_Date)) {
+            return null;
         }
-
-        if ($date instanceof \MUtil_Date) {
-            // Now calculate age
-            $birthDate = $this->getBirthDay();
-            if ($birthDate instanceof \MUtil_Date) {
-                $age = $date->get('Y') - $birthDate->get('Y');
-                if ($date->get('MMdd') < $birthDate->get('MMdd')) {
-                    $age--;
-                }
-            }
+        
+        // Now calculate age         
+        if ($months) {
+            $age  = $date->diffMonths($birthDate);                
+            $unit = 'dd';        
+        } else {
+            $age  = $date->diffYears($birthDate);
+            $unit = 'MMdd';
         }
+        if ($date->get($unit) < $birthDate->get($unit)) {
+            $age--;
+        } 
 
         return $age;
     }

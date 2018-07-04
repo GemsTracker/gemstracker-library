@@ -73,6 +73,8 @@ CREATE TABLE gems__appointments (
         gap_id_user             INTEGER not null,
         gap_id_organization     INTEGER not null,
 
+        gap_id_episode          INTEGER,
+
         gap_source              varchar(20) not null default 'manual',
         gap_id_in_source        varchar(40),
         gap_manual_edit         TINYINT(1) not null default 0,
@@ -259,6 +261,31 @@ Om uw wachtwoord te kiezen en uw account te activeren, klik op deze link:\n{rese
 To log in with your organization account {login_name} please click on this link:\r\n{login_url}'),
     (19, 'nl', 'Nieuw account aangemaakt', 'Er is voor u een nieuw account aangemaakt voor de [b]{organization}[/b] website [b]{project}[/b].
 Om in te loggen met uw organisatie account {login_name} klikt u op onderstaande link:\r\n{login_url}');
+CREATE TABLE gems__conditions (
+        gcon_id                  INTEGER not null,
+
+        gcon_type                varchar(200) not null,
+        gcon_class               varchar(200) not null,
+        gcon_name                varchar(200) not null,
+        
+        -- Generic text fields so the classes can fill them as they please
+        gcon_condition_text1        varchar(200),
+        gcon_condition_text2        varchar(200),
+        gcon_condition_text3        varchar(200),
+        gcon_condition_text4        varchar(200),
+
+        gcon_active              TINYINT(1) not null default 1,
+
+        gcon_changed             TEXT not null default current_timestamp,
+        gcon_changed_by          INTEGER not null,
+        gcon_created             TEXT not null default '0000-00-00 00:00:00',
+        gcon_created_by          INTEGER not null,
+
+        PRIMARY KEY (gcon_id)
+    )
+    ;
+
+
 CREATE TABLE gems__consents (
       gco_description varchar(20) not null,
       gco_order smallint not null default 10,
@@ -280,6 +307,39 @@ INSERT INTO gems__consents
     ('Yes', 10, 'consent given', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
     ('No', 20, 'do not use', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
     ('Unknown', 30, 'do not use', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
+
+CREATE TABLE gems__episodes_of_care (
+        gec_episode_of_care_id      INTEGER not null ,
+        gec_id_user                 INTEGER not null,
+        gec_id_organization         INTEGER not null,
+
+        gec_source                  varchar(20) not null default 'manual',
+        gec_id_in_source            varchar(40),
+        gec_manual_edit             TINYINT(1) not null default 0,
+
+        gec_status                  varchar(1) not null default 'A',
+        -- one off A => active, C => Cancelled, E => Error, F => Finished, O => Onhold, P => Planned, W => Waitlist
+        -- see https://www.hl7.org/fhir/episodeofcare.html
+
+        gec_startdate               TEXT not null,
+        gec_enddate                 TEXT,
+
+        gec_id_attended_by          INTEGER,
+
+        gec_subject                 varchar(250),
+        gec_comment                 text,
+
+        gec_diagnosis               varchar(250),
+
+        gec_changed                 TEXT not null default current_timestamp,
+        gec_changed_by              INTEGER not null,
+        gec_created                 TEXT not null,
+        gec_created_by              INTEGER not null,
+
+        PRIMARY KEY (gec_episode_of_care_id)
+    )
+    ;
+
 
 CREATE TABLE gems__groups (
         ggp_id_group              INTEGER not null ,
@@ -592,7 +652,7 @@ CREATE TABLE gems__patch_levels (
 
 INSERT INTO gems__patch_levels (gpl_level, gpl_created)
    VALUES
-   (62, CURRENT_TIMESTAMP);
+   (63, CURRENT_TIMESTAMP);
 
 CREATE TABLE gems__radius_config (
         grcfg_id                bigint(11) NOT NULL ,
@@ -865,7 +925,7 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     VALUES
     (804, 'staff', 'staff', '801',
     'pr.option.edit,pr.option.password,
-    ,pr.plan.compliance,pr.plan.consent,pr.plan.overview,pr.plan.respondent,pr.plan.summary,pr.plan.token,
+    ,pr.plan.compliance,pr.plan.consent,pr.plan.overview,pr.plan.fields,pr.plan.respondent,pr.plan.summary,pr.plan.token,
     ,pr.project,pr.project.questions,
     ,pr.respondent.create,pr.respondent.edit,pr.respondent.select-on-track,pr.respondent.who,
     ,pr.respondent-commlog,pr.respondent-log,
@@ -894,7 +954,7 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     ,pr.plan.consent,pr.plan.consent.export,
 	,pr.upgrade,
     ,pr.option.password,pr.option.edit,pr.organization-switch,
-	,pr.plan.compliance,pr.plan.consent,pr.plan.overview,pr.plan.respondent,pr.plan.summary,pr.plan.token',
+	,pr.plan.compliance,pr.plan.consent,pr.plan.overview,pr.plan.fields,pr.plan.respondent,pr.plan.summary,pr.plan.token',
     CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
 INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_parents,
@@ -909,7 +969,7 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     ,pr.group,
     ,pr.mail.log,
     ,pr.organization,pr.organization-switch,
-    ,pr.plan.compliance.export,pr.plan.overview.export,
+    ,pr.plan.compliance.export,pr.plan.overview.export,pr.plan.fields.export,
     ,pr.plan.respondent,pr.plan.respondent.export,pr.plan.summary.export,pr.plan.token.export,
     ,pr.project-information,
     ,pr.reception,pr.reception.create,pr.reception.edit,
@@ -929,7 +989,7 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
         grl_privileges,
         grl_changed, grl_changed_by, grl_created, grl_created_by)
     VALUES
-    (809, 'siteadmin', 'site admin', '801,803,804,805,806,807',
+    (808, 'siteadmin', 'site admin', '801,803,804,805,806,807',
     'pr.comm.job,
     ,pr.comm.template,pr.comm.template.create,pr.comm.template.delete,pr.comm.template.edit,
     ,pr.consent,pr.consent.create,pr.consent.edit,
@@ -937,7 +997,7 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     ,pr.group,
     ,pr.mail.log,
     ,pr.organization,pr.organization-switch,
-    ,pr.plan.compliance.export,pr.plan.overview.export,
+    ,pr.plan.compliance.export,pr.plan.overview.export,pr.plan.fields.export,
     ,pr.plan.respondent,pr.plan.respondent.export,pr.plan.summary.export,pr.plan.token.export,
     ,pr.project-information,
     ,pr.reception,pr.reception.create,pr.reception.edit,
@@ -957,7 +1017,7 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
         grl_privileges,
         grl_changed, grl_changed_by, grl_created, grl_created_by)
     VALUES
-    (808, 'super', 'super', '801,803,804,805,806,807,809',
+    (809, 'super', 'super', '801,803,804,805,806,807,809',
     'pr.agenda-activity,pr.agenda-activity.cleanup,pr.agenda-activity.create,pr.agenda-activity.delete,pr.agenda-activity.edit,
     ,pr.agenda-filters,pr.agenda-filters.create,pr.agenda-filters.delete,pr.agenda-filters.edit,
     ,pr.agenda-procedure,pr.agenda-procedure.cleanup,pr.agenda-procedure.create,pr.agenda-procedure.delete,pr.agenda-procedure.edit,
@@ -1015,6 +1075,8 @@ CREATE TABLE gems__rounds (
         gro_valid_for_field    varchar(64),
         gro_valid_for_unit     char(1) not null default 'M',
         gro_valid_for_length   int not null default 0,
+
+        gro_condition          INTEGER,
 
         -- Yes, quick and dirty, will correct later (probably)
         gro_organizations     varchar(250) ,
@@ -1081,12 +1143,6 @@ CREATE TABLE gems__staff (
 
         gsf_active				TINYINT(1) default 1,
 
-        -- depreciated
-        gsf_password			varchar(32),
-    	gsf_failed_logins		int(11) default 0,
-        gsf_last_failed			TEXT,
-        -- end depreciated
-
         gsf_id_primary_group	INTEGER,
         gsf_iso_lang			char(2) not null default 'en',
         gsf_logout_on_survey	TINYINT(1) not null default 0,
@@ -1111,11 +1167,6 @@ CREATE TABLE gems__staff (
         -- gsf_phone_2             varchar(25) ,
         -- gsf_phone_3             varchar(25) ,
 
-        -- depreciated
-        gsf_reset_key			varchar(64),
-        gsf_reset_req			TEXT,
-        -- end depreciated
-
         gsf_changed				TEXT not null default current_timestamp,
         gsf_changed_by			INTEGER not null,
         gsf_created				TEXT not null,
@@ -1125,23 +1176,6 @@ CREATE TABLE gems__staff (
         UNIQUE (gsf_login, gsf_id_organization)
     )
     ;
-
-
-CREATE TABLE gems__staff2groups (
-        gs2g_id_user INTEGER not null,
-        gs2g_id_group INTEGER not null,
-
-        gs2g_active TINYINT(1) not null default 1,
-
-        gs2g_changed TEXT not null default current_timestamp,
-        gs2g_changed_by INTEGER not null,
-        gs2g_created TEXT not null,
-        gs2g_created_by INTEGER not null,
-
-        PRIMARY KEY (gs2g_id_user, gs2g_id_group)
-    )
-    ;
-
 
 
 CREATE TABLE gems__surveys (
@@ -1175,6 +1209,7 @@ CREATE TABLE gems__surveys (
 
         gsu_code                    varchar(64),
         gsu_export_code             varchar(64),
+        gsu_hash                    CHAR(32),
 
         gsu_changed                 TEXT not null default current_timestamp,
         gsu_changed_by              INTEGER not null,
@@ -1364,7 +1399,7 @@ CREATE TABLE gems__track_appointments (
         gtap_max_diff_unit      char(1) not null default 'D',
         gtap_uniqueness         tinyint not null default 0,
 
-        gtap_create_track       TINYINT(1) not null default 0,
+        gtap_create_track       int not null default 0,
         gtap_create_wait_days   INTEGER signed not null default 182,
 
         gtap_changed            TEXT not null default current_timestamp,
@@ -1430,6 +1465,9 @@ CREATE TABLE gems__user_logins (
         gul_user_class       varchar(30) not null default 'NoLogin',
         gul_can_login        TINYINT(1) not null default 0,
 
+        gul_two_factor_key   varchar(100),
+        gul_enable_2factor   TINYINT(1) not null default 1,
+
         gul_changed          TEXT not null default current_timestamp,
         gul_changed_by       INTEGER not null,
         gul_created          TEXT not null,
@@ -1475,3 +1513,22 @@ CREATE TABLE gems__user_passwords (
         UNIQUE (gup_reset_key)
     )
     ;
+
+CREATE TABLE gemsdata__responses (
+        gdr_id_response		bigint(20)  NOT NULL ,
+        gdr_id_token		varchar(9)  not null,
+        gdr_answer_id		varchar(40) not null,
+		gdr_answer_row		bigint(20)  NOT NULL default 1,
+
+        gdr_response		text ,
+
+        gdr_changed			TEXT not null default current_timestamp,
+        gdr_changed_by		INTEGER not null,
+		gdr_created			TEXT not null,
+        gdr_created_by		INTEGER not null,
+
+        PRIMARY KEY (gdr_id_response),
+        UNIQUE (gdr_id_token, gdr_answer_id, gdr_answer_row)
+    )
+    ;
+

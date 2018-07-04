@@ -953,6 +953,19 @@ class Gems_Project_ProjectSettings extends \ArrayObject
     }
 
     /**
+     * Checks the super admin password, if it exists
+     *
+     * @param string $password
+     * @return boolean True if the password is correct.
+     */
+    public function getSuperAdminTwoFactor()
+    {
+        if ($this->offsetExists('admin') && isset($this->admin['twoFactor'])) {
+            return trim($this->admin['twoFactor']);
+        }
+    }
+
+    /**
      * Returns the super admin ip range, if it exists
      *
      * @return string

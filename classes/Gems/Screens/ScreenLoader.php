@@ -91,51 +91,10 @@ class ScreenLoader extends \Gems_Loader_TargetLoaderAbstract
      */
     protected function _listScreens($screenType)
     {
-        $results     = array();
         $screenClass = $this->_getScreenClass($screenType);
         $paths       = $this->_getScreenDirs($screenType);
-
-        foreach ($paths as $prefix => $path) {
-
-            if (file_exists($path)) {
-                $eDir = dir($path);
-                $parts = explode('\\', $prefix, 2);
-                if ($parts) {
-                    $name = ' (' . reset($parts) . ')';
-                } else {
-                    $name = '';
-                }
-
-                while (false !== ($filename = $eDir->read())) {
-
-                    if ('.php' === substr($filename, -4)) {
-                        $screenName = $prefix . substr($filename, 0, -4);
-
-                        // Take care of double definitions
-                        if (! isset($results[$screenName])) {
-                            if (! class_exists($screenName, false)) {
-                                include($path . DIRECTORY_SEPARATOR . $filename);
-                            }
-
-                            $screen = new $screenName();
-
-                            if ($screen instanceof $screenClass) {
-                                if ($screen instanceof \MUtil_Registry_TargetInterface) {
-                                    $this->applySource($screen);
-                                }
-
-                                $results[$screenName] = trim($screen->getScreenLabel()) . $name;
-                            }
-                            // \MUtil_Echo::track($screenName);
-                        }
-                    }
-                }
-            }
-        }
-        natcasesort($results);
-        // \MUtil_Echo::track($paths, $results);
-
-        return $results;
+        
+        return $this->listClasses($screenClass, $paths, 'getScreenLabel');
     }
 
     /**

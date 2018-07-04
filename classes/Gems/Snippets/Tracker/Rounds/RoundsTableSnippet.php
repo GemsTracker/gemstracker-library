@@ -93,6 +93,22 @@ class RoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
             '',
             'inactive'
         ));
+        
+        // Add link to survey-edit
+        $menuItems = $this->findMenuItems('survey-maintenance', 'edit');
+        if ($menuItems) {
+            $menuItem = reset($menuItems);
+            if ($menuItem instanceof \Gems_Menu_SubMenuItem) {
+                $href = $menuItem->toHRefAttribute($bridge);
+
+                if ($href) {
+                    $aElem = new \MUtil_Html_AElement($href);
+                    $aElem->setOnEmpty('');
+
+                    $model->set('gro_id_survey', 'itemDisplay', $aElem);
+                }
+            }
+        }
 
         parent::addBrowseTableColumns($bridge, $model);
     }
@@ -131,7 +147,9 @@ class RoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
             $this->columns[90] = array('gro_display_event');
         }
         $this->columns[100] = array('gro_code');
-        $this->columns[110] = array('organizations');
+        $this->columns[110] = array('condition_display');
+        // Organizations can possibly be replaced with a condition
+        $this->columns[120] = array('organizations');        
     }
 
     /**
@@ -160,7 +178,7 @@ class RoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
         // $this->model->addTable('gems__surveys', array('gro_id_survey' => 'gsu_id_survey'));
 
         // $this->model->set('gsu_survey_name', $this->model->get('gro_id_survey'));
-
+        
         return $this->model;
     }
 }

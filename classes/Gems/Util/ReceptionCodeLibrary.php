@@ -135,6 +135,16 @@ class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstr
 
         return $data;
     }
+    /**
+     * Returns the string version of the skip code
+     *
+     * @return string
+     */
+    public function getSkipString()
+    {
+        return 'skip';
+    }
+    
 
     /**
      * Returns the string version of the Stop code

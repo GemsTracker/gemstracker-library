@@ -9,12 +9,6 @@ CREATE TABLE if not exists gems__staff (
 
         gsf_active				boolean null default 1,
 
-        -- depreciated
-        gsf_password			varchar(32) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
-    	gsf_failed_logins		int(11) unsigned null default 0,
-        gsf_last_failed			timestamp null,
-        -- end depreciated
-
         gsf_id_primary_group	bigint unsigned references gems__groups (ggp_id_group),
         gsf_iso_lang			char(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'en'
 								references gems__languages (gml_iso_lang),
@@ -41,11 +35,6 @@ CREATE TABLE if not exists gems__staff (
         gsf_phone_1				varchar(25) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
         -- gsf_phone_2             varchar(25) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
         -- gsf_phone_3             varchar(25) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-
-        -- depreciated
-        gsf_reset_key			varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
-        gsf_reset_req			timestamp null,
-        -- end depreciated
 
         gsf_changed				timestamp not null default current_timestamp on update current_timestamp,
         gsf_changed_by			bigint unsigned not null,

@@ -122,6 +122,28 @@ class Gems_Default_OptionAction extends \Gems_Controller_ModelSnippetActionAbstr
         );
 
     /**
+     * The parameters used for the twoFactor action.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $twoFactorParameters = array(
+        'contentTitle' => 'getShowTwoFactorTitle',
+        'routeAction'  => 'edit',
+        'user'         => 'getCurrentUser',
+        );
+
+    /**
+     * Snippets for twoFactor action
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $twoFactorSnippets = array(
+        'Generic\\ContentTitleSnippet',
+        'User\\SetTwoFactorSnippet',
+        'Generic\\CurrentButtonRowSnippet',
+        );
+
+    /**
      * Allow a user to change his / her password.
      */
     public function changePasswordAction()
@@ -208,6 +230,15 @@ class Gems_Default_OptionAction extends \Gems_Controller_ModelSnippetActionAbstr
     }
 
     /**
+     *
+     * @return string Title for twoFactor overview
+     */
+    public function getShowTwoFactorTitle()
+    {
+        return $this->_('Two factor setup');
+    }
+
+    /**
      * Helper function to allow generalized statements about the items in the model.
      *
      * @param int $count
@@ -239,6 +270,18 @@ class Gems_Default_OptionAction extends \Gems_Controller_ModelSnippetActionAbstr
             $params = $this->_processParameters($this->showLogParameters);
 
             $this->addSnippets($this->showLogSnippets, $params);
+        }
+    }
+
+    /**
+     * Set two factor authentication
+     */
+    public function twoFactorAction()
+    {
+        if ($this->twoFactorSnippets) {
+            $params = $this->_processParameters($this->twoFactorParameters);
+
+            $this->addSnippets($this->twoFactorSnippets, $params);
         }
     }
 }

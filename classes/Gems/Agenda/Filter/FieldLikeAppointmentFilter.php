@@ -85,7 +85,6 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
      */
     protected $db;
 
-
     /**
      * Override this function when you need to perform any actions when the data is loaded.
      *
@@ -101,42 +100,9 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
     {
         if ($this->_data &&
                 $this->db instanceof \Zend_Db_Adapter_Abstract) {
-
-            if ($this->_data['gaf_filter_text1'] && $this->_data['gaf_filter_text2']) {
-                if (isset($this->_lookupTables[$this->_data['gaf_filter_text1']])) {
-                    $table = $this->_lookupTables[$this->_data['gaf_filter_text1']]['tableName'];
-                    $id    = $this->_lookupTables[$this->_data['gaf_filter_text1']]['tableId'];
-                    $like  = $this->_lookupTables[$this->_data['gaf_filter_text1']]['tableLikeFilter'];
-
-                    $sql  = "SELECT $id, $id FROM $table WHERE $like ORDER BY $id";
-                    $this->_fieldList2 = $this->db->fetchPairs(sprintf(
-                            $sql,
-                            addslashes($this->_data['gaf_filter_text2']))
-                            );
-                } else {
-                    $this->_fieldList2 = null;
-                }
-            } else {
-                $this->_fieldList2 = true;
-            }
-
-            if ($this->_data['gaf_filter_text3'] && $this->_data['gaf_filter_text4']) {
-                if (isset($this->_lookupTables[$this->_data['gaf_filter_text3']])) {
-                    $table = $this->_lookupTables[$this->_data['gaf_filter_text3']]['tableName'];
-                    $id    = $this->_lookupTables[$this->_data['gaf_filter_text3']]['tableId'];
-                    $like  = $this->_lookupTables[$this->_data['gaf_filter_text3']]['tableLikeFilter'];
-
-                    $sql   = "SELECT $id, $id FROM $table WHERE $like ORDER BY $id";
-                    $this->_fieldList4 = $this->db->fetchPairs(sprintf(
-                            $sql,
-                            addslashes($this->_data['gaf_filter_text4']))
-                            );
-                } else {
-                    $this->_fieldList4 = null;
-                }
-            } else {
-                $this->_fieldList4 = true;
-            }
+            
+            $this->_fieldList2 = $this->loadFieldList($this->_data['gaf_filter_text1'], $this->_data['gaf_filter_text2']);
+            $this->_fieldList4 = $this->loadFieldList($this->_data['gaf_filter_text3'], $this->_data['gaf_filter_text4']);
         }
     }
 
@@ -183,42 +149,55 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
      */
     public function getSqlWhere()
     {
-        if ($this->_data['gaf_filter_text1'] && $this->_data['gaf_filter_text2']) {
-            if (isset($this->_lookupTables[$this->_data['gaf_filter_text1']])) {
-                if ($this->_fieldList2 && $this->_fieldList2 !== true) {
-                    $where = $this->_data['gaf_filter_text1']. ' IN (' . implode(', ', $this->_fieldList2) . ')';
-                } else {
-                    return parent::NO_MATCH_SQL;
-                }
-            } else {
-                $text  = $this->_data['gaf_filter_text2'];
-                $where = $this->_data['gaf_filter_text1'] . " LIKE '$text'";
-            }
-        } else {
-            $where = '';
-        }
-
-        if ($this->_data['gaf_filter_text3'] && $this->_data['gaf_filter_text4']) {
-            if ($where) {
-                $where .= ' AND ';
-            }
-            if (isset($this->_lookupTables[$this->_data['gaf_filter_text3']])) {
-                if ($this->_fieldList4 && $this->_fieldList4 !== true) {
-                    $where .= $this->_data['gaf_filter_text3']. ' IN (' . implode(', ', $this->_fieldList4) . ')';
-                } else {
-                    return parent::NO_MATCH_SQL;
-                }
-            } else {
-                $text  = $this->_data['gaf_filter_text4'];
-                $where .= $this->_data['gaf_filter_text3'] . " LIKE '$text'";
-            }
-        }
+        $wheres[] = $this->getWhere($this->_data['gaf_filter_text1'], $this->_data['gaf_filter_text2'], $this->_fieldList2);
+        $wheres[] = $this->getWhere($this->_data['gaf_filter_text3'], $this->_data['gaf_filter_text4'], $this->_fieldList4);
+        
+        $where = join(' AND ', $wheres);                
 
         if ($where) {
             return "($where)";
         } else {
             return parent::NO_MATCH_SQL;
         }
+    }
+    
+    protected function getSqlWhereSingle($field, $searchTxt, $fieldList)
+    {
+        $where = '';
+        
+        if ($field && $searchTxt) {
+            if(isset($this->_lookupTables[$field])) {
+                if ($fieldList && $fieldList !== true) {
+                    $where .= $field. ' IN (' . implode(', ', $fieldList) . ')';
+                } else {
+                    $where = parent::NO_MATCH_SQL;
+                }
+            } else {
+                $where .= $field . " LIKE '$searchTxt'";
+            }
+        }
+        
+        return $where;
+    }
+    
+    protected function loadFieldList($field, $searchTxt)
+    {
+        $result = null;
+        
+        if ($field && $searchTxt) {
+            if (isset($this->_lookupTables[$field])) {
+                $table = $this->_lookupTables[$field]['tableName'];
+                $id    = $this->_lookupTables[$field]['tableId'];
+                $like  = $this->_lookupTables[$field]['tableLikeFilter'];
+
+                $sql    = "SELECT $id, $id FROM $table WHERE $like ORDER BY $id";
+                $result = $this->db->fetchPairs(sprintf($sql, addslashes($searchTxt)));
+            }
+        } else {
+            $result = true;
+        }
+
+        return $result;
     }
 
     /**
@@ -229,44 +208,53 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
      */
     public function matchAppointment(\Gems_Agenda_Appointment $appointment)
     {
-        if ($this->_data['gaf_filter_text1'] && $this->_data['gaf_filter_text2']) {
-            $value = $this->getAppointmentFieldValue($appointment, $this->_data['gaf_filter_text1']);
-            if (isset($this->_lookupTables[$this->_data['gaf_filter_text1']])) {
-                if ($this->_fieldList2 && $this->_fieldList2 !== true) {
-                    if (! isset($this->_fieldList2[$value])) {
-                        return false;
+        $result1 = $this->matchSingle(
+                $this->_data['gaf_filter_text1'], 
+                $this->_data['gaf_filter_text2'], 
+                $this->_fieldList2, 
+                $appointment);
+        
+        $result2 = $this->matchSingle(
+                $this->_data['gaf_filter_text3'], 
+                $this->_data['gaf_filter_text4'], 
+                $this->_fieldList4, 
+                $appointment);
+        
+        return $result1 && $result2;
+    }
+    
+    /**
+     * Check a filter for a match
+     *
+     * @param $field
+     * @param $searchTxt
+     * @param $fieldList
+     * @param \Gems\Agenda\Gems_Agenda_Appointment $appointment
+     * @return boolean
+     */
+    protected function matchSingle($field, $searchTxt, $fieldList, $appointment)
+    {
+        $result = true;
+        
+        if ($field && $searchTxt) {
+            $value = $this->getAppointmentFieldValue($appointment, $field);
+            if (isset($this->_lookupTables[$field])) {
+                if ($fieldList && $fieldList !== true) {
+                    if (! isset($fieldList)) {
+                        $result = false;
                     }
                 } else {
-                    return false;
+                    $result = false;
                 }
             } else {
-                $regex = '/' . str_replace(array('%', '_'), array('.*', '.{1,1}'),$this->_data['gaf_filter_text2']) . '/i';
+                $regex = '/' . str_replace(array('%', '_'), array('.*', '.{1,1}'), $searchTxt) . '/i';
 
                 if (! (boolean) preg_match($regex, $value)) {
-                    return false;
+                    $result = false;
                 }
             }
         }
-
-        if ($this->_data['gaf_filter_text3'] && $this->_data['gaf_filter_text4']) {
-            $value = $this->getAppointmentFieldValue($appointment, $this->_data['gaf_filter_text3']);
-            if (isset($this->_lookupTables[$this->_data['gaf_filter_text3']])) {
-                if ($this->_fieldList4 && $this->_fieldList4 !== true) {
-                    if (! isset($this->_fieldList4[$value])) {
-                        return false;
-                    }
-                } else {
-                    return false;
-                }
-            } else {
-                $regex = '/' . str_replace(array('%', '_'), array('.*', '.{1,1}'),$this->_data['gaf_filter_text2']) . '/i';
-
-                if (! (boolean) preg_match($regex, $value)) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
+        
+        return $result;
     }
 }

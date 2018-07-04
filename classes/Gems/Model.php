@@ -245,6 +245,19 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
 
         return $model;
     }
+    
+    /**
+     * Load the condition model
+     *
+     * @param array|mixed $styles
+     * @return \Gems\Model\ConditionModel
+     */
+    public function getConditionModel()
+    {
+        $model = $this->_loadClass('ConditionModel', true);
+
+        return $model;
+    }
 
     /**
      * Returns the OpenRosaFormModel

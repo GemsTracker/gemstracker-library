@@ -45,6 +45,16 @@ abstract class Gems_User_UserDefinitionAbstract extends \MUtil_Registry_TargetAb
     }
 
     /**
+     * Return true if the two factor can be set.
+     *
+     * @return boolean
+     */
+    public function canSaveTwoFactorKey()
+    {
+        return false;
+    }
+
+    /**
      * Return true if the password can be set.
      *
      * Returns the setting for the definition whan no user is passed, otherwise
@@ -112,6 +122,18 @@ abstract class Gems_User_UserDefinitionAbstract extends \MUtil_Registry_TargetAb
     public function setPassword(\Gems_User_User $user, $password)
     {
         throw new \Gems_Exception_Coding(sprintf('The password cannot be set for %s users.', get_class($this)));
+        return $this;
+    }
+
+    /**
+     *
+     * @param \Gems_User_User $user The user whose password to change
+     * @param string $newKey
+     * @return $this
+     */
+    public function setTwoFactorKey(\Gems_User_User $user, $newKey)
+    {
+        throw new \Gems_Exception_Coding(sprintf('A Two Factor key cannot be set for %s users.', get_class($this)));
         return $this;
     }
 }
