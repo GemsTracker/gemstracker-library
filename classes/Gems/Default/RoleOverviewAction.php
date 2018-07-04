@@ -30,7 +30,7 @@ class Gems_Default_RoleOverviewAction extends \Gems_Controller_ModelSnippetActio
         $first = reset($roles);
 
 
-        $model = new Gems_Model_PlaceholderModel('privileges', array_keys($first), $roles);
+        $model = new Gems_Model_PlaceholderModel('assigned-privileges', array_keys($first), $roles);
         $model->set('role',
             'label', $this->_('Role')
         );
