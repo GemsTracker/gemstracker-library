@@ -1548,7 +1548,7 @@ msgstr[1] "trajecten"
 
 #: classes/Gems/Default/ConditionAction.php:94
 msgid "Conditions"
-msgstr "Voorwaarde"
+msgstr "Voorwaarden"
 
 #: classes/Gems/Default/ConditionAction.php:105
 msgid "condition"
