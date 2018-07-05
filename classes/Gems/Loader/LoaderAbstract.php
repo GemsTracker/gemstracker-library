@@ -200,7 +200,8 @@ class Gems_Loader_LoaderAbstract extends \MUtil_Registry_Source
 
 
         if ($this->_loader instanceof Zalt\Loader\ProjectOverloader) {
-            $obj = $this->_loader->create($className, ...$arguments);
+            $mergedArguments = array_merge(['className' => $className], $arguments);
+            $obj = call_user_func_array([$this->_loader, 'create'], $mergedArguments);
         } else {
             $obj = $this->_loader->createClass($className, $arguments);
         }
