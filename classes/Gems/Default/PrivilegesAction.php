@@ -1,5 +1,22 @@
 <?php
 
+/**
+ *
+ * @package    Gems
+ * @subpackage Default
+ * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
+ * @copyright  Copyright (c) 2014 Erasmus MC
+ * @license    New BSD License
+ */
+
+/**
+ *
+ * @package    Gems
+ * @subpackage Default
+ * @copyright  Copyright (c) 2013 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.8.4
+ */
 class Gems_Default_PrivilegesAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
@@ -22,7 +39,7 @@ class Gems_Default_PrivilegesAction extends \Gems_Controller_ModelSnippetActionA
         'columns' => 'getBrowseColumns',
         'browse'  => false,
         'sortableLinks' => false,
-    ];
+        ];
 
     /**
      * The snippets used for the index action, after those in autofilter
@@ -62,7 +79,7 @@ class Gems_Default_PrivilegesAction extends \Gems_Controller_ModelSnippetActionA
         $first = reset($this->privileges);
 
 
-        $model = new Gems_Model_PlaceholderModel('privileges', array_keys($first), $this->privileges);
+        $model = new \Gems_Model_PlaceholderModel('privileges', array_keys($first), $this->privileges);
         $model->set('privilege',
             'label', $this->_('Privilege')
         );
@@ -113,7 +130,7 @@ class Gems_Default_PrivilegesAction extends \Gems_Controller_ModelSnippetActionA
 
     /**
      * Get list of privileges, their menu options and which role is allowed or denied this specific privilege
-     * 
+     *
      * @return array list of privileges
      */
     protected function getPrivileges()
@@ -204,11 +221,11 @@ class Gems_Default_PrivilegesAction extends \Gems_Controller_ModelSnippetActionA
                 }
             }
 
-            $this->indexParameters['tableTitle'] = $this->_('Assigned but nonexistent privileges');
-            $this->indexParameters['tableData'] = $translatedNonexistent;
+            $this->indexParameters['tableTitle']  = $this->_('Assigned but nonexistent privileges');
+            $this->indexParameters['tableData']   = $translatedNonexistent;
             $this->indexParameters['tableNested'] = true;
 
-            $this->indexStopSnippets[] = 'DataTableSnippet';
+            $this->indexStopSnippets[] = 'Generic\\DataTableSnippet';
         }
     }
 }
