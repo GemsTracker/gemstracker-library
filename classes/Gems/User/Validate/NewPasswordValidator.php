@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -57,7 +56,7 @@ class Gems_User_Validate_NewPasswordValidator implements \Zend_Validate_Interfac
      */
     public function isValid($value, $context = array())
     {
-        $this->_report = $this->_user->reportPasswordWeakness($value);
+        $this->_report = $this->_user->reportPasswordWeakness($value, true);
 
         foreach ($this->_report as &$report) {
             $report = ucfirst($report) . '.';

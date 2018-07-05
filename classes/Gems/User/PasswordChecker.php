@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -256,16 +255,20 @@ class Gems_User_PasswordChecker extends \MUtil_Registry_TargetAbstract
      * @param \Gems_User_User $user
      * @param string $password Or null when you want a report on all the rules for this password.
      * @param array  $codes An array of code names that identify rules that should be used only for those codes.
+     * @param boolean $skipAge When setting a new password, we should not check for age
      * @return mixed String or array of strings containing warning messages
      */
-    public function reportPasswordWeakness(\Gems_User_User $user, $password, array $codes)
+    public function reportPasswordWeakness(\Gems_User_User $user, $password, array $codes, $skipAge = false)
     {
         $this->user = $user;
         $this->_errors = array();
 
         $rules = $this->project->getPasswordRules($codes);
 
-        // \MUtil_Echo::track($rules);
+        if ($skipAge) {
+            unset($rules['maxAge']);
+        }
+        \MUtil_Echo::track($rules);
         foreach ($rules as $rule => $parameter) {
             if (method_exists($this, $rule)) {
                 $this->$rule($parameter, $password);

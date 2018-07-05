@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -357,6 +356,10 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
 
                 $batch->setSessionVariable('files', array());
 
+                if (! isset($post['type'])) {
+                    // Export type is needed, use most basic type
+                    $post['type'] = 'CsvExport';
+                }
                 $batch->addTask('Export_ExportCommand', $post['type'], 'addExport', $post);
                 $batch->addTask('addTask', 'Export_ExportCommand', $post['type'], 'finalizeFiles');
 
@@ -364,8 +367,8 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
             }
 
             if (MUtil_Console::isConsole()) {
-                // This is for unit tests, if we want to be able to really export from 
-                // cli we need to place the exported file somewhere. 
+                // This is for unit tests, if we want to be able to really export from
+                // cli we need to place the exported file somewhere.
                 // This is out of scope for now.
                 $batch->runContinuous();
             } elseif ($batch->run($this->request)) {

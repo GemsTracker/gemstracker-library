@@ -52,11 +52,51 @@ class CheckPasswordChangeRequiredSnippet extends PasswordResetSnippet
     protected $reportRules = true;
 
     /**
+     * A parameter that if true resets the queue
+     *
+     * @var string
+     */
+    protected $resetParam;
+
+    /**
      * Use the default form table layout
      *
      * @var boolean
      */
     protected $useTableLayout = false;
+
+    /**
+     * Simple default function for making sure there is a $this->_saveButton.
+     *
+     * As the save button is not part of the model - but of the interface - it
+     * does deserve it's own function.
+     */
+    protected function addCancelButton()
+    {
+        $cancelUrl  = [
+            $this->request->getControllerKey() => $this->request->getControllerName(),
+            $this->request->getActionKey()     => $this->request->getActionName(),
+            $this->resetParam                  => 1,
+        ];
+
+        $element = $this->_form->createElement('html', 'reset');
+        $element->setLabel(html_entity_decode('&nbsp;'));
+        $element->setValue(\Gems_Html::actionLink($cancelUrl, $this->_('Cancel login')));
+        $this->_form->addElement($element);
+    }
+
+    /**
+     * Simple default function for making sure there is a $this->_saveButton.
+     *
+     * As the save button is not part of the model - but of the interface - it
+     * does deserve it's own function.
+     */
+    protected function addSaveButton()
+    {
+        parent::addSaveButton();
+
+        $this->addCancelButton();
+    }
 
     /**
      * Called after the check that all required registry values

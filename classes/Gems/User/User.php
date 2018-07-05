@@ -162,6 +162,24 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * Get a role with a check on the value in case of integers
+     *
+     * @param string $roleField
+     * @return mixed
+     */
+    protected function _getRole($roleField)
+    {
+        $role = $this->_getVar($roleField);
+        if (intval($role)) {
+           $role = \Gems_Roles::getInstance()->translateToRoleName($role);
+
+           $this->_setVar($roleField, $role);
+        }
+
+        return $role;
+    }
+
+    /**
      * Get a value in whatever store is used by this object.
      *
      * @param string $name
@@ -671,10 +689,9 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         }
 
         // Change a numeric role id to it's string value
-        if (intval($this->_getVar('user_role'))) {
-            $roles = \Gems_Roles::getInstance();
-            $trans = $roles->translateToRoleNames([$this->_getVar('user_role')]);
-            $this->_setVar('user_role', reset($trans));
+        $this->_getRole('user_role');
+        if ($this->_hasVar('current_user_role')) {
+            $this->_getRole('current_user_role');
         }
 
         return (boolean) $this->acl && $this->userLoader;
@@ -1214,9 +1231,9 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     public function getRole($current = true)
     {
         if ($current && $this->_hasVar('current_user_role')) {
-            return $this->_getVar('current_user_role');
+            return $this->_getRole('current_user_role');
         }
-        return $this->_getVar('user_role');
+        return $this->_getRole('user_role');
     }
 
     /**
@@ -1389,10 +1406,9 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         if (! $this->acl) {
             return true;
         }
-        if ($current) {
-            return $this->acl->isAllowed($this->getRole(), null, $privilege);
-        }
-        return $this->acl->isAllowed($this->_getVar('user_role'), null, $privilege);
+        $role = $this->getRole($current);
+        
+        return $this->acl->isAllowed($role, null, $privilege);
     }
 
     /**
@@ -1732,9 +1748,10 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      * Check for password weakness.
      *
      * @param string $password Or null when you want a report on all the rules for this password.
+     * @param boolean $skipAge When setting a new password, we should not check for age
      * @return mixed String or array of strings containing warning messages or nothing
      */
-    public function reportPasswordWeakness($password = null)
+    public function reportPasswordWeakness($password = null, $skipAge = false)
     {
         if ($this->canSetPassword()) {
             $checker = $this->userLoader->getPasswordChecker();
@@ -1746,7 +1763,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
                 $codes[] = 'staff';
             }
 
-            return $checker->reportPasswordWeakness($this, $password, \MUtil_Ra::flatten($codes));
+            return $checker->reportPasswordWeakness($this, $password, \MUtil_Ra::flatten($codes), $skipAge);
         }
     }
 
