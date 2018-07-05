@@ -268,7 +268,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
 
         self::addNameToModel($this, $this->_('Name'));
 
-        $this->setIfExists('grs_email',       'label', $this->_('E-Mail'));
+        $this->setIfExists('gr2o_email',       'label', $this->_('E-Mail'));
         $this->setIfExists('gr2o_mailable',   'label', $this->_('May be mailed'),
                 'multiOptions', $translated->getYesNo()
                 );
@@ -350,7 +350,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                 'dateFormat', \Zend_Date::DATE_MEDIUM
                 );
 
-        $this->setIfExists('grs_email',       'label', $this->_('E-Mail'),
+        $this->setIfExists('gr2o_email',       'label', $this->_('E-Mail'),
                 'tab', $this->_('Contact information'));
         $this->setIfExists('gr2o_mailable',   'label', $this->_('May be mailed'),
                 'elementClass', 'radio',
@@ -364,7 +364,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         $this->setIfExists('grs_address_1',   'label', $this->_('Street'));
         $this->setIfExists('grs_address_2',   'label', ' ');
 
-        // \MUtil_Echo::track($this->getItemsOrdered(), $this->getOrder('grs_email'));
+        // \MUtil_Echo::track($this->getItemsOrdered(), $this->getOrder('gr2o_email'));
 
         $this->setIfExists('grs_zipcode',     'label', $this->_('Zipcode'));
         $this->setIfExists('grs_city',        'label', $this->_('City'));
@@ -455,21 +455,21 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                 );
         $this->set('grs_id_user');
 
-        $this->set('grs_email',
+        $this->set('gr2o_email',
                 'required', true,
                 'autoInsertNotEmptyValidator', false, // Make sure it works ok with next
                 'size', 30,
                 'validator', 'SimpleEmail');
-        $this->addColumn('CASE WHEN grs_email IS NULL OR LENGTH(TRIM(grs_email)) = 0 THEN 1 ELSE 0 END', 'calc_email');
+        $this->addColumn('CASE WHEN gr2o_email IS NULL OR LENGTH(TRIM(gr2o_email)) = 0 THEN 1 ELSE 0 END', 'calc_email');
         $this->set('calc_email',
                 'label', $this->_('Respondent has no e-mail'),
                 'elementClass', 'Checkbox',
                 'required', true,
-                'order', $this->getOrder('grs_email') + 1,
+                'order', $this->getOrder('gr2o_email') + 1,
                 'validator', new \Gems_Validate_OneOf(
                         $this->_('Respondent has no e-mail'),
-                        'grs_email',
-                        $this->get('grs_email', 'label')
+                        'gr2o_email',
+                        $this->get('gr2o_email', 'label')
                         )
                 );
         $this->set('gr2o_mailable',

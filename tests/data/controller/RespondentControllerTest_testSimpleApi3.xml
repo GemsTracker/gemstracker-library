@@ -3,9 +3,8 @@
 	<gems__respondents
 		grs_id_user="17873757"
 		grs_iso_lang="nl"
-		grs_email="email@email.com"
 		grs_first_name="Ria"
-                grs_surname_prefix="van"
+		grs_surname_prefix="van"
 		grs_last_name="Veen-de Vries"
 		grs_gender="F"
 		grs_birthday="1965-04-11"
@@ -19,6 +18,7 @@
 		gr2o_patient_nr="1001303"
 		gr2o_id_organization="70"
 		gr2o_id_user="17873757"
+        gr2o_email="email@email.com"
 		gr2o_mailable="1"
 		gr2o_consent="Unknown"
 		gr2o_reception_code="OK"

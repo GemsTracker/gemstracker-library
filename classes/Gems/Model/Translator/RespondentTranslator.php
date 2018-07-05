@@ -58,6 +58,8 @@ class Gems_Model_Translator_RespondentTranslator extends \Gems_Model_Translator_
         $keys = array_combine(array_values($this->_targetModel->getKeys()), array_values($this->_targetModel->getKeys()));
         $fieldList = $fieldList + $keys;
 
+        $fieldList['grs_email'] = 'gr2o_email';
+
         return $fieldList;
     }
 
@@ -103,7 +105,7 @@ class Gems_Model_Translator_RespondentTranslator extends \Gems_Model_Translator_
             }
         }
 
-        if (!isset($row['grs_email'])) {
+        if (!isset($row['gr2o_email'])) {
             $row['calc_email'] = 1;
         }
 

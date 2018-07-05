@@ -8,6 +8,7 @@ CREATE TABLE if not exists gems__respondent2org (
         -- gr2o_id_physician       bigint unsigned null references gems_staff (gsf_id_user),
 
         -- gr2o_treatment          varchar(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gr2o_email               varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
         gr2o_mailable           boolean not null default 1,
         gr2o_comments           text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
@@ -26,6 +27,7 @@ CREATE TABLE if not exists gems__respondent2org (
         PRIMARY KEY (gr2o_patient_nr, gr2o_id_organization),
         UNIQUE KEY (gr2o_id_user, gr2o_id_organization),
         INDEX (gr2o_id_organization),
+        INDEX (gr2o_email),
         INDEX (gr2o_opened),
         INDEX (gr2o_reception_code),
         INDEX (gr2o_opened_by),

@@ -50,10 +50,10 @@ class Gems_User_RespondentUserDefinition extends \Gems_User_DbUserDefinitionAbst
                 ->join('gems__respondent2org', 'gul_login = gr2o_patient_nr AND gul_id_organization = gr2o_id_organization', array(
                     'user_login'       => 'gr2o_patient_nr',
                     'user_base_org_id' => 'gr2o_id_organization',
+                    'user_email'       => 'gr2o_email',
                     ))
                ->join('gems__respondents', 'gr2o_id_user = grs_id_user', array(
                     'user_id'             => 'grs_id_user',
-                    'user_email'          => 'grs_email',
                     'user_first_name'     => 'grs_first_name',
                     'user_surname_prefix' => 'grs_surname_prefix',
                     'user_last_name'      => 'grs_last_name',

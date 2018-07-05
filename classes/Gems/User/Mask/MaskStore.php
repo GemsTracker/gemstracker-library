@@ -192,7 +192,7 @@ class MaskStore extends \Gems_Loader_TargetLoaderAbstract
             'grs_last_name'              => 'mask',
             'grs_partner_surname_prefix' => 'hide',
             'grs_partner_last_name'      => 'hide',
-            'grs_email'                  => 'mask',
+            'gr2o_email'                 => 'mask',
             'name'                       => 'double',
             'respondent_name'            => 'double',
             'grco_address'               => 'mask',
