@@ -797,7 +797,7 @@ abstract class Gems_Menu_MenuAbstract
         $setup->addBrowsePage($this->_('Charts setup'), 'pr.chartsetup', 'chartconfig');
 
         // ADD CONDITIONS CONTROLLER
-        $setup->addBrowsePage($this->_('Conditions setup'), 'pr.conditions', 'condition');
+        $setup->addBrowsePage($this->_('Conditions'), 'pr.conditions', 'condition');
 
         // SURVEY MAINTENANCE CONTROLLER
         $page = $setup->addPage($this->_('Surveys'), 'pr.survey-maintenance', 'survey-maintenance');

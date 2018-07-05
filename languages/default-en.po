@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-04 19:06+0200\n"
+"POT-Creation-Date: 2018-07-05 11:32+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 2.0.8\n"
+"X-Generator: Poedit 1.8.9\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
@@ -37,7 +37,7 @@ msgstr "; "
 #: classes/Gems/Default/AgendaProcedureAction.php:130
 #: classes/Gems/Default/AgendaStaffAction.php:128
 #: classes/Gems/Default/CommJobAction.php:119
-#: classes/Gems/Default/GroupAction.php:184
+#: classes/Gems/Default/GroupAction.php:188
 #: classes/Gems/Default/LocationAction.php:177
 #: classes/Gems/Default/ReceptionAction.php:73
 #: classes/Gems/Default/SourceAction.php:222
@@ -2220,7 +2220,7 @@ msgid "Allowed IP Ranges"
 msgstr "Allowed IP Ranges"
 
 #: classes/Gems/Default/GroupAction.php:166
-#: classes/Gems/Default/GroupAction.php:176
+#: classes/Gems/Default/GroupAction.php:180
 #: classes/Gems/Model/OrganizationModel.php:206
 msgid ""
 "Separate with | examples: 10.0.0.0-10.0.0.255, 10.10.*.*, 10.10.151.1 or "
@@ -2229,39 +2229,45 @@ msgstr ""
 "Separate with | examples: 10.0.0.0-10.0.0.255, 10.10.*.*, 10.10.151.1 or "
 "10.10.151.1/25"
 
-#: classes/Gems/Default/GroupAction.php:172
-#| msgid "Two factor setup"
+#: classes/Gems/Default/GroupAction.php:173
+msgid "Optional"
+msgstr "Optional"
+
+#: classes/Gems/Default/GroupAction.php:174
+msgid "Required when not exempt"
+msgstr "Required when not exempt"
+
+#: classes/Gems/Default/GroupAction.php:176
 msgid "Two factor status"
 msgstr "Two factor status"
 
-#: classes/Gems/Default/GroupAction.php:175
-#| msgid "Two factor setup"
+#: classes/Gems/Default/GroupAction.php:179
 msgid "Two factor exempt IP Ranges"
 msgstr "Two factor exempt IP Ranges"
 
-#: classes/Gems/Default/GroupAction.php:190
+#: classes/Gems/Default/GroupAction.php:194
 msgid "Screen settings"
 msgstr "Screen settings"
 
-#: classes/Gems/Default/GroupAction.php:198
+#: classes/Gems/Default/GroupAction.php:202
 msgid "Respondent browse screen"
 msgstr "Patient browse screen"
 
-#: classes/Gems/Default/GroupAction.php:204
+#: classes/Gems/Default/GroupAction.php:208
 #: classes/Gems/Model/OrganizationModel.php:158
 msgid "Respondent edit screen"
 msgstr "Patient edit screen"
 
-#: classes/Gems/Default/GroupAction.php:210
+#: classes/Gems/Default/GroupAction.php:214
 #: classes/Gems/Model/OrganizationModel.php:161
 msgid "Respondent show screen"
 msgstr "Patient show screen"
 
-#: classes/Gems/Default/GroupAction.php:255
+#: classes/Gems/Default/GroupAction.php:259
 msgid "Administrative groups"
 msgstr "Administrative groups"
 
-#: classes/Gems/Default/GroupAction.php:266
+#: classes/Gems/Default/GroupAction.php:270
 msgid "group"
 msgid_plural "groups"
 msgstr[0] "group"
@@ -2761,7 +2767,6 @@ msgid "Project privileges"
 msgstr "Project privileges"
 
 #: classes/Gems/Default/PrivilegesAction.php:166
-#| msgid "Privilege"
 msgid "privilege"
 msgid_plural "privileges"
 msgstr[0] "privilege"
@@ -5485,27 +5490,22 @@ msgid "Enabled"
 msgstr "Enabled"
 
 #: classes/Gems/Model/StaffModel.php:284
-#| msgid "Project setup"
 msgid "Not set"
 msgstr "Not set"
 
 #: classes/Gems/Model/StaffModel.php:285
-#| msgid "Enabled"
 msgid "Disabled"
 msgstr "Disabled"
 
 #: classes/Gems/Model/StaffModel.php:286
-#| msgid "No clean up possible."
 msgid "Not possible"
 msgstr "Not possible"
 
 #: classes/Gems/Model/StaffModel.php:288
-#| msgid "Two factor setup"
 msgid "Two factor"
 msgstr "Two factor"
 
 #: classes/Gems/Model/StaffModel.php:293
-#| msgid "Two factor setup"
 msgid "Two factor enabled"
 msgstr "Two factor enabled"
 

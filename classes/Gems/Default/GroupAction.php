@@ -169,8 +169,12 @@ class Gems_Default_GroupAction extends \Gems_Controller_ModelSnippetActionAbstra
                 'rows', 4,
                 'validator', new \Gems_Validate_IPRanges()
                 );
+        $twoFactorStatus = [
+            0 => $this->_('Optional'),
+            1 => $this->_('Required when not exempt')
+        ];
         $model->setIfExists('ggp_2factor_status', 'label', $this->_('Two factor status'),
-                'multiOptions', ['Optional', 'Required when not exempt']
+                'multiOptions', $twoFactorStatus
                 );
         $model->setIfExists('ggp_no_2factor_ip_ranges', 'label', $this->_('Two factor exempt IP Ranges'),
                 'description', $this->_('Separate with | examples: 10.0.0.0-10.0.0.255, 10.10.*.*, 10.10.151.1 or 10.10.151.1/25'),
