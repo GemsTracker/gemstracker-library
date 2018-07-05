@@ -150,6 +150,10 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
     {
         parent::__construct($container, $dirs);
 
+        if ($container instanceof \Zalt\Loader\ProjectOverloader) {
+            return;
+        }
+
         $events = $container->loader->getEvents();
 
         // Make sure the tracker is known

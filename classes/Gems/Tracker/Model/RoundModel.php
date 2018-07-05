@@ -32,11 +32,9 @@ class RoundModel extends \Gems_Model_JoinModel
     /**
      * Construct a round model
      */
-    public function __construct(\Zend_Db_Adapter_Abstract $db)
+    public function __construct()
     {
         parent::__construct('rounds', 'gems__rounds', 'gro', true);
-
-        $this->db = $db;
     }
 
     /**

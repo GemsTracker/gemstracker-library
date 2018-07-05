@@ -88,14 +88,14 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
      * @param \Zend_Translate $translate      A translate object
      * @param type $tablePrefix              The prefix to use for all LS tables (in this installation)
      */
-    public function __construct($sourceSurveyId, $language, \Zend_Db_Adapter_Abstract $lsDb, \Zend_Translate $translate, $tablePrefix)
+    public function __construct($sourceSurveyId, $language, \Zend_Db_Adapter_Abstract $lsDb, \Zend_Translate $translate, $tablePrefix, $cache)
     {
         $this->sourceSurveyId = $sourceSurveyId;
         $this->language       = $language;
         $this->lsDb           = $lsDb;
         $this->translate      = $translate;
         $this->tablePrefix    = $tablePrefix;
-        $this->cache          = \GemsEscort::getInstance()->cache;   //Load the cache from escort
+        $this->cache          = $cache;
     }
 
     /**

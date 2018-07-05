@@ -391,14 +391,18 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
         $model->setSaveWhenNew($created_field);
 
         if (! $userid) {
-            $currentUser = \GemsEscort::getInstance()->currentUser;
+            $escort = \GemsEscort::getInstance();
 
-            if ($currentUser instanceof Gems_User_User) {   // During some unit tests this will be null
-                $userid = $currentUser->getUserId();
-            }
+            if ($escort) {
+                $currentUser = $escort->currentUser;
 
-            if (! $userid) {
-                $userid = 1;
+                if ($currentUser instanceof Gems_User_User) {   // During some unit tests this will be null
+                    $userid = $currentUser->getUserId();
+                }
+
+                if (!$userid) {
+                    $userid = 1;
+                }
             }
         }
         if ($userid) {

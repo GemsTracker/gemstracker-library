@@ -77,6 +77,8 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
      */
     protected $attributeSize = 255;
 
+    protected $cache;
+
     /**
      *
      * @var \Zend_Locale
@@ -254,7 +256,9 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
                     $language,
                     $this->getSourceDatabase(),
                     $this->translate,
-                    $this->addDatabasePrefix(''));
+                    $this->addDatabasePrefix(''),
+                    $this->cache
+            );
         }
 
         return $this->_fieldMaps[$sourceSurveyId][$language];
