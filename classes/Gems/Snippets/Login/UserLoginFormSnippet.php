@@ -88,7 +88,7 @@ class UserLoginFormSnippet extends FormSnippetAbstract
     {
         // Make sure the reset parameter is removed
         $url = [
-            (string) $this->basepath,
+            $this->basepath->getBasePathIfExists(),
             $this->request->getControllerName(),
             $this->request->getActionName(),
             ];

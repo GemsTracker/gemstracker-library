@@ -6,7 +6,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -29,11 +28,19 @@ class Gems_Util_BasePath
      */
     protected $basePath = null;
 
+    /**
+     *
+     * @return string
+     */
     public function  __toString()
     {
         return $this->getBasePath();
     }
 
+    /**
+     *
+     * @return string
+     */
     public function getBasePath()
     {
         if (null === $this->basePath) {
@@ -52,6 +59,26 @@ class Gems_Util_BasePath
         return $this->basePath;
     }
 
+    /**
+     *
+     * @return string The base path if it is more then '/' , null otherwise
+     */
+    public function getBasePathIfExists()
+    {
+        $basepath = $this->getBasePath();
+
+        if ('/' == $basepath) {
+            return null;
+        }
+
+        return $basepath;
+    }
+
+    /**
+     *
+     * @param string $path
+     * @return $this
+     */
     public function setBasePath($path)
     {
         $this->basePath = $path;
