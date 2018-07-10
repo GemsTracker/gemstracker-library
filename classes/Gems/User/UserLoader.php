@@ -38,6 +38,7 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
      */
     const USER_CONSOLE    = 'ConsoleUser';
     const USER_NOLOGIN    = 'NoLogin';
+    const USER_LDAP       = 'LdapUser';
     const USER_PROJECT    = 'ProjectUser';
     const USER_RADIUS     = 'RadiusUser';
     const USER_RESPONDENT = 'RespondentUser';
@@ -246,10 +247,17 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
      */
     public function getAvailableStaffDefinitions()
     {
-        return array(
+        $output = array(
             self::USER_STAFF  => $this->translate->_('Db storage'),
             self::USER_RADIUS => $this->translate->_('Radius storage'),
         );
+
+        if ($this->project->getLdapSettings()) {
+            $output[self::USER_LDAP] = $this->translate->_('LDAP');
+        }
+        asort($output);
+
+        return $output;
     }
 
     /**

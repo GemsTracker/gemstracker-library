@@ -25,6 +25,7 @@ Security
     CSV Injection protection
     Enhanced parameter filtering for added security (#298)
     Enhanced password hashing (#177, #209, #257)
+    LDAP Authentication enabled (#317)
     Two factor authentication for users (#237)
 Track Builder
     Conditions (on track fields) can be set for rounds (#42)

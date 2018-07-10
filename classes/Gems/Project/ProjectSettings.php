@@ -609,6 +609,18 @@ class Gems_Project_ProjectSettings extends \ArrayObject
     }
 
     /**
+     * Get the LDAP query settings
+     *
+     * @return array Settings
+     */
+    public function getLdapSettings()
+    {
+        if ($this->offsetExists('ldap')) {
+            return $this->ldap;
+        }
+    }
+
+    /**
      * Get the default locale
      * @return string locale
      */
