@@ -149,10 +149,14 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
      */
     public function getSqlWhere()
     {
-        $wheres[] = $this->getWhere($this->_data['gaf_filter_text1'], $this->_data['gaf_filter_text2'], $this->_fieldList2);
-        $wheres[] = $this->getWhere($this->_data['gaf_filter_text3'], $this->_data['gaf_filter_text4'], $this->_fieldList4);
+        if ($this->_data['gaf_filter_text1'] && $this->_data['gaf_filter_text2']) {
+            $wheres[] = $this->getSqlWhereSingle($this->_data['gaf_filter_text1'], $this->_data['gaf_filter_text2'], $this->_fieldList2);
+        }
+        if ($this->_data['gaf_filter_text3'] && $this->_data['gaf_filter_text4']) {
+            $wheres[] = $this->getSqlWhereSingle($this->_data['gaf_filter_text3'], $this->_data['gaf_filter_text4'], $this->_fieldList4);
+        }
         
-        $where = join(' AND ', $wheres);                
+        $where = join(' AND ', $wheres);
 
         if ($where) {
             return "($where)";
