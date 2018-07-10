@@ -9,6 +9,7 @@
  * @license    New BSD License
  */
 
+use Gems\User\Group;
 use Gems\User\TwoFactor\TwoFactorAuthenticatorInterface;
 
 /**
@@ -335,9 +336,36 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
 
         if (! isset($groups[$groupId])) {
             $groups[$groupId] = $this->_loadClass('Group', true, array($groupId));
-        }
+    }
 
         return $groups[$groupId];
+    }
+
+    /**
+     *
+     * @return array  id => label
+     */
+    public function getGroupTwoFactorNotSetOptions()
+    {
+        return [
+            Group::NO_TWO_FACTOR_INSIDE_ONLY   => $this->translate->_('Allowed only in optional IP Range'),
+            // Group::NO_TWO_FACTOR_SETUP_INSIDE  => $this->translate->_('Only in optional, setup required'),
+            // Group::NO_TWO_FACTOR_SETUP_OUTSIDE => $this->translate->_('Allowed in allowed, setup required'),
+            Group::NO_TWO_FACTOR_ALLOWED       => $this->translate->_('Allowed in "allowed from" IP Range'),
+        ];
+    }
+
+    /**
+     *
+     * @return array  id => label
+     */
+    public function getGroupTwoFactorSetOptions()
+    {
+        return [
+            Group::TWO_FACTOR_SET_REQUIRED      => $this->translate->_('Always required - even in optional IP Range'),
+            Group::TWO_FACTOR_SET_OUTSIDE_ONLY  => $this->translate->_('Required - except in optional IP Range'),
+            Group::TWO_FACTOR_SET_DISABLED      => $this->translate->_('Disabled - never ask'),
+        ];
     }
 
     /**

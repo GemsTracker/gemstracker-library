@@ -117,13 +117,14 @@ abstract class Gems_User_UserDefinitionAbstract extends \MUtil_Registry_TargetAb
      * Should this user be authorized using two factor authentication?
      *
      * @param string $ipAddress
+     * @param boolean $hasKey
      * @param Group $group
      * @return boolean
      */
-    public function isTwoFactorRequired($ipAddress, Group $group = null)
+    public function isTwoFactorRequired($ipAddress, $hasKey, Group $group = null)
     {
         if ($group) {
-            return $group->isTwoFactorRequired($ipAddress);
+            return $group->isTwoFactorRequired($ipAddress, $hasKey);
         }
         return false;
     }

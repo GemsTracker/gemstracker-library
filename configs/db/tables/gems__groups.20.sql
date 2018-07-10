@@ -14,8 +14,9 @@ CREATE TABLE if not exists gems__groups (
         ggp_staff_members         boolean not null default 0,
         ggp_respondent_members    boolean not null default 1,
         ggp_allowed_ip_ranges     text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
-        ggp_2factor_status        tinyint not null default 0,
         ggp_no_2factor_ip_ranges  text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        ggp_2factor_set           tinyint not null default 50,
+        ggp_2factor_not_set       tinyint not null default 0,
 
         ggp_respondent_browse     varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
         ggp_respondent_edit       varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,

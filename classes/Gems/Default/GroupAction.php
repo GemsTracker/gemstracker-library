@@ -66,6 +66,12 @@ class Gems_Default_GroupAction extends \Gems_Controller_ModelSnippetActionAbstra
 
     /**
      *
+     * @var \Gems_Loader
+     */
+    public $loader;
+
+    /**
+     *
      * @throws \Exception
      */
     public function changeUiAction()
@@ -114,8 +120,9 @@ class Gems_Default_GroupAction extends \Gems_Controller_ModelSnippetActionAbstra
      */
     public function createModel($detailed, $action)
     {
-        $dbLookup = $this->util->getDbLookup();
-        $rolesObj = \Gems_Roles::getInstance();
+        $dbLookup   = $this->util->getDbLookup();
+        $rolesObj   = \Gems_Roles::getInstance();
+        $userLoader = $this->loader->getUserLoader();
 
         $model = new \MUtil_Model_TableModel('gems__groups');
 
@@ -162,21 +169,14 @@ class Gems_Default_GroupAction extends \Gems_Controller_ModelSnippetActionAbstra
                 'elementClass', 'Checkbox',
                 'multiOptions', $yesNo
                 );
-        $model->set('ggp_allowed_ip_ranges', 'label', $this->_('Allowed IP Ranges'),
+        $model->set('ggp_allowed_ip_ranges', 'label', $this->_('Login allowed from IP Ranges'),
                 'description', $this->_('Separate with | examples: 10.0.0.0-10.0.0.255, 10.10.*.*, 10.10.151.1 or 10.10.151.1/25'),
                 'elementClass', 'Textarea',
                 'itemDisplay', [$this, 'ipWrap'],
                 'rows', 4,
                 'validator', new \Gems_Validate_IPRanges()
                 );
-        $twoFactorStatus = [
-            0 => $this->_('Optional'),
-            1 => $this->_('Required when not exempt')
-        ];
-        $model->setIfExists('ggp_2factor_status', 'label', $this->_('Two factor status'),
-                'multiOptions', $twoFactorStatus
-                );
-        $model->setIfExists('ggp_no_2factor_ip_ranges', 'label', $this->_('Two factor exempt IP Ranges'),
+        $model->setIfExists('ggp_no_2factor_ip_ranges', 'label', $this->_('Two factor Optional IP Ranges'),
                 'description', $this->_('Separate with | examples: 10.0.0.0-10.0.0.255, 10.10.*.*, 10.10.151.1 or 10.10.151.1/25'),
                 'default', '127.0.0.1|::1',
                 'elementClass', 'Textarea',
@@ -185,6 +185,16 @@ class Gems_Default_GroupAction extends \Gems_Controller_ModelSnippetActionAbstra
                 'validator', new \Gems_Validate_IPRanges()
                 );
 
+        $model->setIfExists('ggp_2factor_set', 'label', $this->_('Login with two factor set'),
+                'elementClass', 'Radio',
+                'multiOptions', $userLoader->getGroupTwoFactorSetOptions(),
+                'separator', '<br/>'
+                );
+        $model->setIfExists('ggp_2factor_not_set', 'label', $this->_('Login without two factor set'),
+                'elementClass', 'Radio',
+                'multiOptions', $userLoader->getGroupTwoFactorNotSetOptions(),
+                'separator', '<br/>'
+                );
         $model->set('ggp_group_active', 'label', $this->_('Active'),
                 'elementClass', 'Checkbox',
                 'multiOptions', $yesNo
@@ -244,8 +254,8 @@ class Gems_Default_GroupAction extends \Gems_Controller_ModelSnippetActionAbstra
             ['ggp_default_group', $br, 'ggp_group_active'],
             ['ggp_staff_members', $br, 'ggp_respondent_members'],
             ['ggp_allowed_ip_ranges'],
-            ['ggp_2factor_status'],
             ['ggp_no_2factor_ip_ranges'],
+            ['ggp_2factor_not_set', $br, 'ggp_2factor_set'],
             ];
     }
 

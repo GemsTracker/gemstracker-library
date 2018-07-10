@@ -91,6 +91,18 @@ abstract class Gems_User_DbUserDefinitionAbstract extends \Gems_User_UserDefinit
     }
 
     /**
+     *
+     * @return boolean When there is space to save the new hash
+     */
+    public function canSaveNewHash()
+    {
+        $model = new \MUtil_Model_TableModel('gems__user_passwords');
+
+        // Can save if storage is long enough
+        return $model->get('gup_password', 'maxlength') >= 255;
+    }
+
+    /**
      * Return true if the two factor can be set.
      *
      * @return boolean
@@ -123,16 +135,15 @@ abstract class Gems_User_DbUserDefinitionAbstract extends \Gems_User_UserDefinit
      */
     public function checkRehash(\Gems_User_User $user, $password)
     {
-        $model = new \MUtil_Model_TableModel('gems__user_passwords');
-        if ($model->get('gup_password', 'maxlength') < 255) {
-            // Do not save if storage not long enough
+        if (! $this->canSaveNewHash()) {
             return false;
         }
 
-        $row = $model->loadFirst(['gup_id_user' => $user->getUserLoginId()]);
+        $model = new \MUtil_Model_TableModel('gems__user_passwords');
+        $row   = $model->loadFirst(['gup_id_user' => $user->getUserLoginId()]);
 
         if ($row && password_needs_rehash($row['gup_password'], $this->getHashAlgorithm(), $this->getHashOptions())) {
-            $data['gup_id_user']         = $user->getUserLoginId();
+            $data['gup_id_user']  = $user->getUserLoginId();
             $data['gup_password'] = $this->hashPassword($password);
 
             $model = new \MUtil_Model_TableModel('gems__user_passwords');
@@ -402,8 +413,10 @@ abstract class Gems_User_DbUserDefinitionAbstract extends \Gems_User_UserDefinit
         if (null === $password) {
             // Passwords may be emptied.
             $data['gup_password'] = null;
-        } else {
+        } elseif ($this->canSaveNewHash()) {
             $data['gup_password'] = $this->hashPassword($password);
+        } else {
+            $data['gup_password'] = $this->hashOldPassword($password);
         }
         $data['gup_last_pwd_change'] = new \Zend_Db_Expr('CURRENT_TIMESTAMP');
 

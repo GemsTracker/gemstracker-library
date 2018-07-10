@@ -91,6 +91,10 @@ class TwoFactorCheckSnippet extends FormSnippetAbstract
      */
     protected function addFormElements(\Zend_Form $form)
     {
+        if (! $this->user->hasTwoFactor()) {
+            return;
+        }
+
         $this->saveLabel = $this->_('Check code');
 
         $options = [
@@ -152,7 +156,11 @@ class TwoFactorCheckSnippet extends FormSnippetAbstract
      */
     protected function getTitle()
     {
-        return $this->_('Two factor authentication');
+        if ($this->user->hasTwoFactor()) {
+            return $this->_('Two factor authentication');
+        } else {
+            return $this->_('Two factor authentication required but not set!');
+        }
     }
 
     /**
@@ -180,6 +188,14 @@ class TwoFactorCheckSnippet extends FormSnippetAbstract
     public function hasHtmlOutput()
     {
         if ($this->user && $this->user->isTwoFactorRequired($this->_getIp())) {
+            if (! $this->user->hasTwoFactor()) {
+                $this->addMessage($this->_('Two factor authentication is required to login from this location!'));
+
+                $this->loadForm();
+                $this->addCancelButton();
+                return true;
+            }
+
             parent::hasHtmlOutput();
 
             return ! $this->_result;

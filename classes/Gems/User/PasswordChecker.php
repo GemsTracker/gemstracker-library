@@ -268,7 +268,8 @@ class Gems_User_PasswordChecker extends \MUtil_Registry_TargetAbstract
         if ($skipAge) {
             unset($rules['maxAge']);
         }
-        \MUtil_Echo::track($rules);
+        // \MUtil_Echo::track($rules);
+        
         foreach ($rules as $rule => $parameter) {
             if (method_exists($this, $rule)) {
                 $this->$rule($parameter, $password);

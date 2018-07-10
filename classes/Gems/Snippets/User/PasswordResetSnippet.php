@@ -57,6 +57,13 @@ class PasswordResetSnippet extends FormSnippetAbstract
     protected $forceRules = null;
 
     /**
+     * Form label width factor
+     *
+     * @var float
+     */
+    protected $labelWidthFactor = 1.2;
+
+    /**
      *
      * @var \Gems_Loader
      */
@@ -108,7 +115,7 @@ class PasswordResetSnippet extends FormSnippetAbstract
      */
     protected function createForm($options = null)
     {
-        $optionVars = array('askCheck', 'askOld', 'checkFields', 'forceRules', 'reportRules');
+        $optionVars = array('askCheck', 'askOld', 'checkFields', 'forceRules', 'labelWidthFactor', 'reportRules');
         foreach ($optionVars as $name) {
             if ($this->$name !== null) {
                 $options[$name] = $this->$name;

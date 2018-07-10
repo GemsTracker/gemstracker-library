@@ -22,6 +22,41 @@ namespace Gems\User;
 class Group extends \Gems_Registry_CachedArrayTargetAbstract
 {
     /**
+     * No two factor always allowed
+     */
+    CONST NO_TWO_FACTOR_ALLOWED = 0;
+
+    /**
+     * No two factor only allowed inside ip range
+     */
+    CONST NO_TWO_FACTOR_INSIDE_ONLY = 99;
+
+    /**
+     * Two factor setup required when inside ip range
+     */
+    // CONST NO_TWO_FACTOR_SETUP_INSIDE = 50;
+
+    /**
+     * Two factor setup required when loggin in
+     */
+    // CONST NO_TWO_FACTOR_SETUP_OUTSIDE = 25;
+
+    /**
+     * Two factor disabled when set
+     */
+    CONST TWO_FACTOR_SET_DISABLED = 0;
+
+    /**
+     * Two factor required when outside ip range
+     */
+    CONST TWO_FACTOR_SET_OUTSIDE_ONLY = 50;
+
+    /**
+     * Two factor required when set
+     */
+    CONST TWO_FACTOR_SET_REQUIRED = 99;
+
+    /**
      * Variable to add tags to the cache for cleanup.
      *
      * @var array
@@ -317,15 +352,31 @@ class Group extends \Gems_Registry_CachedArrayTargetAbstract
      * Should a user be authorized using two factor authentication?
      *
      * @param string $ipAddress
+     * @param boolean $hasKey
      * @return boolean
      */
-    public function isTwoFactorRequired($ipAddress)
+    public function isTwoFactorRequired($ipAddress, $hasKey)
     {
-        if (! $this->_get('ggp_2factor_status')) {
-            return false;
+        // \MUtil_Echo::track($ipAddress, $hasKey, $this->_get('ggp_2factor_set'), $this->_get('ggp_2factor_not_set'));
+        
+        if ($hasKey) {
+            switch ($this->_get('ggp_2factor_set')) {
+                case self::TWO_FACTOR_SET_REQUIRED:
+                    return true;
+
+                case self::TWO_FACTOR_SET_OUTSIDE_ONLY:
+                    // Required when not in range
+                    return ! $this->util->isAllowedIP($ipAddress, $this->_get('ggp_no_2factor_ip_ranges'));
+            }
+        } else {
+            switch ($this->_get('ggp_2factor_not_set')) {
+                case self::NO_TWO_FACTOR_INSIDE_ONLY:
+                    // Required even when not set when not in range
+                    return ! $this->util->isAllowedIP($ipAddress, $this->_get('ggp_no_2factor_ip_ranges'));
+            }
         }
-        // Required when not in range
-        return ! $this->util->isAllowedIP($ipAddress, $this->_get('ggp_no_2factor_ip_ranges'));
+
+        return false;
     }
 
     /**

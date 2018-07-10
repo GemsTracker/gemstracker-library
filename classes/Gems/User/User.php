@@ -1407,7 +1407,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
             return true;
         }
         $role = $this->getRole($current);
-        
+
         return $this->acl->isAllowed($role, null, $privilege);
     }
 
@@ -1608,7 +1608,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      */
     public function isTwoFactorRequired($ipAddress)
     {
-        return $this->isTwoFactorEnabled() && $this->definition->isTwoFactorRequired($ipAddress, $this->getGroup());
+        return $this->definition->isTwoFactorRequired($ipAddress, $this->isTwoFactorEnabled(), $this->getGroup());
     }
 
     /**

@@ -2,20 +2,36 @@
 =================
 New features
     Appointments can now be grouped into HL7 care episodes (#306)
-    New before answering and after completion events synchronize track fields with code the same as answer codes
-    More options for appointments to create a track (#294)
     Conditions can determine if a round is applicable or not (#42), this reduces the need for track events
+    New before answering and after completion events synchronize track fields with code the same as answer codes (#55)
+    More options for appointments to create a track (#294)
+    Patients van have different e-mail addresses at each organization in a project (#310)
+    Privileges can be exported with their assignments (#313)
+Bugs
+    Many rare bugs solved and speed and interface improvements
+    Reset password did not work when the password was expired (#307)
+    Sort links stopped working after search (#312)
 Interface improvements:
     Added token states incomplete and partially answered (#280)
     Answers of partially answered tokens can be seen (#280)
-    IP Filters can use subnet masks and asterisk range notations, including IP6 addresses (#28)
-    Token status is shown in show token screen
+    Groups and organizations IP Filters can use subnet masks and asterisk range notations, including IP6 addresses (#28)
+    Monitor job overviews (#194)
+    Token status is shown in show token screen (#280)
 Programmability
+    Simplified project specific login procedures (#298)
     Projects can allow organizations to look into each others tokens and tracks (#300)
+    Upgrade Compatibility Checks for deprecated project code (#269)
 Security
     CSV Injection protection
     Enhanced parameter filtering for added security (#298)
+    Enhanced password hashing (#177, #209, #257)
     Two factor authentication for users (#237)
+Track Builder
+    Conditions (on track fields) can be set for rounds (#42)
+    Extended Open Rosa support including for nested rows and survey answering
+    Organizations can share tracks and tokens (#300)
+    Track can be created from appointments even when an odler track is open (#294)
+    When redoing a survey, the answers are injected before answering instead of during replacement (#301)
 
 1.8.2 => 1.8.3
 =================

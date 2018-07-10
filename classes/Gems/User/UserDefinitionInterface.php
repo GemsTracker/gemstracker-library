@@ -105,10 +105,11 @@ interface Gems_User_UserDefinitionInterface
      * Should this user be authorized using two factor authentication?
      *
      * @param string $ipAddress
+     * @param boolean $hasKey
      * @param Group $group
      * @return boolean
      */
-    public function isTwoFactorRequired($ipAddress, Group $group = null);
+    public function isTwoFactorRequired($ipAddress, $hasKey, Group $group = null);
 
     /**
      * Set the password, if allowed for this user type.
