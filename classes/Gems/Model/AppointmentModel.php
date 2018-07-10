@@ -29,6 +29,12 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
 
     /**
      *
+     * @var \Gems_User_Organization
+     */
+    protected $currentOrganization;
+
+    /**
+     *
      * @var \Gems_User_User
      */
     protected $currentUser;
@@ -277,14 +283,14 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
      * @param int $orgId The id of the current organization
      * @return \Gems_Model_AppointmentModel
      */
-    public function applyEditSettings($orgId)
+    public function applyEditSettings($orgId = null)
     {
         $this->applyDetailSettings(false);
 
         $agenda = $this->loader->getAgenda();
         $empty  = $this->util->getTranslated()->getEmptyDropdownArray();
 
-        $this->setIfExists('gap_id_organization', 'default', $orgId);
+        $this->setIfExists('gap_id_organization', 'default', $orgId ?: $this->currentOrganization->getId());
         $this->setIfExists('gap_admission_time',  'elementClass', 'Date');
         $this->setIfExists('gap_discharge_time',  'elementClass', 'Date');
         $this->setIfExists('gap_status',          'required', true);
