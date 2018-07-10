@@ -9,6 +9,11 @@
  * @license    New BSD License
  */
 
+namespace OpenRosa\Tracker\Source;
+
+use OpenRosa\Tracker\Source\Form;
+use OpenRosa\Tracker\Model\SurveyModel;
+
 /**
  *
  *
@@ -18,14 +23,26 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class OpenRosa_Tracker_Source_OpenRosa extends \Gems_Tracker_Source_SourceAbstract
+class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
 {
+
+    protected $_attributeMap = array(
+        'gto_id_respondent',
+        'gto_id_organization',
+        'gto_id_respondent_track',
+        'gto_round_description',
+    );
+
     /**
-     * This holds the path to the location where the form definitions will be stored.
      *
-     * @var string
+     * @var \Zend_Cache_Core
      */
-    protected $formDir;
+    protected $cache;
+
+    /**
+     * @var \Zend_Db
+     */
+    protected $db;
 
     /**
      * This holds the path to the location where OpenRosa will store it's files.
@@ -34,6 +51,13 @@ class OpenRosa_Tracker_Source_OpenRosa extends \Gems_Tracker_Source_SourceAbstra
      * @var string
      */
     protected $baseDir;
+
+    /**
+     * This holds the path to the location where the form definitions will be stored.
+     *
+     * @var string
+     */
+    protected $formDir;
 
     /**
      *
@@ -109,7 +133,7 @@ class OpenRosa_Tracker_Source_OpenRosa extends \Gems_Tracker_Source_SourceAbstra
         $db = $this->getSourceDatabase();
 
         $select = $db->select();
-        $select->from('gems__openrosaforms', array('gof_id'));
+        $select->from('gems__openrosaforms', ['gof_id']);
 
         return $db->fetchCol($select);
     }
@@ -117,7 +141,7 @@ class OpenRosa_Tracker_Source_OpenRosa extends \Gems_Tracker_Source_SourceAbstra
 
     protected function _scanForms()
     {
-        $messages = array();
+        $messages = [];
         $formCnt  = 0;
         $addCnt   = 0;
         $eDir = $this->_checkDir($this->formDir);
@@ -127,13 +151,13 @@ class OpenRosa_Tracker_Source_OpenRosa extends \Gems_Tracker_Source_SourceAbstra
             while (false !== ($filename = $eDir->read())) {
                 if (substr($filename, -4) == '.xml') {
                     $formCnt++;
-                    $form                       = new \OpenRosa_Tracker_Source_OpenRosa_Form($this->formDir . $filename);
+                    $form                       = $this->createForm($this->formDir . $filename);
                     $filter['gof_form_id']      = $form->getFormID();
                     $filter['gof_form_version'] = $form->getFormVersion();
                     $forms                      = $model->load($filter);
 
                     if (!$forms) {
-                        $newValues = array();
+                        $newValues = [];
                         $newValues['gof_id']           = null;
                         $newValues['gof_form_id']      = $form->getFormID();
                         $newValues['gof_form_version'] = $form->getFormVersion();
@@ -149,8 +173,7 @@ class OpenRosa_Tracker_Source_OpenRosa extends \Gems_Tracker_Source_SourceAbstra
             }
         }
 
-        $cache = GemsEscort::getInstance()->cache;
-        $cache->clean();
+        $this->cache->clean();
 
         $messages[] = sprintf('Checked %s forms and added %s forms', $formCnt, $addCnt);
     }
@@ -175,6 +198,17 @@ class OpenRosa_Tracker_Source_OpenRosa extends \Gems_Tracker_Source_SourceAbstra
     }
 
     /**
+     * Create Open Rosa Model
+     *
+     * @param \Gems_Tracker_Survey $survey
+     * @return Model
+     */
+    protected function createModel(\Gems_Tracker_Survey $survey)
+    {
+        return new SurveyModel($survey, $this, $this->tracker);
+    }
+
+    /**
      * Inserts the token in the source (if needed) and sets those attributes the source wants to set.
      *
      * @param \Gems_Tracker_Token $token
@@ -187,6 +221,18 @@ class OpenRosa_Tracker_Source_OpenRosa extends \Gems_Tracker_Source_SourceAbstra
     public function copyTokenToSource(\Gems_Tracker_Token $token, $language, $surveyId, $sourceSurveyId = null)
     {
         // Maybe insert meta data  here?
+    }
+
+    /**
+     * returns an Open Rosa Form
+     *
+     * @param $filename absolute filename
+     * @return \OpenRosa\Tracker\Source\OpenRosa\Form
+     * @throws \Gems_Exception_Coding
+     */
+    protected function createForm($filename)
+    {
+        return new Form($filename, $this->db, $this->translate);
     }
 
     /**
@@ -212,6 +258,11 @@ class OpenRosa_Tracker_Source_OpenRosa extends \Gems_Tracker_Source_SourceAbstra
                 \MUtil_Echo::r($answers[$fieldName], 'Missed answer date value:');
             }
         }
+    }
+
+    public function getAttributes()
+    {
+        return $this->_attributeMap;
     }
 
     /**
@@ -250,7 +301,7 @@ class OpenRosa_Tracker_Source_OpenRosa extends \Gems_Tracker_Source_SourceAbstra
      */
     public function getDatesList($language, $surveyId, $sourceSurveyId = null)
     {
-        $result = array();
+        $result = [];
 
         $survey = $this->getSurvey($surveyId, $sourceSurveyId);
         $model  = $survey->getModel();
@@ -308,13 +359,34 @@ class OpenRosa_Tracker_Source_OpenRosa extends \Gems_Tracker_Source_SourceAbstra
     {
         $survey = $this->getSurvey($surveyId, $sourceSurveyId);
         $model  = $survey->getModel();
-        $result = array();
+        $result = [];
 
         foreach($model->getItemsOrdered() as $name) {
             if ($label = $model->get($name, 'label')) {
                 $result[$name]['question'] = $label;
                 if ($answers = $model->get($name, 'multiOptions')) {
                     $result[$name]['answers'] = $answers;
+                }
+            }
+        }
+
+        if ($model->getMeta('nested', false)) {
+            // We have a nested model, add the nested questions
+            $nestedNames = $model->getMeta('nestedNames');
+            foreach($nestedNames as $nestedName) {
+                if ($nestedName instanceof \Gems_Model_JoinModel) {
+                    $nestedModel = $nestedName;
+                } else {
+                    $nestedModel = $model->get($nestedName, 'model');
+                }
+                foreach($nestedModel->getItemsOrdered() as $name) {
+
+                    if ($label = $nestedModel->get($name, 'label')) {
+                        $result[$name]['question'] = $label;
+                        if ($answers = $nestedModel->get($name, 'multiOptions')) {
+                            $result[$name]['answers'] = $answers;
+                        }
+                    }
                 }
             }
         }
@@ -334,7 +406,7 @@ class OpenRosa_Tracker_Source_OpenRosa extends \Gems_Tracker_Source_SourceAbstra
     {
         $survey = $this->getSurvey($surveyId, $sourceSurveyId);
         $model  = $survey->getModel();
-        $result = array();
+        $result = [];
 
         foreach($model->getItemsOrdered() as $name) {
             if ($label = $model->get($name, 'label')) {
@@ -343,11 +415,13 @@ class OpenRosa_Tracker_Source_OpenRosa extends \Gems_Tracker_Source_SourceAbstra
         }
 
         if ($model->getMeta('nested', false)) {
-            // We have a nested model, add the nested questions
-            $nestedModel = $model->get($model->getMeta('nestedName'), 'model');
-            foreach($nestedModel->getItemsOrdered() as $name) {
-                if ($label = $nestedModel->get($name, 'label')) {
-                    $result[$name] = $label;
+            foreach ($model->getMeta('nestedNames') as $name) {
+                // We have a nested model, add the nested questions
+                $nestedModel = $model->get($name, 'model');
+                foreach($nestedModel->getItemsOrdered() as $name) {
+                    if ($label = $nestedModel->get($name, 'label')) {
+                        $result[$name] = $label;
+                    }
                 }
             }
         }
@@ -370,7 +444,7 @@ class OpenRosa_Tracker_Source_OpenRosa extends \Gems_Tracker_Source_SourceAbstra
         $survey = $this->getSurvey($surveyId, $sourceSurveyId);
         $model  = $survey->getModel();
 
-        $result = $model->loadFirst(array('token' => $tokenId));
+        $result = $model->loadFirst(['token' => $tokenId]);
         return $result;
     }
 
@@ -399,47 +473,19 @@ class OpenRosa_Tracker_Source_OpenRosa extends \Gems_Tracker_Source_SourceAbstra
      */
     public function getRawTokenAnswerRows(array $filter, $surveyId, $sourceSurveyId = null)
     {
-        $select = $this->getRawTokenAnswerRowsSelect($filter, $surveyId, $sourceSurveyId);
+        $survey = $this->getSurvey($surveyId, $sourceSurveyId);
+        $model  = $survey->getModel();
+        $answers = $model->load($filter);
 
-        $data = $select->query()->fetchAll();
-        if (is_array($data)) {
-            $data = $this->getSurvey($surveyId, $sourceSurveyId)->getModel()->processAfterLoad($data);
-
-            // Check for nested answers
-            $model  = $this->getSurvey($surveyId, $sourceSurveyId)->getModel();
-            $nested = $model->getMeta('nested', false);
-
-            if ($nested) {
-                $nestedName  = $model->getMeta('nestedName');
-                $oldData     = $data;
-                $data        = array();
-                $nestedModel = $model->get($nestedName, 'model');
-                $nestedKeys  = array();
-                foreach ($nestedModel->getItemsOrdered() as $name)
-                {
-                    if ($label = $nestedModel->get($name, 'label')) {
-                        $nestedKeys[$name]= $name;
-                    }
-                }
-                foreach ($oldData as $idx => $row)
-                {
-                    if (array_key_exists($nestedName, $row)) {
-                        $nestedRows = $row[$nestedName];
-                        unset($row[$nestedName]);
-                        foreach ($nestedRows as $idx2 => $nestedRow) {
-                            $data[$idx . '_' . $idx2] = $row + array_intersect_key($nestedRow, $nestedKeys);
-                        }
-                    } else {
-                        $data[$idx] = $row;
-                    }
-                }
-            }
+        $data = [];
+        foreach($answers as $key=>$answer) {
+            $data[$answer['token']] = $answer;
         }
 
         if ($data) {
             return $data;
         }
-        return array();
+        return [];
     }
 
     /**
@@ -516,7 +562,7 @@ class OpenRosa_Tracker_Source_OpenRosa extends \Gems_Tracker_Source_SourceAbstra
         }
 
         $surveyInfo = $this->getSurveyInfo($sourceSurveyId);
-        $survey     = new \OpenRosa_Tracker_Source_OpenRosa_Form($this->formDir . $surveyInfo['gof_form_xml']);
+        $survey     = $this->createForm($this->formDir . $surveyInfo['gof_form_xml']);
 
         return $survey;
     }
@@ -552,9 +598,16 @@ class OpenRosa_Tracker_Source_OpenRosa extends \Gems_Tracker_Source_SourceAbstra
             $sourceSurveyId = $this->_getSid($survey->getSurveyId());
         }
 
+        $model         = $this->createModel($survey);
+        $model->set('gto_id_token', 'label', $this->_('Token'), 'elementClass', 'Exhibitor');
+
+        $surveyForm  = $this->getSurvey($survey->getSurveyId(), $sourceSurveyId);
         $surveyModel   = $this->getSurvey($survey->getSurveyId(), $sourceSurveyId)->getModel();
-        $model         = new \OpenRosa_Tracker_Source_OpenRosa_Model($survey, $this);
-        $questionsList = $this->getQuestionList($language, $survey->getSurveyId(), $sourceSurveyId);
+
+        $model->setMeta('openroseTableName', $surveyForm->getTableName());
+        $model->setMeta('internalAttributes', true);
+
+        /*$questionsList = $this->getQuestionList($language, $survey->getSurveyId(), $sourceSurveyId);
         foreach($questionsList as $item => $question) {
             $allOptions = $surveyModel->get($item);
             $allowed = array_fill_keys(array('storageFormat', 'dateFormat', 'label', 'multiOptions', 'maxlength', 'type', 'itemDisplay', 'formatFunction'),1);
@@ -568,6 +621,65 @@ class OpenRosa_Tracker_Source_OpenRosa extends \Gems_Tracker_Source_SourceAbstra
         }
 
         return $model;
+        */
+
+        foreach($surveyModel->getItemsOrdered() as $name) {
+            $label = $surveyModel->get($name, 'label');
+            if ($label) {
+                $options = $surveyModel->get($name);
+                unset($options['table']);
+
+                $options['label']           = strip_tags($label);
+                $options['label_raw']       = $label;
+                $options['survey_question'] = true;
+
+                //Should also do something to get the better titles...
+                $model->set($name, $options);
+            }
+        }
+
+        if ($tableIdField = $model->getTableIdField()) {
+            if ($surveyModel->has($tableIdField) && !$surveyModel->get($tableIdField, 'label')) {
+                $options = $surveyModel->get($name);
+                unset($options['table']);
+                $model->set($tableIdField, $options);
+            }
+        }
+
+        if ($surveyModel->getMeta('nested', false)) {
+            $model->setMeta('nested', true);
+            // We have a nested model, add the nested questions
+            $nestedNames = $surveyModel->getMeta('nestedNames');
+            $model->setMeta('nestedNames', $nestedNames);
+            foreach($nestedNames as $nestedName) {
+
+                $nestedModel = $surveyModel->get($nestedName, 'model');
+                if ($nestedModel instanceof \MUtil_Model_ModelAbstract) {
+                    $model->addListModel($nestedModel, array('orf_id' => 'orfr_response_id'));
+                    $model->set($nestedName, 'label', $surveyModel->get($nestedName, 'label'),
+                        'elementClass', 'FormTable'
+                    );
+                    $model->setMeta('nestedNames', $nestedNames);
+                }
+            }
+        }
+        $model->del('token');
+
+        return $model;
+    }
+
+    /**
+     * Returns a Gems Tracker token from a token ID
+     *
+     * @param string $tokenId Gems Token Id
+     * @return \Gems_Tracker_Token
+     * @deprecated
+     */
+    public function getToken($tokenId)
+    {
+        $tracker = $this->loader->getTracker();
+        $token = $tracker->getToken($tokenId);
+        return $token;
     }
 
     /**
@@ -582,7 +694,8 @@ class OpenRosa_Tracker_Source_OpenRosa extends \Gems_Tracker_Source_SourceAbstra
     public function getTokenUrl(\Gems_Tracker_Token $token, $language, $surveyId, $sourceSurveyId)
     {
         // There is no url, so return null
-        return;
+        $basePath = \GemsEscort::getInstance()->basePath->__toString();
+        return $basePath . '/open-rosa-form/edit/id/' . $token->getTokenId();
     }
 
     /**
@@ -616,19 +729,6 @@ class OpenRosa_Tracker_Source_OpenRosa extends \Gems_Tracker_Source_SourceAbstra
     }
 
     /**
-     * Sets the answers passed on.
-     *
-     * @param \Gems_Tracker_Token $token Gems token object
-     * @param $answers array Field => Value array
-     * @param int $surveyId Gems Survey Id
-     * @param string $sourceSurveyId Optional Survey Id used by source
-     */
-    public function setRawTokenAnswers(\Gems_Tracker_Token $token, array $answers, $surveyId, $sourceSurveyId = null)
-    {
-
-    }
-
-    /**
      * Survey source synchronization check function
      *
      * @param string $sourceSurveyId
@@ -638,10 +738,11 @@ class OpenRosa_Tracker_Source_OpenRosa extends \Gems_Tracker_Source_SourceAbstra
      */
     public function checkSurvey($sourceSurveyId, $surveyId, $userId)
     {
-        $changed  = 0;
-        $created  = false;
-        $deleted  = false;
-        $survey   = $this->tracker->getSurvey($surveyId);
+        $changed     = 0;
+        $created     = false;
+        $deleted     = false;
+        $deletedFile = false;
+        $survey      = $this->tracker->getSurvey($surveyId);
 
         // Get OpenRosa data
         if ($sourceSurveyId) {
@@ -674,6 +775,15 @@ class OpenRosa_Tracker_Source_OpenRosa extends \Gems_Tracker_Source_SourceAbstra
                 $values['gsu_surveyor_id'] = $sourceSurveyId;
                 $created = true;
             }
+
+            if (!$this->sourceFileExists($openRosaSurvey['gof_form_xml'])) {
+                // No longer exists
+                $values['gsu_surveyor_active'] = 0;
+                $values['gsu_status']          = 'Survey form XML was removed from directory.';
+                $deletedFile = true;
+            }
+
+
         } else {
             // No longer exists
             $values['gsu_surveyor_active'] = 0;
@@ -691,6 +801,9 @@ class OpenRosa_Tracker_Source_OpenRosa extends \Gems_Tracker_Source_SourceAbstra
         if ($deleted) {
             $message = $this->_('The \'%s\' survey is no longer active. The survey was removed from OpenRosa!');
 
+        } elseif ($deletedFile) {
+            $message = $this->_('The \'%s\' survey is no longer active. The survey XML file was removed from its directory!');
+
         } elseif ($created) {
             $message = $this->_('Imported the \'%s\' survey.');
 
@@ -699,6 +812,27 @@ class OpenRosa_Tracker_Source_OpenRosa extends \Gems_Tracker_Source_SourceAbstra
         }
 
         return sprintf($message, $survey->getName());;
+    }
+
+    /**
+     * Sets the answers passed on.
+     *
+     * @param \Gems_Tracker_Token $token Gems token object
+     * @param $answers array Field => Value array
+     * @param int $surveyId Gems Survey Id
+     * @param string $sourceSurveyId Optional Survey Id used by source
+     */
+    public function setRawTokenAnswers(\Gems_Tracker_Token $token, array $answers, $surveyId, $sourceSurveyId = null)
+    {
+        $survey = $this->getSurvey($surveyId, $sourceSurveyId);
+        $model  = $survey->getModel();
+
+        // new \Zend_Db_Table(array('db' => $this->getSourceDatabase(), 'name' => 'odk__etc'))
+        $answers['token'] = $answers['gto_id_token'];
+
+        $model->save($answers);
+
+        return $model->getChanged();
     }
 
      /**
@@ -712,6 +846,22 @@ class OpenRosa_Tracker_Source_OpenRosa extends \Gems_Tracker_Source_SourceAbstra
     public function setTokenCompletionTime(\Gems_Tracker_Token $token, $completionTime, $surveyId, $sourceSurveyId = null)
     {
         // Nothing to do, time is kept in Gems
+    }
+
+    /**
+     * Check if the xml file still exists in the directory
+     *
+     * @param $filename
+     * @return bool
+     */
+    protected function sourceFileExists($filename)
+    {
+        $fullFilename = $this->formDir . $filename;
+        if (file_exists($fullFilename)) {
+            return true;
+        }
+
+        return false;
     }
 
    /**

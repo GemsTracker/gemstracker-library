@@ -270,6 +270,8 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
             $this->addPage(null, null, 'openrosa', 'download');
             $this->addPage(null, null, 'openrosa', 'barcode'); // For barcode rendering
             $this->addPage(null, 'pr.islogin', 'openrosa', 'image'); // For image rendering
+
+            $this->addPage(null, null, 'open-rosa-form', 'edit');
         }
     }
 
