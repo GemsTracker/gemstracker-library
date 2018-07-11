@@ -86,9 +86,10 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
      * @param string $language               (ISO) Language
      * @param \Zend_Db_Adapter_Abstract $lsDb The Lime Survey database connection
      * @param \Zend_Translate $translate      A translate object
-     * @param type $tablePrefix              The prefix to use for all LS tables (in this installation)
+     * @param string $tablePrefix              The prefix to use for all LS tables (in this installation)
+     * @param \Zend_Cache_Core $cache
      */
-    public function __construct($sourceSurveyId, $language, \Zend_Db_Adapter_Abstract $lsDb, \Zend_Translate $translate, $tablePrefix, $cache)
+    public function __construct($sourceSurveyId, $language, \Zend_Db_Adapter_Abstract $lsDb, \Zend_Translate $translate, $tablePrefix, \Zend_Cache_Core $cache)
     {
         $this->sourceSurveyId = $sourceSurveyId;
         $this->language       = $language;
@@ -184,11 +185,11 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                 $this->_hardAnswers = array();
             }
         }
-        
+
         if (array_key_exists($qid, $this->_hardAnswers) && array_key_exists($scale_id, $this->_hardAnswers[$qid])) {
             return $this->_hardAnswers[$qid][$scale_id];
         }
-        
+
         return false;
     }
 
@@ -321,7 +322,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                         } while ($i<$rowscount && $rows[$i]['qid']==$row1['qid']);
                         $i--;
                         break;
-                        
+
                     case '*':   //Equation type
                         $row['code'] = $row['title'];
                         if (!is_null($row['sq_title'])) {
@@ -780,7 +781,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
         } elseif ($type === \MUtil_Model::TYPE_TIME) {
             $tmpres['dateFormat']    = 'HH:mm:ss';
         }
-        
+
         return $tmpres;
     }
 
@@ -808,7 +809,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
         $map     = $this->_getMap();
         $results = array();
 
-     
+
         $question = null;
         foreach ($map as $name => $field) {
 

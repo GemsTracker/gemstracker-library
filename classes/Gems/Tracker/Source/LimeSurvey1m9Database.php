@@ -77,7 +77,17 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
      */
     protected $attributeSize = 255;
 
+    /**
+     *
+     * @var \Zend_Cache_Core
+     */
     protected $cache;
+
+    /**
+     *
+     * @var string class name for creating field maps
+     */
+    protected $fieldMapClass = '\Gems_Tracker_Source_LimeSurvey1m9FieldMap';
 
     /**
      *
@@ -251,7 +261,8 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
         // \MUtil_Echo::track($language, $sourceSurveyId);
 
         if (! isset($this->_fieldMaps[$sourceSurveyId][$language])) {
-            $this->_fieldMaps[$sourceSurveyId][$language] = new \Gems_Tracker_Source_LimeSurvey1m9FieldMap(
+            $className = $this->fieldMapClass;
+            $this->_fieldMaps[$sourceSurveyId][$language] = new $className(
                     $sourceSurveyId,
                     $language,
                     $this->getSourceDatabase(),

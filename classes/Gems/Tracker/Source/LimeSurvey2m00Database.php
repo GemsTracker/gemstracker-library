@@ -6,12 +6,9 @@
  * @subpackage Tracker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
- * Class description of LimeSurvey1m91Database
- *
  * Difference with 1.9 version:
  *   - private field was renamed to anonymized
  *   - url for survey was changed
@@ -24,6 +21,12 @@
  */
 class Gems_Tracker_Source_LimeSurvey2m00Database extends \Gems_Tracker_Source_LimeSurvey1m91Database
 {
+    /**
+     *
+     * @var string class name for creating field maps
+     */
+    protected $fieldMapClass = '\Gems_Tracker_Source_LimeSurvey2m00FieldMap';
+
     /**
      * Check a token table for any changes needed by this version.
      *
@@ -84,32 +87,6 @@ class Gems_Tracker_Source_LimeSurvey2m00Database extends \Gems_Tracker_Source_Li
         }
 
         return $missingFields;
-    }
-
-    /**
-     * Return a fieldmap object
-     *
-     * @param int $sourceSurveyId Survey ID
-     * @param string $language      Optional (ISO) Language, uses default language for survey when null
-     * @return \Gems_Tracker_Source_LimeSurvey1m9FieldMap
-     */
-    protected function _getFieldMap($sourceSurveyId, $language = null)
-    {
-        $language = $this->_getLanguage($sourceSurveyId, $language);
-        // \MUtil_Echo::track($language, $sourceSurveyId);
-
-        if (! isset($this->_fieldMaps[$sourceSurveyId][$language])) {
-            $this->_fieldMaps[$sourceSurveyId][$language] = new \Gems_Tracker_Source_LimeSurvey2m00FieldMap(
-                    $sourceSurveyId,
-                    $language,
-                    $this->getSourceDatabase(),
-                    $this->translate,
-                    $this->addDatabasePrefix(''),
-                    $this->cache
-            );
-        }
-
-        return $this->_fieldMaps[$sourceSurveyId][$language];
     }
 
     /**

@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 use Gems\Agenda\AppointmentFilterInterface;
@@ -151,7 +150,11 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
 
         // Check for tracks that should be created
         foreach ($filters as $filter) {
-            if (!$filter->isCreator()) { continue; }
+            if (!$filter->isCreator()) {
+                continue;
+            }
+
+            $createTrack = false;
 
             // Find the method to use for this creator type
             $method      = $this->getCreatorCheckMethod($filter->getCreatorType());

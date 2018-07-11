@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TrackEngineAbstract.php 2836 2015-12-31 16:15:40Z matijsdejong $
  */
 
 use Gems\Tracker\Model\AddTrackFieldsTransformer;
@@ -150,7 +149,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
                 }
             }
         }
-        
+
         ksort($icons);  // Sort by key
 
         return $icons;
@@ -334,7 +333,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
         // FOR TESTING: sqlite can not de update and joins, so when testing just return zero for now
         if (\Zend_Session::$_unitTestEnabled === true) return 0;
         // @@ TODO Make this testable and not db dependent anymore
-        
+
         // Quote here, I like to keep bound parameters limited to the WHERE
         // Besides, these statements are not order dependent while parameters are and do not repeat
         $qOrgId   = $this->db->quote($respTrack->getOrganizationId());
@@ -374,7 +373,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
                     (gto_round_description IS NOT NULL AND gro_round_description IS NULL)
                 ) AND
                     gto_id_respondent_track = ?";
-        
+
         $stmt = $this->db->query($sql, array($respTrackId));
 
         return $stmt->rowCount();
@@ -870,6 +869,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
         $model->set('gro_icon_file',         'label', $this->_('Icon'));
         $model->set('gro_id_order',          'label', $this->_('Order'),
                 'default', 10,
+                'required', true,
                 'validators[uni]', $model->createUniqueValidator(array('gro_id_order', 'gro_id_track'))
                 );
         $model->set('gro_round_description', 'label', $this->_('Description'),
@@ -910,15 +910,15 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
                 );
         $tp = new \MUtil_Model_Type_ConcatenatedRow('|', $this->_(', '));
         $tp->apply($model, 'organizations');
-        
-        $model->set('gro_condition', 
-                'label', $this->_('Condition'), 
-                'elementClass', 'Select', 
+
+        $model->set('gro_condition',
+                'label', $this->_('Condition'),
+                'elementClass', 'Select',
                 'multiOptions', $this->loader->getConditions()->getConditionsFor(Gems\Conditions::ROUND_CONDITION)
                 );
-        
+
         $model->set('condition_display', 'label', $this->_('Condition help'), 'elementClass', 'Hidden', 'no_text_search', true, 'noSort', true);
-        
+
         $model->addDependency('Condition\\RoundDependency');
 
         switch ($action) {
