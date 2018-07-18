@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-10 15:00+0200\n"
+"POT-Creation-Date: 2018-07-18 11:36+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -14,14 +14,14 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 2.0.8\n"
+"X-Generator: Poedit 2.0.9\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
 "X-Poedit-SearchPath-3: layouts\n"
 "X-Poedit-SearchPath-4: vendor/magnafacta/mutil/src/MUtil\n"
 
-#: classes/Gems/Agenda.php:472 classes/Gems/Agenda/Appointment.php:402
+#: classes/Gems/Agenda.php:472 classes/Gems/Agenda/Appointment.php:405
 #: classes/Gems/Agenda/AppointmentFilterModel.php:167
 #: classes/Gems/Agenda/AppointmentFilterModel.php:185
 #: classes/Gems/Agenda/EpisodeOfCare.php:124
@@ -224,7 +224,7 @@ msgstr "Short stay"
 msgid "Virtual"
 msgstr "Virtual"
 
-#: classes/Gems/Agenda/Appointment.php:96
+#: classes/Gems/Agenda/Appointment.php:95
 #, php-format
 msgid "Track created by %s filter"
 msgstr "Track created by %s filter"
@@ -268,7 +268,7 @@ msgstr "Name"
 #: classes/Gems/Default/CommJobAction.php:102
 #: classes/Gems/Default/ConsentAction.php:56
 #: classes/Gems/Default/DatabaseAction.php:210
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:871
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:870
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:223
 msgid "Order"
 msgstr "Order"
@@ -382,7 +382,7 @@ msgstr "%s like \"%s\""
 #: classes/Gems/Default/SurveyMaintenanceAction.php:448
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:911
 #: classes/Gems/Tracker/Model/TrackModel.php:137
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:535
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:546
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:847
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:1005
 msgid ", "
@@ -735,9 +735,9 @@ msgstr "Are you sure?"
 #: classes/Gems/Snippets/ModelItemYesNoDeleteSnippetAbstract.php:167
 #: classes/Gems/Snippets/Respondent/Relation/YesNoDeleteSnippet.php:65
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:174
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:125
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:129
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:148
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:126
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:130
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:149
 #: classes/Gems/Util/Translated.php:372
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelConfirmDataChangeSnippetAbstract.php:275
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelYesNoDeleteSnippetAbstract.php:256
@@ -755,9 +755,9 @@ msgstr "Yes"
 #: classes/Gems/Snippets/ModelItemYesNoDeleteSnippetAbstract.php:169
 #: classes/Gems/Snippets/Respondent/Relation/YesNoDeleteSnippet.php:67
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:175
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:126
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:130
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:149
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:127
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:131
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:150
 #: classes/Gems/Util/ReceptionCodeLibrary.php:131
 #: classes/Gems/Util/ReceptionCodeLibrary.php:175
 #: classes/Gems/Util/Translated.php:372
@@ -1192,7 +1192,7 @@ msgstr[1] "episodes of care"
 #: classes/Gems/Snippets/Track/TracksSnippet.php:88
 #: classes/Gems/Snippets/Tracker/AvailableTracksSnippet.php:105
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:773
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:861
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:860
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:309
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:131
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:167
@@ -1225,7 +1225,7 @@ msgstr "Round"
 #: classes/Gems/Snippets/Respondent/RespondentOverviewSnippet.php:148
 #: classes/Gems/Snippets/Survey/AnswerImportSnippet.php:125
 #: classes/Gems/Snippets/Tracker/TrackSurveyOverviewSnippet.php:94
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:867
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:866
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:283
 msgid "Survey"
 msgstr "Survey"
@@ -1410,9 +1410,9 @@ msgid "Use the 'By staff member' address"
 msgstr "Use the 'By staff member' address"
 
 #: classes/Gems/Default/CommJobAction.php:296
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:180
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:288
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:354
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:181
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:289
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:355
 msgid "Other"
 msgstr "Other"
 
@@ -2216,7 +2216,6 @@ msgid "Respondents"
 msgstr "Patients"
 
 #: classes/Gems/Default/GroupAction.php:172
-#| msgid "Allowed IP Ranges"
 msgid "Login allowed from IP Ranges"
 msgstr "Login allowed from IP Ranges"
 
@@ -2231,17 +2230,14 @@ msgstr ""
 "10.10.151.1/25"
 
 #: classes/Gems/Default/GroupAction.php:179
-#| msgid "Two factor exempt IP Ranges"
 msgid "Two factor Optional IP Ranges"
 msgstr "Two factor Optional IP Ranges"
 
 #: classes/Gems/Default/GroupAction.php:188
-#| msgid "two factor setup"
 msgid "Login with two factor set"
 msgstr "Login with two factor set"
 
 #: classes/Gems/Default/GroupAction.php:193
-#| msgid "two factor setup"
 msgid "Login without two factor set"
 msgstr "Login without two factor set"
 
@@ -4229,8 +4225,8 @@ msgstr "Start"
 #: classes/Gems/Model/EpisodeOfCareModel.php:190
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:143
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:197
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:276
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:298
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:277
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:299
 msgid "Comment"
 msgstr "Comment"
 
@@ -5096,7 +5092,7 @@ msgstr "(no patient)"
 #: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:69
 #: classes/Gems/Snippets/Survey/Display/BarChartSnippet.php:202
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:462
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:495
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:496
 msgid "Date"
 msgstr "Date"
 
@@ -6296,7 +6292,6 @@ msgid "Two factor authentication"
 msgstr "Two factor authentication"
 
 #: classes/Gems/Snippets/Login/TwoFactorCheckSnippet.php:162
-#| msgid "Two factor authentication setting saved."
 msgid "Two factor authentication required but not set!"
 msgstr "Two factor authentication required but not set!"
 
@@ -6307,7 +6302,6 @@ msgstr[0] "two factor authentication"
 msgstr[1] "two factor authentication"
 
 #: classes/Gems/Snippets/Login/TwoFactorCheckSnippet.php:192
-#| msgid "You are not allowed to login from this location."
 msgid "Two factor authentication is required to login from this location!"
 msgstr "Two factor authentication is required to login from this location!"
 
@@ -7313,8 +7307,8 @@ msgstr "Survey insertion impossible: no insertable survey exists!"
 
 #: classes/Gems/Snippets/Tracker/InsertSurveySnippet.php:477
 #: classes/Gems/Tracker/Round.php:77
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:839
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:959
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:840
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:960
 #, php-format
 msgid "%s - %s"
 msgstr "%s - %s"
@@ -7491,16 +7485,27 @@ msgstr "Save Two Factor Setup"
 msgid "A new random two factor key was saved for %s."
 msgstr "A new random two factor key was saved for %s."
 
-#: classes/Gems/Snippets/User/SetTwoFactorSnippet.php:125
+#: classes/Gems/Snippets/User/SetTwoFactorSnippet.php:99
+#| msgid "two factor authentication"
+#| msgid_plural "two factor authentication"
+msgid "Click save to enable two factor authentication."
+msgstr "Click save to enable two factor authentication."
+
+#: classes/Gems/Snippets/User/SetTwoFactorSnippet.php:108
+#| msgid "Two factor authentication"
+msgid "Two factor authentication not active!"
+msgstr "Two factor authentication not active!"
+
+#: classes/Gems/Snippets/User/SetTwoFactorSnippet.php:134
 msgid "two factor setup"
 msgstr "two factor setup"
 
-#: classes/Gems/Snippets/User/SetTwoFactorSnippet.php:143
+#: classes/Gems/Snippets/User/SetTwoFactorSnippet.php:152
 #, php-format
 msgid "A two factor key cannot be set for %s."
 msgstr "A two factor key cannot be set for %s."
 
-#: classes/Gems/Snippets/User/SetTwoFactorSnippet.php:171
+#: classes/Gems/Snippets/User/SetTwoFactorSnippet.php:180
 msgid "Two factor authentication setting saved."
 msgstr "Two factor authentication setting saved."
 
@@ -7659,14 +7664,14 @@ msgstr "Checked %d tokens."
 
 #: classes/Gems/Task/Tracker/CheckTrackTokens.php:45
 #: classes/Gems/Tracker/ChangeTracker.php:56
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:427
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:426
 #, php-format
 msgid "%2$d token date changes in %1$d tracks."
 msgstr "%2$d token date changes in %1$d tracks."
 
 #: classes/Gems/Task/Tracker/CheckTrackTokens.php:49
 #: classes/Gems/Tracker/ChangeTracker.php:39
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:430
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:429
 #, php-format
 msgid "Checked %d tracks."
 msgstr "Checked %d tracks."
@@ -7943,19 +7948,19 @@ msgstr[0] "Created %d token replacement"
 msgstr[1] "Created %d token replacements"
 
 #: classes/Gems/Tracker/ChangeTracker.php:59
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:412
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:411
 #, php-format
 msgid "Round changes propagated to %d tokens."
 msgstr "Round changes propagated to %d tokens."
 
 #: classes/Gems/Tracker/ChangeTracker.php:62
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:416
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:415
 #, php-format
 msgid "%d tokens deleted by round changes."
 msgstr "%d tokens deleted by round changes."
 
 #: classes/Gems/Tracker/ChangeTracker.php:65
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:420
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:419
 #, php-format
 msgid "%d tokens created to by round changes."
 msgstr "%d tokens created to by round changes."
@@ -8085,21 +8090,21 @@ msgstr "Use a standard token date."
 msgid "Use a track level date."
 msgstr "Use a track level date."
 
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:442
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:441
 #, php-format
 msgid "%s track engines cannot be converted to %s track engines."
 msgstr "%s track engines cannot be converted to %s track engines."
 
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:465
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:464
 msgid " - Copy"
 msgstr " - Copy"
 
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:520
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:519
 #, php-format
 msgid "Copied track, including %s round(s) and %s field(s)."
 msgstr "Copied track, including %s round(s) and %s field(s)."
 
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:870
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:869
 msgid "Icon"
 msgstr "Icon"
 
@@ -8314,7 +8319,7 @@ msgid "Caretaker"
 msgstr "Caretaker"
 
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:463
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:510
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:511
 msgid "Free text"
 msgstr "Free text"
 
@@ -8821,7 +8826,7 @@ msgstr "This survey can no longer be answered."
 msgid "Please answer this survey before %s."
 msgstr "Please answer this survey before %s."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:145
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:155
 #, php-format
 msgid ""
 "The description of the exit url description was changed for %s languages in "
@@ -8830,148 +8835,148 @@ msgstr ""
 "The description of the exit url description was changed for %s languages in "
 "survey '%s'."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:318
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:329
 #, php-format
 msgid "Back to %s"
 msgstr "Back to %s"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:474
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:485
 #, php-format
 msgid ""
 "The '%s' survey is no longer active. The survey was removed from LimeSurvey!"
 msgstr ""
 "The '%s' survey is no longer active. The survey was removed from LimeSurvey!"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:507
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:518
 #, php-format
 msgid "Corrected anonymization for survey '%s'"
 msgstr "Corrected anonymization for survey '%s'"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:539
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:550
 #, php-format
 msgid "Added to token table '%s' the field(s): %s"
 msgstr "Added to token table '%s' the field(s): %s"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:544
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:555
 #, php-format
 msgid "Attribute fields not created for token table for '%s'"
 msgstr "Attribute fields not created for token table for '%s'"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:545
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:556
 #, php-format
 msgid "Required fields: %s"
 msgstr "Required fields: %s"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:555
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:566
 #, php-format
 msgid "Updated token attribute descriptions for '%s'"
 msgstr "Updated token attribute descriptions for '%s'"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:574
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:585
 #, php-format
 msgid "The status of the '%s' survey has changed."
 msgstr "The status of the '%s' survey has changed."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:580
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:591
 #, php-format
 msgid "Survey '%s' IS NO LONGER ACTIVE!!!"
 msgstr "Survey '%s' IS NO LONGER ACTIVE!!!"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:586
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:597
 #, php-format
 msgid "The status of the '%s' survey has changed to '%s'."
 msgstr "The status of the '%s' survey has changed to '%s'."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:589
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:600
 #, php-format
 msgid "The status warning for the '%s' survey was removed."
 msgstr "The status warning for the '%s' survey was removed."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:595
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:606
 #, php-format
 msgid "The name of the '%s' survey has changed to '%s'."
 msgstr "The name of the '%s' survey has changed to '%s'."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:600
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:611
 #, php-format
 msgid "The description of the '%s' survey has changed to '%s'."
 msgstr "The description of the '%s' survey has changed to '%s'."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:612
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:623
 #: classes/OpenRosa/Tracker/Source/OpenRosa.php:808
 #, php-format
 msgid "Imported the '%s' survey."
 msgstr "Imported the '%s' survey."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:131
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:132
 msgid "Uncertain"
 msgstr "Uncertain"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:134
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:135
 msgid "Increase"
 msgstr "Increase"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:135
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:136
 msgid "Same"
 msgstr "Same"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:136
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:137
 msgid "Decrease"
 msgstr "Decrease"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:139
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:140
 #: classes/Gems/Util/Translated.php:313
 msgid "Female"
 msgstr "Female"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:140
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:141
 #: classes/Gems/Util/Translated.php:313
 msgid "Male"
 msgstr "Male"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:144
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:145
 #: classes/OpenRosa/Tracker/Source/Form.php:573
 msgid "Checked"
 msgstr "Checked"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:145
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:146
 #: classes/OpenRosa/Tracker/Source/Form.php:574
 msgid "Not checked"
 msgstr "Not checked"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:253
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:254
 #, php-format
 msgid "Rank %d"
 msgstr "Rank %d"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:276
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:298
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:277
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:299
 msgid " (comment)"
 msgstr " (comment)"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:498
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:499
 msgid "Free number"
 msgstr "Free number"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:504
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:505
 msgid "Free text (long)"
 msgstr "Free text (long)"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:507
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:508
 msgid "Free text (very long)"
 msgstr "Free text (very long)"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:726
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:825
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:891
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:945
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:727
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:826
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:892
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:946
 #: classes/Gems/Tracker/Source/LimeSurvey2m00FieldMap.php:73
 #, php-format
 msgid "%s: %s"
 msgstr "%s: %s"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:845
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:965
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:846
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:966
 #, php-format
 msgid "- %s"
 msgstr "- %s"
@@ -9344,33 +9349,35 @@ msgstr "You are not allowed to switch to the %s group."
 msgid "You cannot switch to an inactive or non-existing group."
 msgstr "You cannot switch to an inactive or non-existing group."
 
-#: classes/Gems/User/UserLoader.php:236 classes/Gems/User/UserLoader.php:250
+#: classes/Gems/User/UserLoader.php:237 classes/Gems/User/UserLoader.php:251
 msgid "Db storage"
 msgstr "Db storage"
 
-#: classes/Gems/User/UserLoader.php:251
+#: classes/Gems/User/UserLoader.php:252
 msgid "Radius storage"
 msgstr "Radius storage"
 
-#: classes/Gems/User/UserLoader.php:351
-#| msgid "Allowed IP Ranges"
+#: classes/Gems/User/UserLoader.php:256
+msgid "LDAP"
+msgstr "LDAP"
+
+#: classes/Gems/User/UserLoader.php:359
 msgid "Allowed only in optional IP Range"
 msgstr "Allowed only in optional IP Range"
 
-#: classes/Gems/User/UserLoader.php:354
-#| msgid "Allowed IP Ranges"
+#: classes/Gems/User/UserLoader.php:362
 msgid "Allowed in \"allowed from\" IP Range"
 msgstr "Allowed in \"allowed from\" IP Range"
 
-#: classes/Gems/User/UserLoader.php:365
+#: classes/Gems/User/UserLoader.php:373
 msgid "Always required - even in optional IP Range"
 msgstr "Always required - even in optional IP Range"
 
-#: classes/Gems/User/UserLoader.php:366
+#: classes/Gems/User/UserLoader.php:374
 msgid "Required - except in optional IP Range"
 msgstr "Required - except in optional IP Range"
 
-#: classes/Gems/User/UserLoader.php:367
+#: classes/Gems/User/UserLoader.php:375
 msgid "Disabled - never ask"
 msgstr "Disabled - never ask"
 
@@ -9732,9 +9739,6 @@ msgstr ""
 
 #: classes/OpenRosa/Tracker/Source/OpenRosa.php:805
 #, php-format
-#| msgid ""
-#| "The '%s' survey is no longer active. The survey was removed from "
-#| "LimeSurvey!"
 msgid ""
 "The '%s' survey is no longer active. The survey XML file was removed from "
 "its directory!"
