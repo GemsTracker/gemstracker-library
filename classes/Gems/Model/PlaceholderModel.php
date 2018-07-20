@@ -43,6 +43,25 @@ class Gems_Model_PlaceholderModel extends \MUtil_Model_ArrayModelAbstract
         return $filteredData;
     }
 
+    /**
+     * Calculates the total number of items in a model result with certain filters
+     *
+     * @param array $filter Filter array, num keys contain fixed expresions, text keys are equal or one of filters
+     * @param array $sort Sort array field name => sort type
+     * @return integer number of total items in model result
+     * @throws Zend_Db_Select_Exception
+     */
+    public function getItemCount($filter = true, $sort = true)
+    {
+        $data = $this->_loadAllTraversable();
+
+        if ($filter) {
+            $data = $this->_filterData($data, $filter);
+        }
+
+        return count($data);
+    }
+
 	/**
      * An ArrayModel assumes that (usually) all data needs to be loaded before any load
      * action, this is done using the iterator returned by this function.
