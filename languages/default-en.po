@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 2.0.9\n"
+"X-Generator: Poedit 1.8.9\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
@@ -1015,11 +1015,11 @@ msgstr[1] "procedures"
 #: classes/Gems/Default/AgendaStaffAction.php:112
 #: classes/Gems/Model/StaffModel.php:213
 msgid "Function"
-msgstr "Funcite"
+msgstr "Function"
 
 #: classes/Gems/Default/AgendaStaffAction.php:120
 msgid "GemsTracker user"
-msgstr "GemsTracker februiker"
+msgstr "GemsTracker user"
 
 #: classes/Gems/Default/AgendaStaffAction.php:121
 msgid "Optional: link this health care provider to a GemsTracker Staff user."
