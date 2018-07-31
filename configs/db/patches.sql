@@ -1395,3 +1395,7 @@ ALTER TABLE `gems__respondent2org`
 UPDATE gems__respondent2org
 	INNER JOIN gems__respondents ON grs_id_user = gr2o_id_user
 	SET gr2o_email = grs_email;
+
+-- PATCH: Add memory to gems__token_attempts
+ALTER TABLE gems__token_attempts
+    ADD gta_activated boolean null default 0 AFTER gta_datetime;

@@ -96,10 +96,19 @@ class SetTwoFactorSnippet extends FormSnippetAbstract
                     $this->user->getFullName()
                     ));
 
-            $this->user->setTwoFactorKey($this->authenticator, $authKey);
+            $this->addMessage($this->_('Click save to enable two factor authentication.'));
+            $this->user->setTwoFactorKey($this->authenticator, $authKey, false);
+
+            // Set on save
+            $output['twoFactorEnabled'] = 1;
+        } else {
+            $output['twoFactorEnabled'] = $this->user->isTwoFactorEnabled() ? 1 : 0;
+
+            if (! $output['twoFactorEnabled']) {
+                $this->addMessage($this->_('Two factor authentication not active!'));
+            }
         }
         $output['twoFactorKey']     = $authKey;
-        $output['twoFactorEnabled'] = $this->user->isTwoFactorEnabled() ? 1 : 0;
 
         return $output;
     }

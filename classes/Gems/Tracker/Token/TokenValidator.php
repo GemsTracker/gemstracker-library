@@ -120,7 +120,10 @@ class Gems_Tracker_Token_TokenValidator extends \MUtil_Registry_TargetAbstract i
         if ($throttleSettings = $this->project->getAskThrottleSettings()) {
 
             // Prune the database for (very) old attempts
-            $where = $this->db->quoteInto('gta_datetime < DATE_SUB(NOW(), INTERVAL ? second)', $throttleSettings['period'] * 20);
+            $where = $this->db->quoteInto(
+                    "gta_datetime < DATE_SUB(NOW(), INTERVAL ? second) AND gta_activated = 0",
+                    $throttleSettings['period'] * 20)
+                    ;
             $this->db->delete('gems__token_attempts', $where);
 
             // Retrieve the number of failed attempts that occurred within the specified window
@@ -135,11 +138,18 @@ class Gems_Tracker_Token_TokenValidator extends \MUtil_Registry_TargetAbstract i
             $remainingDelay = ($attemptData['last'] + $throttleSettings['delay']);
 
 
-            // \MUtil_Echo::track($throttleSettings, $attemptData, $remainingDelay);
+            // \MUtil_Echo::track($throttleSettings, $attemptData, $remainingDelay, $select->getPart(\Zend_Db_Select::WHERE));
             if ($attemptData['attempts'] > $throttleSettings['threshold'] && $remainingDelay > 0) {
                 $this->logger->log("Possible token brute force attack, throttling for $remainingDelay seconds", \Zend_Log::ERR);
 
                 $this->_messages = $this->translate->_('The server is currently busy, please wait a while and try again.');
+
+                $this->db->update(
+                        'gems__token_attempts',
+                        ['gta_activated' => 1],
+                        implode(' AND ', $select->getPart(\Zend_Db_Select::WHERE))
+                        );
+
                 return false;
             }
         }

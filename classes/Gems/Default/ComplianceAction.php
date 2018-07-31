@@ -1,5 +1,7 @@
 <?php
 
+use Gems\User\Group;
+
 /**
  *
  * @package    Gems
@@ -65,12 +67,17 @@ class Gems_Default_ComplianceAction extends \Gems_Controller_ModelSnippetActionA
             'gr2t_id_user' => 'gr2o_id_user',
             'gr2t_id_organization' => 'gr2o_id_organization'
             ));
+        $model->addTable('gems__respondents', array('gr2o_id_user' => 'grs_id_user'));
         $model->addTable('gems__tracks', array('gr2t_id_track' => 'gtr_id_track'));
         $model->addTable('gems__reception_codes', array('gr2t_reception_code' => 'grc_id_reception_code'));
         $model->addFilter(array('grc_success' => 1));
 
         $model->resetOrder();
         $model->set('gr2o_patient_nr', 'label', $this->_('Respondent nr'));
+        $model->addColumn(
+            "TRIM(CONCAT(COALESCE(CONCAT(grs_last_name, ', '), '-, '), COALESCE(CONCAT(grs_first_name, ' '), ''), COALESCE(grs_surname_prefix, '')))",
+            'respondent_name');
+        $model->set('respondent_name', 'label', $this->_('Name'));
         $model->set('gr2t_start_date', 'label', $this->_('Start date'), 'dateFormat', 'dd-MM-yyyy');
         $model->set('gr2t_end_date',   'label', $this->_('End date'), 'dateFormat', 'dd-MM-yyyy');
 
@@ -146,8 +153,15 @@ class Gems_Default_ComplianceAction extends \Gems_Controller_ModelSnippetActionA
 
         $model->resetOrder();
         $model->set('gr2o_patient_nr');
+        $model->set('respondent_name');
         $model->set('gr2t_start_date');
         $model->addTransformer($joinTrans);
+        
+        // Add masking if needed
+        $group = $this->currentUser->getGroup();
+        if ($group instanceof Group) {
+            $group->applyGroupToModel($model, false);
+        }
 
         return $model;
     }

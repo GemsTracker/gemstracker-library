@@ -73,6 +73,7 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends \Gems_Snip
                     $model->get('gr2o_id_organization');
 
                     $model->set('gr2o_patient_nr', 'itemDisplay', $aElem);
+                    $model->set('respondent_name', 'itemDisplay', $aElem);
                 }
             }
         }

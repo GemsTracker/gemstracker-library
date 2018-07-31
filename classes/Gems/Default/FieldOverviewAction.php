@@ -1,5 +1,6 @@
 <?php
 
+use Gems\User\Group;
 
 /**
  * @package    Gems
@@ -7,7 +8,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -16,7 +16,7 @@
  * @subpackage Default
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.7.0 9-mrt-2015 17:15:29
+ * @since      Class available since version 1.7.0
  */
 class Gems_Default_FieldOverviewAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
@@ -31,10 +31,17 @@ class Gems_Default_FieldOverviewAction extends \Gems_Controller_ModelSnippetActi
      * @var array Mixed key => value array for snippet initialization
      */
     protected $autofilterParameters = array('menuShowActions' => array('track' => 'show-track'));
+    
+    /**
+     * The snippets used for the autofilter action.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $autofilterSnippets = 'Tracker\\Fields\\FieldOverviewTableSnippet';
 
     /**
      *
-     * @var \Gems_User_User
+     * @var Gems_User_User
      */
     public $currentUser;
 
@@ -42,7 +49,7 @@ class Gems_Default_FieldOverviewAction extends \Gems_Controller_ModelSnippetActi
      *
      * @var \Zend_Db_Adapter_Abstract
      */
-    public $db;
+    public $db;    
 
     /**
      * The snippets used for the index action, before those in autofilter
@@ -80,12 +87,18 @@ class Gems_Default_FieldOverviewAction extends \Gems_Controller_ModelSnippetActi
             'gr2t_id_user' => 'gr2o_id_user',
             'gr2t_id_organization' => 'gr2o_id_organization'
             ));
+        $model->addTable('gems__respondents', array('gr2o_id_user' => 'grs_id_user'));
         $model->addTable('gems__tracks', array('gr2t_id_track' => 'gtr_id_track'));
         $model->addTable('gems__reception_codes', array('gr2t_reception_code' => 'grc_id_reception_code'));
         $model->addFilter(array('grc_success' => 1));
-
+        
+        $model->addColumn(
+            "TRIM(CONCAT(COALESCE(CONCAT(grs_last_name, ', '), '-, '), COALESCE(CONCAT(grs_first_name, ' '), ''), COALESCE(grs_surname_prefix, '')))",
+            'respondent_name');
+        
         $model->resetOrder();
         $model->set('gr2o_patient_nr', 'label', $this->_('Respondent nr'));
+        $model->set('respondent_name', 'label', $this->_('Name'));
         $model->set('gr2t_start_date', 'label', $this->_('Start date'), 'dateFormat', 'dd-MM-yyyy');
         $model->set('gr2t_end_date',   'label', $this->_('End date'), 'dateFormat', 'dd-MM-yyyy');
 
@@ -107,6 +120,12 @@ class Gems_Default_FieldOverviewAction extends \Gems_Controller_ModelSnippetActi
         $trackId = $filter['gr2t_id_track'];
         $engine = $this->loader->getTracker()->getTrackEngine($trackId);
         $engine->addFieldsToModel($model, false);
+        
+        // Add masking if needed
+        $group = $this->currentUser->getGroup();
+        if ($group instanceof Group) {
+            $group->applyGroupToModel($model, false);
+        }
 
         return $model;
     }
