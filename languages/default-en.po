@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-18 11:36+0200\n"
+"POT-Creation-Date: 2018-07-31 16:04+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -242,8 +242,10 @@ msgstr "Determines what is filtered how."
 #: classes/Gems/Agenda/AppointmentFilterModel.php:91
 #: classes/Gems/Default/AgendaStaffAction.php:109
 #: classes/Gems/Default/CommTemplateAction.php:123
+#: classes/Gems/Default/ComplianceAction.php:80
 #: classes/Gems/Default/DatabaseAction.php:206
 #: classes/Gems/Default/DatabaseAction.php:469
+#: classes/Gems/Default/FieldOverviewAction.php:101
 #: classes/Gems/Default/FieldReportAction.php:112
 #: classes/Gems/Default/GroupAction.php:134
 #: classes/Gems/Default/RoleAction.php:110
@@ -1479,8 +1481,8 @@ msgstr "Edit template: %s"
 msgid "Email templates"
 msgstr "Email templates"
 
-#: classes/Gems/Default/ComplianceAction.php:73
-#: classes/Gems/Default/FieldOverviewAction.php:88
+#: classes/Gems/Default/ComplianceAction.php:76
+#: classes/Gems/Default/FieldOverviewAction.php:100
 #: classes/Gems/Model/CommLogModel.php:135
 #: classes/Gems/Model/RespondentModel.php:267
 #: classes/Gems/Snippets/Agenda/AppointmentsTableSnippet.php:188
@@ -1489,8 +1491,8 @@ msgstr "Email templates"
 msgid "Respondent nr"
 msgstr "Patient nr"
 
-#: classes/Gems/Default/ComplianceAction.php:74
-#: classes/Gems/Default/FieldOverviewAction.php:89
+#: classes/Gems/Default/ComplianceAction.php:81
+#: classes/Gems/Default/FieldOverviewAction.php:102
 #: classes/Gems/Model/EpisodeOfCareModel.php:142
 #: classes/Gems/Model/EpisodeOfCareModel.php:179
 #: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:600
@@ -1498,25 +1500,25 @@ msgstr "Patient nr"
 msgid "Start date"
 msgstr "Start date"
 
-#: classes/Gems/Default/ComplianceAction.php:75
-#: classes/Gems/Default/FieldOverviewAction.php:90
+#: classes/Gems/Default/ComplianceAction.php:82
+#: classes/Gems/Default/FieldOverviewAction.php:103
 #: classes/Gems/Model/EpisodeOfCareModel.php:145
 #: classes/Gems/Model/EpisodeOfCareModel.php:182
 msgid "End date"
 msgstr "End date"
 
-#: classes/Gems/Default/ComplianceAction.php:83
-#: classes/Gems/Default/FieldOverviewAction.php:98
+#: classes/Gems/Default/ComplianceAction.php:90
+#: classes/Gems/Default/FieldOverviewAction.php:111
 #: classes/Gems/Default/FieldReportAction.php:114
 #: classes/Gems/Default/SummaryAction.php:116
 msgid "No track selected..."
 msgstr "No track selected..."
 
-#: classes/Gems/Default/ComplianceAction.php:162
+#: classes/Gems/Default/ComplianceAction.php:176
 msgid "Compliance"
 msgstr "Compliance"
 
-#: classes/Gems/Default/ComplianceAction.php:190
+#: classes/Gems/Default/ComplianceAction.php:204
 #: classes/Gems/Default/FieldReportAction.php:336
 #: classes/Gems/Default/ProjectTracksAction.php:148
 #: classes/Gems/Default/TrackAction.php:1024
@@ -2044,11 +2046,11 @@ msgstr "Please select a survey to start the export"
 msgid "Export data from a single survey"
 msgstr "Export data from a single survey"
 
-#: classes/Gems/Default/FieldOverviewAction.php:144
+#: classes/Gems/Default/FieldOverviewAction.php:163
 msgid "Respondent Track fields"
 msgstr "Patient Track fields"
 
-#: classes/Gems/Default/FieldOverviewAction.php:172
+#: classes/Gems/Default/FieldOverviewAction.php:191
 msgid "track field"
 msgid_plural "track fields"
 msgstr[0] "track field"
@@ -7486,13 +7488,10 @@ msgid "A new random two factor key was saved for %s."
 msgstr "A new random two factor key was saved for %s."
 
 #: classes/Gems/Snippets/User/SetTwoFactorSnippet.php:99
-#| msgid "two factor authentication"
-#| msgid_plural "two factor authentication"
 msgid "Click save to enable two factor authentication."
 msgstr "Click save to enable two factor authentication."
 
 #: classes/Gems/Snippets/User/SetTwoFactorSnippet.php:108
-#| msgid "Two factor authentication"
 msgid "Two factor authentication not active!"
 msgstr "Two factor authentication not active!"
 
@@ -8981,25 +8980,25 @@ msgstr "%s: %s"
 msgid "- %s"
 msgstr "- %s"
 
-#: classes/Gems/Tracker/Token/TokenValidator.php:142
+#: classes/Gems/Tracker/Token/TokenValidator.php:145
 msgid "The server is currently busy, please wait a while and try again."
 msgstr "The server is currently busy, please wait a while and try again."
 
-#: classes/Gems/Tracker/Token/TokenValidator.php:177
+#: classes/Gems/Tracker/Token/TokenValidator.php:187
 #, php-format
 msgid "Not a valid token. The format for valid tokens is: %s."
 msgstr "Not a valid token. The format for valid tokens is: %s."
 
-#: classes/Gems/Tracker/Token/TokenValidator.php:195
-#: classes/Gems/Tracker/Token/TokenValidator.php:209
+#: classes/Gems/Tracker/Token/TokenValidator.php:205
+#: classes/Gems/Tracker/Token/TokenValidator.php:219
 msgid "This token is no longer valid."
 msgstr "This token is no longer valid."
 
-#: classes/Gems/Tracker/Token/TokenValidator.php:202
+#: classes/Gems/Tracker/Token/TokenValidator.php:212
 msgid "This token cannot (yet) be used."
 msgstr "This token cannot (yet) be used."
 
-#: classes/Gems/Tracker/Token/TokenValidator.php:216
+#: classes/Gems/Tracker/Token/TokenValidator.php:226
 msgid "Unknown token."
 msgstr "Unknown token."
 
@@ -9292,6 +9291,10 @@ msgstr "QR Code"
 #: classes/Gems/User/TwoFactor/GoogleAuthenticator.php:141
 msgid "Scan this QR Code"
 msgstr "Scan this QR Code"
+
+#: classes/Gems/User/TwoFactor/GoogleAuthenticator.php:142
+msgid "Install the Google Authenticator app on your phone and scan this code."
+msgstr "Install the Google Authenticator app on your phone and scan this code."
 
 #: classes/Gems/User/TwoFactor/GoogleAuthenticator.php:148
 msgid "or"

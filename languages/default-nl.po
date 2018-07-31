@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-18 11:37+0200\n"
+"POT-Creation-Date: 2018-07-31 16:03+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 2.0.9\n"
+"X-Generator: Poedit 1.8.9\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
@@ -243,8 +243,10 @@ msgstr "Bepaald wat op welke manier gefilterd wordt."
 #: classes/Gems/Agenda/AppointmentFilterModel.php:91
 #: classes/Gems/Default/AgendaStaffAction.php:109
 #: classes/Gems/Default/CommTemplateAction.php:123
+#: classes/Gems/Default/ComplianceAction.php:80
 #: classes/Gems/Default/DatabaseAction.php:206
 #: classes/Gems/Default/DatabaseAction.php:469
+#: classes/Gems/Default/FieldOverviewAction.php:101
 #: classes/Gems/Default/FieldReportAction.php:112
 #: classes/Gems/Default/GroupAction.php:134
 #: classes/Gems/Default/RoleAction.php:110
@@ -1497,8 +1499,8 @@ msgstr "Bewerk sjabloon: %s"
 msgid "Email templates"
 msgstr "Email sjabloon"
 
-#: classes/Gems/Default/ComplianceAction.php:73
-#: classes/Gems/Default/FieldOverviewAction.php:88
+#: classes/Gems/Default/ComplianceAction.php:76
+#: classes/Gems/Default/FieldOverviewAction.php:100
 #: classes/Gems/Model/CommLogModel.php:135
 #: classes/Gems/Model/RespondentModel.php:267
 #: classes/Gems/Snippets/Agenda/AppointmentsTableSnippet.php:188
@@ -1507,8 +1509,8 @@ msgstr "Email sjabloon"
 msgid "Respondent nr"
 msgstr "Patiënt nr"
 
-#: classes/Gems/Default/ComplianceAction.php:74
-#: classes/Gems/Default/FieldOverviewAction.php:89
+#: classes/Gems/Default/ComplianceAction.php:81
+#: classes/Gems/Default/FieldOverviewAction.php:102
 #: classes/Gems/Model/EpisodeOfCareModel.php:142
 #: classes/Gems/Model/EpisodeOfCareModel.php:179
 #: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:600
@@ -1516,25 +1518,25 @@ msgstr "Patiënt nr"
 msgid "Start date"
 msgstr "Startdatum"
 
-#: classes/Gems/Default/ComplianceAction.php:75
-#: classes/Gems/Default/FieldOverviewAction.php:90
+#: classes/Gems/Default/ComplianceAction.php:82
+#: classes/Gems/Default/FieldOverviewAction.php:103
 #: classes/Gems/Model/EpisodeOfCareModel.php:145
 #: classes/Gems/Model/EpisodeOfCareModel.php:182
 msgid "End date"
 msgstr "Einddatum"
 
-#: classes/Gems/Default/ComplianceAction.php:83
-#: classes/Gems/Default/FieldOverviewAction.php:98
+#: classes/Gems/Default/ComplianceAction.php:90
+#: classes/Gems/Default/FieldOverviewAction.php:111
 #: classes/Gems/Default/FieldReportAction.php:114
 #: classes/Gems/Default/SummaryAction.php:116
 msgid "No track selected..."
 msgstr "Geen traject geselecteerd..."
 
-#: classes/Gems/Default/ComplianceAction.php:162
+#: classes/Gems/Default/ComplianceAction.php:176
 msgid "Compliance"
 msgstr "Voortgang"
 
-#: classes/Gems/Default/ComplianceAction.php:190
+#: classes/Gems/Default/ComplianceAction.php:204
 #: classes/Gems/Default/FieldReportAction.php:336
 #: classes/Gems/Default/ProjectTracksAction.php:148
 #: classes/Gems/Default/TrackAction.php:1024
@@ -2062,11 +2064,11 @@ msgstr "Selecteer een vragenlijst om de export te starten"
 msgid "Export data from a single survey"
 msgstr "Exporteer gegevens van één vragenlijst"
 
-#: classes/Gems/Default/FieldOverviewAction.php:144
+#: classes/Gems/Default/FieldOverviewAction.php:163
 msgid "Respondent Track fields"
 msgstr "Patiënt Traject Velden"
 
-#: classes/Gems/Default/FieldOverviewAction.php:172
+#: classes/Gems/Default/FieldOverviewAction.php:191
 msgid "track field"
 msgid_plural "track fields"
 msgstr[0] "trajectveld"
@@ -6349,7 +6351,7 @@ msgstr "Controle code"
 
 #: classes/Gems/Snippets/Login/TwoFactorCheckSnippet.php:101
 msgid "Enter authenticator code"
-msgstr "Voor authenticatie code in"
+msgstr "Voer authenticatie code in"
 
 #: classes/Gems/Snippets/Login/TwoFactorCheckSnippet.php:102
 msgid "From the Google app on your phone."
@@ -9071,27 +9073,27 @@ msgstr "%s: %s"
 msgid "- %s"
 msgstr "- %s"
 
-#: classes/Gems/Tracker/Token/TokenValidator.php:142
+#: classes/Gems/Tracker/Token/TokenValidator.php:145
 msgid "The server is currently busy, please wait a while and try again."
 msgstr ""
 "De server is bezet, wacht u alstublieft een moment en probeer het dan "
 "nogmaals."
 
-#: classes/Gems/Tracker/Token/TokenValidator.php:177
+#: classes/Gems/Tracker/Token/TokenValidator.php:187
 #, php-format
 msgid "Not a valid token. The format for valid tokens is: %s."
 msgstr "Geen geldig kenmerk. Het formaat voor geldige tokens is: %s."
 
-#: classes/Gems/Tracker/Token/TokenValidator.php:195
-#: classes/Gems/Tracker/Token/TokenValidator.php:209
+#: classes/Gems/Tracker/Token/TokenValidator.php:205
+#: classes/Gems/Tracker/Token/TokenValidator.php:219
 msgid "This token is no longer valid."
 msgstr "Dit kenmerk is niet meer geldig."
 
-#: classes/Gems/Tracker/Token/TokenValidator.php:202
+#: classes/Gems/Tracker/Token/TokenValidator.php:212
 msgid "This token cannot (yet) be used."
 msgstr "Dit kenmerk kan (nog) niet gebruikt worden."
 
-#: classes/Gems/Tracker/Token/TokenValidator.php:216
+#: classes/Gems/Tracker/Token/TokenValidator.php:226
 msgid "Unknown token."
 msgstr "Onbekend kenmerk."
 
@@ -9387,6 +9389,11 @@ msgstr "QR Code"
 #: classes/Gems/User/TwoFactor/GoogleAuthenticator.php:141
 msgid "Scan this QR Code"
 msgstr "Scan deze QR Code"
+
+#: classes/Gems/User/TwoFactor/GoogleAuthenticator.php:142
+msgid "Install the Google Authenticator app on your phone and scan this code."
+msgstr ""
+"Installeer de Google Authenticator app op je telefoon en scan deze code."
 
 #: classes/Gems/User/TwoFactor/GoogleAuthenticator.php:148
 msgid "or"
