@@ -20,7 +20,7 @@ namespace Gems\Event\Survey\BeforeAnswering;
  * @license    New BSD License
  * @since      Class available since version 1.8.4 21-Mar-2018 19:49:43
  */
-class FillTrackFieldAnswers extends \MUtil_Translate_TranslateableAbstract implements \Gems_Event_SurveyBeforeAnsweringEventInterface
+class FillTrackFieldAnswers extends PrefillAnswers
 {
     /**
      * A pretty name for use in dropdown selection boxes.
@@ -42,16 +42,22 @@ class FillTrackFieldAnswers extends \MUtil_Translate_TranslateableAbstract imple
      */
     public function processTokenInsertion(\Gems_Tracker_Token $token)
     {
-        if ($token->getReceptionCode()->isSuccess() && (! $token->isCompleted())) {
-            $respTrack = $token->getRespondentTrack();
-            $fields    = $respTrack->getCodeFields();
+        $this->token = $token;
+
+        if ($token->getReceptionCode()->isSuccess() && (!$token->isCompleted())) {
+            // Read questioncodes
             $questions = $token->getSurvey()->getQuestionList(null);
+            $fields    = [];
             $results   = [];
 
-            foreach ($codes as $code => $value) {
-                if (isset($questions[$code]) && ($questions[$code] != $value)) {
-                    $results[$code] = $value;
-                }
+            // Check if they match a prefix schema
+            foreach ($questions as $code => $text) {
+                $upperField = strtoupper($code);
+                $fields[$code] = $upperField;
+            }
+
+            if (count($fields) > 0) {
+                $results = $results + $this->getTrackFields($fields);
             }
 
             return $results;
