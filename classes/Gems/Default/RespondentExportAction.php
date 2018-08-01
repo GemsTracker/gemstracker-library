@@ -26,7 +26,7 @@ class Gems_Default_RespondentExportAction extends \Gems_Controller_Action
         $export = $this->loader->getRespondentExport();
         $form   = $export->getForm();
 
-        $element = new \Zend_Form_Element_Textarea('id');
+        $element = new \Zend_Form_Element_Textarea('ids');
         $element->setLabel($this->_('Respondent numbers'))
                 ->setAttrib('cols', 60)
                 ->setAttrib('rows', 4)
@@ -44,7 +44,7 @@ class Gems_Default_RespondentExportAction extends \Gems_Controller_Action
         $form->populate($request->getParams());
 
         if ($request->isPost()) {
-            $respondents = preg_split('/[\s,;]+/', $request->getParam('id'), -1, PREG_SPLIT_NO_EMPTY);
+            $respondents = preg_split('/[\s,;]+/', $request->getParam('ids'), -1, PREG_SPLIT_NO_EMPTY);
             if (count($respondents)>0) {
                 $export->render($respondents, $request->getParam('group'), $request->getParam('format'));
             } else {
