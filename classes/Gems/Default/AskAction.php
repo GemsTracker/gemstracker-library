@@ -126,10 +126,7 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
             $tokenLang = strtolower($this->token->getRespondentLanguage());
             // \MUtil_Echo::track($tokenLang, $this->locale->getLanguage());
             if ($tokenLang != $this->locale->getLanguage()) {
-                $this->locale->setLocale($tokenLang);
-                $this->translateAdapter->setLocale($this->locale);
-                $this->currentUser->setLocale($tokenLang);
-                \Gems_Cookies::setLocale($tokenLang, $this->basepath->getBasePath());
+                $this->currentUser->switchLocale($tokenLang);
             }
 
             $currentOrg = $this->loader->getOrganization();

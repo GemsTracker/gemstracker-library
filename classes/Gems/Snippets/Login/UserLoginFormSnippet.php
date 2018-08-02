@@ -138,15 +138,7 @@ class UserLoginFormSnippet extends FormSnippetAbstract
             $user = $this->loginForm->getUser();
 
             if ($this->loginForm->isValid($this->request->getPost(), false)) {
-
-                /**
-                 * Set current locale in cookies
-                 */
-                \Gems_Cookies::setLocale($user->getLocale(), $this->basepath->getBasePath());
-                
-                // Make sure the locale is correct for the rest of the sequence snippets
-                \Zend_Registry::get('Zend_Locale')->setLocale($user->getLocale());
-                \Zend_Registry::get('Zend_Translate')->setLocale($user->getLocale());
+                $user->switchLocale();
 
                 $this->loginStatusTracker
                         ->setPasswordText($this->loginForm->getPasswordText())
