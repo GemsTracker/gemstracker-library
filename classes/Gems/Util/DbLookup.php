@@ -256,7 +256,7 @@ class Gems_Util_DbLookup extends UtilAbstract
                 );
             }
             // Add round 0 for inserted rounds, and check if the description matches
-            $filter[] = sprintf('(gto_id_round IN (%s)) OR (gto_id_round = 0 AND gto_round_description = %s', $roundIds, $this->db->quote($job['gcj_round_description']));
+            $filter[] = sprintf('(gto_id_round IN (%s)) OR (gto_id_round = 0 AND gto_round_description = %s)', $this->db->quote($roundIds), $this->db->quote($job['gcj_round_description']));
         }
         if ($job['gcj_id_survey']) {
             $filter['gto_id_survey'] = $job['gcj_id_survey'];
