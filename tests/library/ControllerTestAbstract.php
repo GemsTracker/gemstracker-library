@@ -23,6 +23,7 @@ class ControllerTestAbstract extends \Zend_Test_PHPUnit_ControllerTestCase
         $definition = $userLoader->getUserDefinition($defName);
 
         $values = $definition->getUserData('unittest', $this->userIdNr);
+        $values['user_locale'] = 'en';
 
         $values = $userLoader->ensureDefaultUserValues($values, $definition, $defName);
         $user   = new \Gems_User_User($values, $definition);
@@ -39,6 +40,7 @@ class ControllerTestAbstract extends \Zend_Test_PHPUnit_ControllerTestCase
         // Do deep injection in all relevant parts
         $gems->currentUser                 = $user;                    // Copied to controller
         $gems->getContainer()->currentUser = $user;
+        $gems->getContainer()->currentuser = $user;
     }
 
     /**
