@@ -1,52 +1,44 @@
 <?php
 
-class ControllerTestAbstract extends \Zend_Test_PHPUnit_ControllerTestCase {
-
+class ControllerTestAbstract extends \Zend_Test_PHPUnit_ControllerTestCase
+{
     /**
      *
      * @var Set to no to work without an initilised database
      */
     public $useDatabase = true;
 
-    public function setUp()
+    /**
+     *
+     * @var int
+     */
+    public $userIdNr = 70;
+
+    protected function _fixUser()
     {
-        $iniFile = APPLICATION_PATH . '/configs/application.example.ini';
+        $gems       = \GemsEscort::getInstance();
+        $loader     = $gems->getLoader();
+        $userLoader = $loader->getUserLoader();
+        $defName    = \Gems_User_UserLoader::USER_CONSOLE;
+        $definition = $userLoader->getUserDefinition($defName);
 
-        if (!file_exists($iniFile)) {
-            $iniFile = APPLICATION_PATH . '/configs/application.ini';
-        }
+        $values = $definition->getUserData('unittest', $this->userIdNr);
 
-        // Use a database, can be empty but this speeds up testing a lot
-        $config = new \Zend_Config_Ini($iniFile, 'testing', true);
-        $config->merge(new \Zend_Config([
-            'resources' => [
-                'db' => [
-                    'adapter' => 'Pdo_Sqlite',
-                    'params'  => [
-                        'dbname'   => ':memory:',
-                        'username' => 'test'
-                    ]
-                ]
-            ]
-        ]));
+        $values = $userLoader->ensureDefaultUserValues($values, $definition, $defName);
+        $user   = new \Gems_User_User($values, $definition);
+        $user->answerRegistryRequest('basepath', $gems->basepath);
+        $user->answerRegistryRequest('db', $gems->db);
+        $user->answerRegistryRequest('loader', $loader);
+        $user->answerRegistryRequest('locale', $gems->locale);
+        $user->answerRegistryRequest('session', $gems->session);
+        $user->answerRegistryRequest('translateAdapter', $gems->translateAdapter);
+        $user->answerRegistryRequest('userLoader', $userLoader);
+        $user->answerRegistryRequest('util', $loader->getUtil());
 
-        // Add our test loader dirs
-        $dirs = $config->loaderDirs->toArray();
-        $config->loaderDirs =
-                [GEMS_PROJECT_NAME_UC => GEMS_TEST_DIR . "/classes/" . GEMS_PROJECT_NAME_UC] +
-                $dirs;
-
-        // Create application, bootstrap, and run
-        $application = new \Zend_Application(APPLICATION_ENV, $config);
-
-        $this->bootstrap = $application;
-
-        if ($this->useDatabase){
-            $this->_setupDatabase();
-        }
-
-        // Run the bootstrap
-        parent::setUp();
+        $userLoader->setCurrentUser($user);
+        // Do deep injection in all relevant parts
+        $gems->currentUser                 = $user;                    // Copied to controller
+        $gems->getContainer()->currentUser = $user;
     }
 
     /**
@@ -74,7 +66,7 @@ class ControllerTestAbstract extends \Zend_Test_PHPUnit_ControllerTestCase {
                 foreach ($statements as $sql) {
                     if (!strpos(strtoupper($sql), 'INSERT INTO') && !strpos(strtoupper($sql), 'INSERT IGNORE') && !strpos(strtoupper($sql), 'UPDATE ')) {
                         if (!empty($sql)) {
-                            $stmt = $db->exec($sql);                            
+                            $stmt = $db->exec($sql);
                         }
                     }
                 }
@@ -183,6 +175,45 @@ class ControllerTestAbstract extends \Zend_Test_PHPUnit_ControllerTestCase {
         $this->_path = $path;
     }
 
+    public function setUp()
+    {
+        $iniFile = APPLICATION_PATH . '/configs/application.example.ini';
+
+        if (!file_exists($iniFile)) {
+            $iniFile = APPLICATION_PATH . '/configs/application.ini';
+        }
+
+        // Use a database, can be empty but this speeds up testing a lot
+        $config = new \Zend_Config_Ini($iniFile, 'testing', true);
+        $config->merge(new \Zend_Config([
+            'resources' => [
+                'db' => [
+                    'adapter' => 'Pdo_Sqlite',
+                    'params'  => [
+                        'dbname'   => ':memory:',
+                        'username' => 'test'
+                    ]
+                ]
+            ]
+        ]));
+
+        // Add our test loader dirs
+        $dirs = $config->loaderDirs->toArray();
+        $config->loaderDirs =
+                [GEMS_PROJECT_NAME_UC => GEMS_TEST_DIR . "/classes/" . GEMS_PROJECT_NAME_UC] +
+                $dirs;
+
+        // Create application, bootstrap, and run
+        $this->bootstrap = new \Zend_Application(APPLICATION_ENV, $config);
+
+        if ($this->useDatabase){
+            $this->_setupDatabase();
+        }
+
+        // Run the bootstrap
+        parent::setUp();
+    }
+
     /**
      * SQLite compatibility implementation for the MySQL ADDATE() SQL function, when not using INTERVAL syntax.
      */
@@ -194,7 +225,7 @@ class ControllerTestAbstract extends \Zend_Test_PHPUnit_ControllerTestCase {
 
         return $date->format('Y-m-d H:i:s');
     }
-    
+
     /**
      * SQLite compatibility implementation for the CHAR_LENGTH() SQL function.
      */

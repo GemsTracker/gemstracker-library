@@ -33,8 +33,7 @@ CREATE TABLE if not exists gems__respondents (
         grs_created                timestamp not null,
         grs_created_by             bigint unsigned not null,
 
-        PRIMARY KEY(grs_id_user),
-        --INDEX (grs_email)
+        PRIMARY KEY(grs_id_user)
     )
     ENGINE=InnoDB
     AUTO_INCREMENT = 30001

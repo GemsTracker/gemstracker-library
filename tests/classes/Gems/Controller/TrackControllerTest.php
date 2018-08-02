@@ -17,8 +17,13 @@ use ControllerTestAbstract;
  */
 class TrackControllerTest extends ControllerTestAbstract
 {
-
     public $tempDir;
+
+    /**
+     *
+     * @var int
+     */
+    public $userIdNr = 1;
 
     public function setUp()
     {
@@ -27,30 +32,6 @@ class TrackControllerTest extends ControllerTestAbstract
 
         $this->_fixSetup();
         $this->_fixUser();
-    }
-
-    protected function _fixUser()
-    {
-        $loader     = \GemsEscort::getInstance()->getLoader();
-        $userLoader = $loader->getUserLoader();
-        $defName    = \Gems_User_UserLoader::USER_CONSOLE;
-        $definition = $userLoader->getUserDefinition($defName);
-
-        $values = $definition->getUserData('unittest', 1);
-
-        $values = $userLoader->ensureDefaultUserValues($values, $definition, $defName);
-        $user   = new \Gems_User_User($values, $definition);
-        $user->answerRegistryRequest('userLoader', $userLoader);
-        $user->answerRegistryRequest('session', \GemsEscort::getInstance()->session);
-        $user->answerRegistryRequest('loader', $loader);
-        $user->answerRegistryRequest('util', $loader->getUtil());
-        $user->answerRegistryRequest('db', \Zend_Db_Table_Abstract::getDefaultAdapter());
-
-        $userLoader->setCurrentUser($user);
-        // Do deep injection in all relevant parts
-        \GemsEscort::getInstance()->currentUser                 = $user;                    // Copied to controller
-        \GemsEscort::getInstance()->getContainer()->currentUser = $user;
-        \GemsEscort::getInstance()->getContainer()->currentuser = $user;
     }
 
     /**
@@ -99,11 +80,11 @@ class TrackControllerTest extends ControllerTestAbstract
         $this->assertEquals($expected, $actual);
         \MUtil_Batch_BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
     }
-    
-    /*public function testCorrect() {        
+
+    /*public function testCorrect() {
         $req = $this->getRequest();
         $req->setParam('id', 'abcd-efgh');
-        
+
         // First get the csrf token
         $this->dispatch('/track/correct');
         $body = $this->getResponse()->getBody();
