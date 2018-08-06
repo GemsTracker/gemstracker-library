@@ -1,4 +1,5 @@
 <?php
+
 namespace Gems\Controller;
 
 use ControllerTestAbstract;
@@ -7,16 +8,17 @@ class IndexControllerTest extends \ControllerTestAbstract
 {
     // We check that the program runs without an initialised database
     public $useDatabase = false;
-            
-    public function setUp() {
+
+    public function setUp()
+    {
         $this->setPath(GEMS_TEST_DIR . '/data/controller');
         parent::setUp();
     }
-    
+
     public function testSaltRequired()
     {
         $this->dispatch('/');
-        $reponse = $this->getFrontController()->getResponse();
+        $reponse   = $this->getFrontController()->getResponse();
         $exception = $reponse->getExceptionByMessage("Missing required project setting: 'salt'.");
         $this->assertTrue(count($exception) == 1);
     }

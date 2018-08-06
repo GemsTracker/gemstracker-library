@@ -356,6 +356,9 @@ CREATE TABLE gems__groups (
         ggp_staff_members         TINYINT(1) not null default 0,
         ggp_respondent_members    TINYINT(1) not null default 1,
         ggp_allowed_ip_ranges     text,
+        ggp_no_2factor_ip_ranges  text,
+        ggp_2factor_set           tinyint not null default 50,
+        ggp_2factor_not_set       tinyint not null default 0,
 
         ggp_respondent_browse     varchar(255),
         ggp_respondent_edit       varchar(255),
@@ -374,13 +377,13 @@ CREATE TABLE gems__groups (
 
 -- Default groups
 INSERT ignore INTO gems__groups
-    (ggp_id_group, ggp_name, ggp_description, ggp_role, ggp_may_set_groups, ggp_group_active, ggp_staff_members, ggp_respondent_members, ggp_changed_by, ggp_created, ggp_created_by)
+    (ggp_id_group, ggp_name, ggp_description, ggp_role, ggp_may_set_groups, ggp_default_group, ggp_no_2factor_ip_ranges, ggp_group_active, ggp_staff_members, ggp_respondent_members, ggp_changed_by, ggp_created, ggp_created_by)
     VALUES
-    (900, 'Super Administrators', 'Super administrators with access to the whole site', 809, '900,901,902,903', 1, 1, 0, 0, current_timestamp, 0),
-    (901, 'Site Admins', 'Site Administrators', 808, '901,902,903', 1, 1, 0, 0, current_timestamp, 0),
-    (902, 'Local Admins', 'Local Administrators', 807, '903', 1, 1, 0, 0, current_timestamp, 0),
-    (903, 'Staff', 'Health care staff', 804,, 1, 1, 0, 0, current_timestamp, 0),
-    (904, 'Respondents', 'Respondents', 802,, 1, 0, 1, 0, current_timestamp, 0);
+    (900, 'Super Administrators', 'Super administrators with access to the whole site', 809, '900,901,902,903', 903, '127.0.0.1', 1, 1, 0, 0, current_timestamp, 0),
+    (901, 'Site Admins', 'Site Administrators', 808, '901,902,903', 903, '127.0.0.1', 1, 1, 0, 0, current_timestamp, 0),
+    (902, 'Local Admins', 'Local Administrators', 807, '903', 903, '127.0.0.1', 1, 1, 0, 0, current_timestamp, 0),
+    (903, 'Staff', 'Health care staff', 804,,, '127.0.0.1', 1, 1, 0, 0, current_timestamp, 0),
+    (904, 'Respondents', 'Respondents', 802,,, '127.0.0.1', 1, 0, 1, 0, current_timestamp, 0);
 
 CREATE TABLE gems__locations (
         glo_id_location     INTEGER not null ,
@@ -707,7 +710,7 @@ CREATE TABLE gems__respondent2org (
         -- gr2o_id_physician       INTEGER,
 
         -- gr2o_treatment          varchar(200),
-        gr2o_email              varchar(100),
+        gr2o_email               varchar(100),
         gr2o_mailable           TINYINT(1) not null default 1,
         gr2o_comments           text,
 
@@ -1017,7 +1020,7 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
         grl_privileges,
         grl_changed, grl_changed_by, grl_created, grl_created_by)
     VALUES
-    (809, 'super', 'super', '801,803,804,805,806,807,809',
+    (809, 'super', 'super', '801,803,804,805,806,807,808',
     'pr.agenda-activity,pr.agenda-activity.cleanup,pr.agenda-activity.create,pr.agenda-activity.delete,pr.agenda-activity.edit,
     ,pr.agenda-filters,pr.agenda-filters.create,pr.agenda-filters.delete,pr.agenda-filters.edit,
     ,pr.agenda-procedure,pr.agenda-procedure.cleanup,pr.agenda-procedure.create,pr.agenda-procedure.delete,pr.agenda-procedure.edit,
@@ -1318,10 +1321,12 @@ CREATE TABLE gems__tokens (
 
 
 CREATE TABLE gems__token_attempts (
-        gta_id_attempt INTEGER not null ,
-        gta_id_token varchar(9) not null,
-        gta_ip_address varchar(64) not null,
-        gta_datetime TEXT not null default current_timestamp,
+        gta_id_attempt      INTEGER not null ,
+        gta_id_token        varchar(9) not null,
+        gta_ip_address      varchar(64) not null,
+        gta_datetime        TEXT not null default current_timestamp,
+        gta_activated       TINYINT(1) default 0,
+
 
         PRIMARY KEY (gta_id_attempt)
     )
@@ -1502,7 +1507,7 @@ CREATE TABLE gems__user_passwords (
         gup_reset_key        char(64),
         gup_reset_requested  TEXT,
         gup_reset_required   TINYINT(1) not null default 0,
-        gup_last_pwd_change      TEXT not null default 0,  -- Can only have on current_timestamp so default to 0
+        gup_last_pwd_change  TEXT not null default 0,  -- Can only have on current_timestamp so default to 0
 
         gup_changed          TEXT not null default current_timestamp,
         gup_changed_by       INTEGER not null,

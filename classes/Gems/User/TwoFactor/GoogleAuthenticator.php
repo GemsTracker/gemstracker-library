@@ -139,7 +139,7 @@ class GoogleAuthenticator extends \MUtil_Translate_TranslateableAbstract impleme
 
         $imgElement = $form->createElement('Html', 'image');
         $imgElement->setLabel($this->_('Scan this QR Code'))
-                ->setDescription('Install the Google Authenticator app on your phone and scan this code.');
+                ->setDescription($this->_('Install the Google Authenticator app on your phone and scan this code.'));
         $imgElement->img($params);
         $form->addElement($imgElement);
 

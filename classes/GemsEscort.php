@@ -2248,7 +2248,10 @@ class GemsEscort extends \MUtil_Application_Escort
                 $incoming = $request->getServer('HTTP_ORIGIN', $request->getServer('HTTP_REFERER', false));
                 if ($incoming) {
                     if (! $this->isAllowedHost($incoming)) {
-                        throw new \Gems_Exception("Invalid source host, possible CSRF attack", 403);
+                        throw new \Gems_Exception(
+                            sprintf("Invalid source host, possible CSRF attack. Used host: %s", $incoming),
+                            403
+                        );
                     }
                 }
             }

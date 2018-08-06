@@ -40,33 +40,9 @@ class OrganizationControllerTest extends ControllerTestAbstract
         }
     }
 
-    protected function _fixUser()
-    {
-        $loader     = \GemsEscort::getInstance()->getLoader();
-        $userLoader = $loader->getUserLoader();
-        $defName    = \Gems_User_UserLoader::USER_CONSOLE;
-        $definition = $userLoader->getUserDefinition($defName);
-
-        $values = $definition->getUserData('unittest', 70);
-
-        $values = $userLoader->ensureDefaultUserValues($values, $definition, $defName);
-        $user   = new \Gems_User_User($values, $definition);
-        $user->answerRegistryRequest('userLoader', $userLoader);
-        $user->answerRegistryRequest('session', \GemsEscort::getInstance()->session);
-        $user->answerRegistryRequest('loader', $loader);
-        $user->answerRegistryRequest('util', $loader->getUtil());
-        $user->answerRegistryRequest('db', \Zend_Db_Table_Abstract::getDefaultAdapter());
-
-        $userLoader->setCurrentUser($user);
-        // Do deep injection in all relevant parts
-        \GemsEscort::getInstance()->currentUser                 = $user;                    // Copied to controller
-        \GemsEscort::getInstance()->getContainer()->currentUser = $user;
-        \GemsEscort::getInstance()->getContainer()->currentuser = $user;
-    }
-
     /**
      * Test export
-     * 
+     *
      * @dataProvider ExportProvider
      */
     public function testExport($expectedFile, $type, $options)
@@ -91,10 +67,10 @@ class OrganizationControllerTest extends ControllerTestAbstract
         $iterator = new \GlobIterator($this->tempDir . '/export-*', \FilesystemIterator::KEY_AS_FILENAME | \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::CURRENT_AS_FILEINFO);
         $expected = file_get_contents($this->getPath() . '/' . $expectedFile);
         $datasetName = $this->getDataSetAsString(false);
-        
+
         // Make sure there is exactly one exported file
         $this->assertEquals(1, $iterator->count(), sprintf('Number of files does not match expected.', $iterator->count()));
-        
+
         foreach ($iterator as $fileName => $fileInfo) {
             if ($type == "StreamingExcelExport") {
                 // We extract the sheet1 and compare that to the saved (expected) sheet1
@@ -103,7 +79,7 @@ class OrganizationControllerTest extends ControllerTestAbstract
                 $actual = file_get_contents($fileInfo->getPathname());
             }
             unlink($fileInfo->getPathname());
-            $this->assertEquals($expected, $actual);            
+            $this->assertEquals($expected, $actual);
         }
 
         $this->reset();
@@ -158,5 +134,5 @@ class OrganizationControllerTest extends ControllerTestAbstract
                 ]
             ],
         ];
-    }   
+    }
 }

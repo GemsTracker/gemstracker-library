@@ -203,6 +203,23 @@ class TwoFactorCheckSnippet extends FormSnippetAbstract
 
         return false;
     }
+    
+    /**
+     * Hook that allows actions when the input is invalid
+     *
+     * When not rerouted, the form will be populated afterwards
+     */
+    protected function onInValid()
+    {
+        // We disable this standard error message as we are not changing anything here
+        //$this->addMessage(sprintf($this->_('Input error! Changes to %s not saved!'), $this->getTopic()));
+
+        if ($this->_csrf) {
+            if ($this->_csrf->getMessages()) {
+                $this->addMessage($this->_('The form was open for too long or was opened in multiple windows.'));
+            }
+        }
+    }
 
     /**
      * Hook containing the actual save code.

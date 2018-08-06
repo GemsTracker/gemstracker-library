@@ -20,42 +20,16 @@ class RespondentControllerTest extends ControllerTestAbstract {
     public function setUp() {
         $this->setPath(GEMS_TEST_DIR . '/data/controller');
         parent::setUp();
-        
+
         $this->_fixSetup();
         $this->_fixUser();
     }
 
-    protected function _fixUser()
-    {
-        $loader = \GemsEscort::getInstance()->getLoader();
-        $userLoader = $loader->getUserLoader();
-        $defName = \Gems_User_UserLoader::USER_CONSOLE;
-        $definition = $userLoader->getUserDefinition($defName);
-
-        $values = $definition->getUserData('unittest', 70);
-
-        $values = $userLoader->ensureDefaultUserValues($values, $definition, $defName);
-        $user = new \Gems_User_User($values, $definition);
-        $user->answerRegistryRequest('userLoader', $userLoader);
-        $user->answerRegistryRequest('session', \GemsEscort::getInstance()->session);
-        $user->answerRegistryRequest('loader', $loader);
-        $user->answerRegistryRequest('util', $loader->getUtil());
-        $user->answerRegistryRequest('db', \Zend_Db_Table_Abstract::getDefaultAdapter());
-
-        $userLoader->setCurrentUser($user);
-        // Do deep injection in all relevant parts
-        \GemsEscort::getInstance()->currentUser = $user;                    // Copied to controller
-        \GemsEscort::getInstance()->getContainer()->currentUser = $user;
-        \GemsEscort::getInstance()->getContainer()->currentuser = $user;
-    }
-    
-    
-
     /**
-     * Test inseeting a new patient
+     * Test inserting a new patient
      */
     public function testSimplaApi1()
-    {        
+    {
         $params = [
             'gr2o_patient_nr'      => '1001303',
             'gr2o_id_organization' => 70,
@@ -105,9 +79,9 @@ class RespondentControllerTest extends ControllerTestAbstract {
         $this->dispatch('/respondent/simple-api');
         $body = $this->getResponse()->getBody();
         $this->assertEquals('No changes to patient 1001303.', $body, 'simple-api: unchanged patient failed');
-        //$this->saveTables(['gems__respondents', 'gems__respondent2org'], 'RespondentControllerTest_testSimpleApi3');        
+        //$this->saveTables(['gems__respondents', 'gems__respondent2org'], 'RespondentControllerTest_testSimpleApi3');
     }
-    
+
     /**
      * Check that changes will be saved when name hase changed
      */
@@ -133,19 +107,19 @@ class RespondentControllerTest extends ControllerTestAbstract {
         $this->dispatch('/respondent/simple-api');
         $body = $this->getResponse()->getBody();
         $this->assertEquals('Changes to patient 1001303 saved.', $body, 'simple-api: Changed patient failed');
-        //$this->saveTables(['gems__respondents', 'gems__respondent2org'], 'RespondentControllerTest_testSimpleApi3');        
+        //$this->saveTables(['gems__respondents', 'gems__respondent2org'], 'RespondentControllerTest_testSimpleApi3');
     }
-    
+
     /**
      * Check the merge function of the simple api
-     * 
+     *
      * When only old or new number exists, just update the pid if needed
      * When both exist, make sure all related records are merged
-     * 
+     *
      * @dataProvider MergeProvider
      */
     public function testSimpleApiMerge($oldPid, $newPid, $result)
-    {        
+    {
         $params = [
             'gr2o_patient_nr'      => $newPid,
             'gr2o_id_organization' => 70,
@@ -161,16 +135,16 @@ class RespondentControllerTest extends ControllerTestAbstract {
             // Just for the unit test as we don't have a default value
             'gr2o_opened_by'       => '0',
         ];
-        
+
         $params['oldpid'] = $oldPid;
         $req = $this->getRequest();
         $req->setParams($params);
         $this->dispatch('/respondent/simple-api');
         $body = $this->getResponse()->getBody();
         $this->assertContains($result, $body, 'simple-api: Merge patient failed');
-        //$this->saveTables(['gems__respondents', 'gems__respondent2org'], 'RespondentControllerTest_testSimpleApi3');        
+        //$this->saveTables(['gems__respondents', 'gems__respondent2org'], 'RespondentControllerTest_testSimpleApi3');
     }
-    
+
     public function mergeProvider()
     {
         return [

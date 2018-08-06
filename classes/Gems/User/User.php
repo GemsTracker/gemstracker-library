@@ -15,7 +15,7 @@ use Zend\Authentication\Result;
 use Zend\Authentication\Adapter\AdapterInterface;
 
 /**
- * User object that mimicks the old $this->session behaviour
+ * User object that mimmicks the old $this->session behaviour
  *
  * @package    Gems
  * @subpackage User
@@ -57,6 +57,12 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     protected $acl;
 
     /**
+     *
+     * @var \Gems_Util_BasePath
+     */
+    protected $basepath;
+
+    /**
      * Required
      *
      * @var \Zend_Db_Adapter_Abstract
@@ -95,6 +101,12 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      * @var \Gems_Loader
      */
     protected $loader;
+
+    /**
+     *
+     * @var \Zend_Locale
+     */
+    protected $locale;
 
     /**
      * Array containing the parameter names that may point to an organization
@@ -1840,6 +1852,9 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
                 $this->_vars->__set($name, $value);
             }
 
+            // Perform the interface switch
+            $this->switchLocale();
+
             if ($signalLoader) {
                 $this->userLoader->setCurrentUser($this);
             }
@@ -2057,6 +2072,25 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         return $this;
     }
 
+    /**
+     * Switch to new locale
+     *
+     * @param string $locale Current if omitted
+     * @return boolean true if cookie was set
+     */
+    public function switchLocale($locale = null)
+    {
+        if (null === $locale) {
+            $locale = $this->getLocale();
+        } elseif ($this->getLocale() != $locale) {
+            $this->setLocale($locale);
+        }
+
+        $this->locale->setLocale($locale);
+        $this->translateAdapter->setLocale($locale);
+
+        return \Gems_Cookies::setLocale($locale, $this->basepath->getBasePath());
+    }
 
     /**
      * Unsets this user as the current user.
