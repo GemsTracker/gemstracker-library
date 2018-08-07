@@ -213,7 +213,7 @@ class Form
         }
 
         if (!isset($this->instance['token'])) {
-            $mainSql .= "  " . $this->db->quoteIdentifier('token') . " varchar(9) DEFAULT NOT NULL,\n";
+            $mainSql .= "  " . $this->db->quoteIdentifier('token') . " varchar(9) DEFAULT NULL,\n";
         }
 
         foreach ($this->instance as $name => $element) {
