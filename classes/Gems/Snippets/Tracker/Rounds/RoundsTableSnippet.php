@@ -99,8 +99,7 @@ class RoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
         if ($menuItems) {
             $menuItem = reset($menuItems);
             if ($menuItem instanceof \Gems_Menu_SubMenuItem) {
-                $href = false;
-                //$href = $menuItem->toHRefAttribute($bridge);
+                $href = $menuItem->toHRefAttribute(['id' => $bridge->getLazy('gro_id_survey')]);
 
                 if ($href) {
                     $aElem = new \MUtil_Html_AElement($href);
