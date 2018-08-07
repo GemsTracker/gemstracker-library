@@ -528,7 +528,9 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
      */
     protected function createRoundModel()
     {
-        return new RoundModel($this->db);
+        $roundModel = new RoundModel();
+        $roundModel->answerRegistryRequest('db', $this->db);
+        return $roundModel;
     }
 
     /**
