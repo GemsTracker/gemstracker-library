@@ -32,6 +32,18 @@ CREATE TABLE questions (
 	PRIMARY KEY (qid,language)
 );
 
+CREATE TABLE answers (
+	qid int(11) NOT NULL DEFAULT 0,
+        code varchar(5) DEFAULT NULL,
+	answer text DEFAULT NULL,
+        sortorder int(11) NOT NULL DEFAULT 0,
+	assessment_value int(11) NOT NULL DEFAULT 0,
+	language varchar(20) NOT NULL DEFAULT 'en',
+        scale_id int(11) NOT NULL DEFAULT 0,
+
+	PRIMARY KEY (qid, code, language, scale_id)
+);
+
 CREATE TABLE question_attributes (
 	qaid int(11) NOT NULL,
 	qid int(11) NOT NULL DEFAULT 0,
