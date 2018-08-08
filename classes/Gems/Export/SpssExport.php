@@ -59,12 +59,12 @@ class SpssExport extends ExportAbstract
     public function getName() {
         return 'SPSS Export';
     }
-    
+
     public function addFooter($filename)
     {
         parent::addFooter($filename);
         if ($model = $this->getModel()) {
-            $this->addSpssFile($filename);            
+            $this->addSpssFile($filename);
         }
     }
 
@@ -100,7 +100,7 @@ class SpssExport extends ExportAbstract
                         $changed = true;
                     }
                     break;
-                
+
                 case \MUtil_Model::TYPE_STRING:
                     $size = (int) $this->model->get($name, 'maxlength');
                     if (mb_strlen($value)>$size) {
@@ -115,7 +115,7 @@ class SpssExport extends ExportAbstract
         }
         fputcsv($file, $exportRow, $this->delimiter, "'");
         if ($changed) {
-            $this->batch->setVariable('model', $model);
+            $this->batch->setVariable('model', $this->model);
         }
     }
 
@@ -124,16 +124,16 @@ class SpssExport extends ExportAbstract
      */
     protected function addSpssFile($filename)
     {
-        $spsFileName         = substr($filename, - strlen($this->fileExtension)) . '.sps';
-        $model               = $this->model;
-        $files               = $this->getFiles();
-        $files[$spsFileName] = $spsFileName;
+        $model       = $this->model;
+        $files       = $this->getFiles();
+        $datFileName = array_search($filename, $files);
+        $spsFileName = substr($datFileName, 0, -strlen($this->fileExtension)) . '.sps';
+        $tmpFileName = substr($filename, 0, -strlen($this->fileExtension)) . '.sps';
 
-        $this->batch->setSessionVariable('files', $files);        
-        $this->addHeader($spsFileName);
-
-        $file        = fopen($spsFileName, 'a');
-        $filenameDat = $filename;
+        $this->files[$spsFileName] = $tmpFileName;
+        $this->batch->setSessionVariable('files', $this->files);
+        $this->addHeader($tmpFileName);
+        $file = fopen($tmpFileName, 'a');
 
         //first output our script
         fwrite($file,
@@ -144,7 +144,7 @@ SET LOCALE='en_UK'.
 
 GET DATA
  /TYPE=TXT
- /FILE=\"" . $filenameDat . "\"
+ /FILE=\"" . $datFileName . "\"
  /DELCASE=LINE
  /DELIMITERS=\"".$this->delimiter."\"
  /QUALIFIER=\"'\"
@@ -236,7 +236,7 @@ GET DATA
                 fwrite($file, ".\n\n");
             }
         }
-        
+
         fwrite($file, "RESTORE LOCALE.\n");
 
         fclose($file);
@@ -288,7 +288,7 @@ GET DATA
     protected function preprocessModel()
     {
         parent::preprocessModel();
-        
+
         $labeledCols = $this->getLabeledColumns();
         foreach($labeledCols as $columnName) {
             $options = array();
