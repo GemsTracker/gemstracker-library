@@ -116,7 +116,8 @@ class Gems_Selector_TokenDateSelector extends \Gems_Selector_DateSelectorAbstrac
         $select->join('gems__surveys',         'gto_id_survey = gsu_id_survey', array());
         $select->join('gems__groups',          'gsu_id_primary_group = ggp_id_group', array());
         $select->join('gems__respondents',     'gto_id_respondent = grs_id_user', array());
-        $select->join('gems__respondent2track','gto_id_respondent_track = gr2t_id_respondent_track', array());
+        $select->join('gems__respondent2org',  '(gto_id_organization = gr2o_id_organization AND gto_id_respondent = gr2o_id_user)', array());
+        $select->join('gems__respondent2track','gto_id_respondent_track = gr2t_id_respondent_track', array());        
         $select->join('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', array());
     }
 
