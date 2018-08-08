@@ -703,8 +703,30 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                     $tmpres = $tmpres + $dateFormats;
                 }
             }
+            
+            if ($options = $this->_getMultiOptions($field)) {
+                $tmpres['multiOptions'] = $options;
+                
+                // Limesurvey defines numeric options as string, maybe we can convert it back
+                if ($tmpres['type'] === \MUtil_Model::TYPE_STRING) {
+                    $changeType = true;
+                    foreach(array_keys($options) as $key) {
+                        // But if we find a numeric = false, we leave as is
+                        if(!is_numeric($key)) {
+                            $changeType = false;
+                            break;
+                        }
+                    }
+                    if ($changeType == true) {
+                        $tmpres['type'] = \MUtil_Model::TYPE_NUMERIC;
+                    }
+                }
+            }
 
-            // \MUtil_Echo::track($field);
+            if ($tmpres['type'] === \MUtil_Model::TYPE_NUMERIC) {
+                $tmpres['formatFunction'] = array($this, 'handleFloat');
+            }
+
             $oldQuestion = isset($oldfld['question']) ? $oldfld['question'] : null;
             if (isset($field['question']) && (! isset($oldfld) || $oldQuestion !== $field['question'])) {
                 $tmpres['label'] = \MUtil_Html::raw($this->removeMarkup($field['question']));
@@ -733,9 +755,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                 }
                 $tmpres['thClass'] = \Gems_Tracker_SurveyModel::CLASS_SUB_QUESTION;
             }
-            if ($options = $this->_getMultiOptions($field)) {
-                $tmpres['multiOptions'] = $options;
-            }
+            
             // Code does not have to be unique. So if a title is used
             // twice we only use it for the first result.
             if (isset($field['code']) && (! $model->has($field['code']))) {
@@ -971,6 +991,16 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
         // \MUtil_Echo::track($results);
 
         return $results;
+    }
+    
+    /**
+     * Function to cast numbers as float, but leave null intact
+     * @param  The number to cast to float
+     * @return float
+     */
+    public function handleFloat($value)
+    {
+        return is_null($value) ? null : (float)$value;
     }
 
     protected function loadTableMetaData()

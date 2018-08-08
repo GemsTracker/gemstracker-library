@@ -59,19 +59,12 @@ class SpssExport extends ExportAbstract
     public function getName() {
         return 'SPSS Export';
     }
-
-    /**
-     * Add an export command with specific details. Can be batched.
-     * @param array $data    Data submitted by export form
-     * @param array $modelId Model Id when multiple models are passed
-     */
-    public function addExport($data, $modelId=false)
+    
+    public function addFooter($filename)
     {
-        parent::addExport($data, $modelId);
+        parent::addFooter($filename);
         if ($model = $this->getModel()) {
-            $this->addSpssFile();
-
-            $this->batch->setSessionVariable('files', $this->files);
+            $this->addSpssFile($filename);            
         }
     }
 
@@ -97,22 +90,50 @@ class SpssExport extends ExportAbstract
         $exportRow = $this->filterRow($row);
         $labeledCols = $this->getLabeledColumns();
         $exportRow = array_replace(array_flip($labeledCols), $exportRow);
+        $changed = false;
+        foreach ($exportRow as $name => $value) {
+            $type = $this->model->get($name, 'type');
+            switch ($type) {
+                case \MUtil_Model::TYPE_NUMERIC:
+                    if (!is_numeric($value)) {
+                        $this->model->set($name, 'type', \MUtil_Model::TYPE_STRING);
+                        $changed = true;
+                    }
+                    break;
+                
+                case \MUtil_Model::TYPE_STRING:
+                    $size = (int) $this->model->get($name, 'maxlength');
+                    if (mb_strlen($value)>$size) {
+                        $this->model->set($name, 'maxlength', mb_strlen($value));
+                        $changed = true;
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
         fputcsv($file, $exportRow, $this->delimiter, "'");
+        if ($changed) {
+            $this->batch->setVariable('model', $model);
+        }
     }
 
     /**
      * Creates a correct SPSS file and adds it to the Files array
      */
-    protected function addSpssFile()
+    protected function addSpssFile($filename)
     {
-        $model = $this->model;
+        $spsFileName         = substr($filename, - strlen($this->fileExtension)) . '.sps';
+        $model               = $this->model;
+        $files               = $this->getFiles();
+        $files[$spsFileName] = $spsFileName;
 
-        $this->files[$this->filename.'.sps'] = $this->tempFilename . '.sps';
-        $this->addHeader($this->tempFilename . '.sps');
+        $this->batch->setSessionVariable('files', $files);        
+        $this->addHeader($spsFileName);
 
-        $file = fopen($this->tempFilename . '.sps', 'a');
-
-        $filenameDat = $this->filename . $this->fileExtension;
+        $file        = fopen($spsFileName, 'a');
+        $filenameDat = $filename;
 
         //first output our script
         fwrite($file,
@@ -134,9 +155,9 @@ GET DATA
 
 
         $labeledCols = $this->getLabeledColumns();
-        $labels     = array();
-        $types      = array();
-        $fixedNames = array();
+        $labels      = array();
+        $types       = array();
+        $fixedNames  = array();
         //$questions  = $survey->getQuestionList($language);
         foreach ($labeledCols as $colname) {
 
