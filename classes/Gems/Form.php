@@ -162,6 +162,7 @@ class Gems_Form extends \MUtil_Form
      *
      * @param mixed $submitUrl Url as \MUtil_Html_UrlArrayAttribute, array or string
      * @param mixed $targetId Id of html element whose content is replaced by the submit result: \MUtil_Html_ElementInterface or string
+     * @param boolean $selective When true autosubmit is applied only to elements with the CSS class autosubmit
      */
     public function setAutoSubmit($submitUrl, $targetId, $selective = false)
     {
