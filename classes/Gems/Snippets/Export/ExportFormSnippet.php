@@ -6,7 +6,11 @@ use MUtil\Snippets\SnippetAbstract;
 
 class ExportFormSnippet extends \MUtil_Snippets_SnippetAbstract
 {
-	public $loader;
+    /**
+     *
+     * @var \Gems_Loader
+     */
+    public $loader;
 
     public $request;
 

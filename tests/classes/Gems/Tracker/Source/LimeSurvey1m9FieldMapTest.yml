@@ -146,6 +146,92 @@ questions:
     scale_id: 0
     same_default: 0
     relevance: 1
+  -
+    qid: 9
+    parent_qid: 0
+    sid: 1
+    gid: 1
+    type: "T"
+    title: "text"
+    question: "Enter some text"
+    preg: ""
+    help: ""
+    other: "N"
+    mandatory: "N"
+    question_order: 1
+    language: "en"
+    scale_id: 0
+    same_default: 0
+    relevance: 1
+  -
+    qid: 10
+    parent_qid: 0
+    sid: 1
+    gid: 1
+    type: "L"
+    title: "list"
+    question: "Choose one"
+    preg: ""
+    help: ""
+    other: "N"
+    mandatory: "N"
+    question_order: 2
+    language: "en"
+    scale_id: 0
+    same_default: 0
+    relevance: 1
+  -
+    qid: 11
+    parent_qid: 0
+    sid: 1
+    gid: 1
+    type: "L"
+    title: "list2"
+    question: "Choose one"
+    preg: ""
+    help: ""
+    other: "N"
+    mandatory: "N"
+    question_order: 3
+    language: "en"
+    scale_id: 0
+    same_default: 0
+    relevance: 1
+    
+answers:
+  -
+    qid: 10
+    code: 1
+    answer: "Yes"
+    sortorder: 1
+    assessment_value: 0
+    language: "en"
+    scale_id: 0
+  -
+    qid: 10
+    code: 2
+    answer: "No"
+    sortorder: 1
+    assessment_value: 0
+    language: "en"
+    scale_id: 0
+  -
+    qid: 11
+    code: 1
+    answer: "Yes"
+    sortorder: 1
+    assessment_value: 0
+    language: "en"
+    scale_id: 0
+  -
+    qid: 11
+    code: "a"
+    answer: "No"
+    sortorder: 1
+    assessment_value: 0
+    language: "en"
+    scale_id: 0    
+    
 
 question_attributes:
   -

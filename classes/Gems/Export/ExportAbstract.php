@@ -18,7 +18,7 @@ namespace Gems\Export;
  * @license    New BSD License
  * @since      Class available since version 1.7.1
  */
-abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
+abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract implements ExportInterface
 {
     /**
      * @var \Zend_Session_Namespace    Own session used for non-batch exports
@@ -135,7 +135,9 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
     /**
      * @return array Default values in form
      */
-    public function getDefaultFormValues() {}
+    public function getDefaultFormValues() {
+        return [];
+    }
 
     /**
      * Add an export command with specific details. Can be batched.
@@ -144,7 +146,6 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
      */
     public function addExport($data, $modelId = false)
     {
-
         $this->files   = $this->getFiles();
         $this->data    = $data;
         $this->modelId = $modelId;
@@ -168,8 +169,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
                 $this->batch->addTask('Export_ExportCommand', $data['type'], 'addFooter', $this->tempFilename . $this->fileExtension);
                 $this->batch->setSessionVariable('files', $this->files);
             } else {
-                $this->addFooter($this->tempFilename . $this->fileExtension);
-                $this->_session        = new \Zend_Session_Namespace(__CLASS__);
+                $this->addFooter($this->tempFilename . $this->fileExtension);                
                 $this->_session->files = $this->files;
             }
         }
@@ -231,6 +231,14 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
                 $this->addRow($row, $file);
             }
             fclose($file);
+        }
+    }
+    
+    public function afterRegistry() {
+        parent::afterRegistry();
+        
+        if (!$this->batch) {
+            $this->_session = new \Zend_Session_Namespace(__CLASS__);
         }
     }
 
@@ -508,9 +516,13 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
      * Get the model to export
      * @return \MUtil_Model_ModelAbstract
      */
-    protected function getModel()
+    public function getModel()
     {
-        $model = $this->batch->getVariable('model');
+        if ($this->batch) {
+            $model = $this->batch->getVariable('model');
+        } else {
+            $model = $this->_session->model;
+        }
         if (is_array($model)) {
             if ($this->modelId && isset($model[$this->modelId])) {
                 $model = $model[$this->modelId];
@@ -562,6 +574,18 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract
     public function setBatch(\Gems_Task_TaskRunnerBatch $batch)
     {
         $this->batch = $batch;
+    }
+    
+    /**
+     * Set the model when not in batch mode
+     * 
+     * @param \MUtil_Model_ModelAbstract $model
+     */
+    public function setModel(\MUtil_Model_ModelAbstract $model)
+    {
+        if ($this->_session) {
+            $this->_session->model = $model;
+        }
     }
 
 }

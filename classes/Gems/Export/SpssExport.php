@@ -108,7 +108,11 @@ class SpssExport extends ExportAbstract
         }
         fputcsv($file, $exportRow, $this->delimiter, "'");
         if ($changed) {
-            $this->batch->setVariable('model', $this->model);
+            if ($this->batch) {
+                $this->batch->setVariable('model', $this->model);
+            } else {
+                $this->_session->model = $this->model;
+            }
         }
     }
 
@@ -124,7 +128,11 @@ class SpssExport extends ExportAbstract
         $tmpFileName = substr($filename, 0, -strlen($this->fileExtension)) . '.sps';
 
         $this->files[$spsFileName] = $tmpFileName;
-        $this->batch->setSessionVariable('files', $this->files);
+        if ($this->batch) {
+                $this->batch->setSessionVariable('files', $this->files);
+            } else {
+                $this->_session->files = $this->files;
+            }
         $this->addHeader($tmpFileName);
         $file = fopen($tmpFileName, 'a');
 

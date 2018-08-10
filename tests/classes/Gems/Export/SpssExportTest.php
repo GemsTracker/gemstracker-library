@@ -75,15 +75,41 @@ class SpssExportTest extends \Gems_Test_DbTestAbstract
         return $translate;
     }
     
-    public function testNumericOptions()
+    public function testExport()
     {
         // Create a simple array model to apply to fieldmap to
         $array = array('test' => 123);
-        $model = new \Gems_Model_PlaceholderModel('test', $array); 
-        $this->fieldmap->applyToModel($model);        
-
-        $this->assertEquals(\MUtil_Model::TYPE_NUMERIC, $model->get('list', 'type'));
-        $this->assertEquals(\MUtil_Model::TYPE_STRING, $model->get('list2', 'type'));
+        $data  = [
+            [
+                'startdate' => '2018-08-10',
+                'submitdate' => '2018-08-10',
+                'datestamp' => '2018-08-10',
+                'text' => 'some text',
+                'list' => 1,
+                'list2' => 'a'
+            ]
+        ];
+        $model = new \Gems_Model_PlaceholderModel('test', $array, $data); 
+        $this->fieldmap->applyToModel($model);
+        
+        $export = $this->loader->getExport()->getExport('SpssExport');
+        $options = $export->getDefaultFormValues();
+        $export->setModel($model);
+        $export->addExport($options);
+        $file = $export->finalizeFiles();
+        
+        // Extract
+        $sps = file_get_contents('zip://'. $file['file'] . '#test.sps');
+        $dat = file_get_contents('zip://'. $file['file'] . '#test.dat');
+        
+        // Cleanup in case tests fail
+        unlink($file['file']);
+        
+        // Check
+        $expectedDat = file_get_contents(GEMS_TEST_DIR . '/data/export/test.dat');
+        $this->assertEquals($dat, $expectedDat);
+        
+        $expectedSps = file_get_contents(GEMS_TEST_DIR . '/data/export/test.sps');
+        $this->assertEquals($sps, $expectedSps);        
     }
-
 }

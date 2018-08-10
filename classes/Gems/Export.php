@@ -96,7 +96,7 @@ class Gems_Export extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @return \Gems_Export_ExportInterface
+     * @return \Gems\Export\ExportInterface
      */
     public function getExport($type)
     {
