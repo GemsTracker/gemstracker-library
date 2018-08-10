@@ -93,24 +93,17 @@ class SpssExport extends ExportAbstract
         $changed = false;
         foreach ($exportRow as $name => $value) {
             $type = $this->model->get($name, 'type');
-            switch ($type) {
-                case \MUtil_Model::TYPE_NUMERIC:
-                    if (!is_numeric($value)) {
-                        $this->model->set($name, 'type', \MUtil_Model::TYPE_STRING);
-                        $changed = true;
-                    }
-                    break;
-
-                case \MUtil_Model::TYPE_STRING:
-                    $size = (int) $this->model->get($name, 'maxlength');
-                    if (mb_strlen($value)>$size) {
-                        $this->model->set($name, 'maxlength', mb_strlen($value));
-                        $changed = true;
-                    }
-                    break;
-
-                default:
-                    break;
+            if ($type == \MUtil_Model::TYPE_NUMERIC && !is_numeric($value)) {
+                $this->model->set($name, 'type', \MUtil_Model::TYPE_STRING);
+                $changed = true;
+            }
+            
+            if ($type == \MUtil_Model::TYPE_STRING) {
+                $size = (int) $this->model->get($name, 'maxlength');
+                if (mb_strlen($value)>$size) {
+                    $this->model->set($name, 'maxlength', mb_strlen($value));
+                    $changed = true;
+                }
             }
         }
         fputcsv($file, $exportRow, $this->delimiter, "'");
