@@ -138,21 +138,20 @@ class SpssExport extends ExportAbstract
 
         //first output our script
         fwrite($file,
-            "SET UNICODE=ON.
-SHOW LOCALE.
-PRESERVE LOCALE.
-SET LOCALE='en_UK'.
-
-GET DATA
- /TYPE=TXT
- /FILE=\"" . $datFileName . "\"
- /DELCASE=LINE
- /DELIMITERS=\"".$this->delimiter."\"
- /QUALIFIER=\"'\"
- /ARRANGEMENT=DELIMITED
- /FIRSTCASE=1
- /IMPORTCASE=ALL
- /VARIABLES=");
+            "SET UNICODE=ON.\n" .
+            "SHOW LOCALE.\n" .
+"PRESERVE LOCALE.\n" .
+"SET LOCALE='en_UK'.\n\n" .
+"GET DATA\n" .
+" /TYPE=TXT\n" .
+" /FILE=\"" . $datFileName . "\"\n" .
+" /DELCASE=LINE\n" .
+" /DELIMITERS=\"".$this->delimiter."\"\n" .
+" /QUALIFIER=\"'\"\n" .
+" /ARRANGEMENT=DELIMITED\n" .
+" /FIRSTCASE=1\n" .
+" /IMPORTCASE=ALL\n" .
+" /VARIABLES=");
 
 
         $labeledCols = $this->getLabeledColumns();

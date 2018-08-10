@@ -107,9 +107,12 @@ class SpssExportTest extends \Gems_Test_DbTestAbstract
         
         // Check
         $expectedDat = file_get_contents(GEMS_TEST_DIR . '/data/export/test.dat');
+        $expectedDat = preg_replace('~\r\n?~', "\n", $expectedDat);
+        
         $this->assertEquals($dat, $expectedDat);
         
         $expectedSps = file_get_contents(GEMS_TEST_DIR . '/data/export/test.sps');
+        $expectedSps = preg_replace('~\r\n?~', "\n", $expectedSps);
         $this->assertEquals($sps, $expectedSps);        
     }
 }
