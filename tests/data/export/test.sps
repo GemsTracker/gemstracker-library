@@ -14,17 +14,23 @@ GET DATA
  /IMPORTCASE=ALL
  /VARIABLES=
  text A9
- list F5.4.
+ list F5.4
+ list2 A1.
 CACHE.
 EXECUTE.
 
 *Define variable labels.
 VARIABLE LABELS text 'Enter some text'.
 VARIABLE LABELS list 'Choose one'.
+VARIABLE LABELS list2 'Choose something'.
 
 *Define value labels.
 VALUE LABELS list
 1 'Yes'
 2 'No'.
+
+VALUE LABELS list2
+"1" 'Yes'
+"a" 'No'.
 
 RESTORE LOCALE.

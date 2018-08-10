@@ -51,7 +51,7 @@ questions:
     gid: 1
     type: "L"
     title: "list2"
-    question: "Choose one"
+    question: "Choose something"
     preg: ""
     help: ""
     other: "N"
