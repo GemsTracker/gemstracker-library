@@ -1,6 +1,6 @@
 <?php
 
-class Gems_Tracker_Source_LimeSurvey1m9FieldMapTest extends \Gems_Test_DbTestAbstract {
+class Gems_Tracker_Source_ExtraMapTest extends \Gems_Test_DbTestAbstract {
 
     protected function setUp() {
         // \Zend_Application: loads the autoloader
