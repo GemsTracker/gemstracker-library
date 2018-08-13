@@ -161,33 +161,31 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
      * Uses 1 query to retrieve all answers and serves them as needed
      *
      * @param integer    $qid        Question ID
-     * @param integer    $scale_id    Scale ID
+     * @param integer    $scaleId    Scale ID
      */
-    private function _getHardAnswers($qid, $scale_id)
+    private function _getHardAnswers($qid, $scaleId)
     {
         if (! is_array($this->_hardAnswers)) {
-
             $qaTable = $this->_getAnswersTableName();
             $qTable  = $this->_getQuestionsTableName();
 
             $sql = 'SELECT a.*, q.other FROM ' . $qaTable . ' AS a
                 LEFT JOIN ' . $qTable . ' AS q ON q.qid = a.qid AND q.language = a.language
                 WHERE q.sid = ? AND q.language = ? ORDER BY a.qid, a.scale_id, sortorder';
-
+            
+            $this->_hardAnswers = array();
             if ($rows = $this->lsDb->fetchAll($sql, array($this->sourceSurveyId, $this->language))) {
                 foreach ($rows as $row) {
                     $this->_hardAnswers[$row['qid']][$row['scale_id']][$row['code']] = $row['answer'];
                     if ($row['other']=='Y') {
-                        $this->_hardAnswers[$row['qid']][$row['scale_id']]['-oth-'] =  $this->_getQuestionAttribute($row['qid'], 'other_replace_text', $this->translate->_('Other'));;
+                        $this->_hardAnswers[$row['qid']][$row['scale_id']]['-oth-'] =  $this->_getQuestionAttribute($row['qid'], 'other_replace_text', $this->translate->_('Other'));
                     }
                 }
-            } else {
-                $this->_hardAnswers = array();
             }
         }
 
-        if (array_key_exists($qid, $this->_hardAnswers) && array_key_exists($scale_id, $this->_hardAnswers[$qid])) {
-            return $this->_hardAnswers[$qid][$scale_id];
+        if (array_key_exists($qid, $this->_hardAnswers) && array_key_exists($scaleId, $this->_hardAnswers[$qid])) {
+            return $this->_hardAnswers[$qid][$scaleId];
         }
 
         return false;
