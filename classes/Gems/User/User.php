@@ -1900,7 +1900,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     public function setCurrentOrganization($organization)
     {
         if (!($organization instanceof \Gems_User_Organization)) {
-            $organization   = $this->userLoader->getOrganization($organizationId);
+            $organization = $this->userLoader->getOrganization($organization);
         }
         
         $organizationId    = $organization->getId();
