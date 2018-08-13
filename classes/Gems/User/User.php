@@ -172,6 +172,32 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         }
         $this->definition = $definition;
     }
+    
+    /**
+     * Helper function for setcurrentOrganization
+     * 
+     * Change value to $newId in an array if the key is in the $keys array (as key) and value is $oldId
+     * 
+     * @param array $array
+     * @param int $oldId
+     * @param int $newId
+     * @param array $keys
+     * @return array
+     */
+    protected function _changeIds($array, $oldId, $newId, $keys) {
+        if (!is_array($array)) {
+            return $array;
+        }
+               
+        $matches = array_intersect_key($array, $keys);
+        foreach($matches as $key => &$curId) {
+            if ($curId == $oldId) {
+                $array[$key] = $newId;
+            }
+        }
+                
+        return $array;
+    }
 
     /**
      * Get a role with a check on the value in case of integers
@@ -932,7 +958,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     /**
      * Return true if this user has a password.
      *
-     * @return boolean
+     * @return string
      */
     public function getEmailAddress()
     {
@@ -1873,19 +1899,16 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      */
     public function setCurrentOrganization($organization)
     {
-        if ($organization instanceof \Gems_User_Organization) {
-            $organizationId = $organization->getId();
-        } else {
-            $organizationId = $organization;
-            $organization = $this->userLoader->getOrganization($organizationId);
+        if (!($organization instanceof \Gems_User_Organization)) {
+            $organization   = $this->userLoader->getOrganization($organizationId);
         }
-
+        
+        $organizationId    = $organization->getId();
         $oldOrganizationId = $this->getCurrentOrganizationId();
+        
+        if ($organizationId != $oldOrganizationId) {
+            $this->_setVar('user_organization_id', $organizationId);
 
-        if ($organizationId) {
-            if ($organizationId != $oldOrganizationId) {
-                $this->_setVar('user_organization_id', $organizationId);
-            }
             if ($this->isCurrentUser()) {
                 $this->getCurrentOrganization()->setAsCurrentOrganization();
 
@@ -1897,35 +1920,20 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
 
                 // Now update the requestcache to change the oldOrgId to the new orgId
                 // Don't do it when the oldOrgId doesn't match
-                if ($requestCache = $this->session->requestCache) {
-                    //Create the list of request cache keys that match an organization ID (to be extended)
-                    foreach ($requestCache as $key => $value) {
-                        if (is_array($value)) {
-                            foreach ($value as $paramKey => $paramValue) {
-                                if (in_array($paramKey, $this->possibleOrgIds)) {
-
-                                    if ($paramValue == $oldOrganizationId) {
-                                        $requestCache[$key][$paramKey] = $usedOrganizationId;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    $this->session->requestCache = $requestCache;
+                $keysArray = array_flip($this->possibleOrgIds);
+                $requestCache = $this->session->requestCache;
+                foreach ($requestCache as $key => &$elements) {
+                    $elements = $this->_changeIds($elements, $oldOrganizationId, $usedOrganizationId, $keysArray);
                 }
+                $this->session->requestCache = $requestCache;        
+                
                 // $searchSession &= $_SESSION['ModelSnippetActionAbstract_getSearchData'];
                 $searchSession = new \Zend_Session_Namespace('ModelSnippetActionAbstract_getSearchData');
                 foreach ($searchSession as $id => $data) {
-                    foreach ($this->possibleOrgIds as $key) {
-                        // WARNING: use {$id}[$key] otherwise the {$id[$key]} index of searchSession is returned
-                        if (isset($searchSession->{$id}[$key]) && ($searchSession->{$id}[$key] == $oldOrganizationId)) {
-                            $searchSession->{$id}[$key] = $usedOrganizationId;
-                            // \MUtil_Echo::track($key, $data[$key], $searchSession->{$id}[$key]);
-                        }
-                    }
+                    $searchSession->$id = $this->_changeIds($data, $oldOrganizationId, $usedOrganizationId, $keysArray);
                 }
             }
-        }
+        }    
 
         return $this;
     }
