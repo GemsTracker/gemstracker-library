@@ -49,30 +49,6 @@ answers:
   language: "de-informal"
   scale_id: 0
 -
-  qid: 194
-  code: "A3"
-  answer: "Troisième option de réponse"
-  sortorder: 3
-  assessment_value: 1
-  language: "fr"
-  scale_id: 0
--
-  qid: 193
-  code: "A3"
-  answer: "Troisième option de réponse"
-  sortorder: 3
-  assessment_value: 1
-  language: "fr"
-  scale_id: 0
--
-  qid: 192
-  code: "A23"
-  answer: "deuxième catégorie - Troisième option de réponse"
-  sortorder: 7
-  assessment_value: 1
-  language: "fr"
-  scale_id: 0
--
   qid: 192
   code: "A23"
   answer: "second category - Third answer option"
@@ -123,14 +99,6 @@ answers:
 -
   qid: 192
   code: "A24"
-  answer: "deuxième catégorie - Dernière option de réponse"
-  sortorder: 8
-  assessment_value: 1
-  language: "fr"
-  scale_id: 0
--
-  qid: 192
-  code: "A24"
   answer: "second category - Last answer option"
   sortorder: 8
   assessment_value: 1
@@ -147,14 +115,6 @@ answers:
 -
   qid: 192
   code: "A22"
-  answer: "deuxième catégorie - Nouvelle option de réponse"
-  sortorder: 6
-  assessment_value: 1
-  language: "fr"
-  scale_id: 0
--
-  qid: 192
-  code: "A22"
   answer: "second category - New answer option"
   sortorder: 6
   assessment_value: 1
@@ -163,14 +123,6 @@ answers:
 -
   qid: 201
   code: "A2"
-  answer: "Nouvelle option de réponse"
-  sortorder: 2
-  assessment_value: 1
-  language: "fr"
-  scale_id: 0
--
-  qid: 201
-  code: "A2"
   answer: "New answer option"
   sortorder: 2
   assessment_value: 1
@@ -179,26 +131,10 @@ answers:
 -
   qid: 200
   code: "A2"
-  answer: "Nouvelle option de réponse"
-  sortorder: 2
-  assessment_value: 1
-  language: "fr"
-  scale_id: 0
--
-  qid: 200
-  code: "A2"
   answer: "New answer option"
   sortorder: 2
   assessment_value: 1
   language: "en"
-  scale_id: 0
--
-  qid: 210
-  code: "A13"
-  answer: "Troisième option de réponse - Échelle 1"
-  sortorder: 3
-  assessment_value: 1
-  language: "fr"
   scale_id: 0
 -
   qid: 210
@@ -227,14 +163,6 @@ answers:
 -
   qid: 209
   code: "A13"
-  answer: "Troisième option de réponse - Échelle 1"
-  sortorder: 3
-  assessment_value: 1
-  language: "fr"
-  scale_id: 0
--
-  qid: 209
-  code: "A13"
   answer: "Dritte Antwortoption - Skala 1"
   sortorder: 3
   assessment_value: 1
@@ -255,14 +183,6 @@ answers:
   sortorder: 4
   assessment_value: 1
   language: "de-informal"
-  scale_id: 0
--
-  qid: 215
-  code: "A4"
-  answer: "Dernière option de réponse"
-  sortorder: 4
-  assessment_value: 1
-  language: "fr"
   scale_id: 0
 -
   qid: 215
@@ -289,14 +209,6 @@ answers:
   language: "de-informal"
   scale_id: 0
 -
-  qid: 201
-  code: "A3"
-  answer: "Troisième option de réponse"
-  sortorder: 3
-  assessment_value: 1
-  language: "fr"
-  scale_id: 0
--
   qid: 209
   code: "A13"
   answer: "Third answer option - scale 1"
@@ -311,14 +223,6 @@ answers:
   sortorder: 2
   assessment_value: 1
   language: "de-informal"
-  scale_id: 0
--
-  qid: 209
-  code: "A12"
-  answer: "Nouvelle option de réponse - Échelle 1"
-  sortorder: 2
-  assessment_value: 1
-  language: "fr"
   scale_id: 0
 -
   qid: 209
@@ -351,14 +255,6 @@ answers:
   sortorder: 2
   assessment_value: 1
   language: "de-informal"
-  scale_id: 0
--
-  qid: 210
-  code: "A12"
-  answer: "Nouvelle option de réponse - Échelle 1"
-  sortorder: 2
-  assessment_value: 1
-  language: "fr"
   scale_id: 0
 -
   qid: 210
@@ -403,14 +299,6 @@ answers:
 -
   qid: 213
   code: "A2"
-  answer: "Nouvelle option de réponse"
-  sortorder: 2
-  assessment_value: 1
-  language: "fr"
-  scale_id: 0
--
-  qid: 213
-  code: "A2"
   answer: "Neue Antwortoption"
   sortorder: 2
   assessment_value: 1
@@ -447,14 +335,6 @@ answers:
   sortorder: 5
   assessment_value: 1
   language: "en"
-  scale_id: 0
--
-  qid: 213
-  code: "A4"
-  answer: "Dernière option de réponse"
-  sortorder: 5
-  assessment_value: 1
-  language: "fr"
   scale_id: 0
 -
   qid: 192
@@ -475,14 +355,6 @@ answers:
 -
   qid: 192
   code: "A21"
-  answer: "deuxième catégorie - Un exemple d'option de réponse"
-  sortorder: 5
-  assessment_value: 1
-  language: "fr"
-  scale_id: 0
--
-  qid: 192
-  code: "A21"
   answer: "zweite Kategorie - Beispielantwort"
   sortorder: 5
   assessment_value: 1
@@ -497,14 +369,6 @@ answers:
   language: "en"
   scale_id: 0
 -
-  qid: 193
-  code: "A4"
-  answer: "Dernière option de réponse"
-  sortorder: 4
-  assessment_value: 1
-  language: "fr"
-  scale_id: 0
--
   qid: 194
   code: "A4"
   answer: "Last answer option"
@@ -513,28 +377,12 @@ answers:
   language: "en"
   scale_id: 0
 -
-  qid: 194
-  code: "A4"
-  answer: "Dernière option de réponse"
-  sortorder: 4
-  assessment_value: 1
-  language: "fr"
-  scale_id: 0
--
   qid: 201
   code: "A1"
   answer: "Some example answer option"
   sortorder: 1
   assessment_value: 1
   language: "en"
-  scale_id: 0
--
-  qid: 201
-  code: "A1"
-  answer: "Un exemple d'option de réponse"
-  sortorder: 1
-  assessment_value: 1
-  language: "fr"
   scale_id: 0
 -
   qid: 211
@@ -547,27 +395,11 @@ answers:
 -
   qid: 211
   code: "A1"
-  answer: "Un exemple d'option de réponse"
-  sortorder: 1
-  assessment_value: 1
-  language: "fr"
-  scale_id: 0
--
-  qid: 211
-  code: "A1"
   answer: "Some example answer option"
   sortorder: 1
   assessment_value: 1
   language: "en"
   scale_id: 0
--
-  qid: 209
-  code: "A21"
-  answer: "Un exemple d'option de réponse - Échelle 2"
-  sortorder: 1
-  assessment_value: 1
-  language: "fr"
-  scale_id: 1
 -
   qid: 209
   code: "A21"
@@ -586,36 +418,12 @@ answers:
   scale_id: 1
 -
   qid: 209
-  code: "A22"
-  answer: "Nouvelle option de réponse - Échelle 2"
-  sortorder: 2
-  assessment_value: 1
-  language: "fr"
-  scale_id: 1
--
-  qid: 209
-  code: "A11"
-  answer: "Un exemple d'option de réponse - Échelle 1"
-  sortorder: 1
-  assessment_value: 1
-  language: "fr"
-  scale_id: 0
--
-  qid: 209
   code: "A11"
   answer: "Some example answer option - scale 1"
   sortorder: 1
   assessment_value: 1
   language: "en"
   scale_id: 0
--
-  qid: 210
-  code: "A21"
-  answer: "Un exemple d'option de réponse - Échelle 2"
-  sortorder: 1
-  assessment_value: 1
-  language: "fr"
-  scale_id: 1
 -
   qid: 210
   code: "A21"
@@ -632,22 +440,6 @@ answers:
   assessment_value: 1
   language: "en"
   scale_id: 1
--
-  qid: 210
-  code: "A22"
-  answer: "Nouvelle option de réponse - Échelle 2"
-  sortorder: 2
-  assessment_value: 1
-  language: "fr"
-  scale_id: 1
--
-  qid: 210
-  code: "A11"
-  answer: "Un exemple d'option de réponse - Échelle 1"
-  sortorder: 1
-  assessment_value: 1
-  language: "fr"
-  scale_id: 0
 -
   qid: 210
   code: "A11"
@@ -667,14 +459,6 @@ answers:
 -
   qid: 200
   code: "A1"
-  answer: "Un exemple d'option de réponse"
-  sortorder: 1
-  assessment_value: 1
-  language: "fr"
-  scale_id: 0
--
-  qid: 200
-  code: "A1"
   answer: "Some example answer option"
   sortorder: 1
   assessment_value: 1
@@ -687,14 +471,6 @@ answers:
   sortorder: 1
   assessment_value: 1
   language: "de-informal"
-  scale_id: 0
--
-  qid: 215
-  code: "A1"
-  answer: "Un exemple d'option de réponse"
-  sortorder: 1
-  assessment_value: 1
-  language: "fr"
   scale_id: 0
 -
   qid: 215
@@ -721,14 +497,6 @@ answers:
   language: "en"
   scale_id: 0
 -
-  qid: 215
-  code: "A2"
-  answer: "Nouvelle option de réponse"
-  sortorder: 2
-  assessment_value: 1
-  language: "fr"
-  scale_id: 0
--
   qid: 213
   code: "A1"
   answer: "Beispielantwort"
@@ -743,22 +511,6 @@ answers:
   sortorder: 2
   assessment_value: 1
   language: "en"
-  scale_id: 0
--
-  qid: 211
-  code: "A2"
-  answer: "Nouvelle option de réponse"
-  sortorder: 2
-  assessment_value: 1
-  language: "fr"
-  scale_id: 0
--
-  qid: 192
-  code: "A12"
-  answer: "première catégorie - Nouvelle option de réponse"
-  sortorder: 2
-  assessment_value: 1
-  language: "fr"
   scale_id: 0
 -
   qid: 192
@@ -779,14 +531,6 @@ answers:
 -
   qid: 192
   code: "A13"
-  answer: "première catégorie - Troisième option de réponse"
-  sortorder: 3
-  assessment_value: 1
-  language: "fr"
-  scale_id: 0
--
-  qid: 192
-  code: "A13"
   answer: "erste Kategorie - Dritte Antwortoption"
   sortorder: 3
   assessment_value: 1
@@ -799,14 +543,6 @@ answers:
   sortorder: 4
   assessment_value: 1
   language: "en"
-  scale_id: 0
--
-  qid: 192
-  code: "A14"
-  answer: "première catégorie - Dernière option de réponse"
-  sortorder: 4
-  assessment_value: 1
-  language: "fr"
   scale_id: 0
 -
   qid: 193
@@ -823,14 +559,6 @@ answers:
   sortorder: 2
   assessment_value: 1
   language: "en"
-  scale_id: 0
--
-  qid: 193
-  code: "A2"
-  answer: "Nouvelle option de réponse"
-  sortorder: 2
-  assessment_value: 1
-  language: "fr"
   scale_id: 0
 -
   qid: 193
@@ -855,14 +583,6 @@ answers:
   sortorder: 2
   assessment_value: 1
   language: "en"
-  scale_id: 0
--
-  qid: 194
-  code: "A2"
-  answer: "Nouvelle option de réponse"
-  sortorder: 2
-  assessment_value: 1
-  language: "fr"
   scale_id: 0
 -
   qid: 194
@@ -879,14 +599,6 @@ answers:
   sortorder: 3
   assessment_value: 1
   language: "de-informal"
-  scale_id: 0
--
-  qid: 200
-  code: "A3"
-  answer: "Troisième option de réponse"
-  sortorder: 3
-  assessment_value: 1
-  language: "fr"
   scale_id: 0
 -
   qid: 201
@@ -905,14 +617,6 @@ answers:
   language: "en"
   scale_id: 0
 -
-  qid: 201
-  code: "A4"
-  answer: "Dernière option de réponse"
-  sortorder: 4
-  assessment_value: 1
-  language: "fr"
-  scale_id: 0
--
   qid: 209
   code: "A22"
   answer: "Neue Antwortoption - Skala 2"
@@ -928,14 +632,6 @@ answers:
   assessment_value: 1
   language: "en"
   scale_id: 1
--
-  qid: 209
-  code: "A14"
-  answer: "Dernière option de réponse - Échelle 1"
-  sortorder: 4
-  assessment_value: 1
-  language: "fr"
-  scale_id: 0
 -
   qid: 210
   code: "A22"
@@ -953,14 +649,6 @@ answers:
   language: "en"
   scale_id: 1
 -
-  qid: 210
-  code: "A14"
-  answer: "Dernière option de réponse - Échelle 1"
-  sortorder: 4
-  assessment_value: 1
-  language: "fr"
-  scale_id: 0
--
   qid: 211
   code: "A3"
   answer: "Dritte Antwortoption"
@@ -969,28 +657,12 @@ answers:
   language: "de-informal"
   scale_id: 0
 -
-  qid: 211
-  code: "A3"
-  answer: "Troisième option de réponse"
-  sortorder: 3
-  assessment_value: 1
-  language: "fr"
-  scale_id: 0
--
   qid: 213
   code: "A0"
   answer: "Default option"
   sortorder: 3
   assessment_value: 1
   language: "en"
-  scale_id: 0
--
-  qid: 213
-  code: "A0"
-  answer: "Option par défaut"
-  sortorder: 3
-  assessment_value: 1
-  language: "fr"
   scale_id: 0
 -
   qid: 213
@@ -1017,36 +689,12 @@ answers:
   language: "de-informal"
   scale_id: 0
 -
-  qid: 215
-  code: "A3"
-  answer: "Troisième option de réponse"
-  sortorder: 3
-  assessment_value: 1
-  language: "fr"
-  scale_id: 0
--
-  qid: 213
-  code: "A3"
-  answer: "Troisième option de réponse"
-  sortorder: 4
-  assessment_value: 1
-  language: "fr"
-  scale_id: 0
--
   qid: 213
   code: "A1"
   answer: "Some example answer option"
   sortorder: 1
   assessment_value: 1
   language: "en"
-  scale_id: 0
--
-  qid: 213
-  code: "A1"
-  answer: "Un exemple d'option de réponse"
-  sortorder: 1
-  assessment_value: 1
-  language: "fr"
   scale_id: 0
 -
   qid: 192
@@ -1073,31 +721,7 @@ answers:
   language: "en"
   scale_id: 0
 -
-  qid: 192
-  code: "A11"
-  answer: "première catégorie - Un exemple d'option de réponse"
-  sortorder: 1
-  assessment_value: 1
-  language: "fr"
-  scale_id: 0
--
   qid: 193
-  code: "A1"
-  answer: "Some example answer option"
-  sortorder: 1
-  assessment_value: 1
-  language: "en"
-  scale_id: 0
--
-  qid: 193
-  code: "A1"
-  answer: "Un exemple d'option de réponse"
-  sortorder: 1
-  assessment_value: 1
-  language: "fr"
-  scale_id: 0
--
-  qid: 194
   code: "A1"
   answer: "Some example answer option"
   sortorder: 1
@@ -1107,10 +731,10 @@ answers:
 -
   qid: 194
   code: "A1"
-  answer: "Un exemple d'option de réponse"
+  answer: "Some example answer option"
   sortorder: 1
   assessment_value: 1
-  language: "fr"
+  language: "en"
   scale_id: 0
 -
   qid: 201
@@ -1135,14 +759,6 @@ answers:
   sortorder: 4
   assessment_value: 1
   language: "en"
-  scale_id: 0
--
-  qid: 211
-  code: "A4"
-  answer: "Dernière option de réponse"
-  sortorder: 4
-  assessment_value: 1
-  language: "fr"
   scale_id: 0
 -
   qid: 211
@@ -1195,14 +811,6 @@ answers:
 -
   qid: 209
   code: "A23"
-  answer: "Troisième option de réponse - Échelle 2"
-  sortorder: 3
-  assessment_value: 1
-  language: "fr"
-  scale_id: 1
--
-  qid: 209
-  code: "A23"
   answer: "Dritte Antwortoption - Skala 2"
   sortorder: 3
   assessment_value: 1
@@ -1215,14 +823,6 @@ answers:
   sortorder: 4
   assessment_value: 1
   language: "en"
-  scale_id: 1
--
-  qid: 209
-  code: "A24"
-  answer: "Dernière option de réponse - Échelle 2"
-  sortorder: 4
-  assessment_value: 1
-  language: "fr"
   scale_id: 1
 -
   qid: 209
@@ -1243,14 +843,6 @@ answers:
 -
   qid: 210
   code: "A23"
-  answer: "Troisième option de réponse - Échelle 2"
-  sortorder: 3
-  assessment_value: 1
-  language: "fr"
-  scale_id: 1
--
-  qid: 210
-  code: "A23"
   answer: "Dritte Antwortoption - Skala 2"
   sortorder: 3
   assessment_value: 1
@@ -1267,14 +859,6 @@ answers:
 -
   qid: 210
   code: "A24"
-  answer: "Dernière option de réponse - Échelle 2"
-  sortorder: 4
-  assessment_value: 1
-  language: "fr"
-  scale_id: 1
--
-  qid: 210
-  code: "A24"
   answer: "Letzte Antwortoption - Skala 2"
   sortorder: 4
   assessment_value: 1
@@ -1287,14 +871,6 @@ answers:
   sortorder: 4
   assessment_value: 1
   language: "en"
-  scale_id: 0
--
-  qid: 200
-  code: "A4"
-  answer: "Dernière option de réponse"
-  sortorder: 4
-  assessment_value: 1
-  language: "fr"
   scale_id: 0
 -
   qid: 200
@@ -1325,14 +901,6 @@ groups:
 -
   gid: 8
   sid: 2
-  group_name: "Question de type texte"
-  group_order: 0
-  description: "Ceci est la description du groupe de questions de type texte."
-  language: "fr"
-  randomization_group: ""
--
-  gid: 8
-  sid: 2
   group_name: "Textfragen"
   group_order: 0
   description: "r453q26ier steht die Beschreibung für die Gruppe der Textfragen."
@@ -1348,14 +916,6 @@ groups:
   language: "de-informal"
   randomization_group: ""
   grelevance: ""
--
-  gid: 9
-  sid: 2
-  group_name: "Question de type numérique"
-  group_order: 1
-  description: "Ceci est la description des questions de type numérique"
-  language: "fr"
-  randomization_group: ""
 -
   gid: 9
   sid: 2
@@ -1375,14 +935,6 @@ groups:
 -
   gid: 10
   sid: 2
-  group_name: "Question à réponse unique"
-  group_order: 2
-  description: "Ceci est la description du groupe des questions à réponse unique"
-  language: "fr"
-  randomization_group: ""
--
-  gid: 10
-  sid: 2
   group_name: "Einfachauswahl"
   group_order: 2
   description: "r453q26ier steht die Beschreibung für die Gruppe der Einfachauswahl-Fragen."
@@ -1398,14 +950,6 @@ groups:
   language: "de-informal"
   randomization_group: ""
   grelevance: ""
--
-  gid: 11
-  sid: 2
-  group_name: "QSuestions à réponses multiples"
-  group_order: 3
-  description: "Ceci est la description du groupe des questions à réponses multiples"
-  language: "fr"
-  randomization_group: ""
 -
   gid: 11
   sid: 2
@@ -1430,24 +974,6 @@ groups:
   group_order: 4
   description: "<p>\n	LimeSurvey can use a lot of condition and filter to show or hide question. You an use AND or OR condition. You can use previous question answers and tokens.</p>\n<p>\n	<small>More information : <a href=\"http://manual.limesurvey.org/Conditions_Engine\">Conditions Engine</a> and <a href=\"http://manual.limesurvey.org/Expression_Manager\">expression manager</a></small></p>\n "
   language: "en"
-  randomization_group: ""
-  grelevance: ""
--
-  gid: 12
-  sid: 2
-  group_name: "Conditions and scenario"
-  group_order: 4
-  description: "<p>\n	LimeSurvey peut utiliser de nombreuses conditions et filtres pour masquer certaines questions. Il est possible d'utiliser des conditions de type OR ou AND. Vous pouvez utiliser les réponses précédentes mais aussi les attributs des invitations.</p>\n<p>\n	<small>Plus d'informations : <a href=\"http://manual.limesurvey.org/Conditions_Engine\">le gestionnaire de conditions</a> et le <a href=\"http://manual.limesurvey.org/Expression_Manager\">gestionnaire d'expressions</a></small></p>\n"
-  language: "fr"
-  randomization_group: ""
-  grelevance: ""
--
-  gid: 13
-  sid: 2
-  group_name: "Filtres de tableaux"
-  group_order: 5
-  description: "Vous pouvez afficher ou masquer une série de sous question avec l'attribut <a href=\"http://manual.limesurvey.org/QS:Array_filter\" lang=\"en\" target=\"_blank\">Filtre de tableau</a> et <a href=\"http://manual.limesurvey.org/QS:Array_filter_exclude\" lang=\"en\" target=\"_blank\">Filttre d’exclusion</a>. On utilise le gestionnaire d'expression pour masquer ou montrer les questions correspondantes."
-  language: "fr"
   randomization_group: ""
   grelevance: ""
 -
@@ -1664,22 +1190,6 @@ questions:
   gid: 8
   type: "S"
   title: "S"
-  question: "Zone de texte court"
-  preg: ""
-  help: "Un texte d'aide pour les personnes interrogées."
-  other: "N"
-  mandatory: "N"
-  question_order: 0
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 176
-  parent_qid: 0
-  sid: 2
-  gid: 8
-  type: "S"
-  title: "S"
   question: "Short free text"
   preg: ""
   help: "This is the help text"
@@ -1728,22 +1238,6 @@ questions:
   gid: 8
   type: "T"
   title: "T"
-  question: "Zone de texte long"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 177
-  parent_qid: 0
-  sid: 2
-  gid: 8
-  type: "T"
-  title: "T"
   question: "Langer freier Text"
   preg: ""
   help: ""
@@ -1767,22 +1261,6 @@ questions:
   mandatory: "N"
   question_order: 2
   language: "en"
-  scale_id: 0
-  same_default: 0
--
-  qid: 178
-  parent_qid: 0
-  sid: 2
-  gid: 8
-  type: "U"
-  title: "H"
-  question: "Zone de texte très long"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -1824,22 +1302,6 @@ questions:
   gid: 8
   type: "S"
   title: "S1"
-  question: "Zone de texte court ( Nombres uniquement, avec un minuteur )"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 3
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 179
-  parent_qid: 0
-  sid: 2
-  gid: 8
-  type: "S"
-  title: "S1"
   question: "Kurzer freier Text beschränkt auf numerische Eingaben, mit zusätzlicher Timerfunktion"
   preg: ""
   help: ""
@@ -1863,22 +1325,6 @@ questions:
   mandatory: "N"
   question_order: 4
   language: "en"
-  scale_id: 0
-  same_default: 0
--
-  qid: 180
-  parent_qid: 0
-  sid: 2
-  gid: 8
-  type: "T"
-  title: "T1"
-  question: "Zone de texte long (Lignes à afficher : 2 , Largeur de la zone de saisie : 3, Nombre maximum de caractères : 6)"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 4
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -1920,22 +1366,6 @@ questions:
   gid: 8
   type: "Q"
   title: "Q"
-  question: "Multiples zones de texte court"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 5
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 181
-  parent_qid: 0
-  sid: 2
-  gid: 8
-  type: "Q"
-  title: "Q"
   question: "Mehrfache kurze freie Texte"
   preg: ""
   help: ""
@@ -1959,22 +1389,6 @@ questions:
   mandatory: "N"
   question_order: 6
   language: "en"
-  scale_id: 0
-  same_default: 0
--
-  qid: 182
-  parent_qid: 0
-  sid: 2
-  gid: 8
-  type: "Q"
-  title: "Q1"
-  question: "Multiples zones de texte court (Lignes à afficher : 2, Ordre des réponses aléatoire)"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 6
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -2016,22 +1430,6 @@ questions:
   gid: 8
   type: "Q"
   title: "M2"
-  question: "Multiples zones de texte court, avec des réponses longues (Nombre maximum de caractères: 2, Nombres uniquement, Largeur de la zone de saisie : 2)"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 7
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 183
-  parent_qid: 0
-  sid: 2
-  gid: 8
-  type: "Q"
-  title: "M2"
   question: "Mehrfache kurze freie Texte mit langen Antwortfeldern, maximale Zeichenanzahl = 2, Beschränkung auf numerische Eingaben, Größe Textfeld = 2"
   preg: ""
   help: ""
@@ -2039,22 +1437,6 @@ questions:
   mandatory: "N"
   question_order: 7
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 184
-  parent_qid: 0
-  sid: 2
-  gid: 9
-  type: "N"
-  title: "N"
-  question: "Entrée numérique"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 0
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -2089,23 +1471,6 @@ questions:
   language: "de-informal"
   scale_id: 0
   same_default: 0
--
-  qid: 185
-  parent_qid: 0
-  sid: 2
-  gid: 9
-  type: "K"
-  title: "MN"
-  question: "Multiples entrées numériques"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
-  scale_id: 0
-  same_default: 0
-  relevance: ""
 -
   qid: 185
   parent_qid: 0
@@ -2164,23 +1529,6 @@ questions:
   gid: 9
   type: "K"
   title: "MNM"
-  question: "Multiples entrées numériques (Valeur minimale de la somme : 3, Valeur maximum de la somme : 10, Nombre maximum de caractères :1 )"
-  preg: ""
-  help: "Il est possible d'utiliser les réponses précédentes."
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
-  scale_id: 0
-  same_default: 0
-  relevance: ""
--
-  qid: 186
-  parent_qid: 0
-  sid: 2
-  gid: 9
-  type: "K"
-  title: "MNM"
   question: "Mehrfache numerische Eingabe mit Summe Minimum = 3, Summe Maximum = 10, maximale Zeichen = 1"
   preg: ""
   help: "Übernimmt Werte aus vorheriger Frage mittels SGQA Platzhalter."
@@ -2191,22 +1539,6 @@ questions:
   scale_id: 0
   same_default: 0
   relevance: ""
--
-  qid: 187
-  parent_qid: 0
-  sid: 2
-  gid: 9
-  type: "K"
-  title: "Q2"
-  question: "Multiples entrées numériques (Utiliser un curseur, Précision du curseur : 0.1, Valeurs minimale et maximale, utilisation d'un séparateur de texte )"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 3
-  language: "fr"
-  scale_id: 0
-  same_default: 0
 -
   qid: 187
   parent_qid: 0
@@ -2262,22 +1594,6 @@ questions:
   gid: 10
   type: "Y"
   title: "Y"
-  question: "Oui/Non"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 0
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 188
-  parent_qid: 0
-  sid: 2
-  gid: 10
-  type: "Y"
-  title: "Y"
   question: "Ja/Nein"
   preg: ""
   help: ""
@@ -2285,22 +1601,6 @@ questions:
   mandatory: "N"
   question_order: 0
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 189
-  parent_qid: 0
-  sid: 2
-  gid: 10
-  type: "G"
-  title: "G"
-  question: "Genre"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -2342,22 +1642,6 @@ questions:
   gid: 10
   type: 5
   title: "q5"
-  question: "5 boutons radios"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 190
-  parent_qid: 0
-  sid: 2
-  gid: 10
-  type: 5
-  title: "q5"
   question: "5 point choice"
   preg: ""
   help: ""
@@ -2381,22 +1665,6 @@ questions:
   mandatory: "N"
   question_order: 2
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 191
-  parent_qid: 0
-  sid: 2
-  gid: 10
-  type: "I"
-  title: "I"
-  question: "Changement de langue"
-  preg: ""
-  help: "<p>\n	Cette question change la langue du questionnaire en cours, mieux vaut ne l'utiliser qu'a cela.</p>\n<p>\n	Cela peut être intéressant de poser cette question au démarrage du questionnaire.</p>\n"
-  other: "N"
-  mandatory: "N"
-  question_order: 3
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -2438,23 +1706,6 @@ questions:
   gid: 10
   type: "!"
   title: "ldc"
-  question: "Liste (Menu déroulant) (avec séparateur de catégories )"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 5
-  language: "fr"
-  scale_id: 0
-  same_default: 0
-  relevance: ""
--
-  qid: 192
-  parent_qid: 0
-  sid: 2
-  gid: 10
-  type: "!"
-  title: "ldc"
   question: "List dropdown (with category)"
   preg: ""
   help: ""
@@ -2489,22 +1740,6 @@ questions:
   gid: 10
   type: "L"
   title: "L"
-  question: "Liste (Boutons radio)"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 6
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 193
-  parent_qid: 0
-  sid: 2
-  gid: 10
-  type: "L"
-  title: "L"
   question: "List radio"
   preg: ""
   help: ""
@@ -2528,22 +1763,6 @@ questions:
   mandatory: "N"
   question_order: 6
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 194
-  parent_qid: 0
-  sid: 2
-  gid: 10
-  type: "O"
-  title: "O"
-  question: "Liste avec commentaire"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 7
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -2585,22 +1804,6 @@ questions:
   gid: 11
   type: "M"
   title: "M"
-  question: "Multiples cases à cocher"
-  preg: ""
-  help: ""
-  other: "Y"
-  mandatory: "N"
-  question_order: 0
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 195
-  parent_qid: 0
-  sid: 2
-  gid: 11
-  type: "M"
-  title: "M"
   question: "Multiple options"
   preg: ""
   help: ""
@@ -2626,23 +1829,6 @@ questions:
   language: "de-informal"
   scale_id: 0
   same_default: 0
--
-  qid: 196
-  parent_qid: 0
-  sid: 2
-  gid: 11
-  type: "M"
-  title: "moe"
-  question: "Multiples cases à cocher (avec Option d'exclusion)"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "Y"
-  question_order: 1
-  language: "fr"
-  scale_id: 0
-  same_default: 0
-  relevance: ""
 -
   qid: 196
   parent_qid: 0
@@ -2677,22 +1863,6 @@ questions:
   scale_id: 0
   same_default: 0
   relevance: ""
--
-  qid: 197
-  parent_qid: 0
-  sid: 2
-  gid: 11
-  type: "P"
-  title: "K"
-  question: "Multiples cases à cocher avec commentaires (Valeurs par défaut et nombre de réponses minimum)"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
-  scale_id: 0
-  same_default: 1
 -
   qid: 197
   parent_qid: 0
@@ -2738,22 +1908,6 @@ questions:
   other: "N"
   mandatory: "N"
   question_order: 8
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 198
-  parent_qid: 0
-  sid: 2
-  gid: 10
-  type: "D"
-  title: "D"
-  question: "Date"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 8
   language: "en"
   scale_id: 0
   same_default: 0
@@ -2771,22 +1925,6 @@ questions:
   mandatory: "N"
   question_order: 8
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 199
-  parent_qid: 0
-  sid: 2
-  gid: 10
-  type: "D"
-  title: "D1"
-  question: "Date (Afficher les boites de sélection , Année minimal et maximale)"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 9
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -2828,22 +1966,6 @@ questions:
   gid: 11
   type: "R"
   title: "R"
-  question: "Classement"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 6
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 200
-  parent_qid: 0
-  sid: 2
-  gid: 11
-  type: "R"
-  title: "R"
   question: "Ranking"
   preg: ""
   help: ""
@@ -2867,22 +1989,6 @@ questions:
   mandatory: "N"
   question_order: 6
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 201
-  parent_qid: 0
-  sid: 2
-  gid: 10
-  type: "F"
-  title: "F"
-  question: "Tableau"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 11
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -2924,22 +2030,6 @@ questions:
   gid: 10
   type: "A"
   title: "A"
-  question: "Tableau (5 boutons radio)"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 13
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 202
-  parent_qid: 0
-  sid: 2
-  gid: 10
-  type: "A"
-  title: "A"
   question: "Array 5 point choice"
   preg: ""
   help: ""
@@ -2963,22 +2053,6 @@ questions:
   mandatory: "N"
   question_order: 13
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 203
-  parent_qid: 0
-  sid: 2
-  gid: 10
-  type: "B"
-  title: "B"
-  question: "Tableau (10 boutons radio)"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 14
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -3020,22 +2094,6 @@ questions:
   gid: 10
   type: "E"
   title: "E"
-  question: "Tableau (Augmenter, Sans changement, Diminuer)"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 15
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 204
-  parent_qid: 0
-  sid: 2
-  gid: 10
-  type: "E"
-  title: "E"
   question: "Array (Increase/Same/Decrease)"
   preg: ""
   help: ""
@@ -3059,22 +2117,6 @@ questions:
   mandatory: "N"
   question_order: 15
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 205
-  parent_qid: 0
-  sid: 2
-  gid: 10
-  type: "X"
-  title: "X"
-  question: "A la suite, les tableaux de questions à réponses uniques"
-  preg: ""
-  help: "Ceci est une question de type \"question sans réponse\", nous l'utilisons pour effectuer une séparation."
-  other: "N"
-  mandatory: "N"
-  question_order: 10
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -3116,23 +2158,6 @@ questions:
   gid: 8
   type: ";"
   title: "AT"
-  question: "Tableau (texte)"
-  preg: ""
-  help: "Ceci est une question de type tableau"
-  other: "N"
-  mandatory: "N"
-  question_order: 8
-  language: "fr"
-  scale_id: 0
-  same_default: 0
-  relevance: ""
--
-  qid: 206
-  parent_qid: 0
-  sid: 2
-  gid: 8
-  type: ";"
-  title: "AT"
   question: "Array Texts"
   preg: ""
   help: "This is an array question"
@@ -3157,23 +2182,6 @@ questions:
   mandatory: "N"
   question_order: 8
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
-  relevance: ""
--
-  qid: 207
-  parent_qid: 0
-  sid: 2
-  gid: 9
-  type: ":"
-  title: "ANT"
-  question: "Tableau (Nombres) (Saisies de texte)"
-  preg: ""
-  help: "Ceci est une question de type tableau"
-  other: "N"
-  mandatory: "N"
-  question_order: 4
-  language: "fr"
   scale_id: 0
   same_default: 0
   relevance: ""
@@ -3235,23 +2243,6 @@ questions:
   gid: 11
   type: ":"
   title: "arn"
-  question: "Tableau (Nombres) (Utilisation de cases à cocher)"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 4
-  language: "fr"
-  scale_id: 0
-  same_default: 0
-  relevance: ""
--
-  qid: 208
-  parent_qid: 0
-  sid: 2
-  gid: 11
-  type: ":"
-  title: "arn"
   question: "Array Zahlen (0/1) (Checkbox-Layout)"
   preg: ""
   help: ""
@@ -3259,23 +2250,6 @@ questions:
   mandatory: "N"
   question_order: 4
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
-  relevance: ""
--
-  qid: 209
-  parent_qid: 0
-  sid: 2
-  gid: 10
-  type: 1
-  title: "dual"
-  question: "Tableau double échelle"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 17
-  language: "fr"
   scale_id: 0
   same_default: 0
   relevance: ""
@@ -3320,22 +2294,6 @@ questions:
   gid: 10
   type: 1
   title: "q12"
-  question: "Tableau double échelle (Double menu déroulant)"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 18
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 210
-  parent_qid: 0
-  sid: 2
-  gid: 10
-  type: 1
-  title: "q12"
   question: "Array dual scale (dropdown)"
   preg: ""
   help: ""
@@ -3361,23 +2319,6 @@ questions:
   language: "de-informal"
   scale_id: 0
   same_default: 0
--
-  qid: 211
-  parent_qid: 0
-  sid: 2
-  gid: 10
-  type: "H"
-  title: "abc"
-  question: "Afficher en colonnes"
-  preg: ""
-  help: "C'est exactement la même que question que précédemment, seule l'orientation à était modifiée."
-  other: "N"
-  mandatory: "N"
-  question_order: 12
-  language: "fr"
-  scale_id: 0
-  same_default: 0
-  relevance: ""
 -
   qid: 211
   parent_qid: 0
@@ -3419,22 +2360,6 @@ questions:
   gid: 10
   type: ":"
   title: "AN"
-  question: "Tableau (Nombres) ( Valeur minimum: -2, Valeur maximum: 2, Valeur du pas : 2)"
-  preg: ""
-  help: "Un seul choix dans une liste de nombres"
-  other: "N"
-  mandatory: "N"
-  question_order: 19
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 212
-  parent_qid: 0
-  sid: 2
-  gid: 10
-  type: ":"
-  title: "AN"
   question: "Array number ( Minimum: -2, Maximum: 2, step : 2)"
   preg: ""
   help: "Number entry but like unique choice entry."
@@ -3460,23 +2385,6 @@ questions:
   language: "de-informal"
   scale_id: 0
   same_default: 0
--
-  qid: 213
-  parent_qid: 0
-  sid: 2
-  gid: 10
-  type: "!"
-  title: "ldd"
-  question: "Liste (Menu déroulant) (avec option par défaut)"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 4
-  language: "fr"
-  scale_id: 0
-  same_default: 1
-  relevance: ""
 -
   qid: 213
   parent_qid: 0
@@ -3518,22 +2426,6 @@ questions:
   gid: 10
   type: "C"
   title: "C"
-  question: "Tableau (Oui/Non/Indifférent)"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 16
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 214
-  parent_qid: 0
-  sid: 2
-  gid: 10
-  type: "C"
-  title: "C"
   question: "Array Yes/No/Uncertain"
   preg: ""
   help: ""
@@ -3566,22 +2458,6 @@ questions:
   gid: 11
   type: "R"
   title: "R1"
-  question: "Classement (Nombre de réponses minimum et maximum, ordre aléatoire)"
-  preg: ""
-  help: "Rendre obligatoire la question de classement oblige à classer toutes les réponses."
-  other: "N"
-  mandatory: "N"
-  question_order: 7
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 215
-  parent_qid: 0
-  sid: 2
-  gid: 11
-  type: "R"
-  title: "R1"
   question: "Ranking (minimum and maximum answer)"
   preg: ""
   help: ""
@@ -3605,22 +2481,6 @@ questions:
   mandatory: "N"
   question_order: 7
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 216
-  parent_qid: 0
-  sid: 2
-  gid: 11
-  type: "X"
-  title: "XB"
-  question: "Si certaines questions ont les mêmes options, il est possible d'utiliser un tableau pour représenter les différentes questions."
-  preg: ""
-  help: "Une question sans réponse"
-  other: "N"
-  mandatory: "N"
-  question_order: 3
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -3678,22 +2538,6 @@ questions:
   gid: 11
   type: "X"
   title: "XC"
-  question: "Réponses multiples avec notion d'ordre"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 5
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 217
-  parent_qid: 0
-  sid: 2
-  gid: 11
-  type: "X"
-  title: "XC"
   question: "Mehrfachauswahl als Ranking-Fragetyp"
   preg: ""
   help: ""
@@ -3726,22 +2570,6 @@ questions:
   gid: 12
   type: "Y"
   title: "QC"
-  question: "Une question oui/non pour afficher ou masquer les réponses suivantes"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 0
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 218
-  parent_qid: 0
-  sid: 2
-  gid: 12
-  type: "Y"
-  title: "QC"
   question: "Eine Ja/Nein Pflichtfrage, die Folgefragen anziegt/versteckt je nach Auswahl."
   preg: ""
   help: ""
@@ -3751,23 +2579,6 @@ questions:
   language: "de-informal"
   scale_id: 0
   same_default: 0
--
-  qid: 219
-  parent_qid: 0
-  sid: 2
-  gid: 12
-  type: "X"
-  title: "QCYes"
-  question: "Ceci est affiché uniquement si vous sélectionnez OUI."
-  preg: ""
-  help: "Il est possible d'utiliser tous les types de questions de LimeSurvey."
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
-  scale_id: 0
-  same_default: 0
-  relevance: "((2X12X218.NAOK == \"Y\"))"
 -
   qid: 219
   parent_qid: 0
@@ -3837,23 +2648,6 @@ questions:
   same_default: 0
   relevance: "((2X12X218.NAOK == \"N\"))"
 -
-  qid: 220
-  parent_qid: 0
-  sid: 2
-  gid: 12
-  type: "X"
-  title: "QCNo"
-  question: "Ceci est affiché si vous sélectionnez Non"
-  preg: ""
-  help: "Vous pouvez utiliser tous les types de questions de LimeSurvey"
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
-  scale_id: 0
-  same_default: 0
-  relevance: "((2X12X218.NAOK == \"N\"))"
--
   qid: 221
   parent_qid: 0
   sid: 2
@@ -3887,39 +2681,6 @@ questions:
   scale_id: 0
   same_default: 0
   relevance: "((is_empty(2X12X218.NAOK)))"
--
-  qid: 221
-  parent_qid: 0
-  sid: 2
-  gid: 12
-  type: "X"
-  title: "QCDefault"
-  question: "Ceci est affiché en cas de Non réponse, donc affiché par défaut"
-  preg: ""
-  help: "Vous pouvez utiliser tous les types de questions de LimeSurvey"
-  other: "N"
-  mandatory: "N"
-  question_order: 3
-  language: "fr"
-  scale_id: 0
-  same_default: 0
-  relevance: "((is_empty(2X12X218.NAOK)))"
--
-  qid: 222
-  parent_qid: 0
-  sid: 2
-  gid: 12
-  type: "M"
-  title: "QCS1"
-  question: "Pour des conditions plus complexes , il est possible d'utiliser les scénarios."
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 7
-  language: "fr"
-  scale_id: 0
-  same_default: 0
 -
   qid: 222
   parent_qid: 0
@@ -3985,39 +2746,6 @@ questions:
   scale_id: 0
   same_default: 0
 -
-  qid: 223
-  parent_qid: 0
-  sid: 2
-  gid: 12
-  type: "M"
-  title: "QCS2"
-  question: "Afficher la question 1 ou 2 selon les conditions"
-  preg: ""
-  help: "Nous utilisons les scénario pour avoir une conditions de type OU."
-  other: "N"
-  mandatory: "N"
-  question_order: 8
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 224
-  parent_qid: 0
-  sid: 2
-  gid: 12
-  type: "X"
-  title: "CC01"
-  question: "Question 1 : affichée si vous sélectionner <q>Afficher la question 1</q> sur l'une des questions précédentes."
-  preg: ""
-  help: "N'importe quel type de question peut être utilisé, ici c'est une question sans réponse."
-  other: "N"
-  mandatory: "N"
-  question_order: 10
-  language: "fr"
-  scale_id: 0
-  same_default: 0
-  relevance: "((2X12X222SH101.NAOK == \"Y\") and (2X12X226.NAOK != \"Y\")) or ((2X12X223SQ201.NAOK == \"Y\") and (2X12X226.NAOK != \"Y\"))"
--
   qid: 224
   parent_qid: 0
   sid: 2
@@ -4075,23 +2803,6 @@ questions:
   gid: 12
   type: "X"
   title: "QC02"
-  question: "Question 2 : affichée si vous sélectionner <q>Afficher la question 1</q> sur l'une des questions précédentes."
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 11
-  language: "fr"
-  scale_id: 0
-  same_default: 0
-  relevance: "((2X12X222SH102.NAOK == \"Y\") and (2X12X226.NAOK != \"Y\")) or ((2X12X223SQ202.NAOK == \"Y\") and (2X12X226.NAOK != \"Y\"))"
--
-  qid: 225
-  parent_qid: 0
-  sid: 2
-  gid: 12
-  type: "X"
-  title: "QC02"
   question: "Question 2 : displayed if you select <q>Show question 2</q> at one of previous question."
   preg: ""
   help: ""
@@ -4102,23 +2813,6 @@ questions:
   scale_id: 0
   same_default: 0
   relevance: "((2X12X222SH102.NAOK == \"Y\") and (2X12X226.NAOK != \"Y\")) or ((2X12X223SQ202.NAOK == \"Y\") and (2X12X226.NAOK != \"Y\"))"
--
-  qid: 226
-  parent_qid: 0
-  sid: 2
-  gid: 12
-  type: "Y"
-  title: "QCS3"
-  question: "Cacher les questions 1 et 2 même si vous avez coché <q>Afficher</q> sur l'une des questions précédentes."
-  preg: ""
-  help: "Ceci est affiché uniquement si vous choisissez d'afficher la question 1 ou 2."
-  other: "N"
-  mandatory: "Y"
-  question_order: 9
-  language: "fr"
-  scale_id: 0
-  same_default: 0
-  relevance: "((2X12X222SH101.NAOK == \"Y\" or 2X12X222SH102.NAOK == \"Y\")) or ((2X12X223SQ201.NAOK == \"Y\" or 2X12X223SQ202.NAOK == \"Y\"))"
 -
   qid: 226
   parent_qid: 0
@@ -4176,22 +2870,6 @@ questions:
   gid: 13
   type: "M"
   title: "AF"
-  question: "Une question à choix multiple permet de filtrer les sous questions suivantes"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 0
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 227
-  parent_qid: 0
-  sid: 2
-  gid: 13
-  type: "M"
-  title: "AF"
   question: "Auf Basis einer Mehrfachauswahl können Optionen in folgenden Fragen gefiltert werden."
   preg: ""
   help: ""
@@ -4225,23 +2903,6 @@ questions:
   gid: 13
   type: "C"
   title: "FAF"
-  question: "Filtre de tableau avec la question précédente"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
-  scale_id: 0
-  same_default: 0
-  relevance: "count(that.AF) > 0"
--
-  qid: 228
-  parent_qid: 0
-  sid: 2
-  gid: 13
-  type: "C"
-  title: "FAF"
   question: "Antwortoptionen gefiltert auf Basis der Auswahl in der vorherigen Frage."
   preg: ""
   help: ""
@@ -4252,23 +2913,6 @@ questions:
   scale_id: 0
   same_default: 0
   relevance: "count(that.AF) > 0"
--
-  qid: 229
-  parent_qid: 0
-  sid: 2
-  gid: 13
-  type: "C"
-  title: "FAFE"
-  question: "Filtre d'exclusion du tableau avec la question précédente"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
-  scale_id: 0
-  same_default: 0
-  relevance: "count(that.AF) < 4"
 -
   qid: 229
   parent_qid: 0
@@ -4327,23 +2971,6 @@ questions:
   gid: 12
   type: "X"
   title: "QEMYes"
-  question: "Ceci est affiché uniquement si vous sélectionnez OUI."
-  preg: ""
-  help: "En utilisant le gestionnaire d'expression"
-  other: "N"
-  mandatory: "N"
-  question_order: 4
-  language: "fr"
-  scale_id: 0
-  same_default: 0
-  relevance: "QC.NAOK == \"Y\""
--
-  qid: 230
-  parent_qid: 0
-  sid: 2
-  gid: 12
-  type: "X"
-  title: "QEMYes"
   question: "Diese Frage wird nur angezeigt, wenn zuvor \"Ja\" ausgewählt wurde."
   preg: ""
   help: ""
@@ -4368,23 +2995,6 @@ questions:
   mandatory: "N"
   question_order: 5
   language: "en"
-  scale_id: 0
-  same_default: 0
-  relevance: "QC.NAOK == \"N\""
--
-  qid: 231
-  parent_qid: 0
-  sid: 2
-  gid: 12
-  type: "X"
-  title: "QEMNo"
-  question: "Ceci est affiché si vous sélectionnez Non"
-  preg: ""
-  help: "En utilisant le gestionnaire d'expression"
-  other: "N"
-  mandatory: "N"
-  question_order: 5
-  language: "fr"
   scale_id: 0
   same_default: 0
   relevance: "QC.NAOK == \"N\""
@@ -4429,23 +3039,6 @@ questions:
   gid: 12
   type: "X"
   title: "QEMDefault"
-  question: "Ceci est affiché en cas de Non réponse, donc affiché par défaut"
-  preg: ""
-  help: "En utilisant le gestionnaire d'expression"
-  other: "N"
-  mandatory: "N"
-  question_order: 6
-  language: "fr"
-  scale_id: 0
-  same_default: 0
-  relevance: "is_empty(QC.NAOK)"
--
-  qid: 232
-  parent_qid: 0
-  sid: 2
-  gid: 12
-  type: "X"
-  title: "QEMDefault"
   question: "Diese Frage wird nur angezeigt, wenn \"keine Antwort\" gewählt wurde (Default)."
   preg: ""
   help: ""
@@ -4456,22 +3049,6 @@ questions:
   scale_id: 0
   same_default: 0
   relevance: "is_empty(QC.NAOK)"
--
-  qid: 233
-  parent_qid: 186
-  sid: 2
-  gid: 9
-  type: "K"
-  title: "SQ001"
-  question: "Apples"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
-  scale_id: 0
-  same_default: 0
 -
   qid: 233
   parent_qid: 186
@@ -4527,22 +3104,6 @@ questions:
   gid: 9
   type: "K"
   title: "SQ002"
-  question: "Oranges"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 234
-  parent_qid: 186
-  sid: 2
-  gid: 9
-  type: "K"
-  title: "SQ002"
   question: "Orangen"
   preg: ""
   help: ""
@@ -4581,22 +3142,6 @@ questions:
   other: "N"
   mandatory: "N"
   question_order: 3
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 235
-  parent_qid: 186
-  sid: 2
-  gid: 9
-  type: "K"
-  title: "SQ003"
-  question: "Bananas"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 3
   language: "en"
   scale_id: 0
   same_default: 0
@@ -4614,22 +3159,6 @@ questions:
   mandatory: "N"
   question_order: 1
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 236
-  parent_qid: 197
-  sid: 2
-  gid: 11
-  type: "P"
-  title: "SQ001"
-  question: "LimeSurvey est excellent parceque "
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -4681,22 +3210,6 @@ questions:
   scale_id: 0
   same_default: 0
 -
-  qid: 237
-  parent_qid: 197
-  sid: 2
-  gid: 11
-  type: "P"
-  title: "SQ002"
-  question: "LimeSurvey est meilleur que "
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
   qid: 238
   parent_qid: 197
   sid: 2
@@ -4729,22 +3242,6 @@ questions:
   scale_id: 0
   same_default: 0
 -
-  qid: 238
-  parent_qid: 197
-  sid: 2
-  gid: 11
-  type: "P"
-  title: "SQ003"
-  question: "LimeSurvey est beau comme "
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 3
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
   qid: 239
   parent_qid: 197
   sid: 2
@@ -4774,38 +3271,6 @@ questions:
   mandatory: "N"
   question_order: 4
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 239
-  parent_qid: 197
-  sid: 2
-  gid: 11
-  type: "P"
-  title: "SQ004"
-  question: "LimeSurvey est facile comme "
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 4
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 240
-  parent_qid: 183
-  sid: 2
-  gid: 8
-  type: "Q"
-  title: "SQ01"
-  question: "Un exemple de sous-question avec quelques mots supplémentaires pour la longueur"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -4847,22 +3312,6 @@ questions:
   gid: 8
   type: "Q"
   title: "SQ02"
-  question: "Une nouvelle sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 241
-  parent_qid: 183
-  sid: 2
-  gid: 8
-  type: "Q"
-  title: "SQ02"
   question: "New answer subquestion"
   preg: ""
   help: ""
@@ -4886,22 +3335,6 @@ questions:
   mandatory: "N"
   question_order: 2
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 242
-  parent_qid: 183
-  sid: 2
-  gid: 8
-  type: "Q"
-  title: "SQ03"
-  question: "Troisième sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 3
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -4969,22 +3402,6 @@ questions:
   scale_id: 0
   same_default: 0
 -
-  qid: 243
-  parent_qid: 183
-  sid: 2
-  gid: 8
-  type: "Q"
-  title: "SQ04"
-  question: "Dernière sous-question et quelques mots"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 4
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
   qid: 244
   parent_qid: 207
   sid: 2
@@ -5013,22 +3430,6 @@ questions:
   other: "N"
   mandatory: "N"
   question_order: 1
-  language: "fr"
-  scale_id: 1
-  same_default: 0
--
-  qid: 244
-  parent_qid: 207
-  sid: 2
-  gid: 9
-  type: ":"
-  title: "SQX01"
-  question: "X-axis example subquestion"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
   language: "en"
   scale_id: 1
   same_default: 0
@@ -5046,22 +3447,6 @@ questions:
   mandatory: "N"
   question_order: 2
   language: "en"
-  scale_id: 1
-  same_default: 0
--
-  qid: 245
-  parent_qid: 207
-  sid: 2
-  gid: 9
-  type: ":"
-  title: "SQX02"
-  question: "X-axis new answer subquestion"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
   scale_id: 1
   same_default: 0
 -
@@ -5103,22 +3488,6 @@ questions:
   gid: 9
   type: ":"
   title: "SQX03"
-  question: "X-axis third subquestion"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 3
-  language: "fr"
-  scale_id: 1
-  same_default: 0
--
-  qid: 246
-  parent_qid: 207
-  sid: 2
-  gid: 9
-  type: ":"
-  title: "SQX03"
   question: "Teilfrage drei - X"
   preg: ""
   help: ""
@@ -5126,22 +3495,6 @@ questions:
   mandatory: "N"
   question_order: 3
   language: "de-informal"
-  scale_id: 1
-  same_default: 0
--
-  qid: 247
-  parent_qid: 207
-  sid: 2
-  gid: 9
-  type: ":"
-  title: "SQX04"
-  question: "X-axis last subquestion"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 4
-  language: "fr"
   scale_id: 1
   same_default: 0
 -
@@ -5189,22 +3542,6 @@ questions:
   other: "N"
   mandatory: "N"
   question_order: 1
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 248
-  parent_qid: 207
-  sid: 2
-  gid: 9
-  type: ":"
-  title: "SQY01"
-  question: "Y-axis example subquestion"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
   language: "en"
   scale_id: 0
   same_default: 0
@@ -5222,22 +3559,6 @@ questions:
   mandatory: "N"
   question_order: 1
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 249
-  parent_qid: 207
-  sid: 2
-  gid: 9
-  type: ":"
-  title: "SQY02"
-  question: "Y-axis new answer subquestion"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -5285,22 +3606,6 @@ questions:
   other: "N"
   mandatory: "N"
   question_order: 3
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 250
-  parent_qid: 207
-  sid: 2
-  gid: 9
-  type: ":"
-  title: "SQY03"
-  question: "Y-axis third subquestion"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 3
   language: "en"
   scale_id: 0
   same_default: 0
@@ -5318,22 +3623,6 @@ questions:
   mandatory: "N"
   question_order: 3
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 251
-  parent_qid: 207
-  sid: 2
-  gid: 9
-  type: ":"
-  title: "SQY04"
-  question: "Y-axis last subquestion"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 4
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -5391,22 +3680,6 @@ questions:
   gid: 11
   type: ":"
   title: "SQX01"
-  question: "Un exemple de sous-question - Échelle X"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
-  scale_id: 1
-  same_default: 0
--
-  qid: 252
-  parent_qid: 208
-  sid: 2
-  gid: 11
-  type: ":"
-  title: "SQX01"
   question: "Beispiel Teilfrage - X"
   preg: ""
   help: ""
@@ -5430,22 +3703,6 @@ questions:
   mandatory: "N"
   question_order: 2
   language: "en"
-  scale_id: 1
-  same_default: 0
--
-  qid: 253
-  parent_qid: 208
-  sid: 2
-  gid: 11
-  type: ":"
-  title: "SQX02"
-  question: "Nouvelle sous-question - Échelle X"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
   scale_id: 1
   same_default: 0
 -
@@ -5487,22 +3744,6 @@ questions:
   gid: 11
   type: ":"
   title: "SQX03"
-  question: "Troisième sous-question - Échelle X"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 3
-  language: "fr"
-  scale_id: 1
-  same_default: 0
--
-  qid: 254
-  parent_qid: 208
-  sid: 2
-  gid: 11
-  type: ":"
-  title: "SQX03"
   question: "Teilfrage drei - X"
   preg: ""
   help: ""
@@ -5510,22 +3751,6 @@ questions:
   mandatory: "N"
   question_order: 3
   language: "de-informal"
-  scale_id: 1
-  same_default: 0
--
-  qid: 255
-  parent_qid: 208
-  sid: 2
-  gid: 11
-  type: ":"
-  title: "SQX04"
-  question: "Dernière sous-question - Échelle X"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 4
-  language: "fr"
   scale_id: 1
   same_default: 0
 -
@@ -5558,22 +3783,6 @@ questions:
   mandatory: "N"
   question_order: 4
   language: "de-informal"
-  scale_id: 1
-  same_default: 0
--
-  qid: 256
-  parent_qid: 212
-  sid: 2
-  gid: 10
-  type: ":"
-  title: "SQX01"
-  question: "Un exemple de sous-question - Échelle X"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
   scale_id: 1
   same_default: 0
 -
@@ -5631,22 +3840,6 @@ questions:
   gid: 10
   type: ":"
   title: "SQX02"
-  question: "Nouvelle sous-question - Échelle X"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
-  scale_id: 1
-  same_default: 0
--
-  qid: 257
-  parent_qid: 212
-  sid: 2
-  gid: 10
-  type: ":"
-  title: "SQX02"
   question: "Neue Teilfrage - X-Skala"
   preg: ""
   help: ""
@@ -5689,22 +3882,6 @@ questions:
   scale_id: 1
   same_default: 0
 -
-  qid: 258
-  parent_qid: 212
-  sid: 2
-  gid: 10
-  type: ":"
-  title: "SQX03"
-  question: "Troisième sous-question - Échelle X"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 3
-  language: "fr"
-  scale_id: 1
-  same_default: 0
--
   qid: 259
   parent_qid: 212
   sid: 2
@@ -5727,22 +3904,6 @@ questions:
   gid: 10
   type: ":"
   title: "SQX04"
-  question: "Dernière sous-question - Échelle X"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 4
-  language: "fr"
-  scale_id: 1
-  same_default: 0
--
-  qid: 259
-  parent_qid: 212
-  sid: 2
-  gid: 10
-  type: ":"
-  title: "SQX04"
   question: "Last subquestion - X-Scale"
   preg: ""
   help: ""
@@ -5751,22 +3912,6 @@ questions:
   question_order: 4
   language: "en"
   scale_id: 1
-  same_default: 0
--
-  qid: 260
-  parent_qid: 222
-  sid: 2
-  gid: 12
-  type: "M"
-  title: "SH101"
-  question: "Afficher la question 1"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
-  scale_id: 0
   same_default: 0
 -
   qid: 260
@@ -5823,22 +3968,6 @@ questions:
   gid: 12
   type: "M"
   title: "SH102"
-  question: "Afficher la question 2"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 261
-  parent_qid: 222
-  sid: 2
-  gid: 12
-  type: "M"
-  title: "SH102"
   question: "display question 2"
   preg: ""
   help: ""
@@ -5862,22 +3991,6 @@ questions:
   mandatory: "N"
   question_order: 1
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 262
-  parent_qid: 223
-  sid: 2
-  gid: 12
-  type: "M"
-  title: "SQ201"
-  question: "Afficher la question 1"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -5929,38 +4042,6 @@ questions:
   scale_id: 0
   same_default: 0
 -
-  qid: 263
-  parent_qid: 223
-  sid: 2
-  gid: 12
-  type: "M"
-  title: "SQ202"
-  question: "Afficher la question 2"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 264
-  parent_qid: 181
-  sid: 2
-  gid: 8
-  type: "Q"
-  title: "SQ01"
-  question: "Un exemple de sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
   qid: 264
   parent_qid: 181
   sid: 2
@@ -6015,22 +4096,6 @@ questions:
   gid: 8
   type: "Q"
   title: "SQ02"
-  question: "Nouvelle sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 265
-  parent_qid: 181
-  sid: 2
-  gid: 8
-  type: "Q"
-  title: "SQ02"
   question: "neue Teilfrage"
   preg: ""
   help: ""
@@ -6038,22 +4103,6 @@ questions:
   mandatory: "N"
   question_order: 2
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 266
-  parent_qid: 181
-  sid: 2
-  gid: 8
-  type: "Q"
-  title: "SQ03"
-  question: "Troisième sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 3
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -6086,22 +4135,6 @@ questions:
   mandatory: "N"
   question_order: 3
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 267
-  parent_qid: 181
-  sid: 2
-  gid: 8
-  type: "Q"
-  title: "SQ04"
-  question: "Dernière sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 4
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -6169,38 +4202,6 @@ questions:
   scale_id: 0
   same_default: 0
 -
-  qid: 268
-  parent_qid: 182
-  sid: 2
-  gid: 8
-  type: "Q"
-  title: "SQ01"
-  question: "Un exemple de sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 269
-  parent_qid: 182
-  sid: 2
-  gid: 8
-  type: "Q"
-  title: "SQ02"
-  question: "Nouvelle sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
   qid: 269
   parent_qid: 182
   sid: 2
@@ -6255,22 +4256,6 @@ questions:
   gid: 8
   type: "Q"
   title: "SQ03"
-  question: "Troisième sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 3
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 270
-  parent_qid: 182
-  sid: 2
-  gid: 8
-  type: "Q"
-  title: "SQ03"
   question: "dritte Teilfrage"
   preg: ""
   help: ""
@@ -6294,22 +4279,6 @@ questions:
   mandatory: "N"
   question_order: 4
   language: "en"
-  scale_id: 0
-  same_default: 0
--
-  qid: 271
-  parent_qid: 182
-  sid: 2
-  gid: 8
-  type: "Q"
-  title: "SQ04"
-  question: "Dernière sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 4
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -6351,22 +4320,6 @@ questions:
   gid: 8
   type: ";"
   title: "SQY01"
-  question: "Un exemple de sous-question - Y"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 272
-  parent_qid: 206
-  sid: 2
-  gid: 8
-  type: ";"
-  title: "SQY01"
   question: "Beispiel Teilfrage - Y"
   preg: ""
   help: ""
@@ -6390,22 +4343,6 @@ questions:
   mandatory: "N"
   question_order: 2
   language: "en"
-  scale_id: 0
-  same_default: 0
--
-  qid: 273
-  parent_qid: 206
-  sid: 2
-  gid: 8
-  type: ";"
-  title: "SQY02"
-  question: "Nouvelle sous-question - Y"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -6447,22 +4384,6 @@ questions:
   gid: 8
   type: ";"
   title: "SQY03"
-  question: "Troisième sous-question - Y"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 3
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 274
-  parent_qid: 206
-  sid: 2
-  gid: 8
-  type: ";"
-  title: "SQY03"
   question: "Teilfrage drei - Y"
   preg: ""
   help: ""
@@ -6470,22 +4391,6 @@ questions:
   mandatory: "N"
   question_order: 3
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 275
-  parent_qid: 206
-  sid: 2
-  gid: 8
-  type: ";"
-  title: "SQY04"
-  question: "Dernière sous-question - Y"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 4
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -6519,22 +4424,6 @@ questions:
   question_order: 4
   language: "de-informal"
   scale_id: 0
-  same_default: 0
--
-  qid: 276
-  parent_qid: 206
-  sid: 2
-  gid: 8
-  type: ";"
-  title: "SQX01"
-  question: "Un exemple de sous-question - X"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
-  scale_id: 1
   same_default: 0
 -
   qid: 276
@@ -6591,22 +4480,6 @@ questions:
   gid: 8
   type: ";"
   title: "SQX02"
-  question: "Nouvelle sous-question - X"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
-  scale_id: 1
-  same_default: 0
--
-  qid: 277
-  parent_qid: 206
-  sid: 2
-  gid: 8
-  type: ";"
-  title: "SQX02"
   question: "weitere Teilfrage  - X"
   preg: ""
   help: ""
@@ -6639,22 +4512,6 @@ questions:
   gid: 8
   type: ";"
   title: "SQX03"
-  question: "Troisième sous-question - X"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 3
-  language: "fr"
-  scale_id: 1
-  same_default: 0
--
-  qid: 278
-  parent_qid: 206
-  sid: 2
-  gid: 8
-  type: ";"
-  title: "SQX03"
   question: "Third subquestion - X"
   preg: ""
   help: ""
@@ -6678,22 +4535,6 @@ questions:
   mandatory: "N"
   question_order: 4
   language: "de-informal"
-  scale_id: 1
-  same_default: 0
--
-  qid: 279
-  parent_qid: 206
-  sid: 2
-  gid: 8
-  type: ";"
-  title: "SQX04"
-  question: "Dernière sous-question - X"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 4
-  language: "fr"
   scale_id: 1
   same_default: 0
 -
@@ -6745,22 +4586,6 @@ questions:
   scale_id: 0
   same_default: 0
 -
-  qid: 280
-  parent_qid: 185
-  sid: 2
-  gid: 9
-  type: "K"
-  title: "SQ01"
-  question: "Un exemple de sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
   qid: 281
   parent_qid: 185
   sid: 2
@@ -6774,22 +4599,6 @@ questions:
   mandatory: "N"
   question_order: 2
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 281
-  parent_qid: 185
-  sid: 2
-  gid: 9
-  type: "K"
-  title: "SQ02"
-  question: "Nouvelle sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -6831,22 +4640,6 @@ questions:
   gid: 9
   type: "K"
   title: "SQ03"
-  question: "Troisième sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 3
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 282
-  parent_qid: 185
-  sid: 2
-  gid: 9
-  type: "K"
-  title: "SQ03"
   question: "Teilfrage drei"
   preg: ""
   help: ""
@@ -6879,22 +4672,6 @@ questions:
   gid: 9
   type: "K"
   title: "SQ04"
-  question: "Dernière sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 4
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 283
-  parent_qid: 185
-  sid: 2
-  gid: 9
-  type: "K"
-  title: "SQ04"
   question: "letzte Teilfrage"
   preg: ""
   help: ""
@@ -6902,22 +4679,6 @@ questions:
   mandatory: "N"
   question_order: 4
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 284
-  parent_qid: 187
-  sid: 2
-  gid: 9
-  type: "K"
-  title: "SQ01"
-  question: "Un exemple de sous-question|moins|plus"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -6975,22 +4736,6 @@ questions:
   gid: 9
   type: "K"
   title: "SQ02"
-  question: "Nouvelle sous-question|moins|plus"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 285
-  parent_qid: 187
-  sid: 2
-  gid: 9
-  type: "K"
-  title: "SQ02"
   question: "weitere Teilfrage|weniger|mehr"
   preg: ""
   help: ""
@@ -7033,22 +4778,6 @@ questions:
   scale_id: 0
   same_default: 0
 -
-  qid: 286
-  parent_qid: 187
-  sid: 2
-  gid: 9
-  type: "K"
-  title: "SQ03"
-  question: "Troisième sous-question|moins|plus"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 3
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
   qid: 287
   parent_qid: 187
   sid: 2
@@ -7062,22 +4791,6 @@ questions:
   mandatory: "N"
   question_order: 4
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 287
-  parent_qid: 187
-  sid: 2
-  gid: 9
-  type: "K"
-  title: "SQ04"
-  question: "Dernière sous-question|moins|plus"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 4
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -7119,22 +4832,6 @@ questions:
   gid: 10
   type: "F"
   title: "SQ01"
-  question: "Un exemple de sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 288
-  parent_qid: 201
-  sid: 2
-  gid: 10
-  type: "F"
-  title: "SQ01"
   question: "Beispielteilfrage|rechts"
   preg: ""
   help: ""
@@ -7142,22 +4839,6 @@ questions:
   mandatory: "N"
   question_order: 1
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 289
-  parent_qid: 201
-  sid: 2
-  gid: 10
-  type: "F"
-  title: "SQ02"
-  question: "Nouvelle sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -7190,22 +4871,6 @@ questions:
   mandatory: "N"
   question_order: 2
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 290
-  parent_qid: 201
-  sid: 2
-  gid: 10
-  type: "F"
-  title: "SQ03"
-  question: "Troisième sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 3
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -7263,22 +4928,6 @@ questions:
   gid: 10
   type: "F"
   title: "SQ04"
-  question: "Dernière sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 4
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 291
-  parent_qid: 201
-  sid: 2
-  gid: 10
-  type: "F"
-  title: "SQ04"
   question: "Letzte Teilfrage|rechts"
   preg: ""
   help: ""
@@ -7311,22 +4960,6 @@ questions:
   gid: 10
   type: "H"
   title: "SQ01"
-  question: "Un exemple de sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 292
-  parent_qid: 211
-  sid: 2
-  gid: 10
-  type: "H"
-  title: "SQ01"
   question: "Beispiel Teilfrage"
   preg: ""
   help: ""
@@ -7334,22 +4967,6 @@ questions:
   mandatory: "N"
   question_order: 1
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 293
-  parent_qid: 211
-  sid: 2
-  gid: 10
-  type: "H"
-  title: "SQ02"
-  question: "Nouvelle sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -7391,22 +5008,6 @@ questions:
   gid: 10
   type: "H"
   title: "SQ03"
-  question: "Troisième sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 3
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 294
-  parent_qid: 211
-  sid: 2
-  gid: 10
-  type: "H"
-  title: "SQ03"
   question: "Third subquestion"
   preg: ""
   help: ""
@@ -7439,22 +5040,6 @@ questions:
   gid: 10
   type: "H"
   title: "SQ04"
-  question: "Dernière sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 4
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 295
-  parent_qid: 211
-  sid: 2
-  gid: 10
-  type: "H"
-  title: "SQ04"
   question: "Last subquestion"
   preg: ""
   help: ""
@@ -7478,22 +5063,6 @@ questions:
   mandatory: "N"
   question_order: 4
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 296
-  parent_qid: 202
-  sid: 2
-  gid: 10
-  type: "A"
-  title: "SQ01"
-  question: "Un exemple de sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -7551,22 +5120,6 @@ questions:
   gid: 10
   type: "A"
   title: "SQ02"
-  question: "Nouvelle sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 297
-  parent_qid: 202
-  sid: 2
-  gid: 10
-  type: "A"
-  title: "SQ02"
   question: "Neue Teilfrage"
   preg: ""
   help: ""
@@ -7574,22 +5127,6 @@ questions:
   mandatory: "N"
   question_order: 2
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 298
-  parent_qid: 202
-  sid: 2
-  gid: 10
-  type: "A"
-  title: "SQ03"
-  question: "Troisième sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 3
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -7622,22 +5159,6 @@ questions:
   mandatory: "N"
   question_order: 3
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 299
-  parent_qid: 202
-  sid: 2
-  gid: 10
-  type: "A"
-  title: "SQ04"
-  question: "Dernière sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 4
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -7695,22 +5216,6 @@ questions:
   gid: 10
   type: "B"
   title: "SQ01"
-  question: "Un exemple de sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 300
-  parent_qid: 203
-  sid: 2
-  gid: 10
-  type: "B"
-  title: "SQ01"
   question: "Beispiel Teilfrage"
   preg: ""
   help: ""
@@ -7718,22 +5223,6 @@ questions:
   mandatory: "N"
   question_order: 1
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 301
-  parent_qid: 203
-  sid: 2
-  gid: 10
-  type: "B"
-  title: "SQ02"
-  question: "Nouvelle sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -7766,22 +5255,6 @@ questions:
   mandatory: "N"
   question_order: 2
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 302
-  parent_qid: 203
-  sid: 2
-  gid: 10
-  type: "B"
-  title: "SQ03"
-  question: "Troisième sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 3
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -7849,22 +5322,6 @@ questions:
   scale_id: 0
   same_default: 0
 -
-  qid: 303
-  parent_qid: 203
-  sid: 2
-  gid: 10
-  type: "B"
-  title: "SQ04"
-  question: "Dernière sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 4
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
   qid: 304
   parent_qid: 204
   sid: 2
@@ -7894,22 +5351,6 @@ questions:
   mandatory: "N"
   question_order: 1
   language: "en"
-  scale_id: 0
-  same_default: 0
--
-  qid: 304
-  parent_qid: 204
-  sid: 2
-  gid: 10
-  type: "E"
-  title: "SQ01"
-  question: "Un exemple de sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -7945,22 +5386,6 @@ questions:
   scale_id: 0
   same_default: 0
 -
-  qid: 305
-  parent_qid: 204
-  sid: 2
-  gid: 10
-  type: "E"
-  title: "SQ02"
-  question: "Nouvelle sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
   qid: 306
   parent_qid: 204
   sid: 2
@@ -7983,22 +5408,6 @@ questions:
   gid: 10
   type: "E"
   title: "SQ03"
-  question: "Troisième sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 3
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 306
-  parent_qid: 204
-  sid: 2
-  gid: 10
-  type: "E"
-  title: "SQ03"
   question: "Dritte Teilfrage"
   preg: ""
   help: ""
@@ -8006,22 +5415,6 @@ questions:
   mandatory: "N"
   question_order: 3
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 307
-  parent_qid: 204
-  sid: 2
-  gid: 10
-  type: "E"
-  title: "SQ04"
-  question: "Dernière sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 4
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -8079,22 +5472,6 @@ questions:
   gid: 10
   type: "C"
   title: "SQ01"
-  question: "Un exemple de sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 308
-  parent_qid: 214
-  sid: 2
-  gid: 10
-  type: "C"
-  title: "SQ01"
   question: "Some example subquestion"
   preg: ""
   help: ""
@@ -8127,22 +5504,6 @@ questions:
   gid: 10
   type: "C"
   title: "SQ02"
-  question: "Nouvelle sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 309
-  parent_qid: 214
-  sid: 2
-  gid: 10
-  type: "C"
-  title: "SQ02"
   question: "Neue Teilfrage"
   preg: ""
   help: ""
@@ -8150,22 +5511,6 @@ questions:
   mandatory: "N"
   question_order: 2
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 310
-  parent_qid: 214
-  sid: 2
-  gid: 10
-  type: "C"
-  title: "SQ03"
-  question: "Troisième sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 3
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -8198,22 +5543,6 @@ questions:
   mandatory: "N"
   question_order: 3
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 311
-  parent_qid: 214
-  sid: 2
-  gid: 10
-  type: "C"
-  title: "SQ04"
-  question: "Dernière sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 4
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -8271,22 +5600,6 @@ questions:
   gid: 10
   type: 1
   title: "SQ01"
-  question: "Un exemple de sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 312
-  parent_qid: 209
-  sid: 2
-  gid: 10
-  type: 1
-  title: "SQ01"
   question: "Beispiel Teilfrage"
   preg: ""
   help: ""
@@ -8329,38 +5642,6 @@ questions:
   scale_id: 0
   same_default: 0
 -
-  qid: 313
-  parent_qid: 209
-  sid: 2
-  gid: 10
-  type: 1
-  title: "SQ02"
-  question: "Nouvelle sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 314
-  parent_qid: 209
-  sid: 2
-  gid: 10
-  type: 1
-  title: "SQ03"
-  question: "Troisième sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 3
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
   qid: 314
   parent_qid: 209
   sid: 2
@@ -8399,22 +5680,6 @@ questions:
   gid: 10
   type: 1
   title: "SQ04"
-  question: "Dernière sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 4
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 315
-  parent_qid: 209
-  sid: 2
-  gid: 10
-  type: 1
-  title: "SQ04"
   question: "Last subquestion"
   preg: ""
   help: ""
@@ -8438,22 +5703,6 @@ questions:
   mandatory: "N"
   question_order: 4
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 316
-  parent_qid: 210
-  sid: 2
-  gid: 10
-  type: 1
-  title: "SQ01"
-  question: "Un exemple de sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -8511,22 +5760,6 @@ questions:
   gid: 10
   type: 1
   title: "SQ02"
-  question: "Nouvelle sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 317
-  parent_qid: 210
-  sid: 2
-  gid: 10
-  type: 1
-  title: "SQ02"
   question: "Neue Teilfrage"
   preg: ""
   help: ""
@@ -8559,22 +5792,6 @@ questions:
   gid: 10
   type: 1
   title: "SQ03"
-  question: "Troisième sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 3
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 318
-  parent_qid: 210
-  sid: 2
-  gid: 10
-  type: 1
-  title: "SQ03"
   question: "Dritte Teilfrage"
   preg: ""
   help: ""
@@ -8582,22 +5799,6 @@ questions:
   mandatory: "N"
   question_order: 3
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 319
-  parent_qid: 210
-  sid: 2
-  gid: 10
-  type: 1
-  title: "SQ04"
-  question: "Dernière sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 4
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -8646,22 +5847,6 @@ questions:
   mandatory: "N"
   question_order: 1
   language: "en"
-  scale_id: 0
-  same_default: 0
--
-  qid: 320
-  parent_qid: 195
-  sid: 2
-  gid: 11
-  type: "M"
-  title: "SQ01"
-  question: "Un exemple de sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -8687,22 +5872,6 @@ questions:
   gid: 11
   type: "M"
   title: "SQ02"
-  question: "Nouvelle sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 321
-  parent_qid: 195
-  sid: 2
-  gid: 11
-  type: "M"
-  title: "SQ02"
   question: "New answer subquestion"
   preg: ""
   help: ""
@@ -8726,22 +5895,6 @@ questions:
   mandatory: "N"
   question_order: 2
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 322
-  parent_qid: 195
-  sid: 2
-  gid: 11
-  type: "M"
-  title: "SQ03"
-  question: "Troisième sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 3
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -8790,22 +5943,6 @@ questions:
   mandatory: "N"
   question_order: 4
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 323
-  parent_qid: 195
-  sid: 2
-  gid: 11
-  type: "M"
-  title: "SQ04"
-  question: "Dernière sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 4
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -8847,22 +5984,6 @@ questions:
   gid: 11
   type: "M"
   title: "SQ01"
-  question: "Un exemple de sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 324
-  parent_qid: 196
-  sid: 2
-  gid: 11
-  type: "M"
-  title: "SQ01"
   question: "Some example subquestion"
   preg: ""
   help: ""
@@ -8895,22 +6016,6 @@ questions:
   gid: 11
   type: "M"
   title: "SQ02"
-  question: "Nouvelle sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 325
-  parent_qid: 196
-  sid: 2
-  gid: 11
-  type: "M"
-  title: "SQ02"
   question: "New answer subquestion"
   preg: ""
   help: ""
@@ -8934,22 +6039,6 @@ questions:
   mandatory: "N"
   question_order: 3
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 326
-  parent_qid: 196
-  sid: 2
-  gid: 11
-  type: "M"
-  title: "SQ03"
-  question: "Troisième sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 3
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -9001,22 +6090,6 @@ questions:
   scale_id: 0
   same_default: 0
 -
-  qid: 327
-  parent_qid: 196
-  sid: 2
-  gid: 11
-  type: "M"
-  title: "SQ04"
-  question: "Dernière sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 4
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
   qid: 328
   parent_qid: 196
   sid: 2
@@ -9039,22 +6112,6 @@ questions:
   gid: 11
   type: "M"
   title: "SQ05"
-  question: "Option exclusive"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 5
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 328
-  parent_qid: 196
-  sid: 2
-  gid: 11
-  type: "M"
-  title: "SQ05"
   question: "Exklusivoption"
   preg: ""
   help: ""
@@ -9062,22 +6119,6 @@ questions:
   mandatory: "N"
   question_order: 5
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 329
-  parent_qid: 208
-  sid: 2
-  gid: 11
-  type: ":"
-  title: "SQY01"
-  question: "Un exemple de sous-question - Échelle Y"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -9135,22 +6176,6 @@ questions:
   gid: 11
   type: ":"
   title: "SQY02"
-  question: "Nouvelle sous-question - Échelle Y"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 330
-  parent_qid: 208
-  sid: 2
-  gid: 11
-  type: ":"
-  title: "SQY02"
   question: "weitere Teilfrage - Y"
   preg: ""
   help: ""
@@ -9158,22 +6183,6 @@ questions:
   mandatory: "N"
   question_order: 2
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 331
-  parent_qid: 208
-  sid: 2
-  gid: 11
-  type: ":"
-  title: "SQY03"
-  question: "Troisième sous-question - Échelle Y"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 3
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -9241,22 +6250,6 @@ questions:
   scale_id: 0
   same_default: 0
 -
-  qid: 332
-  parent_qid: 208
-  sid: 2
-  gid: 11
-  type: ":"
-  title: "SQY04"
-  question: "Dernière sous-question - Échelle Y"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 4
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
   qid: 333
   parent_qid: 227
   sid: 2
@@ -9270,22 +6263,6 @@ questions:
   mandatory: "N"
   question_order: 1
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 333
-  parent_qid: 227
-  sid: 2
-  gid: 13
-  type: "M"
-  title: "SQ01"
-  question: "Un exemple de sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -9327,22 +6304,6 @@ questions:
   gid: 13
   type: "M"
   title: "SQ02"
-  question: "Nouvelle sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 334
-  parent_qid: 227
-  sid: 2
-  gid: 13
-  type: "M"
-  title: "SQ02"
   question: "weitere Teilfrage"
   preg: ""
   help: ""
@@ -9375,22 +6336,6 @@ questions:
   gid: 13
   type: "M"
   title: "SQ03"
-  question: "Troisième sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 3
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 335
-  parent_qid: 227
-  sid: 2
-  gid: 13
-  type: "M"
-  title: "SQ03"
   question: "Teilfrage drei"
   preg: ""
   help: ""
@@ -9398,22 +6343,6 @@ questions:
   mandatory: "N"
   question_order: 3
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 336
-  parent_qid: 227
-  sid: 2
-  gid: 13
-  type: "M"
-  title: "SQ04"
-  question: "Dernière sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 4
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -9471,22 +6400,6 @@ questions:
   gid: 13
   type: "C"
   title: "SQ01"
-  question: "Un exemple de sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 337
-  parent_qid: 228
-  sid: 2
-  gid: 13
-  type: "C"
-  title: "SQ01"
   question: "Beispiel Teilfrage"
   preg: ""
   help: ""
@@ -9494,22 +6407,6 @@ questions:
   mandatory: "N"
   question_order: 1
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 338
-  parent_qid: 228
-  sid: 2
-  gid: 13
-  type: "C"
-  title: "SQ02"
-  question: "Nouvelle sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -9567,22 +6464,6 @@ questions:
   gid: 13
   type: "C"
   title: "SQ03"
-  question: "Troisième sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 3
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 339
-  parent_qid: 228
-  sid: 2
-  gid: 13
-  type: "C"
-  title: "SQ03"
   question: "Teilfrage drei"
   preg: ""
   help: ""
@@ -9590,22 +6471,6 @@ questions:
   mandatory: "N"
   question_order: 3
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 340
-  parent_qid: 228
-  sid: 2
-  gid: 13
-  type: "C"
-  title: "SQ04"
-  question: "Dernière sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 4
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -9638,22 +6503,6 @@ questions:
   mandatory: "N"
   question_order: 4
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 341
-  parent_qid: 229
-  sid: 2
-  gid: 13
-  type: "C"
-  title: "SQ01"
-  question: "Un exemple de sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -9711,22 +6560,6 @@ questions:
   gid: 13
   type: "C"
   title: "SQ02"
-  question: "Nouvelle sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 342
-  parent_qid: 229
-  sid: 2
-  gid: 13
-  type: "C"
-  title: "SQ02"
   question: "weitere Teilfrage"
   preg: ""
   help: ""
@@ -9750,22 +6583,6 @@ questions:
   mandatory: "N"
   question_order: 3
   language: "en"
-  scale_id: 0
-  same_default: 0
--
-  qid: 343
-  parent_qid: 229
-  sid: 2
-  gid: 13
-  type: "C"
-  title: "SQ03"
-  question: "Troisième sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 3
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -9807,22 +6624,6 @@ questions:
   gid: 13
   type: "C"
   title: "SQ04"
-  question: "Dernière sous-question"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 4
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 344
-  parent_qid: 229
-  sid: 2
-  gid: 13
-  type: "C"
-  title: "SQ04"
   question: "letzte Teilfrage"
   preg: ""
   help: ""
@@ -9830,22 +6631,6 @@ questions:
   mandatory: "N"
   question_order: 4
   language: "de-informal"
-  scale_id: 0
-  same_default: 0
--
-  qid: 345
-  parent_qid: 212
-  sid: 2
-  gid: 10
-  type: ":"
-  title: "SQY01"
-  question: "Un exemple de sous-question - Échelle Y"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 1
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -9903,22 +6688,6 @@ questions:
   gid: 10
   type: ":"
   title: "SQY02"
-  question: "Nouvelle sous-question - Échelle Y"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 2
-  language: "fr"
-  scale_id: 0
-  same_default: 0
--
-  qid: 346
-  parent_qid: 212
-  sid: 2
-  gid: 10
-  type: ":"
-  title: "SQY02"
   question: "Neue Teilfrage - Y-Skala"
   preg: ""
   help: ""
@@ -9942,22 +6711,6 @@ questions:
   mandatory: "N"
   question_order: 3
   language: "en"
-  scale_id: 0
-  same_default: 0
--
-  qid: 347
-  parent_qid: 212
-  sid: 2
-  gid: 10
-  type: ":"
-  title: "SQY03"
-  question: "Troisième sous-question - Échelle Y"
-  preg: ""
-  help: ""
-  other: "N"
-  mandatory: "N"
-  question_order: 3
-  language: "fr"
   scale_id: 0
   same_default: 0
 -
@@ -10179,12 +6932,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 790
-  qid: 176
-  attribute: "prefix"
-  value: ""
-  language: "fr"
--
   qaid: 791
   qid: 176
   attribute: "random_group"
@@ -10201,12 +6948,6 @@ question_attributes:
   attribute: "suffix"
   value: ""
   language: "en"
--
-  qaid: 794
-  qid: 176
-  attribute: "suffix"
-  value: ""
-  language: "fr"
 -
   qaid: 795
   qid: 176
@@ -10235,12 +6976,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 800
-  qid: 176
-  attribute: "time_limit_countdown_message"
-  value: ""
-  language: "fr"
--
   qaid: 801
   qid: 176
   attribute: "time_limit_disable_next"
@@ -10262,12 +6997,6 @@ question_attributes:
   attribute: "time_limit_message"
   value: ""
   language: "en"
--
-  qaid: 805
-  qid: 176
-  attribute: "time_limit_message"
-  value: ""
-  language: "fr"
 -
   qaid: 806
   qid: 176
@@ -10311,12 +7040,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 814
-  qid: 176
-  attribute: "time_limit_warning_2_message"
-  value: ""
-  language: "fr"
--
   qaid: 815
   qid: 176
   attribute: "time_limit_warning_2_style"
@@ -10338,12 +7061,6 @@ question_attributes:
   attribute: "time_limit_warning_message"
   value: ""
   language: "en"
--
-  qaid: 819
-  qid: 176
-  attribute: "time_limit_warning_message"
-  value: ""
-  language: "fr"
 -
   qaid: 820
   qid: 176
@@ -10402,12 +7119,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 831
-  qid: 177
-  attribute: "time_limit_countdown_message"
-  value: ""
-  language: "fr"
--
   qaid: 832
   qid: 177
   attribute: "time_limit_disable_next"
@@ -10429,12 +7140,6 @@ question_attributes:
   attribute: "time_limit_message"
   value: ""
   language: "en"
--
-  qaid: 836
-  qid: 177
-  attribute: "time_limit_message"
-  value: ""
-  language: "fr"
 -
   qaid: 837
   qid: 177
@@ -10478,12 +7183,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 845
-  qid: 177
-  attribute: "time_limit_warning_2_message"
-  value: ""
-  language: "fr"
--
   qaid: 846
   qid: 177
   attribute: "time_limit_warning_2_style"
@@ -10505,12 +7204,6 @@ question_attributes:
   attribute: "time_limit_warning_message"
   value: ""
   language: "en"
--
-  qaid: 850
-  qid: 177
-  attribute: "time_limit_warning_message"
-  value: ""
-  language: "fr"
 -
   qaid: 851
   qid: 177
@@ -10569,12 +7262,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 862
-  qid: 178
-  attribute: "time_limit_countdown_message"
-  value: ""
-  language: "fr"
--
   qaid: 863
   qid: 178
   attribute: "time_limit_disable_next"
@@ -10596,12 +7283,6 @@ question_attributes:
   attribute: "time_limit_message"
   value: ""
   language: "en"
--
-  qaid: 867
-  qid: 178
-  attribute: "time_limit_message"
-  value: ""
-  language: "fr"
 -
   qaid: 868
   qid: 178
@@ -10645,12 +7326,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 876
-  qid: 178
-  attribute: "time_limit_warning_2_message"
-  value: ""
-  language: "fr"
--
   qaid: 877
   qid: 178
   attribute: "time_limit_warning_2_style"
@@ -10672,12 +7347,6 @@ question_attributes:
   attribute: "time_limit_warning_message"
   value: ""
   language: "en"
--
-  qaid: 881
-  qid: 178
-  attribute: "time_limit_warning_message"
-  value: ""
-  language: "fr"
 -
   qaid: 882
   qid: 178
@@ -10776,12 +7445,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 901
-  qid: 179
-  attribute: "prefix"
-  value: ""
-  language: "fr"
--
   qaid: 902
   qid: 179
   attribute: "random_group"
@@ -10798,12 +7461,6 @@ question_attributes:
   attribute: "suffix"
   value: ""
   language: "en"
--
-  qaid: 905
-  qid: 179
-  attribute: "suffix"
-  value: ""
-  language: "fr"
 -
   qaid: 906
   qid: 179
@@ -10832,12 +7489,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 911
-  qid: 179
-  attribute: "time_limit_countdown_message"
-  value: ""
-  language: "fr"
--
   qaid: 912
   qid: 179
   attribute: "time_limit_disable_next"
@@ -10859,12 +7510,6 @@ question_attributes:
   attribute: "time_limit_message"
   value: ""
   language: "en"
--
-  qaid: 916
-  qid: 179
-  attribute: "time_limit_message"
-  value: ""
-  language: "fr"
 -
   qaid: 917
   qid: 179
@@ -10908,12 +7553,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 925
-  qid: 179
-  attribute: "time_limit_warning_2_message"
-  value: ""
-  language: "fr"
--
   qaid: 926
   qid: 179
   attribute: "time_limit_warning_2_style"
@@ -10935,12 +7574,6 @@ question_attributes:
   attribute: "time_limit_warning_message"
   value: ""
   language: "en"
--
-  qaid: 930
-  qid: 179
-  attribute: "time_limit_warning_message"
-  value: ""
-  language: "fr"
 -
   qaid: 931
   qid: 179
@@ -10999,12 +7632,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 942
-  qid: 180
-  attribute: "time_limit_countdown_message"
-  value: ""
-  language: "fr"
--
   qaid: 943
   qid: 180
   attribute: "time_limit_disable_next"
@@ -11026,12 +7653,6 @@ question_attributes:
   attribute: "time_limit_message"
   value: ""
   language: "en"
--
-  qaid: 947
-  qid: 180
-  attribute: "time_limit_message"
-  value: ""
-  language: "fr"
 -
   qaid: 948
   qid: 180
@@ -11075,12 +7696,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 956
-  qid: 180
-  attribute: "time_limit_warning_2_message"
-  value: ""
-  language: "fr"
--
   qaid: 957
   qid: 180
   attribute: "time_limit_warning_2_style"
@@ -11102,12 +7717,6 @@ question_attributes:
   attribute: "time_limit_warning_message"
   value: ""
   language: "en"
--
-  qaid: 961
-  qid: 180
-  attribute: "time_limit_warning_message"
-  value: ""
-  language: "fr"
 -
   qaid: 962
   qid: 180
@@ -11151,12 +7760,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 970
-  qid: 181
-  attribute: "prefix"
-  value: ""
-  language: "fr"
--
   qaid: 971
   qid: 181
   attribute: "random_group"
@@ -11178,12 +7781,6 @@ question_attributes:
   attribute: "suffix"
   value: ""
   language: "en"
--
-  qaid: 975
-  qid: 181
-  attribute: "suffix"
-  value: ""
-  language: "fr"
 -
   qaid: 976
   qid: 181
@@ -11227,12 +7824,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 984
-  qid: 182
-  attribute: "prefix"
-  value: ""
-  language: "fr"
--
   qaid: 985
   qid: 182
   attribute: "random_group"
@@ -11254,12 +7845,6 @@ question_attributes:
   attribute: "suffix"
   value: ""
   language: "en"
--
-  qaid: 989
-  qid: 182
-  attribute: "suffix"
-  value: ""
-  language: "fr"
 -
   qaid: 990
   qid: 182
@@ -11303,12 +7888,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 998
-  qid: 183
-  attribute: "prefix"
-  value: ""
-  language: "fr"
--
   qaid: 999
   qid: 183
   attribute: "random_group"
@@ -11330,12 +7909,6 @@ question_attributes:
   attribute: "suffix"
   value: ""
   language: "en"
--
-  qaid: 1003
-  qid: 183
-  attribute: "suffix"
-  value: ""
-  language: "fr"
 -
   qaid: 1004
   qid: 183
@@ -11389,12 +7962,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 1014
-  qid: 184
-  attribute: "prefix"
-  value: ""
-  language: "fr"
--
   qaid: 1015
   qid: 184
   attribute: "public_statistics"
@@ -11416,12 +7983,6 @@ question_attributes:
   attribute: "suffix"
   value: ""
   language: "en"
--
-  qaid: 1019
-  qid: 184
-  attribute: "suffix"
-  value: ""
-  language: "fr"
 -
   qaid: 1020
   qid: 184
@@ -11505,12 +8066,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 1036
-  qid: 187
-  attribute: "prefix"
-  value: ""
-  language: "fr"
--
   qaid: 1037
   qid: 187
   attribute: "public_statistics"
@@ -11577,12 +8132,6 @@ question_attributes:
   attribute: "suffix"
   value: ""
   language: "en"
--
-  qaid: 1050
-  qid: 187
-  attribute: "suffix"
-  value: ""
-  language: "fr"
 -
   qaid: 1051
   qid: 187
@@ -11736,12 +8285,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 1081
-  qid: 193
-  attribute: "other_replace_text"
-  value: ""
-  language: "fr"
--
   qaid: 1082
   qid: 193
   attribute: "page_break"
@@ -11874,12 +8417,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 1108
-  qid: 195
-  attribute: "other_replace_text"
-  value: ""
-  language: "fr"
--
   qaid: 1109
   qid: 195
   attribute: "page_break"
@@ -11966,12 +8503,6 @@ question_attributes:
   attribute: "other_replace_text"
   value: ""
   language: "en"
--
-  qaid: 1126
-  qid: 197
-  attribute: "other_replace_text"
-  value: ""
-  language: "fr"
 -
   qaid: 1127
   qid: 197
@@ -12320,12 +8851,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 1196
-  qid: 205
-  attribute: "time_limit_countdown_message"
-  value: ""
-  language: "fr"
--
   qaid: 1197
   qid: 205
   attribute: "time_limit_disable_next"
@@ -12347,12 +8872,6 @@ question_attributes:
   attribute: "time_limit_message"
   value: ""
   language: "en"
--
-  qaid: 1201
-  qid: 205
-  attribute: "time_limit_message"
-  value: ""
-  language: "fr"
 -
   qaid: 1202
   qid: 205
@@ -12396,12 +8915,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 1210
-  qid: 205
-  attribute: "time_limit_warning_2_message"
-  value: ""
-  language: "fr"
--
   qaid: 1211
   qid: 205
   attribute: "time_limit_warning_2_style"
@@ -12423,12 +8936,6 @@ question_attributes:
   attribute: "time_limit_warning_message"
   value: ""
   language: "en"
--
-  qaid: 1215
-  qid: 205
-  attribute: "time_limit_warning_message"
-  value: ""
-  language: "fr"
 -
   qaid: 1216
   qid: 205
@@ -12457,12 +8964,6 @@ question_attributes:
   value: "Scale A"
   language: "en"
 -
-  qaid: 1221
-  qid: 209
-  attribute: "dualscale_headerA"
-  value: "Scale A"
-  language: "fr"
--
   qaid: 1222
   qid: 209
   attribute: "dualscale_headerB"
@@ -12474,12 +8975,6 @@ question_attributes:
   attribute: "dualscale_headerB"
   value: "Scale B"
   language: "en"
--
-  qaid: 1224
-  qid: 209
-  attribute: "dualscale_headerB"
-  value: "Scale B"
-  language: "fr"
 -
   qaid: 1225
   qid: 210
@@ -12508,12 +9003,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 1230
-  qid: 210
-  attribute: "dropdown_prepostfix"
-  value: ""
-  language: "fr"
--
   qaid: 1231
   qid: 210
   attribute: "dropdown_separators"
@@ -12531,12 +9020,6 @@ question_attributes:
   value: "Scale B"
   language: "en"
 -
-  qaid: 1234
-  qid: 210
-  attribute: "dualscale_headerA"
-  value: "Scale B"
-  language: "fr"
--
   qaid: 1235
   qid: 210
   attribute: "dualscale_headerB"
@@ -12548,12 +9031,6 @@ question_attributes:
   attribute: "dualscale_headerB"
   value: "Scale A"
   language: "en"
--
-  qaid: 1237
-  qid: 210
-  attribute: "dualscale_headerB"
-  value: "Scale A"
-  language: "fr"
 -
   qaid: 1238
   qid: 210
@@ -12792,12 +9269,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 1285
-  qid: 216
-  attribute: "time_limit_countdown_message"
-  value: ""
-  language: "fr"
--
   qaid: 1286
   qid: 216
   attribute: "time_limit_disable_next"
@@ -12819,12 +9290,6 @@ question_attributes:
   attribute: "time_limit_message"
   value: ""
   language: "en"
--
-  qaid: 1290
-  qid: 216
-  attribute: "time_limit_message"
-  value: ""
-  language: "fr"
 -
   qaid: 1291
   qid: 216
@@ -12868,12 +9333,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 1299
-  qid: 216
-  attribute: "time_limit_warning_2_message"
-  value: ""
-  language: "fr"
--
   qaid: 1300
   qid: 216
   attribute: "time_limit_warning_2_style"
@@ -12895,12 +9354,6 @@ question_attributes:
   attribute: "time_limit_warning_message"
   value: ""
   language: "en"
--
-  qaid: 1304
-  qid: 216
-  attribute: "time_limit_warning_message"
-  value: ""
-  language: "fr"
 -
   qaid: 1305
   qid: 216
@@ -12944,12 +9397,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 1313
-  qid: 217
-  attribute: "time_limit_countdown_message"
-  value: ""
-  language: "fr"
--
   qaid: 1314
   qid: 217
   attribute: "time_limit_disable_next"
@@ -12971,12 +9418,6 @@ question_attributes:
   attribute: "time_limit_message"
   value: ""
   language: "en"
--
-  qaid: 1318
-  qid: 217
-  attribute: "time_limit_message"
-  value: ""
-  language: "fr"
 -
   qaid: 1319
   qid: 217
@@ -13020,12 +9461,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 1327
-  qid: 217
-  attribute: "time_limit_warning_2_message"
-  value: ""
-  language: "fr"
--
   qaid: 1328
   qid: 217
   attribute: "time_limit_warning_2_style"
@@ -13047,12 +9482,6 @@ question_attributes:
   attribute: "time_limit_warning_message"
   value: ""
   language: "en"
--
-  qaid: 1332
-  qid: 217
-  attribute: "time_limit_warning_message"
-  value: ""
-  language: "fr"
 -
   qaid: 1333
   qid: 217
@@ -13121,12 +9550,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 1346
-  qid: 219
-  attribute: "time_limit_countdown_message"
-  value: ""
-  language: "fr"
--
   qaid: 1347
   qid: 219
   attribute: "time_limit_disable_next"
@@ -13148,12 +9571,6 @@ question_attributes:
   attribute: "time_limit_message"
   value: ""
   language: "en"
--
-  qaid: 1351
-  qid: 219
-  attribute: "time_limit_message"
-  value: ""
-  language: "fr"
 -
   qaid: 1352
   qid: 219
@@ -13197,12 +9614,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 1360
-  qid: 219
-  attribute: "time_limit_warning_2_message"
-  value: ""
-  language: "fr"
--
   qaid: 1361
   qid: 219
   attribute: "time_limit_warning_2_style"
@@ -13224,12 +9635,6 @@ question_attributes:
   attribute: "time_limit_warning_message"
   value: ""
   language: "en"
--
-  qaid: 1365
-  qid: 219
-  attribute: "time_limit_warning_message"
-  value: ""
-  language: "fr"
 -
   qaid: 1366
   qid: 219
@@ -13273,12 +9678,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 1374
-  qid: 220
-  attribute: "time_limit_countdown_message"
-  value: ""
-  language: "fr"
--
   qaid: 1375
   qid: 220
   attribute: "time_limit_disable_next"
@@ -13300,12 +9699,6 @@ question_attributes:
   attribute: "time_limit_message"
   value: ""
   language: "en"
--
-  qaid: 1379
-  qid: 220
-  attribute: "time_limit_message"
-  value: ""
-  language: "fr"
 -
   qaid: 1380
   qid: 220
@@ -13349,12 +9742,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 1388
-  qid: 220
-  attribute: "time_limit_warning_2_message"
-  value: ""
-  language: "fr"
--
   qaid: 1389
   qid: 220
   attribute: "time_limit_warning_2_style"
@@ -13376,12 +9763,6 @@ question_attributes:
   attribute: "time_limit_warning_message"
   value: ""
   language: "en"
--
-  qaid: 1393
-  qid: 220
-  attribute: "time_limit_warning_message"
-  value: ""
-  language: "fr"
 -
   qaid: 1394
   qid: 220
@@ -13425,12 +9806,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 1402
-  qid: 221
-  attribute: "time_limit_countdown_message"
-  value: ""
-  language: "fr"
--
   qaid: 1403
   qid: 221
   attribute: "time_limit_disable_next"
@@ -13452,12 +9827,6 @@ question_attributes:
   attribute: "time_limit_message"
   value: ""
   language: "en"
--
-  qaid: 1407
-  qid: 221
-  attribute: "time_limit_message"
-  value: ""
-  language: "fr"
 -
   qaid: 1408
   qid: 221
@@ -13501,12 +9870,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 1416
-  qid: 221
-  attribute: "time_limit_warning_2_message"
-  value: ""
-  language: "fr"
--
   qaid: 1417
   qid: 221
   attribute: "time_limit_warning_2_style"
@@ -13528,12 +9891,6 @@ question_attributes:
   attribute: "time_limit_warning_message"
   value: ""
   language: "en"
--
-  qaid: 1421
-  qid: 221
-  attribute: "time_limit_warning_message"
-  value: ""
-  language: "fr"
 -
   qaid: 1422
   qid: 221
@@ -13606,12 +9963,6 @@ question_attributes:
   attribute: "other_replace_text"
   value: ""
   language: "en"
--
-  qaid: 1436
-  qid: 222
-  attribute: "other_replace_text"
-  value: ""
-  language: "fr"
 -
   qaid: 1437
   qid: 222
@@ -13705,12 +10056,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 1455
-  qid: 223
-  attribute: "other_replace_text"
-  value: ""
-  language: "fr"
--
   qaid: 1456
   qid: 223
   attribute: "page_break"
@@ -13773,12 +10118,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 1468
-  qid: 224
-  attribute: "time_limit_countdown_message"
-  value: ""
-  language: "fr"
--
   qaid: 1469
   qid: 224
   attribute: "time_limit_disable_next"
@@ -13800,12 +10139,6 @@ question_attributes:
   attribute: "time_limit_message"
   value: ""
   language: "en"
--
-  qaid: 1473
-  qid: 224
-  attribute: "time_limit_message"
-  value: ""
-  language: "fr"
 -
   qaid: 1474
   qid: 224
@@ -13849,12 +10182,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 1482
-  qid: 224
-  attribute: "time_limit_warning_2_message"
-  value: ""
-  language: "fr"
--
   qaid: 1483
   qid: 224
   attribute: "time_limit_warning_2_style"
@@ -13876,12 +10203,6 @@ question_attributes:
   attribute: "time_limit_warning_message"
   value: ""
   language: "en"
--
-  qaid: 1487
-  qid: 224
-  attribute: "time_limit_warning_message"
-  value: ""
-  language: "fr"
 -
   qaid: 1488
   qid: 224
@@ -13925,12 +10246,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 1496
-  qid: 225
-  attribute: "time_limit_countdown_message"
-  value: ""
-  language: "fr"
--
   qaid: 1497
   qid: 225
   attribute: "time_limit_disable_next"
@@ -13952,12 +10267,6 @@ question_attributes:
   attribute: "time_limit_message"
   value: ""
   language: "en"
--
-  qaid: 1501
-  qid: 225
-  attribute: "time_limit_message"
-  value: ""
-  language: "fr"
 -
   qaid: 1502
   qid: 225
@@ -14001,12 +10310,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 1510
-  qid: 225
-  attribute: "time_limit_warning_2_message"
-  value: ""
-  language: "fr"
--
   qaid: 1511
   qid: 225
   attribute: "time_limit_warning_2_style"
@@ -14028,12 +10331,6 @@ question_attributes:
   attribute: "time_limit_warning_message"
   value: ""
   language: "en"
--
-  qaid: 1515
-  qid: 225
-  attribute: "time_limit_warning_message"
-  value: ""
-  language: "fr"
 -
   qaid: 1516
   qid: 225
@@ -14132,12 +10429,6 @@ question_attributes:
   value: ""
   language: "en"
 -
-  qaid: 1535
-  qid: 227
-  attribute: "other_replace_text"
-  value: ""
-  language: "fr"
--
   qaid: 1536
   qid: 227
   attribute: "page_break"
@@ -14234,7 +10525,7 @@ surveys:
   savetimings: "N"
   template: "default"
   language: "en"
-  additional_languages: "fr de-informal"
+  additional_languages: "de-informal"
   datestamp: "Y"
   usecookie: "N"
   allowregister: "N"
@@ -14326,26 +10617,3 @@ surveys_languagesettings:
   email_admin_responses_subj: "Response submission for survey {SURVEYNAME} with results"
   email_admin_responses: "Hello,<br />\n<br />\nA new response was submitted for your survey '{SURVEYNAME}'.<br />\n<br />\nClick the following link to reload the survey:<br />\n{RELOADURL}<br />\n<br />\nClick the following link to see the individual response:<br />\n{VIEWRESPONSEURL}<br />\n<br />\nClick the following link to edit the individual response:<br />\n{EDITRESPONSEURL}<br />\n<br />\nView statistics by clicking here:<br />\n{STATISTICSURL}<br />\n<br />\n<br />\nThe following answers were given by the participant:<br />\n{ANSWERTABLE}"
   surveyls_numberformat: 0
--
-  surveyls_survey_id: 2
-  surveyls_language: "fr"
-  surveyls_title: "Sample survey"
-  surveyls_description: "Ce sondage montre toutes les types de questions de LimeSurvey et quelques options. "
-  surveyls_welcometext: "<p>\n	Ceci est le message d'accueil de votre sondage !! Vous pouvez l'éditer dans les paramètres du questionnaire.</p>\n"
-  surveyls_endtext: "<p>\n	Ceci est le message de fin de votre questionnaire ! Un bon endroit pour vous remercier d'avoir répondu à ce questionnaire.</p>"
-  surveyls_url: "http://www.limesurvey.org"
-  surveyls_urldescription: "La description de l'URL de fin, ce sondage est distribué sous Licence GPL"
-  surveyls_email_invite_subj: "Invitation à participer à un questionnaire"
-  surveyls_email_invite: "Cher(e) {FIRSTNAME},<br /><br />Vous avez été invité à participer à un questionnaire.<br /><br />Celui-ci est intitulé :<br />\"{SURVEYNAME}\"<br /><br />\"{SURVEYDESCRIPTION}\"<br /><br />Pour participer, veuillez cliquer sur le lien ci-dessous.<br /><br />Cordialement,<br /><br />{ADMINNAME} ({ADMINEMAIL})<br /><br />----------------------------------------------<br />Cliquez ici pour remplir ce questionnaire :<br />{SURVEYURL}<br /><br />Si vous ne souhaitez pas participer à ce questionnaire et ne souhaitez plus recevoir aucune invitation, veuillez cliquer sur le lien suivant :<br />{OPTOUTURL}"
-  surveyls_email_remind_subj: "Rappel pour participer à un questionnaire"
-  surveyls_email_remind: "Cher(e) {FIRSTNAME},<br /><br />Vous avez été invité à participer à un questionnaire récemment.<br /><br />Nous avons pris en compte que vous n'avez pas encore complété le questionnaire, et nous vous rappelons que celui-ci est toujours disponible si vous souhaitez participer.<br /><br />Le questionnaire est intitulé :<br />\"{SURVEYNAME}\"<br /><br />\"{SURVEYDESCRIPTION}\"<br /><br />Pour participer, veuillez cliquer sur le lien ci-dessous.<br /><br />Cordialement,<br /><br />{ADMINNAME} ({ADMINEMAIL})<br /><br />----------------------------------------------<br />Cliquez ici pour faire le questionnaire:<br />{SURVEYURL}<br /><br />Si vous ne souhaitez pas participer à ce questionnaire et ne souhaitez plus recevoir aucune invitation, veuillez cliquer sur le lien suivant :<br />{OPTOUTURL}"
-  surveyls_email_register_subj: "Confirmation de l'inscription au questionnaire"
-  surveyls_email_register: "Cher(e){FIRSTNAME},<br /><br />Vous (ou quelqu'un utilisant votre adresse électronique) vous êtes enregistré pour participer à un questionnaire en ligne intitulé {SURVEYNAME}.<br /><br />Pour compléter ce questionnaire, cliquez sur le lien suivant :<br /><br />{SURVEYURL}<br /><br />Si vous avez des questions à propos de ce questionnaire, ou si vous ne vous êtes pas enregistré pour participer à celui-ci et croyez que ce courriel est une erreur, veuillez contacter {ADMINNAME} sur {ADMINEMAIL}"
-  surveyls_email_confirm_subj: "Confirmation de questionnaire complété"
-  surveyls_email_confirm: "Cher(e) {FIRSTNAME},<br /><br />Ce courriel vous confirme que vous avez complété le questionnaire intitulé {SURVEYNAME} et que votre réponse a été enregistrée. Merci pour votre participation.<br /><br />Si vous avez des questions à propos de ce courriel, veuillez contacter {ADMINNAME} sur {ADMINEMAIL}.<br /><br />Cordialement,<br /><br />{ADMINNAME}"
-  surveyls_dateformat: 5
-  email_admin_notification_subj: "Soumission de réponse pour le questionnaire {SURVEYNAME}"
-  email_admin_notification: "Bonjour,<br />\n<br />\nUne nouvelle réponse a été soumise pour votre questionnaire '{SURVEYNAME}'.<br />\n<br />\nCliquer sur le lien suivant pour recharger votre questionnaire :<br />\n{RELOADURL}<br />\n<br />\nCliquer sur le lien suivant pour voir la réponse :<br />\n{VIEWRESPONSEURL}<br />\n<br />\nCliquer sur le lien suivant pour éditer la réponse :<br />\n{EDITRESPONSEURL}<br />\n<br />\nVisualiser les statistiques en cliquant ici :<br />\n{STATISTICSURL}<br />\n<br />\nles réponses suivantes ont été données par le participant :<br />\n{ANSWERTABLE}"
-  email_admin_responses_subj: "Soumission de réponse pour le questionnaire {SURVEYNAME} avec résultats"
-  email_admin_responses: "Bonjour,<br />\n<br />\nUne nouvelle réponse a été soumise pour votre questionnaire '{SURVEYNAME}'.<br />\n<br />\nCliquer sur le lien suivant pour recharger votre questionnaire :<br />\n{RELOADURL}<br />\n<br />\nCliquer sur le lien suivant pour voir la réponse :<br />\n{VIEWRESPONSEURL}<br />\n<br />\nCliquez sur le lien suivant pour éditer la réponse individuelle :<br />\n{EDITRESPONSEURL}<br />\n<br />\nVisualiser les statistiques en cliquant ici :<br />\n{STATISTICSURL}<br />\n<br />\n<br />\nles réponses suivantes ont été données par le participant :<br />\n{ANSWERTABLE}"
-  surveyls_numberformat: 1
