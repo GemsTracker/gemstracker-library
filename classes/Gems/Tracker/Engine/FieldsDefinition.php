@@ -375,20 +375,12 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
     /**
      * Returns an array name => code of all the fields of the type specified
      *
-     * @param string $fieldType
+     * @param string|array $fieldType One or more field types
      * @return array name => code
      */
     public function getFieldCodesOfType($fieldType)
     {
-        $output = array();
-
-        foreach ($this->_trackFields as $key => $field) {
-            if ($fieldType == $field['gtf_field_type']) {
-                $output[$key] = $field['gtf_field_code'];
-            }
-        }
-
-        return $output;
+        return $this->getFieldsOfType($fieldType, 'gtf_field_code');
     }
 
     /**
@@ -399,23 +391,7 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
      */
     public function getFieldLabelsOfType($fieldType)
     {
-        $output = array();
-
-        if (is_array($fieldType)) {
-            foreach ($this->_trackFields as $key => $field) {
-                if (in_array($field['gtf_field_type'], $fieldType)) {
-                    $output[$key] = $field['gtf_field_name'];
-                }
-            }
-        } else {
-            foreach ($this->_trackFields as $key => $field) {
-                if ($fieldType == $field['gtf_field_type']) {
-                    $output[$key] = $field['gtf_field_name'];
-                }
-            }
-        }
-
-        return $output;
+        return $this->getFieldsOfType($fieldType, 'gtf_field_name');    
     }
 
     /**
@@ -454,6 +430,26 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
             }
         }
         // \MUtil_Echo::track($output);
+
+        return $output;
+    }
+    
+     /**
+     * Returns an array name => $element of all the fields of the type specified
+     *
+     * @param string|array $fieldType One or more field types
+     * @return array name => $element
+     */
+    protected function getFieldsOfType($fieldType, $element)
+    {
+        $output     = array();
+        $fieldArray = (array) $fieldType;
+        
+        foreach ($this->_trackFields as $key => $field) {
+            if (in_array($field['gtf_field_type'], $fieldArray)) {
+                $output[$key] = $field[$element];
+            }
+        }        
 
         return $output;
     }
