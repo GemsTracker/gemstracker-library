@@ -109,5 +109,20 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMapTest extends \Gems_Test_DbTestAbs
         $this->assertEquals(\MUtil_Model::TYPE_NUMERIC, $model->get('list', 'type'));
         $this->assertEquals(\MUtil_Model::TYPE_STRING, $model->get('list2', 'type'));
     }
+    
+    /**
+     * Test is list with only numeric options are presented as numeric
+     * 
+     * The database format is string, but limesurvey exports pure numeric list as numeric to spss
+     * to mimic this we change the type if we can
+     */
+    public function testExpressionHelpIsQuestion() {
+        // Create a simple array model to apply to fieldmap to
+        $array = array('test' => 123);
+        $model = new \Gems_Model_PlaceholderModel('test', $array);
+        $this->fieldmap->applyToModel($model);
+        
+        $this->assertEquals('Expression question', $model->get('expression', 'label'));
+    }
 
 }

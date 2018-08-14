@@ -292,7 +292,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                             }
                             $map[$row['sgq']] = $row;
 
-                            if ($rows[$i]['type'] !== 'M') {
+                            if ($rows[$i]['type'] == 'P') {
                                 $row['sgq'] .= 'comment';
                                 $row['code'] .= 'comment';
                                 $row['sq_title'] .= 'comment';

@@ -197,6 +197,23 @@ questions:
     scale_id: 0
     same_default: 0
     relevance: 1
+  -
+    qid: 12
+    parent_qid: 0
+    sid: 1
+    gid: 1
+    type: "*"
+    title: "expression"
+    question: "{list2.NAOK}"
+    preg: ""
+    help: "Expression question"
+    other: "N"
+    mandatory: "N"
+    question_order: 9
+    language: "en"
+    scale_id: 0
+    same_default: 0
+    relevance: 1
     
 answers:
   -
