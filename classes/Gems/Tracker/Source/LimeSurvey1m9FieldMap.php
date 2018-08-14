@@ -648,13 +648,15 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                     if (strpos($format, ':')) {
                         $time = true;
                     }
-                    if (strpos($format, '-')) {
-                        $date = true;
-                    } elseif (strpos($format, '/')) {
-                        $date = true;
-                    } elseif (strpos($format, '\\')) {
+                    
+                    // Find any of -\/ to mark as a date
+                    $regExp = '/.*[-\/\\\\]+.*/m';
+                    $matches = [];
+                    preg_match($regExp, $format, $matches);
+                    if (count($matches) > 0) {
                         $date = true;
                     }
+                    
                     if ($date && !$time) {
                         return \MUtil_Model::TYPE_DATE;
                     } elseif (!$date && $time) {
@@ -783,12 +785,10 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                 $tmpres['storageFormat'] = 'yyyy-MM-dd';
             }
         } else {
-            if ($type === \MUtil_Model::TYPE_DATETIME) {
+            if ($type === \MUtil_Model::TYPE_DATETIME || $type === \MUtil_Model::TYPE_TIME) {
                 $tmpres['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
             } elseif ($type === \MUtil_Model::TYPE_DATE) {
                 $tmpres['storageFormat'] = 'yyyy-MM-dd';
-            } elseif ($type === \MUtil_Model::TYPE_TIME) {
-                $tmpres['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
             }
         }
 
@@ -814,61 +814,6 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
         }
 
         return false;
-    }
-
-    /**
-     * Returns an array containing fieldname => label for dropdown list etc..
-     *
-     * @param string $forType Optional type filter
-     * @return array fieldname => label
-     */
-    public function getFullQuestionList($forType = false)
-    {
-        $map     = $this->_getMap();
-        $results = array();
-
-
-        $question = null;
-        foreach ($map as $name => $field) {
-
-            // Always need the last field
-            if (isset($field['question'])) {
-                $question = $this->removeMarkup($field['question']);
-            }
-
-            // Optional type check
-            if ((! $forType) || ($field['type'] == $forType)) {
-
-                // Juggle the labels for sub-questions etc..
-                if (isset($field['sq_question1'])) {
-                    $squestion = sprintf($this->translate->_('%s: %s'), $this->removeMarkup($field['sq_question']), $this->removeMarkup($field['sq_question1']));
-                } elseif (isset($field['sq_question'])) {
-                    $squestion = $this->removeMarkup($field['sq_question']);
-                } else {
-                    $squestion = null;
-                }
-
-                // Title does not have to be unique. So if a title is used
-                // twice we only use it for the first result.
-                if (isset($field['code']) && (! isset($results[$field['code']]))) {
-                    $name = $field['code'];
-                }
-                //\MUtil_Echo::track($field['title'], $question, $squestion, $field);
-                if ($question && $squestion) {
-                    $results[$name] = sprintf($this->translate->_('%s - %s'), $question, $squestion);;
-
-                } elseif ($question) {
-                    $results[$name] = $question;
-
-                } elseif ($squestion) {
-                    $results[$name] = sprintf($this->translate->_('- %s'), $squestion);
-                } elseif (isset($field['question']) && $field['title']) {
-                    $results[$name] = $field['title'];
-                }
-            }
-        }
-
-        return $results;
     }
 
     /**
@@ -982,11 +927,12 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
 
                 } elseif ($squestion) {
                     $results[$name] = sprintf($this->translate->_('- %s'), $squestion);
+                } elseif (isset($field['question']) && $field['title']) {
+                    // When question is empty, but we have a title
+                    $results[$name] = $field['title'];
                 }
             }
-            // \MUtil_Echo::track($field);
         }
-        // \MUtil_Echo::track($results);
 
         return $results;
     }

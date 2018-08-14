@@ -190,8 +190,8 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             'Gems\Agenda\Filter\FieldLikeAppointmentFilter' => [
                 'getAppointmentFieldVale'   => 'getAppointmentFieldValue',
                 ],
-            'Gems_Tracker_Survey' => [
-                'getFullQuestionList'       => 'getQuestionInformation',
+            'Gems_Tracker_Source' => [
+                'getFullQuestionList'       => 'getQuestionList',
                 ],
             'Gems_Mail_MailLoader' => [
                 'getAvailableMailTemplates' => 'CommTemplateUtil->getCommTemplatesForTarget',
