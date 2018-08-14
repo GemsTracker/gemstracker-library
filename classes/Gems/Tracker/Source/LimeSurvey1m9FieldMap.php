@@ -724,18 +724,18 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             if ($tmpres['type'] === \MUtil_Model::TYPE_NUMERIC) {
                 $tmpres['formatFunction'] = array($this, 'handleFloat');
             }
-
-            $oldQuestion = isset($oldfld['question']) ? $oldfld['question'] : null;
-            if (isset($field['question']) && (! isset($oldfld) || $oldQuestion !== $field['question'])) {
+            
+            if (isset($field['question'])) {
                 $tmpres['label'] = \MUtil_Html::raw($this->removeMarkup($field['question']));
             }
             if (isset($field['help']) && $field['help']) {
                 $tmpres['description'] = \MUtil_Html::raw($this->removeMarkup($field['help']));
             }
 
+            $oldQid = isset($oldfld['qid']) ? $oldfld['qid'] : 0;
             // Juggle the labels for sub-questions etc..
-            if (isset($field['sq_question'])) {
-                if (isset($tmpres['label'])) {
+            if (isset($field['sq_question'])) {                
+                if ($oldQid !== $field['qid']) {
                     // Add non answered question for grouping and make it the current parent
                     //$parent = '_' . $name . '_';
                     $parent = $field['title'];

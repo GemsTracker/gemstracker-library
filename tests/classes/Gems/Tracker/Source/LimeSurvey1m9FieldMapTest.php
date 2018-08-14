@@ -105,7 +105,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMapTest extends \Gems_Test_DbTestAbs
         $array = array('test' => 123);
         $model = new \Gems_Model_PlaceholderModel('test', $array);
         $this->fieldmap->applyToModel($model);
-
+        
         $this->assertEquals(\MUtil_Model::TYPE_NUMERIC, $model->get('list', 'type'));
         $this->assertEquals(\MUtil_Model::TYPE_STRING, $model->get('list2', 'type'));
     }

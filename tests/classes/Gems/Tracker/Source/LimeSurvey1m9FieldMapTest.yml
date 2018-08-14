@@ -158,7 +158,7 @@ questions:
     help: ""
     other: "N"
     mandatory: "N"
-    question_order: 1
+    question_order: 6
     language: "en"
     scale_id: 0
     same_default: 0
@@ -175,7 +175,7 @@ questions:
     help: ""
     other: "N"
     mandatory: "N"
-    question_order: 2
+    question_order: 7
     language: "en"
     scale_id: 0
     same_default: 0
@@ -192,7 +192,7 @@ questions:
     help: ""
     other: "N"
     mandatory: "N"
-    question_order: 3
+    question_order: 8
     language: "en"
     scale_id: 0
     same_default: 0
