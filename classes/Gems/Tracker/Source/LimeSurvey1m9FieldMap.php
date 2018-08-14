@@ -243,15 +243,17 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
 
                     case 'R':     //Ranking question
                         //Check the needed slots in attributes table
-                        if ($slots = $this->_getQuestionAttribute($row['qid'], 'ranking_slots')) {
-                            for ($a = 1; $a <= $slots; $a++) {
-                                $row1 = $row;
-                                $row1['code'] = $row['title'] . '_' . $i;
-                                $row1['sgq'] .= $a;
-                                $row1['sq_title'] = $a;
-                                $row1['sq_question'] = sprintf($this->translate->_('Rank %d'), $a);
-                                $map[$row1['sgq']] = $row1;
-                            }
+                        $possibleAnswers = count($this->_getMultiOptions($row));
+                        $maxAnswers      = $this->_getQuestionAttribute($row['qid'], 'max_answers', $possibleAnswers);
+                        $slots           = min($maxAnswers, $possibleAnswers);
+                        
+                        for ($a = 1; $a <= $slots; $a++) {
+                            $row1 = $row;
+                            $row1['code'] = $row['title'] . '_' . $a;
+                            $row1['sgq'] = $row['sgq'] . $a;
+                            $row1['sq_title'] = $a;
+                            $row1['sq_question'] = sprintf($this->translate->_('Rank %d'), $a);
+                            $map[$row1['sgq']] = $row1;
                         }
                         break;
 
