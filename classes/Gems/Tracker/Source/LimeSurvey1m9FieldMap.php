@@ -325,10 +325,6 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
 
                     case '*':   //Equation type
                         $row['code'] = $row['title'];
-                        if (!is_null($row['sq_title'])) {
-                            $row['sgq'] .= $row['sq_title'];
-                            $row['code'] .= '_' . $row['sq_title'];
-                        }
 
                         // Since there is no question text (it contains the equation)
                         // We use the help text for that, but in case that is empty we use
@@ -496,33 +492,37 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
      * Return a certain question attribute or the default value if it does not exist.
      *
      * @param string $qid
-     * @param string $subId
+     * @param string $attribute
      * @param mxied $default
      * @return mixed
      */
-    protected function _getQuestionAttribute($qid, $subId, $default = null)
+    protected function _getQuestionAttribute($qid, $attribute, $default = null)
     {
         if (! is_array($this->_attributes)) {
-            $qaTable = $this->_getQuestionAttributesTableName();
-            $qTable  = $this->_getQuestionsTableName();
-            $sTable  = $this->_getSurveysTableName();
+            $this->_attributes = [];            
+            $attributesTable  = $this->_getQuestionAttributesTableName();
+            $questionsTable   = $this->_getQuestionsTableName();
+            $surveyTable      = $this->_getSurveysTableName();
 
-            $sql = 'SELECT a.qid, a.attribute, a.value FROM ' . $qaTable . ' AS a
-                LEFT JOIN ' . $qTable . ' AS q ON q.qid = a.qid
-                LEFT JOIN ' . $sTable . ' AS s ON s.sid = q.sid AND q.language = s.language
+            $sql = 'SELECT a.qid, a.attribute, a.value FROM ' . $attributesTable . ' AS a
+                LEFT JOIN ' . $questionsTable . ' AS q ON q.qid = a.qid
+                LEFT JOIN ' . $surveyTable . ' AS s ON s.sid = q.sid AND q.language = s.language
                 WHERE s.sid = ?';
 
-            $result = array();
-            if ($attributes = $this->lsDb->fetchAll($sql, $this->sourceSurveyId)) {
-                foreach ($attributes as $attribute) {
-                    $result[$attribute['qid']][$attribute['attribute']] = $attribute['value'];
-                }
+            $attributes = $this->lsDb->fetchAll($sql, $this->sourceSurveyId);
+            
+            if (false === $attributes) {
+                // If DB lookup failed, return the default
+                return $default;
             }
-            $this->_attributes = $result;
+            
+            foreach ($attributes as $attrib) {
+                $this->_attributes[$attrib['qid']][$attrib['attribute']] = $attrib['value'];
+            }
         }
 
-        if (isset($this->_attributes[$qid][$subId]) && strlen(trim($this->_attributes[$qid][$subId]))) {
-            return $this->_attributes[$qid][$subId];
+        if (isset($this->_attributes[$qid][$attribute]) && strlen(trim($this->_attributes[$qid][$attribute]))) {
+            return $this->_attributes[$qid][$attribute];
         } else {
             return $default;
         }
@@ -822,7 +822,8 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             $tmpres['type']  = $field['type'];
             $tmpres['title'] = $field['title'];
 
-            if (! isset($oldfld) || ($oldfld['question'] !== $field['question'])) {
+            $oldQid = isset($oldfld['qid']) ? $oldfld['qid'] : 0;
+            if ($oldQid !== $field['qid']) {
                 $tmpres['question'] = $this->removeMarkup($field['question']);
             }
 

@@ -124,5 +124,4 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMapTest extends \Gems_Test_DbTestAbs
         
         $this->assertEquals('Expression question', $model->get('expression', 'label'));
     }
-
 }
