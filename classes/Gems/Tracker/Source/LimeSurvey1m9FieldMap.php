@@ -381,13 +381,8 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
      */
     protected function _getMultiOptions($field)
     {
-        if (!isset($field['scale_id'])) {
-            $scale_id = 0;
-        } else {
-            $scale_id = $field['scale_id'];
-        }
-
-        $qid  = $field['qid'];
+        $scaleId = isset($field['scale_id']) ? $field['scale_id'] : 0;
+        $qid     = $field['qid'];
 
         switch ($field['type']) {
             case 'F':
@@ -397,22 +392,23 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             case 'R':
             case '1':
             case '!':
-                $answers = $this->_getHardAnswers($qid, $scale_id);
+                $answers = $this->_getHardAnswers($qid, $scaleId);
                 break;
 
             case ':':
                 //Get the labels that could apply!
-                if (! $this->_getQuestionAttribute($qid, 'multiflexible_checkbox')) {
-                    $answers = false;
-                    break;
+                $answers = false;
+                if ($this->_getQuestionAttribute($qid, 'multiflexible_checkbox')) {
+                    $answers = $this->_getFixedAnswers($field['type']);
                 }
+                break;
 
             case "C":
             case "E":
             case 'G':
             case 'M':
             case 'P':
-            case "Y":
+            case 'Y':
                 $answers = $this->_getFixedAnswers($field['type']);
                 break;
 
@@ -430,28 +426,20 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
      */
     private function _getPossibleAnswers($field)
     {
-        if (!isset($field['scale_id'])) {
-            $scale_id = 0;
-        } else {
-            $scale_id = $field['scale_id'];
+        $scaleId = isset($field['scale_id']) ? $field['scale_id'] : 0;
+        $code    = $field['code'];
+
+        if (isset($this->_answers[$code][$scaleId])) {
+            return $this->_answers[$code][$scaleId];
         }
+        
+        $qid  = $field['qid'];
 
-        $code = $field['code'];
-
-        if (! isset($this->_answers[$code][$scale_id])) {
-            $qid  = $field['qid'];
-
+        // Get the real multioption
+        $answers = $this->_getMultiOptions($field);
+        if (!$answers) {
+            // If not present, try to find ranges or a description
             switch ($field['type']) {
-                case 'F':
-                case 'H':
-                case 'L':
-                case 'O':
-                case 'R':
-                case '1':
-                case '!':
-                    $answers = $this->_getHardAnswers($qid, $scale_id);
-                    break;
-
                 case ':':
                     //Get the labels that could apply!
                     if ($this->_getQuestionAttribute($qid, 'multiflexible_checkbox')) {
@@ -461,37 +449,25 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                     $maxvalue  = $this->_getQuestionAttribute($qid, 'multiflexible_max', 10);
                     $minvalue  = $this->_getQuestionAttribute($qid, 'multiflexible_min', 1);
                     $stepvalue = $this->_getQuestionAttribute($qid, 'multiflexible_step', 1);
-                    $answers = range($minvalue, $maxvalue, $stepvalue);
-                    $answers = array_combine($answers, $answers);
+                    $answers   = range($minvalue, $maxvalue, $stepvalue);
+                    $answers   = array_combine($answers, $answers);
                     break;
-
                 case '5':
                 case 'A':
                     $answers = range(1, 5);
                     $answers = array_combine($answers, $answers);
                     break;
-
                 case 'B':
                     $answers = range(1, 10);
                     $answers = array_combine($answers, $answers);
                     break;
-
                 case 'K':
                     $maxvalue  = $this->_getQuestionAttribute($qid, 'slider_max', 100);
                     $minvalue  = $this->_getQuestionAttribute($qid, 'slider_min', 0);
                     $stepvalue = $this->_getQuestionAttribute($qid, 'slider_accuracy', 1);
-                    $answers = range($minvalue, $maxvalue, $stepvalue);
-                    $answers = array_combine($answers, $answers);
-                    break;
-
-                case "C":
-                case "E":
-                case 'G':
-                case 'M':
-                case 'P':
-                case "Y":
-                    $answers = $this->_getFixedAnswers($field['type']);
-                    break;
+                    $answers   = range($minvalue, $maxvalue, $stepvalue);
+                    $answers   = array_combine($answers, $answers);
+                    break;                    
                 case 'D':
                     $answers = $this->translate->_('Date');
                     break;
@@ -499,7 +475,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                     $answers = $this->translate->_('Free number');
                     break;
                 case 'X':
-                    $answers = array();
+                    $answers = '';  // Boilerplate, this has no answer
                     break;
                 case 'T':
                     $answers = $this->translate->_('Free text (long)');
@@ -510,11 +486,10 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                 default:
                     $answers = $this->translate->_('Free text');
             }
-            // \MUtil_Echo::track($qid, $scale_id, $answers);
-            $this->_answers[$code][$scale_id] = $answers;
         }
+        $this->_answers[$code][$scaleId] = $answers;
 
-        return $this->_answers[$code][$scale_id];
+        return $this->_answers[$code][$scaleId];
     }
 
     /**
