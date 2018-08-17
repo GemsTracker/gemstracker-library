@@ -38,7 +38,8 @@
             "OpenRosa_" : "classes"
         },
         "psr-4": {
-            "Gems\\": "classes/Gems"
+            "Gems\\": "classes/Gems",
+            "OpenRosa\\": "classes/OpenRosa"
         }
     },
     "include-path": [
