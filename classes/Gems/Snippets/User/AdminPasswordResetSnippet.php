@@ -36,17 +36,18 @@ class AdminPasswordResetSnippet extends PasswordResetSnippet
     protected function addFormElements(\Zend_Form $form)
     {
         if ($this->user->hasEmailAddress()) {
+            $order = count($form->getElements())-1;
             $createElement = new \MUtil_Form_Element_FakeSubmit('create_account');
             $createElement->setLabel($this->_('Create account mail'))
                         ->setAttrib('class', 'button')
-                        ->setOrder(0);
+                        ->setOrder($order++);
 
             $form->addElement($createElement);
 
             $resetElement = new \MUtil_Form_Element_FakeSubmit('reset_password');
             $resetElement->setLabel($this->_('Reset password mail'))
                         ->setAttrib('class', 'button')
-                        ->setOrder(1);
+                        ->setOrder($order++);
             $form->addElement($resetElement);
         }
 
