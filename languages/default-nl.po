@@ -2319,7 +2319,7 @@ msgstr ""
 
 #: classes/Gems/Default/IndexAction.php:269
 msgid "Execute password reset"
-msgstr "Vervang vergeten passwood"
+msgstr "Vervang vergeten wachtwoord"
 
 #: classes/Gems/Default/IndexAction.php:270
 msgid "We received your password reset request."
@@ -7540,7 +7540,7 @@ msgstr "Wijzig wachtwoord email verzonden"
 #: classes/Gems/Snippets/User/AdminPasswordResetSnippet.php:102
 msgid "No default Reset Password mail template set in organization or project"
 msgstr ""
-"Geen default sjabloon voor paswoord reset ingesteld op project of "
+"Geen default sjabloon voor wachtwoord reset ingesteld op project of "
 "organisatie niveau"
 
 #: classes/Gems/Snippets/User/OwnAccountEditSnippet.php:73
@@ -9162,7 +9162,7 @@ msgstr "Verkeerd wachtwoord."
 
 #: classes/Gems/User/Form/ChangePasswordForm.php:356
 msgid "Rule enforcement"
-msgstr "Afdwingen passwordregels"
+msgstr "Afdwingen wachtwoordregels"
 
 #: classes/Gems/User/Form/ChangePasswordForm.php:358
 msgid "Choose a non-compliant password to force a password change at login."
