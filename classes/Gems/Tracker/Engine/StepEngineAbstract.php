@@ -325,7 +325,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
     {
         // Change only not-completed tokens with a positive successcode where at least one date
         // is not set by user input
-        if ($token->isCompleted() || !$token->getReceptionCode()->isSucces() || ($token->isValidFromManual() && $token->isValidUntilManual())) {
+        if ($token->isCompleted() || !$token->getReceptionCode()->isSuccess() || ($token->isValidFromManual() && $token->isValidUntilManual())) {
             return 0;
         }
 
