@@ -263,47 +263,96 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
             return $date;
         }
     }
-    
+
     /**
      * Check if the token should be enabled / disabled due to conditions
-     * 
+     *
      * @param \GemS_Tracker_Token $token
      * @param array $round
      * @param int   $userId Id of the user who takes the action (for logging)
      * @return int The number of tokens changed by this code
      */
     protected function checkTokenCondition(\GemS_Tracker_Token $token, $round, $userId)
-    {
-        $changed  = 0;
-        $message  = '';
+    {        
         $skipCode = $this->util->getReceptionCodeLibrary()->getSkipString();
-        
-        if (!empty($round['gro_condition']) && 
-            !$token->isCompleted() && 
-            ($token->getReceptionCode()->isSuccess() || $token->getReceptionCode()->getCode() == $skipCode)) {
-            
-            $condition   = $this->loader->getConditions()->loadCondition($round['gro_condition']);
-            $valid       = $condition->isRoundValid($token);            
-            $oldStatus   = $token->getReceptionCode()->isSuccess() ? true : false;
 
-            if ($valid !== $oldStatus) {
-                if (!$valid) {
-                    $message = $this->_('Skipped by condition %s: %s');
-                    $newCode = $skipCode;
-                } else {
-                    $message = $this->_('Activated by condition %s: %s');
-                    $newCode = $this->util->getReceptionCodeLibrary()->getOKString();
-                }
-                
-                $changed = 1;
-                
-                $token->setReceptionCode($newCode, 
-                        sprintf($message, $condition->getName(), $condition->getRoundDisplay($token->getTrackId(), $token->getRoundId())),
-                        $userId);
+        // Only if we have a condition, the token is not yet completed and 
+        // receptioncode is ok or skip we evaluate the condition
+        if (empty($round['gro_condition']) ||
+            $token->isCompleted() ||
+            !($token->getReceptionCode()->isSuccess() || $token->getReceptionCode()->getCode() == $skipCode)) {
+        
+            return 0;            
+        }
+
+        $changed   = 0;
+        $condition = $this->loader->getConditions()->loadCondition($round['gro_condition']);
+        $newStatus = $condition->isRoundValid($token);
+        $oldStatus = $token->getReceptionCode()->isSuccess();
+
+        if ($newStatus !== $oldStatus) {
+            $changed = 1;
+            if ($newStatus == false) {
+                $message = $this->_('Skipped by condition %s: %s');
+                $newCode = $skipCode;
+            } else {
+                $message = $this->_('Activated by condition %s: %s');
+                $newCode = $this->util->getReceptionCodeLibrary()->getOKString();
+            }            
+
+            $token->setReceptionCode($newCode,
+                    sprintf($message, $condition->getName(), $condition->getRoundDisplay($token->getTrackId(), $token->getRoundId())),
+                    $userId);
+
+            if ($newStatus == true) {
+                // Token was made valid, now calc the dates
+                $this->checkTokenDates($token, $round, $userId);
             }
         }
-        
+
         return $changed;
+    }
+
+    /**
+     * Check the valid from and until dates for this token
+     *
+     * @param \GemS_Tracker_Token $token
+     * @param array $round
+     * @param int   $userId Id of the user who takes the action (for logging)
+     * @return int 1 if the token has changed
+     */
+    protected function checkTokenDates($token, $round, $userId)
+    {
+        // Change only not-completed tokens with a positive successcode where at least one date
+        // is not set by user input
+        if ($token->isCompleted() || !$token->getReceptionCode()->isSucces() || ($token->isValidFromManual() && $token->isValidUntilManual())) {
+            return 0;
+        }
+
+        $respTrack = $token->getRespondentTrack();
+        if ($token->isValidFromManual()) {
+            $validFrom = $token->getValidFrom();
+        } else {
+            $fromDate  = $this->getValidFromDate(
+                    $round['gro_valid_after_source'], $round['gro_valid_after_field'], $round['gro_valid_after_id'], $token, $respTrack
+            );
+            $validFrom = $this->calculateFromDate(
+                    $fromDate, $round['gro_valid_after_unit'], $round['gro_valid_after_length']
+            );
+        }
+
+        if ($token->isValidUntilManual()) {
+            $validUntil = $token->getValidUntil();
+        } else {
+            $untilDate  = $this->getValidUntilDate(
+                    $round['gro_valid_for_source'], $round['gro_valid_for_field'], $round['gro_valid_for_id'], $token, $respTrack, $validFrom
+            );
+            $validUntil = $this->calculateUntilDate(
+                    $untilDate, $round['gro_valid_for_unit'], $round['gro_valid_for_length']
+            );
+        }
+
+        return $token->setValidFrom($validFrom, $validUntil, $userId);
     }
 
     /**
@@ -329,66 +378,17 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
         while ($token) {
             // \MUtil_Echo::track($token->getTokenId());
             //Only process the token when linked to a round
+            $round   = false;
+            $changes = 0;
             if (array_key_exists($token->getRoundId(), $this->_rounds)) {
                 $round = $this->_rounds[$token->getRoundId()];
-            } else {
-                $round = false;
-            }
-            
-            $changes = 0;
+            }            
 
-            // Change only not-completed tokens with a positive successcode where at least one date
-            // is not set by user input
-            if ($token->hasSuccesCode() &&
-                    (! $token->isCompleted()) &&
-                    (! ($token->isValidFromManual() && $token->isValidUntilManual())) &&
-                    ($token !== $skipToken) && 
-                    $round) {
+            if ($round && $token !== $skipToken) {
+                $changes = $this->checkTokenDates($token, $round, $userId);
+                $changes += $this->checkTokenCondition($token, $round, $userId);
+            }            
 
-                if ($token->isValidFromManual()) {
-                    $validFrom = $token->getValidFrom();
-                } else {
-                    $fromDate   = $this->getValidFromDate(
-                            $round['gro_valid_after_source'],
-                            $round['gro_valid_after_field'],
-                            $round['gro_valid_after_id'],
-                            $token,
-                            $respTrack
-                            );
-                    $validFrom  = $this->calculateFromDate(
-                            $fromDate,
-                            $round['gro_valid_after_unit'],
-                            $round['gro_valid_after_length']
-                            );
-                }
-
-                // \MUtil_Echo::track($round, (string) $fromDate, $validFrom);
-
-                if ($token->isValidUntilManual()) {
-                    $validUntil = $token->getValidUntil();
-                } else {
-                    $untilDate  = $this->getValidUntilDate(
-                            $round['gro_valid_for_source'],
-                            $round['gro_valid_for_field'],
-                            $round['gro_valid_for_id'],
-                            $token,
-                            $respTrack,
-                            $validFrom
-                            );
-                    $validUntil = $this->calculateUntilDate(
-                            $untilDate,
-                            $round['gro_valid_for_unit'],
-                            $round['gro_valid_for_length']
-                            );
-                }
-
-                $changes += $token->setValidFrom($validFrom, $validUntil, $userId);
-            }
-            
-            if ($round) {
-                $changes += $this->checkTokenCondition($token, $round, $userId); 
-            }                
-            
             // If condition changed and dates changed, we only signal one change
             $changed += min($changes, 1);
             $token = $token->getNextToken();
