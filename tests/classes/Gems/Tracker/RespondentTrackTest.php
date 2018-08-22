@@ -20,11 +20,29 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
         // \Zend_Application: loads the autoloader
         require_once 'Zend/Application.php';
 
+        $iniFile = APPLICATION_PATH . '/configs/application.example.ini';
+
+        // Use a database, can be empty but this speeds up testing a lot
+        $config = new Zend_Config_Ini($iniFile, 'testing', true);
+        $config->merge(new Zend_Config([
+            'resources' => [
+                'db' => [
+                    'adapter' => 'Pdo_Sqlite',
+                    'params'  => [
+                        'dbname'   => ':memory:',
+                        'username' => 'test'
+                    ]
+                ]
+            ]
+        ]));
+
+        // Add our test loader dirs
+        $dirs               = $config->loaderDirs->toArray();
+        $config->loaderDirs = [GEMS_PROJECT_NAME_UC => GEMS_TEST_DIR . "/classes/" . GEMS_PROJECT_NAME_UC] +
+                $dirs;
+
         // Create application, bootstrap, and run
-        $application = new \Zend_Application(
-            APPLICATION_ENV,
-            GEMS_ROOT_DIR . '/configs/application.example.ini'
-        );
+        $application = new Zend_Application(APPLICATION_ENV, $config);
 
         $this->bootstrap = $application;
 
@@ -97,8 +115,8 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
     protected function getDataSet()
     {
         //Dataset TokenTest.xml has the minimal data we need to perform our tests
-        $classFile =  str_replace('.php', '.xml', __FILE__);
-        return $this->createFlatXMLDataSet($classFile);
+        $classFile =  str_replace('.php', '.yml', __FILE__);
+        return new \PHPUnit_Extensions_Database_DataSet_YamlDataSet($classFile);
     }
 
     public function testGetFieldCodes()
@@ -193,7 +211,10 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
      */
     public function testCreateTrackDefaultFields()
     {
-        $respondentTrack = $this->loader->getTracker()->createRespondentTrack(1234, 1, 1, 1);
+        $trackData = [
+            'gr2t_start_date' => new \MUtil_Date('2000-01-01')
+            ];
+        $respondentTrack = $this->loader->getTracker()->createRespondentTrack(1234, 1, 1, 1, $trackData);
 
         $actual = $expected = $respondentTrack->getFieldData();
         $expected['f__1'] = $expected['code'] = 'default';
