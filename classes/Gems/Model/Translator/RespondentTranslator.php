@@ -105,7 +105,7 @@ class Gems_Model_Translator_RespondentTranslator extends \Gems_Model_Translator_
             }
         }
 
-        if (!isset($row['gr2o_email'])) {
+        if (empty($row['gr2o_email'])) {
             $row['calc_email'] = 1;
         }
 
