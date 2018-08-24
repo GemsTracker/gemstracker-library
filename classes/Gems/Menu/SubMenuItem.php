@@ -44,12 +44,12 @@
 class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
 {
     private $_hiddenOrgId;
-    private $_hiddenParameters;  // Added to $request by applyHiddenParameters
+    private $_hiddenParameters = array();  // Added to $request by applyHiddenParameters
     private $_itemOptions;
-    private $_parameters = true;
-    private $_parameterFilter;
+    private $_parameters = array();
+    private $_parameterFilter = array();
     private $_parent;
-    private $_requiredParameters;
+    private $_requiredParameters = array();
 
     public function __construct(\GemsEscort $escort, \Gems_Menu_MenuAbstract $parent, array $options)
     {
@@ -77,64 +77,46 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
      */
     private function _applyParameterFilter(\Gems_Menu_ParameterCollector $source, $raiseConditions, &$condition)
     {
-        if ($this->_parameterFilter) {
-            foreach ($this->_parameterFilter as $name => $testValue) {
-                $paramValue = $source->getMenuParameter($name);
+        foreach ($this->_parameterFilter as $name => $testValue) {
+            $paramValue = $source->getMenuParameter($name);
+            $testValue  = (array) $testValue;
 
-                if ($paramValue instanceof \MUtil_Lazy_LazyInterface) {
-                    if ($raiseConditions) {
-                        $paramValue = \MUtil_Lazy::rise($paramValue);
-
+            if ($paramValue instanceof \MUtil_Lazy_LazyInterface) {
+                if (!$raiseConditions) {
+                    $newCondition = new \MUtil_Lazy_Call('in_array', array($paramValue, $testValue));
+                    if ($condition instanceof \MUtil_Lazy_LazyInterface) {
+                        if ($condition instanceof \MUtil_Lazy_LazyAnd) {
+                            $condition->add($newCondition);
+                        } else {
+                            $condition = new \MUtil_Lazy_LazyAnd($condition, $newCondition);
+                        }
                     } else {
-                        if (is_array($testValue)) {
-                            $newCondition = new \MUtil_Lazy_Call('in_array', array($paramValue, $testValue));
-                        } else {
-                            $newCondition = \MUtil_Lazy::comp($testValue, '==', $paramValue);
-                        }
-                        if ($condition instanceof \MUtil_Lazy_LazyInterface) {
-                            if ($condition instanceof \MUtil_Lazy_LazyAnd) {
-                                $condition->add($newCondition);
-                            } else {
-                                $condition = new \MUtil_Lazy_LazyAnd($condition, $newCondition);
-                            }
-                        } else {
-                            $condition = $newCondition;
-                        }
-                        continue;
+                        $condition = $newCondition;
                     }
-
+                    continue;
                 }
+                $paramValue = \MUtil_Lazy::rise($paramValue);
+            }
 
-                if (is_array($testValue)) {
-                    if (!in_array($paramValue, $testValue)) {
-                        if (\Gems_Menu::$verbose) {
-                            // Mutil_Echo::backtrace();
-                            \MUtil_Echo::r($name . ' => ' . print_r($testValue,true) . ' !== ' . $paramValue, $this->get('label') . ' (' . $this->get('controller') . '/' . $this->get('action') . ')');
-                        }
-                        return true;
-                    }
-                } else {
-                    if ($testValue !== $paramValue) {
-                        if (\Gems_Menu::$verbose) {
-                            // Mutil_Echo::backtrace();
-                            \MUtil_Echo::r($name . ' => ' . $testValue . ' !== ' . $paramValue, $this->get('label') . ' (' . $this->get('controller') . '/' . $this->get('action') . ')');
-                        }
-                        return true;
-                    }
+            if (!in_array($paramValue, $testValue)) {
+                if (\Gems_Menu::$verbose) {
+                    // Mutil_Echo::backtrace();
+                    \MUtil_Echo::r($name . ' => ' . print_r($testValue,true) . ' !== ' . $paramValue, $this->get('label') . ' (' . $this->get('controller') . '/' . $this->get('action') . ')');
                 }
+                return true;
             }
         }
+
+        return false;
     }
 
     private function _applyParameterSource(\Gems_Menu_ParameterCollector $source, array &$parameters)
     {
         // Fill in required parameters
-        if ($this->_parameters && is_array($this->_parameters)) {
-            foreach ($this->_parameters as $param => $name) {
-                $parameters[$param] = $source->getMenuParameter($name, $param);
-                if (\Gems_Menu::$verbose) {
-                    \MUtil_Echo::r($param . '/' . $name . ' => ' . $parameters[$param], $this->get('label'));
-                }
+        foreach ($this->_parameters as $param => $name) {
+            $parameters[$param] = $source->getMenuParameter($name, $param);
+            if (\Gems_Menu::$verbose) {
+                \MUtil_Echo::r($param . '/' . $name . ' => ' . $parameters[$param], $this->get('label'));
             }
         }
     }
@@ -160,15 +142,13 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
         $this->_applyParameterSource($source, $parameters);
 
         // Test required parameters
-        if ($this->_requiredParameters) {
-            foreach ($this->_requiredParameters as $param => $name) {
-                if (! isset($parameters[$param])) {
-                    if (\Gems_Menu::$verbose) {
-                        // \MUtil_Echo::backtrace();
-                        \MUtil_Echo::r('<b>Not found:</b> ' . $param . '/' . $name, $this->get('label') . ' (' . $this->get('controller') . '/' . $this->get('action') . ')');
-                    }
-                    return false;
+        foreach ($this->_requiredParameters as $param => $name) {
+            if (! isset($parameters[$param])) {
+                if (\Gems_Menu::$verbose) {
+                    // \MUtil_Echo::backtrace();
+                    \MUtil_Echo::r('<b>Not found:</b> ' . $param . '/' . $name, $this->get('label') . ' (' . $this->get('controller') . '/' . $this->get('action') . ')');
                 }
+                return false;
             }
         }
 
@@ -574,9 +554,6 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
     {
         $params = \MUtil_Ra::pairs(func_get_args());
 
-        if (true === $this->_parameters) {
-            $this->_parameters = array();
-        }
         foreach ($params as $param => $name) {
             if (is_int($param)) {
                 $param = $name;
@@ -591,9 +568,6 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
     {
         $params = \MUtil_Ra::pairs(func_get_args());
 
-        if (true === $this->_parameters) {
-            $this->_parameters = array();
-        }
         foreach ($params as $param => $name) {
             if (is_int($param)) {
                 $param = $name;
@@ -675,18 +649,14 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
 
     public function applyHiddenParameters(\Zend_Controller_Request_Abstract $request, \Gems_Menu_ParameterSource $source)
     {
-        if ($this->_hiddenParameters) {
-            foreach ($this->_hiddenParameters as $key => $value) {
-                $request->setParam($key, $value);
-                $source[$key] = $value;
-            }
+        foreach ($this->_hiddenParameters as $key => $value) {
+            $request->setParam($key, $value);
+            $source[$key] = $value;
         }
-        if ($this->_hiddenOrgId) {
-            if ($patientId = $request->getParam(\MUtil_Model::REQUEST_ID)) {
-                $request->setParam(\MUtil_Model::REQUEST_ID1, $patientId);
-                $request->setParam(\MUtil_Model::REQUEST_ID2, $this->_hiddenOrgId);
-                $request->setParam(\MUtil_Model::REQUEST_ID,  null);
-            }
+        if ($this->_hiddenOrgId && $patientId = $request->getParam(\MUtil_Model::REQUEST_ID)) {
+            $request->setParam(\MUtil_Model::REQUEST_ID1, $patientId);
+            $request->setParam(\MUtil_Model::REQUEST_ID2, $this->_hiddenOrgId);
+            $request->setParam(\MUtil_Model::REQUEST_ID,  null);
         }
 
         return $this;
@@ -848,16 +818,11 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
         $target = $this->get($key);
 
         if (is_array($value)) {
-            foreach ($value as $val) {
-                if ($target === $val) {
-                    return true;
-                }
-            }
-            return false;
-
-        } else {
-            return $target === $value;
+            // Strict check
+            return in_array($target, $value, true);
         }
+
+        return $target === $value;
     }
 
     /**
@@ -885,7 +850,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
         return $this->get('visible', true);
     }
 
-    protected function notSet($key_args)
+    protected function notSet($keyArgs)
     {
         $resultKeys = array();
 
@@ -900,8 +865,8 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
 
     public function removeParameters()
     {
-        $this->_parameters         = true;
-        $this->_requiredParameters = null;
+        $this->_parameters         = array();
+        $this->_requiredParameters = array();
         return $this;
     }
 
@@ -938,8 +903,8 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
         if (1 == $idCount) {
             $params[\MUtil_Model::REQUEST_ID] = \MUtil_Model::REQUEST_ID;
         } else {
-            for ($i = 1; $i <= $idCount; $i++) {
-                $params[\MUtil_Model::REQUEST_ID . $i] = \MUtil_Model::REQUEST_ID . $i;
+            for ($idx = 1; $idx <= $idCount; $idx++) {
+                $params[\MUtil_Model::REQUEST_ID . $idx] = \MUtil_Model::REQUEST_ID . $idx;
             }
         }
         $this->setNamedParameters($params);
@@ -984,91 +949,90 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
      */
     public function toActionLink($parameterOrLabelSources_args = null)
     {
-        if ($this->get('allowed')) {
-            $parameterSources = func_get_args();
+        if (!$this->get('allowed')) {
+            return null;
+        }
 
-            $label = $this->get('label');
-            $showDisabled = false;
-            foreach ($parameterSources as $key => $source) {
-                if (is_string($source) || ($source instanceof \MUtil_Html_HtmlInterface)) {
-                    $label = $source;
-                    unset($parameterSources[$key]);
-                }
-                if (is_bool($source)) {
-                    $showDisabled = $source;
-                    unset($parameterSources[$key]);
-                }
+        $parameterSources = func_get_args();
+        $label            = $this->get('label');
+        $showDisabled     = false;
+        foreach ($parameterSources as $key => $source) {
+            if (is_string($source) || ($source instanceof \MUtil_Html_HtmlInterface)) {
+                $label = $source;
+                unset($parameterSources[$key]);
             }
-            if ($this->has('icon')) {
-                $label = array($this->get('icon'), $label);
+            if (is_bool($source)) {
+                $showDisabled = $source;
+                unset($parameterSources[$key]);
             }
+        }
+        if ($this->has('icon')) {
+            $label = array($this->get('icon'), $label);
+        }
 
-            $condition = true;
-            if ($href = $this->_toHRef(new \Gems_Menu_ParameterCollector($parameterSources), $condition)) {
+        $condition = true;
+        $element   = null;
+        if ($href = $this->_toHRef(new \Gems_Menu_ParameterCollector($parameterSources), $condition)) {
 
-                if ($condition instanceof \MUtil_Lazy_LazyInterface) {
-                    if ($showDisabled) {
-                        // There is a (lazy) condition and disabled buttons should show
-                        // so make the link an if
-                        $element = \MUtil_Html::create()->actionLink(\MUtil_Lazy::iff($condition, $href), $label);
+            if ($condition instanceof \MUtil_Lazy_LazyInterface) {
+                if ($showDisabled) {
+                    // There is a (lazy) condition and disabled buttons should show
+                    // so make the link an if
+                    $element = \MUtil_Html::create()->actionLink(\MUtil_Lazy::iff($condition, $href), $label);
 
-                        // and make the tagName an if
-                        $element->tagName = \MUtil_Lazy::iff($condition, 'a', 'span');
-                        $element->appendAttrib('class', \MUtil_Lazy::iff($condition, '' , 'disabled'));
-                    } else {
-                        // There is a (lazy) condition and nothing should show when not there
-                        // so make the label an if
-                        $label = \MUtil_Lazy::iff($condition, $label);
-                        $element = \MUtil_Html::create()->actionLink($href, $label);
-                    }
+                    // and make the tagName an if
+                    $element->tagName = \MUtil_Lazy::iff($condition, 'a', 'span');
+                    $element->appendAttrib('class', \MUtil_Lazy::iff($condition, '', 'disabled'));
                 } else {
+                    // There is a (lazy) condition and nothing should show when not there
+                    // so make the label an if
+                    $label   = \MUtil_Lazy::iff($condition, $label);
                     $element = \MUtil_Html::create()->actionLink($href, $label);
                 }
-                if ($title = $this->get('title')) {
-                    $element->title = $title;
-                }
+            } else {
+                $element = \MUtil_Html::create()->actionLink($href, $label);
+            }
+            if ($title = $this->get('title')) {
+                $element->title = $title;
+            }
 
-                // and make sure nothing shows when empty
-                $element->setOnEmpty(null);
-                $element->renderWithoutContent = false;
+            // and make sure nothing shows when empty
+            $element->setOnEmpty(null);
+            $element->renderWithoutContent = false;
 
-                foreach (array('onclick', 'rel', 'target', 'type') as $name) {
-                    if ($this->has($name)) {
-                        $value = $this->get($name);
+            foreach (array('onclick', 'rel', 'target', 'type') as $name) {
+                if ($this->has($name)) {
+                    $value = $this->get($name);
 
-                        if (is_scalar($value) && isset($href[$value])) {
-                            $value = $href[$value];
-                        }
+                    if (is_scalar($value) && isset($href[$value])) {
+                        $value = $href[$value];
+                    }
 
-                        if (($condition instanceof \MUtil_Lazy_LazyInterface) && $showDisabled) {
-                            $element->$name = \MUtil_Lazy::iff($condition, $value);
-                        } else {
-                            $element->$name = $value;
-                        }
+                    if (($condition instanceof \MUtil_Lazy_LazyInterface) && $showDisabled) {
+                        $element->$name = \MUtil_Lazy::iff($condition, $value);
+                    } else {
+                        $element->$name = $value;
                     }
                 }
-
-            } elseif ($showDisabled) {
-                // \MUtil_Echo::r($label, 'No href');
-                $element = \MUtil_Html::create()->actionDisabled($label);
-
-            } else {
-                return;
             }
 
-            if ($class = $this->get('class')) {
-                $element->appendAttrib('class', $class);
-            }
-            return $element;
+        } elseif ($showDisabled) {
+            // \MUtil_Echo::r($label, 'No href');
+            $element = \MUtil_Html::create()->actionDisabled($label);
         }
+
+        if ($element && $class = $this->get('class')) {
+            $element->appendAttrib('class', $class);
+        }
+        return $element;
     }
 
     /**
      *
-     * @param mixed $parameterSources_args
+     * @param mixed $parameterSourcesArgs
      * @return \MUtil_Html_AElement
      */
-    public function toActionLinkLower($parameterSources_args = null)
+    public function toActionLinkLower($parameterSourcesArgs = null)
     {
         // return null;
         $parameterSources = func_get_args();
@@ -1082,10 +1046,10 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
 
     /**
      *
-     * @param mixed $parameterSources_args
+     * @param mixed $parameterSourcesArgs
      * @return \MUtil_Html_HrefArrayAttribute
      */
-    public function toHRefAttribute($parameterSources_args = null)
+    public function toHRefAttribute($parameterSourcesArgs = null)
     {
         // return null;
         $parameterSources = func_get_args();
@@ -1094,7 +1058,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
         return $this->_toHRef(new \Gems_Menu_ParameterCollector($parameterSources), $condition);
     }
 
-    public function toRouteUrl($parameterSources_args = null)
+    public function toRouteUrl($parameterSourcesArgs = null)
     {
         $parameterSources = func_get_args();
 
@@ -1103,21 +1067,22 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
 
     public function toUl($actionController = null)
     {
-        if ($this->isVisible() && $this->hasChildren()) {
-            $parameterSources = func_get_args();
+        if (!$this->isVisible() || !$this->hasChildren()) {
+            return null;
+        }
 
-            $ul = \MUtil_Html_ListElement::ul();
+        $parameterSources = func_get_args();
 
-            foreach ($this->getChildren() as $menuItem) {
-                if ($li = $menuItem->_toLi(new \Gems_Menu_ParameterCollector($parameterSources))) {
-                    $ul->append($li);
-                }
+        $ul = \MUtil_Html_ListElement::ul();
+
+        foreach ($this->getChildren() as $menuItem) {
+            if ($li = $menuItem->_toLi(new \Gems_Menu_ParameterCollector($parameterSources))) {
+                $ul->append($li);
             }
+        }
 
-            if (count($ul)) {
-                return $ul;
-            }
+        if (count($ul)) {
+            return $ul;
         }
     }
 }
-
