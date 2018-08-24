@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+use MUtil\Translate\TranslateableTrait;
+
 /**
  * Base class for building a menu / button structure where the display of items is dependent
  * on both privileges and the availability of parameter information,
@@ -22,6 +24,12 @@
  */
 abstract class Gems_Menu_MenuAbstract
 {
+    use TranslateableTrait;
+
+    /**
+     *
+     * @var \Gems_Menu_SubMenuItem[]
+     */
     protected $_subItems = array();
 
     /**
@@ -42,26 +50,11 @@ abstract class Gems_Menu_MenuAbstract
      */
     protected $user;
 
-    /**
-     * Copy from \Zend_Translate_Adapter
-     *
-     * Translates the given string
-     * returns the translation
-     *
-     * @param  string             $text   Translation string
-     * @param  string|\Zend_Locale $locale (optional) Locale/Language to use, identical with locale
-     *                                    identifier, @see \Zend_Locale for more information
-     * @return string
-     */
-    public function _($text, $locale = null)
-    {
-        return $this->translateAdapter->_($text, $locale);
-    }
-
     public function __construct(\GemsEscort $escort)
     {
         $this->escort = $escort;
         $this->translateAdapter = $escort->translate->getAdapter();
+        $this->initTranslateable();
         $this->user = $escort->getLoader()->getCurrentUser();
     }
 
@@ -72,22 +65,24 @@ abstract class Gems_Menu_MenuAbstract
      */
     protected function _addUsedPrivileges(array &$privileges, $label)
     {
-        if ($this->_subItems) {
-            foreach ($this->_subItems as $item) {
-                // Skip autofilter action, but include all others
-                if ($item->get('action') !== 'autofilter') {
-                    $_itemlabel = $label. ($item->get('label') ?: $item->get('privilege'));
-                    if ($_privilege = $item->get('privilege')) {
+        foreach ($this->_subItems as $item) {
+            // Skip autofilter action, but include all others
+            if ($item->get('action') == 'autofilter') {
+                continue;
+            }
+            $_itemlabel = $label;
+            if (!$item->get('label')) {
+                $_itemlabel .= $item->get('privilege');
+            }
+            if ($_privilege = $item->get('privilege')) {
 
-                        if (isset($privileges[$_privilege])) {
-                            $privileges[$_privilege] .= "<br/>&nbsp; + " . $_itemlabel;
-                        } else {
-                            $privileges[$_privilege] = $_itemlabel;
-                        }
-                    }
-                    $item->_addUsedPrivileges($privileges, $_itemlabel . '-&gt;');
+                if (isset($privileges[$_privilege])) {
+                    $privileges[$_privilege] .= "<br/>&nbsp; + " . $_itemlabel;
+                } else {
+                    $privileges[$_privilege] = $_itemlabel;
                 }
             }
+            $item->_addUsedPrivileges($privileges, $_itemlabel . '-&gt;');
         }
     }
 
@@ -117,52 +112,45 @@ abstract class Gems_Menu_MenuAbstract
      */
     protected function _toNavigationArray(\Gems_Menu_ParameterCollector $source)
     {
-        if ($this->_subItems) {
-            $this->sortByOrder();
-            $lastParams = null;
-            $i = 0;
-            $pages = array();
-            foreach ($this->_subItems as $item) {
-                if (! $item->get('button_only')) {
-                    $page = $item->_toNavigationArray($source);
-
-                    if (($this instanceof \Gems_Menu_SubMenuItem) &&
-                        (! $this->notSet('controller', 'action')) &&
-                        isset($page['params'])) {
-
-                        $params = $page['params'];
-                        unset($params['reset']); // Ignore this setting
-
-                        if (count($params)) {
-                            $class = '';
-                        } else {
-                            $class = 'noParameters ';
-                        }
-
-                        if ((null !== $lastParams) && ($lastParams !== $params)) {
-                            $class .= 'breakBefore';
-                        } else {
-                            $class = trim($class);
-                        }
-
-                        if ($class) {
-                            if (isset($page['class'])) {
-                                $page['class'] .= ' ' . $class;
-                            } else {
-                                $page['class'] =  $class;
-                            }
-                        }
-                        $lastParams = $params;
-                    }
-                    $pages[$i] = $page;
-                    $i++;
-                }
+        $this->sortByOrder();
+        $lastParams = null;
+        $pageIdx    = 0;
+        $pages      = array();
+        foreach ($this->_subItems as $item) {
+            // Skip button_only items
+            if ($item->get('button_only')) {
+                continue;
             }
+            $page = $item->_toNavigationArray($source);
 
-            return $pages;
+            if (($this instanceof \Gems_Menu_SubMenuItem) &&
+                    (!$this->notSet('controller', 'action')) &&
+                    isset($page['params'])) {
+
+                $params = $page['params'];
+                unset($params['reset']); // Ignore this setting
+
+                $class = [];
+                if (isset($page['class'])) {
+                    $class[] = $page['class'];
+                }
+                if (empty($params)) {
+                    $class[] = 'noParameters';
+                }
+                if ((null !== $lastParams) && ($lastParams !== $params)) {
+                    $class[] = 'breakBefore';
+                }
+
+                if (!empty($class)) {
+                    $page['class'] = join(' ', $class);
+                }
+                $lastParams = $params;
+            }
+            $pages[$pageIdx] = $page;
+            $pageIdx++;
         }
 
-        return array();
+        return $pages;
     }
 
     /**
@@ -184,10 +172,10 @@ abstract class Gems_Menu_MenuAbstract
      *
      * @see \Zend_Navigation_Page
      *
-     * @param array $args_array \MUtil_Ra::args array with defaults 'visible' and 'allowed' true.
+     * @param array $argsArray \MUtil_Ra::args array with defaults 'visible' and 'allowed' true.
      * @return \Gems_Menu_SubMenuItem
      */
-    protected function add($args_array)
+    protected function add($argsArray)
     {
         // Process parameters.
         $args = \MUtil_Ra::args(func_get_args(), 0,
@@ -751,8 +739,8 @@ abstract class Gems_Menu_MenuAbstract
         $page->addImportAction();
 
         if (! $this->user->hasPrivilege('pr.staff.edit.all')) {
-            foreach ($pages as $sub_page) {
-                $sub_page->addParameterFilter('gsf_id_organization', $filter, 'accessible_role', 1);
+            foreach ($pages as $subPage) {
+                $subPage->addParameterFilter('gsf_id_organization', $filter, 'accessible_role', 1);
             }
         }
 
@@ -886,27 +874,25 @@ abstract class Gems_Menu_MenuAbstract
      * @return \Gems_Menu_MenuAbstract (continuation pattern)
      */
     protected function applyAcl(\MUtil_Acl $acl, $userRole)
-    {
-        if ($this->_subItems) {
-            foreach ($this->_subItems as $item) {
+    {   
+        foreach ($this->_subItems as $item) {
 
-                $allowed = $item->get('allowed', true);
+            $allowed = $item->get('allowed', true);
 
-                if ($allowed && ($privilege = $item->get('privilege'))) {
-                    $allowed = $acl->isAllowed($userRole, null, $privilege);
-                }
+            if ($allowed && ($privilege = $item->get('privilege'))) {
+                $allowed = $acl->isAllowed($userRole, null, $privilege);
+            }
 
-                if ($allowed) {
-                    $item->applyAcl($acl, $userRole);
-                } else {
-                    // As an item can be invisible but allowed,
-                    // but not disallowed but visible we need to
-                    // set both.
-                    $item->set('allowed', false);
-                    $item->set('visible', false);
-                    $item->setForChildren('allowed', false);
-                    $item->setForChildren('visible', false);
-                }
+            if ($allowed) {
+                $item->applyAcl($acl, $userRole);
+            } else {
+                // As an item can be invisible but allowed,
+                // but not disallowed but visible we need to
+                // set both.
+                $item->set('allowed', false);
+                $item->set('visible', false);
+                $item->setForChildren('allowed', false);
+                $item->setForChildren('visible', false);
             }
         }
 
@@ -921,11 +907,9 @@ abstract class Gems_Menu_MenuAbstract
      */
     protected function findItem($options, $findDeep = true)
     {
-        if ($this->_subItems) {
-            foreach ($this->_subItems as $item) {
-                if ($result = $item->findItem($options, $findDeep)) {
-                    return $result;
-                }
+        foreach ($this->_subItems as $item) {
+            if ($result = $item->findItem($options, $findDeep)) {
+                return $result;
             }
         }
 
@@ -934,11 +918,9 @@ abstract class Gems_Menu_MenuAbstract
 
     protected function findItemPath($options)
     {
-        if ($this->_subItems) {
-            foreach ($this->_subItems as $item) {
-                if ($path = $item->findItemPath($options)) {
-                    return $path;
-                }
+        foreach ($this->_subItems as $item) {
+            if ($path = $item->findItemPath($options)) {
+                return $path;
             }
         }
 
@@ -947,10 +929,8 @@ abstract class Gems_Menu_MenuAbstract
 
     protected function findItems($options, array &$results)
     {
-        if ($this->_subItems) {
-            foreach ($this->_subItems as $item) {
-                $item->findItems($options, $results);
-            }
+        foreach ($this->_subItems as $item) {
+            $item->findItems($options, $results);
         }
     }
 
@@ -960,12 +940,8 @@ abstract class Gems_Menu_MenuAbstract
      */
     public function getChildren()
     {
-        if ($this->_subItems) {
-            $this->sortByOrder();
-            return $this->_subItems;
-        } else {
-            return array();
-        }
+        $this->sortByOrder();
+        return $this->_subItems;
     }
 
     public function hasChildren()
@@ -978,26 +954,6 @@ abstract class Gems_Menu_MenuAbstract
     abstract public function isVisible();
 
     /**
-     * Copy from \Zend_Translate_Adapter
-     *
-     * Translates the given string using plural notations
-     * Returns the translated string
-     *
-     * @see \Zend_Locale
-     * @param  string             $singular Singular translation string
-     * @param  string             $plural   Plural translation string
-     * @param  integer            $number   Number for detecting the correct plural
-     * @param  string|\Zend_Locale $locale   (Optional) Locale/Language to use, identical with
-     *                                      locale identifier, @see \Zend_Locale for more information
-     * @return string
-     */
-    public function plural($singular, $plural, $number, $locale = null)
-    {
-        $args = func_get_args();
-        return call_user_func_array(array($this->translateAdapter, 'plural'), $args);
-    }
-
-    /**
      * Make sure only the active branch is visible
      *
      * @param array $activeBranch Of \Gems_Menu_Menu Abstract items
@@ -1007,15 +963,13 @@ abstract class Gems_Menu_MenuAbstract
     {
         $current = array_pop($activeBranch);
 
-        if ($this->_subItems) {
-            foreach ($this->_subItems as $item) {
-                if ($item->isVisible()) {
-                    if ($item === $current) {
-                        $item->set('active', true);
-                        $item->setBranchVisible($activeBranch);
-                    } else {
-                        $item->setForChildren('visible', false);
-                    }
+        foreach ($this->_subItems as $item) {
+            if ($item->isVisible()) {
+                if ($item === $current) {
+                    $item->set('active', true);
+                    $item->setBranchVisible($activeBranch);
+                } else {
+                    $item->setForChildren('visible', false);
                 }
             }
         }
@@ -1025,14 +979,13 @@ abstract class Gems_Menu_MenuAbstract
 
     protected function setForChildren($key, $value)
     {
-        if ($this->_subItems) {
-            foreach ($this->_subItems as $item) {
-                $item->set($key, $value);
-                if ($item->_subItems) {
-                    $item->setForChildren($key, $value);
-                }
+        foreach ($this->_subItems as $item) {
+            $item->set($key, $value);
+            if ($item->_subItems) {
+                $item->setForChildren($key, $value);
             }
         }
+            
         return $this;
     }
 
