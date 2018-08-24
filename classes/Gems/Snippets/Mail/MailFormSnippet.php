@@ -213,39 +213,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends \MUtil_Snippets_ModelSnippetAbs
      */
     protected function createMultiOption(array $requestData, $name, $email, $extra = null, $disabledTitle = false, $menuFind = false)
     {
-        if (! $email) {
-            $email = $this->_('no email adress');
-        }
-
-        $text = "\"$name\" <$email>";
-        if (null !== $extra) {
-            $text .= ": $extra";
-        }
-
-        if ($this->view) {
-            if ($disabledTitle) {
-                $el = \MUtil_Html::create()->span($text, array('class' => 'disabled'));
-
-                if ($menuFind && is_array($menuFind)) {
-                    $menuFind['allowed'] = true;
-                    $menuItem = $this->menu->find($menuFind);
-                    if ($menuItem) {
-                        $href = $menuItem->toHRefAttribute($requestData);
-
-                        if ($href) {
-                            $el = \MUtil_Html::create()->a($href, $el);
-                            $el->target = $menuItem->get('target', '_BLANK');
-                        }
-                    }
-                }
-                $el->title = $disabledTitle;
-                $text = $el->render($this->view);
-            } else {
-                $text = $this->view->escape($text);
-            }
-        }
-
-        return $text;
+        return $this->mailElements->getEmailOption($requestData, $name, $email, $extra, $disabledTitle, $menuFind);
     }
 
     /**
