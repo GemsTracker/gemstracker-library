@@ -7,6 +7,17 @@
  */
 
 class Test_Escort extends GemsEscort {
+    
+    public function _initLogger() {
+        $this->bootstrap('project');    // Make sure the project object is available
+        $logger = \Gems_Log::getLogger();
+
+        $writer = new \Zend_Log_Writer_Null();
+        $logger->addWriter($writer);
+
+        \Zend_Registry::set('logger', $logger);
+    }
+    
     public function _initProject() {
         $projectArray = $this->includeFile(APPLICATION_PATH . '/configs/project.example.ini');
 
