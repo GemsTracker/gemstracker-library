@@ -24,7 +24,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
      *
      * @var string Class of the button
      */
-	protected $buttonClass = 'button';
+    protected $buttonClass = 'button';
 
     /**
      *
@@ -42,7 +42,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
      *
      * @var \Zend_Loader
      */
-	protected $loader;
+    protected $loader;
 
     /**
      *
@@ -60,7 +60,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
      *
      * @var \Zend_Translate;
      */
-	protected $translate;
+    protected $translate;
 
     /**
      *
@@ -74,7 +74,6 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
      */
     protected $view;
 
-
     /**
      * Adds a form multiple times in a table
      *
@@ -84,35 +83,32 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
      * All elements not yet added to the form are added using a new FormBridge
      * instance using the default label / non-label distinction.
      *
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $parentBridge
      * @param string $name Name of element
      * @param mixed $arrayOrKey1 \MUtil_Ra::pairs() name => value array
      * @return \MUtil_Form_Element_Table
      */
-    public function addFormTabs($parentBridge, $name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
-    {
+    public function addFormTabs($parentBridge, $name, $arrayOrKey1 = null) {
         $options = func_get_args();
         $options = \MUtil_Ra::pairs($options, 2);
 
-        /*$options = $this->_mergeOptions($name, $options,
-            self::SUBFORM_OPTIONS);*/
+        /* $options = $this->_mergeOptions($name, $options,
+          self::SUBFORM_OPTIONS); */
         //\MUtil_Echo::track($options);
         if (isset($options['form'])) {
             $form = $options['form'];
             unset($options['form']);
         } else {
             $formClass = get_class($parentBridge->getForm());
-            $form = new $formClass();
+            $form      = new $formClass();
         }
-        $parentForm = $parentBridge->getForm();
         $submodel = $parentBridge->getModel()->get($name, 'model');
         if ($submodel instanceof \MUtil_Model_ModelAbstract) {
             $bridge = $submodel->getBridgeFor('form', $form);
-            $subItemNumber = 0;
             foreach ($submodel->getItemsOrdered() as $itemName) {
-                if (! $form->getElement($name)) {
+                if (!$form->getElement($name)) {
                     if ($submodel->has($itemName, 'label')) {
                         $bridge->add($itemName);
-                        $subelement = $form->getElement($itemName);
                     } else {
                         $bridge->addHidden($itemName);
                     }
@@ -132,8 +128,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
      *
      * @return \Gems_Form_Element_CKEditor|\Zend_Form_Element_Hidden
      */
-    public function createBodyElement($name, $label, $required=false, $hidden=false, $mailFields=array(), $mailFieldsLabel=false)
-    {
+    public function createBodyElement($name, $label, $required = false, $hidden = false, $mailFields = array(), $mailFieldsLabel = false) {
         if ($hidden) {
             return new \Zend_Form_Element_Hidden($name);
         }
@@ -141,7 +136,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
         $options['required'] = $required;
         $options['label']    = $label;
 
-        $mailBody = new \Gems_Form_Element_CKEditor($name, $options);
+        $mailBody                            = new \Gems_Form_Element_CKEditor($name, $options);
         $mailBody->config['availablefields'] = $mailFields;
         if ($mailFieldsLabel) {
             $mailBody->config['availablefieldsLabel'] = $mailFieldsLabel;
@@ -150,12 +145,12 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
         }
 
         $mailBody->config['extraPlugins'] .= ',availablefields';
-        $mailBody->config['toolbar'][] = array('availablefields');
+        $mailBody->config['toolbar'][]    = array('availablefields');
 
         return new \Gems_Form_Element_CKEditor($name, $options);
     }
 
-	/**
+    /**
      * Default creator of an E-mail form element (set with SimpleEmails validations)
      *
      * @param $name
@@ -164,8 +159,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
      * @param bool $multi
      * @return \Zend_Form_Element_Text
      */
-	public function createEmailElement($name, $label, $required = false, $multi = false)
-    {
+    public function createEmailElement($name, $label, $required = false, $multi = false) {
         $options['label']     = $label;
         $options['maxlength'] = 250;
         $options['required']  = $required;
@@ -187,10 +181,9 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
      *
      * @return \Zend_Form_Element_Radio
      */
-    public function createMethodElement()
-    {
+    public function createMethodElement() {
         $multiOptions = $this->util->getTranslated()->getBulkMailProcessOptions();
-        $options = array(
+        $options      = array(
             'label'        => $this->translate->_('Method'),
             'multiOptions' => $multiOptions,
             'required'     => true,
@@ -205,10 +198,9 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
      * @param bool $noText Is there no preview text button?
      * @return \MUtil_Form_Element_Exhibitor
      */
-    public function createPreviewHtmlElement($label=false)
-    {
+    public function createPreviewHtmlElement($label = false) {
         if ($label) {
-        	$options['label'] = $this->translate->_($label);
+            $options['label'] = $this->translate->_($label);
         } else {
             $options['label'] = $this->translate->_('Preview HTML');
         }
@@ -222,10 +214,9 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
      *
      * @return \MUtil_Form_Element_Exhibitor
      */
-    public function createPreviewTextElement()
-    {
-        $options['label']       = $this->translate->_('Preview Text');
-        $options['nohidden']    = true;
+    public function createPreviewTextElement() {
+        $options['label']    = $this->translate->_('Preview Text');
+        $options['nohidden'] = true;
 
         return $this->_form->createElement('Html', 'preview_text', $options);
     }
@@ -236,70 +227,58 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
      * @param string $label
      * @return \Zend_Form_Element_Submit
      */
-    public function createSubmitButton($name, $label)
-    {
-        $button = $this->_form->createElement('submit', $name, array('label'=>$label));
+    public function createSubmitButton($name, $label) {
+        $button = $this->_form->createElement('submit', $name, array('label' => $label));
         return $button;
     }
 
-    public function createTemplateSelectElement($name, $label, $target=false, $list=false, $onChangeSubmit=false)
-    {
-        $options['label'] = $label;
-
+    public function createTemplateSelectElement($name, $label, $target = false, $list = false, $onChangeSubmit = false) {
         $query = 'SELECT gems__comm_templates.gct_id_template, gems__comm_templates.gct_name
         FROM gems__comm_template_translations
         RIGHT JOIN gems__comm_templates ON gems__comm_templates.gct_id_template = gems__comm_template_translations.gctt_id_template
         WHERE gems__comm_template_translations.gctt_subject <> ""
         AND gems__comm_template_translations.gctt_body <> ""';
         if ($target) {
-            $query .= ' AND gems__comm_templates.gct_target = ?';
+            $query .= $this->db->quoteInto(' AND gems__comm_templates.gct_target = ?', $target);
         }
         $query .= ' GROUP BY gems__comm_templates.gct_id_template ORDER BY gems__comm_templates.gct_name';
 
-        if ($target) {
-            $options['multiOptions'] = $this->db->fetchPairs($query, $target);
-        } else {
-            $options['multiOptions'] = $this->db->fetchPairs($query);
-        }
+        $options['multiOptions'] = $this->db->fetchPairs($query);
+        $options['label']        = $label;
 
-        if (! $list) {
-            $options['multiOptions'] = array('' => '') + $options['multiOptions'];
-        }
         if ($onChangeSubmit) {
-            $options['onchange']     = 'this.form.submit()';
+            $options['onchange'] = 'this.form.submit()';
         }
+        
         if ($list) {
             $options['required'] = true;
-            $options['size'] = min(count($options['multiOptions']) + 1, 7);
+            $options['size']     = min(count($options['multiOptions']) + 1, 7);
+        } else {
+            $options['multiOptions'] = array('' => '') + $options['multiOptions'];
         }
 
         return $this->_form->createElement('select', $name, $options);
     }
 
-
-
-    public static function displayMailHtml($text)
-    {
+    public static function displayMailHtml($text) {
         $div = \MUtil_Html::create()->div(array('class' => 'mailpreview'));
         $div->raw($text);
 
         return $div;
     }
 
-    public function displayMailFields($mailFields)
-    {
-    	$mailFieldsRepeater = new \MUtil_Lazy_RepeatableByKeyValue($mailFields);
+    public function displayMailFields($mailFields) {
+        $mailFieldsRepeater = new \MUtil_Lazy_RepeatableByKeyValue($mailFields);
         $mailFieldsHtml     = new \MUtil_Html_TableElement($mailFieldsRepeater, array('class' => 'table table-striped table-bordered table-condensed'));
         $mailFieldsHtml->addColumn($mailFieldsRepeater->key, $this->translate->_('Field'));
         $mailFieldsHtml->addColumn($mailFieldsRepeater->value, $this->translate->_('Value'));
-        $container = \MUtil_Html::create()->div(array('class' => 'table-container'));
-        $container[] = $mailFieldsHtml;
+        $container          = \MUtil_Html::create()->div(array('class' => 'table-container'));
+        $container[]        = $mailFieldsHtml;
         return $container;
     }
 
-    public function getEmailOption(array $requestData, $name, $email, $extra = null, $disabledTitle = false, $menuFind = false)
-    {
-        if (! $email) {
+    public function getEmailOption(array $requestData, $name, $email, $extra = null, $disabledTitle = false, $menuFind = false) {
+        if (!$email) {
             $email = $this->translate->_('no email adress');
         }
 
@@ -314,18 +293,18 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
 
                 if ($menuFind && is_array($menuFind)) {
                     $menuFind['allowed'] = true;
-                    $menuItem = $this->menu->find($menuFind);
+                    $menuItem            = $this->menu->find($menuFind);
                     if ($menuItem) {
                         $href = $menuItem->toHRefAttribute($requestData);
 
                         if ($href) {
-                            $element = \MUtil_Html::create()->a($href, $element);
+                            $element         = \MUtil_Html::create()->a($href, $element);
                             $element->target = $menuItem->get('target', '_BLANK');
                         }
                     }
                 }
                 $element->title = $disabledTitle;
-                $text = $element->render($this->view);
+                $text           = $element->render($this->view);
             } else {
                 $text = $this->view->escape($text);
             }
@@ -337,4 +316,5 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
     public function setForm($form) {
         $this->_form = $form;
     }
+
 }
