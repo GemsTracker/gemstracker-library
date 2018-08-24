@@ -310,7 +310,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
 
         if ($this->view) {
             if ($disabledTitle) {
-                $el = \MUtil_Html::create()->span($text, array('class' => 'disabled'));
+                $element = \MUtil_Html::create()->span($text, array('class' => 'disabled'));
 
                 if ($menuFind && is_array($menuFind)) {
                     $menuFind['allowed'] = true;
@@ -319,13 +319,13 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
                         $href = $menuItem->toHRefAttribute($requestData);
 
                         if ($href) {
-                            $el = \MUtil_Html::create()->a($href, $el);
-                            $el->target = $menuItem->get('target', '_BLANK');
+                            $element = \MUtil_Html::create()->a($href, $element);
+                            $element->target = $menuItem->get('target', '_BLANK');
                         }
                     }
                 }
-                $el->title = $disabledTitle;
-                $text = $el->render($this->view);
+                $element->title = $disabledTitle;
+                $text = $element->render($this->view);
             } else {
                 $text = $this->view->escape($text);
             }
