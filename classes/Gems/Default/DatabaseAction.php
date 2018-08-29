@@ -85,16 +85,22 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
 
     public function createDataTable($tableName, $caption, \Zend_Db_Adapter_Abstract $db)
     {
-        $model = new \MUtil_Model_TableModel(['name' => $tableName, 'db'=> $db]);
+        // We can only use a different db when supplying a \Zend_Db_Table
+        $table = new \Zend_Db_Table(['name' => $tableName, 'db'=> $db]);
+        $model = new \MUtil_Model_TableModel($table);
+        // Add labels so they show in the table
         foreach ($model->getItemNames() as $item) {
             $model->set($item, 'label', $item);
         }
+        // We don't want the ID applied to the primary key, so we set a fake key
+        $model->setKeys(['fakeKey'=>'fakeKey']);
 
         $params = [
-            'model'    => $model,
-            'showMenu' => false,
+            'browse'   => true,
             'caption'  => $caption,
-            'onEmpty'  => sprintf($this->_('No rows in %s.'), $tableName)
+            'model'    => $model,
+            'onEmpty'  => sprintf($this->_('No rows in %s.'), $tableName),
+            'showMenu' => false,
         ];
 
         $this->addSnippet('ModelTableSnippetGeneric', $params);
