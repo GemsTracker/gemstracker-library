@@ -159,12 +159,7 @@ class Gems_Model_DbaModel extends \MUtil_Model_ArrayModelAbstract
             $mainDirectory = $pathData['path'];
             $location      = $pathData['name'];
             $db            = $pathData['db'];
-            $tables        = $pathData['db']->listTables();
-
-            if ($tables) { // Can be empty
-                $tables = array_change_key_case(array_combine($tables, $tables), CASE_LOWER);
-            }
-
+            $tables        = $this->listTablesViews($db);
 
             if (is_dir($mainDirectory)) {
                 foreach (new \DirectoryIterator($mainDirectory) as $directory) {
@@ -182,8 +177,8 @@ class Gems_Model_DbaModel extends \MUtil_Model_ArrayModelAbstract
                                 $fileName = substr($fileName,  0,  -4);
                                 $forder   = $this->_getOrder($fileName); // Changes $fileName
 
-                                if ($fexists = array_key_exists($fileName, $tables)) {
-                                    unset($tables[$fileName]);
+                                if (array_key_exists($type, $tables) && $fexists = array_key_exists($fileName, $tables[$type])) {
+                                    unset($tables[$type][$fileName]);
                                 } elseif (array_key_exists($fileName, $data)) {
                                     // $fexists is also true when the table was already defined
                                     // in a previous directory
@@ -219,24 +214,26 @@ class Gems_Model_DbaModel extends \MUtil_Model_ArrayModelAbstract
                 }
             }
 
-            foreach ($tables as $table) {
-                if (! isset($data[$table])) {
-                    $data[$table] = array(
-                        'name'        => $table,
-                        'group'       => $this->_getGroupName($table),
-                        'type'        => 'table',
-                        'order'       => self::DEFAULT_ORDER,
-                        'defined'     => false,
-                        'exists'      => true,
-                        'state'       => self::STATE_UNKNOWN,
-                        'path'        => null,
-                        'fullPath'    => $file->getPathname(),
-                        'fileName'    => $table . '.' . self::STATE_UNKNOWN . '.sql',
-                        'script'      => '',
-                        'lastChanged' => null,
-                        'location'    => $location,
-                        'db'          => $db,
-                        );
+            foreach ($tables as $type => $items) {
+                foreach($items as $item) {
+                    if (! isset($data[$item])) {
+                        $data[$item] = array(
+                            'name'        => $item,
+                            'group'       => $this->_getGroupName($item),
+                            'type'        => $type,
+                            'order'       => self::DEFAULT_ORDER,
+                            'defined'     => false,
+                            'exists'      => true,
+                            'state'       => self::STATE_UNKNOWN,
+                            'path'        => null,
+                            'fullPath'    => $file->getPathname(),
+                            'fileName'    => $item . '.' . self::STATE_UNKNOWN . '.sql',
+                            'script'      => '',
+                            'lastChanged' => null,
+                            'location'    => $location,
+                            'db'          => $db,
+                            );
+                    }
                 }
             }
         }
@@ -267,6 +264,27 @@ class Gems_Model_DbaModel extends \MUtil_Model_ArrayModelAbstract
     public function getFileEncoding()
     {
         return $this->file_encoding;
+    }
+    
+    /**
+     * 
+     * @param \Zend_Db_Adapter_Abstract $db
+     * @throws Zend_Db_Adapter_Exception
+     */
+    public function listTablesViews($db)
+    {
+        $sql = 'SHOW FULL TABLES';
+        $queryResult = $db->query($sql);
+        while ($row = $queryResult->fetch(\Zend_Db::FETCH_NUM)) {
+            $type = 'table';
+            if (strtoupper($row[1]) == 'VIEW') {
+                $type = 'view';
+            }
+            $result[$type][strtolower($row[0])] = strtolower($row[0]);
+        }
+        $queryResult->close();
+        
+        return $result;        
     }
 
     /**

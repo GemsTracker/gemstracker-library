@@ -83,11 +83,20 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
         }
     }
 
-    public function createDataTable($tableName, $caption, \Zend_Db_Adapter_Abstract $db)
+    public function createDataTable($tableData, $caption)
     {
-        // We can only use a different db when supplying a \Zend_Db_Table
-        $table = new \Zend_Db_Table(['name' => $tableName, 'db'=> $db]);
+        $db        = isset($tableData['db']) ? $tableData['db'] : $this->db;
+        $tableName = $tableData['name'];
+        $type      = $tableData['type'];
+        
+        // We can only use a different db when supplying a \Zend_Db_Table_Abstract
+        if ($type == 'view') {         
+            $table = new \Gems\Db\TableView(['name' => $tableName, 'db'=> $db]);            
+        } else {
+            $table = new \Zend_Db_Table(['name' => $tableName, 'db'=> $db]);
+        }
         $model = new \MUtil_Model_TableModel($table);
+        
         // Add labels so they show in the table
         foreach ($model->getItemNames() as $item) {
             $model->set($item, 'label', $item);
@@ -254,7 +263,7 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
                     $this->html->h3(sprintf($this->_('Drop table with %d rows'), $count));
                     $question = $this->_('Are you really sure?');
 
-                    $this->createDataTable($data['name'], $question, $data['db']);
+                    $this->createDataTable($data, $question);
                     $pInfo = $this->html->pInfo($question, ' ');
                     $pInfo->actionLink(array('confirmed' => 2), $this->_('Yes'));
                     $pInfo->actionLink(array('action' => 'show'), $this->_('No'));
@@ -729,15 +738,10 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
             $this->addMessage($this->_('This database object does not exist. You cannot view it.'));
             $this->html->buttonDiv($this->createMenuLinks(1));
 
-        } else {
-            if (isset($data['db'])) {
-                $db = $data['db'];
-            } else {
-                $db = $this->db;
-            }
+        } else {            
             $caption = sprintf($this->_('Contents of %s %s'), $this->_($data['type']), $data['name']);
             $this->html->h3(sprintf($this->_('The data in table %s'), $data['name']));
-            $this->createDataTable($data['name'], $caption, $db);
+            $this->createDataTable($data, $caption);
             $this->html[] = $this->createMenuLinks();
         }
     }
