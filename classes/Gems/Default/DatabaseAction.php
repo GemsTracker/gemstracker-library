@@ -85,24 +85,19 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
 
     public function createDataTable($tableName, $caption, \Zend_Db_Adapter_Abstract $db)
     {
-        $select = $db->select();
-        $select->from($tableName);
-
-        $paginator = \Zend_Paginator::factory($select);
-        $paginator->setCurrentPageNumber($this->_getParam('page'));
-        $paginator->setItemCountPerPage(10);
-
-        $table = \MUtil_Html_TableElement::createArray($paginator->getCurrentItems(), $caption, true);
-        if ($table instanceof \MUtil_Html_TableElement) {
-            $table->class = 'browser table';
-            $table->tfrow()->pagePanel($paginator, $this->getRequest(), $this->translate);
-        } else {
-            $table = \MUtil_Html::create()->pInfo(sprintf($this->_('No rows in %s.'), $tableName));
+        $model = new \MUtil_Model_TableModel(['name' => $tableName, 'db'=> $db]);
+        foreach ($model->getItemNames() as $item) {
+            $model->set($item, 'label', $item);
         }
 
-        $container = \MUtil_Html::create()->div(array('class' => 'table-container'));
-        $container[] = $table;
-        return $container;
+        $params = [
+            'model'    => $model,
+            'showMenu' => false,
+            'caption'  => $caption,
+            'onEmpty'  => sprintf($this->_('No rows in %s.'), $tableName)
+        ];
+
+        $this->addSnippet('ModelTableSnippetGeneric', $params);
     }
 
     /**
@@ -253,7 +248,7 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
                     $this->html->h3(sprintf($this->_('Drop table with %d rows'), $count));
                     $question = $this->_('Are you really sure?');
 
-                    $this->html[] = $this->createDataTable($data['name'], $question, $data['db']);
+                    $this->createDataTable($data['name'], $question, $data['db']);
                     $pInfo = $this->html->pInfo($question, ' ');
                     $pInfo->actionLink(array('confirmed' => 2), $this->_('Yes'));
                     $pInfo->actionLink(array('action' => 'show'), $this->_('No'));
@@ -777,11 +772,9 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
             } else {
                 $db = $this->db;
             }
+            $caption = sprintf($this->_('Contents of %s %s'), $this->_($data['type']), $data['name']);
             $this->html->h3(sprintf($this->_('The data in table %s'), $data['name']));
-            $this->html[] = $this->createDataTable(
-                    $data['name'],
-                    sprintf($this->_('Contents of %s %s'), $this->_($data['type']), $data['name']),
-                    $db);
+            $this->createDataTable($data['name'], $caption, $db);
             $this->html[] = $this->createMenuLinks();
         }
     }
