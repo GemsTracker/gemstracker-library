@@ -84,9 +84,9 @@ class Gems_Model_DbaModel extends \MUtil_Model_ArrayModelAbstract
         $this->set('defined',     'type', \MUtil_Model::TYPE_NUMERIC);
         $this->set('exists',      'type', \MUtil_Model::TYPE_NUMERIC);
         $this->set('state',       'type', \MUtil_Model::TYPE_NUMERIC);
-        $this->set('path',        'maxlength', 255, 'type', \MUtil_Model::TYPE_STRING);
+        /*$this->set('path',        'maxlength', 255, 'type', \MUtil_Model::TYPE_STRING);
         $this->set('fullPath',    'maxlength', 255, 'type', \MUtil_Model::TYPE_STRING);
-        $this->set('fileName',    'maxlength', 100, 'type', \MUtil_Model::TYPE_STRING);
+        $this->set('fileName',    'maxlength', 100, 'type', \MUtil_Model::TYPE_STRING);*/
         $this->set('script',      'type', \MUtil_Model::TYPE_STRING);
         $this->set('lastChanged', 'type', \MUtil_Model::TYPE_DATETIME);
         $this->set('location',    'maxlength', 12, 'type', \MUtil_Model::TYPE_STRING);
@@ -94,23 +94,6 @@ class Gems_Model_DbaModel extends \MUtil_Model_ArrayModelAbstract
             \Gems_Model_DbaModel::STATE_CREATED => $this->_('created'),
             \Gems_Model_DbaModel::STATE_DEFINED => $this->_('not created'),
             \Gems_Model_DbaModel::STATE_UNKNOWN => $this->_('unknown')));
-    }
-
-    /**
-     * proxy for easy access to translations
-     *
-     * @param  string             $messageId Translation string
-     * @param  string|\Zend_Locale $locale    (optional) Locale/Language to use, identical with locale
-     *                                       identifier, @see \Zend_Locale for more information
-     * @return string
-     */
-    private function _($messageId, $locale = null)
-    {
-        if ($this->translate) {
-            return $this->translate->_($messageId, $locale);
-        }
-
-        return $messageId;
     }
 
     private function _getGroupName($name)
@@ -165,20 +148,14 @@ class Gems_Model_DbaModel extends \MUtil_Model_ArrayModelAbstract
                 foreach (new \DirectoryIterator($mainDirectory) as $directory) {
                     $type = $this->_getType($directory->getFilename());
 
-                    if (!$directory->isDir() || $directory->isDot()) {
+                    if ($directory->isFile() || $directory->isDot()) {
                         continue;
                     }
                     $path = $directory->getPathname();
 
-                    foreach (new \DirectoryIterator($path) as $file) {
+                    foreach (new \GlobIterator($path . DIRECTORY_SEPARATOR . '*.sql') as $file) {
 
-                        $fileName = $file->getFilename();
-                        //$fileName = strtolower($fileName);
-
-                        if (substr($fileName, -4) !== '.sql') {
-                            continue;
-                        }
-                        $fileName = substr($fileName,  0,  -4);
+                        $fileName = $file->getBasename('.sql');
                         $forder   = $this->_getOrder($fileName); // Changes $fileName
 
                         if (array_key_exists($type, $tables) && $fexists = array_key_exists($fileName, $tables[$type])) {
@@ -202,9 +179,9 @@ class Gems_Model_DbaModel extends \MUtil_Model_ArrayModelAbstract
                             'defined'     => true,
                             'exists'      => $fexists,
                             'state'       => $fexists ? self::STATE_CREATED : self::STATE_DEFINED,
-                            'path'        => $path,
+                            /*'path'        => $path,
                             'fullPath'    => $file->getPathname(),
-                            'fileName'    => $file->getFilename(),
+                            'fileName'    => $file->getFilename(),*/
                             // \MUtil_Lazy does not serialize
                             // 'script'      => \MUtil_Lazy::call('file_get_contents', $file->getPathname()),
                             'script'      => $fileContent,
@@ -227,9 +204,9 @@ class Gems_Model_DbaModel extends \MUtil_Model_ArrayModelAbstract
                             'defined'     => false,
                             'exists'      => true,
                             'state'       => self::STATE_UNKNOWN,
-                            'path'        => null,
+                            /*'path'        => null,
                             'fullPath'    => $file->getPathname(),
-                            'fileName'    => $item . '.' . self::STATE_UNKNOWN . '.sql',
+                            'fileName'    => $item . '.' . self::STATE_UNKNOWN . '.sql',*/
                             'script'      => '',
                             'lastChanged' => null,
                             'location'    => $location,
