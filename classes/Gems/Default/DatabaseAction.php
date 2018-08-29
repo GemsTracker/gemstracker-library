@@ -280,44 +280,6 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
         }
     }
 
-    public function getFieldTable($id)
-    {
-        $tData = $this->getModel()->loadTable($id);
-
-        if (! $tData) {
-            return sprintf($this->_('%s no longer exists in the database.'), $id);
-        }
-        if (\Gems_Model_DbaModel::STATE_DEFINED == $tData['state']) {
-            return sprintf($this->_('%s does not yet exist in the database.'), ucfirst($tData['type']));
-        }
-        if ('table' !== $tData['type']) {
-            return sprintf($this->_('%s object does exist.'), ucfirst($tData['type']));
-        }
-
-        try {
-            $table = new \Zend_DB_Table(array(
-                \Zend_Db_Table_Abstract::NAME => $id,
-                \Zend_Db_Table_Abstract::ADAPTER => $tData['db'],
-                ));
-
-            $data = \MUtil_Lazy::repeat($table->info('metadata'));
-
-            $html = new \MUtil_Html_TableElement($data);
-            $html->addColumn($data->COLUMN_NAME, 'Column');
-            $html->addColumn($data->DATA_TYPE,   'Type');
-            $html->addColumn($data->LENGTH, 'Length');
-            $html->addColumn($data->SCALE, 'Precision');
-            $html->addColumn($data->UNSIGNED, 'Unsigned');
-            $html->addColumn($data->NULLABLE, 'Nullable');
-            $html->addColumn($data->DEFAULT, 'Default');
-
-        } catch (\Zend_Db_Table_Exception $zdte) {
-            $html = $this->_('Object is not a table.');
-        }
-
-        return $html;
-    }
-
     /**
      * Helper function to get the title for the index action.
      *
@@ -352,12 +314,6 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
 
         $table = $bridge->getTable();
         $table->class = 'displayer table';
-
-        if ($model->isMeta('action', 'show')) {
-            $table->tr();
-            $table->tdh($this->_('Structure'));
-            $table->td($this->getFieldTable($this->_getParam(\MUtil_Model::REQUEST_ID)));
-        }
 
         return $table;
     }
@@ -619,13 +575,13 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
             if ($objects) {
                 $results = array();
                 $results[] = sprintf($this->_('Starting %d object creation scripts.'), $oCount);
-                $i         = 1;
+                $objCount  = 1;
                 foreach ($objects as $data) {
 
                     $result = $model->runScript($data);
                     $results = array_merge($results, $result);
-                    $results[] = sprintf($this->_('Finished %s creation script for object %d of %d'), $this->_(strtolower($data['type'])), $i, $oCount);
-                    $i++;
+                    $results[] = sprintf($this->_('Finished %s creation script for object %d of %d'), $this->_(strtolower($data['type'])), $objCount, $oCount);
+                    $objCount++;
                 }
                 $this->accesslog->logChange($this->_request, $results);
 
@@ -673,15 +629,20 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
         $form->addElement($element);
 
         //$element = new \Zend_Form_Element_Submit('submit');
-        $element = $form->createElement('submit', 'submit');
-        $element->setLabel($this->_('Run'));
-        $form->addElement($element);
+        $submit = $form->createElement('submit', 'submit');
+        $submit->setLabel($this->_('Run'));
+        $form->addElement($submit);
 
         /****************
          * Process form *
          ****************/
-        if ($this->_request->isPost() && $form->isValid($_POST)) {
-            $data = $_POST;
+        $request   = $this->getRequest();
+        $resultSet = 0;
+        if($request->isPost()) {
+            $form->populate($request->getPost());            
+        }
+        if ($submit->isChecked() && $form->isValid($request->getPost())) {
+            $data = $form->getValues();
             $data['name'] = '';
             $data['type'] = $this->_('raw');
 
@@ -698,10 +659,6 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
                 }
             }
             $this->accesslog->logChange($this->_request, null, $data['script']);
-
-        } else {
-            $form->populate($_POST);
-            $resultSet = 0;
         }
 
         /****************
