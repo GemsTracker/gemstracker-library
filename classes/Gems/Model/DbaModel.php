@@ -10,6 +10,8 @@
  * @version    $Id$
  */
 
+use MUtil\Translate\TranslateableTrait;
+
 /**
  * Database Administration model. This model reads data about the database
  * structure both from the file system (configs/db*) and the database
@@ -24,6 +26,8 @@
  */
 class Gems_Model_DbaModel extends \MUtil_Model_ArrayModelAbstract
 {
+    use TranslateableTrait;
+    
     const DEFAULT_ORDER = 1000;
 
     const STATE_CREATED = 1;
@@ -57,11 +61,6 @@ class Gems_Model_DbaModel extends \MUtil_Model_ArrayModelAbstract
     protected $file_encoding;
 
     /**
-     * @var \Zend_Translate_Adapter
-     */
-    protected $translate;
-
-    /**
      *
      * @param \Zend_Db_Adapter_Abstract $db
      * @param array $directories directory => name | \Zend_Db_Adaptor_Abstract | array(['path' =>], 'name' =>, 'db' =>,)
@@ -76,6 +75,7 @@ class Gems_Model_DbaModel extends \MUtil_Model_ArrayModelAbstract
 
         //Grab translate object from the Escort
         $this->translate = \GemsEscort::getInstance()->translate;
+        $this->initTranslateable();
 
         $this->set('group',       'maxlength', 40, 'type', \MUtil_Model::TYPE_STRING);
         $this->set('name',        'key', true, 'maxlength', 40, 'type', \MUtil_Model::TYPE_STRING);
@@ -155,7 +155,7 @@ class Gems_Model_DbaModel extends \MUtil_Model_ArrayModelAbstract
     {
         $data  = array();
 
-        foreach (array_reverse($this->directories) as $i => $pathData) {
+        foreach (array_reverse($this->directories) as $pathData) {
             $mainDirectory = $pathData['path'];
             $location      = $pathData['name'];
             $db            = $pathData['db'];
@@ -165,51 +165,53 @@ class Gems_Model_DbaModel extends \MUtil_Model_ArrayModelAbstract
                 foreach (new \DirectoryIterator($mainDirectory) as $directory) {
                     $type = $this->_getType($directory->getFilename());
 
-                    if ($directory->isDir() && (! $directory->isDot())) {
-                        $path = $directory->getPathname();
+                    if (!$directory->isDir() || $directory->isDot()) {
+                        continue;
+                    }
+                    $path = $directory->getPathname();
 
-                        foreach (new \DirectoryIterator($path) as $file) {
+                    foreach (new \DirectoryIterator($path) as $file) {
 
-                            $fileName = $file->getFilename();
-                            //$fileName = strtolower($fileName);
+                        $fileName = $file->getFilename();
+                        //$fileName = strtolower($fileName);
 
-                            if (substr($fileName, -4) == '.sql') {
-                                $fileName = substr($fileName,  0,  -4);
-                                $forder   = $this->_getOrder($fileName); // Changes $fileName
-
-                                if (array_key_exists($type, $tables) && $fexists = array_key_exists($fileName, $tables[$type])) {
-                                    unset($tables[$type][$fileName]);
-                                } elseif (array_key_exists($fileName, $data)) {
-                                    // $fexists is also true when the table was already defined
-                                    // in a previous directory
-                                    $fexists = $data[$fileName]['exists'];
-                                }
-
-                                $fileContent = file_get_contents($file->getPathname());
-                                if ($this->file_encoding && ($this->file_encoding !== mb_internal_encoding())) {
-                                    $fileContent = mb_convert_encoding($fileContent, mb_internal_encoding(), $this->file_encoding);
-                                }
-
-                                $data[$fileName] = array(
-                                    'name'        => $fileName,
-                                    'group'       => $this->_getGroupName($fileName),
-                                    'type'        => $type,
-                                    'order'       => $forder,
-                                    'defined'     => true,
-                                    'exists'      => $fexists,
-                                    'state'       => $fexists ? self::STATE_CREATED : self::STATE_DEFINED,
-                                    'path'        => $path,
-                                    'fullPath'    => $file->getPathname(),
-                                    'fileName'    => $file->getFilename(),
-                                    // \MUtil_Lazy does not serialize
-                                    // 'script'      => \MUtil_Lazy::call('file_get_contents', $file->getPathname()),
-                                    'script'      => $fileContent,
-                                    'lastChanged' => $file->getMTime(),
-                                    'location'    => $location,
-                                    'db'          => $db,
-                                    );
-                            }
+                        if (substr($fileName, -4) !== '.sql') {
+                            continue;
                         }
+                        $fileName = substr($fileName,  0,  -4);
+                        $forder   = $this->_getOrder($fileName); // Changes $fileName
+
+                        if (array_key_exists($type, $tables) && $fexists = array_key_exists($fileName, $tables[$type])) {
+                            unset($tables[$type][$fileName]);
+                        } elseif (array_key_exists($fileName, $data)) {
+                            // $fexists is also true when the table was already defined
+                            // in a previous directory
+                            $fexists = $data[$fileName]['exists'];
+                        }
+
+                        $fileContent = file_get_contents($file->getPathname());
+                        if ($this->file_encoding && ($this->file_encoding !== mb_internal_encoding())) {
+                            $fileContent = mb_convert_encoding($fileContent, mb_internal_encoding(), $this->file_encoding);
+                        }
+
+                        $data[$fileName] = array(
+                            'name'        => $fileName,
+                            'group'       => $this->_getGroupName($fileName),
+                            'type'        => $type,
+                            'order'       => $forder,
+                            'defined'     => true,
+                            'exists'      => $fexists,
+                            'state'       => $fexists ? self::STATE_CREATED : self::STATE_DEFINED,
+                            'path'        => $path,
+                            'fullPath'    => $file->getPathname(),
+                            'fileName'    => $file->getFilename(),
+                            // \MUtil_Lazy does not serialize
+                            // 'script'      => \MUtil_Lazy::call('file_get_contents', $file->getPathname()),
+                            'script'      => $fileContent,
+                            'lastChanged' => $file->getMTime(),
+                            'location'    => $location,
+                            'db'          => $db,
+                            );
                     }
                 }
             }
@@ -318,7 +320,7 @@ class Gems_Model_DbaModel extends \MUtil_Model_ArrayModelAbstract
             $qCount  = count($queries);
 
             $results[] = sprintf($this->_('Executed %2$s creation script %1$s:'), $data['name'], $this->_(strtolower($data['type'])));
-            $i = 1;
+            $stepCount = 1;
             $resultSet = 1;
 
             foreach ($queries as $query) {
@@ -342,19 +344,19 @@ class Gems_Model_DbaModel extends \MUtil_Model_ArrayModelAbstract
                     $stmt = $db->query($sql);
                     if ($rows = $stmt->rowCount()) {
                         if ($includeResultSets && ($data = $stmt->fetchAll())) {
-                            $results[] = sprintf($this->_('%d record(s) returned as result set %d in step %d of %d.'), $rows, $resultSet, $i, $qCount);
+                            $results[] = sprintf($this->_('%d record(s) returned as result set %d in step %d of %d.'), $rows, $resultSet, $stepCount, $qCount);
                             $results[] = $data;
                             $resultSet++;
                         } else {
-                            $results[] = sprintf($this->_('%d record(s) updated in step %d of %d.'), $rows, $i, $qCount);
+                            $results[] = sprintf($this->_('%d record(s) updated in step %d of %d.'), $rows, $stepCount, $qCount);
                         }
                     } else {
-                        $results[] = sprintf($this->_('Script ran step %d of %d succesfully.'), $i, $qCount);
+                        $results[] = sprintf($this->_('Script ran step %d of %d succesfully.'), $stepCount, $qCount);
                     }
                 } catch (\Zend_Db_Statement_Exception $e) {
-                    $results[] = $e->getMessage() . $this->_('  in step ') . $i . ': ' . $sql;
+                    $results[] = $e->getMessage() . $this->_('  in step ') . $stepCount . ': ' . $sql;
                 }
-                $i++;
+                $stepCount++;
             }
         } else {
             $results[] = sprintf($this->_('No script for %1$s.'), $data['name']);
