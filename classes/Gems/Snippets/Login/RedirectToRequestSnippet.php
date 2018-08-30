@@ -98,18 +98,9 @@ class RedirectToRequestSnippet extends \MUtil_Snippets_SnippetAbstract
         if ($staticSession && is_array($staticSession->previousRequestParameters)) {
             $url = $staticSession->previousRequestParameters;
 
-            $staticSession->unsetAll();
             $this->loginStatusTracker->destroySession();
 
-            $menuItem = $this->menu->findController(
-                    $url[$this->request->getControllerKey()],
-                    $url[$this->request->getActionKey()]
-                    );
-
-            if ($this->loginStatusTracker->hasUser() &&
-                    $this->loginStatusTracker->getUser()->hasPrivilege($menuItem->getPrivilege())) {
-                $this->_redirectUrl = $url;
-            }
+            $this->_redirectUrl = $url;
         }
 
         return $this->_redirectUrl;
