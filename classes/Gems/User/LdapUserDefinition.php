@@ -75,11 +75,21 @@ class LdapUserDefinition extends \Gems_User_StaffUserDefinition
     {
         $config = $this->project->getLdapSettings();
 
-        $adapter = new LdapAdapter($config);
+        $adapter = new LdapAdapter();
 
         // \MUtil_Echo::track($config);
-        $adapter->setUsername('Magna\\' . $user->getLoginName())
-                ->setPassword($password);
+        foreach ($config as $server) {
+            $adapter->setOptions([$server]);
+
+            if (isset($server['accountDomainNameShort'])) {
+                $userName = $server['accountDomainNameShort'] . '\\' . $user->getLoginName();
+            } else {
+                $userName = $user->getLoginName();
+            }
+
+            $adapter->setUsername($userName)
+                    ->setPassword($password);
+        }
 
         return $adapter;
     }
