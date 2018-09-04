@@ -70,10 +70,7 @@ abstract class Gems_Menu_MenuAbstract
             if ($item->get('action') == 'autofilter') {
                 continue;
             }
-            $_itemlabel = $label;
-            if (!$item->get('label')) {
-                $_itemlabel .= $item->get('privilege');
-            }
+            $_itemlabel = $label . ($item->get('label') ?: $item->get('privilege'));
             if ($_privilege = $item->get('privilege')) {
 
                 if (isset($privileges[$_privilege])) {
