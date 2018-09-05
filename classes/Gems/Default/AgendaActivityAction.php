@@ -27,8 +27,9 @@ class Gems_Default_AgendaActivityAction extends \Gems_Controller_ModelSnippetAct
      * @var mixed String or array of snippets name
      */
     protected $autofilterParameters = array(
-        'columns'     => 'getBrowseColumns',
-        'extraSort'   => array('gaa_name' => SORT_ASC),
+        'columns'      => 'getBrowseColumns',
+        'extraSort'    => array('gaa_name' => SORT_ASC),
+        'searchFields' => 'getSearchFields',
         );
 
     /**
@@ -37,6 +38,13 @@ class Gems_Default_AgendaActivityAction extends \Gems_Controller_ModelSnippetAct
      * @var array
      */
     public $cacheTags = array('activity', 'activities');
+    
+    /**
+     * The snippets used for the index action, before those in autofilter
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Agenda\\AutoseachFormSnippet');
 
     /**
      * The snippets used for the show action
@@ -152,6 +160,18 @@ e.g. consult, check-up, diet, operation, physiotherapy or other.'),
     {
         return $this->_('Agenda activity');
     }
+    
+    /**
+     * Returns the fields for autosearch with 
+     * 
+     * @return array
+     */
+    public function getSearchFields()
+    {
+        return [
+            'gaa_filter' => $this->_('(all filters)')
+        ];
+    }
 
     /**
      *
@@ -202,7 +222,7 @@ e.g. consult, check-up, diet, operation, physiotherapy or other.'),
     public function indexAction()
     {
         parent::indexAction();
-
+        
         $this->html->pInfo($this->getModel()->get('gaa_name', 'description'));
     }
 }

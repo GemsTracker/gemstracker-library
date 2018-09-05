@@ -29,6 +29,7 @@ class Gems_Default_AgendaProcedureAction extends \Gems_Controller_ModelSnippetAc
     protected $autofilterParameters = array(
         'columns'     => 'getBrowseColumns',
         'extraSort'   => array('gapr_name' => SORT_ASC),
+        'searchFields' => 'getSearchFields',
         );
 
     /**
@@ -37,6 +38,13 @@ class Gems_Default_AgendaProcedureAction extends \Gems_Controller_ModelSnippetAc
      * @var array
      */
     public $cacheTags = array('procedure', 'procedures');
+    
+    /**
+     * The snippets used for the index action, before those in autofilter
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Agenda\\AutoseachFormSnippet');
 
     /**
      * The snippets used for the show action
@@ -151,6 +159,18 @@ e.g. an excercise, an explanantion, a massage, mindfullness, a (specific) operat
     public function getIndexTitle()
     {
         return $this->_('Agenda procedures');
+    }
+    
+    /**
+     * Returns the fields for autosearch with 
+     * 
+     * @return array
+     */
+    public function getSearchFields()
+    {
+        return [
+            'gapr_filter' => $this->_('(all filters)')
+        ];
     }
 
     /**

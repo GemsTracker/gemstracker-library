@@ -29,6 +29,7 @@ class Gems_Default_AgendaStaffAction extends \Gems_Controller_ModelSnippetAction
     protected $autofilterParameters = array(
         'columns'     => 'getBrowseColumns',
         'extraSort'   => array('gas_name' => SORT_ASC),
+        'searchFields' => 'getSearchFields',
         );
 
     /**
@@ -37,6 +38,13 @@ class Gems_Default_AgendaStaffAction extends \Gems_Controller_ModelSnippetAction
      * @var array
      */
     public $cacheTags = array('staff');
+    
+    /**
+     * The snippets used for the index action, before those in autofilter
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Agenda\\AutoseachFormSnippet');
 
     /**
      * The snippets used for the show action
@@ -149,6 +157,18 @@ class Gems_Default_AgendaStaffAction extends \Gems_Controller_ModelSnippetAction
     public function getIndexTitle()
     {
         return $this->_('Agenda healthcare provider');
+    }
+    
+    /**
+     * Returns the fields for autosearch with 
+     * 
+     * @return array
+     */
+    public function getSearchFields()
+    {
+        return [
+            'gas_filter' => $this->_('(all filters)')
+        ];
     }
 
     /**
