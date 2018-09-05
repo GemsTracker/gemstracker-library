@@ -44,7 +44,7 @@ class Gems_Default_AgendaActivityAction extends \Gems_Controller_ModelSnippetAct
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Agenda\\AutoseachFormSnippet');
+    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Agenda\\AutosearchFormSnippet');
 
     /**
      * The snippets used for the show action
