@@ -27,11 +27,13 @@ class RespondentAnswerTranslatorTest extends ControllerTestAbstract {
      * @var \Gems_Model_Translator_AppointmentTranslator
      */
     protected $object;
+    
+    public $userIdNr = 1;
 
     public function setUp() {
         $this->setPath(GEMS_TEST_DIR . '/data/model');
         parent::setUp();
-        $this->fixUser();
+        $this->_fixUser();
 
         $this->loader = $this->bootstrap->getBootstrap()->loader;
 
@@ -43,26 +45,8 @@ class RespondentAnswerTranslatorTest extends ControllerTestAbstract {
         $object       = $translators[$translator];
         $object->answerRegistryRequest('loader', $this->loader);
         $object->afterRegistry();
-
-
-
+        
         $this->object = $object;
-    }
-
-    protected function fixUser() {
-        // Fix user
-        $currentUser = $this->getMockBuilder('Gems_User_User')
-                ->disableOriginalConstructor()
-                ->getMock();
-        $currentUser->expects($this->any())
-                ->method('getGroup')
-                ->will($this->returnValue(1));
-        $currentUser->expects($this->any())
-                ->method('getUserId')
-                ->will($this->returnValue(1));
-
-        \GemsEscort::getInstance()->currentUser = $currentUser;
-        $this->currentUser                      = $currentUser;
     }
 
     /**
@@ -182,6 +166,27 @@ class RespondentAnswerTranslatorTest extends ControllerTestAbstract {
 
         //$this->saveTables(['gems__agenda_staff'], 'AppointmentTranslatorTest');
         $this->assertEquals($expected, $actual);
+    }
+    
+    public function testBatch()
+    {
+        $importLoader = $this->loader->getImportLoader();
+        $importLoader->answerRegistryRequest('_orgCode', 'code');
+        $importer     = $importLoader->getImporter('answers');
+        $importer->setSourceFile(__DIR__ . DIRECTORY_SEPARATOR . 'answerimport.csv');
+        $importer->setTargetModel($this->getAnswerModel());
+        $importer->setImportTranslator($this->object);
+        $this->object->setSurveyId(1);
+        //$batch = $importer->getCheckWithImportBatches();
+        $batch = $importer->getCheckAndImportBatch();
+        $batch->runAll();
+        /*
+        if ($exceptions = $batch->getExceptions()) {
+            var_dump($exceptions);
+        }
+         */
+        $messages = $batch->getMessages();
+        $this->assertEquals($messages['addedAnswers'], '4 tokens were imported as a new extra token.');
     }
 
 }

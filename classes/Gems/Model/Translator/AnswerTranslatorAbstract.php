@@ -139,7 +139,7 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends \Gems_Mode
         $importBatch->setTask(
                 $this->saveTask,
                 'import-' . $key,
-                $row,
+                $key,
                 $this->getNoToken(),
                 $this->getTokenCompleted()
                 );

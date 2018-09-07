@@ -145,7 +145,7 @@ CREATE TABLE `surveys_languagesettings` (
 );
 
 CREATE TABLE survey_1 (
-	`id` int(11) NOT NULL,
+	`id` integer NOT NULL,
 	`submitdate` datetime DEFAULT NULL,
 	`lastpage` int(11) DEFAULT NULL,
 	`startlanguage` varchar(20) NOT NULL,
@@ -157,7 +157,38 @@ CREATE TABLE survey_1 (
 	`1X1X2` date DEFAULT NULL,
 	`1X1X3` datetime DEFAULT NULL,
 	`1X1X4` datetime DEFAULT NULL,
+        `1X1X9` text DEFAULT NULL,
+        `1X1X10` text DEFAULT NULL,
+        `1X1X11` text DEFAULT NULL,
+        `1X1X12` text DEFAULT NULL,
+        `1X1X5main1_sub1` text DEFAULT NULL,
+        `1X1X5main1_sub2` text DEFAULT NULL,
 	PRIMARY KEY (`id`)
+);
+
+CREATE TABLE tokens_1 (
+  `tid` integer NOT NULL,
+  `participant_id` varchar(50) DEFAULT NULL,
+  `firstname` varchar(40) DEFAULT NULL,
+  `lastname` varchar(40) DEFAULT NULL,
+  `email` text,
+  `emailstatus` text,
+  `token` varchar(35) DEFAULT NULL,
+  `language` varchar(25) DEFAULT NULL,
+  `blacklisted` varchar(17) DEFAULT NULL,
+  `sent` varchar(17) DEFAULT 'N',
+  `remindersent` varchar(17) DEFAULT 'N',
+  `remindercount` int(11) DEFAULT '0',
+  `completed` varchar(17) DEFAULT 'N',
+  `usesleft` int(11) DEFAULT '1',
+  `validfrom` datetime DEFAULT NULL,
+  `validuntil` datetime DEFAULT NULL,
+  `mpid` int(11) DEFAULT NULL,
+  `attribute_1` varchar(255) DEFAULT NULL,
+  `attribute_2` varchar(255) DEFAULT NULL,
+  `attribute_3` varchar(255) DEFAULT NULL,
+  `attribute_4` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`tid`)
 );
 
 CREATE TABLE `survey_2` (

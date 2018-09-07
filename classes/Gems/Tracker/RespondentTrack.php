@@ -1352,7 +1352,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
 
             $this->_respTrackData = $this->db->fetchRow($sql, $this->_respTrackId);
         }
-        if ($this->currentUser instanceof \Gems_User_User) {
+        if ($this->_respTrackData && $this->currentUser instanceof \Gems_User_User) {
             $this->_respTrackData = $this->currentUser->applyGroupMask($this->_respTrackData);
         }
 

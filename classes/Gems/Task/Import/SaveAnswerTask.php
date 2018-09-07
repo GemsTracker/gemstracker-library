@@ -19,7 +19,13 @@
  * @since      Class available since version 1.6.3
  */
 class Gems_Task_Import_SaveAnswerTask extends \MUtil_Task_TaskAbstract
-{
+{    
+    /**
+     *
+     * @var \Iterator
+     */
+    protected $iterator;
+
     /**
      *
      * @var \Gems_Loader
@@ -31,6 +37,12 @@ class Gems_Task_Import_SaveAnswerTask extends \MUtil_Task_TaskAbstract
      * @var \Zend_Locale
      */
     protected $locale;
+
+    /**
+     *
+     * @var \MUtil_Model_ModelTranslatorInterface
+     */
+    protected $modelTranslator;
 
     /**
      *
@@ -53,7 +65,7 @@ class Gems_Task_Import_SaveAnswerTask extends \MUtil_Task_TaskAbstract
     public function checkRegistryRequestsAnswers()
     {
         return ($this->targetModel instanceof \MUtil_Model_ModelAbstract) &&
-            parent::checkRegistryRequestsAnswers();
+                parent::checkRegistryRequestsAnswers();
     }
 
     /**
@@ -69,24 +81,38 @@ class Gems_Task_Import_SaveAnswerTask extends \MUtil_Task_TaskAbstract
             $tokenCompletion = \Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_ERROR)
     {
         // \MUtil_Echo::track($row);
+        if ($this->iterator instanceof \Iterator && !is_array($row) && is_int($row)) {
+            $key = $row;
+            if ($key < $this->iterator->key()) { $this->iterator->rewind(); }
+            while ($key > $this->iterator->key()) {
+                $this->iterator->next();
+            }
+            $current = $this->iterator->current();
+            $row     = $this->modelTranslator->translateRowValues($current, $key);
+
+            if ($row) {
+                $row = $this->modelTranslator->validateRowValues($row, $key);
+            }
+            $errors = $this->modelTranslator->getRowErrors($key);
+        }
         if ($row) {
-            $answers = $row;
-            $prevAnswers  = false;
-            $token   = null;
-            $tracker = $this->loader->getTracker();
-            $userId  = $this->loader->getCurrentUser()->getUserId();
+            $answers     = $row;
+            $prevAnswers = false;
+            $token       = null;
+            $tracker     = $this->loader->getTracker();
+            $userId      = $this->loader->getCurrentUser()->getUserId();
 
             // \Gems_Tracker::$verbose = true;
 
-            $batch   = $this->getBatch();
+            $batch = $this->getBatch();
             $batch->addToCounter('imported');
 
             // Remove all "non-answer" fields
-            unset($answers['token'], $answers['patient_id'], $answers['organization_id'], $answers['track_id'],
+            unset($answers['token'], $answers['patient_id'], $answers['organization_id'], $answers['track_id'], 
                     $answers['survey_id'], $answers['completion_date'], $answers['gto_id_token']);
 
             if (isset($row['survey_id'])) {
-                $model = $tracker->getSurvey($row['survey_id'])->getAnswerModel('en');
+                $model = $this->targetModel;
                 foreach ($answers as $key => &$value) {
                     if ($value instanceof \Zend_Date) {
                         $value = $value->toString($model->getWithDefault($key, 'storageFormat', 'yyyy-MM-dd HH:mm:ss'));
@@ -103,7 +129,7 @@ class Gems_Task_Import_SaveAnswerTask extends \MUtil_Task_TaskAbstract
             }
             if (! ($token && $token->exists)) {
                 if (! (isset($row['track_id']) && $row['track_id'])) {
-
+                    
                 }
                 // create token?
             }
@@ -132,7 +158,7 @@ class Gems_Task_Import_SaveAnswerTask extends \MUtil_Task_TaskAbstract
                                 $count));
 
                         $oldToken = $token;
-                        $token = $tracker->getToken($replacementTokenId);
+                        $token    = $tracker->getToken($replacementTokenId);
 
                         // Make sure the Next token is set right
                         $oldToken->setNextToken($token);
@@ -141,7 +167,7 @@ class Gems_Task_Import_SaveAnswerTask extends \MUtil_Task_TaskAbstract
                                 $code,
                                 sprintf($this->_('Token %s overwritten by import.'), $token->getTokenId()) . $oldComment,
                                 $userId
-                                );
+                        );
                     } else {
                         $oldComment = "";
                         if ($token->getComment()) {
@@ -162,7 +188,7 @@ class Gems_Task_Import_SaveAnswerTask extends \MUtil_Task_TaskAbstract
                                 $count));
 
                         $oldToken = $token;
-                        $token = $tracker->getToken($replacementTokenId);
+                        $token    = $tracker->getToken($replacementTokenId);
 
                         // Make sure the Next token is set right
                         $oldToken->setNextToken($token);
@@ -170,7 +196,7 @@ class Gems_Task_Import_SaveAnswerTask extends \MUtil_Task_TaskAbstract
                                 $oldToken->getReceptionCode(),
                                 sprintf($this->_('Additional answers in imported token %s.'), $token->getTokenId()) . $oldComment,
                                 $userId
-                                );
+                        );
                     }
                 }
 
