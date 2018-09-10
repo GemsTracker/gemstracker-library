@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-05 12:01+0200\n"
+"POT-Creation-Date: 2018-09-10 12:18+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -4283,6 +4283,10 @@ msgstr "Link by patient id"
 msgid "Link by patient id and completion date"
 msgstr "Link by patient id and completion date"
 
+#: classes/Gems/Import/Importer.php:57
+msgid "Remaining time: {remaining} - {msg}"
+msgstr "Remaining time: {remaining} - {msg}"
+
 #: classes/Gems/Mail/MailElements.php:144
 #: classes/Gems/Menu/MenuAbstract.php:828
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:152
@@ -7506,42 +7510,42 @@ msgstr "Finished %s %s creation script for object %d of %d"
 msgid "%d patch(es) executed."
 msgstr "%d patch(es) executed."
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:119
-#: classes/Gems/Task/Import/SaveAnswerTask.php:149
+#: classes/Gems/Task/Import/SaveAnswerTask.php:145
+#: classes/Gems/Task/Import/SaveAnswerTask.php:175
 msgid "Previous comments:"
 msgstr "Previous comments:"
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:123
-#: classes/Gems/Task/Import/SaveAnswerTask.php:142
+#: classes/Gems/Task/Import/SaveAnswerTask.php:149
+#: classes/Gems/Task/Import/SaveAnswerTask.php:168
 #, php-format
 msgid "Token %s overwritten by import."
 msgstr "Token %s overwritten by import."
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:129
+#: classes/Gems/Task/Import/SaveAnswerTask.php:155
 #, php-format
 msgid "%d token overwrote an existing token."
 msgid_plural "%d tokens overwrote existing tokens."
 msgstr[0] "%d token overwrote an existing token."
 msgstr[1] "%d tokens overwrote existing tokens."
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:153
+#: classes/Gems/Task/Import/SaveAnswerTask.php:179
 #, php-format
 msgid "More answers for token %s by import."
 msgstr "More answers for token %s by import."
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:159
+#: classes/Gems/Task/Import/SaveAnswerTask.php:185
 #, php-format
 msgid "%d token was imported as a new extra token."
 msgid_plural "%d tokens were imported as a new extra token."
 msgstr[0] "%d token was imported as a new extra token."
 msgstr[1] "%d tokens were imported as a new extra token."
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:171
+#: classes/Gems/Task/Import/SaveAnswerTask.php:197
 #, php-format
 msgid "Additional answers in imported token %s."
 msgstr "Additional answers in imported token %s."
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:193
+#: classes/Gems/Task/Import/SaveAnswerTask.php:219
 #, php-format
 msgid "%d token imported."
 msgid_plural "%d tokens imported."

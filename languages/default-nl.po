@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-05 12:02+0200\n"
+"POT-Creation-Date: 2018-09-10 12:19+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -223,7 +223,7 @@ msgstr "Kort verblijf"
 
 #: classes/Gems/Agenda.php:1085
 msgid "Virtual"
-msgstr "Virueel"
+msgstr "Virtueel"
 
 #: classes/Gems/Agenda/Appointment.php:95
 #, php-format
@@ -4342,6 +4342,10 @@ msgstr "Koppel middels patiënt id"
 msgid "Link by patient id and completion date"
 msgstr "Koppel middels patiënt id en invuldatum"
 
+#: classes/Gems/Import/Importer.php:57
+msgid "Remaining time: {remaining} - {msg}"
+msgstr "Resterende tijd: {remaining} - {msg}"
+
 #: classes/Gems/Mail/MailElements.php:144
 #: classes/Gems/Menu/MenuAbstract.php:828
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:152
@@ -7588,42 +7592,42 @@ msgstr "Klaar met %s %s aanmaak script voor object %d van %d"
 msgid "%d patch(es) executed."
 msgstr "%d patch(es) uitgevoerd."
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:119
-#: classes/Gems/Task/Import/SaveAnswerTask.php:149
+#: classes/Gems/Task/Import/SaveAnswerTask.php:145
+#: classes/Gems/Task/Import/SaveAnswerTask.php:175
 msgid "Previous comments:"
 msgstr "Vorige opmerkingen:"
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:123
-#: classes/Gems/Task/Import/SaveAnswerTask.php:142
+#: classes/Gems/Task/Import/SaveAnswerTask.php:149
+#: classes/Gems/Task/Import/SaveAnswerTask.php:168
 #, php-format
 msgid "Token %s overwritten by import."
 msgstr "Kenmerk %s overschreven door import."
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:129
+#: classes/Gems/Task/Import/SaveAnswerTask.php:155
 #, php-format
 msgid "%d token overwrote an existing token."
 msgid_plural "%d tokens overwrote existing tokens."
 msgstr[0] "%d kenmerk overschreef een bestaand kenmerk."
 msgstr[1] "%d kenmerken overschreven bestaande kenmerken."
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:153
+#: classes/Gems/Task/Import/SaveAnswerTask.php:179
 #, php-format
 msgid "More answers for token %s by import."
 msgstr "Meer antwoorden voor kenmerk %s middels import."
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:159
+#: classes/Gems/Task/Import/SaveAnswerTask.php:185
 #, php-format
 msgid "%d token was imported as a new extra token."
 msgid_plural "%d tokens were imported as a new extra token."
 msgstr[0] "%d kenmerk geïmporteerd als nieuw extra kenmerk."
 msgstr[1] "%d kenmerken geïmporteerd als nieuw extra kenmerk."
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:171
+#: classes/Gems/Task/Import/SaveAnswerTask.php:197
 #, php-format
 msgid "Additional answers in imported token %s."
 msgstr "Additionele antwoorden zitten in het geïmporteerde kenmerk %s."
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:193
+#: classes/Gems/Task/Import/SaveAnswerTask.php:219
 #, php-format
 msgid "%d token imported."
 msgid_plural "%d tokens imported."

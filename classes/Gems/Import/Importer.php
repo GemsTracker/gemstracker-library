@@ -38,6 +38,8 @@ class Gems_Import_Importer extends \MUtil_Model_Importer
         if (null === $batch) {
             $batch = $this->loader->getTaskRunnerBatch('check_' . basename($this->sourceModel->getName()) . '_' . $idPart);
         }
+        $batch->setProgressTemplate($this->_('Remaining time: {remaining} - {msg}'));        
+        
         return parent::getBasicImportBatch($idPart, $batch);
     }
     /**
@@ -50,13 +52,11 @@ class Gems_Import_Importer extends \MUtil_Model_Importer
         if (! $this->_importBatch instanceof \MUtil_Task_TaskBatch) {
             $batch = $this->loader->getTaskRunnerBatch(__CLASS__ . '_import_' .
                     basename($this->sourceModel->getName()) . '_' . __FUNCTION__);
-
-            $batch->setVariable('targetModel', $this->getTargetModel());
-
             $this->_importBatch = $batch;
         } else {
             $batch = $this->_importBatch;
         }
+        $batch->setProgressTemplate($this->_('Remaining time: {remaining} - {msg}'));
 
         return parent::getImportOnlyBatch($batch);
     }
