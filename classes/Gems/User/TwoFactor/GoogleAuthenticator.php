@@ -101,16 +101,61 @@ class GoogleAuthenticator extends \MUtil_Translate_TranslateableAbstract impleme
      */
     protected function _getQRCodeGoogleUrl($name, $secret, $title = null, $params = array())
     {
-        $width = !empty($params['width']) && (int) $params['width'] > 0 ? (int) $params['width'] : 200;
+        $url = $this->_getQRCodeUrl($title, $name, $secret);
+        list($width, $height, $level) = $this->_getQRParams($params);
+
+        return 'https://chart.googleapis.com/chart?chs=' . $width . 'x' . $height . '&chld=' . $level . '|0&cht=qr&chl=' . $url . '';
+    }
+    
+    /**
+     * Get QR-Code URL for image, using inline data uri.
+     *
+     * @param string $name The person using it
+     * @param string $secret Above code in authenticator
+     * @param string $title
+     * @param array  $params
+     *
+     * @return string
+     */
+    protected function _getQRCodeInline($name, $secret, $title = null, $params = array())
+    {
+        $url = $this->_getQRCodeUrl($title, $name, $secret);
+        list($width, $height, $level) = $this->_getQRParams($params);
+
+        $renderer = new \BaconQrCode\Renderer\Image\Png();
+        $renderer->setWidth($width)
+                 ->setHeight($height)
+                 ->setMargin(0);
+        $bacon    = new \BaconQrCode\Writer($renderer);
+        $data     = $bacon->writeString($urlencoded, $encoding, \BaconQrCode\Common\ErrorCorrectionLevel::M);
+        return 'data:image/png;base64,' . base64_encode($data);
+    }
+    
+    protected function _getQRParams($params)
+    {
+        $width  = !empty($params['width']) && (int) $params['width'] > 0 ? (int) $params['width'] : 200;
         $height = !empty($params['height']) && (int) $params['height'] > 0 ? (int) $params['height'] : 200;
-        $level = !empty($params['level']) && array_search($params['level'], array('L', 'M', 'Q', 'H')) !== false ? $params['level'] : 'M';
-
-        $urlencoded = urlencode('otpauth://totp/'.$name.'?secret='.$secret.'');
-        if (isset($title)) {
-            $urlencoded .= urlencode('&issuer='.urlencode($title));
-        }
-
-        return 'https://chart.googleapis.com/chart?chs='.$width.'x'.$height.'&chld='.$level.'|0&cht=qr&chl='.$urlencoded.'';
+        $level  = !empty($params['level']) && array_search($params['level'], array('L', 'M', 'Q', 'H')) !== false ? $params['level'] : 'M';
+        
+        return [$width, $height, $level];
+    }
+    
+    /**
+     * Get otpauth url
+     *
+     * @param $title
+     * @param $name
+     * @param $secret
+     *
+     * @return string
+     */
+    protected function _getQRCodeUrl($title, $name, $secret)
+    {
+        if (empty($title)) {
+            return 'otpauth://totp/'.rawurlencode($name).'?secret='.$secret;
+        } else {
+            return 'otpauth://totp/'.rawurlencode($title).':'.rawurlencode($name).'?secret='.$secret.'&issuer='.rawurlencode($title);
+        }        
     }
 
     /**
