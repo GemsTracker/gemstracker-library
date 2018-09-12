@@ -204,12 +204,9 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
         }
         $filter['gsu_active']  = 1;
 
-        if (isset($filter['filter_status']) && $filter['filter_status']) {
-            // $filter[] = $this->util->getTokenData()->getStatusExpressionFor($filter['filter_status']);
-
-            // unset($filter['filter_status']);
-        } else {
-            $filter['grc_success'] = 1; // Delete unless overruled by filter status
+        // When we dit not select a specific status we skip the deleted status
+        if (!isset($filter['token_status'])) {
+            $filter['grc_success'] = 1;
         }
 
         if (isset($filter['main_filter'])) {
