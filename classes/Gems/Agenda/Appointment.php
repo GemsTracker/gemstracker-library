@@ -154,7 +154,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
                 continue;
             }
 
-            $createTrack = false;
+            $createTrack = true;
 
             // Find the method to use for this creator type
             $method      = $this->getCreatorCheckMethod($filter->getCreatorType());
