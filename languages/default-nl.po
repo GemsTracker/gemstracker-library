@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 1.8.9\n"
+"X-Generator: Poedit 2.1.1\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
@@ -4115,7 +4115,7 @@ msgstr "Relatie"
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:189
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:267
 msgid "Track reception code"
-msgstr "Taject ontvangstcode"
+msgstr "Traject ontvangstcode"
 
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:235
 msgid "Add track fields to export"
