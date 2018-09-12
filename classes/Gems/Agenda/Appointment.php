@@ -174,7 +174,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
             // \MUtil_Echo::track($trackId, $createTrack, $filter->getName(), $filter->getSqlWhere(), $filter->getFilterId());
             if ($createTrack) {
                 $respTrack = $this->_createTrack($filter, $tracker);
-                $existingTracks[$$trackId][] = $respTrack;
+                $existingTracks[$trackId][] = $respTrack;
 
                 $tokenChanges += $respTrack->getCount();
             }
