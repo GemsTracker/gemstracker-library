@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [Unreleased]
+
 ## [1.8.4] - 2018-08-20
 ### Added
 - Appointments can now be grouped into HL7 care episodes (#306)
@@ -433,3 +435,5 @@ Replaced individual snippets
     SingleAnswerTableSnippet => AnswerModelSnippet
     AnswersTableSnippet => TrackAnswersModelSnippet
 
+[Unreleased]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.4...HEAD
+[1.8.4]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.3...1.8.4
