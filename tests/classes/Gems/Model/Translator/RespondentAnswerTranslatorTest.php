@@ -167,13 +167,17 @@ class RespondentAnswerTranslatorTest extends ControllerTestAbstract {
         //$this->saveTables(['gems__agenda_staff'], 'AppointmentTranslatorTest');
         $this->assertEquals($expected, $actual);
     }
-    
-    public function testBatch()
+       
+    /**
+     * @param string $filename
+     * @dataProvider providerTestBatch
+     */
+    public function testBatch($fileName)
     {
         $importLoader = $this->loader->getImportLoader();
         $importLoader->answerRegistryRequest('_orgCode', 'code');
         $importer     = $importLoader->getImporter('answers');
-        $importer->setSourceFile(__DIR__ . DIRECTORY_SEPARATOR . 'answerimport.csv');
+        $importer->setSourceFile(__DIR__ . DIRECTORY_SEPARATOR . $fileName);
         $importer->setTargetModel($this->getAnswerModel());
         $importer->setImportTranslator($this->object);
         $this->object->setSurveyId(1);
@@ -187,6 +191,14 @@ class RespondentAnswerTranslatorTest extends ControllerTestAbstract {
          */
         $messages = $batch->getMessages();
         $this->assertEquals($messages['addedAnswers'], '4 tokens were imported as a new extra token.');
+    }
+    
+    public function providerTestBatch()
+    {
+        return [ 
+            'colon'     => ['answerimport.csv'],
+            'semicolon' => ['answerimportnl.csv']
+            ];
     }
 
 }
