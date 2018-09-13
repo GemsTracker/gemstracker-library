@@ -184,9 +184,11 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
 
         if ($error) {
             $this->html->pre($error, array('class' => 'disabled logFile'));
-        } else {
+        } elseif (substr($logFile, -3) == '.md') {            
             $parseDown = new \Parsedown();
             $this->html->div(array('class'=>'logFile'))->raw($parseDown->parse($content));
+        } else {
+            $this->html->pre($content, array('class' => 'logFile'));
         }
 
         if ($emptyLabel) {
@@ -200,7 +202,7 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
      */
     public function changelogAction()
     {
-        $this->_showText(sprintf($this->_('Changelog %s'), $this->escort->project->name), APPLICATION_PATH . '/changelog.txt');
+        $this->_showText(sprintf($this->_('Changelog %s'), $this->escort->project->name), APPLICATION_PATH . '/CHANGELOG.md');
     }
 
     /**
