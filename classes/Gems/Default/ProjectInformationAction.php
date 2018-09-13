@@ -185,7 +185,8 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
         if ($error) {
             $this->html->pre($error, array('class' => 'disabled logFile'));
         } else {
-            $this->html->pre($content, array('class' => 'logFile'));
+            $parseDown = new \Parsedown();
+            $this->html->div(array('class'=>'logFile'))->raw($parseDown->parse($content));
         }
 
         if ($emptyLabel) {
