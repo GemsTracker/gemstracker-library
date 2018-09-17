@@ -68,7 +68,7 @@ abstract class Gems_Default_RespondentChildActionAbstract extends \Gems_Controll
      *
      * @return \Gems_Tracker_Respondent
      */
-    protected function getRespondent()
+    public function getRespondent()
     {
         if (! $this->_respondent) {
             $patientNumber  = $this->_getParam(\MUtil_Model::REQUEST_ID1);
