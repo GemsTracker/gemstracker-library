@@ -148,7 +148,7 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
      * @param string $logFile
      * @param string $emptyLabel
      */
-    protected function _showText($caption, $logFile, $emptyLabel = null)
+    protected function _showText($caption, $logFile, $emptyLabel = null, $context = null)
     {
         $this->html->h2($caption);
 
@@ -185,7 +185,7 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
         if ($error) {
             $this->html->pre($error, array('class' => 'disabled logFile'));
         } elseif (substr($logFile, -3) == '.md') {            
-            $parseDown = new \Parsedown();
+            $parseDown = new \Gems\Parsedown($context);
             $this->html->div(array('class'=>'logFile'))->raw($parseDown->parse($content));
         } else {
             $this->html->pre($content, array('class' => 'logFile'));
@@ -210,7 +210,7 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
      */
     public function changelogGemsAction()
     {
-        $this->_showText(sprintf($this->_('Changelog %s'), 'GemsTracker'), GEMS_LIBRARY_DIR . '/CHANGELOG.md');
+        $this->_showText(sprintf($this->_('Changelog %s'), 'GemsTracker'), GEMS_LIBRARY_DIR . '/CHANGELOG.md', null, 'GemsTracker/gemstracker-library');
     }
 
     public function errorsAction()
