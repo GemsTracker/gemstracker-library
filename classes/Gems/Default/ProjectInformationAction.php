@@ -202,7 +202,7 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
      */
     public function changelogAction()
     {
-        $this->_showText(sprintf($this->_('Changelog %s'), $this->escort->project->name), APPLICATION_PATH . '/CHANGELOG.md');
+        $this->_showText(sprintf($this->_('Changelog %s'), $this->escort->project->name), APPLICATION_PATH . '/changelog.txt');
     }
 
     /**
@@ -210,7 +210,7 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
      */
     public function changelogGemsAction()
     {
-        $this->_showText(sprintf($this->_('Changelog %s'), 'GemsTracker'), GEMS_LIBRARY_DIR . '/changelog.txt');
+        $this->_showText(sprintf($this->_('Changelog %s'), 'GemsTracker'), GEMS_LIBRARY_DIR . '/CHANGELOG.md');
     }
 
     public function errorsAction()
