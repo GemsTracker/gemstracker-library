@@ -542,12 +542,17 @@ class Gems_AccessLog
      * @param \Zend_Controller_Request_Abstract $request
      * @param mixed $message
      * @param mixed $data
-     * @param int $respondentId
+     * @param int|\Gems_Tracker_Respondent $respondentId
      * @return boolean True when a log entry was stored
      */
     public function logRequest(\Zend_Controller_Request_Abstract $request, $message = null, $data = null, $respondentId = null)
     {
         $action = $request->getControllerName() . '.' . $request->getActionName();
+        if ($respondentId instanceof \Gems_Tracker_Respondent) {
+            $respondentId = $respondentId->getId();
+            $data = (array) $data;
+            $data['gr2o_id_organization'] = $respondentId->getOrganizationId();
+        }
         return $this->logEntry($request, $action, false, $message, $data, $respondentId);
     }
 }

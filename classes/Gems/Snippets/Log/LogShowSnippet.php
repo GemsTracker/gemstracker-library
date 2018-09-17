@@ -95,14 +95,21 @@ class LogShowSnippet extends \Gems_Snippets_ModelItemTableSnippetAbstract
         if (isset($row['gla_respondent_id'], $row['gla_organization']) &&
                 ($this->menuList instanceof \Gems_Menu_MenuList)) {
 
-            $patientNr = $this->util->getDbLookup()->getPatientNr($row['gla_respondent_id'], $row['gla_organization']);
+            try {
+                $patientNr = $this->util->getDbLookup()->getPatientNr($row['gla_respondent_id'], $row['gla_organization']);
 
-            $this->menuList->addParameterSources(array(
-                'gr2o_patient_nr'      => $patientNr,
-                'gr2o_id_organization' => $row['gla_organization'],
-                ));
+                $this->menuList->addParameterSources(array(
+                    'gr2o_patient_nr'      => $patientNr,
+                    'gr2o_id_organization' => $row['gla_organization'],
+                    ));
 
-            $this->menuList->addByController('respondent', 'show', $this->_('Show respondent'));
+                $this->menuList->addByController('respondent', 'show', $this->_('Show respondent'));
+            } catch (Exception $exc) {
+                // Retrieving the patient van fail when an incorrect organization was logged. 
+                // We silently fail and do not add thwe 'Show respondent' button
+            }
+
+            
         }
     }
 }
