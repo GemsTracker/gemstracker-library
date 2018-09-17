@@ -4,8 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
+[Unreleased]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.4...HEAD
+### Changed
+- The getRespondent() method in a controller was changed to public to allow better logging (#360)
+- The meta.Content-Security-Policy was moved to the headers section (#352)
 
 ## [1.8.4] - 2018-08-20
+[1.8.4]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.3...1.8.4
 ### Added
 - Appointments can now be grouped into HL7 care episodes (#306)
 - Conditions can determine if a round is applicable or not (#42), this reduces the need for track events
@@ -434,6 +439,3 @@ But also:
 Replaced individual snippets
     SingleAnswerTableSnippet => AnswerModelSnippet
     AnswersTableSnippet => TrackAnswersModelSnippet
-
-[Unreleased]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.4...HEAD
-[1.8.4]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.3...1.8.4

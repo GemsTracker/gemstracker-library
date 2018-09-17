@@ -38,7 +38,7 @@ class Gems_Default_RespondentLogAction extends \Gems_Default_LogAction
      *
      * @return \Gems_Tracker_Respondent
      */
-    protected function getRespondent()
+    public function getRespondent()
     {
         static $respondent;
 

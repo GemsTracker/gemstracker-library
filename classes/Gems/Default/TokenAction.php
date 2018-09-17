@@ -68,7 +68,7 @@ class Gems_Default_TokenAction extends \Gems_Default_TokenSearchActionAbstract
      *
      * @return \Gems_Tracker_Respondent
      */
-    protected function getRespondent()
+    public function getRespondent()
     {
         static $respondent;
 

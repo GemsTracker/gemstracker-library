@@ -140,7 +140,7 @@ class Gems_Default_RespondentMailLogAction extends \Gems_Default_RespondentChild
      *
      * @return \Gems_Tracker_Respondent
      */
-    protected function getRespondent()
+    public function getRespondent()
     {
         if (! $this->_respondent instanceof \Gems_Tracker_Respondent) {
             if ($this->_getParam(\MUtil_Model::REQUEST_ID1) && $this->_getParam(\MUtil_Model::REQUEST_ID2)) {

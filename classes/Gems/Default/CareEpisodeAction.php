@@ -147,7 +147,7 @@ class Gems_Default_CareEpisodeAction extends \Gems_Default_RespondentChildAction
      *
      * @return \Gems_Tracker_Respondent
      */
-    protected function getRespondent()
+    public function getRespondent()
     {
         if (! $this->_respondent) {
             $id = $this->_getParam(\Gems_Model::EPISODE_ID);
