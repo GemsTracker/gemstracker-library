@@ -549,9 +549,9 @@ class Gems_AccessLog
     {
         $action = $request->getControllerName() . '.' . $request->getActionName();
         if ($respondentId instanceof \Gems_Tracker_Respondent) {
-            $respondentId = $respondentId->getId();
             $data = (array) $data;
             $data['gr2o_id_organization'] = $respondentId->getOrganizationId();
+            $respondentId = $respondentId->getId();
         }
         return $this->logEntry($request, $action, false, $message, $data, $respondentId);
     }
