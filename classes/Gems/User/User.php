@@ -172,12 +172,12 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         }
         $this->definition = $definition;
     }
-    
+
     /**
      * Helper function for setcurrentOrganization
-     * 
+     *
      * Change value to $newId in an array if the key is in the $keys array (as key) and value is $oldId
-     * 
+     *
      * @param array $array
      * @param int $oldId
      * @param int $newId
@@ -188,14 +188,14 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         if (!is_array($array)) {
             return $array;
         }
-               
+
         $matches = array_intersect_key($array, $keys);
         foreach($matches as $key => &$curId) {
             if ($curId == $oldId) {
                 $array[$key] = $newId;
             }
         }
-                
+
         return $array;
     }
 
@@ -1902,10 +1902,10 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         if (!($organization instanceof \Gems_User_Organization)) {
             $organization = $this->userLoader->getOrganization($organization);
         }
-        
+
         $organizationId    = $organization->getId();
         $oldOrganizationId = $this->getCurrentOrganizationId();
-        
+
         if ($organizationId != $oldOrganizationId) {
             $this->_setVar('user_organization_id', $organizationId);
 
@@ -1922,18 +1922,20 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
                 // Don't do it when the oldOrgId doesn't match
                 $keysArray = array_flip($this->possibleOrgIds);
                 $requestCache = $this->session->requestCache;
-                foreach ($requestCache as $key => &$elements) {
-                    $elements = $this->_changeIds($elements, $oldOrganizationId, $usedOrganizationId, $keysArray);
+                if ($requestCache) {
+                    foreach ($requestCache as $key => &$elements) {
+                        $elements = $this->_changeIds($elements, $oldOrganizationId, $usedOrganizationId, $keysArray);
+                    }
+                    $this->session->requestCache = $requestCache;
                 }
-                $this->session->requestCache = $requestCache;        
-                
+
                 // $searchSession &= $_SESSION['ModelSnippetActionAbstract_getSearchData'];
                 $searchSession = new \Zend_Session_Namespace('ModelSnippetActionAbstract_getSearchData');
                 foreach ($searchSession as $id => $data) {
                     $searchSession->$id = $this->_changeIds($data, $oldOrganizationId, $usedOrganizationId, $keysArray);
                 }
             }
-        }    
+        }
 
         return $this;
     }
