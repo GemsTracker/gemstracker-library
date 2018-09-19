@@ -42,7 +42,7 @@ class Parsedown extends \Parsedown
      */
     protected function inlineIssueLink($Excerpt)
     {
-        if (preg_match('/([\p{L}\p{N}_-]*)\/?([\p{L}\p{N}_-]*)(#\d+)/ui', $Excerpt['context'], $matches, PREG_OFFSET_CAPTURE)) {
+        if (preg_match('/([\p{L}\p{N}_-]*)\/?([\p{L}\p{N}_-]*)#(\d+)/ui', $Excerpt['context'], $matches, PREG_OFFSET_CAPTURE)) {
             if (!empty($matches[1][0])) {
                 $project = $matches[1][0] . '/' . $matches[2][0];
             } else {
@@ -55,7 +55,7 @@ class Parsedown extends \Parsedown
                 'position' => $matches[0][1],
                 'element' => array(
                     'name' => 'a',
-                    'text' => $matches[3][0],
+                    'text' => '#' . $matches[3][0],
                     'attributes' => array(
                         'href' => $url,
                     ),
