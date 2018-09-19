@@ -37,12 +37,12 @@ class Parsedown extends \Parsedown
      * 
      * organization/repository#<issue> or #<issue>
      * 
-     * @param array $Excerpt
+     * @param array $excerpt
      * @return array
      */
-    protected function inlineIssueLink($Excerpt)
+    protected function inlineIssueLink($excerpt)
     {
-        if (preg_match('/([\p{L}\p{N}_-]*)\/?([\p{L}\p{N}_-]*)#(\d+)/ui', $Excerpt['context'], $matches, PREG_OFFSET_CAPTURE)) {
+        if (preg_match('/([\p{L}\p{N}_-]*)\/?([\p{L}\p{N}_-]*)#(\d+)/ui', $excerpt['context'], $matches, PREG_OFFSET_CAPTURE)) {
             if (!empty($matches[1][0])) {
                 $project = $matches[1][0] . '/' . $matches[2][0];
             } else {
@@ -50,7 +50,7 @@ class Parsedown extends \Parsedown
             }
             $url = sprintf('%s/%s/issues/%s', $this->GitHub, $project, $matches[3][0]);
 
-            $Inline = array(
+            $inline = array(
                 'extent' => strlen($matches[0][0]),
                 'position' => $matches[0][1],
                 'element' => array(
@@ -62,7 +62,7 @@ class Parsedown extends \Parsedown
                 ),
             );
             
-            return $Inline;
+            return $inline;
         }
     }
 }
