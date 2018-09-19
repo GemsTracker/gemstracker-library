@@ -7,7 +7,7 @@
 	<gems__respondent2track2field gr2t2f_id_respondent_track="1" gr2t2f_id_field="1" gr2t2f_value="test" gr2t2f_changed_by="1" gr2t2f_created="2012-09-07" gr2t2f_created_by="1"/>
 	<gems__respondent2track2field gr2t2f_id_respondent_track="1" gr2t2f_id_field="2" gr2t2f_value="2010-10-08" gr2t2f_changed_by="1" gr2t2f_created="2012-09-07" gr2t2f_created_by="1"/>
 	<gems__respondents grs_id_user="1234" grs_changed_by="1" grs_created="2012-09-07" grs_created_by="1"/>
-	<gems__respondent2org gr2o_id_user="1234" gr2o_id_organization="1" gr2o_consent="consent given" gr2o_patient_nr="abc" gr2o_opened_by="1" gr2o_changed="2012-09-07" gr2o_changed_by="1" gr2o_created="2012-09-07" gr2o_created_by="1"/>
+	<gems__respondent2org gr2o_id_user="1234" gr2o_reception_code="OK" gr2o_id_organization="1" gr2o_consent="consent given" gr2o_patient_nr="abc" gr2o_opened_by="1" gr2o_changed="2012-09-07" gr2o_changed_by="1" gr2o_created="2012-09-07" gr2o_created_by="1"/>
 	<gems__reception_codes grc_id_reception_code="OK" grc_description="Ok code" grc_success="1" grc_for_surveys="1" grc_redo_survey="0" grc_for_tracks="1" grc_for_respondents="1" grc_overwrite_answers="0" grc_active="1" grc_changed_by="1" grc_created="2012-09-07" grc_created_by="1"/>
 	<gems__reception_codes grc_id_reception_code="redo" grc_description="redo code" grc_success="0" grc_for_surveys="1" grc_redo_survey="2" grc_for_tracks="0" grc_for_respondents="0" grc_overwrite_answers="1" grc_active="1" grc_changed_by="1" grc_created="2012-09-07" grc_created_by="1"/>
 	<gems__consents gco_description="consent given" gco_changed_by="1" gco_created="2012-09-07" gco_created_by="1"/>

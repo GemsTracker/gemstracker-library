@@ -85,7 +85,7 @@ class CsvExport extends ExportAbstract
         fwrite($file, $bom);
 
         $name = $this->getName();
-        if (isset($data[$name], $data[$name]['format'], $data[$name]['format'][0]) && in_array('addHeader', $this->data[$name]['format'])) {
+        if (isset($this->data[$name], $this->data[$name]['format'], $this->data[$name]['format'][0]) && in_array('addHeader', $this->data[$name]['format'])) {
             $labeledCols = $this->getLabeledColumns();
             $labels      = array();
 
