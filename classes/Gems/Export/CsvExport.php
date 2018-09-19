@@ -85,7 +85,7 @@ class CsvExport extends ExportAbstract
         fwrite($file, $bom);
 
         $name = $this->getName();
-        if (isset($this->data[$name]) && isset($this->data[$name]['format']) && in_array('addHeader', $this->data[$name]['format'])) {
+        if (isset($data[$name], $data[$name]['format'], $data[$name]['format'][0]) && in_array('addHeader', $this->data[$name]['format'])) {
             $labeledCols = $this->getLabeledColumns();
             $labels      = array();
 
@@ -120,7 +120,7 @@ class CsvExport extends ExportAbstract
         if (isset($data[$name]) && isset($data[$name]['delimiter'])) {
             $this->delimiter = $data[$name]['delimiter'];
         }
-        if (!(isset($data[$name]) && isset($data[$name]['format']) && in_array('formatAnswer', $data[$name]['format']))) {
+        if (!(isset($data[$name], $data[$name]['format'], $data[$name]['format'][0]) && in_array('formatAnswer', $data[$name]['format']))) {
             $this->modelFilterAttributes = array('formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay');
         }
         parent::addRows($data, $modelId, $tempFilename, $filter);
