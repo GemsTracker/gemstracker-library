@@ -21,7 +21,8 @@
 class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     protected $autofilterParameters = array(
-        'extraSort'   => array('gcj_id_order' => SORT_ASC)
+        'extraSort'    => array('gcj_id_order' => SORT_ASC),
+        'searchFields' => 'getSearchFields'
         );
 
     /**
@@ -42,6 +43,13 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
      * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
+    
+    /**
+     * The snippets used for the index action, before those in autofilter
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Agenda\\AutosearchFormSnippet');
     
     protected $monitorParameters = array(
         'monitorJob' => 'getMailMonitorJob'
@@ -119,10 +127,10 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
         $activeOptions = [
             0 => $this->_('Disabled'),
             1 => $this->_('Automatic'),
-            2 => $this->_('Manual')
+            2 => $this->_('By hand')
         ];
         $model->set('gcj_active',              'label', $this->_('Execution'),
-                'multiOptions', $activeOptions, 'elementClass', 'Checkbox', 'required', true,
+                'multiOptions', $activeOptions, 'required', true,
                 'description', $this->_('Job is only run when not disabled.'));
 
         $fromMethods = $unselected + $this->getBulkMailFromOptions();
@@ -138,9 +146,9 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
                     'elementClass', 'Hidden');
         }
         if ($detailed) {
-            $bulkProcessOptions = $translated->getBulkMailProcessOptionsShort();
-        } else {
             $bulkProcessOptions = $translated->getBulkMailProcessOptions();
+        } else {
+            $bulkProcessOptions = $translated->getBulkMailProcessOptionsShort();
         }
         $model->set('gcj_process_method',      'label', $this->_('Processing Method'), 'default', 'O', 'multiOptions', $bulkProcessOptions);
         $model->set('gcj_filter_mode',         'label', $this->_('Filter for'), 'multiOptions', $unselected + $this->getBulkMailFilterOptions());
@@ -425,6 +433,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
                         break;
                 }
                 $params['class'] = 'browser table mailjob'. $class;
+                $params['caption'] = 'caption';
                 $model  = $this->loader->getTracker()->getTokenModel();
                 $filter = $this->loader->getUtil()->getDbLookup()->getFilterForMailJob($job);
                 $params['model']           = $model;

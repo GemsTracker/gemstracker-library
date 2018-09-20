@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-20 15:37+0200\n"
+"POT-Creation-Date: 2018-09-20 16:01+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -83,7 +83,7 @@ msgstr "Foutieve invoer"
 #: classes/Gems/Default/AgendaActivityAction.php:122
 #: classes/Gems/Default/AgendaProcedureAction.php:122
 #: classes/Gems/Default/AgendaStaffAction.php:123
-#: classes/Gems/Default/CommJobAction.php:206
+#: classes/Gems/Default/CommJobAction.php:214
 #: classes/Gems/Default/ConsentPlanAction.php:148
 #: classes/Gems/Default/IndexAction.php:320
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:360
@@ -267,7 +267,7 @@ msgstr "Naam"
 
 #: classes/Gems/Agenda/AppointmentFilterModel.php:92
 #: classes/Gems/Agenda/AppointmentFilterModel.php:147
-#: classes/Gems/Default/CommJobAction.php:102
+#: classes/Gems/Default/CommJobAction.php:110
 #: classes/Gems/Default/ConsentAction.php:56
 #: classes/Gems/Default/DatabaseAction.php:220
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:872
@@ -1204,7 +1204,7 @@ msgstr[0] "behandelepisode"
 msgstr[1] "behandelepisodes"
 
 #: classes/Gems/Default/ChartconfigAction.php:36
-#: classes/Gems/Default/CommJobAction.php:178
+#: classes/Gems/Default/CommJobAction.php:186
 #: classes/Gems/Default/ProjectTracksAction.php:99
 #: classes/Gems/Export/RespondentExport.php:331
 #: classes/Gems/Export/RespondentExport.php:343 classes/Gems/Menu.php:342
@@ -1227,7 +1227,7 @@ msgid "Track"
 msgstr "Traject"
 
 #: classes/Gems/Default/ChartconfigAction.php:37
-#: classes/Gems/Default/CommJobAction.php:185
+#: classes/Gems/Default/CommJobAction.php:193
 #: classes/Gems/Default/SummaryAction.php:88
 #: classes/Gems/Export/RespondentExport.php:249
 #: classes/Gems/Snippets/Mail/TokenMailFormSnippet.php:43
@@ -1241,7 +1241,7 @@ msgid "Round"
 msgstr "Ronde"
 
 #: classes/Gems/Default/ChartconfigAction.php:38
-#: classes/Gems/Default/CommJobAction.php:196
+#: classes/Gems/Default/CommJobAction.php:204
 #: classes/Gems/Default/ProjectSurveysAction.php:110
 #: classes/Gems/Default/SummaryAction.php:89
 #: classes/Gems/Export/RespondentExport.php:248
@@ -1290,110 +1290,109 @@ msgid_plural "Chart configs"
 msgstr[0] "Chart configuratie"
 msgstr[1] "Chart configuraties"
 
-#: classes/Gems/Default/CommJobAction.php:102
+#: classes/Gems/Default/CommJobAction.php:110
 msgid ""
 "Execution order of the communication jobs, lower numbers are executed first."
 msgstr ""
 "Volgorde van uitvoeren van de communicatie jobs, lager nummer wordt eerder "
 "uitgevoerd."
 
-#: classes/Gems/Default/CommJobAction.php:115
+#: classes/Gems/Default/CommJobAction.php:123
 #: classes/Gems/Model/CommLogModel.php:149
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:141
 msgid "Template"
 msgstr "Sjabloon"
 
-#: classes/Gems/Default/CommJobAction.php:116
+#: classes/Gems/Default/CommJobAction.php:124
 msgid "By staff member"
 msgstr "Door medewerker"
 
-#: classes/Gems/Default/CommJobAction.php:118
+#: classes/Gems/Default/CommJobAction.php:126
 msgid "Used for logging and possibly from address."
 msgstr "Gebruikt voor activiteiten log en eventueel voor vanaf adres."
 
-#: classes/Gems/Default/CommJobAction.php:120
+#: classes/Gems/Default/CommJobAction.php:128
 #: classes/Gems/Model/StaffModel.php:285
 msgid "Disabled"
 msgstr "Uitgeschakeld"
 
-#: classes/Gems/Default/CommJobAction.php:121
+#: classes/Gems/Default/CommJobAction.php:129
 msgid "Automatic"
 msgstr "Automatisch"
 
-#: classes/Gems/Default/CommJobAction.php:122
-#: classes/Gems/Default/ContactAction.php:180
-msgid "Manual"
-msgstr "Handleiding"
+#: classes/Gems/Default/CommJobAction.php:130
+msgid "By hand"
+msgstr "Handmatig"
 
-#: classes/Gems/Default/CommJobAction.php:124
+#: classes/Gems/Default/CommJobAction.php:132
 msgid "Execution"
 msgstr "Uitvoering"
 
-#: classes/Gems/Default/CommJobAction.php:126
+#: classes/Gems/Default/CommJobAction.php:134
 msgid "Job is only run when not disabled."
 msgstr "Een opdracht wordt alleen uitgevoerd als deze niet inactief is."
 
-#: classes/Gems/Default/CommJobAction.php:129
+#: classes/Gems/Default/CommJobAction.php:137
 #: classes/Gems/Task/Mail/ExecuteMailJobTask.php:121
 msgid "From address used"
 msgstr "Gebruikte vanaf adres"
 
-#: classes/Gems/Default/CommJobAction.php:134
+#: classes/Gems/Default/CommJobAction.php:142
 msgid "From other"
 msgstr "Vanaf overig"
 
-#: classes/Gems/Default/CommJobAction.php:145
+#: classes/Gems/Default/CommJobAction.php:153
 #: classes/Gems/Task/Mail/ExecuteMailJobTask.php:155
 msgid "Processing Method"
 msgstr "Verwerkings methode"
 
-#: classes/Gems/Default/CommJobAction.php:146
+#: classes/Gems/Default/CommJobAction.php:154
 msgid "Filter for"
 msgstr "Selecteer op"
 
-#: classes/Gems/Default/CommJobAction.php:152
+#: classes/Gems/Default/CommJobAction.php:160
 msgid "Days between reminders"
 msgstr "Aantal dagen tussen herinneringen"
 
-#: classes/Gems/Default/CommJobAction.php:152
+#: classes/Gems/Default/CommJobAction.php:160
 msgid "1 day means the reminder is send the next day"
 msgstr "1 staat voor de volgende dag een herinnering sturen"
 
-#: classes/Gems/Default/CommJobAction.php:153
+#: classes/Gems/Default/CommJobAction.php:161
 msgid "Maximum reminders"
 msgstr "Maximum aantal herinneringen"
 
-#: classes/Gems/Default/CommJobAction.php:156
+#: classes/Gems/Default/CommJobAction.php:164
 msgid "Days before expiration"
 msgstr "Dagen voor vervaldatum"
 
-#: classes/Gems/Default/CommJobAction.php:166
+#: classes/Gems/Default/CommJobAction.php:174
 msgid "1 means only one reminder will be send"
 msgstr "1 betekent dat maar één herinnering verstuurd word"
 
-#: classes/Gems/Default/CommJobAction.php:174
+#: classes/Gems/Default/CommJobAction.php:182
 #: classes/Gems/Default/SummaryAction.php:101
 #: classes/Gems/Snippets/Respondent/RespondentOverviewSnippet.php:149
 msgid "Filler"
 msgstr "Invuller"
 
-#: classes/Gems/Default/CommJobAction.php:177
+#: classes/Gems/Default/CommJobAction.php:185
 #: classes/Gems/Snippets/Token/PlanSearchSnippet.php:104
 msgid "(all tracks)"
 msgstr "(alle trajecten)"
 
-#: classes/Gems/Default/CommJobAction.php:183
+#: classes/Gems/Default/CommJobAction.php:191
 #: classes/Gems/Snippets/Token/PlanSearchSnippet.php:111
 msgid "(all rounds)"
 msgstr "(alle rondes)"
 
-#: classes/Gems/Default/CommJobAction.php:195
+#: classes/Gems/Default/CommJobAction.php:203
 #: classes/Gems/Snippets/Mail/Log/MailLogSearchSnippet.php:61
 #: classes/Gems/Snippets/Token/PlanSearchSnippet.php:117
 msgid "(all surveys)"
 msgstr "(alle vragenlijsten)"
 
-#: classes/Gems/Default/CommJobAction.php:201
+#: classes/Gems/Default/CommJobAction.php:209
 #: classes/Gems/Snippets/Agenda/CalendarSearchSnippet.php:51
 #: classes/Gems/Snippets/Log/LogSearchSnippet.php:63
 #: classes/Gems/Snippets/Mail/Log/MailLogSearchSnippet.php:67
@@ -1409,85 +1408,85 @@ msgstr "(alle vragenlijsten)"
 msgid "(all organizations)"
 msgstr "(alle organisaties)"
 
-#: classes/Gems/Default/CommJobAction.php:225
+#: classes/Gems/Default/CommJobAction.php:233
 #, php-format
 msgid "Starting single %s mail job %s"
 msgstr "Start één %s email opdracht %s"
 
-#: classes/Gems/Default/CommJobAction.php:244
+#: classes/Gems/Default/CommJobAction.php:252
 msgid "Mailjob is inactive and won't be executed"
-msgstr ""
+msgstr "Mailopdracht is inactief en wordt niet verstuurd"
 
-#: classes/Gems/Default/CommJobAction.php:263
+#: classes/Gems/Default/CommJobAction.php:271
 #, php-format
 msgid "Preview single mail job %s"
 msgstr "Preview email opdracht %s"
 
-#: classes/Gems/Default/CommJobAction.php:265
+#: classes/Gems/Default/CommJobAction.php:273
 #, php-format
 msgid "Executing single mail job %s"
 msgstr "Email opdracht %s uitvoeren"
 
-#: classes/Gems/Default/CommJobAction.php:278
+#: classes/Gems/Default/CommJobAction.php:286
 msgid "Execute all mail jobs"
 msgstr "Alle email opdrachten uitvoeren"
 
-#: classes/Gems/Default/CommJobAction.php:291
+#: classes/Gems/Default/CommJobAction.php:299
 msgid "First mail"
 msgstr "Eerste email"
 
-#: classes/Gems/Default/CommJobAction.php:292
+#: classes/Gems/Default/CommJobAction.php:300
 msgid "Reminder after first email"
 msgstr "Herinnering na eerste email"
 
-#: classes/Gems/Default/CommJobAction.php:293
+#: classes/Gems/Default/CommJobAction.php:301
 msgid "Reminder before expiration"
 msgstr "Herinnering voor vervaldatum"
 
-#: classes/Gems/Default/CommJobAction.php:304
+#: classes/Gems/Default/CommJobAction.php:312
 msgid "Use organizational from address"
 msgstr "Gebruik vanaf adres van organisatie"
 
-#: classes/Gems/Default/CommJobAction.php:307
+#: classes/Gems/Default/CommJobAction.php:315
 #, php-format
 msgid "Use site %s address"
 msgstr "Gebruik %s adres van de site"
 
-#: classes/Gems/Default/CommJobAction.php:310
+#: classes/Gems/Default/CommJobAction.php:318
 msgid "Use the 'By staff member' address"
 msgstr "Gebruik 'Door medewerker' adres"
 
-#: classes/Gems/Default/CommJobAction.php:311
+#: classes/Gems/Default/CommJobAction.php:319
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:181
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:289
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:351
 msgid "Other"
 msgstr "Overige"
 
-#: classes/Gems/Default/CommJobAction.php:323
+#: classes/Gems/Default/CommJobAction.php:331
 msgid "Automatic mail jobs"
 msgstr "Automatische email opdrachten"
 
-#: classes/Gems/Default/CommJobAction.php:339
+#: classes/Gems/Default/CommJobAction.php:347
 msgid "(all execution methods)"
 msgstr "(alle uitvoerwijzen)"
 
-#: classes/Gems/Default/CommJobAction.php:351
+#: classes/Gems/Default/CommJobAction.php:359
 msgid "automatic mail job"
 msgid_plural "automatic mail jobs"
 msgstr[0] "automatische email opdracht"
 msgstr[1] "automatische email opdrachten"
 
-#: classes/Gems/Default/CommJobAction.php:361
+#: classes/Gems/Default/CommJobAction.php:369
 #, php-format
 msgid "Automatic mails have been turned off since %s."
 msgstr "Automatische email opdrachten staan sinds %s uit."
 
-#: classes/Gems/Default/CommJobAction.php:365
+#: classes/Gems/Default/CommJobAction.php:373
 msgid "Turn Automatic Mail Jobs ON"
 msgstr "Automatische email opdrachten AANzetten"
 
-#: classes/Gems/Default/CommJobAction.php:371
+#: classes/Gems/Default/CommJobAction.php:379
 msgid ""
 "With automatic mail jobs and a cron job on the server, mails can be sent "
 "without manual user action."
@@ -1495,15 +1494,15 @@ msgstr ""
 "Met automatische email opdrachten en een cron opdracht op de server, kunnen "
 "emails verstuurd worden zonder dat een gebruiker actie hoeft te ondernemen."
 
-#: classes/Gems/Default/CommJobAction.php:413
+#: classes/Gems/Default/CommJobAction.php:421
 msgid "Mailjob inactive, can not be sent"
 msgstr "Mailopdracht inactief, kan niet verstuurd worden"
 
-#: classes/Gems/Default/CommJobAction.php:418
+#: classes/Gems/Default/CommJobAction.php:426
 msgid "Mailjob manual, can only be sent using run"
 msgstr "Mailopdracht handmatig, verstuur met `uitvoeren`"
 
-#: classes/Gems/Default/CommJobAction.php:424
+#: classes/Gems/Default/CommJobAction.php:432
 msgid "Mailjob automatic, can be sent using run or run all"
 msgstr ""
 "Mailopdracht automatisch, verstuur met `uitvoeren` of `alles uitvoeren`"
@@ -1756,6 +1755,10 @@ msgstr "Documentatie"
 #, php-format
 msgid "All available documentation is gathered at: %s"
 msgstr "Alle beschikbare documentatie staat op: %s"
+
+#: classes/Gems/Default/ContactAction.php:180
+msgid "Manual"
+msgstr "Handleiding"
 
 #: classes/Gems/Default/ContactAction.php:182
 #, php-format
