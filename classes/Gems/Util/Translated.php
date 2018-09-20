@@ -264,6 +264,20 @@ class Gems_Util_Translated extends \MUtil_Translate_TranslateableAbstract
             'A' => $this->_('Send one mail per respondent, mark only mailed tokens as sent.'),
             );
     }
+    
+    /**
+     * The options for bulk mail token processing.
+     *
+     * @return array
+     */
+    public function getBulkMailProcessOptionsShort()
+    {
+        return array(
+            'M' => $this->_('Multiple emails'),
+            'O' => $this->_('One mail, mark all'),
+            'A' => $this->_('One mail'),
+            );
+    }
 
     /**
      * The options for bulk mail token processing.
