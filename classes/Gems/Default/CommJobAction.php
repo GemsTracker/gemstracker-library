@@ -116,9 +116,14 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
         $model->set('gcj_id_user_as',          'label', $this->_('By staff member'),
                 'multiOptions', $unselected + $dbLookup->getActiveStaff(), 'default', $this->currentUser->getUserId(),
                 'description', $this->_('Used for logging and possibly from address.'));
-        $model->set('gcj_active',              'label', $this->_('Active'),
-                'multiOptions', $translated->getYesNo(), 'elementClass', 'Checkbox', 'required', true,
-                'description', $this->_('Job is only run when active.'));
+        $activeOptions = [
+            0 => $this->_('Disabled'),
+            1 => $this->_('Automatic'),
+            2 => $this->_('Manual')
+        ];
+        $model->set('gcj_active',              'label', $this->_('Execution'),
+                'multiOptions', $activeOptions, 'elementClass', 'Checkbox', 'required', true,
+                'description', $this->_('Job is only run when not disabled.'));
 
         $fromMethods = $unselected + $this->getBulkMailFromOptions();
         $model->set('gcj_from_method',         'label', $this->_('From address used'), 'multiOptions', $fromMethods);
@@ -132,7 +137,12 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
             $model->set('gcj_from_fixed',      'label', '',
                     'elementClass', 'Hidden');
         }
-        $model->set('gcj_process_method',      'label', $this->_('Processing Method'), 'default', 'O', 'multiOptions', $translated->getBulkMailProcessOptions());
+        if ($detailed) {
+            $bulkProcessOptions = $translated->getBulkMailProcessOptionsShort();
+        } else {
+            $bulkProcessOptions = $translated->getBulkMailProcessOptions();
+        }
+        $model->set('gcj_process_method',      'label', $this->_('Processing Method'), 'default', 'O', 'multiOptions', $bulkProcessOptions);
         $model->set('gcj_filter_mode',         'label', $this->_('Filter for'), 'multiOptions', $unselected + $this->getBulkMailFilterOptions());
 
         if ($detailed) {
@@ -187,12 +197,15 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
                 'multiOptions', $anySurvey + $dbTracks->getAllSurveys(true)
                 );
 
-        if ($detailed) {
-            $anyOrganization[''] = $this->_('(all organizations)');
-            $model->set('gcj_id_organization', 'label', $this->_('Organization'),
-                    'multiOptions', $anyOrganization + $dbLookup->getOrganizations());
+        $organizations = $dbLookup->getOrganizations();
+        $anyOrganization[''] = $this->_('(all organizations)');
+        $model->set('gcj_id_organization', 
+                'multiOptions', $anyOrganization + $organizations);
+        
+        if ($detailed || count($organizations) > 1) {
+            $model->set('gcj_id_organization', 'label', $this->_('Organization'));
         }
-
+        
         return $model;
     }
 
@@ -220,13 +233,15 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
 
             // We could skip this, but a check before starting the batch is better
             $sql = $this->db->select()->from('gems__comm_jobs', array('gcj_id_job'))
-                    ->where('gcj_active = 1')
+                    ->where('gcj_active > 0')
                     ->where('gcj_id_job = ?', $jobId);
 
             $job = $this->db->fetchOne($sql);
 
             if (!empty($job)) {
                 $batch->addTask('Mail\\ExecuteMailJobTask', $job, null, null, $preview);
+            } else {
+                $this->addMessage($this->_("Mailjob is inactive and won't be executed"), 'danger');
             }
             
             if ($preview === true) {
@@ -312,6 +327,18 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
     {
         return $this->loader->getUtil()->getMonitor()->getCronMailMonitor();
     }
+    
+    /**
+     * Returns the fields for autosearch with 
+     * 
+     * @return array
+     */
+    public function getSearchFields()
+    {
+        return [
+            'gcj_active' => $this->_('(all execution methods)')
+        ];
+    }
 
     /**
      * Helper function to allow generalized statements about the items in the model.
@@ -377,8 +404,27 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
         $id = $this->getRequest()->getParam('id');
         if (!is_null($id)) {
             $id = (int) $id;
-            $job = $this->db->fetchRow("SELECT * FROM gems__comm_jobs WHERE gcj_active = 1 and gcj_id_job = ?", $id);
+            $job = $this->db->fetchRow("SELECT * FROM gems__comm_jobs WHERE gcj_id_job = ?", $id);
             if ($job) {
+                // Show a different color when not active @@TODO: Extend with only manual option                
+                switch ($job['gcj_active']) {
+                    case 0:
+                        $class   = ' disabled';
+                        $caption = $this->_('Mailjob inactive, can not be sent');
+                        break;
+                    
+                    case 2:
+                        $class = ' manual';
+                        $caption = $this->_('Mailjob manual, can only be sent using run');
+                        break;
+
+                    // gcj_active = 1
+                    default:
+                        $class = '';
+                        $caption = $this->_('Mailjob automatic, can be sent using run or run all');
+                        break;
+                }
+                $params['class'] = 'browser table mailjob'. $class;
                 $model  = $this->loader->getTracker()->getTokenModel();
                 $filter = $this->loader->getUtil()->getDbLookup()->getFilterForMailJob($job);
                 $params['model']           = $model;
