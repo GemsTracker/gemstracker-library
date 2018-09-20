@@ -77,6 +77,7 @@ class Gems_Default_ExportMultiSurveysAction extends \Gems_Default_ExportSurveyAc
                 $batch->addTask('addTask', 'Export_ExportCommand', $data['type'], 'finalizeFiles');
 
                 $batch->autoStart = true;
+                $this->accesslog->logChange($this->getRequest(), null, $data + $filter);
             }
 
 

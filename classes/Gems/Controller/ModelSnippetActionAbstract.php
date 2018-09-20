@@ -108,6 +108,12 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         'formTitle'       => 'getReactivateTitle',
         'topicCallable'   => 'getTopicCallable',
         );
+    
+    /**
+     *
+     * @var \Gems_AccessLog
+     */
+    public $accesslog;
 
     /**
      * The snippets used for the autofilter action.
@@ -319,7 +325,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
     {
         $step = $this->request->getParam('step');
         $post = $this->request->getPost();
-
+        
         $this->autofilterParameters = $this->autofilterParameters + $this->_autofilterExtraParameters;
 
         $model = $this->getExportModel();
@@ -332,6 +338,10 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         }
 
         $model->applyParameters($this->getSearchFilter(false), true);
+        
+        if (!empty($post)) {
+            $this->accesslog->logChange($this->request, null, $post + $model->getFilter());
+        }
 
         // Add any defaults.
         if (isset($this->autofilterParameters['extraFilter'])) {
