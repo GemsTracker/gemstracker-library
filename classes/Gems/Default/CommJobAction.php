@@ -67,7 +67,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
      * Query to get the round descriptions for options
      * @var string
      */
-    protected $roundDescriptionQuery = "SELECT gro_round_description, gro_round_description FROM gems__rounds WHERE gro_id_track = ? GROUP BY gro_round_description";
+    protected $roundDescQuery = "SELECT gro_round_description, gro_round_description FROM gems__rounds WHERE gro_id_track = ? GROUP BY gro_round_description";
 
     /**
      * The automatically filtered result
@@ -194,7 +194,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
                 'multiOptions', $defaultRounds,
                 'variableSelect', array(
                     'source' => 'gcj_id_track',
-                    'baseQuery' => $this->roundDescriptionQuery,
+                    'baseQuery' => $this->roundDescQuery,
                     'ajax' => array('controller' => 'comm-job', 'action' => 'roundselect'),
                     'firstValue' => $anyRound,
                     'defaultValues' => $defaultRounds,
@@ -368,7 +368,6 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
         if ($lock->isLocked()) {
             $this->addMessage(sprintf($this->_('Automatic mails have been turned off since %s.'), $lock->getLockTime()));
 
-            $request = $this->getRequest();
             if ($menuItem = $this->menu->findController('cron', 'cron-lock')) {
                 $menuItem->set('label', $this->_('Turn Automatic Mail Jobs ON'));
             }
@@ -401,7 +400,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
     {
         \Zend_Layout::resetMvcInstance();
         $trackId = $this->getRequest()->getParam('sourceValue');
-        $rounds = $this->db->fetchPairs($this->roundDescriptionQuery, $trackId);
+        $rounds = $this->db->fetchPairs($this->roundDescQuery, $trackId);
         echo json_encode($rounds);
     }
 
@@ -409,39 +408,41 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
     {
         parent::showAction();
 
-        $id = $this->getRequest()->getParam('id');
-        if (!is_null($id)) {
-            $id = (int) $id;
-            $job = $this->db->fetchRow("SELECT * FROM gems__comm_jobs WHERE gcj_id_job = ?", $id);
-            if ($job) {
-                // Show a different color when not active @@TODO: Extend with only manual option                
-                switch ($job['gcj_active']) {
-                    case 0:
-                        $class   = ' disabled';
-                        $caption = $this->_('Mailjob inactive, can not be sent');
-                        break;
-                    
-                    case 2:
-                        $class = ' manual';
-                        $caption = $this->_('Mailjob manual, can only be sent using run');
-                        break;
+        $jobId = $this->getRequest()->getParam('id');
+        if (!is_null($jobId)) {
+            $jobId = (int) $jobId;
+            $job   = $this->db->fetchRow("SELECT * FROM gems__comm_jobs WHERE gcj_id_job = ?", $jobId);
+            
+            // Show a different color when not active,                 
+            switch ($job['gcj_active']) {
+                case 0:
+                    $class   = ' disabled';
+                    $caption = $this->_('Mailjob inactive, can not be sent');
+                    break;
 
-                    // gcj_active = 1
-                    default:
-                        $class = '';
-                        $caption = $this->_('Mailjob automatic, can be sent using run or run all');
-                        break;
-                }
-                $params['class'] = 'browser table mailjob'. $class;
-                $params['caption'] = 'caption';
-                $model  = $this->loader->getTracker()->getTokenModel();
-                $filter = $this->loader->getUtil()->getDbLookup()->getFilterForMailJob($job);
-                $params['model']           = $model;
-                $params['filter']          = $filter;
-                $params['showActionLinks'] = false;
-                $model->setSort(array('gto_valid_from' => SORT_ASC, 'gto_round_order' => SORT_ASC));
-                $this->addSnippet('TokenPlanTableSnippet', $params);
-             }
+                case 2:
+                    $class = ' manual';
+                    $caption = $this->_('Mailjob manual, can only be sent using run');
+                    break;
+
+                // gcj_active = 1
+                default:
+                    $class = '';
+                    $caption = $this->_('Mailjob automatic, can be sent using run or run all');
+                    break;
+            }            
+            $model  = $this->loader->getTracker()->getTokenModel();
+            $filter = $this->loader->getUtil()->getDbLookup()->getFilterForMailJob($job);
+            $params = [
+                'model'           => $model,
+                'filter'          => $filter,
+                'showActionLinks' => false,
+                'class'           => 'browser table mailjob' . $class,
+                'caption'         => $caption,
+                'onEmpty'         => $this->_('No tokens found to email')
+            ];
+            $model->setSort(array('gto_valid_from' => SORT_ASC, 'gto_round_order' => SORT_ASC));
+            $this->addSnippet('TokenPlanTableSnippet', $params);
         }
     }
 

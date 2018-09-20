@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-20 16:00+0200\n"
+"POT-Creation-Date: 2018-09-20 16:12+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -1464,11 +1464,11 @@ msgstr[1] "automatic mail jobs"
 msgid "Automatic mails have been turned off since %s."
 msgstr "Automatic mails have been turned off since %s."
 
-#: classes/Gems/Default/CommJobAction.php:373
+#: classes/Gems/Default/CommJobAction.php:372
 msgid "Turn Automatic Mail Jobs ON"
 msgstr "Turn Automatic Mail Jobs ON"
 
-#: classes/Gems/Default/CommJobAction.php:379
+#: classes/Gems/Default/CommJobAction.php:378
 msgid ""
 "With automatic mail jobs and a cron job on the server, mails can be sent "
 "without manual user action."
@@ -1476,17 +1476,21 @@ msgstr ""
 "With automatic mail jobs and a cron job on the server, mails can be sent "
 "without manual user action."
 
-#: classes/Gems/Default/CommJobAction.php:421
+#: classes/Gems/Default/CommJobAction.php:420
 msgid "Mailjob inactive, can not be sent"
 msgstr "Mailjob inactive, can not be sent"
 
-#: classes/Gems/Default/CommJobAction.php:426
+#: classes/Gems/Default/CommJobAction.php:425
 msgid "Mailjob manual, can only be sent using run"
 msgstr "Mailjob manual, can only be sent using run"
 
-#: classes/Gems/Default/CommJobAction.php:432
+#: classes/Gems/Default/CommJobAction.php:431
 msgid "Mailjob automatic, can be sent using run or run all"
 msgstr "Mailjob automatic, can be sent using run or run all"
+
+#: classes/Gems/Default/CommJobAction.php:442
+msgid "No tokens found to email"
+msgstr "Geen toegangscodes gevonden om te mailen"
 
 #: classes/Gems/Default/CommTemplateAction.php:60
 #: classes/Gems/Util/Translated.php:402
