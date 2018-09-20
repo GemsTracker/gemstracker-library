@@ -249,6 +249,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
             if (!empty($job)) {
                 $batch->addTask('Mail\\ExecuteMailJobTask', $job, null, null, $preview);
             } else {
+                $batch->reset();
                 $this->addMessage($this->_("Mailjob is inactive and won't be executed"), 'danger');
             }
             

@@ -51,7 +51,7 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
 
         $sql = $this->db->select()->from('gems__comm_jobs')
                     ->join('gems__comm_templates', 'gcj_id_message = gct_id_template')
-                    ->where('gcj_active = 1')
+                    ->where('gcj_active > 0')
                     ->where('gcj_id_job = ?', $jobId);
 
         $job = $this->db->fetchRow($sql);
