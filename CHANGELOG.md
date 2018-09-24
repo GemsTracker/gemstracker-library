@@ -8,12 +8,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 ### Changed
 - The getRespondent() method in a controller was changed to public to allow better logging (#360)
 - The meta.Content-Security-Policy was moved to the headers section (#352)
+- Changelog now allows .md extension for markdown formatting, including github issue links (#351)
+- Mailjobs can now be executed manually. This allows a combination of automatic and semi automatic as well as deactived jobs (#361)
+- Agenda setup now allows to select on the filter attribute (#353)
+- SPSS export no longer cuts of text answers at 64 chars and will default to numeric more often for list type answers (#335)
 
 ### Removed
 - The old ExcelHtml and Stata exports were removed, the new Excel and Stata exports remain (#342)
+- getFullQuestionList was removed from LimeSurvey source, as it was not in the interface and unused (#186)
 
 ### Fixed
 - Logging the organization is improved, and logging survey export is now on by default (#360 #242)
+- While browsing database tables the pagination now works when the number of items is changed (#346)
+- Answer import of csv files now autosenses for colon or semicolon separator (#358)
+- Bigger files can be handled during import without running out of memory (#354)
+- LimeSurvey source now supports the ranking question (#341)
 
 ## [1.8.4] - 2018-08-20
 [1.8.4]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.3...1.8.4
