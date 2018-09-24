@@ -9,6 +9,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - The getRespondent() method in a controller was changed to public to allow better logging (#360)
 - The meta.Content-Security-Policy was moved to the headers section (#352)
 
+### Removed
+- The old ExcelHtml and Stata exports were removed, the new Excel and Stata exports remain (#342)
+
+### Fixed
+- Logging the organization is improved, and logging survey export is now on by default (#360 #242)
+
 ## [1.8.4] - 2018-08-20
 [1.8.4]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.3...1.8.4
 ### Added
