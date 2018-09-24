@@ -18,11 +18,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - getFullQuestionList was removed from LimeSurvey source, as it was not in the interface and unused (#186)
 
 ### Fixed
-- Logging the organization is improved, and logging survey export is now on by default (#360 #242)
+- Logging the organization for is improved, and logging survey export is now on by default (#360 #242)
 - While browsing database tables the pagination now works when the number of items is changed (#346)
 - Answer import of csv files now autosenses for colon or semicolon separator (#358)
 - Bigger files can be handled during import without running out of memory (#354)
 - LimeSurvey source now supports the ranking question (#341)
+- Deleted tokens can be found again in overviews (#356)
+- LDAP user domain is no longer hardcoded (#350)
+- Respondent email can be set to empty when importing (#349)
+- Tokens dates are updated when condition changes (#349)
+- Fixes for login sequence (#363 #347)
+- Appointments can create a new track when there is no pre-existing track (#355)
 
 ## [1.8.4] - 2018-08-20
 [1.8.4]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.3...1.8.4
