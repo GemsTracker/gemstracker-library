@@ -700,7 +700,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                 }
             }
 
-            if ($tmpres['type'] === \MUtil_Model::TYPE_NUMERIC) {
+            if ($tmpres['type'] === \MUtil_Model::TYPE_NUMERIC && !isset($tmpres['multiOptions'])) {
                 $tmpres['formatFunction'] = array($this, 'handleFloat');
             }
             
@@ -713,7 +713,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
 
             $oldQid = isset($oldfld['qid']) ? $oldfld['qid'] : 0;
             // Juggle the labels for sub-questions etc..
-            if (isset($field['sq_question'])) {                
+            if (isset($field['sq_question'])) {
                 if ($oldQid !== $field['qid']) {
                     // Add non answered question for grouping and make it the current parent
                     //$parent = '_' . $name . '_';

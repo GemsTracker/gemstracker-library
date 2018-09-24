@@ -108,6 +108,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMapTest extends \Gems_Test_DbTestAbs
         
         $this->assertEquals(\MUtil_Model::TYPE_NUMERIC, $model->get('list', 'type'));
         $this->assertEquals(\MUtil_Model::TYPE_STRING, $model->get('list2', 'type'));
+        $this->assertEquals($model->get('list2', 'formatFunction'), $model->get('list', 'formatFunction'), 'List question should not have a formatfunction');
     }
     
     /**
