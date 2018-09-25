@@ -27,7 +27,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - LDAP user domain is no longer hardcoded (#350)
 - Respondent email can be set to empty when importing (#349)
 - Tokens dates are updated when condition changes (#349)
-- Fixes for login sequence (#363 #347)
+- Fixes for login sequence (#363 #347 #365)
 - Appointments can create a new track when there is no pre-existing track (#355)
 
 ## [1.8.4] - 2018-08-20
