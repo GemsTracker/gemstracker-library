@@ -164,6 +164,7 @@ class CheckPasswordChangeRequiredSnippet extends PasswordResetSnippet
         if ($this->loginStatusTracker->isPasswordResetActive()) {
             // Skip parent::hasHtmlOutput()
             // will trigger an error loop because you can only your password if set as current user
+            $this->user->setPasswordResetRequired(true);
             $this->processForm();
         }
 
