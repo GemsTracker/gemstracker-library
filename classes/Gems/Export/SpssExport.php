@@ -93,7 +93,8 @@ class SpssExport extends ExportAbstract
         $changed = false;
         foreach ($exportRow as $name => $value) {
             $type = $this->model->get($name, 'type');
-            if ($type == \MUtil_Model::TYPE_NUMERIC && !is_numeric($value)) {
+            // When numeric, there could be a non numeric answer, just ignore empty values
+            if ($type == \MUtil_Model::TYPE_NUMERIC && !empty($value) && !is_numeric($value)) {
                 $this->model->set($name, 'type', \MUtil_Model::TYPE_STRING);
                 $changed = true;
             }
