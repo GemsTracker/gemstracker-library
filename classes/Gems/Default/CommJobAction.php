@@ -434,15 +434,19 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
             }            
             $model  = $this->loader->getTracker()->getTokenModel();
             $filter = $this->loader->getUtil()->getDbLookup()->getFilterForMailJob($job);
+            // Clone request and unset the id parameter to prevent filtering
+            $cleanReq = clone $this->getRequest();
+            $cleanReq->setParam(\MUtil_Model::REQUEST_ID, null);
             $params = [
+                'request'         => $cleanReq,
                 'model'           => $model,
                 'filter'          => $filter,
                 'showActionLinks' => false,
                 'class'           => 'browser table mailjob' . $class,
                 'caption'         => $caption,
-                'onEmpty'         => $this->_('No tokens found to email')
+                'onEmpty'         => $this->_('No tokens found to email'),
+                'extraSort'       => ['gto_valid_from' => SORT_ASC, 'gto_round_order' => SORT_ASC]
             ];
-            $model->setSort(array('gto_valid_from' => SORT_ASC, 'gto_round_order' => SORT_ASC));
             $this->addSnippet('TokenPlanTableSnippet', $params);
         }
     }

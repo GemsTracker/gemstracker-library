@@ -29,6 +29,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Tokens dates are updated when condition changes (#349)
 - Fixes for login sequence (#363 #347 #365)
 - Appointments can create a new track when there is no pre-existing track (#355)
+- When viewing a mailjob selected token overview can be sorted by clicking on headers (#366)
 
 ## [1.8.4] - 2018-08-20
 [1.8.4]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.3...1.8.4
