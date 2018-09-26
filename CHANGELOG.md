@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 [Unreleased]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.4...HEAD
+### Added
+- Survey answers can now be exported to R format (#213)
 ### Changed
 - The getRespondent() method in a controller was changed to public to allow better logging (#360)
 - The meta.Content-Security-Policy was moved to the headers section (#352)

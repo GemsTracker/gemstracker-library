@@ -41,6 +41,7 @@ class Gems_Export extends \Gems_Loader_TargetLoaderAbstract
      */
     protected $_exportClasses = array(
         'StreamingExcelExport' => 'Excel (xlsx)',
+        'RExport' => 'R',
         'SpssExport' => 'SPSS',
         'CsvExport' => 'CSV',
         'StreamingStataExport' => 'Stata (xml)',
