@@ -499,7 +499,8 @@ class Gems_AccessLog
         }
 
         $orgId = $currentUser->getCurrentOrganizationId() ? $currentUser->getCurrentOrganizationId() : 0;
-        if (is_array($data)) {
+        // When not respondentId, we don't need to look for the orgid in the data as it can be an array
+        if (is_array($data) && $respondentId) {
             foreach ($this->_organizationIdFields as $field) {
                 if (isset($data[$field]) && $data[$field]) {
                     $orgId = $data[$field];
