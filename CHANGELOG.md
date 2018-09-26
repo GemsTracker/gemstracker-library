@@ -75,11 +75,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - When redoing a survey, the answers are injected before answering instead of during replacement (#301)
 
 ## [1.8.3]
+[1.8.3]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.2...1.8.3
 ### Added 
 - Automatic mail
   - Email can now also be sent x days before survey expiry
 
 ## [1.8.2]
+[1.8.2]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.1...1.8.2
 ### Added
 - You can change the organization(s) a patient belongs to (and move his/her tracks)
 - Correct token button added to menu
@@ -131,335 +133,41 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
   - On acceptance and demonstration mail only respondent mails are bounce, staff mails are sent to receiver
   - Administrators may now have the right to switch the used group to any they may set
 
-Important changes from 1.8.0 => 1.8.1
-============================================================
-Round icons are now in the token table just like the round descriptions
-Rounds can be sorted using drag and drop
-Automatic email:
-    Mail jobs are now executed in batch, one job at a time
-    Individual jobs can be executed from the interface
-    Jobs can be sorted manually using the sort button, check the sort order after upgrade!
-Export:
-    For survey responses, when available the respondent relation is exported (field name and relation id)
-    Various bugfixes, check output carefully
+## [1.8.1]
+[1.8.1]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.0...1.8.1
+### Added
+- Rounds can be sorted using drag and drop
 
-Important changes from 1.7.1 => 1.8.0
-============================================================
-Searching for respondents by track or lack of track
-Customize respondents screen using Snippets\Respondent\RespondentTableSnippet
-Track structure can be exported, imported and merged with an existing track
-Tracks answers, fields and rounds can be checked at the respondent and respondent track level
-(Re)checking for answers now possible at the single token level
-When using the gemsdata__responses table, views will be created for each survey
-A new after completion event allows the setting of the informed consent through a survey
-Fixed survey activation when survey not active in source
-LimeSurvey equation questions now use help text for question or question code when empty
-A new cron job checks whether the mail cron job has finished correctly
-The check cron job is also checked before each login
-Imports through the interface are logged in the activity log
-The menu remains fully visible when an error occurs
-Staff import now respects organization default user class
-Inserted surveys now have class 'inserted' added to the row in track overview
-Most search screens have been updated and all work the same
+### Changed
+- Round icons are now in the token table just like the round descriptions
 
-Important changes from 1.7.0 => 1.7.1
-============================================================
-ABOUT THE UPGRADE
-    Check the upgrade compatibility report for any possible code issues!!
-    Ignore any messages that a "Column does not exist in table" during the upgrade
-INTERFACE EXTENSIONS
-    User with the right privileges can select those respondents either with or without a track in the respondent screen
-    Respondents, tracks and tokens can now be undeleted - with the admin level user right
-    Manual or automatic token recalculation is now determined through an input element instead of through 'magic'
-    Manual or automatic track end date recalculation is now determined through an input element instead of through 'magic'
-    Support of the use of respondent relations is now included but not yet part of the default interface
-SECURITY
-    GemsTracker is now auditable, manageable through Setup => Log Setup
-    Activity reports are at several locations:
-        Respondent => Show => Other Activity Log
-        Setup => Access => Staff => Show => Activity overview
-        Setup => Log
-        Your account => Activity overview
-    Csrf protection can now be disabled at the project level (not recommended)
-EXPORT
-    CSV format export supported
-    Trackinformation can be added to the export
-    Multiple surveys can be selected for a single export
-IMPORT
-    Improved error reporting during answer import
-TRACK BUILDER
-    "Single Survey" tracks are replaced by survey level "insert into track" settings
-    Stand alone Single survey tracks are converted to AnyStepEngine tracks, any other Single Survey tracks are deleted
-TRACK FIELDS
-    Appointment track fields can now get an additional timespan within which they must occur
-    Consent track fields added
-    Datetime track fields can be added to tracks, both date and datetime field can be filled using an appointment
-    Relation fields added
-    All track fields can add their label as well as their contents to the track info field
+### Automatic email
+- Mail jobs are now executed in batch, one job at a time
+- Individual jobs can be executed from the interface
+- Jobs can be sorted manually using the sort button, check the sort order after upgrade!
 
-Important changes from 1.6.4 => 1.7.0
-============================================================
-Appointments can be used to create tracks
-Appointments can be linked automatically to track fields
-New track field overview
-New track fields changed events
-Layouts can use bootstrap for styling
-Page loading speed increased by moving javascript loading
-Improved security means users may get error warnings when opening the same form in two windows.
-Password fields for login to sources, mail servers and security devices are now encrypted reversible instead of as plain text
-X-frame setting in project.ini allows defense against clickjacking
-Works with Zend Framework 1.12.8 and higher
-Project and application programmers can use PHP namespaces instead of Zend FW 1 class names
-Fixed many minor bugs
+### Export
+- For survey responses, when available the respondent relation is exported (field name and relation id)
+- Various bugfixes, check output carefully
 
-Important changes from 1.6.3 => 1.6.4
-============================================================
-Errors in token events are less likely to cause the application to halt
-OpenRosa forms can now handle geopoint (location) fields, has support for displaying uploaded images and provides a datelist to use in tracks
-Default track fields can be added to a new track by adapting the TrackModel in your own project and changing the getDefaultFields() method
-Projects can define project specific track field types
-Added the new track field types: location and caretaker. These fields can be filled automatically using one or more appointments
-Export results can now be filtered by round description too
-Form and table bridges have changed. Perform the following search & replaces on your code:
-    MUtil_Model_FormBridge::          => MUtil_Model_Bridge_FormBridge::
-    MUtil_Model_FormBridge            => MUtil_Model_Bridge_FormBridgeInterface
-    MUtil_Model_VerticalTableBridge   => MUtil_Model_Bridge_VerticalTableBridge
-    MUtil_Model_TableBridge           => MUtil_Model_Bridge_TableBridge
-    Gems_Model_ThreeColumnTableBridge => Gems_Model_Bridge_ThreeColumnTableBridge
-The number of reminders no longer includes the first non-reminder mail
+## [1.8.0]
+[1.8.0]: https://github.com/GemsTracker/gemstracker-library/compare/1.7.1...1.8.0
+- Searching for respondents by track or lack of track
+- Customize respondents screen using Snippets\Respondent\RespondentTableSnippet
+- Track structure can be exported, imported and merged with an existing track
+- Tracks answers, fields and rounds can be checked at the respondent and respondent track level
+- (Re)checking for answers now possible at the single token level
+- When using the gemsdata__responses table, views will be created for each survey
+- A new after completion event allows the setting of the informed consent through a survey
+- Fixed survey activation when survey not active in source
+- LimeSurvey equation questions now use help text for question or question code when empty
+- A new cron job checks whether the mail cron job has finished correctly
+- The check cron job is also checked before each login
+- Imports through the interface are logged in the activity log
+- The menu remains fully visible when an error occurs
+- Staff import now respects organization default user class
+- Inserted surveys now have class 'inserted' added to the row in track overview
+- Most search screens have been updated and all work the same
 
-Important changes from 1.6.2 => 1.6.3
-============================================================
-Menu structure has changed: to avoid nesting problems and issues with bread-crumb navigation edit and delete actions are now children of the show action
-Track fields split in fields and appointments: check any code using any track field tables directly, track field id's are no longer integers and getFieldsElements() is no longer in use
-GemsEscort->tokenMailFields() no longer exists
-Tracks can use appointments instead of date fields: when an appointment is changed then the linked track is changed as well
-The token overview can also be filtered on missing or incorrect email addresses and on hover each token shows it's comment
-The token mail communication is reset if a new valid until date is later than the last sent email date
-Sending emails can be blocked on per respondent or per track
-Added a send mails overview for each respondent
-Manual token and track date changes are no longer overruled by recalculations
-The end date of the track is filled as soon as all tokens in a track are completed or have a valid until date
-Logging the respondent in respondent controller restored. Action respondent.show logs without, but respondentShow will log respondent id
-A new respondent status overview tracks the intake of new respondents
-A required valid until definition for each track round can be set at the project level - for new projects this defaults to ON
-Support for LimeSurvey 2.05
-Limesurvey fieldtype list with comment no longer appends underscore to the fieldname, this might break existing calculation scripts
-The track editor shows more information on the rounds per track
-Fixed several bugs, including one that added an extra day to some valid until dates.
-
-Important changes from 1.6.1 => 1.6.2
-============================================================
-Agenda and calendar screens added to version
-Mail templates for staff members, respondents, users, etc... possible
-Multi language mail templates with wysiwyg editing
-Barcharts functionality added
-Improved import scalability
-Role management has a better display interface
-Batch commands now also run from the command line
-Core gems css settings moved to shared gems-core.css
-
-Important changes from 1.6 => 1.6.1
-============================================================
-Added support for ODK Collect by adding OpenRosa support
-Added support for data-mining by enabling the storage of all response data in a separate table with one answer per row
-Export data now operates in batch mode, allowing bigger exports and combining spss files in one download
-Import is possible for most data screens, though respondent import is the only one tested thoroughly.
-New snippet for continuous survey ask-ing with thank you message at the end.
-Stand alone surveys can now be appended to existing tracks
-Project can customize whether the tokens of shared patient are also shared among organizations (default is no)
-GemsTracker now runs from the command line as well
-
-Important changes from 1.5.7 => 1.6
-============================================================
-Patients can now be shared between organizations on the basis of their social security number
-No longer Dutch: the default new project is still Dutch, but the basic GemsTracker core is international
-New summary and compliance reports
-Mail log now shows more information and is better searchable
-Tracks can be cloned
-Better menu structure
-Defined constant GEMS_PROJECT_PATH removed from code (update at least your application.ini and use APPLICATION_PATH instead)
-Moved date_default_timezone_set to index.php (can generate warnings)
-longDescr in project.ini enables more project specific information on the about pages
-New "About GemsTracker" page, implemented as menu item
-Support can now be provided through support, manuals, documentation or forum url's.
-The global variable $GEMS_DIRS is deprecated, redefine it the application.ini using loaderDirs.Gems = .... (see NewProject)
-ZFDebug is now activated in the application.ini using: zfdebug.activate = 1
-
-New project.ini settings:
-longDescr   = ""
-longDescrNl = "" ; Append language for localised long decription
-
-contact.docsUrl    = "" ; The path to the documentation of the project
-contact.forumUrl   = "" ; The path to the forum if available
-contact.gemsUrl    = "http://gemstracker.org/"
-
-New application.ini settings:
-loaderDirs.GEMS_PROJECT_NAME_UC = APPLICATION_PATH "/classes/" GEMS_PROJECT_NAME_UC
-loaderDirs.Gems  = GEMS_LIBRARY_DIR "/classes/Gems"
-
-Numerous small bugs solved
-
-Important changes from 1.5.6 => 1.5.7
-============================================================
-In LimeSurvey tokenanswerpersistence must be set to true for all surveys
-Token/ask now always sets itself to the language of the token user
-Added Answer display events for selecting more or less tokens
-Increased some small buttons for mobile use
-Many small bugs fixed and display improvements made
-Implemented many speed optimizations in both database access and code speed
-New DEMO application environment
-Simplified writing project level unit test
-
-Important changes from 1.5.5 => 1.5.6
-============================================================
-Transparent lessCss compiling was added. When you add a .less file GemsTracker will take care of compiling it to css. If you need to force a recompile, add the ?compilecss parameter to your url.
-Events can be specified at the GemsTracker level as well as the project level
-Surveys can now have their own survey specific display, in a manner similar to event system
-Several interface bugs/improvements were solved/written
-
-Important changes from 1.5.4 => 1.5.5
-============================================================
-New default: user can only login to his own organization and needs to switch after login if desired, to enable old behaviour that could lead to problems with duplicate logins see $allowLoginOnOtherOrganization in Gems_User_UserLoader
-Role editing has become more interactive and safer to use
-Internally code no longer uses the 'Hidden Organization' but expects both an id1/patientNr plus an id2/organizationId to be specified
-Externally the organization id is still left out of the url when not needed
-UPGRADE WARNING: Check all your (snippet) extensions to RespondentAction, TrackAction, SurveyAction and project specific versions of ShowTrackTokenSnippet and ShowSingleSurveySnippet: you may need to specify extra parameters as the menu items need to know the organization id
-New projects start with a basic css template
-In project.ini, export.wkhtmltopdf has been renamed to export.pdfExportCommand, and which now stores the entire command line to the pdf export binary (wkhtmltopdf, Phantom.js or similar).
-The normal time it takes to answer a survey can be added and surveys have a code field
-Export of survey data can be selected by respondent id or by track
-Track and survey maintenance is extended with round and field deletion and more powerfull selection tools
-All maintenance tasks show some explanation on what they do
-New default: Forms are no longer lazy by default. Use $form->setLazy(true) if you need it
-New setting: in project.ini you can set cache to any of "none", "apc", "file" to influence what kind of cache to use
-
-Important changes from 1.5.3 => 1.5.4
-============================================================
-New logLevel project.ini setting
-Added export of all patient data on a single page or PDF (if binary specified in project.ini)
-Fixed a lot of issues with staff not being able to login or not being created
-Fixed handling of token return on multi-url sites
-Added maximum number of reminders sent to tokens
-Fixed several date display and editing issues
-
-Important changes from 1.5.2 => 1.5.3
-============================================================
-People can login using their e-mail address as user name. This can be activated by for respondents and staff seperately, by default this is off for both.
-Showing a list of organizations to choose during login happens always except when 1) there is only one organization or 2) a url is used that is assigned to a specific organization.
-Login & other password forms are now easy to customize on a per project basis.
-Login and authorization rules are easier to extend.
-All password rules are reported on change password forms.
-The password reset cycle send a link that can be used to change the password straight away. By default the systems also asks the user to enter his/her birthday if available and username otherwise, but this can be removed / changed at the project level.
-
-Important changes from 1.5.1 => 1.5.2
-============================================================
-Renamed project.ini setting concentRejected to consentRejected
-Default consent can be changed from 'Unknown' to something else in Project.ini setting consentDefault, please check local respondentController
-
-Important changes from 1.5.0 => 1.5.1
-============================================================
-New event introduced: TrackCompletedEvent
-
-Important changes from 1.4.3 => 1.5
-============================================================
-Passwords should be set with a project.ini->salt. Salt is now a required project setting!
-Setting rules for user passwords has changed and has become more powerfull, unless you do not set them.
-The table gems__staff is split into gems__staff, gems__user_logins with generic login data and gems__users_passwords containing db stored password information.
-GemsEscort->afterLogin(), ->afterLogout() and ->loadLoginInfo(0 are now all handled by Gems_User_UserDefinitionInterface objects.
-GemsEscort->session kept for compatibility reasons, but use should be stopped.
-The table gems__user_ids provides unique and non-sequential user ids accross gems__staff and gems__respondents.
-The gems__respondent.grs_bsn has been renamed to grs_ssn, to make the code more international.
-MailController is now called MailTemplateController.
-EmailController is now called CronController (with stub for compatibility).
-ModelAbstract now declares an protected _load instead of a public load abstract, for implementation of setOnLoad() functions, check your own Models for overloading load() or loadXX() functions.
-
-Important changes from 1.4.2 => 1.4.3
-============================================================
- * gtr_organisations renamed to gtr_organizations
- * table gems__countries is no longer in use
-
-Important changes from 1.4.1 => 1.4.2
-============================================================
- * To have an autosubmit form it is enough now to just use $form->setAutoSubmit($href, $targetId)
- * Introduced Gems_FormattedData, which takes a model and array of data and applies all formatting rules to the data
-   (see export for more info)
- * The menu is reorganised and some items no longers have privileges assigned to them. Be careful with project menus!
- * Tooltip decorator now uses jQuery icon instead of an image
- * Print view of tab-forms now output the tab-titles for better readability, this introduced the class print-only
-
-Important changes from 1.4 => 1.4.1
-============================================================
- * Menu containers no longer have a privilege, this could have impact on custom menu's searching for a container.
- * Default layouts have changed to make displaying the project name optional. To display the project name
-   add the following line to the project.ini:
-       layoutPrepare.projectName = header
-
-
-============================================================
-Library changes for 1.3 => 1.4
-
-- New track engine, all code from Gems_Source and Gems_Token to Gems_Tracker
-- Moved snippets from MUtil_Controller to their own top level package MUtil_Snippets, this allows snippets to load snippets
-- The backwards compatible Gems_Menu extensions Gems_Menu->getParameterSource() and Gems_Menu->getMenuList() are easier to use than their predecessors.
-
-Some examples:
-
-Checking for token completion:
-Old:
-    $tokenLibrary = Gems_Tokens::getLibrary($this->db);
-    $tokenLibrary->checkAnswers($data['grs_id_user'], $this->session->user_id);
-New:
-    $this->loader->getTracker()->processCompletedTokens($data['grs_id_user'], $this->session->user_id);
-
-Getting the survey questions:
-Old:
-    $source     = Gems_Sources::getBySurveyId($this->gsu_id);
-    $this->data = $source->getSurveyQuestions($this->gsu_id, $this->locale);
-New:
-    $survey = $this->loader->getTracker()->getSurvey($this->gsu_id);
-    $this->data = $survey->getQuestionInformation($this->locale->getLanguage());
-
-Getting answers:
-Old:
-    Gems_Tokens::getAnswers($currentToken['gto_id_token'], $first));
-New:
-    $token = $this->loader->getTracker()->getToken($currentToken['gto_id_token']);
-    $token->getRawAnswers();
-or formatted:
-    $model = $token->getSurveyAnswerModel($this->locale->getLanguage());
-    $model->applyRequest($this->request);
-    $model->loadFirst();
-    etc...
-
-getting a token model:
-Old:
-    $this->loader->getModels()->getTokenModel('T' == $this->trackType);
-New for generic token model:
-    $this->loader->getTracker()->getTokenModel();
-Or for token specific detail show & edit:
-    $this->loader->getToken('xxxx-xxxx')->getModel();
-
-Getting a respondent model:
-Old:
-    $model = GemsEscort::getInstance()->getLoader()->getModels()->getTrackModel('TrackModel');
-New:
-    $model = $model = $this->loader->getTracker()->getTrackModel();
-
-New changes directories:
-    application/controllers/snippets => application/snippets
-    library/Gems/controllers/snippets => library/Gems/snippets
-    library/Gems/classes/MUtil/Controller/snippets => library/Gems/classes/MUtil/Snippets/Standard
-
-Changes to snippet classes:
-    MUtil_Controller_SnippetAbstract => MUtil_Snippets_SnippetAbstract
-    MUtil_Controller_SnippetInterface => MUtil_Snippets_SnippetInterface
-    MUtil_Controller_TabSnippetAbstract => MUtil_Snippets_TabSnippetAbstract
-    etc...
-    MUtil_Controller_*Snippet* => MUtil_Snippets_*Snippet*
-But also:
-    Gems_Controller_Snippets_* => Gems_Snippets_*
-
-Replaced individual snippets
-    SingleAnswerTableSnippet => AnswerModelSnippet
-    AnswersTableSnippet => TrackAnswersModelSnippet
+Pre 1.8.0 changes were deleted from the changelog. Check the history in [GitHub] if you are really interested.
+[github]: https://github.com/GemsTracker/gemstracker-library
