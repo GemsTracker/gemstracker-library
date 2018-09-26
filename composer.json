@@ -1,6 +1,6 @@
 {
     "name": "gemstracker/gemstracker",
-    "description": "GemsTracker",
+    "description": "Generic Medical Survey Tracker - a flexible and extendable Electronic Data Capture system",
     "license": "BSD-3-Clause",
     "type": "library",
     "homepage": "https://gemtracker.org",
