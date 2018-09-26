@@ -169,5 +169,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Inserted surveys now have class 'inserted' added to the row in track overview
 - Most search screens have been updated and all work the same
 
-Pre 1.8.0 changes were deleted from the changelog. Check the history in [GitHub] if you are really interested.
-[github]: https://github.com/GemsTracker/gemstracker-library
+## Pre 1.8.0 
+Changes were deleted from the changelog. Check the history in [GitHub](https://github.com/GemsTracker/gemstracker-library) if you are really interested.
