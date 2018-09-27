@@ -1,4 +1,4 @@
-data <- read.csv("test.csv", quote="'\"", stringsAsFactors=FALSE)
+data <- read.csv("test.csv", quote="'\"", stringsAsFactors=FALSE, encoding="UTF-8")
 
 data[,1] <- as.character(data[,1])
 data[,2] <- as.numeric(data[,2])

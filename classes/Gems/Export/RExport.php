@@ -120,7 +120,7 @@ class RExport extends ExportAbstract
 
         //first output our script
         fwrite($file,
-            'data <- read.csv("' . $datFileName . '", quote="\'\\"", stringsAsFactors=FALSE)' . "\n\n");
+            'data <- read.csv("' . $datFileName . '", quote="\'\\"", stringsAsFactors=FALSE, encoding="UTF-8")' . "\n\n");
 
         $labeledCols = $this->getLabeledColumns();
         $labels      = array();

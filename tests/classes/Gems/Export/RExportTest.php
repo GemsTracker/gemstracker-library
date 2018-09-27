@@ -87,6 +87,14 @@ class RExportTest extends \Gems_Test_DbTestAbstract
                 'text' => 'some text',
                 'list' => 1,
                 'list2' => 'a'
+            ],
+            [
+                'startdate' => '2018-08-10',
+                'submitdate' => '2018-08-10',
+                'datestamp' => '2018-08-10',
+                'text' => 'some \'text about a patiënt',
+                'list' => 1,
+                'list2' => 'a'                
             ]
         ];
         $model = new \Gems_Model_PlaceholderModel('test', $array, $data); 
