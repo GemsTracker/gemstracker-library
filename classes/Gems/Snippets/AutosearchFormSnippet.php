@@ -264,7 +264,7 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
         if ($options || null !== $empty)
         {
             if (null !== $empty) {
-                $options = array('' => $empty) + $options;
+                $options = array('' => $empty) + (array) $options;
             }
             $element = $this->form->createElement($class, $name, array('multiOptions' => $options));
 
