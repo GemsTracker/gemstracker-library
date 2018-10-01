@@ -42,6 +42,8 @@ class Gems_Snippets_Tracker_Fields_FieldReportSearchSnippet extends \Gems_Snippe
 
         $this->addPeriodSelect($elements, $data);
         
+        $elements[] = null;
+        
         return $elements;
     }
 }

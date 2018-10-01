@@ -378,6 +378,7 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
                 $elements[] = $reset;
             }
 
+            $prev = null;
             foreach (\MUtil_Ra::flatten($elements) as $element) {
                 if ($element instanceof \Zend_Form_Element) {
                     $appendLabel = false;
@@ -398,11 +399,12 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
                     }
                     // TODO: Elementen automatisch toevoegen in \MUtil_Form
                     $form->addElement($element);
-                } elseif (null === $element) {
+                } elseif (null === $element && $prev !== null) {
                     $span = $div->div(array('class' => 'panel panel-default'))->div(array('class' => 'inputgroup panel-body'));
                 } else {
                     $span[] = $element;
                 }
+                $prev = $element;
             }
 
             // \MUtil_Echo::track($data);
