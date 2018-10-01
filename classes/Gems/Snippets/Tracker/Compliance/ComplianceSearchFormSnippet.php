@@ -42,8 +42,8 @@ class Gems_Snippets_Tracker_Compliance_ComplianceSearchFormSnippet extends Track
     protected function getAutoSearchElements(array $data)
     {
         $elements = [];
-        $this->addTrackSelect($elements, $data);
-        $this->addOrgSelect($elements, $data);
+        $this->addTrackSelect($elements, $data, 'gr2t_id_track');
+        $this->addOrgSelect($elements, $data, 'gr2t_id_organization');
 
         $elements[] = null;
 

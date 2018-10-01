@@ -35,8 +35,8 @@ class Gems_Snippets_Tracker_Summary_SummarySearchFormSnippet extends TrackSearch
     protected function getAutoSearchElements(array $data)
     {
         $elements = [];
-        $this->addTrackSelect($elements, $data);
-        $this->addOrgSelect($elements, $data);
+        $this->addTrackSelect($elements, $data, 'gto_id_track');
+        $this->addOrgSelect($elements, $data, 'gto_id_organization');
 
         $elements[] = null;
 

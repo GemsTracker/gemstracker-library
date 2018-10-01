@@ -29,6 +29,7 @@ class TrackSearchFormSnippetAbstract extends \Gems_Snippets_AutosearchFormSnippe
      */
     protected $currentUser;
     protected $singleTrackId = false;
+    protected $trackFieldId  = false;
 
     /**
      * Add filler select to the elements array
@@ -40,8 +41,8 @@ class TrackSearchFormSnippetAbstract extends \Gems_Snippets_AutosearchFormSnippe
     protected function addFillerSelect(array &$elements, $data, $elementId = 'fillerfilter')
     {
         $elements[] = null;
-        if (isset($data['gto_id_track']) && !empty($data['gto_id_track'])) {
-            $trackId = (int) $data['gto_id_track'];
+        if (isset($data[$this->trackFieldId]) && !empty($data[$this->trackFieldId])) {
+            $trackId = (int) $data[$data[$this->trackFieldId]];
         } else {
             $trackId = $this->singleTrackId ?: -1;
         }
@@ -115,6 +116,9 @@ class TrackSearchFormSnippetAbstract extends \Gems_Snippets_AutosearchFormSnippe
      */
     protected function addTrackSelect(array &$elements, $data, $elementId = 'gto_id_track')
     {
+        // Store for use in addFillerSelect
+        $this->trackFieldId = $elementId;
+        
         $orgs   = $this->currentUser->getRespondentOrganizations();
         $tracks = $this->util->getTrackData()->getTracksForOrgs($orgs);
 
