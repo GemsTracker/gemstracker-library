@@ -1,5 +1,7 @@
 <?php
 
+use Gems\Snippets\Tracker\TrackSearchFormSnippetAbstract;
+
 /**
  *
  * @package    Gems
@@ -18,13 +20,8 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Snippets_Tracker_Compliance_ComplianceSearchFormSnippet extends \Gems_Snippets_AutosearchFormSnippet
+class Gems_Snippets_Tracker_Compliance_ComplianceSearchFormSnippet extends TrackSearchFormSnippetAbstract
 {
-    /**
-     *
-     * @var \Gems_User_User
-     */
-    protected $currentUser;
 
     /**
      * Should the filler be shown?
@@ -44,50 +41,31 @@ class Gems_Snippets_Tracker_Compliance_ComplianceSearchFormSnippet extends \Gems
      */
     protected function getAutoSearchElements(array $data)
     {
-        $orgs = $this->currentUser->getRespondentOrganizations();
-
-        $elements[] = $this->_createSelectElement(
-                'gr2t_id_track',
-                $this->util->getTrackData()->getTracksForOrgs($orgs),
-                $this->_('(select a track)')
-                );
-
-        if (count($orgs) > 1) {
-            if ($this->orgIsMultiCheckbox) {
-                $elements[] = $this->_createMultiCheckBoxElements('gr2t_id_organization', $orgs);
-            } else {
-                $elements[] = $this->_createSelectElement(
-                        'gr2t_id_organization',
-                        $orgs,
-                        $this->_('(all organizations)')
-                        );
-            }
-        }
+        $elements = [];
+        $this->addTrackSelect($elements, $data);
+        $this->addOrgSelect($elements, $data);
 
         $elements[] = null;
 
-        $dates = array(
-            'gr2t_start_date' => $this->_('Track start'),
-            'gr2t_end_date'   => $this->_('Track end'),
-            );
-        // $dates = 'gto_valid_from';
-        $this->_addPeriodSelectors($elements, $dates, 'gto_valid_from');
+        $this->addPeriodSelect($elements, $data);
 
         $elements[] = null;
 
         if ($this->showFiller) {
-            $sql = "SELECT DISTINCT ggp_id_group, ggp_name
-                        FROM gems__groups INNER JOIN gems__surveys ON ggp_id_group = gsu_id_primary_group
-                            INNER JOIN gems__rounds ON gsu_id_survey = gro_id_survey
-                            INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
-                        WHERE ggp_group_active = 1 AND
-                            gro_active=1 AND
-                            gtr_active=1
-                        ORDER BY ggp_name";
-            $elements[] = $this->_createSelectElement('gsu_id_primary_group', $sql, $this->_('(all fillers)'));
+            $this->addFillerSelect($elements, $data);
         }
 
         return $elements;
+    }
+
+    protected function addPeriodSelect(array &$elements, $data)
+    {
+        $dates = array(
+            'gr2t_start_date' => $this->_('Track start'),
+            'gr2t_end_date'   => $this->_('Track end'),
+        );
+        // $dates = 'gto_valid_from';
+        $this->_addPeriodSelectors($elements, $dates);
     }
 
 }
