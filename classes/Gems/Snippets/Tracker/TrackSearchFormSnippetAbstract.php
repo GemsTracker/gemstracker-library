@@ -42,7 +42,7 @@ class TrackSearchFormSnippetAbstract extends \Gems_Snippets_AutosearchFormSnippe
     {
         $elements[] = null;
         if (isset($data[$this->trackFieldId]) && !empty($data[$this->trackFieldId])) {
-            $trackId = (int) $data[$data[$this->trackFieldId]];
+            $trackId = (int) $data[$this->trackFieldId];
         } else {
             $trackId = $this->singleTrackId ?: -1;
         }
