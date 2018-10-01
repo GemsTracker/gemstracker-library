@@ -321,6 +321,14 @@ class Gems_Default_FieldReportAction extends \Gems_Controller_ModelSnippetAction
             $orgs = $this->currentUser->getRespondentOrganizations();
             $this->defaultSearchData['gr2t_id_organization'] = array_keys($orgs);
         }
+        
+        if (!isset($this->defaultSearchData['gtf_id_track'])) {
+            $orgs = $this->currentUser->getRespondentOrganizations();
+            $tracks = $this->util->getTrackData()->getTracksForOrgs($orgs);
+            if (count($tracks) == 1) {
+                $this->defaultSearchData['gtf_id_track'] = key($tracks);
+            }
+        }
 
         return parent::getSearchDefaults();
     }

@@ -34,6 +34,12 @@ class Gems_Default_ComplianceAction extends \Gems_Controller_ModelSnippetActionA
      * @var \Gems_User_User
      */
     public $currentUser;
+    
+    /**
+     *
+     * @var \Zend_Db_Adapter_Abstract
+     */
+    public $db;
 
     /**
      * The snippets used for the index action, before those in autofilter
@@ -99,12 +105,17 @@ class Gems_Default_ComplianceAction extends \Gems_Controller_ModelSnippetActionA
         $select = $this->db->select();
         $select->from('gems__rounds', array('gro_id_round', 'gro_id_order', 'gro_round_description', 'gro_icon_file'))
                 ->joinInner('gems__surveys', 'gro_id_survey = gsu_id_survey', array('gsu_survey_name'))
+                ->joinLeft('gems__track_fields', 'gro_id_relationfield = gtf_id_field AND gtf_field_type = "relation"', array())
+                ->joinInner('gems__groups', 'gsu_id_primary_group =  ggp_id_group', array())
                 ->where('gro_id_track = ?', $filter['gr2t_id_track'])
                 ->where('gsu_active = 1')   //Only active surveys
                 ->order('gro_id_order');
-
-        if (isset($filter['gsu_id_primary_group']) && $filter['gsu_id_primary_group']) {
-            $select->where('gsu_id_primary_group = ?', $filter['gsu_id_primary_group']);
+        
+        $fields['filler'] = new \Zend_Db_Expr('COALESCE(gems__track_fields.gtf_field_name, gems__groups.ggp_name)');
+        $select->columns($fields);
+        
+        if (array_key_exists('fillerfilter', $filter)) {
+            $select->having('filler = ?', $filter['fillerfilter']);
         }
         $data = $this->db->fetchAll($select);
 
@@ -188,6 +199,14 @@ class Gems_Default_ComplianceAction extends \Gems_Controller_ModelSnippetActionA
         if (! isset($this->defaultSearchData['gr2t_id_organization'])) {
             $orgs = $this->currentUser->getRespondentOrganizations();
             $this->defaultSearchData['gr2t_id_organization'] = array_keys($orgs);
+        }
+        
+        if (!isset($this->defaultSearchData['gr2t_id_track'])) {
+            $orgs = $this->currentUser->getRespondentOrganizations();
+            $tracks = $this->util->getTrackData()->getTracksForOrgs($orgs);
+            if (count($tracks) == 1) {
+                $this->defaultSearchData['gr2t_id_track'] = key($tracks);
+            }
         }
 
         return parent::getSearchDefaults();

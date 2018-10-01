@@ -142,6 +142,14 @@ class Gems_Default_SummaryAction extends \Gems_Controller_ModelSnippetActionAbst
             $orgs = $this->currentUser->getRespondentOrganizations();
             $this->defaultSearchData['gto_id_organization'] = array_keys($orgs);
         }
+        
+        if (!isset($this->defaultSearchData['gto_id_track'])) {
+            $orgs = $this->currentUser->getRespondentOrganizations();
+            $tracks = $this->util->getTrackData()->getTracksForOrgs($orgs);
+            if (count($tracks) == 1) {
+                $this->defaultSearchData['gto_id_track'] = key($tracks);
+            }
+        }
 
         return parent::getSearchDefaults();
     }

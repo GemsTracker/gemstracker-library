@@ -1,5 +1,7 @@
 <?php
 
+use Gems\Snippets\Tracker\TrackSearchFormSnippetAbstract;
+
 /**
  *
  * @package    Gems
@@ -19,14 +21,8 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.5 30-nov-2014 18:11:58
  */
-class Gems_Snippets_Tracker_Fields_FieldReportSearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
+class Gems_Snippets_Tracker_Fields_FieldReportSearchSnippet extends \Gems_Snippets_Tracker_Compliance_ComplianceSearchFormSnippet
 {
-    /**
-     *
-     * @var \Gems_User_User
-     */
-    protected $currentUser;
-
     /**
      * Returns a text element for autosearch. Can be overruled.
      *
@@ -38,26 +34,16 @@ class Gems_Snippets_Tracker_Fields_FieldReportSearchSnippet extends \Gems_Snippe
      */
     protected function getAutoSearchElements(array $data)
     {
-        $orgs = $this->currentUser->getRespondentOrganizations();
+        $elements = [];
+        $this->addTrackSelect($elements, $data, 'gtf_id_track');
+        $this->addOrgSelect($elements, $data, 'gr2t_id_organization');
+        
+        $elements[] = null;
 
-        $elements[] = $this->_createSelectElement(
-                'gtf_id_track',
-                $this->util->getTrackData()->getTracksForOrgs($orgs),
-                $this->_('(select a track)')
-                );
-
-        if (count($orgs) > 1) {
-            if ($this->orgIsMultiCheckbox) {
-                $elements[] = $this->_createMultiCheckBoxElements('gr2t_id_organization', $orgs);
-            } else {
-                $elements[] = $this->_createSelectElement(
-                        'gr2t_id_organization',
-                        $orgs,
-                        $this->_('(all organizations)')
-                        );
-            }
-        }
-
+        $this->addPeriodSelect($elements, $data);
+        
+        $elements[] = null;
+        
         return $elements;
     }
 }
