@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Mailjobs can now be executed manually. This allows a combination of automatic and semi automatic as well as deactived jobs (#361)
 - Agenda setup now allows to select on the filter attribute (#353)
 - SPSS export no longer cuts of text answers at 64 chars and will default to numeric more often for list type answers (#335)
+- Communication templates now use token as default source instead of staff (#367)
 
 ### Removed
 - The old ExcelHtml and Stata exports were removed, the new Excel and Stata exports remain (#342)

@@ -125,6 +125,11 @@ class Gems_Default_CommTemplateAction extends \Gems_Controller_ModelSnippetActio
                 'multiOptions', $commTargets,
                 'formatFunction', array($this, '_')
                 );
+        
+        // If the token target is available, use it as a default
+        if (array_key_exists('token', $commTargets)) {
+            $model->set('gct_target', 'default', 'token');
+        }
 
         $model->set('gct_code', 'label', $this->_('Template code'),
                 'description', $this->_('Optional code name to link the template to program code.'),
