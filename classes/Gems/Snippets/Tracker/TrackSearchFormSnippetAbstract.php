@@ -44,7 +44,7 @@ class TrackSearchFormSnippetAbstract extends \Gems_Snippets_AutosearchFormSnippe
         if (isset($data[$this->trackFieldId]) && !empty($data[$this->trackFieldId])) {
             $trackId = (int) $data[$this->trackFieldId];
         } else {
-            $trackId = $this->singleTrackId ?: -1;
+            $trackId = -1;
         }
 
         $sql = $this->db->quoteInto("SELECT ggp_name, ggp_name as label FROM (
@@ -125,9 +125,6 @@ class TrackSearchFormSnippetAbstract extends \Gems_Snippets_AutosearchFormSnippe
         if (count($tracks) > 1) {
             $elements[$elementId] = $this->_createSelectElement($elementId, $tracks, $this->_('(select a track)'));
             $elements[$elementId]->setAttrib('onchange', 'this.form.submit();');
-        } else {
-            $this->singleTrackId      = key($tracks);
-            $elements[$elementId] = $this->form->addElement('Hidden', $elementId, ['value' => $this->singleTrackId]);
         }
     }
 

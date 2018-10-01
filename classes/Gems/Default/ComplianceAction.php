@@ -200,6 +200,14 @@ class Gems_Default_ComplianceAction extends \Gems_Controller_ModelSnippetActionA
             $orgs = $this->currentUser->getRespondentOrganizations();
             $this->defaultSearchData['gr2t_id_organization'] = array_keys($orgs);
         }
+        
+        if (!isset($this->defaultSearchData['gr2t_id_track'])) {
+            $orgs = $this->currentUser->getRespondentOrganizations();
+            $tracks = $this->util->getTrackData()->getTracksForOrgs($orgs);
+            if (count($tracks) == 1) {
+                $this->defaultSearchData['gr2t_id_track'] = key($tracks);
+            }
+        }
 
         return parent::getSearchDefaults();
     }
