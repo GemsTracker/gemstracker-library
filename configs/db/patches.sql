@@ -1388,6 +1388,8 @@ ALTER TABLE gems__staff
     DROP COLUMN gsf_reset_key,
     DROP COLUMN gsf_reset_req;
 
+UPDATE gems__user_logins SET gul_user_class = 'StaffUser' WHERE gul_user_class = 'OldStaffUser';
+
 -- PATCH: Add respondent organisation email and fill with existing data from respondents
 ALTER TABLE `gems__respondent2org`
 	ADD `gr2o_email` varchar(100) COLLATE 'utf8_general_ci' NULL AFTER `gr2o_id_user`;
