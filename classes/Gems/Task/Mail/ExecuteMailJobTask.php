@@ -57,7 +57,7 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
         $job = $this->db->fetchRow($sql);
 
         if (empty($job)) {
-            throw new Exception($this->_('Mail job not found!'));
+            throw new \Gems_Exception($this->_('Mail job not found!'));
         }
 
         $dbLookup   = $this->loader->getUtil()->getDbLookup();
