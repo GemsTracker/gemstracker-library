@@ -22,6 +22,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - getFullQuestionList was removed from LimeSurvey source, as it was not in the interface and unused (#186)
 
 ### Fixed
+- List elements in forms are no longer translated if form is set to disable translator (#370)
 - Logging the organization for is improved, and logging survey export is now on by default (#360 #242)
 - While browsing database tables the pagination now works when the number of items is changed (#346)
 - Answer import of csv files now autosenses for colon or semicolon separator (#358)
