@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Survey answers can now be exported to R format (#213)
 
 ### Changed
+- Export classes can now add instructions for the downloaded file(s) (#371)
 - The getRespondent() method in a controller was changed to public to allow better logging (#360)
 - The meta.Content-Security-Policy was moved to the headers section (#352)
 - Changelog now allows .md extension for markdown formatting, including github issue links (#351)

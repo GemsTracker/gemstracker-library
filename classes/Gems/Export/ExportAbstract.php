@@ -108,6 +108,14 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
      * @return array Form elements
      */
     public function getFormElements(&$form, &$data) {}
+    
+    /**
+     * @return string|null Optional snippet containing help text
+     */
+    public function getHelpSnippet()
+    {
+        return null;
+    }
 
     /**
      * Returns an array of ordered columnnames that have a label

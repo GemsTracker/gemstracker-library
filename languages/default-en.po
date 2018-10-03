@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-20 16:12+0200\n"
+"POT-Creation-Date: 2018-10-03 13:59+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -151,8 +151,8 @@ msgstr "Location"
 
 #: classes/Gems/Agenda.php:797
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:88
-#: classes/Gems/Default/CommTemplateAction.php:141
 #: classes/Gems/Default/CommTemplateAction.php:146
+#: classes/Gems/Default/CommTemplateAction.php:151
 #: classes/Gems/Model/AppointmentModel.php:211
 #: classes/Gems/Model/AppointmentModel.php:266
 #: classes/Gems/Model/CommLogModel.php:141
@@ -241,7 +241,7 @@ msgstr "Determines what is filtered how."
 #: classes/Gems/Agenda/AppointmentFilterModel.php:91
 #: classes/Gems/Default/AgendaStaffAction.php:117
 #: classes/Gems/Default/CommTemplateAction.php:123
-#: classes/Gems/Default/ComplianceAction.php:80
+#: classes/Gems/Default/ComplianceAction.php:86
 #: classes/Gems/Default/DatabaseAction.php:216
 #: classes/Gems/Default/DatabaseAction.php:435
 #: classes/Gems/Default/FieldOverviewAction.php:101
@@ -615,8 +615,8 @@ msgid "Start %s jobs"
 msgstr "Start %s jobs"
 
 #: classes/Gems/Controller/Action/Helper/BatchRunner.php:69
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:400
-#: classes/Gems/Default/ExportMultiSurveysAction.php:95
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:405
+#: classes/Gems/Default/ExportMultiSurveysAction.php:100
 msgid "Nothing to do."
 msgstr "Nothing to do."
 
@@ -662,7 +662,7 @@ msgid "Cancel"
 msgstr "Cancel"
 
 #: classes/Gems/Controller/BrowseEditAction.php:384
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:457
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:462
 #: classes/Gems/Snippets/FormSnippetAbstract.php:237
 #: classes/Gems/Snippets/ModelFormSnippetAbstract.php:361
 #, php-format
@@ -670,7 +670,7 @@ msgid "New %s..."
 msgstr "New %s..."
 
 #: classes/Gems/Controller/BrowseEditAction.php:417
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:507
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:512
 #, php-format
 msgid "Delete %s"
 msgstr "Delete %s"
@@ -688,7 +688,7 @@ msgid "Edit %s %s"
 msgstr "Edit %s %s"
 
 #: classes/Gems/Controller/BrowseEditAction.php:440
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:517
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:522
 #: classes/Gems/Snippets/FormSnippetAbstract.php:239
 #: classes/Gems/Snippets/ModelFormSnippetAbstract.php:363
 #, php-format
@@ -701,12 +701,12 @@ msgid "Free search text"
 msgstr "Free search text"
 
 #: classes/Gems/Controller/BrowseEditAction.php:625
-#: classes/Gems/Snippets/AutosearchFormSnippet.php:451
+#: classes/Gems/Snippets/AutosearchFormSnippet.php:453
 msgid "Reset search"
 msgstr "Reset"
 
 #: classes/Gems/Controller/BrowseEditAction.php:636
-#: classes/Gems/Snippets/AutosearchFormSnippet.php:467
+#: classes/Gems/Snippets/AutosearchFormSnippet.php:469
 #: classes/Gems/Snippets/Database/StructuralChanges.php:77
 msgid "Search"
 msgstr "Search"
@@ -817,52 +817,52 @@ msgstr "Show %s"
 msgid "Unknown %s."
 msgstr "Unknown %s."
 
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:405
-#: classes/Gems/Default/ExportMultiSurveysAction.php:100
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:410
+#: classes/Gems/Default/ExportMultiSurveysAction.php:105
 #: classes/Gems/Snippets/Survey/Display/BarChartSnippet.php:311
 msgid "Back"
 msgstr "Back"
 
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:477
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:482
 #, php-format
 msgid "Do you want to deactivate this %s?"
 msgstr "Do you want to deactivate this %s?"
 
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:487
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:492
 #, php-format
 msgid "Deactivate %s"
 msgstr "Deactivate %s"
 
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:497
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:502
 #, php-format
 msgid "Do you want to delete this %s?"
 msgstr "Do you want to delete this %s?"
 
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:530
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:535
 msgid "No data found."
 msgstr "No data found."
 
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:653
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:658
 #, php-format
 msgid "No %s found..."
 msgstr "No %s found..."
 
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:663
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:668
 #, php-format
 msgid "Do you want to reactivate this %s?"
 msgstr "Do you want to reactivate this %s?"
 
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:673
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:678
 #, php-format
 msgid "Reactivate %s"
 msgstr "Reactivate %s"
 
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:683
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:688
 #, php-format
 msgid "Showing %s"
 msgstr "Showing %s"
 
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:719
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:724
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/FormSnippetAbstract.php:360
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:420
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/WizardFormSnippetAbstract.php:438
@@ -1383,10 +1383,8 @@ msgstr "(all surveys)"
 #: classes/Gems/Snippets/Respondent/RespondentSearchSnippet.php:86
 #: classes/Gems/Snippets/Staff/StaffSearchSnippet.php:52
 #: classes/Gems/Snippets/Token/PlanSearchSnippet.php:95
-#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:62
-#: classes/Gems/Snippets/Tracker/Fields/FieldReportSearchSnippet.php:56
-#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:56
 #: classes/Gems/Snippets/Tracker/TrackMaintenance/TrackMaintenanceSearchSnippet.php:58
+#: classes/Gems/Snippets/Tracker/TrackSearchFormSnippetAbstract.php:87
 msgid "(all organizations)"
 msgstr "(all organizations)"
 
@@ -1395,80 +1393,80 @@ msgstr "(all organizations)"
 msgid "Starting single %s mail job %s"
 msgstr "Starting single %s mail job %s"
 
-#: classes/Gems/Default/CommJobAction.php:252
+#: classes/Gems/Default/CommJobAction.php:253
 msgid "Mailjob is inactive and won't be executed"
 msgstr "Mailjob is inactive and won't be executed"
 
-#: classes/Gems/Default/CommJobAction.php:271
+#: classes/Gems/Default/CommJobAction.php:272
 #, php-format
 msgid "Preview single mail job %s"
 msgstr "Preview single mail job %s"
 
-#: classes/Gems/Default/CommJobAction.php:273
+#: classes/Gems/Default/CommJobAction.php:274
 #, php-format
 msgid "Executing single mail job %s"
 msgstr "Executing single mail job %s"
 
-#: classes/Gems/Default/CommJobAction.php:286
+#: classes/Gems/Default/CommJobAction.php:287
 msgid "Execute all mail jobs"
 msgstr "Execute all mail jobs"
 
-#: classes/Gems/Default/CommJobAction.php:299
+#: classes/Gems/Default/CommJobAction.php:300
 msgid "First mail"
 msgstr "First mail"
 
-#: classes/Gems/Default/CommJobAction.php:300
+#: classes/Gems/Default/CommJobAction.php:301
 msgid "Reminder after first email"
 msgstr "Reminder after first email"
 
-#: classes/Gems/Default/CommJobAction.php:301
+#: classes/Gems/Default/CommJobAction.php:302
 msgid "Reminder before expiration"
 msgstr "Reminder before expiration"
 
-#: classes/Gems/Default/CommJobAction.php:312
+#: classes/Gems/Default/CommJobAction.php:313
 msgid "Use organizational from address"
 msgstr "Use organizational from address"
 
-#: classes/Gems/Default/CommJobAction.php:315
+#: classes/Gems/Default/CommJobAction.php:316
 #, php-format
 msgid "Use site %s address"
 msgstr "Use site %s address"
 
-#: classes/Gems/Default/CommJobAction.php:318
+#: classes/Gems/Default/CommJobAction.php:319
 msgid "Use the 'By staff member' address"
 msgstr "Use the 'By staff member' address"
 
-#: classes/Gems/Default/CommJobAction.php:319
+#: classes/Gems/Default/CommJobAction.php:320
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:181
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:289
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:351
 msgid "Other"
 msgstr "Other"
 
-#: classes/Gems/Default/CommJobAction.php:331
+#: classes/Gems/Default/CommJobAction.php:332
 msgid "Automatic mail jobs"
 msgstr "Automatic mail jobs"
 
-#: classes/Gems/Default/CommJobAction.php:347
+#: classes/Gems/Default/CommJobAction.php:348
 msgid "(all execution methods)"
 msgstr "(all execution methods)"
 
-#: classes/Gems/Default/CommJobAction.php:359
+#: classes/Gems/Default/CommJobAction.php:360
 msgid "automatic mail job"
 msgid_plural "automatic mail jobs"
 msgstr[0] "automatic mail job"
 msgstr[1] "automatic mail jobs"
 
-#: classes/Gems/Default/CommJobAction.php:369
+#: classes/Gems/Default/CommJobAction.php:370
 #, php-format
 msgid "Automatic mails have been turned off since %s."
 msgstr "Automatic mails have been turned off since %s."
 
-#: classes/Gems/Default/CommJobAction.php:372
+#: classes/Gems/Default/CommJobAction.php:373
 msgid "Turn Automatic Mail Jobs ON"
 msgstr "Turn Automatic Mail Jobs ON"
 
-#: classes/Gems/Default/CommJobAction.php:378
+#: classes/Gems/Default/CommJobAction.php:379
 msgid ""
 "With automatic mail jobs and a cron job on the server, mails can be sent "
 "without manual user action."
@@ -1476,19 +1474,19 @@ msgstr ""
 "With automatic mail jobs and a cron job on the server, mails can be sent "
 "without manual user action."
 
-#: classes/Gems/Default/CommJobAction.php:420
+#: classes/Gems/Default/CommJobAction.php:421
 msgid "Mailjob inactive, can not be sent"
 msgstr "Mailjob inactive, can not be sent"
 
-#: classes/Gems/Default/CommJobAction.php:425
+#: classes/Gems/Default/CommJobAction.php:426
 msgid "Mailjob manual, can only be sent using run"
 msgstr "Mailjob manual, can only be sent using run"
 
-#: classes/Gems/Default/CommJobAction.php:431
+#: classes/Gems/Default/CommJobAction.php:432
 msgid "Mailjob automatic, can be sent using run or run all"
 msgstr "Mailjob automatic, can be sent using run or run all"
 
-#: classes/Gems/Default/CommJobAction.php:442
+#: classes/Gems/Default/CommJobAction.php:447
 msgid "No tokens found to email"
 msgstr "Geen toegangscodes gevonden om te mailen"
 
@@ -1501,34 +1499,34 @@ msgstr "&laquo;empty&raquo;"
 msgid "Mail Target"
 msgstr "Mail Target"
 
-#: classes/Gems/Default/CommTemplateAction.php:129
+#: classes/Gems/Default/CommTemplateAction.php:134
 msgid "Template code"
 msgstr "Template code"
 
-#: classes/Gems/Default/CommTemplateAction.php:130
+#: classes/Gems/Default/CommTemplateAction.php:135
 msgid "Optional code name to link the template to program code."
 msgstr "Optional code name to link the template to program code."
 
-#: classes/Gems/Default/CommTemplateAction.php:153
+#: classes/Gems/Default/CommTemplateAction.php:158
 #: classes/Gems/Model/LogModel.php:110
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:149
 msgid "Message"
 msgstr "Message"
 
-#: classes/Gems/Default/CommTemplateAction.php:186
+#: classes/Gems/Default/CommTemplateAction.php:191
 msgid "New template"
 msgstr "New template"
 
-#: classes/Gems/Default/CommTemplateAction.php:193
+#: classes/Gems/Default/CommTemplateAction.php:198
 #, php-format
 msgid "Edit template: %s"
 msgstr "Edit template: %s"
 
-#: classes/Gems/Default/CommTemplateAction.php:198
+#: classes/Gems/Default/CommTemplateAction.php:203
 msgid "Email templates"
 msgstr "Email templates"
 
-#: classes/Gems/Default/ComplianceAction.php:76
+#: classes/Gems/Default/ComplianceAction.php:82
 #: classes/Gems/Default/FieldOverviewAction.php:100
 #: classes/Gems/Model/CommLogModel.php:135
 #: classes/Gems/Model/RespondentModel.php:267
@@ -1538,7 +1536,7 @@ msgstr "Email templates"
 msgid "Respondent nr"
 msgstr "Patient nr"
 
-#: classes/Gems/Default/ComplianceAction.php:81
+#: classes/Gems/Default/ComplianceAction.php:87
 #: classes/Gems/Default/FieldOverviewAction.php:102
 #: classes/Gems/Model/EpisodeOfCareModel.php:142
 #: classes/Gems/Model/EpisodeOfCareModel.php:179
@@ -1547,26 +1545,26 @@ msgstr "Patient nr"
 msgid "Start date"
 msgstr "Start date"
 
-#: classes/Gems/Default/ComplianceAction.php:82
+#: classes/Gems/Default/ComplianceAction.php:88
 #: classes/Gems/Default/FieldOverviewAction.php:103
 #: classes/Gems/Model/EpisodeOfCareModel.php:145
 #: classes/Gems/Model/EpisodeOfCareModel.php:182
 msgid "End date"
 msgstr "End date"
 
-#: classes/Gems/Default/ComplianceAction.php:90
+#: classes/Gems/Default/ComplianceAction.php:96
 #: classes/Gems/Default/FieldOverviewAction.php:111
 #: classes/Gems/Default/FieldReportAction.php:114
 #: classes/Gems/Default/SummaryAction.php:116
 msgid "No track selected..."
 msgstr "No track selected..."
 
-#: classes/Gems/Default/ComplianceAction.php:176
+#: classes/Gems/Default/ComplianceAction.php:187
 msgid "Compliance"
 msgstr "Compliance"
 
-#: classes/Gems/Default/ComplianceAction.php:204
-#: classes/Gems/Default/FieldReportAction.php:336
+#: classes/Gems/Default/ComplianceAction.php:223
+#: classes/Gems/Default/FieldReportAction.php:344
 #: classes/Gems/Default/ProjectTracksAction.php:148
 #: classes/Gems/Default/TrackAction.php:1024
 #: classes/Gems/Default/TrackMaintenanceAction.php:276
@@ -2057,11 +2055,11 @@ msgstr "Contents of %s %s"
 msgid "The data in table %s"
 msgstr "The data in table %s"
 
-#: classes/Gems/Default/ExportMultiSurveysAction.php:248
+#: classes/Gems/Default/ExportMultiSurveysAction.php:253
 msgid "Export data from multiple surveys"
 msgstr "Export data from multiple surveys"
 
-#: classes/Gems/Default/ExportMultiSurveysAction.php:268
+#: classes/Gems/Default/ExportMultiSurveysAction.php:273
 #: classes/Gems/Default/ExportSurveyAction.php:56
 msgid "Please select a survey to start the export"
 msgstr "Please select a survey to start the export"
@@ -2074,7 +2072,7 @@ msgstr "Export data from a single survey"
 msgid "Respondent Track fields"
 msgstr "Patient Track fields"
 
-#: classes/Gems/Default/FieldOverviewAction.php:191
+#: classes/Gems/Default/FieldOverviewAction.php:199
 msgid "track field"
 msgid_plural "track fields"
 msgstr[0] "track field"
@@ -2709,7 +2707,7 @@ msgid "No existing token specified!"
 msgstr "No existing token specified!"
 
 #: classes/Gems/Default/OpenRosaFormAction.php:128
-#: classes/Gems/Default/SummaryAction.php:239
+#: classes/Gems/Default/SummaryAction.php:247
 #: classes/Gems/Default/TokenSearchActionAbstract.php:268
 #: classes/Gems/Default/TrackAction.php:1004
 #: classes/Gems/Tracker/Snippets/EditTokenSnippetAbstract.php:122
@@ -3704,7 +3702,7 @@ msgstr "Round / Details"
 #: classes/Gems/Snippets/Token/PlanSearchSnippet.php:75
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:44
 #: classes/Gems/Snippets/Tracker/Rounds/RoundsTableSnippet.php:137
-#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:66
+#: classes/Gems/Snippets/Tracker/TrackSearchFormSnippetAbstract.php:103
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:538
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:298
 msgid "Valid from"
@@ -3716,7 +3714,7 @@ msgstr "Valid from"
 #: classes/Gems/Snippets/Token/PlanSearchSnippet.php:76
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:45
 #: classes/Gems/Snippets/Tracker/Rounds/RoundsTableSnippet.php:139
-#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:67
+#: classes/Gems/Snippets/Tracker/TrackSearchFormSnippetAbstract.php:104
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:539
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:308
 msgid "Valid until"
@@ -6114,6 +6112,42 @@ msgstr "No structural changes in patchlevel %d"
 msgid "Export to"
 msgstr "Export to"
 
+#: classes/Gems/Snippets/Export/ExportInformationR.php:34
+msgid "Export to R"
+msgstr "Export to R"
+
+#: classes/Gems/Snippets/Export/ExportInformationR.php:36
+msgid ""
+"Open the downloaded zip file when finished and open the .R file using:\n"
+"    source(\"filename.R\", encoding=\"UTF-8\")\n"
+"or use File -> Reopen with Encoding... when using RStudio and choose UTF-8 "
+"and run all lines.\n"
+"\n"
+"Your data is now in a frame called 'data'"
+msgstr ""
+"Open the downloaded zip file when finished and open the .R file using:\n"
+"    source(\"filename.R\", encoding=\"UTF-8\")\n"
+"or use File -> Reopen with Encoding... when using RStudio and choose UTF-8 "
+"and run all lines.\n"
+"\n"
+"Your data is now in a frame called 'data'"
+
+#: classes/Gems/Snippets/Export/ExportInformationSpss.php:34
+msgid "Export to SPSS"
+msgstr "Export to SPSS"
+
+#: classes/Gems/Snippets/Export/ExportInformationSpss.php:36
+msgid ""
+"Extract all files from the downloaded zip and open the .sps file.\n"
+"Change line number 8 to include the full path to the .dat file:\n"
+"    /FILE=\"filename.dat\"  ==>  /FILE=\"c:\\downloads\\filename.dat\"\n"
+"Choose Run/All and all your data should be visible."
+msgstr ""
+"Extract all files from the downloaded zip and open the .sps file.\n"
+"Change line number 8 to include the full path to the .dat file:\n"
+"    /FILE=\"filename.dat\"  ==>  /FILE=\"c:\\downloads\\filename.dat\"\n"
+"Choose Run/All and all your data should be visible."
+
 #: classes/Gems/Snippets/Export/MultiSurveysSearchFormSnippet.php:152
 msgid "(any track)"
 msgstr "(any track)"
@@ -6166,9 +6200,7 @@ msgstr "(select a survey)"
 #: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippet.php:59
 #: classes/Gems/Snippets/Mail/Log/MailLogSearchSnippet.php:55
 #: classes/Gems/Snippets/Mail/Log/RespondentMailLogSearchSnippet.php:74
-#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:52
-#: classes/Gems/Snippets/Tracker/Fields/FieldReportSearchSnippet.php:46
-#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:45
+#: classes/Gems/Snippets/Tracker/TrackSearchFormSnippetAbstract.php:126
 msgid "(select a track)"
 msgstr "(select a track)"
 
@@ -6177,15 +6209,15 @@ msgid "(select a round)"
 msgstr "(select a round)"
 
 #: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:70
-#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:70
-#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:64
+#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:64
+#: classes/Gems/Snippets/Tracker/TrackSearchFormSnippetAbstract.php:101
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:526
 msgid "Track start"
 msgstr "Track start"
 
 #: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:71
-#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:71
-#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:65
+#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:65
+#: classes/Gems/Snippets/Tracker/TrackSearchFormSnippetAbstract.php:102
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:527
 msgid "Track end"
 msgstr "Track end"
@@ -7019,8 +7051,7 @@ msgid "(all actions)"
 msgstr "(all actions)"
 
 #: classes/Gems/Snippets/Token/PlanSearchSnippet.php:138
-#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:87
-#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:97
+#: classes/Gems/Snippets/Tracker/TrackSearchFormSnippetAbstract.php:69
 #: classes/Gems/Util/Translated.php:290
 msgid "(all fillers)"
 msgstr "(all fillers)"
@@ -10293,6 +10324,32 @@ msgstr "An error occurred!"
 #: views/scripts/error/error.phtml:37
 msgid "Please contact system administration"
 msgstr "Please contact system administration"
+
+#~ msgid ""
+#~ "Extract all files from the downloaded zip and open the .sps file.\n"
+#~ "Change line number 8 to include the full path to the .dat file:\n"
+#~ " /FILE=\"filename.dat\"  ==>  /FILE=\"c:\\downloads\\filename.dat\"\n"
+#~ "Choose Run/All and all your data should be visible."
+#~ msgstr ""
+#~ "Extract all files from the downloaded zip and open the .sps file.\n"
+#~ "Change line number 8 to include the full path to the .dat file:\n"
+#~ " /FILE=\"filename.dat\"  ==>  /FILE=\"c:\\downloads\\filename.dat\"\n"
+#~ "Choose Run/All and all your data should be visible."
+
+#~ msgid ""
+#~ "Open the downloaded zip file when finished and open the .R file using:\n"
+#~ "    source(\"filename.R\", encoding=\"UTF-8\")\n"
+#~ "or use File -> Reopen with Encoding when using RStudio and choose UTF-8 "
+#~ "and run all lines.\n"
+#~ "\n"
+#~ "Your data is now in a frame called 'data'"
+#~ msgstr ""
+#~ "Open the downloaded zip file when finished and open the .R file using:\n"
+#~ "    source(\"filename.R\", encoding=\"UTF-8\")\n"
+#~ "or use File -> Reopen with Encoding when using RStudio and choose UTF-8 "
+#~ "and run all lines.\n"
+#~ "\n"
+#~ "Your data is now in a frame called 'data'"
 
 #~ msgid "Job is only run when active."
 #~ msgstr "Job is only run when active."

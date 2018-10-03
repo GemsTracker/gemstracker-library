@@ -52,7 +52,16 @@ class SpssExport extends ExportAbstract
      * @var array   Array with the filter options that should be used for this exporter
      */
     protected $modelFilterAttributes = array('formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay');
-
+    
+    /**
+     * Add the help snippet
+     * 
+     * @return string
+     */
+    public function getHelpSnippet()
+    {
+        return 'Export\\ExportInformationSpss';
+    }
     /**
      * @return string name of the specific export
      */

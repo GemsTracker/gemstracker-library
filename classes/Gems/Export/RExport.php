@@ -35,6 +35,16 @@ class RExport extends ExportAbstract
      * @var array   Array with the filter options that should be used for this exporter
      */
     protected $modelFilterAttributes = array('formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay');
+    
+    /**
+     * Add the help snippet
+     * 
+     * @return string
+     */
+    public function getHelpSnippet()
+    {
+        return 'Export\\ExportInformationR';
+    }
 
     /**
      * @return string name of the specific export
@@ -47,7 +57,7 @@ class RExport extends ExportAbstract
     {
         parent::addFooter($filename);
         if ($model = $this->getModel()) {
-            $this->addSyntaxFile($filename);
+            $this->addSyntaxFile($filename);            
         }
     }
 

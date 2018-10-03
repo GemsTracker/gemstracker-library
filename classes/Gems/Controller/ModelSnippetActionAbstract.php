@@ -372,6 +372,11 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
                 }
                 $batch->addTask('Export_ExportCommand', $post['type'], 'addExport', $post);
                 $batch->addTask('addTask', 'Export_ExportCommand', $post['type'], 'finalizeFiles');
+                
+                $export = $this->loader->getExport()->getExport($post['type']);
+                if ($snippet = $export->getHelpSnippet()) {
+                    $this->addSnippet($snippet);
+                }
 
                 $batch->autoStart = true;
             }

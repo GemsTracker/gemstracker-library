@@ -75,6 +75,11 @@ class Gems_Default_ExportMultiSurveysAction extends \Gems_Default_ExportSurveyAc
                 }
 
                 $batch->addTask('addTask', 'Export_ExportCommand', $data['type'], 'finalizeFiles');
+                
+                $export = $this->loader->getExport()->getExport($data['type']);
+                if ($snippet = $export->getHelpSnippet()) {
+                    $this->addSnippet($snippet);
+                }
 
                 $batch->autoStart = true;
                 $this->accesslog->logChange($this->getRequest(), null, $data + $filter);
