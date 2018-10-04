@@ -98,7 +98,9 @@ class Gems_Default_FieldOverviewAction extends \Gems_Controller_ModelSnippetActi
         
         $model->resetOrder();
         $model->set('gr2o_patient_nr', 'label', $this->_('Respondent nr'));
+        if (! $this->currentUser->isFieldMaskedPartial('respondent_name')) {
         $model->set('respondent_name', 'label', $this->_('Name'));
+        }
         $model->set('gr2t_start_date', 'label', $this->_('Start date'), 'dateFormat', 'dd-MM-yyyy');
         $model->set('gr2t_end_date',   'label', $this->_('End date'), 'dateFormat', 'dd-MM-yyyy');
 

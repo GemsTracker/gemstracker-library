@@ -77,7 +77,10 @@ class Gems_Default_ComplianceAction extends \Gems_Controller_ModelSnippetActionA
         $model->addColumn(
             "TRIM(CONCAT(COALESCE(CONCAT(grs_last_name, ', '), '-, '), COALESCE(CONCAT(grs_first_name, ' '), ''), COALESCE(grs_surname_prefix, '')))",
             'respondent_name');
+
+        if (! $this->currentUser->isFieldMaskedPartial('respondent_name')) {
         $model->set('respondent_name', 'label', $this->_('Name'));
+        }
         $model->set('gr2t_start_date', 'label', $this->_('Start date'), 'dateFormat', 'dd-MM-yyyy');
         $model->set('gr2t_end_date',   'label', $this->_('End date'), 'dateFormat', 'dd-MM-yyyy');
 
