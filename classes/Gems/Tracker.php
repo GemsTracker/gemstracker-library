@@ -719,7 +719,7 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
                 $trackData['gtr_track_class'] = 'AnyStepEngine';
             }
 
-            $this->_trackEngines[$trackId] = $this->_loadClass('engine_' . $trackData['gtr_track_class'], true, array($trackData));
+            $this->_trackEngines[$trackId] = $this->_loadClass('Engine_' . $trackData['gtr_track_class'], true, array($trackData));
         }
 
         return $this->_trackEngines[$trackId];
