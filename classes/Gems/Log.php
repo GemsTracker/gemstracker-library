@@ -119,7 +119,7 @@ class Gems_Log extends \Zend_Log
         }
 
         foreach ($info as $line) {
-            $this->log($line, \Zend_Log::DEBUG);
+            $this->log($line, $priority);
         }
     }
 
