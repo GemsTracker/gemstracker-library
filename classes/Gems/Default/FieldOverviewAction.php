@@ -31,7 +31,7 @@ class Gems_Default_FieldOverviewAction extends \Gems_Controller_ModelSnippetActi
      * @var array Mixed key => value array for snippet initialization
      */
     protected $autofilterParameters = array('menuShowActions' => array('track' => 'show-track'));
-    
+
     /**
      * The snippets used for the autofilter action.
      *
@@ -49,7 +49,7 @@ class Gems_Default_FieldOverviewAction extends \Gems_Controller_ModelSnippetActi
      *
      * @var \Zend_Db_Adapter_Abstract
      */
-    public $db;    
+    public $db;
 
     /**
      * The snippets used for the index action, before those in autofilter
@@ -91,14 +91,16 @@ class Gems_Default_FieldOverviewAction extends \Gems_Controller_ModelSnippetActi
         $model->addTable('gems__tracks', array('gr2t_id_track' => 'gtr_id_track'));
         $model->addTable('gems__reception_codes', array('gr2t_reception_code' => 'grc_id_reception_code'));
         $model->addFilter(array('grc_success' => 1));
-        
+
         $model->addColumn(
             "TRIM(CONCAT(COALESCE(CONCAT(grs_last_name, ', '), '-, '), COALESCE(CONCAT(grs_first_name, ' '), ''), COALESCE(grs_surname_prefix, '')))",
             'respondent_name');
-        
+
         $model->resetOrder();
         $model->set('gr2o_patient_nr', 'label', $this->_('Respondent nr'));
-        $model->set('respondent_name', 'label', $this->_('Name'));
+        if (! $this->currentUser->isFieldMaskedPartial('respondent_name')) {
+            $model->set('respondent_name', 'label', $this->_('Name'));
+        }
         $model->set('gr2t_start_date', 'label', $this->_('Start date'), 'dateFormat', 'dd-MM-yyyy');
         $model->set('gr2t_end_date',   'label', $this->_('End date'), 'dateFormat', 'dd-MM-yyyy');
 
@@ -120,7 +122,7 @@ class Gems_Default_FieldOverviewAction extends \Gems_Controller_ModelSnippetActi
         $trackId = $filter['gr2t_id_track'];
         $engine = $this->loader->getTracker()->getTrackEngine($trackId);
         $engine->addFieldsToModel($model, false);
-        
+
         // Add masking if needed
         $group = $this->currentUser->getGroup();
         if ($group instanceof Group) {
@@ -176,7 +178,7 @@ class Gems_Default_FieldOverviewAction extends \Gems_Controller_ModelSnippetActi
             $orgs = $this->currentUser->getRespondentOrganizations();
             $this->defaultSearchData['gr2t_id_organization'] = array_keys($orgs);
         }
-        
+
         if (!isset($this->defaultSearchData['gr2t_id_track'])) {
             $orgs = $this->currentUser->getRespondentOrganizations();
             $tracks = $this->util->getTrackData()->getTracksForOrgs($orgs);

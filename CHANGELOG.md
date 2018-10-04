@@ -23,6 +23,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - getFullQuestionList was removed from LimeSurvey source, as it was not in the interface and unused (#186)
 
 ### Fixed
+- Do not show name in Compliance and Field overview when user may not see the name (#374)
+- Programming errors show debug trace in error log (#373)
 - List elements in forms are no longer translated if form is set to disable translator (#370)
 - Logging the organization for is improved, and logging survey export is now on by default (#360 #242)
 - While browsing database tables the pagination now works when the number of items is changed (#346)
@@ -80,7 +82,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [1.8.3]
 [1.8.3]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.2...1.8.3
-### Added 
+### Added
 - Automatic mail
   - Email can now also be sent x days before survey expiry
 
@@ -125,7 +127,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
   - Respondent changed events can be set at the organization level
   - It is easier to change part of the display in ShowTrackTokenSnippet
   - Less compile now uses relativeUrls during compilation, added logoFile and logoHeight variables
-  
+
 ### Fixed
 - Blocked users were not blocked
 - Surveys could be answered during maintenance mode
@@ -173,5 +175,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Inserted surveys now have class 'inserted' added to the row in track overview
 - Most search screens have been updated and all work the same
 
-## Pre 1.8.0 
+## Pre 1.8.0
 Changes were deleted from the changelog. Check the history in [GitHub](https://github.com/GemsTracker/gemstracker-library) if you are really interested.

@@ -34,7 +34,7 @@ class Gems_Default_ComplianceAction extends \Gems_Controller_ModelSnippetActionA
      * @var \Gems_User_User
      */
     public $currentUser;
-    
+
     /**
      *
      * @var \Zend_Db_Adapter_Abstract
@@ -83,7 +83,10 @@ class Gems_Default_ComplianceAction extends \Gems_Controller_ModelSnippetActionA
         $model->addColumn(
             "TRIM(CONCAT(COALESCE(CONCAT(grs_last_name, ', '), '-, '), COALESCE(CONCAT(grs_first_name, ' '), ''), COALESCE(grs_surname_prefix, '')))",
             'respondent_name');
-        $model->set('respondent_name', 'label', $this->_('Name'));
+
+        if (! $this->currentUser->isFieldMaskedPartial('respondent_name')) {
+            $model->set('respondent_name', 'label', $this->_('Name'));
+        }
         $model->set('gr2t_start_date', 'label', $this->_('Start date'), 'dateFormat', 'dd-MM-yyyy');
         $model->set('gr2t_end_date',   'label', $this->_('End date'), 'dateFormat', 'dd-MM-yyyy');
 
@@ -110,10 +113,10 @@ class Gems_Default_ComplianceAction extends \Gems_Controller_ModelSnippetActionA
                 ->where('gro_id_track = ?', $filter['gr2t_id_track'])
                 ->where('gsu_active = 1')   //Only active surveys
                 ->order('gro_id_order');
-        
+
         $fields['filler'] = new \Zend_Db_Expr('COALESCE(gems__track_fields.gtf_field_name, gems__groups.ggp_name)');
         $select->columns($fields);
-        
+
         if (array_key_exists('fillerfilter', $filter)) {
             $select->having('filler = ?', $filter['fillerfilter']);
         }
@@ -167,7 +170,7 @@ class Gems_Default_ComplianceAction extends \Gems_Controller_ModelSnippetActionA
         $model->set('respondent_name');
         $model->set('gr2t_start_date');
         $model->addTransformer($joinTrans);
-        
+
         // Add masking if needed
         $group = $this->currentUser->getGroup();
         if ($group instanceof Group) {
@@ -200,7 +203,7 @@ class Gems_Default_ComplianceAction extends \Gems_Controller_ModelSnippetActionA
             $orgs = $this->currentUser->getRespondentOrganizations();
             $this->defaultSearchData['gr2t_id_organization'] = array_keys($orgs);
         }
-        
+
         if (!isset($this->defaultSearchData['gr2t_id_track'])) {
             $orgs = $this->currentUser->getRespondentOrganizations();
             $tracks = $this->util->getTrackData()->getTracksForOrgs($orgs);
