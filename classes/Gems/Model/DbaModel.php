@@ -259,7 +259,7 @@ class Gems_Model_DbaModel extends \MUtil_Model_ArrayModelAbstract
             if (strtoupper($row[1]) == 'VIEW') {
                 $type = 'view';
             }
-            $result[$type][strtolower($row[0])] = strtolower($row[0]);
+            $result[$type][strtolower($row[0])] = $row[0];
         }
         $queryResult->close();
         
