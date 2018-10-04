@@ -2249,7 +2249,7 @@ class GemsEscort extends \MUtil_Application_Escort
             $menu->setCurrent($menuItem);
         }
         if ($request instanceof \Zend_Controller_Request_Http) {
-            if ($request->isPost() || ($user->isActive() && $user->isCurrentUser())) {
+            if ($request->isPost()) {
                 $incoming = $request->getServer('HTTP_ORIGIN', $request->getServer('HTTP_REFERER', false));
                 if ($incoming) {
                     if (! $this->isAllowedHost($incoming)) {
