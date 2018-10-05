@@ -1401,3 +1401,18 @@ UPDATE gems__respondent2org
 -- PATCH: Add memory to gems__token_attempts
 ALTER TABLE gems__token_attempts
     ADD gta_activated boolean null default 0 AFTER gta_datetime;
+
+-- GEMS VERSION: 63
+-- PATCH: Extend structure of Episodes of care
+ALTER TABLE gems__episodes_of_care
+        ADD gec_diagnosis_data text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null
+        AFTER gec_diagnosis;
+
+ALTER TABLE gems__episodes_of_care
+        ADD gec_extra_data text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null
+        AFTER gec_diagnosis_data;
+
+-- PATCH: Add diagnosis to appoointments
+ALTER TABLE gems__appointments
+        ADD gap_diagnosis_code varchar(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null
+        AFTER gap_id_location;

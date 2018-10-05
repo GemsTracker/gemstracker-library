@@ -30,6 +30,8 @@ CREATE TABLE if not exists gems__appointments (
         gap_id_activity         bigint unsigned null references gems__agenda_activities (gaa_id_activity),
         gap_id_procedure        bigint unsigned null references gems__agenda_procedures (gapr_id_procedure),
         gap_id_location         bigint unsigned null references gems__locations (glo_id_location),
+        gap_diagnosis_code      varchar(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null
+                                references gems__agenda_diagnoses (gad_diagnosis_code),
 
         gap_subject             varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
         gap_comment             TEXT CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,

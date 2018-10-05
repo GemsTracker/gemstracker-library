@@ -21,6 +21,8 @@ CREATE TABLE if not exists gems__episodes_of_care (
         gec_comment                 text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
 
         gec_diagnosis               varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
+        gec_diagnosis_data          text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
+        gec_extra_data              text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
 
         gec_changed                 timestamp not null default current_timestamp on update current_timestamp,
         gec_changed_by              bigint unsigned not null,
