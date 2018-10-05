@@ -70,6 +70,11 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
     protected $cascade = 'Model';
 
     /**
+     * @var int Current user ID
+     */
+    protected static $currentUserId;
+
+    /**
      *
      * @var \Zend_Db_Adapter_Abstract
      */
@@ -390,6 +395,10 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
         $model->setOnSave($created_field, new \MUtil_Db_Expr_CurrentTimestamp());
         $model->setSaveWhenNew($created_field);
 
+        if (! $userid && self::$currentUserId) {
+            $userid = self::$currentUserId;
+        }
+        
         if (! $userid) {
             $escort = \GemsEscort::getInstance();
 
@@ -411,5 +420,15 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
             $model->setOnSave($created_by_field, $userid);
             $model->setSaveWhenNew($created_by_field);
         }
+    }
+
+    /**
+     * Set the current User ID
+     *
+     * @param $userId
+     */
+    public static function setCurrentUserId($userId)
+    {
+        self::$currentUserId = $userId;
     }
 }
