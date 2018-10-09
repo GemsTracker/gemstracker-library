@@ -208,8 +208,9 @@ abstract class Gems_Menu_MenuAbstract
 
         $setup->addAgendaSetupPage($this->_('Activities'),          'pr.agenda-activity',  'agenda-activity');
         $setup->addAgendaSetupPage($this->_('Procedures'),          'pr.agenda-procedure', 'agenda-procedure');
+        $setup->addAgendaSetupPage($this->_('Diagnoses'),           'pr.agenda-diagnosis', 'agenda-diagnosis');
         $setup->addAgendaSetupPage($this->_('Locations'),           'pr.locations',        'location');
-        $setup->addAgendaSetupPage($this->_('Healthcare staff'),     'pr.agenda-staff',     'agenda-staff');
+        $setup->addAgendaSetupPage($this->_('Healthcare staff'),    'pr.agenda-staff',     'agenda-staff');
         $setup->addBrowsePage(     $this->_('Track field filters'), 'pr.agenda-filters',   'agenda-filter');
 
         return $setup;
@@ -871,7 +872,7 @@ abstract class Gems_Menu_MenuAbstract
      * @return \Gems_Menu_MenuAbstract (continuation pattern)
      */
     protected function applyAcl(\MUtil_Acl $acl, $userRole)
-    {   
+    {
         foreach ($this->_subItems as $item) {
 
             $allowed = $item->get('allowed', true);
@@ -982,7 +983,7 @@ abstract class Gems_Menu_MenuAbstract
                 $item->setForChildren($key, $value);
             }
         }
-            
+
         return $this;
     }
 

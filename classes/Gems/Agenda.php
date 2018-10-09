@@ -556,6 +556,19 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Get a selection list of coding systems used
+     *
+     * @return array code => label
+     */
+    public function getDiagnosisCodingSystems()
+    {
+        return [
+            'DBC'    => $this->_('DBC (Dutch Diagnosis Treatment Code)'),
+            'manual' => $this->_('Manual (organisation Specfic)'),
+        ];
+    }
+
+    /**
      * Get an appointment object
      *
      * @param mixed $episodeData Episode id or array containing episode data

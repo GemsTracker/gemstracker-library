@@ -9,6 +9,9 @@ CREATE TABLE if not exists gems__agenda_staff (
 
         gas_match_to        varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
+        gas_source          varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'manual',
+        gas_id_in_source    varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
+
         gas_active          boolean not null default 1,
         gas_filter          boolean not null default 0,
 

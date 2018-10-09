@@ -1403,7 +1403,7 @@ ALTER TABLE gems__token_attempts
     ADD gta_activated boolean null default 0 AFTER gta_datetime;
 
 -- GEMS VERSION: 63
--- PATCH: Extend structure of Episodes of care
+-- PATCH: Extend structure of Episodes
 ALTER TABLE gems__episodes_of_care
         ADD gec_diagnosis_data text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null
         AFTER gec_diagnosis;
@@ -1416,3 +1416,12 @@ ALTER TABLE gems__episodes_of_care
 ALTER TABLE gems__appointments
         ADD gap_diagnosis_code varchar(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null
         AFTER gap_id_location;
+
+-- PATCH: Add source to Agenda staff
+ALTER TABLE gems__agenda_staff
+    ADD gas_source varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'manual'
+    AFTER gas_match_to;
+
+ALTER TABLE gems__agenda_staff
+    ADD gas_id_in_source varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null
+    AFTER gas_source;
