@@ -116,19 +116,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
         \Gems_Model::setChangeFieldsByPrefix($model, 'gtf');
         $this->addUnionModel($model, null, self::FIELDS_NAME);
 
-        $model = new \MUtil_Model_TableModel('gems__track_appointments');
-        \Gems_Model::setChangeFieldsByPrefix($model, 'gtap');
-
-        $map = $model->getItemsOrdered();
-        $map = array_combine($map, str_replace('gtap_', 'gtf_', $map));
-        $map['gtap_id_app_field'] = 'gtf_id_field';
-
-        $this->addUnionModel($model, $map, self::APPOINTMENTS_NAME);
-
-        $model->addColumn(new \Zend_Db_Expr("'appointment'"), 'gtf_field_type');
-        $model->addColumn(new \Zend_Db_Expr("NULL"), 'gtf_field_values');
-        $model->addColumn(new \Zend_Db_Expr("NULL"), 'gtf_field_default');
-        $model->addColumn(new \Zend_Db_Expr("NULL"), 'gtf_calculate_using');
+        $this->addAppointmentsToModel();
 
         $this->setKeys(array(
             \Gems_Model::FIELD_ID => 'gtf_id_field',
@@ -188,6 +176,26 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
         }
 
         return parent::_processRowAfterLoad($row, $new, $isPost, $transformColumns);
+    }
+
+    /**
+     * Add appointment model to union model
+     */
+    protected function addAppointmentsToModel()
+    {
+        $model = new \MUtil_Model_TableModel('gems__track_appointments');
+        \Gems_Model::setChangeFieldsByPrefix($model, 'gtap');
+
+        $map = $model->getItemsOrdered();
+        $map = array_combine($map, str_replace('gtap_', 'gtf_', $map));
+        $map['gtap_id_app_field'] = 'gtf_id_field';
+
+        $this->addUnionModel($model, $map, self::APPOINTMENTS_NAME);
+
+        $model->addColumn(new \Zend_Db_Expr("'appointment'"), 'gtf_field_type');
+        $model->addColumn(new \Zend_Db_Expr("NULL"), 'gtf_field_values');
+        $model->addColumn(new \Zend_Db_Expr("NULL"), 'gtf_field_default');
+        $model->addColumn(new \Zend_Db_Expr("NULL"), 'gtf_calculate_using');
     }
 
     /**
@@ -468,6 +476,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
             'relation'    => $this->_('Relation'),
             'select'      => $this->_('Select one'),
             'multiselect' => $this->_('Select multiple'),
+            'track'       => $this->_('Track'),
             );
 
         asort($output);
