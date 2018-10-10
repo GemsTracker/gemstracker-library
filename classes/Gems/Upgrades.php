@@ -340,7 +340,7 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
      */
     public function Upgrade184to185()
     {
-        $this->_batch->addTask('Db_AddPatches', 62);
+        $this->_batch->addTask('Db_AddPatches', 63);
 
         // Use AddTask task to execute after patches
         $this->_batch->addTask('AddTask', 'Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
