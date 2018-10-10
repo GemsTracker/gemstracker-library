@@ -5,7 +5,6 @@
  * @subpackage AccessLog
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -550,9 +549,13 @@ class Gems_AccessLog
     {
         $action = $request->getControllerName() . '.' . $request->getActionName();
         if ($respondentId instanceof \Gems_Tracker_Respondent) {
-            $data = (array) $data;
-            $data['gr2o_id_organization'] = $respondentId->getOrganizationId();
-            $respondentId = $respondentId->getId();
+            if ($respondentId->exists) {
+                $data = (array) $data;
+                $data['gr2o_id_organization'] = $respondentId->getOrganizationId();
+                $respondentId = $respondentId->getId();
+            } else {
+                $respondentId = null;
+            }
         }
         return $this->logEntry($request, $action, false, $message, $data, $respondentId);
     }

@@ -48,10 +48,10 @@ class Gems_Default_RespondentLogAction extends \Gems_Default_LogAction
 
             $respondent = $this->loader->getRespondent($patientNumber, $organizationId);
 
-            if (! $respondent->exists) {
-                throw new \Gems_Exception($this->_('Unknown respondent.'));
+            if ((! $respondent->exists) && $patientNumber && $organizationId) {
+                throw new \Gems_Exception(sprintf($this->_('Unknown respondent %s.'), $patientNumber));
             }
-            
+
             $respondent->applyToMenuSource($this->menu->getParameterSource());
         }
 

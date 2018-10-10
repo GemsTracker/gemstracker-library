@@ -1,12 +1,12 @@
 <?php
 
 /**
+ *
  * @package    Gems
  * @subpackage Snippets
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -36,6 +36,4 @@ abstract class Gems_Snippets_MenuSnippetAbstract extends \MUtil_Snippets_Snippet
     {
         return $this->menu->find(array('controller' => $controller, 'action' => $action, 'allowed' => true));
     }
-
-
 }

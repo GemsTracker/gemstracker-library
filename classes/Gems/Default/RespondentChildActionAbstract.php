@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: RespondentChildActionAbstract.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 /**
@@ -77,7 +76,7 @@ abstract class Gems_Default_RespondentChildActionAbstract extends \Gems_Controll
             $this->_respondent = $this->loader->getRespondent($patientNumber, $organizationId);
 
             if ((! $this->_respondent->exists) && $patientNumber && $organizationId) {
-                throw new \Gems_Exception($this->_('Unknown respondent.'));
+                throw new \Gems_Exception(sprintf($this->_('Unknown respondent %s.'), $patientNumber));
             }
 
             $this->_respondent->applyToMenuSource($this->menu->getParameterSource());

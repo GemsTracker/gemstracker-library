@@ -92,15 +92,15 @@ class TokenSearchSnippet extends PlanSearchSnippet
                         gro_active=1 AND
                         gtr_active=1 AND
                         $orgWhere)
-                            
+
                 UNION DISTINCT
-                
+
                 (SELECT DISTINCT ggp_id_group, ggp_name
                     FROM gems__tokens
                     INNER JOIN gems__surveys ON (gto_id_survey = gsu_id_survey AND gsu_active = 1)
                     INNER JOIN gems__groups ON (gsu_id_primary_group = ggp_id_group AND ggp_group_active = 1)
                     INNER JOIN gems__tracks ON (gto_id_track = gtr_id_track AND gtr_active = 1)
-                    WHERE 
+                    WHERE
                         gto_id_round = 0 AND
                         gto_id_organization IN (" . implode(',', array_keys($allowedOrgs)) . ") AND
                         gto_id_respondent = ?
@@ -120,26 +120,26 @@ class TokenSearchSnippet extends PlanSearchSnippet
     {
         $orgWhere    = "(INSTR(gtr_organizations, '|" .
                 implode("|') > 0 OR INSTR(gtr_organizations, '|", array_keys($allowedOrgs)) .
-                "|') > 0)";        
-        
+                "|') > 0)";
+
         /**
          * Explanation:
          *  Select all unique round descriptions for active rounds in active tracks
          *  Add to this the unique round descriptions for all tokens in active tracks with round id 0 (inserted round)
          */
         return $this->db->quoteInto("(SELECT DISTINCT gro_round_description, gro_round_description as gto_round_description
-                    FROM gems__rounds 
+                    FROM gems__rounds
                     INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
                     WHERE gro_active=1 AND
                         LENGTH(gro_round_description) > 0 AND
                         gtr_active=1 AND
                         $orgWhere)
                 UNION DISTINCT
-                
+
                 (SELECT DISTINCT gto_round_description as gro_round_description, gto_round_description
                     FROM gems__tokens
                     INNER JOIN gems__tracks ON (gto_id_track = gtr_id_track AND gtr_active = 1)
-                    WHERE 
+                    WHERE
                         gto_id_round = 0 AND
                         LENGTH(gto_round_description) > 0 AND
                         gto_id_organization IN (" . implode(',', array_keys($allowedOrgs)) . ") AND
@@ -161,7 +161,7 @@ class TokenSearchSnippet extends PlanSearchSnippet
         $orgWhere    = "(INSTR(gtr_organizations, '|" .
                 implode("|') > 0 OR INSTR(gtr_organizations, '|", array_keys($allowedOrgs)) .
                 "|') > 0)";
-        
+
         return $this->db->quoteInto(
                 "SELECT gtr_id_track, gtr_track_name
                     FROM gems__tracks
@@ -182,8 +182,8 @@ class TokenSearchSnippet extends PlanSearchSnippet
     {
         $orgWhere    = "(INSTR(gtr_organizations, '|" .
                 implode("|') > 0 OR INSTR(gtr_organizations, '|", array_keys($allowedOrgs)) .
-                "|') > 0)";      
-        
+                "|') > 0)";
+
         return $this->db->quoteInto("(SELECT DISTINCT gsu_id_survey, gsu_survey_name
                     FROM gems__surveys INNER JOIN gems__rounds ON gsu_id_survey = gro_id_survey
                         INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
@@ -191,14 +191,14 @@ class TokenSearchSnippet extends PlanSearchSnippet
                         gro_active=1 AND
                         gtr_active=1 AND
                         $orgWhere)
-                    
+
                 UNION DISTINCT
-                
+
                 (SELECT DISTINCT gsu_id_survey, gsu_survey_name
                     FROM gems__tokens
                     INNER JOIN gems__surveys ON (gto_id_survey = gsu_id_survey AND gsu_active = 1)
                     INNER JOIN gems__tracks ON (gto_id_track = gtr_id_track AND gtr_active = 1)
-                    WHERE 
+                    WHERE
                         gto_id_round = 0 AND
                         gto_id_organization IN (" . implode(',', array_keys($allowedOrgs)) . ") AND
                         gto_id_respondent = ?
@@ -207,23 +207,23 @@ class TokenSearchSnippet extends PlanSearchSnippet
                 $data['gto_id_respondent']
                 );
     }
-    
+
     /**
      * Return the fixed parameters
-     * 
+     *
      * Normally these are the hidden parameters like ID
-     * 
+     *
      * @return array
      */
     protected function getFixedParams()
     {
         $neededParams = parent::getFixedParams();
-        
+
         $neededParams[] = \MUtil_Model::REQUEST_ID1;
         $neededParams[] = \MUtil_Model::REQUEST_ID2;
-        
+
         return $neededParams;
-        
+
     }
 
     /**
@@ -235,6 +235,9 @@ class TokenSearchSnippet extends PlanSearchSnippet
     {
         $userOrgs = parent::getOrganizationList($data);
 
+        if (! $data['gto_id_respondent']) {
+            return $userOrgs;
+        }
         $respOrgs = $this->db->fetchCol(
                 "SELECT gr2o_id_organization FROM gems__respondent2org WHERE gr2o_id_user = ?",
                 $data['gto_id_respondent']);

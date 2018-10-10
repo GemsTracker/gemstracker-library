@@ -159,7 +159,7 @@ class Gems_Default_RespondentMailLogAction extends \Gems_Default_RespondentChild
                                 $row['gr2o_id_organization']
                                 );
 
-                        if (! $this->_respondent->exists && $patientNumber && $organizationId) {
+                        if (! $this->_respondent->exists) {
                             throw new \Gems_Exception($this->_('Unknown respondent.'));
                         }
 

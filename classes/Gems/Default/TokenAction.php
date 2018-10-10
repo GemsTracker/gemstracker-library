@@ -78,8 +78,8 @@ class Gems_Default_TokenAction extends \Gems_Default_TokenSearchActionAbstract
 
             $respondent = $this->loader->getRespondent($patientNumber, $organizationId);
 
-            if (! $respondent->exists) {
-                throw new \Gems_Exception($this->_('Unknown respondent.'));
+            if ((! $this->_respondent->exists) && $patientNumber && $organizationId) {
+                throw new \Gems_Exception(sprintf($this->_('Unknown respondent %s.'), $patientNumber));
             }
 
             $respondent->applyToMenuSource($this->menu->getParameterSource());
@@ -116,7 +116,7 @@ class Gems_Default_TokenAction extends \Gems_Default_TokenSearchActionAbstract
 
         // Survey action data
         $data['gto_id_respondent']   = $this->getRespondentId();
-        
+
         $orgsFor = $this->util->getOtherOrgsFor($this->_getParam(\MUtil_Model::REQUEST_ID2));
         if (is_array($orgsFor)) {
             $data['gto_id_organization'] = $orgsFor;

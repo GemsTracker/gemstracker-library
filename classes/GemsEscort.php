@@ -1362,11 +1362,6 @@ class GemsEscort extends \MUtil_Application_Escort
     public function controllerBeforeAction(\Zend_Controller_Action $actionController = null)
     {
         if (method_exists($actionController, 'getRespondent')) {
-            try {
-                $respondent = $actionController->getRespondent();
-            } catch (\Gems_Exception $exc) {
-                $respondent = null;
-            }
             $this->accesslog->logRequest($this->request, array(), null, $actionController->getRespondent());
         } else {
             $this->accesslog->logRequest($this->request, array());
