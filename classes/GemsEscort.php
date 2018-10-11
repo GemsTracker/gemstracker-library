@@ -1361,7 +1361,8 @@ class GemsEscort extends \MUtil_Application_Escort
      */
     public function controllerBeforeAction(\Zend_Controller_Action $actionController = null)
     {
-        if (method_exists($actionController, 'getRespondent')) {
+        // Test for Zend_Session::$_unitTestEnabled: db is not yet loaded in tests
+        if (method_exists($actionController, 'getRespondent') && (!\Zend_Session::$_unitTestEnabled)) {
             $this->accesslog->logRequest($this->request, array(), null, $actionController->getRespondent());
         } else {
             $this->accesslog->logRequest($this->request, array());
