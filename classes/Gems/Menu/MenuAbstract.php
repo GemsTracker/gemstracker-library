@@ -40,12 +40,6 @@ abstract class Gems_Menu_MenuAbstract
 
     /**
      *
-     * @var \Zend_Translate_Adapter
-     */
-    protected $translateAdapter;
-
-    /**
-     *
      * @var \Gems_User_User
      */
     protected $user;
