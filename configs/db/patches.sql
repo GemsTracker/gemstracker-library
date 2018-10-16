@@ -1425,3 +1425,9 @@ ALTER TABLE gems__agenda_staff
 ALTER TABLE gems__agenda_staff
     ADD gas_id_in_source varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null
     AFTER gas_source;
+
+-- PATCH: Updates rights to see raw data for Episodes of Care
+UPDATE gems__roles 
+    SET grl_privileges = CONCAT(grl_privileges, ',pr.episodes.rawdata')
+    WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.episodes.rawdata%';
+

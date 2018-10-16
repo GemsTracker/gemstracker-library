@@ -167,6 +167,7 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     ,pr.comm.job.create,pr.comm.job.edit,pr.comm.job.delete,
     ,pr.consent.delete,
     ,pr.database,pr.database.create,pr.database.delete,pr.database.execute,pr.database.patches,
+    ,pr.episodes.rawdata,
 	,pr.file-import,
     ,pr.group.create,pr.group.edit,
     ,pr.locations,pr.locations.cleanup,pr.locations.create,pr.locations.delete,pr.locations.edit,

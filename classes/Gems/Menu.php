@@ -173,11 +173,11 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         // ASSIGNED CONTROLLER
         $assiPage = $page->addPage($this->_('Assigned'), 'pr.role', 'role-overview', 'index');
         $assiPage->addAutofilterAction();
-        $assiPage->addExportAction(); 
-        
+        $assiPage->addExportAction();
+
         // PRIVILEGES CONTROLLER
         $privPage = $page->addPage($this->_('Privileges'), 'pr.role', 'privileges', 'index');
-        $privPage->addAutofilterAction();                
+        $privPage->addAutofilterAction();
         $privPage->addExportAction();
 
         // GROUPS CONTROLLER
@@ -789,6 +789,9 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
                 ));
         $this->addHiddenPrivilege('pr.respondent.multiorg', $this->_(
                 'Display multiple organizations in respondent overview.'
+                ));
+        $this->addHiddenPrivilege('pr.episodes.rawdata', $this->_(
+                'Display raw data in Episodes of Care.'
                 ));
         $this->addHiddenPrivilege('pr.respondent.result', $this->_(
                 'Display results in token overviews.'

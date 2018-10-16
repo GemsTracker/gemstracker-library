@@ -11,6 +11,8 @@
 
 namespace Gems\Model;
 
+use MUtil\Model\Type\JsonData;
+
 /**
  *
  * @package    Gems
@@ -151,6 +153,10 @@ class EpisodeOfCareModel extends \Gems_Model_JoinModel
 
         $this->set('appointment_count',     'label', $this->_('Appointments'));
 
+        $jsonType = new JsonData(10);
+        $jsonType->apply($this, 'gec_diagnosis_data', false);
+        $jsonType->apply($this, 'gec_extra_data',     false);
+
         $this->refreshGroupSettings();
 
         return $this;
@@ -191,6 +197,15 @@ class EpisodeOfCareModel extends \Gems_Model_JoinModel
         $this->setIfExists('gec_diagnosis',      'label', $this->_('Diagnosis'));
         $this->set('appointment_count',     'label', $this->_('Appointments'));
 
+        $jsonType = new JsonData(10);
+        $jsonType->apply($this, 'gec_diagnosis_data', true);
+        $jsonType->apply($this, 'gec_extra_data',     true);
+
+        if ($this->currentUser->hasPrivilege('pr.episodes.rawdata')) {
+            $this->setIfExists('gec_diagnosis_data', 'label', $this->_('Diagnosis data'));
+            $this->setIfExists('gec_extra_data',     'label', $this->_('Extra data'));
+        }
+
         $this->refreshGroupSettings();
 
         return $this;
@@ -227,6 +242,11 @@ class EpisodeOfCareModel extends \Gems_Model_JoinModel
                 'rows', 5);
         $this->setIfExists('gec_diagnosis',       'required', true);
         $this->set('appointment_count',           'elementClass', 'Exhibitor');
+
+        if ($this->currentUser->hasPrivilege('pr.episodes.rawdata')) {
+            $this->setIfExists('gec_diagnosis_data', 'elementClass', 'Exhibitor');
+            $this->setIfExists('gec_extra_data',     'elementClass', 'Exhibitor');
+        }
 
         return $this;
     }
