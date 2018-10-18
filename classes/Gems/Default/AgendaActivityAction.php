@@ -158,7 +158,7 @@ e.g. consult, check-up, diet, operation, physiotherapy or other.'),
      */
     public function getIndexTitle()
     {
-        return $this->_('Agenda activity');
+        return $this->_('Agenda activities');
     }
     
     /**

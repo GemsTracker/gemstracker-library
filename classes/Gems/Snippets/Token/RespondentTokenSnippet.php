@@ -43,7 +43,7 @@ class RespondentTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
     public $browse = true;
 
     /**
-     * When true: show tokens for all organisations, false: only current organisation, array => those organisations
+     * When true: show tokens for all organizations, false: only current organization, array => those organizations
      *
      * @var mixed boolean or array
      */

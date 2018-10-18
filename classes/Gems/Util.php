@@ -275,7 +275,7 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
     /**
      * The organizations whose tokens and tracks are shown for this organization
      *
-     * When true: show tokens for all organizations, false: only current organisation, array => those organisations
+     * When true: show tokens for all organizations, false: only current organization, array => those organizations
      *
      * @param int $organizationId Optional, uses current user when empty
      * @return boolean|array
@@ -288,7 +288,7 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
         // Do show data from all other orgs
         // return true;
 
-        // Return the organisations the user is allowed to see.
+        // Return the organizations the user is allowed to see.
         // return array_keys($this->currentUser->getAllowedOrganizations());
     }
 

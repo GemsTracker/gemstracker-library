@@ -120,8 +120,8 @@ class Gems_Default_AgendaDiagnosisAction extends \Gems_Controller_ModelSnippetAc
                 'required', true
                 );
 
-        $model->setIfExists('gad_coding_method',    'label', $this->_('Coding method'),
-                'description', $this->_('The coding method used.'),
+        $model->setIfExists('gad_coding_method',    'label', $this->_('Coding system'),
+                'description', $this->_('The coding system used.'),
                 'multiOptions', $translated->getEmptyDropdownArray() + $this->loader->getAgenda()->getDiagnosisCodingSystems()
                 );
 
@@ -152,7 +152,7 @@ class Gems_Default_AgendaDiagnosisAction extends \Gems_Controller_ModelSnippetAc
      */
     public function getIndexTitle()
     {
-        return $this->_('Diagnoses list');
+        return $this->_('Agenda diagnoses');
     }
 
     /**
@@ -163,7 +163,7 @@ class Gems_Default_AgendaDiagnosisAction extends \Gems_Controller_ModelSnippetAc
     public function getSearchFields()
     {
         return [
-            'gad_coding_method' => $this->_('(all coding methods)'),
+            'gad_coding_method' => $this->_('(all coding systems)'),
             'gad_filter'        => $this->_('(all filters)'),
         ];
     }

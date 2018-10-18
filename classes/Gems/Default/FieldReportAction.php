@@ -64,7 +64,7 @@ class Gems_Default_FieldReportAction extends \Gems_Controller_ModelSnippetAction
     protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Tracker_Fields_FieldReportSearchSnippet');
 
     /**
-     * Where statement filtering out organisations
+     * Where statement filtering out organizations
      *
      * @var string
      */

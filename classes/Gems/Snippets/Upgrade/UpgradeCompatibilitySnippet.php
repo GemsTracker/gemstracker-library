@@ -201,6 +201,13 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
                 'hasAllowedRole'            => 'inAllowedGroup',
                 'refreshAllowedStaffGroups' => null,
                 ],
+            'Gems_User_LoginStatusTracker' => [
+                'getUsedOrganisationId'     => 'getUsedOrganizationId',
+                ],
+            'Gems_User_Form_LayeredLoginForm' => [
+                'getChildOrganisations'     => 'getChildOrganizations',
+                'getTopOrganisations'       => 'getTopOrganizations',
+                ],
         );
         foreach ($obsFunctions as $className => $functions) {
             foreach ($functions as $funcName => $replacement) {

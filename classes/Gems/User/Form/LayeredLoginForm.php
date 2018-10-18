@@ -57,7 +57,7 @@ class Gems_User_Form_LayeredLoginForm extends \Gems_User_Form_LoginForm
             $orgId = parent::getActiveOrganizationId();
             $topId = $request->getParam($this->topOrganizationFieldName);
 
-            $children = $this->getChildOrganisations($topId);
+            $children = $this->getChildOrganizations($topId);
             if ($orgId && isset($children[$orgId])) {
                 return $orgId;
             }
@@ -72,7 +72,7 @@ class Gems_User_Form_LayeredLoginForm extends \Gems_User_Form_LoginForm
      * @param int $parentId
      * @return array
      */
-    public function getChildOrganisations($parentId = null)
+    public function getChildOrganizations($parentId = null)
     {
         static $children;
 
@@ -122,7 +122,7 @@ class Gems_User_Form_LayeredLoginForm extends \Gems_User_Form_LoginForm
         }
 
         $curOrg = $userLoader->getCurrentUser()->getCurrentOrganizationId();
-        $orgs   = $this->getChildOrganisations($this->getCurrentTopOrganizationId());
+        $orgs   = $this->getChildOrganizations($this->getCurrentTopOrganizationId());
         if (isset($orgs[$curOrg])) {
             return $curOrg;
         }
@@ -152,7 +152,7 @@ class Gems_User_Form_LayeredLoginForm extends \Gems_User_Form_LoginForm
             \Gems_Cookies::set('gems_toporganization', $orgId);
             return $orgId;
         } else {
-            $orgs = array_keys($this->getTopOrganisations());
+            $orgs = array_keys($this->getTopOrganizations());
             $firstId = reset($orgs);
             return \Gems_Cookies::get($this->getRequest(), 'gems_toporganization', $firstId);
         }
@@ -170,7 +170,7 @@ class Gems_User_Form_LayeredLoginForm extends \Gems_User_Form_LoginForm
         $element   = $this->getElement($this->organizationFieldName);
         $orgId     = $this->getCurrentOrganizationId();
         $parentId  = $this->getParentId();
-        $childOrgs = $this->getChildOrganisations($parentId);
+        $childOrgs = $this->getChildOrganizations($parentId);
 
         if (!empty($childOrgs)) {
             if (count($childOrgs) == 1) {
@@ -223,7 +223,7 @@ class Gems_User_Form_LayeredLoginForm extends \Gems_User_Form_LoginForm
      *
      * @return array
      */
-    public function getTopOrganisations()
+    public function getTopOrganizations()
     {
         try {
             $organizations = $this->db->fetchPairs('SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active=1 AND gor_has_login=1 AND (gor_accessible_by IS NULL OR gor_accessible_by = "::") ORDER BY gor_name');
@@ -251,7 +251,7 @@ class Gems_User_Form_LayeredLoginForm extends \Gems_User_Form_LoginForm
     {
         $element = $this->getElement($this->topOrganizationFieldName);
         $orgId   = $this->getCurrentTopOrganizationId();
-        $orgs    = $this->getTopOrganisations();
+        $orgs    = $this->getTopOrganizations();
         $hidden  = $this->_organizationFromUrl || (count($orgs) < 2);
 
         if ($this->_organizationFromUrl) {

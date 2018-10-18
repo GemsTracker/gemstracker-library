@@ -81,7 +81,7 @@ class Gems_Default_OrganizationAction extends \Gems_Controller_ModelSnippetActio
             $this->currentUser->setCurrentOrganization($orgId);
 
             if ($origUrl) {
-                // Check for organisation id in url, but not when a patient id is stated
+                // Check for organization id in url, but not when a patient id is stated
                 if (strpos($origUrl, '/' . \MUtil_Model::REQUEST_ID1 . '/') === false) {
                     foreach ($this->currentUser->possibleOrgIds as $key) {
                         $finds[]    = '/' . $key. '/' . $oldOrg;

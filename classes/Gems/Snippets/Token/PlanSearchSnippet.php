@@ -87,7 +87,7 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
         $elements['select_title'] = $this->_('Select:');
         $elements['break1']       = \MUtil_Html::create('br');
 
-        // Select organisation
+        // Select organization
         if (count($allowedOrgs) > 1) {
             $elements['gto_id_organization'] = $this->_createSelectElement(
                     'gto_id_organization',

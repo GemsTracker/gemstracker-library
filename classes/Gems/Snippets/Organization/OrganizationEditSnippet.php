@@ -66,7 +66,7 @@ class OrganizationEditSnippet extends \Gems_Snippets_ModelTabFormSnippetGeneric
             unset($multiOptions[$this->formData['gor_id_organization']]);
             $model->set('gor_accessible_by', 'multiOptions', $multiOptions);
 
-            // Show allowed organisations
+            // Show allowed organizations
             $org         = $this->loader->getOrganization($this->formData['gor_id_organization']);
             $allowedOrgs = $org->getAllowedOrganizations();
             //Strip self

@@ -515,8 +515,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
     /**
      * The organizations whose tokens are shown.
      *
-     * When true: show tokens for all organisations, false: only current organisation, array => those organisations
-     *
+     * When true: show tokens for all organizations, false: only current organization, array => those organizations
      * @return boolean|array
      */
     public function getOtherOrgs()

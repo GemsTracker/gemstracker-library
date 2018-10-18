@@ -168,7 +168,7 @@ class Gems_Default_ConsentPlanAction extends \Gems_Controller_ModelSnippetAction
             $model->set($month, 'formatFunction', $this->util->getLocalized()->getMonthName);
         }
 
-        // Only show organisations the user is allowed to see
+        // Only show organizations the user is allowed to see
         $allowed = $this->currentUser->getAllowedOrganizations();
         $model->setFilter(array('gr2o_id_organization'=>array_keys($allowed)));
 

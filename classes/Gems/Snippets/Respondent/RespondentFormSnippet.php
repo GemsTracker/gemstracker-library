@@ -55,7 +55,7 @@ class RespondentFormSnippet extends \Gems_Snippets_ModelFormSnippetGeneric
                 if (isset($this->formData['grs_ssn']) && $this->formData['grs_ssn'])  {
                     $filter = array(
                         'grs_ssn' => $this->formData['grs_ssn'],
-                        'gr2o_id_organization' => true, // Make sure all organisations are checked in RespModel
+                        'gr2o_id_organization' => true, // Make sure all organizations are checked in RespModel
                         );
 
                     if ($this->formData['gr2o_id_organization']) {

@@ -89,7 +89,7 @@ class LoginStatusTracker
      *
      * @return int
      */
-    public function getUsedOrganisationId()
+    public function getUsedOrganizationId()
     {
         return $this->_session->data['userOrganization'];
     }

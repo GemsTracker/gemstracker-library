@@ -436,7 +436,7 @@ class Gems_Util_TrackData extends UtilAbstract
     }
 
     /**
-     * Returns array (id => name) of all tracks accessible by this organisation, sorted alphabetically
+     * Returns array (id => name) of all tracks accessible by this organization, sorted alphabetically
      *
      * @param array $orgs orgId => org name
      * @return array

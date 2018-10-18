@@ -133,7 +133,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         $filter = parent::_checkFilterUsed($filter);
 
         if (isset($filter['gr2o_id_organization'])) {
-            // Check for option to check for any organisation
+            // Check for option to check for any organization
             if (true === $filter['gr2o_id_organization']) {
                 unset($filter['gr2o_id_organization']);
             }

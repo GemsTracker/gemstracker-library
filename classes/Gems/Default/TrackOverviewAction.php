@@ -142,7 +142,7 @@ class Gems_Default_TrackOverviewAction extends \Gems_Controller_ModelSnippetActi
      */
     public function getTopic($count = 1)
     {
-        return $this->_('track per organisation');
+        return $this->_('track per organization');
     }
 
     /**
