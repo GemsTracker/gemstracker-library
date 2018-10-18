@@ -113,7 +113,7 @@ class Gems_Default_AgendaProcedureAction extends \Gems_Controller_ModelSnippetAc
 
         $model->setDeleteValues('gapr_active', 0);
 
-        $model->set('gapr_name',                    'label', $this->_('Activity'),
+        $model->set('gapr_name',                    'label', $this->_('Procedure'),
                 'description', $this->_('A procedure describes an appointments effects on a respondent:
 e.g. an excercise, an explanantion, a massage, mindfullness, a (specific) operation, etc...'),
                 'required', true

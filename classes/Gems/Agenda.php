@@ -564,7 +564,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     {
         return [
             'DBC'    => $this->_('DBC (Dutch Diagnosis Treatment Code)'),
-            'manual' => $this->_('Manual (organisation Specfic)'),
+            'manual' => $this->_('Manual (organization specific)'),
         ];
     }
 
