@@ -50,10 +50,51 @@ class AppointmentFilterTest extends \Gems_Test_DbTestAbstract
         if (file_exists($testFile)) {
             return new \PHPUnit_Extensions_Database_DataSet_YamlDataSet($testFile);
         }
-        
+
         //Dataset className.yml has the minimal data we need to perform our tests
         $classFile =  str_replace('.php', '.yml', __FILE__);
         return new \PHPUnit_Extensions_Database_DataSet_YamlDataSet($classFile);
+    }
+
+    /**
+     * General test case for appointment filters
+     *
+     * @param array $expected Expected result of matchAppointment(), Nested array appointment id's = [triggered filter id's]
+     * @param string $test Name of test
+     */
+    public function performFilterTests(array $expected, $test)
+    {
+        $allAppointments = $this->model->load();
+        $results         = [];
+        $testFilters     = [];
+
+        // Test matchAppointment()
+        foreach ($allAppointments as $appointmentData) {
+            $appointment = $this->agenda->getAppointment($appointmentData);
+            $results[$appointment->getId()] = [];
+
+            $filters = $this->agenda->matchFilters($appointment);
+            foreach ($filters as $filter) {
+                if ($filter instanceof AppointmentFilterInterface) {
+                    $filterId = $filter->getFilterId();
+                    $results[$appointment->getId()][] = $filterId;
+                    $testFilters[$filterId] = $filter;
+                    $expected2[$filterId][] = $appointment->getId();
+                }
+            }
+        }
+        error_log(print_r($results, true));
+        $this->assertEquals($expected, $results, "Appointments match not equal to expected result for $test.");
+
+        // Test getSqlWhere()
+        $results2 = [];
+        foreach ($testFilters as $filter) {
+            if ($filter instanceof AppointmentFilterInterface) {
+                $sql = "SELECT gap_id_appointment FROM gems__appointments WHERE " . $filter->getSqlWhere();
+                $results2[$filter->getFilterId()] = $this->db->fetchCol($sql);
+            }
+        }
+        $this->assertEquals($expected2, $results2, "Appointment SQL not equal to appointment match for $test.");
     }
 
     /**
@@ -62,9 +103,6 @@ class AppointmentFilterTest extends \Gems_Test_DbTestAbstract
      */
     protected function setUp()
     {
-        // \Zend_Application: loads the autoloader
-        require_once 'Zend/Application.php';
-
         $iniFile = APPLICATION_PATH . '/configs/application.example.ini';
 
         // Use a database, can be empty but this speeds up testing a lot
@@ -82,9 +120,8 @@ class AppointmentFilterTest extends \Gems_Test_DbTestAbstract
         ]));
 
         // Add our test loader dirs
-        $dirs               = $config->loaderDirs->toArray();
         $config->loaderDirs = [GEMS_PROJECT_NAME_UC => GEMS_TEST_DIR . "/classes/" . GEMS_PROJECT_NAME_UC] +
-                $dirs;
+                $config->loaderDirs->toArray();
 
         // Create application, bootstrap, and run
         $application = new Zend_Application(APPLICATION_ENV, $config);
@@ -96,7 +133,7 @@ class AppointmentFilterTest extends \Gems_Test_DbTestAbstract
         $this->bootstrap->bootstrap('db');
         $this->bootstrap->getBootstrap()->getContainer()->db = $this->db;
 
-        // Remove
+        // Removing caching as this screws up the tests
         $this->bootstrap->bootstrap('cache');
         $this->bootstrap->getBootstrap()->getContainer()->cache = \Zend_Cache::factory(
                 'Core',
@@ -111,7 +148,7 @@ class AppointmentFilterTest extends \Gems_Test_DbTestAbstract
         \Zend_Db_Table::setDefaultAdapter($this->db);
 
         $this->loader = $this->bootstrap->getBootstrap()->getResource('loader');
-        $this->agenda = $this->loader->getAgenda();
+        $this->agenda = $this->loader->getAgenda()->reset();
         $this->model  = $this->loader->getModels()->createAppointmentModel();
 
          // Now set some defaults
@@ -141,38 +178,46 @@ class AppointmentFilterTest extends \Gems_Test_DbTestAbstract
      */
     public function testLocationFilters()
     {
-        $allAppointments = $this->model->load();
-
-        $expected = [
+        $this->performFilterTests([
             1 => [1],
             2 => [2],
             3 => [1, 2],
-        ];
-        $results     = [];
-        $testFilters = [];
+            4 => [],
+            ], 'Locations');
+    }
 
-        foreach ($allAppointments as $appointmentData) {
-            $appointment = $this->agenda->getAppointment($appointmentData);
-            $filters = $this->agenda->matchFilters($appointment);
-            foreach ($filters as $filter) {
-                if ($filter instanceof AppointmentFilterInterface) {
-                    $filterId = $filter->getFilterId();
-                    $results[$appointment->getId()][] = $filterId;
-                    $testFilters[$filterId] = $filter;
-                    $expected2[$filterId][] = $appointment->getId();
-                }
-            }
-        }
-        error_log(print_r($results, true));
-        $this->assertEquals($expected, $results, 'Appointments match not equal to expected result for Locations.');
-
-        $results2 = [];
-        foreach ($testFilters as $filter) {
-            if ($filter instanceof AppointmentFilterInterface) {
-                $sql = "SELECT gap_id_appointment FROM gems__appointments WHERE " . $filter->getSqlWhere();
-                $results2[$filter->getFilterId()] = $this->db->fetchCol($sql);
-            }
-        }
-        $this->assertEquals($expected2, $results2, 'Appointment SQL not equal to appointment match for Locations.');
+    /**
+     * Test location filters
+     */
+    public function testSqlLikeFilters()
+    {
+        $this->performFilterTests(
+                [
+                    1 => [1, 2, 3, 7, 8],
+                    2 => [1],
+                    3 => [1, 2, 7],
+                    4 => [1],
+                    5 => [4, 7, 8],
+                    6 => [4, 5, 6],
+                    7 => [4, 5, 7],
+                    8 => [4],
+                    9 => [1, 2, 3, 4, 7, 8],
+                    10 => [1, 4, 5, 6],
+                    11 => [1, 2, 4, 5, 7],
+                    12 => [1, 4],
+                    13 => [7, 8],
+                    14 => [],
+                    15 => [7],
+                    16 => [],
+                    17 => [7, 8],
+                    18 => [],
+                    19 => [7],
+                    20 => [],
+                    21 => [1],
+                    22 => [4],
+                    23 => [1, 4],
+                    24 => [],
+                    25 => [],
+                ], 'SQL Like');
     }
 }

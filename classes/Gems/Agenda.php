@@ -1241,6 +1241,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     public function matchFilters(\Gems_Agenda_Appointment $appointment)
     {
         $filters = $this->loadDefaultFilters();
+        error_log(count($filters));
         $output  = array();
 
         foreach ($filters as $filter) {
@@ -1445,5 +1446,18 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     {
         $args = func_get_args();
         return call_user_func_array(array($this->translateAdapter, 'plural'), $args);
+    }
+
+    /**
+     * Reset internally held data for testing
+     *
+     * @return $this
+     */
+    public function reset()
+    {
+        $this->_appointments = [];
+        $this->_filters = [];
+
+        return $this;
     }
 }

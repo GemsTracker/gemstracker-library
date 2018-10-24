@@ -23,9 +23,10 @@
 abstract class Gems_Test_DbTestAbstract extends \Zend_Test_PHPUnit_DatabaseTestCase
 {
     /**
-     * @var \Gems_Loader
+     *
+     * @var \PHPUnit_Extensions_Database_DB_IDatabaseConnection
      */
-    protected $loader = null;
+    protected $_connectionMock;
 
     /**
      * @var \Zend_Db_Adapter_Abstract
@@ -33,10 +34,9 @@ abstract class Gems_Test_DbTestAbstract extends \Zend_Test_PHPUnit_DatabaseTestC
     protected $db = null;
 
     /**
-     *
-     * @var \PHPUnit_Extensions_Database_DB_IDatabaseConnection
+     * @var \Gems_Loader
      */
-    protected $_connectionMock;
+    protected $loader = null;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
