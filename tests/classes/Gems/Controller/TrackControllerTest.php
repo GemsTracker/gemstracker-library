@@ -40,7 +40,6 @@ class TrackControllerTest extends ControllerTestAbstract
      */
     public function testCreateTrack()
     {
-        error_log(__FILE__ . '.' . __FUNCTION__ . '() line ' . __LINE__);
         $params = [
             'gr2t_id_track'        => 1,
             'save_button'          => 'Add track',
@@ -55,7 +54,7 @@ class TrackControllerTest extends ControllerTestAbstract
         $req->setParam('tr', 1);
         $req->setParam('id1', 'abc');
         $req->setParam('id2', 1);
-        error_log(__FILE__ . '.' . __FUNCTION__ . '() line ' . __LINE__);
+
         // First get the csrf token
         $this->dispatch('/track/create');
         $body = $this->getResponse()->getBody();
@@ -65,9 +64,9 @@ class TrackControllerTest extends ControllerTestAbstract
         } else {
             $this->fail('Unable to obtain csrf token');
         }
-        error_log(__FILE__ . '.' . __FUNCTION__ . '() line ' . __LINE__);
+
         $this->resetResponse();
-        error_log(__FILE__ . '.' . __FUNCTION__ . '() line ' . __LINE__);
+
         // Now submit the form
         $req->setPost('no_csrf', $csrf);
         $req->setMethod('post');

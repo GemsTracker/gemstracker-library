@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: LocationAppointmentFilter.php $
  */
 
 namespace Gems\Agenda\Filter;
@@ -26,7 +25,7 @@ use Gems\Agenda\AppointmentFilterAbstract;
 class LocationAppointmentFilter extends AppointmentFilterAbstract
 {
     /**
-     * The locations that this filter matches or true when not matching against procdures
+     * The locations that this filter matches or true when not matching against any location
      *
      * @var array glo_id_location => glo_id_location
      */
@@ -99,8 +98,8 @@ class LocationAppointmentFilter extends AppointmentFilterAbstract
     public function matchAppointment(\Gems_Agenda_Appointment $appointment)
     {
         if (true !== $this->_locations) {
-            if (! isset($this->_locations[$appointment->getLocationId()])) {
-                return false;
+            if (isset($this->_locations[$appointment->getLocationId()])) {
+                return true;
             }
         }
         return false;

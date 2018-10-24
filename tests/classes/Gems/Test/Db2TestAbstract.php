@@ -23,9 +23,10 @@
 abstract class Gems_Test_Db2TestAbstract extends \PHPUnit_Extensions_Database_TestCase
 {
     /**
-     * @var \Gems_Loader
+     *
+     * @var \PHPUnit_Extensions_Database_DB_DefaultDatabaseConnection
      */
-    protected $loader = null;
+    protected $_connectionMock;
 
     /**
      * @var Zend\Db\Adapter\Adapter
@@ -33,10 +34,9 @@ abstract class Gems_Test_Db2TestAbstract extends \PHPUnit_Extensions_Database_Te
     protected $db = null;
 
     /**
-     *
-     * @var \PHPUnit_Extensions_Database_DB_DefaultDatabaseConnection
+     * @var \Gems_Loader
      */
-    protected $_connectionMock;
+    protected $loader = null;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -47,7 +47,7 @@ abstract class Gems_Test_Db2TestAbstract extends \PHPUnit_Extensions_Database_Te
         parent::setUp();
 
         $connection = $this->getConnection()->getConnection();
-        
+
         // Now add some utility functions that sqlite does not have. Copied from
         // Drupal: https://github.com/drupal/drupal/blob/8.4.x/core/lib/Drupal/Core/Database/Driver/sqlite/Connection.php
         /* @var $connection \PDO */

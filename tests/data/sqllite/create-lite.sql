@@ -22,6 +22,29 @@ CREATE TABLE gems__agenda_activities (
     ;
 
 
+CREATE TABLE gems__agenda_diagnoses (
+        gad_diagnosis_code  varchar(50) not null,
+        gad_description     varchar(250),
+
+        gad_coding_method   varchar(10) not null default 'DBC',
+        gad_code            varchar(40),
+
+        gad_source          varchar(20) not null default 'manual',
+        gad_id_in_source    varchar(40),
+
+        gad_active          TINYINT(1) not null default 1,
+        gad_filter          TINYINT(1) not null default 0,
+
+        gad_changed         TEXT not null default current_timestamp,
+        gad_changed_by      INTEGER not null,
+        gad_created         TEXT not null default '0000-00-00 00:00:00',
+        gad_created_by      INTEGER not null,
+
+        PRIMARY KEY (gad_diagnosis_code)
+    )
+    ;
+
+
 CREATE TABLE gems__agenda_procedures (
         gapr_id_procedure    INTEGER not null ,
         gapr_name            varchar(250) ,
@@ -54,6 +77,9 @@ CREATE TABLE gems__agenda_staff (
         gas_id_user         INTEGER,
 
         gas_match_to        varchar(250) ,
+
+        gas_source          varchar(20) not null default 'manual',
+        gas_id_in_source    varchar(40),
 
         gas_active          TINYINT(1) not null default 1,
         gas_filter          TINYINT(1) not null default 0,
@@ -99,6 +125,7 @@ CREATE TABLE gems__appointments (
         gap_id_activity         INTEGER,
         gap_id_procedure        INTEGER,
         gap_id_location         INTEGER,
+        gap_diagnosis_code      varchar(50),
 
         gap_subject             varchar(250),
         gap_comment             TEXT,
@@ -330,6 +357,8 @@ CREATE TABLE gems__episodes_of_care (
         gec_comment                 text,
 
         gec_diagnosis               varchar(250),
+        gec_diagnosis_data          text,
+        gec_extra_data              text,
 
         gec_changed                 TEXT not null default current_timestamp,
         gec_changed_by              INTEGER not null,
@@ -655,7 +684,7 @@ CREATE TABLE gems__patch_levels (
 
 INSERT INTO gems__patch_levels (gpl_level, gpl_created)
    VALUES
-   (63, CURRENT_TIMESTAMP);
+   (64, CURRENT_TIMESTAMP);
 
 CREATE TABLE gems__radius_config (
         grcfg_id                bigint(11) NOT NULL ,
@@ -1028,6 +1057,7 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     ,pr.comm.job.create,pr.comm.job.edit,pr.comm.job.delete,
     ,pr.consent.delete,
     ,pr.database,pr.database.create,pr.database.delete,pr.database.execute,pr.database.patches,
+    ,pr.episodes.rawdata,
 	,pr.file-import,
     ,pr.group.create,pr.group.edit,
     ,pr.locations,pr.locations.cleanup,pr.locations.create,pr.locations.delete,pr.locations.edit,

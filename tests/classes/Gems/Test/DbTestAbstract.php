@@ -28,7 +28,7 @@ abstract class Gems_Test_DbTestAbstract extends \Zend_Test_PHPUnit_DatabaseTestC
     protected $loader = null;
 
     /**
-     * @var \Zend_Db
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db = null;
 
@@ -48,7 +48,7 @@ abstract class Gems_Test_DbTestAbstract extends \Zend_Test_PHPUnit_DatabaseTestC
 
         $this->db = $this->getConnection()->getConnection();
         $connection = $this->getConnection()->getConnection()->getConnection();
-        
+
         // Now add some utility functions that sqlite does not have. Copied from
         // Drupal: https://github.com/drupal/drupal/blob/8.4.x/core/lib/Drupal/Core/Database/Driver/sqlite/Connection.php
         /* @var $connection \PDO */
@@ -103,7 +103,7 @@ abstract class Gems_Test_DbTestAbstract extends \Zend_Test_PHPUnit_DatabaseTestC
         // For successful testing of the complete tokens class, we need more tables
         return array($path . 'sqllite/create-lite.sql');
     }
-    
+
     /**
      * SQLite compatibility implementation for the CONCAT() SQL function.
      */

@@ -27,7 +27,7 @@ use Gems\Agenda\AppointmentSubFilterAbstract;
 class AndAppointmentFilter extends AppointmentSubFilterAbstract
 {
     protected $glue = ' AND ';
-    
+
     /**
      * Generate a where statement to filter the appointment model
      *
@@ -47,7 +47,7 @@ class AndAppointmentFilter extends AppointmentSubFilterAbstract
         }
 
         if ($wheres) {
-            return implode($this->glue, $wheres);
+            return '(' . implode($this->glue, $wheres) . ')';
         } else {
             return parent::NO_MATCH_SQL;
         }
