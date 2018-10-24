@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: AgendaFilterAction.php $
  */
 
 /**
@@ -44,7 +43,6 @@ class Gems_Default_AgendaFilterAction extends \Gems_Controller_ModelSnippetActio
      * @var mixed String or array of snippets name
      */
     protected $showParameters = array(
-        'bridgeMode'      => \MUtil_Model_Bridge_BridgeAbstract::MODE_SINGLE_ROW,
         'calSearchFilter' => 'getShowFilter',
         'caption'         => 'getShowCaption',
         'onEmpty'         => 'getShowOnEmpty',

@@ -92,5 +92,4 @@ class RespondentPlanTokenSnippet extends PlanTokenSnippet
         }
         $bridge->addSortable('assigned_by');
     }
-
 }

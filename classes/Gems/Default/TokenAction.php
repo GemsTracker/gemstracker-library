@@ -77,8 +77,8 @@ class Gems_Default_TokenAction extends \Gems_Default_TokenSearchActionAbstract
             $organizationId = $this->_getParam(\MUtil_Model::REQUEST_ID2);
 
             $respondent = $this->loader->getRespondent($patientNumber, $organizationId);
-
-            if ((! $this->_respondent->exists) && $patientNumber && $organizationId) {
+            
+            if ((! $respondent->exists) && $patientNumber && $organizationId) {
                 throw new \Gems_Exception(sprintf($this->_('Unknown respondent %s.'), $patientNumber));
             }
 
