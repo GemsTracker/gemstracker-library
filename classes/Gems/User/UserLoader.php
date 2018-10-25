@@ -813,7 +813,9 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
             self::$currentUser = $user;
 
             // Update the escort variable used by loader
-            \GemsEscort::getInstance()->currentUser = $user;
+            if ($escort = GemsEscort::getInstance()) {
+                $escort->currentUser = $user;
+            }
 
             // Double check in case this function was used as original
             // start for setting the user.
