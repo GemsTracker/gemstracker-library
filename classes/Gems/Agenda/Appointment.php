@@ -11,6 +11,8 @@
 
 use Gems\Agenda\AppointmentFilterInterface;
 
+use Gems\Agenda\EpisodeOfCare;
+
 /**
  *
  * @package    Gems
@@ -171,7 +173,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
                 }
             }
 
-            // \MUtil_Echo::track($trackId, $createTrack, $filter->getName(), $filter->getSqlWhere(), $filter->getFilterId());
+            // \MUtil_Echo::track($trackId, $createTrack, $filter->getName(), $filter->getSqlAppointmentsWhere(), $filter->getFilterId());
             if ($createTrack) {
                 $respTrack = $this->_createTrack($filter, $tracker);
                 $existingTracks[$trackId][] = $respTrack;
@@ -403,6 +405,19 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
         $results[] = $this->getSubject();
 
         return implode($this->_('; '), array_filter($results));
+    }
+
+    /**
+     *
+     * @return \Gems|Agenda\EpisodeOfCare
+     */
+    public function getEpisode()
+    {
+        $episodeId = $this->getEpisodeId();
+
+        if ($episodeId) {
+            return $this->agenda->getEpisodeOfCare($episodeId);
+        }
     }
 
     /**

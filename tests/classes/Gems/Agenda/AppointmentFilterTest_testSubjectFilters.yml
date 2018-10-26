@@ -41,14 +41,10 @@ gems__agenda_staff:
 gems__appointment_filters:
     -
         gaf_id: 1
-        gaf_class: 'LocationAppointmentFilter'
-        gaf_manual_name: 'Location xxx'
-        gaf_calc_name: 'Location contains %xxx%'
+        gaf_class: 'SubjectAppointmentFilter'
+        gaf_calc_name: 'Subject contains %xxx%'
         gaf_id_order: 10
         gaf_filter_text1: '%xxx%'
-        gaf_filter_text2:
-        gaf_filter_text3:
-        gaf_filter_text4:
         gaf_active: 1
         gaf_changed: '2017-08-09'
         gaf_changed_by: '1'
@@ -56,14 +52,10 @@ gems__appointment_filters:
         gaf_created_by: '1'
     -
         gaf_id: 2
-        gaf_class: 'LocationAppointmentFilter'
-        gaf_manual_name: 'Location yyy'
-        gaf_calc_name: 'Location contains %yyy%'
+        gaf_class: 'SubjectAppointmentFilter'
+        gaf_calc_name: 'Subject contains %yyy%'
         gaf_id_order: 20
         gaf_filter_text1: '%yyy%'
-        gaf_filter_text2:
-        gaf_filter_text3:
-        gaf_filter_text4:
         gaf_active: 1
         gaf_changed: '2017-08-09'
         gaf_changed_by: '1'
@@ -71,14 +63,10 @@ gems__appointment_filters:
         gaf_created_by: '1'
     -
         gaf_id: 3
-        gaf_class: 'LocationAppointmentFilter'
-        gaf_manual_name: 'Inactive test'
-        gaf_calc_name: 'Location contains %Location%'
+        gaf_class: 'SubjectAppointmentFilter'
+        gaf_calc_name: 'Subject contains %zzz%'
         gaf_id_order: 30
-        gaf_filter_text1: '%Location%'
-        gaf_filter_text2:
-        gaf_filter_text3:
-        gaf_filter_text4:
+        gaf_filter_text1: '%zzz%'
         gaf_active: 0
         gaf_changed: '2017-08-09'
         gaf_changed_by: '1'
@@ -86,14 +74,23 @@ gems__appointment_filters:
         gaf_created_by: '1'
     -
         gaf_id: 4
-        gaf_class: 'LocationAppointmentFilter'
-        gaf_manual_name: 'Active but no field set'
-        gaf_calc_name: 'Location contains %Location%'
+        gaf_class: 'SubjectAppointmentFilter'
+        gaf_manual_name: 'Inactive test'
+        gaf_calc_name: 'Subject contains %sub%'
         gaf_id_order: 40
-        gaf_filter_text1: '%Location%'
-        gaf_filter_text2:
-        gaf_filter_text3:
-        gaf_filter_text4:
+        gaf_filter_text1: '%Sub%'
+        gaf_active: 0
+        gaf_changed: '2017-08-09'
+        gaf_changed_by: '1'
+        gaf_created: '2017-08-09'
+        gaf_created_by: '1'
+    -
+        gaf_id: 5
+        gaf_class: 'SubjectAppointmentFilter'
+        gaf_manual_name: 'Active but no field set'
+        gaf_calc_name: 'Subject contains %sub%'
+        gaf_id_order: 50
+        gaf_filter_text1: '%Sub%'
         gaf_active: 1
         gaf_changed: '2017-08-09'
         gaf_changed_by: '1'
@@ -116,7 +113,7 @@ gems__appointments:
         gap_id_procedure: 1
         gap_id_location: 1
         gap_diagnosis_code:
-        gap_subject:
+        gap_subject: 'Subject xxx '
         gap_comment:
         gap_changed: '2017-08-09'
         gap_changed_by: '1'
@@ -136,9 +133,9 @@ gems__appointments:
         gap_id_referred_by: 1
         gap_id_activity: 1
         gap_id_procedure: 1
-        gap_id_location: 2
+        gap_id_location: 1
         gap_diagnosis_code:
-        gap_subject:
+        gap_subject: 'Subject yyy '
         gap_comment:
         gap_changed: '2017-08-09'
         gap_changed_by: '1'
@@ -158,9 +155,9 @@ gems__appointments:
         gap_id_referred_by: 1
         gap_id_activity: 1
         gap_id_procedure: 1
-        gap_id_location: 3
+        gap_id_location: 1
         gap_diagnosis_code:
-        gap_subject:
+        gap_subject: 'Subject xxx & yyy '
         gap_comment:
         gap_changed: '2017-08-09'
         gap_changed_by: '1'
@@ -180,9 +177,9 @@ gems__appointments:
         gap_id_referred_by: 1
         gap_id_activity: 1
         gap_id_procedure: 1
-        gap_id_location: 4
+        gap_id_location: 1
         gap_diagnosis_code:
-        gap_subject:
+        gap_subject: 'Subject www '
         gap_comment:
         gap_changed: '2017-08-09'
         gap_changed_by: '1'
@@ -345,6 +342,28 @@ gems__track_appointments:
         gtap_required: 0
         gtap_readonly: 0
         gtap_filter_id: 3
+        gtap_min_diff_length: 1
+        gtap_min_diff_unit: 'D'
+        gtap_max_diff_exists: 0
+        gtap_max_diff_length: 0
+        gtap_max_diff_unit: 'D'
+        gtap_uniqueness: 1
+        gtap_create_track: 1
+        gtap_create_wait_days: 182
+        gtap_changed: '2012-09-07'
+        gtap_changed_by: '1'
+        gtap_created: '2012-09-07'
+        gtap_created_by: '1'
+    -
+        gtap_id_app_field: 4
+        gtap_id_track: '1'
+        gtap_id_order: 30
+        gtap_field_name: 'Test 4'
+        gtap_to_track_info: 1
+        gtap_track_info_label: 0
+        gtap_required: 0
+        gtap_readonly: 0
+        gtap_filter_id: 4
         gtap_min_diff_length: 1
         gtap_min_diff_unit: 'D'
         gtap_max_diff_exists: 0

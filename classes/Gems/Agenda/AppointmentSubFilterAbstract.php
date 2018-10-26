@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: AppointmentSubFilterAbstract.php $
  */
 
 namespace Gems\Agenda;
@@ -21,8 +20,14 @@ namespace Gems\Agenda;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 17-okt-2014 14:46:23
  */
-abstract class AppointmentSubFilterAbstract extends AppointmentFilterAbstract
+abstract class AppointmentSubFilterAbstract extends BasicFilterAbstract
 {
+    /**
+     *
+     * @var boolean When true prefer appointments SQL
+     */
+    protected $_preferAppointments = true;
+
     /**
      *
      * @var array of AppointmentFilterInterface instances
@@ -52,7 +57,7 @@ abstract class AppointmentSubFilterAbstract extends AppointmentFilterAbstract
                 $this->agenda instanceof \Gems_Agenda &&
                 ! $this->_subFilters) {
 
-            // Flexible determination of filters to load. Save for future expansion of numbe rof fields
+            // Flexible determination of filters to load. Save for future expansion of number of fields
             $i         = 1;
             $field     = 'gaf_filter_text' . $i;
             $filterIds = array();
@@ -65,8 +70,9 @@ abstract class AppointmentSubFilterAbstract extends AppointmentFilterAbstract
             }
 
             if ($filterIds) {
-                $filterObjects = $this->agenda->getFilters("SELECT *
-                    FROM gems__appointment_filters 
+                $preferAppBalance = 0;
+                $filterObjects  = $this->agenda->getFilters("SELECT *
+                    FROM gems__appointment_filters
                     WHERE gaf_id IN (" . implode(', ', $filterIds) . ")
                     ORDER BY gaf_id_order");
 
@@ -76,11 +82,13 @@ abstract class AppointmentSubFilterAbstract extends AppointmentFilterAbstract
                         if ($filterObject instanceof AppointmentFilterInterface) {
                             if ($filterObject->getFilterId() == $id) {
                                 $this->_subFilters[$id] = $filterObject;
-                                break;
+                                $preferAppBalance += $filterObject->preferAppointmentSql() ? 1 : -1;
                             }
                         }
                     }
                 }
+
+                $this->_preferAppointments = $preferAppBalance >= 0;
             }
         }
     }
@@ -92,4 +100,13 @@ abstract class AppointmentSubFilterAbstract extends AppointmentFilterAbstract
      * @return boolean
      */
     // public function matchAppointment(\Gems_Agenda_Appointment $appointment);
+
+    /**
+     *
+     * @return boolean When true prefer SQL statements filtering appointments
+     */
+    public function preferAppointmentSql()
+    {
+        return $this->_preferAppointments;
+    }
 }

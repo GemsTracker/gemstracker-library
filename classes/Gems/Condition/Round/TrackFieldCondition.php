@@ -56,7 +56,7 @@ class TrackFieldCondition extends RoundConditionAbstract
 
     public function getHelp()
     {
-        return $this->_("First pick a trackfield that has a code. Then choose your comparison operator and specify the needed parameters");
+        return $this->_("First pick a trackfield that has a code. Then choose your comparison operator and specify the needed parameters.");
     }
 
     public function getModelFields($context, $new)
@@ -70,18 +70,18 @@ class TrackFieldCondition extends RoundConditionAbstract
             'gcon_condition_text3' => ['elementClass' => 'Hidden'],
             'gcon_condition_text4' => ['elementClass' => 'Hidden'],
         ];
-        
+
         if (!(isset($context['gcon_condition_text2']) && $context['gcon_condition_text2'] && array_key_exists($context['gcon_condition_text2'], $comparators))) {
             $context['gcon_condition_text2'] = key($comparators);
         }
-        $comparator = $this->getComparator($context['gcon_condition_text2'], []);            
+        $comparator = $this->getComparator($context['gcon_condition_text2'], []);
         switch ($comparator->getNumParams()) {
             case 2:
                 $result['gcon_condition_text4'] = ['label' => $this->_('Param2'), 'elementClass' => 'text'];
                 // intentional fall through
 
             case 1:
-                $result['gcon_condition_text3'] = ['label' => $this->_('Param1'), 'elementClass' => 'text'];                
+                $result['gcon_condition_text3'] = ['label' => $this->_('Param1'), 'elementClass' => 'text'];
 
             default:
                 break;

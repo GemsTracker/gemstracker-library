@@ -11,6 +11,8 @@
 
 namespace Gems\Agenda\Filter;
 
+use Gems\Agenda\EpisodeOfCare;
+
 /**
  *
  * @package    Gems
@@ -22,19 +24,40 @@ namespace Gems\Agenda\Filter;
 class NotAnyAppointmentFilter extends AndAppointmentFilter
 {
     /**
+     * Standard where processing
+     *
+     * @param string $where
+     * @return string
+     */
+    protected function fixSql($where)
+    {
+        if ($where == parent::NO_MATCH_SQL) {
+            return parent::MATCH_ALL_SQL;
+        } elseif ($where == parent::MATCH_ALL_SQL) {
+            return parent::NO_MATCH_SQL;
+        } else {
+            return "NOT ($where)";
+        }
+    }
+
+    /**
      * Generate a where statement to filter the appointment model
      *
      * @return string
      */
-    public function getSqlWhere()
+    public function getSqlAppointmentsWhere()
     {
-        $where = parent::getSqlWhere();
+        return $this->fixSql(parent::getSqlAppointmentsWhere());
+    }
 
-        if ($where == parent::NO_MATCH_SQL) {
-            return parent::MATCH_ALL_SQL;
-        } else {
-            return "NOT ($where)";
-        }
+    /**
+     * Generate a where statement to filter an episode model
+     *
+     * @return string
+     */
+    public function getSqlEpisodeWhere()
+    {
+        return $this->fixSql(parent::getSqlEpisodeWhere());
     }
 
     /**
@@ -46,5 +69,16 @@ class NotAnyAppointmentFilter extends AndAppointmentFilter
     public function matchAppointment(\Gems_Agenda_Appointment $appointment)
     {
         return ! parent::matchAppointment($appointment);
+    }
+
+    /**
+     * Check a filter for a match
+     *
+     * @param \Gems\Agenda\EpisodeOfCare $episode
+     * @return boolean
+     */
+    public function matchEpisode(EpisodeOfCare $episode)
+    {
+        return ! parent::matchEpisode($episode);
     }
 }

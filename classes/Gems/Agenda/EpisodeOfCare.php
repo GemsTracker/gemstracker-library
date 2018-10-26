@@ -23,6 +23,12 @@ class EpisodeOfCare extends \MUtil_Translate_TranslateableAbstract
 {
     /**
      *
+     * @var array appointmentId => appointment object
+     */
+    protected $_appointments = false;
+
+    /**
+     *
      * @var int The id of the episode
      */
     protected $_episodeId;
@@ -81,6 +87,19 @@ class EpisodeOfCare extends \MUtil_Translate_TranslateableAbstract
             $this->_episodeId = $episodeData;
             // loading occurs in checkRegistryRequestAnswers
         }
+    }
+
+    /**
+     *
+     * @return array of appointmentId => appointment object
+     */
+    public function getAppointments()
+    {
+        if (false === $this->_appointments) {
+            $this->_appointments = $this->agenda->getAppointmentsForEpisode($this);
+        }
+
+        return $this->_appointments;
     }
 
     /**
@@ -217,6 +236,7 @@ class EpisodeOfCare extends \MUtil_Translate_TranslateableAbstract
         if ($this->currentUser instanceof \Gems_User_User) {
             $this->_gemsData = $this->currentUser->applyGroupMask($this->_gemsData);
         }
+        $this->_appointments = false;
 
         return $this;
     }

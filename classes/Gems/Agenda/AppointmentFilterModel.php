@@ -42,12 +42,14 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
      */
     protected $filterDependencies = array(
         'AndModelDependency',
+        'DiagnosisEpisodeModelDependency',
         'FieldLikeModelDependency',
         'LocationModelDependency',
         'NotAnyModelDependency',
         'OrModelDependency',
         'SqlLikeModelDependency',
-        'SubjectModelDependency',
+        'SubjectAppointmentModelDependency',
+        'SubjectEpisodeModelDependency',
     );
 
     /**

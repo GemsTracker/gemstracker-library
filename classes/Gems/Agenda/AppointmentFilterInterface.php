@@ -21,7 +21,6 @@ namespace Gems\Agenda;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 13-okt-2014 20:00:03
  */
-// interface Gems_Agenda_AppointmentFilterInterface
 interface AppointmentFilterInterface
 {
     /**
@@ -32,15 +31,8 @@ interface AppointmentFilterInterface
     public function exchangeArray(array $data);
 
     /**
-     * The appointment field id from gtap_id_app_field
-     *
-     * @return int
-     */
-    public function getAppointmentFieldId();
-    
-    /**
      * Return the type of track creator this filter is
-     * 
+     *
      * @return int
      */
     public function getCreatorType();
@@ -67,18 +59,18 @@ interface AppointmentFilterInterface
     public function getName();
 
     /**
-     * Generate a where statement to filter the appointment model
+     * Generate a where statement to filter an appointment model
      *
      * @return string
      */
-    public function getSqlWhere();
+    public function getSqlAppointmentsWhere();
 
     /**
-     * The track field id for the filter
+     * Generate a where statement to filter an episode model
      *
-     * @return int
+     * @return string
      */
-    public function getTrackAppointmentFieldId();
+    public function getSqlEpisodeWhere();
 
     /**
      * The track id for the filter
@@ -108,4 +100,18 @@ interface AppointmentFilterInterface
      * @return boolean
      */
     public function matchAppointment(\Gems_Agenda_Appointment $appointment);
+
+    /**
+     * Check a filter for a match
+     *
+     * @param \Gems\Agenda\EpisodeOfCare $episode
+     * @return boolean
+     */
+    public function matchEpisode(EpisodeOfCare $episode);
+
+    /**
+     *
+     * @return boolean When true prefer SQL statements filtering appointments
+     */
+    public function preferAppointmentSql();
 }

@@ -112,7 +112,7 @@ class AppointmentSelect extends \MUtil_Registry_TargetAbstract
      */
     public function forFilter(AppointmentFilterInterface $filter)
     {
-        $this->_select->where($filter->getSqlWhere());
+        $this->_select->where($filter->getSqlAppointmentsWhere());
 
         return $this;
     }

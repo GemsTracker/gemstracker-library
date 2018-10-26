@@ -24,33 +24,33 @@ use Gems\Tracker\Model\FieldMaintenanceModel;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 13-okt-2014 20:13:01
  */
-abstract class AppointmentFilterAbstract extends BasicFilterAbstract
+abstract class EpisodeFilterAbstract extends BasicFilterAbstract
 {
     /**
      * Generate a where statement to filter an appointment model
      *
      * @return string
      */
-    // public function getSqlAppointmentsWhere();
-
-    /**
-     * Generate a where statement to filter an episode model
-     *
-     * @return string
-     */
-    public function getSqlEpisodeWhere()
+    public function getSqlAppointmentsWhere()
     {
-        $where = $this->getSqlAppointmentsWhere();
+        $where = $this->getSqlEpisodeWhere();
 
         if (($where == parent::NO_MATCH_SQL) || ($where == parent::MATCH_ALL_SQL)) {
             return $where;
         }
 
         return sprintf(
-                "gec_episode_of_care_id IN (SELECT gap_id_episode FROM gems__appointments WHERE %s)",
+                "gap_id_episode IN (SELECT gec_episode_of_care_id FROM gems__episodes_of_care WHERE %s)",
                 $where
                 );
     }
+
+    /**
+     * Generate a where statement to filter an episode model
+     *
+     * @return string
+     */
+    // public function getSqlEpisodeWhere();
 
     /**
      * Check a filter for a match
@@ -58,7 +58,16 @@ abstract class AppointmentFilterAbstract extends BasicFilterAbstract
      * @param \Gems\Agenda\Gems_Agenda_Appointment $appointment
      * @return boolean
      */
-    // public function matchAppointment(\Gems_Agenda_Appointment $appointment);
+    public function matchAppointment(\Gems_Agenda_Appointment $appointment)
+    {
+        $episode = $appointment->getEpisode();
+
+        if (! ($episode && $episode->exists)) {
+            return false;
+        }
+
+        return $this->matchEpisode($episode);
+    }
 
     /**
      * Check a filter for a match
@@ -66,18 +75,7 @@ abstract class AppointmentFilterAbstract extends BasicFilterAbstract
      * @param \Gems\Agenda\EpisodeOfCare $episode
      * @return boolean
      */
-    public function matchEpisode(EpisodeOfCare $episode)
-    {
-        foreach ($episode->getAppointments() as $appointment) {
-            if ($appointment instanceof \Gems_Agenda_Appointment) {
-                if ($this->matchAppointment($appointment)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
+    // public function matchEpisode(EpisodeOfCare $episode);
 
     /**
      *
@@ -85,6 +83,6 @@ abstract class AppointmentFilterAbstract extends BasicFilterAbstract
      */
     public function preferAppointmentSql()
     {
-        return true;
+        return false;
     }
 }

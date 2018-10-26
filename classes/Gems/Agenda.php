@@ -305,93 +305,6 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     }
 
     /**
-     * Find the first appointment matching this query
-     *
-     * @param int $filterId
-     * @param \Gems_Tracker_RespondentTrack $respTrack
-     * @param mixed $from Optional date or appointment after which the appointment must occur
-     * @param string $oper Comaprison operator for the from date
-     * @param int $uniqueness 0 is not unique, 1 within respTreck, 2 within track, 3 overall
-     * @return int The first found appointment id or false
-     * /
-    public function findFirstAppointmentId($filterId, \Gems_Tracker_RespondentTrack $respTrack,
-            $from = null, $oper = '>=', $uniqueness = 0)
-    {
-        $filter = $this->getFilter($filterId);
-        if (! $filter) {
-            return false;
-        }
-
-        $respondentId = $respTrack->getRespondentId();
-        $orgId        = $respTrack->getOrganizationId();
-
-        $select = $this->db->select();
-        $select->from('gems__appointments', 'gap_id_appointment')
-                ->where('gap_id_user = ?', $respondentId)
-                ->where('gap_id_organization = ?', $orgId)
-                ->where('gap_status IN (?)', $this->getStatusKeysActiveDbQuoted())
-                ->where($filter->getSqlWhere())
-                ->limit(1);
-
-        if ($from) {
-            if ($from instanceof \Gems_Agenda_Appointment) {
-                $from = $from->getAdmissionTime();
-            }
-            if ($from instanceof \Zend_Date) {
-                $from = $from->toString('yyyy-MM-dd HH:mm:ss');
-            }
-            $select->where("gap_admission_time $oper ?", $from);
-        }
-        if ('<' === $oper[0]) {
-            $select->order('gap_admission_time DESC');
-        } else {
-            $select->order('gap_admission_time ASC');
-        }
-
-        if ($uniqueness) {
-            $fieldId     = intval($filter->getAppointmentFieldId());
-            $respTrackId = intval($respTrack->getRespondentTrackId());
-            switch ($uniqueness) {
-                case 1:
-                    $select->where(
-                            "gap_id_appointment NOT IN
-                                (SELECT gr2t2a_id_appointment FROM gems__respondent2track2appointment
-                                    WHERE gr2t2a_id_appointment IS NOT NULL AND
-                                        gr2t2a_id_respondent_track = $respTrackId AND
-                                        gr2t2a_id_app_field != $fieldId)"
-                            );
-                    break;
-                case 2:
-                    $trackId = $respTrack->getTrackId();
-                    $select->where(
-                            "gap_id_appointment NOT IN
-                                (SELECT gr2t2a_id_appointment FROM gems__respondent2track2appointment
-                                    INNER JOIN gems__respondent2track
-                                        ON gr2t2a_id_respondent_track = gr2t_id_respondent_track
-                                    WHERE gr2t2a_id_appointment IS NOT NULL AND
-                                        gr2t_id_track = $trackId AND
-                                        NOT (gr2t2a_id_respondent_track = $respTrackId AND
-                                            gr2t2a_id_app_field = $fieldId))"
-                            );
-                    break;
-//                case 3:
-//                    $select->where(
-//                            "gap_id_appointment NOT IN
-//                                (SELECT gr2t2a_id_appointment FROM gems__respondent2track2appointment
-//                                    WHERE gr2t2a_id_appointment IS NOT NULL AND
-//                                        NOT (gr2t2a_id_respondent_track = $respTrackId AND
-//                                            gr2t2a_id_app_field = $fieldId))"
-//                            );
-//                    break;
-                // default:
-            }
-        }
-
-        // \MUtil_Echo::track($select->__toString(), $uniqueness, $filter->getSqlWhere());
-        return $this->db->fetchOne($select);
-    }
-
-    /**
      * Get all active respondents for this user
      *
      * @param int $respondentId When null $patientNr is required
@@ -556,6 +469,37 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Get all appointments for an episode
+     *
+     * @param int|Episode $episode Episode Id or object
+     * @return array appointmentId => appointment object
+     */
+    public function getAppointmentsForEpisode($episode)
+    {
+        $select = $this->_getAppointmentSelect();
+
+        if ($episode instanceof EpisodeOfCare) {
+            $episodeId = $episode->getId();
+        } else {
+            $episodeId = $episode;
+        }
+        $select->where('gap_id_episode = ?', $episodeId);
+
+        // \MUtil_Echo::track($select->__toString());
+        $rows = $this->db->fetchAll($select);
+
+        if (! $rows) {
+            return array();
+        }
+
+        $results = array();
+        foreach ($rows as $row) {
+            $results[$row['gap_id_appointment']] = $this->getAppointment($row);
+        }
+        return $results;
+    }
+
+    /**
      * Get a selection list of coding systems used
      *
      * @return array code => label
@@ -654,7 +598,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
      * Get the options list episodes for episodes
      *
      * @param array $episodes
-     * @return array of $epsiodeId => Description
+     * @return array of $episodeId => Description
      */
     public function getEpisodesAsOptions(array $episodes)
     {
@@ -674,7 +618,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
      *
      * @param \Gems_Tracker_Respondent $respondent
      * @param $where mixed Optional extra string or array filter
-     * @return array of $epsiodeId => \Gems\Agenda\EpisodeOfCare
+     * @return array of $episodeId => \Gems\Agenda\EpisodeOfCare
      */
     public function getEpisodesFor(\Gems_Tracker_Respondent $respondent, $where = null)
     {
@@ -687,7 +631,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
      * @param int $respondentId
      * @param int $orgId
      * @param $where mixed Optional extra string or array filter
-     * @return array of $epsiodeId => \Gems\Agenda\EpisodeOfCare
+     * @return array of $episodeId => \Gems\Agenda\EpisodeOfCare
      */
     public function getEpisodesForRespId($respondentId, $orgId, $where = null)
     {
@@ -1241,7 +1185,6 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     public function matchFilters(\Gems_Agenda_Appointment $appointment)
     {
         $filters = $this->loadDefaultFilters();
-        error_log(count($filters));
         $output  = array();
 
         foreach ($filters as $filter) {

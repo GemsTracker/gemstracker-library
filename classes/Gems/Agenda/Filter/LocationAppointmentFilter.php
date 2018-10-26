@@ -75,7 +75,7 @@ class LocationAppointmentFilter extends AppointmentFilterAbstract
      *
      * @return string
      */
-    public function getSqlWhere()
+    public function getSqlAppointmentsWhere()
     {
         if ($this->_locations && ($this->_locations !== true)) {
             $where = 'gap_id_location IN (' . implode(', ', $this->_locations) . ')';

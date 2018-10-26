@@ -10,6 +10,8 @@
  * @version    $Id: CalendarTableSnippet.php$
  */
 
+use Gems\Agenda\AppointmentFilterInterface;
+
 /**
  *
  * @package    Gems
@@ -18,11 +20,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Snippets_Agenda_CalendarTableSnippet extends \Gems_Snippets_ModelTableSnippetGeneric
+class Gems_Snippets_Agenda_CalendarTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
 {
     /**
      *
-     * @var array Optional alternative search filter for appointments
+     * @var \Gems\Agenda\AppointmentFilterInterface
      */
     protected $calSearchFilter;
 
@@ -31,6 +33,12 @@ class Gems_Snippets_Agenda_CalendarTableSnippet extends \Gems_Snippets_ModelTabl
      * @var \Gems_Loader
      */
     protected $loader;
+
+    /**
+     *
+     * @var \MUtil_Model_ModelAbstract
+     */
+    protected $model;
 
     /**
      * Adds columns from the model to the bridge that creates the browse table.
@@ -99,7 +107,19 @@ class Gems_Snippets_Agenda_CalendarTableSnippet extends \Gems_Snippets_ModelTabl
         parent::afterRegistry();
 
         if ($this->calSearchFilter) {
-            $this->searchFilter = $this->calSearchFilter;
+            if ($this->calSearchFilter instanceof AppointmentFilterInterface) {
+                $this->searchFilter = [
+                    \MUtil_Model::SORT_DESC_PARAM => 'gap_admission_time',
+                    $this->calSearchFilter->getSqlAppointmentsWhere(),
+                    'limit' => 10,
+                    ];
+                // \MUtil_Echo::track($this->calSearchFilter->getSqlAppointmentsWhere());
+
+                $this->caption = $this->_('Example appointments');
+                $this->onEmpty = $this->_('No example appointments found');
+            } else {
+                $this->searchFilter = $this->calSearchFilter;
+            }
         }
     }
 

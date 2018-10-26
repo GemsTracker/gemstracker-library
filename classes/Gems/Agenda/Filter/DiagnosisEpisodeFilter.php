@@ -7,12 +7,12 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: SubjectAppointmentFilter.php $
  */
 
 namespace Gems\Agenda\Filter;
 
-use Gems\Agenda\AppointmentFilterAbstract;
+use Gems\Agenda\EpisodeFilterAbstract;
+use Gems\Agenda\EpisodeOfCare;
 
 /**
  *
@@ -23,33 +23,37 @@ use Gems\Agenda\AppointmentFilterAbstract;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 13-okt-2014 20:02:33
  */
-class SubjectAppointmentFilter extends AppointmentFilterAbstract
+class DiagnosisEpisodeFilter extends EpisodeFilterAbstract
 {
     /**
-     * Generate a where statement to filter the appointment model
+     * Generate a where statement to filter an episode model
      *
      * @return string
      */
-    public function getSqlAppointmentsWhere()
+    public function getSqlEpisodeWhere()
     {
         $text = $this->_data['gaf_filter_text1'];
         if ($text) {
-            return "gap_subject LIKE '$text'";
+            return "gec_diagnosis LIKE '$text'";
         } else {
-            return parent::NO_MATCH_SQL;
+            return "(gec_diagnosis IS NULL OR gec_diagnosis = '')";
         }
     }
 
     /**
      * Check a filter for a match
      *
-     * @param \Gems\Agenda\Gems_Agenda_Appointment $appointment
+     * @param \Gems\Agenda\EpisodeOfCare $episode
      * @return boolean
      */
-    public function matchAppointment(\Gems_Agenda_Appointment $appointment)
+    public function matchEpisode(EpisodeOfCare $episode)
     {
+        if (! $this->_data['gaf_filter_text1']) {
+            return ! $episode->getDiagnosis();
+        }
+
         $regex = '/' . str_replace(array('%', '_'), array('.*', '.{1,1}'),$this->_data['gaf_filter_text1']) . '/i';
 
-        return (boolean) preg_match($regex, $appointment->getSubject());
+        return (boolean) preg_match($regex, $episode->getDiagnosis());
     }
 }

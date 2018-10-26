@@ -35,6 +35,13 @@ class Gems_Default_CareEpisodeAction extends \Gems_Default_RespondentChildAction
         );
 
     /**
+     * The snippets used for the autofilter action.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $autofilterSnippets = 'Agenda\\EpisodeTableSnippet';
+
+    /**
      *
      * @var \Gems_User_User
      */

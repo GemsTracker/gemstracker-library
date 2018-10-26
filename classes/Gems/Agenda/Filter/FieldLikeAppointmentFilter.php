@@ -100,7 +100,7 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
     {
         if ($this->_data &&
                 $this->db instanceof \Zend_Db_Adapter_Abstract) {
-            
+
             $this->_fieldList2 = $this->loadFieldList($this->_data['gaf_filter_text1'], $this->_data['gaf_filter_text2']);
             $this->_fieldList4 = $this->loadFieldList($this->_data['gaf_filter_text3'], $this->_data['gaf_filter_text4']);
         }
@@ -147,7 +147,7 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
      *
      * @return string
      */
-    public function getSqlWhere()
+    public function getSqlAppointmentsWhere()
     {
         if ($this->_data['gaf_filter_text1'] && $this->_data['gaf_filter_text2']) {
             $wheres[] = $this->getSqlWhereSingle($this->_data['gaf_filter_text1'], $this->_data['gaf_filter_text2'], $this->_fieldList2);
@@ -155,20 +155,25 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
         if ($this->_data['gaf_filter_text3'] && $this->_data['gaf_filter_text4']) {
             $wheres[] = $this->getSqlWhereSingle($this->_data['gaf_filter_text3'], $this->_data['gaf_filter_text4'], $this->_fieldList4);
         }
-        
-        $where = join(' AND ', $wheres);
+        foreach ($wheres as $key => $where) {
+            if ($where == parent::NO_MATCH_SQL) {
+                return parent::NO_MATCH_SQL;
+            } elseif ($where == parent::MATCH_ALL_SQL) {
+                unset($wheres[$key]);
+            }
+        }
 
-        if ($where) {
-            return "($where)";
+        if ($wheres) {
+            return '(' . join(' AND ', $wheres) . ')';
         } else {
-            return parent::NO_MATCH_SQL;
+            return parent::MATCH_ALL_SQL;
         }
     }
-    
+
     protected function getSqlWhereSingle($field, $searchTxt, $fieldList)
     {
         $where = '';
-        
+
         if ($field && $searchTxt) {
             if(isset($this->_lookupTables[$field])) {
                 if ($fieldList && $fieldList !== true) {
@@ -180,14 +185,14 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
                 $where .= $field . " LIKE '$searchTxt'";
             }
         }
-        
+
         return $where;
     }
-    
+
     protected function loadFieldList($field, $searchTxt)
     {
         $result = null;
-        
+
         if ($field && $searchTxt) {
             if (isset($this->_lookupTables[$field])) {
                 $table = $this->_lookupTables[$field]['tableName'];
@@ -213,20 +218,20 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
     public function matchAppointment(\Gems_Agenda_Appointment $appointment)
     {
         $result1 = $this->matchSingle(
-                $this->_data['gaf_filter_text1'], 
-                $this->_data['gaf_filter_text2'], 
-                $this->_fieldList2, 
+                $this->_data['gaf_filter_text1'],
+                $this->_data['gaf_filter_text2'],
+                $this->_fieldList2,
                 $appointment);
-        
+
         $result2 = $this->matchSingle(
-                $this->_data['gaf_filter_text3'], 
-                $this->_data['gaf_filter_text4'], 
-                $this->_fieldList4, 
+                $this->_data['gaf_filter_text3'],
+                $this->_data['gaf_filter_text4'],
+                $this->_fieldList4,
                 $appointment);
-        
+
         return $result1 && $result2;
     }
-    
+
     /**
      * Check a filter for a match
      *
@@ -239,7 +244,7 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
     protected function matchSingle($field, $searchTxt, $fieldList, $appointment)
     {
         $result = true;
-        
+
         if ($field && $searchTxt) {
             $value = $this->getAppointmentFieldValue($appointment, $field);
             if (isset($this->_lookupTables[$field])) {
@@ -258,7 +263,7 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
                 }
             }
         }
-        
+
         return $result;
     }
 }

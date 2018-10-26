@@ -42,11 +42,9 @@ class Gems_Default_AgendaFilterAction extends \Gems_Controller_ModelSnippetActio
      *
      * @var mixed String or array of snippets name
      */
-    protected $showParameters = array(
+    protected $showParameters = [
         'calSearchFilter' => 'getShowFilter',
-        'caption'         => 'getShowCaption',
-        'onEmpty'         => 'getShowOnEmpty',
-        );
+        ];
 
     /**
      * The snippets used for the show action
@@ -56,6 +54,7 @@ class Gems_Default_AgendaFilterAction extends \Gems_Controller_ModelSnippetActio
     protected $showSnippets = array(
         'Generic\\ContentTitleSnippet',
         'ModelItemTableSnippetGeneric',
+        'Agenda\\EpisodeTableSnippet',
         'Agenda_CalendarTableSnippet',
         );
 
@@ -109,24 +108,6 @@ class Gems_Default_AgendaFilterAction extends \Gems_Controller_ModelSnippetActio
     }
 
     /**
-     *
-     * @return type
-     */
-    public function getShowCaption()
-    {
-        return $this->_('Example appointments');
-    }
-
-    /**
-     *
-     * @return type
-     */
-    public function getShowOnEmpty()
-    {
-        return $this->_('No example appointments found');
-
-    }
-    /**
      * Get an agenda filter for the current shown item
      *
      * @return array
@@ -135,14 +116,8 @@ class Gems_Default_AgendaFilterAction extends \Gems_Controller_ModelSnippetActio
     {
         $filter = $this->loader->getAgenda()->getFilter($this->_getIdParam());
 
-        if ($filter && $filter->getSqlWhere()) {
-            return array(
-                \MUtil_Model::SORT_DESC_PARAM => 'gap_admission_time',
-                $filter->getSqlWhere(),
-                'limit' => 10,
-                );
-        } else {
-            return array('1=0');
+        if ($filter) {
+            return $filter;
         }
     }
 }

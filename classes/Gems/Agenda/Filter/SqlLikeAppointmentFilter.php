@@ -109,7 +109,7 @@ class SqlLikeAppointmentFilter extends AppointmentFilterAbstract
      *
      * @return string
      */
-    public function getSqlWhere()
+    public function getSqlAppointmentsWhere()
     {
         if ($this->_activities && ($this->_activities !== true)) {
             $where = 'gap_id_activity IN (' . implode(', ', $this->_activities) . ')';

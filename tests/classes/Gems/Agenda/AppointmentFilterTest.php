@@ -83,14 +83,14 @@ class AppointmentFilterTest extends \Gems_Test_DbTestAbstract
                 }
             }
         }
-        error_log(print_r($results, true));
+        // error_log(print_r($results, true));
         $this->assertEquals($expected, $results, "Appointments match not equal to expected result for $test.");
 
-        // Test getSqlWhere()
+        // Test getSqlAppointmentsWhere()
         $results2 = [];
         foreach ($testFilters as $filter) {
             if ($filter instanceof AppointmentFilterInterface) {
-                $sql = "SELECT gap_id_appointment FROM gems__appointments WHERE " . $filter->getSqlWhere();
+                $sql = "SELECT gap_id_appointment FROM gems__appointments WHERE " . $filter->getSqlAppointmentsWhere();
                 $results2[$filter->getFilterId()] = $this->db->fetchCol($sql);
             }
         }
@@ -174,6 +174,41 @@ class AppointmentFilterTest extends \Gems_Test_DbTestAbstract
     }
 
     /**
+     * Test Field Like filters
+     */
+    public function testFieldLikeFilters()
+    {
+        $this->performFilterTests(
+                [
+                    1 => [1, 2, 3, 7, 8],
+                    2 => [1],
+                    3 => [1, 2, 7],
+                    4 => [1],
+                    5 => [4, 7, 8],
+                    6 => [4, 5, 6],
+                    7 => [4, 5, 7],
+                    8 => [4],
+                    9 => [1, 2, 3, 4, 7, 8],
+                    10 => [1, 4, 5, 6],
+                    11 => [1, 2, 4, 5, 7],
+                    12 => [1, 4],
+                    13 => [7, 8],
+                    14 => [],
+                    15 => [7],
+                    16 => [],
+                    17 => [7, 8],
+                    18 => [],
+                    19 => [7],
+                    20 => [],
+                    21 => [1],
+                    22 => [4],
+                    23 => [1, 4],
+                    24 => [],
+                    25 => [],
+                ], 'SQL Like');
+    }
+
+    /**
      * Test location filters
      */
     public function testLocationFilters()
@@ -187,7 +222,7 @@ class AppointmentFilterTest extends \Gems_Test_DbTestAbstract
     }
 
     /**
-     * Test location filters
+     * Test SQL Like filters
      */
     public function testSqlLikeFilters()
     {
@@ -219,5 +254,19 @@ class AppointmentFilterTest extends \Gems_Test_DbTestAbstract
                     24 => [],
                     25 => [],
                 ], 'SQL Like');
+    }
+
+    /**
+     * Test subject filters
+     */
+    public function testSubjectFilters()
+    {
+        $this->performFilterTests(
+                [
+                    1 => [1],
+                    2 => [2],
+                    3 => [1, 2],
+                    4 => [],
+                ], 'Subject');
     }
 }
