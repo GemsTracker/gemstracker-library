@@ -164,6 +164,21 @@ class AppointmentFilterTest extends \Gems_Test_DbTestAbstract
     }
 
     /**
+     * Test subject filters
+     */
+    public function testAppSubjectFilters()
+    {
+        $this->performFilterTests(
+                [
+                    1 => [1],
+                    2 => [2],
+                    3 => [1, 2],
+                    4 => [],
+                    5 => [4],
+                ], 'Appointment Subject');
+    }
+
+    /**
      * General test database is loaded
      */
     public function testCountStaff()
@@ -254,19 +269,5 @@ class AppointmentFilterTest extends \Gems_Test_DbTestAbstract
                     24 => [],
                     25 => [],
                 ], 'SQL Like');
-    }
-
-    /**
-     * Test subject filters
-     */
-    public function testSubjectFilters()
-    {
-        $this->performFilterTests(
-                [
-                    1 => [1],
-                    2 => [2],
-                    3 => [1, 2],
-                    4 => [],
-                ], 'Subject');
     }
 }

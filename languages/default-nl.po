@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-26 16:08+0200\n"
+"POT-Creation-Date: 2018-10-26 16:32+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -349,7 +349,6 @@ msgstr "Gebruik van dit filter in andere filters."
 #: classes/Gems/Agenda/Filter/LocationModelDependency.php:45
 #: classes/Gems/Agenda/Filter/NotAnyModelDependency.php:51
 #: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:56
-#: classes/Gems/Agenda/Filter/SubjectAppointmentModelDependency.php:44
 msgid "empty filter"
 msgstr "leeg filter"
 
@@ -414,6 +413,7 @@ msgstr ""
 "voor een enkel willekeurig teken."
 
 #: classes/Gems/Agenda/Filter/DiagnosisEpisodeModelDependency.php:80
+#: classes/Gems/Agenda/Filter/SubjectAppointmentModelDependency.php:80
 #: classes/Gems/Agenda/Filter/SubjectEpisodeModelDependency.php:80
 msgid "Leave empty to filter for missing content."
 msgstr "Leeglaten om te filteren op het ontbreken van inhoud."
@@ -524,11 +524,15 @@ msgstr ""
 msgid "Appointment subject contains %s"
 msgstr "Afspraak onderwerp bevat %s"
 
+#: classes/Gems/Agenda/Filter/SubjectAppointmentModelDependency.php:44
+msgid "Missing appointment subject filter"
+msgstr "Afspraak onderwerp ontbreekt"
+
 #: classes/Gems/Agenda/Filter/SubjectAppointmentModelDependency.php:65
 msgid "Appointment subject match"
 msgstr "Filter op afspraak onderwerp"
 
-#: classes/Gems/Agenda/Filter/SubjectAppointmentModelDependency.php:83
+#: classes/Gems/Agenda/Filter/SubjectAppointmentModelDependency.php:84
 msgid "Appointment subject"
 msgstr "Afspraak onderwerp"
 

@@ -36,7 +36,7 @@ class SubjectAppointmentFilter extends AppointmentFilterAbstract
         if ($text) {
             return "gap_subject LIKE '$text'";
         } else {
-            return parent::NO_MATCH_SQL;
+            return "(gap_subject IS NULL OR gap_subject = '')";
         }
     }
 
@@ -48,6 +48,10 @@ class SubjectAppointmentFilter extends AppointmentFilterAbstract
      */
     public function matchAppointment(\Gems_Agenda_Appointment $appointment)
     {
+        if (! $this->_data['gaf_filter_text1']) {
+            return ! $appointment->getSubject();
+        }
+
         $regex = '/' . str_replace(array('%', '_'), array('.*', '.{1,1}'),$this->_data['gaf_filter_text1']) . '/i';
 
         return (boolean) preg_match($regex, $appointment->getSubject());

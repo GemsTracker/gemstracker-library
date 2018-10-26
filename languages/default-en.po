@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-26 16:09+0200\n"
+"POT-Creation-Date: 2018-10-26 16:31+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -346,7 +346,6 @@ msgstr "The use of this filter in other filters."
 #: classes/Gems/Agenda/Filter/LocationModelDependency.php:45
 #: classes/Gems/Agenda/Filter/NotAnyModelDependency.php:51
 #: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:56
-#: classes/Gems/Agenda/Filter/SubjectAppointmentModelDependency.php:44
 msgid "empty filter"
 msgstr "empty filter"
 
@@ -411,6 +410,7 @@ msgstr ""
 "single random character."
 
 #: classes/Gems/Agenda/Filter/DiagnosisEpisodeModelDependency.php:80
+#: classes/Gems/Agenda/Filter/SubjectAppointmentModelDependency.php:80
 #: classes/Gems/Agenda/Filter/SubjectEpisodeModelDependency.php:80
 msgid "Leave empty to filter for missing content."
 msgstr "Leave empty to filter for missing content."
@@ -519,11 +519,16 @@ msgstr "But skip when this text is found - use %%-sign as well."
 msgid "Appointment subject contains %s"
 msgstr "Appointment subject contains %s"
 
+#: classes/Gems/Agenda/Filter/SubjectAppointmentModelDependency.php:44
+#| msgid "Missing episode subject filter"
+msgid "Missing appointment subject filter"
+msgstr "Missing appointment subject filter"
+
 #: classes/Gems/Agenda/Filter/SubjectAppointmentModelDependency.php:65
 msgid "Appointment subject match"
 msgstr "Appointment subject match"
 
-#: classes/Gems/Agenda/Filter/SubjectAppointmentModelDependency.php:83
+#: classes/Gems/Agenda/Filter/SubjectAppointmentModelDependency.php:84
 msgid "Appointment subject"
 msgstr "Appointment subject"
 
@@ -623,9 +628,6 @@ msgid "Between"
 msgstr "Between"
 
 #: classes/Gems/Condition/Round/TrackFieldCondition.php:59
-#| msgid ""
-#| "First pick a trackfield that has a code. Then choose your comparison "
-#| "operator and specify the needed parameters"
 msgid ""
 "First pick a trackfield that has a code. Then choose your comparison "
 "operator and specify the needed parameters."

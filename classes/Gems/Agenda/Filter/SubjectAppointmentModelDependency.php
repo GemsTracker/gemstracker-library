@@ -41,7 +41,7 @@ class SubjectAppointmentModelDependency extends FilterModelDependencyAbstract
         if (isset($context['gaf_filter_text1'])) {
             return sprintf($this->_('Appointment subject contains %s'), $context['gaf_filter_text1']);
         } else {
-            return $this->_('empty filter');
+            return $this->_('Missing appointment subject filter');
         }
     }
 
@@ -76,13 +76,14 @@ class SubjectAppointmentModelDependency extends FilterModelDependencyAbstract
     {
         $description = $this->_(
                 "Use the %%-sign to search for zero or more random characters and an _ for a single random character."
-                );
+                ) . "\n" .
+                $this->_("Leave empty to filter for missing content.");
 
         return array(
             'gaf_filter_text1' => array(
                 'label'       => $this->_('Appointment subject'),
                 'description' => $description,
-                'required'    => true,
+                'required'    => false,
                 ),
             );
     }
