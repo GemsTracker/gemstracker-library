@@ -87,7 +87,7 @@ class FieldLikeModelDependency extends FilterModelDependencyAbstract
             'gap_id_location'     => $this->_('Location'),
             'gap_subject'         => $this->_('Subject'),
         );
-        
+
         asort($output);
 
         return $output;
@@ -123,9 +123,9 @@ class FieldLikeModelDependency extends FilterModelDependencyAbstract
     public function getTextSettings()
     {
         $fields = $this->agenda->getFieldLabels();
-        $description = $this->_(
+        $description = sprintf($this->_(
                 "Use the %%-sign to search for zero or more random characters and an _ for a single random character."
-                );
+                ));
 
         return array(
             'gaf_filter_text1' => array(

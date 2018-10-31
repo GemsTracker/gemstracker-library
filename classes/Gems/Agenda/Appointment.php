@@ -592,6 +592,15 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     *
+     * @return boolean
+     */
+    public function hasEpisode()
+    {
+        return (boolean) $this->_gemsData['gap_id_episode'];
+    }
+
+    /**
      * Return true when the status is active
      *
      * @return type

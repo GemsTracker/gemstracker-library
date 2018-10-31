@@ -59,42 +59,153 @@ class AppointmentFilterTest extends \Gems_Test_DbTestAbstract
     /**
      * General test case for appointment filters
      *
-     * @param array $expected Expected result of matchAppointment(), Nested array appointment id's = [triggered filter id's]
+     * @param array $expectedAppFilters Expected result of matchAppointment(), Nested array appointment id's = [triggered filter id's]
      * @param string $test Name of test
      */
-    public function performFilterTests(array $expected, $test)
+    public function performFilterTests(array $expectedAppFilters, $test)
     {
-        $allAppointments = $this->model->load();
-        $results         = [];
-        $testFilters     = [];
+        $allAppointments    = $this->model->load();
+        $allEpisodeIds      = $this->db->fetchPairs(
+                "SELECT gec_episode_of_care_id, gec_episode_of_care_id
+                    FROM gems__episodes_of_care
+                    ORDER BY gec_episode_of_care_id"
+                );
+        $testFilters        = $this->db->fetchPairs(
+                "SELECT gaf_id, gaf_active
+                    FROM gems__appointment_filters INNER JOIN gems__track_appointments ON gaf_id = gtap_filter_id
+                    ORDER BY gaf_id"
+                );
 
-        // Test matchAppointment()
+        $expectedEpiFilters = array_fill_keys($allEpisodeIds, []);
+        $expectedFilterApps = array_fill_keys(array_keys($testFilters), []);
+        $expectedFilterEpis = $expectedFilterApps;
+
+        // TEST matchAppointment()
+        $resultsAppFilters  = [];
         foreach ($allAppointments as $appointmentData) {
-            $appointment = $this->agenda->getAppointment($appointmentData);
-            $results[$appointment->getId()] = [];
+            $appointment   = $this->agenda->getAppointment($appointmentData);
+            $appointmentId = $appointment->getId();
+            $resultsAppFilters[$appointmentId] = [];
 
             $filters = $this->agenda->matchFilters($appointment);
             foreach ($filters as $filter) {
                 if ($filter instanceof AppointmentFilterInterface) {
                     $filterId = $filter->getFilterId();
-                    $results[$appointment->getId()][] = $filterId;
-                    $testFilters[$filterId] = $filter;
-                    $expected2[$filterId][] = $appointment->getId();
+                    $resultsAppFilters[$appointmentId][] = $filterId;
+
+                    if (! $testFilters[$filterId] instanceof AppointmentFilterInterface) {
+                        if (0 == $testFilters[$filterId]) {
+                            $this->fail(sprintf(
+                                    "Filter %s (id %s) was triggered while inactive in $test.",
+                                    $filter->getName(),
+                                    $filterId
+                                    ));
+                        }
+                        $testFilters[$filterId] = $filter;
+                    }
+                    // Prepare for getSqlAppointmentsWhere() test
+                    $expectedFilterApps[$filterId][] = $appointment->getId();
+
+                    // Prepare for matchEpisode() test
+                    if ($appointment->hasEpisode()) {
+                        $expectedEpiFilters[$appointment->getEpisodeId()][] = $filterId;
+                    }
+                } else {
+                    $this->fail("Unexepected non-filter return for appointment in $test.");
                 }
             }
         }
         // error_log(print_r($results, true));
-        $this->assertEquals($expected, $results, "Appointments match not equal to expected result for $test.");
+        $this->assertEquals(
+                $expectedAppFilters,
+                $resultsAppFilters,
+                "Appointments match not equal to expected result for $test."
+                );
 
-        // Test getSqlAppointmentsWhere()
-        $results2 = [];
-        foreach ($testFilters as $filter) {
+        // TEST getSqlAppointmentsWhere()
+        $resultsFilterApps = [];
+        foreach ($testFilters as $filterId => $filter) {
+            if (! $filter instanceof AppointmentFilterInterface) {
+                if (0 == $filter) {
+                    // Was not used so triggered no results to compare to
+                    $resultsFilterApps[$filterId] = [];
+                    continue;
+                }
+                $filter = $this->agenda->getFilter($filterId);
+            }
             if ($filter instanceof AppointmentFilterInterface) {
                 $sql = "SELECT gap_id_appointment FROM gems__appointments WHERE " . $filter->getSqlAppointmentsWhere();
-                $results2[$filter->getFilterId()] = $this->db->fetchCol($sql);
+                $resultsFilterApps[$filter->getFilterId()] = $this->db->fetchCol($sql);
+            } else {
+                $this->fail(sprintf("Filter %d could not be loaded in $test.", $filterId));
             }
         }
-        $this->assertEquals($expected2, $results2, "Appointment SQL not equal to appointment match for $test.");
+        $this->assertEquals(
+                $expectedFilterApps,
+                $resultsFilterApps,
+                "Appointment SQL not equal to appointment match for $test."
+                );
+
+        // TEST matchEpsiode()
+        $resultsEpiFilters  = [];
+        foreach ($allEpisodeIds as $epiId) {
+            $episode = $this->agenda->getEpisodeOfCare($epiId);
+
+            $resultsEpiFilters[$epiId] = [];
+
+            $filters = $this->agenda->matchFilters($episode);
+            foreach ($filters as $filter) {
+                if ($filter instanceof AppointmentFilterInterface) {
+                    $filterId = $filter->getFilterId();
+                    $resultsEpiFilters[$epiId][] = $filterId;
+
+                    if (! $testFilters[$filterId] instanceof AppointmentFilterInterface) {
+                        if (0 == $testFilters[$filterId]) {
+                            $this->fail(sprintf(
+                                    "Filter %s (id %s) was triggered while inactive in $test.",
+                                    $filter->getName(),
+                                    $filterId
+                                    ));
+                        }
+                        $testFilters[$filterId] = $filter;
+                    }
+                    // Prepare for getSqlEpisodeWhere() test
+                    $expectedFilterEpis[$filterId][] = $episode->getId();
+                } else {
+                    $this->fail("Unexepected non-filter return for epsiode in $test.");
+                }
+            }
+        }
+        $this->assertEquals(
+                $expectedEpiFilters,
+                $resultsEpiFilters,
+                "Episode match not equal to expected result for $test."
+                );
+
+        // TEST getSqlEpisodeWhere()
+        $resultsFilterEpis = [];
+        foreach ($testFilters as $filterId => $filter) {
+            if (! $filter instanceof AppointmentFilterInterface) {
+                if (0 == $filter) {
+                    // Was not used so triggered no results to compare to
+                    $resultsFilterEpis[$filterId] = [];
+                    continue;
+                }
+                $filter = $this->agenda->getFilter($filterId);
+            }
+            if ($filter instanceof AppointmentFilterInterface) {
+                $sql = "SELECT gec_episode_of_care_id FROM gems__episodes_of_care WHERE " . $filter->getSqlEpisodeWhere();
+                $resultsFilterEpis[$filter->getFilterId()] = $this->db->fetchCol($sql);
+            } else {
+                $this->fail(sprintf("Filter %d could not be loaded in $test.", $filterId));
+            }
+        }
+        $this->assertEquals(
+                $expectedFilterEpis,
+                $resultsFilterEpis,
+                "Episode SQL not equal to episode match for $test."
+                );
+
     }
 
     /**

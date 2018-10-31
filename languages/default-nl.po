@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-26 16:32+0200\n"
+"POT-Creation-Date: 2018-10-31 13:28+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -23,9 +23,9 @@ msgstr ""
 "X-Poedit-SearchPath-4: vendor/magnafacta/mutil/src/MUtil\n"
 
 #: classes/Gems/Agenda.php:385 classes/Gems/Agenda/Appointment.php:407
-#: classes/Gems/Agenda/AppointmentFilterModel.php:169
-#: classes/Gems/Agenda/AppointmentFilterModel.php:187
-#: classes/Gems/Agenda/EpisodeOfCare.php:143
+#: classes/Gems/Agenda/AppointmentFilterModel.php:172
+#: classes/Gems/Agenda/AppointmentFilterModel.php:190
+#: classes/Gems/Agenda/EpisodeOfCare.php:160
 #: classes/Gems/Tracker/Model/Dependency/FromAppointmentsMaintenanceDependency.php:91
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:875
 msgid "; "
@@ -39,9 +39,9 @@ msgstr "DBC (Diagnose Behandel Combinatie)"
 msgid "Manual (organization specific)"
 msgstr "Handmatig (organisatie specifiek)"
 
-#: classes/Gems/Agenda.php:568
-#: classes/Gems/Agenda/AppointmentFilterModel.php:97
-#: classes/Gems/Agenda/AppointmentFilterModel.php:159
+#: classes/Gems/Agenda.php:565
+#: classes/Gems/Agenda/AppointmentFilterModel.php:100
+#: classes/Gems/Agenda/AppointmentFilterModel.php:162
 #: classes/Gems/Default/AgendaActivityAction.php:138
 #: classes/Gems/Default/AgendaDiagnosisAction.php:132
 #: classes/Gems/Default/AgendaProcedureAction.php:138
@@ -62,33 +62,34 @@ msgstr "Handmatig (organisatie specifiek)"
 msgid "Active"
 msgstr "Actief"
 
-#: classes/Gems/Agenda.php:569 classes/Gems/Default/DatabaseAction.php:392
+#: classes/Gems/Agenda.php:566 classes/Gems/Default/DatabaseAction.php:392
 #: classes/Gems/Default/DatabaseAction.php:438
 msgid "Finished"
 msgstr "Afgerond"
 
-#: classes/Gems/Agenda.php:570
+#: classes/Gems/Agenda.php:567
 msgid "On hold"
 msgstr "Gepauzeerd"
 
-#: classes/Gems/Agenda.php:571
+#: classes/Gems/Agenda.php:568
 msgid "Planned"
 msgstr "Gepland"
 
-#: classes/Gems/Agenda.php:572
+#: classes/Gems/Agenda.php:569
 msgid "Waitlist"
 msgstr "Wachtlijst"
 
-#: classes/Gems/Agenda.php:588
+#: classes/Gems/Agenda.php:585
 msgid "Cancelled"
 msgstr "Afgezegd"
 
-#: classes/Gems/Agenda.php:589
+#: classes/Gems/Agenda.php:586
 msgid "Erroneous input"
 msgstr "Foutieve invoer"
 
-#: classes/Gems/Agenda.php:715
+#: classes/Gems/Agenda.php:712
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:81
+#: classes/Gems/Agenda/Filter/OrganizationModelDependency.php:102
 #: classes/Gems/Default/AgendaActivityAction.php:122
 #: classes/Gems/Default/AgendaProcedureAction.php:122
 #: classes/Gems/Default/AgendaStaffAction.php:123
@@ -112,12 +113,12 @@ msgstr "Foutieve invoer"
 msgid "Organization"
 msgstr "Organisatie"
 
-#: classes/Gems/Agenda.php:721
+#: classes/Gems/Agenda.php:718
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:82
 msgid "Source of appointment"
 msgstr "Afspraken bron"
 
-#: classes/Gems/Agenda.php:724
+#: classes/Gems/Agenda.php:721
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:83
 #: classes/Gems/Model/AppointmentModel.php:205
 #: classes/Gems/Model/AppointmentModel.php:256
@@ -126,13 +127,13 @@ msgstr "Afspraken bron"
 msgid "With"
 msgstr "Met"
 
-#: classes/Gems/Agenda.php:730
+#: classes/Gems/Agenda.php:727
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:84
 #: classes/Gems/Model/AppointmentModel.php:258
 msgid "Referrer"
 msgstr "Verwijzer"
 
-#: classes/Gems/Agenda.php:736
+#: classes/Gems/Agenda.php:733
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:85
 #: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:95
 #: classes/Gems/Default/AgendaActivityAction.php:116
@@ -141,7 +142,7 @@ msgstr "Verwijzer"
 msgid "Activity"
 msgstr "Activiteit"
 
-#: classes/Gems/Agenda.php:742
+#: classes/Gems/Agenda.php:739
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:86
 #: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:100
 #: classes/Gems/Default/AgendaProcedureAction.php:116
@@ -149,7 +150,7 @@ msgstr "Activiteit"
 msgid "Procedure"
 msgstr "Procedure"
 
-#: classes/Gems/Agenda.php:748
+#: classes/Gems/Agenda.php:745
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:87
 #: classes/Gems/Default/DatabaseAction.php:221
 #: classes/Gems/Default/LocationAction.php:129
@@ -160,7 +161,7 @@ msgstr "Procedure"
 msgid "Location"
 msgstr "Locatie"
 
-#: classes/Gems/Agenda.php:754
+#: classes/Gems/Agenda.php:751
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:88
 #: classes/Gems/Default/CommTemplateAction.php:146
 #: classes/Gems/Default/CommTemplateAction.php:151
@@ -173,64 +174,64 @@ msgstr "Locatie"
 msgid "Subject"
 msgstr "Onderwerp"
 
-#: classes/Gems/Agenda.php:932
+#: classes/Gems/Agenda.php:929
 msgid "Active appointment"
 msgstr "Actief"
 
-#: classes/Gems/Agenda.php:933
+#: classes/Gems/Agenda.php:930
 msgid "Completed appointment"
 msgstr "Afgerond"
 
-#: classes/Gems/Agenda.php:949
+#: classes/Gems/Agenda.php:946
 msgid "Aborted appointment"
 msgstr "Niet doorgegaan"
 
-#: classes/Gems/Agenda.php:950
+#: classes/Gems/Agenda.php:947
 msgid "Cancelled appointment"
 msgstr "Afgezegd"
 
-#: classes/Gems/Agenda.php:1019
+#: classes/Gems/Agenda.php:1016
 msgid "Never"
 msgstr "Nooit"
 
-#: classes/Gems/Agenda.php:1020
+#: classes/Gems/Agenda.php:1017
 msgid "When no open track exists"
 msgstr "Wanneer er geen open traject bestaat"
 
-#: classes/Gems/Agenda.php:1021
+#: classes/Gems/Agenda.php:1018
 msgid "Always"
 msgstr "Altijd"
 
-#: classes/Gems/Agenda.php:1023
+#: classes/Gems/Agenda.php:1020
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:297
 msgid "Create track"
 msgstr "Nieuw traject"
 
-#: classes/Gems/Agenda.php:1036
+#: classes/Gems/Agenda.php:1033
 msgid "Ambulatory"
 msgstr "Poliklinisch"
 
-#: classes/Gems/Agenda.php:1037
+#: classes/Gems/Agenda.php:1034
 msgid "Emergency"
 msgstr "Noodgeval"
 
-#: classes/Gems/Agenda.php:1038 classes/Gems/Mail/MailElements.php:273
+#: classes/Gems/Agenda.php:1035 classes/Gems/Mail/MailElements.php:273
 msgid "Field"
 msgstr "Veld"
 
-#: classes/Gems/Agenda.php:1039
+#: classes/Gems/Agenda.php:1036
 msgid "Home"
 msgstr "Thuis"
 
-#: classes/Gems/Agenda.php:1040
+#: classes/Gems/Agenda.php:1037
 msgid "Inpatient"
 msgstr "Patiënt"
 
-#: classes/Gems/Agenda.php:1041
+#: classes/Gems/Agenda.php:1038
 msgid "Short stay"
 msgstr "Kort verblijf"
 
-#: classes/Gems/Agenda.php:1042
+#: classes/Gems/Agenda.php:1039
 msgid "Virtual"
 msgstr "Virtueel"
 
@@ -239,17 +240,17 @@ msgstr "Virtueel"
 msgid "Track created by %s filter"
 msgstr "Traject aangemaakt door %s filter"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:88
-#: classes/Gems/Agenda/AppointmentFilterModel.php:142
+#: classes/Gems/Agenda/AppointmentFilterModel.php:91
+#: classes/Gems/Agenda/AppointmentFilterModel.php:145
 msgid "Filter type"
 msgstr "Soort filter"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:89
-#: classes/Gems/Agenda/AppointmentFilterModel.php:143
+#: classes/Gems/Agenda/AppointmentFilterModel.php:92
+#: classes/Gems/Agenda/AppointmentFilterModel.php:146
 msgid "Determines what is filtered how."
 msgstr "Bepaald wat op welke manier gefilterd wordt."
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:93
+#: classes/Gems/Agenda/AppointmentFilterModel.php:96
 #: classes/Gems/Default/AgendaStaffAction.php:117
 #: classes/Gems/Default/CommTemplateAction.php:123
 #: classes/Gems/Default/ComplianceAction.php:88
@@ -267,8 +268,8 @@ msgstr "Bepaald wat op welke manier gefilterd wordt."
 #: classes/Gems/Model/RespondentModel.php:269
 #: classes/Gems/Model/StaffModel.php:211
 #: classes/Gems/Model/TemplateModel.php:51
-#: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:148
-#: classes/Gems/Snippets/Agenda/EpisodeTableSnippet.php:100
+#: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:149
+#: classes/Gems/Snippets/Agenda/EpisodeTableSnippet.php:101
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:47
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:230
 #: classes/Gems/Tracker/Model/TrackModel.php:85
@@ -276,8 +277,8 @@ msgstr "Bepaald wat op welke manier gefilterd wordt."
 msgid "Name"
 msgstr "Naam"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:94
-#: classes/Gems/Agenda/AppointmentFilterModel.php:149
+#: classes/Gems/Agenda/AppointmentFilterModel.php:97
+#: classes/Gems/Agenda/AppointmentFilterModel.php:152
 #: classes/Gems/Default/CommJobAction.php:110
 #: classes/Gems/Default/ConsentAction.php:56
 #: classes/Gems/Default/DatabaseAction.php:220
@@ -286,61 +287,61 @@ msgstr "Naam"
 msgid "Order"
 msgstr "Volgorde"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:95
-#: classes/Gems/Agenda/AppointmentFilterModel.php:150
+#: classes/Gems/Agenda/AppointmentFilterModel.php:98
+#: classes/Gems/Agenda/AppointmentFilterModel.php:153
 msgid "Execution order of the filters, lower numbers are executed first."
 msgstr ""
 "Volgorde waarin de filters gecontroleerd worden, het laagste getal wordt als "
 "eerste eerste gecontroleerd."
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:104
-#: classes/Gems/Agenda/AppointmentFilterModel.php:172
+#: classes/Gems/Agenda/AppointmentFilterModel.php:107
+#: classes/Gems/Agenda/AppointmentFilterModel.php:175
 msgid "Use in track fields"
 msgstr "Gebruik in trajectvelden"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:105
+#: classes/Gems/Agenda/AppointmentFilterModel.php:108
 msgid "The number of uses of this filter in track fields."
 msgstr "Het aantal keren dat dit filter in trajectvelden gebruikt is."
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:120
-#: classes/Gems/Agenda/AppointmentFilterModel.php:190
+#: classes/Gems/Agenda/AppointmentFilterModel.php:123
+#: classes/Gems/Agenda/AppointmentFilterModel.php:193
 msgid "Use in filters"
 msgstr "Gebruik in filters"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:121
+#: classes/Gems/Agenda/AppointmentFilterModel.php:124
 msgid "The number of uses of this filter in other filters."
 msgstr "Het aantal keren dat dit filter in andere filters gebruikt is."
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:146
+#: classes/Gems/Agenda/AppointmentFilterModel.php:149
 msgid "Manual name"
 msgstr "Handmatige naam"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:147
+#: classes/Gems/Agenda/AppointmentFilterModel.php:150
 msgid "A name for this filter. The calculated name is used otherwise."
 msgstr "Een naam voor dit filter. Anders wordt de berekende naam gebruikt."
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:148
+#: classes/Gems/Agenda/AppointmentFilterModel.php:151
 msgid "Calculated name"
 msgstr "Berekende naam"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:168
+#: classes/Gems/Agenda/AppointmentFilterModel.php:171
 #: vendor/magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:428
 msgid ": "
 msgstr ": "
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:170
+#: classes/Gems/Agenda/AppointmentFilterModel.php:173
 msgid "Not used in tracks"
 msgstr "Niet gebruikt in trajecten"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:173
+#: classes/Gems/Agenda/AppointmentFilterModel.php:176
 msgid "The use of this filter in track fields."
 msgstr "Gebruik van dit filter in trajectvelden."
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:188
+#: classes/Gems/Agenda/AppointmentFilterModel.php:191
 msgid "Not used in filters"
 msgstr "Niet gebruikt in filters"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:191
+#: classes/Gems/Agenda/AppointmentFilterModel.php:194
 msgid "The use of this filter in other filters."
 msgstr "Gebruik van dit filter in andere filters."
 
@@ -349,6 +350,7 @@ msgstr "Gebruik van dit filter in andere filters."
 #: classes/Gems/Agenda/Filter/LocationModelDependency.php:45
 #: classes/Gems/Agenda/Filter/NotAnyModelDependency.php:51
 #: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:56
+#: classes/Gems/Agenda/Filter/WithModelDependency.php:45
 msgid "empty filter"
 msgstr "leeg filter"
 
@@ -400,10 +402,12 @@ msgstr "Filter op diagnose overeenkomst"
 
 #: classes/Gems/Agenda/Filter/DiagnosisEpisodeModelDependency.php:78
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:127
+#: classes/Gems/Agenda/Filter/JsonDiagnosisDependency.php:94
 #: classes/Gems/Agenda/Filter/LocationModelDependency.php:79
 #: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:90
 #: classes/Gems/Agenda/Filter/SubjectAppointmentModelDependency.php:78
 #: classes/Gems/Agenda/Filter/SubjectEpisodeModelDependency.php:78
+#: classes/Gems/Agenda/Filter/WithModelDependency.php:79
 #, php-format
 msgid ""
 "Use the %%-sign to search for zero or more random characters and an _ for a "
@@ -415,6 +419,7 @@ msgstr ""
 #: classes/Gems/Agenda/Filter/DiagnosisEpisodeModelDependency.php:80
 #: classes/Gems/Agenda/Filter/SubjectAppointmentModelDependency.php:80
 #: classes/Gems/Agenda/Filter/SubjectEpisodeModelDependency.php:80
+#, php-format
 msgid "Leave empty to filter for missing content."
 msgstr "Leeglaten om te filteren op het ontbreken van inhoud."
 
@@ -429,6 +434,7 @@ msgid "%s like \"%s\""
 msgstr "%s like \"%s\""
 
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:67
+#: classes/Gems/Agenda/Filter/OrganizationModelDependency.php:63
 #: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:54
 #: classes/Gems/Default/SurveyMaintenanceAction.php:448
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:913
@@ -462,7 +468,42 @@ msgstr "Zoek tekst 2"
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:147
 #, php-format
 msgid "Required when filled - use %%-sign as well."
-msgstr "Verplicht indien gevuld - gebruik ook %%-teken."
+msgstr "Verplicht indien gevuld - gebruik ook hier het %%-teken."
+
+#: classes/Gems/Agenda/Filter/JsonDiagnosisDependency.php:48
+#, php-format
+msgid "Episode diagnosis contains %s after key: %s"
+msgstr "Episode diagnose bevat %s na sleutel: %s"
+
+#: classes/Gems/Agenda/Filter/JsonDiagnosisDependency.php:54
+#, php-format
+msgid "Episode diagnosis contains %s after keys: %s"
+msgstr "Episode diagnose bevat %s na sleutels: %s"
+
+#: classes/Gems/Agenda/Filter/JsonDiagnosisDependency.php:60
+#, php-format
+msgid "Diagnosis data contains %s"
+msgstr "Diagnose gegevens bevatten %s"
+
+#: classes/Gems/Agenda/Filter/JsonDiagnosisDependency.php:81
+msgid "Diagnosis Data match"
+msgstr "Diagnose gegevens filter"
+
+#: classes/Gems/Agenda/Filter/JsonDiagnosisDependency.php:99
+msgid "1st optional key"
+msgstr "1e optionele sleutel"
+
+#: classes/Gems/Agenda/Filter/JsonDiagnosisDependency.php:104
+msgid "2nd optional key"
+msgstr "2e optionele sleutel"
+
+#: classes/Gems/Agenda/Filter/JsonDiagnosisDependency.php:109
+msgid "3rd optional key"
+msgstr "3e optionele sleutel"
+
+#: classes/Gems/Agenda/Filter/JsonDiagnosisDependency.php:114
+msgid "Data value"
+msgstr "Gegevens waarde"
 
 #: classes/Gems/Agenda/Filter/LocationModelDependency.php:43
 #, php-format
@@ -488,6 +529,19 @@ msgstr "OF combinatie filter"
 #: classes/Gems/Agenda/Filter/OrModelDependency.php:73
 msgid " OR "
 msgstr " OF "
+
+#: classes/Gems/Agenda/Filter/OrganizationModelDependency.php:57
+msgid "No organization"
+msgstr "Geen organisatie"
+
+#: classes/Gems/Agenda/Filter/OrganizationModelDependency.php:63
+#, php-format
+msgid "One of: %s"
+msgstr "Een van: %s"
+
+#: classes/Gems/Agenda/Filter/OrganizationModelDependency.php:85
+msgid "Organization filter"
+msgstr "Organisatie filter"
 
 #: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:44
 #, php-format
@@ -552,6 +606,19 @@ msgstr "Filter op episode onderwerp"
 #: classes/Gems/Agenda/Filter/SubjectEpisodeModelDependency.php:84
 msgid "Episode subject"
 msgstr "Episode onderwerp"
+
+#: classes/Gems/Agenda/Filter/WithModelDependency.php:43
+#, php-format
+msgid "Attended by contains %s"
+msgstr "Afspraak met bevat %s"
+
+#: classes/Gems/Agenda/Filter/WithModelDependency.php:66
+msgid "Attended by / with match"
+msgstr ""
+
+#: classes/Gems/Agenda/Filter/WithModelDependency.php:84
+msgid "Appointment is with"
+msgstr "Afspraak is met"
 
 #: classes/Gems/Condition/Comparator/Between.php:26
 #, php-format
@@ -1032,7 +1099,7 @@ msgstr "(alle filters)"
 #: classes/Gems/Default/AgendaProcedureAction.php:182
 #: classes/Gems/Default/AgendaStaffAction.php:180
 #: classes/Gems/Default/LocationAction.php:209
-#: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:118
+#: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:119
 msgid "Example appointments"
 msgstr "Voorbeeld afspraken"
 
@@ -1040,7 +1107,7 @@ msgstr "Voorbeeld afspraken"
 #: classes/Gems/Default/AgendaProcedureAction.php:191
 #: classes/Gems/Default/AgendaStaffAction.php:189
 #: classes/Gems/Default/LocationAction.php:218
-#: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:119
+#: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:120
 msgid "No example appointments found"
 msgstr "Geen voorbeeld afspraken gevonden"
 
@@ -1657,8 +1724,8 @@ msgstr "Email sjabloon"
 #: classes/Gems/Model/CommLogModel.php:135
 #: classes/Gems/Model/RespondentModel.php:267
 #: classes/Gems/Snippets/Agenda/AppointmentsTableSnippet.php:188
-#: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:146
-#: classes/Gems/Snippets/Agenda/EpisodeTableSnippet.php:98
+#: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:147
+#: classes/Gems/Snippets/Agenda/EpisodeTableSnippet.php:99
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:262
 msgid "Respondent nr"
 msgstr "Patiënt nr"
@@ -6089,7 +6156,7 @@ msgid "No appointments found."
 msgstr "Geen afspraken gevonden."
 
 #: classes/Gems/Snippets/Agenda/AppointmentsTableSnippet.php:181
-#: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:143
+#: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:144
 msgid "Time"
 msgstr "Tijd"
 
@@ -6111,11 +6178,11 @@ msgstr "(alle locaties)"
 msgid "Show respondent"
 msgstr "Toon patiënt"
 
-#: classes/Gems/Snippets/Agenda/EpisodeTableSnippet.php:76
+#: classes/Gems/Snippets/Agenda/EpisodeTableSnippet.php:77
 msgid "Example episodes"
 msgstr "Voorbeeld episodes"
 
-#: classes/Gems/Snippets/Agenda/EpisodeTableSnippet.php:77
+#: classes/Gems/Snippets/Agenda/EpisodeTableSnippet.php:78
 msgid "No example episodes found"
 msgstr "Geen voorbeeld episode gevonden"
 

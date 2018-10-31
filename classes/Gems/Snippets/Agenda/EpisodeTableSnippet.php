@@ -73,6 +73,7 @@ class EpisodeTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
                     ];
                 // \MUtil_Echo::track($this->calSearchFilter->getSqlEpisodeWhere());
 
+                $this->bridgeMode = \MUtil_Model_Bridge_BridgeAbstract::MODE_ROWS;
                 $this->caption = $this->_('Example episodes');
                 $this->onEmpty = $this->_('No example episodes found');
             } else {

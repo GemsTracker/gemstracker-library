@@ -115,6 +115,7 @@ class Gems_Snippets_Agenda_CalendarTableSnippet extends \Gems_Snippets_ModelTabl
                     ];
                 // \MUtil_Echo::track($this->calSearchFilter->getSqlAppointmentsWhere());
 
+                $this->bridgeMode = \MUtil_Model_Bridge_BridgeAbstract::MODE_ROWS;
                 $this->caption = $this->_('Example appointments');
                 $this->onEmpty = $this->_('No example appointments found');
             } else {

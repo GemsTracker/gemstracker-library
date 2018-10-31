@@ -530,9 +530,6 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
                          '$episodeData array should atleast have a key "gec_episode_of_care_id" containing the requested episode id'
                          );
              }
-            $episodeId = $episodeData['gec_episode_of_care_id'];
-        } else {
-            $episodeId = $episodeData;
         }
         // \MUtil_Echo::track($appointmentId, $appointmentData);
 
@@ -1179,20 +1176,32 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @param \Gems_Agenda_Appointment $appointment
+     * @param mixed $to \Gems_Agenda_Appointment:EpsiodeOfCare
      * @return AppointmentFilterInterface[]
      */
-    public function matchFilters(\Gems_Agenda_Appointment $appointment)
+    public function matchFilters($to)
     {
         $filters = $this->loadDefaultFilters();
         $output  = array();
 
-        foreach ($filters as $filter) {
-            if ($filter instanceof AppointmentFilterInterface) {
-                if ($filter->matchAppointment($appointment)) {
-                    $output[] = $filter;
+        if ($to instanceof \Gems_Agenda_Appointment) {
+            foreach ($filters as $filter) {
+                if ($filter instanceof AppointmentFilterInterface) {
+                    if ($filter->matchAppointment($to)) {
+                        $output[] = $filter;
+                    }
                 }
             }
+        } elseif ($to instanceof EpisodeOfCare) {
+            foreach ($filters as $filter) {
+                if ($filter instanceof AppointmentFilterInterface) {
+                    if ($filter->matchEpisode($to)) {
+                        $output[] = $filter;
+                    }
+                }
+            }
+        } else {
+            throw new \Gems_Coding_Exception('The $to paramater must be either an appointment or an episode object.');
         }
 
         return $output;

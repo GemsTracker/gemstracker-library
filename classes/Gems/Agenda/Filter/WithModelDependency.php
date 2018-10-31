@@ -1,11 +1,12 @@
 <?php
 
+
 /**
  *
  * @package    Gems
  * @subpackage Agenda
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2014 Erasmus MC
+ * @copyright  Copyright (c) 2018, Equipe Zorgbedrijven and MagnaFacta B.V.
  * @license    New BSD License
  */
 
@@ -18,11 +19,11 @@ use Gems\Agenda\FilterModelDependencyAbstract;
  *
  * @package    Gems
  * @subpackage Agenda
- * @copyright  Copyright (c) 2014 Erasmus MC
- * @license    New BSD License
- * @since      Class available since version 1.6.5 15-okt-2014 18:52:40
+ * @copyright  Copyright (c) 2018, Equipe Zorgbedrijven and MagnaFacta B.V.
+ * @license    No free license, do not copy
+ * @since      Class available since version 1.8.4 22-Oct-2018 12:19:53
  */
-class SubjectAppointmentModelDependency extends FilterModelDependencyAbstract
+class WithModelDependency extends FilterModelDependencyAbstract
 {
     /**
      * A ModelAbstract->setOnSave() function that returns the input
@@ -39,9 +40,9 @@ class SubjectAppointmentModelDependency extends FilterModelDependencyAbstract
     public function calcultateName($value, $isNew = false, $name = null, array $context = array())
     {
         if (isset($context['gaf_filter_text1'])) {
-            return sprintf($this->_('Appointment subject contains %s'), $context['gaf_filter_text1']);
+            return sprintf($this->_('Attended by contains %s'), $context['gaf_filter_text1']);
         } else {
-            return $this->_('Missing appointment subject filter');
+            return $this->_('empty filter');
         }
     }
 
@@ -52,7 +53,7 @@ class SubjectAppointmentModelDependency extends FilterModelDependencyAbstract
      */
     public function getFilterClass()
     {
-        return 'SubjectAppointmentFilter';
+        return 'WithAppointmentFilter';
     }
 
     /**
@@ -62,7 +63,7 @@ class SubjectAppointmentModelDependency extends FilterModelDependencyAbstract
      */
     public function getFilterName()
     {
-        return $this->_('Appointment subject match');
+        return $this->_('Attended by / with match');
     }
 
     /**
@@ -76,14 +77,13 @@ class SubjectAppointmentModelDependency extends FilterModelDependencyAbstract
     {
         $description = sprintf($this->_(
                 "Use the %%-sign to search for zero or more random characters and an _ for a single random character."
-                ) . "\n" .
-                $this->_("Leave empty to filter for missing content."));
+                ));
 
         return array(
             'gaf_filter_text1' => array(
-                'label'       => $this->_('Appointment subject'),
+                'label'       => $this->_('Appointment is with'),
                 'description' => $description,
-                'required'    => false,
+                'required'    => true,
                 ),
             );
     }

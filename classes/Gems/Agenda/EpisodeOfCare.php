@@ -79,7 +79,7 @@ class EpisodeOfCare extends \MUtil_Translate_TranslateableAbstract
     {
         if (is_array($episodeData)) {
             $this->_gemsData      = $episodeData;
-            $this->_episodeId = $episodeData['gec_episode_of_care_id'];
+            $this->_episodeId     = $episodeData['gec_episode_of_care_id'];
             if ($this->currentUser instanceof \Gems_User_User) {
                 $this->_gemsData = $this->currentUser->applyGroupMask($this->_gemsData);
             }
@@ -128,6 +128,23 @@ class EpisodeOfCare extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * The diagnosis data of the episode translated from Json
+     *
+     * @return array of Json data
+     */
+    public function getDiagnosisData()
+    {
+        if (! isset($this->_gemsData['gec_diagnosis'])) {
+            return [];
+        }
+        if (is_string($this->_gemsData['gec_diagnosis'])) {
+            $this->_gemsData['gec_diagnosis'] = json_decode($this->_gemsData['gec_diagnosis'], true);
+        }
+
+        return $this->_gemsData['gec_diagnosis'];
+    }
+
+    /**
      * Get a general description of this appointment
      *
      * @see \Gems_Agenda->getAppointmentDisplay()
@@ -141,6 +158,23 @@ class EpisodeOfCare extends \MUtil_Translate_TranslateableAbstract
         $results[] = $this->getDiagnosis();
 
         return implode($this->_('; '), array_filter($results));
+    }
+
+    /**
+     * The extra data of the episode translated from Json
+     *
+     * @return array of Json data
+     */
+    public function getExtraData()
+    {
+        if (! isset($this->_gemsData['gec_extra_data'])) {
+            return [];
+        }
+        if (is_string($this->_gemsData['gec_extra_data'])) {
+            $this->_gemsData['gec_extra_data'] = json_decode($this->_gemsData['gec_extra_data'], true);
+        }
+
+        return $this->_gemsData['gec_extra_data'];
     }
 
     /**

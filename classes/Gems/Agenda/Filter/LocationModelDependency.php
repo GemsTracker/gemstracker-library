@@ -75,9 +75,9 @@ class LocationModelDependency extends FilterModelDependencyAbstract
      */
     public function getTextSettings()
     {
-        $description = $this->_(
+        $description = sprintf($this->_(
                 "Use the %%-sign to search for zero or more random characters and an _ for a single random character."
-                );
+                ));
 
         return array(
             'gaf_filter_text1' => array(
