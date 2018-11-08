@@ -352,7 +352,7 @@ gems__appointments:
         gap_id_appointment: 5
         gap_id_user: '1'
         gap_id_organization: 1
-        gap_id_episode:
+        gap_id_episode: 1
         gap_manual_edit: 1
         gap_code: A
         gap_status: AC
@@ -374,7 +374,7 @@ gems__appointments:
         gap_id_appointment: 6
         gap_id_user: '1'
         gap_id_organization: 1
-        gap_id_episode:
+        gap_id_episode: 1
         gap_manual_edit: 1
         gap_code: A
         gap_status: AC
@@ -396,7 +396,7 @@ gems__appointments:
         gap_id_appointment: 7
         gap_id_user: '1'
         gap_id_organization: 1
-        gap_id_episode:
+        gap_id_episode: 1
         gap_manual_edit: 1
         gap_code: A
         gap_status: AC
@@ -418,7 +418,7 @@ gems__appointments:
         gap_id_appointment: 8
         gap_id_user: '1'
         gap_id_organization: 1
-        gap_id_episode:
+        gap_id_episode: 2
         gap_manual_edit: 1
         gap_code: A
         gap_status: AC
@@ -440,7 +440,7 @@ gems__appointments:
         gap_id_appointment: 9
         gap_id_user: '1'
         gap_id_organization: 1
-        gap_id_episode:
+        gap_id_episode: 2
         gap_manual_edit: 1
         gap_code: A
         gap_status: AC
@@ -462,7 +462,7 @@ gems__appointments:
         gap_id_appointment: 10
         gap_id_user: '1'
         gap_id_organization: 1
-        gap_id_episode:
+        gap_id_episode: 2
         gap_manual_edit: 1
         gap_code: A
         gap_status: AC
@@ -484,7 +484,7 @@ gems__appointments:
         gap_id_appointment: 11
         gap_id_user: '1'
         gap_id_organization: 1
-        gap_id_episode:
+        gap_id_episode: 3
         gap_manual_edit: 1
         gap_code: A
         gap_status: AC
@@ -506,7 +506,7 @@ gems__appointments:
         gap_id_appointment: 12
         gap_id_user: '1'
         gap_id_organization: 1
-        gap_id_episode:
+        gap_id_episode: 3
         gap_manual_edit: 1
         gap_code: A
         gap_status: AC
@@ -528,7 +528,7 @@ gems__appointments:
         gap_id_appointment: 13
         gap_id_user: '1'
         gap_id_organization: 1
-        gap_id_episode:
+        gap_id_episode: 3
         gap_manual_edit: 1
         gap_code: A
         gap_status: AC
@@ -810,6 +810,58 @@ gems__appointments:
         gap_changed_by: '1'
         gap_created: '2017-08-09'
         gap_created_by: '1'
+gems__episodes_of_care:
+    -
+        gec_episode_of_care_id: 1
+        gec_id_user: '1'
+        gec_id_organization: 1
+        gec_source: 'manual'
+        gec_manual_edit: 1
+        gec_status: 'A'
+        gec_startdate: '2017-08-09'
+        gec_enddate:
+        gec_id_attended_by: 1
+        gec_subject: 'Test app 4, 5, 6'
+        gec_comment:
+        gec_diagnosis:
+        gec_changed: '2017-08-09'
+        gec_changed_by: '1'
+        gec_created: '2017-08-09'
+        gec_created_by: '1'
+    -
+        gec_episode_of_care_id: 2
+        gec_id_user: '1'
+        gec_id_organization: 1
+        gec_source: 'manual'
+        gec_manual_edit: 1
+        gec_status: 'A'
+        gec_startdate: '2017-08-09'
+        gec_enddate:
+        gec_id_attended_by: 1
+        gec_subject: 'Test app 7, 8, 9'
+        gec_comment:
+        gec_diagnosis:
+        gec_changed: '2017-08-09'
+        gec_changed_by: '1'
+        gec_created: '2017-08-09'
+        gec_created_by: '1'
+    -
+        gec_episode_of_care_id: 3
+        gec_id_user: '1'
+        gec_id_organization: 1
+        gec_source: 'manual'
+        gec_manual_edit: 1
+        gec_status: 'A'
+        gec_startdate: '2017-08-09'
+        gec_enddate:
+        gec_id_attended_by: 1
+        gec_subject: 'Test app 10, 11, 12'
+        gec_comment:
+        gec_diagnosis:
+        gec_changed: '2017-08-09'
+        gec_changed_by: '1'
+        gec_created: '2017-08-09'
+        gec_created_by: '1'
 gems__locations:
     -
         glo_id_location: 1

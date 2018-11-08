@@ -108,7 +108,7 @@ class AppointmentFilterTest extends \Gems_Test_DbTestAbstract
 
                     // Prepare for matchEpisode() test
                     if ($appointment->hasEpisode()) {
-                        $expectedEpiFilters[$appointment->getEpisodeId()][] = $filterId;
+                        $expectedEpiFilters[$appointment->getEpisodeId()][$filterId] = $filterId;
                     }
                 } else {
                     $this->fail("Unexepected non-filter return for appointment in $test.");
@@ -157,7 +157,7 @@ class AppointmentFilterTest extends \Gems_Test_DbTestAbstract
             foreach ($filters as $filter) {
                 if ($filter instanceof AppointmentFilterInterface) {
                     $filterId = $filter->getFilterId();
-                    $resultsEpiFilters[$epiId][] = $filterId;
+                    $resultsEpiFilters[$epiId][$filterId] = $filterId;
 
                     if (! $testFilters[$filterId] instanceof AppointmentFilterInterface) {
                         if (0 == $testFilters[$filterId]) {
