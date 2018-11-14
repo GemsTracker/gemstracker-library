@@ -179,6 +179,25 @@ class Gems_Default_ComplianceAction extends \Gems_Controller_ModelSnippetActionA
 
         return $model;
     }
+    
+    /**
+     * Get the model for export and have the option to change it before using for export
+     * @return
+     */
+    public function getExportModel()
+    {
+        $model         = parent::getExportModel();
+        $statusColumns = $model->getColNames('label');
+        $everyStatus   = $this->util->getTokenData()->getEveryStatus();
+        foreach ($statusColumns as $colName) {
+            // For the compliance columns, we add the translation for the letter codes and move the decription to the label
+            // This way the column shows the full survey name and round description
+            if (substr($colName, 0, 5) == 'stat_') {
+                $model->set($colName, 'multiOptions', $everyStatus, 'label', $model->get($colName, 'description'));
+            }
+        }
+        return $model;
+    }
 
     /**
      * Helper function to get the title for the index action.
