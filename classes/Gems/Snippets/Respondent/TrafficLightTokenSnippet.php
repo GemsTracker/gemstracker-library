@@ -64,6 +64,12 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
      * @var string
      */
     protected $_dateTimeFormat;
+    
+    /**
+     *
+     * @var \Gems_Menu_SubMenuItem
+     */
+    protected $_overview;
 
     /**
      *
@@ -313,7 +319,9 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                     $tooltip[] = sprintf($this->_('Result') .': %s', $tokenData['gto_result']);
                 }
                 $this->_completed++;
-                $tokenLink->target = 'inline';
+                if ($tokenLink) {
+                    $tokenLink->target = 'inline';
+                }
                 break;
                 
             case 'O': // Open
@@ -395,6 +403,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
         $this->_tokenEdit    = $this->findMenuItem('track', 'edit');
         $this->_tokenPreview = $this->findMenuItem('track', 'questions');
         $this->_tokenShow    = $this->findMenuItem('track', 'show');
+        $this->_overview     = $this->findMenuItem('respondent', 'overview');
 
         // Initialize the tooltips
         $this->textNotMailable = $this->_("May not be mailed");
@@ -627,19 +636,21 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                 }
                 $day = $subcontainer->div(array('class' => $class, 'renderClosingTag' => true));
                 $this->_addTooltip($summaryIcon, $this->_('Summary'), 'auto top');
-                $summaryLink = \MUtil_Html::create('a', array(
-                    'href' => array(
-                        'controller' => 'respondent',
-                        'action' => 'overview',
-                        'gto_id_respondent_track' => $row['gto_id_respondent_track'],
-                        'gto_round_description' => urlencode(str_replace('/', '&#47;', $description)),
+                $params = [
+                    'gto_id_respondent_track' => $row['gto_id_respondent_track'],
+                    'gto_round_description'   => urlencode(str_replace('/', '&#47;', $description))
+                ];
+                if ($this->_overview) {
+                    $summaryLink = $this->createMenuLink([
                         'gr2o_patient_nr' => $row['gr2o_patient_nr'],
                         'gr2o_id_organization' => $row['gr2o_id_organization'],
-                        'RouteReset' => true
-                        ),
-                    'target' => 'inline',
-                    $summaryIcon,
-                    'class' => 'pull-right' ));
+                        'RouteReset' => true], 'respondent', 'overview', $summaryIcon, $this->_overview);
+                    $summaryLink->href->add($params);
+                    $summaryLink->target = 'inline';
+                } else {
+                    $summaryLink = \MUtil_Html::create('div', $summaryIcon, array('renderClosingTag' => true));
+                }
+                $summaryLink->class='pull-right';
                 $day->h5(array($summaryLink, ucfirst($description)));
                 $day->h6($date);
 
