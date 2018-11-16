@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 [Unreleased]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.4...HEAD
 ### Added
 - Compliance overview now provides a better export (#381)
+- Organization contact email will now be notified when cron has not run on time, can be switched off (#172)
 
 ## [1.8.5] - 2018-10-10
 [1.8.5]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.4...1.8.5
