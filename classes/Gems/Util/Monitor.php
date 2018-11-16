@@ -52,26 +52,48 @@ class Monitor extends UtilAbstract
      * @return boolean
      */
     protected function _getMailTo($monitorName, $where = null, $joins = '')
+    {     
+        $projTo  = explode(',',$this->project->getMonitorTo($monitorName));
+        $userTo  = $this->_getUserTo($monitorName);
+        $mailtos = array_merge($projTo, $userTo);
+        
+        return array_values(array_unique(array_filter(array_map('trim',$mailtos))));
+    }
+    
+    /**
+     * Return an array of user recipients for the given monitorName
+     * 
+     * @param string $monitorName
+     * @return array
+     */
+    protected function _getUserTo($monitorName)
     {
-        $projTo = $this->project->getMonitorTo($monitorName);
+        switch ($monitorName) {
+            case 'maintenancemode':
+                $roles = $this->util->getDbLookup()->getRolesByPrivilege('pr.maintenance.maintenance-mode');
+                if ($roles) {
+                    $joins = "JOIN gems__groups ON gsf_id_primary_group = ggp_id_group 
+                      JOIN gems__roles ON ggp_role = grl_id_role";
 
-        if ($where) {
-            $dbTo = $this->db->fetchCol(
-                    "SELECT DISTINCT gsf_email FROM gems__staff $joins WHERE LENGTH(gsf_email) > 5 AND gsf_active = 1 AND $where"
-                    );
-
-            if ($dbTo) {
-                if ($projTo) {
-                    return array_unique(array_merge($dbTo, array_filter(array_map('trim', explode(',', $projTo)))));
+                    $where = 'grl_name IN (' .
+                            implode(', ', array_map(array($this->db, 'quote'), array_keys($roles))) .
+                            ')';
+                } else {
+                    return [];
                 }
-                return $dbTo;
-            }
-        }
-        if ($projTo) {
-            return $projTo;
-        }
+                break;
 
-        return false;
+            case 'cronmail':
+            default:
+                $joins = '';
+                $where = 'gsf_mail_watcher = 1';
+                break;
+        }
+        
+        $userTo = $this->db->fetchCol(
+                "SELECT DISTINCT gsf_email FROM gems__staff $joins WHERE LENGTH(gsf_email) > 5 AND gsf_active = 1 AND $where"
+                );
+        return $userTo;
     }
 
     /**
@@ -142,6 +164,10 @@ This messages was send automatically.";
         return array($subject, $messageBbText);
     }
     
+    /**
+     * 
+     * @return MonitorJob
+     */
     public function getReverseMaintenanceMonitor()
     {
        return MonitorJob::getJob($this->project->getName() . ' maintenance mode');
@@ -223,28 +249,15 @@ This messages was send automatically.";
         }
 
         $lock->lock();
-
-        $roles = $this->util->getDbLookup()->getRolesByPrivilege('pr.maintenance.maintenance-mode');
-        if ($roles) {
-            $joins = "JOIN gems__groups ON gsf_id_primary_group = ggp_id_group 
-                      JOIN gems__roles ON ggp_role = grl_id_role";
-
-            $where = 'grl_name IN (' .
-                    implode(', ', array_map(array($this->db, 'quote'), array_keys($roles))) .
-                    ')';
-        } else {
-            $joins = '';
-            $where = null;
-        }
-        $to = $this->_getMailTo('maintenancemode', $where, $joins);
-
-        if (! $to) {
+        $to = $this->_getMailTo('maintenancemode');
+        
+        if (!$to) {
             return true;
         }
 
         $locale = $this->project->getLocaleDefault();
         list($initSubject, $initBbText, $subject, $messageBbText) = $this->getReverseMaintenanceMonitorTemplate($locale);
-        
+
         $job->setFrom($this->project->getMonitorFrom('maintenancemode'))
                 ->setMessage($messageBbText)
                 ->setPeriod($this->project->getMonitorPeriod('maintenancemode'))
@@ -265,10 +278,9 @@ This messages was send automatically.";
      */
     public function startCronMailMonitor()
     {
-        $to = $this->_getMailTo('cronmail', 'gsf_mail_watcher = 1');
-
+        $to  = $this->_getMailTo('cronmail');
         $job = $this->getCronMailMonitor();
-        
+
         if (! $to) {
             $job->stop();
             return false;
