@@ -137,7 +137,7 @@ class MonitorTest extends \Gems_Test_DbTestAbstract
         $job      = $this->object->getCronMailMonitor();
         $data     = $job->getArrayCopy();
         $actual   = $data['to'];
-        $expected = ['test2@gemstracker.org'];
+        $expected = ['test2@gemstracker.org', 'org@gemstracker.org'];
         // Cleanup
         $job->stop();
         $this->assertEquals($expected, $actual);

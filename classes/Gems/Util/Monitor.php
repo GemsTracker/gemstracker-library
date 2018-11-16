@@ -42,7 +42,31 @@ class Monitor extends UtilAbstract
      * @var \Gems_Util
      */
     protected $util;
+    
+    /**
+     * Return an array of organization recipients for the given monitorName
+     * 
+     * @param string $monitorName
+     * @return array
+     */
+    protected function _getOrgTo($monitorName)
+    {
+        switch ($monitorName) {
+            case 'maintenancemode':
+                $where = "1 = 0";
+                break;
 
+            case 'cronmail':
+            default:
+                $where = 'gor_mail_watcher = 1';
+                break;
+        }
+        
+        $orgTo = $this->db->fetchCol(
+                "SELECT DISTINCT gor_contact_email FROM gems__organizations WHERE LENGTH(gor_contact_email) > 5 AND gor_active = 1 AND $where"
+                );
+        return $orgTo;        
+    }
 
     /**
      * Get the mail addresses for a monitor
@@ -55,7 +79,8 @@ class Monitor extends UtilAbstract
     {     
         $projTo  = explode(',',$this->project->getMonitorTo($monitorName));
         $userTo  = $this->_getUserTo($monitorName);
-        $mailtos = array_merge($projTo, $userTo);
+        $orgTo   = $this->_getOrgTo($monitorName);
+        $mailtos = array_merge($projTo, $userTo, $orgTo);
         
         return array_values(array_unique(array_filter(array_map('trim',$mailtos))));
     }

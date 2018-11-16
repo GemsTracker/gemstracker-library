@@ -17,6 +17,7 @@ CREATE TABLE if not exists gems__organizations (
 
         gor_contact_name            varchar(50)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
         gor_contact_email           varchar(127) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gor_mail_watcher	    boolean not null default 1,
         gor_welcome                 text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'  null,
         gor_signature               text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 

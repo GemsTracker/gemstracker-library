@@ -616,6 +616,7 @@ CREATE TABLE gems__organizations (
 
         gor_contact_name            varchar(50),
         gor_contact_email           varchar(127),
+        gor_mail_watcher	    TINYINT(1) not null default 1,
         gor_welcome                 text,
         gor_signature               text,
 
@@ -684,7 +685,7 @@ CREATE TABLE gems__patch_levels (
 
 INSERT INTO gems__patch_levels (gpl_level, gpl_created)
    VALUES
-   (64, CURRENT_TIMESTAMP);
+   (65, CURRENT_TIMESTAMP);
 
 CREATE TABLE gems__radius_config (
         grcfg_id                bigint(11) NOT NULL ,

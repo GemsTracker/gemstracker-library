@@ -1431,3 +1431,7 @@ UPDATE gems__roles
     SET grl_privileges = CONCAT(grl_privileges, ',pr.episodes.rawdata')
     WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.episodes.rawdata%';
 
+-- GEMS VERSION: 64
+-- PATCH: 186 - add organization mailwatcher
+ALTER TABLE gems__organizations
+	ADD gor_mail_watcher boolean not null default 1 AFTER gor_contact_email;

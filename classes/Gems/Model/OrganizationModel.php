@@ -223,6 +223,8 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
     {
         $this->applyDetailSettings();
         $this->resetOrder();
+        
+        $yesNo = $this->util->getTranslated()->getYesNo();
 
         // GENERAL TAB
         $this->set('gor_name',
@@ -259,6 +261,11 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
                 'size', 50,
                 'validator', 'SimpleEmail'
                 );
+        $this->set('gor_mail_watcher', 'label', $this->_('Check cron job mail'),
+                    'description', $this->_('If checked the organization contact will be mailed when the cron job does not run on time.'),
+                    'elementClass', 'Checkbox',
+                    'multiOptions', $yesNo
+                    );
         $this->set('gor_welcome',
                 'elementClass', 'Textarea',
                 'rows', 5
