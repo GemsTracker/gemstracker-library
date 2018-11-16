@@ -102,6 +102,31 @@ class MonitorTest extends \Gems_Test_DbTestAbstract
         $result = $this->object->reverseMaintenanceMonitor();
         $this->assertTrue($result);
     }
+    
+    public function testUsersMaintenance() {
+        $lock = $this->util->getMaintenanceLock();
+        $lock->unlock();
+
+        $this->object->reverseMaintenanceMonitor();
+        $job      = $this->object->getReverseMaintenanceMonitor();
+        $data     = $job->getArrayCopy();
+        $actual   = $data['to'];
+        $expected = [1 => 'test@gemstracker.org'];
+        // Cleanup
+        $lock->unlock();
+        $this->assertEquals($expected, $actual);
+    }
+    
+    public function testUsersCron() {
+        $this->object->startCronMailMonitor();
+        $job      = $this->object->getCronMailMonitor();
+        $data     = $job->getArrayCopy();
+        $actual   = $data['to'];
+        $expected = [1 => 'test2@gemstracker.org'];
+        // Cleanup
+        $job->stop();
+        $this->assertEquals($expected, $actual);
+    }
 
     /**
      * Returns the test dataset.
