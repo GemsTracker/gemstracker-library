@@ -111,7 +111,7 @@ class MonitorTest extends \Gems_Test_DbTestAbstract
         $job      = $this->object->getReverseMaintenanceMonitor();
         $data     = $job->getArrayCopy();
         $actual   = $data['to'];
-        $expected = [1 => 'test@gemstracker.org'];
+        $expected = ['test@gemstracker.org'];
         // Cleanup
         $lock->unlock();
         $this->assertEquals($expected, $actual);
@@ -122,7 +122,7 @@ class MonitorTest extends \Gems_Test_DbTestAbstract
         $job      = $this->object->getCronMailMonitor();
         $data     = $job->getArrayCopy();
         $actual   = $data['to'];
-        $expected = [1 => 'test2@gemstracker.org'];
+        $expected = ['test2@gemstracker.org'];
         // Cleanup
         $job->stop();
         $this->assertEquals($expected, $actual);
