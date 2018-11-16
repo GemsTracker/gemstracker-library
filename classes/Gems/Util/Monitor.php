@@ -49,9 +49,9 @@ class Monitor extends UtilAbstract
      *
      * @param string $monitorName ProjectSettings name
      * @param string $where Optional, a gems__staff SQL WHERE statement
-     * @return boolean
+     * @return array
      */
-    protected function _getMailTo($monitorName, $where = null, $joins = '')
+    protected function _getMailTo($monitorName)
     {     
         $projTo  = explode(',',$this->project->getMonitorTo($monitorName));
         $userTo  = $this->_getUserTo($monitorName);

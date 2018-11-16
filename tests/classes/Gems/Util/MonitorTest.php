@@ -114,6 +114,21 @@ class MonitorTest extends \Gems_Test_DbTestAbstract
         $expected = ['test@gemstracker.org'];
         // Cleanup
         $lock->unlock();
+        $job->stop();
+        $this->assertEquals($expected, $actual);
+    }
+    
+    public function testNoUsersMaintenance() {
+        $lock = $this->util->getMaintenanceLock();
+        $lock->unlock();
+
+        $this->object->reverseMaintenanceMonitor();
+        $job      = $this->object->getReverseMaintenanceMonitor();
+        $data     = $job->getArrayCopy();
+        $actual   = $data['to'];
+        $expected = null;
+        // Cleanup
+        $lock->unlock();
         $this->assertEquals($expected, $actual);
     }
     
@@ -128,16 +143,28 @@ class MonitorTest extends \Gems_Test_DbTestAbstract
         $this->assertEquals($expected, $actual);
     }
 
-    /**
-     * Returns the test dataset.
+     /**
+     * Used to setup database for an individual testcase
      *
-     * @return PHPUnit_Extensions_Database_DataSet_IDataSet
+     * Will use <classname>_<testname>.xml or <classname>.xml
+     *
+     * @return \PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet | null
      */
     protected function getDataSet()
     {
-        //Dataset TokenTest.xml has the minimal data we need to perform our tests
-        $classFile = str_replace('.php', '.xml', __FILE__);
-        return $this->createFlatXMLDataSet($classFile);
+        $testcase  = $this->getName(false);
+        // Just basename fails on linux systems
+        $className = str_replace('.php', '', __FILE__);
+        $classFile = $className . '.xml';
+        $testFile  = $className . '_' . $testcase . '.xml';
+        if (file_exists($testFile)) {
+            return new \PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet($testFile);
+        }
+        if (file_exists($classFile)) {
+            return new \PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet($classFile);
+        }
+
+        return null;
     }
 
 }
