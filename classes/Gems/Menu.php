@@ -306,7 +306,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
 
-        $rPage->addAction(null, null, 'overview')
+        $rPage->addAction(null, 'pr.token.answers', 'overview')
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
 
