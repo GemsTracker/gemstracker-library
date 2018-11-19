@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-31 13:28+0100\n"
+"POT-Creation-Date: 2018-11-19 13:16+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 2.2\n"
+"X-Generator: Poedit 1.8.9\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
@@ -1714,7 +1714,7 @@ msgstr "Patient nr"
 #: classes/Gems/Default/FieldOverviewAction.php:104
 #: classes/Gems/Model/EpisodeOfCareModel.php:144
 #: classes/Gems/Model/EpisodeOfCareModel.php:185
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:600
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:609
 #: classes/OpenRosa/Tracker/Source/Form.php:629
 msgid "Start date"
 msgstr "Start date"
@@ -1733,11 +1733,11 @@ msgstr "End date"
 msgid "No track selected..."
 msgstr "No track selected..."
 
-#: classes/Gems/Default/ComplianceAction.php:190
+#: classes/Gems/Default/ComplianceAction.php:209
 msgid "Compliance"
 msgstr "Compliance"
 
-#: classes/Gems/Default/ComplianceAction.php:226
+#: classes/Gems/Default/ComplianceAction.php:245
 #: classes/Gems/Default/FieldReportAction.php:344
 #: classes/Gems/Default/ProjectTracksAction.php:148
 #: classes/Gems/Default/TrackAction.php:1024
@@ -2122,7 +2122,7 @@ msgid "Query"
 msgstr "Query"
 
 #: classes/Gems/Default/DatabaseAction.php:439
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:313
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:319
 #, php-format
 msgid "Result"
 msgstr "Result"
@@ -3664,7 +3664,7 @@ msgstr "Open"
 
 #: classes/Gems/Default/SummaryAction.php:129
 #: classes/Gems/Snippets/Respondent/RespondentOverviewSnippet.php:147
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:629
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:638
 msgid "Summary"
 msgstr "Summary"
 
@@ -3686,7 +3686,7 @@ msgstr "Average answer time: %s."
 #: classes/Gems/Default/SurveyMaintenanceAction.php:199
 #: classes/Gems/Default/SurveyMaintenanceAction.php:221
 #: classes/Gems/Snippets/Respondent/RespondentOverviewSnippet.php:167
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:597
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:606
 #: classes/Gems/Util/Translated.php:117
 msgid "n/a"
 msgstr "n/a"
@@ -4374,7 +4374,7 @@ msgstr "Last page"
 #: classes/Gems/Export/RespondentExport.php:250 classes/Gems/Menu.php:234
 #: classes/Gems/Menu.php:366 classes/Gems/Menu.php:460
 #: classes/Gems/Model/CommLogModel.php:140
-#: classes/Gems/Model/OrganizationModel.php:254
+#: classes/Gems/Model/OrganizationModel.php:256
 #: classes/Gems/Model/Translator/TokenAnswerTranslator.php:89
 #: classes/Gems/Snippets/Ask/RedirectUntilGoodbyeSnippet.php:83
 #: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:65
@@ -4604,7 +4604,7 @@ msgstr "Codes"
 msgid "Consents"
 msgstr "Consents"
 
-#: classes/Gems/Menu.php:169 classes/Gems/Model/OrganizationModel.php:274
+#: classes/Gems/Menu.php:169 classes/Gems/Model/OrganizationModel.php:281
 msgid "Access"
 msgstr "Access"
 
@@ -5470,15 +5470,28 @@ msgstr "Reset Password template"
 msgid "Allowed IP Ranges"
 msgstr "Allowed IP Ranges"
 
-#: classes/Gems/Model/OrganizationModel.php:254
+#: classes/Gems/Model/OrganizationModel.php:256
 msgid "Email"
 msgstr "Email"
 
-#: classes/Gems/Model/OrganizationModel.php:289
+#: classes/Gems/Model/OrganizationModel.php:264
+#: classes/Gems/Model/StaffModel.php:270
+msgid "Check cron job mail"
+msgstr "Check cron job mail"
+
+#: classes/Gems/Model/OrganizationModel.php:265
+msgid ""
+"If checked the organization contact will be mailed when the cron job does "
+"not run on time."
+msgstr ""
+"If checked the organization contact will be mailed when the cron job does "
+"not run on time."
+
+#: classes/Gems/Model/OrganizationModel.php:296
 msgid "Can access"
 msgstr "Can access"
 
-#: classes/Gems/Model/OrganizationModel.php:309
+#: classes/Gems/Model/OrganizationModel.php:316
 msgid "Interface"
 msgstr "Interface"
 
@@ -5492,7 +5505,7 @@ msgstr "E-Mail"
 #: classes/Gems/Model/RespondentModel.php:272
 #: classes/Gems/Model/RespondentModel.php:355
 #: classes/Gems/Model/RespondentModel.php:476
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:401
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:410
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:170
 msgid "May be mailed"
 msgstr "May be mailed"
@@ -5693,10 +5706,6 @@ msgstr "Logout on survey"
 #: classes/Gems/Model/StaffModel.php:266
 msgid "If checked the user will logoff when answering a survey."
 msgstr "If checked the user will logoff when answering a survey."
-
-#: classes/Gems/Model/StaffModel.php:270
-msgid "Check cron job mail"
-msgstr "Check cron job mail"
 
 #: classes/Gems/Model/StaffModel.php:271
 msgid ""
@@ -6735,13 +6744,13 @@ msgid "(accessible by any organization)"
 msgstr "(accessible by any organization)"
 
 #: classes/Gems/Snippets/ReceptionCode/ChangeReceptionCodeSnippetAbstract.php:110
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:151
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:157
 #, php-format
 msgid "Undelete %s!"
 msgstr "Undelete %s!"
 
 #: classes/Gems/Snippets/ReceptionCode/ChangeReceptionCodeSnippetAbstract.php:112
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:148
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:154
 #, php-format
 msgid "Delete %s!"
 msgstr "Delete %s!"
@@ -6930,58 +6939,58 @@ msgstr "empty"
 msgid "%s (%d open)"
 msgstr "%s (%d open)"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:174
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:180
 #: classes/Gems/Snippets/Tracker/Buttons/TrackActionButtonRow.php:40
 #: classes/Gems/Snippets/Tracker/DeleteTrackSnippet.php:133
 msgid "Edit track"
 msgstr "Edit track"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:310
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:316
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:327
 #, php-format
 msgid "Completed"
 msgstr "Completed"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:326
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:334
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:759
 msgid "Does not expire"
 msgstr "Does not expire"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:328
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:336
 #, php-format
 msgid "Open until %s"
 msgstr "Open until %s"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:336
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:344
 #, php-format
 msgid "Missed since %s"
 msgstr "Missed since %s"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:342
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:350
 #, php-format
 msgid "Valid from %s"
 msgstr "Valid from %s"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:400
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:409
 msgid "May not be mailed"
 msgstr "May not be mailed"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:476
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:485
 #, php-format
 msgid "%s missed"
 msgstr "%s missed"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:481
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:490
 #, php-format
 msgid "%s completed"
 msgstr "%s completed"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:486
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:495
 #, php-format
 msgid "%s open"
 msgstr "%s open"
 
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:491
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:500
 #, php-format
 msgid "%s upcoming"
 msgstr "%s upcoming"
@@ -9258,25 +9267,25 @@ msgstr "This token cannot (yet) be used."
 msgid "Unknown token."
 msgstr "Unknown token."
 
-#: classes/Gems/Upgrades.php:78
+#: classes/Gems/Upgrades.php:79
 msgid "Syncing surveys for all sources"
 msgstr "Syncing surveys for all sources"
 
-#: classes/Gems/Upgrades.php:138 classes/Gems/Upgrades.php:150
-#: classes/Gems/Upgrades.php:172 classes/Gems/Upgrades.php:184
-#: classes/Gems/Upgrades.php:197 classes/Gems/Upgrades.php:211
-#: classes/Gems/Upgrades.php:225 classes/Gems/Upgrades.php:243
-#: classes/Gems/Upgrades.php:256 classes/Gems/Upgrades.php:270
-#: classes/Gems/Upgrades.php:284 classes/Gems/Upgrades.php:301
-#: classes/Gems/Upgrades.php:316 classes/Gems/Upgrades.php:332
-#: classes/Gems/Upgrades.php:347
-msgid "Make sure to read the changelog as it contains important instructions"
-msgstr "Make sure to read the changelog as it contains important instructions"
-
+#: classes/Gems/Upgrades.php:139 classes/Gems/Upgrades.php:151
+#: classes/Gems/Upgrades.php:173 classes/Gems/Upgrades.php:185
+#: classes/Gems/Upgrades.php:198 classes/Gems/Upgrades.php:212
+#: classes/Gems/Upgrades.php:226 classes/Gems/Upgrades.php:244
 #: classes/Gems/Upgrades.php:257 classes/Gems/Upgrades.php:271
 #: classes/Gems/Upgrades.php:285 classes/Gems/Upgrades.php:302
 #: classes/Gems/Upgrades.php:317 classes/Gems/Upgrades.php:333
-#: classes/Gems/Upgrades.php:348
+#: classes/Gems/Upgrades.php:348 classes/Gems/Upgrades.php:363
+msgid "Make sure to read the changelog as it contains important instructions"
+msgstr "Make sure to read the changelog as it contains important instructions"
+
+#: classes/Gems/Upgrades.php:258 classes/Gems/Upgrades.php:272
+#: classes/Gems/Upgrades.php:286 classes/Gems/Upgrades.php:303
+#: classes/Gems/Upgrades.php:318 classes/Gems/Upgrades.php:334
+#: classes/Gems/Upgrades.php:349 classes/Gems/Upgrades.php:364
 msgid ""
 "Check the Code compatibility report for any issues with project specific "
 "code!"
