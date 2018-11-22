@@ -97,6 +97,24 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
      * @var boolean $useHtmlView
      */
     public $useHtmlView = true;
+    
+    /**
+     * Leave on top,  we won't miss this
+     */
+    public function init()
+    {
+        parent::init();
+        
+        /**
+         * If not in the index action, add the following to the head section
+         *      <meta name="robots" content="noindex">
+         */
+        $action = $this->getRequest()->getActionName();
+        if ($action !== 'index') {
+            $view = Zend_Controller_Front::getInstance()->getParam('bootstrap')->getResource('view');
+            $this->view->getHelper('headMeta')->appendName('robots', 'noindex');
+        }
+    }
 
     /**
      * Common handler utility to initialize tokens from parameters
@@ -111,8 +129,10 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
 
         $this->tracker = $this->loader->getTracker();
         $this->tokenId = $this->tracker->filterToken($this->_getParam(\MUtil_Model::REQUEST_ID));
+        // Now check if the token is valid
+        $validator = $this->tracker->getTokenValidator();
 
-        if (! $this->tokenId) {
+        if (! $this->tokenId || $validator->isValid($this->tokenId) === false) {
             return false;
         }
 
