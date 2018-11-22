@@ -196,7 +196,7 @@ class Gems_Tracker_Token_TokenValidator extends \MUtil_Registry_TargetAbstract i
                 // Reuse means a user can use an old token to check for new surveys
                 if ($reuse >= 0) {
                     // Oldest date AFTER completiondate. Oldest date is today minus reuse time
-                    if ($completionTime->diffDays($currentDate) <= $reuse) {
+                    if ($currentDate->diffDays($completionTime) <= $reuse) {
                         // It is completed and may still be used to look
                         // up other valid tokens.
                         return true;
