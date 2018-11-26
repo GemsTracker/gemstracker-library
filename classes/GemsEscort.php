@@ -1015,16 +1015,19 @@ class GemsEscort extends \MUtil_Application_Escort
                     $localeDiv->span(strtoupper($locale), array('class' => 'language ' . $locale));
                 } else {
                     $localeDiv->a(
-                            array(
-                                'controller' => 'language',
-                                'action' => 'change-ui',
-                                'language' => urlencode($locale),
-                                'current_uri' => $currentUri,
-                                'class' => ''
-                            ),
-                            strtoupper($locale),
-                            array('class' => 'language ' . $locale)
-                        );
+                        array(
+                            'controller' => 'language',
+                            'action' => 'change-ui',
+                            'language' => urlencode($locale),
+                            'current_uri' => $currentUri,
+                            'class' => ''                                
+                        ),
+                        strtoupper($locale),
+                        array(
+                            'class' => 'language ' . $locale, 
+                            'rel' => 'nofollow'
+                        )
+                    );
                 }
                 $localeDiv[] = ' ';
             }
