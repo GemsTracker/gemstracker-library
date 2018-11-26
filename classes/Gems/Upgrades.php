@@ -236,11 +236,6 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
         $this->_batch->addTask('Db_CreateNewTables');
         $this->_batch->addTask('Db_AddPatches', 56);
 
-        // Use AddTask task to execute after patches
-        $this->_batch->addTask('AddTask', 'Updates_EncryptPasswords', 'gems__sources', 'gso_id_source', 'gso_ls_password', 'gso_encryption');
-        $this->_batch->addTask('AddTask', 'Updates_EncryptPasswords', 'gems__mail_servers', 'gms_from', 'gms_password', 'gms_encryption');
-        $this->_batch->addTask('AddTask', 'Updates_EncryptPasswords', 'gems__radius_config', 'grcfg_id', 'grcfg_secret', 'grcfg_encryption');
-
         $this->_batch->addTask('Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
 
         return true;
@@ -335,7 +330,7 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
 
         return true;
     }
-    
+
     /**
      * To upgrade to 1.8.5
      */
@@ -350,7 +345,7 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
 
         return true;
     }
-    
+
     /**
      * To upgrade to 1.8.6
      */
@@ -358,6 +353,11 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
     {
         $this->_batch->addTask('Db_CreateNewTables');
         $this->_batch->addTask('Db_AddPatches', 64);
+
+        // Use AddTask task to execute after patches
+        $this->_batch->addTask('AddTask', 'Updates_EncryptPasswords', 'gems__sources', 'gso_id_source', 'gso_ls_password');
+        $this->_batch->addTask('AddTask', 'Updates_EncryptPasswords', 'gems__mail_servers', 'gms_from', 'gms_password');
+        $this->_batch->addTask('AddTask', 'Updates_EncryptPasswords', 'gems__radius_config', 'grcfg_id', 'grcfg_secret');
 
         // Use AddTask task to execute after patches
         $this->_batch->addTask('AddTask', 'Echo', $this->_('Make sure to read the changelog as it contains important instructions'));

@@ -315,10 +315,7 @@ abstract class Gems_Tracker_Source_SourceAbstract extends \MUtil_Translate_Trans
                             ? $this->_sourceData['gso_ls_username']
                             : $gemsConfig['username'];
                     $dbConfig['password'] = $this->_sourceData['gso_ls_password']
-                            ? $this->project->decrypt(
-                                    $this->_sourceData['gso_ls_password'],
-                                    $this->_sourceData['gso_encryption']
-                                    )
+                            ? $this->project->decrypt($this->_sourceData['gso_ls_password'])
                             : $gemsConfig['password'];
 
                     $this->_sourceDb = \Zend_Db::factory($adapter, $dbConfig);

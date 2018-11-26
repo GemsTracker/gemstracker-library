@@ -316,7 +316,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
         if (preg_match('/\\s(protected|private) function\\s+getRespondent\\s*\\(/', $content)) {
             $messages[] = "This controller should change it's getRespondent method to be public.";
         }
-        
+
         if (preg_match('/\\sextends\\s+\\\\?Gems_Controller_BrowseEditAction\\s/', $content)) {
             $messages[] = "This controller extends from the deprecated Gems_Controller_BrowseEditAction.";
             $messages[] = \MUtil_Html::create('strong', "Rewrite the controller!");
@@ -653,7 +653,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             $this->html->pInfo('No headers section found.');
             $issues = true;
         }
-        if (!$this->project->offsetExists('meta')) {            
+        if (!$this->project->offsetExists('meta')) {
             $this->html->pInfo('No meta headers section found.');
             $issues = true;
         } else {
@@ -664,20 +664,21 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             if (isset($this->project['meta']['Strict-Transport-Security'])) {
                 $this->html->pInfo('meta.Strict-Transport-Security should be moved to headers section');
                 $issues = true;
-            }            
+            }
         }
 
-        if (isset($this->project['headers']['Content-Security-Policy']) && 
+        if (isset($this->project['headers']['Content-Security-Policy']) &&
                 preg_match('/img-src\s.*?data:.*?;/', $this->project['headers']['Content-Security-Policy']) !== 1) {
             $this->html->pInfo('The headers.Content-Security-Policy setting img-src should have data: for Two Factor Authentication.');
-            $issues = true;            
-        }
-        if ($this->project->offsetExists('x-frame')) {
-            $this->html->pInfo('Stand alone X-Frame option is no longer in use, set in headers section instead.');
             $issues = true;
         }
         if ($this->project->offsetExists('jquerycss')) {
             $this->html->pInfo('Separate JQuery CSS no longer in use. Remove jquerycss setting.');
+            $issues = true;
+        }
+
+        if (! isset($this->project['security'], $this->project['security']['methods'])) {
+            $this->html->pInfo('No OpenSSL cipher methods defined in security.methods.');
             $issues = true;
         }
 

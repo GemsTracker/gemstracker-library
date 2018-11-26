@@ -18,6 +18,12 @@ class EncryptedFieldTest extends PHPUnit_Framework_TestCase
     protected $maskedType;
 
     /**
+     *
+     * @var \Gems_Project_ProjectSettings
+     */
+    private $project;
+
+    /**
      * @var Gems_Model_Type_EncryptedField
      */
     protected $unmaskedType;
@@ -28,15 +34,15 @@ class EncryptedFieldTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $model   = new MUtil_Model_NestedArrayModel('text', array());
-        $settings = new Zend_Config_Ini(GEMS_ROOT_DIR . '/configs/project.example.ini', APPLICATION_ENV);
-        $project = new Gems_Project_ProjectSettings($settings);
+        $model         = new MUtil_Model_NestedArrayModel('text', array());
+        $settings      = new Zend_Config_Ini(GEMS_ROOT_DIR . '/configs/project.example.ini', APPLICATION_ENV);
+        $this->project = new Gems_Project_ProjectSettings($settings);
 
-        $this->maskedType   = new Gems_Model_Type_EncryptedField($project, true);
-        $this->unmaskedType = new Gems_Model_Type_EncryptedField($project, false);
+        $this->maskedType   = new Gems_Model_Type_EncryptedField($this->project, true);
+        $this->unmaskedType = new Gems_Model_Type_EncryptedField($this->project, false);
 
-        $this->maskedType->apply($model, 'f1', 'f2');
-        $this->unmaskedType->apply($model, 'f1', 'f2');
+        $this->maskedType->apply($model, 'f1');
+        $this->unmaskedType->apply($model, 'f1');
     }
 
     /**
@@ -58,9 +64,23 @@ class EncryptedFieldTest extends PHPUnit_Framework_TestCase
         $unencrypted = 'myvisiblepassword';
         $encrypted   = $this->unmaskedType->saveValue($unencrypted);
         // echo "\n$encrypted\n";
-        
-        $this->assertEquals('********',   $this->maskedType->loadValue($encrypted, false, 'f1', array('f2' => 'default')));
-        $this->assertEquals($unencrypted, $this->unmaskedType->loadValue($encrypted, false, 'f1', array('f2' => 'default')));
+
+        $this->assertEquals('********',   $this->maskedType->loadValue($encrypted, false, 'f1'));
+        $this->assertEquals($unencrypted, $this->unmaskedType->loadValue($encrypted, false, 'f1'));
+    }
+
+    /**
+     * When decrypting a field that can not match, we should get our unaltered input back
+     */
+    public function testDecryptionMCrypt()
+    {
+        if (version_compare(PHP_VERSION, '7.1.0') < 0) {
+            // Test old code without using openssl library
+            unset($this->project['security']['methods']);
+        }
+
+        $unencrypted = 'myvisiblepassword';
+        $this->assertEquals($unencrypted, $this->project->decrypt($this->unmaskedType->saveValue($unencrypted, false, 'f1')));
     }
 
     /**
@@ -69,7 +89,7 @@ class EncryptedFieldTest extends PHPUnit_Framework_TestCase
     public function testDecryptionUnencrypted()
     {
         $unencrypted = 'myvisiblepassword';
-        $this->assertEquals($unencrypted, $this->unmaskedType->loadValue($unencrypted, false, 'f1', array('f2' => null)));
+        $this->assertEquals($unencrypted, $this->unmaskedType->loadValue(':null:' . $unencrypted, false, 'f1'));
     }
 
     /**

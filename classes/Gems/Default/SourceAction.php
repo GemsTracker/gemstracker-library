@@ -213,7 +213,7 @@ class Gems_Default_SourceAction extends \Gems_Controller_ModelSnippetActionAbstr
                         'renderPassword', false);
             }
             $type = new \Gems_Model_Type_EncryptedField($this->project, true);
-            $type->apply($model, 'gso_ls_password', 'gso_encryption');
+            $type->apply($model, 'gso_ls_password');
 
             $model->set('gso_ls_charset',     'label', $this->_('Charset'),
                     'description', $in_gems,

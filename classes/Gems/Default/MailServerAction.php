@@ -75,7 +75,7 @@ class Gems_Default_MailServerAction extends \Gems_Controller_ModelSnippetActionA
                     'description', $this->_('Enter only when changing'));
 
             $type = new \Gems_Model_Type_EncryptedField($this->project, true);
-            $type->apply($model, 'gms_password', 'gms_encryption');
+            $type->apply($model, 'gms_password');
         }
 
         return $model;

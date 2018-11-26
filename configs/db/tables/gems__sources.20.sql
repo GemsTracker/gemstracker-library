@@ -12,7 +12,11 @@ CREATE TABLE IF NOT EXISTS gems__sources (
         gso_ls_table_prefix varchar(127) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' default NULL,
         gso_ls_username     varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' default NULL,
         gso_ls_password     varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' default NULL,
+
+        -- deprecated in 1.8.6  method was never used, now saved with password
         gso_encryption      varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        -- end deprecated
+
         gso_ls_charset      varchar(8) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' default NULL,
 
         gso_active          tinyint(1) NOT NULL default '1',

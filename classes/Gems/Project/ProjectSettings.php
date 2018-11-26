@@ -217,42 +217,135 @@ class Gems_Project_ProjectSettings extends \ArrayObject
      * Decrypt a string encrypted with encrypt()
      *
      * @param string $input String to decrypt
-     * @param string $method The method used for encrypting (null = no encryption)
      * @return decrypted string
      */
-    public function decrypt($input, $method = 'default')
+    public function decrypt($input)
     {
-        if ((! $input) || (null === $method)) {
+        if (! $input) {
             return $input;
         }
 
-        $decoded = base64_decode($input);
-        $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
-        $iv      = substr($decoded, 0, $iv_size);
-        $key     = md5($this->offsetExists('salt') ? $this->offsetGet('salt') : 'vadf2646fakjndkjn24656452vqk');
+        $methods = $this->getEncryptionMethods();
+        if (':' == $input[0]) {
+            list($empty, $mkey, $base64) = explode(':', $input, 3);
+
+            if (! isset($methods[$mkey])) {
+                $error = sprintf("Encryption method '%s' not defined in projec.ini.", $mkey);
+                throw new \Gems_Exception_Coding($error);
+            }
+
+            $method = $methods[$mkey];
+        } else {
+            $mkey   = 'mcrypt';
+            $base64 = $input;
+            $method = $mkey;
+        }
+
+        $decoded = base64_decode($base64);
+        if ('mcrypt' == $method) {
+            $output = $this->decryptMcrypt($decoded);
+        } elseif ('null' == $method) {
+            $output = $base64;
+        } else {
+            $output = $this->decryptOpenSsl($decoded, $method);
+        }
+
+        if (false === $output) {
+            return $input;
+        } else {
+            return $output;
+        }
+    }
+
+    /**
+     * Decrypt a string encrypted with encrypt()
+     *
+     * @param string $input String to decrypt
+     * @return string decrypted string of false
+     */
+    protected function decryptMcrypt($input)
+    {
+        $ivlen = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
+        $iv    = substr($input, 0, $ivlen);
+        $key   = md5($this->offsetExists('salt') ? $this->offsetGet('salt') : 'vadf2646fakjndkjn24656452vqk');
 
         // Remove trailing zero bytes!
-        return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, substr($decoded, $iv_size), MCRYPT_MODE_CBC, $iv), "\0");
+        return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, substr($input, $ivlen), MCRYPT_MODE_CBC, $iv), "\0");
     }
 
     /**
      * Reversibly encrypt a string
      *
      * @param string $input String to decrypt
-     * @param string $method The method used for encrypting (null = no encryption)
-     * @return decrypted string
+     * @param string $method The cipher method, one of openssl_get_cipher_methods().
+     * @return string decrypted string of false
      */
-    public function encrypt($input, $method = 'default')
+    protected function decryptOpenSsl($input, $method)
     {
-        if ((! $input) || (null === $method)) {
+        $ivlen = openssl_cipher_iv_length($method);
+        $iv    = substr($input, 0, $ivlen);
+        $key   = $this->getEncryptionSaltKey();
+
+        return openssl_decrypt(substr($input, $ivlen), $method, $key, 0, $iv);
+    }
+
+    /**
+     * Reversibly encrypt a string
+     *
+     * @param string $input String to decrypt
+     * @return encrypted string
+     */
+    public function encrypt($input)
+    {
+        if (! $input) {
             return $input;
         }
 
-        $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
-        $iv      = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-        $key     = md5($this->offsetExists('salt') ? $this->offsetGet('salt') : 'vadf2646fakjndkjn24656452vqk');
+        $methods = $this->getEncryptionMethods();
+        $method  = reset($methods);
+        $mkey    = key($methods);
 
-        return base64_encode($iv . mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $input, MCRYPT_MODE_CBC, $iv));
+        if ('mcrypt' == $method) {
+            $result = $this->encryptMcrypt($input);
+        } elseif ('null' == $method) {
+            $result = $input;
+        } else {
+            $result = $this->encryptOpenSsl($input, $method);
+        }
+
+        return ":$mkey:" . base64_encode($result);
+    }
+
+    /**
+     * Reversibly encrypt a string
+     *
+     * @param string $input String to encrypt
+     * @return encrypted string
+     */
+    protected function encryptMcrypt($input)
+    {
+        $ivlen = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
+        $iv    = mcrypt_create_iv($ivlen, MCRYPT_RAND);
+        $key   = $this->getEncryptionSaltKey();
+
+        return $iv . mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $input, MCRYPT_MODE_CBC, $iv);
+    }
+
+
+    /**
+     * Reversibly encrypt a string
+     *
+     * @param string $input String to encrypt
+     * @param string $method The cipher method, one of openssl_get_cipher_methods().
+     * @return encrypted string
+     */
+    protected function encryptOpenSsl($input, $method)
+    {
+        $ivlen = openssl_cipher_iv_length($method);
+        $iv    = openssl_random_pseudo_bytes($ivlen);
+        $key   = $this->getEncryptionSaltKey();
+
+        return $iv . openssl_encrypt($input, $method, $key, 0, $iv);
     }
 
     /**
@@ -527,6 +620,37 @@ class Gems_Project_ProjectSettings extends \ArrayObject
             return (string) $this->email['resetPasswordTemplate'];
         }
         return false;
+    }
+
+    /**
+     *
+     * @return array (stored) key => openssl_get_cipher_method used
+     */
+    protected function getEncryptionMethods()
+    {
+        if (isset($this['security'], $this['security']['methods'])) {
+            // reverse so first item is used as default
+            $output = array_reverse($this['security']['methods']);
+        } else {
+            $output = [];
+        }
+        if (! isset($output['mcrypt'])) {
+            $output['mcrypt'] = 'mcrypt';
+        }
+        if (! isset($output['null'])) {
+            $output['null'] = 'null';
+        }
+
+        return $output;
+    }
+
+    /**
+     *
+     * @return string The salt key
+     */
+    protected function getEncryptionSaltKey()
+    {
+        return md5($this->offsetExists('salt') ? $this->offsetGet('salt') : 'vadf2646fakjndkjn24656452vqk');
     }
 
     /**

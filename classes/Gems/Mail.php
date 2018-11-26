@@ -126,10 +126,7 @@ class Gems_Mail extends \MUtil_Mail
                 if (isset($serverData['gms_user'], $serverData['gms_password'])) {
                     $options['auth'] = 'login';
                     $options['username'] = $serverData['gms_user'];
-                    $options['password'] = $this->project->decrypt(
-                            $serverData['gms_password'],
-                            $serverData['gms_encryption']
-                            );
+                    $options['password'] = $this->project->decrypt($serverData['gms_password']);
                 }
                 if (isset($serverData['gms_port'])) {
                     $options['port'] = $serverData['gms_port'];

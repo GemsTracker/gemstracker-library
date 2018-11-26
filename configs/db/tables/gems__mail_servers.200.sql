@@ -7,7 +7,10 @@ CREATE TABLE if not exists gems__mail_servers (
         gms_ssl        tinyint not null default 0,
         gms_user       varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
         gms_password   varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+
+        -- deprecated in 1.8.6  method was never used, now saved with password
         gms_encryption varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        -- end deprecated
 
         gms_changed    timestamp not null default current_timestamp on update current_timestamp,
         gms_changed_by bigint unsigned not null,

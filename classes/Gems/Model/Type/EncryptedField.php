@@ -26,13 +26,6 @@
 class Gems_Model_Type_EncryptedField
 {
     /**
-     * Array encryption value field name => encryption method field name
-     *
-     * @var array
-     */
-    protected $findValue;
-
-    /**
      *
      * @var \Gems_Project_ProjectSettings
      */
@@ -61,26 +54,16 @@ class Gems_Model_Type_EncryptedField
      *
      * @param \MUtil_Model_ModelAbstract $model
      * @param string $valueField The field containing the value to be encrypted
-     * #param string $methodField the field storing the method of encryption
      * @return \Gems_Model_Type_EncryptedField (continuation pattern)
      */
-    public function apply(\MUtil_Model_ModelAbstract $model, $valueField, $methodField)
+    public function apply(\MUtil_Model_ModelAbstract $model, $valueField)
     {
-        $this->findValue[$methodField] = $valueField;
-
         $model->setSaveWhenNotNull($valueField);
         $model->setOnLoad($valueField, array($this, 'loadValue'));
         $model->setOnSave($valueField, array($this, 'saveValue'));
 
-        // Only hidden to make sure onSave's are triggered
-        $model->set($methodField, 'elementClass', 'hidden');
-        $model->setOnLoad($methodField, 'default'); // Yes you can set this to a constant
-        $model->setSaveWhen($methodField, array($this, 'whenEncryption'));
-        $model->setOnSave($methodField, array($this, 'saveEncryption'));
-
         if ($model instanceof \MUtil_Model_DatabaseModelAbstract) {
             $model->setOnTextFilter($valueField, false);
-            $model->setOnTextFilter($methodField, false);
         }
 
         return $this;
@@ -108,37 +91,13 @@ class Gems_Model_Type_EncryptedField
             if ($this->valueMask) {
                 return str_repeat('*', 8);
             } else {
-                $methodField = array_search($name, $this->findValue);
-                if (array_key_exists($methodField, $context)) {
-                    return $this->project->decrypt($value, $context[$methodField]);
-                }
+                return $this->project->decrypt($value);
             }
         }
 
         return $value;
     }
-
-    /**
-     * A ModelAbstract->setOnSave() function that returns the input
-     * date as a valid date.
-     *
-     * @see \MUtil_Model_ModelAbstract
-     *
-     * @param mixed $value The value being saved
-     * @param boolean $isNew True when a new item is being saved
-     * @param string $name The name of the current field
-     * @param array $context Optional, the other values being saved
-     * @return \Zend_Date
-     */
-    public function saveEncryption($value, $isNew = false, $name = null, array $context = array())
-    {
-        $valueField = $this->findValue[$name];
-        if (isset($context[$valueField]) && $context[$valueField]) {
-            return 'default';
-        }
-        return null;
-    }
-
+    
     /**
      * A ModelAbstract->setOnSave() function that returns the input
      * date as a valid date.
@@ -155,26 +114,7 @@ class Gems_Model_Type_EncryptedField
     {
         if ($value) {
             // \MUtil_Echo::track($value);
-            return $this->project->encrypt($value, 'default');
+            return $this->project->encrypt($value);
         }
-    }
-
-    /**
-     * A ModelAbstract->setOnSave() function that returns the input
-     * date as a valid date.
-     *
-     * @see \MUtil_Model_ModelAbstract
-     *
-     * @param mixed $value The value being saved
-     * @param boolean $isNew True when a new item is being saved
-     * @param string $name The name of the current field
-     * @param array $context Optional, the other values being saved
-     * @return \Zend_Date
-     */
-    public function whenEncryption($value, $isNew = false, $name = null, array $context = array())
-    {
-        // \MUtil_Echo::track($value);
-        $valueField = $this->findValue[$name];
-        return isset($context[$valueField]) && $context[$valueField];
     }
 }

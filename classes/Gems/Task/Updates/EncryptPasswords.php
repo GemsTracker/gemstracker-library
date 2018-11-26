@@ -37,15 +37,15 @@ class Gems_Task_Updates_EncryptPasswords extends \MUtil_Task_TaskAbstract
      * The parameters should be optional and failing to provide them should be handled by
      * the task
      */
-    public function execute($tableName = '', $idField = '', $passwordField = '', $methodField = '')
+    public function execute($tableName = '', $idField = '', $passwordField = '')
     {
-        $passwords = $this->db->fetchPairs("SELECT $idField, $passwordField FROM $tableName WHERE $passwordField IS NOT NULL AND $methodField IS NULL");
+        $passwords = $this->db->fetchPairs(
+                "SELECT $idField, $passwordField FROM $tableName WHERE $passwordField IS NOT NULL"
+                );
 
         if ($passwords) {
-            $values[$methodField] = 'default';
-
             foreach ($passwords as $key => $password) {
-                $values[$passwordField] = $this->project->encrypt($password, $values[$methodField]);
+                $values[$passwordField] = $this->project->encrypt($this->project->decrypt($password));
 
                 $this->db->update($tableName, $values, "$idField = '$key'");
             }

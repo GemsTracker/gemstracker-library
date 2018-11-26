@@ -9,6 +9,12 @@ class Gems_Model_EncryptedFieldModelTest extends MUtil_Model_AbstractModelTest
     private $_model;
 
     /**
+     *
+     * @var \Gems_Project_ProjectSettings
+     */
+    private $project;
+
+    /**
      * Create the model
      *
      * @return MUtil_Model_ModelAbstract
@@ -21,9 +27,9 @@ class Gems_Model_EncryptedFieldModelTest extends MUtil_Model_AbstractModelTest
             $settings = new Zend_Config_Ini(GEMS_ROOT_DIR . '/configs/project.example.ini', APPLICATION_ENV);
             $settings = $settings->toArray();
             $settings['salt'] = 'vadf2646fakjndkjn24656452vqk';
-            $project = new Gems_Project_ProjectSettings($settings);
-            $encryptedField = new Gems_Model_Type_EncryptedField($project, false);
-            $encryptedField->apply($this->_model, 'c1', 'c3');
+            $this->project  = new Gems_Project_ProjectSettings($settings);
+            $encryptedField = new Gems_Model_Type_EncryptedField($this->project, false);
+            $encryptedField->apply($this->_model, 'c1');
         }
 
         return $this->_model;
@@ -47,8 +53,10 @@ class Gems_Model_EncryptedFieldModelTest extends MUtil_Model_AbstractModelTest
     public function testHasFirstRow()
     {
         $model = $this->getModel();
-        $rows = $model->load();
+        $rows  = $model->load();
         $this->assertCount(1, $rows);
+
+        // echo "\n" . $this->project->encrypt('myvisiblepassword2') . "\n";
     }
 
     /**
@@ -68,10 +76,10 @@ class Gems_Model_EncryptedFieldModelTest extends MUtil_Model_AbstractModelTest
     public function testInsertARow()
     {
         $model  = $this->getModel();
-        $result = $model->save(array('id' => null, 'c1' => "myvisiblepassword", 'c2' => "myvisiblepassword", 'c3' => 'default'));
+        $result = $model->save(array('id' => null, 'c1' => "myvisiblepassword", 'c2' => "myvisiblepassword"));
         $this->assertEquals(2, $result['id']);
-        
-        $model->remove('c1', MUtil_Model_ModelAbstract::LOAD_TRANSFORMER);
+
+        $model->remove('c1', \MUtil_Model_ModelAbstract::LOAD_TRANSFORMER);
         $row = $model->loadFirst(array('id'=>2));
         $this->assertNotEquals($row['c1'], $row['c2']);
     }
@@ -82,7 +90,7 @@ class Gems_Model_EncryptedFieldModelTest extends MUtil_Model_AbstractModelTest
     public function testRetrieveInsertedRow()
     {
         $model  = $this->getModel();
-        $result = $model->save(array('id' => null, 'c1' => "myvisiblepassword", 'c2' => "myvisiblepassword", 'c3' => 'default'));
+        $result = $model->save(array('id' => null, 'c1' => "myvisiblepassword", 'c2' => "myvisiblepassword"));
 
         $row = $model->loadFirst(array('id'=>$result['id']));
         $this->assertEquals($row['c1'], $row['c2']);

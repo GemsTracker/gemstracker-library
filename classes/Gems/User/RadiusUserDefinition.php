@@ -162,7 +162,7 @@ class Gems_User_RadiusUserDefinition extends \Gems_User_StaffUserDefinition impl
                     );
 
             $type = new \Gems_Model_Type_EncryptedField($this->project, $valueMask);
-            $type->apply($model, 'grcfg_secret', 'grcfg_encryption');
+            $type->apply($model, 'grcfg_secret');
 
             $this->_configModel = $model;
         }
