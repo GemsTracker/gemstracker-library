@@ -99,7 +99,7 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
     public $useHtmlView = true;
     
     /**
-     * Leave on top,  we won't miss this
+     * Leave on top, so we won't miss this
      */
     public function init()
     {
@@ -112,7 +112,7 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
         $action = $this->getRequest()->getActionName();
         if ($action !== 'index') {
             $view = Zend_Controller_Front::getInstance()->getParam('bootstrap')->getResource('view');
-            $this->view->getHelper('headMeta')->appendName('robots', 'noindex');
+            $this->view->getHelper('headMeta')->appendName('robots', 'noindex, nofollow');
         }
     }
 
