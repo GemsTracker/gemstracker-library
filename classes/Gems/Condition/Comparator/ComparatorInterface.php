@@ -25,28 +25,29 @@ interface ComparatorInterface
      * @param array $options
      */
     public function __construct($options = array());
-    
+
     /**
-     * Return a readable desription, using the given subject and configured options
-     * 
+     * Return a readable description, using the given subject and configured options
+     *
      * @param string $subject
+     * @return string
      */
     public function getDescription($subject);
-    
+
     /**
      * The number of parameters this comparator expects
+     *
+     * @return int Less than 5
      */
     public function getNumParams();
-    
+
     /**
-     * IS the comparision valid?
-     * 
+     * IS the comparison valid?
+     *
      * Settings should already be in place by the construtor.
-     * 
-     * @param int $value The id of the condition
-     * 
+     *
+     * @param mixed $value The id of the condition
      * @return bool
      */
     public function isValid($value);
-
 }

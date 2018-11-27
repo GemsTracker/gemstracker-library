@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -32,7 +31,7 @@ class Gems_Tracker_Engine_AnyStepEngine extends \Gems_Tracker_Engine_StepEngineA
     protected function applySurveyListValidAfter(\MUtil_Model_ModelAbstract $model, array &$itemData)
     {
         $this->_ensureRounds();
-        
+
         $rounds = array();
         foreach ($this->_rounds as $roundId => $round) {
             if (($roundId == $itemData['gro_id_round'])) {
@@ -83,7 +82,7 @@ class Gems_Tracker_Engine_AnyStepEngine extends \Gems_Tracker_Engine_StepEngineA
     public function checkTokensFrom(\Gems_Tracker_RespondentTrack $respTrack, \Gems_Tracker_Token $startToken, $userId, \Gems_Tracker_Token $skipToken = null)
     {
         $changed = parent::checkTokensFrom($respTrack, $respTrack->getFirstToken(), $userId, $skipToken);
-        
+
         return $changed;
     }
 
@@ -138,7 +137,8 @@ class Gems_Tracker_Engine_AnyStepEngine extends \Gems_Tracker_Engine_StepEngineA
      * @param string $action The current action
      * @return \MUtil_Model_ModelAbstract
      */
-    public function getRoundModel($detailed, $action) {
+    public function getRoundModel($detailed, $action)
+    {
         $model = parent::getRoundModel($detailed, $action);
 
         $model->set('gro_valid_for_id',

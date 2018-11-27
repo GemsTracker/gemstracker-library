@@ -41,7 +41,7 @@ class Gems_Default_ConditionAction extends \Gems_Controller_ModelSnippetActionAb
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
-     */
+     * /
     protected $showParameters = array(
         'bridgeMode'      => \MUtil_Model_Bridge_BridgeAbstract::MODE_SINGLE_ROW,
         );
@@ -54,6 +54,7 @@ class Gems_Default_ConditionAction extends \Gems_Controller_ModelSnippetActionAb
     protected $showSnippets = array(
         'Generic\\ContentTitleSnippet',
         'ModelItemTableSnippetGeneric',
+        'Tracker\\Rounds\\ConditionRoundsTableSnippet',
         );
 
     /**

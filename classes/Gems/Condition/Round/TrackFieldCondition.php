@@ -45,9 +45,10 @@ class TrackFieldCondition extends RoundConditionAbstract
     protected function getComparators()
     {
         $compators = [
-            \Gems\Conditions::COMPARATOR_EQUALS  => $this->_('Equals'),
-            \Gems\Conditions::COMPARATOR_NOT     => $this->_('Does not equal'),
-            \Gems\Conditions::COMPARATOR_BETWEEN => $this->_('Between')
+            \Gems\Conditions::COMPARATOR_EQUALS   => $this->_('Equals'),
+            \Gems\Conditions::COMPARATOR_NOT      => $this->_('Does not equal'),
+            \Gems\Conditions::COMPARATOR_BETWEEN  => $this->_('Between'),
+            \Gems\Conditions::COMPARATOR_CONTAINS => $this->_('Contains'),
         ];
         natsort($compators);
 

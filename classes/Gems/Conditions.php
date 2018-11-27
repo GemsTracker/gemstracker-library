@@ -32,14 +32,15 @@ use MUtil_Registry_TargetInterface;
 class Conditions extends Gems_Loader_TargetLoaderAbstract
 {
     use TranslateableTrait;
-    
+
     const COMPARATOR           = 'Comparator';
     const COMPARATOR_BETWEEN   = 'Between';
+    const COMPARATOR_CONTAINS  = 'Contains';
     const COMPARATOR_EQUALS    = 'Equals';
     const COMPARATOR_EQUALLESS = 'EqualLess';
     const COMPARATOR_EQUALMORE = 'EqualMore';
     const COMPARATOR_NOT       = 'NotEquals';
-    
+
     const ROUND_CONDITION  = 'Round';
 
     /**
@@ -54,7 +55,7 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
         self::COMPARATOR      => 'Gems\\Condition\\Comparator\\ComparatorInterface',
         self::ROUND_CONDITION => 'Gems\\Condition\\RoundConditionInterface',
     );
-    
+
     /**
      *
      * @var array containing conditionType => name for all condition classes
@@ -62,14 +63,14 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
     protected $_conditionTypes = array(
         self::ROUND_CONDITION => 'Round',
     );
-    
+
     /**
      * Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
     protected $cascade = 'Condition';
-    
+
     /**
      *
      * @var Gems_Loader
@@ -81,10 +82,10 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
      * @var Gems_Util
      */
     protected $util;
-    
+
     public function __construct($container, array $dirs) {
         parent::__construct($container, $dirs);
-        
+
         $this->addRegistryContainer(array('conditions' => $this));
     }
 
@@ -121,11 +122,11 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
         }
 
         return $paths;
-    }    
-    
+    }
+
     /**
      * Returns a list of selectable conditions with an empty element as the first option.
-     * 
+     *
      * @param string $conditionType The type (i.e. lookup directory with an associated class) of the conditions to list
      * @return ConditionInterface or more specific a $conditionClass type object
      */
@@ -133,7 +134,7 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
     {
         $classType = $this->_getConditionClass($conditionType);
         $paths     = $this->_getConditionDirs($conditionType);
-        
+
         return $this->util->getTranslated()->getEmptyDropdownArray() + $this->listClasses($classType, $paths);
     }
 
@@ -164,14 +165,14 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
 
         return $condition;
     }
-    
+
     public function afterRegistry()
     {
         parent::afterRegistry();
 
         $this->initTranslateable();
     }
-    
+
     public function getConditionsFor($conditionType)
     {
         $model = $this->loader->getModels()->getConditionModel();
@@ -180,26 +181,26 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
             'gcon_type' => $conditionType,
             'gcon_active' => 1
             ];
-        
+
         $model->trackUsage();
         $model->get('gcon_id');
         $model->get('gcon_name');
         $conditions = $model->load($filter, ['gcon_name']);
-        
+
         $output = $this->util->getTranslated()->getEmptyDropdownArray();
-        
+
         foreach($conditions as $condition) {
             $output[$condition['gcon_id']] = $condition['gcon_name'];
         }
-        
+
         return $output;
     }
-    
+
     public function getConditionTypes()
     {
         return $this->_conditionTypes;
     }
-    
+
     /**
      *
      * @return array eventname => string
@@ -217,10 +218,10 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
     {
         return $this->_listConditions(self::ROUND_CONDITION);
     }
-    
+
     /**
      * Load a comparator
-     * 
+     *
      * @param type $name
      * @param type $options
      * @return \Gems\Condition\Comparator\ComparatorInterface
@@ -229,7 +230,7 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
     {
         return $this->_loadClass('Comparator\\' . $name, true, [$options]);
     }
-    
+
     /**
      *
      * @param string $conditionName
@@ -239,25 +240,25 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
     {
         return $this->_loadCondition($conditionName, $conditionType);
     }
-    
+
     /**
-     * 
+     *
      * @param type $conditionId
      * @return ConditionInterface
      */
-    public function loadCondition($conditionId)            
+    public function loadCondition($conditionId)
     {
         $model = $this->loader->getModels()->getConditionModel();
-        
+
         $conditionData = $model->loadFirst(['gcon_id' => $conditionId]);
-        
+
         if ($conditionData) {
             $condition = $this->loadConditionForType($conditionData['gcon_type'], $conditionData['gcon_class']);
             $condition->exchangeArray($conditionData);
-            
+
             return $condition;
         }
-        
+
         throw new Gems_Exception_Coding('Unable to load requested condition');
     }
 

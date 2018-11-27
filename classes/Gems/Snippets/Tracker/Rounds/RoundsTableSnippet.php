@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: RoundsTableSnippet.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Snippets\Tracker\Rounds;
@@ -85,7 +84,7 @@ class RoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
         $model->get('gro_valid_for_length');
         $model->get('gro_valid_for_source');
         $model->get('gro_valid_for_unit');
-        
+
         // We want to markt the row for inactive surveys so it visually stands out
         $model->get('gsu_active');
         $bridge->tr()->appendAttrib('class', \MUtil_Lazy::iif(
@@ -93,7 +92,7 @@ class RoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
             '',
             'inactive'
         ));
-        
+
         // Add link to survey-edit
         $menuItems = $this->findMenuItems('survey-maintenance', 'edit');
         if ($menuItems) {
@@ -112,6 +111,7 @@ class RoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
 
         parent::addBrowseTableColumns($bridge, $model);
     }
+
     /**
      * Called after the check that all required registry values
      * have been set correctly has run.
@@ -149,7 +149,7 @@ class RoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
         $this->columns[100] = array('gro_code');
         $this->columns[110] = array('condition_display');
         // Organizations can possibly be replaced with a condition
-        $this->columns[120] = array('organizations');        
+        $this->columns[120] = array('organizations');
     }
 
     /**
@@ -178,7 +178,7 @@ class RoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
         // $this->model->addTable('gems__surveys', array('gro_id_survey' => 'gsu_id_survey'));
 
         // $this->model->set('gsu_survey_name', $this->model->get('gro_id_survey'));
-        
+
         return $this->model;
     }
 }

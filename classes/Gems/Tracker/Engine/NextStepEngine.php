@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -21,7 +20,6 @@
  */
 class Gems_Tracker_Engine_NextStepEngine extends \Gems_Tracker_Engine_StepEngineAbstract
 {
-
     /**
      * Set the surveys to be listed as valid after choices for this item and the way they are displayed (if at all)
      *
