@@ -79,8 +79,8 @@ class ConditionRoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstra
         parent::afterRegistry();
 
         $this->browse  = true;
-        $this->caption = $this->_('Rounds using this condition');
-        $this->onEmpty = $this->_('No rounds found using this condition');
+        $this->caption = $this->_('Rounds with this condition');
+        $this->onEmpty = $this->_('No rounds using this condition found');
     }
 
     /**
@@ -103,7 +103,7 @@ class ConditionRoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstra
             $this->_model->set('gtr_track_name',        'label', $this->_('Track name'));
             $this->_model->set('gro_id_order',          'label', $this->_('Round order'));
             $this->_model->set('gro_round_description', 'label', $this->_('Description'));
-            $this->_model->set('gsu_survey_name',       'label', $this->_('Survey name'));
+            $this->_model->set('gsu_survey_name',       'label', $this->_('Survey'));
             $this->_model->set('ggp_name',              'label', $this->_('Assigned to'));
             $this->_model->set('gro_active',            'label', $this->_('Active'),
                     'multiOptions', $this->util->getTranslated()->getYesNo());

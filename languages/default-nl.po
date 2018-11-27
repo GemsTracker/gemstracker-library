@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-19 13:21+0100\n"
+"POT-Creation-Date: 2018-11-27 16:00+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 1.8.9\n"
+"X-Generator: Poedit 2.2\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
@@ -50,11 +50,12 @@ msgstr "Handmatig (organisatie specifiek)"
 #: classes/Gems/Default/LocationAction.php:177
 #: classes/Gems/Default/ReceptionAction.php:73
 #: classes/Gems/Default/SourceAction.php:222
-#: classes/Gems/Model/ConditionModel.php:99
-#: classes/Gems/Model/ConditionModel.php:133
+#: classes/Gems/Model/ConditionModel.php:100
+#: classes/Gems/Model/ConditionModel.php:146
 #: classes/Gems/Model/OrganizationModel.php:100
 #: classes/Gems/Model/StaffModel.php:277
 #: classes/Gems/Snippets/Survey/SurveyMaintenanceSearchSnippet.php:49
+#: classes/Gems/Snippets/Tracker/Rounds/ConditionRoundsTableSnippet.php:108
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:891
 #: classes/Gems/Tracker/Model/TrackModel.php:90
 #: classes/Gems/Util/TrackData.php:185
@@ -263,7 +264,7 @@ msgstr "Bepaald wat op welke manier gefilterd wordt."
 #: classes/Gems/Default/SourceAction.php:155
 #: classes/Gems/Default/SurveyMaintenanceAction.php:393
 #: classes/Gems/Default/TokenSearchActionAbstract.php:109
-#: classes/Gems/Model/ConditionModel.php:98
+#: classes/Gems/Model/ConditionModel.php:99
 #: classes/Gems/Model/OrganizationModel.php:81
 #: classes/Gems/Model/RespondentModel.php:269
 #: classes/Gems/Model/StaffModel.php:211
@@ -625,6 +626,11 @@ msgstr "Afspraak is met"
 msgid "%s <= %s <= %s"
 msgstr "%s <= %s <= %s"
 
+#: classes/Gems/Condition/Comparator/Contains.php:33
+#, php-format
+msgid "%s contains %s"
+msgstr "%s bevat %s"
+
 #: classes/Gems/Condition/Comparator/EqualLess.php:26
 #, php-format
 msgid "%s <= %s"
@@ -645,7 +651,7 @@ msgstr "%s gelijk aan %s"
 msgid "%s does not equal %s"
 msgstr "%s niet gelijk aan %s"
 
-#: classes/Gems/Condition/Round/AgeCondition.php:28
+#: classes/Gems/Condition/Round/AgeCondition.php:29
 msgid ""
 "Round will be valid when respondent is:\n"
 " - At least minimum age\n"
@@ -655,34 +661,34 @@ msgstr ""
 " - Ten minste minium leeftijd is\n"
 " - Niet ouder is dan maximumleeftijd"
 
-#: classes/Gems/Condition/Round/AgeCondition.php:54
+#: classes/Gems/Condition/Round/AgeCondition.php:55
 #: classes/Gems/Util/TrackData.php:232 classes/Gems/Util/Translated.php:371
 msgid "Years"
 msgstr "Jaren"
 
-#: classes/Gems/Condition/Round/AgeCondition.php:55
+#: classes/Gems/Condition/Round/AgeCondition.php:56
 #: classes/Gems/Util/TrackData.php:230 classes/Gems/Util/Translated.php:369
 msgid "Months"
 msgstr "Maanden"
 
-#: classes/Gems/Condition/Round/AgeCondition.php:66
+#: classes/Gems/Condition/Round/AgeCondition.php:67
 msgid "Minimum age"
 msgstr "Minimum leeftijd"
 
-#: classes/Gems/Condition/Round/AgeCondition.php:67
+#: classes/Gems/Condition/Round/AgeCondition.php:68
 msgid "Age in"
 msgstr "Leeftijd in"
 
-#: classes/Gems/Condition/Round/AgeCondition.php:68
+#: classes/Gems/Condition/Round/AgeCondition.php:69
 msgid "Maximum age"
 msgstr "Maximum leeftijd"
 
-#: classes/Gems/Condition/Round/AgeCondition.php:75
-#: classes/Gems/Condition/Round/AgeCondition.php:92
+#: classes/Gems/Condition/Round/AgeCondition.php:76
+#: classes/Gems/Condition/Round/AgeCondition.php:93
 msgid "Respondent age"
 msgstr "Leeftijd patiënt"
 
-#: classes/Gems/Condition/Round/AgeCondition.php:89
+#: classes/Gems/Condition/Round/AgeCondition.php:90
 msgid " (age in months"
 msgstr " (leeftijd in maanden"
 
@@ -698,7 +704,11 @@ msgstr "Niet gelijk aan"
 msgid "Between"
 msgstr "Tussen"
 
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:59
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:51
+msgid "Contains"
+msgstr "Bevat"
+
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:60
 msgid ""
 "First pick a trackfield that has a code. Then choose your comparison "
 "operator and specify the needed parameters."
@@ -706,29 +716,29 @@ msgstr ""
 "Kies eerst een trajectveld met een code. Kies dan je vergelijkingstype en "
 "kies de nodige parameters."
 
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:68
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:95
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:69
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:96
 msgid "Track field"
 msgstr "Traject veld"
 
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:69
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:70
 msgid "Comparison operator"
 msgstr "Vergelijkings type"
 
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:80
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:81
 msgid "Param2"
 msgstr "Tweede parameter"
 
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:84
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:85
 msgid "Param1"
 msgstr "Eerste parameter"
 
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:100
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:101
 #, php-format
 msgid "Track does not have a field with code `%s`."
 msgstr "Traject heeft geen veld met code `%s`."
 
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:110
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:111
 #, php-format
 msgid "Field `%s`"
 msgstr "Veld `%s`"
@@ -1279,24 +1289,24 @@ msgstr "U heeft geen toegang %s afspraken!"
 msgid "Organization does not exist."
 msgstr "Organisatie bestaat niet."
 
-#: classes/Gems/Default/AskAction.php:151
+#: classes/Gems/Default/AskAction.php:171
 #, php-format
 msgid "Enter your %s token"
 msgstr "Voer uw %s kenmerk in"
 
-#: classes/Gems/Default/AskAction.php:154
+#: classes/Gems/Default/AskAction.php:174
 msgid "Tokens identify a survey that was assigned to you personally."
 msgstr "Elk kenmerk verwijst naar een specifiek aan u toegekende vragenlijst."
 
-#: classes/Gems/Default/AskAction.php:154
+#: classes/Gems/Default/AskAction.php:174
 msgid "Entering the token and pressing OK will open that survey."
 msgstr "Vul uw kenmerk in en druk op OK om die vragenlijst te openen."
 
-#: classes/Gems/Default/AskAction.php:158
+#: classes/Gems/Default/AskAction.php:178
 msgid "After answering the survey you will be logged off automatically."
 msgstr "Na het invullen wordt u automatisch uitgelogd."
 
-#: classes/Gems/Default/AskAction.php:163
+#: classes/Gems/Default/AskAction.php:183
 msgid ""
 "A token consists of two groups of four letters and numbers, separated by an "
 "optional hyphen. Tokens are case insensitive."
@@ -1305,7 +1315,7 @@ msgstr ""
 "(niet verplicht) streepje ertussen. Hoofdletters of gewone letters maakt "
 "niets uit."
 
-#: classes/Gems/Default/AskAction.php:164
+#: classes/Gems/Default/AskAction.php:184
 msgid ""
 "The number zero and the letter O are treated as the same; the same goes for "
 "the number one and the letter L."
@@ -1313,12 +1323,12 @@ msgstr ""
 "Er wordt geen verschil gemaakt tussen het getal nul en de letter O en ook "
 "niet tussen het getal één en de letter L."
 
-#: classes/Gems/Default/AskAction.php:183
+#: classes/Gems/Default/AskAction.php:203
 #, php-format
 msgid "The token %s does not exist (any more)."
 msgstr "Het kenmerk %s bestaat niet (meer)."
 
-#: classes/Gems/Default/AskAction.php:223
+#: classes/Gems/Default/AskAction.php:243
 #, php-format
 msgid ""
 "Thank you for answering. At the moment we have no further surveys for you to "
@@ -1327,7 +1337,7 @@ msgstr ""
 "Dank u voor uw antwoorden. Op dit moment hebben we geen vragenlijsten meer "
 "voor u."
 
-#: classes/Gems/Default/AskAction.php:228
+#: classes/Gems/Default/AskAction.php:248
 #, php-format
 msgid ""
 "The survey for token %s has been answered and no further surveys are open."
@@ -1335,7 +1345,7 @@ msgstr ""
 "De vragenlijst met het kenmerk %s is beantwoord en er staan verder geen "
 "vragenlijsten open."
 
-#: classes/Gems/Default/AskAction.php:362
+#: classes/Gems/Default/AskAction.php:382
 #, php-format
 msgid "The survey for token %s is no longer active."
 msgstr "De vragenlijst voor kenmerk %s is niet meer in gebruik."
@@ -1423,6 +1433,7 @@ msgstr "Ronde"
 #: classes/Gems/Snippets/Mail/TokenMailFormSnippet.php:44
 #: classes/Gems/Snippets/Respondent/RespondentOverviewSnippet.php:148
 #: classes/Gems/Snippets/Survey/AnswerImportSnippet.php:125
+#: classes/Gems/Snippets/Tracker/Rounds/ConditionRoundsTableSnippet.php:106
 #: classes/Gems/Snippets/Tracker/TrackSurveyOverviewSnippet.php:94
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:868
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:283
@@ -1444,6 +1455,7 @@ msgstr "Vragenlijstcode"
 #: classes/Gems/Default/UpgradeAction.php:204
 #: classes/Gems/Export/RespondentExport.php:332
 #: classes/Gems/Snippets/Track/TracksSnippet.php:89
+#: classes/Gems/Snippets/Tracker/Rounds/ConditionRoundsTableSnippet.php:105
 #: classes/Gems/Snippets/Tracker/TrackSurveyOverviewSnippet.php:98
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:877
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:320
@@ -1769,12 +1781,12 @@ msgid_plural "tracks"
 msgstr[0] "traject"
 msgstr[1] "trajecten"
 
-#: classes/Gems/Default/ConditionAction.php:94
+#: classes/Gems/Default/ConditionAction.php:95
 #: classes/Gems/Menu/MenuAbstract.php:780
 msgid "Conditions"
 msgstr "Voorwaarden"
 
-#: classes/Gems/Default/ConditionAction.php:105
+#: classes/Gems/Default/ConditionAction.php:106
 msgid "condition"
 msgid_plural "conditions"
 msgstr[0] "voorwaarde"
@@ -1996,7 +2008,7 @@ msgstr "Geen gegevens in %s."
 #: classes/Gems/Default/LogFileAction.php:92
 #: classes/Gems/Model/AppointmentModel.php:197
 #: classes/Gems/Model/AppointmentModel.php:246
-#: classes/Gems/Model/ConditionModel.php:88
+#: classes/Gems/Model/ConditionModel.php:89
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:234
 msgid "Type"
 msgstr "Type"
@@ -2385,11 +2397,11 @@ msgstr "Bestanden die klaarstaan om te importeren"
 #: classes/Gems/Default/GroupAction.php:83
 #: classes/Gems/Default/StaffAction.php:154
 #: classes/Gems/Default/StaffAction.php:168
-#: classes/Gems/Default/StaffLogAction.php:68 classes/GemsEscort.php:2190
+#: classes/Gems/Default/StaffLogAction.php:68 classes/GemsEscort.php:2193
 msgid "No access to page"
 msgstr "Geen toegang tot pagina"
 
-#: classes/Gems/Default/GroupAction.php:85 classes/GemsEscort.php:2192
+#: classes/Gems/Default/GroupAction.php:85 classes/GemsEscort.php:2195
 #, php-format
 msgid "Access to the %s/%s page is not allowed for your current group: %s."
 msgstr "U heeft geen toegang tot de %s/%s pagina. Uw huidige groep is: %s."
@@ -4139,6 +4151,7 @@ msgstr "Ontbrekende traject identificatie."
 
 #: classes/Gems/Default/TrackOverviewAction.php:108
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:368
+#: classes/Gems/Snippets/Tracker/Rounds/ConditionRoundsTableSnippet.php:103
 msgid "Track name"
 msgstr "Traject naam"
 
@@ -4148,6 +4161,7 @@ msgstr "traject per organisatie"
 
 #: classes/Gems/Default/TrackRoundsAction.php:202
 #: classes/Gems/Menu/MenuAbstract.php:836
+#: classes/Gems/Model/ConditionModel.php:111
 msgid "Rounds"
 msgstr "Rondes"
 
@@ -4394,6 +4408,7 @@ msgid "Respondent track ID"
 msgstr "Patiënt traject ID"
 
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:366
+#: classes/Gems/Snippets/Tracker/Rounds/ConditionRoundsTableSnippet.php:104
 msgid "Round order"
 msgstr "Ronde volgorde"
 
@@ -4718,7 +4733,7 @@ msgstr "Toon"
 msgid "Change password"
 msgstr "Uw wachtwoord"
 
-#: classes/Gems/Menu.php:235 classes/GemsEscort.php:1055
+#: classes/Gems/Menu.php:235 classes/GemsEscort.php:1058
 msgid "Logoff"
 msgstr "Uitloggen"
 
@@ -5245,7 +5260,7 @@ msgstr "Afspraak"
 
 #: classes/Gems/Model/AppointmentModel.php:196
 #: classes/Gems/Model/AppointmentModel.php:242
-#: classes/Gems/Model/AppointmentModel.php:245 classes/GemsEscort.php:1417
+#: classes/Gems/Model/AppointmentModel.php:245 classes/GemsEscort.php:1420
 msgid "dd-mm-yyyy hh:mm"
 msgstr "dd-mm-jjjj uu:mm"
 
@@ -5285,23 +5300,27 @@ msgstr "Adres van"
 msgid "Fill out by"
 msgstr "In te vullen door"
 
-#: classes/Gems/Model/ConditionModel.php:89
+#: classes/Gems/Model/ConditionModel.php:90
 msgid "Determines where the condition can be applied."
 msgstr "Bepaalt waar de voorwaarde gebruikt kan worden."
 
-#: classes/Gems/Model/ConditionModel.php:94
+#: classes/Gems/Model/ConditionModel.php:95
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:917
 msgid "Condition"
 msgstr "Voorwaarde"
 
-#: classes/Gems/Model/ConditionModel.php:123
+#: classes/Gems/Model/ConditionModel.php:112
+msgid "The number of rounds using this condition."
+msgstr "Het aantal rondes met deze voorwaarde."
+
+#: classes/Gems/Model/ConditionModel.php:136
 msgid ""
 "A name for this condition, will be used to select it when applying the "
 "condition."
 msgstr ""
 "De naam van deze voorwaarde, deze zie je bij het toewijzen van de voorwaarde."
 
-#: classes/Gems/Model/ConditionModel.php:125
+#: classes/Gems/Model/ConditionModel.php:138
 msgid "Help"
 msgstr "Help"
 
@@ -5351,7 +5370,7 @@ msgstr "Geen script voor %1$s."
 #: classes/Gems/Model/EpisodeOfCareModel.php:146
 #: classes/Gems/Model/EpisodeOfCareModel.php:149
 #: classes/Gems/Model/EpisodeOfCareModel.php:187
-#: classes/Gems/Model/EpisodeOfCareModel.php:190 classes/GemsEscort.php:1398
+#: classes/Gems/Model/EpisodeOfCareModel.php:190 classes/GemsEscort.php:1401
 msgid "dd-mm-yyyy"
 msgstr "dd-mm-jjjj"
 
@@ -6196,7 +6215,7 @@ msgid "No example episodes found"
 msgstr "Geen voorbeeld episode gevonden"
 
 #: classes/Gems/Snippets/Ask/MaintenanceModeAskSnippet.php:42
-#: classes/GemsEscort.php:2154 classes/GemsEscort.php:2165
+#: classes/GemsEscort.php:2157 classes/GemsEscort.php:2168
 msgid "System is in maintenance mode"
 msgstr "Systeem is in onderhoudsmodus"
 
@@ -7673,6 +7692,22 @@ msgstr "Toevoegen vragenlijst niet mogelijk: de patiënt heeft geen traject!"
 msgid "Patient"
 msgstr "Patiënt"
 
+#: classes/Gems/Snippets/Tracker/Rounds/ConditionRoundsTableSnippet.php:82
+msgid "Rounds with this condition"
+msgstr "Rondes met deze voorwaarde"
+
+#: classes/Gems/Snippets/Tracker/Rounds/ConditionRoundsTableSnippet.php:83
+msgid "No rounds using this condition found"
+msgstr "Geen rondes gevonden met deze voorwaarde"
+
+#: classes/Gems/Snippets/Tracker/Rounds/ConditionRoundsTableSnippet.php:107
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:189
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:193
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:588
+#: classes/Gems/Tracker/Model/StandardTokenModel.php:286
+msgid "Assigned to"
+msgstr "Invuller"
+
 #: classes/Gems/Snippets/Tracker/Rounds/EditRoundStepSnippet.php:48
 msgid "Lists choices changed."
 msgstr "Keuzelijst is veranderd."
@@ -8325,13 +8360,13 @@ msgstr "Vanwege ronde aanpassingen zijn %d nieuwe kenmerken gecreëerd."
 msgid "No tokens were changed."
 msgstr "Geen kenmerken veranderd."
 
-#: classes/Gems/Tracker/Engine/AnyStepEngine.php:64
-#: classes/Gems/Tracker/Engine/AnyStepEngine.php:68
-#: classes/Gems/Tracker/Engine/NextStepEngine.php:67
+#: classes/Gems/Tracker/Engine/AnyStepEngine.php:63
+#: classes/Gems/Tracker/Engine/AnyStepEngine.php:67
+#: classes/Gems/Tracker/Engine/NextStepEngine.php:65
 msgid "This round"
 msgstr "Deze ronde"
 
-#: classes/Gems/Tracker/Engine/AnyStepEngine.php:97
+#: classes/Gems/Tracker/Engine/AnyStepEngine.php:96
 msgid ""
 "Engine for tracks where a rounds activation can depend on any previous "
 "survey."
@@ -8339,11 +8374,11 @@ msgstr ""
 "Een traject type waar de activatie van een ronde van elke willekeurige "
 "eerdere ronde afhankelijk kan zijn."
 
-#: classes/Gems/Tracker/Engine/AnyStepEngine.php:107
+#: classes/Gems/Tracker/Engine/AnyStepEngine.php:106
 msgid "Previous Survey"
 msgstr "Eerdere vragenlijst"
 
-#: classes/Gems/Tracker/Engine/NextStepEngine.php:122
+#: classes/Gems/Tracker/Engine/NextStepEngine.php:120
 msgid ""
 "Engine for tracks where the next round is always dependent on the previous "
 "step."
@@ -8351,16 +8386,9 @@ msgstr ""
 "Een traject type waar de activatie van een volgende ronde alleen afhangt van "
 "de ronde ervoor."
 
-#: classes/Gems/Tracker/Engine/NextStepEngine.php:133
+#: classes/Gems/Tracker/Engine/NextStepEngine.php:131
 msgid "Next Step"
 msgstr "Stap voor stap"
-
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:189
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:193
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:588
-#: classes/Gems/Tracker/Model/StandardTokenModel.php:286
-msgid "Assigned to"
-msgstr "Invuller"
 
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:296
 #, php-format
@@ -9372,18 +9400,18 @@ msgstr "Vragenlijsten synchroniseren voor alle bronnen"
 #: classes/Gems/Upgrades.php:139 classes/Gems/Upgrades.php:151
 #: classes/Gems/Upgrades.php:173 classes/Gems/Upgrades.php:185
 #: classes/Gems/Upgrades.php:198 classes/Gems/Upgrades.php:212
-#: classes/Gems/Upgrades.php:226 classes/Gems/Upgrades.php:244
-#: classes/Gems/Upgrades.php:257 classes/Gems/Upgrades.php:271
-#: classes/Gems/Upgrades.php:285 classes/Gems/Upgrades.php:302
-#: classes/Gems/Upgrades.php:317 classes/Gems/Upgrades.php:333
-#: classes/Gems/Upgrades.php:348 classes/Gems/Upgrades.php:363
+#: classes/Gems/Upgrades.php:226 classes/Gems/Upgrades.php:239
+#: classes/Gems/Upgrades.php:252 classes/Gems/Upgrades.php:266
+#: classes/Gems/Upgrades.php:280 classes/Gems/Upgrades.php:297
+#: classes/Gems/Upgrades.php:312 classes/Gems/Upgrades.php:328
+#: classes/Gems/Upgrades.php:343 classes/Gems/Upgrades.php:363
 msgid "Make sure to read the changelog as it contains important instructions"
 msgstr "Lees de wijzigingen, er kunnen belangrijke aanwijzingen in staan"
 
-#: classes/Gems/Upgrades.php:258 classes/Gems/Upgrades.php:272
-#: classes/Gems/Upgrades.php:286 classes/Gems/Upgrades.php:303
-#: classes/Gems/Upgrades.php:318 classes/Gems/Upgrades.php:334
-#: classes/Gems/Upgrades.php:349 classes/Gems/Upgrades.php:364
+#: classes/Gems/Upgrades.php:253 classes/Gems/Upgrades.php:267
+#: classes/Gems/Upgrades.php:281 classes/Gems/Upgrades.php:298
+#: classes/Gems/Upgrades.php:313 classes/Gems/Upgrades.php:329
+#: classes/Gems/Upgrades.php:344 classes/Gems/Upgrades.php:364
 msgid ""
 "Check the Code compatibility report for any issues with project specific "
 "code!"
@@ -10036,29 +10064,29 @@ msgstr "Pad %s niet schrijfbaar"
 msgid " > "
 msgstr " | "
 
-#: classes/GemsEscort.php:1053
+#: classes/GemsEscort.php:1056
 #, php-format
 msgid "You are logged in as %s"
 msgstr "Ingelogd als %s"
 
-#: classes/GemsEscort.php:1059
+#: classes/GemsEscort.php:1062
 msgid "You are not logged in"
 msgstr "U bent niet ingelogd"
 
-#: classes/GemsEscort.php:1244
+#: classes/GemsEscort.php:1247
 #, php-format
 msgid "User: %s"
 msgstr "Login: %s"
 
-#: classes/GemsEscort.php:1275
+#: classes/GemsEscort.php:1278
 msgid "version"
 msgstr "versie"
 
-#: classes/GemsEscort.php:1429
+#: classes/GemsEscort.php:1432
 msgid "hh:mm"
 msgstr "uu:mm"
 
-#: classes/GemsEscort.php:1938
+#: classes/GemsEscort.php:1941
 msgid ""
 "Take note: your session has expired, your inputs were not saved. Please "
 "check the input data and try again"
@@ -10066,27 +10094,27 @@ msgstr ""
 "Let op: uw sessie is verlopen, uw invoer is niet opgeslagen. Controleer uw "
 "gegevens en probeer a.u.b. opnieuw"
 
-#: classes/GemsEscort.php:2160
+#: classes/GemsEscort.php:2163
 msgid "The page you requested is currently inaccessible."
 msgstr "De door u gevraagde pagina is momenteel ontoegankelijk."
 
-#: classes/GemsEscort.php:2161
+#: classes/GemsEscort.php:2164
 msgid "Please check back later."
 msgstr "Probeer het later opnieuw."
 
-#: classes/GemsEscort.php:2174
+#: classes/GemsEscort.php:2177
 msgid "No access to site."
 msgstr "Geen toegang tot website."
 
-#: classes/GemsEscort.php:2176 classes/GemsEscort.php:2235
+#: classes/GemsEscort.php:2179 classes/GemsEscort.php:2238
 msgid "You have no access to this site."
 msgstr "U heeft geen toegang tot deze website."
 
-#: classes/GemsEscort.php:2217 classes/GemsEscort.php:2233
+#: classes/GemsEscort.php:2220 classes/GemsEscort.php:2236
 msgid "You are no longer logged in."
 msgstr "U bent niet meer ingelogd."
 
-#: classes/GemsEscort.php:2218
+#: classes/GemsEscort.php:2221
 msgid "You must login to access this page."
 msgstr "U moet ingelogd zijn voor toegang tot deze pagina."
 

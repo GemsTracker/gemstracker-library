@@ -108,7 +108,7 @@ class ConditionModel extends \Gems_Model_JoinModel
                     "(SELECT COUNT(gro_id_round) FROM gems__rounds WHERE gcon_id = gro_condition)",
                     'usage'
                     );
-            $this->set('usage', 'label', $this->_('Rounds use'),
+            $this->set('usage', 'label', $this->_('Rounds'),
                     'description', $this->_('The number of rounds using this condition.'),
                     'elementClass', 'Exhibitor'
                     );
