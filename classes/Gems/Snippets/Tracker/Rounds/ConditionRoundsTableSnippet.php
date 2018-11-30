@@ -126,7 +126,7 @@ class ConditionRoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstra
     {
         $conditionId = $this->request->getParam(\MUtil_Model::REQUEST_ID);
 
-        \MUtil_Model::$verbose = true;
+        //\MUtil_Model::$verbose = true;
         if ($conditionId) {
             $model->addFilter(['gro_condition' => $conditionId]);
         }
