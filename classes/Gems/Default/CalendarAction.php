@@ -147,6 +147,11 @@ class Gems_Default_CalendarAction extends \Gems_Controller_ModelSnippetActionAbs
 
         return $filter;
     }
+    
+    public function getIndexTitle()
+    {
+        return $this->_('Calendar');
+    }
 
     public function simpleApiAction()
     {
