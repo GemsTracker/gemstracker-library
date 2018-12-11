@@ -79,7 +79,8 @@ class RespondentModelTest extends AbstractModelTest {
         'resp_deleted'          => '0'
     ];
 
-    public function setUp() {
+    public function setUp()
+        {
         parent::setUp();
 
         $this->setUpApplication();
@@ -96,7 +97,8 @@ class RespondentModelTest extends AbstractModelTest {
         $this->model->afterRegistry();
     }
 
-    protected function fixUser() {
+    protected function fixUser()
+    {
         // Fix user
         $currentUser = $this->getMockBuilder('Gems_User_User')
                 ->disableOriginalConstructor()
@@ -179,7 +181,7 @@ class RespondentModelTest extends AbstractModelTest {
         $expected = array_intersect_key($baseRecord, $changeFields);
         $actual   = array_intersect_key($record, $changeFields);
         $this->assertNotEquals($expected, $actual); // Make sure the fields are updated!
-        
+
         // Now check if remaining fields match expectations
         $expected                         = array_diff_key($baseRecord, $changeFields);
         $expected['gr2o_id_organization'] = $toOrg;

@@ -166,8 +166,9 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
      * @param int $userId
      * @return int
      */
-    private function _checkUserId($userId = null) {
-        if (empty($userId)) {
+    private function _checkUserId($userId = null)
+    {
+        if (empty($userId) && $this->currentUser instanceof \Gems_User_User) {
             $userId = $this->currentUser->getUserId();
             if (0 === $userId) {
                 $userId = null;
@@ -257,6 +258,10 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
         }
         $respTrackData['gr2t_id_user']         = $respondentId;
         $respTrackData['gr2t_id_organization'] = $organizationId;
+        if (! array_key_exists('gr2t_reception_code', $respTrackData)) {
+            // The start date has to exist.
+            $respTrackData['gr2t_reception_code'] = \GemsEscort::RECEPTION_OK;
+        }
 
         // Create the filter values for creating the track
         $filter['gtr_id_track'] = $trackId;

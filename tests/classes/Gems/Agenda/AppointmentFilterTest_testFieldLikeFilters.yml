@@ -9,9 +9,9 @@ gems__agenda_activities:
         gaa_active: 1
         gaa_filter: 0
         gaa_changed: '2017-08-09'
-        gaa_changed_by: '1'
+        gaa_changed_by: 1
         gaa_created: '2017-08-09'
-        gaa_created_by: '1'
+        gaa_created_by: 1
     -
         gaa_id_activity: 2
         gaa_name: 'Activity 2 sneeze'
@@ -22,9 +22,9 @@ gems__agenda_activities:
         gaa_active: 1
         gaa_filter: 0
         gaa_changed: '2017-08-09'
-        gaa_changed_by: '1'
+        gaa_changed_by: 1
         gaa_created: '2017-08-09'
-        gaa_created_by: '1'
+        gaa_created_by: 1
     -
         gaa_id_activity: 3
         gaa_name: 'Activity 3 cough & sneeze'
@@ -35,9 +35,9 @@ gems__agenda_activities:
         gaa_active: 1
         gaa_filter: 0
         gaa_changed: '2017-08-09'
-        gaa_changed_by: '1'
+        gaa_changed_by: 1
         gaa_created: '2017-08-09'
-        gaa_created_by: '1'
+        gaa_created_by: 1
     -
         gaa_id_activity: 4
         gaa_name: 'Activity 4 something else'
@@ -48,9 +48,9 @@ gems__agenda_activities:
         gaa_active: 1
         gaa_filter: 0
         gaa_changed: '2017-08-09'
-        gaa_changed_by: '1'
+        gaa_changed_by: 1
         gaa_created: '2017-08-09'
-        gaa_created_by: '1'
+        gaa_created_by: 1
 gems__agenda_procedures:
     -
         gapr_id_procedure: 1
@@ -62,9 +62,9 @@ gems__agenda_procedures:
         gapr_active: 1
         gapr_filter: 0
         gapr_changed: '2017-08-09'
-        gapr_changed_by: '1'
+        gapr_changed_by: 1
         gapr_created: '2017-08-09'
-        gapr_created_by: '1'
+        gapr_created_by: 1
     -
         gapr_id_procedure: 2
         gapr_name: 'Procedure 2 hypnotize'
@@ -75,9 +75,9 @@ gems__agenda_procedures:
         gapr_active: 1
         gapr_filter: 0
         gapr_changed: '2017-08-09'
-        gapr_changed_by: '1'
+        gapr_changed_by: 1
         gapr_created: '2017-08-09'
-        gapr_created_by: '1'
+        gapr_created_by: 1
     -
         gapr_id_procedure: 3
         gapr_name: 'Procedure 3 sedate & hypnotize'
@@ -88,9 +88,9 @@ gems__agenda_procedures:
         gapr_active: 1
         gapr_filter: 0
         gapr_changed: '2017-08-09'
-        gapr_changed_by: '1'
+        gapr_changed_by: 1
         gapr_created: '2017-08-09'
-        gapr_created_by: '1'
+        gapr_created_by: 1
     -
         gapr_id_procedure: 4
         gapr_name: 'Procedure 4 nothing to sneeze at'
@@ -101,9 +101,9 @@ gems__agenda_procedures:
         gapr_active: 1
         gapr_filter: 0
         gapr_changed: '2017-08-09'
-        gapr_changed_by: '1'
+        gapr_changed_by: 1
         gapr_created: '2017-08-09'
-        gapr_created_by: '1'
+        gapr_created_by: 1
 gems__agenda_staff:
     -
         gas_id_staff: 1
@@ -113,9 +113,9 @@ gems__agenda_staff:
         gas_active: 1
         gas_filter: 0
         gas_changed: '2017-08-09'
-        gas_changed_by: '1'
+        gas_changed_by: 1
         gas_created: '2017-08-09'
-        gas_created_by: '1'
+        gas_created_by: 1
 gems__appointment_filters:
     -
         gaf_id: 1
@@ -128,9 +128,9 @@ gems__appointment_filters:
         gaf_filter_text4:
         gaf_active: 1
         gaf_changed: '2017-08-09'
-        gaf_changed_by: '1'
+        gaf_changed_by: 1
         gaf_created: '2017-08-09'
-        gaf_created_by: '1'
+        gaf_created_by: 1
     -
         gaf_id: 2
         gaf_class: 'SqlLikeAppointmentFilter'
@@ -142,9 +142,9 @@ gems__appointment_filters:
         gaf_filter_text4:
         gaf_active: 1
         gaf_changed: '2017-08-09'
-        gaf_changed_by: '1'
+        gaf_changed_by: 1
         gaf_created: '2017-08-09'
-        gaf_created_by: '1'
+        gaf_created_by: 1
     -
         gaf_id: 3
         gaf_class: 'SqlLikeAppointmentFilter'
@@ -156,9 +156,9 @@ gems__appointment_filters:
         gaf_filter_text4:
         gaf_active: 1
         gaf_changed: '2017-08-09'
-        gaf_changed_by: '1'
+        gaf_changed_by: 1
         gaf_created: '2017-08-09'
-        gaf_created_by: '1'
+        gaf_created_by: 1
     -
         gaf_id: 4
         gaf_class: 'SqlLikeAppointmentFilter'
@@ -170,9 +170,9 @@ gems__appointment_filters:
         gaf_filter_text4:
         gaf_active: 1
         gaf_changed: '2017-08-09'
-        gaf_changed_by: '1'
+        gaf_changed_by: 1
         gaf_created: '2017-08-09'
-        gaf_created_by: '1'
+        gaf_created_by: 1
     -
         gaf_id: 5
         gaf_class: 'SqlLikeAppointmentFilter'
@@ -184,9 +184,9 @@ gems__appointment_filters:
         gaf_filter_text4:
         gaf_active: 1
         gaf_changed: '2017-08-09'
-        gaf_changed_by: '1'
+        gaf_changed_by: 1
         gaf_created: '2017-08-09'
-        gaf_created_by: '1'
+        gaf_created_by: 1
     -
         gaf_id: 6
         gaf_class: 'SqlLikeAppointmentFilter'
@@ -198,9 +198,9 @@ gems__appointment_filters:
         gaf_filter_text4:
         gaf_active: 1
         gaf_changed: '2017-08-09'
-        gaf_changed_by: '1'
+        gaf_changed_by: 1
         gaf_created: '2017-08-09'
-        gaf_created_by: '1'
+        gaf_created_by: 1
     -
         gaf_id: 7
         gaf_class: 'SqlLikeAppointmentFilter'
@@ -212,9 +212,9 @@ gems__appointment_filters:
         gaf_filter_text4:
         gaf_active: 1
         gaf_changed: '2017-08-09'
-        gaf_changed_by: '1'
+        gaf_changed_by: 1
         gaf_created: '2017-08-09'
-        gaf_created_by: '1'
+        gaf_created_by: 1
     -
         gaf_id: 8
         gaf_class: 'SqlLikeAppointmentFilter'
@@ -226,9 +226,9 @@ gems__appointment_filters:
         gaf_filter_text4:
         gaf_active: 1
         gaf_changed: '2017-08-09'
-        gaf_changed_by: '1'
+        gaf_changed_by: 1
         gaf_created: '2017-08-09'
-        gaf_created_by: '1'
+        gaf_created_by: 1
     -
         gaf_id: 9
         gaf_class: 'SqlLikeAppointmentFilter'
@@ -241,9 +241,9 @@ gems__appointment_filters:
         gaf_filter_text4:
         gaf_active: 0
         gaf_changed: '2017-08-09'
-        gaf_changed_by: '1'
+        gaf_changed_by: 1
         gaf_created: '2017-08-09'
-        gaf_created_by: '1'
+        gaf_created_by: 1
     -
         gaf_id: 10
         gaf_class: 'SqlLikeAppointmentFilter'
@@ -256,13 +256,13 @@ gems__appointment_filters:
         gaf_filter_text4:
         gaf_active: 1
         gaf_changed: '2017-08-09'
-        gaf_changed_by: '1'
+        gaf_changed_by: 1
         gaf_created: '2017-08-09'
-        gaf_created_by: '1'
+        gaf_created_by: 1
 gems__appointments:
     -
         gap_id_appointment: 1
-        gap_id_user: '1'
+        gap_id_user: 1
         gap_id_organization: 1
         gap_id_episode:
         gap_manual_edit: 1
@@ -279,12 +279,12 @@ gems__appointments:
         gap_subject:
         gap_comment:
         gap_changed: '2017-08-09'
-        gap_changed_by: '1'
+        gap_changed_by: 1
         gap_created: '2017-08-09'
-        gap_created_by: '1'
+        gap_created_by: 1
     -
         gap_id_appointment: 2
-        gap_id_user: '1'
+        gap_id_user: 1
         gap_id_organization: 1
         gap_id_episode:
         gap_manual_edit: 1
@@ -301,12 +301,12 @@ gems__appointments:
         gap_subject:
         gap_comment:
         gap_changed: '2017-08-09'
-        gap_changed_by: '1'
+        gap_changed_by: 1
         gap_created: '2017-08-09'
-        gap_created_by: '1'
+        gap_created_by: 1
     -
         gap_id_appointment: 3
-        gap_id_user: '1'
+        gap_id_user: 1
         gap_id_organization: 1
         gap_id_episode:
         gap_manual_edit: 1
@@ -323,12 +323,12 @@ gems__appointments:
         gap_subject:
         gap_comment:
         gap_changed: '2017-08-09'
-        gap_changed_by: '1'
+        gap_changed_by: 1
         gap_created: '2017-08-09'
-        gap_created_by: '1'
+        gap_created_by: 1
     -
         gap_id_appointment: 4
-        gap_id_user: '1'
+        gap_id_user: 1
         gap_id_organization: 1
         gap_id_episode:
         gap_manual_edit: 1
@@ -345,12 +345,12 @@ gems__appointments:
         gap_subject:
         gap_comment:
         gap_changed: '2017-08-09'
-        gap_changed_by: '1'
+        gap_changed_by: 1
         gap_created: '2017-08-09'
-        gap_created_by: '1'
+        gap_created_by: 1
     -
         gap_id_appointment: 5
-        gap_id_user: '1'
+        gap_id_user: 1
         gap_id_organization: 1
         gap_id_episode:
         gap_manual_edit: 1
@@ -367,12 +367,12 @@ gems__appointments:
         gap_subject:
         gap_comment:
         gap_changed: '2017-08-09'
-        gap_changed_by: '1'
+        gap_changed_by: 1
         gap_created: '2017-08-09'
-        gap_created_by: '1'
+        gap_created_by: 1
     -
         gap_id_appointment: 6
-        gap_id_user: '1'
+        gap_id_user: 1
         gap_id_organization: 1
         gap_id_episode:
         gap_manual_edit: 1
@@ -389,12 +389,12 @@ gems__appointments:
         gap_subject:
         gap_comment:
         gap_changed: '2017-08-09'
-        gap_changed_by: '1'
+        gap_changed_by: 1
         gap_created: '2017-08-09'
-        gap_created_by: '1'
+        gap_created_by: 1
     -
         gap_id_appointment: 7
-        gap_id_user: '1'
+        gap_id_user: 1
         gap_id_organization: 1
         gap_id_episode:
         gap_manual_edit: 1
@@ -411,12 +411,12 @@ gems__appointments:
         gap_subject:
         gap_comment:
         gap_changed: '2017-08-09'
-        gap_changed_by: '1'
+        gap_changed_by: 1
         gap_created: '2017-08-09'
-        gap_created_by: '1'
+        gap_created_by: 1
     -
         gap_id_appointment: 8
-        gap_id_user: '1'
+        gap_id_user: 1
         gap_id_organization: 1
         gap_id_episode:
         gap_manual_edit: 1
@@ -433,12 +433,12 @@ gems__appointments:
         gap_subject:
         gap_comment:
         gap_changed: '2017-08-09'
-        gap_changed_by: '1'
+        gap_changed_by: 1
         gap_created: '2017-08-09'
-        gap_created_by: '1'
+        gap_created_by: 1
     -
         gap_id_appointment: 9
-        gap_id_user: '1'
+        gap_id_user: 1
         gap_id_organization: 1
         gap_id_episode:
         gap_manual_edit: 1
@@ -455,12 +455,12 @@ gems__appointments:
         gap_subject:
         gap_comment:
         gap_changed: '2017-08-09'
-        gap_changed_by: '1'
+        gap_changed_by: 1
         gap_created: '2017-08-09'
-        gap_created_by: '1'
+        gap_created_by: 1
     -
         gap_id_appointment: 10
-        gap_id_user: '1'
+        gap_id_user: 1
         gap_id_organization: 1
         gap_id_episode:
         gap_manual_edit: 1
@@ -477,12 +477,12 @@ gems__appointments:
         gap_subject:
         gap_comment:
         gap_changed: '2017-08-09'
-        gap_changed_by: '1'
+        gap_changed_by: 1
         gap_created: '2017-08-09'
-        gap_created_by: '1'
+        gap_created_by: 1
     -
         gap_id_appointment: 11
-        gap_id_user: '1'
+        gap_id_user: 1
         gap_id_organization: 1
         gap_id_episode:
         gap_manual_edit: 1
@@ -499,12 +499,12 @@ gems__appointments:
         gap_subject:
         gap_comment:
         gap_changed: '2017-08-09'
-        gap_changed_by: '1'
+        gap_changed_by: 1
         gap_created: '2017-08-09'
-        gap_created_by: '1'
+        gap_created_by: 1
     -
         gap_id_appointment: 12
-        gap_id_user: '1'
+        gap_id_user: 1
         gap_id_organization: 1
         gap_id_episode:
         gap_manual_edit: 1
@@ -521,12 +521,12 @@ gems__appointments:
         gap_subject:
         gap_comment:
         gap_changed: '2017-08-09'
-        gap_changed_by: '1'
+        gap_changed_by: 1
         gap_created: '2017-08-09'
-        gap_created_by: '1'
+        gap_created_by: 1
     -
         gap_id_appointment: 13
-        gap_id_user: '1'
+        gap_id_user: 1
         gap_id_organization: 1
         gap_id_episode:
         gap_manual_edit: 1
@@ -543,12 +543,12 @@ gems__appointments:
         gap_subject:
         gap_comment:
         gap_changed: '2017-08-09'
-        gap_changed_by: '1'
+        gap_changed_by: 1
         gap_created: '2017-08-09'
-        gap_created_by: '1'
+        gap_created_by: 1
     -
         gap_id_appointment: 14
-        gap_id_user: '1'
+        gap_id_user: 1
         gap_id_organization: 1
         gap_id_episode:
         gap_manual_edit: 1
@@ -565,12 +565,12 @@ gems__appointments:
         gap_subject:
         gap_comment:
         gap_changed: '2017-08-09'
-        gap_changed_by: '1'
+        gap_changed_by: 1
         gap_created: '2017-08-09'
-        gap_created_by: '1'
+        gap_created_by: 1
     -
         gap_id_appointment: 15
-        gap_id_user: '1'
+        gap_id_user: 1
         gap_id_organization: 1
         gap_id_episode:
         gap_manual_edit: 1
@@ -587,12 +587,12 @@ gems__appointments:
         gap_subject:
         gap_comment:
         gap_changed: '2017-08-09'
-        gap_changed_by: '1'
+        gap_changed_by: 1
         gap_created: '2017-08-09'
-        gap_created_by: '1'
+        gap_created_by: 1
     -
         gap_id_appointment: 16
-        gap_id_user: '1'
+        gap_id_user: 1
         gap_id_organization: 1
         gap_id_episode:
         gap_manual_edit: 1
@@ -609,12 +609,12 @@ gems__appointments:
         gap_subject:
         gap_comment:
         gap_changed: '2017-08-09'
-        gap_changed_by: '1'
+        gap_changed_by: 1
         gap_created: '2017-08-09'
-        gap_created_by: '1'
+        gap_created_by: 1
     -
         gap_id_appointment: 17
-        gap_id_user: '1'
+        gap_id_user: 1
         gap_id_organization: 1
         gap_id_episode:
         gap_manual_edit: 1
@@ -631,12 +631,12 @@ gems__appointments:
         gap_subject:
         gap_comment:
         gap_changed: '2017-08-09'
-        gap_changed_by: '1'
+        gap_changed_by: 1
         gap_created: '2017-08-09'
-        gap_created_by: '1'
+        gap_created_by: 1
     -
         gap_id_appointment: 18
-        gap_id_user: '1'
+        gap_id_user: 1
         gap_id_organization: 1
         gap_id_episode:
         gap_manual_edit: 1
@@ -653,12 +653,12 @@ gems__appointments:
         gap_subject:
         gap_comment:
         gap_changed: '2017-08-09'
-        gap_changed_by: '1'
+        gap_changed_by: 1
         gap_created: '2017-08-09'
-        gap_created_by: '1'
+        gap_created_by: 1
     -
         gap_id_appointment: 19
-        gap_id_user: '1'
+        gap_id_user: 1
         gap_id_organization: 1
         gap_id_episode:
         gap_manual_edit: 1
@@ -675,12 +675,12 @@ gems__appointments:
         gap_subject:
         gap_comment:
         gap_changed: '2017-08-09'
-        gap_changed_by: '1'
+        gap_changed_by: 1
         gap_created: '2017-08-09'
-        gap_created_by: '1'
+        gap_created_by: 1
     -
         gap_id_appointment: 20
-        gap_id_user: '1'
+        gap_id_user: 1
         gap_id_organization: 1
         gap_id_episode:
         gap_manual_edit: 1
@@ -697,12 +697,12 @@ gems__appointments:
         gap_subject:
         gap_comment:
         gap_changed: '2017-08-09'
-        gap_changed_by: '1'
+        gap_changed_by: 1
         gap_created: '2017-08-09'
-        gap_created_by: '1'
+        gap_created_by: 1
     -
         gap_id_appointment: 21
-        gap_id_user: '1'
+        gap_id_user: 1
         gap_id_organization: 1
         gap_id_episode:
         gap_manual_edit: 1
@@ -719,12 +719,12 @@ gems__appointments:
         gap_subject:
         gap_comment:
         gap_changed: '2017-08-09'
-        gap_changed_by: '1'
+        gap_changed_by: 1
         gap_created: '2017-08-09'
-        gap_created_by: '1'
+        gap_created_by: 1
     -
         gap_id_appointment: 22
-        gap_id_user: '1'
+        gap_id_user: 1
         gap_id_organization: 1
         gap_id_episode:
         gap_manual_edit: 1
@@ -741,12 +741,12 @@ gems__appointments:
         gap_subject:
         gap_comment:
         gap_changed: '2017-08-09'
-        gap_changed_by: '1'
+        gap_changed_by: 1
         gap_created: '2017-08-09'
-        gap_created_by: '1'
+        gap_created_by: 1
     -
         gap_id_appointment: 23
-        gap_id_user: '1'
+        gap_id_user: 1
         gap_id_organization: 1
         gap_id_episode:
         gap_manual_edit: 1
@@ -763,12 +763,12 @@ gems__appointments:
         gap_subject:
         gap_comment:
         gap_changed: '2017-08-09'
-        gap_changed_by: '1'
+        gap_changed_by: 1
         gap_created: '2017-08-09'
-        gap_created_by: '1'
+        gap_created_by: 1
     -
         gap_id_appointment: 24
-        gap_id_user: '1'
+        gap_id_user: 1
         gap_id_organization: 1
         gap_id_episode:
         gap_manual_edit: 1
@@ -785,12 +785,12 @@ gems__appointments:
         gap_subject:
         gap_comment:
         gap_changed: '2017-08-09'
-        gap_changed_by: '1'
+        gap_changed_by: 1
         gap_created: '2017-08-09'
-        gap_created_by: '1'
+        gap_created_by: 1
     -
         gap_id_appointment: 25
-        gap_id_user: '1'
+        gap_id_user: 1
         gap_id_organization: 1
         gap_id_episode:
         gap_manual_edit: 1
@@ -807,64 +807,64 @@ gems__appointments:
         gap_subject:
         gap_comment:
         gap_changed: '2017-08-09'
-        gap_changed_by: '1'
+        gap_changed_by: 1
         gap_created: '2017-08-09'
-        gap_created_by: '1'
+        gap_created_by: 1
 gems__locations:
     -
         glo_id_location: 1
         glo_name: 'Location 1 xxx '
-        glo_organizations: '1'
+        glo_organizations: 1
         glo_match_to:
         glo_code:
         glo_active: 1
         glo_filter: 0
         glo_changed: '2017-08-09'
-        glo_changed_by: '1'
+        glo_changed_by: 1
         glo_created: '2017-08-09'
-        glo_created_by: '1'
+        glo_created_by: 1
 gems__respondents:
     -
-        grs_id_user: '1'
-        grs_changed_by: '1'
+        grs_id_user: 1
+        grs_changed_by: 1
         grs_created: '2012-09-07'
-        grs_created_by: '1'
+        grs_created_by: 1
 gems__respondent2org:
     -
-        gr2o_id_user: '1'
-        gr2o_id_organization: '1'
+        gr2o_id_user: 1
+        gr2o_id_organization: 1
         gr2o_consent: ok
         gr2o_patient_nr: abc
-        gr2o_opened_by: '1'
+        gr2o_opened_by: 1
         gr2o_changed: '2012-09-07'
-        gr2o_changed_by: '1'
+        gr2o_changed_by: 1
         gr2o_created: '2012-09-07'
-        gr2o_created_by: '1'
+        gr2o_created_by: 1
 gems__staff:
     -
-        gsf_id_user: '1'
+        gsf_id_user: 1
         gsf_login: username
-        gsf_id_organization: '1'
+        gsf_id_organization: 1
         gsf_email: test@gemstracker.org
         gsf_id_primary_group: '222'
-        gsf_active: '1'
-        gsf_changed_by: '1'
+        gsf_active: 1
+        gsf_changed_by: 1
         gsf_created: '2017-08-09'
-        gsf_created_by: '1'
+        gsf_created_by: 1
 gems__tracks:
     -
-        gtr_id_track: '1'
+        gtr_id_track: 1
         gtr_track_class: AnyStepEngine
         gtr_track_name: 'Test Track'
         gtr_date_start: '2000-01-01 00:00:00'
         gtr_active: 1
-        gtr_changed_by: '1'
+        gtr_changed_by: 1
         gtr_created: '2012-09-07'
-        gtr_created_by: '1'
+        gtr_created_by: 1
 gems__track_appointments:
     -
         gtap_id_app_field: 1
-        gtap_id_track: '1'
+        gtap_id_track: 1
         gtap_id_order: 10
         gtap_field_name: 'Test 1'
         gtap_to_track_info: 1
@@ -881,12 +881,12 @@ gems__track_appointments:
         gtap_create_track: 1
         gtap_create_wait_days: 182
         gtap_changed: '2012-09-07'
-        gtap_changed_by: '1'
+        gtap_changed_by: 1
         gtap_created: '2012-09-07'
-        gtap_created_by: '1'
+        gtap_created_by: 1
     -
         gtap_id_app_field: 2
-        gtap_id_track: '1'
+        gtap_id_track: 1
         gtap_id_order: 20
         gtap_field_name: 'Test 2'
         gtap_to_track_info: 1
@@ -903,12 +903,12 @@ gems__track_appointments:
         gtap_create_track: 1
         gtap_create_wait_days: 182
         gtap_changed: '2012-09-07'
-        gtap_changed_by: '1'
+        gtap_changed_by: 1
         gtap_created: '2012-09-07'
-        gtap_created_by: '1'
+        gtap_created_by: 1
     -
         gtap_id_app_field: 3
-        gtap_id_track: '1'
+        gtap_id_track: 1
         gtap_id_order: 30
         gtap_field_name: 'Test 3'
         gtap_to_track_info: 1
@@ -925,12 +925,12 @@ gems__track_appointments:
         gtap_create_track: 1
         gtap_create_wait_days: 182
         gtap_changed: '2012-09-07'
-        gtap_changed_by: '1'
+        gtap_changed_by: 1
         gtap_created: '2012-09-07'
-        gtap_created_by: '1'
+        gtap_created_by: 1
     -
         gtap_id_app_field: 4
-        gtap_id_track: '1'
+        gtap_id_track: 1
         gtap_id_order: 40
         gtap_field_name: 'Test 4'
         gtap_to_track_info: 1
@@ -947,12 +947,12 @@ gems__track_appointments:
         gtap_create_track: 1
         gtap_create_wait_days: 182
         gtap_changed: '2012-09-07'
-        gtap_changed_by: '1'
+        gtap_changed_by: 1
         gtap_created: '2012-09-07'
-        gtap_created_by: '1'
+        gtap_created_by: 1
     -
         gtap_id_app_field: 5
-        gtap_id_track: '1'
+        gtap_id_track: 1
         gtap_id_order: 50
         gtap_field_name: 'Test 5'
         gtap_to_track_info: 1
@@ -969,12 +969,12 @@ gems__track_appointments:
         gtap_create_track: 1
         gtap_create_wait_days: 182
         gtap_changed: '2012-09-07'
-        gtap_changed_by: '1'
+        gtap_changed_by: 1
         gtap_created: '2012-09-07'
-        gtap_created_by: '1'
+        gtap_created_by: 1
     -
         gtap_id_app_field: 6
-        gtap_id_track: '1'
+        gtap_id_track: 1
         gtap_id_order: 60
         gtap_field_name: 'Test 6'
         gtap_to_track_info: 1
@@ -991,12 +991,12 @@ gems__track_appointments:
         gtap_create_track: 1
         gtap_create_wait_days: 182
         gtap_changed: '2012-09-07'
-        gtap_changed_by: '1'
+        gtap_changed_by: 1
         gtap_created: '2012-09-07'
-        gtap_created_by: '1'
+        gtap_created_by: 1
     -
         gtap_id_app_field: 7
-        gtap_id_track: '1'
+        gtap_id_track: 1
         gtap_id_order: 70
         gtap_field_name: 'Test 7'
         gtap_to_track_info: 1
@@ -1013,12 +1013,12 @@ gems__track_appointments:
         gtap_create_track: 1
         gtap_create_wait_days: 182
         gtap_changed: '2012-09-07'
-        gtap_changed_by: '1'
+        gtap_changed_by: 1
         gtap_created: '2012-09-07'
-        gtap_created_by: '1'
+        gtap_created_by: 1
     -
         gtap_id_app_field: 8
-        gtap_id_track: '1'
+        gtap_id_track: 1
         gtap_id_order: 80
         gtap_field_name: 'Test 8'
         gtap_to_track_info: 1
@@ -1035,12 +1035,12 @@ gems__track_appointments:
         gtap_create_track: 1
         gtap_create_wait_days: 182
         gtap_changed: '2012-09-07'
-        gtap_changed_by: '1'
+        gtap_changed_by: 1
         gtap_created: '2012-09-07'
-        gtap_created_by: '1'
+        gtap_created_by: 1
     -
         gtap_id_app_field: 9
-        gtap_id_track: '1'
+        gtap_id_track: 1
         gtap_id_order: 90
         gtap_field_name: 'Test 9'
         gtap_to_track_info: 1
@@ -1057,6 +1057,6 @@ gems__track_appointments:
         gtap_create_track: 1
         gtap_create_wait_days: 182
         gtap_changed: '2012-09-07'
-        gtap_changed_by: '1'
+        gtap_changed_by: 1
         gtap_created: '2012-09-07'
-        gtap_created_by: '1'
+        gtap_created_by: 1

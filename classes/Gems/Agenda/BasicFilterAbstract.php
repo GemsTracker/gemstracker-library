@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: AppointmentFilterAbstract.php $
  */
 
 namespace Gems\Agenda;
@@ -78,6 +77,7 @@ abstract class BasicFilterAbstract extends \MUtil_Translate_TranslateableAbstrac
      */
     public function exchangeArray(array $data)
     {
+        // echo "\n" . print_r($data, true) . "\n";
         $this->_data = $data;
         $this->afterLoad();
     }
