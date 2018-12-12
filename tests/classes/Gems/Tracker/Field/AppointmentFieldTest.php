@@ -167,6 +167,9 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
             ));
     }
 
+    /**
+     * Test assigning an existing appointment in code to an existing track with an appointment field
+     */
     public function testAppointmentTrackAssignment()
     {
         $appointment = $this->agenda->getAppointment(1);
@@ -188,6 +191,9 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
         $this->assertSameDay($appointment->getAdmissionTime()->addMonth(1), $token->getValidUntil());
     }
 
+    /**
+     * Test saving a new appointment that is assigned to an existing track with an appointment field, using a filter
+     */
     public function testAppointmentTrackAutoAssignment()
     {
         $nextMonth   = new \DateTime('first day of next month');
@@ -221,6 +227,311 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
         $this->assertSameDay($appointment->getAdmissionTime()->addMonth(1), $token->getValidUntil());
     }
 
+    /**
+     * Test saving a new appointment that creates a new track, using a filter
+     */
+    public function testAppointmentTrackCreate()
+    {
+        $nextMonth     = new \DateTime('first day of next month');
+        $preRespTracks = $this->tracker->getRespondentTracks(1, 1);
+        $this->assertEquals(0, count($preRespTracks));
+
+        \MUtil_Batch_BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
+
+        $model = $this->loader->getModels()->createAppointmentModel();
+        $model->save([
+            'gap_id_user' => 1,
+            'gap_id_organization' => 1,
+            'gap_manual_edit' => 0,
+            'gap_code' => 'A',
+            'gap_status' => 'AC',
+            'gap_admission_time' => new \MUtil_Date($nextMonth),
+            'gap_id_attended_by' => 1,
+            'gap_id_referred_by' => 1,
+            'gap_id_activity' => 1,
+            'gap_id_procedure' => 1,
+            'gap_id_location' => 1,
+            'gap_subject' => 'Do trigger this',
+        ]);
+        // $respTrack->checkTrackTokens(1);
+        // echo "\n" . print_r($respTrack->getFieldData(), true) . "\n";
+        // echo "\n" . print_r($app, true) . "\n";
+
+        $respTracks = $this->tracker->getRespondentTracks(1, 1);
+        $this->assertEquals(1, count($respTracks));
+
+        $appointment = $this->agenda->getAppointment(1);
+        $respTrack   = reset($respTracks);
+        $token       = $respTrack->getFirstToken();
+
+        $this->assertSameDay($nextMonth, $appointment->getAdmissionTime());
+        $this->assertSameDay($appointment->getAdmissionTime(), $token->getValidFrom());
+        $this->assertSameDay($appointment->getAdmissionTime()->addMonth(1), $token->getValidUntil());
+    }
+
+    /**
+     * Test saving a new appointment that creates a second track instance using a filter, even though there is an existing closed track
+     */
+    public function testAppointmentTrackCreateSecondClosed()
+    {
+        $nextMonth     = new \DateTime('first day of next month');
+        $lastMonth     = new \DateTime('first day of last month');
+        $preRespTracks = $this->tracker->getRespondentTracks(1, 1);
+        $this->assertEquals(1, count($preRespTracks));
+
+        $appointment1 = $this->agenda->getAppointment(1);
+        $preRespTrack = reset($preRespTracks);
+        $preToken     = $preRespTrack->getFirstToken();
+
+        $this->assertSameDay($lastMonth, $appointment1->getAdmissionTime());
+        $this->assertSameDay($appointment1->getAdmissionTime(), $preToken->getValidFrom());
+        $this->assertSameDay($appointment1->getAdmissionTime()->addMonth(1), $preToken->getValidUntil());
+
+        // echo "\n" . print_r($this->db->fetchAll('SELECT * FROM gems__respondent2track2appointment'), true) . "\n";
+        \MUtil_Batch_BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
+
+        $model = $this->loader->getModels()->createAppointmentModel();
+        $model->save([
+            'gap_id_user' => 1,
+            'gap_id_organization' => 1,
+            'gap_manual_edit' => 0,
+            'gap_code' => 'A',
+            'gap_status' => 'AC',
+            'gap_admission_time' => new \MUtil_Date($nextMonth),
+            'gap_id_attended_by' => 1,
+            'gap_id_referred_by' => 1,
+            'gap_id_activity' => 1,
+            'gap_id_procedure' => 1,
+            'gap_id_location' => 1,
+            'gap_subject' => 'Do trigger this',
+        ]);
+
+        // echo "\n" . print_r($this->db->fetchAll('SELECT * FROM gems__appointments'), true) . "\n";
+
+        // Test trigger did nothing
+        $respTracks = $this->tracker->getRespondentTracks(1, 1);
+        $this->assertEquals(2, count($respTracks));
+
+        $appointment2 = $this->agenda->getAppointment(2);
+        $respTrack    = end($respTracks);
+        $token        = $respTrack->getFirstToken();
+
+        $this->assertSameDay($nextMonth, $appointment2->getAdmissionTime());
+        $this->assertSameDay($appointment2->getAdmissionTime(), $token->getValidFrom());
+        $this->assertSameDay($appointment2->getAdmissionTime()->addMonth(1), $token->getValidUntil());
+    }
+
+
+    /**
+     * Test saving a new appointment that creates a second track instance using a filter, even though there is an existing open track
+     * Using field setting gtap_create_track = 2
+     */
+    public function testAppointmentTrackCreateSecondOpen()
+    {
+        $nextMonth     = new \DateTime('first day of next month');
+        $lastMonth     = new \DateTime('first day of last month');
+        $preRespTracks = $this->tracker->getRespondentTracks(1, 1);
+        $this->assertEquals(1, count($preRespTracks));
+
+        $appointment1 = $this->agenda->getAppointment(1);
+        $preRespTrack = reset($preRespTracks);
+        $preToken     = $preRespTrack->getFirstToken();
+
+        $this->assertSameDay($lastMonth, $appointment1->getAdmissionTime());
+        $this->assertSameDay($appointment1->getAdmissionTime(), $preToken->getValidFrom());
+        $this->assertSameDay($appointment1->getAdmissionTime()->addMonth(1), $preToken->getValidUntil());
+
+        // echo "\n" . print_r($this->db->fetchAll('SELECT * FROM gems__respondent2track2appointment'), true) . "\n";
+        \MUtil_Batch_BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
+
+        $model = $this->loader->getModels()->createAppointmentModel();
+        $model->save([
+            'gap_id_user' => 1,
+            'gap_id_organization' => 1,
+            'gap_manual_edit' => 0,
+            'gap_code' => 'A',
+            'gap_status' => 'AC',
+            'gap_admission_time' => new \MUtil_Date($nextMonth),
+            'gap_id_attended_by' => 1,
+            'gap_id_referred_by' => 1,
+            'gap_id_activity' => 1,
+            'gap_id_procedure' => 1,
+            'gap_id_location' => 1,
+            'gap_subject' => 'Do trigger this',
+        ]);
+
+        // echo "\n" . print_r($this->db->fetchAll('SELECT * FROM gems__appointments'), true) . "\n";
+
+        // Test trigger did nothing
+        $respTracks = $this->tracker->getRespondentTracks(1, 1);
+        $this->assertEquals(2, count($respTracks));
+
+        $appointment2 = $this->agenda->getAppointment(2);
+        $respTrack    = end($respTracks);
+        $token        = $respTrack->getFirstToken();
+
+        $this->assertSameDay($nextMonth, $appointment2->getAdmissionTime());
+        $this->assertSameDay($appointment2->getAdmissionTime(), $token->getValidFrom());
+        $this->assertSameDay($appointment2->getAdmissionTime()->addMonth(1), $token->getValidUntil());
+    }
+
+    /**
+     * Test saving a new appointment that could create a new track using a filter, but is blocked by an existing closed track
+     */
+    public function testAppointmentTrackCreationBlockedClosed()
+    {
+        $nextMonth     = new \DateTime('first day of next month');
+        $lastMonth     = new \DateTime('first day of last month');
+        $preRespTracks = $this->tracker->getRespondentTracks(1, 1);
+        $this->assertEquals(1, count($preRespTracks));
+
+        $appointment  = $this->agenda->getAppointment(1);
+        $preRespTrack = reset($preRespTracks);
+        $preToken     = $preRespTrack->getFirstToken();
+
+        $this->assertSameDay($lastMonth, $appointment->getAdmissionTime());
+        $this->assertSameDay($appointment->getAdmissionTime(), $preToken->getValidFrom());
+        $this->assertSameDay($appointment->getAdmissionTime()->addMonth(1), $preToken->getValidUntil());
+
+        // echo "\n" . print_r($this->db->fetchAll('SELECT * FROM gems__respondent2track2appointment'), true) . "\n";
+
+        $model = $this->loader->getModels()->createAppointmentModel();
+        $model->save([
+            'gap_id_user' => 1,
+            'gap_id_organization' => 1,
+            'gap_manual_edit' => 0,
+            'gap_code' => 'A',
+            'gap_status' => 'AC',
+            'gap_admission_time' => new \MUtil_Date($nextMonth),
+            'gap_id_attended_by' => 1,
+            'gap_id_referred_by' => 1,
+            'gap_id_activity' => 1,
+            'gap_id_procedure' => 1,
+            'gap_id_location' => 1,
+            'gap_subject' => 'Do trigger this',
+        ]);
+
+        // echo "\n" . print_r($this->db->fetchAll('SELECT * FROM gems__appointments'), true) . "\n";
+
+        // Test trigger did nothing
+        $respTracks = $this->tracker->getRespondentTracks(1, 1);
+        $this->assertEquals(1, count($respTracks));
+
+        $respTrack = reset($respTracks);
+        $token     = $respTrack->getFirstToken();
+
+        $this->assertSameDay($lastMonth, $appointment->getAdmissionTime());
+        $this->assertSameDay($appointment->getAdmissionTime(), $token->getValidFrom());
+        $this->assertSameDay($appointment->getAdmissionTime()->addMonth(1), $token->getValidUntil());
+    }
+
+    /**
+     * Test saving a new appointment that could create a new track using a filter, but is blocked by an existing open track
+     */
+    public function testAppointmentTrackCreationBlockedOpen()
+    {
+        $nextMonth     = new \DateTime('first day of next month');
+        $lastMonth     = new \DateTime('first day of last month');
+        $preRespTracks = $this->tracker->getRespondentTracks(1, 1);
+        $this->assertEquals(1, count($preRespTracks));
+
+        $appointment  = $this->agenda->getAppointment(1);
+        $preRespTrack = reset($preRespTracks);
+        $preToken     = $preRespTrack->getFirstToken();
+
+        $this->assertSameDay($lastMonth, $appointment->getAdmissionTime());
+        $this->assertSameDay($appointment->getAdmissionTime(), $preToken->getValidFrom());
+        $this->assertSameDay($appointment->getAdmissionTime()->addMonth(1), $preToken->getValidUntil());
+
+        // echo "\n" . print_r($this->db->fetchAll('SELECT * FROM gems__respondent2track2appointment'), true) . "\n";
+
+        $model = $this->loader->getModels()->createAppointmentModel();
+        $model->save([
+            'gap_id_user' => 1,
+            'gap_id_organization' => 1,
+            'gap_manual_edit' => 0,
+            'gap_code' => 'A',
+            'gap_status' => 'AC',
+            'gap_admission_time' => new \MUtil_Date($nextMonth),
+            'gap_id_attended_by' => 1,
+            'gap_id_referred_by' => 1,
+            'gap_id_activity' => 1,
+            'gap_id_procedure' => 1,
+            'gap_id_location' => 1,
+            'gap_subject' => 'Do trigger this',
+        ]);
+
+        // echo "\n" . print_r($this->db->fetchAll('SELECT * FROM gems__appointments'), true) . "\n";
+
+        // Test trigger did nothing
+        $respTracks = $this->tracker->getRespondentTracks(1, 1);
+        $this->assertEquals(1, count($respTracks));
+
+        $respTrack = reset($respTracks);
+        $token     = $respTrack->getFirstToken();
+
+        $this->assertSameDay($lastMonth, $appointment->getAdmissionTime());
+        $this->assertSameDay($appointment->getAdmissionTime(), $token->getValidFrom());
+        $this->assertSameDay($appointment->getAdmissionTime()->addMonth(1), $token->getValidUntil());
+    }
+
+    /**
+     * Test saving a new appointment that creates a new track instead of replacing the appointment in an existing
+     * closed track even though the old appointment no longer adheres to the filter
+     */
+    public function testAppointmentTrackLeaveClosedAlone()
+    {
+        $nextMonth     = new \DateTime('first day of next month');
+        $lastMonth     = new \DateTime('first day of last month');
+        $preRespTracks = $this->tracker->getRespondentTracks(1, 1);
+        $this->assertEquals(1, count($preRespTracks));
+
+        $appointment1 = $this->agenda->getAppointment(1);
+        $preRespTrack = reset($preRespTracks);
+        $preToken     = $preRespTrack->getFirstToken();
+
+        $this->assertSameDay($lastMonth, $appointment1->getAdmissionTime());
+        $this->assertSameDay($appointment1->getAdmissionTime(), $preToken->getValidFrom());
+        $this->assertSameDay($appointment1->getAdmissionTime()->addMonth(1), $preToken->getValidUntil());
+
+        // echo "\n" . print_r($this->db->fetchAll('SELECT * FROM gems__respondent2track2appointment'), true) . "\n";
+
+        $model = $this->loader->getModels()->createAppointmentModel();
+        $model->save([
+            'gap_id_user' => 1,
+            'gap_id_organization' => 1,
+            'gap_manual_edit' => 0,
+            'gap_code' => 'A',
+            'gap_status' => 'AC',
+            'gap_admission_time' => new \MUtil_Date($nextMonth),
+            'gap_id_attended_by' => 1,
+            'gap_id_referred_by' => 1,
+            'gap_id_activity' => 1,
+            'gap_id_procedure' => 1,
+            'gap_id_location' => 1,
+            'gap_subject' => 'Do trigger this',
+        ]);
+
+        // echo "\n" . print_r($this->db->fetchAll('SELECT * FROM gems__appointments'), true) . "\n";
+
+        // Test trigger did nothing
+        $respTracks = $this->tracker->getRespondentTracks(1, 1);
+        // BUG: moet 2 zijn, moet een nieuw traject komen
+        $this->assertEquals(1, count($respTracks));
+
+        $appointment2 = $this->agenda->getAppointment(2);
+        $respTrack    = end($respTracks);
+        $token        = $respTrack->getFirstToken();
+
+        $this->assertSameDay($nextMonth, $appointment2->getAdmissionTime());
+        // BUG: moet 2 x $appointment2 zijn
+        $this->assertSameDay($appointment1->getAdmissionTime(), $token->getValidFrom());
+        $this->assertSameDay($appointment1->getAdmissionTime()->addMonth(1), $token->getValidUntil());
+    }
+
+    /**
+     * Test saving a new appointment that is NOT assigned to an existing track with an appointment field
+     */
     public function testAppointmentTrackNotAssignment()
     {
         $nextMonth   = new \DateTime('first day of next month');
@@ -254,11 +565,26 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
         $this->assertNull($token->getValidUntil());
     }
 
-    public function testAppointmentTrackCreate()
+    /**
+     * Test saving a new appointment that is assigned to an existing track with an appointment field
+     * overwriting the old appointment that no longer adheres to the filter
+     */
+    public function testAppointmentTrackOverwriteAssignment()
     {
         $nextMonth     = new \DateTime('first day of next month');
+        $lastMonth     = new \DateTime('first day of last month');
         $preRespTracks = $this->tracker->getRespondentTracks(1, 1);
-        $this->assertEquals(0, count($preRespTracks));
+        $this->assertEquals(1, count($preRespTracks));
+
+        $appointment1 = $this->agenda->getAppointment(1);
+        $preRespTrack = reset($preRespTracks);
+        $preToken     = $preRespTrack->getFirstToken();
+
+        $this->assertSameDay($lastMonth, $appointment1->getAdmissionTime());
+        $this->assertSameDay($appointment1->getAdmissionTime(), $preToken->getValidFrom());
+        $this->assertSameDay($appointment1->getAdmissionTime()->addMonth(1), $preToken->getValidUntil());
+
+        // echo "\n" . print_r($this->db->fetchAll('SELECT * FROM gems__respondent2track2appointment'), true) . "\n";
 
         $model = $this->loader->getModels()->createAppointmentModel();
         $model->save([
@@ -275,19 +601,19 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
             'gap_id_location' => 1,
             'gap_subject' => 'Do trigger this',
         ]);
-        // $respTrack->checkTrackTokens(1);
-        // echo "\n" . print_r($respTrack->getFieldData(), true) . "\n";
-        // echo "\n" . print_r($app, true) . "\n";
 
+        // echo "\n" . print_r($this->db->fetchAll('SELECT * FROM gems__appointments'), true) . "\n";
+
+        // Test trigger did nothing
         $respTracks = $this->tracker->getRespondentTracks(1, 1);
         $this->assertEquals(1, count($respTracks));
 
-        $appointment = $this->agenda->getAppointment(1);
-        $respTrack   = reset($respTracks);
-        $token       = $respTrack->getFirstToken();
+        $appointment2 = $this->agenda->getAppointment(2);
+        $respTrack    = reset($respTracks);
+        $token        = $respTrack->getFirstToken();
 
-        $this->assertSameDay($nextMonth, $appointment->getAdmissionTime());
-        $this->assertSameDay($appointment->getAdmissionTime(), $token->getValidFrom());
-        $this->assertSameDay($appointment->getAdmissionTime()->addMonth(1), $token->getValidUntil());
+        $this->assertSameDay($nextMonth, $appointment2->getAdmissionTime());
+        $this->assertSameDay($appointment2->getAdmissionTime(), $token->getValidFrom());
+        $this->assertSameDay($appointment2->getAdmissionTime()->addMonth(1), $token->getValidUntil());
     }
 }

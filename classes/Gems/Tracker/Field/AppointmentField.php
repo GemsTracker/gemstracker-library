@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: AppointmentField.php $
  */
 
 namespace Gems\Tracker\Field;
@@ -221,6 +220,7 @@ class AppointmentField extends FieldAbstract
                     }
 
                     // Query ready
+                    // echo "\n" . $select->getSelect()->__toString() . "\n";
                     $newValue = $select->fetchOne();
 
                     if ($newValue) {

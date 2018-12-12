@@ -347,7 +347,8 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
                 $this->_gemsData['gap_admission_time'] =
                         new \MUtil_Date($this->_gemsData['gap_admission_time'], \Gems_Tracker::DB_DATETIME_FORMAT);
             }
-            return $this->_gemsData['gap_admission_time'];
+            // Clone to make sure calculations can be performed without changing this object
+            return clone $this->_gemsData['gap_admission_time'];
         }
     }
 

@@ -1,0 +1,176 @@
+--- # Test specific additions
+gems__appointment_filters:
+    -
+        gaf_id: 1
+        gaf_class: 'SubjectAppointmentFilter'
+        gaf_calc_name: 'Subject contains %trigger%'
+        gaf_id_order: 10
+        gaf_filter_text1: '%trigger%'
+        gaf_active: 1
+        gaf_changed: '2017-08-09'
+        gaf_changed_by: 1
+        gaf_created: '2017-08-09'
+        gaf_created_by: 1
+gems__appointments:
+    -
+        gap_id_appointment: 1
+        gap_id_user: 1
+        gap_id_organization: 1
+        gap_id_episode:
+        gap_manual_edit: 0
+        gap_code: A
+        gap_status: AC
+        gap_admission_time: '{LAST_MONTH}-01 09:00:00'
+        gap_discharge_time: '{LAST_MONTH}-01 09:30:00'
+        gap_id_attended_by: 1
+        gap_id_referred_by: 1
+        gap_id_activity: 1
+        gap_id_procedure: 1
+        gap_id_location: 1
+        gap_diagnosis_code:
+        gap_subject: 'Was triggered'
+        gap_comment:
+        gap_changed: '2017-08-09'
+        gap_changed_by: 1
+        gap_created: '2017-08-09'
+        gap_created_by: 1
+gems__respondent2track:
+    -
+        gr2t_id_respondent_track: 1
+        gr2t_id_track: 1
+        gr2t_id_user: 1
+        gr2t_track_info: ''
+        gr2t_start_date: '2012-09-07'
+        gr2t_end_date: '{LAST_MONTH}-02'
+        gr2t_id_organization: 1
+        gr2t_mailable: 1
+        gr2t_active: 1
+        gr2t_count: 1
+        gr2t_completed: 1
+        gr2t_reception_code: 'OK'
+        gr2t_changed_by: 1
+        gr2t_created: '2012-09-07'
+        gr2t_created_by: 1
+gems__respondent2track2appointment:
+    -
+        gr2t2a_id_respondent_track: 1
+        gr2t2a_id_app_field: 1
+        gr2t2a_id_appointment: 1
+        gr2t2a_changed: '2012-09-07'
+        gr2t2a_changed_by: 1
+        gr2t2a_created: '2012-09-07'
+        gr2t2a_created_by: 1
+gems__rounds:
+    -
+        gro_id_round: 0
+        gro_id_track: 0
+        gro_id_order: 0
+        gro_id_survey: 0
+        gro_survey_name: inserted
+        gro_changed_by: 1
+        gro_created: '2012-03-29 10:55:55'
+        gro_created_by: 1
+        gro_valid_after_id: 0
+        gro_valid_after_source: tok
+        gro_valid_after_field: gto_valid_from
+        gro_valid_after_unit: M
+        gro_valid_after_length: 1
+        gro_valid_for_id: 1
+        gro_valid_for_source: tok
+        gro_valid_for_field: gto_valid_from
+        gro_valid_for_unit: M
+        gro_valid_for_length: '2'
+    -
+        gro_id_round: 1
+        gro_id_track: 1
+        gro_id_order: 10
+        gro_id_survey: 1
+        gro_survey_name: baseline
+        gro_changed_by: 1
+        gro_created: '2012-03-29 10:55:55'
+        gro_created_by: 1
+        gro_valid_after_id: 0
+        gro_valid_after_source: app
+        gro_valid_after_field: 'a__1'
+        gro_valid_after_unit: M
+        gro_valid_after_length: 0
+        gro_valid_for_id: 1
+        gro_valid_for_source: tok
+        gro_valid_for_field: gto_valid_from
+        gro_valid_for_unit: M
+        gro_valid_for_length: 1
+gems__surveys:
+    -
+        gsu_id_survey: 1
+        gsu_survey_name: 'test survey'
+        gsu_id_primary_group: 1
+        gsu_id_source: 1
+        gsu_changed_by: 1
+        gsu_created: '2012-03-29 10:55:55'
+        gsu_created_by: 1
+gems__tokens:
+    -
+        gto_id_token: abcd-efg2
+        gto_id_respondent_track: 1
+        gto_id_round: 1
+        gto_id_respondent: 1
+        gto_id_organization: 1
+        gto_id_track: 1
+        gto_id_survey: 1
+        gto_round_order: '10'
+        gto_round_description: ''
+        gto_valid_from: '{LAST_MONTH}-01 09:00:00'
+        gto_valid_from_manual: 0
+        gto_valid_until: '{THIS_MONTH}-01 09:00:00'
+        gto_valid_until_manual: 0
+        gto_mail_sent_date: '{LAST_MONTH}-01 19:00:00'
+        gto_mail_sent_num: 0
+        gto_start_time: '{LAST_MONTH}-02 09:00:00'
+        gto_completion_time: '{LAST_MONTH}-02 09:01:00'
+        gto_duration_in_sec: 60
+        gto_result:
+        gto_comment:
+        gto_reception_code: OK
+        gto_return_url: 'url'
+        gto_in_source: 1
+        gto_by: 1
+        gto_changed: '2012-03-29 13:50:22'
+        gto_changed_by: 1
+        gto_created: '2012-03-29 10:55:55'
+        gto_created_by: 1
+gems__tracks:
+    -
+        gtr_id_track: 1
+        gtr_track_class: AnyStepEngine
+        gtr_track_name: 'Test Track'
+        gtr_date_start: '2000-01-01 00:00:00'
+        gtr_date_until:
+        gtr_active: 1
+        gtr_changed_by: 1
+        gtr_created: '2012-09-07'
+        gtr_created_by: 1
+gems__track_appointments:
+    -
+        gtap_id_app_field: 1
+        gtap_id_track: 1
+        gtap_id_order: 10
+        gtap_field_name: 'Test 1'
+        gtap_field_code: 'testApp'
+        gtap_field_description: 'Test 1'
+        gtap_to_track_info: 1
+        gtap_track_info_label: 0
+        gtap_required: 0
+        gtap_readonly: 0
+        gtap_filter_id: 1
+        gtap_min_diff_length: 1
+        gtap_min_diff_unit: 'D'
+        gtap_max_diff_exists: 0
+        gtap_max_diff_length: 0
+        gtap_max_diff_unit: 'D'
+        gtap_uniqueness: 0
+        gtap_create_track: 1
+        gtap_create_wait_days: 10
+        gtap_changed: '2012-09-07'
+        gtap_changed_by: 1
+        gtap_created: '2012-09-07'
+        gtap_created_by: 1

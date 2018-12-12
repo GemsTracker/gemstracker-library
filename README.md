@@ -9,6 +9,9 @@ See [new project](https://github.com/GemsTracker/new-project) for a basic implem
 # API
 Check the [API docs](https://gemstracker.github.io/gemstracker-library/) for the latest release.
 
+# Code climate
+Check our coding trends on [Code climate](https://codeclimate.com/github/GemsTracker/gemstracker-library/trends/technical_debt).
+
 # License
 GemsTracker is licensed under the New BSD License - see the [LICENSE](LICENSE.txt) file for details
 
