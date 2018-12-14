@@ -394,6 +394,7 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
         $this->assertSameDay($appointment->getAdmissionTime()->addMonth(1), $preToken->getValidUntil());
 
         // echo "\n" . print_r($this->db->fetchAll('SELECT * FROM gems__respondent2track2appointment'), true) . "\n";
+        \MUtil_Batch_BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
 
         $model = $this->loader->getModels()->createAppointmentModel();
         $model->save([
@@ -444,6 +445,7 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
         $this->assertSameDay($appointment->getAdmissionTime()->addMonth(1), $preToken->getValidUntil());
 
         // echo "\n" . print_r($this->db->fetchAll('SELECT * FROM gems__respondent2track2appointment'), true) . "\n";
+        \MUtil_Batch_BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
 
         $model = $this->loader->getModels()->createAppointmentModel();
         $model->save([
@@ -495,6 +497,7 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
         $this->assertSameDay($appointment1->getAdmissionTime()->addMonth(1), $preToken->getValidUntil());
 
         // echo "\n" . print_r($this->db->fetchAll('SELECT * FROM gems__respondent2track2appointment'), true) . "\n";
+        \MUtil_Batch_BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
 
         $model = $this->loader->getModels()->createAppointmentModel();
         $model->save([
@@ -517,7 +520,7 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
         // Test trigger did nothing
         $respTracks = $this->tracker->getRespondentTracks(1, 1);
         // BUG: moet 2 zijn, moet een nieuw traject komen
-        $this->assertEquals(1, count($respTracks));
+        $this->assertEquals(2, count($respTracks));
 
         $appointment2 = $this->agenda->getAppointment(2);
         $respTrack    = end($respTracks);
@@ -525,8 +528,8 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
 
         $this->assertSameDay($nextMonth, $appointment2->getAdmissionTime());
         // BUG: moet 2 x $appointment2 zijn
-        $this->assertSameDay($appointment1->getAdmissionTime(), $token->getValidFrom());
-        $this->assertSameDay($appointment1->getAdmissionTime()->addMonth(1), $token->getValidUntil());
+        $this->assertSameDay($appointment2->getAdmissionTime(), $token->getValidFrom());
+        $this->assertSameDay($appointment2->getAdmissionTime()->addMonth(1), $token->getValidUntil());
     }
 
     /**

@@ -164,8 +164,8 @@ gems__track_appointments:
         gtap_filter_id: 1
         gtap_min_diff_length: 1
         gtap_min_diff_unit: 'D'
-        gtap_max_diff_exists: 0
-        gtap_max_diff_length: 0
+        gtap_max_diff_exists: 1
+        gtap_max_diff_length: 10
         gtap_max_diff_unit: 'D'
         gtap_uniqueness: 0
         gtap_create_track: 2
