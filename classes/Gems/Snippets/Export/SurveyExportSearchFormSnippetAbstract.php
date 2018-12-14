@@ -87,6 +87,16 @@ abstract class SurveyExportSearchFormSnippetAbstract extends \Gems_Snippets_Auto
 
         $elements[] = null;
 
+        $elements['export_trackfield_codes'] = $this->form->createElement('text', 'export_trackfield_codes',
+            [
+                'size' => 50,
+                'label' => 'Export trackfield codes',
+                'description' => 'Export specific trackfield codes. This works without selecting a track. The columnname will be the code. Use , as a separator between codes.'
+            ]
+        );
+
+        $elements[] = null;
+
         $elements[] = $this->_('Output');
         $elements['incomplete'] = $this->_createCheckboxElement(
                 'incomplete',

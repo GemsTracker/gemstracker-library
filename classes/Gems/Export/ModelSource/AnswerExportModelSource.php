@@ -74,6 +74,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
         $this->_addExtraGenderAge($model, $data, $prefixes);
         $this->_addExtraTokenReceptionCode($model, $data, $prefixes);
         $this->_addExtraTrackReceptionCode($model, $data, $prefixes);
+        $this->addExtraTrackFieldsByCode($model, $data, $prefixes);
     }
 
     /**
@@ -173,6 +174,28 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
             $model->set('gtf_field_name', 'label', $this->_('Relation'), 'type', \MUtil_Model::TYPE_STRING);
 
             $prefixes['TF'] = array_diff($model->getItemNames(), $prefixes['A'], $prefixes['D']);
+        }
+    }
+
+    /**
+     * @param MUtil_Model_ModelAbstract $model
+     * @param array $data
+     * @param array $prefixes
+     */
+    protected function addExtraTrackFieldsByCode(\MUtil_Model_ModelAbstract $model, array $data, array &$prefixes)
+    {
+        if (isset($data['export_trackfield_codes']) && $data['export_trackfield_codes']) {
+            $includeCodes = array_map('trim', explode(',', $data['export_trackfield_codes']));
+
+            if (!empty($includeCodes)) {
+                foreach ($includeCodes as $name) {
+                    $model->set($name, 'label', $name);
+                }
+
+                $tracker = $this->loader->getTracker();
+                $transformer = new \Gems\Tracker\Model\AddTrackFieldsByCodeTransformer($tracker, $includeCodes);
+                $model->addTransformer($transformer);
+            }
         }
     }
 
