@@ -701,10 +701,11 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
 
         /****************************************
          * Insert token in table (if not there) *
-         ****************************************/
-
+         ****************************************/        
+        $validDates = $this->getValidDates($token);
+        
         // Get the mapped values
-        $values = $this->_fillAttributeMap($token);
+        $values = $this->_fillAttributeMap($token) + $validDates;
         // Apparently it is possible to have this value filled without a survey questionnaire.
         if ($token->isCompleted()) {
             $values['completed'] = $token->getCompletionTime()->toString(self::LS_DB_COMPLETION_FORMAT);
@@ -1296,7 +1297,39 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
         $baseurl = $this->getBaseUrl();
         return $baseurl . ('/' == substr($baseurl, -1) ? '' : '/') . 'index.php?sid=' . $sourceSurveyId . '&token=' . $tokenId . $langUrl;
     }
+    
+    /**
+     * Get valid from/to dates to send to LimeSurvey depending on the dates of the token
+     * 
+     * @param \Gems_Tracker_Token $token
+     * @return []
+     */
+    public function getValidDates(\Gems_Tracker_Token $token)
+    {
+        $now = new \MUtil_Date();
+        // For extra protection, we add valid from/to dates as needed instead of leaving them in GemsTracker only
+        $tokenFrom  = $token->getValidFrom();
+        $tokenUntil = $token->getValidUntil();
+        // Always set a date, so LimeSurvey will check the token
+        $lsFrom     = is_null($tokenFrom) ? new \MUtil_Date('1900-01-01') : $tokenFrom;
+        if (!is_null($tokenUntil) && $tokenUntil->isEarlier($now)) {
+            $lsUntil = $tokenUntil;
+        } elseif (!is_null($tokenFrom)) {
+            // To end of day. If entering via GemsTracker it will always be updated as long as the token is still valid
+            $lsUntil = clone $now;
+            $lsUntil->setTimeToDayEnd();
+        } else {
+            // No valid from date, use same date as until
+            $lsUntil = $lsFrom;
+        }
 
+        $values = [
+            'validfrom'  => $lsFrom->toString(self::LS_DB_DATETIME_FORMAT),
+            'validuntil' => $lsUntil->toString(self::LS_DB_DATETIME_FORMAT)
+        ];
+
+        return $values;
+    }
 
     /**
      * Checks whether the token is in the source.
