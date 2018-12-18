@@ -226,7 +226,7 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
     public function beforeDisplay()
     {
         if ($this->_form instanceof \Gems_TabForm) {
-            if ($links = $this->getMenuList()) {
+            /*if ($links = $this->getMenuList()) {
                 $linkContainer = \MUtil_Html::create()->div(array('class' => 'element-container-labelless'));
                 $linkContainer[] = $links;
 
@@ -245,7 +245,7 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
                 } else {
                     $this->_form->getDisplayGroup(\Gems_TabForm::GROUP_OTHER)->addElement($element);
                 }
-            }
+            }*/
         } else {
             if (\MUtil_Bootstrap::enabled() !== true) {
                 $table = new \MUtil_Html_TableElement(array('class' => $this->class));

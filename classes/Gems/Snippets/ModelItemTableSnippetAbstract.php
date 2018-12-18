@@ -90,11 +90,11 @@ abstract class Gems_Snippets_ModelItemTableSnippetAbstract extends \MUtil_Snippe
     protected function addShowTableRows(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
         if ($this->addOnclickEdit) {
-            $menuItem = $this->getEditMenuItem();
+            /*$menuItem = $this->getEditMenuItem();
             if ($menuItem) {
                 // Add click to edit
                 $bridge->tbody()->onclick = array('location.href=\'', $menuItem->toHRefAttribute($this->request), '\';');
-            }
+            }*/
         }
 
         parent::addShowTableRows($bridge, $model);
@@ -171,7 +171,7 @@ abstract class Gems_Snippets_ModelItemTableSnippetAbstract extends \MUtil_Snippe
      */
     protected function setShowTableFooter(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
-        if ($this->displayMenu) {
+        /*if ($this->displayMenu) {
             if (! $this->menuList) {
                 $this->menuList = $this->menu->getCurrentMenuList($this->request, $this->_('Cancel'));
             }
@@ -180,6 +180,6 @@ abstract class Gems_Snippets_ModelItemTableSnippetAbstract extends \MUtil_Snippe
             }
 
             $bridge->tfrow($this->menuList, array('class' => 'centerAlign'));
-        }
+        }*/
     }
 }
