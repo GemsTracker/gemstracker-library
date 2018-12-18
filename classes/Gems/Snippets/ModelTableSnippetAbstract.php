@@ -232,14 +232,14 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_M
      */
     protected function findMenuItem($defaultController, $actions = 'index')
     {
-        foreach ((array) $actions as $key => $action) {
+        /*foreach ((array) $actions as $key => $action) {
             $controller = is_int($key) ? $defaultController : $key;
             $item       = $this->menu->find(array('controller' => $controller, 'action' => $action, 'allowed' => true));
 
             if ($item) {
                 return $item;
             }
-        }
+        }*/
     }
 
     /**

@@ -98,7 +98,7 @@ class Gems_Tracker_Token_TokenValidator extends \MUtil_Registry_TargetAbstract i
     protected function getRequest()
     {
         if (! $this->request) {
-            $this->request = \Zend_Controller_Front::getInstance()->getRequest();
+            $this->request = \MUtil\Controller\Front::getRequest();
         }
 
         return $this->request;

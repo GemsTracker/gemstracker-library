@@ -59,6 +59,10 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
      */
     protected $maintenanceModeSnippets = ['Ask\\MaintenanceModeAskSnippet'];
 
+    public $loader;
+
+    public $project;
+
     /**
      * The current token ID
      *
@@ -257,8 +261,7 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
             ));
 
         if ($request->isPost() && $form->isValid($request->getParams())) {
-            $this->_forward('forward');
-            return;
+            return $this->_forward('forward');
         }
 
         $form->populate($request->getParams());

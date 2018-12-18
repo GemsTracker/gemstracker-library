@@ -97,7 +97,7 @@ class ButtonRowSnippet extends \MUtil_Snippets_SnippetAbstract
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
-        $menuList = $this->menu->getMenuList();
+        /*$menuList = $this->menu->getMenuList();
 
         $menuList->addParameterSources($this->request, $this->menu->getParameterSource());
 
@@ -107,6 +107,6 @@ class ButtonRowSnippet extends \MUtil_Snippets_SnippetAbstract
 
         if ($menuList->render($view)) {
             return \MUtil_Html::create('div', array('class' => 'buttons', 'renderClosingTag' => true), $menuList);
-        }
+        }*/
     }
 }

@@ -312,13 +312,13 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
     {
         parent::afterRegistry();
 
-        if ($this->util && (false !== $this->searchData) && (! $this->requestCache)) {
+        /*if ($this->util && (false !== $this->searchData) && (! $this->requestCache)) {
             $this->requestCache = $this->util->getRequestCache();
         }
         if ($this->requestCache) {
             // Do not store searchButtonId
             $this->requestCache->removeParams($this->searchButtonId);
-        }
+        }*/
     }
 
     /**
@@ -449,14 +449,14 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
      */
     protected function getAutoSearchReset()
     {
-        if ($menuItem = $this->menu->getCurrent()) {
+        /*if ($menuItem = $this->menu->getCurrent()) {
             $link    = $menuItem->toActionLink($this->request, array('reset' => 1), $this->_('Reset search'));
 
             $element = new \MUtil_Form_Element_Html('reset');
             $element->setValue($link);
 
             return $element;
-        }
+        }*/
     }
 
     /**
