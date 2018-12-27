@@ -1359,7 +1359,7 @@ class GemsEscort extends \MUtil_Application_Escort
      * @param \Zend_Controller_Action $actionController
      * @return void
      */
-    public function controllerBeforeAction(\Zend_Controller_Action $actionController = null)
+    public function controllerBeforeAction($actionController = null)
     {
         // Test for Zend_Session::$_unitTestEnabled: db is not yet loaded in tests
         if (method_exists($actionController, 'getRespondent') && (!\Zend_Session::$_unitTestEnabled)) {
@@ -1384,7 +1384,7 @@ class GemsEscort extends \MUtil_Application_Escort
      * @param \Zend_Controller_Action $actionController
      * @return void
      */
-    public function controllerInit(\Zend_Controller_Action $actionController = null)
+    public function controllerInit($actionController = null)
     {
         $this->_copyVariables($actionController ? $actionController : $this->controllerAfterAction);
 

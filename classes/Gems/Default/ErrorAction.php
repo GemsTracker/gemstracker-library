@@ -18,7 +18,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Default_ErrorAction extends \Zend_Controller_Action
+class Gems_Default_ErrorAction extends \MUtil_Controller_Action
 {
     /**
      * Action for displaying an error, CLI as well as HTTP
