@@ -40,7 +40,8 @@ class TrackRoundConditionExportTask extends TrackExportAbstract
         $select->from('gems__conditions', array(
             'gcon_id', 'gcon_type', 'gcon_class', 'gcon_name', 'gcon_condition_text1', 'gcon_condition_text2', 'gcon_condition_text3', 'gcon_condition_text4',
             ))  ->joinInner('gems__rounds', 'gems__conditions.gcon_id = gems__rounds.gro_condition', array())
-                ->where('gems__rounds.gro_id_track = ?', $trackId);
+                ->where('gems__rounds.gro_id_track = ?', $trackId)
+                ->distinct(true);
         // \MUtil_Echo::track($select->__toString(), $roundId);
 
         $data = $this->db->fetchAll($select);
