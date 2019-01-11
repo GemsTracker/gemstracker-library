@@ -18,7 +18,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Default_IndexAction extends \Gems_Controller_Action
+class Gems_Default_IndexAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
      * Gems only parameters used for the login action. Can be overruled
@@ -561,4 +561,9 @@ class Gems_Default_IndexAction extends \Gems_Controller_Action
             $this->currentUser->setCurrentOrganization($user->getCurrentOrganization());
         }
     }
+
+    protected function createModel($detailed, $action): \MUtil_Model_ModelAbstract {
+        return null;
+    }
+
 }

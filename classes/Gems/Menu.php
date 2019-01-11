@@ -8,6 +8,8 @@
  * @license    New BSD License
  */
 
+use MUtil\Translate\TranslateableTrait;
+
 /**
  * This is the generic Menu class to be extended by the project
  *
@@ -28,6 +30,8 @@
  */
 class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInterface
 {
+    use TranslateableTrait;
+    
     /**
      *
      * @var \Gems_Menu_SubMenuItem
@@ -55,10 +59,16 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
      */
     static public $verbose = false;
 
-    public function  __construct(\GemsEscort $escort)
+    public function  __construct()
     {
-        parent::__construct($escort);
-
+        parent::__construct();        
+    }
+    
+    public function afterRegistry(){
+        parent::afterRegistry();
+        
+        $this->initTranslateable();
+        
         //This loads the default menu
         $this->loadDefaultMenu();
 
@@ -66,7 +76,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $this->loadProjectMenu();
 
         $this->setOnlyActiveBranchVisible();
-        $this->applyAcl($escort->acl, $this->user->getRole());
+        $this->applyAcl($this->acl, $this->currentUser->getRole());
     }
 
     private function _findPath($request)
@@ -108,7 +118,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
      */
     public function addContactPage($label)
     {
-        $project = $this->escort->project;
+        $project = $this->project;
 
         $page = $this->addPage($label, null, 'contact');
 
@@ -155,7 +165,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $page->addAction($this->_('Execute new'), 'pr.database.create', 'run-all');
         $page->addAction($this->_('Patches'), 'pr.database.patches', 'patch');
         $page->addAction($this->_('Show structure changes'), 'pr.database', 'show-changes');
-        if (isset($this->escort->project->databaseTranslations)) {
+        if (isset($this->project->databaseTranslations)) {
             $page->addAction($this->_('Refresh translateables'), 'pr.database', 'refresh-translations');
         }
         $page->addAction($this->_('Run SQL'), 'pr.database.execute', 'run-sql');
@@ -197,7 +207,8 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $setup->addLogControllers();
 
         // OpenRosa
-        $this->addOpenRosaContainer($this->_('OpenRosa'), $setup);
+        // Disabled for now
+        //$this->addOpenRosaContainer($this->_('OpenRosa'), $setup);
 
         return $setup;
     }
@@ -234,17 +245,17 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $this->addAskPage($this->_('Token'));
         $this->addPage($this->_('Logoff'), 'pr.islogin', 'index', 'logoff');
 
-        if (count($this->user->getAllowedStaffGroups(false)) > 1) {
+        if (count($this->currentUser->getAllowedStaffGroups(false)) > 1) {
             // ALLOW GROUP SWITCH
             $this->addPage(null, null, 'group', 'change-ui');
         }
 
-        if ($this->escort->project->multiLocale) {
+        if ($this->project->multiLocale) {
             // ALLOW LANGUAGE CHANGE
             $this->addPage(null, null, 'language', 'change-ui');
         }
 
-        if (count($this->user->getAllowedOrganizations()) > 1) {
+        if (count($this->currentUser->getAllowedOrganizations()) > 1) {
             // ALLOW ORGANIZATION CHANGE
             $this->addPage(null, null, 'organization', 'change-ui');
         }
@@ -283,7 +294,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
      */
     public function addRespondentPage($label)
     {
-        $orgId = $this->user->getCurrentOrganizationId();
+        $orgId = $this->currentUser->getCurrentOrganizationId();
 
         $params = array(\MUtil_Model::REQUEST_ID1  => 'gr2o_patient_nr', \MUtil_Model::REQUEST_ID2 => 'gr2o_id_organization');
 

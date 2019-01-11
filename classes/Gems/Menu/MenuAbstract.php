@@ -22,34 +22,44 @@ use MUtil\Translate\TranslateableTrait;
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-abstract class Gems_Menu_MenuAbstract
+abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
 {
     use TranslateableTrait;
-
+    
     /**
      *
      * @var \Gems_Menu_SubMenuItem[]
      */
     protected $_subItems = array();
+    
+    public $acl;
 
     /**
      *
      * @var \GemsEscort
      */
     public $escort;
+    
+    /**
+     *
+     * @var \Gems_Project_ProjectSettings
+     */
+    public $project;
+    
+    /**
+     *
+     * @var \Gems_Loader
+     */
+    public $loader;
 
     /**
      *
      * @var \Gems_User_User
      */
-    protected $user;
+    protected $currentUser;
 
-    public function __construct(\GemsEscort $escort)
+    public function __construct()
     {
-        $this->escort = $escort;
-        $this->translateAdapter = $escort->translate->getAdapter();
-        $this->initTranslateable();
-        $this->user = $escort->getLoader()->getCurrentUser();
     }
 
     /**
@@ -84,7 +94,7 @@ abstract class Gems_Menu_MenuAbstract
      */
     protected function _getOriginalRequest()
     {
-        $request = $this->escort->request;
+        $request = \MUtil\Controller\Front::getRequest();
         $handler = $request->getParam('error_handler');
 
         if ($handler) {
@@ -182,7 +192,7 @@ abstract class Gems_Menu_MenuAbstract
             $args['order'] = 10 * (count($this->_subItems) + 1);
         }
 
-        $page = new \Gems_Menu_SubMenuItem($this->escort, $this, $args);
+        $page = new \Gems_Menu_SubMenuItem($this->translateAdapter, $this, $args);
 
         $this->_subItems[] = $page;
 
@@ -358,7 +368,7 @@ abstract class Gems_Menu_MenuAbstract
             }
         }
 
-        $page = new \Gems_Menu_ContainerItem($this->escort, $this, $other);
+        $page = new \Gems_Menu_ContainerItem($this->translate, $this, $other);
 
         $this->_subItems[] = $page;
 
@@ -639,7 +649,7 @@ abstract class Gems_Menu_MenuAbstract
                 'changelog-gems'
                 );
         $upage->addPage(
-                sprintf($this->_('Changelog %s'), $this->escort->project->getName()),
+                sprintf($this->_('Changelog %s'), $this->project->getName()),
                 'pr.upgrade',
                 'project-information',
                 'changelog'
@@ -699,10 +709,10 @@ abstract class Gems_Menu_MenuAbstract
      */
     public function addStaffPage($label, array $other = array())
     {
-        if ($this->user->hasPrivilege('pr.staff.edit.all')) {
-            $filter = array_keys($this->escort->getUtil()->getDbLookup()->getOrganizations());
+        if ($this->currentUser->hasPrivilege('pr.staff.edit.all')) {
+            $filter = array_keys($this->loader->getUtil()->getDbLookup()->getOrganizations());
         } else {
-            $filter = array_keys($this->user->getAllowedOrganizations());
+            $filter = array_keys($this->currentUser->getAllowedOrganizations());
         }
 
         $page = $this->addPage($label, 'pr.staff', 'staff', 'index', $other);
@@ -730,7 +740,7 @@ abstract class Gems_Menu_MenuAbstract
         $page->addExportAction();
         $page->addImportAction();
 
-        if (! $this->user->hasPrivilege('pr.staff.edit.all')) {
+        if (! $this->currentUser->hasPrivilege('pr.staff.edit.all')) {
             foreach ($pages as $subPage) {
                 $subPage->addParameterFilter('gsf_id_organization', $filter, 'accessible_role', 1);
             }

@@ -51,11 +51,18 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
     private $_parent;
     private $_requiredParameters = array();
 
-    public function __construct(\GemsEscort $escort, \Gems_Menu_MenuAbstract $parent, array $options)
+    public function __construct($translateAdapter, \Gems_Menu_MenuAbstract $parent, array $options)
     {
-        parent::__construct($escort);
+        parent::__construct();
+        
+        $this->translateAdapter = $translateAdapter;
+        $this->initTranslateable();
 
         $this->_parent = $parent;
+        
+        $this->project = $parent->project;
+        $this->currentUser = $parent->currentUser;
+        $this->loader = $parent->loader;
 
         foreach ($options as $key => $value) {
             $this->set($key, $value);
