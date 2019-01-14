@@ -562,7 +562,7 @@ class Gems_Default_IndexAction extends \Gems_Controller_ModelSnippetActionAbstra
         }
     }
 
-    protected function createModel($detailed, $action): \MUtil_Model_ModelAbstract {
+    protected function createModel($detailed, $action) {
         return null;
     }
 
