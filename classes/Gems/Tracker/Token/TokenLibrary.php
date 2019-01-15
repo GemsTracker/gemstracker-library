@@ -38,6 +38,18 @@ class Gems_Tracker_Token_TokenLibrary extends \Gems_Registry_TargetAbstract
     protected $tokenFrom;
     protected $tokenReuse;
     protected $tokenTo;
+    
+    /**
+     * The number of days a used token is valid to answer other tokens
+     * 
+     * -1 not at all, this breaks the tokenloop
+     * 0 default only the same day
+     * 1 yesterdays tokens can still be used
+     * etc.
+     * 
+     * @var int 
+     */
+    protected $_defaultReuse = 0;
 
 
     /**
@@ -87,7 +99,7 @@ class Gems_Tracker_Token_TokenLibrary extends \Gems_Registry_TargetAbstract
         if (isset($this->project->tokens['reuse'])) {
             $this->tokenReuse = intval($this->project->tokens['reuse']);
         } else {
-            $this->tokenReuse = 0;
+            $this->tokenReuse = $this->_defaultReuse;
         }
 
         return true;
