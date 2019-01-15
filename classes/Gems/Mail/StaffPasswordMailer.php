@@ -87,23 +87,5 @@ class Gems_Mail_StaffPasswordMailer extends \Gems_Mail_StaffMailer
         } else {
             return false;
         }
-    }
-
-    /**
-     * Use the Mail template code to select and set the template
-     * @param string mail
-     */
-    public function setTemplateByCode($templateCode)
-    {
-        $select = $this->loader->getModels()->getCommTemplateModel()->getSelect();
-        $select->where('gct_code = ?', $templateCode);
-
-        $template = $this->db->fetchRow($select);
-        if ($template) {
-            $this->setTemplate($template['gct_id_template']);
-            return true;
-        } else {
-            return false;
-        }
-    }
+    }    
 }

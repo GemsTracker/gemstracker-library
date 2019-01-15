@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-27 16:00+0100\n"
+"POT-Creation-Date: 2019-01-15 16:45+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -15,14 +15,14 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 2.2\n"
+"X-Generator: Poedit 1.8.9\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
 "X-Poedit-SearchPath-3: layouts\n"
 "X-Poedit-SearchPath-4: vendor/magnafacta/mutil/src/MUtil\n"
 
-#: classes/Gems/Agenda.php:385 classes/Gems/Agenda/Appointment.php:407
+#: classes/Gems/Agenda.php:385 classes/Gems/Agenda/Appointment.php:408
 #: classes/Gems/Agenda/AppointmentFilterModel.php:172
 #: classes/Gems/Agenda/AppointmentFilterModel.php:190
 #: classes/Gems/Agenda/EpisodeOfCare.php:160
@@ -97,7 +97,7 @@ msgstr "Foutieve invoer"
 #: classes/Gems/Default/CommJobAction.php:214
 #: classes/Gems/Default/ConsentPlanAction.php:148
 #: classes/Gems/Default/IndexAction.php:320
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:360
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:383
 #: classes/Gems/Model/AppointmentModel.php:210
 #: classes/Gems/Model/AppointmentModel.php:263
 #: classes/Gems/Model/EpisodeOfCareModel.php:178
@@ -786,7 +786,7 @@ msgstr "Ok"
 #: classes/Gems/Default/UpgradeAction.php:212
 #: classes/Gems/Export/RespondentExport.php:480
 #: classes/Gems/Snippets/Agenda/AppointmentCleanupSnippet.php:228
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:116
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:209
 #: classes/Gems/Snippets/FormSnippetAbstract.php:214
 #: classes/Gems/Snippets/Generic/ButtonRowSnippet.php:79
 #: classes/Gems/Snippets/ModelFormSnippetAbstract.php:338
@@ -1329,6 +1329,7 @@ msgid "The token %s does not exist (any more)."
 msgstr "Het kenmerk %s bestaat niet (meer)."
 
 #: classes/Gems/Default/AskAction.php:243
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:274
 #, php-format
 msgid ""
 "Thank you for answering. At the moment we have no further surveys for you to "
@@ -1350,7 +1351,11 @@ msgstr ""
 msgid "The survey for token %s is no longer active."
 msgstr "De vragenlijst voor kenmerk %s is niet meer in gebruik."
 
-#: classes/Gems/Default/CalendarAction.php:158
+#: classes/Gems/Default/CalendarAction.php:153 classes/Gems/Menu.php:757
+msgid "Calendar"
+msgstr "Kalender"
+
+#: classes/Gems/Default/CalendarAction.php:163
 #: classes/Gems/Default/RespondentNewAction.php:807
 #: classes/Gems/Import/ImportLoader.php:324
 #: classes/Gems/Import/ImportLoader.php:328
@@ -2289,7 +2294,7 @@ msgstr[1] "trajectvelden"
 #: classes/Gems/Menu/MenuAbstract.php:678
 #: classes/Gems/Menu/MenuAbstract.php:802
 #: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:261
-#: classes/Gems/Tracker.php:692
+#: classes/Gems/Tracker.php:697
 msgid "Tracks"
 msgstr "Trajecten"
 
@@ -2317,7 +2322,7 @@ msgid "%d (uses per value: %01.2f)"
 msgstr "%d (gebruik per waarde %01.2f)"
 
 #: classes/Gems/Default/FieldReportAction.php:308
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:234
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:257
 msgid "Track fields"
 msgstr "Trajectvelden"
 
@@ -2433,7 +2438,7 @@ msgstr "Standaard medewerker groep bij het aanmaken van een nieuwe medewerker"
 #: classes/Gems/Default/StaffAction.php:209 classes/Gems/Menu.php:188
 #: classes/Gems/Model/LogModel.php:105
 #: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:258
-#: classes/Gems/Tracker.php:694
+#: classes/Gems/Tracker.php:699
 msgid "Staff"
 msgstr "Medewerkers"
 
@@ -3922,7 +3927,7 @@ msgstr "Per kenmerk plannen"
 #: classes/Gems/Snippets/Respondent/DetailsWithAssignmentsSnippet.php:93
 #: classes/Gems/Snippets/Respondent/RespondentDetailsSnippet.php:53
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:42
-#: classes/Gems/Tracker.php:693 classes/Gems/Util/Translated.php:292
+#: classes/Gems/Tracker.php:698 classes/Gems/Util/Translated.php:292
 msgid "Respondent"
 msgstr "Patiënt"
 
@@ -3932,7 +3937,7 @@ msgid "Round / Details"
 msgstr "Ronde / Details"
 
 #: classes/Gems/Default/TokenSearchActionAbstract.php:106
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:378
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:401
 #: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:72
 #: classes/Gems/Snippets/Token/PlanSearchSnippet.php:75
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:44
@@ -3944,7 +3949,7 @@ msgid "Valid from"
 msgstr "Geldig vanaf"
 
 #: classes/Gems/Default/TokenSearchActionAbstract.php:107
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:379
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:402
 #: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:73
 #: classes/Gems/Snippets/Token/PlanSearchSnippet.php:76
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:45
@@ -4150,7 +4155,7 @@ msgid "Missing track identifier."
 msgstr "Ontbrekende traject identificatie."
 
 #: classes/Gems/Default/TrackOverviewAction.php:108
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:368
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:391
 #: classes/Gems/Snippets/Tracker/Rounds/ConditionRoundsTableSnippet.php:103
 msgid "Track name"
 msgstr "Traject naam"
@@ -4324,105 +4329,105 @@ msgstr "Antwoorden opmaken"
 msgid "Delimiter"
 msgstr "Delimiter"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:101
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:102
 msgid "Birth year"
 msgstr "Geboorte jaar"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:110
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:111
 msgid "Birth month"
 msgstr "Geboorte maand"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:155
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:273
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:156
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:296
 msgid "Token reception code"
 msgstr "Kenmerk ontvangstcode"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:172
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:173
 msgid "Relation ID"
 msgstr "Relatie ID"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:173
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:174
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:476
 #: classes/Gems/Util/Translated.php:291
 msgid "Relation"
 msgstr "Relatie"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:189
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:267
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:212
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:290
 msgid "Track reception code"
 msgstr "Traject ontvangstcode"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:235
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:258
 msgid "Add track fields to export"
 msgstr "Voeg trajectvelden toe aan de export"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:242
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:265
 msgid "Add respondent nr to export"
 msgstr "Voeg het patiëntnummer toe aan de export"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:248
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:271
 msgid "Respondent gender"
 msgstr "Patiënt geslacht"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:249
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:272
 msgid "Add respondent gender to export"
 msgstr "Voeg de geslacht van de patiënt toe aan de export"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:254
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:277
 msgid "Respondent birth year"
 msgstr "Patiënt geboorte jaar"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:255
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:278
 msgid "Add respondent birth year to export"
 msgstr "Voeg het geboortejaar van de patiënt toe aan de export"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:260
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:283
 msgid "Respondent birth month"
 msgstr "Patiënt geboorte maand"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:261
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:284
 msgid "Add respondent birth month to export"
 msgstr "Voeg de geboortemaand van de patiënt toe aan de export"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:268
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:291
 msgid "Add reception code of track"
 msgstr "Ontvangstcode van traject toevoegen"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:274
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:297
 msgid "Add reception code of token"
 msgstr "Ontvangstcode van kenmerk toevoegen"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:359
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:382
 msgid "Respondent ID"
 msgstr "Respondent ID"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:364
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:387
 #: classes/Gems/Model/RespondentModel.php:289
 #: classes/Gems/Model/RespondentModel.php:383
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:469
 msgid "Consent"
 msgstr "Toestemming"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:365
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:388
 msgid "Respondent track ID"
 msgstr "Patiënt traject ID"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:366
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:389
 #: classes/Gems/Snippets/Tracker/Rounds/ConditionRoundsTableSnippet.php:104
 msgid "Round order"
 msgstr "Ronde volgorde"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:367
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:390
 msgid "Round description"
 msgstr "Ronde omschrijving"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:369
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:392
 #: classes/Gems/Snippets/Respondent/MinimalTableSnippet.php:105
 #: classes/Gems/Snippets/Respondent/RespondentTableSnippet.php:102
 msgid "Track description"
 msgstr "Trajectomschrijving"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:375
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:398
 #: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:231
 #: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:74
 #: classes/Gems/Snippets/Token/PlanSearchSnippet.php:78
@@ -4431,20 +4436,20 @@ msgstr "Trajectomschrijving"
 msgid "Completion date"
 msgstr "Datum ingevuld op"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:376
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:399
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:540
 msgid "Start time"
 msgstr "Startdatum"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:380
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:403
 msgid "Start language"
 msgstr "Aanvangstaal"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:381
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:404
 msgid "Last page"
 msgstr "Laatste pagina"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:383
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:406
 #: classes/Gems/Export/RespondentExport.php:250 classes/Gems/Menu.php:234
 #: classes/Gems/Menu.php:366 classes/Gems/Menu.php:460
 #: classes/Gems/Model/CommLogModel.php:140
@@ -4452,7 +4457,9 @@ msgstr "Laatste pagina"
 #: classes/Gems/Model/Translator/TokenAnswerTranslator.php:89
 #: classes/Gems/Snippets/Ask/RedirectUntilGoodbyeSnippet.php:83
 #: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:65
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:87
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:110
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:178
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:270
 #: classes/Gems/Snippets/Import/FileImportSnippet.php:64
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:771
 #: classes/Gems/Tracker/Form/AskTokenForm.php:52
@@ -4873,10 +4880,6 @@ msgstr "Activiteiten log"
 #: classes/Gems/Menu.php:551
 msgid "Relations"
 msgstr "Relaties"
-
-#: classes/Gems/Menu.php:757
-msgid "Calendar"
-msgstr "Kalender"
 
 #: classes/Gems/Menu.php:760
 msgid "Overview"
@@ -6288,20 +6291,19 @@ msgstr "Wij waarderen uw medewerking."
 
 #: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:67
 #: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:71
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:89
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:93
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:77
 #, php-format
 msgid "Welcome %s,"
 msgstr "Welkom %s,"
 
 #: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:69
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:91
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:182
 #, php-format
 msgid "We kindly ask you to answer a survey about %s."
 msgstr "Wij verzoeken u een vragenlijst over %s te beantwoorden."
 
 #: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:77
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:97
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:186
 #, php-format
 msgid "Thank you for answering the \"%s\" survey."
 msgstr "Dank u voor het invullen van de \"%s\" vragenlijst."
@@ -6330,18 +6332,46 @@ msgstr "Dank u voor het beantwoorden van alle openstaande vragenlijsten."
 msgid "There are no surveys to show for this token."
 msgstr "U heeft geen open vragenlijsten voor dit kenmerk."
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:98
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:65
+msgid "Send me an email to continue later"
+msgstr "Stuur mij een email om later verder te gaan"
+
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:121
+msgid ""
+"An email with information to continue later was sent to your registered "
+"email address."
+msgstr ""
+"Een email met informatie om later verder te gaan is verstuurd naar uw "
+"emailadres."
+
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:123
+msgid ""
+"An email with information to continue later was already sent to your "
+"registered email address today."
+msgstr ""
+"Een email met informatie om later verder te gaan is vandaag al verstuurd "
+"naar uw emailadres."
+
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:126
+msgid ""
+"Delivery can take a while. If you do not receive an email please check your "
+"spam-box."
+msgstr ""
+"Het kan even duren voordat u de email ontvangt. Als u niets ontvangt, "
+"controleer dan uw spam-box."
+
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:187
 msgid "Please click the button below to answer the next survey."
 msgstr "Klik op de onderstaande knop om de volgende vragenlijst in te vullen."
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:103
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:192
 #, php-format
 msgid "Please click the button below to answer the survey for token %s."
 msgstr ""
 "Klik op de onderstaande knop om de vragenlijst behorende bij kenmerk %s in "
 "te vullen."
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:107
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:196
 #, php-format
 msgid ""
 "Wait one second to open the survey automatically or click on Cancel to stop."
@@ -6354,7 +6384,7 @@ msgstr[1] ""
 "Over %d seconden start de vragenlijst automatisch. Klik op annuleren om dit "
 "te onderbreken."
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:122
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:220
 #, php-format
 msgid ""
 "After this survey there is one other survey we would like you to answer."
@@ -6537,26 +6567,26 @@ msgstr ""
 "Niet patiënt nr, maar respondent id zoals hier wordt geëxporteerd. Scheid "
 "meerdere id's met, of;"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:90
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:100
 msgid "Output"
 msgstr "Output"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:93
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:103
 msgid "Include incomplete surveys"
 msgstr "Voeg onvoltooide vragenlijsten toe"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:94
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:104
 msgid ""
 "Include surveys that have been started but have not been checked as completed"
 msgstr ""
 "Voeg vragenlijsten toe die gestart zijn maar niet gemarkeerd zijn als "
 "voltooid"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:98
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:108
 msgid "Column Identifiers"
 msgstr "Kolom identificatoren"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:99
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:109
 msgid ""
 "Prefix the column labels with an identifier. (A) Answers, (TF) Trackfields, "
 "(D) Description"
@@ -6564,23 +6594,23 @@ msgstr ""
 "Zet een voorvoegsel voor de kolomlabels met een id. (A) antwoorden, (TF) "
 "trajectvelden, (D) beschrijving"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:103
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:113
 msgid "Show parent"
 msgstr "Toon hoofdvraag"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:104
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:114
 msgid "Show the parent column even if it doesn't have answers"
 msgstr "Toon de hoofdvraag kolom, ook als er geen antwoorden in staan"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:108
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:118
 msgid "Prefix child"
 msgstr "Volledige vraag"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:109
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:119
 msgid "Prefix the child column labels with parent question label"
 msgstr "Plaats de hoofdvraag voor de subvraag in de kolom naam"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:116
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:126
 msgid "Add to export"
 msgstr "Voeg toe aan de export"
 
@@ -8081,7 +8111,7 @@ msgid_plural "%d fields exported"
 msgstr[0] "%d veld geëxporteerd"
 msgstr[1] "%d velden geëxporteerd"
 
-#: classes/Gems/Task/Tracker/Export/TrackRoundConditionExportTask.php:61
+#: classes/Gems/Task/Tracker/Export/TrackRoundConditionExportTask.php:62
 #, php-format
 msgid "%d condition exported"
 msgid_plural "%d conditions exported"
@@ -9151,68 +9181,68 @@ msgstr "&lt; Terug"
 msgid "Next &gt;"
 msgstr "Verder &gt;"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:97
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:104
 msgid "We have received your answers today. Thank you!"
 msgstr "We hebben uw vragenlijst vandaag ingevuld ontvangen. Dank u wel!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:100
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:107
 msgid "We have received your answers yesterday. Thank you!"
 msgstr "We hebben uw vragenlijst gisteren ingevuld ontvangen. Dank u wel!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:103
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:110
 msgid "We have received your answers 2 days ago. Thank you."
 msgstr "We hebben uw vragenlijst eergisteren ingevuld ontvangen. Dank u wel."
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:107
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:114
 #, php-format
 msgid "We have received your answers %d days ago. Thank you."
 msgstr ""
 "We hebben uw vragenlijst %d dagen geleden ingevuld ontvangen. Dank u wel."
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:109
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:116
 #, php-format
 msgid "We have received your answers on %s. "
 msgstr "We hebben uw vragenlijst op %s ingevuld ontvangen. "
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:122
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:129
 #, php-format
 msgid "Takes about %s to answer."
 msgstr "Duurt meestal ongeveer %s."
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:135
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:144
 msgid "Survey has no time limit."
 msgstr "Vragenlijst zonder eindtijd."
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:143
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:152
 msgid "Warning!!!"
 msgstr "Let op!!!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:145
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:154
 msgid "This survey must be answered today!"
 msgstr "Deze vragenlijst kan alleen vandaag nog ingevuld worden!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:150
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:159
 msgid "Warning!!"
 msgstr "Let op!!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:152
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:161
 msgid "This survey can only be answered until tomorrow!"
 msgstr "Deze vragenlijst kan slechts tot morgen ingevuld worden!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:156
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:165
 msgid "Warning! This survey can only be answered for another 2 days!"
 msgstr "Let op! Deze vragenlijst kan slechts tot overmorgen ingevuld worden!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:160
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:169
 #, php-format
 msgid "Please answer this survey within %d days."
 msgstr "Wij verzoeken u deze vragenlijst binnen %d dagen in te vullen."
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:164
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:173
 msgid "This survey can no longer be answered."
 msgstr "Deze vragenlijst kan niet langer worden ingevuld."
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:167
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:176
 #, php-format
 msgid "Please answer this survey before %s."
 msgstr "Wij verzoeken u deze vragenlijst voor %s in te vullen."

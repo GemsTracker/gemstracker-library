@@ -40,6 +40,13 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
      * @var boolean
      */
     protected $showDuration = true;
+    
+    /**
+     * Switch for showing how long the token is valid.
+     *
+     * @var boolean
+     */
+    protected $showUntil = true;
 
     /**
      * Required, the current token, possibly already answered
@@ -131,6 +138,8 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
      */
     public function formatUntil(\MUtil_Date $dateTime = null)
     {
+        if (false === $this->showUntil) { return; }
+        
         if (null === $dateTime) {
             return $this->_('Survey has no time limit.');
         }
