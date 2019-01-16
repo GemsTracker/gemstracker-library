@@ -26,6 +26,18 @@ namespace Gems\Snippets\Ask;
 class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
 {
     /**
+     *
+     * @var \Gems_Loader
+     */
+    public $loader;
+    
+    /**
+     *
+     * @var \Gems_Menu
+     */
+    public $menu;
+    
+    /**
      * Required
      *
      * @var \Gems_Project_ProjectSettings
@@ -62,7 +74,11 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
 
             // If there is no template, we show no link
             if ($mail->setTemplateByCode('continue')) {
-                $html->actionLink(array('continue_later' => 1), $this->_('Send me an email to continue later'));
+                $html->pInfo($this->_('or'));
+                $menuItem = $this->menu->find(array('controller' => 'ask', 'action' => 'forward'));
+                $href = $menuItem->toHRefAttribute($this->request);
+                $href->add(['continue_later' => 1, 'id' => $this->token->getTokenId()]);
+                $html->actionLink($href, $this->_('Send me an email to continue later'));
             }
         }
     }
