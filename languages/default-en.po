@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-15 16:45+0100\n"
+"POT-Creation-Date: 2019-01-16 16:29+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -687,13 +687,75 @@ msgstr "Respondent age"
 msgid " (age in months"
 msgstr " (age in months"
 
+#: classes/Gems/Condition/Round/GenderCondition.php:49
 #: classes/Gems/Condition/Round/TrackFieldCondition.php:48
 msgid "Equals"
 msgstr "Equals"
 
+#: classes/Gems/Condition/Round/GenderCondition.php:50
 #: classes/Gems/Condition/Round/TrackFieldCondition.php:49
 msgid "Does not equal"
 msgstr "Does not equal"
+
+#: classes/Gems/Condition/Round/GenderCondition.php:59
+msgid ""
+"Round will be valid depending on the gender of the respondent or the "
+"relation assinged to the survey."
+msgstr ""
+"Round will be valid depending on the gender of the respondent or the "
+"relation assinged to the survey."
+
+#: classes/Gems/Condition/Round/GenderCondition.php:69
+#: classes/Gems/Condition/Round/GenderCondition.php:109
+#: classes/Gems/Default/TokenSearchActionAbstract.php:104
+#: classes/Gems/Model/LogModel.php:107
+#: classes/Gems/Snippets/Respondent/DetailsWithAssignmentsSnippet.php:93
+#: classes/Gems/Snippets/Respondent/RespondentDetailsSnippet.php:53
+#: classes/Gems/Snippets/TokenPlanTableSnippet.php:42
+#: classes/Gems/Tracker.php:698 classes/Gems/Util/Translated.php:292
+msgid "Respondent"
+msgstr "Patient"
+
+#: classes/Gems/Condition/Round/GenderCondition.php:70
+#: classes/Gems/Condition/Round/GenderCondition.php:110
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:174
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:476
+#: classes/Gems/Util/Translated.php:291
+msgid "Relation"
+msgstr "Relation"
+
+#: classes/Gems/Condition/Round/GenderCondition.php:83
+msgid "Determine gender based on"
+msgstr "Determine gender based on"
+
+#: classes/Gems/Condition/Round/GenderCondition.php:84
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:70
+msgid "Comparison operator"
+msgstr "Comparison operator"
+
+#: classes/Gems/Condition/Round/GenderCondition.php:85
+#: classes/Gems/Model/RespondentModel.php:345
+#: classes/Gems/Model/RespondentRelationModel.php:46
+#: classes/Gems/Model/StaffModel.php:137 classes/Gems/Model/StaffModel.php:216
+msgid "Gender"
+msgstr "Gender"
+
+#: classes/Gems/Condition/Round/GenderCondition.php:92
+msgid "Respondent or relation gender"
+msgstr "Respondent or relation gender"
+
+#: classes/Gems/Condition/Round/GenderCondition.php:98
+msgid "Round is not for relations"
+msgstr "Round is not for relations"
+
+#: classes/Gems/Condition/Round/GenderCondition.php:100
+msgid "Round is not for respondents"
+msgstr "Round is not for respondents"
+
+#: classes/Gems/Condition/Round/GenderCondition.php:119
+#, php-format
+msgid "Gender of %s"
+msgstr "Gender of %s"
 
 #: classes/Gems/Condition/Round/TrackFieldCondition.php:50
 msgid "Between"
@@ -715,10 +777,6 @@ msgstr ""
 #: classes/Gems/Condition/Round/TrackFieldCondition.php:96
 msgid "Track field"
 msgstr "Track field"
-
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:70
-msgid "Comparison operator"
-msgstr "Comparison operator"
 
 #: classes/Gems/Condition/Round/TrackFieldCondition.php:81
 msgid "Param2"
@@ -781,7 +839,7 @@ msgstr "Ok"
 #: classes/Gems/Default/UpgradeAction.php:212
 #: classes/Gems/Export/RespondentExport.php:480
 #: classes/Gems/Snippets/Agenda/AppointmentCleanupSnippet.php:228
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:209
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:225
 #: classes/Gems/Snippets/FormSnippetAbstract.php:214
 #: classes/Gems/Snippets/Generic/ButtonRowSnippet.php:79
 #: classes/Gems/Snippets/ModelFormSnippetAbstract.php:338
@@ -1312,7 +1370,7 @@ msgid "The token %s does not exist (any more)."
 msgstr "The token %s does not exist (any more)."
 
 #: classes/Gems/Default/AskAction.php:243
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:274
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:290
 #, php-format
 msgid ""
 "Thank you for answering. At the moment we have no further surveys for you to "
@@ -3880,15 +3938,6 @@ msgstr "Surveys assigned to patient %s"
 msgid "Token planning"
 msgstr "Token planning"
 
-#: classes/Gems/Default/TokenSearchActionAbstract.php:104
-#: classes/Gems/Model/LogModel.php:107
-#: classes/Gems/Snippets/Respondent/DetailsWithAssignmentsSnippet.php:93
-#: classes/Gems/Snippets/Respondent/RespondentDetailsSnippet.php:53
-#: classes/Gems/Snippets/TokenPlanTableSnippet.php:42
-#: classes/Gems/Tracker.php:698 classes/Gems/Util/Translated.php:292
-msgid "Respondent"
-msgstr "Patient"
-
 #: classes/Gems/Default/TokenSearchActionAbstract.php:105
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:43
 msgid "Round / Details"
@@ -4287,12 +4336,6 @@ msgstr "Token reception code"
 msgid "Relation ID"
 msgstr "Relation ID"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:174
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:476
-#: classes/Gems/Util/Translated.php:291
-msgid "Relation"
-msgstr "Relation"
-
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:212
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:290
 msgid "Track reception code"
@@ -4398,9 +4441,9 @@ msgstr "Last page"
 #: classes/Gems/Model/Translator/TokenAnswerTranslator.php:89
 #: classes/Gems/Snippets/Ask/RedirectUntilGoodbyeSnippet.php:83
 #: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:65
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:110
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:178
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:270
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:126
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:194
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:286
 #: classes/Gems/Snippets/Import/FileImportSnippet.php:64
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:771
 #: classes/Gems/Tracker/Form/AskTokenForm.php:52
@@ -5587,12 +5630,6 @@ msgstr "Partner surname prefix"
 msgid "Partner last name"
 msgstr "Partner last name"
 
-#: classes/Gems/Model/RespondentModel.php:345
-#: classes/Gems/Model/RespondentRelationModel.php:46
-#: classes/Gems/Model/StaffModel.php:137 classes/Gems/Model/StaffModel.php:216
-msgid "Gender"
-msgstr "Gender"
-
 #: classes/Gems/Model/RespondentModel.php:354
 msgid "Contact information"
 msgstr "Contact information"
@@ -6224,19 +6261,19 @@ msgstr "We appreciate your cooperation very much."
 
 #: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:67
 #: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:71
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:77
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:93
 #, php-format
 msgid "Welcome %s,"
 msgstr "Welcome %s,"
 
 #: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:69
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:182
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:198
 #, php-format
 msgid "We kindly ask you to answer a survey about %s."
 msgstr "We kindly ask you to answer a survey about %s."
 
 #: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:77
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:186
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:202
 #, php-format
 msgid "Thank you for answering the \"%s\" survey."
 msgstr "Thank you for answering the \"%s\" survey."
@@ -6265,11 +6302,16 @@ msgstr "Thank you for answering all open surveys."
 msgid "There are no surveys to show for this token."
 msgstr "There are no surveys to show for this token."
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:65
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:77
+#: classes/Gems/User/TwoFactor/GoogleAuthenticator.php:193
+msgid "or"
+msgstr "or"
+
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:81
 msgid "Send me an email to continue later"
 msgstr "Send me an email to continue later"
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:121
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:137
 msgid ""
 "An email with information to continue later was sent to your registered "
 "email address."
@@ -6277,7 +6319,7 @@ msgstr ""
 "An email with information to continue later was sent to your registered "
 "email address."
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:123
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:139
 msgid ""
 "An email with information to continue later was already sent to your "
 "registered email address today."
@@ -6285,7 +6327,7 @@ msgstr ""
 "An email with information to continue later was already sent to your "
 "registered email address today."
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:126
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:142
 msgid ""
 "Delivery can take a while. If you do not receive an email please check your "
 "spam-box."
@@ -6293,16 +6335,16 @@ msgstr ""
 "Delivery can take a while. If you do not receive an email please check your "
 "spam-box."
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:187
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:203
 msgid "Please click the button below to answer the next survey."
 msgstr "Please click the button below to answer the next survey."
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:192
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:208
 #, php-format
 msgid "Please click the button below to answer the survey for token %s."
 msgstr "Please click the button below to answer the survey for token %s."
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:196
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:212
 #, php-format
 msgid ""
 "Wait one second to open the survey automatically or click on Cancel to stop."
@@ -6313,7 +6355,7 @@ msgstr[0] ""
 msgstr[1] ""
 "Wait %d seconds to open the survey automatically or click on Cancel to stop."
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:220
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:236
 #, php-format
 msgid ""
 "After this survey there is one other survey we would like you to answer."
@@ -9620,10 +9662,6 @@ msgstr "Scan this QR Code"
 #: classes/Gems/User/TwoFactor/GoogleAuthenticator.php:187
 msgid "Install the Google Authenticator app on your phone and scan this code."
 msgstr "Install the Google Authenticator app on your phone and scan this code."
-
-#: classes/Gems/User/TwoFactor/GoogleAuthenticator.php:193
-msgid "or"
-msgstr "or"
 
 #: classes/Gems/User/TwoFactor/GoogleAuthenticator.php:197
 msgid "Enter new authenticator code"
