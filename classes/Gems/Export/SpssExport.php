@@ -69,9 +69,10 @@ class SpssExport extends ExportAbstract
         return 'SPSS Export';
     }
 
-    public function addFooter($filename)
+    public function addFooter($filename, $modelId = null)
     {
-        parent::addFooter($filename);
+        parent::addFooter($filename, $modelId);
+        
         if ($model = $this->getModel()) {
             $this->addSpssFile($filename);
         }
@@ -139,10 +140,10 @@ class SpssExport extends ExportAbstract
 
         $this->files[$spsFileName] = $tmpFileName;
         if ($this->batch) {
-                $this->batch->setSessionVariable('files', $this->files);
-            } else {
-                $this->_session->files = $this->files;
-            }
+            $this->batch->setSessionVariable('files', $this->files);
+        } else {
+            $this->_session->files = $this->files;
+        }
         $this->addHeader($tmpFileName);
         $file = fopen($tmpFileName, 'a');
 

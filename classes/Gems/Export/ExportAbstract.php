@@ -174,10 +174,10 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
             } while ($currentRow < $totalRows);
 
             if ($this->batch) {
-                $this->batch->addTask('Export_ExportCommand', $data['type'], 'addFooter', $this->tempFilename . $this->fileExtension);
+                $this->batch->addTask('Export_ExportCommand', $data['type'], 'addFooter', $this->tempFilename . $this->fileExtension, $modelId);
                 $this->batch->setSessionVariable('files', $this->files);
             } else {
-                $this->addFooter($this->tempFilename . $this->fileExtension);                
+                $this->addFooter($this->tempFilename . $this->fileExtension, $modelId);
                 $this->_session->files = $this->files;
             }
         }
@@ -261,7 +261,9 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
      * Add a footer to a specific file
      * @param string $filename The temporary filename while the file is being written
      */
-    public function addFooter($filename) {}
+    public function addFooter($filename, $modelId = null) {
+        $this->modelId = $modelId;
+    }
 
     /**
      * Clean a proposed filename up so it can be used correctly as a filename

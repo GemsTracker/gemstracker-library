@@ -53,9 +53,9 @@ class RExport extends ExportAbstract
         return 'R Export';
     }
 
-    public function addFooter($filename)
+    public function addFooter($filename, $modelId = null)
     {
-        parent::addFooter($filename);
+        parent::addFooter($filename, $modelId);
         if ($model = $this->getModel()) {
             $this->addSyntaxFile($filename);            
         }

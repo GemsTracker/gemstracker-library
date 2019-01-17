@@ -204,8 +204,10 @@ class StreamingExcelExport extends ExportAbstract
      * Add a footer to a specific file
      * @param string $filename The temporary filename while the file is being written
      */
-    public function addFooter($filename)
+    public function addFooter($filename, $modelId = null)
     {
+        parent::addFooter($filename, $modelId);
+        
         $this->model = $this->getModel();
         $writer = WriterFactory::create(Type::XLSX);
         $writer->openToFile($filename);

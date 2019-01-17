@@ -81,7 +81,7 @@ class StreamingStataExport extends ExportAbstract
                 $this->batch->addTask('Export_ExportCommand', $data['type'], 'addFooter', $this->tempFilename . $this->fileExtension, $modelId);
                 $this->batch->setSessionVariable('files', $this->files);
             } else {
-                $this->addFooter($this->tempFilename . $this->fileExtension);
+                $this->addFooter($this->tempFilename . $this->fileExtension, $modelId);
                 $this->_session        = new \Zend_Session_Namespace(__CLASS__);
                 $this->_session->files = $this->files;
             }
@@ -311,7 +311,7 @@ class StreamingStataExport extends ExportAbstract
      * Add a footer to a specific file
      * @param string $filename The temporary filename while the file is being written
      */
-    public function addFooter($filename, $modelId=null)
+    public function addFooter($filename, $modelId = null)
     {   
         $tempFilename = str_replace($this->fileExtension, '', $filename);
         $this->model = $this->getModel();
