@@ -51,7 +51,6 @@
         "ext-gd": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
-        "ext-mcrypt": "*",
         "ext-mysqli": "*",
         "ext-soap": "*",
         "ext-xmlreader": "*",
