@@ -153,7 +153,7 @@ class GenderCondition extends RoundConditionAbstract
             if (!$survey->isTakenByStaff()) {
                 // For patient or relation
                 $relationField = isset($context['gro_id_relationfield']) ? $context['gro_id_relationfield'] : -1;
-                if ($this->_data['gcon_condition_text1'] === 'r' && $relationField === -1) {
+                if ($this->_data['gcon_condition_text1'] === 'r' && $relationField <= 0) {
                     return true;
                 }
                 
