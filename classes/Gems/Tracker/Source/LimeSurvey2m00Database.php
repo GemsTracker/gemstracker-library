@@ -122,4 +122,42 @@ class Gems_Tracker_Source_LimeSurvey2m00Database extends \Gems_Tracker_Source_Li
         }
         return $start . 'survey/index/sid/' . $sourceSurveyId . '/token/' . $tokenId . $langUrl . '/newtest/Y';
     }
+
+    /**
+     * Get the table structure of a survey table
+     *
+     * @param $sourceSurveyId int Limesurvey survey ID
+     * @return array List of table structure
+     */
+    public function getSurveyTableStructure($sourceSurveyId)
+    {
+        $tableStructure = $this->_getFieldMap($sourceSurveyId)->getSurveyTableStructure();
+
+        return $tableStructure;
+    }
+
+    /**
+     * Get the table structure of a survey token table
+     *
+     * @param $sourceSurveyId int Limesurvey survey ID
+     * @return array List of table structure of survey token table
+     */
+    public function getTokenTableStructure($sourceSurveyId)
+    {
+        $tableStructure = $this->_getFieldMap($sourceSurveyId)->getTokenTableStructure();
+
+        return $tableStructure;
+    }
+
+    /**
+     * Execute a Database query on the limesurvey Database
+     *
+     * @param $sourceSurveyId int Limesurvey survey ID
+     * @param $sql mixed SQL query to perform on the limesurvey database
+     * @param array $bindValues optional bind values for the Query
+     */
+    public function lsDbQuery($sourceSurveyId, $sql, $bindValues=array())
+    {
+        $this->_getFieldMap($sourceSurveyId)->lsDbQuery($sql, $bindValues);
+    }
 }

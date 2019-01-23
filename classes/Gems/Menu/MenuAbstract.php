@@ -798,6 +798,8 @@ abstract class Gems_Menu_MenuAbstract
         $page->addAction($this->_('Check all is answered'), 'pr.survey-maintenance.check-all', 'check-all');
         $page->addAction($this->_('Import answers'), 'pr.survey-maintenance.answer-import', 'answer-imports');
 
+        $page->addPage($this->_('Update to new survey'), 'pr.survey-maintenance', 'update-survey', 'index');
+
         // TRACK MAINTENANCE CONTROLLER
         $page = $setup->addPage($this->_('Tracks'), 'pr.track-maintenance', 'track-maintenance', 'index');
         $page->addAutofilterAction();

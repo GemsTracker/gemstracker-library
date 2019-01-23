@@ -854,6 +854,10 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             }
             $result[$name] = $tmpres;
 
+            if (isset($field['sgq'])) {
+                $result[$name]['id'] = $field['sgq'];
+            }
+
             $oldfld = $field;
         }
         // \MUtil_Echo::track($result);
