@@ -607,6 +607,30 @@ class Gems_Util_DbLookup extends UtilAbstract
 
         return $this->db->fetchPairs($sql);
     }
+    
+    /**
+     * Returns an array with key => value pairs containing all surveys
+     * (for a specific organization). Includes surveyor_id
+     *
+     * @param string $organizationId
+     * @return array
+     */
+    public function getSurveysWithSid($organizationId = null)
+    {
+        $where = "";
+
+        if ($organizationId !== null) {
+            $where = "AND EXISTS (SELECT 1 FROM gems__rounds
+                INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
+                WHERE gro_id_survey = gsu_id_survey AND
+                gtr_organizations LIKE '%|" . (int) $organizationId . "|%')";
+        }
+
+        $sql = "SELECT gsu_id_survey, concat_ws(' - ', gsu_surveyor_id, gsu_survey_name) FROM gems__surveys WHERE gsu_active = 1 " .
+            $where . " ORDER BY gsu_survey_name ASC";
+
+        return $this->db->fetchPairs($sql);
+    }
 
     /**
      * Get all surveys that can be exported

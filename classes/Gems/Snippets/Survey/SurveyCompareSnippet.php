@@ -2,13 +2,14 @@
 
 namespace Gems\Snippets\Survey;
 
-class SurveyCompareSnippet extends \MUtil_Snippets_SnippetAbstract
+class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract
 {
-
+    
     /**
      * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
+    
     /**
      * @var \Gems_Loader
      */
@@ -18,6 +19,12 @@ class SurveyCompareSnippet extends \MUtil_Snippets_SnippetAbstract
      * @var \Zend_Locale
      */
     public $locale;
+    
+    /**
+     *
+     * @var \MUtil_Model
+     */
+    protected $model;
 
     /**
      * @var \Zend_Controller_Request_Abstract
@@ -48,6 +55,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_SnippetAbstract
      * @var int Id of the tartget Survey
      */
     protected $targetSurveyId;
+    
     /**
      * @var \Gems_Util
      */
@@ -78,29 +86,26 @@ class SurveyCompareSnippet extends \MUtil_Snippets_SnippetAbstract
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
-        if ($post = $this->request->getPost()) {
-            $this->processForm($post);
-        }
-
+        $form = parent::getHtmlOutput($view);
+        
         $html = \MUtil_Html::create()->div(['id' => 'survey-compare']);
 
-        if (isset($post['step'])
-            && isset($post['source_survey']) && $post['source_survey'] == $this->sourceSurveyId
-            && isset($post['target_survey']) && $post['target_survey'] == $this->targetSurveyId) {
+        $html->append($form);
+        
+        switch ($this->currentStep) {
+            
+            case 3:
+                $html->append($this->getSurveyResults($this->formData));
+                break;
+            
+            case 4:
+                $html->append($this->runUpdates($this->formData));
+                break;
 
-            if ($post['step'] == 'update') {
-                $html->append($this->getSurveyCompareTable($post));
-            }
-            if ($post['step'] == 'submit') {
-                $html->append($this->getSurveyResults($post));
-            }
-            if ($post['step'] == 'confirmed') {
-                $html->append($this->runUpdates($post));
-            }
-        } else {
-            $html->append($this->getSurveyCompareTable($post));
+            default:
+                break;
         }
-
+        
         return $html;
     }
 
@@ -235,20 +240,19 @@ class SurveyCompareSnippet extends \MUtil_Snippets_SnippetAbstract
         return $table;
     }
 
-
-
     /**
      * Get the complete comparison table
      *
      * @return \MUtil_Html Form nodes
      */
-    public function getSurveyCompareTable($post)
+    public function getSurveyCompareTable($bridge)
     {
-        $form = \MUtil_Html::create()->form(['method' => 'POST']);
+        $post = $this->formData;
+        
+        $element = $bridge->getForm()->createElement('html', 'table');
+        $table = $element->table(['class' => 'browser table']);
 
-        \MUtil_Echo::track($post);
-
-        $table = $form->table(['class' => 'browser table']);
+        $bridge->addElement($element);
 
         $table->caption($this->getTitle());
 
@@ -266,8 +270,6 @@ class SurveyCompareSnippet extends \MUtil_Snippets_SnippetAbstract
 
         $tableBody = $table->tbody();
 
-        $this->addSurveySelectForm($tableBody, $post);
-
         if ($this->sourceSurveyId && $this->targetSurveyId) {
             $row = $tableBody->tr();
             $row->td($this->_('Usage'));
@@ -275,13 +277,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_SnippetAbstract
             $row->td($this->getSurveyStatistics($this->targetSurveyId));
 
             $this->addSurveyCompareForm($tableBody, $post);
-
-            $form->input(['name' => 'source_survey', 'type' => 'hidden', 'value' => $this->sourceSurveyId]);
-            $form->input(['name' => 'target_survey', 'type' => 'hidden', 'value' => $this->targetSurveyId]);
-            $tableBody->tr()->td(['colspan' => 3])->button(['type' => 'submit', 'name' => 'step', 'value' => 'submit'])->append($this->_('Next'));
         }
-
-        return $form;
     }
 
     /**
@@ -397,8 +393,6 @@ class SurveyCompareSnippet extends \MUtil_Snippets_SnippetAbstract
 
         $comments = $this->getComments();
 
-        $updateOptions = $this->getUpdateOptionsForm($post);
-
         $table = \MUtil_Html::create()->table(['class' => 'browser table']);
         $header = $table->thead()->tr();
         $header->th($surveys[$this->sourceSurveyId]);
@@ -417,9 +411,6 @@ class SurveyCompareSnippet extends \MUtil_Snippets_SnippetAbstract
             $tableBody->tr()->th($this->_('Comments'), ['colspan' => 2]);
             $tableBody->tr()->td($comments, ['colspan' => 2]);
         }
-
-        $tableBody->tr()->th($this->_('Options'), ['colspan' => 2]);
-        $tableBody->tr()->th($updateOptions, ['colspan' => 2]);
 
         $tableBody->tr()->th($this->_('Survey Query'), ['colspan' => 2]);
         $tableBody->tr()->td(['colspan' => 2])->code()->pre($surveyQuery);
@@ -725,7 +716,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_SnippetAbstract
         if (!$this->surveys) {
             $dbLookup = $this->util->getDbLookup();
 
-            $this->surveys = $dbLookup->getSurveys();
+            $this->surveys = $dbLookup->getSurveysWithSid();
         }
 
         return $this->surveys;
@@ -754,94 +745,6 @@ class SurveyCompareSnippet extends \MUtil_Snippets_SnippetAbstract
         $structure = $source->getTokenTableStructure($survey->getSourceSurveyId());
 
         return $structure;
-    }
-
-    /**
-     * Creates a form with options which queries to run on the database
-     *
-     * @param $post array List of POST data
-     * @return \Gems_Form Form with options
-     */
-    public function getUpdateOptionsForm($post)
-    {
-        $form = new \Gems_Form(['class' => 'form-horizontal']);
-
-        $elements['trackReplace'] = $form->createElement('checkbox', 'track_replace',
-            [
-                'label' => $this->_('Replace in tracks'),
-                'description' => $this->_('Replace all occurances of old survey in all tracks with the new survey'),
-            ]
-        );
-
-        $elements['surveyQuery'] = $form->createElement('checkbox', 'survey_query',
-            [
-                'label' => $this->_('Copy survey answers'),
-                'description' => $this->_('Copy all survey answers into the new survey in Limesurvey'),
-            ]
-        );
-
-        $elements['tokenQuery'] = $form->createElement('checkbox', 'token_query',
-            [
-                'label' => $this->_('Copy tokens'),
-                'description' => $this->_('Copy all tokens in Limesurvey to new survey'),
-            ]
-        );
-
-        $elements['tokenUpdate'] = $form->createElement('checkbox', 'token_update',
-            [
-                'label' => $this->_('Update tokens'),
-                'description' => $this->_('Update all existing gemstracker tokens to point to the new survey'),
-            ]
-        );
-
-        $elements['submit'] = $form->createElement('submit', $this->_('Run queries'));
-
-        $elements['step'] = $form->createElement('hidden', 'step',
-            [
-                'value' => 'confirmed',
-            ]
-        );
-
-        $elements['sourceSurvey'] = $form->createElement('hidden', 'source_survey',
-            [
-                'value' => $this->sourceSurveyId,
-            ]
-        );
-
-        $elements['targetSurvey'] = $form->createElement('hidden', 'target_survey',
-            [
-                'value' => $this->targetSurveyId,
-            ]
-        );
-
-        foreach($post['target'] as $targetQuestion=>$sourceQuestion) {
-            $elements[$targetQuestion] = $form->createElement('hidden', (string)$targetQuestion,
-                [
-                    'value' => $sourceQuestion,
-                ]
-            );
-            $elements[$targetQuestion]->setBelongsTo('target');
-        }
-
-
-        $form->addElements($elements);
-
-        return $form;
-    }
-
-    /**
-     * process the form after a reload
-     *
-     * @param $post array POST Request data
-     */
-    protected function processForm($post)
-    {
-        if (isset($post['source_survey'])) {
-            $this->sourceSurveyId = $post['source_survey'];
-        }
-        if (isset($post['target_survey'])) {
-            $this->targetSurveyId = $post['target_survey'];
-        }
     }
 
     /**
@@ -1001,4 +904,205 @@ class SurveyCompareSnippet extends \MUtil_Snippets_SnippetAbstract
     {
         return str_replace([', ', '(SELECT ', ' FROM '], [", \n", "\n(SELECT \n", "\n FROM "], $sql);
     }
+
+    /**
+     * Add the elements from the model to the bridge for the current step
+     *
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_ModelAbstract $model
+     * @param int $step The current step
+     */
+    protected function addStepElementsFor(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model, $step)
+    {
+        $this->displayHeader(
+                $bridge,
+                sprintf($this->_('Survey replace. Step %d of %d.'), $step, $this->getStepCount()),
+                'h1');        
+
+        switch ($step) {
+            case 0:
+            case 1:
+                $this->addStep1($bridge, $model);
+                break;
+
+            case 2:
+                $this->addStep2($bridge, $model);
+                break;
+
+            case 3:
+                $this->addStep3($bridge, $model);
+                break;
+
+            default:
+                $this->addStep4($bridge, $model);
+                break;
+
+        }
+        
+        return;
+    }
+    
+    /**
+     * Add the elements from the model to the bridge for the current step
+     *
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_ModelAbstract $model
+     */
+    protected function addStep1(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
+    {
+        $model->set('source_survey', 'elementClass', 'Select');
+        $model->set('target_survey', 'elementClass', 'Select');
+        $this->addItems($bridge, 'source_survey', 'target_survey');
+    }
+    
+    /**
+     * Add the elements from the model to the bridge for the current step
+     *
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_ModelAbstract $model
+     */
+    protected function addStep2(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
+    {
+        $model->set('source_survey', 'elementClass', 'Exhibitor');
+        $model->set('target_survey', 'elementClass', 'Exhibitor');
+        $this->addItems($bridge, 'source_survey', 'target_survey');
+        $this->addItems($bridge, 'track_replace', 'token_update', 'copy_answers');
+        $element = $bridge->getForm()->createElement('html', 'table');
+        $bridge->addElement($element);
+        
+        $table = $element->table(['class' => 'browser table']);
+        $table->caption($this->getTitle());
+
+        $headers = [
+            $this->_('Question code'),
+            $this->_('Source Survey'),
+            $this->_('Target Survey'),
+        ];
+
+        $tableHeader = $table->thead()->tr();
+
+        foreach($headers as $label) {
+            $tableHeader->th($label);
+        }
+
+        $tableBody = $table->tbody();
+
+        if ($this->sourceSurveyId && $this->targetSurveyId) {
+            $row = $tableBody->tr();
+            $row->td($this->_('Usage'));
+            $row->td($this->getSurveyStatistics($this->sourceSurveyId));
+            $row->td($this->getSurveyStatistics($this->targetSurveyId));
+
+            $this->addSurveyCompareForm($tableBody, $this->formData);
+        }
+    }
+    
+    /**
+     * Add the elements from the model to the bridge for the current step
+     *
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_ModelAbstract $model
+     */
+    protected function addStep3(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
+    {
+        //$this->_form->append($this->getSurveyCompareTable());
+        //$this->addItems($bridge, 'target_survey', 'source_survey');
+    }
+    
+    /**
+     * Add the elements from the model to the bridge for the current step
+     *
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_ModelAbstract $model
+     */
+    protected function addStep4(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
+    {
+        //$this->_form->append($this->getSurveyCompareTable());
+        //$this->addItems($bridge, 'target_survey', 'source_survey');
+    }
+
+    protected function createModel()
+    {
+        if (! $this->model instanceof \MUtil_Model_ModelAbstract) {
+            // $model = new \MUtil_Model_TableModel
+            $model = new \MUtil_Model_SessionModel('updatesurvey');
+            
+            $surveys = $this->surveys;
+
+            $empty = $this->util->getTranslated()->getEmptyDropdownArray();
+            $surveyOptions = $empty + $surveys;
+
+            $model->set('source_survey', 'label', $this->_('Source Survey'), 'multiOptions', $surveyOptions, 'required', true);
+            $validator = new \MUtil_Validate_NotEqualTo(['source_survey'], ['source_survey' => $this->_('Source and target survey can not be the same')]);
+            $model->set('target_survey', 'label', $this->_('Target Survey'), 'multiOptions', $surveyOptions, 'required', true, 'validator', $validator);
+            
+            $model->set('track_replace', 'label', $this->_('Replace in track definitions'), 'description', $this->_('Replace all occurances of old survey in all tracks with the new survey'), 
+                    'elementClass', 'checkbox', 'default', 1);
+            
+            $model->set('token_update', 'label', $this->_('Replace in existing tracks'), 'description', $this->_('Update all existing gemstracker tokens to point to the new survey'),
+                    'elementClass', 'checkbox', 'default', 0);
+            
+            // survey_query, token_query
+            $model->set('copy_answers', 'label', $this->_('Copy survey answers'), 'description', $this->_('Copy all survey answers into the new survey in Limesurvey'),
+                    'elementClass', 'checkbox', 'default', 0);
+
+            // Storage for local copy of the file, kept through process
+            $model->set('import_id');
+
+            $this->model = $model;
+        }
+
+        return $this->model;
+    }
+
+    protected function getStepCount()
+    {
+        return 4;        
+    }
+    
+    /**
+     * Hook that loads the form data from $_POST or the model
+     *
+     * Or from whatever other source you specify here.
+     */
+    protected function loadFormData()
+    {
+        if ($this->request->isPost()) {
+            $this->formData = $this->request->getPost() + $this->formData;
+        } else {
+            foreach ($this->model->getColNames('default') as $name) {
+                if (!(isset($this->formData[$name]) && $this->formData[$name])) {
+                    $this->formData[$name] = $this->model->get($name, 'default');
+                }
+            }
+        }
+        if (! (isset($this->formData['import_id']) && $this->formData['import_id'])) {
+            $this->formData['import_id'] = mt_rand(10000,99999) . time();
+        }
+        
+        if (array_key_exists('source_survey', $this->formData) && $this->formData['source_survey']) {
+            $this->sourceSurveyId = $this->formData['source_survey'];
+        }
+        if (array_key_exists('target_survey', $this->formData) && $this->formData['target_survey']) {
+            $this->targetSurveyId = $this->formData['target_survey'];
+        }
+        
+        $this->_session = new \Zend_Session_Namespace(__CLASS__ . '-' . $this->formData['import_id']);
+    }
+    
+    /**
+     * Display a header
+     *
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param mixed $header Header content
+     * @param string $tagName
+     */
+    protected function displayHeader(\MUtil_Model_Bridge_FormBridgeInterface $bridge, $header, $tagName = 'h2')
+    {
+        $element = $bridge->getForm()->createElement('html', 'step_header');
+        $element->$tagName($header);
+
+        $bridge->addElement($element);
+    }
+
 }
