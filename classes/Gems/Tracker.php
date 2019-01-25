@@ -166,8 +166,9 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
      * @param int $userId
      * @return int
      */
-    private function _checkUserId($userId = null) {
-        if (empty($userId)) {
+    private function _checkUserId($userId = null)
+    {
+        if (empty($userId) && $this->currentUser instanceof \Gems_User_User) {
             $userId = $this->currentUser->getUserId();
             if (0 === $userId) {
                 $userId = null;
