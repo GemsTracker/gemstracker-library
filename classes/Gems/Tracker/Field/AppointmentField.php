@@ -318,7 +318,7 @@ class AppointmentField extends FieldAbstract
             $appointment = $this->loader->getAgenda()->getAppointment($value);
         }
         if ($appointment instanceof \Gems_Agenda_Appointment) {
-            if (! $this->menu instanceof \Gems_Mail) {
+            if (! $this->menu instanceof \Gems_Menu) {
                 $this->menu = $this->loader->getMenu();
             }
             $menuItem = $this->menu->findAllowedController('appointment', 'show');
