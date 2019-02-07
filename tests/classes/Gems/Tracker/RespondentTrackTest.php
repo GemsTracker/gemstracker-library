@@ -1,5 +1,4 @@
 <?php
-
 class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
 {
     /**
@@ -206,7 +205,7 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
 
         $this->assertArrayWithDateMatch($expected, $actual, '', 1, 0);
     }
-
+    
     /**
      * What happens with a field with a default value, when we create without providing data?
      */
@@ -223,7 +222,7 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
         $this->assertArrayWithDateMatch($expected, $actual, '', 1, 0);
         \MUtil_Batch_BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
     }
-
+    
     /**
      * Test if settings fields via code works
      */
@@ -242,7 +241,7 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
         $actual = $respondentTrack->setFieldData(array('code' => 'newvalue', 'datecode' => null));
         $this->assertArrayWithDateMatch($expected, $actual, '', 1, 0);
     }
-
+    
     /**
      * Test if settings fields via code works
      */
@@ -257,13 +256,13 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
         $actual = $respondentTrack->setFieldData(array('f__3' => 'newvalue', 'f__4' => null));
         $this->assertArrayWithDateMatch($expected, $actual, '', 1, 0);
     }
-
+    
     public function testGetCodeFields()
     {
         $respondentTrack = $this->loader->getTracker()->getRespondentTrack(1);
-
+        
         $actual = $respondentTrack->getCodeFields();
-
+        
         $date = new MUtil_Date('2010-10-08', 'yyyy-MM-dd');
         $expected = array(
             'code' => 'test',
@@ -271,5 +270,29 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
             'rel'  => 'Johnny Walker'
             );
         $this->assertEquals($expected, $actual);
+    }
+
+    public function testGetTrackCode()
+    {
+        $respondentTrack = $this->loader->getTracker()->getRespondentTrack(1);
+        $result = $respondentTrack->getCode();
+
+        $this->assertEquals('test', $result);
+    }
+
+    public function testGetTrackName()
+    {
+        $respondentTrack = $this->loader->getTracker()->getRespondentTrack(1);
+        $result = $respondentTrack->getTrackName();
+
+        $this->assertEquals('Test Track', $result);
+    }
+
+    public function testGetTrackActive()
+    {
+        $respondentTrack = $this->loader->getTracker()->getRespondentTrack(1);
+        $result = $respondentTrack->getTrackActive();
+
+        $this->assertEquals(true, $result);
     }
 }

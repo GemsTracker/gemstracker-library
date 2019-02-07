@@ -3,6 +3,8 @@ gems__tracks:
         gtr_id_track: '1'
         gtr_track_class: AnyStepEngine
         gtr_track_name: 'Test Track'
+        gtr_code: 'test'
+        gtr_active: 1
         gtr_date_start: '2000-01-01 00:00:00'
         gtr_changed_by: '1'
         gtr_created: '2012-09-07'
@@ -11,6 +13,8 @@ gems__tracks:
         gtr_id_track: '2'
         gtr_track_class: AnyStepEngine
         gtr_track_name: 'Test Track 2'
+        gtr_code: 'test'
+        gtr_active: 1
         gtr_date_start: '2000-01-01 00:00:00'
         gtr_changed_by: '1'
         gtr_created: '2012-09-07'

@@ -77,12 +77,6 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var array Raw track engine data, set in getCode()
-     */
-    protected $_trackData;
-
-    /**
-     *
      * @var \Gems_User_User
      */
     protected $currentUser;
@@ -238,6 +232,25 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
             $this->_rounds = array();
             foreach($rounds as $round) {
                 $this->_rounds[$round['gro_id_round']] = $round;
+            }
+        }
+    }
+
+    /**
+     * Makes sure the track data is part of the $this->_respTrackData
+     */
+    protected function _ensureTrackData()
+    {
+        if (! isset($this->_respTrackData['gtr_code'], $this->_respTrackData['gtr_name'])) {
+            $select = $this->db->select();
+            $select->from('gems__tracks')
+                ->where('gtr_id_track = ?', $this->_respTrackData['gr2t_id_track']);
+
+            if ($trackData = $this->db->fetchRow($select)) {
+                $this->_respTrackData = $this->_respTrackData + $trackData;
+            } else {
+                $trackId = $this->_respTrackId;
+                throw new \Gems_Exception("Track data missing for respondent track $trackId.");
             }
         }
     }
@@ -655,17 +668,11 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
      */
     public function getCode()
     {
-        if (null === $this->_trackData) {
-            $this->_trackData = $this->tracker->getTrackModel()->loadFirst(array(
-                'gtr_id_track' => $this->_respTrackData['gr2t_id_track'],
-                ));
+        if (!isset($this->_respTrackData['gtr_code'])) {
+            $this->_ensureTrackData();
         }
 
-        if (is_array($this->_trackData)) {
-            return $this->_trackData['gtr_code'];
-        } else {
-            return false;
-        }
+        return $this->_respTrackData['gtr_code'];
     }
 
     /**
@@ -1102,6 +1109,19 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
 
     /**
      *
+     * @return string Check if track is active
+     */
+    public function getTrackActive()
+    {
+        if (!isset($this->_respTrackData['gtr_active'])) {
+            $this->_ensureTrackData();
+        }
+
+        return (bool)$this->_respTrackData['gtr_active'];
+    }
+
+    /**
+     *
      * @return \Gems_Tracker_Engine_TrackEngineInterface
      */
     public function getTrackEngine()
@@ -1116,6 +1136,19 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     public function getTrackId()
     {
         return $this->_respTrackData['gr2t_id_track'];
+    }
+
+    /**
+     *
+     * @return string Name of the track
+     */
+    public function getTrackName()
+    {
+        if (!isset($this->_respTrackData['gtr_track_name'])) {
+            $this->_ensureTrackData();
+        }
+
+        return $this->_respTrackData['gtr_track_name'];
     }
 
     /**
