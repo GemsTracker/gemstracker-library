@@ -68,20 +68,6 @@ class TrackField extends FieldAbstract
     }
 
     /**
-     * Calculation the field info display for this type
-     *
-     * @param array $currentValue The current value
-     * @param array $fieldData The other values loaded so far
-     * @return mixed the new value
-     */
-    public function calculateFieldInfo($currentValue, array $fieldData)
-    {
-        if (! $currentValue) {
-            return $currentValue;
-        }
-    }
-
-    /**
      * Returns the changes to the model for this field that must be made in an array consisting of
      *
      * <code>
