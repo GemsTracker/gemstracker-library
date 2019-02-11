@@ -465,6 +465,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
         $output = array(
             'activity'    => $this->_('Activity'),
             'appointment' => $this->_('Appointment'),
+            'boolean'     => $this->_('Boolean'),
             'caretaker'   => $this->_('Caretaker'),
             'consent'     => $this->_('Consent'),
             'date'        => $this->_('Date'),
