@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-16 16:29+0100\n"
+"POT-Creation-Date: 2019-02-11 09:39+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -146,7 +146,7 @@ msgstr "Activity"
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:86
 #: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:100
 #: classes/Gems/Default/AgendaProcedureAction.php:116
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:475
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:476
 msgid "Procedure"
 msgstr "Procedure"
 
@@ -157,7 +157,7 @@ msgstr "Procedure"
 #: classes/Gems/Model/AppointmentModel.php:209
 #: classes/Gems/Model/AppointmentModel.php:262
 #: classes/Gems/Model/OrganizationModel.php:82
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:473
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:474
 msgid "Location"
 msgstr "Location"
 
@@ -719,7 +719,7 @@ msgstr "Patient"
 #: classes/Gems/Condition/Round/GenderCondition.php:70
 #: classes/Gems/Condition/Round/GenderCondition.php:110
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:174
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:476
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:477
 #: classes/Gems/Util/Translated.php:291
 msgid "Relation"
 msgstr "Relation"
@@ -1447,7 +1447,7 @@ msgstr[1] "episodes of care"
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:773
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:862
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:317
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:479
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:480
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:131
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:167
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:274
@@ -2330,7 +2330,7 @@ msgstr[1] "track fields"
 #: classes/Gems/Default/FieldReportAction.php:142
 #: classes/Gems/Default/ReceptionAction.php:87 classes/Gems/Menu.php:396
 #: classes/Gems/Menu/MenuAbstract.php:678
-#: classes/Gems/Menu/MenuAbstract.php:802
+#: classes/Gems/Menu/MenuAbstract.php:804
 #: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:261
 #: classes/Gems/Tracker.php:697
 msgid "Tracks"
@@ -3254,6 +3254,8 @@ msgstr "By"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:123
 #: classes/Gems/Default/SurveyMaintenanceAction.php:470
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:160
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:652
 msgid "Usage"
 msgstr "Usage"
 
@@ -3740,6 +3742,7 @@ msgstr "Open"
 #: classes/Gems/Default/SummaryAction.php:129
 #: classes/Gems/Snippets/Respondent/RespondentOverviewSnippet.php:147
 #: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:638
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:757
 msgid "Summary"
 msgstr "Summary"
 
@@ -3748,6 +3751,7 @@ msgid "incalculable"
 msgstr "incalculable"
 
 #: classes/Gems/Default/SurveyMaintenanceAction.php:192
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:546
 #, php-format
 msgid "Answered surveys: %d."
 msgstr "Answered surveys: %d."
@@ -4162,7 +4166,7 @@ msgid "track per organization"
 msgstr "track per organization"
 
 #: classes/Gems/Default/TrackRoundsAction.php:202
-#: classes/Gems/Menu/MenuAbstract.php:836
+#: classes/Gems/Menu/MenuAbstract.php:838
 #: classes/Gems/Model/ConditionModel.php:111
 msgid "Rounds"
 msgstr "Rounds"
@@ -4388,7 +4392,7 @@ msgstr "Respondent ID"
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:387
 #: classes/Gems/Model/RespondentModel.php:289
 #: classes/Gems/Model/RespondentModel.php:383
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:469
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:470
 msgid "Consent"
 msgstr "Consent"
 
@@ -4506,7 +4510,7 @@ msgid "Output format"
 msgstr "Output format"
 
 #: classes/Gems/Export/RespondentExport.php:474 classes/Gems/Menu.php:772
-#: classes/Gems/Menu/MenuAbstract.php:813 classes/Gems/Menu/SubMenuItem.php:493
+#: classes/Gems/Menu/MenuAbstract.php:815 classes/Gems/Menu/SubMenuItem.php:493
 #: classes/Gems/Snippets/Export/ExportFormSnippet.php:59
 #: classes/Gems/Snippets/Export/MultiSurveysSearchFormSnippet.php:74
 msgid "Export"
@@ -4572,7 +4576,7 @@ msgid "Remaining time: {remaining} - {msg}"
 msgstr "Remaining time: {remaining} - {msg}"
 
 #: classes/Gems/Mail/MailElements.php:144
-#: classes/Gems/Menu/MenuAbstract.php:823
+#: classes/Gems/Menu/MenuAbstract.php:825
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:152
 #: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:106
 msgid "Fields"
@@ -4771,12 +4775,12 @@ msgid "Check answers"
 msgstr "Check answers"
 
 #: classes/Gems/Menu.php:381 classes/Gems/Menu.php:443
-#: classes/Gems/Menu/MenuAbstract.php:815
+#: classes/Gems/Menu/MenuAbstract.php:817
 msgid "Check rounds"
 msgstr "Check rounds"
 
 #: classes/Gems/Menu.php:387 classes/Gems/Menu.php:448
-#: classes/Gems/Menu/MenuAbstract.php:818
+#: classes/Gems/Menu/MenuAbstract.php:820
 msgid "Recalculate fields"
 msgstr "Recalculate fields"
 
@@ -4814,11 +4818,11 @@ msgstr "Export track"
 msgid "Check all answers"
 msgstr "Check all answers"
 
-#: classes/Gems/Menu.php:467 classes/Gems/Menu/MenuAbstract.php:854
+#: classes/Gems/Menu.php:467 classes/Gems/Menu/MenuAbstract.php:856
 msgid "Check all rounds"
 msgstr "Check all rounds"
 
-#: classes/Gems/Menu.php:470 classes/Gems/Menu/MenuAbstract.php:855
+#: classes/Gems/Menu.php:470 classes/Gems/Menu/MenuAbstract.php:857
 msgid "Recalculate all fields"
 msgstr "Recalculate all fields"
 
@@ -5193,15 +5197,19 @@ msgstr "Import answers"
 msgid "PDF"
 msgstr "PDF"
 
-#: classes/Gems/Menu/MenuAbstract.php:810
+#: classes/Gems/Menu/MenuAbstract.php:801
+msgid "Update to new survey"
+msgstr "Update to new survey"
+
+#: classes/Gems/Menu/MenuAbstract.php:812
 msgid "Copy"
 msgstr "Copy"
 
-#: classes/Gems/Menu/MenuAbstract.php:848
+#: classes/Gems/Menu/MenuAbstract.php:850
 msgid "Sort rounds"
 msgstr "Sort rounds"
 
-#: classes/Gems/Menu/MenuAbstract.php:850
+#: classes/Gems/Menu/MenuAbstract.php:852
 msgid "Tracks per org"
 msgstr "Tracks per org"
 
@@ -5377,7 +5385,7 @@ msgstr "(no patient)"
 #: classes/Gems/Model/LogModel.php:102
 #: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:77
 #: classes/Gems/Snippets/Survey/Display/BarChartSnippet.php:202
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:470
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:471
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:468
 msgid "Date"
 msgstr "Date"
@@ -5640,6 +5648,7 @@ msgstr "Treatment"
 
 #: classes/Gems/Model/RespondentModel.php:362
 #: classes/Gems/Model/RespondentRelationModel.php:56
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:762
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:312
 msgid "Comments"
 msgstr "Comments"
@@ -7219,6 +7228,124 @@ msgstr "No data present"
 msgid "Print"
 msgstr "Print"
 
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:77
+msgid "Survey replace"
+msgstr "Survey replace"
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:140
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:637
+#: classes/Gems/Snippets/Survey/SurveyQuestionsSnippet.php:133
+msgid "Question code"
+msgstr "Question code"
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:141
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:386
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:638
+msgid "Source Survey"
+msgstr "Source Survey"
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:142
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:388
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:639
+msgid "Target Survey"
+msgstr "Target Survey"
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:226
+msgid "Question type is not the same. Check compatibility!"
+msgstr "Question type is not the same. Check compatibility!"
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:228
+msgid "Question could not be found in source. Is this a new question?"
+msgstr "Question could not be found in source. Is this a new question?"
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:366
+#, php-format
+msgid "Used %d time in %s track."
+msgid_plural "Used %d times in %s track."
+msgstr[0] "Used %d time in %s track."
+msgstr[1] "Used %d times in %s track."
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:372
+msgid "Not used in any track."
+msgstr "Not used in any track."
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:387
+msgid "Source and target survey can not be the same"
+msgstr "Source and target survey can not be the same"
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:390
+msgid "Replace in track definitions"
+msgstr "Replace in track definitions"
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:390
+msgid "Replace all occurances of old survey in all tracks with the new survey"
+msgstr "Replace all occurances of old survey in all tracks with the new survey"
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:393
+msgid "Replace in existing tracks"
+msgstr "Replace in existing tracks"
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:393
+msgid "Update all existing gemstracker tokens to point to the new survey"
+msgstr "Update all existing gemstracker tokens to point to the new survey"
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:397
+msgid "Copy survey answers"
+msgstr "Copy survey answers"
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:397
+msgid "Copy all survey answers into the new survey"
+msgstr "Copy all survey answers into the new survey"
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:472
+#, php-format
+msgid "Target survey already has %d answers. Is this expected?"
+msgstr "Target survey already has %d answers. Is this expected?"
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:498
+#, php-format
+msgid "%d new questions"
+msgstr "%d new questions"
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:502
+#, php-format
+msgid "%d questions without warnings "
+msgstr "%d questions without warnings "
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:506
+#, php-format
+msgid "%d missing questions"
+msgstr "%d missing questions"
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:510
+#, php-format
+msgid "%d questions where the question type has changed"
+msgstr "%d questions where the question type has changed"
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:846
+msgid "Insert answers into a new version of a survey"
+msgstr "Insert answers into a new version of a survey"
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:935
+#, php-format
+msgid "All tracks have been updated to use '%s' instead of '%s'"
+msgstr "All tracks have been updated to use '%s' instead of '%s'"
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:944
+#, php-format
+msgid "All '%s' tokens in gemstracker have been updated to '%s'"
+msgstr "All '%s' tokens in gemstracker have been updated to '%s'"
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:953
+#, php-format
+msgid "All '%s' survey answers in limesurvey have been copied to '%s'"
+msgstr "All '%s' survey answers in limesurvey have been copied to '%s'"
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:960
+#, php-format
+msgid "All '%s' tokens in limesurvey have been copied to '%s'"
+msgstr "All '%s' tokens in limesurvey have been copied to '%s'"
+
 #: classes/Gems/Snippets/Survey/SurveyMaintenanceSearchSnippet.php:40
 msgid "(all groups)"
 msgstr "(all groups)"
@@ -7242,10 +7369,6 @@ msgstr "(every state)"
 #: classes/Gems/Snippets/Survey/SurveyMaintenanceSearchSnippet.php:58
 msgid "(any insertable)"
 msgstr "(any insertable)"
-
-#: classes/Gems/Snippets/Survey/SurveyQuestionsSnippet.php:133
-msgid "Question code"
-msgstr "Question code"
 
 #: classes/Gems/Snippets/Survey/SurveyQuestionsSnippet.php:137
 #: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:151
@@ -7434,6 +7557,7 @@ msgid "No token specified."
 msgstr "No token specified."
 
 #: classes/Gems/Snippets/Token/TokenTabsSnippet.php:67
+#: classes/Gems/Tracker/Model/Dependency/BooleanMaintenanceDependency.php:72
 #: classes/Gems/Tracker/Model/Dependency/DefaultTextDependency.php:72
 #: classes/Gems/Tracker/Model/Dependency/ValuesMaintenanceDependency.php:106
 msgid "Default"
@@ -7669,7 +7793,7 @@ msgstr "Survey insertion impossible: no insertable survey exists!"
 
 #: classes/Gems/Snippets/Tracker/InsertSurveySnippet.php:477
 #: classes/Gems/Tracker/Round.php:77
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:901
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:905
 #, php-format
 msgid "%s - %s"
 msgstr "%s - %s"
@@ -8597,6 +8721,29 @@ msgid ""
 msgstr ""
 "Any previous track must have an end date at least this many days in the past."
 
+#: classes/Gems/Tracker/Model/Dependency/BooleanMaintenanceDependency.php:64
+#: classes/Gems/Tracker/Model/Dependency/ValuesMaintenanceDependency.php:97
+msgid "Values"
+msgstr "Values"
+
+#: classes/Gems/Tracker/Model/Dependency/BooleanMaintenanceDependency.php:65
+#: classes/Gems/Tracker/Model/Dependency/ValuesMaintenanceDependency.php:98
+msgid "Separate multiple values with a vertical bar (|)"
+msgstr "Separate multiple values with a vertical bar (|)"
+
+#: classes/Gems/Tracker/Model/Dependency/BooleanMaintenanceDependency.php:66
+msgid ""
+"Leave empty for Yes|No. Add two values as replacement. Separate multiple "
+"values with a vertical bar (|)"
+msgstr ""
+"Leave empty for Yes|No. Add two values as replacement. Separate multiple "
+"values with a vertical bar (|)"
+
+#: classes/Gems/Tracker/Model/Dependency/BooleanMaintenanceDependency.php:73
+#: classes/Gems/Tracker/Model/Dependency/ValuesMaintenanceDependency.php:107
+msgid "Choose the default value"
+msgstr "Choose the default value"
+
 #: classes/Gems/Tracker/Model/Dependency/DefaultTextDependency.php:73
 msgid "Enter a default value"
 msgstr "Enter a default value"
@@ -8610,18 +8757,6 @@ msgstr "Calculate from"
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:291
 msgid "Automatically calculate this field using other fields"
 msgstr "Automatically calculate this field using other fields"
-
-#: classes/Gems/Tracker/Model/Dependency/ValuesMaintenanceDependency.php:97
-msgid "Values"
-msgstr "Values"
-
-#: classes/Gems/Tracker/Model/Dependency/ValuesMaintenanceDependency.php:98
-msgid "Separate multiple values with a vertical bar (|)"
-msgstr "Separate multiple values with a vertical bar (|)"
-
-#: classes/Gems/Tracker/Model/Dependency/ValuesMaintenanceDependency.php:107
-msgid "Choose the default value"
-msgstr "Choose the default value"
 
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:243
 msgid "Field code"
@@ -8682,36 +8817,40 @@ msgid "Add name to description"
 msgstr "Add name to description"
 
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:468
+msgid "Boolean"
+msgstr "Boolean"
+
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:469
 msgid "Caretaker"
 msgstr "Caretaker"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:471
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:472
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:483
 msgid "Free text"
 msgstr "Free text"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:472
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:473
 msgid "Long free text"
 msgstr "Long free text"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:474
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:475
 msgid "Moment in time"
 msgstr "Moment in time"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:477
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:478
 msgid "Select one"
 msgstr "Select one"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:478
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:479
 msgid "Select multiple"
 msgstr "Select multiple"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:581
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:582
 #, php-format
 msgid "Non-existing filter %s"
 msgstr "Non-existing filter %s"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:587
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:588
 #, php-format
 msgid "%d field"
 msgid_plural "%d fields"
@@ -8787,11 +8926,11 @@ msgstr "Before field update"
 msgid "After field update"
 msgstr "After field update"
 
-#: classes/Gems/Tracker/RespondentTrack.php:774
+#: classes/Gems/Tracker/RespondentTrack.php:781
 msgid "Track stopped"
 msgstr "Track stopped"
 
-#: classes/Gems/Tracker/RespondentTrack.php:777
+#: classes/Gems/Tracker/RespondentTrack.php:784
 msgid "Track completed"
 msgstr "Track completed"
 
@@ -9335,12 +9474,12 @@ msgstr "Free text (very long)"
 
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:726
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:833
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:887
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:891
 #, php-format
 msgid "%s: %s"
 msgstr "%s: %s"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:907
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:911
 #, php-format
 msgid "- %s"
 msgstr "- %s"
@@ -9775,11 +9914,11 @@ msgstr "Patient number %s not found."
 msgid "&laquo;system&raquo;"
 msgstr "&laquo;system&raquo;"
 
-#: classes/Gems/Util/DbLookup.php:627
+#: classes/Gems/Util/DbLookup.php:675
 msgid "inactive"
 msgstr "inactive"
 
-#: classes/Gems/Util/DbLookup.php:628
+#: classes/Gems/Util/DbLookup.php:676
 msgid "source inactive"
 msgstr "source inactive"
 
@@ -10636,6 +10775,9 @@ msgstr "An error occurred!"
 #: views/scripts/error/error.phtml:37
 msgid "Please contact system administration"
 msgstr "Please contact system administration"
+
+#~ msgid "Copy all survey answers into the new survey in Limesurvey"
+#~ msgstr "Copy all survey answers into the new survey in Limesurvey"
 
 #~| msgid "Round used"
 #~ msgid "Rounds use"

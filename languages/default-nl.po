@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-08 11:17+0100\n"
+"POT-Creation-Date: 2019-02-11 09:40+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 1.8.9\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
@@ -147,7 +147,7 @@ msgstr "Activiteit"
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:86
 #: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:100
 #: classes/Gems/Default/AgendaProcedureAction.php:116
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:475
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:476
 msgid "Procedure"
 msgstr "Procedure"
 
@@ -158,7 +158,7 @@ msgstr "Procedure"
 #: classes/Gems/Model/AppointmentModel.php:209
 #: classes/Gems/Model/AppointmentModel.php:262
 #: classes/Gems/Model/OrganizationModel.php:82
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:473
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:474
 msgid "Location"
 msgstr "Locatie"
 
@@ -724,7 +724,7 @@ msgstr "Patiënt"
 #: classes/Gems/Condition/Round/GenderCondition.php:70
 #: classes/Gems/Condition/Round/GenderCondition.php:110
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:174
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:476
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:477
 #: classes/Gems/Util/Translated.php:291
 msgid "Relation"
 msgstr "Relatie"
@@ -1465,7 +1465,7 @@ msgstr[1] "behandelepisodes"
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:773
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:862
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:317
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:479
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:480
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:131
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:167
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:274
@@ -3281,8 +3281,8 @@ msgstr "Door"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:123
 #: classes/Gems/Default/SurveyMaintenanceAction.php:470
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:275
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:992
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:160
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:652
 msgid "Usage"
 msgstr "Gebruik"
 
@@ -3778,7 +3778,7 @@ msgstr "Open"
 #: classes/Gems/Default/SummaryAction.php:129
 #: classes/Gems/Snippets/Respondent/RespondentOverviewSnippet.php:147
 #: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:638
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:407
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:757
 msgid "Summary"
 msgstr "Samenvatting"
 
@@ -3787,7 +3787,7 @@ msgid "incalculable"
 msgstr "onberekenbaar"
 
 #: classes/Gems/Default/SurveyMaintenanceAction.php:192
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:570
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:546
 #, php-format
 msgid "Answered surveys: %d."
 msgstr "Beantwoorde vragenlijsten: %d."
@@ -4451,7 +4451,7 @@ msgstr "Respondent ID"
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:387
 #: classes/Gems/Model/RespondentModel.php:289
 #: classes/Gems/Model/RespondentModel.php:383
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:469
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:470
 msgid "Consent"
 msgstr "Toestemming"
 
@@ -5452,7 +5452,7 @@ msgstr "(geen patiënt)"
 #: classes/Gems/Model/LogModel.php:102
 #: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:77
 #: classes/Gems/Snippets/Survey/Display/BarChartSnippet.php:202
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:470
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:471
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:468
 msgid "Date"
 msgstr "Datum"
@@ -5716,7 +5716,7 @@ msgstr "Behandeling"
 
 #: classes/Gems/Model/RespondentModel.php:362
 #: classes/Gems/Model/RespondentRelationModel.php:56
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:411
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:762
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:312
 msgid "Comments"
 msgstr "Opmerkingen"
@@ -7302,149 +7302,127 @@ msgstr "Geen gegevens gevonden"
 msgid "Print"
 msgstr "Afdrukken"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:137
-msgid "Question type is not the same. Check compatibility!"
-msgstr "Vraag type is niet hetzelfde. Controleer of ze overdraagbaar zijn!"
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:77
+msgid "Survey replace"
+msgstr "Vragenlijst vervangen"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:139
-msgid "Question could not be found in source. Is this a new question?"
-msgstr "Vraag kan niet gevonden worden in bron. Is dit een nieuwe vraag?"
-
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:141
-msgid ""
-"Warning! Question not found in target survey. Data will be lost on transfer"
-msgstr ""
-"Waarschuwing! Vraag niet gevonden in bron vragenlijst. Data zal verloren "
-"gaan na kopiëeren"
-
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:178
-msgid "Compare"
-msgstr "Vergelijk"
-
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:225
-#, php-format
-msgid "%d new questions"
-msgstr "%d nieuwe vragen"
-
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:229
-#, php-format
-msgid "%d questions without warnings "
-msgstr "%d vragen zonder waarschuwing"
-
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:233
-#, php-format
-msgid "%d missing questions"
-msgstr "%d missende vragen"
-
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:237
-#, php-format
-msgid "%d questions where the question type has changed"
-msgstr "%d vragen waarbij het vraagtype is veranderd"
-
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:260
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:977
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:140
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:637
 #: classes/Gems/Snippets/Survey/SurveyQuestionsSnippet.php:133
 msgid "Question code"
 msgstr "Vraagcode"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:261
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:978
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:1035
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:141
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:386
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:638
 msgid "Source Survey"
 msgstr "Bron vragenlijst"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:262
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:979
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:1037
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:142
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:388
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:639
 msgid "Target Survey"
 msgstr "Doel vragenlijst"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:356
-#, php-format
-msgid "Target survey already has %d answers. Is this expected?"
-msgstr "Doel vragenlijst heeft al %d antwoorden. Klopt dit?"
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:226
+msgid "Question type is not the same. Check compatibility!"
+msgstr "Vraag type is niet hetzelfde. Controleer of ze overdraagbaar zijn!"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:415
-msgid "Survey Query"
-msgstr "Vragenlijst Query"
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:228
+msgid "Question could not be found in source. Is this a new question?"
+msgstr "Vraag kan niet gevonden worden in bron. Is dit een nieuwe vraag?"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:418
-msgid "Token Query"
-msgstr "Kenmerk Query"
-
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:593
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:366
 #, php-format
 msgid "Used %d time in %s track."
 msgid_plural "Used %d times in %s track."
 msgstr[0] "%d keer in %s traject gebruikt."
 msgstr[1] "%d keer in %s traject gebruikt."
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:600
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:372
 msgid "Not used in any track."
 msgstr "In geen enkel traject gebruikt."
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:730
-msgid "Insert answers into a new version of a survey"
-msgstr "Voeg antwoorden in een nieuwe versie van een vragenlijst toe."
-
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:787
-#, php-format
-msgid "All tracks have been updated to use '%s' instead of '%s'"
-msgstr "Alle trajecten zijn geupdate om '%s' te gebruiken in plaats van '%s'"
-
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:797
-#, php-format
-msgid "All '%s' survey answers in limesurvey have been copied to '%s'"
-msgstr ""
-"Alle '%s' vragenlijst antwoorden in limesurvey zijn gekopiëerd naar '%s'"
-
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:807
-#, php-format
-msgid "All '%s' tokens in limesurvey have been copied to '%s'"
-msgstr "Alle '%s' kenmerken in limesurvey zijn gekopiëerd naar '%s'"
-
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:817
-#, php-format
-msgid "All '%s' tokens in gemstracker have been updated to '%s'"
-msgstr "Alle '%s' kenmerken in gemstracker zijn aangepast naar '%s'"
-
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:919
-#, php-format
-msgid "Survey replace. Step %d of %d."
-msgstr "Vragenlijst vervangen. Stap %d van %d."
-
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:1036
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:387
 msgid "Source and target survey can not be the same"
 msgstr "Bron en doel vragenlijst kunnen niet hetzelfde zijn"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:1039
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:390
 msgid "Replace in track definitions"
 msgstr "Vervang in trajectdefinitie."
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:1039
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:390
 msgid "Replace all occurances of old survey in all tracks with the new survey"
 msgstr ""
-"Vervang overal de oude vragenlijst in alle trajecten met de nieuwe "
-"vragenlijst"
+"Vervang in alle trajecten de oude vragenlijst door de nieuwe vragenlijst"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:1042
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:393
 msgid "Replace in existing tracks"
 msgstr "Vervang in een bestaand traject"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:1042
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:393
 msgid "Update all existing gemstracker tokens to point to the new survey"
 msgstr ""
 "Pas alle bestaande gemstracker kenmerken aan om naar de nieuwe vragenlijst "
 "te wijzen."
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:1046
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:397
 msgid "Copy survey answers"
-msgstr "Kopiëer antwoorden op vragenlijsten"
+msgstr "Kopiëer antwoorden"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:1046
-msgid "Copy all survey answers into the new survey in Limesurvey"
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:397
+msgid "Copy all survey answers into the new survey"
+msgstr "Kopiëer alle beantwoorde vragenlijsten naar de nieuwe vragenlijst"
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:472
+#, php-format
+msgid "Target survey already has %d answers. Is this expected?"
+msgstr "Doel vragenlijst heeft al %d antwoorden. Klopt dit?"
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:498
+#, php-format
+msgid "%d new questions"
+msgstr "%d nieuwe vragen"
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:502
+#, php-format
+msgid "%d questions without warnings "
+msgstr "%d vragen zonder waarschuwing"
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:506
+#, php-format
+msgid "%d missing questions"
+msgstr "%d missende vragen"
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:510
+#, php-format
+msgid "%d questions where the question type has changed"
+msgstr "%d vragen waarbij het vraagtype is veranderd"
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:846
+msgid "Insert answers into a new version of a survey"
+msgstr "Voeg antwoorden in een nieuwe versie van een vragenlijst toe."
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:935
+#, php-format
+msgid "All tracks have been updated to use '%s' instead of '%s'"
+msgstr "Alle trajecten zijn geupdate om '%s' te gebruiken in plaats van '%s'"
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:944
+#, php-format
+msgid "All '%s' tokens in gemstracker have been updated to '%s'"
+msgstr "Alle '%s' kenmerken in gemstracker zijn aangepast naar '%s'"
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:953
+#, php-format
+msgid "All '%s' survey answers in limesurvey have been copied to '%s'"
 msgstr ""
-"Kopiëer alle vragenlijst antwoorden in de nieuwe vragenlijst in Limesurvey"
+"Alle '%s' vragenlijst antwoorden in limesurvey zijn gekopiëerd naar '%s'"
+
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:960
+#, php-format
+msgid "All '%s' tokens in limesurvey have been copied to '%s'"
+msgstr "Alle '%s' kenmerken in limesurvey zijn gekopiëerd naar '%s'"
 
 #: classes/Gems/Snippets/Survey/SurveyMaintenanceSearchSnippet.php:40
 msgid "(all groups)"
@@ -8938,36 +8916,40 @@ msgid "Add name to description"
 msgstr "Naam in omschrijving"
 
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:468
+msgid "Boolean"
+msgstr "Ja/Nee/Nvt"
+
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:469
 msgid "Caretaker"
 msgstr "Behandelaar"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:471
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:472
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:483
 msgid "Free text"
 msgstr "Vrije tekst"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:472
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:473
 msgid "Long free text"
 msgstr "Lange vrije tekst"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:474
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:475
 msgid "Moment in time"
 msgstr "Tijdstip"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:477
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:478
 msgid "Select one"
 msgstr "Kies één"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:478
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:479
 msgid "Select multiple"
 msgstr "Meerkeuze vraag"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:581
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:582
 #, php-format
 msgid "Non-existing filter %s"
 msgstr "Niet-bestaand filter %s"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:587
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:588
 #, php-format
 msgid "%d field"
 msgid_plural "%d fields"
@@ -10914,6 +10896,28 @@ msgstr "Er trad een fout op!"
 #: views/scripts/error/error.phtml:37
 msgid "Please contact system administration"
 msgstr "Neem contact op met systeembeheer"
+
+#~ msgid "Copy all survey answers into the new survey in Limesurvey"
+#~ msgstr "Kopiëer alle beantwoorde vragenlijsten naar de nieuwe vragenlijst"
+
+#~ msgid ""
+#~ "Warning! Question not found in target survey. Data will be lost on "
+#~ "transfer"
+#~ msgstr ""
+#~ "Waarschuwing! Vraag niet gevonden in bron vragenlijst. Data zal verloren "
+#~ "gaan na kopiëeren"
+
+#~ msgid "Compare"
+#~ msgstr "Vergelijk"
+
+#~ msgid "Survey Query"
+#~ msgstr "Vragenlijst Query"
+
+#~ msgid "Token Query"
+#~ msgstr "Kenmerk Query"
+
+#~ msgid "Survey replace. Step %d of %d."
+#~ msgstr "Vragenlijst vervangen. Stap %d van %d."
 
 #~ msgid "Agenda activity"
 #~ msgstr "Agenda activiteit"
