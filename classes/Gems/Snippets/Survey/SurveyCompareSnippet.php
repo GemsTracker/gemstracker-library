@@ -692,6 +692,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
         }
 
         $select = \MUtil_Html::create()->select(['name' => $name]);
+        $select->class = 'form-control';
 
         $empty = $this->util->getTranslated()->getEmptyDropdownArray();
         $select->option(reset($empty), ['value' => '']);
