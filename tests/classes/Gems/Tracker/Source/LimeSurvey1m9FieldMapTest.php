@@ -31,7 +31,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMapTest extends \Gems_Test_DbTestAbs
         $cache          = \Zend_Cache::factory('Core', 'Static', array('caching' => false), array('disable_caching' => true));
         $this->cache    = $cache;
 
-        $this->fieldmap = new \Gems_Tracker_Source_LimeSurvey1m9FieldMap($sourceSurveyId, $language, $lsDb, $translate, $tablePrefix, $cache);
+        $this->fieldmap = new \Gems_Tracker_Source_LimeSurvey1m9FieldMap($sourceSurveyId, $language, $lsDb, $translate, $tablePrefix, $cache, 1);
         
     }
 

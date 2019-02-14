@@ -60,7 +60,7 @@ class RespondentAnswerTranslatorTest extends ControllerTestAbstract {
         $tablePrefix    = '';
         $cache          = \Zend_Cache::factory('Core', 'Static', array('caching' => false), array('disable_caching' => true));
 
-        $fieldmap = new \Gems_Tracker_Source_LimeSurvey1m9FieldMap($sourceSurveyId, $language, $lsDb, $translate, $tablePrefix, $cache);
+        $fieldmap = new \Gems_Tracker_Source_LimeSurvey1m9FieldMap($sourceSurveyId, $language, $lsDb, $translate, $tablePrefix, $cache, 1);
 
 
         // Create a simple array model to apply to fieldmap to
