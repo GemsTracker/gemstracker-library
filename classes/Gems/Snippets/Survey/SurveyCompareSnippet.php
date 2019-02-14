@@ -9,7 +9,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
      * @var \Zend_Session_Namespace
      */
     protected $_session;
-    
+
     /**
      *
      * @var \Gems_AccessLog
@@ -41,6 +41,21 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
      * @var \Zend_Controller_Request_Abstract
      */
     public $request;
+
+    /**
+     * Variable to either keep or throw away the request data
+     * not specified in the route.
+     *
+     * @var boolean True then the route is reset
+     */
+    public $resetRoute = true;
+
+    /**
+     * The name of the action to forward to after form completion
+     *
+     * @var string
+     */
+    protected $routeAction = 'run';
 
     /**
      * @var int Id of the source survey
@@ -146,7 +161,6 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
         $bridge->addElement($element);
 
         $table = $element->table(['class' => 'browser table']);
-        $table->caption($this->getTitle());
 
         $headers = [
             $this->_('Question code'),
@@ -304,86 +318,6 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
         parent::afterRegistry();
 
         $this->getSurveys();
-    }
-
-    /**
-     * Generates the lime_survey_xxx query from the selected survey links and the table structure
-     *
-     * @param $post array List of POST data
-     * @param $sourceSurveyData array List of question information from the source survey
-     * @param $targetSurveyData array List of question information from the target survey
-     * @return string SQL query inserting question answers into the target survey
-     */
-    public function buildSurveyQuery($post, $sourceSurveyData, $targetSurveyData) {
-        $sourceTableStructure = $this->getSurveyTableStructure($this->sourceSurveyId);
-        $targetTableStructure = $this->getSurveyTableStructure($this->targetSurveyId);
-
-        $targetSourceSurveyId = (string) $this->getSourceSurveyId($this->targetSurveyId);
-
-        $targetTableColumns = [];
-        $sourceTableColumns = [];
-        if (isset($post['target'])) {
-            foreach ($post['target'] as $targetColumn => $sourceColumn) {
-                if (!empty($sourceColumn)) {
-                    $targetTableColumns[] = $targetSurveyData[$targetColumn]['id'];
-                    $sourceTableColumns[] = $sourceSurveyData[$sourceColumn]['id'];
-                }
-            }
-        }
-        $initColumns = [];
-        foreach ($targetTableStructure as $columnName => $questionStructure) {
-            if (strpos($columnName, $targetSourceSurveyId) !== 0) {
-                $initColumns[$columnName] = $columnName;
-            }
-        }
-
-        if (isset($initColumns['id'])) {
-            unset($initColumns['id']);
-        }
-
-        $sourceFirstColumn = reset($sourceTableStructure);
-        $sourceTable       = $sourceFirstColumn['TABLE_NAME'];
-
-        $targetFirstColumn = reset($targetTableStructure);
-        $targetTable       = $targetFirstColumn['TABLE_NAME'];
-
-        $sql = "INSERT INTO {$targetTable} (" . join(', ', $initColumns) . ',' . join(', ', $targetTableColumns) . ")";
-        $sql .= '(SELECT ' . join(', ', $initColumns) . ',' . join(', ', $sourceTableColumns) . " FROM " . $sourceTable . ')';
-
-        return $sql;
-    }
-
-    /**
-     * Generates a lime_tokens_xxx query from the table structure the source and target queries
-     *
-     * @return string SQL query inserting existing tokens into the target survey
-     */
-    public function buildTokenQuery() {
-        $sourceTokenTableStructure = $this->getTokenTableStructure($this->sourceSurveyId);
-        $targetTokenTableStructure = $this->getTokenTableStructure($this->targetSurveyId);
-
-        $sourceFirstColumn = reset($sourceTokenTableStructure);
-        $sourceTable       = $sourceFirstColumn['TABLE_NAME'];
-
-        $targetFirstColumn = reset($targetTokenTableStructure);
-        $targetTable       = $targetFirstColumn['TABLE_NAME'];
-
-        $bothTokenTableStructures = [];
-        foreach ($targetTokenTableStructure as $columnName => $columnData) {
-            if (isset($sourceTokenTableStructure[$columnName])) {
-                $bothTokenTableStructures[$columnName] = true;
-            }
-        }
-
-        if (isset($bothTokenTableStructures['tid'])) {
-            unset($bothTokenTableStructures['tid']);
-        }
-
-        $sql = "INSERT INTO {$targetTable} (" . join(', ', array_keys($bothTokenTableStructures)) . ")";
-        $sql .= "\n";
-        $sql .= '(SELECT ' . join(', ', array_keys($bothTokenTableStructures)) . ' FROM ' . $sourceTable . ')';
-
-        return $sql;
     }
 
     /**
@@ -678,8 +612,6 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
 
         $bridge->addElement($element);
 
-        $table->caption($this->getTitle());
-
         $headers = [
             $this->_('Question code'),
             $this->_('Source Survey'),
@@ -786,6 +718,10 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
 
         $table  = \MUtil_Html::create()->table(['class' => 'browser table']);
         $header = $table->thead()->tr();
+        $header->th($this->_('Source Survey'));
+        $header->th($this->_('Target Survey'));
+
+        $header = $table->thead()->tr();
         $header->th($this->surveys[$this->sourceSurveyId]);
         $header->th($this->surveys[$this->targetSurveyId]);
 
@@ -813,7 +749,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
         return $table;
     }
 
-/**
+    /**
      * Create a select element node with all available surveys
      *
      * @param $name string name of the survey select
@@ -856,22 +792,6 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
     }
 
     /**
-     * Get the table structure from a survey database
-     *
-     * @param $surveyId int Survey ID
-     * @return array List of table structure
-     */
-    public function getSurveyTableStructure($surveyId) {
-        $tracker = $this->loader->getTracker();
-        $survey  = $tracker->getSurvey($surveyId);
-        $source  = $survey->getSource();
-
-        $structure = $source->getSurveyTableStructure($survey->getSourceSurveyId());
-
-        return $structure;
-    }
-
-    /**
      * Get all available surveys
      *
      * @return array Survey Id => Survey name of available surveys
@@ -891,22 +811,6 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
      */
     public function getTitle() {
         return $this->_('Insert answers into a new version of a survey');
-    }
-
-    /**
-     * Get the table structure of the survey token table
-     *
-     * @param $surveyId int Gens Survey ID
-     * @return array List of token table structure
-     */
-    public function getTokenTableStructure($surveyId) {
-        $tracker = $this->loader->getTracker();
-        $survey  = $tracker->getSurvey($surveyId);
-        $source  = $survey->getSource();
-
-        $structure = $source->getTokenTableStructure($survey->getSourceSurveyId());
-
-        return $structure;
     }
 
     /**
@@ -984,52 +888,13 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
         }
     }
 
-    /**
-     * Run a query on the survey source database
-     *
-     * @param $surveyId int Gems Survey ID
-     * @param $sql SQL statement to run on source database
-     */
-    protected function querySurveySource($surveyId, $sql) {
-        $tracker        = $this->loader->getTracker();
-        $survey         = $tracker->getSurvey($surveyId);
-        $sourceSurveyId = $survey->getSourceSurveyId();
-        $source         = $survey->getSource();
+    protected function setAfterSaveRoute()
+    {
+        $this->afterSaveRouteUrl = array(
+            $this->request->getControllerKey() => $this->request->getControllerName(),
+            $this->request->getActionKey()     => $this->routeAction
+            );
 
-        $source->lsDbQuery($sourceSurveyId, $sql);
-    }
-
-    /**
-     * Inserts survey answers from the source survey into the target survey
-     *
-     * @param $post array List of POST data
-     * @param $sourceSurveyData array with source survey data
-     * @param $targetSurveyData array with target survey data
-     */
-    public function setSurveyAnswersToNewSurvey($post, $sourceSurveyData, $targetSurveyData) {
-        $sql = $this->buildSurveyQuery($post, $sourceSurveyData, $targetSurveyData);
-        $this->querySurveySource($this->targetSurveyId, $sql);
-    }
-
-    /**
-     * Inserts survey tokens from the source survey into the target survey
-     *
-     * @param $post array List of POST data
-     * @param $sourceSurveyData array with source survey data
-     * @param $targetSurveyData array with target survey data
-     */
-    public function setSurveyTokensToNewSurvey($post, $sourceSurveyData, $targetSurveyData) {
-        $sql = $this->buildTokenQuery($post, $sourceSurveyData, $targetSurveyData);
-        $this->querySurveySource($this->targetSurveyId, $sql);
-    }
-
-    /**
-     * Adds whitespaces to an SQL query, so it'll look more readable on screen
-     *
-     * @param $sql string SQL statement
-     * @return string SQL statement with white spaces
-     */
-    public function whitespaceQuery($sql) {
-        return str_replace([', ', '(SELECT ', ' FROM '], [", \n", "\n(SELECT \n", "\n FROM "], $sql);
+        return $this;
     }
 }

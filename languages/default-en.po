@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-14 09:04+0100\n"
+"POT-Creation-Date: 2019-02-14 12:39+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -3254,8 +3254,8 @@ msgstr "By"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:123
 #: classes/Gems/Default/SurveyMaintenanceAction.php:470
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:166
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:685
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:187
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:634
 msgid "Usage"
 msgstr "Usage"
 
@@ -3742,7 +3742,7 @@ msgstr "Open"
 #: classes/Gems/Default/SummaryAction.php:129
 #: classes/Gems/Snippets/Respondent/RespondentOverviewSnippet.php:147
 #: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:638
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:790
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:743
 msgid "Summary"
 msgstr "Summary"
 
@@ -3751,7 +3751,7 @@ msgid "incalculable"
 msgstr "incalculable"
 
 #: classes/Gems/Default/SurveyMaintenanceAction.php:192
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:575
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:524
 #, php-format
 msgid "Answered surveys: %d."
 msgstr "Answered surveys: %d."
@@ -5648,7 +5648,7 @@ msgstr "Treatment"
 
 #: classes/Gems/Model/RespondentModel.php:362
 #: classes/Gems/Model/RespondentRelationModel.php:56
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:795
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:748
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:312
 msgid "Comments"
 msgstr "Comments"
@@ -7228,105 +7228,107 @@ msgstr "No data present"
 msgid "Print"
 msgstr "Print"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:83
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:104
 msgid "Survey replace"
 msgstr "Survey replace"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:146
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:670
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:167
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:619
 #: classes/Gems/Snippets/Survey/SurveyQuestionsSnippet.php:133
 msgid "Question code"
 msgstr "Question code"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:147
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:414
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:671
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:168
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:363
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:620
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:724
 msgid "Source Survey"
 msgstr "Source Survey"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:148
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:416
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:672
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:169
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:365
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:621
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:725
 msgid "Target Survey"
 msgstr "Target Survey"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:218
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:239
 msgid "Survey replaced successfully!"
 msgstr "Survey replaced successfully!"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:254
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:283
 msgid "Question type is not the same. Check compatibility!"
 msgstr "Question type is not the same. Check compatibility!"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:256
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:285
 msgid "Question could not be found in source. Is this a new question?"
 msgstr "Question could not be found in source. Is this a new question?"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:394
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:343
 #, php-format
 msgid "Used %d time in %s track."
 msgid_plural "Used %d times in %s track."
 msgstr[0] "Used %d time in %s track."
 msgstr[1] "Used %d times in %s track."
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:400
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:349
 msgid "Not used in any track."
 msgstr "Not used in any track."
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:415
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:364
 msgid "Source and target survey can not be the same"
 msgstr "Source and target survey can not be the same"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:418
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:367
 msgid "Replace in track definitions"
 msgstr "Replace in track definitions"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:418
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:367
 msgid "Replace all occurances of old survey in all tracks with the new survey"
 msgstr "Replace all occurances of old survey in all tracks with the new survey"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:421
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:370
 msgid "Replace in existing tracks"
 msgstr "Replace in existing tracks"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:421
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:370
 msgid "Update all existing gemstracker tokens to point to the new survey"
 msgstr "Update all existing gemstracker tokens to point to the new survey"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:425
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:374
 msgid "Copy survey answers"
 msgstr "Copy survey answers"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:425
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:374
 msgid "Copy all survey answers into the new survey"
 msgstr "Copy all survey answers into the new survey"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:500
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:449
 #, php-format
 msgid "Target survey already has %d answers. Is this expected?"
 msgstr "Target survey already has %d answers. Is this expected?"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:526
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:475
 #, php-format
 msgid "%d new questions"
 msgstr "%d new questions"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:530
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:479
 #, php-format
 msgid "%d questions without warnings "
 msgstr "%d questions without warnings "
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:534
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:483
 #, php-format
 msgid "%d missing questions"
 msgstr "%d missing questions"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:538
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:487
 #, php-format
 msgid "%d questions where the question type has changed"
 msgstr "%d questions where the question type has changed"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:879
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:816
 msgid "Insert answers into a new version of a survey"
 msgstr "Insert answers into a new version of a survey"
 
@@ -8116,15 +8118,19 @@ msgstr "%d '%s' survey answers have been copied to '%s'."
 msgid "For %d tokens no answers were found."
 msgstr "For %d tokens no answers were found."
 
-#: classes/Gems/Task/Survey/TokenReplaceTask.php:53
+#: classes/Gems/Task/Survey/TokenReplaceTask.php:54
 #, php-format
-msgid "All '%s' tokens in gemstracker have been updated to '%s'"
-msgstr "All '%s' tokens in gemstracker have been updated to '%s'"
+msgid "For %d token survey '%s'  has been updated to '%s'"
+msgid_plural "For %d tokens survey '%s'  has been updated to '%s'"
+msgstr[0] "For %d token survey '%s'  has been updated to '%s'"
+msgstr[1] "For %d tokens survey '%s'  has been updated to '%s'"
 
-#: classes/Gems/Task/Survey/TrackReplaceTask.php:49
+#: classes/Gems/Task/Survey/TrackReplaceTask.php:50
 #, php-format
-msgid "All tracks have been updated to use '%s' instead of '%s'"
-msgstr "All tracks have been updated to use '%s' instead of '%s'"
+msgid "%d track round has been updated to use '%s' instead of '%s'"
+msgid_plural "%d track rounds have been updated to use '%s' instead of '%s'"
+msgstr[0] "%d track round has been updated to use '%s' instead of '%s'"
+msgstr[1] "%d track rounds have been updated to use '%s' instead of '%s'"
 
 #: classes/Gems/Task/Tracker/AddRefreshQuestions.php:147
 #, php-format
@@ -8350,7 +8356,7 @@ msgid "Unknown or invalid round display event \"%s\" specified on line %d."
 msgstr "Unknown or invalid round display event \"%s\" specified on line %d."
 
 #: classes/Gems/Task/Tracker/Import/CheckTrackSurveyImportTask.php:120
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:255
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:261
 #, php-format
 msgid "[%s]"
 msgstr "[%s]"
@@ -8360,7 +8366,7 @@ msgid "(survey required)"
 msgstr "(survey required)"
 
 #: classes/Gems/Task/Tracker/Import/CheckTrackSurveyImportTask.php:144
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:243
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:249
 msgid "(skip rounds)"
 msgstr "(skip rounds)"
 
@@ -9026,12 +9032,12 @@ msgstr[1] ""
 "Click here if the download does not start automatically in %d seconds:"
 
 #: classes/Gems/Tracker/Snippets/ExportTrackSnippetAbstract.php:286
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:559
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:587
 msgid "No export code changed"
 msgstr "No export code changed"
 
 #: classes/Gems/Tracker/Snippets/ExportTrackSnippetAbstract.php:290
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:563
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:591
 #, php-format
 msgid "%d export code changed"
 msgid_plural "%d export codes changed"
@@ -9079,187 +9085,187 @@ msgstr "Check the rounds to export"
 msgid "No rounds to export"
 msgstr "No rounds to export"
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:114
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:120
 #, php-format
 msgid "Set round to round %s"
 msgstr "Set round to round %s"
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:148
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:153
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:154
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:159
 msgid "Leave current round"
 msgstr "Leave current round"
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:149
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:155
 msgid "Replace with import round"
 msgstr "Replace with import round"
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:155
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:161
 #, php-format
 msgid "Replace with import round %s"
 msgstr "Replace with import round %s"
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:162
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:168
 #, php-format
 msgid "Matching round %s"
 msgstr "Matching round %s"
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:172
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:178
 #, php-format
 msgid "Round not in import: %s"
 msgstr "Round not in import: %s"
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:177
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:183
 #, php-format
 msgid "Leave current round %d unchanged"
 msgstr "Leave current round %d unchanged"
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:178
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:184
 #, php-format
 msgid "Deactivate current round %d"
 msgstr "Deactivate current round %d"
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:233
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:239
 msgid "Change track information."
 msgstr "Change track information."
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:249
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:255
 msgid "Survey export code links"
 msgstr "Survey export code links"
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:253
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:259
 msgid "Linked survey name"
 msgstr "Linked survey name"
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:254
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:260
 msgid "Import survey name"
 msgstr "Import survey name"
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:255
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:261
 msgid "export code"
 msgstr "export code"
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:280
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:286
 msgid "Creating the track."
 msgstr "Creating the track."
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:302
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:308
 msgid "Errors occurred during import!"
 msgstr "Errors occurred during import!"
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:304
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:310
 msgid "Track created successfully!"
 msgstr "Track created successfully!"
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:305
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:311
 msgid "Click the \"Finish\" button to see the track."
 msgstr "Click the \"Finish\" button to see the track."
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:372
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:389
 msgid "Checking the content of the file."
 msgstr "Checking the content of the file."
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:394
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:411
 msgid "Import errors occurred!"
 msgstr "Import errors occurred!"
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:396
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:413
 msgid "Import checks OK!"
 msgstr "Import checks OK!"
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:397
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:414
 msgid "Click the \"Next\" button to continue."
 msgstr "Click the \"Next\" button to continue."
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:418
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:435
 msgid "Upload a track definition file."
 msgstr "Upload a track definition file."
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:441
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:458
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:235
 #, php-format
 msgid "Error retrieving file '%s'."
 msgstr "Error retrieving file '%s'."
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:469
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:486
 msgid "Merging the tracks."
 msgstr "Merging the tracks."
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:491
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:508
 msgid "Merge errors occurred!"
 msgstr "Merge errors occurred!"
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:493
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:510
 msgid "Tracks mergeded successfully!"
 msgstr "Tracks mergeded successfully!"
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:494
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:511
 msgid "Click the \"Finish\" button to see the merged track."
 msgstr "Click the \"Finish\" button to see the merged track."
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:512
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:540
 msgid "Match the current track rounds to import rounds."
 msgstr "Match the current track rounds to import rounds."
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:524
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:552
 msgid "No rounds in current track."
 msgstr "No rounds in current track."
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:616
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:644
 msgid "Track merge finished"
 msgstr "Track merge finished"
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:618
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:646
 msgid "Track import finished"
 msgstr "Track import finished"
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:634
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:662
 msgid "A .track.txt file"
 msgstr "A .track.txt file"
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:638
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:666
 msgid ""
 "Import an exported track using a file with the extension \".track.txt\"."
 msgstr ""
 "Import an exported track using a file with the extension \".track.txt\"."
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:644
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:672
 msgid "<<create a new track>>"
 msgstr "<<create a new track>>"
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:645
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:673
 msgid "Merge with"
 msgstr "Merge with"
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:646
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:674
 msgid "Create a new track or choose a track to merge the import into."
 msgstr "Create a new track or choose a track to merge the import into."
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:725
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:753
 #, php-format
 msgid "Merge import into \"%s\" track. Step %d of %d."
 msgstr "Merge import into \"%s\" track. Step %d of %d."
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:732
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:760
 #, php-format
 msgid "New track import. Step %d of %d."
 msgstr "New track import. Step %d of %d."
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:1054
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:1082
 #, php-format
 msgid "The import file \"%s\" seems to be missing."
 msgstr "The import file \"%s\" seems to be missing."
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:1064
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:1092
 #, php-format
 msgid "The import file \"%s\" is empty."
 msgstr "The import file \"%s\" is empty."
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:1088
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:1116
 #, php-format
 msgid "Unknown data type identifier \"%s\" found at line %s."
 msgstr "Unknown data type identifier \"%s\" found at line %s."
 
-#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:1104
+#: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:1132
 #, php-format
 msgid "Incorrect number of fields at line %d. Found %d while %d expected."
 msgstr "Incorrect number of fields at line %d. Found %d while %d expected."
@@ -10789,6 +10795,12 @@ msgstr "An error occurred!"
 #: views/scripts/error/error.phtml:37
 msgid "Please contact system administration"
 msgstr "Please contact system administration"
+
+#~ msgid "All '%s' tokens in gemstracker have been updated to '%s'"
+#~ msgstr "All '%s' tokens in gemstracker have been updated to '%s'"
+
+#~ msgid "All tracks have been updated to use '%s' instead of '%s'"
+#~ msgstr "All tracks have been updated to use '%s' instead of '%s'"
 
 #~ msgid "All '%s' survey answers in limesurvey have been copied to '%s'"
 #~ msgstr "All '%s' survey answers in limesurvey have been copied to '%s'"

@@ -47,10 +47,14 @@ class TokenReplaceTask extends \MUtil_Task_TaskAbstract
         $where[] = 'gto_start_time is NULL';
         $where[] = 'gto_completion_time is NULL';
 
-        $this->db->update('gems__tokens', $data, $where);
+        $count = $this->db->update('gems__tokens', $data, $where);
                 
         $this->getBatch()->addMessage(
-                sprintf($this->_('All \'%s\' tokens in gemstracker have been updated to \'%s\''),
+                sprintf($this->plural(
+                            'For %d token survey \'%s\'  has been updated to \'%s\'',
+                            'For %d tokens survey \'%s\'  has been updated to \'%s\'',
+                            $count),
+                        $count,
                         $this->sourceSurveyName,
                         $this->targetSurveyName));
     }

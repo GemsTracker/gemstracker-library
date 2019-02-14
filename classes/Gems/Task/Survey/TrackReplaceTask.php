@@ -43,10 +43,14 @@ class TrackReplaceTask extends \MUtil_Task_TaskAbstract
             'gro_id_survey = ?' => $this->sourceSurveyId,
         ];
 
-        $this->db->update('gems__rounds', $data, $where);
+        $count = $this->db->update('gems__rounds', $data, $where);
                 
         $this->getBatch()->addMessage(
-                sprintf($this->_('All tracks have been updated to use \'%s\' instead of \'%s\''),
+                sprintf($this->plural(
+                            '%d track round has been updated to use \'%s\' instead of \'%s\'',
+                            '%d track rounds have been updated to use \'%s\' instead of \'%s\'',
+                            $count),
+                        $count,
                         $this->targetSurveyName,
                         $this->sourceSurveyName));
     }
