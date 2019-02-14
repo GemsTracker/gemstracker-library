@@ -43,6 +43,12 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
      * @var \Zend_Session_Namespace
      */
     protected $_session;
+    
+    /**
+     *
+     * @var \Gems_AccessLog
+     */
+    protected $accesslog;
 
     /**
      *
@@ -304,6 +310,17 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
                 $element->h3($this->_('Track created successfully!'));
                 $element->pInfo($this->_('Click the "Finish" button to see the track.'));
             }
+            
+            $data = $this->formData; 
+  
+            // Remove unuseful data 
+            unset($data['button_spacer'], $data['current_step'], $data[$this->csrfId], $data['auto_form_focus_tracker']);
+
+            // Add useful data 
+
+            ksort($data); 
+
+            $this->accesslog->logChange($this->request, null, array_filter($data));         
         } else {
             $element->setValue($batch->getPanel($this->view, $batch->getProgressPercentage() . '%'));
         }
@@ -493,6 +510,17 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
                 $element->h3($this->_('Tracks mergeded successfully!'));
                 $element->pInfo($this->_('Click the "Finish" button to see the merged track.'));
             }
+            
+            $data = $this->formData; 
+  
+            // Remove unuseful data 
+            unset($data['button_spacer'], $data['current_step'], $data[$this->csrfId], $data['auto_form_focus_tracker']);
+
+            // Add useful data 
+
+            ksort($data); 
+
+            $this->accesslog->logChange($this->request, null, array_filter($data));
         } else {
             $element->setValue($batch->getPanel($this->view, $batch->getProgressPercentage() . '%'));
         }
