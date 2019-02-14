@@ -268,7 +268,8 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
                     $this->getSourceDatabase(),
                     $this->translate,
                     $this->addDatabasePrefix(''),
-                    $this->cache
+                    $this->cache,
+                    $this->getId()
             );
         }
 

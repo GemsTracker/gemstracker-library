@@ -78,6 +78,13 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
      * @var int
      */
     protected $sourceSurveyId;
+    
+    /**
+     * The GemsTracker source id
+     *
+     * @var int
+     */
+    protected $sourceId;
 
     /**
      * Construct a fieldmap object to add LS source code knowledge and interpretation to the database data about a survey.
@@ -89,7 +96,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
      * @param string $tablePrefix              The prefix to use for all LS tables (in this installation)
      * @param \Zend_Cache_Core $cache
      */
-    public function __construct($sourceSurveyId, $language, \Zend_Db_Adapter_Abstract $lsDb, \Zend_Translate $translate, $tablePrefix, \Zend_Cache_Core $cache)
+    public function __construct($sourceSurveyId, $language, \Zend_Db_Adapter_Abstract $lsDb, \Zend_Translate $translate, $tablePrefix, \Zend_Cache_Core $cache, $sourceId)
     {
         $this->sourceSurveyId = $sourceSurveyId;
         $this->language       = $language;
@@ -97,6 +104,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
         $this->translate      = $translate;
         $this->tablePrefix    = $tablePrefix;
         $this->cache          = $cache;
+        $this->sourceId       = $sourceId;
     }
 
     /**
@@ -193,7 +201,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
 
     protected function _getMap()
     {
-        $cacheId = 'lsFieldMap'.$this->sourceSurveyId.strtr($this->language, '-.', '__');
+        $cacheId = 'lsFieldMap'.$this->sourceId . '_'.$this->sourceSurveyId.strtr($this->language, '-.', '__');
         $this->_fieldMap = $this->cache->load($cacheId);
 
         if (false === $this->_fieldMap) {
