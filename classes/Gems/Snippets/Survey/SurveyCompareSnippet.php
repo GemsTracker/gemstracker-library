@@ -218,7 +218,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
         }
 
         $this->nextDisabled = true;
-
+        
         $batch = $this->getUpdateBatch();
         $form  = $bridge->getForm();
 
@@ -411,7 +411,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
         $surveyCompare = $this->getSurveyCompare($sourceSurveyData, $targetSurveyData, $post);
 
         $categorizedResults = [];
-        foreach ($this->questionStatusClasses as $status => $class) {
+        foreach (array_keys($this->questionStatusClasses) as $status) {
             $categorizedResults[$status] = [];
         }
 
@@ -558,11 +558,6 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
 
         // show all questions that can be send to the target survey
         foreach ($targetSurveyData as $questionCode => $questionData) {
-            /* $currentSourceQuestionId = $questionData['id'];
-              if (isset($post[$currentSourceQuestionId])) {
-              $currentSourceQuestionId = $post[$currentQuestion];
-              } */
-
             $currentQuestionCode = $questionCode;
             if (isset($post['target']) && isset($post['target'][$currentQuestionCode])) {
                 $currentQuestionCode = $post['target'][$currentQuestionCode];
@@ -572,7 +567,6 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
                 'target' => $questionCode,
                 'source' => $currentQuestionCode,
             ];
-            $existingSourceQuestionTitle = null;
 
             if (isset($sourceSurveyData[$currentQuestionCode])) {
                 if ($questionData['type'] === $sourceSurveyData[$currentQuestionCode]['type']) {
@@ -647,21 +641,21 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
 
         $survey = $tracker->getSurvey($surveyId);
 
-        $surveyInformation = $survey->getQuestionInformation($this->locale);
+        $surveyInfo = $survey->getQuestionInformation($this->locale);
 
-        $filteredSurveyInformation = $surveyInformation;
-        foreach ($surveyInformation as $questionCode => $questionInfo) {
+        $filteredSurveyInfo = $surveyInfo;
+        foreach ($surveyInfo as $questionCode => $questionInfo) {
             if ($questionInfo['class'] == 'question_sub') {
                 $parentCode                                           = $questionInfo['title'];
-                $parent                                               = $surveyInformation[$parentCode];
-                $filteredSurveyInformation[$questionCode]['question'] = $parent['question'] . ' | ' . $questionInfo['question'];
-                if (isset($filteredSurveyInformation[$parentCode])) {
-                    unset($filteredSurveyInformation[$parentCode]);
+                $parent                                               = $surveyInfo[$parentCode];
+                $filteredSurveyInfo[$questionCode]['question'] = $parent['question'] . ' | ' . $questionInfo['question'];
+                if (isset($filteredSurveyInfo[$parentCode])) {
+                    unset($filteredSurveyInfo[$parentCode]);
                 }
             }
         }
 
-        return $filteredSurveyInformation;
+        return $filteredSurveyInfo;
     }
 
     /**
@@ -764,16 +758,6 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
         $empty = $this->util->getTranslated()->getEmptyDropdownArray();
         $select->option(reset($empty), ['value' => '']);
 
-        if (!empty($surveys)) {
-            foreach ($surveys as $surveyId => $surveyName) {
-                $attributes = ['value' => $surveyId];
-                if (isset($post[$name]) && $post[$name] == $surveyId) {
-                    $attributes['selected'] = 'selected';
-                }
-                $select->option($surveyName, $attributes);
-            }
-        }
-
         return $select;
     }
 
@@ -829,24 +813,21 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
         $batch->setVariable('targetSurveyId', $this->targetSurveyId);
         $batch->setVariable('targetSurveyName', $this->getSurveyName($this->targetSurveyId));
 
-        if ($batch->isFinished()) {
+        if ($batch->isFinished() || $batch->isLoaded()) {
             return $batch;
         }
+        
+        if ($this->formData['track_replace'] == 1) {
+            $batch->addTask('Survey\\TrackReplaceTask');
+        }
 
-        if (! $batch->isLoaded()) {
-            if ($this->formData['track_replace'] == 1) {
-                $batch->addTask('Survey\\TrackReplaceTask');
-            }
+        if ($this->formData['token_update'] == 1) {
+            $batch->addTask('Survey\\TokenReplaceTask');
+        }
 
-            if ($this->formData['token_update'] == 1) {
-                $batch->addTask('Survey\\TokenReplaceTask');
-            }
-
-            if ($this->formData['copy_answers'] == 1) {
-                $userId = $this->loader->getCurrentUser()->getUserId();
-                $batch->addTask('Survey\\MoveAnswersTask', $userId);
-            }
-
+        if ($this->formData['copy_answers'] == 1) {
+            $userId = $this->loader->getCurrentUser()->getUserId();
+            $batch->addTask('Survey\\MoveAnswersTask', $userId);
         }
 
         return $batch;
