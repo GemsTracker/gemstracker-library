@@ -1443,3 +1443,10 @@ INSERT INTO gems__comm_template_translations (gctt_id_template, gctt_lang, gctt_
     VALUES
     ((select gct_id_template from gems__comm_templates where gct_code='continue'), 'en', 'Continue later', 'Dear {greeting},\n\nClick on [url={token_url}]this link[/url] to continue filling out surveys or go to [url]{site_ask_url}[/url] and enter this token: [b]{token}[/b]\n\n{organization_signature}'),
     ((select gct_id_template from gems__comm_templates where gct_code='continue'), 'nl', 'Later doorgaan', 'Beste {greeting},\n\nKlik op [url={token_url}]deze link[/url] om verder te gaan met invullen van vragenlijsten of ga naar [url]{site_ask_url}[/url] en voer dit kenmerk in: [b]{token}[/b]\n\n{organization_signature}');
+
+-- PATCH: New fundamental reception code 'moved'
+INSERT INTO gems__reception_codes (grc_id_reception_code, grc_description, grc_success,
+      grc_for_surveys, grc_redo_survey, grc_for_tracks, grc_for_respondents, grc_overwrite_answers, grc_active,
+      grc_changed, grc_changed_by, grc_created, grc_created_by)
+    VALUES
+        ('moved', 'Moved to new survey', 0, 1, 0, 0, 0, 1, 0, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);

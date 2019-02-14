@@ -65,6 +65,12 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
      * @var \Gems_Util
      */
     public $util;
+    
+    /**
+     *
+     * @var \Gems_View
+     */
+    public $view;
 
     /**
      * Add the elements from the model to the bridge for the current step
@@ -185,16 +191,38 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
      * @param \MUtil_Model_ModelAbstract $model
      */
     protected function addStepElementsForStep4(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model) {
-        $messages = $this->runUpdates($this->formData);
-
-        if (!empty($messages)) {
-            $element = $bridge->getForm()->createElement('html', 'results');
-            $bridge->addElement($element);
-            $ul      = $element->ul();
-            foreach ($messages as $message) {
-                $ul->li($message);
-            }
+        // Things go really wrong (at the session level) if we run this code
+        // while the finish button was pressed
+        if ($this->isFinishedClicked()) {
+            return;
         }
+
+        $this->nextDisabled = true;
+
+        $batch = $this->getUpdateBatch();
+        $form  = $bridge->getForm();
+        
+        $batch->setFormId($form->getId());
+        $batch->autoStart = true;
+
+        // \MUtil_Registry_Source::$verbose = true;
+        if ($batch->run($this->request)) {
+            exit;
+        }
+
+        $element = $form->createElement('html', $batch->getId());
+
+        if ($batch->isFinished()) {
+            // Keep the filename after $batch->getMessages(true) cleared the previous
+            $this->addMessage($batch->getMessages(true));
+            $element->h3($this->_('Survey replaced successfully!'));
+            $this->nextDisabled = false;
+        } else {
+            $element->setValue($batch->getPanel($this->view, $batch->getProgressPercentage() . '%'));
+        }
+
+        $form->activateJQuery();
+        $form->addElement($element);
     }
 
     /**
@@ -394,11 +422,11 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
                     'elementClass', 'checkbox', 'default', 0);
 
             // survey_query, token_query
-            $model->set('copy_answers', 'label', $this->_('Copy survey answers'), 'description', $this->_('Copy all survey answers into the new survey in Limesurvey'),
+            $model->set('copy_answers', 'label', $this->_('Copy survey answers'), 'description', $this->_('Copy all survey answers into the new survey'),
                     'elementClass', 'checkbox', 'default', 0);
             
             // Disable copying answers until problems are solved with different survey sources (ie. multisite ls)
-            $model->set('copy_answers', 'disabled', true);
+            //$model->set('copy_answers', 'disabled', true);
 
             // Storage for local copy of the file, kept through process
             $model->set('import_id');
@@ -539,8 +567,9 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
      */
     public function getNumberOfAnswers($surveyId) {
         $fields['tokenCount'] = 'COUNT(DISTINCT gto_id_token)';
-        $select               = $this->loader->getTracker()->getTokenSelect($fields);
+        $select               = $this->loader->getTracker()->getTokenSelect($fields)->andReceptionCodes([]);
         $select->forSurveyId($surveyId)
+                ->onlySucces()
                 ->onlyCompleted();
         $row                  = $select->fetchRow();
         return sprintf($this->_('Answered surveys: %d.'), $row['tokenCount']);
@@ -560,6 +589,10 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
     }
 
     protected function getStepCount() {
+        if ($this->formData['copy_answers'] == 0) {
+            return 3;
+        }
+        
         return 4;
     }
 
@@ -862,6 +895,44 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
         return $structure;
     }
     
+    /**
+     *
+     * @return \Gems_Task_TaskRunnerBatch
+     */
+    protected function getUpdateBatch()
+    {
+        $batch  = $this->loader->getTaskRunnerBatch('survey_replace_' . $this->sourceSurveyId . '_' . $this->targetSurveyId);
+
+        $targetFields = array_key_exists('target', $this->formData) ? $this->formData['target'] : [];
+        $batch->setVariable('targetFields', $targetFields);
+        $batch->setVariable('sourceSurveyId', $this->sourceSurveyId);
+        $batch->setVariable('sourceSurveyName', $this->getSurveyName($this->sourceSurveyId));
+        $batch->setVariable('targetSurveyId', $this->targetSurveyId);
+        $batch->setVariable('targetSurveyName', $this->getSurveyName($this->targetSurveyId));
+        
+        if ($batch->isFinished()) {
+            return $batch;
+        }
+
+        if (! $batch->isLoaded()) {
+            if ($this->formData['track_replace'] == 1) {
+                $batch->addTask('Survey\\TrackReplaceTask');
+            }
+            
+            if ($this->formData['token_update'] == 1) {
+                $batch->addTask('Survey\\TokenReplaceTask');
+            }
+
+            if ($this->formData['copy_answers'] == 1) {
+                $userId = $this->loader->getCurrentUser()->getUserId();
+                $batch->addTask('Survey\\MoveAnswersTask', $userId);
+            }
+            
+        }
+
+        return $batch;
+    }
+    
      /**
      * Hook that loads the form data from $_POST or the model
      *
@@ -915,58 +986,6 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
     }
 
     /**
-     * Runs the sql queries generated in the process
-     *
-     * @param $post array List of POST data
-     * @return bool
-     */
-    protected function runUpdates($post) {
-        $messages = [];
-
-        $sourceSurveyData = $this->getSurveyData($this->sourceSurveyId);
-        $targetSurveyData = $this->getSurveyData($this->targetSurveyId);
-        
-        $sourceSurveyName = $this->getSurveyName($this->sourceSurveyId);
-        $targetSurveyName = $this->getSurveyName($this->targetSurveyId);
-
-        if ($post['track_replace'] == 1) {
-            $this->setSurveysInTrack();
-            $messages[] = sprintf(
-                    $this->_('All tracks have been updated to use \'%s\' instead of \'%s\''),
-                    $targetSurveyName,
-                    $sourceSurveyName
-            );
-        }
-        
-        if ($post['token_update'] == 1) {
-            $this->setTokensToNewSurvey($post['copy_answers']);
-            $messages[] = sprintf(
-                    $this->_('All \'%s\' tokens in gemstracker have been updated to \'%s\''),
-                    $sourceSurveyName,
-                    $targetSurveyName
-            );
-        }
-
-        if ($post['copy_answers'] == 1) {
-            //$this->setSurveyAnswersToNewSurvey($post, $sourceSurveyData, $targetSurveyData);
-            $messages[] = sprintf(
-                    $this->_('All \'%s\' survey answers in limesurvey have been copied to \'%s\''),
-                    $sourceSurveyName,
-                    $targetSurveyName
-            );
-        
-            //$this->setSurveyTokensToNewSurvey($post, $sourceSurveyData, $targetSurveyData);
-            $messages[] = sprintf(
-                    $this->_('All \'%s\' tokens in limesurvey have been copied to \'%s\''),
-                    $sourceSurveyName,
-                    $targetSurveyName
-            );
-        }        
-
-        return $messages;
-    }    
-
-    /**
      * Inserts survey answers from the source survey into the target survey
      *
      * @param $post array List of POST data
@@ -989,42 +1008,6 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
         $sql = $this->buildTokenQuery($post, $sourceSurveyData, $targetSurveyData);
         $this->querySurveySource($this->targetSurveyId, $sql);
     }
-    
-    /**
-     * Replaces the new survey in the Tracks it is being used
-     */
-    public function setSurveysInTrack() {
-        $data = [
-            'gro_id_survey' => $this->targetSurveyId,
-        ];
-
-        $where = [
-            'gro_id_survey = ?' => $this->sourceSurveyId,
-        ];
-
-        $this->db->update('gems__rounds', $data, $where);
-    }
-
-    /**
-     * Updates existing tokens to use the new gems survey ID
-     */
-    public function setTokensToNewSurvey($onlyNew = true) {
-        $data = [
-            'gto_id_survey' => $this->targetSurveyId,
-        ];
-
-        $where = [
-            'gto_id_survey = ?' => $this->sourceSurveyId,
-            ];
-        
-        // Only if not started yet, unless we copy all tokens and data to the new survey
-        if ($onlyNew) {
-            $where[] = 'gto_start_time is NULL';
-            $where[] = 'gto_completion_time is NULL';
-        }
-
-        $this->db->update('gems__tokens', $data, $where);
-    }   
 
     /**
      * Adds whitespaces to an SQL query, so it'll look more readable on screen
