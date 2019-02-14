@@ -8213,7 +8213,7 @@ msgstr "Alle '%s' kenmerken in gemstracker zijn aangepast naar '%s'"
 #: classes/Gems/Task/Survey/TrackReplaceTask.php:49
 #, php-format
 msgid "All tracks have been updated to use '%s' instead of '%s'"
-msgstr "Alle trajecten zijn geupdate om '%s' te gebruiken in plaats van '%s'"
+msgstr "Alle trajecten zijn bijgewerkt om '%s' te gebruiken in plaats van '%s'"
 
 #: classes/Gems/Task/Tracker/AddRefreshQuestions.php:147
 #, php-format

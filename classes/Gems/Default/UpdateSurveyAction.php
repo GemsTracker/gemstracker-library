@@ -21,7 +21,7 @@
  */
 class Gems_Default_UpdateSurveyAction extends \Gems_Controller_Action
 {
-    public function indexAction()
+    public function runAction()
     {
         $this->initHtml();
         $this->addSnippets('Survey\\SurveyCompareSnippet');

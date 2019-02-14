@@ -11,6 +11,12 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
     protected $_session;
     
     /**
+     *
+     * @var \Gems_AccessLog
+     */
+    protected $accesslog;
+
+    /**
      * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
@@ -65,7 +71,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
      * @var \Gems_Util
      */
     public $util;
-    
+
     /**
      *
      * @var \Gems_View
@@ -201,7 +207,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
 
         $batch = $this->getUpdateBatch();
         $form  = $bridge->getForm();
-        
+
         $batch->setFormId($form->getId());
         $batch->autoStart = true;
 
@@ -217,6 +223,14 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
             $this->addMessage($batch->getMessages(true));
             $element->h3($this->_('Survey replaced successfully!'));
             $this->nextDisabled = false;
+
+            $data = $this->formData;
+            // Remove unuseful data
+            unset($data['button_spacer'], $data['current_step'], $data[$this->csrfId], $data['auto_form_focus_tracker'], $data['import_id']);
+            // Add friendly names
+            $data['source_survey_name'] =  $this->getSurveyName($this->sourceSurveyId);
+            $data['target_survey_name'] =  $this->getSurveyName($this->targetSurveyId);
+            $this->accesslog->logChange($this->request, null, array_filter($data));
         } else {
             $element->setValue($batch->getPanel($this->view, $batch->getProgressPercentage() . '%'));
         }
@@ -424,7 +438,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
             // survey_query, token_query
             $model->set('copy_answers', 'label', $this->_('Copy survey answers'), 'description', $this->_('Copy all survey answers into the new survey'),
                     'elementClass', 'checkbox', 'default', 0);
-            
+
             // Disable copying answers until problems are solved with different survey sources (ie. multisite ls)
             //$model->set('copy_answers', 'disabled', true);
 
@@ -468,7 +482,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
         }
 
         foreach ($surveyCompare as $result) {
-            if (isset($result['status'])) {                
+            if (isset($result['status'])) {
                 if ($result['status'] == 'missing') {
                     $categorizedResults[$result['status']][$result['source']] = $result;
                 } else {
@@ -592,7 +606,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
         if ($this->formData['copy_answers'] == 0) {
             return 3;
         }
-        
+
         return 4;
     }
 
@@ -729,8 +743,8 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
         $survey  = $tracker->getSurvey($surveyId);
 
         return $survey->getName();
-    }   
-    
+    }
+
     /**
      * Get the form select with all the questions in the survey and the current selected one
      *
@@ -786,9 +800,9 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
             $targetSurveyData = $this->getSurveyData($this->targetSurveyId);
 
             $compareResultSummary = $this->getCompareResultSummary($post, $sourceSurveyData, $targetSurveyData);
-            
+
             $tableBody->tr()->th($this->_('Summary'), ['colspan' => 2]);
-            $tableBody->tr()->td($compareResultSummary, ['colspan' => 2]);           
+            $tableBody->tr()->td($compareResultSummary, ['colspan' => 2]);
         }
 
         if ($comments) {
@@ -855,8 +869,8 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
         $structure = $source->getSurveyTableStructure($survey->getSourceSurveyId());
 
         return $structure;
-    }    
-    
+    }
+
     /**
      * Get all available surveys
      *
@@ -894,7 +908,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
 
         return $structure;
     }
-    
+
     /**
      *
      * @return \Gems_Task_TaskRunnerBatch
@@ -909,7 +923,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
         $batch->setVariable('sourceSurveyName', $this->getSurveyName($this->sourceSurveyId));
         $batch->setVariable('targetSurveyId', $this->targetSurveyId);
         $batch->setVariable('targetSurveyName', $this->getSurveyName($this->targetSurveyId));
-        
+
         if ($batch->isFinished()) {
             return $batch;
         }
@@ -918,7 +932,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
             if ($this->formData['track_replace'] == 1) {
                 $batch->addTask('Survey\\TrackReplaceTask');
             }
-            
+
             if ($this->formData['token_update'] == 1) {
                 $batch->addTask('Survey\\TokenReplaceTask');
             }
@@ -927,12 +941,12 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
                 $userId = $this->loader->getCurrentUser()->getUserId();
                 $batch->addTask('Survey\\MoveAnswersTask', $userId);
             }
-            
+
         }
 
         return $batch;
     }
-    
+
      /**
      * Hook that loads the form data from $_POST or the model
      *
