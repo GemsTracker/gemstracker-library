@@ -842,6 +842,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         $groups   = $dbLookup->getActiveStaffGroups();
 
         if ('master' === $this->getRole($current)) {
+            $groups[-1] = $this->_('Project \'master\'');
             return $groups;
         }
 

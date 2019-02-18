@@ -81,7 +81,7 @@ class Gems_User_ProjectUserDefinition extends \Gems_User_UserDefinitionAbstract
             'user_two_factor_key'    => $twoFactor,
             'user_enable_2factor'    => $twoFactor ? 1 : 0,
             'user_name'              => $login,
-            'user_group'             => 800,
+            'user_group'             => -1,
             'user_role'              => 'master',
             'user_style'             => 'gems',
             'user_base_org_id'       => $organization,

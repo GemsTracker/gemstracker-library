@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-14 12:41+0100\n"
+"POT-Creation-Date: 2019-02-18 14:04+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -437,7 +437,7 @@ msgstr "%s like \"%s\""
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:67
 #: classes/Gems/Agenda/Filter/OrganizationModelDependency.php:63
 #: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:54
-#: classes/Gems/Default/SurveyMaintenanceAction.php:448
+#: classes/Gems/Default/SurveyMaintenanceAction.php:451
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:913
 #: classes/Gems/Tracker/Model/TrackModel.php:137
 #: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:547
@@ -1504,7 +1504,7 @@ msgid "Survey"
 msgstr "Vragenlijst"
 
 #: classes/Gems/Default/ChartconfigAction.php:39
-#: classes/Gems/Default/SurveyMaintenanceAction.php:503
+#: classes/Gems/Default/SurveyMaintenanceAction.php:506
 msgid "Survey code"
 msgstr "Vragenlijstcode"
 
@@ -2079,7 +2079,7 @@ msgstr "Type"
 #: classes/Gems/Default/DatabaseAction.php:219
 #: classes/Gems/Default/DatabaseAction.php:388
 #: classes/Gems/Default/DatabaseAction.php:434
-#: classes/Gems/Default/SurveyMaintenanceAction.php:412
+#: classes/Gems/Default/SurveyMaintenanceAction.php:415
 msgid "Group"
 msgstr "Groep"
 
@@ -3269,7 +3269,7 @@ msgid "Session"
 msgstr "Sessie"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:116
-#: classes/Gems/Default/SurveyMaintenanceAction.php:408
+#: classes/Gems/Default/SurveyMaintenanceAction.php:411
 #, php-format
 msgid "Active in %s"
 msgstr "Actief in %s"
@@ -3280,9 +3280,9 @@ msgid "By"
 msgstr "Door"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:123
-#: classes/Gems/Default/SurveyMaintenanceAction.php:470
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:187
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:634
+#: classes/Gems/Default/SurveyMaintenanceAction.php:473
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:186
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:625
 msgid "Usage"
 msgstr "Gebruik"
 
@@ -3291,22 +3291,22 @@ msgid "How many track definitions use this survey?"
 msgstr "Hoeveel trajecten gebruiken deze vragenlijst?"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:125
-#: classes/Gems/Default/SurveyMaintenanceAction.php:427
+#: classes/Gems/Default/SurveyMaintenanceAction.php:430
 msgid "Insertable"
 msgstr "Invoegbaar"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:126
-#: classes/Gems/Default/SurveyMaintenanceAction.php:428
+#: classes/Gems/Default/SurveyMaintenanceAction.php:431
 msgid "Can this survey be manually inserted into a track?"
 msgstr "Kan deze vragenlijst handmatig in een traject ingevoegd worden?"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:131
-#: classes/Gems/Default/SurveyMaintenanceAction.php:484
+#: classes/Gems/Default/SurveyMaintenanceAction.php:487
 msgid "Duration description"
 msgstr "Beschrijving afnametijd"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:132
-#: classes/Gems/Default/SurveyMaintenanceAction.php:485
+#: classes/Gems/Default/SurveyMaintenanceAction.php:488
 msgid "Text to inform the respondent, e.g. \"20 seconds\" or \"1 minute\"."
 msgstr ""
 "Tekst om de patiënt te informeren, bijv. \"20 seconden\" of \"1 minuut\"."
@@ -3316,7 +3316,7 @@ msgid "Active surveys"
 msgstr "Beschikbare vragenlijsten"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:189
-#: classes/Gems/Default/SurveyMaintenanceAction.php:664
+#: classes/Gems/Default/SurveyMaintenanceAction.php:667
 #: classes/Gems/Default/TokenAction.php:138
 msgid "survey"
 msgid_plural "surveys"
@@ -3778,7 +3778,7 @@ msgstr "Open"
 #: classes/Gems/Default/SummaryAction.php:129
 #: classes/Gems/Snippets/Respondent/RespondentOverviewSnippet.php:147
 #: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:638
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:743
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:735
 msgid "Summary"
 msgstr "Samenvatting"
 
@@ -3787,7 +3787,7 @@ msgid "incalculable"
 msgstr "onberekenbaar"
 
 #: classes/Gems/Default/SurveyMaintenanceAction.php:192
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:524
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:523
 #, php-format
 msgid "Answered surveys: %d."
 msgstr "Beantwoorde vragenlijsten: %d."
@@ -3871,84 +3871,88 @@ msgid "Active in source"
 msgstr "Actief in bron"
 
 #: classes/Gems/Default/SurveyMaintenanceAction.php:406
+msgid "Source survey id"
+msgstr "Bron vragenlijst id"
+
+#: classes/Gems/Default/SurveyMaintenanceAction.php:409
 msgid "Status in source"
 msgstr "Status in bron"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:413
+#: classes/Gems/Default/SurveyMaintenanceAction.php:416
 msgid "If empty, survey will never show up!"
 msgstr "Indien leeg zal de vragenlijst niet tevoorschijn komen!"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:434
+#: classes/Gems/Default/SurveyMaintenanceAction.php:437
 msgid "Add to inserted end date"
 msgstr "Optellen bij eind datum bij  invoegen"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:435
+#: classes/Gems/Default/SurveyMaintenanceAction.php:438
 msgid "Add to the start date to calculate the end date when inserting."
 msgstr "Optellen bij de startdatum tijdens invoegen."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:438
+#: classes/Gems/Default/SurveyMaintenanceAction.php:441
 msgid "Inserted end date unit"
 msgstr "Opteleendheid eind datum"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:439
+#: classes/Gems/Default/SurveyMaintenanceAction.php:442
 msgid "The unit used to calculate the end date when inserting the survey."
 msgstr ""
 "De eenheid die gebruikt wordt bij het berekenen van de eind datum tijdens "
 "het invoegen."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:442
+#: classes/Gems/Default/SurveyMaintenanceAction.php:445
 msgid "Insert organizations"
 msgstr "Invoeg organisaties"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:443
+#: classes/Gems/Default/SurveyMaintenanceAction.php:446
 msgid "The organizations where the survey may be inserted."
 msgstr "De organisaties bij wie deze vragenlijst  ingevoegd mag worden."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:477
+#: classes/Gems/Default/SurveyMaintenanceAction.php:480
 msgid "Duration calculated"
 msgstr "Berekende afnametijd"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:490
+#: classes/Gems/Default/SurveyMaintenanceAction.php:493
 msgid "Result field"
 msgstr "Resultaatveld"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:504
+#: classes/Gems/Default/SurveyMaintenanceAction.php:507
 msgid "Optional code name to link the survey to program code."
 msgstr "Optionele code naam om de vragenlijst aan programmacode te koppelen."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:507
+#: classes/Gems/Default/SurveyMaintenanceAction.php:510
 msgid "Survey export code"
 msgstr "Vragenlijstexportcode"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:508
+#: classes/Gems/Default/SurveyMaintenanceAction.php:511
 #: classes/Gems/Tracker/Snippets/ExportTrackSnippetAbstract.php:382
 msgid "A unique code indentifying this survey during track import"
 msgstr ""
 "Een unieke code die deze vragenlijst identificeert bij de trajectimport"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:515
+#: classes/Gems/Default/SurveyMaintenanceAction.php:518
 msgid "Before answering"
 msgstr "Voor beantwoording"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:522
+#: classes/Gems/Default/SurveyMaintenanceAction.php:525
 #: classes/Gems/Tracker/Model/TrackModel.php:114
 msgid "After completion"
 msgstr "Na afronding"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:529
+#: classes/Gems/Default/SurveyMaintenanceAction.php:532
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:887
 msgid "Answer display"
 msgstr "Antwoord weergave"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:589
+#: classes/Gems/Default/SurveyMaintenanceAction.php:592
 msgid " ["
 msgstr " ["
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:590
+#: classes/Gems/Default/SurveyMaintenanceAction.php:593
 msgid "]"
 msgstr "]"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:604
+#: classes/Gems/Default/SurveyMaintenanceAction.php:607
 #: classes/Gems/Menu.php:474 classes/Gems/Menu/MenuAbstract.php:685
 #: classes/Gems/Menu/MenuAbstract.php:783
 #: classes/Gems/Tracker/Model/TrackModel.php:88
@@ -5716,7 +5720,7 @@ msgstr "Behandeling"
 
 #: classes/Gems/Model/RespondentModel.php:362
 #: classes/Gems/Model/RespondentRelationModel.php:56
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:748
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:740
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:312
 msgid "Comments"
 msgstr "Opmerkingen"
@@ -5816,7 +5820,7 @@ msgstr "Login Naam"
 
 #: classes/Gems/Model/StaffModel.php:190
 #: classes/Gems/User/Form/OrganizationFormAbstract.php:218
-#: classes/Gems/User/User.php:1734
+#: classes/Gems/User/User.php:1735
 msgid "Username"
 msgstr "Gebruikersnaam"
 
@@ -7306,106 +7310,106 @@ msgstr "Afdrukken"
 msgid "Survey replace"
 msgstr "Vragenlijst vervangen"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:167
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:619
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:166
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:610
 #: classes/Gems/Snippets/Survey/SurveyQuestionsSnippet.php:133
 msgid "Question code"
 msgstr "Vraagcode"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:168
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:363
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:620
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:724
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:167
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:362
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:611
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:716
 msgid "Source Survey"
 msgstr "Bron vragenlijst"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:169
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:365
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:621
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:725
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:168
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:364
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:612
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:717
 msgid "Target Survey"
 msgstr "Doel vragenlijst"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:239
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:238
 msgid "Survey replaced successfully!"
 msgstr "Vervangen vragenlijst geslaagd!"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:283
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:282
 msgid "Question type is not the same. Check compatibility!"
 msgstr "Vraag type is niet hetzelfde. Controleer of ze overdraagbaar zijn!"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:285
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:284
 msgid "Question could not be found in source. Is this a new question?"
 msgstr "Vraag kan niet gevonden worden in bron. Is dit een nieuwe vraag?"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:343
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:342
 #, php-format
 msgid "Used %d time in %s track."
 msgid_plural "Used %d times in %s track."
 msgstr[0] "%d keer in %s traject gebruikt."
 msgstr[1] "%d keer in %s traject gebruikt."
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:349
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:348
 msgid "Not used in any track."
 msgstr "In geen enkel traject gebruikt."
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:364
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:363
 msgid "Source and target survey can not be the same"
 msgstr "Bron en doel vragenlijst kunnen niet hetzelfde zijn"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:367
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:366
 msgid "Replace in track definitions"
 msgstr "Vervang in trajectdefinitie."
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:367
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:366
 msgid "Replace all occurances of old survey in all tracks with the new survey"
 msgstr ""
 "Vervang in alle trajecten de oude vragenlijst door de nieuwe vragenlijst"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:370
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:369
 msgid "Replace in existing tracks"
 msgstr "Vervang in een bestaand traject"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:370
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:369
 msgid "Update all existing gemstracker tokens to point to the new survey"
 msgstr ""
 "Pas alle bestaande gemstracker kenmerken aan om naar de nieuwe vragenlijst "
 "te wijzen."
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:374
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:373
 msgid "Copy survey answers"
 msgstr "Kopiëer antwoorden"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:374
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:373
 msgid "Copy all survey answers into the new survey"
 msgstr "Kopiëer alle beantwoorde vragenlijsten naar de nieuwe vragenlijst"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:449
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:448
 #, php-format
 msgid "Target survey already has %d answers. Is this expected?"
 msgstr "Doel vragenlijst heeft al %d antwoorden. Klopt dit?"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:475
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:474
 #, php-format
 msgid "%d new questions"
 msgstr "%d nieuwe vragen"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:479
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:478
 #, php-format
 msgid "%d questions without warnings "
 msgstr "%d vragen zonder waarschuwing"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:483
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:482
 #, php-format
 msgid "%d missing questions"
 msgstr "%d missende vragen"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:487
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:486
 #, php-format
 msgid "%d questions where the question type has changed"
 msgstr "%d vragen waarbij het vraagtype is veranderd"
 
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:816
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:798
 msgid "Insert answers into a new version of a survey"
 msgstr "Voeg antwoorden in een nieuwe versie van een vragenlijst toe."
 
@@ -9668,7 +9672,7 @@ msgid "Trying upgrade for %s to level %s: %s"
 msgstr "Probeert upgrade voor %s naar niveau %s: %s"
 
 #: classes/Gems/User/Form/ChangePasswordForm.php:180
-#: classes/Gems/User/User.php:1714 classes/Gems/User/User.php:1729
+#: classes/Gems/User/User.php:1715 classes/Gems/User/User.php:1730
 #, php-format
 msgid "%s is not correct."
 msgstr "%s is onjuist."
@@ -9951,32 +9955,36 @@ msgstr[1] ""
 msgid "You are not allowed to login from this location."
 msgstr "U kunt vanaf deze locatie niet inloggen."
 
-#: classes/Gems/User/User.php:1699
+#: classes/Gems/User/User.php:845
+msgid "Project 'master'"
+msgstr "Project 'master'"
+
+#: classes/Gems/User/User.php:1700
 msgid "Your birthday"
 msgstr "Uw geboortedatum"
 
-#: classes/Gems/User/User.php:1722
+#: classes/Gems/User/User.php:1723
 msgid "Your zipcode"
 msgstr "Uw postcode"
 
-#: classes/Gems/User/User.php:1820
+#: classes/Gems/User/User.php:1821
 msgid "Trying to send a password reset to a user that cannot be reset."
 msgstr "Het wachtwoord voor deze gebruiker kan niet gewijzigd worden."
 
-#: classes/Gems/User/User.php:1848
+#: classes/Gems/User/User.php:1849
 msgid "Unable to send e-mail."
 msgstr "Verzenden email mislukt."
 
-#: classes/Gems/User/User.php:1963 classes/Gems/User/User.php:1968
+#: classes/Gems/User/User.php:1964 classes/Gems/User/User.php:1969
 msgid "No access to group"
 msgstr "Geen toegang tot deze groep"
 
-#: classes/Gems/User/User.php:1964
+#: classes/Gems/User/User.php:1965
 #, php-format
 msgid "You are not allowed to switch to the %s group."
 msgstr "U mag niet naar de %s groep switchen."
 
-#: classes/Gems/User/User.php:1969
+#: classes/Gems/User/User.php:1970
 #, php-format
 msgid "You cannot switch to an inactive or non-existing group."
 msgstr "U mag niet switchen naar een inactieve of niet-bestaande groep."
