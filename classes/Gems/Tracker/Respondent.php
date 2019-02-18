@@ -508,7 +508,11 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
                         $respTrack->setReceptionCode($newCode, null, $this->currentUser->getUserId());
                         $respTrack->restoreTokens($oldCode, $newCode);
                         $count++;
-                    }
+                    } else {
+                        // If the code was not assigned to the track, still try to restore tokens
+                        $tmpCount = $respTrack->restoreTokens($oldCode, $newCode);
+                        $count = $count + min($tmpCount, 1);
+		    }
                 }
             }
         }
