@@ -403,6 +403,9 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
                 'elementClass', 'Exhibitor',
                 'multiOptions', $yesNo
                 );
+        $model->set('gsu_surveyor_id',    'label', $this->_('Source survey id'),
+                'elementClass', 'Exhibitor'
+                );
         $model->set('gsu_status_show',        'label', $this->_('Status in source'),
                 'elementClass', 'Exhibitor');
         $model->set('gsu_active',             'label', sprintf($this->_('Active in %s'), $this->project->getName()),
@@ -589,7 +592,7 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
         $output[20] = array('gsu_surveyor_active', \MUtil_Html::raw($this->_(' [')), 'gso_source_name',
             \MUtil_Html::raw($this->_(']')), $br, 'gsu_status_show', $br, 'gsu_insertable');
         $output[30] = array('gsu_active', \MUtil_Html::raw(' '), 'track_count', $br, 'gsu_id_primary_group');
-        $output[40] = array('gsu_code', $br, 'gsu_export_code');
+        $output[40] = array('gsu_surveyor_id', $br, 'gsu_code', $br, 'gsu_export_code');
 
         return $output;
     }
