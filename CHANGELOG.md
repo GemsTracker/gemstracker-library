@@ -5,13 +5,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 [Unreleased]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.4...HEAD
+### Security
+- Token valid dates are also injected in the survey system (#385)
+- A basic continue later option was added to allow repsondents to pause answering surveys (#387)
+
 ### Added
 - Compliance overview now provides a better export (#381)
 - Round conditions can now filter for contained text (#384)
+- Round conditions now allow to use the gender of the respondent or the relation (#390)
 - Organization contact email will now be notified when cron has not run on time, can be switched off (#172)
+- Boolean trackfield was added (#399)
+
+### Interface improvements
+- Source survey id is visible in survey maintenance screen (#403)
+- The progressbar will reach 100% now in Internet Explorer (#400)
+- The project user can now switch to superadmin group (#404)
 
 ### Fixed
 - Use of mcrypt no longer requeired, uses OpenSSL instead (#334)
+- When exporting multiple survey results at the same time, SPSS export now adds a syntax file for each survey (#391)
 
 ## [1.8.5] - 2018-10-10
 [1.8.5]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.4...1.8.5
