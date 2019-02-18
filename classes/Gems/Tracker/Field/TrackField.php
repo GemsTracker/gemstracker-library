@@ -14,7 +14,7 @@ class TrackField extends FieldAbstract
      *
      * @var array Null or an array of respondent track fields.
      */
-    protected $_dependsOn = array('gr2t_id_user', 'gr2t_id_organization');
+    protected $_dependsOn = array('gr2t_id_user', 'gr2t_id_organization', 'gr2t_id_respondent_track');
 
     /**
      * Model settings for this field that may change depending on the dependsOn fields.
@@ -66,6 +66,12 @@ class TrackField extends FieldAbstract
         $settings['multiOptions'] = $empty + $this->getLookup();
         $settings['formatFunction'] = array($this, 'showTrack');
     }
+    
+    public function calculateFieldInfo($currentValue, array $fieldData)
+    {
+        // Always leave empty
+        return false;
+    }
 
     /**
      * Returns the changes to the model for this field that must be made in an array consisting of
@@ -91,8 +97,9 @@ class TrackField extends FieldAbstract
             return null;
         }
         $empty  = $this->util->getTranslated()->getEmptyDropdownArray();
-
-        $output['multiOptions'] = $empty + $this->getLookup($context['gr2t_id_user'], $context['gr2t_id_organization']);
+        $tracks = $this->getLookup($context['gr2t_id_user'], $context['gr2t_id_organization']);
+        unset($tracks[$context['gr2t_id_respondent_track']]);
+        $output['multiOptions'] = $empty + $tracks;
 
         return $output;
     }
