@@ -30,13 +30,13 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
      * @var \Gems_Loader
      */
     public $loader;
-    
+
     /**
      *
      * @var \Gems_Menu
      */
     public $menu;
-    
+
     /**
      * Required
      *
@@ -50,21 +50,21 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
      * @var \Gems_Tracker_Token
      */
     protected $showToken;
-    
+
     /**
      * Switch for showing how long the token is valid.
      *
      * @var boolean
      */
     protected $showUntil = false;
-    
+
     /**
      * Show this snippet show a thank you screen when there are no more tokens to answer?
-     * 
-     * @var boolean 
+     *
+     * @var boolean
      */
     public $showEndScreen = true;
-    
+
     public function addContinueLink(\MUtil_Html_HtmlInterface $html)
     {
         if (!$this->checkContinueLinkClicked()) {
@@ -82,21 +82,23 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
             }
         }
     }
-    
+
     public function addWelcome(\MUtil_Html_HtmlInterface $html)
     {
-        if ($this->showToken->hasRelation()) {
-            $name = $this->showToken->getRelation()->getName();
-        } else {
-            $name = $this->showToken->getRespondentName();
+        if ($this->showToken) {
+            if ($this->showToken->hasRelation()) {
+                $name = $this->showToken->getRelation()->getName();
+            } else {
+                $name = $this->showToken->getRespondentName();
+            }
         }
         $html->pInfo(sprintf($this->_('Welcome %s,'), $name));
     }
-    
+
     public function checkContinueLinkClicked()
     {
         return $this->request->getParam('continue_later', false);
-    }    
+    }
 
     /**
      * Should be called after answering the request to allow the Target
@@ -112,10 +114,10 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
             return false;
         }
     }
-    
+
     /**
      * Handle the situation when the continue later link was clicked
-     * 
+     *
      * @return \MUtil_Html_HtmlInterface
      */
     public function continueClicked()
@@ -138,7 +140,7 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
             } else {
                 $html->pInfo($this->_('An email with information to continue later was already sent to your registered email address today.'));
             }
-            
+
             $html->pInfo($this->_('Delivery can take a while. If you do not receive an email please check your spam-box.'));
         }
 
@@ -163,7 +165,7 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
             if (!($this->showToken instanceof \Gems_Tracker_Token)) {
                 // Last token was answered, return info
                 return $this->lastCompleted();
-                
+
             } elseif ($this->checkContinueLinkClicked()) {
                 // Continue later was clicked, handle the click
                 return $this->continueClicked();
@@ -173,7 +175,7 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
         $delay = $this->project->getAskDelay($this->request, $this->wasAnswered);
         $href  = $this->getTokenHref($this->showToken);
         $url   = $href->render($this->view);
-        
+
         switch ($delay) {
             case 0:
                 // Redirect at once
@@ -186,15 +188,15 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
             default:
                 // Let the page load after stated interval
                 $this->view->headMeta()->appendHttpEquiv('Refresh', $delay . '; url=' . $url);
-        }        
-        
+        }
+
         $html  = $this->getHtmlSequence();
         $org   = $this->showToken->getOrganization();
 
         $html->h3($this->_('Token'));
-        
+
         $this->addWelcome($html);
-        if ($this->showToken->hasRelation()) {
+        if ($this->showToken && $this->showToken->hasRelation()) {
             $html->pInfo(sprintf($this->_('We kindly ask you to answer a survey about %s.'), $this->showToken->getRespondent()->getName()));
         }
 
@@ -216,7 +218,7 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
 
         $buttonDiv = $html->buttonDiv(array('class' => 'centerAlign'));
         $buttonDiv->actionLink($href, $this->showToken->getSurveyName());
-        
+
         $buttonDiv->append(' ');
         $buttonDiv->append($this->formatDuration($this->showToken->getSurvey()->getDuration()));
         $buttonDiv->append($this->formatUntil($this->showToken->getValidUntil()));
@@ -224,7 +226,7 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
         if ($delay > 0) {
             $buttonDiv->actionLink(array('delay_cancelled' => 1), $this->_('Cancel'));
         }
-        
+
         if ($this->wasAnswered) {
             // Provide continue later link only when the first survey was answered
             $this->addContinueLink($html);
@@ -260,21 +262,21 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
             $this->showToken = $this->token->getNextUnansweredToken();
         } else {
             $this->showToken = $this->token;
-        }        
-        
+        }
+
         $validToken = ($this->showToken instanceof \Gems_Tracker_Token) && $this->showToken->exists;
-        
+
         if (!$validToken && $this->wasAnswered) {
             // The token was answered, but there are no more tokens to show
             $validToken = $this->showEndScreen;
         }
-        
+
         return $validToken;
     }
-    
+
     /**
      * The last token was answered, there are no more tokens to answer
-     * 
+     *
      * @return \MUtil_Html_HtmlInterface
      */
     public function lastCompleted()
