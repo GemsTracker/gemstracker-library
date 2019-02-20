@@ -129,6 +129,8 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
     protected $showSnippets = array(
         'Generic\\ContentTitleSnippet',
         'ModelItemTableSnippetGeneric',
+        'Tracker\\TrackVisualDefinitionTitleSnippet',
+        'Tracker\\TrackVisualDefinitionSnippet',
         'Tracker\\Fields\\FieldsTitleSnippet',
         'Tracker\\Fields\\FieldsTableSnippet',
         'Tracker\\Buttons\\NewFieldButtonRow',
@@ -306,5 +308,25 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
         $this->_helper->BatchRunner($batch, $title, $this->accesslog);
 
         $this->addSnippet('Track\\RecalcFieldsInformation');
+    }
+
+    /**
+     *  Pass the h3 tag to all snippets except the first one
+     */    
+    public function showAction()
+    {
+        $showSnippets = $this->showSnippets;
+        $first = array_shift($showSnippets);
+        $next  = $showSnippets;
+        
+        $this->showSnippets = $first;
+        parent::showAction();
+        
+        $this->showParameters['tagName'] = 'h3';
+        
+        $this->showSnippets = $next;
+        parent::showAction();
+        
+        $this->showSnippets = array_unshift($next);
     }
 }
