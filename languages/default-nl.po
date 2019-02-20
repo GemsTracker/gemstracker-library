@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-18 14:04+0100\n"
+"POT-Creation-Date: 2019-02-20 12:47+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -844,7 +844,7 @@ msgstr "Ok"
 #: classes/Gems/Default/UpgradeAction.php:212
 #: classes/Gems/Export/RespondentExport.php:480
 #: classes/Gems/Snippets/Agenda/AppointmentCleanupSnippet.php:228
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:225
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:227
 #: classes/Gems/Snippets/FormSnippetAbstract.php:214
 #: classes/Gems/Snippets/Generic/ButtonRowSnippet.php:79
 #: classes/Gems/Snippets/ModelFormSnippetAbstract.php:338
@@ -1387,7 +1387,7 @@ msgid "The token %s does not exist (any more)."
 msgstr "Het kenmerk %s bestaat niet (meer)."
 
 #: classes/Gems/Default/AskAction.php:243
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:290
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:292
 #, php-format
 msgid ""
 "Thank you for answering. At the moment we have no further surveys for you to "
@@ -1498,6 +1498,7 @@ msgstr "Ronde"
 #: classes/Gems/Snippets/Survey/AnswerImportSnippet.php:125
 #: classes/Gems/Snippets/Tracker/Rounds/ConditionRoundsTableSnippet.php:106
 #: classes/Gems/Snippets/Tracker/TrackSurveyOverviewSnippet.php:94
+#: classes/Gems/Snippets/Tracker/TrackVisualDefinitionSnippet.php:110
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:868
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:283
 msgid "Survey"
@@ -1622,6 +1623,7 @@ msgstr "1 betekent dat maar één herinnering verstuurd word"
 #: classes/Gems/Default/CommJobAction.php:182
 #: classes/Gems/Default/SummaryAction.php:101
 #: classes/Gems/Snippets/Respondent/RespondentOverviewSnippet.php:149
+#: classes/Gems/Snippets/Tracker/TrackVisualDefinitionSnippet.php:111
 msgid "Filler"
 msgstr "Invuller"
 
@@ -1836,7 +1838,7 @@ msgstr "Voortgang"
 #: classes/Gems/Default/FieldReportAction.php:344
 #: classes/Gems/Default/ProjectTracksAction.php:148
 #: classes/Gems/Default/TrackAction.php:1024
-#: classes/Gems/Default/TrackMaintenanceAction.php:276
+#: classes/Gems/Default/TrackMaintenanceAction.php:278
 #: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:186
 #: classes/Gems/Tracker/Snippets/EditTrackSnippetAbstract.php:171
 msgid "track"
@@ -4189,20 +4191,20 @@ msgid_plural "fields"
 msgstr[0] "veld"
 msgstr[1] "velden"
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:171
+#: classes/Gems/Default/TrackMaintenanceAction.php:173
 msgid "Checking round assignments for all tracks."
 msgstr "Controleren ronde toewijzingen voor alle trajecten."
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:190
+#: classes/Gems/Default/TrackMaintenanceAction.php:192
 #, php-format
 msgid "Checking round assignments for track %d '%s'."
 msgstr "Controleer ronde toewijzingen voor traject %d '%s'."
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:287
+#: classes/Gems/Default/TrackMaintenanceAction.php:289
 msgid "Recalculating fields for all tracks."
 msgstr "Herbereken de trajectvelden van alle trajecten."
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:305
+#: classes/Gems/Default/TrackMaintenanceAction.php:307
 #, php-format
 msgid "Recalculating fields for track %d '%s'."
 msgstr "Herbereken de velden voor traject %d '%s'."
@@ -4508,9 +4510,9 @@ msgstr "Laatste pagina"
 #: classes/Gems/Model/Translator/TokenAnswerTranslator.php:89
 #: classes/Gems/Snippets/Ask/RedirectUntilGoodbyeSnippet.php:83
 #: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:65
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:126
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:194
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:286
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:128
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:196
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:288
 #: classes/Gems/Snippets/Import/FileImportSnippet.php:64
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:771
 #: classes/Gems/Tracker/Form/AskTokenForm.php:52
@@ -6341,19 +6343,19 @@ msgstr "Wij waarderen uw medewerking."
 
 #: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:67
 #: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:71
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:93
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:95
 #, php-format
 msgid "Welcome %s,"
 msgstr "Welkom %s,"
 
 #: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:69
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:198
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:200
 #, php-format
 msgid "We kindly ask you to answer a survey about %s."
 msgstr "Wij verzoeken u een vragenlijst over %s te beantwoorden."
 
 #: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:77
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:202
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:204
 #, php-format
 msgid "Thank you for answering the \"%s\" survey."
 msgstr "Dank u voor het invullen van de \"%s\" vragenlijst."
@@ -6391,7 +6393,7 @@ msgstr "of"
 msgid "Send me an email to continue later"
 msgstr "Stuur mij een email om later verder te gaan"
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:137
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:139
 msgid ""
 "An email with information to continue later was sent to your registered "
 "email address."
@@ -6399,7 +6401,7 @@ msgstr ""
 "Een email met informatie om later verder te gaan is verstuurd naar uw "
 "emailadres."
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:139
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:141
 msgid ""
 "An email with information to continue later was already sent to your "
 "registered email address today."
@@ -6407,7 +6409,7 @@ msgstr ""
 "Een email met informatie om later verder te gaan is vandaag al verstuurd "
 "naar uw emailadres."
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:142
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:144
 msgid ""
 "Delivery can take a while. If you do not receive an email please check your "
 "spam-box."
@@ -6415,18 +6417,18 @@ msgstr ""
 "Het kan even duren voordat u de email ontvangt. Als u niets ontvangt, "
 "controleer dan uw spam-box."
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:203
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:205
 msgid "Please click the button below to answer the next survey."
 msgstr "Klik op de onderstaande knop om de volgende vragenlijst in te vullen."
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:208
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:210
 #, php-format
 msgid "Please click the button below to answer the survey for token %s."
 msgstr ""
 "Klik op de onderstaande knop om de vragenlijst behorende bij kenmerk %s in "
 "te vullen."
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:212
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:214
 #, php-format
 msgid ""
 "Wait one second to open the survey automatically or click on Cancel to stop."
@@ -6439,7 +6441,7 @@ msgstr[1] ""
 "Over %d seconden start de vragenlijst automatisch. Klik op annuleren om dit "
 "te onderbreken."
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:236
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:238
 #, php-format
 msgid ""
 "After this survey there is one other survey we would like you to answer."
@@ -8000,6 +8002,11 @@ msgstr "Dit traject kan aan een patiënt toegewezen worden van %s tot %s."
 #, php-format
 msgid "This track can be assigned since %s."
 msgstr "Dit traject kan sinds %s aan een patiënt toegewezen worden."
+
+#: classes/Gems/Snippets/Tracker/TrackVisualDefinitionTitleSnippet.php:44
+#, php-format
+msgid "Quick view %s track"
+msgstr "Quick view traject %s"
 
 #: classes/Gems/Snippets/User/AdminPasswordResetSnippet.php:41
 msgid "Create account mail"

@@ -327,6 +327,6 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
         $this->showSnippets = $next;
         parent::showAction();
         
-        $this->showSnippets = array_unshift($next);
+        $this->showSnippets = array_unshift($next, $first);
     }
 }

@@ -20,7 +20,7 @@ namespace Gems\Snippets\Tracker;
  * @license    New BSD License
  * @since      Class available since version 1.8.6
  */
-class TrackerVisualDefinitionSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
+class TrackVisualDefinitionSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
 {
     /**
      * Set a fixed model sort.
@@ -29,7 +29,9 @@ class TrackerVisualDefinitionSnippet extends \Gems_Snippets_ModelTableSnippetAbs
      *
      * @var array
      */
-    protected $_fixedSort = array('gro_id_order' => SORT_ASC);
+    protected $_fixedSort = array('round_order' => SORT_ASC);
+    
+    protected $_model;
 
     /**
      * One of the \MUtil_Model_Bridge_BridgeAbstract MODE constants
@@ -39,6 +41,8 @@ class TrackerVisualDefinitionSnippet extends \Gems_Snippets_ModelTableSnippetAbs
     protected $bridgeMode = \MUtil_Model_Bridge_BridgeAbstract::MODE_ROWS;
     
     protected $class = 'browser table visualtrack';
+    
+    protected $db;
     
     protected $showMenu = false;
     
@@ -87,7 +91,7 @@ class TrackerVisualDefinitionSnippet extends \Gems_Snippets_ModelTableSnippetAbs
                 'round_order' => new \Zend_Db_Expr('min(gro_id_order)')
             ];
             foreach ($rounds as $round) {
-                $fields[$round] = new \Zend_Db_Expr('max(case when gro_round_description = ' . $db->quote($round) . ' then "X" else NULL end)');
+                $fields[$round] = new \Zend_Db_Expr('max(case when (gro_round_description = ' . $db->quote($round) . ' AND gro_condition IS NULL) then "X" when gro_round_description = ' . $db->quote($round) . ' then "C" else NULL end)');
             }
             $fields['filler'] = new \Zend_Db_Expr('COALESCE(gems__track_fields.gtf_field_name, gems__groups.ggp_name)');
 
