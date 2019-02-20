@@ -29,7 +29,11 @@ class TrackVisualDefinitionSnippet extends \Gems_Snippets_ModelTableSnippetAbstr
      *
      * @var array
      */
-    protected $_fixedSort = array('round_order' => SORT_ASC);
+    protected $_fixedSort = [
+        'filler'          => SORT_ASC,
+        'gsu_survey_name' => SORT_ASC,
+        'round_order'     => SORT_ASC
+        ];
     
     protected $_model;
 
@@ -107,8 +111,8 @@ class TrackVisualDefinitionSnippet extends \Gems_Snippets_ModelTableSnippetAbstr
             $model = new \MUtil_Model_SelectModel($sql, 'track-plan');
             //$model->setKeys(array('gsu_survey_name'));
             $model->resetOrder();
-            $model->set('gsu_survey_name', 'label', $this->_('Survey'));
             $model->set('filler', 'label', $this->_('Filler'));
+            $model->set('gsu_survey_name', 'label', $this->_('Survey'));            
             foreach ($rounds as $round) {
                 $model->set($round, 'label', $round);
             }
