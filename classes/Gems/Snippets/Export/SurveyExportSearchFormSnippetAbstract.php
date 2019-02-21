@@ -71,6 +71,7 @@ abstract class SurveyExportSearchFormSnippetAbstract extends \Gems_Snippets_Auto
             'gr2t_end_date'       => $this->_('Track end'),
             'gto_valid_from'      => $this->_('Valid from'),
             'gto_valid_until'     => $this->_('Valid until'),
+            'gto_start_time'      => $this->_('Start date'),
             'gto_completion_time' => $this->_('Completion date'),
             );
         // $dates = 'gto_valid_from';
