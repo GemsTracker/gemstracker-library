@@ -30,6 +30,8 @@ class Gems_Tracker_Snippets_EditRoundSnippetAbstract extends \Gems_Snippets_Mode
      * @var \Gems_Loader
      */
     protected $loader;
+    
+    protected $onlyUsedElements = true;
 
     /**
      *
