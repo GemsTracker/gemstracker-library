@@ -991,13 +991,13 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
         $result = false;
 
         // VALID AFTER DATE
-
-        // Survey list is independent of the actual chosen source, but not
-        // vice versa. So we have to set it now.
-        $result = $this->applySurveyListValidAfter($model, $itemData) || $result;
-
+        
         if (! $this->_sourceUsesSurvey($itemData['gro_valid_after_source'])) {
             $model->del('gro_valid_after_id', 'label');
+        } else {
+            // Survey list is independent of the actual chosen source, but not
+            // vice versa. So we have to set it now.
+            $result = $this->applySurveyListValidAfter($model, $itemData) || $result;
         }
 
         // Set allowed after sources
@@ -1008,13 +1008,13 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
 
         // VALID FOR DATE
 
-        // Survey list is indepedent of the actual chosen source, but not
-        // vice versa. So we have to set it now.
-        $result = $this->applySurveyListValidFor($model, $itemData) || $result;
-
         // Display used survey only when appropriate
         if (! $this->_sourceUsesSurvey($itemData['gro_valid_for_source'])) {
             $model->del('gro_valid_for_id', 'label');
+        } else {
+            // Survey list is indepedent of the actual chosen source, but not
+            // vice versa. So we have to set it now.
+            $result = $this->applySurveyListValidFor($model, $itemData) || $result;
         }
 
         // Set allowed for sources
