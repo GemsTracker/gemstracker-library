@@ -119,10 +119,21 @@ class SpssExport extends ExportAbstract
         }
         fputcsv($file, $exportRow, $this->delimiter, "'");
         if ($changed) {
+            $modelData = [];
+            foreach ($exportRow as $name => $value) {
+                $modelData[$name] = [
+                    'type' => $this->model->get($name, 'type'),
+                    'maxlength' => $this->model->get($name, 'maxlength')
+                ];
+            }
             if ($this->batch) {
-                $this->batch->setVariable('model', $this->model);
+                $models = $this->batch->getSessionVariable('modelsExtra');
+                $models[$this->modelId] = $modelData;
+                $this->batch->setSessionVariable('modelsExtra', $models);
             } else {
-                $this->_session->model = $this->model;
+                $models = $this->_session->modelsExtra;
+                $models[$this->modelId] = $modelData;
+                $this->_session->modelsExtra = $models;
             }
         }
     }
@@ -329,6 +340,29 @@ class SpssExport extends ExportAbstract
             }
             $options['type']           = $type;
             $this->model->set($columnName, $options);
+        }
+        
+        // Load extra data
+        if ($this->batch) {
+            $models = $this->batch->getSessionVariable('modelsExtra');
+        } else {
+            $models = $this->_session->modelsExtra;
+        }
+        
+        if (!is_array($models) || !isset($models[$this->modelId])) {
+            $models[$this->modelId] = [];
+        }
+        $modelData = $models[$this->modelId];
+        foreach($modelData as $name => $items)
+        {
+            $this->model->set($name, $items);
+        }
+        
+        // Save extra data
+        if ($this->batch) {
+            $this->batch->setSessionVariable('modelsExtra', $models);
+        } else {
+            $this->_session->modelsExtra = $models;
         }
     }
 }
