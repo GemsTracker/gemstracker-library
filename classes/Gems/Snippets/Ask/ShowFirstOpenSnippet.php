@@ -134,11 +134,11 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
         if ($mail->setTemplateByCode('continue')) {
             $lastMailedDate = \MUtil_Date::ifDate($this->showToken->getMailSentDate(), 'yyyy-MM-dd');
             // Do not send multiple mails a day
-            if (! is_null($lastMailedDate) && !$lastMailedDate->isToday()) {
+            if (! is_null($lastMailedDate) && $lastMailedDate->isToday()) {
+                $html->pInfo($this->_('An email with information to continue later was already sent to your registered email address today.'));
+            } else {
                 $mail->send();
                 $html->pInfo($this->_('An email with information to continue later was sent to your registered email address.'));
-            } else {
-                $html->pInfo($this->_('An email with information to continue later was already sent to your registered email address today.'));
             }
 
             $html->pInfo($this->_('Delivery can take a while. If you do not receive an email please check your spam-box.'));
