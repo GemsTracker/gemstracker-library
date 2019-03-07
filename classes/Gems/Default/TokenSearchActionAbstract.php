@@ -221,6 +221,12 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
                     $filter['gto_completion_time'] = null;
                     break;
 
+                case 'notmailable':
+                    $filter[] = '(gr2o_mailable = 0 OR gr2t_mailable = 0) AND ggp_respondent_members = 0';
+                    $filter[] = '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)';
+                    $filter['gto_completion_time'] = null;
+                    break;
+
                 case 'notmailed':
                     $filter['gto_mail_sent_date'] = null;
                     $filter[] = '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)';

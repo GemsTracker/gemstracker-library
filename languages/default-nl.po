@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-20 12:47+0100\n"
+"POT-Creation-Date: 2019-03-07 12:30+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 1.8.9\n"
+"X-Generator: Poedit 2.2.1\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
@@ -1498,7 +1498,7 @@ msgstr "Ronde"
 #: classes/Gems/Snippets/Survey/AnswerImportSnippet.php:125
 #: classes/Gems/Snippets/Tracker/Rounds/ConditionRoundsTableSnippet.php:106
 #: classes/Gems/Snippets/Tracker/TrackSurveyOverviewSnippet.php:94
-#: classes/Gems/Snippets/Tracker/TrackVisualDefinitionSnippet.php:110
+#: classes/Gems/Snippets/Tracker/TrackVisualDefinitionSnippet.php:115
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:868
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:283
 msgid "Survey"
@@ -1623,7 +1623,7 @@ msgstr "1 betekent dat maar één herinnering verstuurd word"
 #: classes/Gems/Default/CommJobAction.php:182
 #: classes/Gems/Default/SummaryAction.php:101
 #: classes/Gems/Snippets/Respondent/RespondentOverviewSnippet.php:149
-#: classes/Gems/Snippets/Tracker/TrackVisualDefinitionSnippet.php:111
+#: classes/Gems/Snippets/Tracker/TrackVisualDefinitionSnippet.php:114
 msgid "Filler"
 msgstr "Invuller"
 
@@ -1811,6 +1811,7 @@ msgstr "Patiënt nr"
 #: classes/Gems/Default/FieldOverviewAction.php:104
 #: classes/Gems/Model/EpisodeOfCareModel.php:144
 #: classes/Gems/Model/EpisodeOfCareModel.php:185
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:74
 #: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:609
 #: classes/OpenRosa/Tracker/Source/Form.php:629
 msgid "Start date"
@@ -2986,7 +2987,7 @@ msgstr "Geen bestaand kenmerk opgegeven!"
 
 #: classes/Gems/Default/OpenRosaFormAction.php:128
 #: classes/Gems/Default/SummaryAction.php:247
-#: classes/Gems/Default/TokenSearchActionAbstract.php:268
+#: classes/Gems/Default/TokenSearchActionAbstract.php:274
 #: classes/Gems/Default/TrackAction.php:1004
 #: classes/Gems/Tracker/Snippets/EditTokenSnippetAbstract.php:122
 msgid "token"
@@ -4230,7 +4231,7 @@ msgid "Rounds"
 msgstr "Rondes"
 
 #: classes/Gems/Default/TrackRoundsAction.php:237
-#: classes/Gems/Tracker/Snippets/EditRoundSnippetAbstract.php:97
+#: classes/Gems/Tracker/Snippets/EditRoundSnippetAbstract.php:99
 msgid "round"
 msgid_plural "rounds"
 msgstr[0] "ronde"
@@ -4482,7 +4483,7 @@ msgstr "Trajectomschrijving"
 
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:398
 #: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:231
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:74
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:75
 #: classes/Gems/Snippets/Token/PlanSearchSnippet.php:78
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:541
 #: classes/OpenRosa/Tracker/Source/Form.php:632
@@ -6393,21 +6394,21 @@ msgstr "of"
 msgid "Send me an email to continue later"
 msgstr "Stuur mij een email om later verder te gaan"
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:139
-msgid ""
-"An email with information to continue later was sent to your registered "
-"email address."
-msgstr ""
-"Een email met informatie om later verder te gaan is verstuurd naar uw "
-"emailadres."
-
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:141
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:138
 msgid ""
 "An email with information to continue later was already sent to your "
 "registered email address today."
 msgstr ""
 "Een email met informatie om later verder te gaan is vandaag al verstuurd "
 "naar uw emailadres."
+
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:141
+msgid ""
+"An email with information to continue later was sent to your registered "
+"email address."
+msgstr ""
+"Een email met informatie om later verder te gaan is verstuurd naar uw "
+"emailadres."
 
 #: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:144
 msgid ""
@@ -6612,11 +6613,11 @@ msgstr "Traject start"
 msgid "Track end"
 msgstr "Traject einde"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:82
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:83
 msgid "Respondent id's"
 msgstr "Respondent id's"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:85
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:86
 msgid ""
 "Not respondent nr, but respondent id as exported here. Separate multiple "
 "id's with , or ;"
@@ -6624,26 +6625,26 @@ msgstr ""
 "Niet patiënt nr, maar respondent id zoals hier wordt geëxporteerd. Scheid "
 "meerdere id's met, of;"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:100
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:101
 msgid "Output"
 msgstr "Output"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:103
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:104
 msgid "Include incomplete surveys"
 msgstr "Voeg onvoltooide vragenlijsten toe"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:104
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:105
 msgid ""
 "Include surveys that have been started but have not been checked as completed"
 msgstr ""
 "Voeg vragenlijsten toe die gestart zijn maar niet gemarkeerd zijn als "
 "voltooid"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:108
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:109
 msgid "Column Identifiers"
 msgstr "Kolom identificatoren"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:109
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:110
 msgid ""
 "Prefix the column labels with an identifier. (A) Answers, (TF) Trackfields, "
 "(D) Description"
@@ -6651,23 +6652,23 @@ msgstr ""
 "Zet een voorvoegsel voor de kolomlabels met een id. (A) antwoorden, (TF) "
 "trajectvelden, (D) beschrijving"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:113
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:114
 msgid "Show parent"
 msgstr "Toon hoofdvraag"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:114
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:115
 msgid "Show the parent column even if it doesn't have answers"
 msgstr "Toon de hoofdvraag kolom, ook als er geen antwoorden in staan"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:118
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:119
 msgid "Prefix child"
 msgstr "Volledige vraag"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:119
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:120
 msgid "Prefix the child column labels with parent question label"
 msgstr "Plaats de hoofdvraag voor de subvraag in de kolom naam"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:126
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:127
 msgid "Add to export"
 msgstr "Voeg toe aan de export"
 
@@ -7572,6 +7573,10 @@ msgstr "Herinnering nodig"
 #: classes/Gems/Snippets/Token/PlanSearchSnippet.php:302
 msgid "Missing email"
 msgstr "Email ontbreekt"
+
+#: classes/Gems/Snippets/Token/PlanSearchSnippet.php:303
+msgid "Not allowed to email"
+msgstr "Mag niet gemaild worden"
 
 #: classes/Gems/Snippets/Token/PlanTokenSnippet.php:110
 #: classes/Gems/Snippets/Token/RespondentPlanTokenSnippet.php:85
@@ -9088,7 +9093,7 @@ msgstr "%s antwoorden voor patiëntnummer %s"
 msgid "Answers for token %s, patient number %s: %s."
 msgstr "Antwoorden voor kenmerk %s, patiëntnummer %s: %s."
 
-#: classes/Gems/Tracker/Snippets/EditRoundSnippetAbstract.php:107
+#: classes/Gems/Tracker/Snippets/EditRoundSnippetAbstract.php:109
 msgid "Add new round"
 msgstr "Nieuwe ronde toevoegen"
 
