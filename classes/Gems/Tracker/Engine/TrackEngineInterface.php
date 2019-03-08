@@ -178,18 +178,10 @@ interface Gems_Tracker_Engine_TrackEngineInterface
     public function getFieldsDefinition();
 
     /**
-     * Returns the fields required for editing a track of this type.
-     *
-     * @return array of \Zend_Form_Element
-     * /
-    public function getFieldsElements();
-
-    /**
      * Returns a model that can be used to retrieve or save the field definitions for the track editor.
      *
      * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
      * @param string $action The current action
-     * @param array $data the current request data
      * @return \Gems\Tracker\Model\FieldMaintenanceModel
      */
     public function getFieldsMaintenanceModel($detailed = false, $action = 'index');

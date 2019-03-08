@@ -23,8 +23,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - The project user can now switch to superadmin group (#404)
 
 ### Fixed
-- Use of mcrypt no longer requeired, uses OpenSSL instead (#334)
+- Use of mcrypt no longer required, uses OpenSSL instead (#334)
 - When exporting multiple survey results at the same time, SPSS export now adds a syntax file for each survey (#391)
+- Used tracks can no longer be deleted, only deactivated (#414)
+- Deleting a track also deletes linked rounds and fields (#414)
 
 ## [1.8.5] - 2018-10-10
 [1.8.5]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.4...1.8.5

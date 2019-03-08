@@ -28,6 +28,12 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
      * @var array
      */
     protected $_trackData = array();
+    
+    /**
+     *
+     * @var \Zend_Db_Adapter_Abstract
+     */
+    protected $db;
 
     /**
      * @var \Gems_Loader
@@ -161,6 +167,48 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
     {
         return $this->tracker && $this->translate && $this->util;
     }
+    
+    /**
+     * Delete items from the model
+     * 
+     * This method also takes care of cascading to track fields and rounds
+     *
+     * @param mixed $filter True to use the stored filter, array to specify a different filter
+     * @return int The number of items deleted
+     */
+    public function delete($filter = true)
+    {
+        $this->setChanged(0);
+        $tracks = $this->load($filter);
+
+        if ($tracks) {
+            foreach ($tracks as $row) {
+                if (isset($row['gtr_id_track'])) {
+                    $trackId = $row['gtr_id_track'];
+                    if ($this->isDeleteable($trackId)) {
+                        $this->db->delete('gems__tracks', $this->db->quoteInto('gtr_id_track = ?', $trackId));
+
+                        // Now cascade to children, they should take care of further cascading
+                        // Delete rounds
+                        $trackEngine = $this->tracker->getTrackEngine($trackId);
+                        $roundModel  = $trackEngine->getRoundModel(false, index);
+                        $roundModel->delete(['gro_id_track' => $trackId]);
+                        
+                        // Delete trackfields
+                        $trackFieldModel = $trackEngine->getFieldsMaintenanceModel(false, 'index');
+                        $trackFieldModel->delete(['gtf_id_track' => $trackId]);
+                    } else {
+                        $values['gtr_id_track'] = $trackId;
+                        $values['gtr_active']   = 0;
+                        $this->save($values);
+                    }
+                    $this->addChanged();
+                }
+            }
+        }
+        
+        return $this->getChanged();
+    }
 
     /**
      * When this method returns something other than an empty array it will try
@@ -197,6 +245,22 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
 
         return $defaultFields;
     }
+    
+    /**
+     * Get the number of times someone started answering a round in this track.
+     *
+     * @param int $trackId
+     * @return int
+     */
+    public function getStartCount($trackId)
+    {
+        if (! $trackId) {
+            return 0;
+        }
+
+        $sql = "SELECT COUNT(DISTINCT gto_id_respondent_track) FROM gems__tokens WHERE gto_id_track = ? AND gto_start_time IS NOT NULL";
+        return $this->db->fetchOne($sql, $trackId);
+    }
 
     /**
      * Returns a translate adaptor
@@ -215,6 +279,21 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
         }
 
         return $this->translate;
+    }
+    
+    /**
+     * Can this track be deleted as is?
+     *
+     * @param int $trackId
+     * @return boolean
+     */
+    public function isDeleteable($trackId)
+    {
+        if (! $trackId) {
+            return true;
+        }
+        $sql = "SELECT gto_id_token FROM gems__tokens WHERE gto_id_track = ? AND gto_start_time IS NOT NULL";
+        return (boolean) ! $this->db->fetchOne($sql, $trackId);
     }
 
     public function save(array $newValues, array $filter = null)

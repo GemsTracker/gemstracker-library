@@ -69,6 +69,17 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
      * @var \Gems_User_User
      */
     public $currentUser;
+    
+    protected $deleteParameters = array(
+        'trackId' => '_getIdParam'
+    );
+
+    /**
+     * The snippets used for the delete action.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $deleteSnippets = 'Track\\TrackDeleteSnippet';
 
     /**
      * The parameters used for the export action
