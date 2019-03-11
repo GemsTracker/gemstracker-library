@@ -39,6 +39,7 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
     const COMPARATOR_EQUALS    = 'Equals';
     const COMPARATOR_EQUALLESS = 'EqualLess';
     const COMPARATOR_EQUALMORE = 'EqualMore';
+    const COMPARATOR_IN        = 'In';
     const COMPARATOR_NOT       = 'NotEquals';
 
     const ROUND_CONDITION  = 'Round';

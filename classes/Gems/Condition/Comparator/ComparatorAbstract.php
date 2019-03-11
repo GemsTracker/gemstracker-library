@@ -24,4 +24,29 @@ abstract class ComparatorAbstract extends \MUtil_Translate_TranslateableAbstract
     public function __construct($options = array()) {
         $this->_options = $options;
     }
+    
+    /**
+     * Get the descriptions for the parameters
+     * 
+     * @return []
+     */
+    public function getParamDescriptions() {
+        return [
+            null,
+            null
+        ];
+    }
+    
+    /**
+     * Get the labels for the parameters
+     * 
+     * @return []
+     */
+    public function getParamLabels() {
+        return [
+            $this->_('First parameter'),
+            $this->_('Second parameter')
+        ];
+    }
+
 }

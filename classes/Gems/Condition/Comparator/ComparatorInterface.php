@@ -40,9 +40,23 @@ interface ComparatorInterface
      * @return int Less than 5
      */
     public function getNumParams();
+    
+    /**
+     * Get the descriptions for the parameters
+     * 
+     * @return []
+     */
+    public function getParamDescriptions();
+    
+    /**
+     * Get the labels for the parameters
+     * 
+     * @return []
+     */
+    public function getParamLabels();
 
     /**
-     * IS the comparison valid?
+     * Is the comparison valid?
      *
      * Settings should already be in place by the construtor.
      *

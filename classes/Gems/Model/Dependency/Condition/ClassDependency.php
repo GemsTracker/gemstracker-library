@@ -59,8 +59,8 @@ class ClassDependency extends \MUtil\Model\Dependency\DependencyAbstract
         'condition_help' => ['value'],
         'gcon_condition_text1' => ['label', 'elementClass', 'multiOptions', 'value'],
         'gcon_condition_text2' => ['label', 'elementClass', 'multiOptions', 'value'],
-        'gcon_condition_text3' => ['label', 'elementClass', 'multiOptions', 'value'],
-        'gcon_condition_text4' => ['label', 'elementClass', 'multiOptions', 'value'],
+        'gcon_condition_text3' => ['label', 'elementClass', 'multiOptions', 'value', 'description'],
+        'gcon_condition_text4' => ['label', 'elementClass', 'multiOptions', 'value', 'description'],
         ];
 
     /**

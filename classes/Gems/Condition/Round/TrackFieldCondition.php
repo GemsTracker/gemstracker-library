@@ -45,10 +45,13 @@ class TrackFieldCondition extends RoundConditionAbstract
     protected function getComparators()
     {
         $compators = [
-            \Gems\Conditions::COMPARATOR_EQUALS   => $this->_('Equals'),
-            \Gems\Conditions::COMPARATOR_NOT      => $this->_('Does not equal'),
-            \Gems\Conditions::COMPARATOR_BETWEEN  => $this->_('Between'),
-            \Gems\Conditions::COMPARATOR_CONTAINS => $this->_('Contains'),
+            \Gems\Conditions::COMPARATOR_EQUALS    => $this->_('Equals'),
+            \Gems\Conditions::COMPARATOR_NOT       => $this->_('Does not equal'),
+            \Gems\Conditions::COMPARATOR_EQUALLESS => $this->_('Equal or less'),
+            \Gems\Conditions::COMPARATOR_EQUALMORE => $this->_('Equal or more'),
+            \Gems\Conditions::COMPARATOR_BETWEEN   => $this->_('Between'),
+            \Gems\Conditions::COMPARATOR_CONTAINS  => $this->_('Contains'),
+            \Gems\Conditions::COMPARATOR_IN        => $this->_('In (..|..)'),
         ];
         natsort($compators);
 
@@ -75,14 +78,16 @@ class TrackFieldCondition extends RoundConditionAbstract
         if (!(isset($context['gcon_condition_text2']) && $context['gcon_condition_text2'] && array_key_exists($context['gcon_condition_text2'], $comparators))) {
             $context['gcon_condition_text2'] = key($comparators);
         }
-        $comparator = $this->getComparator($context['gcon_condition_text2'], []);
+        $comparator   = $this->getComparator($context['gcon_condition_text2'], []);
+        $labels       = $comparator->getParamLabels();
+        $descriptions = $comparator->getParamDescriptions();
         switch ($comparator->getNumParams()) {
             case 2:
-                $result['gcon_condition_text4'] = ['label' => $this->_('Param2'), 'elementClass' => 'text'];
+                $result['gcon_condition_text4'] = ['label' => $labels[1], 'description' => $descriptions[1], 'elementClass' => 'text'];
                 // intentional fall through
-
+                
             case 1:
-                $result['gcon_condition_text3'] = ['label' => $this->_('Param1'), 'elementClass' => 'text'];
+                $result['gcon_condition_text3'] = ['label' => $labels[0], 'description' => $descriptions[0], 'elementClass' => 'text'];
 
             default:
                 break;
