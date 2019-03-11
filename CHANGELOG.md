@@ -4,10 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
-[Unreleased]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.4...HEAD
+[Unreleased]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.5...HEAD
 ### Security
 - Token valid dates are also injected in the survey system (#385)
-- A basic continue later option was added to allow repsondents to pause answering surveys (#387)
+- A basic continue later option was added to allow respondents to pause answering surveys (#387)
 
 ### Added
 - Compliance overview now provides a better export (#381)

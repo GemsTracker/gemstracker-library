@@ -197,6 +197,9 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
                         // Delete trackfields
                         $trackFieldModel = $trackEngine->getFieldsMaintenanceModel(false, 'index');
                         $trackFieldModel->delete(['gtf_id_track' => $trackId]);
+                        
+                        // Delete assigned but unused tracks
+                        $this->db->delete('gems__respondent2track',  $this->db->quoteInto('gr2t_id_track = ?', $trackId));
                     } else {
                         $values['gtr_id_track'] = $trackId;
                         $values['gtr_active']   = 0;
