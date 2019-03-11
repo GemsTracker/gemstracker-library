@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-07 12:30+0100\n"
+"POT-Creation-Date: 2019-03-11 16:33+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.0.4\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
@@ -57,7 +57,7 @@ msgstr "Handmatig (organisatie specifiek)"
 #: classes/Gems/Snippets/Survey/SurveyMaintenanceSearchSnippet.php:49
 #: classes/Gems/Snippets/Tracker/Rounds/ConditionRoundsTableSnippet.php:108
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:891
-#: classes/Gems/Tracker/Model/TrackModel.php:90
+#: classes/Gems/Tracker/Model/TrackModel.php:96
 #: classes/Gems/Util/TrackData.php:185
 #: classes/OpenRosa/Model/OpenRosaFormModel.php:42
 msgid "Active"
@@ -273,7 +273,7 @@ msgstr "Bepaald wat op welke manier gefilterd wordt."
 #: classes/Gems/Snippets/Agenda/EpisodeTableSnippet.php:101
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:47
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:230
-#: classes/Gems/Tracker/Model/TrackModel.php:85
+#: classes/Gems/Tracker/Model/TrackModel.php:91
 #: classes/OpenRosa/Model/OpenRosaFormModel.php:41
 msgid "Name"
 msgstr "Naam"
@@ -361,6 +361,8 @@ msgstr "EN filter combinatie"
 
 #: classes/Gems/Agenda/Filter/AndModelDependency.php:117
 #: classes/Gems/Agenda/Filter/NotAnyModelDependency.php:49
+#: classes/Gems/Condition/Round/AndCondition.php:104
+#: classes/Gems/Condition/Round/OrCondition.php:104
 msgid " AND "
 msgstr " EN "
 
@@ -439,7 +441,7 @@ msgstr "%s like \"%s\""
 #: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:54
 #: classes/Gems/Default/SurveyMaintenanceAction.php:451
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:913
-#: classes/Gems/Tracker/Model/TrackModel.php:137
+#: classes/Gems/Tracker/Model/TrackModel.php:143
 #: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:547
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:847
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:1005
@@ -626,6 +628,14 @@ msgstr "Afspraak is met"
 msgid "%s <= %s <= %s"
 msgstr "%s <= %s <= %s"
 
+#: classes/Gems/Condition/Comparator/ComparatorAbstract.php:47
+msgid "First parameter"
+msgstr "Eerste parameter"
+
+#: classes/Gems/Condition/Comparator/ComparatorAbstract.php:48
+msgid "Second parameter"
+msgstr "Tweede parameter"
+
 #: classes/Gems/Condition/Comparator/Contains.php:33
 #, php-format
 msgid "%s contains %s"
@@ -645,6 +655,17 @@ msgstr "%s >= %s"
 #, php-format
 msgid "%s equals %s"
 msgstr "%s gelijk aan %s"
+
+#: classes/Gems/Condition/Comparator/In.php:33
+#, php-format
+msgid "%s in the list %s"
+msgstr "%s in de lijst %s"
+
+#: classes/Gems/Condition/Comparator/In.php:51
+#: classes/Gems/Tracker/Model/Dependency/BooleanMaintenanceDependency.php:65
+#: classes/Gems/Tracker/Model/Dependency/ValuesMaintenanceDependency.php:98
+msgid "Separate multiple values with a vertical bar (|)"
+msgstr "Zet een verticale streep (|) tussen de verschillende waarden"
 
 #: classes/Gems/Condition/Comparator/NotEquals.php:25
 #, php-format
@@ -692,6 +713,41 @@ msgstr "Leeftijd patiënt"
 msgid " (age in months"
 msgstr " (leeftijd in maanden"
 
+#: classes/Gems/Condition/Round/AndCondition.php:54
+msgid ""
+"Combine 2 or more conditions using the AND operator. All conditions must be "
+"valid and true."
+msgstr ""
+"Combineer twee of meer voorwaarden met behulp van de operator AND. Alle "
+"voorwaarden moeten geldig en waar zijn."
+
+#: classes/Gems/Condition/Round/AndCondition.php:61
+#: classes/Gems/Condition/Round/OrCondition.php:61
+msgid "The condition can not reference itself."
+msgstr "De voorwaarde mag niet naar zichzelf verwijzen."
+
+#: classes/Gems/Condition/Round/AndCondition.php:62
+#: classes/Gems/Condition/Round/OrCondition.php:62
+msgid "Conditions may be chosen only once."
+msgstr "Voorwaarden kunnen maar één keer gekozen worden."
+
+#: classes/Gems/Condition/Round/AndCondition.php:66
+#: classes/Gems/Condition/Round/AndCondition.php:67
+#: classes/Gems/Condition/Round/AndCondition.php:68
+#: classes/Gems/Condition/Round/AndCondition.php:69
+#: classes/Gems/Condition/Round/OrCondition.php:66
+#: classes/Gems/Condition/Round/OrCondition.php:67
+#: classes/Gems/Condition/Round/OrCondition.php:68
+#: classes/Gems/Condition/Round/OrCondition.php:69
+#: classes/Gems/Model/ConditionModel.php:95
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:917
+msgid "Condition"
+msgstr "Voorwaarde"
+
+#: classes/Gems/Condition/Round/AndCondition.php:78
+msgid "Multiple conditions AND"
+msgstr "Meerdere voorwaarden EN"
+
 #: classes/Gems/Condition/Round/GenderCondition.php:49
 #: classes/Gems/Condition/Round/TrackFieldCondition.php:48
 msgid "Equals"
@@ -734,7 +790,7 @@ msgid "Determine gender based on"
 msgstr "Geslacht afhankelijk van"
 
 #: classes/Gems/Condition/Round/GenderCondition.php:84
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:70
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:73
 msgid "Comparison operator"
 msgstr "Vergelijkings type"
 
@@ -762,15 +818,39 @@ msgstr "voor patiënten"
 msgid "Gender of %s"
 msgstr "Geslacht van %s"
 
+#: classes/Gems/Condition/Round/OrCondition.php:54
+msgid ""
+"Combine 2 or more conditions using the OR operator. All conditions must be "
+"valid and at least one must be true."
+msgstr ""
+"Combineer twee of meer voorwaarden met behulp van de operator OF. Alle "
+"voorwaarden moeten geldig en ten minste één moet waar zijn."
+
+#: classes/Gems/Condition/Round/OrCondition.php:78
+msgid "Multiple conditions OR"
+msgstr "Meerdere voorwaarden OF"
+
 #: classes/Gems/Condition/Round/TrackFieldCondition.php:50
+msgid "Equal or less"
+msgstr "Gelijk aan of kleiner dan"
+
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:51
+msgid "Equal or more"
+msgstr "Gelijk aan of groter dan"
+
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:52
 msgid "Between"
 msgstr "Tussen"
 
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:51
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:53
 msgid "Contains"
 msgstr "Bevat"
 
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:60
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:54
+msgid "In (..|..)"
+msgstr "In (..|..)"
+
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:63
 msgid ""
 "First pick a trackfield that has a code. Then choose your comparison "
 "operator and specify the needed parameters."
@@ -778,25 +858,17 @@ msgstr ""
 "Kies eerst een trajectveld met een code. Kies dan je vergelijkingstype en "
 "kies de nodige parameters."
 
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:69
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:96
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:72
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:101
 msgid "Track field"
 msgstr "Traject veld"
 
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:81
-msgid "Param2"
-msgstr "Tweede parameter"
-
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:85
-msgid "Param1"
-msgstr "Eerste parameter"
-
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:101
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:106
 #, php-format
 msgid "Track does not have a field with code `%s`."
 msgstr "Traject heeft geen veld met code `%s`."
 
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:111
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:116
 #, php-format
 msgid "Field `%s`"
 msgstr "Veld `%s`"
@@ -1839,7 +1911,7 @@ msgstr "Voortgang"
 #: classes/Gems/Default/FieldReportAction.php:344
 #: classes/Gems/Default/ProjectTracksAction.php:148
 #: classes/Gems/Default/TrackAction.php:1024
-#: classes/Gems/Default/TrackMaintenanceAction.php:278
+#: classes/Gems/Default/TrackMaintenanceAction.php:289
 #: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:186
 #: classes/Gems/Tracker/Snippets/EditTrackSnippetAbstract.php:171
 msgid "track"
@@ -2716,7 +2788,7 @@ msgstr "Ongeldige taal instelling."
 
 #: classes/Gems/Default/LocationAction.php:133 classes/Gems/Menu.php:186
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:908
-#: classes/Gems/Tracker/Model/TrackModel.php:132
+#: classes/Gems/Tracker/Model/TrackModel.php:138
 msgid "Organizations"
 msgstr "Organisaties"
 
@@ -3336,7 +3408,7 @@ msgstr "Vragenlijst #"
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:161
 #: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:114
 #: classes/Gems/Snippets/Tracker/AvailableTracksSnippet.php:107
-#: classes/Gems/Tracker/Model/TrackModel.php:92
+#: classes/Gems/Tracker/Model/TrackModel.php:98
 msgid "From"
 msgstr "Van"
 
@@ -3938,7 +4010,7 @@ msgid "Before answering"
 msgstr "Voor beantwoording"
 
 #: classes/Gems/Default/SurveyMaintenanceAction.php:525
-#: classes/Gems/Tracker/Model/TrackModel.php:114
+#: classes/Gems/Tracker/Model/TrackModel.php:120
 msgid "After completion"
 msgstr "Na afronding"
 
@@ -3958,7 +4030,7 @@ msgstr "]"
 #: classes/Gems/Default/SurveyMaintenanceAction.php:607
 #: classes/Gems/Menu.php:474 classes/Gems/Menu/MenuAbstract.php:685
 #: classes/Gems/Menu/MenuAbstract.php:783
-#: classes/Gems/Tracker/Model/TrackModel.php:88
+#: classes/Gems/Tracker/Model/TrackModel.php:94
 msgid "Surveys"
 msgstr "Vragenlijsten"
 
@@ -4192,20 +4264,20 @@ msgid_plural "fields"
 msgstr[0] "veld"
 msgstr[1] "velden"
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:173
+#: classes/Gems/Default/TrackMaintenanceAction.php:184
 msgid "Checking round assignments for all tracks."
 msgstr "Controleren ronde toewijzingen voor alle trajecten."
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:192
+#: classes/Gems/Default/TrackMaintenanceAction.php:203
 #, php-format
 msgid "Checking round assignments for track %d '%s'."
 msgstr "Controleer ronde toewijzingen voor traject %d '%s'."
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:289
+#: classes/Gems/Default/TrackMaintenanceAction.php:300
 msgid "Recalculating fields for all tracks."
 msgstr "Herbereken de trajectvelden van alle trajecten."
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:307
+#: classes/Gems/Default/TrackMaintenanceAction.php:318
 #, php-format
 msgid "Recalculating fields for track %d '%s'."
 msgstr "Herbereken de velden voor traject %d '%s'."
@@ -5364,11 +5436,6 @@ msgstr "In te vullen door"
 #: classes/Gems/Model/ConditionModel.php:90
 msgid "Determines where the condition can be applied."
 msgstr "Bepaalt waar de voorwaarde gebruikt kan worden."
-
-#: classes/Gems/Model/ConditionModel.php:95
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:917
-msgid "Condition"
-msgstr "Voorwaarde"
 
 #: classes/Gems/Model/ConditionModel.php:112
 msgid "The number of rounds using this condition."
@@ -7746,6 +7813,26 @@ msgstr ""
 "dan blijven de oude velden zoals ze zijn en alleen veranderde en nieuwe "
 "trajecten zullen de veranderingen laten zien."
 
+#: classes/Gems/Snippets/Track/TrackDeleteSnippet.php:81
+#, php-format
+msgid "This track has been started %s time."
+msgid_plural "This track has been started %s times."
+msgstr[0] "Dit traject is  %s keer gestart."
+msgstr[1] "Dit traject is  %s keer gestart."
+
+#: classes/Gems/Snippets/Track/TrackDeleteSnippet.php:84
+msgid "This track cannot be deleted, only deactivated."
+msgstr "Dit traject kan niet (meer) verwijderd worden, alleen gedeactiveerd."
+
+# this is niet te vertalen dus invullen 'subject' achterwege gelaten
+#: classes/Gems/Snippets/Track/TrackDeleteSnippet.php:86
+msgid "Do you want to deactivate this track?"
+msgstr "Wilt u dit traject deactiveren?"
+
+#: classes/Gems/Snippets/Track/TrackDeleteSnippet.php:87
+msgid "Deactivate track"
+msgstr "Deactiveer traject"
+
 #: classes/Gems/Snippets/Track/TracksForAppointment.php:40
 msgid "Tracks using this appointment"
 msgstr "Trajecten met deze afspraak"
@@ -8859,11 +8946,6 @@ msgstr ""
 msgid "Values"
 msgstr "Waarden"
 
-#: classes/Gems/Tracker/Model/Dependency/BooleanMaintenanceDependency.php:65
-#: classes/Gems/Tracker/Model/Dependency/ValuesMaintenanceDependency.php:98
-msgid "Separate multiple values with a vertical bar (|)"
-msgstr "Zet een verticale streep (|) tussen de verschillende waarden"
-
 #: classes/Gems/Tracker/Model/Dependency/BooleanMaintenanceDependency.php:66
 msgid ""
 "Leave empty for Yes|No. Add two values as replacement. Separate multiple "
@@ -9033,31 +9115,31 @@ msgstr "Aantal contact momenten"
 msgid "Duration in seconds"
 msgstr "Antwoordtijd (in sec.)"
 
-#: classes/Gems/Tracker/Model/TrackModel.php:86
+#: classes/Gems/Tracker/Model/TrackModel.php:92
 msgid "Track Engine"
 msgstr "Traject type"
 
-#: classes/Gems/Tracker/Model/TrackModel.php:95
+#: classes/Gems/Tracker/Model/TrackModel.php:101
 msgid "Use until"
 msgstr "Geldig tot"
 
-#: classes/Gems/Tracker/Model/TrackModel.php:98
+#: classes/Gems/Tracker/Model/TrackModel.php:104
 msgid "Track code"
 msgstr "Trajectcode"
 
-#: classes/Gems/Tracker/Model/TrackModel.php:100
+#: classes/Gems/Tracker/Model/TrackModel.php:106
 msgid "Optional code name to link the track to program code."
 msgstr "Optionele code naam om het traject aan programmacode te koppelen."
 
-#: classes/Gems/Tracker/Model/TrackModel.php:107
+#: classes/Gems/Tracker/Model/TrackModel.php:113
 msgid "Before (re)calculation"
 msgstr "Voor (her)calculatie"
 
-#: classes/Gems/Tracker/Model/TrackModel.php:121
+#: classes/Gems/Tracker/Model/TrackModel.php:127
 msgid "Before field update"
 msgstr "Voor opslag velden"
 
-#: classes/Gems/Tracker/Model/TrackModel.php:128
+#: classes/Gems/Tracker/Model/TrackModel.php:134
 msgid "After field update"
 msgstr "Na veranderde velden"
 
@@ -10935,6 +11017,12 @@ msgstr "Er trad een fout op!"
 #: views/scripts/error/error.phtml:37
 msgid "Please contact system administration"
 msgstr "Neem contact op met systeembeheer"
+
+#~ msgid "Param2"
+#~ msgstr "Tweede parameter"
+
+#~ msgid "Param1"
+#~ msgstr "Eerste parameter"
 
 #~ msgid "All '%s' tokens in gemstracker have been updated to '%s'"
 #~ msgstr "Alle '%s' kenmerken in gemstracker zijn aangepast naar '%s'"

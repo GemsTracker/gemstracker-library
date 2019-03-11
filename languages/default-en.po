@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-20 12:46+0100\n"
+"POT-Creation-Date: 2019-03-11 16:32+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 1.8.9\n"
+"X-Generator: Poedit 2.0.4\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
@@ -56,7 +56,7 @@ msgstr "Manual (organization specific)"
 #: classes/Gems/Snippets/Survey/SurveyMaintenanceSearchSnippet.php:49
 #: classes/Gems/Snippets/Tracker/Rounds/ConditionRoundsTableSnippet.php:108
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:891
-#: classes/Gems/Tracker/Model/TrackModel.php:90
+#: classes/Gems/Tracker/Model/TrackModel.php:96
 #: classes/Gems/Util/TrackData.php:185
 #: classes/OpenRosa/Model/OpenRosaFormModel.php:42
 msgid "Active"
@@ -272,7 +272,7 @@ msgstr "Determines what is filtered how."
 #: classes/Gems/Snippets/Agenda/EpisodeTableSnippet.php:101
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:47
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:230
-#: classes/Gems/Tracker/Model/TrackModel.php:85
+#: classes/Gems/Tracker/Model/TrackModel.php:91
 #: classes/OpenRosa/Model/OpenRosaFormModel.php:41
 msgid "Name"
 msgstr "Name"
@@ -358,6 +358,8 @@ msgstr "AND filter combination"
 
 #: classes/Gems/Agenda/Filter/AndModelDependency.php:117
 #: classes/Gems/Agenda/Filter/NotAnyModelDependency.php:49
+#: classes/Gems/Condition/Round/AndCondition.php:104
+#: classes/Gems/Condition/Round/OrCondition.php:104
 msgid " AND "
 msgstr " AND "
 
@@ -436,7 +438,7 @@ msgstr "%s like \"%s\""
 #: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:54
 #: classes/Gems/Default/SurveyMaintenanceAction.php:451
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:913
-#: classes/Gems/Tracker/Model/TrackModel.php:137
+#: classes/Gems/Tracker/Model/TrackModel.php:143
 #: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:547
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:847
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:1005
@@ -621,6 +623,14 @@ msgstr "Appointment is with"
 msgid "%s <= %s <= %s"
 msgstr "%s <= %s <= %s"
 
+#: classes/Gems/Condition/Comparator/ComparatorAbstract.php:47
+msgid "First parameter"
+msgstr "First parameter"
+
+#: classes/Gems/Condition/Comparator/ComparatorAbstract.php:48
+msgid "Second parameter"
+msgstr "Second parameter"
+
 #: classes/Gems/Condition/Comparator/Contains.php:33
 #, php-format
 msgid "%s contains %s"
@@ -640,6 +650,17 @@ msgstr "%s >= %s"
 #, php-format
 msgid "%s equals %s"
 msgstr "%s equals %s"
+
+#: classes/Gems/Condition/Comparator/In.php:33
+#, php-format
+msgid "%s in the list %s"
+msgstr "%s in the list %s"
+
+#: classes/Gems/Condition/Comparator/In.php:51
+#: classes/Gems/Tracker/Model/Dependency/BooleanMaintenanceDependency.php:65
+#: classes/Gems/Tracker/Model/Dependency/ValuesMaintenanceDependency.php:98
+msgid "Separate multiple values with a vertical bar (|)"
+msgstr "Separate multiple values with a vertical bar (|)"
 
 #: classes/Gems/Condition/Comparator/NotEquals.php:25
 #, php-format
@@ -687,6 +708,43 @@ msgstr "Respondent age"
 msgid " (age in months"
 msgstr " (age in months"
 
+#: classes/Gems/Condition/Round/AndCondition.php:54
+msgid ""
+"Combine 2 or more conditions using the AND operator. All conditions must be "
+"valid and true."
+msgstr ""
+"Combine 2 or more conditions using the AND operator. All conditions must be "
+"valid and true."
+
+#: classes/Gems/Condition/Round/AndCondition.php:61
+#: classes/Gems/Condition/Round/OrCondition.php:61
+#| msgid "This organization cannot have any respondents."
+msgid "The condition can not reference itself."
+msgstr "The condition can not reference itself."
+
+#: classes/Gems/Condition/Round/AndCondition.php:62
+#: classes/Gems/Condition/Round/OrCondition.php:62
+#| msgid "Filters may be chosen only once."
+msgid "Conditions may be chosen only once."
+msgstr "Conditions may be chosen only once."
+
+#: classes/Gems/Condition/Round/AndCondition.php:66
+#: classes/Gems/Condition/Round/AndCondition.php:67
+#: classes/Gems/Condition/Round/AndCondition.php:68
+#: classes/Gems/Condition/Round/AndCondition.php:69
+#: classes/Gems/Condition/Round/OrCondition.php:66
+#: classes/Gems/Condition/Round/OrCondition.php:67
+#: classes/Gems/Condition/Round/OrCondition.php:68
+#: classes/Gems/Condition/Round/OrCondition.php:69
+#: classes/Gems/Model/ConditionModel.php:95
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:917
+msgid "Condition"
+msgstr "Condition"
+
+#: classes/Gems/Condition/Round/AndCondition.php:78
+msgid "Multiple conditions AND"
+msgstr "Multiple conditions AND"
+
 #: classes/Gems/Condition/Round/GenderCondition.php:49
 #: classes/Gems/Condition/Round/TrackFieldCondition.php:48
 msgid "Equals"
@@ -729,7 +787,7 @@ msgid "Determine gender based on"
 msgstr "Determine gender based on"
 
 #: classes/Gems/Condition/Round/GenderCondition.php:84
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:70
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:73
 msgid "Comparison operator"
 msgstr "Comparison operator"
 
@@ -757,15 +815,43 @@ msgstr "Round is not for respondents"
 msgid "Gender of %s"
 msgstr "Gender of %s"
 
+#: classes/Gems/Condition/Round/OrCondition.php:54
+#| msgid ""
+#| "Combine 2 or more conditions using the AND operator. All conditions must "
+#| "be valid and true."
+msgid ""
+"Combine 2 or more conditions using the OR operator. All conditions must be "
+"valid and at least one must be true."
+msgstr ""
+"Combine 2 or more conditions using the OR operator. All conditions must be "
+"valid and at least one must be true."
+
+#: classes/Gems/Condition/Round/OrCondition.php:78
+#| msgid "Multiple conditions AND"
+msgid "Multiple conditions OR"
+msgstr "Multiple conditions OR"
+
 #: classes/Gems/Condition/Round/TrackFieldCondition.php:50
+msgid "Equal or less"
+msgstr "Equal or less"
+
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:51
+msgid "Equal or more"
+msgstr "Equal or more"
+
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:52
 msgid "Between"
 msgstr "Between"
 
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:51
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:53
 msgid "Contains"
 msgstr "Contains"
 
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:60
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:54
+msgid "In (..|..)"
+msgstr "In (..|..)"
+
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:63
 msgid ""
 "First pick a trackfield that has a code. Then choose your comparison "
 "operator and specify the needed parameters."
@@ -773,25 +859,17 @@ msgstr ""
 "First pick a trackfield that has a code. Then choose your comparison "
 "operator and specify the needed parameters."
 
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:69
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:96
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:72
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:101
 msgid "Track field"
 msgstr "Track field"
 
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:81
-msgid "Param2"
-msgstr "Second parameter"
-
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:85
-msgid "Param1"
-msgstr "First parameter"
-
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:101
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:106
 #, php-format
 msgid "Track does not have a field with code `%s`."
 msgstr "Track does not have a field with code `%s`."
 
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:111
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:116
 #, php-format
 msgid "Field `%s`"
 msgstr "Field `%s`"
@@ -1480,7 +1558,7 @@ msgstr "Round"
 #: classes/Gems/Snippets/Survey/AnswerImportSnippet.php:125
 #: classes/Gems/Snippets/Tracker/Rounds/ConditionRoundsTableSnippet.php:106
 #: classes/Gems/Snippets/Tracker/TrackSurveyOverviewSnippet.php:94
-#: classes/Gems/Snippets/Tracker/TrackVisualDefinitionSnippet.php:110
+#: classes/Gems/Snippets/Tracker/TrackVisualDefinitionSnippet.php:115
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:868
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:283
 msgid "Survey"
@@ -1604,7 +1682,7 @@ msgstr "1 means only one reminder will be sent"
 #: classes/Gems/Default/CommJobAction.php:182
 #: classes/Gems/Default/SummaryAction.php:101
 #: classes/Gems/Snippets/Respondent/RespondentOverviewSnippet.php:149
-#: classes/Gems/Snippets/Tracker/TrackVisualDefinitionSnippet.php:111
+#: classes/Gems/Snippets/Tracker/TrackVisualDefinitionSnippet.php:114
 msgid "Filler"
 msgstr "Filler"
 
@@ -1791,6 +1869,7 @@ msgstr "Patient nr"
 #: classes/Gems/Default/FieldOverviewAction.php:104
 #: classes/Gems/Model/EpisodeOfCareModel.php:144
 #: classes/Gems/Model/EpisodeOfCareModel.php:185
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:74
 #: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:609
 #: classes/OpenRosa/Tracker/Source/Form.php:629
 msgid "Start date"
@@ -1818,7 +1897,7 @@ msgstr "Compliance"
 #: classes/Gems/Default/FieldReportAction.php:344
 #: classes/Gems/Default/ProjectTracksAction.php:148
 #: classes/Gems/Default/TrackAction.php:1024
-#: classes/Gems/Default/TrackMaintenanceAction.php:278
+#: classes/Gems/Default/TrackMaintenanceAction.php:289
 #: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:186
 #: classes/Gems/Tracker/Snippets/EditTrackSnippetAbstract.php:171
 msgid "track"
@@ -2693,7 +2772,7 @@ msgstr "Invalid language setting."
 
 #: classes/Gems/Default/LocationAction.php:133 classes/Gems/Menu.php:186
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:908
-#: classes/Gems/Tracker/Model/TrackModel.php:132
+#: classes/Gems/Tracker/Model/TrackModel.php:138
 msgid "Organizations"
 msgstr "Organizations"
 
@@ -2959,7 +3038,7 @@ msgstr "No existing token specified!"
 
 #: classes/Gems/Default/OpenRosaFormAction.php:128
 #: classes/Gems/Default/SummaryAction.php:247
-#: classes/Gems/Default/TokenSearchActionAbstract.php:268
+#: classes/Gems/Default/TokenSearchActionAbstract.php:274
 #: classes/Gems/Default/TrackAction.php:1004
 #: classes/Gems/Tracker/Snippets/EditTokenSnippetAbstract.php:122
 msgid "token"
@@ -3307,7 +3386,7 @@ msgstr "Survey #"
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:161
 #: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:114
 #: classes/Gems/Snippets/Tracker/AvailableTracksSnippet.php:107
-#: classes/Gems/Tracker/Model/TrackModel.php:92
+#: classes/Gems/Tracker/Model/TrackModel.php:98
 msgid "From"
 msgstr "From"
 
@@ -3895,7 +3974,7 @@ msgid "Before answering"
 msgstr "Before answering"
 
 #: classes/Gems/Default/SurveyMaintenanceAction.php:525
-#: classes/Gems/Tracker/Model/TrackModel.php:114
+#: classes/Gems/Tracker/Model/TrackModel.php:120
 msgid "After completion"
 msgstr "After completion"
 
@@ -3915,7 +3994,7 @@ msgstr "]"
 #: classes/Gems/Default/SurveyMaintenanceAction.php:607
 #: classes/Gems/Menu.php:474 classes/Gems/Menu/MenuAbstract.php:685
 #: classes/Gems/Menu/MenuAbstract.php:783
-#: classes/Gems/Tracker/Model/TrackModel.php:88
+#: classes/Gems/Tracker/Model/TrackModel.php:94
 msgid "Surveys"
 msgstr "Surveys"
 
@@ -4139,20 +4218,20 @@ msgid_plural "fields"
 msgstr[0] "field"
 msgstr[1] "fields"
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:173
+#: classes/Gems/Default/TrackMaintenanceAction.php:184
 msgid "Checking round assignments for all tracks."
 msgstr "Checking round assignments for all tracks."
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:192
+#: classes/Gems/Default/TrackMaintenanceAction.php:203
 #, php-format
 msgid "Checking round assignments for track %d '%s'."
 msgstr "Checking round assignments for track %d '%s'."
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:289
+#: classes/Gems/Default/TrackMaintenanceAction.php:300
 msgid "Recalculating fields for all tracks."
 msgstr "Recalculating fields for all tracks."
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:307
+#: classes/Gems/Default/TrackMaintenanceAction.php:318
 #, php-format
 msgid "Recalculating fields for track %d '%s'."
 msgstr "Recalculating fields for track %d '%s'."
@@ -4178,7 +4257,7 @@ msgid "Rounds"
 msgstr "Rounds"
 
 #: classes/Gems/Default/TrackRoundsAction.php:237
-#: classes/Gems/Tracker/Snippets/EditRoundSnippetAbstract.php:97
+#: classes/Gems/Tracker/Snippets/EditRoundSnippetAbstract.php:99
 msgid "round"
 msgid_plural "rounds"
 msgstr[0] "round"
@@ -4423,7 +4502,7 @@ msgstr "Track description"
 
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:398
 #: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:231
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:74
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:75
 #: classes/Gems/Snippets/Token/PlanSearchSnippet.php:78
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:541
 #: classes/OpenRosa/Tracker/Source/Form.php:632
@@ -5295,11 +5374,6 @@ msgstr "Fill out by"
 #: classes/Gems/Model/ConditionModel.php:90
 msgid "Determines where the condition can be applied."
 msgstr "Determines where the condition can be applied."
-
-#: classes/Gems/Model/ConditionModel.php:95
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:917
-msgid "Condition"
-msgstr "Condition"
 
 #: classes/Gems/Model/ConditionModel.php:112
 msgid "The number of rounds using this condition."
@@ -6326,21 +6400,21 @@ msgstr "or"
 msgid "Send me an email to continue later"
 msgstr "Send me an email to continue later"
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:139
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:138
 msgid ""
-"An email with information to continue later was sent to your registered "
-"email address."
+"An email with information to continue later was already sent to your "
+"registered email address today."
 msgstr ""
-"An email with information to continue later was sent to your registered "
-"email address."
+"An email with information to continue later was already sent to your "
+"registered email address today."
 
 #: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:141
 msgid ""
-"An email with information to continue later was already sent to your "
-"registered email address today."
+"An email with information to continue later was sent to your registered "
+"email address."
 msgstr ""
-"An email with information to continue later was already sent to your "
-"registered email address today."
+"An email with information to continue later was sent to your registered "
+"email address."
 
 #: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:144
 msgid ""
@@ -6542,11 +6616,11 @@ msgstr "Track start"
 msgid "Track end"
 msgstr "Track end"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:82
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:83
 msgid "Respondent id's"
 msgstr "Respondent id's"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:85
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:86
 msgid ""
 "Not respondent nr, but respondent id as exported here. Separate multiple "
 "id's with , or ;"
@@ -6554,25 +6628,25 @@ msgstr ""
 "Not patient nr, but respondent id as exported here. Separate multiple id's "
 "with , or ;"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:100
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:101
 msgid "Output"
 msgstr "Output"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:103
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:104
 msgid "Include incomplete surveys"
 msgstr "Include incomplete surveys"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:104
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:105
 msgid ""
 "Include surveys that have been started but have not been checked as completed"
 msgstr ""
 "Include surveys that have been started but have not been checked as completed"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:108
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:109
 msgid "Column Identifiers"
 msgstr "Column Identifiers"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:109
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:110
 msgid ""
 "Prefix the column labels with an identifier. (A) Answers, (TF) Trackfields, "
 "(D) Description"
@@ -6580,23 +6654,23 @@ msgstr ""
 "Prefix the column labels with an identifier. (A) Answers, (TF) Trackfields, "
 "(D) Description"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:113
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:114
 msgid "Show parent"
 msgstr "Show parent"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:114
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:115
 msgid "Show the parent column even if it doesn't have answers"
 msgstr "Show the parent column even if it doesn't have answers"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:118
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:119
 msgid "Prefix child"
 msgstr "Prefix child"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:119
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:120
 msgid "Prefix the child column labels with parent question label"
 msgstr "Prefix the child column labels with parent question label"
 
-#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:126
+#: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:127
 msgid "Add to export"
 msgstr "Add to export"
 
@@ -7496,6 +7570,10 @@ msgstr "Needs reminder"
 msgid "Missing email"
 msgstr "Missing email"
 
+#: classes/Gems/Snippets/Token/PlanSearchSnippet.php:303
+msgid "Not allowed to email"
+msgstr "Not allowed to email"
+
 #: classes/Gems/Snippets/Token/PlanTokenSnippet.php:110
 #: classes/Gems/Snippets/Token/RespondentPlanTokenSnippet.php:85
 msgid "Contact moments"
@@ -7659,6 +7737,25 @@ msgstr ""
 "If you do not run this code after changing track fields, then the old fields "
 "values remain as they were and only newly changed and newly created tracks "
 "will reflect the changes."
+
+#: classes/Gems/Snippets/Track/TrackDeleteSnippet.php:81
+#, php-format
+msgid "This track has been started %s time."
+msgid_plural "This track has been started %s times."
+msgstr[0] "This track has been started %s time."
+msgstr[1] "This track has been started %s times."
+
+#: classes/Gems/Snippets/Track/TrackDeleteSnippet.php:84
+msgid "This track cannot be deleted, only deactivated."
+msgstr "This track cannot be deleted, only deactivated."
+
+#: classes/Gems/Snippets/Track/TrackDeleteSnippet.php:86
+msgid "Do you want to deactivate this track?"
+msgstr "Do you want to deactivate this track?"
+
+#: classes/Gems/Snippets/Track/TrackDeleteSnippet.php:87
+msgid "Deactivate track"
+msgstr "Deactivate track"
 
 #: classes/Gems/Snippets/Track/TracksForAppointment.php:40
 msgid "Tracks using this appointment"
@@ -8757,11 +8854,6 @@ msgstr ""
 msgid "Values"
 msgstr "Values"
 
-#: classes/Gems/Tracker/Model/Dependency/BooleanMaintenanceDependency.php:65
-#: classes/Gems/Tracker/Model/Dependency/ValuesMaintenanceDependency.php:98
-msgid "Separate multiple values with a vertical bar (|)"
-msgstr "Separate multiple values with a vertical bar (|)"
-
 #: classes/Gems/Tracker/Model/Dependency/BooleanMaintenanceDependency.php:66
 msgid ""
 "Leave empty for Yes|No. Add two values as replacement. Separate multiple "
@@ -8929,31 +9021,31 @@ msgstr "Number of contact moments"
 msgid "Duration in seconds"
 msgstr "Duration in seconds"
 
-#: classes/Gems/Tracker/Model/TrackModel.php:86
+#: classes/Gems/Tracker/Model/TrackModel.php:92
 msgid "Track Engine"
 msgstr "Track Engine"
 
-#: classes/Gems/Tracker/Model/TrackModel.php:95
+#: classes/Gems/Tracker/Model/TrackModel.php:101
 msgid "Use until"
 msgstr "Use until"
 
-#: classes/Gems/Tracker/Model/TrackModel.php:98
+#: classes/Gems/Tracker/Model/TrackModel.php:104
 msgid "Track code"
 msgstr "Track code"
 
-#: classes/Gems/Tracker/Model/TrackModel.php:100
+#: classes/Gems/Tracker/Model/TrackModel.php:106
 msgid "Optional code name to link the track to program code."
 msgstr "Optional code name to link the track to program code."
 
-#: classes/Gems/Tracker/Model/TrackModel.php:107
+#: classes/Gems/Tracker/Model/TrackModel.php:113
 msgid "Before (re)calculation"
 msgstr "Before (re)calculation"
 
-#: classes/Gems/Tracker/Model/TrackModel.php:121
+#: classes/Gems/Tracker/Model/TrackModel.php:127
 msgid "Before field update"
 msgstr "Before field update"
 
-#: classes/Gems/Tracker/Model/TrackModel.php:128
+#: classes/Gems/Tracker/Model/TrackModel.php:134
 msgid "After field update"
 msgstr "After field update"
 
@@ -8989,7 +9081,7 @@ msgstr "%s answers for patient number %s"
 msgid "Answers for token %s, patient number %s: %s."
 msgstr "Answers for token %s, patient number %s: %s."
 
-#: classes/Gems/Tracker/Snippets/EditRoundSnippetAbstract.php:107
+#: classes/Gems/Tracker/Snippets/EditRoundSnippetAbstract.php:109
 msgid "Add new round"
 msgstr "Add new round"
 
@@ -10810,6 +10902,12 @@ msgstr "An error occurred!"
 #: views/scripts/error/error.phtml:37
 msgid "Please contact system administration"
 msgstr "Please contact system administration"
+
+#~ msgid "Param2"
+#~ msgstr "Second parameter"
+
+#~ msgid "Param1"
+#~ msgstr "First parameter"
 
 #~ msgid "All '%s' tokens in gemstracker have been updated to '%s'"
 #~ msgstr "All '%s' tokens in gemstracker have been updated to '%s'"

@@ -30,7 +30,7 @@ class In extends ComparatorAbstract
     public function getDescription($subject)
     {
         return sprintf(
-                $this->_('%s in de lijst %s'),
+                $this->_('%s in the list %s'),
                 $subject,
                 $this->_options[0]
                 );
