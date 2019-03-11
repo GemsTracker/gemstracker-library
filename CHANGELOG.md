@@ -12,6 +12,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 ### Added
 - Compliance overview now provides a better export (#381)
 - Round conditions can now filter for contained text (#384)
+- Round conditions can now filter for a value in a list (#415)
+- Round conditions can be combined using AND / OR operators (#416)
 - Round conditions now allow to use the gender of the respondent or the relation (#390)
 - Organization contact email will now be notified when cron has not run on time, can be switched off (#172)
 - Boolean trackfield was added (#399)
