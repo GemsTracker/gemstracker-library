@@ -1427,7 +1427,7 @@ ALTER TABLE gems__agenda_staff
     AFTER gas_source;
 
 -- PATCH: Updates rights to see raw data for Episodes of Care
-UPDATE gems__roles 
+UPDATE gems__roles
     SET grl_privileges = CONCAT(grl_privileges, ',pr.episodes.rawdata')
     WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.episodes.rawdata%';
 
@@ -1450,3 +1450,7 @@ INSERT INTO gems__reception_codes (grc_id_reception_code, grc_description, grc_s
       grc_changed, grc_changed_by, grc_created, grc_created_by)
     VALUES
         ('moved', 'Moved to new survey', 0, 1, 0, 0, 0, 1, 0, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
+
+-- PATCH: Add organization check
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.organization.check-org') WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.organization.check-org%';
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.organization.check-all') WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.organization.check-all%';

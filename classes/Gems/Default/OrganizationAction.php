@@ -21,6 +21,12 @@
 class Gems_Default_OrganizationAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
+     *
+     * @var \Gems_AccessLog
+     */
+    public $accesslog;
+
+    /**
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
@@ -110,6 +116,83 @@ class Gems_Default_OrganizationAction extends \Gems_Controller_ModelSnippetActio
     }
 
     /**
+     * Check a single organization
+     */
+    public function checkAllAction()
+    {
+        $batch = $this->loader->getTaskRunnerBatch('orgCheckAll');
+        if (! $batch->isLoaded()) {
+
+            $sql = "SELECT gr2o_id_user, gr2o_id_organization
+                        FROM gems__respondent2org INNER JOIN gems__reception_codes ON gr2o_reception_code = grc_id_reception_code
+                        WHERE grc_success = 1
+                        ORDER BY gr2o_id_organization, gr2o_created";
+
+            // \MUtil_Echo::track($sql);
+
+            $rows = $this->db->fetchAll($sql);
+
+            foreach ($rows as $row) {
+                $batch->addTask('Respondent\\UpdateRespondentTask', $row['gr2o_id_user'], $row['gr2o_id_organization']);
+            }
+        }
+
+        $title = $this->_("Checking all respondents.");
+        $this->_helper->BatchRunner($batch, $title, $this->accesslog);
+
+        $this->addSnippet('Organization\\CheckOrganizationInformation');
+    }
+
+    /**
+     * Check a single organization
+     */
+    public function checkOrgAction()
+    {
+        $go    = true;
+        $orgId = $this->_getIdParam();
+        $org   = $this->loader->getOrganization($orgId);
+
+        if (! $org->getRespondentChangeEventClass()) {
+            $go = false;
+            $this->addMessage(sprintf(
+                   $this->_('Nothing to do: no respondent change event set for %s.'),
+                   $org->getName()
+                   ));
+        }
+        if (! $org->canHaveRespondents()) {
+            $go = false;
+            $this->addMessage(sprintf(
+                   $this->_('Nothing to do: no respondents exist for %s.'),
+                   $org->getName()
+                   ));
+        }
+
+        if ($go) {
+            $batch = $this->loader->getTaskRunnerBatch('orgCheck' . $orgId);
+            if (! $batch->isLoaded()) {
+
+                $sql = "SELECT gr2o_id_user
+                            FROM gems__respondent2org INNER JOIN gems__reception_codes ON gr2o_reception_code = grc_id_reception_code
+                            WHERE gr2o_id_organization = ? AND grc_success = 1
+                            ORDER BY gr2o_created";
+
+                // \MUtil_Echo::track($sql);
+
+                $respIds = $this->db->fetchCol($sql, $orgId);
+
+                foreach ($respIds as $respId) {
+                    $batch->addTask('Respondent\\UpdateRespondentTask', $respId, $orgId);
+                }
+            }
+
+            $title = sprintf($this->_("Checking respondents for '%s'."), $org->getName());
+            $this->_helper->BatchRunner($batch, $title, $this->accesslog);
+       }
+
+        $this->addSnippet('Organization\\CheckOrganizationInformation');
+    }
+
+    /**
      * Creates a model for getModel(). Called only for each new $action.
      *
      * The parameters allow you to easily adapt the model to the current action. The $detailed
@@ -146,7 +229,7 @@ class Gems_Default_OrganizationAction extends \Gems_Controller_ModelSnippetActio
     {
         $data    = $this->getModel()->loadFirst();
         $subject = $data['gor_name'];
-        
+
         //Add location to the subject when not empty
         if (!empty($data['gor_location'])) {
             $subject .= ' - ' . $data['gor_location'];
@@ -164,7 +247,7 @@ class Gems_Default_OrganizationAction extends \Gems_Controller_ModelSnippetActio
     {
         return $this->_('Participating organizations');
     }
-    
+
     /**
      * Get the filter to use with the model for searching including model sorts, etc..
      *

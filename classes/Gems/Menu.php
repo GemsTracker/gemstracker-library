@@ -183,7 +183,12 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         // GROUPS CONTROLLER
         $cont->addGroupsPage($this->_('Groups'));
         // ORGANIZATIONS CONTROLLER
-        $cont->addBrowsePage($this->_('Organizations'),'pr.organization', 'organization');
+        $orgsPage = $cont->addBrowsePage($this->_('Organizations'), 'pr.organization', 'organization');
+        $orgsPage->addAction($this->_('Check all respondents'), 'pr.organization.check-all', 'check-all');
+        $orgPage = $this->findController('organization', 'show');
+        $orgPage->addAction($this->_('Check respondents'), 'pr.organization.check-org', 'check-org')
+                ->setModelParameters(1);
+
         // STAFF CONTROLLER
         $page = $cont->addStaffPage($this->_('Staff'));
 

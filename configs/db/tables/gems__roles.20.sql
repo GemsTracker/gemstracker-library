@@ -174,7 +174,7 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     ,pr.log.files,pr.log.files.download,
     ,pr.mail.server,pr.mail.server.create,pr.mail.server.delete,pr.mail.server.edit,
     ,pr.maintenance.clean-cache,pr.maintenance.maintenance-mode,
-    ,pr.organization.create,pr.organization.edit,
+    ,pr.organization.create,pr.organization.edit,pr.organization.check,
     ,pr.plan.mail-as-application,pr.reception.delete,
     ,pr.respondent.multiorg,
     ,pr.role.create,pr.role.edit,

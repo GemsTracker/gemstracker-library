@@ -16,6 +16,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Round conditions can be combined using AND / OR operators (#416)
 - Round conditions now allow to use the gender of the respondent or the relation (#390)
 - Organization contact email will now be notified when cron has not run on time, can be switched off (#172)
+- Organizations can automatically create 'default' tracks for new or changed respondents (#420)
+- Bulk check for respondent update events for organizations (#420)
 - Boolean trackfield was added (#399)
 - A visual overview of a track in now available in the track builder (#408)
 
