@@ -27,7 +27,7 @@ use MUtil\Translate\TranslateableTrait;
 class Gems_Model_DbaModel extends \MUtil_Model_ArrayModelAbstract
 {
     use TranslateableTrait;
-    
+
     const DEFAULT_ORDER = 1000;
 
     const STATE_CREATED = 1;
@@ -144,6 +144,10 @@ class Gems_Model_DbaModel extends \MUtil_Model_ArrayModelAbstract
             $db            = $pathData['db'];
             $tables        = $this->listTablesViews($db);
 
+            if (!is_array($tables)) {
+                $tables = [];
+            }
+
             if (is_dir($mainDirectory)) {
                 foreach (new \DirectoryIterator($mainDirectory) as $directory) {
                     $type = $this->_getType($directory->getFilename());
@@ -158,12 +162,15 @@ class Gems_Model_DbaModel extends \MUtil_Model_ArrayModelAbstract
                         $fileName = $file->getBasename('.sql');
                         $forder   = $this->_getOrder($fileName); // Changes $fileName
 
-                        if (array_key_exists($type, $tables) && $fexists = array_key_exists($fileName, $tables[$type])) {
+                        if (array_key_exists($type, $tables) && array_key_exists($fileName, $tables[$type])) {
+                            $fexists = true;
                             unset($tables[$type][$fileName]);
                         } elseif (array_key_exists($fileName, $data)) {
                             // $fexists is also true when the table was already defined
                             // in a previous directory
                             $fexists = $data[$fileName]['exists'];
+                        } else {
+                            $fexists = false;
                         }
 
                         $fileContent = file_get_contents($file->getPathname());
@@ -244,16 +251,18 @@ class Gems_Model_DbaModel extends \MUtil_Model_ArrayModelAbstract
     {
         return $this->file_encoding;
     }
-    
+
     /**
-     * 
+     *
      * @param \Zend_Db_Adapter_Abstract $db
      * @throws Zend_Db_Adapter_Exception
      */
     public function listTablesViews($db)
     {
-        $sql = 'SHOW FULL TABLES';
+        $sql         = 'SHOW FULL TABLES';
         $queryResult = $db->query($sql);
+        $result      = [];
+        
         while ($row = $queryResult->fetch(\Zend_Db::FETCH_NUM)) {
             $type = 'table';
             if (strtoupper($row[1]) == 'VIEW') {
@@ -262,8 +271,8 @@ class Gems_Model_DbaModel extends \MUtil_Model_ArrayModelAbstract
             $result[$type][strtolower($row[0])] = $row[0];
         }
         $queryResult->close();
-        
-        return $result;        
+
+        return $result;
     }
 
     /**
