@@ -49,7 +49,7 @@ class OrCondition extends AndCondition
     public function isRoundValid(\Gems_Tracker_Token $token)
     {
         $conditions = $this->getConditions();
-        $valid = true;
+        $valid = false;
         foreach($conditions as $condition)
         {
             $valid = $valid || $condition->isRoundValid($token);
