@@ -110,7 +110,7 @@ class Gems_Default_AgendaFilterAction extends \Gems_Controller_ModelSnippetActio
     /**
      * Get an agenda filter for the current shown item
      *
-     * @return array
+     * @return AppointmentFilterInterface or null
      */
     public function getShowFilter()
     {
