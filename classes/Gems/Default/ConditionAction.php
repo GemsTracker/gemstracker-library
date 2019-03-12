@@ -105,5 +105,45 @@ class Gems_Default_ConditionAction extends \Gems_Controller_ModelSnippetActionAb
     {
         return $this->plural('condition', 'conditions', $count);
     }
+    
+    public function createAction()
+    {
+        parent::createAction();
+        $this->addScript();
+    }
+    
+    public function editAction()
+    {
+        parent::editAction();
+        $this->addScript();
+    }
+    
+    /**
+     * This script disables the onchange that is fired just before the click on the submit button fires.
+     * The onchange submits the form, changes the csrf token and then the submit button fires with the old
+     * csrf that is invalid. This could prevent a needed (fake)submit to change values, but for now it
+     * does not seem like a problem.
+     */
+    protected function addScript() 
+    {
+        $view = $this->view;
+        \MUtil_JQuery::enableView($view);
+
+        $jquery = $view->jQuery();
+        $jquery->enable();  //Just to make sure
+
+        $handler = \ZendX_JQuery_View_Helper_JQuery::getJQueryHandler();
+
+        $script = "$('input[type=\"submit\"]').mousedown(function(e) {
+     e.preventDefault(); // prevents blur() to be called when clicking submit
+});";
+        $fields = array(
+            'jQuery'  => $handler,
+        );
+
+        $js = str_replace(array_keys($fields), $fields, $script);
+
+        $jquery->addOnLoad($js);
+    }
 
 }
