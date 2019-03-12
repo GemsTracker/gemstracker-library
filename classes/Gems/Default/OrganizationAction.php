@@ -155,14 +155,14 @@ class Gems_Default_OrganizationAction extends \Gems_Controller_ModelSnippetActio
         if (! $org->getRespondentChangeEventClass()) {
             $go = false;
             $this->addMessage(sprintf(
-                   $this->_('Nothing to do: no respondent change event set for %s.'),
+                   $this->_('Nothing to do: respondent change event for %s not set.'),
                    $org->getName()
                    ));
         }
         if (! $org->canHaveRespondents()) {
             $go = false;
             $this->addMessage(sprintf(
-                   $this->_('Nothing to do: no respondents exist for %s.'),
+                   $this->_('Nothing to do: %s has no respondents.'),
                    $org->getName()
                    ));
         }

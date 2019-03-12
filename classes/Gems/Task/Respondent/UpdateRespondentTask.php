@@ -58,7 +58,7 @@ class UpdateRespondentTask extends \MUtil_Task_TaskAbstract
         $batch->setMessage(
                 'respCheck',
                 sprintf(
-                        $this->_('%d respondents checked, %d respondent were changed.'),
+                        $this->_('%d respondents checked, %d respondents were changed.'),
                         $batch->getCounter('respondentsChecked'),
                         $batch->getCounter('respondentsChanged')
                         ));

@@ -39,7 +39,7 @@ class CheckOrganizationInformation extends \MUtil_Snippets_SnippetAbstract
         $ul->li($this->_('Executes respondent change event for all active respondents.'));
 
         $seq->pInfo($this->_(
-                'Run this code when the respondent change event has changed or e.g. when a new "default" track has been added.'
+                'Run this code when the respondent change event was changed or e.g. when a new "default" track was created.'
                 ));
 
         return $seq;

@@ -57,7 +57,7 @@ class CreateDefaultTracks extends \MUtil_Translate_TranslateableAbstract
     public function getEventName()
     {
         return sprintf(
-                $this->_('Add all tracks with a trackcode containging "%s".'),
+                $this->_('Add all tracks with containing the trackcode "%s".'),
                 $this->trackCode
                 );
     }
