@@ -62,7 +62,7 @@ class In extends ComparatorAbstract
      */
     public function isValid($value)
     {
-        $validOptions = explode('|', $options[0]);
+        $validOptions = explode('|', $this->_options[0]);
         return in_array($value, $validOptions);
     }
 
