@@ -1434,6 +1434,7 @@ UPDATE gems__roles
 -- GEMS VERSION: 64
 -- PATCH: 186 - add organization mailwatcher
 ALTER TABLE gems__organizations
+    ADD gor_mail_watcher boolean not null default 1 after gor_contact_email;
 
 -- PATCH: add continue later templates
 INSERT INTO gems__comm_templates (gct_id_template, gct_name, gct_target, gct_code, gct_changed, gct_changed_by, gct_created, gct_created_by)
