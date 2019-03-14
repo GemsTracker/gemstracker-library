@@ -776,8 +776,13 @@ abstract class Gems_Menu_MenuAbstract
         // ADD CHART SETUP CONTROLLER
         $setup->addBrowsePage($this->_('Charts setup'), 'pr.chartsetup', 'chartconfig');
 
-        // ADD CONDITIONS CONTROLLER
-        $setup->addBrowsePage($this->_('Conditions'), 'pr.conditions', 'condition');
+        // ADD CONDITIONS CONTROLLER - do not include import/export as this is handled by track import/export
+        $conditions = $setup->addPage($this->_('Conditions'), 'pr.conditions', 'condition');
+        $conditions->addAutofilterAction();
+        $conditions->addCreateAction();
+        $show = $conditions->addShowAction();
+        $show->addEditAction();
+        $show->addDeleteAction();
 
         // SURVEY MAINTENANCE CONTROLLER
         $page = $setup->addPage($this->_('Surveys'), 'pr.survey-maintenance', 'survey-maintenance');

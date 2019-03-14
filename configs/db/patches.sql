@@ -1455,3 +1455,11 @@ INSERT INTO gems__reception_codes (grc_id_reception_code, grc_description, grc_s
 -- PATCH: Add organization check
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.organization.check-org') WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.organization.check-org%';
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.organization.check-all') WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.organization.check-all%';
+
+-- PATCH: Add conditions to interface
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.conditions,')
+    WHERE grl_privileges LIKE '%,pr.track-maintenance,%' AND grl_privileges NOT LIKE '%,pr.conditions,%';
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.conditions.edit,pr.conditions.create,')
+    WHERE grl_privileges LIKE '%,pr.track-maintenance.edit%' AND grl_privileges NOT LIKE '%,pr.conditions.edit,pr.conditions.create%';
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.conditions.delete,')
+    WHERE grl_privileges LIKE '%,pr.track-maintenance.delete%' AND grl_privileges NOT LIKE '%,pr.conditions.delete%';

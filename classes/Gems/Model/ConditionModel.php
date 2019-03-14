@@ -21,7 +21,7 @@ namespace Gems\Model;
  */
 class ConditionModel extends \Gems_Model_JoinModel
 {
-/**
+    /**
      *
      * @var \Zend_Db_Adapter_Abstract
      */
@@ -32,28 +32,6 @@ class ConditionModel extends \Gems_Model_JoinModel
      * @var \Gems_Loader
      */
     protected $loader;
-
-    /**
-     * The filter dependency class names, the parts after *_Agenda_Filter_
-     *
-     * @var array (dependencyClassName)
-     * /
-    protected $filterDependencies = array(
-        'AndModelDependency',
-        'FieldLikeModelDependency',
-        'LocationModelDependency',
-        'NotAnyModelDependency',
-        'OrModelDependency',
-        'SqlLikeModelDependency',
-        'SubjectModelDependency',
-    );
-
-    /**
-     * The filter class names, loaded by loodFilterDependencies()
-     *
-     * @var array filterClassName => Label
-     * /
-    protected $filterOptions;
 
     /**
      *

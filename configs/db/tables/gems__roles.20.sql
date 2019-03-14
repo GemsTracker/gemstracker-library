@@ -124,7 +124,8 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     ,pr.token.mail.freetext,pr.token.undelete,
     ,pr.track.check,pr.track.insert,pr.track.undelete,
     ,pr.track-maintenance,pr.track-maintenance.create,pr.track-maintenance.edit,pr.track-maintenance.export,
-    ,pr.track-maintenance.import,pr.track-maintenance.trackperorg',
+    ,pr.track-maintenance.import,pr.track-maintenance.trackperorg,
+    ,pr.conditions,pr.conditions.create,pr.conditions.edit',
     CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
 INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_parents,
@@ -152,7 +153,8 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     ,pr.token.mail.freetext,pr.token.undelete,
     ,pr.track.check,pr.track.insert,pr.track.undelete,
     ,pr.track-maintenance,pr.track-maintenance.create,pr.track-maintenance.edit,pr.track-maintenance.export,
-    ,pr.track-maintenance.import,pr.track-maintenance.trackperorg',
+    ,pr.track-maintenance.import,pr.track-maintenance.trackperorg,
+    ,pr.conditions,pr.conditions.create,pr.conditions.edit',
     CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
 INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_parents,
@@ -184,5 +186,6 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     ,pr.survey-maintenance.edit,
     ,pr.templates,
     ,pr.track-maintenance.delete,
+    ,pr.conditions.delete,
     ,pr.upgrade,pr.upgrade.all,pr.upgrade.one,pr.upgrade.from,pr.upgrade.to',
     CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
