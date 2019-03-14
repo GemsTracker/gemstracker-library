@@ -814,8 +814,8 @@ abstract class Gems_Menu_MenuAbstract
         $showPage = $page->addShowAction();
         $showPage->addEditAction();
         $showPage->addDeleteAction();
-        $showPage->addButtonOnly($this->_('Copy'),  'pr.track-maintenance.copy', 'track-maintenance', 'copy')
-                ->setModelParameters(1);
+        /*$showPage->addButtonOnly($this->_('Copy'),  'pr.track-maintenance.copy', 'track-maintenance', 'copy')
+                ->setModelParameters(1);*/
 
         $showPage->addAction($this->_('Export'), 'pr.track-maintenance.export', 'export')
                  ->addParameters(\MUtil_Model::REQUEST_ID);
