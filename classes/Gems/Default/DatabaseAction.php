@@ -626,69 +626,11 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
 
     public function runSqlAction()
     {
-        /*************
-         * Make form *
-         *************/
-        $form = $this->createForm();
-
-        $element = $form->createElement('textarea', 'script');
-        $element->setDescription($this->_('Separate multiple commands with semicolons (;).'));
-        $element->setLabel('SQL:');
-        $element->setRequired(true);
-        $form->addElement($element);
-
-        //$element = new \Zend_Form_Element_Submit('submit');
-        $submit = $form->createElement('submit', 'submit');
-        $submit->setLabel($this->_('Run'));
-        $form->addElement($submit);
-
-        /****************
-         * Process form *
-         ****************/
-        $request   = $this->getRequest();
-        $resultSet = 0;
-        if($request->isPost()) {
-            $form->populate($request->getPost());            
-        }
-        if ($submit->isChecked() && $form->isValid($request->getPost())) {
-            $data = $form->getValues();
-            $data['name'] = '';
-            $data['type'] = $this->_('raw');
-
-            $model = $this->getModel();
-            $results   = $model->runScript($data, true);
-            $resultSet = 1;
-            $echos     = \MUtil_Html::create()->array();
-            foreach ($results as $result) {
-                if (is_string($result)) {
-                    $this->addMessage($result);
-                } else {
-                    $echo = $echos->echo($result, sprintf($this->_('Result set %s.'), $resultSet++));
-                    $echo->class = 'browser';
-                }
-            }
-            $this->accesslog->logChange($this->_request, null, $data['script']);
-        }
-
-        /****************
-         * Display form *
-         ****************/
-        $table = new \MUtil_Html_TableElement(array('class' => 'formTable'));
-        $table->setAsFormLayout($form, true, true);
-        $table['tbody'][0][0]->class = 'label';  // Is only one row with formLayout, so all in output fields get class.
-        $table['tbody'][0][0]->style = 'vertical-align: top;'; // Only single cell, this always looks better here.
-
-        if ($links = $this->createMenuLinks()) {
-            $table->tf(); // Add empty cell, no label
-            $linksCell = $table->tf($links);
-        }
-
-        $this->html->h3($this->_('Execute raw SQL'));
-        $this->html[] = $form;
-        if ($resultSet > 1) {
-            $this->html->h3($this->_('Result sets'));
-            $this->html[] = $echos;
-        }
+        $params = [
+            'model' => $this->getModel(),
+            'menuLinks' => $this->createMenuLinks(),
+        ];
+        $this->addSnippet('Database\\RunSqlFormSnippet', $params);
     }
 
     public function showAction()
