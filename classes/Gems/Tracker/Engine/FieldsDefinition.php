@@ -54,9 +54,9 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
     protected $_dataModel = array();
 
     /**
-     * Can be an empty array.
+     * Array of Fieldobjects Can be an empty array.
      *
-     * @var array of \Gems\Tracker\Field\FieldInterface objects
+     * @var \Gems\Tracker\Field\FieldInterface[]
      */
     protected $_fields = false;
 
