@@ -213,8 +213,11 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
             switch ($filter['main_filter']) {
                 case 'hasnomail':
                     $filter[] = sprintf(
-                            "(gr2o_email IS NULL OR gr2o_email = '' OR gr2o_email NOT RLIKE '%s') AND
-                                ggp_respondent_members = 1",
+                            "((gr2o_email IS NULL OR gr2o_email = '' OR gr2o_email NOT RLIKE '%1\$s') AND
+                                ggp_respondent_members = 1 AND gto_id_relationfield IS NULL) 
+                             OR
+                             ((grr_email IS NULL OR grr_email = '' OR grr_email NOT RLIKE '%1\$s') AND
+                                ggp_respondent_members = 1 AND gto_id_relationfield IS NOT NULL)",
                             str_replace('\'', '\\\'', trim(\MUtil_Validate_SimpleEmail::EMAIL_REGEX, '/'))
                             );
                     $filter[] = '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)';
@@ -222,7 +225,7 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
                     break;
 
                 case 'notmailable':
-                    $filter[] = '(gr2o_mailable = 0 OR gr2t_mailable = 0) AND ggp_respondent_members = 0';
+                    $filter[] = '(gr2o_mailable = 0 OR gr2t_mailable = 0) AND ggp_respondent_members = 1';
                     $filter[] = '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)';
                     $filter['gto_completion_time'] = null;
                     break;
@@ -235,10 +238,11 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
 
                 case 'tomail':
                     $filter[] = sprintf(
-                            "gr2o_email IS NOT NULL AND
-                                gr2o_email != '' AND
-                                gr2o_email RLIKE '%s' AND
-                                ggp_respondent_members = 1",
+                            "(gr2o_email IS NOT NULL AND gr2o_email != '' AND gr2o_email RLIKE '%s' AND
+                                ggp_respondent_members = 1 AND gto_id_relationfield IS NULL)
+                              OR
+                              (grr_email IS NOT NULL AND grr_email != '' AND grr_email RLIKE '%s' AND
+                                ggp_respondent_members = 1 AND gto_id_relationfield IS NO NULL)",
                             str_replace('\'', '\\\'', trim(\MUtil_Validate_SimpleEmail::EMAIL_REGEX, '/'))
                             );
                     //$filter[] = "gr2o_email IS NOT NULL AND gr2o_email != '' AND ggp_respondent_members = 1";
