@@ -240,6 +240,7 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
             $this->addColumn(new \Zend_Db_Expr('NULL'), 'calc_result', 'gto_result');
         }
         $this->addColumn($this->util->getTokenData()->getStatusExpression(), 'token_status');
+        $this->set('forgroup', 'column_expression', new \Zend_Db_Expr('COALESCE(gems__track_fields.gtf_field_name, ggp_name)'));
     }
 
     /**

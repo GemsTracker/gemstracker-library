@@ -94,7 +94,13 @@ class Gems_Selector_TokenDateSelector extends \Gems_Selector_DateSelectorAbstrac
 
         $mainFilter = isset($filter['main_filter']) ? $filter['main_filter'] : null;
         unset($filter['main_filter']);
-
+        
+        $forGroup = isset($filter['forgroup']) ? $filter['forgroup'] : null;
+        unset($filter['forgroup']);
+        if ($forGroup) {
+            $filter[] = $this->db->quoteinto('ggp_name =? or gtf_field_name = ?', forGroup);
+        }
+        
         $output = parent::processFilter($request, $filter);
 
         if ($mainFilter) {
@@ -119,7 +125,8 @@ class Gems_Selector_TokenDateSelector extends \Gems_Selector_DateSelectorAbstrac
         $select->join('gems__respondent2org',  '(gto_id_organization = gr2o_id_organization AND gto_id_respondent = gr2o_id_user)', array());
         $select->join('gems__respondent2track','gto_id_respondent_track = gr2t_id_respondent_track', array());        
         $select->join('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', array());
-        $select->joinLeft('gems__respondent_relations', '(gto_id_relation = grr_id AND gto_id_respondent = grr_id_respondent)'); // Add relation
+        $select->joinLeft('gems__respondent_relations', '(gto_id_relation = grr_id AND gto_id_respondent = grr_id_respondent)', array()); // Add relation
+        $select->joinLeft('gems__track_fields',  '(gto_id_relationfield = gtf_id_field AND gtf_field_type = "relation")', array());       // Add relation fields     
     }
 
     protected function setTableBody(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Lazy_RepeatableInterface $repeater, $columnClass)
