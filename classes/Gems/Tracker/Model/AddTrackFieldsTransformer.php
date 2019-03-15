@@ -65,6 +65,20 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
     }
 
     /**
+     * Get default values of empty fields
+     *
+     * @return array
+     */
+    public function getEmptyFieldsData()
+    {
+        $fields = [];
+        foreach ($this->_trackFields as $key => $field) {
+            $fields[$key] = $field['gtf_field_default'];
+        }
+        return $fields;
+    }
+
+    /**
      * If the transformer add's fields, these should be returned here.
      * Called in $model->AddTransformer(), so the transformer MUST
      * know which fields to add by then (optionally using the model
@@ -106,7 +120,7 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
             } else {
 
                 if (! $empty) {
-                    $empty = array_fill_keys(array_keys($this->fieldsDefinition->getFieldNames()), null);
+                    $empty = $this->getEmptyFieldsData();
                 }
                 $fields = $empty;
             }

@@ -38,7 +38,11 @@ class SelectField extends FieldAbstract
      */
     protected function addModelSettings(array &$settings)
     {
-        $empty = $this->util->getTranslated()->getEmptyDropdownArray();
+        $empty = [];
+        if (!$this->_fieldDefinition['gtf_required'] || $this->_fieldDefinition['gtf_field_default'] === null) {
+            $empty = $this->util->getTranslated()->getEmptyDropdownArray();
+        }
+
         $multi = explode(parent::FIELD_SEP, $this->_fieldDefinition['gtf_field_values']);
 
         $settings['elementClass'] = 'Select';
