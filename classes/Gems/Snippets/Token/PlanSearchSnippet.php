@@ -58,7 +58,6 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
      */
     protected function addFillerSelect(array &$elements, $data, $elementId = 'filler')
     {
-        $elements[] = null;
         if (isset($data['gto_id_track']) && !empty($data['gto_id_track'])) {
             $trackId = (int) $data['gto_id_track'];
         } else {
