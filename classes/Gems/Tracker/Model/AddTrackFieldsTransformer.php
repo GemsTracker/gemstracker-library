@@ -71,11 +71,11 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
      */
     public function getEmptyFieldsData()
     {
-        $fields = [];
-        foreach ($this->_trackFields as $key => $field) {
-            $fields[$key] = $field['gtf_field_default'];
+        $output = [];
+        foreach ($this->fieldsDefinition->getFieldDefaults() as $key => $default) {
+            $output[$key] = $default;
         }
-        return $fields;
+        return $output;
     }
 
     /**
@@ -144,7 +144,7 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
     public function transformRowAfterSave(\MUtil_Model_ModelAbstract $model, array $row)
     {
         if (isset($row[$this->respTrackIdField]) && $row[$this->respTrackIdField]) {
-            
+
             if ((! $this->respTrackIdField) || ($this->respTrackIdField == 'gr2t_id_respondent_track')) {
                 // Load && refresh when using standard gems__respondent2track data
                 $respTrack = $this->tracker->getRespondentTrack($row);

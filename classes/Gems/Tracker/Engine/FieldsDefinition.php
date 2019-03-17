@@ -357,6 +357,23 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
 
     /**
      * Returns an array of the fields in this track
+     * key / value are id / code
+     *
+     * @return array fieldid => fieldcode
+     */
+    public function getFieldDefaults()
+    {
+        $output = array();
+
+        foreach ($this->_trackFields as $key => $field) {
+            $output[$key] = $field['gtf_field_default'];
+        }
+
+        return $output;
+    }
+
+    /**
+     * Returns an array of the fields in this track
      * key / value are id / field name
      *
      * @return array fieldid => fieldcode
@@ -391,7 +408,7 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
      */
     public function getFieldLabelsOfType($fieldType)
     {
-        return $this->getFieldsOfType($fieldType, 'gtf_field_name');    
+        return $this->getFieldsOfType($fieldType, 'gtf_field_name');
     }
 
     /**
@@ -433,7 +450,7 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
 
         return $output;
     }
-    
+
      /**
      * Returns an array name => $element of all the fields of the type specified
      *
@@ -444,12 +461,12 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
     {
         $output     = array();
         $fieldArray = (array) $fieldType;
-        
+
         foreach ($this->_trackFields as $key => $field) {
             if (in_array($field['gtf_field_type'], $fieldArray)) {
                 $output[$key] = $field[$element];
             }
-        }        
+        }
 
         return $output;
     }
