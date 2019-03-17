@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - A basic continue later option was added to allow respondents to pause answering surveys (#387)
 
 ### Added
+- Appointments have extra filter options for creating a second track instance, e.g. on a start date difference (419)
 - Compliance overview now provides a better export (#381)
 - Round conditions can now filter for contained text (#384)
 - Round conditions can now filter for a value in a list (#415)
