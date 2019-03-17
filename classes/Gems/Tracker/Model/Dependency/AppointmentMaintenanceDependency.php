@@ -184,14 +184,37 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
                     ),
                 );
             $output['gtf_create_track'] = $this->loader->getAgenda()->getTrackCreateElement();
+        }
 
-            if ($context['gtf_create_track']) {
-                $output['gtf_create_wait_days'] = array(
-                    'label'       => $this->_('Days between tracks'),
-                    'description' => $this->_('Any previous track must have an end date at least this many days in the past.'),
-                    'elementClass' => 'Text',
-                    );
+        $label = false;
+        $description = false;
+        if ($context['gtf_create_track']) {
+            switch ($context['gtf_create_track']) {
+                case 1:
+                    $label = $this->_('End date difference');
+                    $description = $this->_('Any previous track must be closed and have an end date at least this many days in the past.');
+                    break;
+                case 2:
+                    $label = $this->_('End date difference');
+                    $description = $this->_('Any previous track must have an end date at least this many days in the past.');
+                    break;
+                case 4:
+                    $label = $this->_('Start date difference');
+                    $description = $this->_('Any previous track must have an start date at least this many days in the past.');
+                    break;
+                case 5:
+                    break;
+
             }
+        }
+        if ($label && $description) {
+            $output['gtf_create_wait_days'] = array(
+                'label'        => $label,
+                'description'  => $description,
+                'elementClass' => 'Text',
+                );
+        } else {
+            unset($output['gtf_create_wait_days']);
         }
 
         return $output;

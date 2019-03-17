@@ -1006,22 +1006,37 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
      * When adding a new type, make sure to modify \Gems_Agenda_Appointment too
      * @see \Gems_Agenda_Appointment::getCreatorCheckMethod()
      *
-     * @return array
+     * @return array For element setting
      */
     public function getTrackCreateElement()
     {
-        return array(
-                'elementClass' => 'Radio',
-                'multiOptions' => [
-                    0 => $this->_('Never'),
-                    1 => $this->_('When no open track exists'),
-                    2 => $this->_('Always')
-                    ],
-                'label'        => $this->_('Create track'),
-                'onclick'      => 'this.form.submit();',
-                );
+        return [
+            'elementClass' => 'Radio',
+            'multiOptions' => $this->getTrackCreateOptions(),
+            'label'        => $this->_('When track already assigned'),
+            'onclick'      => 'this.form.submit();',
+            ];
     }
 
+    /**
+     * Get the element that allows to create a track from an appointment
+     *
+     * When adding a new type, make sure to modify \Gems_Agenda_Appointment too
+     * @see \Gems_Agenda_Appointment::getCreatorCheckMethod()
+     *
+     * @return array Code => label
+     */
+    public function getTrackCreateOptions()
+    {
+        return [
+            0 => $this->_('Do nothing'),
+            4 => $this->_('Create new on minimum start date difference'),
+            3 => $this->_('Create always (unless the appointment already assigned)'),
+            2 => $this->_('Create new on minimum end date difference'),
+            5 => $this->_('Create new when all surveys have been completed'),
+            1 => $this->_('Create new when all surveys have been completed and on minimum end date'),
+            ];
+    }
     /**
      * Get the type codes for agenda items
      *

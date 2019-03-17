@@ -242,6 +242,41 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * Always report the track should be created
+     *
+     * @param \Gems\Agenda\AppointmentFilterInterface $filter
+     * @param \Gems_Tracker_RespondentTrack $respTrack
+     *
+     * @return boolean
+     */
+    public function createAlwaysNoEndDate($filter, $respTrack)
+    {
+        return $this->createWhenNotInThisTrack($filter, $respTrack);
+    }
+
+    /**
+     * Always report the track should be created
+     *
+     * @param \Gems\Agenda\AppointmentFilterInterface $filter
+     * @param \Gems_Tracker_RespondentTrack $respTrack
+     *
+     * @return boolean
+     */
+    public function createFromStart($filter, $respTrack)
+    {
+        $createTrack = true;
+        $curr        = $this->getAdmissionTime();
+        $start       = $respTrack->getStartDate();
+        $wait        = $filter->getWaitDays();
+
+        if ((! $start) || ($curr->diffDays($start) <= $wait)) {
+            $createTrack = false;
+        }
+
+        return $createTrack;
+    }
+
+    /**
      * Always return the track should NOT be created
      *
      * This should never be called as 0 is not a creator, the code is here just
@@ -255,6 +290,26 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
     public function createNever()
     {
         return false;
+    }
+
+    /**
+     * Only return true when no open track exists
+     *
+     * @param \Gems\Agenda\AppointmentFilterInterface $filter
+     * @param \Gems_Tracker_RespondentTrack $respTrack
+     *
+     * @return boolean
+     */
+    public function createNoOpen($filter, $respTrack)
+    {
+        // If an open track of this type exists: do not create a new one
+        $createTrack = !$respTrack->isOpen();
+
+        if ($createTrack) {
+            $createTrack = $this->createWhenNotInThisTrack($filter, $respTrack);
+        }
+
+        return $createTrack;
     }
 
     /**
@@ -383,7 +438,10 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
         static $methods = [
             0 => 'createNever',
             1 => 'createWhenNoOpen',
-            2 => 'createAlways'
+            2 => 'createAlways',
+            3 => 'createAlwaysNoEndDate',
+            4 => 'createFromStart',
+            5 => 'createNoOpen',
         ];
 
         // No checks, when type does not exists this is an error we want to be thrown
