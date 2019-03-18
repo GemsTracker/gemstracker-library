@@ -71,11 +71,7 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
      */
     public function getEmptyFieldsData()
     {
-        $output = [];
-        foreach ($this->fieldsDefinition->getFieldDefaults() as $key => $default) {
-            $output[$key] = $default;
-        }
-        return $output;
+        return $this->fieldsDefinition->getFieldDefaults();
     }
 
     /**
