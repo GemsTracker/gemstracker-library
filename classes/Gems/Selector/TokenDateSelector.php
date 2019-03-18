@@ -98,7 +98,7 @@ class Gems_Selector_TokenDateSelector extends \Gems_Selector_DateSelectorAbstrac
         $forGroup = isset($filter['forgroup']) ? $filter['forgroup'] : null;
         unset($filter['forgroup']);
         if ($forGroup) {
-            $filter[] = $this->db->quoteinto('ggp_name =? or gtf_field_name = ?', $forGroup);
+            $filter[] = $this->db->quoteinto('(ggp_name = ? AND gto_id_relationfield IS NULL) or gtf_field_name = ?', $forGroup);
         }
         
         $output = parent::processFilter($request, $filter);
