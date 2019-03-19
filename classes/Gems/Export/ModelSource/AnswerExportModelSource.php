@@ -61,6 +61,59 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
     protected $model;
 
     /**
+     * Add the default fields and optionally joins to the model
+     *
+     * @param MUtil_Model_ModelAbstract $model
+     * @param array $data
+     * @param array $prefixes
+     */
+    protected function _addDefaultFieldsToExportModel(\MUtil_Model_ModelAbstract $model, array $data, array &$prefixes)
+    {
+        if (!$model->checkJoinExists('gems__respondent2org.gr2o_id_user', 'gems__tokens.gto_id_respondent')) {
+            $model->addTable('gems__respondent2org', array(
+                'gems__respondent2org.gr2o_id_user' => 'gems__tokens.gto_id_respondent',
+                'gems__respondent2org.gr2o_id_organization' => 'gems__tokens.gto_id_organization'), 'gr2o'
+            );
+        }
+
+        if (!$model->checkJoinExists('gems__respondent2track.gr2t_id_respondent_track', 'gems__tokens.gto_id_respondent_track')) {
+            $model->addTable('gems__respondent2track', array('gems__respondent2track.gr2t_id_respondent_track' => 'gems__tokens.gto_id_respondent_track'), 'gr2t');
+        }
+        if (!$model->checkJoinExists('gems__tracks.gtr_id_track', 'gems__tokens.gto_id_track')) {
+            $model->addTable('gems__tracks', array('gems__tracks.gtr_id_track' => 'gems__tokens.gto_id_track'), 'gtr');
+        }
+        if (!$model->checkJoinExists('gems__consents.gco_description', 'gems__respondent2org.gr2o_consent')) {
+            $model->addTable('gems__consents', array('gems__consents.gco_description' => 'gems__respondent2org.gr2o_consent'), 'gco');
+        }
+
+        $model->set('respondentid',        'label', $this->_('Respondent ID'), 'type', \MUtil_Model::TYPE_NUMERIC);
+        $model->set('organizationid',      'label', $this->_('Organization'), 'type', \MUtil_Model::TYPE_NUMERIC,
+            'multiOptions', $this->currentUser->getAllowedOrganizations()
+        );
+        // Add Consent
+        $model->set('consentcode',              'label', $this->_('Consent'), 'type', \MUtil_Model::TYPE_STRING);
+        $model->set('resptrackid',              'label', $this->_('Respondent track ID'), 'type', \MUtil_Model::TYPE_NUMERIC);
+        $model->set('gto_round_order',          'label', $this->_('Round order'));
+        $model->set('gto_round_description',    'label', $this->_('Round description'));
+        $model->set('gtr_track_name',           'label', $this->_('Track name'));
+        $model->set('gr2t_track_info',          'label', $this->_('Track description'));
+
+        // These are limesurvey fields, replace them with GemsTracker fields
+        //$model->set('submitdate',               'label', $this->_('Submit date'));
+        //$model->set('startdate',                'label', $this->_('Start date'));
+        //$model->set('datestamp',                'label', $this->_('Datestamp'));
+        $model->set('gto_completion_time',      'label', $this->_('Completion date'));
+        $model->set('gto_start_time',           'label', $this->_('Start time'));
+
+        $model->set('gto_valid_from',           'label', $this->_('Valid from'));
+        $model->set('gto_valid_until',          'label', $this->_('Valid until'));
+        $model->set('startlanguage',            'label', $this->_('Start language'));
+        $model->set('lastpage',                 'label', $this->_('Last page'));
+
+        $model->set('gto_id_token',                       'label', $this->_('Token'));
+    }
+
+    /**
      * Extensible function for added project specific data extensions
      *
      * @param \MUtil_Model_ModelAbstract $model
@@ -74,7 +127,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
         $this->_addExtraGenderAge($model, $data, $prefixes);
         $this->_addExtraTokenReceptionCode($model, $data, $prefixes);
         $this->_addExtraTrackReceptionCode($model, $data, $prefixes);
-        $this->addExtraTrackFieldsByCode($model, $data, $prefixes);
+        $this->_addExtraTrackFieldsByCode($model, $data, $prefixes);
     }
 
     /**
@@ -182,16 +235,14 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
      * @param array $data
      * @param array $prefixes
      */
-    protected function addExtraTrackFieldsByCode(\MUtil_Model_ModelAbstract $model, array $data, array &$prefixes)
+    protected function _addExtraTrackFieldsByCode(\MUtil_Model_ModelAbstract $model, array $data, array &$prefixes)
     {
         if (isset($data['export_trackfield_codes']) && $data['export_trackfield_codes']) {
             $includeCodes = array_map('trim', explode(',', $data['export_trackfield_codes']));
-
             if (!empty($includeCodes)) {
                 foreach ($includeCodes as $name) {
                     $model->set($name, 'label', $name);
                 }
-
                 $tracker = $this->loader->getTracker();
                 $transformer = new \Gems\Tracker\Model\AddTrackFieldsByCodeTransformer($tracker, $includeCodes);
                 $model->addTransformer($transformer);
@@ -210,6 +261,97 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
         if (isset($data['export_track_reception_code']) && $data['export_track_reception_code']) {
 
             $model->set('gr2t_reception_code', 'label', $this->_('Track reception code'));
+        }
+    }
+
+    /**
+     * Add nested model fields to the export model
+     *
+     * @param MUtil_Model_ModelAbstract $model
+     * @param array $data
+     * @param array $prefixes
+     */
+    protected function _addNestedFieldsToExportModel(\MUtil_Model_ModelAbstract $model, array $data, array &$prefixes)
+    {
+        // Set labels in the main model for the submodel fields
+        if ($model->getMeta('nested', false)) {
+            $nestedNames = $model->getMeta('nestedNames');
+            foreach($nestedNames as $nestedName) {
+                $nestedModel = $model->get($nestedName, 'model');
+                $nestedLabels = $nestedModel->getcolNames('label');
+                foreach($nestedLabels as $colName) {
+                    $label = $nestedModel->get($colName, 'label');
+                    $model->set($colName, 'label', $label);
+                }
+                $model->remove($nestedName, 'label');
+            }
+        }
+    }
+
+    /**
+     * Add all survey answers to the export model
+     *
+     * @param MUtil_Model_ModelAbstract $model
+     * @param Gems_Tracker_Survey $survey
+     * @param array $data
+     * @param array $prefixes
+     */
+    protected function _addSurveyAnswersToExportModel(\MUtil_Model_ModelAbstract $model, \Gems_Tracker_Survey $survey, array $data, array &$prefixes)
+    {
+        $prefixes['A'] = [];
+        $language = $this->locale->getLanguage();
+        $questions = $survey->getQuestionList($language);
+        $questionInformation = $survey->getQuestionInformation($language);
+        foreach($questions as $questionName => $label) {
+            if ($parent = $model->get($questionName, 'parent_question')) {
+                if ($model->get($parent, 'type') === \MUtil_Model::TYPE_NOVALUE) {
+                    if (isset($data['prefix_child']) && $data['prefix_child'] == 1) {
+                        $cleanLabel = strip_tags($label);
+                        $model->set($questionName, 'label', $cleanLabel);
+                    }
+                    if (isset($data['show_parent']) && $data['show_parent'] == 1) {
+                        if (!in_array($parent, $prefixes['A'])) {
+                            $prefixes['A'][] = $parent;
+                            if (isset($questionInformation[$parent], $questionInformation[$parent]['question'])) {
+                                $cleanLabel = strip_tags($questionInformation[$parent]['question']);
+                                $model->set($parent, 'label', $cleanLabel);
+                            }
+                        }
+                    } else {
+                        $model->remove($parent, 'label');
+                    }
+                }
+            }
+
+            if ($question = $model->get($questionName, 'survey_question') && $model->get($questionName, 'label') == null) {
+                $model->set($questionName, 'label', $questionName);
+                if (isset($questionInformation[$questionName], $questionInformation[$questionName]['question'])) {
+                    $cleanLabel = strip_tags($questionInformation[$questionName]['question']);
+                    $model->set($questionName, 'label', $cleanLabel);
+                }
+            }
+            $prefixes['A'][] = $questionName;
+        }
+    }
+
+    /**
+     * Add the survey source attributes to the export model that have not yet been set.
+     *
+     * @param MUtil_Model_ModelAbstract $model
+     * @param Gems_Tracker_Survey $survey
+     * @param array $data
+     * @param array $prefixes
+     * @throws Gems_Exception
+     */
+    protected function _addSurveySourceAttributesToExportModel(\MUtil_Model_ModelAbstract $model, \Gems_Tracker_Survey $survey, array $data, array &$prefixes)
+    {
+        $source = $survey->getSource();
+        $attributes = $source->getAttributes();
+        $preExistingFields = $model->getColNames('label');
+        $attributes = array_diff($attributes, $preExistingFields);
+
+        foreach($attributes as $attribute) {
+            $model->set($attribute, 'label', $attribute);
         }
     }
 
@@ -317,95 +459,20 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
             $survey   = $this->loader->getTracker()->getSurvey($surveyId);
             $model = $survey->getAnswerModel($language);
 
-            $source = $survey->getSource();
-            $questions = $source->getQuestionList($language, $surveyId, $survey->getSourceSurveyId());
-            foreach($questions as $questionName => $label ) {
-                if ($parent = $model->get($questionName, 'parent_question')) {
-                    if ($model->get($parent, 'type') === \MUtil_Model::TYPE_NOVALUE) {
-                        if (isset($data['prefix_child']) && $data['prefix_child'] == 1) {
-                            $cleanLabel = strip_tags($label);
-                            $model->set($questionName, 'label', $cleanLabel);
-                        }
-                        if (isset($data['show_parent']) && $data['show_parent'] == 1) {
-                            $model->remove($parent, 'label');
-                        }
-                    }
-                }
-
-                if ($question = $model->get($questionName, 'survey_question') && $model->get($questionName, 'label') == null) {
-                    $model->set($questionName, 'label', $questionName);
-                }
-
+            // Reset labels and order
+            foreach($model->getItemNames() as $itemName) {
+                $model->remove($itemName, 'label');
             }
+            $model->resetOrder();
 
-            // Set labels in the main model for the submodel fields
-            if ($model->getMeta('nested', false)) {
-                $nestedNames = $model->getMeta('nestedNames');
-                foreach($nestedNames as $nestedName) {
-                    $nestedModel = $model->get($nestedName, 'model');
-                    $nestedLabels = $nestedModel->getcolNames('label');
-                    foreach($nestedLabels as $colName) {
-                        $label = $nestedModel->get($colName, 'label');
-                        $model->set($colName, 'label', $label);
-                    }
-                    $model->remove($nestedName, 'label');
-                }
-            }
+            $prefixes = [];
 
-            $prefixes = array();
+            $this->_addDefaultFieldsToExportModel($model, $data, $prefixes);
+            $this->_addSurveyAnswersToExportModel($model, $survey, $data, $prefixes);
+            $this->_addNestedFieldsToExportModel($model, $data, $prefixes);
+            $this->_addSurveySourceAttributesToExportModel($model, $survey, $data, $prefixes);
 
-            $prefixes['A'] = array_keys($questions);
-
-            $attributes = $source->getAttributes();
-
-            foreach($attributes as $attribute) {
-                $model->set($attribute, 'label', $attribute);
-            }
-
-            if (!$model->checkJoinExists('gems__respondent2org.gr2o_id_user', 'gems__tokens.gto_id_respondent')) {
-                $model->addTable('gems__respondent2org', array(
-                    'gems__respondent2org.gr2o_id_user' => 'gems__tokens.gto_id_respondent',
-                    'gems__respondent2org.gr2o_id_organization' => 'gems__tokens.gto_id_organization'), 'gr2o'
-                );
-            }
-
-            if (!$model->checkJoinExists('gems__respondent2track.gr2t_id_respondent_track', 'gems__tokens.gto_id_respondent_track')) {
-                $model->addTable('gems__respondent2track', array('gems__respondent2track.gr2t_id_respondent_track' => 'gems__tokens.gto_id_respondent_track'), 'gr2t');
-            }
-            if (!$model->checkJoinExists('gems__tracks.gtr_id_track', 'gems__tokens.gto_id_track')) {
-                $model->addTable('gems__tracks', array('gems__tracks.gtr_id_track' => 'gems__tokens.gto_id_track'), 'gtr');
-            }
-            if (!$model->checkJoinExists('gems__consents.gco_description', 'gems__respondent2org.gr2o_consent')) {
-                $model->addTable('gems__consents', array('gems__consents.gco_description' => 'gems__respondent2org.gr2o_consent'), 'gco');
-            }
-
-            $model->set('respondentid',        'label', $this->_('Respondent ID'), 'type', \MUtil_Model::TYPE_NUMERIC);
-            $model->set('organizationid',      'label', $this->_('Organization'), 'type', \MUtil_Model::TYPE_NUMERIC,
-                    'multiOptions', $this->currentUser->getAllowedOrganizations()
-                    );
-            // Add Consent
-            $model->set('consentcode',              'label', $this->_('Consent'), 'type', \MUtil_Model::TYPE_STRING);
-            $model->set('resptrackid',              'label', $this->_('Respondent track ID'), 'type', \MUtil_Model::TYPE_NUMERIC);
-            $model->set('gto_round_order',          'label', $this->_('Round order'));
-            $model->set('gto_round_description',    'label', $this->_('Round description'));
-            $model->set('gtr_track_name',           'label', $this->_('Track name'));
-            $model->set('gr2t_track_info',          'label', $this->_('Track description'));
-
-            // These are limesurvey fields, replace them with GemsTracker fields
-            //$model->set('submitdate',               'label', $this->_('Submit date'));
-            //$model->set('startdate',                'label', $this->_('Start date'));
-            //$model->set('datestamp',                'label', $this->_('Datestamp'));
-            $model->set('gto_completion_time',      'label', $this->_('Completion date'));
-            $model->set('gto_start_time',           'label', $this->_('Start time'));
-
-            $model->set('gto_valid_from',           'label', $this->_('Valid from'));
-            $model->set('gto_valid_until',          'label', $this->_('Valid until'));
-            $model->set('startlanguage',            'label', $this->_('Start language'));
-            $model->set('lastpage',                 'label', $this->_('Last page'));
-
-            $model->set('gto_id_token',                       'label', $this->_('Token'));
-
-            $prefixes['D'] = array_diff($model->getItemNames(), $prefixes['A'], $model->getItemsFor('table', 'gems__respondent2org'));
+            $prefixes['D'] = array_diff($model->getColNames('label'), $prefixes['A'], $model->getItemsFor('table', 'gems__respondent2org'));
 
             $this->_addExtraDataToExportModel($model, $data, $prefixes);
 
