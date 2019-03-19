@@ -21,10 +21,12 @@ namespace Gems\Screens;
  */
 class ScreenLoader extends \Gems_Loader_TargetLoaderAbstract
 {
-    const RESPONDENT_BROWSE_SCREEN = 'Respondent\\Browse';
-    const RESPONDENT_EDIT_SCREEN   = 'Respondent\\Edit';
-    const RESPONDENT_SHOW_SCREEN   = 'Respondent\\Show';
-    const TOKEN_ASK_SCREEN         = 'Token\\Ask';
+    const RESPONDENT_BROWSE_SCREEN      = 'Respondent\\Browse';
+    const RESPONDENT_EDIT_SCREEN        = 'Respondent\\Edit';
+    const RESPONDENT_SHOW_SCREEN        = 'Respondent\\Show';
+    const RESPONDENT_SUBSCRIBE_SCREEN   = 'Respondent\\Subscribe';
+    const RESPONDENT_UNSUBSCRIBE_SCREEN = 'Respondent\\Unsubscribe';
+    const TOKEN_ASK_SCREEN              = 'Token\\Ask';
 
     /**
      * Each screen type must implement an screen class or interface derived
@@ -35,10 +37,12 @@ class ScreenLoader extends \Gems_Loader_TargetLoaderAbstract
      * @var array containing screenType => screenClass for all screen classes
      */
     protected $_screenClasses = [
-        self::RESPONDENT_BROWSE_SCREEN => 'Gems\\Screens\\BrowseScreenInterface',
-        self::RESPONDENT_EDIT_SCREEN   => 'Gems\\Screens\\EditScreenInterface',
-        self::RESPONDENT_SHOW_SCREEN   => 'Gems\\Screens\\ShowScreenInterface',
-        self::TOKEN_ASK_SCREEN         => 'Gems\\Screens\\AskScreenInterface',
+        self::RESPONDENT_BROWSE_SCREEN      => 'Gems\\Screens\\BrowseScreenInterface',
+        self::RESPONDENT_EDIT_SCREEN        => 'Gems\\Screens\\EditScreenInterface',
+        self::RESPONDENT_SHOW_SCREEN        => 'Gems\\Screens\\ShowScreenInterface',
+        self::RESPONDENT_SUBSCRIBE_SCREEN   => 'Gems\\Screens\\SubscribeScreenInterface',
+        self::RESPONDENT_UNSUBSCRIBE_SCREEN => 'Gems\\Screens\\UnsubscribeScreenInterface',
+        self::TOKEN_ASK_SCREEN              => 'Gems\\Screens\\AskScreenInterface',
         ];
 
     /**
@@ -93,7 +97,7 @@ class ScreenLoader extends \Gems_Loader_TargetLoaderAbstract
     {
         $screenClass = $this->_getScreenClass($screenType);
         $paths       = $this->_getScreenDirs($screenType);
-        
+
         return $this->listClasses($screenClass, $paths, 'getScreenLabel');
     }
 
@@ -167,9 +171,27 @@ class ScreenLoader extends \Gems_Loader_TargetLoaderAbstract
      *
      * @return array screenname => string
      */
+    public function listSubscribeScreens()
+    {
+        return \Gems_Util_Translated::$emptyDropdownArray + $this->_listScreens(self::RESPONDENT_SUBSCRIBE_SCREEN);
+    }
+
+    /**
+     *
+     * @return array screenname => string
+     */
     public function listTokenAskScreens()
     {
         return $this->_listScreens(self::TOKEN_ASK_SCREEN);
+    }
+
+    /**
+     *
+     * @return array screenname => string
+     */
+    public function listUnsubscribeScreens()
+    {
+        return \Gems_Util_Translated::$emptyDropdownArray + $this->_listScreens(self::RESPONDENT_UNSUBSCRIBE_SCREEN);
     }
 
     /**
@@ -205,10 +227,34 @@ class ScreenLoader extends \Gems_Loader_TargetLoaderAbstract
     /**
      *
      * @param string $screenName Name of the screen class
+     * @return \Gems\Screens\SubscribeScreenInterface
+     */
+    public function loadSubscribeScreen($screenName)
+    {
+        if ($screenName) {
+            return $this->_loadScreen($screenName, self::RESPONDENT_SUBSCRIBE_SCREEN);
+        }
+    }
+
+    /**
+     *
+     * @param string $screenName Name of the screen class
      * @return \Gems\Screens\AskScreenInterface
      */
     public function loadTokenAskScreen($screenName)
     {
         return $this->_loadScreen($screenName, self::TOKEN_ASK_SCREEN);
+    }
+
+    /**
+     *
+     * @param string $screenName Name of the screen class
+     * @return \Gems\Screens\UnsubscribeScreenInterface
+     */
+    public function loadUnsubscribeScreen($screenName)
+    {
+        if ($screenName) {
+            return $this->_loadScreen($screenName, self::RESPONDENT_UNSUBSCRIBE_SCREEN);
+        }
     }
 }

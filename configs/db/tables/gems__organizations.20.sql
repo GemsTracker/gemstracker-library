@@ -23,6 +23,8 @@ CREATE TABLE if not exists gems__organizations (
 
         gor_respondent_edit         varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
         gor_respondent_show         varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
+        gor_respondent_subscribe    varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' default '',
+        gor_respondent_unsubscribe  varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' default '',
         gor_token_ask               varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
 
         gor_style                   varchar(15)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'gems',

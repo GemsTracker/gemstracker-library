@@ -1463,3 +1463,11 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.conditions.e
     WHERE grl_privileges LIKE '%,pr.track-maintenance.edit%' AND grl_privileges NOT LIKE '%,pr.conditions.edit,pr.conditions.create%';
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.conditions.delete,')
     WHERE grl_privileges LIKE '%,pr.track-maintenance.delete%' AND grl_privileges NOT LIKE '%,pr.conditions.delete%';
+
+-- PATCH: Add organization participation screen
+ALTER TABLE gems__organizations ADD
+    gor_respondent_subscribe varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' default ''
+    AFTER gor_respondent_show;
+ALTER TABLE gems__organizations ADD
+    gor_respondent_unsubscribe varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' default ''
+    AFTER gor_respondent_subscribe;

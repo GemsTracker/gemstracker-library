@@ -64,9 +64,21 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
 
     /**
      *
+     * @var \Gems\Screens\SubscribeScreenInterface
+     */
+    protected $_subscribeScreen;
+
+    /**
+     *
      * @var \Gems\Screens\AskScreenInterface
      */
     protected $_tokenAskScreen;
+
+    /**
+     *
+     * @var \Gems\Screens\UnsubscribeScreenInterface
+     */
+    protected $_unsubscribeScreen;
 
     /**
      * Required
@@ -432,6 +444,22 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
     }
 
     /**
+     *
+     * @return \Gems\Screens\SubscribeScreenInterface
+     */
+    public function getSubscribeScreen()
+    {
+        if ($this->_subscribeScreen || (! $this->_get('gor_respondent_subscribe'))) {
+            return $this->_subscribeScreen;
+        }
+        $screenLoader = $this->loader->getScreenLoader();
+
+        $this->_subscribeScreen = $screenLoader->loadSubscribeScreen($this->_get('gor_respondent_subscribe'));
+
+        return $this->_subscribeScreen;
+    }
+
+    /**
      * Get the style attribute.
      *
      * @return string
@@ -455,6 +483,22 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
         $this->_tokenAskScreen = $screenLoader->loadTokenAskScreen($this->_get('gor_token_ask'));
 
         return $this->_tokenAskScreen;
+    }
+
+    /**
+     *
+     * @return \Gems\Screens\UnsubscribeScreenInterface
+     */
+    public function getUnsubscribeScreen()
+    {
+        if ($this->_unsubscribeScreen || (! $this->_get('gor_respondent_unsubscribe'))) {
+            return $this->_unsubscribeScreen;
+        }
+        $screenLoader = $this->loader->getScreenLoader();
+
+        $this->_unsubscribeScreen = $screenLoader->loadUnsubscribeScreen($this->_get('gor_respondent_unsubscribe'));
+
+        return $this->_unsubscribeScreen;
     }
 
     /**

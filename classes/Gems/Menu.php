@@ -236,6 +236,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $optionPage->addAction($this->_('Change password'), 'pr.option.password', 'change-password');
         $optionPage->addAction($this->_('Two factor setup'), 'pr.option.2factor', 'two-factor');
 
+        $this->addParticipatePage($this->_('Participate'));
         $this->addAskPage($this->_('Token'));
         $this->addPage($this->_('Logoff'), 'pr.islogin', 'index', 'logoff');
 
@@ -278,6 +279,25 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
 
             $this->addPage(null, null, 'open-rosa-form', 'edit');
         }
+    }
+
+    /**
+     * Shortcut function to create a participate page
+     *
+     * This function is in \Gems_Menu instead of AbstractMenu because
+     * you should ALWAYS put this menu in the root menu.
+     *
+     * @param string $label Label for the whole menu
+     */
+    public function addParticipatePage($label)
+    {
+        $participate = $this->addContainer($label);
+        $subscr = $participate->addPage($this->_('Subscribe'), 'pr.participate.subscribe', 'participate', 'subscribe');
+        $subscr->addPage(null, 'pr.participate.subscribe', 'participate', 'subscribe-thanks');
+        $unsub = $participate->addPage($this->_('Unsubscribe'), 'pr.participate.unsubscribe', 'participate', 'unsubscribe');
+        $unsub->addPage(null, 'pr.participate.unsubscribe', 'participate', 'unsubscribe-thanks');
+
+        return $participate;
     }
 
     /**

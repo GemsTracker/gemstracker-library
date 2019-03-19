@@ -161,6 +161,12 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
         $this->setIfExists('gor_respondent_show', 'label', $this->_('Respondent show screen'),
                 'multiOptions', $groupLevel + $screenLoader->listRespondentShowScreens()
                 );
+        $this->setIfExists('gor_respondent_subscribe', 'label', $this->_('Subscribe screen'),
+                'multiOptions', $screenLoader->listSubscribeScreens()
+                );
+        $this->setIfExists('gor_respondent_unsubscribe', 'label', $this->_('Unsubscribe screen'),
+                'multiOptions', $screenLoader->listUnsubscribeScreens()
+                );
         $this->setIfExists('gor_token_ask', 'label', $this->_('Token ask screen'),
                 'multiOptions', $screenLoader->listTokenAskScreens()
                 );
@@ -223,7 +229,7 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
     {
         $this->applyDetailSettings();
         $this->resetOrder();
-        
+
         $yesNo = $this->util->getTranslated()->getYesNo();
 
         // GENERAL TAB
@@ -318,6 +324,14 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
                 'elementClass', 'Radio'
                 );
         $this->setIfExists('gor_respondent_show',
+                'default', '',
+                'elementClass', 'Radio'
+                );
+        $this->setIfExists('gor_respondent_subscribe',
+                'default', '',
+                'elementClass', 'Radio'
+                );
+        $this->setIfExists('gor_respondent_unsubscribe',
                 'default', '',
                 'elementClass', 'Radio'
                 );
