@@ -4593,7 +4593,7 @@ msgstr "Patiënt geslacht"
 
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:414
 msgid "Add respondent gender to export"
-msgstr "Voeg de geslacht van de patiënt toe aan de export"
+msgstr "Voeg het geslacht van de patiënt toe aan de export"
 
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:419
 msgid "Respondent birth year"
