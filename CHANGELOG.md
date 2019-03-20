@@ -3,8 +3,8 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
-## [Unreleased]
-[Unreleased]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.5...HEAD
+## [1.8.6]
+[1.8.6]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.5...1.8.6
 ### Security
 - Token valid dates are also injected in the survey system (#385)
 - A basic continue later option was added to allow respondents to pause answering surveys (#387)
