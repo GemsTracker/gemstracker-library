@@ -119,6 +119,7 @@ class Gems_Default_ExportSurveyActionAbstract extends \Gems_Controller_ModelSnip
         $this->defaultSearchData = [
             'gto_id_organization' => array_keys($this->currentUser->getRespondentOrganizations()),
             'step' => 'batch',
+            'subquestions' => 'show_parent'
             ];
         return $this->defaultSearchData;
     }
