@@ -6812,7 +6812,7 @@ msgstr "toon hoofdvraag apart"
 
 #: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:116
 msgid "add parent to each subquestion"
-msgstr "voeg hoofdvraag een subvragen toe"
+msgstr "voeg hoofdvraag aan subvragen toe"
 
 #: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:134
 msgid "Add to export"
