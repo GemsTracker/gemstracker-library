@@ -109,7 +109,7 @@ abstract class SurveyExportSearchFormSnippetAbstract extends \Gems_Snippets_Auto
                 $this->_('Column Identifiers'),
                 $this->_('Prefix the column labels with an identifier. (A) Answers, (TF) Trackfields, (D) Description')
                 );
-        $element[] = $this->_(' For subquestions ');
+        $elements[] = $this->_(' For subquestions ');
         $elements['subquestions'] = $this->_createRadioElement(
                 'subquestions', [
                     'show_parent'  => $this->_('show parent as separate question'),
