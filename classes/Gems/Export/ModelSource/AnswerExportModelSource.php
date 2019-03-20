@@ -305,11 +305,11 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
         foreach($questions as $questionName => $label) {
             if ($parent = $model->get($questionName, 'parent_question')) {
                 if ($model->get($parent, 'type') === \MUtil_Model::TYPE_NOVALUE) {
-                    if (isset($data['prefix_child']) && $data['prefix_child'] == 1) {
+                    if (isset($data['subquestions']) && $data['subquestions'] == 'prefix_child') {
                         $cleanLabel = strip_tags($label);
-                        $model->set($questionName, 'label', $cleanLabel);
+                        $model->set($questionName, 'label', $cleanLabel);                        
                     }
-                    if (isset($data['show_parent']) && $data['show_parent'] == 1) {
+                    if (isset($data['subquestions']) && $data['subquestions'] == 'show_parent') {
                         if (!in_array($parent, $prefixes['A'])) {
                             $prefixes['A'][] = $parent;
                             if (isset($questionInformation[$parent], $questionInformation[$parent]['question'])) {

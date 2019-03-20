@@ -109,7 +109,13 @@ abstract class SurveyExportSearchFormSnippetAbstract extends \Gems_Snippets_Auto
                 $this->_('Column Identifiers'),
                 $this->_('Prefix the column labels with an identifier. (A) Answers, (TF) Trackfields, (D) Description')
                 );
-        $elements['show_parent'] = $this->_createCheckboxElement(
+        $element[] = $this->_(' For subquestions ');
+        $elements['subquestions'] = $this->_createRadioElement(
+                'subquestions', [
+                    'show_parent'  => $this->_('show parent as separate question'),
+                    'prefix_child' => $this->_('add parent to each subquestion')
+                ])->setSeparator(' ');
+        /*$elements['show_parent'] = $this->_createCheckboxElement(
                 'show_parent',
                 $this->_('Show parent'),
                 $this->_('Show the parent column even if it doesn\'t have answers')
@@ -119,6 +125,7 @@ abstract class SurveyExportSearchFormSnippetAbstract extends \Gems_Snippets_Auto
                 $this->_('Prefix child'),
                 $this->_('Prefix the child column labels with parent question label')
                 );
+         */
         $elements[] = null;
 
         $extraFields = $this->getExtraFieldElements($data);
