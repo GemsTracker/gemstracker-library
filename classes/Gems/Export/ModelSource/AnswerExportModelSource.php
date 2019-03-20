@@ -75,7 +75,11 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
                 'gems__respondent2org.gr2o_id_organization' => 'gems__tokens.gto_id_organization'), 'gr2o'
             );
         }
-
+        
+        // Add relation fields
+        $model->set('gto_id_relation', 'label', $this->_('Relation ID'), 'type', \MUtil_Model::TYPE_NUMERIC);
+        $model->set('forgroup', 'label', $this->_('Filler'), 'type', \MUtil_Model::TYPE_STRING);
+        
         if (!$model->checkJoinExists('gems__respondent2track.gr2t_id_respondent_track', 'gems__tokens.gto_id_respondent_track')) {
             $model->addTable('gems__respondent2track', array('gems__respondent2track.gr2t_id_respondent_track' => 'gems__tokens.gto_id_respondent_track'), 'gr2t');
         }
@@ -221,10 +225,6 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
         if (isset($data['gto_id_track']) && $data['gto_id_track'] && isset($data['add_track_fields']) && $data['add_track_fields'] == 1) {
             $engine = $this->loader->getTracker()->getTrackEngine($data['gto_id_track']);
             $engine->addFieldsToModel($model, false, 'gto_id_respondent_track');
-
-            // Add relation fields
-            $model->set('gto_id_relation', 'label', $this->_('Relation ID'), 'type', \MUtil_Model::TYPE_NUMERIC);
-            $model->set('gtf_field_name', 'label', $this->_('Relation'), 'type', \MUtil_Model::TYPE_STRING);
 
             $prefixes['TF'] = array_diff($model->getItemNames(), $prefixes['A'], $prefixes['D']);
         }

@@ -57,7 +57,11 @@ class Gems_Tracker_SurveyModel extends \Gems_Model_JoinModel
 
         // Add relations
         // Add relation fields
-        $this->addLeftTable('gems__track_fields',         array('gto_id_relationfield' => 'gtf_id_field', 'gtf_field_type = "relation"'));
+        $this->addLeftTable('gems__track_fields',   array('gto_id_relationfield' => 'gtf_id_field', 'gtf_field_type = "relation"'));
+        $this->addTable('gems__surveys',            array('gto_id_survey' => 'gsu_id_survey'));
+        $this->addTable('gems__groups',             array('gsu_id_primary_group' => 'ggp_id_group'));        
+        $this->set('forgroup', 'column_expression', new \Zend_Db_Expr('COALESCE(gems__track_fields.gtf_field_name, ggp_name)'));
+        
         // Add relation itself
         $this->addLeftTable('gems__respondent_relations', array('gto_id_relation' => 'grr_id', 'gto_id_respondent' => 'grr_id_respondent'));
 
