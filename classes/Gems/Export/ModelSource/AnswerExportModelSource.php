@@ -75,11 +75,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
                 'gems__respondent2org.gr2o_id_organization' => 'gems__tokens.gto_id_organization'), 'gr2o'
             );
         }
-        
-        // Add relation fields
-        $model->set('gto_id_relation', 'label', $this->_('Relation ID'), 'type', \MUtil_Model::TYPE_NUMERIC);
-        $model->set('forgroup', 'label', $this->_('Filler'), 'type', \MUtil_Model::TYPE_STRING);
-        
+               
         if (!$model->checkJoinExists('gems__respondent2track.gr2t_id_respondent_track', 'gems__tokens.gto_id_respondent_track')) {
             $model->addTable('gems__respondent2track', array('gems__respondent2track.gr2t_id_respondent_track' => 'gems__tokens.gto_id_respondent_track'), 'gr2t');
         }
@@ -94,6 +90,11 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
         $model->set('organizationid',      'label', $this->_('Organization'), 'type', \MUtil_Model::TYPE_NUMERIC,
             'multiOptions', $this->currentUser->getAllowedOrganizations()
         );
+        
+        // Add relation fields
+        $model->set('gto_id_relation', 'label', $this->_('Relation ID'), 'type', \MUtil_Model::TYPE_NUMERIC);
+        $model->set('forgroup', 'label', $this->_('Filler'), 'type', \MUtil_Model::TYPE_STRING);
+        
         // Add Consent
         $model->set('consentcode',              'label', $this->_('Consent'), 'type', \MUtil_Model::TYPE_STRING);
         $model->set('resptrackid',              'label', $this->_('Respondent track ID'), 'type', \MUtil_Model::TYPE_NUMERIC);
