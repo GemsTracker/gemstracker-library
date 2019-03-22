@@ -23,6 +23,18 @@ namespace Gems\Tracker\Field;
  */
 class DateField extends FieldAbstract
 {
+    
+    public $allowedDateFormats = [
+        'yyyy-MM-dd HH:mm:ss',
+        'yyyy-MM-dd HH:mm',
+        'yyyy-MM-dd',
+        'c',
+        'dd-MM-yyyy',
+        'dd-MM-yyyy HH:mm',
+        'dd-MM-yyyy HH:mm:ss'
+    ];
+
+    
     /**
      *
      * @var \Gems_Loader
@@ -124,7 +136,7 @@ class DateField extends FieldAbstract
             return $currentValue;
         }
         if ($currentValue) {
-            return \MUtil_Date::ifDate($currentValue, array($this->getDateFormat(), $this->getStorageFormat()));
+            return \MUtil_Date::ifDate($currentValue, $this->allowedDateFormats);
         }
 
         return $currentValue;

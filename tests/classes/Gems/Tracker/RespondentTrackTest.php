@@ -169,29 +169,7 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
 
         $this->assertArrayWithDateMatch($expected, $actual, '', 1, 0);
     }
-
-    /**
-     * When saving a date by using a string, it should work too
-     */
-    public function testSetDateFields()
-    {
-        $respondentTrack = $this->loader->getTracker()->getRespondentTrack(1);
-
-        // $expected = $respondentTrack->getFieldData();
-        $date = new \MUtil_Date('2010-11-09', 'yyyy-MM-dd');
-        $expected = array(
-            'f__1' => 'newvalue',
-            'code' => 'newvalue',
-            'f__2' => $date,
-            'datecode' => $date,
-            'f__5' => 21,
-            'rel'  => 21
-            );
-        $actual = $respondentTrack->setFieldData(array('code' => 'newvalue', 'datecode' => $date->toString('yyyy-MM-dd')));
-        
-        $this->assertArrayWithDateMatch($expected, $actual, '', 1, 0);
-    }
-    
+   
     /**
      * When saving a date by using a string, it should work too
      * 
