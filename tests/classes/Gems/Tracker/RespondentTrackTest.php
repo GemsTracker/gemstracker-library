@@ -188,8 +188,48 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
             'rel'  => 21
             );
         $actual = $respondentTrack->setFieldData(array('code' => 'newvalue', 'datecode' => $date->toString('yyyy-MM-dd')));
-
+        
         $this->assertArrayWithDateMatch($expected, $actual, '', 1, 0);
+    }
+    
+    /**
+     * When saving a date by using a string, it should work too
+     * 
+     * @dataProvider dateStringProvider
+     */
+    public function testSetDateString($date, $expected)
+    {
+        $respondentTrack = $this->loader->getTracker()->getRespondentTrack(1);
+
+        $expectedResult = array(
+            'f__1' => 'test',
+            'code' => 'test',
+            'f__2' => $expected,
+            'datecode' => $expected,
+            'f__5' => 21,
+            'rel'  => 21
+            );
+        $actual = $respondentTrack->setFieldData(array('datecode' => $date));
+        
+        $this->assertArrayWithDateMatch($expectedResult, $actual, '', 1, 0);
+    }
+    
+    public function dateStringProvider()
+    {
+        return [
+            'date' => [
+                '2019-03-22',
+                new \MUtil_Date('2019-03-22')
+            ],
+            'datetime' => [
+                '2019-03-23 15:45:59',
+                new \MUtil_Date('2019-03-23')
+            ],
+            'dateshorttime' => [
+                '2019-03-24 15:45',
+                new \MUtil_Date('2019-03-24')
+            ]
+        ];
     }
 
     /**
