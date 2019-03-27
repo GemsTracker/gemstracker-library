@@ -138,8 +138,11 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
      * @return array Row array containing (optionally) transformed data
      */
     public function transformRowAfterSave(\MUtil_Model_ModelAbstract $model, array $row)
-    {
+    {       
         if (isset($row[$this->respTrackIdField]) && $row[$this->respTrackIdField]) {
+            if (! $this->tracker) {
+                $this->tracker = $this->loader->getTracker();
+            }
 
             if ((! $this->respTrackIdField) || ($this->respTrackIdField == 'gr2t_id_respondent_track')) {
                 // Load && refresh when using standard gems__respondent2track data
@@ -148,10 +151,13 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
                 $respTrack = $this->tracker->getRespondentTrack($row[$this->respTrackIdField]);
             }
 
-            // Field data was already (re)calculated in transformRowBeforeSave
-            // and saveFields() extracts the used field data from the row.
-            $changed = $respTrack->saveFields($row);
-
+            // We use setFieldDate instead of saveFields() since it handles updating related values
+            // like dates derived from appointments
+            $before = $respTrack->getFieldData();       // Get old so we can detect changes
+            $after  = $respTrack->setFieldData($row);
+            $row = $after + $row;
+            $changed = ($before !== $after);
+            
             if ($changed && (! $model->getChanged())) {
                 $model->addChanged(1);
             }
@@ -168,7 +174,7 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
      * @param \MUtil_Model_ModelAbstract $model The parent model
      * @param array $row Array containing row
      * @return array Row array containing (optionally) transformed data
-     */
+     * /
     public function transformRowBeforeSave(\MUtil_Model_ModelAbstract $model, array $row)
     {
         if (! $this->tracker) {
@@ -192,9 +198,10 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
      * When true, the on save functions are triggered before passing the data on
      *
      * @return boolean
-     */
+     * /
     public function triggerOnSaves()
     {
         return true;
     }
+     */
 }

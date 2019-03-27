@@ -298,6 +298,31 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
     }
     
     /**
+     * We have an appointment field and a field that copies the date from the appointment
+     * Setting through the normal interface should work just fine
+     */
+    public function testCreateTrackDefaultFieldsViaModel()
+    {
+        $respondentTrack = $this->loader->getTracker()->getRespondentTrack(1);
+        $engine = $respondentTrack->getTrackEngine();
+        $model = $this->loader->getTracker()->getRespondentTrackModel()->applyEditSettings($engine);
+        
+        // New track
+        $data = $model->loadNew();
+        $data = [
+            'gr2t_id_track'        => 1,
+            'gr2t_id_user'         => '1234',
+            'gr2t_id_organization' => 1,
+            'gr2t_start_date'      => new \MUtil_Date('2000-01-01')
+        ] + $data;
+        
+        $newData = $model->save($data);
+        $expected['f__1'] = $expected['code'] = 'default';
+        $actual = array_intersect_key($newData, $expected);
+        $this->assertEquals($expected, $actual);
+    }
+    
+    /**
      * Test if settings fields via code works
      */
     public function testSetFieldToEmptyWithCode()
