@@ -75,6 +75,92 @@ gems__track_fields:
         gtf_changed_by: '1'
         gtf_created: '2012-09-07'
         gtf_created_by: '1'
+    -
+        gtf_id_field: '6'
+        gtf_id_track: '2'
+        gtf_field_name: AppDate
+        gtf_field_code: null
+        gtf_field_type: date
+        gtf_field_default: null
+        gtf_to_track_info: '0'
+        gtf_calculate_using: 'a__1'
+        gtf_changed_by: '1'
+        gtf_created: '2012-09-07'
+        gtf_created_by: '1'
+gems__track_appointments:
+    -
+        gtap_id_app_field: 1
+        gtap_id_track: 2
+        gtap_field_name: 'appointment'
+        gtap_changed_by: '1'
+        gtap_created: '2012-09-07'
+        gtap_created_by: '1'
+
+gems__agenda_activities:
+    -
+        gaa_id_activity: 1
+        gaa_name: 'Activity 1 cough'
+        gaa_id_organization: 1
+        gaa_name_for_resp:
+        gaa_match_to:
+        gaa_code:
+        gaa_active: 1
+        gaa_filter: 0
+        gaa_changed: '2017-08-09'
+        gaa_changed_by: 1
+        gaa_created: '2017-08-09'
+        gaa_created_by: 1
+gems__agenda_procedures:
+    -
+        gapr_id_procedure: 1
+        gapr_name: 'Procedure 1 sedate'
+        gapr_id_organization: 1
+        gapr_name_for_resp:
+        gapr_match_to:
+        gapr_code:
+        gapr_active: 1
+        gapr_filter: 0
+        gapr_changed: '2017-08-09'
+        gapr_changed_by: 1
+        gapr_created: '2017-08-09'
+        gapr_created_by: 1
+gems__agenda_staff:
+    -
+        gas_id_staff: 1
+        gas_name: 'Staff 1'
+        gas_id_organization: 1
+        gas_match_to:
+        gas_active: 1
+        gas_filter: 0
+        gas_changed: '2017-08-09'
+        gas_changed_by: 1
+        gas_created: '2017-08-09'
+        gas_created_by: 1
+        
+gems__appointments:
+    -
+        gap_id_appointment: 1
+        gap_id_user: 1
+        gap_id_organization: 1
+        gap_id_episode:
+        gap_manual_edit: 1
+        gap_code: A
+        gap_status: AC
+        gap_admission_time: '2017-10-01 09:00:00'
+        gap_discharge_time: '2017-10-01 09:30:00'
+        gap_id_attended_by: 1
+        gap_id_referred_by: 1
+        gap_id_activity: 1
+        gap_id_procedure: 1
+        gap_id_location: 1
+        gap_diagnosis_code:
+        gap_subject: 'Subject xxx '
+        gap_comment:
+        gap_changed: '2017-08-09'
+        gap_changed_by: 1
+        gap_created: '2017-08-09'
+        gap_created_by: 1
+
 gems__reception_codes:
     -
         grc_id_reception_code: OK

@@ -209,6 +209,62 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
             ]
         ];
     }
+    
+    /**
+     * We have an appointment field and a field that copies the date from the appointment
+     * Setting through the normal interface should work just fine
+     */
+    public function testSetFieldsAppointment()
+    {
+        $respondentTrack = $this->loader->getTracker()->getRespondentTrack(2);
+        $expected = $respondentTrack->getFieldData();
+        $expected['a__1'] = 1;
+        $expected['f__6'] = new \MUtil_Date('2017-10-01', 'yyyy-MM-dd');
+        $actual   = $respondentTrack->setFieldData(array('a__1' => 1));
+
+        $this->assertArrayWithDateMatch($expected, $actual, '', 1, 0);
+    }
+    
+    /**
+     * We have an appointment field and a field that copies the date from the appointment
+     * Setting through the normal interface should work just fine
+     */
+    public function testSetFieldsAppointmentViaModel()
+    {
+        $respondentTrack = $this->loader->getTracker()->getRespondentTrack(2);
+        $engine = $respondentTrack->getTrackEngine();
+        $model = $this->loader->getTracker()->getRespondentTrackModel()->applyEditSettings($engine);
+        $data = $model->loadFirst(['gr2t_id_track' => 2]);
+        $data['a__1'] = 1;
+        
+        $result   = $model->save($data);
+        $expected = '2017-10-01';
+        $actual   = $result['f__6']->toString('yyyy-MM-dd');
+        $this->assertEquals($expected, $actual);
+    }
+    
+    /**
+     * We have an appointment field and a field that copies the date from the appointment
+     * Setting through the normal interface should work just fine
+     */
+    public function testCreateTrackWithAppointmentViaModel()
+    {
+        $respondentTrack = $this->loader->getTracker()->getRespondentTrack(2);
+        $engine = $respondentTrack->getTrackEngine();
+        $model = $this->loader->getTracker()->getRespondentTrackModel()->applyEditSettings($engine);
+        
+        // New track
+        $data = $model->loadNew();
+        $data['gr2t_id_track'] = 2;
+        $data['gr2t_id_user'] = '1234';
+        $data['gr2t_id_organization'] = 1;
+        $data['a__1'] = 1;
+        
+        $result   = $model->save($data);
+        $expected = '2017-10-01';
+        $actual   = $result['f__6']->toString('yyyy-MM-dd');
+        $this->assertEquals($expected, $actual);    
+    }
 
     /**
      * When only providing one or two fields, the others should not get nulled
@@ -270,6 +326,8 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
         $expected = array(
             'f__3' => 'newvalue',
             'f__4' => '',
+            'f__6' => '',
+            'a__1' => ''
             );
         $actual = $respondentTrack->setFieldData(array('f__3' => 'newvalue', 'f__4' => null));
         $this->assertArrayWithDateMatch($expected, $actual, '', 1, 0);
