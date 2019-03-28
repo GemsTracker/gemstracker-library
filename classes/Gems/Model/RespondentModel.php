@@ -624,7 +624,17 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         $toPatient['gr2o_patient_nr']      = $toPid;
         $toPatient['gr2o_id_organization'] = $toOrgId;
         $toPatient['gr2o_reception_code']  = \GemsEscort::RECEPTION_OK;
+
+        $loginToSaveTable = false;
+        if (isset($this->_saveTables['gems__user_logins'])) {
+            $loginToSaveTable = $this->_saveTables['gems__user_logins'];
+            unset($this->_saveTables['gems__user_logins']);
+        }
         $result = $this->save($toPatient);
+
+        if ($loginToSaveTable) {
+            $this->_saveTables['gems__user_logins'] = $loginToSaveTable;
+        }
 
         // Now re-enable the mask feature
         $this->currentUser->enableMask();
