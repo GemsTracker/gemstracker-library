@@ -143,3 +143,25 @@ CREATE TABLE gems__organizations (
         PRIMARY KEY(gor_id_organization)
     )
     ;
+
+CREATE TABLE gems__user_logins (
+        gul_id_user          INTEGER not null ,
+
+        gul_login            varchar(30) not null,
+        gul_id_organization  INTEGER not null,
+
+        gul_user_class       varchar(30) not null default 'NoLogin',
+        gul_can_login        TINYINT(1) not null default 0,
+
+        gul_two_factor_key   varchar(100),
+        gul_enable_2factor   TINYINT(1) not null default 1,
+
+        gul_changed          TEXT not null default current_timestamp,
+        gul_changed_by       INTEGER not null,
+        gul_created          TEXT not null,
+        gul_created_by       INTEGER not null,
+
+        PRIMARY KEY (gul_id_user),
+        UNIQUE (gul_login, gul_id_organization)
+    )
+    ;
