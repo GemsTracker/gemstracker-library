@@ -190,4 +190,20 @@ class RespondentModelTest extends AbstractModelTest {
         $this->assertEquals($expected, $actual);
     }
 
+    public function testCopy2OrgRespondentLogin()
+    {
+        $this->model->addLoginCheck();
+
+        $fromOrg = 1;
+        $fromPid = 'o1p2';
+        $toOrg   = 2;
+        $toPid   = 'o2p2';
+        $oldRecord = $this->model->loadFirst(['gr2o_patient_nr' => $fromPid, 'gr2o_id_organization' => $fromOrg]);
+
+        $this->model->copyToOrg($fromOrg, $fromPid, $toOrg, $toPid, true);
+        $newRecord = $this->model->loadFirst(['gr2o_patient_nr' => $fromPid, 'gr2o_id_organization' => $fromOrg]);
+
+        $this->assertEquals($oldRecord, $newRecord, 'Old record should be the same after copy');
+    }
+
 }
