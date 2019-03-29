@@ -374,7 +374,7 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
 
         if ($fields === false) {
             $fields = array();
-            $model  = $this->createTrackClass('Model_FieldMaintenanceModel');
+            $model  = $this->createTrackClass('Model\\FieldMaintenanceModel');
             $rows   = $model->load(array('gtf_field_code IS NOT NULL'), array('gtf_field_code' => SORT_ASC));
 
             if ($rows) {
