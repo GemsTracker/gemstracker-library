@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 1.8.9\n"
+"X-Generator: Poedit 2.2.1\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
@@ -7390,7 +7390,7 @@ msgstr "Uw emailadres"
 
 #: classes/Gems/Snippets/Subscribe/EmailSubscribeSnippet.php:88
 msgid "You have been subscribed succesfully."
-msgstr "U bent uitgeschreven."
+msgstr "Dank u voor uw inschrijving."
 
 #: classes/Gems/Snippets/Subscribe/EmailSubscribeSnippet.php:101
 msgid "Created by subscription"
@@ -8249,7 +8249,7 @@ msgstr "De deelnemende organisaties staan op de contact pagina."
 
 #: classes/Gems/Snippets/Unsubscribe/UnsubscribedSnippet.php:35
 msgid "You have been unsubscribed!"
-msgstr "U bent uitgeschreven!"
+msgstr "We hebben u uitgeschreven!"
 
 #: classes/Gems/Snippets/User/AdminPasswordResetSnippet.php:41
 msgid "Create account mail"
