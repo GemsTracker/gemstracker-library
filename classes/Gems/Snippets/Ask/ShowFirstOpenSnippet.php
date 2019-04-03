@@ -91,8 +91,8 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
             } else {
                 $name = $this->showToken->getRespondentName();
             }
-        }
-        $html->pInfo(sprintf($this->_('Welcome %s,'), $name));
+            $html->pInfo(sprintf($this->_('Welcome %s,'), $name));
+        }        
     }
 
     public function checkContinueLinkClicked()
