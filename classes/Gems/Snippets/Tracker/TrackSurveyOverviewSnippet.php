@@ -106,7 +106,17 @@ class TrackSurveyOverviewSnippet extends \Gems_Snippets_MenuSnippetAbstract
         }
 
         $roundModel = $this->trackEngine->getRoundModel(true, null);
-
+        
+        // The conditions seem to break the iterator, load only fields we need for display so the conditions won't be triggered
+        $roundModel->trackUsage();
+        $roundModel->get('gro_id_track');
+        $roundModel->get('gsu_id_survey');
+        $roundModel->get('gsu_survey_name');
+        $roundModel->get('gro_icon_file');
+        $roundModel->get('gro_round_description');
+        $roundModel->get('ggp_name');
+        $roundModel->get('gsu_survey_description');
+        
         return $roundModel->loadRepeatable(array('gro_id_track' => $trackId, 'gro_active' => 1));
     }
 
