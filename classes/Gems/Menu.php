@@ -160,6 +160,9 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         }
         $page->addAction($this->_('Run SQL'), 'pr.database.execute', 'run-sql');
 
+        $databaseBackup = $page->addPage($this->_('Database backup'), 'pr.database.backup', 'database-backup', 'index');
+        $databaseBackup->addActionButton($this->_('Backup'), 'pr.database.backup', 'backup');
+
         // CODE LEVEL
         $cont = $setup->addContainer($this->_('Codes'));
         $cont->addBrowsePage($this->_('Reception codes'), 'pr.reception', 'reception');
