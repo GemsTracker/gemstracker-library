@@ -72,6 +72,9 @@ class AddAllMailJobsTask extends \MUtil_Task_TaskAbstract
         } else {
             $this->getBatch()->addMessage($this->_('Nothing to do, please create a mail job first.'));
         }
-        $batch->addTask('Mail\\CronMailMonitorTask');
+        // When manually running the jobs, we do not start the monitortask
+        if ($batch->getId() == 'cron') {
+            $batch->addTask('Mail\\CronMailMonitorTask');
+        }
     }
 }
