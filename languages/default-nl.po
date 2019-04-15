@@ -8477,8 +8477,8 @@ msgstr[1] "Voor %d kenmerken is vragenlijst '%s' vervangen door '%s'"
 #, php-format
 msgid "%d track round has been updated to use '%s' instead of '%s'"
 msgid_plural "%d track rounds have been updated to use '%s' instead of '%s'"
-msgstr[0] "In %d ronde is vragenlijst '%s' vervangen door '%s'"
-msgstr[1] "In %d rondes is vragenlijst '%s' vervangen door '%s'"
+msgstr[0] "In %d ronde is vragenlijst '%3$s' vervangen door '%2$s'"
+msgstr[1] "In %d rondes is vragenlijst '%3$s' vervangen door '%2$s'"
 
 #: classes/Gems/Task/Tracker/AddRefreshQuestions.php:147
 #, php-format
