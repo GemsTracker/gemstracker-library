@@ -80,6 +80,7 @@ class ExportDbaModel extends \Gems_Model_DbaModel
         foreach($data as $key=>$row) {
             if (in_array($row['group'], $this->excludeGroups)) {
                 unset($data[$key]);
+                continue;
             }
             $data[$key]['exportTable'] = true;
             $data[$key]['respondentData'] = true;
