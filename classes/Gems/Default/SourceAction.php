@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -185,11 +184,17 @@ class Gems_Default_SourceAction extends \Gems_Controller_ModelSnippetActionAbstr
 
 
         if ($detailed) {
-            $in_gems = $this->_('Leave empty for the Gems database.');
+            $in_gems = $this->_('Leave empty for the Gems database settings.');
 
             $model->set('gso_ls_dbhost',       'label', $this->_('Database host'),
                     'description', $in_gems,
                     'size', 15
+                    );
+            $model->set('gso_ls_dbport',       'label', $this->_('Database port'),
+                    'description', $in_gems . ' ' . $this->_('Usually port 3306'),
+                    'size', 6,
+                    'validators[int]', 'Int',
+                    'validators[between]', ['Between', true, [0, 65535]]
                     );
             $model->set('gso_ls_database',     'label', $this->_('Database'),
                     'description', $in_gems,

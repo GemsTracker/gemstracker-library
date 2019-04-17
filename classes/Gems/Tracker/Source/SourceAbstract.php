@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -311,6 +310,11 @@ abstract class Gems_Tracker_Source_SourceAbstract extends \MUtil_Translate_Trans
                     $dbConfig['host']     = $this->_sourceData['gso_ls_dbhost']
                             ? $this->_sourceData['gso_ls_dbhost']
                             : $gemsConfig['host'];
+                    if (isset($this->_sourceData['gso_ls_dbport'])) {
+                        $dbConfig['port'] = $this->_sourceData['gso_ls_dbport'];
+                    } elseif (isset($gemsConfig['port'])) {
+                        $dbConfig['port'] = $gemsConfig['port'];
+                    }
                     $dbConfig['username'] = $this->_sourceData['gso_ls_username']
                             ? $this->_sourceData['gso_ls_username']
                             : $gemsConfig['username'];

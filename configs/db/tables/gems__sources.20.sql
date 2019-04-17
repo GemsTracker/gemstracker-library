@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS gems__sources (
         gso_ls_adapter      varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' default NULL,
         gso_ls_dbhost       varchar(127) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' default NULL,
         gso_ls_database     varchar(127) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' default NULL,
+        gso_ls_dbport       mediumint default NULL,
         gso_ls_table_prefix varchar(127) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' default NULL,
         gso_ls_username     varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' default NULL,
         gso_ls_password     varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' default NULL,

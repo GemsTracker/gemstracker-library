@@ -1471,3 +1471,9 @@ ALTER TABLE gems__organizations ADD
 ALTER TABLE gems__organizations ADD
     gor_respondent_unsubscribe varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' default ''
     AFTER gor_respondent_subscribe;
+
+-- GEMS VERSION: 65
+-- PATCH: Add port to sources
+ALTER TABLE gems__sources ADD
+        gso_ls_dbport mediumint default NULL
+        AFTER gso_ls_database;
