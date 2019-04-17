@@ -35,6 +35,12 @@ class Gems_Default_ParticipateAction extends \Gems_Controller_Action
     public $db;
 
     /**
+     *
+     * @var \Gems_Loader
+     */
+    public $loader;
+
+    /**
      * Set to true in child class for automatic creation of $this->html.
      *
      * To initiate the use of $this->html from the code call $this->initHtml()
