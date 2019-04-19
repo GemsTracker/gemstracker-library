@@ -414,6 +414,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         $source->offsetSet('gsf_active',          $this->isActive() ? 1 : 0);
         $source->offsetSet('accessible_role',     $this->inAllowedGroup() ? 1 : 0);
         $source->offsetSet('can_mail',            $this->hasEmailAddress() ? 1 : 0);
+        $source->offsetSet('has_2factor',         $this->isTwoFactorEnabled() ? 2 : 0);
     }
 
     /**
@@ -733,6 +734,20 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         }
 
         return (boolean) $this->acl && $this->userLoader;
+    }
+    
+    /**
+     * Clear the two factor authentication key
+     * 
+     * @return $this
+     */
+    public function clearTwoFactorKey()
+    {
+        $this->_setVar('user_two_factor_key', null);
+
+        $this->definition->setTwoFactorKey($this, null);
+        
+        return $this;
     }
 
     /**

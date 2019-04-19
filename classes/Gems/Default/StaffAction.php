@@ -330,4 +330,19 @@ class Gems_Default_StaffAction extends \Gems_Controller_ModelSnippetActionAbstra
             $this->addSnippets($this->resetSnippets, $params);
         }
     }
+    
+    /**
+     * reset two factor authentication
+     */
+    public function reset2faAction()
+    {
+        $user = $this->getSelectedUser();
+        $user->clearTwoFactorKey();
+        $this->addMessage(
+                sprintf($this->_('Two factor key cleared for user %s'),
+                        $user->getLoginName()),
+                'success');
+        $router = \Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
+        $router->gotoRoute(['controller'=>'staff', 'action'=>'show'], null, false);
+    }
 }
