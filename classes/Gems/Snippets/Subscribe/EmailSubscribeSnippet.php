@@ -75,7 +75,7 @@ class EmailSubscribeSnippet extends FormSnippetAbstract
 
         $form->addElement($element);
 
-        return $element;
+        return $form;
     }
 
     /**

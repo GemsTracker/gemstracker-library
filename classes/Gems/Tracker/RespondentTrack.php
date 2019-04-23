@@ -852,7 +852,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
      * Returns the field data for this respondent track id.
      *
      * The values of fields with a field code occur twice: once using the field
-     * id and once useing the code name.
+     * id and once using the code name.
      *
      * @return array of the existing field values for this respondent track
      */

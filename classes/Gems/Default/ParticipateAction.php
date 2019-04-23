@@ -114,24 +114,6 @@ class Gems_Default_ParticipateAction extends \Gems_Controller_Action
     }
 
     /**
-     * Ask the user which organization to participate with
-     *
-     * @return void
-     */
-    public function subscribeToOrgAction()
-    {
-        $request = $this->getRequest();
-        $orgId   = urldecode($request->getParam('org'));
-
-        $allowedOrganizations = $this->currentUser->getAllowedOrganizations();
-        if ((! $this->currentUser->isActive()) || isset($allowedOrganizations[$orgId])) {
-            $this->currentUser->setCurrentOrganization($orgId);
-        }
-
-        $this->forward('subscribe');
-    }
-
-    /**
      * Ask the user which organization to unsubscribe from
      *
      * @return void
