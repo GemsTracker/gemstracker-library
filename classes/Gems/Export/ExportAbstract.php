@@ -500,6 +500,29 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
             return $file;
         }
     }
+    
+    /**
+     * Return the answermodel for the given filter
+     * 
+     * @param array $filter
+     * @param array $data
+     * @param array|string $sort
+     * @return type
+     */
+    protected function getAnswerModel(array $filter, array $data, $sort)
+    {
+        $exportModelSource = $this->loader->getExportModelSource('AnswerExportModelSource');
+        $model = $exportModelSource->getModel($filter, $data);
+        $noExportColumns = $model->getColNames('noExport');
+        foreach($noExportColumns as $colName) {
+            $model->remove($colName, 'label');
+        }
+        $model->applyParameters($filter, true);
+
+        $model->addSort($sort);
+
+        return $model;
+    }
 
     /**
      * Returns the files array. It might be stored in the batch session or normal session.
@@ -534,8 +557,12 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
             $model = $this->_session->model;
         }
         if (is_array($model)) {
-            if ($this->modelId && isset($model[$this->modelId])) {
-                $model = $model[$this->modelId];
+            if ($this->modelId && isset($model['surveys'][$this->modelId])) {
+                $currentFilter = $model['filter'];
+                $currentFilter['gto_id_survey'] = $this->modelId;
+                $data = $model['data'];
+                $sort = $model['sort'];
+                $model = $this->getAnswerModel($currentFilter, $data, $sort);
             } else {
                 return false;
                 //$model = false;
@@ -597,5 +624,5 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
             $this->_session->model = $model;
         }
     }
-
+    
 }
