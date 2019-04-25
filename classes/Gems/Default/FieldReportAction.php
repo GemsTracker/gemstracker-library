@@ -43,6 +43,13 @@ class Gems_Default_FieldReportAction extends \Gems_Controller_ModelSnippetAction
      * @var \Gems_User_User
      */
     public $currentUser;
+    
+    /**
+     * Where statement filtering on track start / end dates
+     *
+     * @var string
+     */
+    protected $dateWhere;
 
     /**
      *
@@ -130,6 +137,12 @@ class Gems_Default_FieldReportAction extends \Gems_Controller_ModelSnippetAction
         $sql     = "SELECT COUNT(*)
             FROM gems__respondent2track INNER JOIN gems__reception_codes ON gr2t_reception_code = grc_id_reception_code
             WHERE gr2t_id_track = ? AND grc_success = 1" . $this->orgWhere;
+        
+        // Add the period filter - if any
+        if ($where = \Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($filter, $this->db)) {
+            $sql .= ' AND ' . $where;
+        }
+        $this->dateWhere = $where; 
 
         $this->trackCount = $this->db->fetchOne($sql, $this->trackId);
 
@@ -216,6 +229,11 @@ class Gems_Default_FieldReportAction extends \Gems_Controller_ModelSnippetAction
                 $model->getFieldName('gr2t2f_value', $subName),
                 $this->trackId
                 );
+        
+        // Add the period filter - if any
+        if ($this->dateWhere) {
+            $sql .= ' AND ' . $this->dateWhere;
+        }
 
         // \MUtil_Echo::track($sql);
         $this->trackFilled = $this->db->fetchOne($sql);
@@ -265,6 +283,11 @@ class Gems_Default_FieldReportAction extends \Gems_Controller_ModelSnippetAction
                 $model->getFieldName('gr2t2f_value', $subName),
                 $this->trackId
                 );
+        
+        // Add the period filter - if any
+        if ($this->dateWhere) {
+            $sql .= ' AND ' . $this->dateWhere;
+        }
 
         // \MUtil_Echo::track($sql);
         $value = $this->db->fetchOne($sql);
