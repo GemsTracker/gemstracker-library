@@ -716,7 +716,7 @@ abstract class Gems_Menu_MenuAbstract
                 ->addParameterFilter('gsf_active', 1);
         $pages[] = $showPage->addAction($this->_('Reset 2FA'), 'pr.staff.edit', 'reset2fa')
                 ->setModelParameters(1)
-                ->addParameterFilter('gsf_active', 1, '2fa_enabled', 2);
+                ->addParameterFilter('gsf_active', 1, 'ihas_2factor', 2);
         $showPage->addAction($this->_('Send Mail'), 'pr.staff.edit', 'mail')
                 ->setModelParameters(1)
                 ->addParameterFilter('can_mail', 1, 'gsf_active', 1, 'gsf_id_organization', $filter);
