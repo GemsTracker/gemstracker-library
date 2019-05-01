@@ -1,0 +1,7 @@
+; Temporary info for using MySQL 5.7
+;
+; From: https://stackoverflow.com/questions/23921117/disable-only-full-group-by
+;
+; Setting needed for MySQL:
+
+SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
