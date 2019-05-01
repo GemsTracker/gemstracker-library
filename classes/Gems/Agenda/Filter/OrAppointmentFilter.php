@@ -27,7 +27,7 @@ use Gems\Agenda\EpisodeOfCare;
  */
 class OrAppointmentFilter extends AppointmentSubFilterAbstract
 {
-    protected $glue = ' AND ';
+    protected $glue = ' OR ';
 
     /**
      * Generate a where statement to filter the appointment model
