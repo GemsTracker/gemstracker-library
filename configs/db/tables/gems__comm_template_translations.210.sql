@@ -33,9 +33,9 @@ Click on [url={token_url}]this link[/url] to start or go to [url]{site_ask_url}[
 To set your password and activate the account please click on this link:\n{reset_url}'),
     (18, 'nl', 'Nieuw account aangemaakt', 'Een nieuw account is aangemaakt voor de [b]{organization}[/b] site [b]{project}[/b].
 Om uw wachtwoord te kiezen en uw account te activeren, klik op deze link:\n{reset_url}'),
-    (19, 'en', 'New account created', 'A new account has been created for the [b]{organization}[/b] website [b]{project}[/b].
-To log in with your organization account {login_name} please click on this link:\r\n{login_url}'),
-    (19, 'nl', 'Nieuw account aangemaakt', 'Er is voor u een nieuw account aangemaakt voor de [b]{organization}[/b] website [b]{project}[/b].
+    (19, 'en', 'New account created', 'A new account has been created for the [b]{organization}[/b] website [b]{project}[/b].
+To log in with your organization account {login_name} please click on this link:\r\n{login_url}'),
+    (19, 'nl', 'Nieuw account aangemaakt', 'Er is voor u een nieuw account aangemaakt voor de [b]{organization}[/b] website [b]{project}[/b].
 Om in te loggen met uw organisatie account {login_name} klikt u op onderstaande link:\r\n{login_url}'),
     (20, 'en', 'Continue later', 'Dear {greeting},\n\nClick on [url={token_url}]this link[/url] to continue filling out surveys or go to [url]{site_ask_url}[/url] and enter this token: [b]{token}[/b]\n\n{organization_signature}'),
     (20, 'nl', 'Later doorgaan', 'Beste {greeting},\n\nKlik op [url={token_url}]deze link[/url] om verder te gaan met invullen van vragenlijsten of ga naar [url]{site_ask_url}[/url] en voer dit kenmerk in: [b]{token}[/b]\n\n{organization_signature}');
