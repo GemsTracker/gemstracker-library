@@ -116,7 +116,7 @@ class PrefillAnswersTest extends \PHPUnit_Framework_TestCase
                 // Raw track fields
                 [
                     'TEst' => 'waarde',
-                    'OKDate' => new \MUtil_Date('2019-05-10 10:11:12')
+                    'OKDate' => new \MUtil_Date('2019-05-10 10:11:12', 'yyyy-MM-dd HH:mm:ss')
                 ],
                 // RespondentFields
                 [
