@@ -30,7 +30,7 @@ class PrefillAnswersTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider surveyDataProvider
      */
-    public function testScore($data, $trackFields, $respondentData, $result)
+    public function testScore($data, $trackFields, $trackFieldsRaw, $respondentData, $result)
     {
         // Create a stub for the \Gems_Tracker_Token class.
         $token = $this->getMockBuilder('Gems_Tracker_Token')
@@ -89,6 +89,10 @@ class PrefillAnswersTest extends \PHPUnit_Framework_TestCase
         $respondentTrack->expects($this->any())
                 ->method('getCodeFields')
                 ->will($this->returnValue($trackFields));
+        
+        $respondentTrack->expects($this->any())
+                ->method('getFieldData')
+                ->will($this->returnValue($trackFieldsRaw));
 
         $this->assertEquals($result, $this->event->processTokenInsertion($token));
     }
@@ -99,13 +103,20 @@ class PrefillAnswersTest extends \PHPUnit_Framework_TestCase
             [// Token
                 [
                     'TFTest' => null,
+                    'TFOKDate' => null,
                     'RDSex'  => null,
                     'RDBirthDate'  => null,
                     
                 ],
                 // TrackFields
                 [
-                    'TEst' => 'waarde'
+                    'TEst' => 'waarde',
+                    'OKDate' => '10 mei 2019'
+                ],
+                // Raw track fields
+                [
+                    'TEst' => 'waarde',
+                    'OKDate' => new \MUtil_Date('2019-05-10 10:11:12')
                 ],
                 // RespondentFields
                 [
@@ -115,6 +126,7 @@ class PrefillAnswersTest extends \PHPUnit_Framework_TestCase
                 // Result
                 [
                     'TFTest' => 'waarde',
+                    'TFOKDate' => '2019-05-10 10:11:12',
                     'RDSex'  => 'M',
                     'RDBirthDate'  => '2008-12-15',
                 ]
