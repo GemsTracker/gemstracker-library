@@ -193,6 +193,7 @@ class PrefillAnswers extends \MUtil_Translate_TranslateableAbstract implements \
         // Read fieldcodes and convert to uppercase since requests are uppercase too
         $respondentTrack = $token->getRespondentTrack();
         $fieldCodes      = $respondentTrack->getCodeFields();
+        $rawFieldData    = $respondentTrack->getFieldData();    // Date (time) fields are unprocessed here
         $keysMixed       = array_keys($fieldCodes);
         $keysUpper       = array_change_key_case($fieldCodes, CASE_UPPER);
         $fieldCodesMap   = array_combine(array_keys($keysUpper), $keysMixed);
@@ -200,7 +201,12 @@ class PrefillAnswers extends \MUtil_Translate_TranslateableAbstract implements \
         foreach ($requests as $original => $upperField) {
             if (array_key_exists($upperField, $fieldCodesMap)) {
                 $trackField         = $fieldCodesMap[$upperField];
-                $results[$original] = $fieldCodes[$trackField];
+                $value              = $fieldCodes[$trackField];
+                // If it is a date(/time) field export it in ISO format
+                if (array_key_exists($trackField, $rawFieldData) && $rawFieldData[$trackField] instanceof \MUtil_Date) {
+                    $value = $rawFieldData[$trackField]->get('yyyy-MM-dd HH:mm:ss');
+                }
+                $results[$original] = $value;
             }
         }
 
