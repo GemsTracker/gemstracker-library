@@ -30,7 +30,7 @@ class FillTrackFieldAnswersTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider surveyDataProvider
      */
-    public function testScore($data, $trackFields, $respondentData, $result)
+    public function testScore($data, $trackFields, $trackFieldsRaw, $respondentData, $result)
     {
         // Create a stub for the \Gems_Tracker_Token class.
         $token = $this->getMockBuilder('Gems_Tracker_Token')
@@ -89,6 +89,10 @@ class FillTrackFieldAnswersTest extends \PHPUnit_Framework_TestCase
         $respondentTrack->expects($this->any())
                 ->method('getCodeFields')
                 ->will($this->returnValue($trackFields));
+        
+        $respondentTrack->expects($this->any())
+                ->method('getFieldData')
+                ->will($this->returnValue($trackFieldsRaw));
 
         $this->assertEquals($result, $this->event->processTokenInsertion($token));
     }
@@ -104,6 +108,10 @@ class FillTrackFieldAnswersTest extends \PHPUnit_Framework_TestCase
                     
                 ],
                 // TrackFields
+                [
+                    'TEst' => 'waarde'
+                ],
+                // Raw track fields
                 [
                     'TEst' => 'waarde'
                 ],
