@@ -78,8 +78,8 @@ class Gems_Log extends \Zend_Log
         $previous = $exception->getPrevious();
         while ($previous) {
             $info[] = '';
-            $info[] = 'Prevous class:   ' . get_class($previous);
-            $info[] = 'Prevous message: ' . $this->stripHtml($previous->getMessage());
+            $info[] = 'Previous class:   ' . get_class($previous);
+            $info[] = 'Previous message: ' . $this->stripHtml($previous->getMessage());
             if (($previous instanceof \Gems_Exception) && ($text = $previous->getInfo())) {
                 $info[] = 'Previous info:    ' . $this->stripHtml($text);
             }
