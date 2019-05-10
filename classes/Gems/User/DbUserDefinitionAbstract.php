@@ -229,6 +229,9 @@ abstract class Gems_User_DbUserDefinitionAbstract extends \Gems_User_UserDefinit
                 'password' => $resources['db']['params']['password'],
                 'charset'  => $resources['db']['params']['charset'],
             );
+            if (isset($resources['db']['params']['port'])) {
+                $dbConfig['port'] = $resources['db']['params']['port'];
+            }
 
             $this->db2 = new Adapter($dbConfig);
         }
