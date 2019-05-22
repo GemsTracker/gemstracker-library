@@ -366,7 +366,9 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
         $output = array();
 
         foreach ($this->_trackFields as $key => $field) {
-            $output[$key] = $field['gtf_field_default'];
+            if (array_key_exists('gtf_field_default', $field)) {
+                $output[$key] = $field['gtf_field_default'];
+            }
         }
 
         return $output;
