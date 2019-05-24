@@ -1837,6 +1837,20 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     }
 
     /**
+     * Refresh the consent Code
+     *
+     * @param string $consentCode
+     */
+    public function refreshConsent()
+    {
+        if (isset($this->_gemsData['gco_code'])) {
+            // Setting the gco_code to false will make sure the data is reloaded
+            $this->_gemsData['gco_code'] = false;
+            $this->getConsentCode();
+        }
+    }
+
+    /**
      *
      * @param string|\MUtil_Date $completionTime Completion time as a date or null
      * @param int $userId The current user

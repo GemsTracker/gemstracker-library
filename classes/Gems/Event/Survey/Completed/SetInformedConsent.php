@@ -104,8 +104,8 @@ class SetInformedConsent extends \MUtil_Translate_TranslateableAbstract
             $model->save($values);
 
             if ($model->getChanged()) {
-                // Refresh the token so it has the new consent code
-                $token->refresh();
+                // Refresh only the consent in the token
+                $token->refreshConsent();
 
                 // Make sure the NEW consent is applied to this survey itself
                 $survey = $token->getSurvey();
