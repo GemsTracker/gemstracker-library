@@ -153,7 +153,7 @@ class Gems_Util_TrackData extends UtilAbstract
      * @param  boolean $active Only show active surveys Default: False
      * @return array of survey Id and survey name pairs
      */
-    public function getAllSurveys($active=false)
+    public function getAllSurveys($active = false)
     {
         if ($active) {
             $sql = "SELECT gsu_id_survey, gsu_survey_name FROM gems__surveys WHERE gsu_active = 1 ORDER BY gsu_survey_name";
@@ -161,7 +161,7 @@ class Gems_Util_TrackData extends UtilAbstract
             $sql = "SELECT gsu_id_survey, gsu_survey_name FROM gems__surveys ORDER BY gsu_survey_name";
         }
 
-        return $this->_getSelectPairsCached(__FUNCTION__, $sql, array(), 'surveys');
+        return $this->_getSelectPairsCached(__FUNCTION__ . '_' . ($active ? '1' : '0'), $sql, array(), 'surveys');
     }
 
     /**

@@ -30,7 +30,7 @@ class Gems_Tracker_Snippets_EditRoundSnippetAbstract extends \Gems_Snippets_Mode
      * @var \Gems_Loader
      */
     protected $loader;
-    
+
     protected $onlyUsedElements = true;
 
     /**
@@ -163,7 +163,7 @@ class Gems_Tracker_Snippets_EditRoundSnippetAbstract extends \Gems_Snippets_Mode
         }
 
         // Check the survey name
-        $surveys = $this->util->getTrackData()->getAllSurveys();
+        $surveys = $this->util->getTrackData()->getAllSurveys(false);
         if (isset($surveys[$this->formData['gro_id_survey']])) {
             $this->formData['gro_survey_name'] = $surveys[$this->formData['gro_id_survey']];
         } else {
@@ -181,6 +181,15 @@ class Gems_Tracker_Snippets_EditRoundSnippetAbstract extends \Gems_Snippets_Mode
      */
     protected function saveData()
     {
+        // Check the survey name again, is sometimes removed
+        $surveys = $this->util->getTrackData()->getAllSurveys(false);
+        if (isset($surveys[$this->formData['gro_id_survey']])) {
+            $this->formData['gro_survey_name'] = $surveys[$this->formData['gro_id_survey']];
+        } else {
+            // Currently required
+            $this->formData['gro_survey_name'] = '';
+        }
+
         parent::saveData();
 
         if ($this->createData && (! $this->roundId)) {
