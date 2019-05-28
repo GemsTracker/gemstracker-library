@@ -66,7 +66,7 @@ class ExportFormSnippet extends \MUtil_Snippets_SnippetAbstract
         $container = \MUtil_Html::div(array('id' => 'export-form'));
         $container->append($form);
         $form->setAttrib('id', 'autosubmit');
-        $form->setAutoSubmit(\MUtil_Html::attrib('href', array('action' => $this->request->getActionName(), 'RouteReset' => true)), 'export-form', true);
+        $form->setAutoSubmit(\MUtil_Html::attrib('href', array('action' => $this->request->getActionName())), 'export-form', true);
 
         return $container;
     }
