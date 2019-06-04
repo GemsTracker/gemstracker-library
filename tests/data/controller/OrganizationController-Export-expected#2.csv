@@ -1,4 +1,4 @@
-﻿gor_name;gor_location;gor_task;gor_url;gor_url_base;gor_code;gor_provider_id;gor_active;gor_contact_name;gor_contact_email;gor_has_login;gor_add_respondents;gor_has_respondents;gor_respondent_group;gor_accessible_by;gor_user_class;gor_respondent_edit;gor_respondent_show;gor_token_ask;gor_resp_change_event;gor_iso_lang
-testorg;;;;;;;1;;;1;1;0;;;StaffUser;;;;;en
-testorg2;;;;;;;1;;;1;1;0;;"10, 12";StaffUser;;;;;en
-testorg2;;;;;;;1;;;1;1;0;;;StaffUser;;;;;en
+﻿gor_name;gor_location;gor_task;gor_url;gor_url_base;gor_code;gor_provider_id;gor_active;gor_contact_name;gor_contact_email;gor_has_login;gor_add_respondents;gor_has_respondents;gor_respondent_group;gor_accessible_by;gor_user_class;gor_respondent_edit;gor_respondent_show;gor_respondent_subscribe;gor_respondent_unsubscribe;gor_token_ask;gor_resp_change_event;gor_iso_lang
+testorg;;;;;;;1;;;1;1;0;;;StaffUser;;;;;;;en
+testorg2;;;;;;;1;;;1;1;0;;"10, 12";StaffUser;;;;;;;en
+testorg2;;;;;;;1;;;1;1;0;;;StaffUser;;;;;;;en

@@ -147,7 +147,7 @@ CREATE TABLE gems__appointment_filters (
         gaf_manual_name         varchar(200),
         gaf_calc_name           varchar(200) not null,
 
-        gaf_id_order            int not null default 10,
+        gaf_id_order            INTEGER not null default 10,
 
         -- Generic text fields so the classes can fill them as they please
         gaf_filter_text1        varchar(200),
@@ -184,7 +184,7 @@ CREATE TABLE "gems__chart_config" (
 )  ;
 CREATE TABLE gems__comm_jobs (
         gcj_id_job INTEGER not null ,
-        gcj_id_order      int not null default 10,
+        gcj_id_order      INTEGER not null default 10,
 
         gcj_id_message INTEGER not null,
 
@@ -207,15 +207,15 @@ CREATE TABLE gems__comm_jobs (
         -- N => notmailed
         -- R => reminder
         gcj_filter_mode          VARCHAR(1) not null,
-        gcj_filter_days_between  INT NOT NULL DEFAULT 7,
-        gcj_filter_max_reminders INT NOT NULL DEFAULT 3,
+        gcj_filter_days_between  INTEGER NOT NULL DEFAULT 7,
+        gcj_filter_max_reminders INTEGER NOT NULL DEFAULT 3,
 
         -- Optional filters
         gcj_target tinyint(1) NOT NULL DEFAULT '0',
         gcj_id_organization INTEGER,
-        gcj_id_track        int,
+        gcj_id_track        INTEGER,
         gcj_round_description varchar(100),
-        gcj_id_survey       int,
+        gcj_id_survey       INTEGER,
 
         gcj_changed TEXT not null default current_timestamp,
         gcj_changed_by INTEGER not null,
@@ -249,7 +249,8 @@ INSERT INTO gems__comm_templates (gct_id_template, gct_name, gct_target, gct_cod
     (16, 'Reminder: your treatement at {organization}', 'token',,CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
     (17, 'Global Password reset', 'staffPassword', 'passwordReset', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
     (18, 'Global Account created', 'staffPassword', 'accountCreate', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-    (19, 'Linked account created', 'staff', 'linkedAccountCreated', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
+    (19, 'Linked account created', 'staff', 'linkedAccountCreated', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+    (20, 'Continue later', 'token', 'continue', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
 CREATE TABLE gems__comm_template_translations (
       gctt_id_template  INTEGER not null,
@@ -284,10 +285,13 @@ Click on [url={token_url}]this link[/url] to start or go to [url]{site_ask_url}[
 To set your password and activate the account please click on this link:\n{reset_url}'),
     (18, 'nl', 'Nieuw account aangemaakt', 'Een nieuw account is aangemaakt voor de [b]{organization}[/b] site [b]{project}[/b].
 Om uw wachtwoord te kiezen en uw account te activeren, klik op deze link:\n{reset_url}'),
-    (19, 'en', 'New account created', 'A new account has been created for the [b]{organization}[/b] website [b]{project}[/b].
-To log in with your organization account {login_name} please click on this link:\r\n{login_url}'),
-    (19, 'nl', 'Nieuw account aangemaakt', 'Er is voor u een nieuw account aangemaakt voor de [b]{organization}[/b] website [b]{project}[/b].
-Om in te loggen met uw organisatie account {login_name} klikt u op onderstaande link:\r\n{login_url}');
+    (19, 'en', 'New account created', 'A new account has been created for the [b]{organization}[/b] website [b]{project}[/b].
+To log in with your organization account {login_name} please click on this link:\r\n{login_url}'),
+    (19, 'nl', 'Nieuw account aangemaakt', 'Er is voor u een nieuw account aangemaakt voor de [b]{organization}[/b] website [b]{project}[/b].
+Om in te loggen met uw organisatie account {login_name} klikt u op onderstaande link:\r\n{login_url}'),
+    (20, 'en', 'Continue later', 'Dear {greeting},\n\nClick on [url={token_url}]this link[/url] to continue filling out surveys or go to [url]{site_ask_url}[/url] and enter this token: [b]{token}[/b]\n\n{organization_signature}'),
+    (20, 'nl', 'Later doorgaan', 'Beste {greeting},\n\nKlik op [url={token_url}]deze link[/url] om verder te gaan met invullen van vragenlijsten of ga naar [url]{site_ask_url}[/url] en voer dit kenmerk in: [b]{token}[/b]\n\n{organization_signature}');
+
 CREATE TABLE gems__conditions (
         gcon_id                  INTEGER not null,
 
@@ -453,7 +457,7 @@ CREATE TABLE gems__locations (
 CREATE TABLE gems__log_activity (
         gla_id              INTEGER not null ,
 
-        gla_action          int not null,
+        gla_action          INTEGER not null,
         gla_respondent_id   INTEGER,
 
         gla_by              INTEGER,
@@ -501,7 +505,7 @@ CREATE TABLE gems__log_respondent_communications (
 
 
 CREATE TABLE gems__log_setup (
-        gls_id_action       int not null ,
+        gls_id_action       INTEGER not null ,
         gls_name            varchar(64) not null unique,
 
         gls_when_no_user    TINYINT(1) not null default 0,
@@ -572,7 +576,10 @@ CREATE TABLE gems__mail_servers (
         gms_ssl        tinyint not null default 0,
         gms_user       varchar(100),
         gms_password   varchar(100),
+
+        -- deprecated in 1.8.6  method was never used, now saved with password
         gms_encryption varchar(20),
+        -- end deprecated
 
         gms_changed    TEXT not null default current_timestamp,
         gms_changed_by INTEGER not null,
@@ -616,12 +623,14 @@ CREATE TABLE gems__organizations (
 
         gor_contact_name            varchar(50),
         gor_contact_email           varchar(127),
-        gor_mail_watcher	    TINYINT(1) not null default 1,
+        gor_mail_watcher            TINYINT(1) not null default 1,
         gor_welcome                 text,
         gor_signature               text,
 
         gor_respondent_edit         varchar(255),
         gor_respondent_show         varchar(255),
+        gor_respondent_subscribe    varchar(255) default '',
+        gor_respondent_unsubscribe  varchar(255) default '',
         gor_token_ask               varchar(255),
 
         gor_style                   varchar(15)  not null default 'gems',
@@ -651,12 +660,12 @@ INSERT ignore INTO gems__organizations (gor_id_organization, gor_name, gor_chang
     (70, 'New organization', CURRENT_TIMESTAMP, 0, CURRENT_TIMESTAMP, 0);
 
 CREATE TABLE gems__patches (
-      gpa_id_patch  int not null ,
+      gpa_id_patch  INTEGER not null ,
 
-      gpa_level     int not null default 0,
+      gpa_level     INTEGER not null default 0,
       gpa_location  varchar(100) not null,
       gpa_name      varchar(30) not null,
-      gpa_order     int not null default 0,
+      gpa_order     INTEGER not null default 0,
 
       gpa_sql       text not null,
 
@@ -675,7 +684,7 @@ CREATE TABLE gems__patches (
 
 
 CREATE TABLE gems__patch_levels (
-      gpl_level   int not null unique,
+      gpl_level   INTEGER not null unique,
 
       gpl_created TEXT not null default current_timestamp,
 
@@ -693,7 +702,10 @@ CREATE TABLE gems__radius_config (
         grcfg_ip                varchar(39),
         grcfg_port              int(5),
         grcfg_secret            varchar(255),
+
+        -- deprecated in 1.8.6  method was never used, now saved with password
         grcfg_encryption        varchar(20),
+        -- end deprecated
 
         PRIMARY KEY (grcfg_id)
     )
@@ -725,11 +737,12 @@ INSERT INTO gems__reception_codes (grc_id_reception_code, grc_description, grc_s
       grc_changed, grc_changed_by, grc_created, grc_created_by)
     VALUES
     ('OK', '', 1, 1, 0, 1, 1, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-    ('redo', 'Redo survey', 0, 1, 2, 0, 0, 1, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+    ('redo', 'Redo survey', 0, 1, 2, 0, 0, 1, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),    
     ('refused', 'Survey refused', 0, 1, 0, 0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
     ('retract', 'Consent retracted', 0, 0, 0, 1, 1, 1, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
     ('skip', 'Skipped by calculation', 0, 1, 0, 0, 0, 1, 0, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-    ('stop', 'Stopped participating', 0, 2, 0, 1, 1, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
+    ('stop', 'Stopped participating', 0, 2, 0, 1, 1, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+    ('moved', 'Moved to new survey', 0, 1, 0, 0, 0, 1, 0, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
 CREATE TABLE gems__respondent2org (
         gr2o_patient_nr         varchar(15) not null,
@@ -764,7 +777,7 @@ CREATE TABLE gems__respondent2track (
         gr2t_id_respondent_track    INTEGER not null ,
 
         gr2t_id_user                INTEGER not null,
-        gr2t_id_track               int not null,
+        gr2t_id_track               INTEGER not null,
 
         gr2t_track_info             varchar(250) ,
         gr2t_start_date             TEXT,
@@ -775,8 +788,8 @@ CREATE TABLE gems__respondent2track (
 
         gr2t_mailable               TINYINT(1) not null default 1,
         gr2t_active                 TINYINT(1) not null default 1,
-        gr2t_count                  int not null default 0,
-        gr2t_completed              int not null default 0,
+        gr2t_count                  INTEGER not null default 0,
+        gr2t_completed              INTEGER not null default 0,
 
         gr2t_reception_code         varchar(20) default 'OK' not null,
         gr2t_comment                varchar(250),
@@ -1015,7 +1028,8 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     ,pr.token.mail.freetext,pr.token.undelete,
     ,pr.track.check,pr.track.insert,pr.track.undelete,
     ,pr.track-maintenance,pr.track-maintenance.create,pr.track-maintenance.edit,pr.track-maintenance.export,
-    ,pr.track-maintenance.import,pr.track-maintenance.trackperorg',
+    ,pr.track-maintenance.import,pr.track-maintenance.trackperorg,
+    ,pr.conditions,pr.conditions.create,pr.conditions.edit',
     CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
 INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_parents,
@@ -1027,23 +1041,25 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     ,pr.comm.template,pr.comm.template.create,pr.comm.template.delete,pr.comm.template.edit,
     ,pr.consent,pr.consent.create,pr.consent.edit,
     ,pr.export,pr.export.export,pr.export-html,
-    ,pr.group,
+    ,pr.group,pr.group.switch,
     ,pr.mail.log,
-    ,pr.organization,pr.organization-switch,
+    ,pr.maintenance.clean-cache,
+    ,pr.organization,pr.organization.check-all,pr.organization.check-org,pr.organization-switch,
     ,pr.plan.compliance.export,pr.plan.overview.export,pr.plan.fields.export,
     ,pr.plan.respondent,pr.plan.respondent.export,pr.plan.summary.export,pr.plan.token.export,
     ,pr.project-information,
     ,pr.reception,pr.reception.create,pr.reception.edit,
-    ,pr.respondent.delete,pr.respondent.result,pr.respondent.show-deleted,pr.respondent.undelete,
+    ,pr.respondent.change-org,pr.respondent.delete,pr.respondent.export-html,pr.respondent.result,pr.respondent.show-deleted,pr.respondent.undelete,
     ,pr.role,
     ,pr.staff,pr.staff.create,pr.staff.deactivate,pr.staff.edit,pr.staff.edit.all,pr.staff.reactivate,pr.staff.see.all,
     ,pr.staff-log,
-    ,pr.source,
-    ,pr.survey-maintenance,pr.survey-maintenance.answer-import,
+    ,pr.source,pr.source.check-answers,pr.source.check-answers-all,pr.source.check-attributes,pr.source.check-attributes-all,pr.source.synchronize,pr.source.synchronize-all,
+    ,pr.survey-maintenance,pr.survey-maintenance.answer-import,pr.survey-maintenance.answer-import,pr.survey-maintenance.check,pr.survey-maintenance.check-all,pr.survey-maintenance.edit.
     ,pr.token.mail.freetext,pr.token.undelete,
     ,pr.track.check,pr.track.insert,pr.track.undelete,
-    ,pr.track-maintenance,pr.track-maintenance.create,pr.track-maintenance.edit,pr.track-maintenance.export,
-    ,pr.track-maintenance.import,pr.track-maintenance.trackperorg',
+    ,pr.track-maintenance,pr.track-maintenance.check,pr.track-maintenance.check-all,pr.track-maintenance.create,pr.track-maintenance.edit,pr.track-maintenance.export,
+    ,pr.track-maintenance.import,pr.track-maintenance.trackperorg,
+    ,pr.conditions,pr.conditions.create,pr.conditions.edit',
     CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
 INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_parents,
@@ -1059,12 +1075,12 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     ,pr.consent.delete,
     ,pr.database,pr.database.create,pr.database.delete,pr.database.execute,pr.database.patches,
     ,pr.episodes.rawdata,
-	,pr.file-import,
+	,pr.file-import,pr.file-import.import,
     ,pr.group.create,pr.group.edit,
     ,pr.locations,pr.locations.cleanup,pr.locations.create,pr.locations.delete,pr.locations.edit,
     ,pr.log.files,pr.log.files.download,
     ,pr.mail.server,pr.mail.server.create,pr.mail.server.delete,pr.mail.server.edit,
-    ,pr.maintenance.clean-cache,pr.maintenance.maintenance-mode,
+    ,pr.maintenance.maintenance-mode,
     ,pr.organization.create,pr.organization.edit,
     ,pr.plan.mail-as-application,pr.reception.delete,
     ,pr.respondent.multiorg,
@@ -1074,14 +1090,15 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     ,pr.staff.edit.all,
     ,pr.survey-maintenance.edit,
     ,pr.templates,
-    ,pr.track-maintenance.delete,
+    ,pr.track-maintenance.trackperorg,pr.track-maintenance.delete,
+    ,pr.conditions.delete,
     ,pr.upgrade,pr.upgrade.all,pr.upgrade.one,pr.upgrade.from,pr.upgrade.to',
     CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 CREATE TABLE gems__rounds (
         gro_id_round           INTEGER not null ,
 
         gro_id_track           INTEGER not null,
-        gro_id_order           int not null default 10,
+        gro_id_order           INTEGER not null default 10,
 
         gro_id_survey          INTEGER not null,
 
@@ -1102,13 +1119,13 @@ CREATE TABLE gems__rounds (
         gro_valid_after_field  varchar(64) not null
                                default 'gto_valid_from',
         gro_valid_after_unit   char(1) not null default 'M',
-        gro_valid_after_length int not null default 0,
+        gro_valid_after_length INTEGER not null default 0,
 
         gro_valid_for_id       INTEGER,
         gro_valid_for_source   varchar(12) not null default 'nul',
         gro_valid_for_field    varchar(64),
         gro_valid_for_unit     char(1) not null default 'M',
-        gro_valid_for_length   int not null default 0,
+        gro_valid_for_length   INTEGER not null default 0,
 
         gro_condition          INTEGER,
 
@@ -1146,10 +1163,15 @@ CREATE TABLE gems__sources (
         gso_ls_adapter      varchar(20),
         gso_ls_dbhost       varchar(127),
         gso_ls_database     varchar(127),
+        gso_ls_dbport       mediumint,
         gso_ls_table_prefix varchar(127),
         gso_ls_username     varchar(64),
         gso_ls_password     varchar(255),
+
+        -- deprecated in 1.8.6  method was never used, now saved with password
         gso_encryption      varchar(20),
+        -- end deprecated
+
         gso_ls_default,
 
         gso_active          tinyint(1) NOT NULL default '1',
@@ -1213,7 +1235,7 @@ CREATE TABLE gems__staff (
 
 
 CREATE TABLE gems__surveys (
-        gsu_id_survey               int not null ,
+        gsu_id_survey               INTEGER not null ,
         gsu_survey_name             varchar(100) not null,
         gsu_survey_description      varchar(100) ,
 
@@ -1225,7 +1247,7 @@ CREATE TABLE gems__surveys (
         gsu_completed_event         varchar(128) ,
         gsu_display_event           varchar(128) ,
 
-        gsu_id_source               int not null,
+        gsu_id_source               INTEGER not null,
         gsu_active                  TINYINT(1) not null default 0,
         gsu_status                  varchar(127) ,
 
@@ -1233,7 +1255,7 @@ CREATE TABLE gems__surveys (
 
         gsu_insertable              TINYINT(1) not null default 0,
         gsu_valid_for_unit          char(1) not null default 'M',
-        gsu_valid_for_length        int not null default 6,
+        gsu_valid_for_length        INTEGER not null default 6,
         gsu_insert_organizations    varchar(250) ,
 
         gsu_result_field            varchar(20) ,
@@ -1256,11 +1278,11 @@ CREATE TABLE gems__surveys (
 
 
 CREATE TABLE gems__survey_questions (
-        gsq_id_survey       int not null,
+        gsq_id_survey       INTEGER not null,
         gsq_name            varchar(100) not null,
 
         gsq_name_parent     varchar(100) ,
-        gsq_order           int not null default 10,
+        gsq_order           INTEGER not null default 10,
         gsq_type            smallint not null default 1,
         gsq_class           varchar(50) ,
         gsq_group           varchar(100) ,
@@ -1278,10 +1300,10 @@ CREATE TABLE gems__survey_questions (
     ;
 
 CREATE TABLE gems__survey_question_options (
-        gsqo_id_survey      int not null,
+        gsqo_id_survey      INTEGER not null,
         gsqo_name           varchar(100) not null,
         -- Order is key as you never now what is in the key used by the providing system
-        gsqo_order          int not null default 0,
+        gsqo_order          INTEGER not null default 0,
 
         gsqo_key            varchar(100) ,
         gsqo_label          varchar(100) ,
@@ -1310,7 +1332,7 @@ CREATE TABLE gems__tokens (
         gto_id_survey           INTEGER not null,
 
         -- values initially filled from gems__rounds, but that might get different values later on, but but not now
-        gto_round_order         int not null default 10,
+        gto_round_order         INTEGER not null default 10,
         gto_icon_file           varchar(100),
         gto_round_description   varchar(100),
 
@@ -1378,7 +1400,7 @@ CREATE TABLE gems__token_replacements (
 
 
 CREATE TABLE gems__tracks (
-        gtr_id_track                int not null ,
+        gtr_id_track                INTEGER not null ,
         gtr_track_name              varchar(40) not null unique,
 
         gtr_track_info              varchar(250) ,
@@ -1388,7 +1410,7 @@ CREATE TABLE gems__tracks (
         gtr_date_until              TEXT,
 
         gtr_active                  TINYINT(1) not null default 0,
-        gtr_survey_rounds           int not null default 0,
+        gtr_survey_rounds           INTEGER not null default 0,
 
         gtr_track_class             varchar(64) not null,
         gtr_beforefieldupdate_event varchar(128) ,
@@ -1411,9 +1433,9 @@ CREATE TABLE gems__tracks (
 
 CREATE TABLE gems__track_appointments (
         gtap_id_app_field       INTEGER not null ,
-        gtap_id_track           int not null,
+        gtap_id_track           INTEGER not null,
 
-        gtap_id_order           int not null default 10,
+        gtap_id_order           INTEGER not null default 10,
 
         gtap_field_name         varchar(200) not null,
         gtap_field_code         varchar(20),
@@ -1428,14 +1450,14 @@ CREATE TABLE gems__track_appointments (
         -- deprecated
         gtap_after_next         TINYINT(1) not null default 1,
         -- deprecated
-        gtap_min_diff_length    int not null default 1,
+        gtap_min_diff_length    INTEGER not null default 1,
         gtap_min_diff_unit      char(1) not null default 'D',
         gtap_max_diff_exists    TINYINT(1) not null default 0,
-        gtap_max_diff_length    int not null default 0,
+        gtap_max_diff_length    INTEGER not null default 0,
         gtap_max_diff_unit      char(1) not null default 'D',
         gtap_uniqueness         tinyint not null default 0,
 
-        gtap_create_track       int not null default 0,
+        gtap_create_track       INTEGER not null default 0,
         gtap_create_wait_days   INTEGER signed not null default 182,
 
         gtap_changed            TEXT not null default current_timestamp,
@@ -1450,9 +1472,9 @@ CREATE TABLE gems__track_appointments (
 
 CREATE TABLE gems__track_fields (
         gtf_id_field            INTEGER not null ,
-        gtf_id_track            int not null,
+        gtf_id_track            INTEGER not null,
 
-        gtf_id_order            int not null default 10,
+        gtf_id_order            INTEGER not null default 10,
 
         gtf_field_name          varchar(200) not null,
         gtf_field_code          varchar(20),
