@@ -383,6 +383,8 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
     public function getFieldNames()
     {
         $fields = array();
+        
+        $this->_ensureTrackFields();
 
         foreach ($this->_trackFields as $key => $field) {
             $fields[$key] = $field['gtf_field_name'];

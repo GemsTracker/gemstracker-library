@@ -331,13 +331,14 @@ class TrackExportTest extends \Gems_Test_DbTestAbstract {
         $this->saveTables(['gems__tracks', 'gems__track_fields', 'gems__conditions', 'gems__rounds'], 'import');
         
         $engine = $this->loader->getTracker()->getTrackEngine(2);
-        $engine->answerRegistryRequest('_rounds', null);    // Trick to force reloading
-        $rounds = $engine->getRounds();
+        // Trick to force reloading of rounds and fields
+        $engine->answerRegistryRequest('_rounds', false);
+        $engine->getFieldsDefinition()->answerRegistryRequest('_fields', false); 
+        $rounds = $engine->getRounds();        
         $fields = $engine->getFieldNames();
-        $this->assertEquals('Copy', $engine->getTrackName);
+        $this->assertEquals('Copy', $engine->getTrackName());
         $this->assertEquals(4, count($rounds));
-        $this->assertEquals(4, count($fields));
-        
+        $this->assertEquals(4, count($fields));        
     }
     
     /**
