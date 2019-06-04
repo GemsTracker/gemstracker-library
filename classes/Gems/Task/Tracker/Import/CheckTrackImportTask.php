@@ -156,5 +156,6 @@ class CheckTrackImportTask extends \MUtil_Task_TaskAbstract
                             ));
                 }
         }
+        $batch->setVariable('import', $import);
     }
 }

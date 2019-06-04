@@ -60,5 +60,6 @@ class CreateTrackImportTask extends \MUtil_Task_TaskAbstract
         $import['trackData']['gtr_id_track'] = $output['gtr_id_track'];
 
         $batch->addMessage(sprintf($this->_('Created track with id %d'), $output['gtr_id_track']));
+        $batch->setVariable('import', $import);
     }
 }

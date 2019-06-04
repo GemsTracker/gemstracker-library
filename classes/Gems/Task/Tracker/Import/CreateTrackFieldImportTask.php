@@ -73,5 +73,6 @@ class CreateTrackFieldImportTask extends \MUtil_Task_TaskAbstract
                     $fieldData['gtf_calculate_using']
                     );
         }
+        $batch->setVariable('import', $import);
     }
 }

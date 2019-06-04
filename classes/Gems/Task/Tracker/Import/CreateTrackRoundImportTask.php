@@ -143,5 +143,6 @@ class CreateTrackRoundImportTask extends \MUtil_Task_TaskAbstract
 
         $import['rounds'][$lineNr]['gro_id_round'] = $roundData['gro_id_round'];
         $import['roundOrders'][$roundData['gro_id_order']] = $roundData['gro_id_round'];
+        $batch->setVariable('import', $import);
     }
 }

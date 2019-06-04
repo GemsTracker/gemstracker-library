@@ -74,5 +74,6 @@ class CheckTrackOrganizationImportTask extends \MUtil_Task_TaskAbstract
                     $lineNr
                     ));
         }
+        $batch->setVariable('import', $import);
     }
 }

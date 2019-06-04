@@ -51,6 +51,11 @@ class CreateTrackRoundConditionImportTask extends \MUtil_Task_TaskAbstract
         $conditions  = $this->loader->getConditions();
         $model       = $this->loader->getModels()->getConditionModel()->applyEditSettings(true);
         
+        if (preg_match('/.*(AndCondition|OrCondition)$/', $conditionData['gcon_class']) == 1) {                    
+            // We have a nested condition
+            $this->resolveCondition($conditionData);
+        }        
+        
         // Try to find by classname and options
         $filter = [
             'gcon_class' => $conditionData['gcon_class'],
@@ -71,5 +76,20 @@ class CreateTrackRoundConditionImportTask extends \MUtil_Task_TaskAbstract
         $conditionSaved = $model->save($conditionData);
 
         $import['importConditions'][$conditionId] = $conditionSaved['gcon_id'];
+        $batch->setVariable('import', $import);
+    }
+    
+    public function resolveCondition(&$conditionData)
+    {      
+        $batch   = $this->getBatch();
+        $import  = $batch->getVariable('import');
+        
+        for ($index = 1; $index < 5; $index++) {
+            $originalId = $conditionData['gcon_condition_text' . $index];
+            if ($originalId) {
+                $newId = $import['importConditions'][$originalId];
+                $conditionData['gcon_condition_text' . $index] = $newId;
+            }
+        }
     }
 }
