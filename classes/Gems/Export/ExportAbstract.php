@@ -399,7 +399,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
     {
         $exportRow = array();
         foreach ($row as $columnName => $result) {
-            if ($this->model->get($columnName, 'label')) {
+            if (!is_null($this->model->get($columnName, 'label'))) {
                 $options = $this->model->get($columnName, $this->modelFilterAttributes);
 
 
