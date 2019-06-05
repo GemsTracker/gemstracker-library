@@ -210,7 +210,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
 
         return $model;
     }
-
+    
     /**
      * Get a select with the fields:
      *  - round_order: The gto_round_order to use for this round
@@ -354,6 +354,20 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
 
         return $output;
     }
+    
+    /**
+     * When there is no track to add to we return false
+     * 
+     * @return boolean
+     */
+    public function hasHtmlOutput() {
+        $this->initTracks();
+        $canDo = count($this->tracks) > 0;
+        if ($canDo === false) { 
+            $this->afterSaveRouteUrl = ['controller'=>'respondent', 'action'=>'show'];             
+        }
+        return $canDo && parent::hasHtmlOutput();
+    }
 
     /**
      * Initialize the _items variable to hold all items from the model
@@ -369,6 +383,35 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
                 array_unshift($this->_items, 'gto_id_token');
             }
         }
+    }
+    
+    protected function initTracks()
+    {
+        $organizationId = $this->request->getParam(\MUtil_Model::REQUEST_ID2);
+        $patientId      = $this->request->getParam(\MUtil_Model::REQUEST_ID1);
+        $respTracks     = $this->tracker->getRespondentTracks(
+                $this->util->getDbLookup()->getRespondentId($patientId, $organizationId),
+                $organizationId,
+                'gr2t_start_date DESC'  // Descending order, last added track comes first
+        );
+        $tracks         = array();
+        foreach ($respTracks as $respTrack) {
+            if ($respTrack instanceof \Gems_Tracker_RespondentTrack) {
+                if ($respTrack->hasSuccesCode()) {
+                    $tracks[$respTrack->getRespondentTrackId()] = substr(sprintf(
+                                    $this->_('%s - %s'),
+                                    $respTrack->getTrackEngine()->getTrackName(),
+                                    $respTrack->getFieldsInfo()
+                            ), 0, 100);
+                }
+            }
+        }
+        if (!$tracks) {
+            $this->addMessageInvalid($this->_('Survey insertion impossible: respondent has no track!'));
+        }
+        
+        $this->tracks     = $tracks;
+        $this->respTracks = $respTracks;
     }
 
     /**
@@ -465,39 +508,23 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
      */
     protected function loadTrackSettings()
     {
-        $respTracks = $this->tracker->getRespondentTracks(
-                $this->formData['gto_id_respondent'],
-                $this->formData['gto_id_organization']
-                );
-        $tracks = array();
-        foreach ($respTracks as $respTrack) {
-            if ($respTrack instanceof \Gems_Tracker_RespondentTrack) {
-                if ($respTrack->hasSuccesCode()) {
-                    $tracks[$respTrack->getRespondentTrackId()] = substr(sprintf(
-                            $this->_('%s - %s'),
-                            $respTrack->getTrackEngine()->getTrackName(),
-                            $respTrack->getFieldsInfo()
-                            ), 0, 100);
-                }
-            }
+        $tracks     = $this->tracks;
+        $respTracks = $this->respTracks;
+        
+        if (! isset($this->formData['gto_id_track'])) {
+            reset($tracks);
+            $this->formData['gto_id_track'] = key($tracks);
         }
-        if ($tracks) {
-            if (! isset($this->formData['gto_id_track'])) {
-                reset($tracks);
-                $this->formData['gto_id_track'] = key($tracks);
-            }
-        } else {
-            $this->addMessageInvalid($this->_('Survey insertion impossible: respondent has no track!'));
-            $tracks = $this->util->getTranslated()->getEmptyDropdownArray();
-        }
+        
         asort($tracks);
+        
         $model = $this->getModel();
         $model->set('gto_id_track', 'multiOptions', $tracks);
         if (count($tracks) === 1) {
             $model->set('gto_id_track', 'elementClass', 'Exhibitor');
         }
 
-        if (isset($this->formData['gto_id_track'])) {
+        if (isset($this->formData['gto_id_track']) && (int) $this->formData['gto_id_track'] > 0) {
             $this->respondentTrack = $respTracks[$this->formData['gto_id_track']];
 
             // Add relation field when survey is not for staff
