@@ -30,6 +30,10 @@ class CreateTrackRoundImportTask extends \MUtil_Task_TaskAbstract
      * @var \Gems_Loader
      */
     protected $loader;
+    
+    protected $_conditions;
+    protected $_fieldCodes;
+    protected $_roundOrders;    
 
     /**
      * Should handle execution of the task, taking as much (optional) parameters as needed
@@ -58,12 +62,12 @@ class CreateTrackRoundImportTask extends \MUtil_Task_TaskAbstract
             return;
         }
 
-        $fieldCodes  = isset($import['fieldCodes'])  ? $import['fieldCodes']  : array();
-        $roundOrders = isset($import['roundOrders']) ? $import['roundOrders'] : array();
-        $conditions  = isset($import['importConditions'])  ? $import['importConditions']  : array();
-        $tracker     = $this->loader->getTracker();
-        $trackEngine = $tracker->getTrackEngine($import['trackId']);
-        $model       = $trackEngine->getRoundModel(true, 'create');
+        $this->_fieldCodes  = isset($import['fieldCodes']) ? $import['fieldCodes'] : array();
+        $this->_roundOrders = isset($import['roundOrders']) ? $import['roundOrders'] : array();
+        $this->_conditions  = isset($import['importConditions']) ? $import['importConditions'] : array();
+        $tracker            = $this->loader->getTracker();
+        $trackEngine        = $tracker->getTrackEngine($import['trackId']);
+        $model              = $trackEngine->getRoundModel(true, 'create');
 
         $roundData['gro_id_track']    = $import['trackId'];
         $roundData['gro_id_survey']   = $import['surveyCodes'][$roundData['survey_export_code']];
@@ -75,74 +79,97 @@ class CreateTrackRoundImportTask extends \MUtil_Task_TaskAbstract
             $roundData['gro_survey_name'] = '';
         }
 
-        if (isset($roundData['gro_id_relationfield'], $fieldCodes[$roundData['gro_id_relationfield']]) &&
-                $roundData['gro_id_relationfield']) {
-            if (! (is_integer($roundData['gro_id_relationfield']) && $roundData['gro_id_relationfield'] < 0)) {
-                // -1 means the respondent itself, also gro_id_relationfield stores a "bare"
-                // field id, not one with a table prefix
-                $keys = FieldsDefinition::splitKey($fieldCodes[$roundData['gro_id_relationfield']]);
-                if (isset($keys['gtf_id_field'])) {
-                    $roundData['gro_id_relationfield'] = $keys['gtf_id_field'];
-                }
-            }
-        }
-        if (isset($roundData['valid_after']) && $roundData['valid_after']) {
-            if (isset($roundOrders[$roundData['valid_after']]) && $roundOrders[$roundData['valid_after']]) {
-                $roundData['gro_valid_after_id'] = $roundOrders[$roundData['valid_after']];
-            } else {
-                $batch->addTask(
-                        'Tracker\\Import\\UpdateRoundValidTask',
-                        $lineNr,
-                        $roundData['gro_id_order'],
-                        $roundData['valid_after'],
-                        'gro_valid_after_id'
-                        );
-            }
-        }
-        if (isset($roundData['gro_valid_after_source'], $roundData['gro_valid_after_field'])) {
-            switch ($roundData['gro_valid_after_source']) {
-                case \Gems_Tracker_Engine_StepEngineAbstract::APPOINTMENT_TABLE:
-                case \Gems_Tracker_Engine_StepEngineAbstract::RESPONDENT_TRACK_TABLE:
-                    if (isset($fieldCodes[$roundData['gro_valid_after_field']])) {
-                        $roundData['gro_valid_after_field'] = $fieldCodes[$roundData['gro_valid_after_field']];
-                    }
-            }
-        }
-        if (isset($roundData['valid_for']) && $roundData['valid_for']) {
-            if (isset($roundOrders[$roundData['valid_for']]) && $roundOrders[$roundData['valid_for']]) {
-                $roundData['gro_valid_for_id'] = $roundOrders[$roundData['valid_for']];
-            } else {
-                $batch->addTask(
-                        'Tracker\\Import\\UpdateRoundValidTask',
-                        $lineNr,
-                        $roundData['gro_id_order'],
-                        $roundData['valid_for'],
-                        'gro_valid_for_id'
-                        );
-            }
-        }
-        if (isset($roundData['gro_valid_for_source'], $roundData['gro_valid_for_field'])) {
-            switch ($roundData['gro_valid_for_source']) {
-                case \Gems_Tracker_Engine_StepEngineAbstract::APPOINTMENT_TABLE:
-                case \Gems_Tracker_Engine_StepEngineAbstract::RESPONDENT_TRACK_TABLE:
-                    if (isset($fieldCodes[$roundData['gro_valid_for_field']])) {
-                        $roundData['gro_valid_for_field'] = $fieldCodes[$roundData['gro_valid_for_field']];
-                    }
-            }
-        }
-        if (isset($roundData['gro_condition']) && $roundData['gro_condition']) {
-            if (isset($conditions[$roundData['gro_condition']]) && $conditions[$roundData['gro_condition']]) {
-                $roundData['gro_condition'] = $conditions[$roundData['gro_condition']];
-            } else {
-                // This should not happen!
-                $roundData['gro_condition'] = null;
-            }
-        }
+        $this->handleRelation($roundData);        
+        $this->handleValid('valid_after', $roundData, $lineNr);        
+        $this->handleValid('valid_for', $roundData, $lineNr);
+        $this->handleCondition($roundData);
         
         $roundData = $model->save($roundData);
 
         $import['rounds'][$lineNr]['gro_id_round'] = $roundData['gro_id_round'];
         $import['roundOrders'][$roundData['gro_id_order']] = $roundData['gro_id_round'];
         $batch->setVariable('import', $import);
+    }
+    
+    /**
+     * Handle condition mapping
+     * 
+     * @param [] $roundData
+     */
+    protected function handleCondition(&$roundData)
+    {
+        if (isset($roundData['gro_condition']) && $roundData['gro_condition']) {
+            if (isset($this->_conditions[$roundData['gro_condition']]) && $this->_conditions[$roundData['gro_condition']]) {
+                $roundData['gro_condition'] = $this->_conditions[$roundData['gro_condition']];
+            } else {
+                // This should not happen!
+                $roundData['gro_condition'] = null;
+            }
+        }
+        
+    }
+    
+    /**
+     * Handle the relation mapping
+     * 
+     * @param [] $roundData
+     */
+    protected function handleRelation(&$roundData)
+    {
+        if (isset($roundData['gro_id_relationfield'], $this->_fieldCodes[$roundData['gro_id_relationfield']]) &&
+                $roundData['gro_id_relationfield']) {
+            if (! (is_integer($roundData['gro_id_relationfield']) && $roundData['gro_id_relationfield'] < 0)) {
+                // -1 means the respondent itself, also gro_id_relationfield stores a "bare"
+                // field id, not one with a table prefix
+                $keys = FieldsDefinition::splitKey($this->_fieldCodes[$roundData['gro_id_relationfield']]);
+                if (isset($keys['gtf_id_field'])) {
+                    $roundData['gro_id_relationfield'] = $keys['gtf_id_field'];
+                }
+            }
+        }
+    }
+    
+    /**
+     * Handle valid for / after fields
+     * 
+     * @param string $validType valid_for or valid_after
+     * @param [] $roundData
+     * @param int $lineNr
+     */
+    protected function handleValid($validType, &$roundData, $lineNr)
+    {
+        // Just for clarity and searchability we create the full names here
+        if ($validType == 'valid_for') {
+            $validId     = 'gro_valid_for_id';
+            $validSource = 'gro_valid_for_source';
+            $validField  = 'gro_valid_for_field';
+        } else {
+            $validId     = 'gro_valid_after_id';
+            $validSource = 'gro_valid_after_source';
+            $validField  = 'gro_valid_after_field';
+        }
+        
+        if (isset($roundData[$validType]) && $roundData[$validType]) {
+            if (isset($this->_roundOrders[$roundData[$validType]]) && $this->_roundOrders[$roundData[$validType]]) {
+                $roundData[$validId] = $this->_roundOrders[$roundData[$validType]];
+            } else {
+                $this->getBatch()->addTask(
+                        'Tracker\\Import\\UpdateRoundValidTask',
+                        $lineNr,
+                        $roundData['gro_id_order'],
+                        $roundData[$validType],
+                        $validId
+                        );
+            }
+        }        
+        if (isset($roundData[$validSource], $roundData[$validField])) {
+            switch ($roundData[$validSource]) {
+                case \Gems_Tracker_Engine_StepEngineAbstract::APPOINTMENT_TABLE:
+                case \Gems_Tracker_Engine_StepEngineAbstract::RESPONDENT_TRACK_TABLE:
+                    if (isset($this->_fieldCodes[$roundData[$validField]])) {
+                        $roundData[$validField] = $this->_fieldCodes[$roundData[$validField]];
+                    }
+            }
+        }
     }
 }
