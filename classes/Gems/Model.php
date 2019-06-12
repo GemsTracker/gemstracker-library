@@ -356,6 +356,16 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
 
         return $model;
     }
+    
+    /**
+     * Get the respondent relation model
+     *
+     * @return \Gems\Model\SurveyMaintenanceModel
+     */
+    public function getSurveyMaintenanceModel()
+    {
+        return $this->_loadClass('SurveyMaintenanceModel', true);
+    }
 
     /**
      * Set a field in this model as a gems unique user id
