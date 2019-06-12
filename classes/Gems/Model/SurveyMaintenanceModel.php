@@ -277,7 +277,17 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel {
                     'elementClass', 'ToggleCheckboxes',
                     'selectorName', 'gsu_insert_organizations',
                     'order', $order
-                    );        
+                    );
+        
+        $this->set('gsu_survey_pdf', 'label', 'Pdf',	
+                        'accept', 'application/pdf',	
+                        'destination', $this->loader->getPdf()->getUploadDir('survey_pdfs'),	
+                        'elementClass', 'File',	
+                        'extension', 'pdf',	
+                        'filename', $surveyId,	
+                        'required', false,	
+                        'validators[pdf]', new \MUtil_Validate_Pdf()	
+                        );
 
         return $this;
     }
