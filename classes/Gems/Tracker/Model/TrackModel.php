@@ -191,7 +191,7 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
                         // Now cascade to children, they should take care of further cascading
                         // Delete rounds
                         $trackEngine = $this->tracker->getTrackEngine($trackId);
-                        $roundModel  = $trackEngine->getRoundModel(false, index);
+                        $roundModel  = $trackEngine->getRoundModel(true, 'index');
                         $roundModel->delete(['gro_id_track' => $trackId]);
                         
                         // Delete trackfields
