@@ -90,20 +90,29 @@ class RoundDependency extends \MUtil\Model\Dependency\DependencyAbstract
         $conditions = $this->loader->getConditions();
 
         if (isset($context['gro_condition']) && !empty($context['gro_condition'])) {
-            $condition = $conditions->loadCondition($context['gro_condition']);
-            $callback  = [$condition, 'isValid'];
-            $validator = new \Zend_Validate_Callback($callback);
-            $validator->setMessage($condition->getNotValidReason($context['gro_condition'], $context), $validator::INVALID_VALUE);                    
-            
-            return [                
-                'condition_display' => [
-                    'elementClass' => 'Exhibitor',
-                    'value' => $condition->getRoundDisplay($context['gro_id_track'], $context['gro_id_round'])
-                ],
-                'gro_condition' => [
-                    'validator' => $validator
-                ]
-            ];
+            try {
+                $condition = $conditions->loadCondition($context['gro_condition']);
+                $callback  = [$condition, 'isValid'];
+                $validator = new \Zend_Validate_Callback($callback);
+                $validator->setMessage($condition->getNotValidReason($context['gro_condition'], $context), $validator::INVALID_VALUE);                    
+
+                return [                
+                    'condition_display' => [
+                        'elementClass' => 'Exhibitor',
+                        'value' => $condition->getRoundDisplay($context['gro_id_track'], $context['gro_id_round'])
+                    ],
+                    'gro_condition' => [
+                        'validator' => $validator
+                    ]
+                ];
+            } catch (\Gems_Exception_Coding $exc) {
+                return [
+                    'condition_display' => [
+                        'elementClass' => 'Exhibitor',
+                        'value' => sprintf($this->_('Unable to load condition with ID %s'), $context['gro_condition'])
+                    ]
+                ];
+            }
         }
         
         return [ 

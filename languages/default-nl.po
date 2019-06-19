@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-19 12:45+0200\n"
+"POT-Creation-Date: 2019-06-19 15:29+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 2.0.4\n"
+"X-Generator: Poedit 2.2.1\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
@@ -272,16 +272,16 @@ msgstr "Bepaald wat op welke manier gefilterd wordt."
 #: classes/Gems/Default/DatabaseAction.php:435
 #: classes/Gems/Default/DatabaseBackupAction.php:48
 #: classes/Gems/Default/FieldOverviewAction.php:102
-#: classes/Gems/Default/FieldReportAction.php:112
+#: classes/Gems/Default/FieldReportAction.php:119
 #: classes/Gems/Default/GroupAction.php:134
 #: classes/Gems/Default/RoleAction.php:110
 #: classes/Gems/Default/SourceAction.php:154
-#: classes/Gems/Default/SurveyMaintenanceAction.php:393
 #: classes/Gems/Default/TokenSearchActionAbstract.php:109
 #: classes/Gems/Model/ConditionModel.php:77
 #: classes/Gems/Model/OrganizationModel.php:81
 #: classes/Gems/Model/RespondentModel.php:269
 #: classes/Gems/Model/StaffModel.php:211
+#: classes/Gems/Model/SurveyMaintenanceModel.php:91
 #: classes/Gems/Model/TemplateModel.php:51
 #: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:149
 #: classes/Gems/Snippets/Agenda/EpisodeTableSnippet.php:101
@@ -452,7 +452,7 @@ msgstr "%s like \"%s\""
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:67
 #: classes/Gems/Agenda/Filter/OrganizationModelDependency.php:63
 #: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:54
-#: classes/Gems/Default/SurveyMaintenanceAction.php:451
+#: classes/Gems/Model/SurveyMaintenanceModel.php:192
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:913
 #: classes/Gems/Tracker/Model/TrackModel.php:143
 #: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:547
@@ -1584,7 +1584,7 @@ msgid "Survey"
 msgstr "Vragenlijst"
 
 #: classes/Gems/Default/ChartconfigAction.php:39
-#: classes/Gems/Default/SurveyMaintenanceAction.php:506
+#: classes/Gems/Model/SurveyMaintenanceModel.php:134
 msgid "Survey code"
 msgstr "Vragenlijstcode"
 
@@ -1594,9 +1594,9 @@ msgstr "Vragenlijstcode"
 #: classes/Gems/Default/ProjectSurveysAction.php:113
 #: classes/Gems/Default/ReceptionAction.php:67
 #: classes/Gems/Default/RoleAction.php:114
-#: classes/Gems/Default/SurveyMaintenanceAction.php:396
 #: classes/Gems/Default/UpgradeAction.php:204
 #: classes/Gems/Export/RespondentExport.php:332
+#: classes/Gems/Model/SurveyMaintenanceModel.php:94
 #: classes/Gems/Snippets/Track/TracksSnippet.php:89
 #: classes/Gems/Snippets/Tracker/Rounds/ConditionRoundsTableSnippet.php:105
 #: classes/Gems/Snippets/Tracker/TrackSurveyOverviewSnippet.php:98
@@ -1906,7 +1906,7 @@ msgstr "Einddatum"
 
 #: classes/Gems/Default/ComplianceAction.php:99
 #: classes/Gems/Default/FieldOverviewAction.php:113
-#: classes/Gems/Default/FieldReportAction.php:114
+#: classes/Gems/Default/FieldReportAction.php:121
 #: classes/Gems/Default/SummaryAction.php:116
 msgid "No track selected..."
 msgstr "Geen traject geselecteerd..."
@@ -1916,7 +1916,7 @@ msgid "Compliance"
 msgstr "Voortgang"
 
 #: classes/Gems/Default/ComplianceAction.php:245
-#: classes/Gems/Default/FieldReportAction.php:344
+#: classes/Gems/Default/FieldReportAction.php:367
 #: classes/Gems/Default/ProjectTracksAction.php:148
 #: classes/Gems/Default/TrackAction.php:1024
 #: classes/Gems/Default/TrackMaintenanceAction.php:289
@@ -2162,7 +2162,7 @@ msgstr "Type"
 #: classes/Gems/Default/DatabaseAction.php:219
 #: classes/Gems/Default/DatabaseAction.php:388
 #: classes/Gems/Default/DatabaseAction.php:434
-#: classes/Gems/Default/SurveyMaintenanceAction.php:415
+#: classes/Gems/Model/SurveyMaintenanceModel.php:113
 msgid "Group"
 msgstr "Groep"
 
@@ -2382,7 +2382,6 @@ msgid "The data in table %s"
 msgstr "De gegevens in tabel %s"
 
 #: classes/Gems/Default/DatabaseBackupAction.php:51
-#| msgid "Respondent age"
 msgid "Respondent data"
 msgstr "Respondent data"
 
@@ -2391,11 +2390,11 @@ msgstr "Respondent data"
 msgid "Database backup completed. File can be found in %s"
 msgstr "Database backup afgerond. Het bestand staat in %s"
 
-#: classes/Gems/Default/ExportMultiSurveysAction.php:253
+#: classes/Gems/Default/ExportMultiSurveysAction.php:159
 msgid "Export data from multiple surveys"
 msgstr "Exporteer gegevens van meerdere vragenlijsten"
 
-#: classes/Gems/Default/ExportMultiSurveysAction.php:273
+#: classes/Gems/Default/ExportMultiSurveysAction.php:179
 #: classes/Gems/Default/ExportSurveyAction.php:56
 msgid "Please select a survey to start the export"
 msgstr "Selecteer een vragenlijst om de export te starten"
@@ -2414,7 +2413,7 @@ msgid_plural "track fields"
 msgstr[0] "trajectveld"
 msgstr[1] "trajectvelden"
 
-#: classes/Gems/Default/FieldReportAction.php:142
+#: classes/Gems/Default/FieldReportAction.php:155
 #: classes/Gems/Default/ReceptionAction.php:87 classes/Gems/Menu.php:424
 #: classes/Gems/Menu/MenuAbstract.php:678
 #: classes/Gems/Menu/MenuAbstract.php:812
@@ -2423,30 +2422,30 @@ msgstr[1] "trajectvelden"
 msgid "Tracks"
 msgstr "Trajecten"
 
-#: classes/Gems/Default/FieldReportAction.php:145
+#: classes/Gems/Default/FieldReportAction.php:158
 msgid "Filled"
 msgstr "Gevuld"
 
-#: classes/Gems/Default/FieldReportAction.php:148
+#: classes/Gems/Default/FieldReportAction.php:161
 msgid "Empty"
 msgstr "Leeg"
 
-#: classes/Gems/Default/FieldReportAction.php:151
+#: classes/Gems/Default/FieldReportAction.php:164
 msgid "Unique values"
 msgstr "Unieke waarden"
 
-#: classes/Gems/Default/FieldReportAction.php:177
-#: classes/Gems/Default/FieldReportAction.php:225
+#: classes/Gems/Default/FieldReportAction.php:190
+#: classes/Gems/Default/FieldReportAction.php:243
 #, php-format
 msgid "%d (%d%%)"
 msgstr "%d (%d%%)"
 
-#: classes/Gems/Default/FieldReportAction.php:272
+#: classes/Gems/Default/FieldReportAction.php:295
 #, php-format
 msgid "%d (uses per value: %01.2f)"
 msgstr "%d (gebruik per waarde %01.2f)"
 
-#: classes/Gems/Default/FieldReportAction.php:308
+#: classes/Gems/Default/FieldReportAction.php:331
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:400
 msgid "Track fields"
 msgstr "Trajectvelden"
@@ -3147,12 +3146,12 @@ msgstr "Inschrijven"
 msgid "Select an organization to subscribe to:"
 msgstr "Kies een organisatie om bij in te schrijven:"
 
-#: classes/Gems/Default/ParticipateAction.php:150 classes/Gems/Menu.php:300
+#: classes/Gems/Default/ParticipateAction.php:132 classes/Gems/Menu.php:300
 #: classes/Gems/Screens/Respondent/Unsubscribe/EmailOnlyUnsubscribe.php:54
 msgid "Unsubscribe"
 msgstr "Uitschrijven"
 
-#: classes/Gems/Default/ParticipateAction.php:162
+#: classes/Gems/Default/ParticipateAction.php:144
 msgid "Select an organization to unsubscribe from:"
 msgstr "Kies een organisatie om bij uit te schrijven:"
 
@@ -3373,7 +3372,7 @@ msgid "Session"
 msgstr "Sessie"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:116
-#: classes/Gems/Default/SurveyMaintenanceAction.php:411
+#: classes/Gems/Model/SurveyMaintenanceModel.php:109
 #, php-format
 msgid "Active in %s"
 msgstr "Actief in %s"
@@ -3384,7 +3383,7 @@ msgid "By"
 msgstr "Door"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:123
-#: classes/Gems/Default/SurveyMaintenanceAction.php:473
+#: classes/Gems/Model/SurveyMaintenanceModel.php:205
 #: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:186
 #: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:625
 msgid "Usage"
@@ -3395,22 +3394,22 @@ msgid "How many track definitions use this survey?"
 msgstr "Hoeveel trajecten gebruiken deze vragenlijst?"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:125
-#: classes/Gems/Default/SurveyMaintenanceAction.php:430
+#: classes/Gems/Model/SurveyMaintenanceModel.php:118
 msgid "Insertable"
 msgstr "Invoegbaar"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:126
-#: classes/Gems/Default/SurveyMaintenanceAction.php:431
+#: classes/Gems/Model/SurveyMaintenanceModel.php:119
 msgid "Can this survey be manually inserted into a track?"
 msgstr "Kan deze vragenlijst handmatig in een traject ingevoegd worden?"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:131
-#: classes/Gems/Default/SurveyMaintenanceAction.php:487
+#: classes/Gems/Model/SurveyMaintenanceModel.php:219
 msgid "Duration description"
 msgstr "Beschrijving afnametijd"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:132
-#: classes/Gems/Default/SurveyMaintenanceAction.php:488
+#: classes/Gems/Model/SurveyMaintenanceModel.php:220
 msgid "Text to inform the respondent, e.g. \"20 seconds\" or \"1 minute\"."
 msgstr ""
 "Tekst om de patiënt te informeren, bijv. \"20 seconden\" of \"1 minuut\"."
@@ -3420,7 +3419,7 @@ msgid "Active surveys"
 msgstr "Beschikbare vragenlijsten"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:189
-#: classes/Gems/Default/SurveyMaintenanceAction.php:667
+#: classes/Gems/Default/SurveyMaintenanceAction.php:305
 #: classes/Gems/Default/TokenAction.php:138
 msgid "survey"
 msgid_plural "surveys"
@@ -3899,177 +3898,35 @@ msgstr "Open"
 msgid "Summary"
 msgstr "Samenvatting"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:175
-msgid "incalculable"
-msgstr "onberekenbaar"
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:192
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:523
-#, php-format
-msgid "Answered surveys: %d."
-msgstr "Beantwoorde vragenlijsten: %d."
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:194
-#, php-format
-msgid "Average answer time: %s."
-msgstr "Gemiddelde antwoordtijd: %s."
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:195
-#: classes/Gems/Default/SurveyMaintenanceAction.php:199
-#: classes/Gems/Default/SurveyMaintenanceAction.php:221
-#: classes/Gems/Snippets/Respondent/RespondentOverviewSnippet.php:167
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:606
-#: classes/Gems/Util/Translated.php:117
-msgid "n/a"
-msgstr "n.v.t."
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:198
-#, php-format
-msgid "Standard deviation: %s."
-msgstr "Standaarddeviatie: %s."
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:217
-#: classes/Gems/Default/SurveyMaintenanceAction.php:221
-#, php-format
-msgid "Median value: %s."
-msgstr "Mediaan: %s."
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:258
-#, php-format
-msgid "%d times in %d track(s)."
-msgstr "%d keer in %d traject(en)."
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:260
-#: classes/Gems/Default/SurveyMaintenanceAction.php:306
-msgid "Not in any track."
-msgstr "Niet in een traject."
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:299
-#, php-format
-msgid "%d time in %s track."
-msgid_plural "%d times in %s track."
-msgstr[0] "%d keer in %s traject."
-msgstr[1] "%d keer in %s traject."
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:320
+#: classes/Gems/Default/SurveyMaintenanceAction.php:165
 #, php-format
 msgid "Checking for the %s survey for answers ."
 msgstr "Controleer de vragenlijst %s op antwoorden."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:325
+#: classes/Gems/Default/SurveyMaintenanceAction.php:170
 msgid "This task checks all tokens using this survey for answers."
 msgstr ""
 "Deze opdracht controleert alle kenmerken met deze vragenlijst op antwoorden."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:336
+#: classes/Gems/Default/SurveyMaintenanceAction.php:181
 msgid "Checking for all surveys for answers ."
 msgstr "Controleer alle vragenlijsten op antwoorden."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:340
+#: classes/Gems/Default/SurveyMaintenanceAction.php:185
 msgid "This task checks all tokens for all surveys for answers."
 msgstr ""
 "Deze opdracht controleert alle kenmerken voor alle vragenlijsten op "
 "antwoorden."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:381
-#: classes/Gems/Tracker/Form/AskTokenForm.php:73
-#: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:147
-msgid "OK"
-msgstr "OK"
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:400
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:647
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:715
-msgid "Source"
-msgstr "Bron"
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:402
-msgid "Active in source"
-msgstr "Actief in bron"
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:406
-msgid "Source survey id"
-msgstr "Bron vragenlijst id"
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:409
-msgid "Status in source"
-msgstr "Status in bron"
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:416
-msgid "If empty, survey will never show up!"
-msgstr "Indien leeg zal de vragenlijst niet tevoorschijn komen!"
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:437
-msgid "Add to inserted end date"
-msgstr "Optellen bij eind datum bij  invoegen"
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:438
-msgid "Add to the start date to calculate the end date when inserting."
-msgstr "Optellen bij de startdatum tijdens invoegen."
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:441
-msgid "Inserted end date unit"
-msgstr "Opteleendheid eind datum"
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:442
-msgid "The unit used to calculate the end date when inserting the survey."
-msgstr ""
-"De eenheid die gebruikt wordt bij het berekenen van de eind datum tijdens "
-"het invoegen."
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:445
-msgid "Insert organizations"
-msgstr "Invoeg organisaties"
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:446
-msgid "The organizations where the survey may be inserted."
-msgstr "De organisaties bij wie deze vragenlijst  ingevoegd mag worden."
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:480
-msgid "Duration calculated"
-msgstr "Berekende afnametijd"
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:493
-msgid "Result field"
-msgstr "Resultaatveld"
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:507
-msgid "Optional code name to link the survey to program code."
-msgstr "Optionele code naam om de vragenlijst aan programmacode te koppelen."
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:510
-msgid "Survey export code"
-msgstr "Vragenlijstexportcode"
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:511
-#: classes/Gems/Tracker/Snippets/ExportTrackSnippetAbstract.php:382
-msgid "A unique code indentifying this survey during track import"
-msgstr ""
-"Een unieke code die deze vragenlijst identificeert bij de trajectimport"
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:518
-msgid "Before answering"
-msgstr "Voor beantwoording"
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:525
-#: classes/Gems/Tracker/Model/TrackModel.php:120
-msgid "After completion"
-msgstr "Na afronding"
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:532
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:887
-msgid "Answer display"
-msgstr "Antwoord weergave"
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:592
+#: classes/Gems/Default/SurveyMaintenanceAction.php:230
 msgid " ["
 msgstr " ["
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:593
+#: classes/Gems/Default/SurveyMaintenanceAction.php:231
 msgid "]"
 msgstr "]"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:607
+#: classes/Gems/Default/SurveyMaintenanceAction.php:245
 #: classes/Gems/Menu.php:502 classes/Gems/Menu/MenuAbstract.php:685
 #: classes/Gems/Menu/MenuAbstract.php:791
 #: classes/Gems/Tracker/Model/TrackModel.php:94
@@ -4425,6 +4282,13 @@ msgstr "Kopieer antwoorden naar trajectvelden met dezelfde trajectveld code"
 #: classes/Gems/Event/Survey/Completed/DisplayVars.php:34
 msgid "Echo the survey answers for testing"
 msgstr "Echo de antwoorden voor tests"
+
+#: classes/Gems/Event/Survey/Completed/Relations.php:59
+#, php-format
+msgid ""
+"Import and assign relations, prefix fields with relationfield code, followed "
+"by %s"
+msgstr ""
 
 #: classes/Gems/Event/Survey/Completed/SetInformedConsent.php:45
 msgid "Use the 'informedconsent' answer to set the informed consent."
@@ -4857,7 +4721,6 @@ msgid "Database backup"
 msgstr "Database backup"
 
 #: classes/Gems/Menu.php:164
-#| msgid "Back"
 msgid "Backup"
 msgstr "Backup"
 
@@ -5502,7 +5365,7 @@ msgid "From address"
 msgstr "Adres van"
 
 #: classes/Gems/Model/CommLogModel.php:144
-#: classes/Gems/Snippets/Tracker/InsertSurveySnippet.php:509
+#: classes/Gems/Snippets/Tracker/InsertSurveySnippet.php:536
 msgid "Fill out by"
 msgstr "In te vullen door"
 
@@ -5567,6 +5430,11 @@ msgstr "  in stap "
 #, php-format
 msgid "No script for %1$s."
 msgstr "Geen script voor %1$s."
+
+#: classes/Gems/Model/Dependency/Condition/RoundDependency.php:112
+#, php-format
+msgid "Unable to load condition with ID %s"
+msgstr "Voorwaarde met ID %s kon niet geladen worden"
 
 #: classes/Gems/Model/EpisodeOfCareModel.php:146
 #: classes/Gems/Model/EpisodeOfCareModel.php:149
@@ -6031,6 +5899,148 @@ msgid ""
 msgstr ""
 "Twee factor authenticatie kan alleen aan- of uitgezet worden. De sleutel "
 "moet de gebruiker zelf instellen."
+
+#: classes/Gems/Model/SurveyMaintenanceModel.php:79
+#: classes/Gems/Tracker/Form/AskTokenForm.php:73
+#: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:147
+msgid "OK"
+msgstr "OK"
+
+#: classes/Gems/Model/SurveyMaintenanceModel.php:98
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:647
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:715
+msgid "Source"
+msgstr "Bron"
+
+#: classes/Gems/Model/SurveyMaintenanceModel.php:100
+msgid "Active in source"
+msgstr "Actief in bron"
+
+#: classes/Gems/Model/SurveyMaintenanceModel.php:104
+msgid "Source survey id"
+msgstr "Bron vragenlijst id"
+
+#: classes/Gems/Model/SurveyMaintenanceModel.php:107
+msgid "Status in source"
+msgstr "Status in bron"
+
+#: classes/Gems/Model/SurveyMaintenanceModel.php:114
+msgid "If empty, survey will never show up!"
+msgstr "Indien leeg zal de vragenlijst niet tevoorschijn komen!"
+
+#: classes/Gems/Model/SurveyMaintenanceModel.php:135
+msgid "Optional code name to link the survey to program code."
+msgstr "Optionele code naam om de vragenlijst aan programmacode te koppelen."
+
+#: classes/Gems/Model/SurveyMaintenanceModel.php:138
+msgid "Survey export code"
+msgstr "Vragenlijstexportcode"
+
+#: classes/Gems/Model/SurveyMaintenanceModel.php:139
+#: classes/Gems/Tracker/Snippets/ExportTrackSnippetAbstract.php:382
+msgid "A unique code indentifying this survey during track import"
+msgstr ""
+"Een unieke code die deze vragenlijst identificeert bij de trajectimport"
+
+#: classes/Gems/Model/SurveyMaintenanceModel.php:178
+msgid "Add to inserted end date"
+msgstr "Optellen bij eind datum bij  invoegen"
+
+#: classes/Gems/Model/SurveyMaintenanceModel.php:179
+msgid "Add to the start date to calculate the end date when inserting."
+msgstr "Optellen bij de startdatum tijdens invoegen."
+
+#: classes/Gems/Model/SurveyMaintenanceModel.php:182
+msgid "Inserted end date unit"
+msgstr "Opteleendheid eind datum"
+
+#: classes/Gems/Model/SurveyMaintenanceModel.php:183
+msgid "The unit used to calculate the end date when inserting the survey."
+msgstr ""
+"De eenheid die gebruikt wordt bij het berekenen van de eind datum tijdens "
+"het invoegen."
+
+#: classes/Gems/Model/SurveyMaintenanceModel.php:186
+msgid "Insert organizations"
+msgstr "Invoeg organisaties"
+
+#: classes/Gems/Model/SurveyMaintenanceModel.php:187
+msgid "The organizations where the survey may be inserted."
+msgstr "De organisaties bij wie deze vragenlijst  ingevoegd mag worden."
+
+#: classes/Gems/Model/SurveyMaintenanceModel.php:212
+msgid "Duration calculated"
+msgstr "Berekende afnametijd"
+
+#: classes/Gems/Model/SurveyMaintenanceModel.php:230
+msgid "Result field"
+msgstr "Resultaatveld"
+
+#: classes/Gems/Model/SurveyMaintenanceModel.php:242
+msgid "Before answering"
+msgstr "Voor beantwoording"
+
+#: classes/Gems/Model/SurveyMaintenanceModel.php:249
+#: classes/Gems/Tracker/Model/TrackModel.php:120
+msgid "After completion"
+msgstr "Na afronding"
+
+#: classes/Gems/Model/SurveyMaintenanceModel.php:256
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:887
+msgid "Answer display"
+msgstr "Antwoord weergave"
+
+#: classes/Gems/Model/SurveyMaintenanceModel.php:315
+msgid "incalculable"
+msgstr "onberekenbaar"
+
+#: classes/Gems/Model/SurveyMaintenanceModel.php:332
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:523
+#, php-format
+msgid "Answered surveys: %d."
+msgstr "Beantwoorde vragenlijsten: %d."
+
+#: classes/Gems/Model/SurveyMaintenanceModel.php:334
+#, php-format
+msgid "Average answer time: %s."
+msgstr "Gemiddelde antwoordtijd: %s."
+
+#: classes/Gems/Model/SurveyMaintenanceModel.php:335
+#: classes/Gems/Model/SurveyMaintenanceModel.php:339
+#: classes/Gems/Model/SurveyMaintenanceModel.php:361
+#: classes/Gems/Snippets/Respondent/RespondentOverviewSnippet.php:167
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:606
+#: classes/Gems/Util/Translated.php:117
+msgid "n/a"
+msgstr "n.v.t."
+
+#: classes/Gems/Model/SurveyMaintenanceModel.php:338
+#, php-format
+msgid "Standard deviation: %s."
+msgstr "Standaarddeviatie: %s."
+
+#: classes/Gems/Model/SurveyMaintenanceModel.php:357
+#: classes/Gems/Model/SurveyMaintenanceModel.php:361
+#, php-format
+msgid "Median value: %s."
+msgstr "Mediaan: %s."
+
+#: classes/Gems/Model/SurveyMaintenanceModel.php:398
+#, php-format
+msgid "%d times in %d track(s)."
+msgstr "%d keer in %d traject(en)."
+
+#: classes/Gems/Model/SurveyMaintenanceModel.php:400
+#: classes/Gems/Model/SurveyMaintenanceModel.php:446
+msgid "Not in any track."
+msgstr "Niet in een traject."
+
+#: classes/Gems/Model/SurveyMaintenanceModel.php:439
+#, php-format
+msgid "%d time in %s track."
+msgid_plural "%d times in %s track."
+msgstr[0] "%d keer in %s traject."
+msgstr[1] "%d keer in %s traject."
 
 #: classes/Gems/Model/TemplateModel.php:197
 msgid "Warning"
@@ -8125,23 +8135,23 @@ msgstr "Toegevoegde vragenlijst"
 msgid "No current rounds available."
 msgstr "Geen huidige ronde beschikbaar."
 
-#: classes/Gems/Snippets/Tracker/InsertSurveySnippet.php:440
-msgid "Survey insertion impossible: no insertable survey exists!"
-msgstr ""
-"Toevoegen vragenlijst niet mogelijk: er bestaat geen invoegbare vragenlijst!"
-
-#: classes/Gems/Snippets/Tracker/InsertSurveySnippet.php:477
+#: classes/Gems/Snippets/Tracker/InsertSurveySnippet.php:402
 #: classes/Gems/Tracker/Round.php:77
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:913
 #, php-format
 msgid "%s - %s"
 msgstr "%s - %s"
 
-#: classes/Gems/Snippets/Tracker/InsertSurveySnippet.php:490
+#: classes/Gems/Snippets/Tracker/InsertSurveySnippet.php:410
 msgid "Survey insertion impossible: respondent has no track!"
 msgstr "Toevoegen vragenlijst niet mogelijk: de patiënt heeft geen traject!"
 
-#: classes/Gems/Snippets/Tracker/InsertSurveySnippet.php:507
+#: classes/Gems/Snippets/Tracker/InsertSurveySnippet.php:483
+msgid "Survey insertion impossible: no insertable survey exists!"
+msgstr ""
+"Toevoegen vragenlijst niet mogelijk: er bestaat geen invoegbare vragenlijst!"
+
+#: classes/Gems/Snippets/Tracker/InsertSurveySnippet.php:534
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:184
 msgid "Patient"
 msgstr "Patiënt"
@@ -8604,7 +8614,7 @@ msgid_plural "%d fields exported"
 msgstr[0] "%d veld geëxporteerd"
 msgstr[1] "%d velden geëxporteerd"
 
-#: classes/Gems/Task/Tracker/Export/TrackRoundConditionExportTask.php:62
+#: classes/Gems/Task/Tracker/Export/TrackRoundConditionExportTask.php:76
 #, php-format
 msgid "%d condition exported"
 msgid_plural "%d conditions exported"
