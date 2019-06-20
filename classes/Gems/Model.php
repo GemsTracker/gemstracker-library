@@ -276,6 +276,18 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Load the export Dba Model
+     *
+     * @return \Gems\Model\ExportDbaModel
+     */
+    public function getExportDbaModel(\Zend_Db_Adapter_Abstract $db, array $directories)
+    {
+        $model = $this->_loadClass('ExportDbaModel', true, [$db, $directories]);
+
+        return $model;
+    }
+
+    /**
      * Returns the OpenRosaFormModel
      *
      * It is special since it can show how many responses each table has

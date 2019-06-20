@@ -41,7 +41,7 @@ class Gems_Default_DatabaseBackupAction extends \Gems_Controller_ModelSnippetAct
      */
     public function createModel($detailed, $action)
     {
-        $model = new \Gems\Model\ExportDbaModel($this->db, $this->escort->getDatabasePaths());
+        $model = $this->loader->getModels()->getExportDbaModel($this->db, $this->escort->getDatabasePaths());
         if ($this->project->databaseFileEncoding) {
             $model->setFileEncoding($this->project->databaseFileEncoding);
         }
