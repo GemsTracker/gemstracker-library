@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-19 15:29+0200\n"
+"POT-Creation-Date: 2019-06-20 18:20+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.2.3\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
@@ -1077,7 +1077,7 @@ msgstr "Invoer fout! Veranderingen niet opgeslagen!"
 
 #: classes/Gems/Controller/BrowseEditAction.php:1037
 #: classes/Gems/Snippets/Login/TwoFactorCheckSnippet.php:219
-#: vendor/magnafacta/mutil/src/MUtil/Snippets/FormSnippetAbstract.php:433
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/FormSnippetAbstract.php:435
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:513
 msgid "The form was open for too long or was opened in multiple windows."
 msgstr ""
@@ -4282,13 +4282,6 @@ msgstr "Kopieer antwoorden naar trajectvelden met dezelfde trajectveld code"
 #: classes/Gems/Event/Survey/Completed/DisplayVars.php:34
 msgid "Echo the survey answers for testing"
 msgstr "Echo de antwoorden voor tests"
-
-#: classes/Gems/Event/Survey/Completed/Relations.php:59
-#, php-format
-msgid ""
-"Import and assign relations, prefix fields with relationfield code, followed "
-"by %s"
-msgstr ""
 
 #: classes/Gems/Event/Survey/Completed/SetInformedConsent.php:45
 msgid "Use the 'informedconsent' answer to set the informed consent."
@@ -9935,6 +9928,15 @@ msgstr "%s: %s"
 msgid "- %s"
 msgstr "- %s"
 
+#: classes/Gems/Tracker/Token.php:1998
+#, php-format
+msgid ""
+"%s: Reset number of contact moments because new start date %s is later than "
+"last mail date."
+msgstr ""
+"%s: Reset aantal contact momenten omdat de nieuwe start datum %s later is "
+"dan laatste contactdatum."
+
 #: classes/Gems/Tracker/Token/TokenValidator.php:145
 msgid "The server is currently busy, please wait a while and try again."
 msgstr ""
@@ -11010,7 +11012,7 @@ msgstr "Rij %s"
 msgid " field %s"
 msgstr " veld %s"
 
-#: vendor/magnafacta/mutil/src/MUtil/Snippets/FormSnippetAbstract.php:429
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/FormSnippetAbstract.php:431
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:509
 #, php-format
 msgid "Input error! Changes to %s not saved!"

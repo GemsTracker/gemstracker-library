@@ -1992,6 +1992,18 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
             if ($start->isLater($this->getMailSentDate())) {
                 $values['gto_mail_sent_date'] = null;
                 $values['gto_mail_sent_num']  = 0;
+
+                $now = new \MUtil_Date();
+                $newComment = sprintf(
+                    $this->_('%s: Reset number of contact moments because new start date %s is later than last contact date.'),
+                    $now->toString('yyyy-MM-dd HH:mm:ss'),
+                    $start->toString('yyyy-MM-dd HH:mm:ss')
+                );
+                $comment = $this->getComment();
+                if (!empty($comment)) {
+                    $comment .= "\n";
+                }
+                $values['gto_comment'] = $comment .= $newComment;
             }
         }
 
