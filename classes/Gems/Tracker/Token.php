@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+use MUtil\Translate\TranslateableTrait;
+
 /**
  * Object class for checking and changing tokens.
  *
@@ -20,6 +22,8 @@
  */
 class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 {
+    use TranslateableTrait;
+    
     const COMPLETION_NOCHANGE = 0;
     const COMPLETION_DATACHANGE = 1;
     const COMPLETION_EVENTCHANGE = 2;
@@ -171,12 +175,6 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var \Zend_Translate
-     */
-    public $translate;
-
-    /**
-     *
      * @var \Gems_Util
      */
     protected $util;
@@ -295,6 +293,21 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         } else {
             return 0;
         }
+    }
+    
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * This function is no needed if the classes are setup correctly
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    {
+        parent::afterRegistry();
+
+        $this->initTranslateable();
     }
 
     /**
