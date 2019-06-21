@@ -318,36 +318,34 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
      */
     public function applyToMenuSource(\Gems_Menu_ParameterSource $source)
     {
-        $source->setTokenId($this->_tokenId);
-        if ($this->exists) {
-            if (! isset($this->_gemsData['gr2o_patient_nr'])) {
-                $this->_ensureRespondentData();
-            }
-
-            $source->setTokenId($this->_tokenId);
-            $this->getRespondentTrack()->applyToMenuSource($source);
-
-            $source->offsetSet('gsu_id_survey', $this->_gemsData['gto_id_survey']);
-            $source->offsetSet('is_completed', $this->_gemsData['gto_completion_time'] ? 1 : 0);
-            $source->offsetSet('show_answers', $this->_gemsData['gto_completion_time'] ? 1 : 0);
-            $source->offsetSet('gto_in_source', $this->_gemsData['gto_in_source']);
-            $source->offsetSet('gto_reception_code', $this->_gemsData['gto_reception_code']);
-
-            $receptionCode = $this->getReceptionCode();
-            $source->offsetSet('grc_success', $receptionCode->isSuccess() ? 1 : 0);
-            if ($receptionCode->isSuccess() &&
-                    (! $this->_gemsData['gto_completion_time']) &&
-                    ($validFrom = $this->getValidFrom())) {
-
-                $validUntil = $this->getValidUntil();
-                $today = new \MUtil_Date();
-
-                $canBeTaken = $validFrom->isEarlier($today) && ($validUntil ? $validUntil->isLater($today) : true);
-            } else {
-                $canBeTaken = false;
-            }
-            $source->offsetSet('can_be_taken', $canBeTaken);
+        $source->setTokenId($this->_tokenId);        
+        if (!$this->exists) return $this;
+        
+        if (! isset($this->_gemsData['gr2o_patient_nr'])) {
+            $this->_ensureRespondentData();
         }
+        $this->getRespondentTrack()->applyToMenuSource($source);
+
+        $source->offsetSet('gsu_id_survey', $this->_gemsData['gto_id_survey']);
+        $source->offsetSet('is_completed', $this->_gemsData['gto_completion_time'] ? 1 : 0);
+        $source->offsetSet('show_answers', $this->_gemsData['gto_completion_time'] ? 1 : 0);
+        $source->offsetSet('gto_in_source', $this->_gemsData['gto_in_source']);
+        $source->offsetSet('gto_reception_code', $this->_gemsData['gto_reception_code']);
+
+        $receptionCode = $this->getReceptionCode();
+        $source->offsetSet('grc_success', $receptionCode->isSuccess() ? 1 : 0);
+        $canBeTaken = false;
+        if ($receptionCode->isSuccess() &&
+                (! $this->_gemsData['gto_completion_time']) &&
+                ($validFrom = $this->getValidFrom())) {
+
+            $validUntil = $this->getValidUntil();
+            $today = new \MUtil_Date();
+
+            $canBeTaken = $validFrom->isEarlier($today) && ($validUntil ? $validUntil->isLater($today) : true);
+        }
+        $source->offsetSet('can_be_taken', $canBeTaken);
+            
         return $this;
     }
 
