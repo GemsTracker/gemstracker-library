@@ -267,32 +267,28 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
      */
     protected function _updateToken(array $values, $userId)
     {
-        if ($this->tracker->filterChangesOnly($this->_gemsData, $values)) {
-
-            if (\Gems_Tracker::$verbose) {
-                $echo = '';
-                foreach ($values as $key => $val) {
-                    $echo .= $key . ': ' . $this->_gemsData[$key] . ' => ' . $val . "\n";
-                }
-                \MUtil_Echo::r($echo, 'Updated values for ' . $this->_tokenId);
-            }
-
-            if (! isset($values['gto_changed'])) {
-                $values['gto_changed'] = new \MUtil_Db_Expr_CurrentTimestamp();
-            }
-            if (! isset($values['gto_changed_by'])) {
-                $values['gto_changed_by'] = $userId;
-            }
-
-            // Update values in this object
-            $this->_gemsData = $values + (array) $this->_gemsData;
-
-            // return 1;
-            return $this->db->update('gems__tokens', $values, array('gto_id_token = ?' => $this->_tokenId));
-
-        } else {
-            return 0;
+        if (!$this->tracker->filterChangesOnly($this->_gemsData, $values)) {            
+            return 0;   // No changes
         }
+
+        if (\Gems_Tracker::$verbose) {
+            $echo = '';
+            foreach ($values as $key => $val) {
+                $echo .= $key . ': ' . $this->_gemsData[$key] . ' => ' . $val . "\n";
+            }
+            \MUtil_Echo::r($echo, 'Updated values for ' . $this->_tokenId);
+        }
+
+        $defaults = [
+            'gto_changed'    => new \MUtil_Db_Expr_CurrentTimestamp(),
+            'gto_changed_by' => $userId
+        ];
+
+        // Update values in this object
+        $this->_gemsData = $values + $defaults + (array) $this->_gemsData;
+
+        // return 1;
+        return $this->db->update('gems__tokens', $values, array('gto_id_token = ?' => $this->_tokenId));
     }
     
     /**
@@ -326,9 +322,10 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         }
         $this->getRespondentTrack()->applyToMenuSource($source);
 
+        $completed = $this->_gemsData['gto_completion_time'] ? 1 : 0;
         $source->offsetSet('gsu_id_survey', $this->_gemsData['gto_id_survey']);
-        $source->offsetSet('is_completed', $this->_gemsData['gto_completion_time'] ? 1 : 0);
-        $source->offsetSet('show_answers', $this->_gemsData['gto_completion_time'] ? 1 : 0);
+        $source->offsetSet('is_completed', $completed);
+        $source->offsetSet('show_answers', $completed);
         $source->offsetSet('gto_in_source', $this->_gemsData['gto_in_source']);
         $source->offsetSet('gto_reception_code', $this->_gemsData['gto_reception_code']);
 
@@ -336,7 +333,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         $source->offsetSet('grc_success', $receptionCode->isSuccess() ? 1 : 0);
         $canBeTaken = false;
         if ($receptionCode->isSuccess() &&
-                (! $this->_gemsData['gto_completion_time']) &&
+                ($completed == 0) &&
                 ($validFrom = $this->getValidFrom())) {
 
             $validUntil = $this->getValidUntil();
@@ -505,11 +502,9 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         $values['gto_result']          = null;
 
         if ($this->inSource()) {
-            $survey = $this->getSurvey();
-
             $values['gto_in_source'] = 1;
-
-            $startTime = $survey->getStartTime($this);
+            $survey                  = $this->getSurvey();
+            $startTime               = $survey->getStartTime($this);
             if ($startTime instanceof \MUtil_Date) {
                 // Value from source overrules any set date time
                 $values['gto_start_time'] = $startTime->toString(\Gems_Tracker::DB_DATETIME_FORMAT);
@@ -526,72 +521,66 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                 // No need to set $values['gto_start_time'], it does not change
             }
 
-            // If there is a start date there can be a completion date
-            if ($startTime instanceof \MUtil_Date) {
-                if ($survey->isCompleted($this)) {
-                    $complTime         = $survey->getCompletionTime($this);
-                    $setCompletionTime = true;
+            if ($survey->isCompleted($this)) {
+                $complTime         = $survey->getCompletionTime($this);
+                $setCompletionTime = true;
 
-                    if (! $complTime instanceof \MUtil_Date) {
-                        // Token is completed but the source cannot tell the time
-                        //
-                        // Try to see it was stored already
-                        $complTime = $this->getDateTime('gto_completion_time');
+                if (! $complTime instanceof \MUtil_Date) {
+                    // Token is completed but the source cannot tell the time
+                    //
+                    // Try to see it was stored already
+                    $complTime = $this->getDateTime('gto_completion_time');
 
-                        if ($complTime instanceof \MUtil_Date) {
-                            // Again no need to change a time that did not change
-                            unset($values['gto_completion_time']);
-                            $setCompletionTime = false;
-                        } else {
-                            // Well anyhow it was completed now or earlier. Get the current moment.
-                            $complTime = new \MUtil_Date();
+                    if ($complTime instanceof \MUtil_Date) {
+                        // Again no need to change a time that did not change
+                        unset($values['gto_completion_time']);
+                        $setCompletionTime = false;
+                    } else {
+                        // Well anyhow it was completed now or earlier. Get the current moment.
+                        $complTime = new \MUtil_Date();
+                    }
+                }
+
+                //Save the old completiontime
+                $oldCompletionTime = $this->_gemsData['gto_completion_time'];
+                //Set completion time for completion event
+                if ($setCompletionTime) {
+                    $values['gto_completion_time']          = $complTime->toString(\Gems_Tracker::DB_DATETIME_FORMAT);
+                    $this->_gemsData['gto_completion_time'] = $values['gto_completion_time'];
+                }
+
+                // Process any Gems side survey dependent changes
+                if ($changed = $this->handleAfterCompletion()) {
+                    // Communicate change
+                    $result += self::COMPLETION_EVENTCHANGE;
+
+                    if (\Gems_Tracker::$verbose) {
+                        \MUtil_Echo::r($changed, 'Source values for ' . $this->_tokenId . ' changed by event.');
+                    }
+                }
+
+                //Reset completiontime to old value, so changes will be picked up
+                $this->_gemsData['gto_completion_time'] = $oldCompletionTime;
+                $values['gto_duration_in_sec']          = max($complTime->diffSeconds($startTime), 0);
+
+                //If the survey has a resultfield, store it
+                if ($resultField = $survey->getResultField()) {
+                    $rawAnswers = $this->getRawAnswers();
+                    if (isset($rawAnswers[$resultField])) {
+                        // Cast to string, because that is the way the result is stored in the db
+                        // not casting to strings means e.g. float results always result in
+                        // an update, even when they did not change.
+                        $values['gto_result'] = (string) $rawAnswers[$resultField];
+
+                        // Chunk of text that is too long
+                        if ($len = $this->_getResultFieldLength()) {
+                            $values['gto_result'] = substr($values['gto_result'], 0, $len);
                         }
                     }
+                }
 
-                    //Set completion time for completion event
-                    if ($setCompletionTime) {
-                        $values['gto_completion_time'] = $complTime->toString(\Gems_Tracker::DB_DATETIME_FORMAT);
-                        //Save the old value
-                        $originalCompletionTime = $this->_gemsData['gto_completion_time'];
-                        $this->_gemsData['gto_completion_time'] = $values['gto_completion_time'];
-                    }
-
-                    // Process any Gems side survey dependent changes
-                    if ($changed = $this->handleAfterCompletion()) {
-
-                        // Communicate change
-                        $result += self::COMPLETION_EVENTCHANGE;
-
-                        if (\Gems_Tracker::$verbose) {
-                            \MUtil_Echo::r($changed, 'Source values for ' . $this->_tokenId . ' changed by event.');
-                        }
-                    }
-
-                    if ($setCompletionTime) {
-                        //Reset to old value, so changes will be picked up
-                        $this->_gemsData['gto_completion_time'] = $originalCompletionTime;
-                    }
-                    $values['gto_duration_in_sec'] = max($complTime->diffSeconds($startTime), 0);
-
-                    //If the survey has a resultfield, store it
-                    if ($resultField = $survey->getResultField()) {
-                        $rawAnswers = $this->getRawAnswers();
-                        if (isset($rawAnswers[$resultField])) {
-                            // Cast to string, because that is the way the result is stored in the db
-                            // not casting to strings means e.g. float results always result in
-                            // an update, even when they did not change.
-                            $values['gto_result'] = (string) $rawAnswers[$resultField];
-
-                            // Chunk of text that is too long
-                            if ($len = $this->_getResultFieldLength()) {
-                                $values['gto_result'] = substr($values['gto_result'], 0, $len);
-                            }
-                        }
-                    }
-
-                    if ($this->project->hasResponseDatabase()) {
-                        $this->toResponseDatabase($userId);
-                    }
+                if ($this->project->hasResponseDatabase()) {
+                    $this->toResponseDatabase($userId);
                 }
             }
         } else {
@@ -600,7 +589,6 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         }
 
         if ($this->_updateToken($values, $userId)) {
-
             // Communicate change
             $result += self::COMPLETION_DATACHANGE;
         }
