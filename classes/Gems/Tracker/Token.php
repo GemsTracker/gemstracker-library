@@ -476,11 +476,10 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                 $this->_gemsData = $this->currentUser->applyGroupMask($this->_gemsData);
             }
         } else {
-            if ($this->db instanceof \Zend_Db_Adapter_Abstract) {
-                $this->refresh();
-            } else {
+            if (!$this->db instanceof \Zend_Db_Adapter_Abstract) {
                 return false;
             }
+            $this->refresh();
         }
 
         return $this->exists;
@@ -693,35 +692,35 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     }
 
     /**
-     * Returns a snippet name that can be used to display the answers to this token.
+     * Returns an array of snippetnames that can be used to display the answers to this token.
      *
-     * @return string
+     * @return array Of snippet names
      */
     public function getAnswerSnippetNames()
     {
-        if ($this->exists) {
-            if (! $this->_loopCheck) {
-                // Events should not call $this->getAnswerSnippetNames() but
-                // $this->getTrackEngine()->getAnswerSnippetNames(). Just in
-                // case the code writer made a mistake we have a guard here.
-                $this->_loopCheck = true;
+        if (! $this->exists) {
+            return ['Token\\TokenNotFoundSnippet'];
+        }
+        
+        if (! $this->_loopCheck) {
+            // Events should not call $this->getAnswerSnippetNames() but
+            // $this->getTrackEngine()->getAnswerSnippetNames(). Just in
+            // case the code writer made a mistake we have a guard here.
+            $this->_loopCheck = true;
 
-                $snippets = $this->getTrackEngine()->getRoundAnswerSnippets($this);
+            $snippets = $this->getTrackEngine()->getRoundAnswerSnippets($this);
 
-                if (! $snippets) {
-                    $snippets = $this->getSurvey()->getAnswerSnippetNames($this);
-                }
-
-                if ($snippets) {
-                    $this->_loopCheck = false;
-                    return $snippets;
-                }
+            if (! $snippets) {
+                $snippets = $this->getSurvey()->getAnswerSnippetNames($this);
             }
 
-            return $this->getTrackEngine()->getAnswerSnippetNames();
-        } else {
-            return 'Token\\TokenNotFoundSnippet';
+            if ($snippets) {
+                $this->_loopCheck = false;
+                return $snippets;
+            }
         }
+
+        return $this->getTrackEngine()->getAnswerSnippetNames();
     }
 
     /**
@@ -1570,24 +1569,26 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         $survey = $this->getSurvey();
         $event  = $survey->getSurveyCompletedEvent();
 
-        if ($event) {
-            try {
-                $changed = $event->processTokenData($this);
-                if ($changed && is_array($changed)) {
+        if (!$event) {
+            return;
+        }
+        
+        try {
+            $changed = $event->processTokenData($this);
+            if ($changed && is_array($changed)) {
 
-                    $this->setRawAnswers($changed);
+                $this->setRawAnswers($changed);
 
-                    return $changed;
-                }
-            } catch (\Exception $e) {
-                $this->logger->log(sprintf(
-                        "After completion event error for token %s on survey '%s' using event '%s': %s",
-                        $this->_tokenId,
-                        $this->getSurveyName(),
-                        $event->getEventName(),
-                        $e->getMessage()
-                        ), \Zend_Log::ERR);
+                return $changed;
             }
+        } catch (\Exception $e) {
+            $this->logger->log(sprintf(
+                    "After completion event error for token %s on survey '%s' using event '%s': %s",
+                    $this->_tokenId,
+                    $this->getSurveyName(),
+                    $event->getEventName(),
+                    $e->getMessage()
+                    ), \Zend_Log::ERR);
         }
     }
 
@@ -1603,28 +1604,30 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         $survey = $this->getSurvey();
         $event  = $survey->getSurveyBeforeAnsweringEvent();
 
-        if ($event) {
-            try {
-                $changed = $event->processTokenInsertion($this);
-                if ($changed && is_array($changed)) {
+        if (!$event) {
+            return;
+        }
+        
+        try {
+            $changed = $event->processTokenInsertion($this);
+            if ($changed && is_array($changed)) {
 
-                    $this->setRawAnswers($changed);
+                $this->setRawAnswers($changed);
 
-                    if (\Gems_Tracker::$verbose) {
-                        \MUtil_Echo::r($changed, 'Source values for ' . $this->_tokenId . ' changed by event.');
-                    }
-
-                    return $changed;
+                if (\Gems_Tracker::$verbose) {
+                    \MUtil_Echo::r($changed, 'Source values for ' . $this->_tokenId . ' changed by event.');
                 }
-            } catch (\Exception $e) {
-                $this->logger->log(sprintf(
-                        "Before answering event error for token %s on survey '%s' using event '%s': %s",
-                        $this->_tokenId,
-                        $this->getSurveyName(),
-                        $event->getEventName(),
-                        $e->getMessage()
-                        ), \Zend_Log::ERR);
+
+                return $changed;
             }
+        } catch (\Exception $e) {
+            $this->logger->log(sprintf(
+                    "Before answering event error for token %s on survey '%s' using event '%s': %s",
+                    $this->_tokenId,
+                    $this->getSurveyName(),
+                    $event->getEventName(),
+                    $e->getMessage()
+                    ), \Zend_Log::ERR);
         }
     }
 
@@ -1841,9 +1844,8 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
      */
     public function setCompletionTime($completionTime, $userId)
     {
-        if (null === $completionTime) {
-            $values['gto_completion_time'] = null;
-        } else {
+        $values['gto_completion_time'] = null;
+        if (!is_null($completionTime)) {
             if (! $completionTime instanceof \Zend_Date) {
                 $completionTime = \MUtil_Date::ifDate(
                         $completionTime,
@@ -1852,8 +1854,6 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
             }
             if ($completionTime instanceof \Zend_Date) {
                 $values['gto_completion_time'] = $completionTime->toString(\Gems_Tracker::DB_DATETIME_FORMAT);
-            } else {
-                $values['gto_completion_time'] = null;
             }
         }
         $this->_updateToken($values, $userId);
