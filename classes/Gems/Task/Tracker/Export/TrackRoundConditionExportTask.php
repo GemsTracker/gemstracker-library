@@ -89,8 +89,7 @@ class TrackRoundConditionExportTask extends TrackExportAbstract
         ];
         
         $requests = array_filter($requests);
-        
-        $nested[$condition['gcon_id']] = $condition;
+
         foreach($requests as $conditionId)
         {
             if (!array_key_exists($conditionId, $single) && !array_key_exists($conditionId, $nested)) {
