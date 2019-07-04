@@ -397,6 +397,8 @@ abstract class Gems_Menu_MenuAbstract
         // EXPORT TO HTML
         $export->addPage($this->_('Respondent archives'), 'pr.export-html', 'respondent-export', 'index');
 
+        $export->addPage($this->_('Survey codebooks'), 'pr.survey-maintenance.code-book-export', 'survey-code-book-multi-export', 'index');
+
 
         return $export;
     }
@@ -802,6 +804,12 @@ abstract class Gems_Menu_MenuAbstract
         $showPage->addPdfButton($this->_('PDF'), 'pr.survey-maintenance')
                 ->addParameters(\MUtil_Model::REQUEST_ID)
                 ->setParameterFilter('gsu_has_pdf', 1);
+
+        $codePage = $showPage->addPage($this->_('Export codebook'), 'pr.survey-maintenance.code-book-export', 'survey-code-book', 'export')
+            ->addParameters(\MUtil_Model::REQUEST_ID)
+            ->setParameterFilter('gsu_active', 1);
+
+        
         // Multi survey
         $page->addAction($this->_('Check all is answered'), 'pr.survey-maintenance.check-all', 'check-all');
         $page->addAction($this->_('Import answers'), 'pr.survey-maintenance.answer-import', 'answer-imports');
