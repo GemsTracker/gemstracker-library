@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-20 18:20+0200\n"
+"POT-Creation-Date: 2019-07-04 08:46+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -2716,30 +2716,32 @@ msgstr ""
 "Uw link om een wachtwoord in te voeren is niet meer geldig, maar u kan "
 "hieronder een nieuwe link aanvragen."
 
-#: classes/Gems/Default/IndexAction.php:486
+#: classes/Gems/Default/IndexAction.php:492
 msgid "For that reason you cannot request a password reset."
 msgstr "Om die reden kunt u geen wachtwoord wijziging aanvragen."
 
-#: classes/Gems/Default/IndexAction.php:505
+#: classes/Gems/Default/IndexAction.php:513
 msgid ""
-"We sent you an e-mail with a reset link. Click on the link in the e-mail."
+"If the entered username or e-mail is valid, we have sent you an e-mail with "
+"a reset link. Click on the link in the e-mail."
 msgstr ""
-"We hebben u een email met reset link gestuurd. Klik op de link in de email."
+"Als de opgegeven gebruikersnaam of e-mail geldig is, hebben we u een email "
+"met reset link gestuurd. Klik op de link in de email."
 
-#: classes/Gems/Default/IndexAction.php:517
+#: classes/Gems/Default/IndexAction.php:527
 #: classes/Gems/Snippets/User/PasswordResetSnippet.php:196
 msgid "New password is active."
 msgstr "Nieuwe wachtwoord geactiveerd."
 
-#: classes/Gems/Default/IndexAction.php:525
+#: classes/Gems/Default/IndexAction.php:535
 msgid "User logged in through reset password."
 msgstr "Gebruiker ingelogd middels wachtwoord reset."
 
-#: classes/Gems/Default/IndexAction.php:544
+#: classes/Gems/Default/IndexAction.php:554
 msgid "Password reset requested"
 msgstr "Wachtwoord wijziging aangevraagd"
 
-#: classes/Gems/Default/IndexAction.php:547
+#: classes/Gems/Default/IndexAction.php:557
 msgid ""
 "Dear {greeting},\n"
 "\n"
@@ -9928,14 +9930,14 @@ msgstr "%s: %s"
 msgid "- %s"
 msgstr "- %s"
 
-#: classes/Gems/Tracker/Token.php:1998
+#: classes/Gems/Tracker/Token.php:1981
 #, php-format
 msgid ""
 "%s: Reset number of contact moments because new start date %s is later than "
-"last mail date."
+"last contact date."
 msgstr ""
 "%s: Reset aantal contact momenten omdat de nieuwe start datum %s later is "
-"dan laatste contactdatum."
+"dan de laatste contactdatum."
 
 #: classes/Gems/Tracker/Token/TokenValidator.php:145
 msgid "The server is currently busy, please wait a while and try again."

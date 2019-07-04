@@ -83,7 +83,7 @@ class Gems_User_Form_ResetRequestForm extends \Gems_User_Form_OrganizationFormAb
         if (! $element) {
             $element = parent::getUserNameElement();
 
-            $element->addValidator(new \Gems_User_Validate_ResetRequestValidator($this, $this->translate));
+            //$element->addValidator(new \Gems_User_Validate_ResetRequestValidator($this, $this->translate));
         }
 
         return $element;

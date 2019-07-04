@@ -480,32 +480,42 @@ class Gems_Default_IndexAction extends \Gems_Controller_Action
             if ($form instanceof \Gems_User_Form_ResetRequestForm) {
                 $user = $form->getUser();
 
-                $result = $user->authenticate(null, false);
-                if (! $result->isValid()) {
-                    $this->addMessage($result->getMessages());
-                    $this->addMessage($this->_('For that reason you cannot request a password reset.'));
-                    return;
-                }
+                $validator = new Gems_User_Validate_ResetRequestValidator($form, $this->translate);
+                $validUser = $validator->isValid();
+                $errors = null;
 
-                $errors = $this->sendUserResetEMail($user);
-                if ($errors) {
-                    $this->accesslog->logChange(
+                if ($validUser) {
+                    $result = $user->authenticate(null, false);
+
+                    if (!$result->isValid()) {
+                        $this->addMessage($result->getMessages());
+                        $this->addMessage($this->_('For that reason you cannot request a password reset.'));
+                        return;
+                    }
+
+                    $errors = $this->sendUserResetEMail($user);
+                    if ($errors) {
+                        $this->accesslog->logChange(
                             $request,
                             sprintf(
-                                    "User %s requested reset password but got %d error(s). %s",
-                                    $form->getUserNameElement()->getValue(),
-                                    count($errors),
-                                    implode(' ', $errors)
-                                    )
-                            );
+                                "User %s requested reset password but got %d error(s). %s",
+                                $form->getUserNameElement()->getValue(),
+                                count($errors),
+                                implode(' ', $errors)
+                            )
+                        );
+                    }
+                }
 
-                } else {
-                    // Everything went OK!
+                if (!$errors || $validUser === false) {
+                    // Everything went OK! Or the user isn't valid but we do not want you to know;
                     $this->addMessage($this->_(
-                            'We sent you an e-mail with a reset link. Click on the link in the e-mail.'
-                            ));
+                        'If the entered username or e-mail is valid, we have sent you an e-mail with a reset link. Click on the link in the e-mail.'
+                    ));
 
-                    $this->accesslog->logChange($request);
+                    if ($validUser) {
+                        $this->accesslog->logChange($request);
+                    }
 
                     if ($this->returnToLoginAfterReset) {
                         $this->setCurrentOrganizationTo($user);
@@ -523,7 +533,7 @@ class Gems_Default_IndexAction extends \Gems_Controller_Action
                  * Log the login
                  */
                 $this->accesslog->logChange($request, $this->_("User logged in through reset password."));
-        		$user->gotoStartPage($this->menu, $this->getRequest());
+                $user->gotoStartPage($this->menu, $this->getRequest());
                 return;
             }
 
