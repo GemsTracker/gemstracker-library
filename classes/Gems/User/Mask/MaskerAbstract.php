@@ -62,6 +62,7 @@ abstract class MaskerAbstract extends \MUtil_Translate_TranslateableAbstract imp
         $output['elementClass']   = 'Exhibitor';
         $output['readonly']       = 'readonly';
         $output['required']       = false;
+        $output['no_text_search'] = true;
 
         $function = $this->getMaskFunction($type);
         if ($function) {

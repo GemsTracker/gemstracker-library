@@ -290,6 +290,8 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                 'multiOptions', $dbLookup->getUserConsents()
                 );
 
+        $this->refreshGroupSettings();
+
         return $this;
     }
 
