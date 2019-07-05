@@ -338,11 +338,15 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
     public function projectAction()
     {
         //Clone the object, we don't want to modify the original
-        $project = clone $this->escort->project;
+        $project = clone $this->project;
 
         //Now remove some keys want want to keep for ourselves
-        unset($project['admin']);
-        unset($project['salt']);
+        if (array_key_exists('admin', $project)) {
+            unset($project['admin']);
+        }
+        if (array_key_exists('salt', $project)) {
+            unset($project['salt']);
+        }
 
         $this->html->h2($this->_('Project settings'));
         $this->_showTable(GEMS_PROJECT_NAME . 'Project.ini', $project);
