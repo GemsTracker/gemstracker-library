@@ -148,6 +148,8 @@ class Gems_Snippets_Agenda_CalendarTableSnippet extends \Gems_Snippets_ModelTabl
 
         \Gems_Model_RespondentModel::addNameToModel($this->model, $this->_('Name'));
 
+        $this->model->refreshGroupSettings();
+
         // \MUtil_Model::$verbose = true;
         return $this->model;
     }
