@@ -425,7 +425,7 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
     public function refreshGroupSettings()
     {
         $group = $this->currentUser->getGroup();
-        if ($group instanceof Group) {
+        if ($group instanceof \Gems\User\Group) {
             $group->applyGroupToModel($this, false);
         }
     }
