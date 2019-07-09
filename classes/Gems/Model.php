@@ -380,6 +380,17 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Get the survey codebook Model
+     *
+     * @param $surveyId
+     * @return \Gems\Model\SurveyCodeBookModel
+     */
+    public function getSurveyCodeBookModel($surveyId)
+    {
+        return $this->_loadClass('SurveyCodeBookModel', true, [$surveyId]);
+    }
+
+    /**
      * Set a field in this model as a gems unique user id
      *
      * @param \MUtil_Model_DatabaseModelAbstract $model
