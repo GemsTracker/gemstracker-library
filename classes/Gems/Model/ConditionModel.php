@@ -146,5 +146,66 @@ class ConditionModel extends \Gems_Model_JoinModel
 
         return $this;
     }
+    
+    /**
+     * Delete items from the model
+     * 
+     * @param mixed $filter True to use the stored filter, array to specify a different filter
+     * @return int The number of items deleted
+     */
+    public function delete($filter = true)
+    {
+        $this->setChanged(0);
+        $conditions = $this->load($filter);
+
+        if ($conditions) {
+            foreach ($conditions as $row) {
+                if (isset($row['gcon_id'])) {
+                    $conditionId = $row['gcon_id'];
+                    if ($this->isDeleteable($conditionId)) {
+                        $this->db->delete('gems__conditions', $this->db->quoteInto('gcon_id = ?', $conditionId));
+                    } else {
+                        $values['gcon_id'] = $conditionId;
+                        $values['gcon_active']   = 0;
+                        $this->save($values);
+                    }
+                    $this->addChanged();
+                }
+            }
+        }
+        
+        return $this->getChanged();
+    }
+    
+    /**
+     * Get the number of times someone started answering a round in this track.
+     *
+     * @param int $conditionId
+     * @return int
+     */
+    public function getUsedCount($conditionId)
+    {
+        if (! $conditionId) {
+            return 0;
+        }
+
+        $sql = "SELECT COUNT(gro_id_round) FROM gems__rounds WHERE gro_condition = ?";
+        return $this->db->fetchOne($sql, $conditionId);
+    }
+    
+    /**
+     * Can this condition be deleted as is?
+     *
+     * @param int $conditionId
+     * @return boolean
+     */
+    public function isDeleteable($conditionId)
+    {
+        if (! $conditionId) {
+            return true;
+        }
+        
+        return (boolean) $this->getUsedCount($conditionId) === 0;
+    }
 
 }

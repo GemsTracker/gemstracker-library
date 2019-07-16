@@ -36,6 +36,17 @@ class Gems_Default_ConditionAction extends \Gems_Controller_ModelSnippetActionAb
      * @var array
      */
     public $cacheTags = array('conditions');
+    
+    protected $deleteParameters = array(
+        'conditionId' => '_getIdParam'
+    );
+    
+    /**
+     * The snippets used for the delete action.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $deleteSnippets = 'ConditionDeleteSnippet';
 
     /**
      * The snippets used for the show action
