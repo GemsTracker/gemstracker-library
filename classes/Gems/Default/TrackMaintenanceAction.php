@@ -70,6 +70,13 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
      */
     public $currentUser;
     
+    /**
+     * The default search data to use.
+     *
+     * @var array()
+     */
+    protected $defaultSearchData = ['gtr_active' => 1];
+    
     protected $deleteParameters = array(
         'trackId' => '_getIdParam'
     );
@@ -269,6 +276,25 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
     public function getSearchFilter($useRequest = true)
     {
         $filter = parent::getSearchFilter($useRequest);
+        
+        if (array_key_exists('gtr_active', $filter) && $filter['gtr_active'] >= 1) {
+            switch ($filter['gtr_active']) {
+                case 2:
+                    //Expired
+                    $filter[] = 'gtr_date_until < CURRENT_TIMESTAMP';
+                    break;
+                case 3:
+                    // Future
+                    $filter[] = 'gtr_date_start > CURRENT_TIMESTAMP';
+                    break;
+
+                default:
+                    // Active now
+                    $filter[] = 'gtr_date_start <= CURRENT_TIMESTAMP AND (gtr_date_until IS NULL OR gtr_date_until >= CURRENT_TIMESTAMP)';
+                    break;
+            }
+            $filter['gtr_active'] = 1;
+        }
 
         if (isset($filter['org']) && strlen($filter['org'])) {
             $filter[] = 'gtr_organizations LIKE "%|' . $filter['org'] . '|%"';
