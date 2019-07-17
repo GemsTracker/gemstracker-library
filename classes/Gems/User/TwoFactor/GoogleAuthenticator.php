@@ -127,7 +127,7 @@ class GoogleAuthenticator extends \MUtil_Translate_TranslateableAbstract impleme
                  ->setHeight($height)
                  ->setMargin(0);
         $bacon    = new \BaconQrCode\Writer($renderer);
-        $data     = $bacon->writeString($urlencoded, $encoding, \BaconQrCode\Common\ErrorCorrectionLevel::M);
+        $data     = $bacon->writeString($url, \BaconQrCode\Common\CharacterSetEci::UTF8, \BaconQrCode\Common\ErrorCorrectionLevel::M);
         return 'data:image/png;base64,' . base64_encode($data);
     }
     
@@ -174,7 +174,7 @@ class GoogleAuthenticator extends \MUtil_Translate_TranslateableAbstract impleme
         $params['class']  = 'floatLeft';
         $params['height'] = 200;
         $params['width']  = 200;
-        $params['src']    = \MUtil_Html::raw($this->_getQRCodeGoogleUrl(
+        $params['src']    = \MUtil_Html::raw($this->_getQRCodeInline(
                 $name,
                 $formData['twoFactorKey'],
                 $title,
