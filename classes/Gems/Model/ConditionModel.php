@@ -190,7 +190,7 @@ class ConditionModel extends \Gems_Model_JoinModel
         }
 
         $sql = "SELECT COUNT(gro_id_round) FROM gems__rounds WHERE gro_condition = ?";
-        return $this->db->fetchOne($sql, $conditionId);
+        return (int) $this->db->fetchOne($sql, $conditionId);
     }
     
     /**
@@ -205,7 +205,7 @@ class ConditionModel extends \Gems_Model_JoinModel
             return true;
         }
         
-        return (boolean) $this->getUsedCount($conditionId) === 0;
+        return $this->getUsedCount($conditionId) === 0;
     }
 
 }
