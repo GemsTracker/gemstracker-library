@@ -67,7 +67,7 @@ class AgeCondition extends RoundConditionAbstract
             'gcon_condition_text1' => ['label' => $this->_('Minimum age'), 'elementClass' => 'text'],
             'gcon_condition_text2' => ['label' => $this->_('Age in'), 'elementClass' => 'Select', 'multiOptions' => $ageUnits, 'value' => $value],
             'gcon_condition_text3' => ['label' => $this->_('Maximum age'), 'elementClass' => 'text'],
-            'gcon_condition_text4' => ['label' => null, 'elementClass' => 'Hidden'],
+            'gcon_condition_text4' => ['label' => null, 'elementClass' => 'Hidden', 'value' => ''],
         ];
     }
 

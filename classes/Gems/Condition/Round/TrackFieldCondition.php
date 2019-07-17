@@ -71,8 +71,8 @@ class TrackFieldCondition extends RoundConditionAbstract
         $result = [
             'gcon_condition_text1' => ['label' => $this->_('Track field'), 'elementClass' => 'select', 'multiOptions' => $fields],
             'gcon_condition_text2' => ['label' => $this->_('Comparison operator'), 'elementClass' => 'select', 'multiOptions' => $comparators],
-            'gcon_condition_text3' => ['elementClass' => 'Hidden'],
-            'gcon_condition_text4' => ['elementClass' => 'Hidden'],
+            'gcon_condition_text3' => ['elementClass' => 'Hidden', 'value' => ''],
+            'gcon_condition_text4' => ['elementClass' => 'Hidden', 'value' => ''],
         ];
 
         if (!(isset($context['gcon_condition_text2']) && $context['gcon_condition_text2'] && array_key_exists($context['gcon_condition_text2'], $comparators))) {

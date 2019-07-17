@@ -83,7 +83,7 @@ class GenderCondition extends RoundConditionAbstract
             'gcon_condition_text1' => ['label' => $this->_('Determine gender based on'), 'elementClass' => 'Select', 'multiOptions' => $subjects, 'value' => $subject],
             'gcon_condition_text2' => ['label' => $this->_('Comparison operator'), 'elementClass' => 'select', 'multiOptions' => $this->getComparators()],
             'gcon_condition_text3' => ['label' => $this->_('Gender'), 'elementClass' => 'select', 'multiOptions' => $genders],
-            'gcon_condition_text4' => ['elementClass' => 'Hidden'],
+            'gcon_condition_text4' => ['elementClass' => 'Hidden', 'value' => ''],
         ];
     }
 
