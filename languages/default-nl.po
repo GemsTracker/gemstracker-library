@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-16 16:01+0200\n"
+"POT-Creation-Date: 2019-07-17 14:20+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -757,11 +757,13 @@ msgid "Multiple conditions AND"
 msgstr "Meerdere voorwaarden EN"
 
 #: classes/Gems/Condition/Round/GenderCondition.php:49
+#: classes/Gems/Condition/Round/LastAnswerCondition.php:48
 #: classes/Gems/Condition/Round/TrackFieldCondition.php:48
 msgid "Equals"
 msgstr "Gelijk aan"
 
 #: classes/Gems/Condition/Round/GenderCondition.php:50
+#: classes/Gems/Condition/Round/LastAnswerCondition.php:49
 #: classes/Gems/Condition/Round/TrackFieldCondition.php:49
 msgid "Does not equal"
 msgstr "Niet gelijk aan"
@@ -797,6 +799,7 @@ msgid "Determine gender based on"
 msgstr "Geslacht afhankelijk van"
 
 #: classes/Gems/Condition/Round/GenderCondition.php:84
+#: classes/Gems/Condition/Round/LastAnswerCondition.php:96
 #: classes/Gems/Condition/Round/TrackFieldCondition.php:73
 msgid "Comparison operator"
 msgstr "Vergelijkings type"
@@ -825,6 +828,59 @@ msgstr "Ronde is niet voor patiënten"
 msgid "Gender of %s"
 msgstr "Geslacht van %s"
 
+#: classes/Gems/Condition/Round/LastAnswerCondition.php:50
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:50
+msgid "Equal or less"
+msgstr "Gelijk aan of kleiner dan"
+
+#: classes/Gems/Condition/Round/LastAnswerCondition.php:51
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:51
+msgid "Equal or more"
+msgstr "Gelijk aan of groter dan"
+
+#: classes/Gems/Condition/Round/LastAnswerCondition.php:52
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:52
+msgid "Between"
+msgstr "Tussen"
+
+#: classes/Gems/Condition/Round/LastAnswerCondition.php:53
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:53
+msgid "Contains"
+msgstr "Bevat"
+
+#: classes/Gems/Condition/Round/LastAnswerCondition.php:54
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:54
+msgid "In (..|..)"
+msgstr "In (..|..)"
+
+#: classes/Gems/Condition/Round/LastAnswerCondition.php:63
+msgid "Look back from the current survey and find the first answered question"
+msgstr "Kijk terug vanaf de huidige vragenlijst en gebruik het eerste antwoord"
+
+#: classes/Gems/Condition/Round/LastAnswerCondition.php:95
+#: classes/Gems/Model/SurveyCodeBookModel.php:54
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:166
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:610
+#: classes/Gems/Snippets/Survey/SurveyQuestionsSnippet.php:133
+msgid "Question code"
+msgstr "Vraagcode"
+
+#: classes/Gems/Condition/Round/LastAnswerCondition.php:124
+msgid "Previous answer"
+msgstr "Vorige antwoord"
+
+#: classes/Gems/Condition/Round/LastAnswerCondition.php:129
+#, php-format
+#| msgid "There are no surveys to show for this token."
+msgid "There is no question with `%s` in this track."
+msgstr "Er is geen vraag met `%s` in dit traject."
+
+#: classes/Gems/Condition/Round/LastAnswerCondition.php:139
+#, php-format
+#| msgid "Thanks for answering our questions."
+msgid "Last answer to question `%s`"
+msgstr "Laatste antwoord op de vraag `%s`"
+
 #: classes/Gems/Condition/Round/OrCondition.php:29
 msgid ""
 "Combine 2 or more conditions using the OR operator. All conditions must be "
@@ -836,26 +892,6 @@ msgstr ""
 #: classes/Gems/Condition/Round/OrCondition.php:34
 msgid "Multiple conditions OR"
 msgstr "Meerdere voorwaarden OF"
-
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:50
-msgid "Equal or less"
-msgstr "Gelijk aan of kleiner dan"
-
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:51
-msgid "Equal or more"
-msgstr "Gelijk aan of groter dan"
-
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:52
-msgid "Between"
-msgstr "Tussen"
-
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:53
-msgid "Contains"
-msgstr "Bevat"
-
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:54
-msgid "In (..|..)"
-msgstr "In (..|..)"
 
 #: classes/Gems/Condition/Round/TrackFieldCondition.php:63
 msgid ""
@@ -1931,12 +1967,12 @@ msgid_plural "tracks"
 msgstr[0] "traject"
 msgstr[1] "trajecten"
 
-#: classes/Gems/Default/ConditionAction.php:95
+#: classes/Gems/Default/ConditionAction.php:106
 #: classes/Gems/Menu/MenuAbstract.php:785
 msgid "Conditions"
 msgstr "Voorwaarden"
 
-#: classes/Gems/Default/ConditionAction.php:106
+#: classes/Gems/Default/ConditionAction.php:117
 msgid "condition"
 msgid_plural "conditions"
 msgstr[0] "voorwaarde"
@@ -5932,13 +5968,6 @@ msgstr ""
 msgid "Survey ID"
 msgstr "Vragenlijst ID"
 
-#: classes/Gems/Model/SurveyCodeBookModel.php:54
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:166
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:610
-#: classes/Gems/Snippets/Survey/SurveyQuestionsSnippet.php:133
-msgid "Question code"
-msgstr "Vraagcode"
-
 #: classes/Gems/Model/SurveyCodeBookModel.php:55
 #: classes/Gems/Snippets/Survey/SurveyQuestionsSnippet.php:137
 #: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:151
@@ -6693,6 +6722,26 @@ msgstr "tot"
 #: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:134
 msgid "Toggle"
 msgstr "Toggle"
+
+#: classes/Gems/Snippets/ConditionDeleteSnippet.php:81
+#, php-format
+msgid "This condition has been used %s time."
+msgid_plural "This condition has been used %s times."
+msgstr[0] "Deze voorwaarde is al %s keer gebruikt."
+msgstr[1] "Deze voorwaarde is al %s keer gebruikt."
+
+#: classes/Gems/Snippets/ConditionDeleteSnippet.php:84
+msgid "This condition cannot be deleted, only deactivated."
+msgstr ""
+"Deze voorwaarde kan niet (meer) verwijderd worden, alleen gedeactiveerd."
+
+#: classes/Gems/Snippets/ConditionDeleteSnippet.php:86
+msgid "Do you want to deactivate this condition?"
+msgstr "Weet u zeker dat deze voorwaarde gedeactiveerd moet worden?"
+
+#: classes/Gems/Snippets/ConditionDeleteSnippet.php:87
+msgid "Deactivate condition"
+msgstr "Voorwaarde deactiveren"
 
 #: classes/Gems/Snippets/Database/DatabaseExportFormSnippet.php:21
 msgid "Include respondent data"
@@ -8220,7 +8269,7 @@ msgstr "Keuzelijst is veranderd."
 msgid "This round has been completed %s time."
 msgid_plural "This round has been completed %s times."
 msgstr[0] "Deze ronde is al %s keer afgerond."
-msgstr[1] "Deze ronde is al %s keren afgerond."
+msgstr[1] "Deze ronde is al %s keer afgerond."
 
 #: classes/Gems/Snippets/Tracker/Rounds/RoundDeleteSnippet.php:115
 msgid "This round cannot be deleted, only deactivated."
@@ -8847,7 +8896,7 @@ msgstr "Ronde %s is gedeactiveerd."
 
 #: classes/Gems/Task/Tracker/Merge/MergeTrackImportTask.php:69
 msgid "Merged track data"
-msgstr "Trajectgegevens gefuseerd"
+msgstr "Trajectgegevens samengevoegd"
 
 #: classes/Gems/Task/Tracker/ProcessTokenCompletion.php:47
 #: classes/Gems/Tracker/ChangeTracker.php:53
@@ -9665,7 +9714,7 @@ msgstr "Fout tijdens het lezen van bestand '%s'."
 
 #: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:486
 msgid "Merging the tracks."
-msgstr "Trajecten worden gefuseerd."
+msgstr "Trajecten worden gesamengevoegd."
 
 #: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:508
 msgid "Merge errors occurred!"

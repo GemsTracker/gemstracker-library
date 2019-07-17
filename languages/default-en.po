@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-16 15:59+0200\n"
+"POT-Creation-Date: 2019-07-17 14:27+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -751,11 +751,13 @@ msgid "Multiple conditions AND"
 msgstr "Multiple conditions AND"
 
 #: classes/Gems/Condition/Round/GenderCondition.php:49
+#: classes/Gems/Condition/Round/LastAnswerCondition.php:48
 #: classes/Gems/Condition/Round/TrackFieldCondition.php:48
 msgid "Equals"
 msgstr "Equals"
 
 #: classes/Gems/Condition/Round/GenderCondition.php:50
+#: classes/Gems/Condition/Round/LastAnswerCondition.php:49
 #: classes/Gems/Condition/Round/TrackFieldCondition.php:49
 msgid "Does not equal"
 msgstr "Does not equal"
@@ -791,6 +793,7 @@ msgid "Determine gender based on"
 msgstr "Determine gender based on"
 
 #: classes/Gems/Condition/Round/GenderCondition.php:84
+#: classes/Gems/Condition/Round/LastAnswerCondition.php:96
 #: classes/Gems/Condition/Round/TrackFieldCondition.php:73
 msgid "Comparison operator"
 msgstr "Comparison operator"
@@ -819,6 +822,60 @@ msgstr "Round is not for respondents"
 msgid "Gender of %s"
 msgstr "Gender of %s"
 
+#: classes/Gems/Condition/Round/LastAnswerCondition.php:50
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:50
+msgid "Equal or less"
+msgstr "Equal or less"
+
+#: classes/Gems/Condition/Round/LastAnswerCondition.php:51
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:51
+msgid "Equal or more"
+msgstr "Equal or more"
+
+#: classes/Gems/Condition/Round/LastAnswerCondition.php:52
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:52
+msgid "Between"
+msgstr "Between"
+
+#: classes/Gems/Condition/Round/LastAnswerCondition.php:53
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:53
+msgid "Contains"
+msgstr "Contains"
+
+#: classes/Gems/Condition/Round/LastAnswerCondition.php:54
+#: classes/Gems/Condition/Round/TrackFieldCondition.php:54
+msgid "In (..|..)"
+msgstr "In (..|..)"
+
+#: classes/Gems/Condition/Round/LastAnswerCondition.php:63
+msgid "Look back from the current survey and find the first answered question"
+msgstr "Look back from the current survey and find the first answered question"
+
+#: classes/Gems/Condition/Round/LastAnswerCondition.php:95
+#: classes/Gems/Model/SurveyCodeBookModel.php:54
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:166
+#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:610
+#: classes/Gems/Snippets/Survey/SurveyQuestionsSnippet.php:133
+msgid "Question code"
+msgstr "Question code"
+
+#: classes/Gems/Condition/Round/LastAnswerCondition.php:124
+#| msgid "Previous comments:"
+msgid "Previous answer"
+msgstr "Previous answer"
+
+#: classes/Gems/Condition/Round/LastAnswerCondition.php:129
+#, php-format
+#| msgid "There are no surveys to show for this token."
+msgid "There is no question with `%s` in this track."
+msgstr "There is no question with `%s` in this track."
+
+#: classes/Gems/Condition/Round/LastAnswerCondition.php:139
+#, php-format
+#| msgid "Thanks for answering our questions."
+msgid "Last answer to question `%s`"
+msgstr "Last answer to question `%s`"
+
 #: classes/Gems/Condition/Round/OrCondition.php:29
 msgid ""
 "Combine 2 or more conditions using the OR operator. All conditions must be "
@@ -830,26 +887,6 @@ msgstr ""
 #: classes/Gems/Condition/Round/OrCondition.php:34
 msgid "Multiple conditions OR"
 msgstr "Multiple conditions OR"
-
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:50
-msgid "Equal or less"
-msgstr "Equal or less"
-
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:51
-msgid "Equal or more"
-msgstr "Equal or more"
-
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:52
-msgid "Between"
-msgstr "Between"
-
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:53
-msgid "Contains"
-msgstr "Contains"
-
-#: classes/Gems/Condition/Round/TrackFieldCondition.php:54
-msgid "In (..|..)"
-msgstr "In (..|..)"
 
 #: classes/Gems/Condition/Round/TrackFieldCondition.php:63
 msgid ""
@@ -1910,12 +1947,12 @@ msgid_plural "tracks"
 msgstr[0] "track"
 msgstr[1] "tracks"
 
-#: classes/Gems/Default/ConditionAction.php:95
+#: classes/Gems/Default/ConditionAction.php:106
 #: classes/Gems/Menu/MenuAbstract.php:785
 msgid "Conditions"
 msgstr "Conditions"
 
-#: classes/Gems/Default/ConditionAction.php:106
+#: classes/Gems/Default/ConditionAction.php:117
 msgid "condition"
 msgid_plural "conditions"
 msgstr[0] "condition"
@@ -2703,8 +2740,6 @@ msgid "For that reason you cannot request a password reset."
 msgstr "For that reason you cannot request a password reset."
 
 #: classes/Gems/Default/IndexAction.php:513
-#| msgid ""
-#| "We sent you an e-mail with a reset link. Click on the link in the e-mail."
 msgid ""
 "If the entered username or e-mail is valid, we have sent you an e-mail with "
 "a reset link. Click on the link in the e-mail."
@@ -3872,12 +3907,10 @@ msgstr "Summary"
 
 #: classes/Gems/Default/SurveyCodeBookAction.php:20
 #: classes/Gems/Default/SurveyCodeBookAction.php:25
-#| msgid "Code"
 msgid "Codebook"
 msgstr "Codebook"
 
 #: classes/Gems/Default/SurveyCodeBookMultiExportAction.php:142
-#| msgid "Export data from multiple surveys"
 msgid "Export codebooks from multiple surveys"
 msgstr "Export codebooks from multiple surveys"
 
@@ -5058,7 +5091,6 @@ msgid "Respondent archives"
 msgstr "Patient archives"
 
 #: classes/Gems/Menu/MenuAbstract.php:400
-#| msgid "Survey code"
 msgid "Survey codebooks"
 msgstr "Survey codebooks"
 
@@ -5248,7 +5280,6 @@ msgid "PDF"
 msgstr "PDF"
 
 #: classes/Gems/Menu/MenuAbstract.php:808
-#| msgid "export code"
 msgid "Export codebook"
 msgstr "Export codebook"
 
@@ -5868,16 +5899,8 @@ msgstr ""
 "You can only enable/disable two factor authentication, not install a key."
 
 #: classes/Gems/Model/SurveyCodeBookModel.php:53
-#| msgid "Survey #"
 msgid "Survey ID"
 msgstr "Survey ID"
-
-#: classes/Gems/Model/SurveyCodeBookModel.php:54
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:166
-#: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:610
-#: classes/Gems/Snippets/Survey/SurveyQuestionsSnippet.php:133
-msgid "Question code"
-msgstr "Question code"
 
 #: classes/Gems/Model/SurveyCodeBookModel.php:55
 #: classes/Gems/Snippets/Survey/SurveyQuestionsSnippet.php:137
@@ -5886,7 +5909,6 @@ msgid "Question"
 msgstr "Question"
 
 #: classes/Gems/Model/SurveyCodeBookModel.php:57
-#| msgid "Answer token %s"
 msgid "Answer codes"
 msgstr "Answer codes"
 
@@ -6631,6 +6653,30 @@ msgstr "until"
 #: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:134
 msgid "Toggle"
 msgstr "Toggle"
+
+#: classes/Gems/Snippets/ConditionDeleteSnippet.php:81
+#, php-format
+#| msgid "This round has been completed %s time."
+#| msgid_plural "This round has been completed %s times."
+msgid "This condition has been used %s time."
+msgid_plural "This condition has been used %s times."
+msgstr[0] "This condition has been used %s time."
+msgstr[1] "This condition has been used %s times."
+
+#: classes/Gems/Snippets/ConditionDeleteSnippet.php:84
+#| msgid "This round cannot be deleted, only deactivated."
+msgid "This condition cannot be deleted, only deactivated."
+msgstr "This condition cannot be deleted, only deactivated."
+
+#: classes/Gems/Snippets/ConditionDeleteSnippet.php:86
+#| msgid "Do you want to deactivate this round?"
+msgid "Do you want to deactivate this condition?"
+msgstr "Do you want to deactivate this condition?"
+
+#: classes/Gems/Snippets/ConditionDeleteSnippet.php:87
+#| msgid "Deactivate round"
+msgid "Deactivate condition"
+msgstr "Deactivate condition"
 
 #: classes/Gems/Snippets/Database/DatabaseExportFormSnippet.php:21
 msgid "Include respondent data"
@@ -8189,7 +8235,6 @@ msgid "(all track engines)"
 msgstr "(all track engines)"
 
 #: classes/Gems/Snippets/Tracker/TrackMaintenance/TrackMaintenanceSearchSnippet.php:54
-#| msgid "Expired surveys"
 msgid "Expired"
 msgstr "Expired"
 
