@@ -113,7 +113,7 @@ class Gems_Default_ConsentPlanAction extends \Gems_Controller_ModelSnippetAction
         }
 
         $consents = $this->util->getDbLookup()->getUserConsents();
-        $deleteds = array('' => '') + $this->util->getReceptionCodeLibrary()->getRespondentDeletionCodes();
+        $deleteds = $this->util->getReceptionCodeLibrary()->getRespondentDeletionCodes();
         $sql      = "SUM(CASE WHEN grc_success = 1 AND gr2o_consent = '%s' THEN 1 ELSE 0 END)";
         foreach ($consents as $consent => $translated) {
             $fields[$translated] = new \Zend_Db_Expr(sprintf($sql, $consent));
