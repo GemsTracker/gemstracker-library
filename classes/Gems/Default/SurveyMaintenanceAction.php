@@ -161,6 +161,7 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
         $where    = $this->db->quoteInto('gto_id_survey = ?', $surveyId);
 
         $batch = $this->loader->getTracker()->recalculateTokens('surveyCheck' . $surveyId, $this->currentUser->getUserId(), $where);
+        $batch->setProgressTemplate($this->_('Remaining time: {remaining} - {msg}'));        
 
         $title = sprintf($this->_('Checking for the %s survey for answers .'),
                 $this->db->fetchOne("SELECT gsu_survey_name FROM gems__surveys WHERE gsu_id_survey = ?", $surveyId));
@@ -177,6 +178,7 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
     public function checkAllAction()
     {
         $batch = $this->loader->getTracker()->recalculateTokens('surveyCheckAll', $this->currentUser->getUserId());
+        $batch->setProgressTemplate($this->_('Remaining time: {remaining} - {msg}'));        
 
         $title = $this->_('Checking for all surveys for answers .');
         $this->_helper->BatchRunner($batch, $title, $this->accesslog);
