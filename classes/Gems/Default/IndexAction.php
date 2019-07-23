@@ -481,7 +481,7 @@ class Gems_Default_IndexAction extends \Gems_Controller_Action
                 $user = $form->getUser();
 
                 $validator = new Gems_User_Validate_ResetRequestValidator($form, $this->translate);
-                $validUser = $validator->isValid();
+                $validUser = $validator->isValid(null, $request->getPost());
                 $errors = null;
 
                 if ($validUser) {
