@@ -350,44 +350,54 @@ class GemsEscort extends \MUtil_Application_Escort
             // To keep the rest readable, we just fall back to File when apc is disabled on cli
             $useCache = "File";
         }
+
+        $defaultLifetime = null;
+
         if ($useCache === 'apc' && extension_loaded('apc') && ini_get('apc.enabled')) {
             //Add path to the prefix as APC is a SHARED cache
             $cachePrefix .= md5(APPLICATION_PATH);
             $cacheBackendOptions = array('cache_id_prefix' => $cachePrefix);
-            $cacheBackend = new \Gems\Cache\Backend\Apc($cacheBackendOptions);
+
+            $cache = new \Symfony\Component\Cache\Adapter\TagAwareAdapter(
+                new \Symfony\Component\Cache\Adapter\ApcuAdapter($cachePrefix, $defaultLifetime)
+            );
+            $cacheBackend = new \Gems\Cache\Backend\Psr6Cache($cache);
             $exists = true;
         } else {
-            $cacheBackend = 'File';
-            $cacheDir = GEMS_ROOT_DIR . "/var/cache/";
-            $cacheBackendOptions = array('cache_dir' => $cacheDir);
-            if (!file_exists($cacheDir)) {
-                if (@mkdir($cacheDir, 0777, true)) {
+            $namespace = '';
+            $directory = GEMS_ROOT_DIR . '/var/cache';
+            //$cache = new Symfony\Component\Cache\Simple\FilesystemCache($namespace, $defaultLifetime, $directory);
+            $cache = new \Symfony\Component\Cache\Adapter\TagAwareAdapter(
+                new \Symfony\Component\Cache\Adapter\FilesystemAdapter($namespace, $defaultLifetime, $directory)
+            );
+            $cacheBackend = new \Gems\Cache\Backend\Psr6Cache($cache);
+            $cacheBackendOptions = [];
+            if (!file_exists($directory)) {
+                if (@mkdir($directory, 0777, true)) {
                     $exists = true;
                 }
             } else {
                 $exists = true;
             }
         }
-
         if ($exists && $useCache <> 'none') {
             /**
              * automatic_cleaning_factor disables automatic cleaning of the cache and should get rid of
              *                           random delays on heavy traffic sites with File cache. Apc does
              *                           not support automatic cleaning.
              */
-            $cacheFrontendOptions = array('automatic_serialization' => true,
-                                          'cache_id_prefix' => $cachePrefix,
-                                          'automatic_cleaning_factor' => 0);
-
+            $cacheFrontendOptions = array(
+                'automatic_serialization' => true,
+                'cache_id_prefix' => $cachePrefix,
+                'automatic_cleaning_factor' => 0
+            );
             $cache = \Zend_Cache::factory('Core', $cacheBackend, $cacheFrontendOptions, $cacheBackendOptions);
         } else {
             $cache = \Zend_Cache::factory('Core', 'Static', array('caching' => false), array('disable_caching' => true));
         }
-
         \Zend_Db_Table_Abstract::setDefaultMetadataCache($cache);
         \Zend_Translate::setCache($cache);
         \Zend_Locale::setCache($cache);
-
         return $cache;
     }
 
