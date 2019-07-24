@@ -23,7 +23,7 @@ use MUtil\Translate\TranslateableTrait;
 class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 {
     use TranslateableTrait;
-    
+
     const COMPLETION_NOCHANGE = 0;
     const COMPLETION_DATACHANGE = 1;
     const COMPLETION_EVENTCHANGE = 2;
@@ -267,7 +267,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
      */
     protected function _updateToken(array $values, $userId)
     {
-        if (!$this->tracker->filterChangesOnly($this->_gemsData, $values)) {            
+        if (!$this->tracker->filterChangesOnly($this->_gemsData, $values)) {
             return 0;   // No changes
         }
 
@@ -290,7 +290,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         // return 1;
         return $this->db->update('gems__tokens', $values, array('gto_id_token = ?' => $this->_tokenId));
     }
-    
+
     /**
      * Called after the check that all required registry values
      * have been set correctly has run.
@@ -314,9 +314,9 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
      */
     public function applyToMenuSource(\Gems_Menu_ParameterSource $source)
     {
-        $source->setTokenId($this->_tokenId);        
+        $source->setTokenId($this->_tokenId);
         if (!$this->exists) return $this;
-        
+
         if (! isset($this->_gemsData['gr2o_patient_nr'])) {
             $this->_ensureRespondentData();
         }
@@ -342,7 +342,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
             $canBeTaken = $validFrom->isEarlier($today) && ($validUntil ? $validUntil->isLater($today) : true);
         }
         $source->offsetSet('can_be_taken', $canBeTaken);
-            
+
         return $this;
     }
 
@@ -628,7 +628,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         foreach($newValues as &$value)
         {
             if ($value instanceof \Zend_Date) {
-                $value = $value->getIso();
+                $value = $value->toString(\Gems_Tracker::DB_DATETIME_FORMAT);
             }
         }
 
@@ -701,7 +701,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         if (! $this->exists) {
             return ['Token\\TokenNotFoundSnippet'];
         }
-        
+
         if (! $this->_loopCheck) {
             // Events should not call $this->getAnswerSnippetNames() but
             // $this->getTrackEngine()->getAnswerSnippetNames(). Just in
@@ -1538,7 +1538,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
         return $survey->getTokenUrl($this, $language);
     }
-    
+
     /**
      *
      * @return \MUtil_Date Valid from as a date or null
@@ -1572,7 +1572,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         if (!$event) {
             return;
         }
-        
+
         try {
             $changed = $event->processTokenData($this);
             if ($changed && is_array($changed)) {
@@ -1607,7 +1607,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         if (!$event) {
             return;
         }
-        
+
         try {
             $changed = $event->processTokenInsertion($this);
             if ($changed && is_array($changed)) {
