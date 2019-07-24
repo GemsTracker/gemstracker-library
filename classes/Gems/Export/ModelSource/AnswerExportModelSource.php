@@ -75,7 +75,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
                 'gems__respondent2org.gr2o_id_organization' => 'gems__tokens.gto_id_organization'), 'gr2o'
             );
         }
-               
+
         if (!$model->checkJoinExists('gems__respondent2track.gr2t_id_respondent_track', 'gems__tokens.gto_id_respondent_track')) {
             $model->addTable('gems__respondent2track', array('gems__respondent2track.gr2t_id_respondent_track' => 'gems__tokens.gto_id_respondent_track'), 'gr2t');
         }
@@ -90,11 +90,11 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
         $model->set('organizationid',      'label', $this->_('Organization'), 'type', \MUtil_Model::TYPE_NUMERIC,
             'multiOptions', $this->currentUser->getAllowedOrganizations()
         );
-        
+
         // Add relation fields
         $model->set('gto_id_relation', 'label', $this->_('Relation ID'), 'type', \MUtil_Model::TYPE_NUMERIC);
         $model->set('forgroup', 'label', $this->_('Filler'), 'type', \MUtil_Model::TYPE_STRING);
-        
+
         // Add Consent
         $model->set('consentcode',              'label', $this->_('Consent'), 'type', \MUtil_Model::TYPE_STRING);
         $model->set('resptrackid',              'label', $this->_('Respondent track ID'), 'type', \MUtil_Model::TYPE_NUMERIC);
@@ -169,6 +169,15 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
                 $model->set('grs_birthmonth', 'label', $this->_('Birth month'), 'type', \MUtil_Model::TYPE_NUMERIC);
 
                 $prefixes['P'][] = 'grs_birthmonth';
+                $checkTable = true;
+            }
+            if (isset($data['export_birth_yearmonth']) && $data['export_birth_yearmonth']) {
+                if (! $model->has('grs_birthyearmonth')) {
+                    $model->addColumn("CONCAT(YEAR(grs_birthday), '/', LPAD(MONTH(grs_birthday), 2, '0'))", 'grs_birthyearmonth');
+                }
+                $model->set('grs_birthyearmonth', 'label', $this->_('Birth year/month'), 'type', \MUtil_Model::TYPE_STRING);
+
+                $prefixes['P'][] = 'grs_birthyearmonth';
                 $checkTable = true;
             }
 
@@ -308,7 +317,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
                 if ($model->get($parent, 'type') === \MUtil_Model::TYPE_NOVALUE) {
                     if (isset($data['subquestions']) && $data['subquestions'] == 'prefix_child') {
                         $cleanLabel = strip_tags($label);
-                        $model->set($questionName, 'label', $cleanLabel);                        
+                        $model->set($questionName, 'label', $cleanLabel);
                     }
                     if (isset($data['subquestions']) && $data['subquestions'] == 'show_parent') {
                         if (!in_array($parent, $prefixes['A'])) {
@@ -425,6 +434,12 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
                     'export_birth_month',
                     $this->_('Respondent birth month'),
                     $this->_('Add respondent birth month to export')
+                    );
+
+            $elements['export_birth_yearmonth'] = $this->_createCheckboxElement(
+                    'export_birth_yearmonth',
+                    $this->_('Respondent birth year/month'),
+                    $this->_('Add respondent birth year and month to export')
                     );
         }
 
