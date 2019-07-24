@@ -90,6 +90,23 @@ class ConditionModel extends \Gems_Model_JoinModel
                     'description', $this->_('The number of rounds using this condition.'),
                     'elementClass', 'Exhibitor'
                     );
+            
+            $this->addColumn(new \Zend_Db_Expr(
+                "(SELECT COUNT(*)
+                    FROM gems__conditions AS other
+                    WHERE (gcon_class LIKE '%AndCondition' OR gcon_class LIKE '%OrCondition') AND
+                        (
+                            gems__conditions.gcon_id = other.gcon_condition_text1 OR
+                            gems__conditions.gcon_id = other.gcon_condition_text2 OR
+                            gems__conditions.gcon_id = other.gcon_condition_text3 OR
+                            gems__conditions.gcon_id = other.gcon_condition_text4
+                        )
+                )"
+                ), 'usecondition');
+            $this->set('usecondition', 'label', $this->_('Conditions'),
+                'description', $this->_('The number of uses of this condition in other conditions.'),
+                'elementClass', 'Exhibitor'
+                );
         }
         $this->addDependency('Condition\\TypeDependency');
 
@@ -189,8 +206,18 @@ class ConditionModel extends \Gems_Model_JoinModel
             return 0;
         }
 
-        $sql = "SELECT COUNT(gro_id_round) FROM gems__rounds WHERE gro_condition = ?";
-        return (int) $this->db->fetchOne($sql, $conditionId);
+        $sqlRounds     = "SELECT COUNT(gro_id_round) FROM gems__rounds WHERE gro_condition = ?";
+        $sqlConditions = "SELECT COUNT(*)
+            FROM gems__conditions
+            WHERE (gcon_class LIKE '%AndCondition' OR gcon_class LIKE '%OrCondition') AND
+                (
+                    gcon_condition_text1 = ? OR
+                    gcon_condition_text2 = ? OR
+                    gcon_condition_text3 = ? OR
+                    gcon_condition_text4 = ?
+                )";
+        
+        return (int) $this->db->fetchOne($sqlRounds, $conditionId) + (int) $this->db->fetchOne($sqlConditions, [$conditionId,$conditionId,$conditionId,$conditionId]);
     }
     
     /**

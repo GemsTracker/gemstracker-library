@@ -66,6 +66,7 @@ class Gems_Default_ConditionAction extends \Gems_Controller_ModelSnippetActionAb
         'Generic\\ContentTitleSnippet',
         'ModelItemTableSnippetGeneric',
         'Tracker\\Rounds\\ConditionRoundsTableSnippet',
+        'ConditionAndOrTableSnippet',
         );
 
     /**
