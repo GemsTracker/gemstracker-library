@@ -82,7 +82,6 @@ class StreamingStataExport extends ExportAbstract
                 $this->batch->setSessionVariable('files', $this->files);
             } else {
                 $this->addFooter($this->tempFilename . $this->fileExtension, $modelId);
-                $this->_session        = new \Zend_Session_Namespace(__CLASS__);
                 $this->_session->files = $this->files;
             }
         }
@@ -144,7 +143,6 @@ class StreamingStataExport extends ExportAbstract
                 $rowNumber = $this->batch->getSessionVariable('rowNumber');
                 $iteration = $this->batch->getSessionVariable('iteration');
             } else {
-                $this->_session = new \Zend_Session_Namespace(__CLASS__);
                 $rowNumber = $this->_session->rowNumber;
                 $iteration = $this->_session->iteration;
             }
@@ -189,10 +187,10 @@ class StreamingStataExport extends ExportAbstract
 
         if ($this->batch) {
             $this->batch->setSessionVariable('rowNumber', $rowNumber);
-            $this->batch->setSessionVariable('iteration', $iteration+1);
+            $this->batch->setSessionVariable('iteration', ++$iteration);
         } else {
             $this->_session->rowNumber = $rowNumber;
-            $this->_session->iteration = $iteration++;
+            $this->_session->iteration = ++$iteration;
         }
     }
 
@@ -320,7 +318,6 @@ class StreamingStataExport extends ExportAbstract
         if ($this->batch) {
             $iteration = $this->batch->getSessionVariable('iteration');
         } else {
-            $this->_session = new \Zend_Session_Namespace(__CLASS__);
             $iteration = $this->_session->iteration;
         }
 
@@ -369,7 +366,6 @@ class StreamingStataExport extends ExportAbstract
             $files = $this->batch->getSessionVariable('files');
 
         } else {
-            $this->_session = new \Zend_Session_Namespace(__CLASS__);
             $rowNumber = $this->_session->rowNumber;
             $stringSizes = $this->_session->stringSizes;
             $files = $this->_session->files;
