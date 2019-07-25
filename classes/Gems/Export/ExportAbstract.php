@@ -557,7 +557,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
             $model = $this->_session->model;
         }
         if (is_array($model)) {
-            if ($this->modelId && isset($model['surveys'][$this->modelId])) {
+            if ($this->modelId) {
                 $currentFilter = $model['filter'];
                 $currentFilter['gto_id_survey'] = $this->modelId;
                 $data = $model['data'];

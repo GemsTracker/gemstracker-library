@@ -117,13 +117,12 @@ class Gems_Default_SurveyCodeBookMultiExportAction extends \Gems_Default_ExportS
      */
     protected function getExportModels(array $surveys, array $filter, array $data)
     {
-        $models = array();
-
-        foreach($surveys as $surveyId) {
-            $models[$surveyId] = $this->getSurveyCodeBookModel($surveyId);
-        }
-
-        return $models;
+        return [
+            'data'          => $data,
+            'filter'        => $filter,            
+            'sort'          => $this->autofilterParameters['extraSort'],
+            'surveys'       => $surveys
+        ];
     }
 
     protected function getSurveyCodeBookModel($surveyId)

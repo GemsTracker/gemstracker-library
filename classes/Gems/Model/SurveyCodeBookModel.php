@@ -17,6 +17,12 @@ class SurveyCodeBookModel extends \Gems_Model_PlaceholderModel
      * @var array List of field columns
      */
     protected $fieldArray;
+    
+    /**
+     *
+     * @var \Gems_Loader
+     */
+    protected $loader;
 
     /**
      *
@@ -38,6 +44,10 @@ class SurveyCodeBookModel extends \Gems_Model_PlaceholderModel
 
     public function afterRegistry()
     {
+        if (! $this->tracker instanceof \Gems_Tracker) {
+            $this->tracker = $this->loader->getTracker();
+        }
+        
         $this->data = $this->getData($this->surveyId);
         $survey = $this->tracker->getSurvey($this->surveyId);
         $name = $this->cleanupName($survey->getName()) . '-code-book';

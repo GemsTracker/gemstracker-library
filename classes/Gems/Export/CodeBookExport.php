@@ -33,5 +33,20 @@ class CodeBookExport extends StreamingExcelExport
     public function getName() {
         return 'CodeBookExport';
     }
+    
+    /**
+     * Return the answermodel for the given filter
+     * 
+     * @param array $filter
+     * @param array $data
+     * @param array|string $sort
+     * @return type
+     */
+    protected function getAnswerModel(array $filter, array $data, $sort)
+    {
+        $model = $this->loader->getModels()->getSurveyCodeBookModel($filter['gto_id_survey']);
+        
+        return $model;
+    }
 
 }

@@ -61,7 +61,7 @@ class SurveyCodeBookMultiExportSnippet extends \Gems_Snippets_AutosearchFormSnip
     protected function getExportTypeElements(array $data)
     {
         $export = $this->loader->getExport();
-        $exportTypes = $export->getExportClasses();
+        $exportTypes = ['CodeBookExport' => 'Excel export'];
 
         if (isset($data['type'])) {
             $currentType = $data['type'];
