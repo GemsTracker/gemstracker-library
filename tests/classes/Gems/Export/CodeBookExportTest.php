@@ -2,7 +2,7 @@
 
 namespace Gems\Export;
 
-class RExportTest extends \Gems_Test_DbTestAbstract
+class CodeBookExportTest extends \Gems_Test_DbTestAbstract
 {
     /**
      *
