@@ -184,24 +184,24 @@ class Gems_Default_SourceAction extends \Gems_Controller_ModelSnippetActionAbstr
 
 
         if ($detailed) {
-            $in_gems = $this->_('Leave empty for the Gems database settings.');
+            $inGems = $this->_('Leave empty for the Gems database settings.');
 
             $model->set('gso_ls_dbhost',       'label', $this->_('Database host'),
-                    'description', $in_gems,
+                    'description', $inGems,
                     'size', 15
                     );
             $model->set('gso_ls_dbport',       'label', $this->_('Database port'),
-                    'description', $in_gems . ' ' . $this->_('Usually port 3306'),
+                    'description', $inGems . ' ' . $this->_('Usually port 3306'),
                     'size', 6,
                     'validators[int]', 'Int',
                     'validators[between]', ['Between', true, [0, 65535]]
                     );
             $model->set('gso_ls_database',     'label', $this->_('Database'),
-                    'description', $in_gems,
+                    'description', $inGems,
                     'size', 15
                     );
             $model->set('gso_ls_username',     'label', $this->_('Database Username'),
-                    'description', $in_gems,
+                    'description', $inGems,
                     'size', 15
                     );
 
@@ -212,7 +212,7 @@ class Gems_Default_SourceAction extends \Gems_Controller_ModelSnippetActionAbstr
                     'size', 15
                     );
             if ('create' == $action) {
-                $model->set('gso_ls_password', 'description', $in_gems, 'renderPassword', true);
+                $model->set('gso_ls_password', 'description', $inGems, 'renderPassword', true);
             } else {
                 $model->set('gso_ls_password', 'description', $this->_('Enter only when changing'),
                         'renderPassword', false);
@@ -221,7 +221,7 @@ class Gems_Default_SourceAction extends \Gems_Controller_ModelSnippetActionAbstr
             $type->apply($model, 'gso_ls_password');
 
             $model->set('gso_ls_charset',     'label', $this->_('Charset'),
-                    'description', $in_gems,
+                    'description', $inGems,
                     'size', 15
                     );
             $model->set('gso_active',         'label', $this->_('Active'),
