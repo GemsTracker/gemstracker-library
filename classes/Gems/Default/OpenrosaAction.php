@@ -25,7 +25,7 @@
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
  */
-class Gems_Default_OpenrosaAction extends \Gems_Controller_BrowseEditAction
+class Gems_Default_OpenrosaAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
      * This holds the path to the location where the form definitions will be stored.
