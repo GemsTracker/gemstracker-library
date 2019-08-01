@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -26,6 +25,17 @@ class Gems_Model_Translator_AppointmentTranslator extends \Gems_Model_Translator
      * @var \Gems_Agenda
      */
     protected $_agenda;
+
+    /**
+     * Datetime import formats
+     *
+     * @var array
+     */
+    public $datetimeFormats = array(
+        \Zend_Date::ISO_8601,
+        'yyyy-MM-ddTHH:mm:ss+z',
+        'yyyy-MM-dd HH:mm:ss',
+        );
 
     /**
      * The name of the field to store the organization id in
