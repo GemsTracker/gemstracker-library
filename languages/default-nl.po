@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 2.2.3\n"
+"X-Generator: Poedit 2.2.1\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
@@ -9075,11 +9075,11 @@ msgstr "%s"
 
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:545
 msgid "Respondent created"
-msgstr "Patiënt ingevoert"
+msgstr "Patiënt aangemaakt"
 
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:546
 msgid "Respondent changed"
-msgstr "Patiënt verandert"
+msgstr "Patiënt veranderd"
 
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:618
 msgid "Valid from calculation"
