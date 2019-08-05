@@ -277,8 +277,8 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
     {
         $filter = parent::getSearchFilter($useRequest);
         
-        if (array_key_exists('gtr_active', $filter)) {
-            switch ($filter['gtr_active']) {
+        if (array_key_exists('active', $filter)) {
+            switch ($filter['active']) {
                 case 0:
                     // Inactive
                     $filter['gtr_active'] = 0;
