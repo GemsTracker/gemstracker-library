@@ -63,7 +63,6 @@ class TrackRoundExportTask extends TrackExportAbstract
             $tests  = [
                 \Gems_Tracker_Engine_StepEngineAbstract::APPOINTMENT_TABLE,
                 \Gems_Tracker_Engine_StepEngineAbstract::RESPONDENT_TRACK_TABLE,
-                \Gems_Tracker_Engine_StepEngineAbstract::RESPONDENT_TABLE,
                 ];
             if (isset($data['gro_id_relationfield']) && $data['gro_id_relationfield']) {
                 // -1 means the respondent itself, also gro_id_relationfield stores a "bare"
