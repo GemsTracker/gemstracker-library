@@ -75,7 +75,7 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
      *
      * @var array()
      */
-    protected $defaultSearchData = ['gtr_active' => 1];
+    protected $defaultSearchData = ['active' => 1];
     
     protected $deleteParameters = array(
         'trackId' => '_getIdParam'
@@ -277,23 +277,31 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
     {
         $filter = parent::getSearchFilter($useRequest);
         
-        if (array_key_exists('gtr_active', $filter) && $filter['gtr_active'] >= 1) {
+        if (array_key_exists('gtr_active', $filter)) {
             switch ($filter['gtr_active']) {
+                case 0:
+                    // Inactive
+                    $filter['gtr_active'] = 0;
+                    break;
+                    
+                case 1:
+                    // Active now
+                    $filter['gtr_active'] = 1;
+                    $filter[] = 'gtr_date_start <= CURRENT_TIMESTAMP AND (gtr_date_until IS NULL OR gtr_date_until >= CURRENT_TIMESTAMP)';
+                    break;
+                    
                 case 2:
                     //Expired
+                    $filter['gtr_active'] = 1;
                     $filter[] = 'gtr_date_until < CURRENT_TIMESTAMP';
                     break;
                 case 3:
                     // Future
+                    $filter['gtr_active'] = 1;
                     $filter[] = 'gtr_date_start > CURRENT_TIMESTAMP';
                     break;
-
-                default:
-                    // Active now
-                    $filter[] = 'gtr_date_start <= CURRENT_TIMESTAMP AND (gtr_date_until IS NULL OR gtr_date_until >= CURRENT_TIMESTAMP)';
-                    break;
             }
-            $filter['gtr_active'] = 1;
+            unset($filter['active']);
         }
 
         if (isset($filter['org']) && strlen($filter['org'])) {

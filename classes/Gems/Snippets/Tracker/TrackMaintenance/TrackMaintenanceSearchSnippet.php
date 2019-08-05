@@ -54,7 +54,7 @@ class TrackMaintenanceSearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
                 2 => $this->_('Expired'),
                 3 => $this->_('Future')
             ];
-            $elementA = $this->_createSelectElement('gtr_active', $optionsA, $this->_('(all)'));
+            $elementA = $this->_createSelectElement('active', $optionsA, $this->_('(all)'));
             $elementA->setLabel($this->model->get('gtr_active', 'label'));
             $elements[] = $elementA;
 
