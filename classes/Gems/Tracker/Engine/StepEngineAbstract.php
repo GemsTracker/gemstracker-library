@@ -47,6 +47,11 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
     const RESPONDENT_TRACK_TABLE = 'rtr';
 
     /**
+     * Database stored constant value for using a respondent as date source
+     */
+    const RESPONDENT_TABLE = 'res';
+
+    /**
      * Database stored constant value for using a token as date source
      */
     const TOKEN_TABLE = 'tok';
@@ -114,6 +119,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
             case self::APPOINTMENT_TABLE:
             case self::NO_TABLE:
             case self::RESPONDENT_TRACK_TABLE:
+            case self::RESPONDENT_TABLE:
                 return false;
 
             default:
@@ -273,16 +279,16 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
      * @return int The number of tokens changed by this code
      */
     protected function checkTokenCondition(\GemS_Tracker_Token $token, $round, $userId)
-    {        
+    {
         $skipCode = $this->util->getReceptionCodeLibrary()->getSkipString();
 
-        // Only if we have a condition, the token is not yet completed and 
+        // Only if we have a condition, the token is not yet completed and
         // receptioncode is ok or skip we evaluate the condition
         if (empty($round['gro_condition']) ||
             $token->isCompleted() ||
             !($token->getReceptionCode()->isSuccess() || $token->getReceptionCode()->getCode() == $skipCode)) {
-        
-            return 0;            
+
+            return 0;
         }
 
         $changed   = 0;
@@ -298,7 +304,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
             } else {
                 $message = $this->_('Activated by condition %s: %s');
                 $newCode = $this->util->getReceptionCodeLibrary()->getOKString();
-            }            
+            }
 
             $token->setReceptionCode($newCode,
                     sprintf($message, $condition->getName(), $condition->getRoundDisplay($token->getTrackId(), $token->getRoundId())),
@@ -382,12 +388,12 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
             $changes = 0;
             if (array_key_exists($token->getRoundId(), $this->_rounds)) {
                 $round = $this->_rounds[$token->getRoundId()];
-            }            
+            }
 
             if ($round && $token !== $skipToken) {
                 $changes = $this->checkTokenDates($token, $round, $userId);
                 $changes += $this->checkTokenCondition($token, $round, $userId);
-            }            
+            }
 
             // If condition changed and dates changed, we only signal one change
             $changed += min($changes, 1);
@@ -532,6 +538,13 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
                     FieldsDefinition::TYPE_DATE,
                     FieldsDefinition::TYPE_DATETIME,
                     ));
+
+            case self::RESPONDENT_TABLE:
+                return [
+                    'grs_birthday' => $this->_('Birthday'),
+                    'gr2o_created' => $this->_('Respondent created'),
+                    'gr2o_changed' => $this->_('Respondent changed'),
+                    ];
 
             case self::TOKEN_TABLE:
                 return array(
@@ -771,6 +784,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
             $results[self::TOKEN_TABLE]  = array($this->_('Token'), $this->_('Use a standard token date.'));
         }
         $results[self::RESPONDENT_TRACK_TABLE] = array($this->_('Track'), $this->_('Use a track level date.'));
+        $results[self::RESPONDENT_TABLE] = array($this->_('Respondent'), $this->_('Use a respondent level date.'));
 
         if ($detailed) {
             foreach ($results as $key => $value) {
@@ -991,7 +1005,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
         $result = false;
 
         // VALID AFTER DATE
-        
+
         if (! $this->_sourceUsesSurvey($itemData['gro_valid_after_source'])) {
             $model->del('gro_valid_after_id', 'label');
         } else {

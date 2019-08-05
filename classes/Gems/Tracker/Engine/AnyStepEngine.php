@@ -200,6 +200,10 @@ class Gems_Tracker_Engine_AnyStepEngine extends \Gems_Tracker_Engine_StepEngineA
             case parent::RESPONDENT_TRACK_TABLE:
                 $date = $respTrack->getDate($fieldName);
                 break;
+
+            case parent::RESPONDENT_TABLE:
+                $date = $respTrack->getRespondent()->getDate($fieldName);
+                break;
         }
 
         return $date;

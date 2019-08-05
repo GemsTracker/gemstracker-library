@@ -162,26 +162,26 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
     public function getAge($date = null, $months = false)
     {
         $birthDate = $this->getBirthDay();
-        
+
         if (is_null($date)) {
             $date = new \MUtil_Date();
-        }        
-        
+        }
+
         if (!($birthDate instanceof \MUtil_Date) || !($date instanceof \MUtil_Date)) {
             return null;
         }
-        
-        // Now calculate age         
+
+        // Now calculate age
         if ($months) {
-            $age  = $date->diffMonths($birthDate);                
-            $unit = 'dd';        
+            $age  = $date->diffMonths($birthDate);
+            $unit = 'dd';
         } else {
             $age  = $date->diffYears($birthDate);
             $unit = 'MMdd';
         }
         if ($date->get($unit) < $birthDate->get($unit)) {
             $age--;
-        } 
+        }
 
         return $age;
     }
@@ -214,6 +214,26 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
     public function getConsent()
     {
         return $this->util->getConsent($this->_gemsData['gr2o_consent']);
+    }
+
+    /**
+     *
+     * @param string $fieldName
+     * @return \MUtil_Date
+     */
+    public function getDate($fieldName)
+    {
+        if (isset($this->_gemsData[$fieldName])) {
+            $date = $this->_gemsData[$fieldName];
+
+            if ($date) {
+                if ($date instanceof \MUtil_Date) {
+                    return $date;
+                }
+
+                return \MUtil_Date::ifDate($date, [\Gems_Tracker::DB_DATETIME_FORMAT, \Gems_Tracker::DB_DATE_FORMAT]);
+            }
+        }
     }
 
     /**

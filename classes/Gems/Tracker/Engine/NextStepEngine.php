@@ -161,6 +161,11 @@ class Gems_Tracker_Engine_NextStepEngine extends \Gems_Tracker_Engine_StepEngine
             case parent::APPOINTMENT_TABLE:
             case parent::RESPONDENT_TRACK_TABLE:
                 $date = $respTrack->getDate($fieldName);
+                break;
+
+            case parent::RESPONDENT_TABLE:
+                $date = $respTrack->getRespondent()->getDate($fieldName);
+                break;
         }
 
         return $date;
@@ -205,6 +210,10 @@ class Gems_Tracker_Engine_NextStepEngine extends \Gems_Tracker_Engine_StepEngine
             case parent::APPOINTMENT_TABLE:
             case parent::RESPONDENT_TRACK_TABLE:
                 $date = $respTrack->getDate($fieldName);
+                break;
+
+            case parent::RESPONDENT_TABLE:
+                $date = $respTrack->getRespondent()->getDate($fieldName);
                 break;
         }
 

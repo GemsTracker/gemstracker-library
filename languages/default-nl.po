@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-17 14:20+0200\n"
+"POT-Creation-Date: 2019-08-05 14:40+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.2.3\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
@@ -51,7 +51,7 @@ msgstr "Handmatig (organisatie specifiek)"
 #: classes/Gems/Default/ReceptionAction.php:73
 #: classes/Gems/Default/SourceAction.php:227
 #: classes/Gems/Model/ConditionModel.php:78
-#: classes/Gems/Model/ConditionModel.php:124
+#: classes/Gems/Model/ConditionModel.php:141
 #: classes/Gems/Model/OrganizationModel.php:100
 #: classes/Gems/Model/StaffModel.php:277
 #: classes/Gems/Snippets/Survey/SurveyMaintenanceSearchSnippet.php:49
@@ -783,7 +783,9 @@ msgstr ""
 #: classes/Gems/Snippets/Respondent/DetailsWithAssignmentsSnippet.php:93
 #: classes/Gems/Snippets/Respondent/RespondentDetailsSnippet.php:53
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:42
-#: classes/Gems/Tracker.php:698 classes/Gems/Util/Translated.php:292
+#: classes/Gems/Tracker.php:698
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:787
+#: classes/Gems/Util/Translated.php:292
 msgid "Respondent"
 msgstr "Patiënt"
 
@@ -858,7 +860,7 @@ msgid "Look back from the current survey and find the first answered question"
 msgstr "Kijk terug vanaf de huidige vragenlijst en gebruik het eerste antwoord"
 
 #: classes/Gems/Condition/Round/LastAnswerCondition.php:95
-#: classes/Gems/Model/SurveyCodeBookModel.php:54
+#: classes/Gems/Model/SurveyCodeBookModel.php:60
 #: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:166
 #: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:610
 #: classes/Gems/Snippets/Survey/SurveyQuestionsSnippet.php:133
@@ -871,13 +873,11 @@ msgstr "Vorige antwoord"
 
 #: classes/Gems/Condition/Round/LastAnswerCondition.php:129
 #, php-format
-#| msgid "There are no surveys to show for this token."
 msgid "There is no question with `%s` in this track."
 msgstr "Er is geen vraag met `%s` in dit traject."
 
 #: classes/Gems/Condition/Round/LastAnswerCondition.php:139
 #, php-format
-#| msgid "Thanks for answering our questions."
 msgid "Last answer to question `%s`"
 msgstr "Laatste antwoord op de vraag `%s`"
 
@@ -1116,8 +1116,8 @@ msgstr "Invoer fout! Veranderingen niet opgeslagen!"
 
 #: classes/Gems/Controller/BrowseEditAction.php:1037
 #: classes/Gems/Snippets/Login/TwoFactorCheckSnippet.php:219
-#: vendor/magnafacta/mutil/src/MUtil/Snippets/FormSnippetAbstract.php:433
-#: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:513
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/FormSnippetAbstract.php:453
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:531
 msgid "The form was open for too long or was opened in multiple windows."
 msgstr ""
 "Dit invoerscherm staat te lang open of staat open in meerdere vensters."
@@ -1581,7 +1581,7 @@ msgstr[1] "behandelepisodes"
 #: classes/Gems/Snippets/Survey/AnswerImportSnippet.php:132
 #: classes/Gems/Snippets/Track/TracksSnippet.php:88
 #: classes/Gems/Snippets/Tracker/AvailableTracksSnippet.php:105
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:773
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:786
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:862
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:317
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:480
@@ -1598,8 +1598,8 @@ msgstr "Traject"
 #: classes/Gems/Export/RespondentExport.php:249
 #: classes/Gems/Snippets/Mail/TokenMailFormSnippet.php:43
 #: classes/Gems/Snippets/Survey/Display/BarChartSnippet.php:203
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:650
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:719
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:663
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:732
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:281
 #: classes/Gems/Util/TokenData.php:688
 #, php-format
@@ -1967,12 +1967,13 @@ msgid_plural "tracks"
 msgstr[0] "traject"
 msgstr[1] "trajecten"
 
-#: classes/Gems/Default/ConditionAction.php:106
+#: classes/Gems/Default/ConditionAction.php:107
 #: classes/Gems/Menu/MenuAbstract.php:785
+#: classes/Gems/Model/ConditionModel.php:106
 msgid "Conditions"
 msgstr "Voorwaarden"
 
-#: classes/Gems/Default/ConditionAction.php:117
+#: classes/Gems/Default/ConditionAction.php:118
 msgid "condition"
 msgid_plural "conditions"
 msgstr[0] "voorwaarde"
@@ -2436,7 +2437,7 @@ msgstr "Exporteer gegevens van meerdere vragenlijsten"
 
 #: classes/Gems/Default/ExportMultiSurveysAction.php:179
 #: classes/Gems/Default/ExportSurveyAction.php:56
-#: classes/Gems/Default/SurveyCodeBookMultiExportAction.php:162
+#: classes/Gems/Default/SurveyCodeBookMultiExportAction.php:161
 msgid "Please select a survey to start the export"
 msgstr "Selecteer een vragenlijst om de export te starten"
 
@@ -2487,7 +2488,7 @@ msgid "%d (uses per value: %01.2f)"
 msgstr "%d (gebruik per waarde %01.2f)"
 
 #: classes/Gems/Default/FieldReportAction.php:331
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:400
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:409
 msgid "Track fields"
 msgstr "Trajectvelden"
 
@@ -3462,7 +3463,7 @@ msgid "Active surveys"
 msgstr "Beschikbare vragenlijsten"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:189
-#: classes/Gems/Default/SurveyMaintenanceAction.php:305
+#: classes/Gems/Default/SurveyMaintenanceAction.php:307
 #: classes/Gems/Default/TokenAction.php:138
 msgid "survey"
 msgid_plural "surveys"
@@ -3623,6 +3624,7 @@ msgstr[1] "patiënten"
 #: classes/Gems/Model/RespondentModel.php:282
 #: classes/Gems/Model/RespondentModel.php:351
 #: classes/Gems/Model/RespondentRelationModel.php:49
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:544
 msgid "Birthday"
 msgstr "Geboren op"
 
@@ -3946,39 +3948,45 @@ msgstr "Samenvatting"
 msgid "Codebook"
 msgstr "Codeboek"
 
-#: classes/Gems/Default/SurveyCodeBookMultiExportAction.php:142
+#: classes/Gems/Default/SurveyCodeBookMultiExportAction.php:141
 msgid "Export codebooks from multiple surveys"
 msgstr "Exporteer codeboeken van meerdere vragenlijsten"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:165
+#: classes/Gems/Default/SurveyMaintenanceAction.php:164
+#: classes/Gems/Default/SurveyMaintenanceAction.php:181
+#: classes/Gems/Import/Importer.php:41 classes/Gems/Import/Importer.php:59
+msgid "Remaining time: {remaining} - {msg}"
+msgstr "Resterende tijd: {remaining} - {msg}"
+
+#: classes/Gems/Default/SurveyMaintenanceAction.php:166
 #, php-format
 msgid "Checking for the %s survey for answers ."
 msgstr "Controleer de vragenlijst %s op antwoorden."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:170
+#: classes/Gems/Default/SurveyMaintenanceAction.php:171
 msgid "This task checks all tokens using this survey for answers."
 msgstr ""
 "Deze opdracht controleert alle kenmerken met deze vragenlijst op antwoorden."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:181
+#: classes/Gems/Default/SurveyMaintenanceAction.php:183
 msgid "Checking for all surveys for answers ."
 msgstr "Controleer alle vragenlijsten op antwoorden."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:185
+#: classes/Gems/Default/SurveyMaintenanceAction.php:187
 msgid "This task checks all tokens for all surveys for answers."
 msgstr ""
 "Deze opdracht controleert alle kenmerken voor alle vragenlijsten op "
 "antwoorden."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:230
+#: classes/Gems/Default/SurveyMaintenanceAction.php:232
 msgid " ["
 msgstr " ["
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:231
+#: classes/Gems/Default/SurveyMaintenanceAction.php:233
 msgid "]"
 msgstr "]"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:245
+#: classes/Gems/Default/SurveyMaintenanceAction.php:247
 #: classes/Gems/Menu.php:502 classes/Gems/Menu/MenuAbstract.php:687
 #: classes/Gems/Menu/MenuAbstract.php:793
 #: classes/Gems/Tracker/Model/TrackModel.php:94
@@ -4026,7 +4034,7 @@ msgstr "Ronde / Details"
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:44
 #: classes/Gems/Snippets/Tracker/Rounds/RoundsTableSnippet.php:137
 #: classes/Gems/Snippets/Tracker/TrackSearchFormSnippetAbstract.php:103
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:538
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:551
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:299
 msgid "Valid from"
 msgstr "Geldig vanaf"
@@ -4038,7 +4046,7 @@ msgstr "Geldig vanaf"
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:45
 #: classes/Gems/Snippets/Tracker/Rounds/RoundsTableSnippet.php:139
 #: classes/Gems/Snippets/Tracker/TrackSearchFormSnippetAbstract.php:104
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:539
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:552
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:309
 msgid "Valid until"
 msgstr "Geldig tot"
@@ -4464,13 +4472,13 @@ msgstr "Trajectomschrijving"
 #: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:231
 #: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:75
 #: classes/Gems/Snippets/Token/PlanSearchSnippet.php:121
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:541
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:554
 #: classes/OpenRosa/Tracker/Source/Form.php:632
 msgid "Completion date"
 msgstr "Datum ingevuld op"
 
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:111
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:540
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:553
 msgid "Start time"
 msgstr "Startdatum"
 
@@ -4494,7 +4502,7 @@ msgstr "Laatste pagina"
 #: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:198
 #: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:290
 #: classes/Gems/Snippets/Import/FileImportSnippet.php:64
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:771
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:784
 #: classes/Gems/Tracker/Form/AskTokenForm.php:52
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:259
 #: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:187
@@ -4511,53 +4519,65 @@ msgstr "Geboorte jaar"
 msgid "Birth month"
 msgstr "Geboorte maand"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:214
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:439
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:178
+msgid "Birth year/month"
+msgstr "Geboorte jaar/maand"
+
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:223
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:454
 msgid "Token reception code"
 msgstr "Kenmerk ontvangstcode"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:264
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:433
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:273
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:448
 msgid "Track reception code"
 msgstr "Traject ontvangstcode"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:401
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:410
 msgid "Add track fields to export"
 msgstr "Voeg trajectvelden toe aan de export"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:408
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:417
 msgid "Add respondent nr to export"
 msgstr "Voeg het patiëntnummer toe aan de export"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:414
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:423
 msgid "Respondent gender"
 msgstr "Patiënt geslacht"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:415
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:424
 msgid "Add respondent gender to export"
 msgstr "Voeg het geslacht van de patiënt toe aan de export"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:420
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:429
 msgid "Respondent birth year"
 msgstr "Patiënt geboorte jaar"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:421
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:430
 msgid "Add respondent birth year to export"
 msgstr "Voeg het geboortejaar van de patiënt toe aan de export"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:426
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:435
 msgid "Respondent birth month"
 msgstr "Patiënt geboorte maand"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:427
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:436
 msgid "Add respondent birth month to export"
 msgstr "Voeg de geboortemaand van de patiënt toe aan de export"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:434
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:441
+msgid "Respondent birth year/month"
+msgstr "Patiënt geboorte jaar/maand"
+
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:442
+msgid "Add respondent birth year and month to export"
+msgstr "Voeg het geboortejaar en de maand van de patiënt toe aan de export"
+
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:449
 msgid "Add reception code of track"
 msgstr "Ontvangstcode van traject toevoegen"
 
-#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:440
+#: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:455
 msgid "Add reception code of token"
 msgstr "Ontvangstcode van kenmerk toevoegen"
 
@@ -4676,10 +4696,6 @@ msgstr "Koppel middels patiënt id"
 #: classes/Gems/Import/ImportLoader.php:319
 msgid "Link by patient id and completion date"
 msgstr "Koppel middels patiënt id en invuldatum"
-
-#: classes/Gems/Import/Importer.php:41 classes/Gems/Import/Importer.php:59
-msgid "Remaining time: {remaining} - {msg}"
-msgstr "Resterende tijd: {remaining} - {msg}"
 
 #: classes/Gems/Mail/MailElements.php:144
 #: classes/Gems/Menu/MenuAbstract.php:841
@@ -4965,8 +4981,8 @@ msgid "E-Mail now!"
 msgstr "Email nu!"
 
 #: classes/Gems/Menu.php:536 classes/Gems/Menu/MenuAbstract.php:485
-#: classes/Gems/Model/SurveyCodeBookModel.php:56
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:762
+#: classes/Gems/Model/SurveyCodeBookModel.php:62
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:775
 msgid "Answers"
 msgstr "Antwoorden"
 
@@ -5386,7 +5402,7 @@ msgstr "Exporteer de huidige gegevens"
 
 #: classes/Gems/Model/AppointmentModel.php:193
 #: classes/Gems/Model/AppointmentModel.php:240
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:766
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:779
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:467
 msgid "Appointment"
 msgstr "Afspraak"
@@ -5441,14 +5457,19 @@ msgstr "Bepaalt waar de voorwaarde gebruikt kan worden."
 msgid "The number of rounds using this condition."
 msgstr "Het aantal rondes met deze voorwaarde."
 
-#: classes/Gems/Model/ConditionModel.php:114
+#: classes/Gems/Model/ConditionModel.php:107
+msgid "The number of uses of this condition in other conditions."
+msgstr ""
+"Het aantal keren dat deze voorwaarde in andere voorwaarden gebruikt is."
+
+#: classes/Gems/Model/ConditionModel.php:131
 msgid ""
 "A name for this condition, will be used to select it when applying the "
 "condition."
 msgstr ""
 "De naam van deze voorwaarde, deze zie je bij het toewijzen van de voorwaarde."
 
-#: classes/Gems/Model/ConditionModel.php:116
+#: classes/Gems/Model/ConditionModel.php:133
 msgid "Help"
 msgstr "Help"
 
@@ -5964,17 +5985,17 @@ msgstr ""
 "Twee factor authenticatie kan alleen aan- of uitgezet worden. De sleutel "
 "moet de gebruiker zelf instellen."
 
-#: classes/Gems/Model/SurveyCodeBookModel.php:53
+#: classes/Gems/Model/SurveyCodeBookModel.php:59
 msgid "Survey ID"
 msgstr "Vragenlijst ID"
 
-#: classes/Gems/Model/SurveyCodeBookModel.php:55
+#: classes/Gems/Model/SurveyCodeBookModel.php:61
 #: classes/Gems/Snippets/Survey/SurveyQuestionsSnippet.php:137
 #: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:151
 msgid "Question"
 msgstr "Vraag"
 
-#: classes/Gems/Model/SurveyCodeBookModel.php:57
+#: classes/Gems/Model/SurveyCodeBookModel.php:63
 msgid "Answer codes"
 msgstr "Antwoordcodes"
 
@@ -5985,8 +6006,8 @@ msgid "OK"
 msgstr "OK"
 
 #: classes/Gems/Model/SurveyMaintenanceModel.php:98
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:647
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:715
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:660
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:728
 msgid "Source"
 msgstr "Bron"
 
@@ -6723,6 +6744,14 @@ msgstr "tot"
 msgid "Toggle"
 msgstr "Toggle"
 
+#: classes/Gems/Snippets/ConditionAndOrTableSnippet.php:82
+msgid "Conditions with this condition"
+msgstr "Voorwaarden met deze voorwaarde"
+
+#: classes/Gems/Snippets/ConditionAndOrTableSnippet.php:83
+msgid "No conditions using this condition found"
+msgstr "Geen andere voorwaarde gebruikt deze voorwaarde"
+
 #: classes/Gems/Snippets/ConditionDeleteSnippet.php:81
 #, php-format
 msgid "This condition has been used %s time."
@@ -6906,14 +6935,14 @@ msgstr "(selecteer een ronde)"
 #: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:70
 #: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:64
 #: classes/Gems/Snippets/Tracker/TrackSearchFormSnippetAbstract.php:101
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:526
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:532
 msgid "Track start"
 msgstr "Traject start"
 
 #: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:71
 #: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:65
 #: classes/Gems/Snippets/Tracker/TrackSearchFormSnippetAbstract.php:102
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:527
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:533
 msgid "Track end"
 msgstr "Traject einde"
 
@@ -7451,7 +7480,7 @@ msgid "Completed"
 msgstr "Ingevuld"
 
 #: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:334
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:759
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:772
 msgid "Does not expire"
 msgstr "Blijft altijd geldig"
 
@@ -8240,7 +8269,7 @@ msgstr ""
 "Toevoegen vragenlijst niet mogelijk: er bestaat geen invoegbare vragenlijst!"
 
 #: classes/Gems/Snippets/Tracker/InsertSurveySnippet.php:534
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:184
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:190
 msgid "Patient"
 msgstr "Patiënt"
 
@@ -8253,9 +8282,9 @@ msgid "No rounds using this condition found"
 msgstr "Geen rondes gevonden met deze voorwaarde"
 
 #: classes/Gems/Snippets/Tracker/Rounds/ConditionRoundsTableSnippet.php:107
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:189
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:193
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:588
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:195
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:199
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:601
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:287
 msgid "Assigned to"
 msgstr "Invuller"
@@ -8717,7 +8746,7 @@ msgid_plural "%d conditions exported"
 msgstr[0] "%d voorwaarde geëxporteerd"
 msgstr[1] "%d voorwaarden geëxporteerd"
 
-#: classes/Gems/Task/Tracker/Export/TrackRoundExportTask.php:99
+#: classes/Gems/Task/Tracker/Export/TrackRoundExportTask.php:100
 #, php-format
 msgid "%d round exported"
 msgid_plural "%d rounds exported"
@@ -9019,89 +9048,101 @@ msgstr ""
 msgid "Next Step"
 msgstr "Stap voor stap"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:296
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:302
 #, php-format
 msgid "Skipped by condition %s: %s"
 msgstr "Overgeslagen door voorwaarde %s: %s"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:299
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:305
 #, php-format
 msgid "Activated by condition %s: %s"
 msgstr "Geactiveerd door voorwaarde %s: %s"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:448
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:454
 #, php-format
 msgid "%s plus %s %s"
 msgstr "%s plus %s %s"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:450
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:456
 #, php-format
 msgid "%s minus %s %s"
 msgstr "%s min %s %s"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:452
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:458
 #, php-format
 msgid "%s"
 msgstr "%s"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:605
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:545
+msgid "Respondent created"
+msgstr "Patiënt ingevoert"
+
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:546
+msgid "Respondent changed"
+msgstr "Patiënt verandert"
+
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:618
 msgid "Valid from calculation"
 msgstr "Berekening datum geldig vanaf"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:614
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:676
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:627
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:689
 msgid "Date source"
 msgstr "Datum bron"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:623
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:685
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:636
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:698
 msgid "Round used"
 msgstr "Gebruikte ronde"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:631
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:692
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:644
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:705
 msgid "Date used"
 msgstr "Gebruikte datum"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:636
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:697
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:649
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:710
 msgid "Add to date"
 msgstr "Optellen bij datum"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:637
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:698
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:650
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:711
 msgid "Can be negative"
 msgstr "Mag negatief zijn"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:642
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:704
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:655
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:717
 msgid "Add to date unit"
 msgstr "Datumoptel eenheid"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:656
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:725
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:669
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:738
 msgid "Date calculation"
 msgstr "Datum berekening"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:666
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:679
 msgid "Valid for calculation"
 msgstr "Berekening datum geldig tot"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:762
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:775
 msgid "Use an answer from a survey."
 msgstr "Gebruikt een antwoord uit een vragenlijst."
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:767
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:780
 msgid "Use an appointment linked to this track."
 msgstr "Gebruik een afspraak gekoppeld aan dit traject."
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:771
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:784
 msgid "Use a standard token date."
 msgstr "Gebruik een datum uit een kenmerk."
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:773
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:786
 msgid "Use a track level date."
 msgstr "Gebruik een op traject niveau ingestelde datum."
+
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:787
+msgid "Use a respondent level date."
+msgstr "Gebruik een op patiëntniveau ingestelde datum."
 
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:441
 #, php-format
@@ -11115,13 +11156,13 @@ msgstr "Rij %s"
 msgid " field %s"
 msgstr " veld %s"
 
-#: vendor/magnafacta/mutil/src/MUtil/Snippets/FormSnippetAbstract.php:429
-#: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:509
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/FormSnippetAbstract.php:449
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:527
 #, php-format
 msgid "Input error! Changes to %s not saved!"
 msgstr "Invoer fout! Veranderingen aan %s niet opgeslagen!"
 
-#: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:487
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:505
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/MultiRowModelFormAbstract.php:95
 msgid "Unknown edit data requested"
 msgstr "Onjuist gegevens bewerkingsverzoek"
