@@ -1,10 +1,10 @@
 
 CREATE TABLE if not exists gems__locations (
         glo_id_location     bigint unsigned not null auto_increment,
-        glo_name            varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        glo_name            varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
         -- Yes, quick and dirty, will correct later (probably)
-        glo_organizations     varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        glo_organizations   varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
         glo_match_to        varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
         glo_code            varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',

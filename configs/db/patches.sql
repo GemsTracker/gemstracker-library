@@ -1477,3 +1477,6 @@ ALTER TABLE gems__organizations ADD
 ALTER TABLE gems__sources ADD
         gso_ls_dbport mediumint default NULL
         AFTER gso_ls_database;
+
+ALTER TABLE gems__locations CHANGE
+        glo_name glo_name varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
