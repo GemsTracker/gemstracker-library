@@ -234,7 +234,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
     {
         if (isset($data['gto_id_track']) && $data['gto_id_track'] && isset($data['add_track_fields']) && $data['add_track_fields'] == 1) {
             $engine = $this->loader->getTracker()->getTrackEngine($data['gto_id_track']);
-            $engine->addFieldsToModel($model, false, 'gto_id_respondent_track');
+            $engine->addFieldsToModel($model, false, 'resptrackid');
 
             $prefixes['TF'] = array_diff($model->getItemNames(), $prefixes['A'], $prefixes['D']);
         }
@@ -254,7 +254,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
                     $model->set($name, 'label', $name);
                 }
                 $tracker = $this->loader->getTracker();
-                $transformer = new \Gems\Tracker\Model\AddTrackFieldsByCodeTransformer($tracker, $includeCodes);
+                $transformer = new \Gems\Tracker\Model\AddTrackFieldsByCodeTransformer($tracker, $includeCodes, 'resptrackid');
                 $model->addTransformer($transformer);
             }
         }
@@ -491,7 +491,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
             $prefixes['D'] = array_diff($model->getColNames('label'), $prefixes['A'], $model->getItemsFor('table', 'gems__respondent2org'));
 
             $this->_addExtraDataToExportModel($model, $data, $prefixes);
-
+            
             if (isset($data['column_identifiers']) && $data['column_identifiers'] == 1) {
 
                 foreach ($prefixes as $prefix => $prefixCategory) {
