@@ -1754,6 +1754,20 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
         return false;
     }
+    
+    /**
+     * Can mails be sent for this token?
+     * 
+     * Cascades to track and respondent level mailable setting
+     * also checks is the email field for respondent or relation is not null
+     * 
+     * @return boolean
+     */
+    public function isMailable()
+    {
+        $email = $this->getEmail();
+        return !empty($email) && $this->getRespondentTrack()->isMailable();
+    }
 
     /**
      * True when the valid from is in the future or not yet set

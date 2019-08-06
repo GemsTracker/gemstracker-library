@@ -461,6 +461,22 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
 
         return (boolean) $this->db->fetchOne($select);
     }
+    
+    /**
+     * Can mails be sent for this respondent?
+     * 
+     * This only check the mailable attribute, not the presence of a mailaddress
+     * 
+     * @return boolean
+     */
+    public function isMailable()
+    {
+        if (!array_key_exists('gr2o_mailable', $this->_gemsData)) {
+            $this->refresh();
+        }
+        
+        return $this->_gemsData['gr2o_mailable'] == 1;
+    }
 
     /**
      * Refresh the data

@@ -1312,6 +1312,22 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         }
         return true;
     }
+    
+    /**
+     * Can mails be sent for this track?
+     * 
+     * Cascades to the respondent mailable setting too
+     * 
+     * @return boolean
+     */
+    public function isMailable()
+    {
+        if (!array_key_exists('gr2t_mailable', $this->_respTrackData)) {
+            $this->refresh();
+        }
+        
+        return $this->_respTrackData['gr2t_mailable'] == 1 && $this->getRespondent()->isMailable();
+    }
 
     /**
      * Processes the field values and and changes them as required

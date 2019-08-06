@@ -75,7 +75,7 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
             $respEmail  = $this->showToken->getEmail();
 
             // If there is no template, or no email for sender / receiver we show no link
-            if ($mailer->setTemplateByCode('continue') && !empty($orgEmail) && !empty($respEmail)) {
+            if ($mailer->setTemplateByCode('continue') && !empty($orgEmail) && $this->showToken->isMailable()) {
                 $html->pInfo($this->_('or'));
                 $menuItem = $this->menu->find(array('controller' => 'ask', 'action' => 'forward'));
                 $href = $menuItem->toHRefAttribute($this->request);
