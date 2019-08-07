@@ -204,13 +204,15 @@ class Gems_Loader_LoaderAbstract extends \MUtil_Registry_Source
             $obj = call_user_func_array([$this->_loader, 'create'], $mergedArguments);
         } else {
             $obj = $this->_loader->createClass($className, $arguments);
-        }
 
-        if ($obj instanceof \MUtil_Registry_TargetInterface) {
-            if ((! $this->applySource($obj)) && parent::$verbose) {
-                \MUtil_Echo::r("Source apply to object of type $name failed.", __CLASS__ . '->' .  __FUNCTION__);
+            if ($obj instanceof \MUtil_Registry_TargetInterface) {
+                if ((! $this->applySource($obj)) && parent::$verbose) {
+                    \MUtil_Echo::r("Source apply to object of type $name failed.", __CLASS__ . '->' .  __FUNCTION__);
+                }
             }
         }
+
+
 
         return $obj;
     }
