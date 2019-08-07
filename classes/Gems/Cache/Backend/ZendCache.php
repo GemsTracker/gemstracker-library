@@ -8,7 +8,9 @@
 namespace Gems\Cache\Backend;
 
 
+use Zend\Cache\Storage\ClearByNamespaceInterface;
 use Zend\Cache\Storage\StorageInterface;
+use Zend\Cache\Storage\TaggableInterface;
 use Gems\Cache\Backend;
 
 class ZendCache extends Backend implements \Zend_Cache_Backend_ExtendedInterface
@@ -34,16 +36,6 @@ class ZendCache extends Backend implements \Zend_Cache_Backend_ExtendedInterface
     }
 
     /**
-     * Set the frontend directives
-     *
-     * @param array $directives assoc of directives
-     */
-    public function setDirectives($directives)
-    {
-        throw new \Exception('Setting of directives not supported in Zend 2 Cache');
-    }
-
-    /**
      * Test if a cache is available for the given id and (if yes) return it (false else)
      *
      * Note : return value is always "string" (unserialization is done by the core not by the backend)
@@ -54,7 +46,7 @@ class ZendCache extends Backend implements \Zend_Cache_Backend_ExtendedInterface
      */
     public function load($id, $doNotTestCacheValidity = false)
     {
-        $this->cache->getItem($id);
+        return $this->cache->getItem($id);
     }
 
     /**
@@ -65,7 +57,7 @@ class ZendCache extends Backend implements \Zend_Cache_Backend_ExtendedInterface
      */
     public function test($id)
     {
-        $this->cache->hasItem($id);
+        return $this->cache->hasItem($id);
     }
 
     /**
@@ -80,7 +72,15 @@ class ZendCache extends Backend implements \Zend_Cache_Backend_ExtendedInterface
      * @param  int   $specificLifetime If != false, set a specific lifetime for this cache record (null => infinite lifetime)
      * @return boolean true if no problem
      */
-    public function save($data, $id, $tags = array(), $specificLifetime = false);
+    public function save($data, $id, $tags = array(), $specificLifetime = false)
+    {
+        $result = $this->cache->setItem($id, $data);
+        if ($this->isTagAware() && !empty($tags)) {
+            $this->cache->setTags($id, $tags);
+        }
+
+        return $result;
+    }
 
     /**
      * Remove a cache record
@@ -88,7 +88,10 @@ class ZendCache extends Backend implements \Zend_Cache_Backend_ExtendedInterface
      * @param  string $id Cache id
      * @return boolean True if no problem
      */
-    public function remove($id);
+    public function remove($id)
+    {
+        return $this->cache->removeItem($id);
+    }
 
     /**
      * Clean some cache records
@@ -107,21 +110,61 @@ class ZendCache extends Backend implements \Zend_Cache_Backend_ExtendedInterface
      * @param  array  $tags Array of tags
      * @return boolean true if no problem
      */
-    public function clean($mode = Zend_Cache::CLEANING_MODE_ALL, $tags = array());
+    public function clean($mode = Zend_Cache::CLEANING_MODE_ALL, $tags = array())
+    {
+        switch ($mode) {
+            case \Zend_Cache::CLEANING_MODE_ALL:
+                try {
+                    $namespace = $this->cache->getOptions()->getNamespace();
+                    if ($this->cache instanceof ClearByNamespaceInterface && $namespace) {
+                        $cleared = $this->storage->clearByNamespace($namespace);
+                    } else {
+                        $cleared = $this->storage->flush();
+                    }
+                } catch (Exception\ExceptionInterface $e) {
+                    $cleared = false;
+                }
+
+                return $cleared;
+                break;
+            case \Zend_Cache::CLEANING_MODE_OLD:
+                throw new \Exception("CLEANING_MODE_OLD is unsupported by the new Zend cache backends.");
+                break;
+            case \Zend_Cache::CLEANING_MODE_MATCHING_TAG:
+            case \Zend_Cache::CLEANING_MODE_NOT_MATCHING_TAG:
+            case \Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG:
+
+                if (!$this->isTagAware()) {
+                    throw new \Exception("Tags are unsupported by this Zend cache backend.");
+                }
+
+                $this->cache->clearByTags($tags);
+                break;
+            default:
+                \Zend_Cache::throwException('Invalid mode for clean() method');
+                break;
+        }
+    }
 
     /**
      * Return an array of stored cache ids
      *
      * @return array array of stored cache ids (string)
      */
-    public function getIds();
+    public function getIds()
+    {
+        throw new \Exception('Get list of set ids is not supported in new Zend cache backends');
+    }
 
     /**
      * Return an array of stored tags
      *
      * @return array array of stored tags (string)
      */
-    public function getTags();
+    public function getTags()
+    {
+        throw new \Exception('Get list of set tags is not supported in new Zend cache backends');
+    }
 
     /**
      * Return an array of stored cache ids which match given tags
@@ -131,7 +174,10 @@ class ZendCache extends Backend implements \Zend_Cache_Backend_ExtendedInterface
      * @param array $tags array of tags
      * @return array array of matching cache ids (string)
      */
-    public function getIdsMatchingTags($tags = array());
+    public function getIdsMatchingTags($tags = array())
+    {
+        throw new \Exception('Get list of set Ids matching a tag is not supported in new Zend cache backends');
+    }
 
     /**
      * Return an array of stored cache ids which don't match given tags
@@ -141,7 +187,10 @@ class ZendCache extends Backend implements \Zend_Cache_Backend_ExtendedInterface
      * @param array $tags array of tags
      * @return array array of not matching cache ids (string)
      */
-    public function getIdsNotMatchingTags($tags = array());
+    public function getIdsNotMatchingTags($tags = array())
+    {
+        throw new \Exception('Get list of set Ids not matching a tag is not supported in new Zend cache backends');
+    }
 
     /**
      * Return an array of stored cache ids which match any given tags
@@ -151,14 +200,20 @@ class ZendCache extends Backend implements \Zend_Cache_Backend_ExtendedInterface
      * @param array $tags array of tags
      * @return array array of any matching cache ids (string)
      */
-    public function getIdsMatchingAnyTags($tags = array());
+    public function getIdsMatchingAnyTags($tags = array())
+    {
+        throw new \Exception('Get list of set Ids matching any tag is not supported in new Zend cache backends');
+    }
 
     /**
      * Return the filling percentage of the backend storage
      *
      * @return int integer between 0 and 100
      */
-    public function getFillingPercentage();
+    public function getFillingPercentage()
+    {
+        throw new \Exception('Get filling percentage is not supported in new Zend cache backends');
+    }
 
     /**
      * Return an array of metadatas for the given cache id
@@ -171,7 +226,16 @@ class ZendCache extends Backend implements \Zend_Cache_Backend_ExtendedInterface
      * @param string $id cache id
      * @return array array of metadatas (false if the cache id is not found)
      */
-    public function getMetadatas($id);
+    public function getMetadatas($id)
+    {
+        /*
+         * expire is not supported in zend 2. so the required list of metadata cannot be fulfilled
+        $metaData = $this->cache->getMetadata($id);
+        if ($this->isTagAware()) {
+            $metaData['tags'] = $this->cache->getTags($id);
+        }*/
+        throw new \Exception('Get metadatas is not supported in PSR-6 backends');
+    }
 
     /**
      * Give (if possible) an extra lifetime to the given cache id
@@ -180,7 +244,10 @@ class ZendCache extends Backend implements \Zend_Cache_Backend_ExtendedInterface
      * @param int $extraLifetime
      * @return boolean true if ok
      */
-    public function touch($id, $extraLifetime);
+    public function touch($id, $extraLifetime)
+    {
+        $this->cache->touchItem($id);
+    }
 
     /**
      * Return an associative array of capabilities (booleans) of the backend
@@ -196,7 +263,23 @@ class ZendCache extends Backend implements \Zend_Cache_Backend_ExtendedInterface
      *
      * @return array associative of with capabilities
      */
-    public function getCapabilities();
+    public function getCapabilities()
+    {
+        $capabilities = [
+            'automatic_cleaning' => true,
+            'tags' => false,
+            'expired_read' => false,
+            'priority' => false,
+            'infinite_lifetime' => false,
+            'get_list' => false,
+        ];
+
+        if ($this->isTagAware()) {
+            $capabilities['tags'] = true;
+        }
+
+        return $capabilities;
+    }
 
     /**
      * @return bool Can the caching adapter use Tags?
