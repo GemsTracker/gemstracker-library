@@ -85,6 +85,12 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
         if (!$model->checkJoinExists('gems__consents.gco_description', 'gems__respondent2org.gr2o_consent')) {
             $model->addTable('gems__consents', array('gems__consents.gco_description' => 'gems__respondent2org.gr2o_consent'), 'gco');
         }
+        
+        if (!$model->checkJoinExists('gems__respondents.grs_id_user', 'gems__tokens.gto_id_respondent')) {
+            $model->addTable('gems__respondents', array(
+                'gems__respondents.grs_id_user' => 'gems__tokens.gto_id_respondent',
+                ), 'grs');
+        }
 
         $model->set('respondentid',        'label', $this->_('Respondent ID'), 'type', \MUtil_Model::TYPE_NUMERIC);
         $model->set('organizationid',      'label', $this->_('Organization'), 'type', \MUtil_Model::TYPE_NUMERIC,
@@ -127,12 +133,14 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
      */
     protected function _addExtraDataToExportModel(\MUtil_Model_ModelAbstract $model, array $data, array &$prefixes)
     {
-        $this->_addExtraTrackFields($model, $data, $prefixes);      // Create the first 'P' fields after this
-        $this->_addExtraRespondentNumber($model, $data, $prefixes);
-        $this->_addExtraGenderAge($model, $data, $prefixes);
         $this->_addExtraTokenReceptionCode($model, $data, $prefixes);
         $this->_addExtraTrackReceptionCode($model, $data, $prefixes);
+        
+        $this->_addExtraTrackFields($model, $data, $prefixes);        
         $this->_addExtraTrackFieldsByCode($model, $data, $prefixes);
+        
+        $this->_addExtraRespondentNumber($model, $data, $prefixes);
+        $this->_addExtraGenderAge($model, $data, $prefixes);
     }
 
     /**
@@ -144,14 +152,12 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
     protected function _addExtraGenderAge(\MUtil_Model_ModelAbstract $model, array $data, array &$prefixes)
     {
         if ($this->currentUser->hasPrivilege('pr.export.gender-age')) {
-            $checkTable = false;
             if (isset($data['export_resp_gender']) && $data['export_resp_gender']) {
                 $model->set('grs_gender', 'label', $this->getRespondentModel()->get('grs_gender', 'label'),
                         'type', \MUtil_Model::TYPE_STRING
                         );
 
                 $prefixes['P'][] = 'grs_gender';
-                $checkTable = true;
             }
             if (isset($data['export_birth_year']) && $data['export_birth_year']) {
                 if (! $model->has('grs_birthyear')) {
@@ -160,7 +166,6 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
                 $model->set('grs_birthyear', 'label', $this->_('Birth year'), 'type', \MUtil_Model::TYPE_NUMERIC);
 
                 $prefixes['P'][] = 'grs_birthyear';
-                $checkTable = true;
             }
             if (isset($data['export_birth_month']) && $data['export_birth_month']) {
                 if (! $model->has('grs_birthmonth')) {
@@ -169,7 +174,6 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
                 $model->set('grs_birthmonth', 'label', $this->_('Birth month'), 'type', \MUtil_Model::TYPE_NUMERIC);
 
                 $prefixes['P'][] = 'grs_birthmonth';
-                $checkTable = true;
             }
             if (isset($data['export_birth_yearmonth']) && $data['export_birth_yearmonth']) {
                 if (! $model->has('grs_birthyearmonth')) {
@@ -178,15 +182,6 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
                 $model->set('grs_birthyearmonth', 'label', $this->_('Birth year/month'), 'type', \MUtil_Model::TYPE_STRING);
 
                 $prefixes['P'][] = 'grs_birthyearmonth';
-                $checkTable = true;
-            }
-
-            if ($checkTable) {
-                if (!$model->checkJoinExists('gems__respondents.grs_id_user', 'gems__tokens.gto_id_respondent')) {
-                    $model->addTable('gems__respondents', array(
-                        'gems__respondents.grs_id_user' => 'gems__tokens.gto_id_respondent',
-                        ), 'grs');
-                }
             }
         }
     }
@@ -219,8 +214,8 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
     protected function _addExtraTokenReceptionCode(\MUtil_Model_ModelAbstract $model, array $data, array &$prefixes)
     {
         if (isset($data['export_token_reception_code']) && $data['export_token_reception_code']) {
-
             $model->set('gto_reception_code', 'label', $this->_('Token reception code'));
+            $prefixes['D'][] = 'gto_reception_code';
         }
     }
 
@@ -234,9 +229,11 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
     {
         if (isset($data['gto_id_track']) && $data['gto_id_track'] && isset($data['add_track_fields']) && $data['add_track_fields'] == 1) {
             $engine = $this->loader->getTracker()->getTrackEngine($data['gto_id_track']);
-            $engine->addFieldsToModel($model, false, 'resptrackid');
-
-            $prefixes['TF'] = array_diff($model->getItemNames(), $prefixes['A'], $prefixes['D']);
+            $fieldNames = $engine->getFieldNames();
+            if (!empty($fieldNames)) {
+                $engine->addFieldsToModel($model, false, 'resptrackid');
+                $prefixes['TF'] = array_keys($engine->getFieldNames());
+            }
         }
     }
 
@@ -247,14 +244,21 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
      */
     protected function _addExtraTrackFieldsByCode(\MUtil_Model_ModelAbstract $model, array $data, array &$prefixes)
     {
-        if (isset($data['export_trackfield_codes']) && $data['export_trackfield_codes']) {
+        if (isset($data['export_trackfield_codes'])) {
             $includeCodes = array_map('trim', explode(',', $data['export_trackfield_codes']));
-            if (!empty($includeCodes)) {
-                foreach ($includeCodes as $name) {
+            $codes = [];
+            
+            foreach ($includeCodes as $name) {
+                if (!empty($name)) {
                     $model->set($name, 'label', $name);
-                }
+                    $prefixes['TF'][] = $name;
+                    $codes[] = $name;
+                }                    
+            }
+            
+            if (!empty($codes)) {
                 $tracker = $this->loader->getTracker();
-                $transformer = new \Gems\Tracker\Model\AddTrackFieldsByCodeTransformer($tracker, $includeCodes, 'resptrackid');
+                $transformer = new \Gems\Tracker\Model\AddTrackFieldsByCodeTransformer($tracker, $codes, 'resptrackid');
                 $model->addTransformer($transformer);
             }
         }
@@ -269,8 +273,8 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
     protected function _addExtraTrackReceptionCode(\MUtil_Model_ModelAbstract $model, array $data, array &$prefixes)
     {
         if (isset($data['export_track_reception_code']) && $data['export_track_reception_code']) {
-
             $model->set('gr2t_reception_code', 'label', $this->_('Track reception code'));
+            $prefixes['TF'][] = 'gr2t_reception_code';
         }
     }
 
@@ -484,9 +488,10 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
             $prefixes = [];
 
             $this->_addDefaultFieldsToExportModel($model, $data, $prefixes);
-            $this->_addSurveyAnswersToExportModel($model, $survey, $data, $prefixes);
             $this->_addNestedFieldsToExportModel($model, $data, $prefixes);
             $this->_addSurveySourceAttributesToExportModel($model, $survey, $data, $prefixes);
+            $this->_addSurveyAnswersToExportModel($model, $survey, $data, $prefixes);
+            
 
             $prefixes['D'] = array_diff($model->getColNames('label'), $prefixes['A'], $model->getItemsFor('table', 'gems__respondent2org'));
 
