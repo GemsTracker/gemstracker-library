@@ -83,7 +83,11 @@ class SurveyCodeBookModel extends \Gems_Model_PlaceholderModel
     {
         $survey = $this->tracker->getSurvey($surveyId);
         $questionInformation = $survey->getQuestionInformation(null);
-
+        if (empty($questionInformation)) {
+            // Inactive / deleted survey?
+            $this->fieldArray = [];
+            return array();
+        }
         $firstItem = reset($questionInformation);
         $this->fieldArray = array_keys($firstItem);
 
