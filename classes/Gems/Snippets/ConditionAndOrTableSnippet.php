@@ -37,7 +37,7 @@ class ConditionAndOrTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstrac
 
     /**
      *
-     * @var \Gems_Model_JoinModel
+     * @var \Gems_Model_ConditionModel
      */
     protected $_model;
 
@@ -92,6 +92,7 @@ class ConditionAndOrTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstrac
     {
         if (! $this->_model instanceof ConditionModel) {
             $this->_model = $this->loader->getModels()->getConditionModel();
+            $this->_model->applyBrowseSettings(true);
         }
 
         return $this->_model;
