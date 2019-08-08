@@ -12,20 +12,38 @@ class ExportFormSnippet extends \MUtil_Snippets_SnippetAbstract
      */
     public $loader;
 
+    /**
+     *
+     * @var \Gems_Export
+     */
+    protected $export;
+
+    /**
+     * Should be set to the available export classes
+     * 
+     * @var array
+     */
+    protected $exportClasses;
+    
     public $request;
 
-	public function getHtmlOutput(\Zend_View_Abstract $view)
-    {
-        $post = $this->request->getPost();
+    public function afterRegistry() {
+        parent::afterRegistry();
+        $this->export = $this->loader->getExport();
 
-        $export = $this->loader->getExport();
-        $exportTypes = $export->getExportClasses();
+        if (!isset($this->exportClasses)) {
+            $this->exportClasses = $this->export->getExportClasses();
+        }
+    }
+
+    public function getHtmlOutput(\Zend_View_Abstract $view) {
+        $post = $this->request->getPost();
 
         if (isset($post['type'])) {
             $currentType = $post['type'];
         } else {
-            reset($exportTypes);
-            $currentType = key($exportTypes);
+            reset($this->exportClasses);
+            $currentType = key($this->exportClasses);
         }
 
         if (\MUtil_Bootstrap::enabled()) {
@@ -39,14 +57,14 @@ class ExportFormSnippet extends \MUtil_Snippets_SnippetAbstract
 
         $elements = array();
 
-        $elements['type'] = $form->createElement('select', 'type', array('label' => $this->_('Export to'), 'multiOptions' => $exportTypes, 'class' => 'autosubmit'));
+        $elements['type'] = $form->createElement('select', 'type', array('label' => $this->_('Export to'), 'multiOptions' => $this->exportClasses, 'class' => 'autosubmit'));
 
         $form->addElements($elements);
 
-        $exportClass = $export->getExport($currentType);
-        $exportName = $exportClass->getName();        
-        $exportFormElements = $exportClass->getFormElements($form, $data);        
-        
+        $exportClass        = $this->export->getExport($currentType);
+        $exportName         = $exportClass->getName();
+        $exportFormElements = $exportClass->getFormElements($form, $data);
+
         if ($exportFormElements) {
             $exportFormElements['firstCheck'] = $form->createElement('hidden', $currentType)->setBelongsTo($currentType);
             $form->addElements($exportFormElements);

@@ -34,6 +34,11 @@ class Gems_Default_SurveyCodeBookAction extends \Gems_Controller_ModelSnippetAct
 
         parent::exportAction();
     }
+    
+    public function getExportClasses()
+    {
+        return $this->loader->getExport()->getCodeBookExportClasses();
+    }
 
     /**
      * Get the return url

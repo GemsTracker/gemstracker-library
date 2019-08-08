@@ -82,6 +82,16 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         'formTitle'     => 'getEditTitle',
         'topicCallable' => 'getTopicCallable',
         );
+    
+    /**
+     * Gems only parameters used for the export action. Can be overruled
+     * by setting $this->editParameters
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    private $_exportExtraParameters = [
+        'exportClasses' => 'getExportClasses',
+        ];
 
     /**
      * Gems only parameters used for the import action. Can be overruled
@@ -143,6 +153,18 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
     public $escort;
 
     protected $exportFormSnippets = 'Export\\ExportFormSnippet';
+    
+    /**
+     * The parameters used for the export actions.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $exportParameters = [];
 
     /**
      * Should Excel output contain formatted data (date fields, select lists)
@@ -352,7 +374,8 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         }
 
         if ((!$step) || ($post && $step == 'form')) {
-            $this->addSnippet($this->exportFormSnippets);
+            $params = $this->exportParameters + $this->_exportExtraParameters;
+            $this->addSnippet($this->exportFormSnippets, $params);
             $batch = $this->loader->getTaskRunnerBatch('export_data');
             $batch->reset();
         } elseif ($step == 'batch') {
@@ -562,6 +585,11 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         } else {
             return array($emptyMsg);
         }
+    }
+    
+    public function getExportClasses()
+    {
+        return $this->loader->getExport()->getExportClasses();
     }
 
     /**

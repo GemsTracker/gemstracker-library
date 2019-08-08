@@ -26,6 +26,15 @@ class Gems_Export extends \Gems_Loader_TargetLoaderAbstract
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
     protected $cascade = 'Export';
+    
+    /**
+     * This variable holds all registered codebook export classes, may be changed in derived classes
+     *
+     * @var array Of classname => description
+     */
+    protected $_codeBookExportClasses = [
+        'CodeBookExport' => 'Excel export'
+    ];
 
     /**
      * Is set to the calling controller to allow rendering the view
@@ -39,21 +48,21 @@ class Gems_Export extends \Gems_Loader_TargetLoaderAbstract
      *
      * @var array Of classname => description
      */
-    protected $_exportClasses = array(
+    protected $_exportClasses =  [
         'StreamingExcelExport' => 'Excel (xlsx)',
         'RExport' => 'R',
         'SpssExport' => 'SPSS',
         'CsvExport' => 'CSV',
         'StreamingStataExport' => 'Stata (xml)',
-    );
+    ];
 
     /**
      * Holds all registered export descriptions, which describe the models that can be exported
      * @var array of classnames of descriptions
      */
-    protected $_exportModelSources = array(
+    protected $_exportModelSources = [
         'AnswerExportModelSource' => 'Answers',
-    );
+    ];
 
     /**
      * The default values for the form. Defaults for a specific export-type should come
@@ -61,10 +70,10 @@ class Gems_Export extends \Gems_Loader_TargetLoaderAbstract
      *
      * @var array
      */
-    protected $_defaults = array(
+    protected $_defaults = [
         'exportmodelsource' => 'AnswerExportModelSource',
         'type' => 'StreamingExcelExport'
-    );
+    ];
 
     /**
      *
@@ -87,6 +96,16 @@ class Gems_Export extends \Gems_Loader_TargetLoaderAbstract
     public function addExportClasses($stack)
     {
         $this->_exportClasses = array_merge($this->_exportClasses, $stack);
+    }
+    
+    /**
+     * Returns all registered codebook export classes
+     *
+     * @return array Of classname => description
+     */
+    public function getCodeBookExportClasses()
+    {
+        return $this->_codeBookExportClasses;
     }
 
     public function getDefaults()

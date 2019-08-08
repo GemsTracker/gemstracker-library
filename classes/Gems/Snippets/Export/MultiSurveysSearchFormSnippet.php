@@ -73,6 +73,17 @@ class MultiSurveysSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
     {
         return $this->form->createElement('submit', 'step', array('label' => $this->_('Export'), 'class' => 'button small'));
     }
+    
+    /**
+     * Get the export classes to use
+     * 
+     * @param \Gems_Export $export
+     * @return array
+     */
+    protected function getExportClasses(\Gems_Export $export)
+    {
+        return $export->getExportClasses();
+    }
 
 	/**
      * Returns export field elements for auto search.
@@ -86,7 +97,7 @@ class MultiSurveysSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
     protected function getExportTypeElements(array &$data)
     {
         $export = $this->loader->getExport();
-        $exportTypes = $export->getExportClasses();
+        $exportTypes = $this->getExportClasses($export);
 
         if (isset($data['type'])) {
             $currentType = $data['type'];
