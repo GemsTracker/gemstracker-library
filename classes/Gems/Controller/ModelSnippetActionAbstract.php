@@ -404,11 +404,14 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
                     } else {
                         $controller->html->pInfo($controller->_('Nothing to do.'));
                     }
-                    $controller->html->pInfo()->a(
-                            \MUtil_Html_UrlArrayAttribute::rerouteUrl($this->getRequest(), array('action'=>'index', 'step' => false)),
-                            array('class'=>'actionlink'),
-                            $this->_('Back')
-                            );
+                    $url = $this->getExportReturnLink();
+                    if ($url) {
+                        $controller->html->pInfo()->a(
+                                $url,                            
+                                array('class'=>'actionlink'),
+                                $this->_('Back')
+                                );
+                    }
                 }
             }
         } elseif ($step == 'download') {
@@ -573,6 +576,16 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
             $model->remove($colName, 'label');
         }
         return $model;
+    }
+    
+    /**
+     * Get the return url
+     * 
+     * @return array
+     */
+    protected function getExportReturnLink()
+    {
+       return \MUtil_Html_UrlArrayAttribute::rerouteUrl($this->getRequest(), array('action'=>'index', 'step' => false));
     }
 
     /**

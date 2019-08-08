@@ -35,8 +35,26 @@ class Gems_Default_SurveyCodeBookAction extends \Gems_Controller_ModelSnippetAct
         parent::exportAction();
     }
 
-    public function exportMultipleAction()
-    {
+    /**
+     * Get the return url
+     * 
+     * @return \MUtil_Html_HrefArrayAttribute Used as href for the \MUtil_Html_AElement
+     */
+    protected function getExportReturnLink() {
+        // At the moment we can only come from the survey-maintenance action, so we redirect there instead of the the index of this action.
 
+        $urlArray = \MUtil_Html_UrlArrayAttribute::rerouteUrl(
+                        $this->getRequest(),
+                        [
+                            'controller' => 'survey-maintenance',
+                            'action'     => 'show',
+                            'id'         => $this->surveyId
+        ]);
+        
+        $url = new \MUtil_Html_HrefArrayAttribute($urlArray);
+        $url->setRouteReset(true);
+        
+        return $url;
     }
+
 }
