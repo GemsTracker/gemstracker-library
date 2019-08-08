@@ -374,7 +374,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         }
 
         if ((!$step) || ($post && $step == 'form')) {
-            $params = $this->exportParameters + $this->_exportExtraParameters;
+            $params = $this->_processParameters($this->exportParameters + $this->_exportExtraParameters);
             $this->addSnippet($this->exportFormSnippets, $params);
             $batch = $this->loader->getTaskRunnerBatch('export_data');
             $batch->reset();
