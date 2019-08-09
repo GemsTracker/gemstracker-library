@@ -114,7 +114,10 @@ class CodeBookExportTest extends \Gems_Test_DbTestAbstract
         
         // Cleanup in case tests fail
         unlink($file['file']);
-        
+        // Dirty fix to clean the session for the next test
+        $session = new \Zend_Session_Namespace('Gems\Export\ExportAbstract');
+        $session->unsetAll();
+                
         // Check
         $expectedData = file_get_contents(GEMS_TEST_DIR . '/data/export/codebook.xml');
         $expectedData = preg_replace('~\r\n?~', "\n", $expectedData);
@@ -152,7 +155,7 @@ class CodeBookExportTest extends \Gems_Test_DbTestAbstract
         
         // Extract
         $actual = file_get_contents('zip://'. $file['file'] . '#xl/worksheets/sheet1.xml');
-        file_put_contents(GEMS_TEST_DIR . '/data/export/codebook-empty.xml', $actual);
+        //file_put_contents(GEMS_TEST_DIR . '/data/export/codebook-empty.xml', $actual);
         
         // Cleanup in case tests fail
         unlink($file['file']);
