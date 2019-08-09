@@ -339,6 +339,28 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
     {
         return $this->getQuestionList($language, $surveyId, $sourceSurveyId);
     }
+    
+    protected function getQuestionInfo($model) {
+        $result = [];
+        foreach($model->getItemsOrdered() as $name) {
+            if ($label = $model->get($name, 'label')) {
+                $answers = [];
+                if ($model->has($name, 'multiOptions')) {
+                    $answers = $model->get($name, 'multiOptions');
+                }
+                if (empty($answers)) {
+                    $answers = $this->getType($model->get($name, 'type'));
+                }
+                $result[$name] = [
+                    'question' => $label,
+                    'type'     => $this->getType($model->get($name, 'type')),
+                    'answers' => $answers
+                ];                
+            }
+        }
+        
+        return $result;
+    }    
 
     /**
      * Returns an array of arrays with the structure:
@@ -359,16 +381,7 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
     {
         $survey = $this->getSurvey($surveyId, $sourceSurveyId);
         $model  = $survey->getModel();
-        $result = [];
-
-        foreach($model->getItemsOrdered() as $name) {
-            if ($label = $model->get($name, 'label')) {
-                $result[$name]['question'] = $label;
-                if ($answers = $model->get($name, 'multiOptions')) {
-                    $result[$name]['answers'] = $answers;
-                }
-            }
-        }
+        $result = $this->getQuestionInfo($model);
 
         if ($model->getMeta('nested', false)) {
             // We have a nested model, add the nested questions
@@ -379,20 +392,13 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
                 } else {
                     $nestedModel = $model->get($nestedName, 'model');
                 }
-                foreach($nestedModel->getItemsOrdered() as $name) {
-
-                    if ($label = $nestedModel->get($name, 'label')) {
-                        $result[$name]['question'] = $label;
-                        if ($answers = $nestedModel->get($name, 'multiOptions')) {
-                            $result[$name]['answers'] = $answers;
-                        }
-                    }
-                }
+                
+                $result = $result + $this->getQuestionInfo($nestedModel);
             }
         }
 
         return $result;
-    }
+    }    
 
     /**
      * Returns an array containing fieldname => label for dropdown list etc..
@@ -696,6 +702,31 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
         // There is no url, so return null
         $basePath = \GemsEscort::getInstance()->basePath->__toString();
         return $basePath . '/open-rosa-form/edit/id/' . $token->getTokenId();
+    }
+    
+    public function getType($type)
+    {
+        static $typeList = null;
+        static $default  = null;
+        
+        if(is_null($typeList)) {
+            $typeList = [
+                \MUtil_Model::TYPE_DATETIME => $this->_('Date and time'),
+                \MUtil_Model::TYPE_DATE => $this->_('Date'),
+                \MUtil_Model::TYPE_TIME => $this->_('Time'),
+                \MUtil_Model::TYPE_NUMERIC => $this->_('Free number'),
+                \MUtil_Model::TYPE_STRING => $this->_('Free text'),
+                \MUtil_Model::TYPE_NOVALUE => $this->_('None')
+                    ];
+                
+            $default = $this->_('Unknown');
+        }
+        
+        if (array_key_exists($type, $typeList)) {
+            return $typeList[$type];
+        }
+        
+        return $default;
     }
 
     /**

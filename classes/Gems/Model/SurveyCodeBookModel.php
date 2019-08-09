@@ -55,12 +55,12 @@ class SurveyCodeBookModel extends \Gems_Model_PlaceholderModel
         parent::__construct($name, $this->fieldArray, $this->data);
         
         $this->initTranslateable();
-
+        $this->resetOrder();
         $this->set('id', 'label', $this->_('Survey ID'));
         $this->set('title', 'label', $this->_('Question code'));
         $this->set('question', 'label', $this->_('Question'));
-        $this->set('answers', 'label', $this->_('Answers'));
-        $this->set('answer_codes', 'label', $this->_('Answer codes'));        
+        $this->set('answer_codes', 'label', $this->_('Answer codes'));
+        $this->set('answers', 'label', $this->_('Answers'));                
 
         parent::afterRegistry();
     }
@@ -92,23 +92,25 @@ class SurveyCodeBookModel extends \Gems_Model_PlaceholderModel
         $this->fieldArray = array_keys($firstItem);
 
         $data = [];
-        foreach($questionInformation as $questionTitle=>$information) {
-            $data[$questionTitle]['id'] = $this->surveyId;
-            $data[$questionTitle]['title'] = $questionTitle;
-            $data[$questionTitle]['question'] = $information['question'];
-            $data[$questionTitle]['answers'] = null;
-            $data[$questionTitle]['answer_codes'] = null;
-            if (is_array($information['answers'])) {
-                $firstInfo = reset($information['answers']);
-                if (count($information['answers']) === 1 && empty($firstInfo)) {
-                    continue;
-                }
-                $answerIds = array_keys($information['answers']);
-                $data[$questionTitle]['answers'] = join('|', $information['answers']);
-                $data[$questionTitle]['answer_codes'] = join('|', $answerIds);
+        foreach ($questionInformation as $questionTitle => $information) {
+            $answers     = $information['answers'];
+            $answerCodes = '';
+            if (is_array($answers)) {
+                $answerCodes = join('|', array_keys($answers));
+                $answers     = join('|', $answers);
+                if (empty($answers)) {
+                    $answerCodes = '';
+                }                
             }
+            
+            $data[$questionTitle] = [
+                'id'           => $this->surveyId,
+                'title'        => $questionTitle,
+                'question'     => $information['question'],
+                'answers'      => $answers,
+                'answer_codes' => $answerCodes
+            ];
         }
         return $data;
-
-    }
+    }   
 }
