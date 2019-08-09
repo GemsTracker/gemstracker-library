@@ -1768,6 +1768,8 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
             $this->_setVar($key, $value);
         }
 
+        $this->_getRole('user_role');
+
         return $this;
     }
 
