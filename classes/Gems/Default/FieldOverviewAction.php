@@ -133,29 +133,6 @@ class Gems_Default_FieldOverviewAction extends \Gems_Controller_ModelSnippetActi
     }
 
     /**
-     * Outputs the model to excel, applying all filters and searches needed
-     *
-     * When you want to change the output, there are two places to check:
-     *
-     * 1. $this->addExcelColumns($model), where the model can be changed to have labels for columns you
-     * need exported
-     *
-     * 2. $this->getExcelData($data, $model) where the supplied data and model are merged to get output
-     * (by default all fields from the model that have a label)
-     */
-    public function excelAction()
-    {
-        $model = $this->getModel();
-        $model->set('gr2t_id_respondent_track', 'label', 'attribute_4', 'order', '5');
-
-        foreach ($model->getColNames('has_orig') as $name) {
-            $model->set($name . '_orig', 'label', $model->get($name, 'label') . ' {RAW]');
-        }
-
-        return parent::excelAction();
-    }
-
-    /**
      * Helper function to get the title for the index action.
      *
      * @return $string

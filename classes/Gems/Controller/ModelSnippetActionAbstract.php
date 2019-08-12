@@ -167,13 +167,6 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
     protected $exportParameters = [];
 
     /**
-     * Should Excel output contain formatted data (date fields, select lists)
-     *
-     * @var boolean
-     */
-    public $formatExcelData = true;
-
-    /**
      *
      * @var \Gems_Loader
      */
@@ -289,55 +282,6 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         $this->createEditParameters = $this->createEditParameters + $this->_editExtraParameters;
 
         parent::editAction();
-    }
-
-    /**
-     * Outputs the model to excel, applying all filters and searches needed
-     *
-     * When you want to change the output, there are two places to check:
-     *
-     * 1. $this->addExcelColumns($model), where the model can be changed to have labels for columns you
-     * need exported
-     *
-     * 2. $this->getExcelData($data, $model) where the supplied data and model are merged to get output
-     * (by default all fields from the model that have a label)
-     */
-    public function excelAction()
-    {
-        // Make sure we have all the parameters used by the model
-        $this->autofilterParameters = $this->autofilterParameters + $this->_autofilterExtraParameters;
-
-        $model = $this->getExportModel();
-
-        // Set any defaults.
-        if (isset($this->autofilterParameters['sortParamAsc'])) {
-            $model->setSortParamAsc($this->autofilterParameters['sortParamAsc']);
-        }
-        if (isset($this->autofilterParameters['sortParamDesc'])) {
-            $model->setSortParamDesc($this->autofilterParameters['sortParamDesc']);
-        }
-
-        $model->applyParameters($this->getSearchFilter(false), true);
-
-        // Add any defaults.
-        if (isset($this->autofilterParameters['extraFilter'])) {
-            $model->addFilter($this->autofilterParameters['extraFilter']);
-        }
-        if (isset($this->autofilterParameters['extraSort'])) {
-            $model->addSort($this->autofilterParameters['extraSort']);
-        }
-
-        // $this->addExcelColumns($model);     // Hook to modify the model
-
-        // Use $this->formatExcelData to switch between formatted and unformatted data
-        $excelData = new \Gems_FormattedData($this->getExcelData($model->load(), $model), $model, $this->formatExcelData);
-
-        $this->view->result   = $excelData;
-
-        $this->view->filename = $this->getRequest()->getControllerName() . '.xls';
-        $this->view->setScriptPath(GEMS_LIBRARY_DIR . '/views/scripts' );
-
-        $this->render('excel', null, true);
     }
 
     /**
@@ -547,45 +491,6 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
     {
         return sprintf($this->_('Edit %s'), $this->getTopic(1));
     }
-
-    /**
-     * Returns an array with all columns from the model that have a label
-     *
-     * @param array                     $data
-     * @param \MUtil_Model_ModelAbstract $model
-     * @return array
-     */
-    protected function getExcelData($data, \MUtil_Model_ModelAbstract $model)
-    {
-        $headings = array();
-        $emptyMsg = $this->_('No data found.');
-        foreach ($model->getItemsOrdered() as $name) {
-            if ($label = $model->get($name, 'label')) {
-                $headings[$name] = (string) $label;
-            }
-        }
-        $results = array();
-        $results[] = $headings;
-        if ($headings) {
-            if ($data) {
-                foreach ($data as $row) {
-                    foreach ($headings as $key => $value) {
-                        $result[$key] = isset($row[$key]) ? $row[$key] : null;
-                    }
-                    $results[] = $result;
-                }
-                return $results;
-            } else {
-                foreach ($headings as $key => $value) {
-                    $result[$key] = $emptyMsg;
-                }
-                $results[] = $result;
-                return $results;
-            }
-        } else {
-            return array($emptyMsg);
-        }
-    }
     
     public function getExportClasses()
     {
@@ -739,8 +644,8 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
      */
     public function getTitle($separator = null)
     {
-        if ($title_set = parent::getTitle($separator)) {
-            return $title_set;
+        if ($titleSet = parent::getTitle($separator)) {
+            return $titleSet;
         }
 
         $title = array();

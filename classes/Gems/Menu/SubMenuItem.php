@@ -461,25 +461,6 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
     /**
      * Add a standard edit action to the current menu item
      *
-     * @deprecated Since 1.8.1
-     * @return \Gems_Menu_SubmenuItem
-     */
-    public function addExcelAction()
-    {
-        $options = array(
-            'class'  => 'excel',
-            //'rel'    => 'external',
-            'target' => null,
-            'title'  => $this->_('Export the current data set to Excel'),
-            //'type'   => 'application/vnd.ms-excel',
-        );
-
-        return $this->addActionButton($this->_('Excel export'), $this->get('privilege') . '.excel', 'excel', $options);
-    }
-
-    /**
-     * Add a standard edit action to the current menu item
-     *
      * @return \Gems_Menu_SubmenuItem
      */
     public function addExportAction()

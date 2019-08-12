@@ -418,7 +418,6 @@ abstract class Gems_Menu_MenuAbstract
         $page = $this->addPage($label, $privilege, $controller, 'index', $other);
         $page->addAutofilterAction();
         // $page->addCreateAction();
-        // $page->addExcelAction();
         $page = $page->addShowAction();
         $page->addEditAction();
 
