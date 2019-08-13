@@ -183,44 +183,61 @@ CREATE TABLE "gems__chart_config" (
 
 )  ;
 CREATE TABLE gems__comm_jobs (
-        gcj_id_job INTEGER not null ,
-        gcj_id_order      INTEGER not null default 10,
+        gcj_id_job                  INTEGER not null ,
+        gcj_id_order                INTEGER not null default 10,
 
-        gcj_id_message INTEGER not null,
+        gcj_id_message              INTEGER not null,
 
-        gcj_id_user_as INTEGER not null,
+        gcj_id_user_as              INTEGER not null,
 
-        gcj_active TINYINT(1) not null default 1,
+        gcj_active                  TINYINT(1) not null default 1,
 
         -- O Use organization from address
         -- S Use site from address
         -- U Use gcj_id_user_as from address
         -- F Fixed gcj_from_fixed
-        gcj_from_method varchar(1) not null,
-        gcj_from_fixed varchar(254),
+        gcj_from_method             varchar(1) not null,
+        gcj_from_fixed              varchar(254),
+
+        -- A Answerer
+        -- O Answerer or Fallback
+        -- F Fallback
+        gcj_to_method               varchar(1) default 'R',
+        -- O Use organization from address
+        -- S Use site from address
+        -- U Use gcj_id_user_as from address
+        -- F Fixed gcj_fallback_fixed
+        gcj_fallback_method         varchar(1) default 'O',
+        gcj_fallback_fixed          varchar(254),
 
         -- M => multiple per respondent, one for each token
         -- O => One per respondent, mark all tokens as send
         -- A => Send only one token, do not mark
-        gcj_process_method varchar(1) not null,
+        gcj_process_method          varchar(1) not null,
 
         -- N => notmailed
         -- R => reminder
-        gcj_filter_mode          VARCHAR(1) not null,
-        gcj_filter_days_between  INTEGER NOT NULL DEFAULT 7,
-        gcj_filter_max_reminders INTEGER NOT NULL DEFAULT 3,
+        -- B => before exporation
+        -- E => reminder before expiration
+        gcj_filter_mode             VARCHAR(1) not null,
+        gcj_filter_days_between     INTEGER NOT NULL DEFAULT 7,
+        gcj_filter_max_reminders    INTEGER NOT NULL DEFAULT 3,
 
         -- Optional filters
-        gcj_target tinyint(1) NOT NULL DEFAULT '0',
-        gcj_id_organization INTEGER,
-        gcj_id_track        INTEGER,
-        gcj_round_description varchar(100),
-        gcj_id_survey       INTEGER,
+        -- 0 -> respondent or relation
+        -- 1 -> relation
+        -- 2 -> respondent
+        -- 3 -> staff
+        gcj_target                  tinyint(1) NOT NULL DEFAULT '0',
+        gcj_id_organization         INTEGER,
+        gcj_id_track                INTEGER,
+        gcj_round_description       varchar(100),
+        gcj_id_survey               INTEGER,
 
-        gcj_changed TEXT not null default current_timestamp,
-        gcj_changed_by INTEGER not null,
-        gcj_created TEXT not null default '0000-00-00 00:00:00',
-        gcj_created_by INTEGER not null,
+        gcj_changed                 TEXT not null default current_timestamp,
+        gcj_changed_by              INTEGER not null,
+        gcj_created                 TEXT not null default '0000-00-00 00:00:00',
+        gcj_created_by              INTEGER not null,
 
         PRIMARY KEY (gcj_id_job)
    )
@@ -288,7 +305,7 @@ Om uw wachtwoord te kiezen en uw account te activeren, klik op deze link:\n{rese
     (19, 'en', 'New account created', 'A new account has been created for the [b]{organization}[/b] website [b]{project}[/b].
 To log in with your organization account {login_name} please click on this link:\r\n{login_url}'),
     (19, 'nl', 'Nieuw account aangemaakt', 'Er is voor u een nieuw account aangemaakt voor de [b]{organization}[/b] website [b]{project}[/b].
-Om in te loggen met uw organisatie account {login_name} klikt u op onderstaande link:\r\n{login_url}'),
+Om in te loggen met uw organisatie account {login_name} klikt u op onderstaande link:\r\n{login_url}'),
     (20, 'en', 'Continue later', 'Dear {greeting},\n\nClick on [url={token_url}]this link[/url] to continue filling out surveys or go to [url]{site_ask_url}[/url] and enter this token: [b]{token}[/b]\n\n{organization_signature}'),
     (20, 'nl', 'Later doorgaan', 'Beste {greeting},\n\nKlik op [url={token_url}]deze link[/url] om verder te gaan met invullen van vragenlijsten of ga naar [url]{site_ask_url}[/url] en voer dit kenmerk in: [b]{token}[/b]\n\n{organization_signature}');
 
@@ -420,10 +437,10 @@ INSERT ignore INTO gems__groups
 
 CREATE TABLE gems__locations (
         glo_id_location     INTEGER not null ,
-        glo_name            varchar(40) ,
+        glo_name            varchar(100) ,
 
         -- Yes, quick and dirty, will correct later (probably)
-        glo_organizations     varchar(250) ,
+        glo_organizations   varchar(250) ,
 
         glo_match_to        varchar(250) ,
         glo_code            varchar(40) ,
@@ -525,6 +542,10 @@ CREATE TABLE gems__log_setup (
 INSERT INTO gems__log_setup (gls_name, gls_when_no_user, gls_on_action, gls_on_post, gls_on_change,
         gls_changed, gls_changed_by, gls_created, gls_created_by)
     VALUES
+        ('comm-job.cron-lock',                  1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('comm-job.execute',                    1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('comm-job.execute-all',                1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('cron.index',                          1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('database.patch',                      0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('database.run',                        0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('database.run-all',                    0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),

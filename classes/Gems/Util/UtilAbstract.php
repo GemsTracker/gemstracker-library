@@ -120,6 +120,41 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * Utility function for loading a single column from cache
+     *
+     * @param string $cacheId The class is prepended to this id
+     * @param mixed $sql string or \Zend_Db_Select
+     * @param array $binds sql paramters
+     * @param mixed $tags atring or array of strings
+     * @param boolean $natSort Perform a natsort over the output
+     * @return array With a column ofr values
+     */
+    protected function _getSelectColCached($cacheId, $sql, $binds = array(), $tags = array(), $natSort = false)
+    {
+        $cacheId = strtr(get_class($this) . '_a_' . $cacheId, '\\/', '__');
+
+        $result = $this->cache->load($cacheId);
+
+        if ($result) {
+            return $result;
+        }
+
+        try {
+            $result = $this->db->fetchCol($sql, (array) $binds);
+
+            if ($natSort) {
+                natsort($result);
+            }
+
+            $this->cache->save($result, $cacheId, (array) $tags);
+        } catch (\Zend_Db_Statement_Mysqli_Exception $e) {
+            $result = [];
+        }
+
+        return $result;
+    }
+
+    /**
      * Utility function for loading a query paired from cache
      *
      * @param string $cacheId The class is prepended to this id

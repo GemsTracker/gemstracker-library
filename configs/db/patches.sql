@@ -1480,3 +1480,42 @@ ALTER TABLE gems__sources ADD
 
 ALTER TABLE gems__locations CHANGE
         glo_name glo_name varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+
+-- GEMS VERSION: 66
+-- PATCH: Add to address settings to mail jobs
+ALTER TABLE gems__comm_jobs ADD
+        gcj_to_method varchar(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' default 'A'
+        AFTER gcj_from_fixed;
+
+ALTER TABLE gems__comm_jobs ADD
+        gcj_fallback_method varchar(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' default 'O'
+        AFTER gcj_to_method;
+
+ALTER TABLE gems__comm_jobs ADD
+        gcj_fallback_fixed varchar(254) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null
+        AFTER gcj_fallback_method;
+
+-- PATCH: Enable logging of all mail execution
+INSERT IGNORE INTO gems__log_setup (gls_name, gls_when_no_user, gls_on_action, gls_on_post, gls_on_change,
+        gls_changed, gls_changed_by, gls_created, gls_created_by)
+    VALUES
+        ('comm-job.cron-lock',                  1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
+
+INSERT IGNORE INTO gems__log_setup (gls_name, gls_when_no_user, gls_on_action, gls_on_post, gls_on_change,
+        gls_changed, gls_changed_by, gls_created, gls_created_by)
+    VALUES
+        ('comm-job.execute',                    1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
+
+INSERT IGNORE INTO gems__log_setup (gls_name, gls_when_no_user, gls_on_action, gls_on_post, gls_on_change,
+        gls_changed, gls_changed_by, gls_created, gls_created_by)
+    VALUES
+        ('comm-job.execute-all',                1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
+
+INSERT IGNORE INTO gems__log_setup (gls_name, gls_when_no_user, gls_on_action, gls_on_post, gls_on_change,
+        gls_changed, gls_changed_by, gls_created, gls_created_by)
+    VALUES
+        ('cron.index',                          1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
+
+UPDATE gems__log_setup
+    SET gls_when_no_user = 1, gls_on_change = 1
+    WHERE gls_name IN ('comm-job.cron-lock', 'comm-job.execute', 'comm-job.execute-all', 'cron.index');

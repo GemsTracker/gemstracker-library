@@ -202,7 +202,7 @@ class Gems_Util_DbLookup extends UtilAbstract
      * @param $respondentId Optional, get for just one respondent
      * @param $organizationId Optional, get for just one organization
      * @return array
-     */
+     * /
     public function getFilterForMailJob($job, $respondentId = null, $organizationId = null)
     {
         // Set up filter
@@ -607,7 +607,7 @@ class Gems_Util_DbLookup extends UtilAbstract
 
         return $this->db->fetchPairs($sql);
     }
-    
+
     /**
      * Returns an array with key => value pairs containing all surveys
      * (for a specific organization). Includes surveyor_id

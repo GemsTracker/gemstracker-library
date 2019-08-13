@@ -252,48 +252,6 @@ class Gems_Util_Translated extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
-     * The options for bulk mail token processing.
-     *
-     * @return array
-     */
-    public function getBulkMailProcessOptions()
-    {
-        return array(
-            'M' => $this->_('Send multiple mails per respondent, one for each checked token.'),
-            'O' => $this->_('Send one mail per respondent, mark all checked tokens as sent.'),
-            'A' => $this->_('Send one mail per respondent, mark only mailed tokens as sent.'),
-            );
-    }
-    
-    /**
-     * The options for bulk mail token processing.
-     *
-     * @return array
-     */
-    public function getBulkMailProcessOptionsShort()
-    {
-        return array(
-            'M' => $this->_('Multiple emails'),
-            'O' => $this->_('One mail, mark all'),
-            'A' => $this->_('One mail'),
-            );
-    }
-
-    /**
-     * The options for bulk mail token processing.
-     *
-     * @return array
-     */
-    public function getBulkMailTargetOptions()
-    {
-        return array(
-            '0' => $this->_('(all fillers)'),
-            '1' => $this->_('Relation'),
-            '2' => $this->_('Respondent'),
-            );
-    }
-
-    /**
      * The date calculation versus manual set
      *
      * @return array

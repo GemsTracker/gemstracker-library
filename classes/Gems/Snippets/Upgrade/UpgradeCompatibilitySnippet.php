@@ -204,6 +204,14 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             'Gems_User_LoginStatusTracker' => [
                 'getUsedOrganisationId'     => 'getUsedOrganizationId',
                 ],
+            'Gems_Util_DbLookup' => [
+                'getFilterForMailJob' => 'MailJobsUtil->getJobFilter',
+                ],
+            'Gems_Util_Translated' => [
+                'getBulkMailProcessOptions'      => 'MailJobsUtil->getBulkProcessOptions',
+                'getBulkMailProcessOptionsShort' => 'MailJobsUtil->getBulkProcessOptionsShort',
+                'getBulkMailTargetOptions'       => 'MailJobsUtil->getBulkTargetOptions',
+                ],
             'Gems_User_Form_LayeredLoginForm' => [
                 'getChildOrganisations'     => 'getChildOrganizations',
                 'getTopOrganisations'       => 'getTopOrganizations',
@@ -250,6 +258,19 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             case 'MailTemplateController':
             case 'SurveyController.php':
                 $messages[] = "You can delete this file. This controller is no longer in use.";
+                return;
+
+            case 'CommJobController.php':
+                if (preg_match('/\\sfunction\\s+getBulkMailFilterOptions\\s*\\(/', $content)) {
+                    $messages[] = "Your CommJob controller has a getBulkMailFilterOptions() function. "
+                            . "This function was moved to Gems\\Util\\MailJobsUtil->getBulkFilterOptions(). "
+                            . "Remove the function and implement a project\\Util\\MailJobsUtil.php";
+                }
+                if (preg_match('/\\sfunction\\s+getBulkMailFromOptions\\s*\\(/', $content)) {
+                    $messages[] = "Your CommJob controller has a getBulkMailFromOptions() function. "
+                            . "This function was moved to Gems\\Util\\MailJobsUtil->getBulkFromOptions(). "
+                            . "Remove the function and implement a project\\Util\\MailJobsUtil.php";
+                }
                 return;
 
             case 'ExportController.php':

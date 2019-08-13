@@ -41,6 +41,12 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
 
     /**
      *
+     * @var \Gems_Project_ProjectSettings
+     */
+    protected $project;
+
+    /**
+     *
      * @param array $job
      * @param $respondentId Optional, execute for just one respondent
      * @param $organizationId Optional, execute for just one organization
@@ -60,11 +66,10 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
             throw new \Gems_Exception($this->_('Mail job not found!'));
         }
 
-        $dbLookup   = $this->loader->getUtil()->getDbLookup();
         $mailLoader = $this->loader->getMailLoader();
         $sendById   = $job['gcj_id_user_as'];
         $sendByMail = $this->getUserEmail($sendById);
-        $filter     = $dbLookup->getFilterForMailJob($job, $respondentId, $organizationId);
+        $filter     = $this->loader->getUtil()->getMailJobsUtil()->getJobFilter($job, $respondentId, $organizationId);
         $tracker    = $this->loader->getTracker();
         $model      = $tracker->getTokenModel();
 
@@ -81,10 +86,11 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
             $sentMailAddresses = array();
 
             foreach ($multipleTokensData as $tokenData) {
-                $mailer       = $mailLoader->getMailer('token', $tokenData);
+                $mailer = $mailLoader->getMailer('token', $tokenData);
                 /* @var $mailer \Gems_Mail_TokenMailer */
-                $token        = $mailer->getToken();
-                $email        = $token->getEmail();
+                $token  = $mailer->getToken();
+
+                $email = $this->getToEmail($sentMailAddresses, $sendByMail, $mailer, $token, $tokenData['can_email']);
 
                 if (empty($email)) {
                     if ($preview) {
@@ -102,26 +108,7 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
                 // Use separator that does not interfere with the numeric (and possible negative) values of both respondentid and relationid
                 $respondentId .= 'R' . $token->getRelationId();
 
-                // Set the from address to use in this job
-                switch ($job['gcj_from_method']) {
-                    case 'O':   // Send on behalf of organization
-                        $organization = $mailer->getOrganization();
-                        $from         = $organization->getEmail(); //$organization->getName() . ' <' . $organization->getEmail() . '>';
-                        break;
-
-                    case 'U':   // Send on behalf of fixed user
-                        $from = $sendByMail;
-                        break;
-
-                    case 'F':   // Send on behalf of fixed email address
-                        $from = $job['gcj_from_fixed'];
-                        break;
-
-                    default:
-                        throw new \Gems_Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('From address used')));
-                }
-
-                $mailer->setFrom($from);
+                $mailer->setFrom($this->getFromEmail($job, $sendByMail, $mailer));
                 $mailer->setBy($sendById);
 
                 try {
@@ -213,6 +200,122 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
         }
 
         $this->currentUser->enableMask();
+    }
+
+    /**
+     *
+     * @param array $job
+     * @param string $sendByMail Email address
+     * @param \Gems_Mail_TokenMailer $mailer
+     * @return string or null
+     * @throws \Gems_Exception
+     */
+    protected function getFallbackEmail(array $job, $sendByMail, \Gems_Mail_TokenMailer $mailer)
+    {
+        // Set the from address to use in this job
+        switch ($job['gcj_fallback_method']) {
+            case 'O':   // Send on behalf of organization
+                return $mailer->getOrganization()->getEmail(); //$organization->getName() . ' <' . $organization->getEmail() . '>';
+
+            case 'U':   // Send on behalf of fixed user
+                return $sendByMail;
+
+            case 'F':   // Send on behalf of fixed email address
+                return $job['gcj_fallback_fixed'];
+
+            case 'S':   // Use site email
+                return $this->project->email['site'];
+
+            default:
+                throw new \Gems_Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Fallback address used')));
+        }
+    }
+
+    /**
+     *
+     * @param array $job
+     * @param string $sendByMail Email address
+     * @param \Gems_Mail_TokenMailer $mailer
+     * @return string or null
+     * @throws \Gems_Exception
+     */
+    protected function getFromEmail(array $job, $sendByMail, \Gems_Mail_TokenMailer $mailer)
+    {
+        // Set the from address to use in this job
+        switch ($job['gcj_from_method']) {
+            case 'O':   // Send on behalf of organization
+                return $mailer->getOrganization()->getEmail(); //$organization->getName() . ' <' . $organization->getEmail() . '>';
+
+            case 'U':   // Send on behalf of fixed user
+                return $sendByMail;
+
+            case 'F':   // Send on behalf of fixed email address
+                return $job['gcj_from_fixed'];
+
+            case 'S':   // Use site email
+                return $this->project->email['site'];
+
+            default:
+                throw new \Gems_Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('From address used')));
+        }
+    }
+
+    /**
+     *
+     * @param array $job
+     * @param string $sendByMail Email address
+     * @param \Gems_Mail_TokenMailer $mailer
+     * @param \Gems_Tracker_Token $token
+     * @param boolean $canBeMailed True when allowed to mail respondent
+     * @return string or null
+     * @throws \Gems_Exception
+     */
+    protected function getToEmail(array $job, $sendByMail, \Gems_Mail_TokenMailer $mailer, \Gems_Tracker_Token $token, $canBeMailed)
+    {
+        $email = null;
+
+        switch ($job['gcj_target']) {
+            case '0':
+                if ($canBeMailed) {
+                    $email = $token->getEmail();
+                }
+                break;
+
+            case '1':
+                if($canBeMailed && $token->hasRelation()) {
+                    $email = $token->getRelation()->getEmail();
+                }
+                break;
+
+            case '2':
+                if ($canBeMailed) {
+                    $email = $token->getRespondent()->getEmailAddress();
+                }
+                break;
+
+            case '3':
+                return $this->getFallbackEmail($job, $sendByMail, $mailer);
+
+            default:
+                throw new \Gems_Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Filler')));
+        }
+
+
+        switch ($job['gcj_to_method']) {
+            case 'A':
+                return $email;
+
+            case 'O':
+                if ($email) {
+                    return $email;
+                }
+                // Intentional fall through
+            case 'F':
+                return $this->getFallbackEmail($job, $sendByMail, $mailer);
+
+            default:
+                throw new \Gems_Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Addresses used')));
+        }
     }
 
     /**

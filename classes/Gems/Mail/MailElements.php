@@ -181,8 +181,9 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
      *
      * @return \Zend_Form_Element_Radio
      */
-    public function createMethodElement() {
-        $multiOptions = $this->util->getTranslated()->getBulkMailProcessOptions();
+    public function createMethodElement()
+    {
+        $multiOptions = $this->util->getMailJobsUtil()->getBulkProcessOptions();
         $options      = array(
             'label'        => $this->translate->_('Method'),
             'multiOptions' => $multiOptions,
@@ -249,7 +250,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
         if ($onChangeSubmit) {
             $options['onchange'] = 'this.form.submit()';
         }
-        
+
         if ($list) {
             $options['required'] = true;
             $options['size']     = min(count($options['multiOptions']) + 1, 7);

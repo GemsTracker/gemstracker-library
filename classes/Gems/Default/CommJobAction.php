@@ -43,18 +43,18 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
      * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
-    
+
     /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
     protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Agenda\\AutosearchFormSnippet');
-    
+
     protected $monitorParameters = array(
         'monitorJob' => 'getMailMonitorJob'
     );
-    
+
     protected $monitorSnippets = 'MonitorSnippet';
 
     /**
@@ -101,13 +101,17 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
     {
         $dbLookup   = $this->util->getDbLookup();
         $dbTracks   = $this->util->getTrackData();
-        $translated = $this->util->getTranslated();
+        $mailUtil   = $this->util->getMailJobsUtil();
         $unselected = array('' => '');
 
         $model = new \MUtil_Model_TableModel('gems__comm_jobs');
 
+        // START START START START START START START START START START START START START START START START START
         \Gems_Model::setChangeFieldsByPrefix($model, 'gcj');
-        $model->set('gcj_id_order',            'label', $this->_('Order'), 'description', $this->_('Execution order of the communication jobs, lower numbers are executed first.'));
+        $model->set('gcj_id_order',            'label', $this->_('Execution order'),
+                'description', $this->_('Execution order of the communication jobs, lower numbers are executed first.'),
+                'required', true
+                );
         if ($detailed) {
             $model->set('gcj_id_order',        'validator', $model->createUniqueValidator('gcj_id_order'));
 
@@ -120,38 +124,43 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
                 }
             }
         }
-        $model->set('gcj_id_message',          'label', $this->_('Template'), 'multiOptions', $unselected + $dbLookup->getCommTemplates('token'));
-        $model->set('gcj_id_user_as',          'label', $this->_('By staff member'),
-                'multiOptions', $unselected + $dbLookup->getActiveStaff(), 'default', $this->currentUser->getUserId(),
-                'description', $this->_('Used for logging and possibly from address.'));
+        $model->set('gcj_id_message',          'label', $this->_('Template'),
+                'multiOptions', $unselected + $dbLookup->getCommTemplates('token')
+                );
+
+        // EXECUTION EXECUTION EXECUTION EXECUTION EXECUTION EXECUTION EXECUTION EXECUTION EXECUTION EXECUTION
+        if ($detailed) {
+            $html = \MUtil_Html::create()->h4($this->_('Execution'));
+            $model->set('execution',
+                    'default', $html,
+                    'label', ' ',
+                    'elementClass', 'html',
+                    'value', $html
+                    );
+        }
         $activeOptions = [
             0 => $this->_('Disabled'),
             1 => $this->_('Automatic'),
-            2 => $this->_('By hand')
+            2 => $this->_('Manually')
         ];
-        $model->set('gcj_active',              'label', $this->_('Execution'),
+        $model->set('gcj_active',              'label', $this->_('Execution method'),
                 'multiOptions', $activeOptions, 'required', true,
-                'description', $this->_('Job is only run when not disabled.'));
+                'description', $this->_('Disabled jobs cannot run. Manually run, but not during automatic jobs.')
+                );
 
-        $fromMethods = $unselected + $this->getBulkMailFromOptions();
-        $model->set('gcj_from_method',         'label', $this->_('From address used'), 'multiOptions', $fromMethods);
         if ($detailed) {
-            // Show other field only when last $fromMethod is select
-            end($fromMethods);  // Move array pointer to the end
-            $lastKey   = key($fromMethods);
-            $switches = array($lastKey => array( 'gcj_from_fixed' => array('elementClass' => 'Text', 'label' => $this->_('From other'))));
-
-            $model->addDependency(array('ValueSwitchDependency', $switches), 'gcj_from_method');
-            $model->set('gcj_from_fixed',      'label', '',
-                    'elementClass', 'Hidden');
-        }
-        if ($detailed) {
-            $bulkProcessOptions = $translated->getBulkMailProcessOptions();
+            $bulkProcessOptions = $mailUtil->getBulkProcessOptions();
         } else {
-            $bulkProcessOptions = $translated->getBulkMailProcessOptionsShort();
+            $bulkProcessOptions = $mailUtil->getBulkProcessOptionsShort();
         }
-        $model->set('gcj_process_method',      'label', $this->_('Processing Method'), 'default', 'O', 'multiOptions', $bulkProcessOptions);
-        $model->set('gcj_filter_mode',         'label', $this->_('Filter for'), 'multiOptions', $unselected + $this->getBulkMailFilterOptions());
+        $model->set('gcj_process_method',      'label', $this->_('Processing Method'),
+                'default', 'O',
+                'description', $this->_('Only for advanced users'),
+                'multiOptions', $bulkProcessOptions
+                );
+        $model->set('gcj_filter_mode',         'label', $this->_('Filter for'),
+                'multiOptions', $unselected + $mailUtil->getBulkFilterOptions()
+                );
 
         if ($detailed) {
             // Only show reminder fields when needed
@@ -160,27 +169,91 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
                         'gcj_filter_days_between'     => array('elementClass' => 'Text', 'label' => $this->_('Days between reminders'),'description', $this->_('1 day means the reminder is send the next day')),
                         'gcj_filter_max_reminders'    => array('elementClass' => 'Text', 'label' => $this->_('Maximum reminders'))
                     ),
+                'B' => array(
+                        'gcj_filter_days_between'     => array('elementClass' => 'Text', 'label' => $this->_('Days before expiration'),'description', ''),
+                    ),
                 'E' => array(
                         'gcj_filter_days_between'     => array('elementClass' => 'Text', 'label' => $this->_('Days before expiration'),'description', ''),
-                    )
+                    ),
                 );
             $model->addDependency(array('ValueSwitchDependency', $switches), 'gcj_filter_mode');
 
             $model->set('gcj_filter_days_between', 'label', '',
                     'elementClass', 'Hidden',
-                    'validators[]', 'Digits');
+                    'required', true,
+                    'validators[]', 'Digits'
+                    );
             $model->set('gcj_filter_max_reminders','label', '',
                     'elementClass', 'Hidden',
                     'description', $this->_('1 means only one reminder will be send'),
-                    'validators[]', 'Digits');
+                    'required', true,
+                    'validators[]', 'Digits'
+                    );
         }
 
-        // If you really want to see this information in the overview, uncomment for the shorter labels
-        // $model->set('gcj_filter_days_between', 'label', $this->_('Interval'), 'validators[]', 'Digits');
-        // $model->set('gcj_filter_max_reminders','label', $this->_('Max'), 'validators[]', 'Digits');
+        // SENDER SENDER SENDER SENDER SENDER SENDER SENDER SENDER SENDER SENDER SENDER SENDER SENDER SENDER SENDER
+        if ($detailed) {
+            $html = \MUtil_Html::create()->h4($this->_('Sender'));
+            $model->set('send_from',
+                    'default', $html,
+                    'label', ' ',
+                    'elementClass', 'html',
+                    'value', $html
+                    );
+        }
+        $model->set('gcj_id_user_as', 'label', $this->_('By staff member'),
+                'multiOptions', $unselected + $dbLookup->getActiveStaff(),
+                'default', $this->currentUser->getUserId(),
+                'description', $this->_('Used for logging and possibly from address.'))
+                ;
+        $fromMethods = $unselected + $mailUtil->getBulkFromOptions();
+        $model->set('gcj_from_method', 'label', $this->_('From address used'),
+                'multiOptions', $fromMethods
+                );
+        if ($detailed) {
+            // Show other field only when last $fromMethod is select
+            $switches = ['F' => ['gcj_from_fixed' => ['elementClass' => 'Text', 'label' => $this->_('From other')]]];
+            $model->addDependency(array('ValueSwitchDependency', $switches), 'gcj_from_method');
 
+            $model->set('gcj_from_fixed',  'label', '',
+                    'elementClass', 'Hidden',
+                    'validators[mail]', 'SimpleEmail'
+                    );
+        }
+
+
+       // RECEIVER RECEIVER RECEIVER RECEIVER RECEIVER RECEIVER RECEIVER RECEIVER RECEIVER RECEIVER RECEIVER RECEIVER
+        if ($detailed) {
+            $html = \MUtil_Html::create()->h4($this->_('Receiver'));
+            $model->set('send_to',
+                    'default', $html,
+                    'label', ' ',
+                    'elementClass', 'html',
+                    'value', $html
+                    );
+        }
         $model->set('gcj_target', 'label', $this->_('Filler'),
-                    'default', 0, 'multiOptions', $translated->getBulkMailTargetOptions());
+                'default', 0,
+                'multiOptions', $mailUtil->getBulkTargetOptions()
+                );
+        if ($detailed) {
+            $model->set('gcj_to_method', 'multiOptions', $mailUtil->getBulkToOptions());
+            $model->set('gcj_fallback_method', 'multiOptions', $fromMethods);
+            $model->set('gcj_fallback_fixed', 'validators[mail]', 'SimpleEmail');
+
+            $model->addDependency('CommJob\\Senderdependency');
+        }
+
+        // SURVEY SELECTION SURVEY SELECTION SURVEY SELECTION SURVEY SELECTION SURVEY SELECTION SURVEY SELECTION
+        if ($detailed) {
+            $html = \MUtil_Html::create()->h4($this->_('Survey selection'));
+            $model->set('selection',
+                    'default', $html,
+                    'label', ' ',
+                    'elementClass', 'html',
+                    'value', $html
+                    );
+        }
 
         $anyTrack[''] = $this->_('(all tracks)');
         $model->set('gcj_id_track', 'label', $this->_('Track'),
@@ -207,13 +280,13 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
 
         $organizations = $dbLookup->getOrganizations();
         $anyOrganization[''] = $this->_('(all organizations)');
-        $model->set('gcj_id_organization', 
+        $model->set('gcj_id_organization',
                 'multiOptions', $anyOrganization + $organizations);
-        
+
         if ($detailed || count($organizations) > 1) {
             $model->set('gcj_id_organization', 'label', $this->_('Organization'));
         }
-        
+
         return $model;
     }
 
@@ -252,7 +325,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
                 $batch->reset();
                 $this->addMessage($this->_("Mailjob is inactive and won't be executed"), 'danger');
             }
-            
+
             if ($preview === true) {
                 $batch->autoStart = true;
             }
@@ -264,10 +337,16 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
             if (count($messages)) {
                 $this->addMessage($messages, 'info');
             }
+            $echo = array_filter(array_map('trim', preg_split('/<[^>]+>/', \MUtil_Echo::out())));
+            if ($echo) {
+                echo "\n\n================================================================\nECHO OUTPUT:\n\n";
+                echo implode("\n", $echo);
+            }
+            $this->accesslog->logChange($this->getRequest(), $messages, $echo);
 
             $this->_reroute(array('action'=>'show'));
         }
-        
+
         if ($preview === true) {
             $title = sprintf($this->_('Preview single mail job %s'), $jobId);
         } else {
@@ -290,39 +369,6 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
     }
 
     /**
-     * The types of mail filters
-     *
-     * @return array
-     */
-    protected function getBulkMailFilterOptions()
-    {
-        return array(
-            'N' => $this->_('First mail'),
-            'R' => $this->_('Reminder after first email'),
-            'E' => $this->_('Reminder before expiration'),
-        );
-    }
-
-    /**
-     * Options for from address use.
-     *
-     * @return array
-     */
-    protected function getBulkMailFromOptions()
-    {
-        $results['O'] = $this->_('Use organizational from address');
-
-        if (isset($project->email['site']) && $project->email['site']) {
-            $results['S'] = sprintf($this->_('Use site %s address'), $project->email['site']);
-        }
-
-        $results['U'] = $this->_("Use the 'By staff member' address");
-        $results['F'] = $this->_('Other');
-
-        return $results;
-    }
-
-    /**
      * Helper function to get the title for the index action.
      *
      * @return $string
@@ -331,15 +377,15 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
     {
         return $this->_('Automatic mail jobs');
     }
-    
+
     public function getMailMonitorJob()
     {
         return $this->loader->getUtil()->getMonitor()->getCronMailMonitor();
     }
-    
+
     /**
-     * Returns the fields for autosearch with 
-     * 
+     * Returns the fields for autosearch with
+     *
      * @return array
      */
     public function getSearchFields()
@@ -378,7 +424,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
 
         $this->html->pInfo($this->_('With automatic mail jobs and a cron job on the server, mails can be sent without manual user action.'));
     }
-    
+
     public function monitorAction() {
         if ($this->monitorSnippets) {
             $params = $this->_processParameters($this->monitorParameters);
@@ -413,8 +459,8 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
         if (!is_null($jobId)) {
             $jobId = (int) $jobId;
             $job   = $this->db->fetchRow("SELECT * FROM gems__comm_jobs WHERE gcj_id_job = ?", $jobId);
-            
-            // Show a different color when not active,                 
+
+            // Show a different color when not active,
             switch ($job['gcj_active']) {
                 case 0:
                     $class   = ' disabled';
@@ -431,9 +477,9 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
                     $class = '';
                     $caption = $this->_('Mailjob automatic, can be sent using run or run all');
                     break;
-            }            
+            }
             $model  = $this->loader->getTracker()->getTokenModel();
-            $filter = $this->loader->getUtil()->getDbLookup()->getFilterForMailJob($job);
+            $filter = $this->loader->getUtil()->getMailJobsUtil()->getJobFilter($job);
             // Clone request and unset the id parameter to prevent filtering
             $cleanReq = clone $this->getRequest();
             $cleanReq->setParam(\MUtil_Model::REQUEST_ID, null);

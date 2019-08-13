@@ -57,6 +57,12 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
+     * @var \Gems\Util\MailJobsUtil
+     */
+    protected $mailJobsUtil;
+
+    /**
+     *
      * @var \Gems\Util\Monitor
      */
     protected $monitor;
@@ -250,6 +256,16 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
     public function getLocalized()
     {
         return $this->_getClass('localized');
+    }
+
+    /**
+     * Returns the maintenance lock
+     *
+     * @return \Gems\Util\MailJobsUtil
+     */
+    public function getMailJobsUtil()
+    {
+        return $this->_getClass('mailJobsUtil');
     }
 
     /**
