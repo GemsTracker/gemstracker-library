@@ -355,12 +355,14 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
      */
     public function assignTo($respondentRelationId, $relationFieldId)
     {
-        if ($this->getRelationFieldId() == $relationFieldId && $this->getRelationId() == $respondentRelationId) return 0;
+        if (($this->getRelationFieldId() == $relationFieldId) && ($this->getRelationId() == $respondentRelationId)) {
+            return 0;
+        }
 
-        return $this->_updateToken(array(
-            'gto_id_relation'=>$respondentRelationId,
-            'gto_id_relationfield'=>$relationFieldId
-            ), $this->loader->getCurrentUser()->getUserId());
+        return $this->_updateToken([
+            'gto_id_relation'      => $respondentRelationId,
+            'gto_id_relationfield' => $relationFieldId,
+            ], $this->currentUser->getUserId());
     }
 
     /**
@@ -1088,7 +1090,8 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
      *
      * @return Gems_Model_RespondentRelationInstance
      */
-    public function getRelation() {
+    public function getRelation()
+    {
         if (is_null($this->_relation) || $this->_relation->getRelationId() !== $this->getRelationId()) {
             $model = $this->loader->getModels()->getRespondentRelationModel();
             $relationObject = $model->getRelation($this->getRespondentId(), $this->getRelationId());
@@ -1116,7 +1119,8 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
      *
      * @return string
      */
-    public function getRelationFieldName() {
+    public function getRelationFieldName()
+    {
         if ($relationFieldId = $this->getRelationFieldId()) {
             $names = $this->getRespondentTrack()->getTrackEngine()->getFieldNames();
             $fieldPrefix = \Gems\Tracker\Model\FieldMaintenanceModel::FIELDS_NAME . \Gems\Tracker\Engine\FieldsDefinition::FIELD_KEY_SEPARATOR;
@@ -1754,13 +1758,13 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
         return false;
     }
-    
+
     /**
      * Can mails be sent for this token?
-     * 
+     *
      * Cascades to track and respondent level mailable setting
      * also checks is the email field for respondent or relation is not null
-     * 
+     *
      * @return boolean
      */
     public function isMailable()

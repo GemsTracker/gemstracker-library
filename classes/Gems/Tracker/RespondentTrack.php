@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+use \Gems\Tracker\Model\FieldMaintenanceModel;
+
 /**
  * Object representing a track assignment to a respondent.
  *
@@ -459,11 +461,11 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         // relation is defined.
         $this->_ensureRounds();
         $relationFields = $this->getFieldData();
-        $fieldPrefix = \Gems\Tracker\Model\FieldMaintenanceModel::FIELDS_NAME . \Gems\Tracker\Engine\FieldsDefinition::FIELD_KEY_SEPARATOR;
+        $fieldPrefix = FieldMaintenanceModel::FIELDS_NAME . \Gems\Tracker\Engine\FieldsDefinition::FIELD_KEY_SEPARATOR;
         $changes = 0;
         foreach ($this->getTokens() as $token) {
-            /* @var $token Gems_Tracker_Token */
-            if (!$token->isCompleted() && $token->getReceptionCode()->isSuccess()) {
+            /* @var $token \Gems_Tracker_Token */
+            if ((!$token->isCompleted()) && $token->getReceptionCode()->isSuccess()) {
                 $roundId = $token->getRoundId();
                 if (!array_key_exists($roundId, $this->_rounds)) {
                     // If not a current round for this track, do check the round when it still exists
@@ -498,8 +500,8 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
             }
         }
 
-        if (MUtil_Model::$verbose && $changes > 0) {
-            MUtil_Echo::r(sprintf('%s tokens changed due to changes in respondent relation assignments.', $changes));
+        if (\MUtil_Model::$verbose && $changes > 0) {
+            \MUtil_Echo::r(sprintf('%s tokens changed due to changes in respondent relation assignments.', $changes));
         }
 
         return $changes;
@@ -622,7 +624,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     /**
      * Returns a token with a success reception code for this round or null
      *
-     * @param type $roundId Gems round id
+     * @param int $roundId Gems round id
      * @param \Gems_Tracker_Token $token Optional token to add as a round (for speed optimization)
      * @return \Gems_Tracker_Token
      */
@@ -1312,12 +1314,12 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         }
         return true;
     }
-    
+
     /**
      * Can mails be sent for this track?
-     * 
+     *
      * Cascades to the respondent mailable setting too
-     * 
+     *
      * @return boolean
      */
     public function isMailable()
@@ -1325,7 +1327,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         if (!array_key_exists('gr2t_mailable', $this->_respTrackData)) {
             $this->refresh();
         }
-        
+
         return $this->_respTrackData['gr2t_mailable'] == 1 && $this->getRespondent()->isMailable();
     }
 
