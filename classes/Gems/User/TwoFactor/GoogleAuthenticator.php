@@ -127,7 +127,7 @@ class GoogleAuthenticator extends \MUtil_Translate_TranslateableAbstract impleme
                  ->setHeight($height)
                  ->setMargin(0);
         $bacon    = new \BaconQrCode\Writer($renderer);
-        $data     = $bacon->writeString($url, \BaconQrCode\Common\CharacterSetEci::UTF8, \BaconQrCode\Common\ErrorCorrectionLevel::M);
+        $data     = $bacon->writeString($url, 'utf-8', \BaconQrCode\Common\ErrorCorrectionLevel::M);
         return 'data:image/png;base64,' . base64_encode($data);
     }
     
