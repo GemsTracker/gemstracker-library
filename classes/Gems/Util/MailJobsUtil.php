@@ -257,7 +257,7 @@ class MailJobsUtil extends UtilAbstract
      *
      * @return array
      */
-    public function getBulkMailOptions()
+    public function getBulkTargetOptions()
     {
         return array(
             '0' => $this->_('Respondents and Relations'),
