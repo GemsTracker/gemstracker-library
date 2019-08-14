@@ -688,11 +688,12 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             }
         }
 
+        /*
         if (isset($this->project['headers']['Content-Security-Policy']) &&
                 preg_match('/img-src\s.*?data:.*?;/', $this->project['headers']['Content-Security-Policy']) !== 1) {
             $this->html->pInfo('The headers.Content-Security-Policy setting img-src should have data: for Two Factor Authentication.');
             $issues = true;
-        }
+        } // */
         if ($this->project->offsetExists('jquerycss')) {
             $this->html->pInfo('Separate JQuery CSS no longer in use. Remove jquerycss setting.');
             $issues = true;

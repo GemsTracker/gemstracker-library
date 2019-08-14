@@ -1481,7 +1481,6 @@ ALTER TABLE gems__sources ADD
 ALTER TABLE gems__locations CHANGE
         glo_name glo_name varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
 
--- GEMS VERSION: 66
 -- PATCH: Add to address settings to mail jobs
 ALTER TABLE gems__comm_jobs ADD
         gcj_to_method varchar(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' default 'A'
