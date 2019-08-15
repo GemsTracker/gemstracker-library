@@ -36,6 +36,8 @@ CREATE TABLE if not exists gems__staff (
         -- gsf_phone_2             varchar(25) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
         -- gsf_phone_3             varchar(25) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
+        gsf_is_embedded			boolean not null default 0,
+
         gsf_changed				timestamp not null default current_timestamp on update current_timestamp,
         gsf_changed_by			bigint unsigned not null,
         gsf_created				timestamp not null,

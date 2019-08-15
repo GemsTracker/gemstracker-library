@@ -49,6 +49,7 @@ class Gems_User_NoLoginDefinition extends \Gems_User_UserDefinitionAbstract
             'user_base_org_id'    => $organization,
             'user_active'         => false,
             'user_role'           => 'nologin',
+            'user_embedded'       => false,
             );
     }
 

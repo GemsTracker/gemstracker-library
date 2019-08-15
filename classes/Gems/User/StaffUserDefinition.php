@@ -62,6 +62,7 @@ class Gems_User_StaffUserDefinition extends \Gems_User_DbUserDefinitionAbstract
                     'user_locale'         => 'gsf_iso_lang',
                     'user_logout'         => 'gsf_logout_on_survey',
                     'user_base_org_id'    => 'gsf_id_organization',
+                    'user_embedded'       => 'gsf_is_embedded',
                     ))
                ->join('gems__groups', 'gsf_id_primary_group = ggp_id_group', array(
                    'user_role'=>'ggp_role',

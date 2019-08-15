@@ -171,6 +171,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
             $this->_vars = $settings;
         }
         $this->definition = $definition;
+        // \MUtil_Echo::track($settings);
     }
 
     /**
@@ -735,10 +736,10 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
 
         return (boolean) $this->acl && $this->userLoader;
     }
-    
+
     /**
      * Clear the two factor authentication key
-     * 
+     *
      * @return $this
      */
     public function clearTwoFactorKey()
@@ -746,7 +747,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         $this->_setVar('user_two_factor_key', null);
 
         $this->definition->setTwoFactorKey($this, null);
-        
+
         return $this;
     }
 
@@ -1350,6 +1351,15 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     *
+     * @return string
+     */
+    public function getUserDefinitionClass()
+    {
+        return $this->_getVar('__user_definition');
+    }
+
+    /**
      * Returns the user id, that identifies this user within this installation.
      *
      * One user id might be connected to multiple logins for multiple organizations.
@@ -1570,6 +1580,16 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     public function isCurrentUser()
     {
         return $this->_vars instanceof \Zend_Session_Namespace;
+    }
+
+    /**
+     * Return true if this user is an embedded user that can defer to other logins.
+     *
+     * @return boolean
+     */
+    public function isEmbedded()
+    {
+        return (boolean) $this->_getVar('user_embedded');
     }
 
     /**

@@ -1518,3 +1518,8 @@ INSERT IGNORE INTO gems__log_setup (gls_name, gls_when_no_user, gls_on_action, g
 UPDATE gems__log_setup
     SET gls_when_no_user = 1, gls_on_change = 1
     WHERE gls_name IN ('comm-job.cron-lock', 'comm-job.execute', 'comm-job.execute-all', 'cron.index');
+
+-- PATCH: Allow embedded user login through user
+ALTER TABLE gems__staff ADD
+    gsf_is_embedded boolean not null default 0
+    AFTER gsf_phone_1;

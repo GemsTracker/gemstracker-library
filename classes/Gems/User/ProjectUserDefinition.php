@@ -87,7 +87,8 @@ class Gems_User_ProjectUserDefinition extends \Gems_User_UserDefinitionAbstract
             'user_base_org_id'       => $organization,
             'user_allowed_ip_ranges' => $this->project->getSuperAdminIPRanges(),
             'user_blockable'         => false,
-            '__allowedOrgs'          => $orgs
+            'user_embedded'          => false,
+            '__allowedOrgs'          => $orgs,
             );
     }
 

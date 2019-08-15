@@ -227,6 +227,69 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         return $this;
     }
 
+    /**
+     * Use this to add all and not-displayed privileges
+     *
+     * @return \void
+     */
+    public function addHiddenPrivileges()
+    {
+        // Privileges not associated with menu item
+        $this->addHiddenPrivilege('pr.organization-switch', $this->_(
+                'Grant access to all organization.'
+                ));
+        $this->addHiddenPrivilege('pr.plan.mail-as-application', $this->_(
+                'Grant right to impersonate the site when mailing.'
+                ));
+        $this->addHiddenPrivilege('pr.respondent.multiorg', $this->_(
+                'Display multiple organizations in respondent overview.'
+                ));
+        $this->addHiddenPrivilege('pr.episodes.rawdata', $this->_(
+                'Display raw data in Episodes of Care.'
+                ));
+        $this->addHiddenPrivilege('pr.respondent.result', $this->_(
+                'Display results in token overviews.'
+                ));
+        $this->addHiddenPrivilege('pr.respondent.select-on-track', $this->_(
+                'Grant checkboxes to select respondents on track status in respondent overview.'
+                ));
+        $this->addHiddenPrivilege('pr.respondent.show-deleted', $this->_(
+                'Grant checkbox to view deleted respondents in respondent overview.'
+                ));
+        $this->addHiddenPrivilege('pr.respondent.who', $this->_(
+                'Display staff member name in token overviews.'
+                ));
+        $this->addHiddenPrivilege('pr.staff.edit.all', $this->_(
+                'Grant right to edit staff members from all organizations.'
+                ));
+        $this->addHiddenPrivilege('pr.export.add-resp-nr', $this->_(
+                'Grant right to export respondent numbers with survey answers.'
+                ));
+        $this->addHiddenPrivilege('pr.export.gender-age', $this->_(
+                'Grant right to export gender and age information with survey answers.'
+                ));
+        $this->addHiddenPrivilege('pr.staff.see.all', $this->_(
+                'Display all organizations in staff overview.'
+                ));
+        $this->addHiddenPrivilege('pr.group.switch', $this->_(
+                'Grant right to switch groups.'
+                ));
+        $this->addHiddenPrivilege('pr.token.mail.freetext', $this->_(
+                'Grant right to send free text (i.e. non-template) email messages.'
+                ));
+
+        $this->addPage(null, 'pr.cron.job', 'cron', 'index');
+        $this->addPage(null, 'pr.cron.job', 'cron', 'monitor');
+        $this->addPage(null, 'pr.cron.job', 'cron', 'test');
+
+        $this->addPage(null, 'pr.embed.login', 'embed', 'login');
+        $this->addHiddenPrivilege('pr.embed.login', $this->_(
+                'Grant right for access to embedded login page.'
+                ));
+
+        $this->addPage(null, null, 'email', 'index');
+    }
+
     public function addLogonOffToken()
     {
         $this->addPage($this->_('Logon'), 'pr.nologin', 'index', 'login')
@@ -808,60 +871,8 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         // CONTACT MENU
         $this->addContactPage($this->_('Contact'));
 
-        // Privileges not associated with menu item
-        $this->addHiddenPrivilege('pr.organization-switch', $this->_(
-                'Grant access to all organization.'
-                ));
-        $this->addHiddenPrivilege('pr.plan.mail-as-application', $this->_(
-                'Grant right to impersonate the site when mailing.'
-                ));
-        $this->addHiddenPrivilege('pr.respondent.multiorg', $this->_(
-                'Display multiple organizations in respondent overview.'
-                ));
-        $this->addHiddenPrivilege('pr.episodes.rawdata', $this->_(
-                'Display raw data in Episodes of Care.'
-                ));
-        $this->addHiddenPrivilege('pr.respondent.result', $this->_(
-                'Display results in token overviews.'
-                ));
-        $this->addHiddenPrivilege('pr.respondent.select-on-track', $this->_(
-                'Grant checkboxes to select respondents on track status in respondent overview.'
-                ));
-        $this->addHiddenPrivilege('pr.respondent.show-deleted', $this->_(
-                'Grant checkbox to view deleted respondents in respondent overview.'
-                ));
-        $this->addHiddenPrivilege('pr.respondent.who', $this->_(
-                'Display staff member name in token overviews.'
-                ));
-        $this->addHiddenPrivilege('pr.staff.edit.all', $this->_(
-                'Grant right to edit staff members from all organizations.'
-                ));
-        $this->addHiddenPrivilege('pr.export.add-resp-nr', $this->_(
-                'Grant right to export respondent numbers with survey answers.'
-                ));
-        $this->addHiddenPrivilege('pr.export.gender-age', $this->_(
-                'Grant right to export gender and age information with survey answers.'
-                ));
-        $this->addHiddenPrivilege('pr.staff.see.all', $this->_(
-                'Display all organizations in staff overview.'
-                ));
-        $this->addHiddenPrivilege('pr.group.switch', $this->_(
-                'Grant right to switch groups.'
-                ));
-        $this->addHiddenPrivilege('pr.token.mail.freetext', $this->_(
-                'Grant right to send free text (i.e. non-template) email messages.'
-                ));
-
-        /* MD 20160826: We probably don't need this as it is under the projectinfopage
-        //Changelog added as button only
-        $this->addButtonOnly($this->_('Changelog'),  'pr.project-information.changelog', 'project-information','changelog');
-         */
-
-        $this->addPage(null, 'pr.cron.job', 'cron', 'index');
-        $this->addPage(null, 'pr.cron.job', 'cron', 'monitor');
-        $this->addPage(null, 'pr.cron.job', 'cron', 'test');
-
-        $this->addPage(null, null, 'email', 'index');
+        // HIDDEN PRIVILEGES
+        $this->addHiddenPrivileges();
     }
 
     /**

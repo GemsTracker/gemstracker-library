@@ -194,6 +194,12 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
                 );
 
         if ($detailed) {
+            $this->set('gsf_is_embedded', 'label', $this->_('Is embedder'),
+                    'description', $this->_('An embedder is only allowed to act as a front login for other users.'),
+                    'elementClass', 'Checkbox',
+                    'multiOptions', $this->util->getTranslated()->getYesNo()
+                    );
+            
             $this->set('gsf_first_name',       'label', $this->_('First name'));
             $this->set('gsf_surname_prefix',   'label', $this->_('Surname prefix'),
                     'description', $this->_('de, van der, \'t, etc...')
@@ -290,11 +296,11 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
                 'multiOptions', $factorOptions
                 );
         if ($detailed) {
-        $this->setIfExists('gul_enable_2factor', 'label', $this->_('Two factor enabled'),
+            $this->setIfExists('gul_enable_2factor', 'label', $this->_('Two factor enabled'),
                     'description', $this->_('You can only enable/disable two factor authentication, not install a key.'),
                     'elementClass', 'Checkbox',
                     'multiOptions', $yesNo
-                );
+                    );
         }
 
         $this->setDeleteValues('gsf_active', 0, 'gul_can_login', 0);
