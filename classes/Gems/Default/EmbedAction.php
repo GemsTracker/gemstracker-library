@@ -250,10 +250,28 @@ class Gems_Default_EmbedAction extends \Gems_Controller_Action
             $keys[] = $this->encryptKey(sprintf($keyStart, $current->format($this->keyTimeFormat)));
             $current->add($addDate);
         }
-        \MUtil_Echo::track($keys);
+        if ('production' != APPLICATION_ENV) {
+            \MUtil_Echo::track(array_map('urlencode', $keys));
+        }
         // \MUtil_Echo::track(hash_algos());
 
         return $keys;
+    }
+
+    /**
+     * Example Hix Login
+     * /
+    public function hixLogin()
+    {
+        $request = $this->getRequest();
+
+        $this->loginEmbedded(
+                'HiX',
+                $request->getParam('key'),
+                $request->getParam('usr'),
+                $request->getParam('pid'),
+                array_keys($this->util->getDbLookup()->getOrganizationsByCode('hix'))
+                );
     }
 
     /**
@@ -306,6 +324,6 @@ class Gems_Default_EmbedAction extends \Gems_Controller_Action
             }
         }
 
-        throw new \Gems_Exception("Unable to authenticate");
+        throw new \Gems_Exception($this->_("Unable to authenticate"));
     }
 }

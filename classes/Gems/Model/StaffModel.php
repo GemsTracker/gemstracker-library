@@ -188,7 +188,7 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
             }
         }
         $this->set('gsf_login',                'label', $this->_('Username'),
-                'minlength', 4,
+                'minlength', 3,
                 'required', true,
                 'size', 15
                 );
@@ -199,7 +199,7 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
                     'elementClass', 'Checkbox',
                     'multiOptions', $this->util->getTranslated()->getYesNo()
                     );
-            
+
             $this->set('gsf_first_name',       'label', $this->_('First name'));
             $this->set('gsf_surname_prefix',   'label', $this->_('Surname prefix'),
                     'description', $this->_('de, van der, \'t, etc...')
