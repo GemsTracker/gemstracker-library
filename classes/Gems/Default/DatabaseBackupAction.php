@@ -4,6 +4,11 @@
 
 class Gems_Default_DatabaseBackupAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
+    protected $defaultSearchData = [
+        'include_drop' => 1,
+        'single_transaction' => 1,
+    ];
+
     /**
      * @var \Zend_Db_Adapter_Abstract
      */
@@ -45,10 +50,14 @@ class Gems_Default_DatabaseBackupAction extends \Gems_Controller_ModelSnippetAct
         if ($this->project->databaseFileEncoding) {
             $model->setFileEncoding($this->project->databaseFileEncoding);
         }
-        $model->set('name', 'label', $this->_('Name'));
+        $model->set('name',             'label', $this->_('Name'));
 
         //$model->set('exportTable','label', $this->_('Table'), 'formatFunction', [$this, 'visualBoolean']);
-        $model->set('respondentData', 'label', $this->_('Respondent data'), 'formatFunction', [$this, 'visualBoolean']);
+        $model->set('respondentData',   'label', $this->_('Respondent data'), 'formatFunction', [$this, 'visualBoolean']);
+
+        $model->set('exportTable',      'label', $this->_('Export table'), 'formatFunction', [$this, 'visualBoolean']);
+        $model->set('data',             'label', $this->_('Export data'), 'formatFunction', [$this, 'visualBoolean']);
+
 
         return $model;
     }
@@ -58,16 +67,31 @@ class Gems_Default_DatabaseBackupAction extends \Gems_Controller_ModelSnippetAct
      */
     public function backupAction()
     {
-        $filter = $this->getSearchFilter();
+        $filter = $this->getSearchFilter(false);
         $model = $this->getModel();
 
         $tables = $model->load();
         $allTables = [];
         $noDataTables = [];
+
+        $addDropTables = false;
+        if (array_key_exists('include_drop', $filter) && $filter['include_drop'] == '1') {
+            $addDropTables = true;
+        }
+        $singleTransaction = false;
+        if (array_key_exists('single_transaction', $filter) && $filter['single_transaction'] == '1') {
+            $singleTransaction = true;
+        }
+        $lockTables = false;
+        if (array_key_exists('lock_tables', $filter) && $filter['lock_tables'] == '1') {
+            $lockTables = true;
+        }
+
         foreach($tables as $table) {
             if ($table['type'] == 'view' && (!array_key_exists('include_views', $filter) || $filter['include_views'] != '1')) {
                 continue;
             }
+
             $allTables[] = $table['name'];
             if ($table['respondentData'] === true && (!array_key_exists('include_respondent_data', $filter) || $filter['include_respondent_data'] != '1')) {
                 $noDataTables[] = $table['name'];
@@ -79,10 +103,10 @@ class Gems_Default_DatabaseBackupAction extends \Gems_Controller_ModelSnippetAct
         $dumpSettings = [
             'include-tables' => $allTables,
             'no-data' => $noDataTables,
-            'single-transaction' => true,
-            'lock-tables' => false,
+            'single-transaction' => $singleTransaction,
+            'lock-tables' => $lockTables,
             'add-locks' => false,
-            'add-drop-table' => true,
+            'add-drop-table' => $addDropTables,
         ];
 
         ini_set('max_execution_time', 300);

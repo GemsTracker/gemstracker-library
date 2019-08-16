@@ -14,6 +14,13 @@ class ExportDbaModel extends \Gems_Model_DbaModel
     protected $excludeGroups = ['gemsdata'];
 
     /**
+     * List of groups (database prefixes) to include in export
+     *
+     * @var array
+     */
+    protected $includeGroups = ['gems'];
+
+    /**
      * @var array List of database tables that do not contain respondent data
      */
     protected $gemsDataExportWhitelist = [
@@ -58,6 +65,28 @@ class ExportDbaModel extends \Gems_Model_DbaModel
     ];
 
     /**
+     * Stores the raw parameters from applyParameters
+     *
+     * @var array
+     */
+    protected $rawParameters = [];
+
+
+    /**
+     * Stores the fields that can be used for sorting or filtering in the
+     * sort / filter objects attached to this model.
+     *
+     * @param array $parameters
+     * @param boolean $includeNumericFilters When true numeric filter keys (0, 1, 2...) are added to the filter as well
+     * @return array The $parameters minus the sort & textsearch keys
+     */
+    public function applyParameters(array $parameters, $includeNumericFilters = false)
+    {
+        $this->rawParameters = $parameters;
+        return parent::applyParameters($parameters, $includeNumericFilters);
+    }
+
+    /**
      * Get a whitelist of database tables that do no contain respondent data
      *
      * @return array
@@ -82,11 +111,21 @@ class ExportDbaModel extends \Gems_Model_DbaModel
                 unset($data[$key]);
                 continue;
             }
+            if (!in_array($row['group'], $this->includeGroups)) {
+                unset($data[$key]);
+                continue;
+            }
+
             $data[$key]['exportTable'] = true;
             $data[$key]['respondentData'] = true;
+            $data[$key]['data'] = true;
             if (in_array($row['name'], $dataExportWhitelist)) {
                 $data[$key]['respondentData'] = false;
+                if (array_key_exists('include_respondent_data', $this->rawParameters) && $this->rawParameters['include_respondent_data'] != '1') {
+                    $data[$key]['data'] = false;
+                }
             }
+
         }
         return $data;
     }

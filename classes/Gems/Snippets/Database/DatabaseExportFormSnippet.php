@@ -20,7 +20,13 @@ class DatabaseExportFormSnippet extends \Gems_Snippets_AutosearchFormSnippet
         $elements = [];
         $elements['include_respondent_data'] = $this->_createCheckboxElement('include_respondent_data', $this->_('Include respondent data'));
 
-        $elements['include_views'] = $this->_createCheckboxElement('include_views', $this->_('Include views'));
+        //$elements['include_views'] = $this->_createCheckboxElement('include_views', $this->_('Include views'));
+
+        $elements[] = null;
+
+        $elements['include_drop'] = $this->_createCheckboxElement('include_drop', $this->_('Include drop tables'));
+        $elements['single_transaction'] = $this->_createCheckboxElement('single_transaction', $this->_('Single transaction'));
+        $elements['lock_tables'] = $this->_createCheckboxElement('lock_tables', $this->_('Lock tables'));
 
         return $elements;
     }

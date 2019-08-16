@@ -162,6 +162,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
 
         $databaseBackup = $page->addPage($this->_('Database backup'), 'pr.database.backup', 'database-backup', 'index');
         $databaseBackup->addActionButton($this->_('Backup'), 'pr.database.backup', 'backup');
+        $databaseBackup->addAutofilterAction();
 
         // CODE LEVEL
         $cont = $setup->addContainer($this->_('Codes'));
