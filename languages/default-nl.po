@@ -5517,7 +5517,7 @@ msgstr "Gebruikte adressen"
 #: classes/Gems/Model/Dependency/CommJob/Senderdependency.php:85
 #: classes/Gems/Task/Mail/ExecuteMailJobTask.php:230
 msgid "Fallback address used"
-msgstr "Gebruikte uitwijk adres"
+msgstr "Gebruikte uitwijkadres"
 
 #: classes/Gems/Model/Dependency/CommJob/Senderdependency.php:87
 msgid "Staff address used"
