@@ -3,6 +3,49 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.8.7]
+[1.8.7]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.6...1.8.7
+### Added
+- Add a database dump option that creates a dump without patient information (#435)
+- Add a survey codebook export (#456)
+- Add year/month option to survey answer export (#465)
+- Add diagnosis as an appointment item (#375)
+- Allow mails to be send to the staff (#477)
+- Organizational fall-back email address for tokens (#32)
+- Enable use of respondent data in track definitions (#469)
+- New condition to use answer from the track (#461)
+- Event to assign relations from survey answers (#458)
+
+### Interface improvements
+- Allow to filter tracks on valid from/until dates (#459)
+- Allow to disable or reset two factor authentication for a user by the admin (#475)
+- Continue later option should not show when emailing not allowed (#470)
+- Overview track field utilization can now filter on track dates (#441)
+
+### Export
+- Multi survey answer export has no defaults for export types (#473)
+- Order of fields jumps in survey answer export (#472)
+- Answer export preview shows no or incorrect data for track fields (#466)
+- Questions without a label can not be exported (#450)
+- Answer export for all surveys runs out of memory (#442)
+- Export of tracks with conditions of type And/Or is incomplete (#446)
+
+### Fixed
+- Deleting a used condition breaks round viewing (#452)
+- Deleting a track throws notices (#451)
+- Notice when trying to add a survey when no track exists (#449)
+- Masked fields should not be searchable in text fields (#455)
+- Calendar does not correctly mask information (#457)
+- Reset password form should not tell if a user is not found in the system (#454)
+- User role not transformed to text after refresh (#474)
+- Import using text throws a notice (#471)
+- Location names should be longer (#468)
+- Appointment import does not allow timezone specification (#467)
+- Empty parameter for condition creates duplicates on import (#460)
+- Template for linked accounts includes hidden chars (#444)
+- Email with ampersand is not accepted (#431)
+- Manual execution of mail jobs is not default logged (#407)
+
 ## [1.8.6]
 [1.8.6]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.5...1.8.6
 ### Security
