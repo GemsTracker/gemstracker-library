@@ -93,7 +93,7 @@ class Senderdependency extends DependencyAbstract
 
         if ($fallbackAddress) {
             $output['gcj_fallback_fixed']['elementClass'] = 'Text';
-            $output['gcj_fallback_fixed']['label']        = $this->_('From other');
+            $output['gcj_fallback_fixed']['label']        = $this->_('Fallback other');
         } else {
             $output['gcj_fallback_fixed']['elementClass'] = 'Hidden';
             $output['gcj_fallback_fixed']['label']        = null;
