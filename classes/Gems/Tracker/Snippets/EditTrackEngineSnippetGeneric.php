@@ -106,9 +106,9 @@ class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends \Gems_Snippets
 
         $bridge->addDate('gtr_date_start');
         $bridge->addDate('gtr_date_until');
-        if (! $this->createData) {
+        //if (! $this->createData) {
             $bridge->addCheckbox('gtr_active');
-        }
+        //}
         if ($model->has('gtr_code')) {
             $bridge->addText('gtr_code');
         }
