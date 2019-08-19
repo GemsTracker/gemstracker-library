@@ -192,7 +192,7 @@ class Gems_User_RadiusUserDefinition extends \Gems_User_StaffUserDefinition impl
     {
         /**
          * Read the needed parameters from the different tables, lots of renames
-         * for compatibility accross implementations.
+         * for compatibility across implementations.
          */
         $select = new \Zend_Db_Select($this->db);
         $select->from('gems__user_logins', array(

@@ -316,16 +316,23 @@ abstract class Gems_User_DbUserDefinitionAbstract extends \Gems_User_UserDefinit
 
         try {
             $result = $this->db->fetchRow($select, array($login_name, $organization), \Zend_Db::FETCH_ASSOC);
+
         } catch (\Zend_Db_Statement_Exception $e) {
             // \MUtil_Echo::track($e->getMessage());
+            // \MUtil_Echo::track($select->__toString());
 
             // Yeah ugly. Can be removed when all projects have been patched to 1.8.4
             $sql = $select->__toString();
-            $sql = str_replace(['`gems__user_logins`.`gul_two_factor_key`', '`gems__user_logins`.`gul_enable_2factor`'], 'NULL', $sql);
+            $sql = str_replace([
+                '`gems__user_logins`.`gul_two_factor_key`',
+                '`gems__user_logins`.`gul_enable_2factor`',
+                '`gems__staff`.`gsf_is_embedded`',
+                ], 'NULL', $sql);
             // \MUtil_Echo::track($sql);
             try {
                 // Next try
                 $result = $this->db->fetchRow($sql, array($login_name, $organization), \Zend_Db::FETCH_ASSOC);
+
             } catch (\Zend_Db_Statement_Exception $e) {
                 // Can be removed when all projects have been patched to 1.6.2
                 $sql = str_replace('gup_last_pwd_change', 'gup_changed', $sql);

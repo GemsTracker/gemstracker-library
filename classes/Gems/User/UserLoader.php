@@ -666,6 +666,7 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
 
         } catch (\Zend_Db_Exception $e) {
             // Intentional fall through
+            // \MUtil_Echo::track($e->getMessage());
         }
 
         return $this->loadUser(self::USER_NOLOGIN, $organization, $login_name);
@@ -780,7 +781,7 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
         $definition = $this->getUserDefinition($defName);
 
         $values = $definition->getUserData($userName, $userOrganization);
-        // \MUtil_Echo::track($defName, $login_name, $userOrganization, $values);
+        // \MUtil_Echo::track($defName, $userName, $userOrganization, $values);
 
         $values = $this->ensureDefaultUserValues($values, $definition, $defName);
         // \MUtil_Echo::track($values, $userName, $userOrganization, $defName);
