@@ -159,7 +159,7 @@ class Gems_Default_DatabaseBackupAction extends \Gems_Controller_ModelSnippetAct
         $directory .= DIRECTORY_SEPARATOR;
 
         $backupName = 'gems_backup_';
-        if (!array_key_exists('include_respondent_data', $filter) || $filter['include_respondent_data'] == '1') {
+        if (!array_key_exists('include_respondent_data', $filter) || $filter['include_respondent_data'] != '1') {
             $backupName .= 'no_respondent_data_';
         }
         $now = new \DateTime();

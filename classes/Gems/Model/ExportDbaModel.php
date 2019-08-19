@@ -120,10 +120,11 @@ class ExportDbaModel extends \Gems_Model_DbaModel
             $data[$key]['respondentData'] = true;
             $data[$key]['data'] = true;
             if (in_array($row['name'], $dataExportWhitelist)) {
-                $data[$key]['respondentData'] = false;
-                if (array_key_exists('include_respondent_data', $this->rawParameters) && $this->rawParameters['include_respondent_data'] != '1') {
-                    $data[$key]['data'] = false;
-                }
+                // In the whitelist so contains no respondent data
+                $data[$key]['respondentData'] = false;                
+            } elseif (array_key_exists('include_respondent_data', $this->rawParameters) && $this->rawParameters['include_respondent_data'] != '1') {
+                // Not in the whitelist so contains respondent data, block export unless asked to include it
+                $data[$key]['data'] = false;
             }
 
         }
