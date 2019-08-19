@@ -1770,7 +1770,14 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     public function isMailable()
     {
         $email = $this->getEmail();
-        return !empty($email) && $this->getRespondentTrack()->isMailable();
+        if ($this->hasRelation()) {
+            $filler = $this->getRelation();
+        } else {
+            $filler = $this->getRespondent();
+        }
+        $mailable = !empty($email) && $this->getRespondentTrack()->isMailable() && $filler->isMailable();
+        
+        return $mailable;
     }
 
     /**

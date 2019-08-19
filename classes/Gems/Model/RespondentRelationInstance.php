@@ -66,11 +66,12 @@ class Gems_Model_RespondentRelationInstance extends \Gems_Registry_TargetAbstrac
     protected function _getDefaults()
     {
         if (empty($this->_defaults)) {
-        $this->_defaults = array(
-            'grr_first_name' => '',
-            'grr_last_name' => '',
-            'grr_email' => ''
-            );
+            $this->_defaults = [
+                'grr_first_name' => '',
+                'grr_last_name'  => '',
+                'grr_email'      => '',
+                'grr_mailable'   => 0
+            ];
         }
 
         return $this->_defaults;
@@ -177,6 +178,22 @@ class Gems_Model_RespondentRelationInstance extends \Gems_Registry_TargetAbstrac
     public function getName()
     {
         return $this->getFirstName() . ' ' . $this->getLastName();
+    }
+    
+    /**
+     * Can mails be sent for this relation?
+     * 
+     * This only check the mailable attribute, not the presence of a mailaddress
+     * 
+     * @return boolean
+     */
+    public function isMailable()
+    {
+        if (!array_key_exists('grr_mailable', $this->_data)) {
+            $this->refresh();
+        }
+        
+        return $this->_data['grr_mailable'] == 1;
     }
 
 

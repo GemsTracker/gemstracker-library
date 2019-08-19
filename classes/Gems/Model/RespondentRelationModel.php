@@ -40,14 +40,17 @@ class Gems_Model_RespondentRelationModel extends \Gems_Model_JoinModel {
 
     public function applyBrowseSettings()
     {
+        $translated = $this->loader->getUtil()->getTranslated();
+                
         $this->addFilter(array('grr_active'=>1));
         $this->set('grr_type',
                 'label', $this->_('Relation type'), 'description', $this->_('Father, mother, etc.'));
-        $this->set('grr_gender', 'label', $this->_('Gender'), 'multiOptions', $this->loader->getUtil()->getTranslated()->getGenderHello());
+        $this->set('grr_gender', 'label', $this->_('Gender'), 'multiOptions', $translated->getGenderHello());
         $this->set('grr_first_name', 'label', $this->_('First name'));
         $this->set('grr_last_name', 'label', $this->_('Last name'));
         $this->set('grr_birthdate', 'label', $this->_('Birthday'), 'dateFormat', \Zend_Date::DATE_MEDIUM, 'elementClass', 'Date');
         $this->set('grr_email', 'label', $this->_('E-Mail'));
+        $this->set('grr_mailable', 'label', $this->_('May be mailed'), 'multiOptions', $translated->getYesNo());
     }
 
     public function applyDetailSettings()

@@ -1523,3 +1523,6 @@ UPDATE gems__log_setup
 ALTER TABLE gems__staff ADD
     gsf_is_embedded boolean not null default 0
     AFTER gsf_phone_1;
+
+-- PATCH: Allow relations to be set to not mailable
+ALTER TABLE  `gems__respondent_relations` ADD  `grr_mailable` boolean not null default 1 AFTER  `grr_email`;

@@ -214,21 +214,20 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
                 case 'hasnomail':
                     $filter[] = sprintf(
                             "((gr2o_email IS NULL OR gr2o_email = '' OR gr2o_email NOT RLIKE '%1\$s') AND
-                                ggp_respondent_members = 1 AND gto_id_relationfield IS NULL) 
+                                ggp_respondent_members = 1 AND (gto_id_relationfield IS NULL OR gto_id_relationfield < 1) AND gr2o_mailable = 1) 
                              OR
                              ((grr_email IS NULL OR grr_email = '' OR grr_email NOT RLIKE '%1\$s') AND
-                                ggp_respondent_members = 1 AND gto_id_relationfield IS NOT NULL)",
+                                ggp_respondent_members = 1 AND gto_id_relationfield > 0 AND grr_mailable = 1)",
                             str_replace('\'', '\\\'', trim(\MUtil_Validate_SimpleEmail::EMAIL_REGEX, '/'))
                             );
                     $filter[] = '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)';
                     $filter['gto_completion_time'] = null;
                     // Exclude not mailable, we don't want to ask them for email if we are not allowed to used it anyway
-                    $filter['gr2o_mailable'] = 1;
                     $filter['gr2t_mailable'] = 1;
                     break;
 
                 case 'notmailable':
-                    $filter[] = '(gr2o_mailable = 0 OR gr2t_mailable = 0) AND ggp_respondent_members = 1';
+                    $filter[] = '(((gto_id_relationfield IS NULL OR gto_id_relationfield < 1) AND gr2o_mailable = 0) OR (gto_id_relationfield > 0 AND grr_mailable = 0) OR gr2t_mailable = 0) AND ggp_respondent_members = 1';
                     $filter[] = '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)';
                     $filter['gto_completion_time'] = null;
                     break;
@@ -242,17 +241,16 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
                 case 'tomail':
                     $filter[] = sprintf(
                             "(gr2o_email IS NOT NULL AND gr2o_email != '' AND gr2o_email RLIKE '%1\$s' AND
-                                ggp_respondent_members = 1 AND gto_id_relationfield IS NULL)
+                                ggp_respondent_members = 1 AND (gto_id_relationfield IS NULL OR gto_id_relationfield < 1) AND gr2o_mailable = 1)
                               OR
                               (grr_email IS NOT NULL AND grr_email != '' AND grr_email RLIKE '%1\$s' AND
-                                ggp_respondent_members = 1 AND gto_id_relationfield IS NOT NULL)",
+                                ggp_respondent_members = 1 AND gto_id_relationfield > 0 AND grr_mailable = 1)",
                             str_replace('\'', '\\\'', trim(\MUtil_Validate_SimpleEmail::EMAIL_REGEX, '/'))
                             );
                     $filter['gto_mail_sent_date'] = null;
                     $filter[] = '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)';
                     $filter['gto_completion_time'] = null;
                     // Exclude not mailable
-                    $filter['gr2o_mailable'] = 1;
                     $filter['gr2t_mailable'] = 1;
                     break;
 

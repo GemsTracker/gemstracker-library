@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS gems__respondent_relations (
 
         -- when not staff, we need at least name, gender and email
         grr_email                   varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        grr_mailable                boolean not null default 1,
         -- grs_initials_name           varchar(30) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
         grr_first_name              varchar(30) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
         -- grs_surname_prefix          varchar(10) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
