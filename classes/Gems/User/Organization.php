@@ -355,14 +355,15 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function getMailFields()
     {
-        $result['organization']            = $this->getName();
-        $result['organization_location']   = $this->_get('gor_location');
-        $result['organization_login_url']  = $this->getLoginUrl();
-        $result['organization_reply_name'] = $this->_get('gor_contact_name');
-        $result['organization_reply_to']   = $this->_get('gor_contact_email');
-        $result['organization_signature']  = $this->getSignature();
-        $result['organization_url']        = $this->_get('gor_url');
-        $result['organization_welcome']    = $this->getWelcome();
+        $result['organization']                 = $this->getName();
+        $result['organization_location']        = $this->_get('gor_location');
+        $result['organization_login_url']       = $this->getLoginUrl();
+        $result['organization_reply_name']      = $this->_get('gor_contact_name');
+        $result['organization_reply_to']        = $this->_get('gor_contact_email');
+        $result['organization_signature']       = $this->getSignature();
+        $result['organization_unsubscribe_url'] = $this->getUnsubscribeUrl();
+        $result['organization_url']             = $this->_get('gor_url');
+        $result['organization_welcome']         = $this->getWelcome();
 
         if ((APPLICATION_ENV === 'production') &&
                 preg_match('#^http(s)?://localhost#', $result['organization_login_url'])) {
@@ -499,6 +500,19 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
         $this->_unsubscribeScreen = $screenLoader->loadUnsubscribeScreen($this->_get('gor_respondent_unsubscribe'));
 
         return $this->_unsubscribeScreen;
+    }
+
+    /**
+     *
+     * @return url string
+     */
+    public function getUnsubscribeUrl()
+    {
+        if (! $this->_get('gor_respondent_unsubscribe')) {
+            return null;
+        }
+
+        return $this->getLoginUrl() . '/participate/unsubscribe/org/' . $this->getId();
     }
 
     /**
