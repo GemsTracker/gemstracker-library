@@ -89,7 +89,7 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
             /* @var $mailer \Gems_Mail_TokenMailer */
             $token  = $mailer->getToken();
 
-            $email = $this->getToEmail($sentMailAddresses, $sendByMail, $mailer, $token, $tokenData['can_email']);
+            $email = $this->getToEmail($job, $sendByMail, $mailer, $token, $tokenData['can_email']);
 
             if (empty($email)) {
                 if ($preview) {
