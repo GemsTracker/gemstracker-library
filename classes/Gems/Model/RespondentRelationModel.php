@@ -45,7 +45,7 @@ class Gems_Model_RespondentRelationModel extends \Gems_Model_JoinModel {
         $this->addFilter(array('grr_active'=>1));
         $this->set('grr_type',
                 'label', $this->_('Relation type'), 'description', $this->_('Father, mother, etc.'));
-        $this->set('grr_gender', 'label', $this->_('Gender'), 'multiOptions', $translated->getGenderHello());
+        $this->set('grr_gender', 'label', $this->_('Gender'), 'elementClass', 'radio', 'separator', '', 'multiOptions', $translated->getGenders());
         $this->set('grr_first_name', 'label', $this->_('First name'));
         $this->set('grr_last_name', 'label', $this->_('Last name'));
         $this->set('grr_birthdate', 'label', $this->_('Birthday'), 'dateFormat', \Zend_Date::DATE_MEDIUM, 'elementClass', 'Date');
@@ -56,8 +56,9 @@ class Gems_Model_RespondentRelationModel extends \Gems_Model_JoinModel {
     public function applyDetailSettings()
     {
         $this->applyBrowseSettings();
-        $this->set('grr_comments', 'label', $this->_('Comments'), 'elementClass', 'TextArea');
+        $this->set('grr_comments', 'label', $this->_('Comments'), 'elementClass', 'TextArea', 'rows', 4, 'cols', 60);
         $this->set('grr_birthdate', 'jQueryParams', array('defaultDate' => '-30y', 'maxDate' => 0, 'yearRange' => 'c-130:c0'));
+        $this->set('grr_mailable', 'elementClass', 'radio', 'separator', '');
     }
 
     /**
