@@ -326,6 +326,24 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
 
     /**
      *
+     * @return string Available languages of the survey
+     */
+    public function getAvailableLanguages()
+    {
+        return $this->_gemsSurvey['gsu_survey_languages'];
+    }
+
+    /**
+     *
+     * @return string Warning messages of the survey
+     */
+    public function getSurveyWarnings()
+    {
+        return $this->_gemsSurvey['gsu_survey_warnings'];
+    }
+
+    /**
+     *
      * @return string The (manually entered) normal duration for taking this survey
      */
     public function getDuration()

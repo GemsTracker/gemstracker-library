@@ -1526,3 +1526,11 @@ ALTER TABLE gems__staff ADD
 
 -- PATCH: Allow relations to be set to not mailable
 ALTER TABLE  `gems__respondent_relations` ADD  `grr_mailable` boolean not null default 1 AFTER  `grr_email`;
+
+-- PATCH: Save survey warnings and languages
+ALTER TABLE `gems__surveys` 
+    ADD `gsu_survey_languages` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL 
+    AFTER `gsu_survey_description`;
+ALTER TABLE `gems__surveys` 
+    ADD `gsu_survey_warnings` VARCHAR(250) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL 
+    AFTER `gsu_survey_languages`;

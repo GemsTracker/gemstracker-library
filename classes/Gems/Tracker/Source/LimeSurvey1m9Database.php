@@ -491,7 +491,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
             // SELECT sid, surveyls_title AS short_title, surveyls_description AS description, active, datestamp, ' . $this->_anonymizedField . '
             $select = $lsDb->select();
             // 'alloweditaftercompletion' ?
-            $select->from($this->_getSurveysTableName(), array('active', 'datestamp', 'tokenanswerspersistence', $this->_anonymizedField))
+            $select->from($this->_getSurveysTableName(), array('active', 'datestamp', 'language', 'additional_languages', 'autoredirect', 'alloweditaftercompletion', 'allowregister', 'listpublic', 'tokenanswerspersistence', $this->_anonymizedField))
                     ->joinInner(
                             $this->_getSurveyLanguagesTableName(),
                             'sid = surveyls_survey_id AND language = surveyls_language',
@@ -502,6 +502,15 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
             $surveyor_title = substr(\MUtil_Html::removeMarkup(html_entity_decode($lsSurvey['surveyls_title'])), 0, 100);
             $surveyor_description = substr(\MUtil_Html::removeMarkup(html_entity_decode($lsSurvey['surveyls_description'])), 0, 100);
             $surveyor_status = '';
+            $surveyor_warnings = '';
+            
+            // AVAILABLE LANGUAGES
+            $surveyor_languages = substr(\MUtil_Html::removeMarkup(html_entity_decode($lsSurvey['language'])), 0, 100);
+            $surveyor_additional_languages = substr(\MUtil_Html::removeMarkup(html_entity_decode($lsSurvey['additional_languages'])), 0, 100);
+            if ($surveyor_additional_languages) {
+                $surveyor_languages .= ', ';
+                $surveyor_languages .= $surveyor_additional_languages;
+            }
 
             // ANONIMIZATION
             switch ($lsSurvey[$this->_anonymizedField]) {
@@ -575,6 +584,23 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
                 $surveyor_status .= 'Not active. ';
             }
             $surveyor_active = (0 === strlen($surveyor_status));
+            
+            // ADDITONAL WARNINGs
+            if ($lsSurvey['autoredirect'] == 'N') {
+                $surveyor_warnings .= "Auto-redirect is disabled. ";
+            }
+            
+            if ($lsSurvey['alloweditaftercompletion'] == 'Y') {
+                $surveyor_warnings .= "Editing after completion is enabled. ";
+            }
+            
+            if ($lsSurvey['allowregister'] == 'Y') {
+                $surveyor_warnings .= "Public registration is enabled. ";
+            }
+            
+            if ($lsSurvey['listpublic']== 'Y') {
+                $surveyor_warnings .= "Public access is enabled. ";
+            }
 
             // Update Gems
             $values = array();
@@ -611,10 +637,27 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
                     $values['gsu_survey_description'] = $surveyor_description;
                     $messages[] = sprintf($this->_('The description of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $surveyor_description);
                 }
+                
+                if ($survey->getAvailableLanguages() != $surveyor_languages) {
+                    $values['gsu_survey_languages'] = $surveyor_languages;
+                    $messages[] = sprintf($this->_('The available languages of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $surveyor_languages);
+                }
+                
+                if ($survey->getSurveyWarnings() != $surveyor_warnings) {
+                    if ($surveyor_warnings) {
+                        $values['gsu_survey_warnings'] = $surveyor_warnings;
+                        $messages[] = sprintf($this->_('The warning messages of the \'%s\' survey have been changed to \'%s\'.'), $survey->getName(), $surveyor_warnings);
+                    } elseif ($survey->getSurveyWarnings() != 'OK') {
+                        $values['gsu_survey_warnings'] = 'OK';
+                        $messages[] = sprintf($this->_('The warning messages of the \'%s\' survey have been cleared.'), $survey->getName());
+                    }
+                }
 
             } else { // New record
                 $values['gsu_survey_name']        = $surveyor_title;
                 $values['gsu_survey_description'] = $surveyor_description;
+                $values['gsu_survey_languages']   = $surveyor_languages;
+                $values['gsu_survey_warnings']    = $surveyor_warnings ? $surveyor_warnings : 'OK';
                 $values['gsu_surveyor_active']    = $surveyor_active ? 1 : 0;
                 $values['gsu_active']             = 0;
                 $values['gsu_status']             = $surveyor_status ? $surveyor_status : 'OK';
