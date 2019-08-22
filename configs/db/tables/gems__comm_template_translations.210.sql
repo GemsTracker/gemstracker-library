@@ -13,37 +13,37 @@ CREATE TABLE if not exists gems__comm_template_translations (
 
 INSERT INTO gems__comm_template_translations (gctt_id_template, gctt_lang, gctt_subject, gctt_body)
     VALUES
-    (11, 'en', 'Questions for your treatement at {organization}', 'Dear {greeting},
+    (11, 'en', 'Questions for your treatment at {organization}', 'Dear {greeting},
 
-Recently you visited [b]{organization}[/b] for treatment. For your proper treatment need answers to some questions.
+Recently you visited [b]{organization}[/b] for treatment. For your proper treatment you need to answer some questions.
 
 Click on [url={token_url}]this link[/url] to start or go to [url]{site_ask_url}[/url] and enter your token "{token}".
 
 {organization_signature}'),
     (11, 'nl', 'Vragen over uw behandeling bij {organization}', 'Beste {greeting},
 
-Recent was u op bezoek bij [b]{organization}[/b] voor een behandling. Om u goed te kunnen behandelen moeten wij u vragen enkele vragen te beantwoorden.
+Recent was u op bezoek bij [b]{organization}[/b] voor een behandeling. Om u goed te kunnen behandelen verzoeken wij u enkele vragen te beantwoorden.
 
-Klik op [url={token_url}]deze link[/url] op te beginnen of gan naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
+Klik op [url={token_url}]deze link[/url] op te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
 
 {organization_signature}'),
-    (12, 'en', 'Reminder: your treatement at {organization}', 'Dear {greeting},
+    (12, 'en', 'Reminder: your treatment at {organization}', 'Dear {greeting},
 
-We remind you that for your proper treatment at [b]{organization}[/b] you are required to answer some questions.
+We remind you that for your proper treatment at [b]{organization}[/b] you need to answer some questions.
 
 Click on [url={token_url}]this link[/url] to start or go to [url]{site_ask_url}[/url] and enter your token "{token}".
 
 {organization_signature}'),
-    (12, 'nl', 'Herinnering: uw behandeling bij {organization}', 'Dear {greeting},
+    (12, 'nl', 'Herinnering: uw behandeling bij {organization}', 'Beste {greeting},
 
-Wij willen u er bij deze aan herinneren dat u enkele vragen moet beantwoorden voor uw behandeling bij [b]{organization}[/b].
+Wij herinneren u eraan dat u nog enkele vragen moet beantwoorden voor uw behandeling bij [b]{organization}[/b].
 
-Klik op [url={token_url}]deze link[/url] op te beginnen of gan naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
+Klik op [url={token_url}]deze link[/url] op te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
 
 {organization_signature}'),
-    (13, 'en', 'Questions for your treatement at {organization}', 'Dear {greeting},
+    (13, 'en', 'Questions for your treatment at {organization}', 'Dear {greeting},
 
-Recently you visited [b]{organization}[/b] for treatment. For your proper treatment need answers to some questions.
+Recently you visited [b]{organization}[/b] for treatment. For your proper treatment you need to answer some questions.
 
 Click on [url={token_url}]this link[/url] to start or go to [url]{site_ask_url}[/url] and enter your token "{token}".
 
@@ -52,57 +52,57 @@ Click on [url={token_url}]this link[/url] to start or go to [url]{site_ask_url}[
 To unsubscribe from these mails [url={organization_unsubscribe_url}]click here[/url].'),
     (13, 'nl', 'Vragen over uw behandeling bij {organization}', 'Beste {greeting},
 
-Recent was u op bezoek bij [b]{organization}[/b] voor een behandling. Om u goed te kunnen behandelen moeten wij u vragen enkele vragen te beantwoorden.
+Recent was u op bezoek bij [b]{organization}[/b] voor een behandeling. Om u goed te kunnen behandelen verzoeken wij u enkele vragen te beantwoorden.
 
-Klik op [url={token_url}]deze link[/url] op te beginnen of gan naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
+Klik op [url={token_url}]deze link[/url] op te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
 
 {organization_signature}
 
 Om geen verdere email te ontvangen [url={organization_unsubscribe_url}]klik hier[/url].'),
-    (14, 'en', 'Reminder: your treatement at {organization}', 'Dear {greeting},
+    (14, 'en', 'Reminder: your treatment at {organization}', 'Dear {greeting},
 
-We remind you that for your proper treatment at [b]{organization}[/b] you are required to answer some questions.
+We remind you that for your proper treatment at [b]{organization}[/b] you need to answer some questions.
 
 Click on [url={token_url}]this link[/url] to start or go to [url]{site_ask_url}[/url] and enter your token "{token}".
 
 {organization_signature}
 
 To unsubscribe from these mails [url={organization_unsubscribe_url}]click here[/url].'),
-    (14, 'nl', 'Herinnering: uw behandeling bij {organization}', 'Dear {greeting},
+    (14, 'nl', 'Herinnering: uw behandeling bij {organization}', 'Beste {greeting},
 
-Wij willen u er bij deze aan herinneren dat u enkele vragen moet beantwoorden voor uw behandeling bij [b]{organization}[/b].
+Wij herinneren u eraan dat u nog enkele vragen moet beantwoorden voor uw behandeling bij [b]{organization}[/b].
 
-Klik op [url={token_url}]deze link[/url] op te beginnen of gan naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
+Klik op [url={token_url}]deze link[/url] op te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
 
 {organization_signature}
 
 Om geen verdere email te ontvangen [url={organization_unsubscribe_url}]klik hier[/url].'),
-    (15, 'en', 'Questions for the treatement of {relation_about} at {organization}', 'Dear {greeting},
+    (15, 'en', 'Questions for the treatment of {relation_about} at {organization}', 'Dear {greeting},
 
-Recently you visited [b]{organization}[/b] with {relation_about} for a treatment. For proper treatment need answers to some questions.
+Recently you visited [b]{organization}[/b] with {relation_about} for a treatment. For your proper treatment you need to answer some questions.
 
 Click on [url={token_url}]this link[/url] to start or go to [url]{site_ask_url}[/url] and enter your token "{token}".
 
 {organization_signature}'),
     (15, 'nl', 'Vragen over de behandeling van {relation_about} bij {organization}', 'Beste {greeting},
 
-Recent was u met {relation_about} op bezoek bij [b]{organization}[/b] voor een behandling. Om goed te kunnen behandelen vragen wij u enkele vragen te beantwoorden.
+Recent was u met {relation_about} op bezoek bij [b]{organization}[/b] voor een behandling. Om goed te kunnen behandelen verzoeken wij u enkele vragen te beantwoorden.
 
-Klik op [url={token_url}]deze link[/url] op te beginnen of gan naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
+Klik op [url={token_url}]deze link[/url] op te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
 
 {organization_signature}'),
-    (16, 'en', 'Reminder: treatement of {relation_about} at {organization}', 'Dear {greeting},
+    (16, 'en', 'Reminder: treatment of {relation_about} at {organization}', 'Dear {greeting},
 
 We remind you that for the proper treatment of {relation_about} at [b]{organization}[/b] we need answers to some questions.
 
 Click on [url={token_url}]this link[/url] to start or go to [url]{site_ask_url}[/url] and enter your token "{token}".
 
 {organization_signature}'),
-    (16, 'nl', 'Herinnering: behandeling van {relation_about} bij {organization}', 'Dear {greeting},
+    (16, 'nl', 'Herinnering: behandeling van {relation_about} bij {organization}', 'Beste {greeting},
 
-Wij willen u er bij deze aan herinneren dat u enkele vragen moet beantwoorden voor de behandeling van {relation_about} bij [b]{organization}[/b].
+Wij herinneren u eraan dat u nog enkele vragen moet beantwoorden voor de behandeling van {relation_about} bij [b]{organization}[/b].
 
-Klik op [url={token_url}]deze link[/url] op te beginnen of gan naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
+Klik op [url={token_url}]deze link[/url] op te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
 
 {organization_signature}'),
     (17, 'en', 'Password reset requested', 'To set a new password for the [b]{organization}[/b] site [b]{project}[/b], please click on this link:\n{reset_url}'),
