@@ -3,6 +3,7 @@ CREATE TABLE if not exists gems__surveys (
         gsu_id_survey               int unsigned not null auto_increment,
         gsu_survey_name             varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
         gsu_survey_description      varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        gsu_survey_languages        varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
         gsu_surveyor_id             int(11),
         gsu_surveyor_active         boolean not null default 1,
@@ -15,6 +16,7 @@ CREATE TABLE if not exists gems__surveys (
         gsu_id_source               int unsigned not null references gems__sources (gso_id_source),
         gsu_active                  boolean not null default 0,
         gsu_status                  varchar(127) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        gsu_survey_warnings         varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
         gsu_id_primary_group        bigint unsigned null references gems__groups (ggp_id_group),
 

@@ -311,6 +311,33 @@ class Gems_Util_TrackData extends UtilAbstract
     }
 
     /**
+     * Returns all available languages used in surveys
+     *
+     * @return array
+     */
+    public function getSurveyLanguages()
+    {
+        $sql = "SELECT DISTINCT gsu_survey_languages
+                    FROM gems__surveys
+                    ORDER BY gsu_survey_languages";
+        
+        $result = $this->db->fetchCol($sql);
+        
+        foreach ($result as $value) {
+            if (strpos($value, ', ') !== false) {
+                $results = explode(', ', $value);
+                foreach ($results as $values) {
+                    $return[$values] = $values;
+                }
+            } else {
+                $return[$value] = $value;
+            }
+        }
+        
+        return $return;
+    }
+    
+    /**
      * Get the Rounds that use this survey
      *
      * @param int $surveyId

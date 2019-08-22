@@ -1533,4 +1533,4 @@ ALTER TABLE `gems__surveys`
     AFTER `gsu_survey_description`;
 ALTER TABLE `gems__surveys` 
     ADD `gsu_survey_warnings` VARCHAR(250) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL 
-    AFTER `gsu_survey_languages`;
+    AFTER `gsu_status`;

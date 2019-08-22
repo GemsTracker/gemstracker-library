@@ -43,7 +43,10 @@ class SurveyMaintenanceSearchSnippet extends \Gems_Snippets_AutosearchFormSnippe
         $sources = $this->util->getDbLookup()->getSources();
         if (count($sources) > 1) {
             $elements[] = $this->_createSelectElement('gsu_id_source', $sources, $this->_('(all sources)'));    
-        }        
+        }
+        
+        $languages = $this->util->getTrackData()->getSurveyLanguages();
+        $elements[] = $this->_createSelectElement('survey_languages', $languages, $this->_('(all languages)'));
 
         $states     = array(
             'act' => $this->_('Active'),
@@ -51,6 +54,16 @@ class SurveyMaintenanceSearchSnippet extends \Gems_Snippets_AutosearchFormSnippe
             'nok' => $this->_('Blocked in source'),
         );
         $elements[] = $this->_createSelectElement('status', $states, $this->_('(every state)'));
+        
+        $warnings     = array(
+            'withwarning'              => $this->_('(with warnings)'),
+            'nowarning'                => $this->_('(without warnings)'),
+            'autoredirect'             => $this->_('Auto-redirect is disabled'),
+            'alloweditaftercompletion' => $this->_('Editing after completion is enabled'),
+            'allowregister'            => $this->_('Public registration is enabled'),
+            'listpublic'               => $this->_('Public access is enabled'),
+        );
+        $elements[] = $this->_createSelectElement('survey_warnings', $warnings, $this->_('(every warning state)'));
 
         $elements[] = \MUtil_Html::create('br');
 

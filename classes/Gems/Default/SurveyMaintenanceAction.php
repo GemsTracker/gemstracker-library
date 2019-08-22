@@ -228,10 +228,10 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
     {
         $br = \MUtil_Html::create('br');
 
-        $output[10] = array('gsu_survey_name', $br, 'gsu_survey_description');
+        $output[10] = array('gsu_survey_name', $br, 'gsu_survey_description', $br, 'gsu_survey_languages');
         $output[20] = array('gsu_surveyor_active', \MUtil_Html::raw($this->_(' [')), 'gso_source_name',
-            \MUtil_Html::raw($this->_(']')), $br, 'gsu_status_show', $br, 'gsu_insertable');
-        $output[30] = array('gsu_active', \MUtil_Html::raw(' '), 'track_count', $br, 'gsu_id_primary_group');
+            \MUtil_Html::raw($this->_(']')), $br, 'gsu_status_show', $br, 'gsu_survey_warnings');
+        $output[30] = array('gsu_active', \MUtil_Html::raw(' '), 'track_count', $br, 'gsu_insertable', $br, 'gsu_id_primary_group');
         $output[40] = array('gsu_surveyor_id', $br, 'gsu_code', $br, 'gsu_export_code');
 
         return $output;
@@ -275,6 +275,41 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
 
             }
             unset($filter['status']);
+        }
+        
+        if (array_key_exists('survey_warnings', $filter)) {
+            switch ($filter['survey_warnings']) {
+                case 'withwarning':
+                    $filter[] = "(gsu_survey_warnings IS NOT NULL AND gsu_survey_warnings NOT IN ('', 'OK'))";
+                    break;
+                case 'nowarning':
+                    $filter[] = "(gsu_survey_warnings IS NULL OR gsu_survey_warnings IN ('', 'OK'))";
+                    break;
+                case 'autoredirect':
+                    $filter[] = "(gsu_survey_warnings IS NOT NULL AND gsu_survey_warnings LIKE '%Auto-redirect is disabled%')";
+                    break;
+                case 'alloweditaftercompletion':
+                    $filter[] = "(gsu_survey_warnings IS NOT NULL AND gsu_survey_warnings LIKE '%Editing after completion is enabled%')";
+                    break;
+                case 'allowregister':
+                    $filter[] = "(gsu_survey_warnings IS NOT NULL AND gsu_survey_warnings LIKE '%Public registration is enabled%')";
+                    break;
+                case 'listpublic':
+                    $filter[] = "(gsu_survey_warnings IS NOT NULL AND gsu_survey_warnings LIKE '%Public access is enabled%')";
+                    break;
+
+                // default:
+
+            }
+            unset($filter['survey_warnings']);
+        }
+        
+        if (array_key_exists('survey_languages', $filter)) {
+            $filter[] = "(gsu_survey_languages IS NOT NULL AND gsu_survey_languages LIKE '%" . $filter['survey_languages'] . "%')";
+            
+            // default:
+
+            unset($filter['survey_languages']);
         }
 
         return $filter;

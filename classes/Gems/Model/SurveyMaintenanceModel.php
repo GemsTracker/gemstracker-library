@@ -97,12 +97,8 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel {
                 );
         
         $this->set('gsu_survey_languages',        'label', $this->_('Available languages'),
-                'elementClass', 'Exhibitor',
-                'itemDisplay', array($this, 'formatLanguages'));
+                'elementClass', 'Exhibitor');
         
-        $this->set('gsu_survey_warnings',        'label', $this->_('Warnings'),
-                'elementClass', 'Exhibitor'
-                );
         $this->set('gso_source_name',        'label', $this->_('Source'),
                 'elementClass', 'Exhibitor');
         $this->set('gsu_surveyor_active',    'label', $this->_('Active in source'),
@@ -114,6 +110,10 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel {
                 );
         $this->set('gsu_status_show',        'label', $this->_('Status in source'),
                 'elementClass', 'Exhibitor');
+        $this->set('gsu_survey_warnings',        'label', $this->_('Warnings'),
+                'elementClass', 'Exhibitor',
+                'formatFunction', array($this, 'formatWarnings')
+                );
         $this->set('gsu_active',             'label', sprintf($this->_('Active in %s'), $this->project->getName()),
                 'elementClass', 'Checkbox',
                 'multiOptions', $yesNo
@@ -167,17 +167,18 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel {
             'gsu_survey_name',
             'gsu_survey_description',
             'gsu_survey_languages',
-            'gsu_survey_warnings',
             'gso_source_name',
             'gsu_surveyor_active',
             'gsu_surveyor_id',
             'gsu_status_show',
+            'gsu_survey_warnings',
             'gsu_active',
             'gsu_id_primary_group',
             'gsu_insertable'            
             ]);
                 
         $this->addDependency('CanEditDependency', 'gsu_surveyor_active', array('gsu_active'));
+        $this->set('gsu_survey_languages', 'itemDisplay', array($this, 'formatLanguages'));
         $this->set('gsu_active',
                 'validators[group]', new \MUtil_Validate_Require(
                         $this->get('gsu_active', 'label'),
@@ -501,5 +502,20 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel {
         }
         
         return $seq;
+    }
+    
+    /**
+     * Return string on empty value
+     *
+     * @param mixed $value
+     * @return mixed $value
+     */
+    public static function formatWarnings($value)
+    {
+        if (is_null($value)) {
+            $value = new \MUtil_Html_HtmlElement('em', '(none)');
+        }
+        
+        return $value;
     }
 }

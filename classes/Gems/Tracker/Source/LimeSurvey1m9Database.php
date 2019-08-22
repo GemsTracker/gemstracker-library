@@ -585,7 +585,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
             }
             $surveyor_active = (0 === strlen($surveyor_status));
             
-            // ADDITONAL WARNINGs
+            // ADDITIONAL WARNINGS
             if ($lsSurvey['autoredirect'] == 'N') {
                 $surveyor_warnings .= "Auto-redirect is disabled. ";
             }
@@ -643,14 +643,14 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
                     $messages[] = sprintf($this->_('The available languages of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $surveyor_languages);
                 }
                 
-                if ($survey->getSurveyWarnings() != $surveyor_warnings) {
-                    if ($surveyor_warnings) {
+                if ($surveyor_warnings) {
+                    if ($survey->getSurveyWarnings() != $surveyor_warnings) {
                         $values['gsu_survey_warnings'] = $surveyor_warnings;
                         $messages[] = sprintf($this->_('The warning messages of the \'%s\' survey have been changed to \'%s\'.'), $survey->getName(), $surveyor_warnings);
-                    } elseif ($survey->getSurveyWarnings() != 'OK') {
-                        $values['gsu_survey_warnings'] = 'OK';
-                        $messages[] = sprintf($this->_('The warning messages of the \'%s\' survey have been cleared.'), $survey->getName());
                     }
+                }  elseif (!is_null($survey->getSurveyWarnings())) {
+                    $values['gsu_survey_warnings'] = NULL;
+                    $messages[] = sprintf($this->_('The warning messages of the \'%s\' survey have been cleared.'), $survey->getName());
                 }
 
             } else { // New record
