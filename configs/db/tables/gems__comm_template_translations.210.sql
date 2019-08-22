@@ -79,7 +79,7 @@ Klik op [url={token_url}]deze link[/url] op te beginnen of ga naar [url]{site_as
 Om geen verdere email te ontvangen [url={organization_unsubscribe_url}]klik hier[/url].'),
     (15, 'en', 'Questions for the treatment of {relation_about} at {organization}', 'Dear {greeting},
 
-Recently you visited [b]{organization}[/b] with {relation_about} for a treatment. For your proper treatment you need to answer some questions.
+Recently you visited [b]{organization}[/b] with {relation_about} for a treatment. For proper treatment you need to answer some questions.
 
 Click on [url={token_url}]this link[/url] to start or go to [url]{site_ask_url}[/url] and enter your token "{token}".
 
