@@ -156,7 +156,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             );
 
         foreach ($phpObjects as $className) {
-            if (preg_match("/[^_\"'\\\\a-z]$className/", $content)) {
+            if (preg_match("/[^_\"'\\\\a-z]" . $className . "[^_\"'\\\\a-z]/", $content)) {
                 $this->appNamespaceError = true;
                 $messages[] = "The code in this file contains a not namespace proof reference to '$className', prefix a \\.";
             }
