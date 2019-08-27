@@ -276,9 +276,10 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
      * @param \GemS_Tracker_Token $token
      * @param array $round
      * @param int   $userId Id of the user who takes the action (for logging)
+     * @param \Gems_Tracker_RespondentTrack Current respondent track
      * @return int The number of tokens changed by this code
      */
-    protected function checkTokenCondition(\GemS_Tracker_Token $token, $round, $userId)
+    protected function checkTokenCondition(\GemS_Tracker_Token $token, $round, $userId, \Gems_Tracker_RespondentTrack $respTrack)
     {
         $skipCode = $this->util->getReceptionCodeLibrary()->getSkipString();
 
@@ -312,7 +313,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
 
             if ($newStatus == true) {
                 // Token was made valid, now calc the dates
-                $this->checkTokenDates($token, $round, $userId);
+                $this->checkTokenDates($token, $round, $userId, $respTrack);
             }
         }
 
@@ -325,9 +326,10 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
      * @param \GemS_Tracker_Token $token
      * @param array $round
      * @param int   $userId Id of the user who takes the action (for logging)
+     * @param \Gems_Tracker_RespondentTrack Current respondent track
      * @return int 1 if the token has changed
      */
-    protected function checkTokenDates($token, $round, $userId)
+    protected function checkTokenDates($token, $round, $userId, \Gems_Tracker_RespondentTrack $respTrack)
     {
         // Change only not-completed tokens with a positive successcode where at least one date
         // is not set by user input
@@ -335,7 +337,6 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
             return 0;
         }
 
-        $respTrack = $token->getRespondentTrack();
         if ($token->isValidFromManual()) {
             $validFrom = $token->getValidFrom();
         } else {
@@ -391,8 +392,8 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
             }
 
             if ($round && $token !== $skipToken) {
-                $changes = $this->checkTokenDates($token, $round, $userId);
-                $changes += $this->checkTokenCondition($token, $round, $userId);
+                $changes = $this->checkTokenDates($token, $round, $userId, $respTrack);
+                $changes += $this->checkTokenCondition($token, $round, $userId, $respTrack);
             }
 
             // If condition changed and dates changed, we only signal one change
