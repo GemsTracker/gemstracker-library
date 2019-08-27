@@ -529,7 +529,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
      */
     protected function _filterContent($content)
     {
-        return preg_replace('/class\\s+([^\\s]+)/', '', $content);
+        return preg_replace('/(class|use)\\s+([^\\s]+)/', '', $content);
     }
 
     /**
