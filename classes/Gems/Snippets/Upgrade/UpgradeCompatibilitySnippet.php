@@ -206,6 +206,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
                 ],
             'Gems_Util_DbLookup' => [
                 'getFilterForMailJob' => 'MailJobsUtil->getJobFilter',
+                'getSurveys' => 'Gems_Util_TrackData->getSurveysFor',
                 ],
             'Gems_Util_Translated' => [
                 'getBulkMailProcessOptions'      => 'MailJobsUtil->getBulkProcessOptions',

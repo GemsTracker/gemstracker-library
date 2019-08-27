@@ -590,22 +590,12 @@ class Gems_Util_DbLookup extends UtilAbstract
      *
      * @param string $organizationId
      * @return array
+     * @deprecated since 1.8.7 
+     * @see \Gems_Util_TrackData->getSurveysFor
      */
     public function getSurveys($organizationId = null)
     {
-        $where = "";
-
-        if ($organizationId !== null) {
-            $where = "AND EXISTS (SELECT 1 FROM gems__rounds
-                INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
-                WHERE gro_id_survey = gsu_id_survey AND
-                gtr_organizations LIKE '%|" . (int) $organizationId . "|%')";
-        }
-
-        $sql = "SELECT gsu_id_survey, gsu_survey_name FROM gems__surveys WHERE gsu_active = 1 " .
-            $where . " ORDER BY gsu_survey_name ASC";
-
-        return $this->db->fetchPairs($sql);
+        return $this->util->getTrackData()->getSurveysFor($organizationId);
     }
 
     /**
