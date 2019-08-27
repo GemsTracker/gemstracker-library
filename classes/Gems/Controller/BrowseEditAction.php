@@ -54,13 +54,6 @@ abstract class Gems_Controller_BrowseEditAction extends \Gems_Controller_ModelAc
     public $filterStandard;
 
     /**
-     * Should Excel output contain formatted data (date fields, select lists)
-     *
-     * @var boolean
-     */
-    public $formatExcelData = true;
-
-    /**
      * The snippets used for the import action
      *
      * @var mixed String or array of snippets name
@@ -444,40 +437,6 @@ abstract class Gems_Controller_BrowseEditAction extends \Gems_Controller_ModelAc
     }
 
     /**
-     * Outputs the model to excel, applying all filters and searches needed
-     *
-     * When you want to change the output, there are two places to check:
-     *
-     * 1. $this->addExcelColumns($model), where the model can be changed to have labels for columns you
-     * need exported
-     *
-     * 2. $this->getExcelData($data, $model) where the supplied data and model are merged to get output
-     * (by default all fields from the model that have a label)
-     */
-    public function excelAction()
-    {
-        ini_set('max_execution_time', 90);  // Quickfix as long as it is not in a batchtask
-
-        // Set the request cache to use the search params from the index action
-        $this->getCachedRequestData(true, 'index');
-
-        $model = $this->getModel();
-
-        $this->_applySearchParameters($model, true);
-
-        $this->addExcelColumns($model);     // Hook to modify the model
-
-        // Use $this->formatExcelData to switch between formatted and unformatted data
-        $excelData = new \Gems_FormattedData($this->getExcelData($model->load(), $model), $model, $this->formatExcelData);
-
-        $this->view->result   = $excelData;
-        $this->view->filename = $this->getRequest()->getControllerName() . '.xls';
-        $this->view->setScriptPath(GEMS_LIBRARY_DIR . '/views/scripts' );
-
-        $this->render('excel', null, true);
-     }
-
-    /**
      * Return an array with route options depending on de $data given.
      *
      * @param mixed $data array or \Zend_Controller_Request_Abstract
@@ -726,43 +685,6 @@ abstract class Gems_Controller_BrowseEditAction extends \Gems_Controller_ModelAc
     public function getDefaultSearchData()
     {
         return array();
-    }
-
-    /**
-     * Returns an array with all columns from the model that have a label
-     *
-     * @param array                     $data
-     * @param \MUtil_Model_ModelAbstract $model
-     * @return array
-     */
-    protected function getExcelData($data, \MUtil_Model_ModelAbstract $model)
-    {
-        $headings = array();
-        $emptyMsg = sprintf($this->_('No %s found.'), $this->getTopic(0));
-        foreach ($model->getItemsOrdered() as $name) {
-            if ($label = $model->get($name, 'label')) {
-                $headings[$name] = (string) $label;
-            }
-        }
-        $results = array();
-        $results[] = $headings;
-        if ($headings) {
-            if ($data) {
-                foreach ($data as $row) {
-                    $results[] = array_intersect_key($row, $headings);
-                }
-                return $results;
-            } else {
-                $result = array();
-                foreach ($headings as $key => $value) {
-                    $result[$key] = $emptyMsg;
-                }
-                $results[] = $result;
-                return $results;
-            }
-        } else {
-            return array($emptyMsg);
-        }
     }
 
     /**
