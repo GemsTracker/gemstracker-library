@@ -337,6 +337,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                         // Since there is no question text (it contains the equation)
                         // We use the help text for that, but in case that is empty we use
                         // The question code
+                        $row['equation'] = $row['question'];
                         $row['question'] = $row['help'];
                         $row['help']     = '';
                         if (empty($row['question'])) {
@@ -829,6 +830,9 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             $tmpres['group'] = $field['gid'];
             $tmpres['type']  = $field['type'];
             $tmpres['title'] = $field['title'];
+            if (array_key_exists('equation', $field)) {
+                $tmpres['equation'] = $field['equation'];
+            }
 
             $oldQid = isset($oldfld['qid']) ? $oldfld['qid'] : 0;
             if ($oldQid !== $field['qid']) {
