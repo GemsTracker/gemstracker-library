@@ -344,29 +344,118 @@ class GemsEscort extends \MUtil_Application_Escort
         $exists      = false;
         $cachePrefix = GEMS_PROJECT_NAME . '_';
 
-
+        $defaultLifetime = null;
         // Check if APC extension is loaded and enabled
         if (\MUtil_Console::isConsole() && !ini_get('apc.enable_cli') && $useCache === 'apc') {
             // To keep the rest readable, we just fall back to File when apc is disabled on cli
-            $useCache = "File";
+            $useCache = "file";
         }
-        if ($useCache === 'apc' && extension_loaded('apc') && ini_get('apc.enabled')) {
-            //Add path to the prefix as APC is a SHARED cache
-            $cachePrefix .= md5(APPLICATION_PATH);
-            $cacheBackendOptions = array('cache_id_prefix' => $cachePrefix);
-            $cacheBackend = new \Gems\Cache\Backend\Apc($cacheBackendOptions);
-            $exists = true;
-        } else {
-            $cacheBackend = 'File';
-            $cacheDir = GEMS_ROOT_DIR . "/var/cache/";
-            $cacheBackendOptions = array('cache_dir' => $cacheDir);
-            if (!file_exists($cacheDir)) {
-                if (@mkdir($cacheDir, 0777, true)) {
+
+
+        switch ($useCache) {
+            case 'newFile':
+                if (!class_exists('\Symfony\Component\Cache\Adapter\FilesystemAdapter')) {
+                    error_log("Symfony filesystem cache not available!");
+                    break;
+                }
+                $namespace = '';
+                $cacheDir = GEMS_ROOT_DIR . '/var/cache';
+                //$cache = new Symfony\Component\Cache\Simple\FilesystemCache($namespace, $defaultLifetime, $directory);
+                $cache = new \Symfony\Component\Cache\Adapter\TagAwareAdapter(
+                    new \Symfony\Component\Cache\Adapter\FilesystemAdapter($namespace, $defaultLifetime, $cacheDir)
+                );
+                $cacheBackend = new \Gems\Cache\Backend\Psr6Cache($cache);
+                $cacheBackendOptions = [];
+                if (!file_exists($cacheDir)) {
+                    if (@mkdir($cacheDir, 0777, true)) {
+                        $exists = true;
+                    }
+                } else {
                     $exists = true;
                 }
-            } else {
-                $exists = true;
-            }
+                break;
+            case 'newZendFile':
+                if (!class_exists('\Zend\Cache\StorageFactory')) {
+                    error_log("Zend\Cache Filesystem cache not available!");
+                    break;
+                }
+                $cacheDir = GEMS_ROOT_DIR . "/var/cache/";
+                $cacheBackendOptions = array('cache_dir' => $cacheDir, 'cache_file_perm' => 0660);
+
+                $storage = \Zend\Cache\StorageFactory::factory([
+                    'adapter' => [
+                        'name' => 'filesystem',
+                        'options' => [
+                            'cache_dir' => $cacheDir,
+                            'file_permission' => 0660,
+                        ],
+                    ],
+                    'plugins' => array(
+                        // Don't throw exceptions on cache errors
+                        /*'exception_handler' => array(
+                            'throw_exceptions' => false
+                        ),*/
+                        // We store database rows on filesystem so we need to serialize them
+                        'Serializer'
+                    )
+                ]);
+
+                $cacheBackend = new \Gems\Cache\Backend\ZendCache($storage);
+
+                if (!file_exists($cacheDir)) {
+                    if (@mkdir($cacheDir, 0777, true)) {
+                        $exists = true;
+                    }
+                } else {
+                    $exists = true;
+                }
+                break;
+            case 'newApc':
+
+                if (!class_exists('\Symfony\Component\Cache\Adapter\ApcuAdapter')) {
+                    error_log("Symfony APCU cache not available!");
+                    break;
+                }
+                    if (extension_loaded('apc') && ini_get('apc.enabled')) {
+                    //Add path to the prefix as APC is a SHARED cache
+                    $cachePrefix .= md5(APPLICATION_PATH);
+                    $cacheBackendOptions = array('cache_id_prefix' => $cachePrefix);
+
+                    $cache = new \Symfony\Component\Cache\Adapter\TagAwareAdapter(
+                        new \Symfony\Component\Cache\Adapter\ApcuAdapter($cachePrefix, $defaultLifetime)
+                    );
+                    $cacheBackend = new \Gems\Cache\Backend\Psr6Cache($cache);
+                    $exists = true;
+                    break;
+                }
+                // Intentional fall through;
+
+            case 'apc':
+            case 'oldApc':
+                if (extension_loaded('apc') && ini_get('apc.enabled')) {
+                    //Add path to the prefix as APC is a SHARED cache
+                    $cachePrefix .= md5(APPLICATION_PATH);
+                    $cacheBackendOptions = array('cache_id_prefix' => $cachePrefix);
+                    $cacheBackend = new \Gems\Cache\Backend\Apc($cacheBackendOptions);
+                    $exists = true;
+                    break;
+                } else {
+                    error_log("APC cache extension not available! defaulting to file.");
+                }
+            // Intentional fall through;
+            case 'file':
+            case 'oldFile':
+            default:
+                $cacheBackend = 'File';
+                $cacheDir = GEMS_ROOT_DIR . "/var/cache/";
+                $cacheBackendOptions = array('cache_dir' => $cacheDir);
+                if (!file_exists($cacheDir)) {
+                    if (@mkdir($cacheDir, 0777, true)) {
+                        $exists = true;
+                    }
+                } else {
+                    $exists = true;
+                }
         }
 
         if ($exists && $useCache <> 'none') {
@@ -376,8 +465,8 @@ class GemsEscort extends \MUtil_Application_Escort
              *                           not support automatic cleaning.
              */
             $cacheFrontendOptions = array('automatic_serialization' => true,
-                                          'cache_id_prefix' => $cachePrefix,
-                                          'automatic_cleaning_factor' => 0);
+                'cache_id_prefix' => $cachePrefix,
+                'automatic_cleaning_factor' => 0);
 
             $cache = \Zend_Cache::factory('Core', $cacheBackend, $cacheFrontendOptions, $cacheBackendOptions);
         } else {
