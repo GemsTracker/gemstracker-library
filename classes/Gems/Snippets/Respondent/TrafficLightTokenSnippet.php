@@ -23,13 +23,24 @@
  */
 class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnippet
 {
-
-    public $browse = false;
+    /**
+     * Set a fixed model filter.
+     *
+     * Leading _ means not overwritten by sources.
+     *
+     * @var array
+     */
+    protected $_fixedFilter     = array(
+        //'gto_valid_from <= NOW()'
+    );
 
     /**
-     * @var \MUtil_Html_Creator
+     * Set a fixed model sort.
+     *
+     * Leading _ means not overwritten by sources.
+     *
+     * @var array
      */
-    public $creator             = null;
     protected $_fixedSort       = array(
         'gr2t_start_date'         => SORT_DESC,
         'gto_id_respondent_track' => SORT_DESC,
@@ -39,9 +50,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
         'forgroup'                => SORT_ASC,
         'gto_round_order'         => SORT_ASC
     );
-    protected $_fixedFilter     = array(
-        //'gto_valid_from <= NOW()'
-    );
+
     protected $_completed       = 0;
     protected $_open            = 0;
     protected $_missed          = 0;
@@ -64,7 +73,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
      * @var string
      */
     protected $_dateTimeFormat;
-    
+
     /**
      *
      * @var \Gems_Menu_SubMenuItem
@@ -81,31 +90,37 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
      *
      * @var \Gems_Menu_SubMenuItem
      */
+    protected $_takeSurvey;
+
+    /**
+     *
+     * @var \Gems_Menu_SubMenuItem
+     */
     protected $_tokenEdit;
 
     /**
      *
      * @var \Gems_Menu_SubMenuItem
      */
-    protected $_trackAnswer;
-    
-    /**
-     *
-     * @var \Gems_Menu_SubMenuItem
-     */
     protected $_tokenCorrect;
-    
+
     /**
      *
      * @var \Gems_Menu_SubMenuItem
      */
     protected $_tokenPreview;
-    
+
     /**
      *
      * @var \Gems_Menu_SubMenuItem
      */
     protected $_tokenShow;
+
+    /**
+     *
+     * @var \Gems_Menu_SubMenuItem
+     */
+    protected $_trackAnswer;
 
     /**
      *
@@ -119,13 +134,20 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
      */
     protected $_trackEdit;
 
-    /**
-     *
-     * @var \Gems_Menu_SubMenuItem
-     */
-    protected $_takeSurvey;
-
     public $allowedOrgs;
+
+    /**
+     * Sets pagination on or off.
+     *
+     * @var boolean
+     */
+    public $browse = false;
+
+    /**
+     * @var \MUtil_Html_Creator
+     */
+    public $creator             = null;
+
     public $currentOrgId;
 
     /**
@@ -137,14 +159,16 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
      */
     protected $textNotMailable;
 
-    protected function _addTooltip($element, $text, $placement = "auto") {
+    protected function _addTooltip($element, $text, $placement = "auto")
+    {
         $element->setAttrib('data-toggle', 'tooltip')
                 ->setAttrib('data-placement', $placement)
                 ->setAttrib('data-html', true) // For multiline tooltips
                 ->setAttrib('title', $text);
     }
 
-    protected function _getDeleteIcon($row, $trackParameterSource, $isSuccess = true) {
+    protected function _getDeleteIcon($row, $trackParameterSource, $isSuccess = true)
+    {
         $deleteTrackContainer = \MUtil_Html::create('div', array('class' => 'otherOrg pull-right', 'renderClosingTag' => true));
         if ($row['gr2o_id_organization'] != $this->currentOrgId) {
             $deleteTrackContainer[] = $this->loader->getOrganization($row['gr2o_id_organization'])->getName() . ' ';
@@ -171,7 +195,8 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
         return $deleteTrackContainer;
     }
 
-    protected function _getEditIcon($row, $trackParameterSource) {
+    protected function _getEditIcon($row, $trackParameterSource)
+    {
         if (array_key_exists($row['gr2o_id_organization'], $this->allowedOrgs) && $this->_trackEdit) {
             $editLink = \MUtil_Html::create('i', array(
                 'class'            => 'fa fa-pencil',
@@ -188,7 +213,8 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
         return $link;
     }
 
-    protected function _getMailIcon($row) {
+    protected function _getMailIcon($row)
+    {
         if (!array_key_exists('gr2t_mailable', $row)) {
             return null;
         }
@@ -214,7 +240,8 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
      *
      * @param \Zend_View $view
      */
-    protected function _initView($view) {
+    protected function _initView($view)
+    {
         $baseUrl = \GemsEscort::getInstance()->basepath->getBasePath();
 
         // Make sure we can use jQuery
@@ -237,7 +264,8 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
      * @param array $tokenData
      * @return boolean
      */
-    protected function _isCompleted($tokenData) {
+    protected function _isCompleted($tokenData)
+    {
         return ($tokenData['token_status'] == "A");
     }
 
@@ -247,21 +275,24 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
      * @param array $tokenData
      * @return boolean
      */
-    protected function _isMissed($tokenData) {
+    protected function _isMissed($tokenData)
+    {
         return in_array($tokenData['token_status'], ['M', 'I']);
     }
-    
+
     /**
      * Are we past the valid from date but before the valid until date?
      *
      * @param array $tokenData
      * @return boolean
      */
-    protected function _isValid($tokenData) {
+    protected function _isValid($tokenData)
+    {
         return in_array($tokenData['token_status'], ['O', 'P']);
     }
 
-    protected function _loadData() {
+    protected function _loadData()
+    {
         $model = $this->getModel();
         $model->trackUsage();
 
@@ -295,21 +326,22 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
         return $model->load(true, $this->_fixedSort);
     }
 
-    public function addToken($tokenData) {
+    public function addToken($tokenData)
+    {
         // We add all data we need so no database calls needed to load the token
         $tokenDiv = $this->creator->div(array('class' => 'zpitem', 'renderClosingTag' => true));
         $innerDiv = $tokenDiv->div(array('class' => 'tokenwrapper', 'renderClosingTag' => true));
-        
+
         $toolsDiv = $this->creator->div(array('class' => 'tools', 'renderClosingTag' => true));
         $innerDiv[] = $toolsDiv;
 
-        $this->getEditanswers($toolsDiv, $tokenData);
+        $this->getToolIcons($toolsDiv, $tokenData);
         $this->addTokenIcon($toolsDiv, $tokenData);
-        
+
         $tokenClass = $this->util->getTokenData()->getStatusClass($tokenData['token_status']);
-                
+
         $tokenLink = null;
-        
+
         switch ($tokenData['token_status']) {
             case 'A': // Answered
                 $tokenLink = $this->createMenuLink($tokenData + array('gto_in_source' => 1), 'track', 'answer', '', $this->_trackAnswer);
@@ -323,7 +355,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                     $tokenLink->target = 'inline';
                 }
                 break;
-                
+
             case 'O': // Open
             case 'P': // Partial
                 $tokenLink = $this->createMenuLink($tokenData, 'ask', 'take', '', $this->_takeSurvey);
@@ -337,14 +369,14 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                 }
                 $this->_open++;
                 break;
-                
+
             case 'M': // Missed
             case 'I': // Incomplete
                 $tokenLink = $this->createMenuLink($tokenData + array('id_type' => 'token', 'grc_success' => 1), 'track', 'edit', '', $this->_tokenEdit);
                 $tooltip = sprintf($this->_('Missed since %s'), $tokenData['gto_valid_until']->get($this->_dateTimeFormat));
                 $this->_missed++;
                 break;
-            
+
             case 'W': //Waiting
                 $tokenLink = $this->createMenuLink($tokenData + array('id_type' => 'token', 'grc_success' => 1), 'track', 'edit', '', $this->_tokenEdit);
                 $tooltip = sprintf($this->_('Valid from %s'), $tokenData['gto_valid_from']->get($this->_dateTimeFormat));
@@ -360,17 +392,18 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
         }
         $tokenDiv->appendAttrib('class', $tokenClass);
         $innerDiv[] = $tokenLink;
-        
-        $this->_addTooltip($tokenLink, $tooltip, 'auto top');        
+
+        $this->_addTooltip($tokenLink, $tooltip, 'auto top');
         $tokenLink[] = $tokenData['gsu_survey_name'];
 
         return $tokenDiv;
     }
-    
-    protected function addTokenIcon($toolsDiv, $tokenData) {
+
+    protected function addTokenIcon($toolsDiv, $tokenData)
+    {
         $iconFile = '';
         if (!empty($tokenData['gto_icon_file'])) {
-            $iconFile = $tokenData['gto_icon_file'];            
+            $iconFile = $tokenData['gto_icon_file'];
         } elseif (!empty($tokenData['gro_icon_file'])) {
             $iconFile = $tokenData['gro_icon_file'];
         }
@@ -379,7 +412,8 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
         }
     }
 
-    public function afterRegistry() {
+    public function afterRegistry()
+    {
         parent::afterRegistry();
 
         // Load the display dateformat
@@ -394,10 +428,10 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
         $this->_trackAnswer  = $this->findMenuItem('track', 'answer');
         $this->_trackEdit    = $this->findMenuItem('track', 'edit-track');
         $this->_trackDelete  = $this->findMenuItem('track', 'delete-track');
-        
+
         $this->_surveyAnswer = $this->findMenuItem('survey', 'answer');
         $this->_takeSurvey   = $this->findMenuItem('ask', 'take');
-        
+
         $this->_tokenCorrect = $this->findMenuItem('track', 'correct');
         $this->_tokenDelete  = $this->findMenuItem('track', 'delete');
         $this->_tokenEdit    = $this->findMenuItem('track', 'edit');
@@ -425,7 +459,8 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
      * @param type $menuItem
      * @return \MUtil_Html_AElement
      */
-    public function createMenuLink($parameterSource, $controller, $action = 'index', $label = null, $menuItem = null) {
+    public function createMenuLink($parameterSource, $controller, $action = 'index', $label = null, $menuItem = null)
+    {
         if (!is_null($menuItem) || $menuItem = $this->findMenuItem($controller, $action)) {
             $item = $menuItem->toActionLinkLower($this->request, $parameterSource, $label);
             if (is_object($item)) {
@@ -435,7 +470,13 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
         }
     }
 
-    public function createModel() {
+    /**
+     * Creates the model
+     *
+     * @return \MUtil_Model_ModelAbstract
+     */
+    public function createModel()
+    {
         $model = parent::createModel();
 
         if (!$model->has('forgroup')) {
@@ -443,13 +484,14 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
         }
 
         return $model;
-    }    
+    }
 
-    protected function finishGroup($progressDiv) {
+    protected function finishGroup($progressDiv)
+    {
         if (is_null($progressDiv)) {
             return;
         }
-        
+
         if ($this->_missed > 0) {
             $progressDiv->div($this->_missed, array('class' => 'missed'));
         }
@@ -474,7 +516,8 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
         $this->_future    = 0;
     }
 
-    protected function finishTrack($progressDiv) {
+    protected function finishTrack($progressDiv)
+    {
         if (!is_null($progressDiv)) {
             $total = max($this->_completedTrack + $this->_openTrack + $this->_missedTrack + $this->_futureTrack, 1);
 
@@ -506,36 +549,18 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
         $this->_futureTrack    = 0;
 
         return;
-    }        
-    
-    /**
-     * 
-     * @param \MUtil_Html $toolsDiv
-     * @param type $token
-     */
-    public function getEditanswers($toolsDiv, $token) {
-        static $correctIcon;
-        
-        if (!isset($correctIcon)) {
-            $correctIcon = \MUtil_Html::create('i', array(
-                    'class'            => 'fa fa-fw fa-pencil dropdown-toggle',
-                    'renderClosingTag' => true
-                ));
-        }
-        
-        // When not completed we have no correct
-        if (!$this->_isCompleted($token)) return;
-        
-        $dropUp = $toolsDiv->div(array('class' => 'dropdown dropup pull-right', 'renderClosingTag' => true));
-        $correctLink = $this->createMenuLink($token + ['is_completed' => 1, 'grc_success' => 1], 'track', 'correct', $correctIcon, $this->_tokenCorrect);
-        if ($correctLink) {
-            $this->_addTooltip($dropUp, ucfirst($this->_tokenCorrect->get('label')));
-            $dropUp->append($correctLink);
-        }
-        return;
     }
-    
-    public function getHtmlOutput(\Zend_View_Abstract $view) {
+
+    /**
+     * Create the snippets content
+     *
+     * This is a stub function either override getHtmlOutput() or override render()
+     *
+     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     */
+    public function getHtmlOutput(\Zend_View_Abstract $view)
+    {
         $this->_initView($view);
 
         $main = $this->creator->div(array('class' => 'panel panel-default', 'id' => 'trackwrapper', 'renderClosingTag' => true));
@@ -665,7 +690,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
             if ($doelgroep !== $row['forgroup']) {
                 $this->finishGroup($progressDiv);
                 $doelgroep    = $row['forgroup'];
-                $doelgroepDiv = $day->div(array('class' => 'actor', 'renderClosingTag' => true));                
+                $doelgroepDiv = $day->div(array('class' => 'actor', 'renderClosingTag' => true));
                 $doelgroepDiv->h6(array($minIcon, $doelgroep));
                 $progressDiv  = $doelgroepDiv->div(array('class' => 'zplegenda', 'renderClosingTag' => true));
                 $tokenDiv     = $doelgroepDiv->div(array('class' => 'zpitems', 'renderClosingTag' => true));
@@ -681,11 +706,65 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
 
         return $main;
     }
-    
-    public function hasHtmlOutput() {
+
+    /**
+     *
+     * @param \MUtil_Html $toolsDiv
+     * @param array $token
+     */
+    public function getToolIcons($toolsDiv, $token)
+    {
+        static $correctIcon;
+        static $showIcon;
+
+        if (!isset($correctIcon)) {
+            $correctIcon = \MUtil_Html::create('i', array(
+                    'class'            => 'fa fa-fw fa-pencil dropdown-toggle',
+                    'renderClosingTag' => true
+                ));
+        }
+
+        if (!isset($showIcon)) {
+            $plusIcon = \MUtil_Html::create('i', array(
+                    'class'            => 'fa fa-fw fa-ellipsis-h dropdown-toggle',
+                    'renderClosingTag' => true
+                ));
+        }
+
+        $dropUp = $toolsDiv->div(array('class' => 'dropdown dropup pull-right', 'renderClosingTag' => true));
+
+        // When not completed we have no correct
+        if ($this->_isCompleted($token)) {
+            $correctLink = $this->createMenuLink($token + ['is_completed' => 1, 'grc_success' => 1], 'track', 'correct', $correctIcon, $this->_tokenCorrect);
+            if ($correctLink) {
+                $this->_addTooltip($dropUp, ucfirst($this->_tokenCorrect->get('label')));
+                $dropUp->append($correctLink);
+            }
+        }
+
+        $showLink = $this->createMenuLink($token, 'track', 'show', $plusIcon, $this->_tokenShow);
+        if ($showLink) {
+            $this->_addTooltip($dropUp, $this->_('Details'));
+            $dropUp->append($showLink);
+        }
+    }
+
+    /**
+     * The place to check if the data set in the snippet is valid
+     * to generate the snippet.
+     *
+     * When invalid data should result in an error, you can throw it
+     * here but you can also perform the check in the
+     * checkRegistryRequestsAnswers() function from the
+     * {@see \MUtil_Registry_TargetInterface}.
+     *
+     * @return boolean
+     */
+    public function hasHtmlOutput()
+    {
         return $this->respondent && $this->request;
     }
-    
+
     /**
      * Copied from parent, adjusted to also show inactive tracks with ok and completed tokens
      *

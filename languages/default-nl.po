@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.2.3\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
@@ -4913,7 +4913,7 @@ msgstr ""
 
 #: classes/Gems/Menu.php:288
 msgid "Grant right for access to embedded login page."
-msgstr ""
+msgstr "Verleen recht voor toegang tot delegeerders aanmeldingspagina."
 
 #: classes/Gems/Menu.php:296
 msgid "Logon"
@@ -5943,11 +5943,13 @@ msgstr "Gebruikersnaam"
 
 #: classes/Gems/Model/StaffModel.php:197
 msgid "Is embedder"
-msgstr ""
+msgstr "Is delegeerder"
 
 #: classes/Gems/Model/StaffModel.php:198
 msgid "An embedder is only allowed to act as a front login for other users."
 msgstr ""
+"Een delegeerder kan alleen gebruikt worden om andere gebruikers in te laten "
+"loggen."
 
 #: classes/Gems/Model/StaffModel.php:234
 msgid "Primary function"
