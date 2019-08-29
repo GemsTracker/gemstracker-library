@@ -336,7 +336,13 @@ abstract class Gems_Menu_MenuAbstract
         return $setup;
     }
 
-
+    /**
+     *
+     * @param string $label
+     * @param string $privilege
+     * @param array $other
+     * @return \Gems_Menu_ContainerItem
+     */
     public function addContainer($label, $privilege = null, array $other = array())
     {
         $other['label'] = $label;
@@ -808,7 +814,7 @@ abstract class Gems_Menu_MenuAbstract
             ->addParameters(\MUtil_Model::REQUEST_ID)
             ->setParameterFilter('gsu_active', 1);
 
-        
+
         // Multi survey
         $page->addAction($this->_('Check all is answered'), 'pr.survey-maintenance.check-all', 'check-all');
         $page->addAction($this->_('Import answers'), 'pr.survey-maintenance.answer-import', 'answer-imports');

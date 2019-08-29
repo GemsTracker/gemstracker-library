@@ -129,8 +129,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
      * you should ALWAYS put this menu in the root menu.
      *
      * @param string $label Label for the whole menu
-     * @param string $privilegeShow The limited privilege (look and edit some items)
-     * @param string $privilegeEdits The privilege for being allowed to do anything
+     * @return \Gems_Menu_ContainerItem
      */
     public function addGemsSetupContainer($label)
     {
