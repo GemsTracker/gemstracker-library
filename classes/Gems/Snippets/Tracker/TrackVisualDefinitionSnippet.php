@@ -114,11 +114,35 @@ class TrackVisualDefinitionSnippet extends \Gems_Snippets_ModelTableSnippetAbstr
             $model->set('filler', 'label', $this->_('Filler'));
             $model->set('gsu_survey_name', 'label', $this->_('Survey'));            
             foreach ($rounds as $round) {
-                $model->set($round, 'label', $round);
+                $model->set($round, 'label', $round, 'formatFunction', [$this, 'visualRoundStatus']);
             }
             $this->_model = $model;
         }
 
         return $this->_model;
     }
+
+    /**
+     * Show a check or cross for true or false values
+     *
+     * @param bool $value
+     * @return mixed
+     */
+    public function visualRoundStatus($value)
+    {
+        switch ($value) {
+            case 'X':
+                // yes
+
+                return \MUtil_Html::create()->i(['class' => 'fa fa-check', 'style' => 'color: green;', 'title' => $this->_('Yes')]);
+                break;
+            case 'C':
+                // Condition
+                return \MUtil_Html::create()->i(['class' => 'fa fa-question-circle', 'style' => 'color: orange;', 'title' => $this->_('Condition')]);
+                break;
+            default:
+                return null;
+        }
+    }
+
 }
