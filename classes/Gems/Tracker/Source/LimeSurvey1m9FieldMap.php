@@ -78,7 +78,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
      * @var int
      */
     protected $sourceSurveyId;
-    
+
     /**
      * The GemsTracker source id
      *
@@ -180,7 +180,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             $sql = 'SELECT a.*, q.other FROM ' . $qaTable . ' AS a
                 LEFT JOIN ' . $qTable . ' AS q ON q.qid = a.qid AND q.language = a.language
                 WHERE q.sid = ? AND q.language = ? ORDER BY a.qid, a.scale_id, sortorder';
-            
+
             $this->_hardAnswers = array();
             if ($rows = $this->lsDb->fetchAll($sql, array($this->sourceSurveyId, $this->language))) {
                 foreach ($rows as $row) {
@@ -254,7 +254,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                         $possibleAnswers = count($this->_getMultiOptions($row));
                         $maxAnswers      = $this->_getQuestionAttribute($row['qid'], 'max_answers', $possibleAnswers);
                         $slots           = min($maxAnswers, $possibleAnswers);
-                        
+
                         for ($a = 1; $a <= $slots; $a++) {
                             $row1 = $row;
                             $row1['code'] = $row['title'] . '_' . $a;
@@ -437,7 +437,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
         if (isset($this->_answers[$code][$scaleId])) {
             return $this->_answers[$code][$scaleId];
         }
-        
+
         $qid  = $field['qid'];
 
         // Get the real multioption
@@ -472,7 +472,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                     $stepvalue = $this->_getQuestionAttribute($qid, 'slider_accuracy', 1);
                     $answers   = range($minvalue, $maxvalue, $stepvalue);
                     $answers   = array_combine($answers, $answers);
-                    break;                    
+                    break;
                 case 'D':
                     $answers = $this->translate->_('Date');
                     break;
@@ -508,7 +508,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
     protected function _getQuestionAttribute($qid, $attribute, $default = null)
     {
         if (! is_array($this->_attributes)) {
-            $this->_attributes = [];            
+            $this->_attributes = [];
             $attributesTable  = $this->_getQuestionAttributesTableName();
             $questionsTable   = $this->_getQuestionsTableName();
             $surveyTable      = $this->_getSurveysTableName();
@@ -519,12 +519,12 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                 WHERE s.sid = ?';
 
             $attributes = $this->lsDb->fetchAll($sql, $this->sourceSurveyId);
-            
+
             if (false === $attributes) {
                 // If DB lookup failed, return the default
                 return $default;
             }
-            
+
             foreach ($attributes as $attrib) {
                 $this->_attributes[$attrib['qid']][$attrib['attribute']] = $attrib['value'];
             }
@@ -634,7 +634,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                     if (strpos($format, ':')) {
                         $time = true;
                     }
-                    
+
                     // Find any of -\/ to mark as a date
                     $regExp = '/.*[-\/\\\\]+.*/m';
                     $matches = [];
@@ -642,7 +642,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                     if (count($matches) > 0) {
                         $date = true;
                     }
-                    
+
                     if ($date && !$time) {
                         return \MUtil_Model::TYPE_DATE;
                     } elseif (!$date && $time) {
@@ -681,6 +681,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             $tmpres = array();
             $tmpres['thClass']         = \Gems_Tracker_SurveyModel::CLASS_MAIN_QUESTION;
             $tmpres['group']           = $field['gid'];
+            $tmpres['groupName']       = isset($field['group_name']) ? $field['group_name'] : null;
             $tmpres['type']            = $this->_getType($field);
             $tmpres['survey_question'] = true;
 
@@ -689,10 +690,10 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                     $tmpres = $tmpres + $dateFormats;
                 }
             }
-            
+
             if ($options = $this->_getMultiOptions($field)) {
                 $tmpres['multiOptions'] = $options;
-                
+
                 // Limesurvey defines numeric options as string, maybe we can convert it back
                 if ($tmpres['type'] === \MUtil_Model::TYPE_STRING) {
                     $changeType = true;
@@ -712,7 +713,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             if ($tmpres['type'] === \MUtil_Model::TYPE_NUMERIC && !isset($tmpres['multiOptions'])) {
                 $tmpres['formatFunction'] = array($this, 'handleFloat');
             }
-            
+
             if (isset($field['question'])) {
                 $tmpres['label'] = \MUtil_Html::raw($this->removeMarkup($field['question']));
             }
@@ -741,7 +742,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                 }
                 $tmpres['thClass'] = \Gems_Tracker_SurveyModel::CLASS_SUB_QUESTION;
             }
-            
+
             // Code does not have to be unique. So if a title is used
             // twice we only use it for the first result.
             if (isset($field['code']) && (! $model->has($field['code']))) {
@@ -930,7 +931,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
 
         return $results;
     }
-    
+
     /**
      * Function to cast numbers as float, but leave null intact
      * @param  The number to cast to float
