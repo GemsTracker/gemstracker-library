@@ -6,7 +6,7 @@ class Gems_Tracker_Source_ExtraMapTest extends \Gems_Test_DbTestAbstract {
      * @var \Gems_Tracker_Source_LimeSurvey1m9FieldMap
      */
     protected $fieldmap;
-    
+
     protected function setUp() {
         // \Zend_Application: loads the autoloader
         require_once 'Zend/Application.php';
@@ -37,7 +37,7 @@ class Gems_Tracker_Source_ExtraMapTest extends \Gems_Test_DbTestAbstract {
         $this->cache    = $cache;
 
         $this->fieldmap = new \Gems_Tracker_Source_LimeSurvey1m9FieldMap($sourceSurveyId, $language, $lsDb, $translate, $tablePrefix, $cache, 1);
-        
+
     }
 
     /**
@@ -74,7 +74,7 @@ class Gems_Tracker_Source_ExtraMapTest extends \Gems_Test_DbTestAbstract {
 
         return $translate;
     }
-    
+
     public function testFieldMapFull() {
         // Create a simple array model to apply to fieldmap to
         $array = [];
@@ -83,16 +83,16 @@ class Gems_Tracker_Source_ExtraMapTest extends \Gems_Test_DbTestAbstract {
 
         foreach($model->getItemNames() as $name) {
             $result[$name] = $model->get($name);
-            unset($result[$name]['formatFunction']);
+            unset($result[$name]['formatFunction'], $result[$name]['groupName']);
         }
-        
+
         // To update the stored fieldmap, uncomment the following if you know what you are doing
         //$export = serialize($result);
         //file_put_contents(GEMS_TEST_DIR . '/data/fieldmap.txt', $export);
         $expected = unserialize(file_get_contents(GEMS_TEST_DIR . '/data/fieldmap.txt'));
         $this->assertEquals($expected, $result, 'Fieldmap has changed!!');
     }
-    
+
     public function testGetQuestionInformation() {
         // Create a simple array model to apply to fieldmap to
         $array = [];

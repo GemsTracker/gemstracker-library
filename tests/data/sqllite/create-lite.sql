@@ -262,12 +262,17 @@ CREATE TABLE gems__comm_templates (
 
 INSERT INTO gems__comm_templates (gct_id_template, gct_name, gct_target, gct_code, gct_changed, gct_changed_by, gct_created, gct_created_by)
     VALUES
-    (15, 'Questions for your treatement at {organization}', 'token',,CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-    (16, 'Reminder: your treatement at {organization}', 'token',,CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+    (11, 'Questions for your treatement at {organization}', 'token',,CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+    (12, 'Reminder: your treatement at {organization}', 'token',,CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+    (13, 'Questions for your treatement at {organization} with unsubscribe', 'token',,CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+    (14, 'Reminder: your treatement at {organization} with unsubscribe', 'token',,CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+    (15, 'Questions for treatement of {relation_about} at {organization}', 'token',,CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+    (16, 'Reminder: treatement of {relation_about} at {organization}', 'token',,CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
     (17, 'Global Password reset', 'staffPassword', 'passwordReset', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
     (18, 'Global Account created', 'staffPassword', 'accountCreate', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
     (19, 'Linked account created', 'staff', 'linkedAccountCreated', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
     (20, 'Continue later', 'token', 'continue', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
+
 
 CREATE TABLE gems__comm_template_translations (
       gctt_id_template  INTEGER not null,
@@ -282,18 +287,96 @@ CREATE TABLE gems__comm_template_translations (
 
 INSERT INTO gems__comm_template_translations (gctt_id_template, gctt_lang, gctt_subject, gctt_body)
     VALUES
-    (15, 'en', 'Questions for your treatement at {organization}', 'Dear {greeting},
+    (11, 'en', 'Questions for your treatment at {organization}', 'Dear {greeting},
 
-Recently you visited [b]{organization}[/b] for treatment. For your proper treatment you are required to answer some questions.
+Recently you visited [b]{organization}[/b] for treatment. For your proper treatment you need to answer some questions.
 
 Click on [url={token_url}]this link[/url] to start or go to [url]{site_ask_url}[/url] and enter your token "{token}".
 
 {organization_signature}'),
-    (16, 'en', 'Reminder: your treatement at {organization}', 'Dear {greeting},
+    (11, 'nl', 'Vragen over uw behandeling bij {organization}', 'Beste {greeting},
 
-We remind you that for your proper treatment at [b]{organization}[/b] you are required to answer some questions.
+Recent was u op bezoek bij [b]{organization}[/b] voor een behandeling. Om u goed te kunnen behandelen verzoeken wij u enkele vragen te beantwoorden.
+
+Klik op [url={token_url}]deze link[/url] op te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
+
+{organization_signature}'),
+    (12, 'en', 'Reminder: your treatment at {organization}', 'Dear {greeting},
+
+We remind you that for your proper treatment at [b]{organization}[/b] you need to answer some questions.
 
 Click on [url={token_url}]this link[/url] to start or go to [url]{site_ask_url}[/url] and enter your token "{token}".
+
+{organization_signature}'),
+    (12, 'nl', 'Herinnering: uw behandeling bij {organization}', 'Beste {greeting},
+
+Wij herinneren u eraan dat u nog enkele vragen moet beantwoorden voor uw behandeling bij [b]{organization}[/b].
+
+Klik op [url={token_url}]deze link[/url] op te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
+
+{organization_signature}'),
+    (13, 'en', 'Questions for your treatment at {organization}', 'Dear {greeting},
+
+Recently you visited [b]{organization}[/b] for treatment. For your proper treatment you need to answer some questions.
+
+Click on [url={token_url}]this link[/url] to start or go to [url]{site_ask_url}[/url] and enter your token "{token}".
+
+{organization_signature}
+
+To unsubscribe from these mails [url={organization_unsubscribe_url}]click here[/url].'),
+    (13, 'nl', 'Vragen over uw behandeling bij {organization}', 'Beste {greeting},
+
+Recent was u op bezoek bij [b]{organization}[/b] voor een behandeling. Om u goed te kunnen behandelen verzoeken wij u enkele vragen te beantwoorden.
+
+Klik op [url={token_url}]deze link[/url] op te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
+
+{organization_signature}
+
+Om geen verdere email te ontvangen [url={organization_unsubscribe_url}]klik hier[/url].'),
+    (14, 'en', 'Reminder: your treatment at {organization}', 'Dear {greeting},
+
+We remind you that for your proper treatment at [b]{organization}[/b] you need to answer some questions.
+
+Click on [url={token_url}]this link[/url] to start or go to [url]{site_ask_url}[/url] and enter your token "{token}".
+
+{organization_signature}
+
+To unsubscribe from these mails [url={organization_unsubscribe_url}]click here[/url].'),
+    (14, 'nl', 'Herinnering: uw behandeling bij {organization}', 'Beste {greeting},
+
+Wij herinneren u eraan dat u nog enkele vragen moet beantwoorden voor uw behandeling bij [b]{organization}[/b].
+
+Klik op [url={token_url}]deze link[/url] op te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
+
+{organization_signature}
+
+Om geen verdere email te ontvangen [url={organization_unsubscribe_url}]klik hier[/url].'),
+    (15, 'en', 'Questions for the treatment of {relation_about} at {organization}', 'Dear {greeting},
+
+Recently you visited [b]{organization}[/b] with {relation_about} for a treatment. For proper treatment you need to answer some questions.
+
+Click on [url={token_url}]this link[/url] to start or go to [url]{site_ask_url}[/url] and enter your token "{token}".
+
+{organization_signature}'),
+    (15, 'nl', 'Vragen over de behandeling van {relation_about} bij {organization}', 'Beste {greeting},
+
+Recent was u met {relation_about} op bezoek bij [b]{organization}[/b] voor een behandling. Om goed te kunnen behandelen verzoeken wij u enkele vragen te beantwoorden.
+
+Klik op [url={token_url}]deze link[/url] op te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
+
+{organization_signature}'),
+    (16, 'en', 'Reminder: treatment of {relation_about} at {organization}', 'Dear {greeting},
+
+We remind you that for the proper treatment of {relation_about} at [b]{organization}[/b] we need answers to some questions.
+
+Click on [url={token_url}]this link[/url] to start or go to [url]{site_ask_url}[/url] and enter your token "{token}".
+
+{organization_signature}'),
+    (16, 'nl', 'Herinnering: behandeling van {relation_about} bij {organization}', 'Beste {greeting},
+
+Wij herinneren u eraan dat u nog enkele vragen moet beantwoorden voor de behandeling van {relation_about} bij [b]{organization}[/b].
+
+Klik op [url={token_url}]deze link[/url] op te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
 
 {organization_signature}'),
     (17, 'en', 'Password reset requested', 'To set a new password for the [b]{organization}[/b] site [b]{project}[/b], please click on this link:\n{reset_url}'),
@@ -715,7 +798,7 @@ CREATE TABLE gems__patch_levels (
 
 INSERT INTO gems__patch_levels (gpl_level, gpl_created)
    VALUES
-   (65, CURRENT_TIMESTAMP);
+   (66, CURRENT_TIMESTAMP);
 
 CREATE TABLE gems__radius_config (
         grcfg_id                bigint(11) NOT NULL ,
@@ -904,6 +987,7 @@ CREATE TABLE gems__respondent_relations (
 
         -- when not staff, we need at least name, gender and email
         grr_email                   varchar(100),
+        grr_mailable                TINYINT(1) not null default 1,
         -- grs_initials_name           varchar(30) ,
         grr_first_name              varchar(30) ,
         -- grs_surname_prefix          varchar(10) ,
@@ -1244,6 +1328,8 @@ CREATE TABLE gems__staff (
         -- gsf_phone_2             varchar(25) ,
         -- gsf_phone_3             varchar(25) ,
 
+        gsf_is_embedded			TINYINT(1) not null default 0,
+
         gsf_changed				TEXT not null default current_timestamp,
         gsf_changed_by			INTEGER not null,
         gsf_created				TEXT not null,
@@ -1259,6 +1345,7 @@ CREATE TABLE gems__surveys (
         gsu_id_survey               INTEGER not null ,
         gsu_survey_name             varchar(100) not null,
         gsu_survey_description      varchar(100) ,
+        gsu_survey_languages        varchar(100) ,
 
         gsu_surveyor_id             int(11),
         gsu_surveyor_active         TINYINT(1) not null default 1,
@@ -1271,6 +1358,7 @@ CREATE TABLE gems__surveys (
         gsu_id_source               INTEGER not null,
         gsu_active                  TINYINT(1) not null default 0,
         gsu_status                  varchar(127) ,
+        gsu_survey_warnings         varchar(250) ,
 
         gsu_id_primary_group        INTEGER,
 
