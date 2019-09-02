@@ -729,14 +729,13 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                     'class'            => 'fa fa-fw fa-ellipsis-h dropdown-toggle',
                     'renderClosingTag' => true
                 ));
-        }
-
-        $dropUp = $toolsDiv->div(array('class' => 'dropdown dropup pull-right', 'renderClosingTag' => true));
+        }        
 
         // When not completed we have no correct
         if ($this->_isCompleted($token)) {
             $correctLink = $this->createMenuLink($token + ['is_completed' => 1, 'grc_success' => 1], 'track', 'correct', $correctIcon, $this->_tokenCorrect);
             if ($correctLink) {
+                $dropUp = $toolsDiv->div(array('class' => 'dropdown dropup pull-right', 'renderClosingTag' => true));
                 $this->_addTooltip($dropUp, ucfirst($this->_tokenCorrect->get('label')));
                 $dropUp->append($correctLink);
             }
@@ -744,6 +743,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
 
         $showLink = $this->createMenuLink($token, 'track', 'show', $plusIcon, $this->_tokenShow);
         if ($showLink) {
+            $dropUp = $toolsDiv->div(array('class' => 'dropdown dropup pull-right', 'renderClosingTag' => true));
             $this->_addTooltip($dropUp, $this->_('Details'));
             $dropUp->append($showLink);
         }
