@@ -270,6 +270,31 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
 
                 case 'act':
                     $filter['gsu_active'] = 1;
+                    break;
+
+                case 'anonymous':
+                    $filter[] = "(gsu_status IS NOT NULL AND gsu_status NOT IN ('', 'OK') AND gsu_status LIKE '%Uses anonymous answers%')";
+                    break;
+
+                case 'datestamp':
+                    $filter[] = "(gsu_status IS NOT NULL AND gsu_status NOT IN ('', 'OK') AND gsu_status LIKE '%Not date stamped%')";
+                    break;
+
+                case 'persistance':
+                    $filter[] = "(gsu_status IS NOT NULL AND gsu_status NOT IN ('', 'OK') AND gsu_status LIKE '%Token-based persistence is disabled%')";
+                    break;
+
+                case 'noattributes':
+                    $filter[] = "(gsu_status IS NOT NULL AND gsu_status NOT IN ('', 'OK') AND gsu_status LIKE '%Token attributes could not be created%')";
+                    break;
+
+                case 'notable':
+                    $filter[] = "(gsu_status IS NOT NULL AND gsu_status NOT IN ('', 'OK') AND gsu_status LIKE '%No token table created%')";
+                    break;
+
+                case 'removed':
+                    $filter[] = "(gsu_status IS NOT NULL AND gsu_status NOT IN ('', 'OK') AND gsu_status LIKE '%Survey was removed from source%')";
+                    break;
 
                 // default:
 

@@ -508,8 +508,11 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
             $surveyor_languages = substr(\MUtil_Html::removeMarkup(html_entity_decode($lsSurvey['language'])), 0, 100);
             $surveyor_additional_languages = substr(\MUtil_Html::removeMarkup(html_entity_decode($lsSurvey['additional_languages'])), 0, 100);
             if ($surveyor_additional_languages) {
-                $surveyor_languages .= ', ';
-                $surveyor_languages .= $surveyor_additional_languages;
+                $array = explode(' ', $surveyor_additional_languages);
+                foreach ($array as $value) {
+                    $surveyor_languages .= ', ';
+                    $surveyor_languages .= $value;
+                }
             }
 
             // ANONIMIZATION

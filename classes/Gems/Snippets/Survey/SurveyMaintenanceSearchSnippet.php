@@ -52,16 +52,22 @@ class SurveyMaintenanceSearchSnippet extends \Gems_Snippets_AutosearchFormSnippe
             'act' => $this->_('Active'),
             'sok' => $this->_('OK in source, not active'),
             'nok' => $this->_('Blocked in source'),
+            'anonymous' => 'Uses anonymous answers',
+            'datestamp' => 'Not date stamped',
+            'persistance' => 'Token-based persistence is disabled',
+            'noattributes' => 'Token attributes could not be created',
+            'notable' => 'No token table created',
+            'removed' => 'Survey was removed from source',
         );
         $elements[] = $this->_createSelectElement('status', $states, $this->_('(every state)'));
         
         $warnings     = array(
             'withwarning'              => $this->_('(with warnings)'),
             'nowarning'                => $this->_('(without warnings)'),
-            'autoredirect'             => $this->_('Auto-redirect is disabled'),
-            'alloweditaftercompletion' => $this->_('Editing after completion is enabled'),
-            'allowregister'            => $this->_('Public registration is enabled'),
-            'listpublic'               => $this->_('Public access is enabled'),
+            'autoredirect'             => 'Auto-redirect is disabled',
+            'alloweditaftercompletion' => 'Editing after completion is enabled',
+            'allowregister'            => 'Public registration is enabled',
+            'listpublic'               => 'Public access is enabled',
         );
         $elements[] = $this->_createSelectElement('survey_warnings', $warnings, $this->_('(every warning state)'));
 
