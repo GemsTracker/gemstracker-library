@@ -1554,7 +1554,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     public function isAllowedOrganization($organizationId)
     {
         $orgs = $this->getAllowedOrganizations();
-
+        
         return isset($orgs[$organizationId]) || (\Gems_User_UserLoader::SYSTEM_NO_ORG == $organizationId);
     }
 

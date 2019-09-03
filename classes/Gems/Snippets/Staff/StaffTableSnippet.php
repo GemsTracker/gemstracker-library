@@ -62,9 +62,9 @@ class StaffTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
      */
     protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
-        $br = \MUtil_Html::create('br');
-
         if (! $this->columns) {
+            $br = \MUtil_Html::create('br');
+            
             $this->columns = array(
                 10 => array('gsf_login', $br, 'gsf_id_primary_group'),
                 20 => array('name', $br, 'gsf_email'),

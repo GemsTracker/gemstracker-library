@@ -5,7 +5,7 @@
  * @package    Gems
  * @subpackage Snippets\Staff
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2015 Erasmus MC
+ * @copyright  Copyright (c) 2019, Erasmus MC and MagnaFacta B.V.
  * @license    New BSD License
  */
 
@@ -13,14 +13,13 @@ namespace Gems\Snippets\Staff;
 
 /**
  *
- *
  * @package    Gems
  * @subpackage Snippets\Staff
- * @copyright  Copyright (c) 2015 Erasmus MC
+ * @copyright  Copyright (c) 2019, Erasmus MC and MagnaFacta B.V.
  * @license    New BSD License
- * @since      Class available since version 1.7.2 28-sep-2015 12:19:23
+ * @since      Class available since version 1.8.6 02-Sep-2019 17:53:47
  */
-class StaffSearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
+class SystemUserSearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
 {
     /**
      *
@@ -53,15 +52,17 @@ class StaffSearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
                 $elements[] = $elementO;
             }
 
+            $optionsT = [
+                'gsf_is_embedded'      => $this->_('Is embedder'),
+                'gsf_logout_on_survey' => $this->_('Is Logout on survey'),
+                ];
+            $elementT = $this->_createSelectElement('specials', $optionsT, $this->_('(all)'));
+            $elements[] = $elementT;
+
             $optionsA = $this->model->get('gsf_active', 'multiOptions');
             $elementA = $this->_createSelectElement('gsf_active', $optionsA, $this->_('(both)'));
             $elementA->setLabel($this->model->get('gsf_active', 'label'));
             $elements[] = $elementA;
-
-            $optionsT = $this->model->get('has_2factor', 'multiOptions');
-            $elementT = $this->_createSelectElement('has_2factor', $optionsT, $this->_('(all)'));
-            $elementT->setLabel($this->model->get('has_2factor', 'label'));
-            $elements[] = $elementT;
         }
 
         return $elements;

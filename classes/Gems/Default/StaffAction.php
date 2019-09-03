@@ -19,6 +19,23 @@
 class Gems_Default_StaffAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
+     * The parameters used for the autofilter action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $autofilterParameters = [
+        'extraFilter' => [
+            'gsf_is_embedded' => 0,
+            'gsf_logout_on_survey' => 0,
+            ],
+        ];
+
+    /**
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
@@ -43,8 +60,10 @@ class Gems_Default_StaffAction extends \Gems_Controller_ModelSnippetActionAbstra
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $createEditParameters = array('routeAction' => 'reset');
-    
+    protected $createEditParameters = [
+        'routeAction' => 'reset',
+        ];
+
     /**
      * The snippets used for the create and edit actions.
      *
@@ -330,7 +349,7 @@ class Gems_Default_StaffAction extends \Gems_Controller_ModelSnippetActionAbstra
             $this->addSnippets($this->resetSnippets, $params);
         }
     }
-    
+
     /**
      * reset two factor authentication
      */

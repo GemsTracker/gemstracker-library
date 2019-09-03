@@ -195,6 +195,9 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         // STAFF CONTROLLER
         $page = $cont->addStaffPage($this->_('Staff'));
 
+        // SYSTEM USET CONTROLLER
+        $page = $cont->addSystemUserPage($this->_('System users'));
+
         // AGENDA CONTAINER
         $setup->addAgendaSetupMenu($this->_('Agenda'));
 
@@ -277,6 +280,10 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $this->addHiddenPrivilege('pr.token.mail.freetext', $this->_(
                 'Grant right to send free text (i.e. non-template) email messages.'
                 ));
+        $this->addHiddenPrivilege('pr.systemuser.seepwd', $this->_(
+                'Grant right to see password of system users (without editing right).'
+                ));
+
 
         $this->addPage(null, 'pr.cron.job', 'cron', 'index');
         $this->addPage(null, 'pr.cron.job', 'cron', 'monitor');

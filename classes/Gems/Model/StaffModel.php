@@ -87,6 +87,62 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
     }
 
     /**
+     *
+     * @param boolean $editing
+     */
+    protected function _addLoginSettings($editing)
+    {
+        if ($this->currentUser->hasPrivilege('pr.staff.see.all') || (! $editing)) {
+            // Select organization
+            $options = $this->util->getDbLookup()->getOrganizations();
+        } else {
+            $options = $this->currentUser->getAllowedOrganizations();
+        }
+        $this->set('gsf_id_organization',      'label', $this->_('Organization'),
+                'default', $this->currentOrganization->getId(),
+                'multiOptions', $options,
+                'required', true
+                );
+
+        $defaultStaffDefinitions = $this->loader->getUserLoader()->getAvailableStaffDefinitions();
+        if (1 == count($defaultStaffDefinitions)) {
+            reset($defaultStaffDefinitions);
+            $this->set('gul_user_class',
+                    'default', key($defaultStaffDefinitions),
+                    'elementClass', 'Hidden',
+                    'multiOptions', $defaultStaffDefinitions,
+                    'required', false
+                    );
+        } else {
+            $this->set('gul_user_class',       'label', $this->_('User Definition'),
+                    'default', $this->currentOrganization->getDefaultUserClass(),
+                    'multiOptions', $defaultStaffDefinitions,
+                    'order', $this->getOrder('gsf_id_organization') + 1,
+                    'required', true
+                    );
+            $this->addDependency('StaffUserClassDependency');
+        }
+
+        if ($editing) {
+            if ($this->project->isLoginShared()) {
+                $this->set('gsf_login', 'validator', $this->createUniqueValidator('gsf_login', array('gsf_id_user')));
+            } else {
+                // per organization
+                $this->set(
+                        'gsf_login',
+                        'validator',
+                        $this->createUniqueValidator(array('gsf_login', 'gsf_id_organization'), array('gsf_id_user'))
+                        );
+            }
+        }
+        $this->set('gsf_login',                'label', $this->_('Username'),
+                'minlength', 3,
+                'required', true,
+                'size', 15
+                );
+    }
+
+    /**
      * Called after the check that all required registry values
      * have been set correctly has run.
      *
@@ -164,42 +220,9 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
         $translated = $this->util->getTranslated();
         $yesNo      = $translated->getYesNo();
 
-        if ($this->currentUser->hasPrivilege('pr.staff.see.all') || (! $editing)) {
-            // Select organization
-            $options = $dbLookup->getOrganizations();
-        } else {
-            $options = $this->currentUser->getAllowedOrganizations();
-        }
-        $this->set('gsf_id_organization',      'label', $this->_('Organization'),
-                'multiOptions', $options,
-                'required', true
-                );
-
-        if ($editing) {
-            if ($this->project->isLoginShared()) {
-                $this->set('gsf_login', 'validator', $this->createUniqueValidator('gsf_login', array('gsf_id_user')));
-            } else {
-                // per organization
-                $this->set(
-                        'gsf_login',
-                        'validator',
-                        $this->createUniqueValidator(array('gsf_login', 'gsf_id_organization'), array('gsf_id_user'))
-                        );
-            }
-        }
-        $this->set('gsf_login',                'label', $this->_('Username'),
-                'minlength', 3,
-                'required', true,
-                'size', 15
-                );
+        $this->_addLoginSettings($editing);
 
         if ($detailed) {
-            $this->set('gsf_is_embedded', 'label', $this->_('Is embedder'),
-                    'description', $this->_('An embedder is only allowed to act as a front login for other users.'),
-                    'elementClass', 'Checkbox',
-                    'multiOptions', $this->util->getTranslated()->getYesNo()
-                    );
-
             $this->set('gsf_first_name',       'label', $this->_('First name'));
             $this->set('gsf_surname_prefix',   'label', $this->_('Surname prefix'),
                     'description', $this->_('de, van der, \'t, etc...')
@@ -268,11 +291,6 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
                     'elementClass', 'Checkbox',
                     'multiOptions', $yesNo
                     );
-            $this->set('gsf_logout_on_survey', 'label', $this->_('Logout on survey'),
-                    'description', $this->_('If checked the user will logoff when answering a survey.'),
-                    'elementClass', 'Checkbox',
-                    'multiOptions', $yesNo
-                    );
             $this->set('gsf_mail_watcher', 'label', $this->_('Check cron job mail'),
                     'description', $this->_('If checked the user will be mailed when the cron job does not run on time.'),
                     'elementClass', 'Checkbox',
@@ -308,6 +326,76 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
         if (! $this->currentUser->hasPrivilege('pr.staff.edit.all')) {
             $this->set('gsf_id_organization', 'elementClass', 'Exhibitor');
         }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param boolean $detailed True when the current action is not in $summarizedActions.
+     * @param string $action The current action.
+     * @return \Gems_Model_StaffModel
+     */
+    public function applySystemUserSettings($detailed, $action)
+    {
+        $dbLookup   = $this->util->getDbLookup();
+        $editing    = ($action == 'edit') || ($action == 'create');
+        $translated = $this->util->getTranslated();
+        $yesNo      = $translated->getYesNo();
+
+        $this->_addLoginSettings($editing);
+
+        $this->set('gsf_last_name',        'label', $this->_('Description'),
+                'description', $this->_('A description what this user is for.'),
+                'required', true);
+
+        $this->set('gsf_is_embedded', 'label', $this->_('Is embedder'),
+                'description', $this->_('An embedder is only allowed to act as a front login for other users.'),
+                'elementClass', 'Checkbox',
+                'multiOptions', $yesNo
+                );
+
+        $this->set('gsf_logout_on_survey', 'label', $this->_('Logout on survey'),
+                'description', $this->_('If checked the user will logoff when answering a survey.'),
+                'elementClass', 'Checkbox',
+                'multiOptions', $yesNo,
+                'validator', new \Gems_Validate_OneOf(
+                        $this->get('gsf_is_embedded', 'label'),
+                        'gsf_is_embedded',
+                        $this->_('Logout on survey.')
+                        )
+                );
+
+        $this->set('gul_can_login',        'label', $this->_('Can login'),
+                'default', 1,
+                'description', $this->_('System users can only be used when this box is checked.'),
+                'elementClass', 'Checkbox',
+                'multiOptions', $yesNo
+                );
+        $this->set('gsf_id_primary_group',     'label', $this->_('Primary function'),
+                'default', $this->currentUser->getDefaultNewStaffGroup(),
+                'multiOptions', $editing ? $this->currentUser->getAllowedStaffGroups() : $dbLookup->getStaffGroups()
+                );
+
+        $this->set('gsf_iso_lang',         'label', $this->_('Language'),
+                'default', $this->project->locale['default'],
+                'multiOptions', $this->util->getLocalized()->getLanguages()
+                );
+        $this->set('gul_two_factor_key',       'label', $this->_('Secret key'),
+                'description', $this->_('Key used for authentication'),
+                'elementClass', 'Textarea',
+                'rows', 3
+                );
+        if (! $this->currentUser->hasPrivilege('pr.systemuser.seepwd')) {
+            $this->set('gul_two_factor_key',
+                'itemDisplay', function ($value) { return '***********'; }
+                );
+        }
+
+        $this->set('gsf_active', 'label', $this->_('Active'),
+                'elementClass', 'None',
+                'multiOptions', $yesNo
+                );
 
         return $this;
     }

@@ -68,7 +68,10 @@ abstract class Gems_Menu_MenuAbstract
             if ($_privilege = $item->get('privilege')) {
 
                 if (isset($privileges[$_privilege])) {
-                    $privileges[$_privilege] .= "<br/>&nbsp; + " . $_itemlabel;
+                    $add = "<br/>&nbsp; + " . $_itemlabel;
+                    if (! \MUtil_String::contains($privileges[$_privilege], $add)) {
+                        $privileges[$_privilege] .= $add;
+                    }
                 } else {
                     $privileges[$_privilege] = $_itemlabel;
                 }
@@ -745,6 +748,36 @@ abstract class Gems_Menu_MenuAbstract
                 $subPage->addParameterFilter('gsf_id_organization', $filter, 'accessible_role', 1);
             }
         }
+
+        return $page;
+    }
+
+    /**
+     * Add a staff browse edit page to the menu,
+     *
+     * @param string $label
+     * @param array $other
+     * @return \Gems_Menu_SubMenuItem
+     */
+    public function addSystemUserPage($label, array $other = array())
+    {
+        $page = $this->addPage($label, 'pr.systemuser', 'system-user', 'index', $other);
+        $page->addAutofilterAction();
+        $createPage = $page->addCreateAction();
+        $showPage = $page->addShowAction();
+
+        $pages[] = $showPage->addEditAction();
+
+        $pages = $pages + $showPage->addDeReactivateAction('gsf_active', 1, 0);
+
+        // LOG CONTROLLER
+//        $logPage = $showPage->addPage($this->_('Activity overview'), 'pr.staff-log', 'staff-log', 'index')
+//                ->setModelParameters(1);
+//        $logPage->addAutofilterAction();
+//        $logPage->addShowAction()->setModelParameters(1)->addNamedParameters('log', 'gla_id');
+
+        $page->addExportAction();
+        $page->addImportAction();
 
         return $page;
     }

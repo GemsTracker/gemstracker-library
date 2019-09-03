@@ -1528,9 +1528,28 @@ ALTER TABLE gems__staff ADD
 ALTER TABLE  `gems__respondent_relations` ADD  `grr_mailable` boolean not null default 1 AFTER  `grr_email`;
 
 -- PATCH: Save survey warnings and languages
-ALTER TABLE `gems__surveys` 
-    ADD `gsu_survey_languages` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL 
+ALTER TABLE `gems__surveys`
+    ADD `gsu_survey_languages` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL
     AFTER `gsu_survey_description`;
-ALTER TABLE `gems__surveys` 
-    ADD `gsu_survey_warnings` VARCHAR(250) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL 
+ALTER TABLE `gems__surveys`
+    ADD `gsu_survey_warnings` VARCHAR(250) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL
     AFTER `gsu_status`;
+
+-- PATCH: System users
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.systemuser')
+    WHERE grl_name IN ('super')
+        AND grl_privileges NOT LIKE '%,pr.systemuser%';
+
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.systemuser.create')
+    WHERE grl_name IN ('super')
+        AND grl_privileges NOT LIKE '%,pr.systemuser.create%';
+
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.systemuser.delete')
+    WHERE grl_name IN ('super')
+        AND grl_privileges NOT LIKE '%,pr.systemuser.delete%';
+
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.systemuser.edit')
+    WHERE grl_name IN ('super')
+        AND grl_privileges NOT LIKE '%,pr.systemuser.edit%';
+
+
