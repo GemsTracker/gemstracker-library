@@ -457,7 +457,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                 );
         $this->set('grs_id_user');
 
-        $this->set('gr2o_email',
+        $this->set('gr2o_email', 'filter', new Gems_Filter_CleanEmail,
                 'required', true,
                 'autoInsertNotEmptyValidator', false, // Make sure it works ok with next
                 'size', 30,
@@ -494,7 +494,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         $this->setIfExists('grs_partner_surname_prefix',
                 'validators[csvinj]', 'NoCsvInjectionChars'
                 );
-        $this->setIfExists('grs_partner_last_name',  'filter', new \Zend_Filter_Callback('ucfirst'),
+        $this->setIfExists('grs_partner_last_name',  'filter', $ucfirst,
                 'validators[csvinj]', 'NoCsvInjectionChars'
                 );
 
