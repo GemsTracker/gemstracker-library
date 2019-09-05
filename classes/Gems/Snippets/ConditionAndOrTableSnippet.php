@@ -108,7 +108,8 @@ class ConditionAndOrTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstrac
         $conditionId = $this->request->getParam(\MUtil_Model::REQUEST_ID);
 
         if ($conditionId) {
-            $model->addFilter([sprintf('gcon_condition_text1 = %1$s OR gcon_condition_text2 = %1$s OR gcon_condition_text3 = %1$s OR gcon_condition_text4 = %1$s', $conditionId)]);
+            $model->addFilter([sprintf('gcon_condition_text1 = %1$s OR gcon_condition_text2 = %1$s OR gcon_condition_text3 = %1$s OR gcon_condition_text4 = %1$s', $conditionId),
+                "gcon_class LIKE '%AndCondition' OR gcon_class LIKE '%OrCondition'"]);
         }
 
         $this->processSortOnly($model);
