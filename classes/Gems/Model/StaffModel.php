@@ -349,20 +349,21 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
                 'description', $this->_('A description what this user is for.'),
                 'required', true);
 
-        $this->set('gsf_is_embedded', 'label', $this->_('Is embedder'),
+        $this->set('gsf_is_embedded', 'label', $this->_('Embedder'),
                 'description', $this->_('An embedder is only allowed to act as a front login for other users.'),
                 'elementClass', 'Checkbox',
                 'multiOptions', $yesNo
                 );
 
-        $this->set('gsf_logout_on_survey', 'label', $this->_('Logout on survey'),
+        $label = $this->_('Logout on survey');
+        $this->set('gsf_logout_on_survey', 'label', $label,
                 'description', $this->_('If checked the user will logoff when answering a survey.'),
                 'elementClass', 'Checkbox',
                 'multiOptions', $yesNo,
                 'validator', new \Gems_Validate_OneOf(
                         $this->get('gsf_is_embedded', 'label'),
                         'gsf_is_embedded',
-                        $this->_('Logout on survey.')
+                        $label
                         )
                 );
 
