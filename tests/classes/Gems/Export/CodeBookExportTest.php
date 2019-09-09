@@ -96,10 +96,19 @@ class CodeBookExportTest extends \Gems_Test_DbTestAbstract
         
         $tracker->expects($this->any())
                 ->method('getSurvey')
-                ->will($this->returnValue($survey));        
+                ->will($this->returnValue($survey));
+        
+        $currentUser = $this->getMockBuilder('Gems_User_User')
+                ->disableOriginalConstructor()
+                ->getMock();
+        
+        $tracker->expects($this->any())
+                ->method('getLocale')
+                ->will($this->returnValue('en'));
                
         $model = new \Gems\Model\SurveyCodeBookModel(1);
         $model->answerRegistryRequest('tracker', $tracker);
+        $model->answerRegistryRequest('currentUser', $currentUser);
         $model->afterRegistry();
         
         $export = $this->loader->getExport()->getExport('CodeBookExport');
@@ -141,10 +150,19 @@ class CodeBookExportTest extends \Gems_Test_DbTestAbstract
         
         $tracker->expects($this->any())
                 ->method('getSurvey')
-                ->will($this->returnValue($survey));        
+                ->will($this->returnValue($survey));
+        
+        $currentUser = $this->getMockBuilder('Gems_User_User')
+                ->disableOriginalConstructor()
+                ->getMock();
+        
+        $tracker->expects($this->any())
+                ->method('getLocale')
+                ->will($this->returnValue('en'));
                
         $model = new \Gems\Model\SurveyCodeBookModel(1);
         $model->answerRegistryRequest('tracker', $tracker);
+        $model->answerRegistryRequest('currentUser', $currentUser);
         $model->afterRegistry();
         
         $export = $this->loader->getExport()->getExport('CodeBookExport');
