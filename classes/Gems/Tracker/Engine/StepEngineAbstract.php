@@ -544,7 +544,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
                 return [
                     'grs_birthday' => $this->_('Birthday'),
                     'gr2o_created' => $this->_('Respondent created'),
-                    'gr2o_changed' => $this->_('Respondent changed'),
+                    /*'gr2o_changed' => $this->_('Respondent changed'),*/
                     ];
 
             case self::TOKEN_TABLE:

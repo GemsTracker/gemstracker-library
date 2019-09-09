@@ -10,6 +10,12 @@ class SurveyCodeBookModel extends \Gems_Model_PlaceholderModel
 {
 
     use TranslateableTrait;
+    
+    /**
+     *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
 
     protected $data;
 
@@ -82,7 +88,9 @@ class SurveyCodeBookModel extends \Gems_Model_PlaceholderModel
     public function getData($surveyId)
     {
         $survey = $this->tracker->getSurvey($surveyId);
-        $questionInformation = $survey->getQuestionInformation(null);
+        // Use interface language
+        $locale = $this->currentUser->getLocale();
+        $questionInformation = $survey->getQuestionInformation($locale);
         if (empty($questionInformation)) {
             // Inactive / deleted survey?
             $this->fieldArray = [];

@@ -62,6 +62,40 @@ class CodeBookExportTest extends \Gems_Test_DbTestAbstract
         // For successful testing of the complete tokens class, we need more tables
         return array($path . 'sqllite/create-lite-ls.sql');
     }
+    
+    protected function getModel($questionInformation, $locale = 'en')
+    {
+        $survey = $this->getMockBuilder('Gems_Tracker_Survey')
+                ->disableOriginalConstructor()
+                ->getMock();
+        
+        $survey->expects($this->any())
+                ->method('getQuestionInformation')
+                ->will($this->returnValue($questionInformation));
+        
+        $tracker = $this->getMockBuilder('Gems_Tracker')
+                ->disableOriginalConstructor()
+                ->getMock();
+        
+        $tracker->expects($this->any())
+                ->method('getSurvey')
+                ->will($this->returnValue($survey));
+        
+        $currentUser = $this->getMockBuilder('Gems_User_User')
+                ->disableOriginalConstructor()
+                ->getMock();
+        
+        $tracker->expects($this->any())
+                ->method('getLocale')
+                ->will($this->returnValue($locale));
+               
+        $model = new \Gems\Model\SurveyCodeBookModel(1);
+        $model->answerRegistryRequest('tracker', $tracker);
+        $model->answerRegistryRequest('currentUser', $currentUser);
+        $model->afterRegistry();
+        
+        return $model;
+    }
 
     protected function getTranslate()
     {
@@ -82,25 +116,8 @@ class CodeBookExportTest extends \Gems_Test_DbTestAbstract
     
     public function testExport()
     {
-        $survey = $this->getMockBuilder('Gems_Tracker_Survey')
-                ->disableOriginalConstructor()
-                ->getMock();
-        
-        $survey->expects($this->any())
-                ->method('getQuestionInformation')
-                ->will($this->returnValue($this->fieldmap->getQuestionInformation()));
-        
-        $tracker = $this->getMockBuilder('Gems_Tracker')
-                ->disableOriginalConstructor()
-                ->getMock();
-        
-        $tracker->expects($this->any())
-                ->method('getSurvey')
-                ->will($this->returnValue($survey));        
-               
-        $model = new \Gems\Model\SurveyCodeBookModel(1);
-        $model->answerRegistryRequest('tracker', $tracker);
-        $model->afterRegistry();
+        $questionInformation = $this->fieldmap->getQuestionInformation();
+        $model = $this->getModel($questionInformation, 'en');
         
         $export = $this->loader->getExport()->getExport('CodeBookExport');
         $options = [ 'type' => 'CodeBookExport' ];
@@ -127,25 +144,8 @@ class CodeBookExportTest extends \Gems_Test_DbTestAbstract
     
     public function testExportNoSurvey()
     {
-        $survey = $this->getMockBuilder('Gems_Tracker_Survey')
-                ->disableOriginalConstructor()
-                ->getMock();
-        
-        $survey->expects($this->any())
-                ->method('getQuestionInformation')
-                ->will($this->returnValue([]));
-        
-        $tracker = $this->getMockBuilder('Gems_Tracker')
-                ->disableOriginalConstructor()
-                ->getMock();
-        
-        $tracker->expects($this->any())
-                ->method('getSurvey')
-                ->will($this->returnValue($survey));        
-               
-        $model = new \Gems\Model\SurveyCodeBookModel(1);
-        $model->answerRegistryRequest('tracker', $tracker);
-        $model->afterRegistry();
+        $questionInformation = [];
+        $model = $this->getModel($questionInformation, 'en');
         
         $export = $this->loader->getExport()->getExport('CodeBookExport');
         $options = [ 'type' => 'CodeBookExport' ];
