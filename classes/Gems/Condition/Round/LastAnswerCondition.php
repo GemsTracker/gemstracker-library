@@ -69,8 +69,9 @@ class LastAnswerCondition extends RoundConditionAbstract
         $answer = 'N/A';    // Default if we find no answer
         
         // We look back from this token, so we can even recalc if needed
-        $prev    = $token->getPreviousSuccessToken();
-        do {
+        $prev    = $token;
+        
+        while ($prev = $prev->getPreviousSuccessToken()) {
             if (!$prev->getReceptionCode()->isSuccess() || !$prev->isCompleted()) {
                 continue;
             }    
@@ -82,8 +83,8 @@ class LastAnswerCondition extends RoundConditionAbstract
                 $answer = $answersUc[$questionCodeUc];
                 break;
             }
-        } while ($prev = $prev->getPreviousSuccessToken());
-
+        }
+        
         return $answer;
     }
 
