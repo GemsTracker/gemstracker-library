@@ -187,6 +187,17 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
         'Tracker\\TrackTokenOverviewSnippet',
         'Tracker\\TrackUsageOverviewSnippet',
         );
+    
+    /**
+     * Parameters for editing a track token
+     *
+     * @var mixed String or array of snippets name
+     */    
+    protected $editParameters = [
+        'formTitle'     => null,
+        'topicCallable' => 'getTokenTopicCallable',
+    ];
+
 
     /**
      * The parameters used for the edit track action.
