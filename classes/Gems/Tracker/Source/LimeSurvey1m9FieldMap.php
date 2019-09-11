@@ -684,6 +684,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             $tmpres['groupName']       = isset($field['group_name']) ? $field['group_name'] : null;
             $tmpres['type']            = $this->_getType($field);
             $tmpres['survey_question'] = true;
+            $tmpres['sourceId']        = $name;
 
             if ($tmpres['type'] === \MUtil_Model::TYPE_DATETIME || $tmpres['type'] === \MUtil_Model::TYPE_DATE || $tmpres['type'] === \MUtil_Model::TYPE_TIME) {
                 if ($dateFormats = $this->getDateFormats($name, $tmpres['type'])) {
