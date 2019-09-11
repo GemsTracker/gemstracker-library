@@ -4,19 +4,19 @@
 <head>
     <meta charset="utf-8">
     <?php echo $this->headMeta(); ?>
-    
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?php echo $this->headTitle(); ?>
     <?php if ($this->jQuery) {
         echo $this->jQuery()->renderStylesheets();
-    } 
-    if (MUtil_Bootstrap::enabled()) {
-        echo MUtil_Bootstrap::bootstrap()->renderStylesheets();
+    }
+    if (\MUtil_Bootstrap::enabled()) {
+        echo \MUtil_Bootstrap::bootstrap()->renderStylesheets();
     }
     ?>
     <?php echo $this->headLink(); ?>
-    
-    
+
+
     <?php echo $this->headStyle(); ?>
 
 </head>
@@ -25,7 +25,7 @@
         <div id="header" class="row"><?php if ($this->header) { echo $this->header->render($this); }?></div>
         <div id="header_bar" class="row"><?php if ($this->header_bar) { echo $this->header_bar->render($this); } ?></div>
 <?php
-    
+
 ?>
         <div class="row">
             <?php if ($this->navigation || $this->menuHtml) { ?>
@@ -42,7 +42,7 @@
             </div>
             <?php if ($this->navigation || $this->menuHtml) { ?>
             <div id="menu" class="col-sm-4 col-sm-pull-8 col-md-3 col-md-pull-9 navbar navbar-default" role="navigation">
-            
+
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                         <span class="icon-bar"></span>
@@ -50,13 +50,13 @@
                         <span class="icon-bar"></span>
                     </button>
                 </div>
-                
+
                 <div class="collapse navbar-collapse">
                     <?php
                 echo $this->navigation()->menu();
                 echo $this->menuHtml; ?>
-                    
-                    
+
+
                 </div>
             </div>
             <?php } ?>
@@ -73,15 +73,15 @@
 
 
 <?php if ($this->jQuery) {
-        //echo 
+        //echo
         echo $this->jQuery()->renderJavascript();
     }
-    if (MUtil_Bootstrap::enabled()) {
-        echo MUtil_Bootstrap::bootstrap()->renderJavascript();
+    if (\MUtil_Bootstrap::enabled()) {
+        echo \MUtil_Bootstrap::bootstrap()->renderJavascript();
     }
 ?>
 <?php
-echo MUtil_Echo::out();
+echo \MUtil_Echo::out();
 echo $this->headScript();
 echo $this->inlineScript();
 ?>

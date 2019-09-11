@@ -184,7 +184,7 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
 
         if ($error) {
             $this->html->pre($error, array('class' => 'disabled logFile'));
-        } elseif (substr($logFile, -3) == '.md') {            
+        } elseif (substr($logFile, -3) == '.md') {
             $parseDown = new \Gems\Parsedown($context);
             $this->html->div(array('class'=>'logFile'))->raw($parseDown->parse($content));
         } else {
@@ -345,7 +345,7 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
         unset($project['salt']);
 
         $this->html->h2($this->_('Project settings'));
-        $this->_showTable(GEMS_PROJECT_NAME . 'Project.ini', $project);
+        $this->_showTable(GEMS_PROJECT_NAME . ' Project.ini', $project);
     }
 
 

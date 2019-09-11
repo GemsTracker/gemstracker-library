@@ -83,7 +83,7 @@ class Gems_Tracker_Source_ExtraMapTest extends \Gems_Test_DbTestAbstract {
 
         foreach($model->getItemNames() as $name) {
             $result[$name] = $model->get($name);
-            unset($result[$name]['formatFunction'], $result[$name]['groupName']);
+            unset($result[$name]['formatFunction'], $result[$name]['groupName'], $result[$name]['sourceId']);
         }
 
         // To update the stored fieldmap, uncomment the following if you know what you are doing

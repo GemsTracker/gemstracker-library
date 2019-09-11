@@ -10,7 +10,7 @@
  * @license    New BSD License
  */
 
-use \MUtil\Controller\Router\Rewrite;
+use MUtil\Controller\Router\Rewrite;
 
 /**
  * Project Application Core code
@@ -1109,11 +1109,11 @@ class GemsEscort extends \MUtil_Application_Escort
                             'action' => 'change-ui',
                             'language' => urlencode($locale),
                             'current_uri' => $currentUri,
-                            'class' => ''                                
+                            'class' => ''
                         ),
                         strtoupper($locale),
                         array(
-                            'class' => 'language ' . $locale, 
+                            'class' => 'language ' . $locale,
                             'rel' => 'nofollow'
                         )
                     );
