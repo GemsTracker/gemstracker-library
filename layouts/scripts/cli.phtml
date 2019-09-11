@@ -1,10 +1,10 @@
 <?php
     if ($this->main) {
-        echo MUtil_Console::removeHtml($this->main->render($this));
+        echo \MUtil_Console::removeHtml($this->main->render($this));
     }
-    echo MUtil_Console::removeHtml($this->layout()->content);
-    if ($echo = MUtil_Echo::out()) {
+    echo \MUtil_Console::removeHtml($this->layout()->content);
+    if ($echo = \MUtil_Echo::out()) {
         echo "\n\n================================================================\nECHO OUTPUT:\n\n";
-        echo MUtil_Console::removeHtml($echo);
+        echo \MUtil_Console::removeHtml($echo);
     }
 ?>
