@@ -166,7 +166,7 @@ class MailJobsUtil extends UtilAbstract
             $cacheId = __FUNCTION__ . '_' . $trackId;
             $sql     = "SELECT gro_id_round FROM gems__rounds
                 WHERE gro_active = 1 AND gro_id_track = ? AND gro_round_description = ?";
-            $binds[] = $job['gcj_id_track'];
+            $binds[] = $trackId;
         } else {
             $cacheId = __FUNCTION__;
             $sql     = "SELECT gro_id_round FROM gems__rounds WHERE gro_active = 1 AND gro_round_description = ?";
