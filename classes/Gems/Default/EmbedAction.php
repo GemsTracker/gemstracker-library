@@ -148,7 +148,7 @@ class Gems_Default_EmbedAction extends \Gems_Controller_Action
      */
     public function getKeysStart(\Gems_User_User $embeddedUser)
     {
-        $key = $embeddedUser->hasTwoFactor() ? $embeddedUser->getTwoFactorKey() : $this->defaultKey;
+        $key = $embeddedUser->getSecretKey() ?: $this->defaultKey;
 
         if (! \MUtil_String::contains($key, '%s')) {
             $key .= '%s';

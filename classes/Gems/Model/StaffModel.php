@@ -338,6 +338,8 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
      */
     public function applySystemUserSettings($detailed, $action)
     {
+        $this->addLeftTable('gems__systemuser_setup', ['gsf_id_user' => 'gsus_id_user'], 'gsus');
+
         $dbLookup   = $this->util->getDbLookup();
         $editing    = ($action == 'edit') || ($action == 'create');
         $translated = $this->util->getTranslated();
@@ -349,21 +351,20 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
                 'description', $this->_('A description what this user is for.'),
                 'required', true);
 
-        $this->set('gsf_is_embedded', 'label', $this->_('Embedder'),
+        $this->set('gsf_is_embedded',      'label', $this->_('Is embedder'),
                 'description', $this->_('An embedder is only allowed to act as a front login for other users.'),
                 'elementClass', 'Checkbox',
                 'multiOptions', $yesNo
                 );
 
-        $label = $this->_('Logout on survey');
-        $this->set('gsf_logout_on_survey', 'label', $label,
+        $this->set('gsf_logout_on_survey', 'label', $this->_('Logout on survey'),
                 'description', $this->_('If checked the user will logoff when answering a survey.'),
                 'elementClass', 'Checkbox',
                 'multiOptions', $yesNo,
                 'validator', new \Gems_Validate_OneOf(
                         $this->get('gsf_is_embedded', 'label'),
                         'gsf_is_embedded',
-                        $label
+                        $this->_('Logout on survey.')
                         )
                 );
 
@@ -373,7 +374,7 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
                 'elementClass', 'Checkbox',
                 'multiOptions', $yesNo
                 );
-        $this->set('gsf_id_primary_group',     'label', $this->_('Primary function'),
+        $this->set('gsf_id_primary_group', 'label', $this->_('Primary function'),
                 'default', $this->currentUser->getDefaultNewStaffGroup(),
                 'multiOptions', $editing ? $this->currentUser->getAllowedStaffGroups() : $dbLookup->getStaffGroups()
                 );
@@ -382,16 +383,14 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
                 'default', $this->project->locale['default'],
                 'multiOptions', $this->util->getLocalized()->getLanguages()
                 );
-        $this->set('gul_two_factor_key',       'label', $this->_('Secret key'),
+        $this->set('gsus_secret_key',      'label', $this->_('Secret key'),
                 'description', $this->_('Key used for authentication'),
                 'elementClass', 'Textarea',
                 'rows', 3
                 );
-        if (! $this->currentUser->hasPrivilege('pr.systemuser.seepwd')) {
-            $this->set('gul_two_factor_key',
-                'itemDisplay', function ($value) { return '***********'; }
-                );
-        }
+        $seeKey = ! ($this->currentUser->hasPrivilege('pr.systemuser.seepwd') || $editing);
+        $type   = new \Gems_Model_Type_EncryptedField($this->project, $seeKey);
+        $type->apply($this, 'gsus_secret_key');
 
         $this->set('gsf_active', 'label', $this->_('Active'),
                 'elementClass', 'None',
