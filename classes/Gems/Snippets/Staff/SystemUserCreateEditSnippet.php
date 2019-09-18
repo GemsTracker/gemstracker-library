@@ -22,25 +22,9 @@ namespace Gems\Snippets\Staff;
 class SystemUserCreateEditSnippet extends StaffCreateEditSnippet
 {
     /**
-     * Hook containing the actual save code.
+     * When true this is the staff form
      *
-     * Call's afterSave() for user interaction.
-     *
-     * @see afterSave()
+     * @var boolean
      */
-    protected function saveData()
-    {
-        parent::saveData();
-
-        if (isset($this->formData['gul_two_factor_key'], $this->formData['gsf_id_user']) &&
-                $this->formData['gul_two_factor_key']) {
-
-            $user = $this->loader->getUserLoader()->getUserByStaffId($this->formData['gsf_id_user']);
-
-            if ($user->canSetPassword()) {
-                $this->addMessage(sprintf($this->_('Password saved for: %s'), $user->getLoginName()));
-                $user->setPassword($this->formData['gul_two_factor_key']);
-            }
-        }
-    }
+    protected $isStaff = false;
 }

@@ -1544,12 +1544,19 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.systemuser.c
     WHERE grl_name IN ('super')
         AND grl_privileges NOT LIKE '%,pr.systemuser.create%';
 
-UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.systemuser.delete')
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.systemuser.deactivate')
     WHERE grl_name IN ('super')
-        AND grl_privileges NOT LIKE '%,pr.systemuser.delete%';
+        AND grl_privileges NOT LIKE '%,pr.systemuser.deactivate%';
+
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.systemuser.reactivate')
+    WHERE grl_name IN ('super')
+        AND grl_privileges NOT LIKE '%,pr.systemuser.reactivate%';
 
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.systemuser.edit')
     WHERE grl_name IN ('super')
         AND grl_privileges NOT LIKE '%,pr.systemuser.edit%';
 
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.staff.switch-user')
+    WHERE grl_name IN ('super')
+        AND grl_privileges NOT LIKE '%,pr.staff.switch-user%';
 
