@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-18 16:15+0200\n"
+"POT-Creation-Date: 2019-09-18 17:00+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -53,7 +53,7 @@ msgstr "Handmatig (organisatie specifiek)"
 #: classes/Gems/Model/ConditionModel.php:78
 #: classes/Gems/Model/ConditionModel.php:141
 #: classes/Gems/Model/OrganizationModel.php:100
-#: classes/Gems/Model/StaffModel.php:301 classes/Gems/Model/StaffModel.php:396
+#: classes/Gems/Model/StaffModel.php:301 classes/Gems/Model/StaffModel.php:395
 #: classes/Gems/Snippets/Survey/SurveyMaintenanceSearchSnippet.php:52
 #: classes/Gems/Snippets/Tracker/Rounds/ConditionRoundsTableSnippet.php:108
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:891
@@ -1624,7 +1624,7 @@ msgstr "Vragenlijstcode"
 #: classes/Gems/Default/RoleAction.php:114
 #: classes/Gems/Default/UpgradeAction.php:204
 #: classes/Gems/Export/RespondentExport.php:332
-#: classes/Gems/Model/StaffModel.php:348
+#: classes/Gems/Model/StaffModel.php:350
 #: classes/Gems/Model/SurveyMaintenanceModel.php:94
 #: classes/Gems/Snippets/Track/TracksSnippet.php:89
 #: classes/Gems/Snippets/Tracker/Rounds/ConditionRoundsTableSnippet.php:105
@@ -4939,7 +4939,7 @@ msgstr ""
 #: classes/Gems/Menu.php:284
 msgid "Grant right to see password of system users (without editing right)."
 msgstr ""
-"Heeft het recht om het wacthwoord van systeemaccounts te zien (zonder wijzig "
+"Heeft het recht om het wachtwoord van systeemaccounts te zien (zonder wijzig "
 "rechten)."
 
 #: classes/Gems/Menu.php:294
@@ -5738,7 +5738,7 @@ msgstr "Na veranderde patiënt"
 #: classes/Gems/Model/OrganizationModel.php:177
 #: classes/Gems/Model/RespondentModel.php:381
 #: classes/Gems/Model/StaffModel.php:198 classes/Gems/Model/StaffModel.php:284
-#: classes/Gems/Model/StaffModel.php:381
+#: classes/Gems/Model/StaffModel.php:382
 msgid "Language"
 msgstr "Taal"
 
@@ -5973,7 +5973,7 @@ msgstr "Vader, moeder, etc."
 
 #: classes/Gems/Model/StaffModel.php:138
 #: classes/Gems/User/Form/OrganizationFormAbstract.php:218
-#: classes/Gems/User/User.php:1770
+#: classes/Gems/User/User.php:1790
 msgid "Username"
 msgstr "Gebruikersnaam"
 
@@ -5981,11 +5981,11 @@ msgstr "Gebruikersnaam"
 msgid "Login Name"
 msgstr "Login Naam"
 
-#: classes/Gems/Model/StaffModel.php:257 classes/Gems/Model/StaffModel.php:376
+#: classes/Gems/Model/StaffModel.php:257 classes/Gems/Model/StaffModel.php:377
 msgid "Primary function"
 msgstr "Primaire functie"
 
-#: classes/Gems/Model/StaffModel.php:288 classes/Gems/Model/StaffModel.php:370
+#: classes/Gems/Model/StaffModel.php:288 classes/Gems/Model/StaffModel.php:371
 msgid "Can login"
 msgstr "Kan inloggen"
 
@@ -6028,39 +6028,44 @@ msgstr ""
 "Twee factor authenticatie kan alleen aan- of uitgezet worden. De sleutel "
 "moet de gebruiker zelf instellen."
 
-#: classes/Gems/Model/StaffModel.php:349
+#: classes/Gems/Model/StaffModel.php:351
 msgid "A description what this user is for."
 msgstr "Een uitleg waar dit account voor is."
 
-#: classes/Gems/Model/StaffModel.php:352
-msgid "Embedder"
-msgstr "Delegeerder"
+#: classes/Gems/Model/StaffModel.php:354
+#: classes/Gems/Snippets/Staff/SystemUserSearchSnippet.php:56
+msgid "Is embedder"
+msgstr "Is delegeerder"
 
-#: classes/Gems/Model/StaffModel.php:353
+#: classes/Gems/Model/StaffModel.php:355
 msgid "An embedder is only allowed to act as a front login for other users."
 msgstr ""
 "Een delegeerder kan alleen gebruikt worden om andere gebruikers in te laten "
 "loggen."
 
-#: classes/Gems/Model/StaffModel.php:358
+#: classes/Gems/Model/StaffModel.php:360
 msgid "Logout on survey"
 msgstr "Log uit bij beantwoorden vragenlijst"
 
-#: classes/Gems/Model/StaffModel.php:360
+#: classes/Gems/Model/StaffModel.php:361
 msgid "If checked the user will logoff when answering a survey."
 msgstr ""
 "Indien actief, dan logt de gebruiker uit voor het beantwoorden van een "
 "vragenlijst."
 
-#: classes/Gems/Model/StaffModel.php:372
+#: classes/Gems/Model/StaffModel.php:367
+msgid "Logout on survey."
+msgstr "Log uit bij beantwoorden vragenlijst."
+
+#: classes/Gems/Model/StaffModel.php:373
 msgid "System users can only be used when this box is checked."
 msgstr "Systeemaccounts kunnen alleen gebruikt worden als dit is aangevinkt."
 
-#: classes/Gems/Model/StaffModel.php:385
+#: classes/Gems/Model/StaffModel.php:386
 msgid "Secret key"
 msgstr "Geheime sleutel"
 
-#: classes/Gems/Model/StaffModel.php:386
+#: classes/Gems/Model/StaffModel.php:387
 msgid "Key used for authentication"
 msgstr "Sleutel gebruikt voor authenticatie"
 
@@ -7695,10 +7700,6 @@ msgstr "(beide)"
 #: classes/Gems/Snippets/Staff/StaffTableSnippet.php:106
 msgid "password"
 msgstr "wachtwoord"
-
-#: classes/Gems/Snippets/Staff/SystemUserSearchSnippet.php:56
-msgid "Is embedder"
-msgstr "Is delegeerder"
 
 #: classes/Gems/Snippets/Staff/SystemUserSearchSnippet.php:57
 msgid "Is Logout on survey"
@@ -10321,7 +10322,7 @@ msgid "Trying upgrade for %s to level %s: %s"
 msgstr "Probeert upgrade voor %s naar niveau %s: %s"
 
 #: classes/Gems/User/Form/ChangePasswordForm.php:180
-#: classes/Gems/User/User.php:1750 classes/Gems/User/User.php:1765
+#: classes/Gems/User/User.php:1770 classes/Gems/User/User.php:1785
 #, php-format
 msgid "%s is not correct."
 msgstr "%s is onjuist."
@@ -10608,32 +10609,32 @@ msgstr "U kunt vanaf deze locatie niet inloggen."
 msgid "Project 'master'"
 msgstr "Project 'master'"
 
-#: classes/Gems/User/User.php:1735
+#: classes/Gems/User/User.php:1755
 msgid "Your birthday"
 msgstr "Uw geboortedatum"
 
-#: classes/Gems/User/User.php:1758
+#: classes/Gems/User/User.php:1778
 msgid "Your zipcode"
 msgstr "Uw postcode"
 
-#: classes/Gems/User/User.php:1858
+#: classes/Gems/User/User.php:1878
 msgid "Trying to send a password reset to a user that cannot be reset."
 msgstr "Het wachtwoord voor deze gebruiker kan niet gewijzigd worden."
 
-#: classes/Gems/User/User.php:1886
+#: classes/Gems/User/User.php:1906
 msgid "Unable to send e-mail."
 msgstr "Verzenden email mislukt."
 
-#: classes/Gems/User/User.php:2001 classes/Gems/User/User.php:2006
+#: classes/Gems/User/User.php:2021 classes/Gems/User/User.php:2026
 msgid "No access to group"
 msgstr "Geen toegang tot deze groep"
 
-#: classes/Gems/User/User.php:2002
+#: classes/Gems/User/User.php:2022
 #, php-format
 msgid "You are not allowed to switch to the %s group."
 msgstr "U mag niet naar de %s groep switchen."
 
-#: classes/Gems/User/User.php:2007
+#: classes/Gems/User/User.php:2027
 #, php-format
 msgid "You cannot switch to an inactive or non-existing group."
 msgstr "U mag niet switchen naar een inactieve of niet-bestaande groep."
@@ -11617,6 +11618,9 @@ msgstr "Er trad een fout op!"
 #: views/scripts/error/error.phtml:37
 msgid "Please contact system administration"
 msgstr "Neem contact op met systeembeheer"
+
+#~ msgid "Embedder"
+#~ msgstr "Delegeerder"
 
 #~ msgid "No %s found."
 #~ msgstr "Geen %s gevonden."

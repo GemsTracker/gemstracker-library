@@ -780,7 +780,7 @@ abstract class Gems_Menu_MenuAbstract
         $pages = $pages + $showPage->addDeReactivateAction('gsf_active', 1, 0);
         $pages[] = $showPage->addAction($this->_('Make staff'), 'pr.staff.switch-user', 'switch-user')
                 ->setModelParameters(1)
-                ->addParameterFilter('can_mail', 1, 'gsf_active', 1, 'gsf_id_organization', $filter);
+                ->addParameterFilter('gsf_active', 1, 'gsf_id_organization', $filter);
 
         // LOG CONTROLLER
 //        $logPage = $showPage->addPage($this->_('Activity overview'), 'pr.staff-log', 'staff-log', 'index')

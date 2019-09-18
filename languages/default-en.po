@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-18 16:11+0200\n"
+"POT-Creation-Date: 2019-09-18 16:59+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -52,7 +52,7 @@ msgstr "Manual (organization specific)"
 #: classes/Gems/Model/ConditionModel.php:78
 #: classes/Gems/Model/ConditionModel.php:141
 #: classes/Gems/Model/OrganizationModel.php:100
-#: classes/Gems/Model/StaffModel.php:301 classes/Gems/Model/StaffModel.php:396
+#: classes/Gems/Model/StaffModel.php:301 classes/Gems/Model/StaffModel.php:395
 #: classes/Gems/Snippets/Survey/SurveyMaintenanceSearchSnippet.php:52
 #: classes/Gems/Snippets/Tracker/Rounds/ConditionRoundsTableSnippet.php:108
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:891
@@ -1605,7 +1605,7 @@ msgstr "Survey code"
 #: classes/Gems/Default/RoleAction.php:114
 #: classes/Gems/Default/UpgradeAction.php:204
 #: classes/Gems/Export/RespondentExport.php:332
-#: classes/Gems/Model/StaffModel.php:348
+#: classes/Gems/Model/StaffModel.php:350
 #: classes/Gems/Model/SurveyMaintenanceModel.php:94
 #: classes/Gems/Snippets/Track/TracksSnippet.php:89
 #: classes/Gems/Snippets/Tracker/Rounds/ConditionRoundsTableSnippet.php:105
@@ -5290,13 +5290,10 @@ msgid "Send Mail"
 msgstr "Send Mail"
 
 #: classes/Gems/Menu/MenuAbstract.php:735
-#| msgid "system user"
-#| msgid_plural "system users"
 msgid "Make system user"
 msgstr "Make system user"
 
 #: classes/Gems/Menu/MenuAbstract.php:781
-#| msgid "(all staff)"
 msgid "Make staff"
 msgstr "Make staff"
 
@@ -5672,7 +5669,7 @@ msgstr "Patient change event"
 #: classes/Gems/Model/OrganizationModel.php:177
 #: classes/Gems/Model/RespondentModel.php:381
 #: classes/Gems/Model/StaffModel.php:198 classes/Gems/Model/StaffModel.php:284
-#: classes/Gems/Model/StaffModel.php:381
+#: classes/Gems/Model/StaffModel.php:382
 msgid "Language"
 msgstr "Language"
 
@@ -5910,7 +5907,7 @@ msgstr "Father, mother, etc."
 
 #: classes/Gems/Model/StaffModel.php:138
 #: classes/Gems/User/Form/OrganizationFormAbstract.php:218
-#: classes/Gems/User/User.php:1770
+#: classes/Gems/User/User.php:1790
 msgid "Username"
 msgstr "Username"
 
@@ -5918,11 +5915,11 @@ msgstr "Username"
 msgid "Login Name"
 msgstr "Login Name"
 
-#: classes/Gems/Model/StaffModel.php:257 classes/Gems/Model/StaffModel.php:376
+#: classes/Gems/Model/StaffModel.php:257 classes/Gems/Model/StaffModel.php:377
 msgid "Primary function"
 msgstr "Primary function"
 
-#: classes/Gems/Model/StaffModel.php:288 classes/Gems/Model/StaffModel.php:370
+#: classes/Gems/Model/StaffModel.php:288 classes/Gems/Model/StaffModel.php:371
 msgid "Can login"
 msgstr "Can login"
 
@@ -5963,35 +5960,40 @@ msgid ""
 msgstr ""
 "You can only enable/disable two factor authentication, not install a key."
 
-#: classes/Gems/Model/StaffModel.php:349
+#: classes/Gems/Model/StaffModel.php:351
 msgid "A description what this user is for."
 msgstr "A description what this user is for."
 
-#: classes/Gems/Model/StaffModel.php:352
-msgid "Embedder"
-msgstr "Embedder"
+#: classes/Gems/Model/StaffModel.php:354
+#: classes/Gems/Snippets/Staff/SystemUserSearchSnippet.php:56
+msgid "Is embedder"
+msgstr "Is embedder"
 
-#: classes/Gems/Model/StaffModel.php:353
+#: classes/Gems/Model/StaffModel.php:355
 msgid "An embedder is only allowed to act as a front login for other users."
 msgstr "An embedder is only allowed to act as a front login for other users."
 
-#: classes/Gems/Model/StaffModel.php:358
+#: classes/Gems/Model/StaffModel.php:360
 msgid "Logout on survey"
 msgstr "Logout on survey"
 
-#: classes/Gems/Model/StaffModel.php:360
+#: classes/Gems/Model/StaffModel.php:361
 msgid "If checked the user will logoff when answering a survey."
 msgstr "If checked the user will logoff when answering a survey."
 
-#: classes/Gems/Model/StaffModel.php:372
+#: classes/Gems/Model/StaffModel.php:367
+msgid "Logout on survey."
+msgstr "Logout on survey."
+
+#: classes/Gems/Model/StaffModel.php:373
 msgid "System users can only be used when this box is checked."
 msgstr "System users can only be used when this box is checked."
 
-#: classes/Gems/Model/StaffModel.php:385
+#: classes/Gems/Model/StaffModel.php:386
 msgid "Secret key"
 msgstr "Secret key"
 
-#: classes/Gems/Model/StaffModel.php:386
+#: classes/Gems/Model/StaffModel.php:387
 msgid "Key used for authentication"
 msgstr "Key used for authentication"
 
@@ -7585,13 +7587,10 @@ msgid "this role"
 msgstr "this role"
 
 #: classes/Gems/Snippets/Staff/StaffCreateEditSnippet.php:49
-#| msgid "Save track"
 msgid "Save as staff"
 msgstr "Save as staff"
 
 #: classes/Gems/Snippets/Staff/StaffCreateEditSnippet.php:51
-#| msgid "system user"
-#| msgid_plural "system users"
 msgid "Save as system user"
 msgstr "Save as system user"
 
@@ -7622,10 +7621,6 @@ msgstr "(both)"
 #: classes/Gems/Snippets/Staff/StaffTableSnippet.php:106
 msgid "password"
 msgstr "password"
-
-#: classes/Gems/Snippets/Staff/SystemUserSearchSnippet.php:56
-msgid "Is embedder"
-msgstr "Is embedder"
 
 #: classes/Gems/Snippets/Staff/SystemUserSearchSnippet.php:57
 msgid "Is Logout on survey"
@@ -10220,7 +10215,7 @@ msgid "Trying upgrade for %s to level %s: %s"
 msgstr "Trying upgrade for %s to level %s: %s"
 
 #: classes/Gems/User/Form/ChangePasswordForm.php:180
-#: classes/Gems/User/User.php:1750 classes/Gems/User/User.php:1765
+#: classes/Gems/User/User.php:1770 classes/Gems/User/User.php:1785
 #, php-format
 msgid "%s is not correct."
 msgstr "%s is not correct."
@@ -10501,32 +10496,32 @@ msgstr "You are not allowed to login from this location."
 msgid "Project 'master'"
 msgstr "Project 'master'"
 
-#: classes/Gems/User/User.php:1735
+#: classes/Gems/User/User.php:1755
 msgid "Your birthday"
 msgstr "Your birthday"
 
-#: classes/Gems/User/User.php:1758
+#: classes/Gems/User/User.php:1778
 msgid "Your zipcode"
 msgstr "Your zipcode"
 
-#: classes/Gems/User/User.php:1858
+#: classes/Gems/User/User.php:1878
 msgid "Trying to send a password reset to a user that cannot be reset."
 msgstr "Trying to send a password reset to a user that cannot be reset."
 
-#: classes/Gems/User/User.php:1886
+#: classes/Gems/User/User.php:1906
 msgid "Unable to send e-mail."
 msgstr "Unable to send e-mail."
 
-#: classes/Gems/User/User.php:2001 classes/Gems/User/User.php:2006
+#: classes/Gems/User/User.php:2021 classes/Gems/User/User.php:2026
 msgid "No access to group"
 msgstr "No access to group"
 
-#: classes/Gems/User/User.php:2002
+#: classes/Gems/User/User.php:2022
 #, php-format
 msgid "You are not allowed to switch to the %s group."
 msgstr "You are not allowed to switch to the %s group."
 
-#: classes/Gems/User/User.php:2007
+#: classes/Gems/User/User.php:2027
 #, php-format
 msgid "You cannot switch to an inactive or non-existing group."
 msgstr "You cannot switch to an inactive or non-existing group."
@@ -11497,6 +11492,9 @@ msgstr "An error occurred!"
 #: views/scripts/error/error.phtml:37
 msgid "Please contact system administration"
 msgstr "Please contact system administration"
+
+#~ msgid "Embedder"
+#~ msgstr "Embedder"
 
 #~ msgid "Auto-redirect is disabled"
 #~ msgstr "Auto-redirect is disabled"
