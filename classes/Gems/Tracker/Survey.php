@@ -178,10 +178,10 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
             return 0;
         }
     }
-    
+
     /**
      * Calculate a hash for this survey, taking into account the questions and answers
-     * 
+     *
      * @return string
      */
     public function calculateHash()
@@ -195,7 +195,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
         }
 
         $hash = md5(serialize($items));
-        
+
         return $hash;
     }
 
@@ -261,7 +261,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
      */
     public function getAnswerSnippetNames(\Gems_Tracker_Token $token)
     {
-        if (isset($this->_gemsSurvey['gsu_display_event'])) {
+        if (isset($this->_gemsSurvey['gsu_display_event']) && $this->_gemsSurvey['gsu_display_event']) {
             $event = $this->events->loadSurveyDisplayEvent($this->_gemsSurvey['gsu_display_event']);
 
             return $event->getAnswerDisplaySnippets($token);
@@ -368,14 +368,14 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
     {
         return $this->_gemsSurvey['gsu_id_primary_group'];
     }
-    
+
     /**
      *
      * @return string The hash of survey questions/answers
      */
     public function getHash()
     {
-        return array_key_exists('gsu_hash', $this->_gemsSurvey) ? $this->_gemsSurvey['gsu_hash'] : null;        
+        return array_key_exists('gsu_hash', $this->_gemsSurvey) ? $this->_gemsSurvey['gsu_hash'] : null;
     }
 
     /**
@@ -537,7 +537,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
      */
     public function getSurveyBeforeAnsweringEvent()
     {
-        if ($this->_gemsSurvey['gsu_beforeanswering_event']) {
+        if (isset($this->_gemsSurvey['gsu_beforeanswering_event']) && $this->_gemsSurvey['gsu_beforeanswering_event']) {
             return $event = $this->events->loadSurveyBeforeAnsweringEvent($this->_gemsSurvey['gsu_beforeanswering_event']);
         }
     }
@@ -549,7 +549,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
      */
     public function getSurveyCompletedEvent()
     {
-        if ($this->_gemsSurvey['gsu_completed_event']) {
+        if (isset($this->_gemsSurvey['gsu_completed_event']) && $this->_gemsSurvey['gsu_completed_event']) {
             return $event = $this->events->loadSurveyCompletionEvent($this->_gemsSurvey['gsu_completed_event']);
         }
     }
@@ -654,16 +654,16 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
         // i.e. use an _update function
         return $this->_updateSurvey($values, $userId);
     }
-    
+
     /**
-     * 
+     *
      * @param string $hash The hash for this survey
      * @param int $userId The current user
      */
     public function setHash($hash, $userId)
     {
         if ($this->getHash() !== $hash && array_key_exists('gsu_hash', $this->_gemsSurvey)) {
-            $values['gsu_hash'] = $hash;        
+            $values['gsu_hash'] = $hash;
             $this->_updateSurvey($values, $userId);
         }
     }

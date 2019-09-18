@@ -72,7 +72,7 @@ class MailJobsUtil extends UtilAbstract
     {
         $roundIds = $this->_getRoundIds($roundDescription, $trackId);
         if ($roundIds) {
-            // Add or statenebt fir round 0 for inserted rounds, and check if the description matches
+            // Add or statement for round 0 for inserted rounds, and check if the description matches
             $filter[] = [
                 'gto_id_round' => $roundIds,
                 [
