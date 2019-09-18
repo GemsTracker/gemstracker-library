@@ -18,7 +18,7 @@ class SurveyCodeBookMultiExportSnippet extends MultiSurveysSearchFormSnippet
      * @param array $data The $form field values (can be usefull, but no need to set them)
      * @return array Of (possible nested) \Zend_Form_Element's or static text to add to the html or null for group breaks.
      */
-    protected function getAutoSearchElements(array &$data)
+    protected function getAutoSearchElements(array $data)
     {
         $elements = $this->getSurveySelectElements($data);        
         $elements[] = null;

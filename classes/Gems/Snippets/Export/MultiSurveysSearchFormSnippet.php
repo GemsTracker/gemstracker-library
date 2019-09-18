@@ -54,7 +54,7 @@ class MultiSurveysSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
      * @param array $data The $form field values (can be usefull, but no need to set them)
      * @return array Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.
      */
-    protected function getAutoSearchElements(array &$data)
+    protected function getAutoSearchElements(array $data)
     {
         $elements = parent::getAutoSearchElements($data);
 
@@ -94,7 +94,7 @@ class MultiSurveysSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
      * @param array $data The $form field values (can be usefull, but no need to set them)
      * @return array Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.
      */
-    protected function getExportTypeElements(array &$data)
+    protected function getExportTypeElements(array $data)
     {
         $export = $this->loader->getExport();
         $exportTypes = $this->getExportClasses($export);
@@ -126,6 +126,7 @@ class MultiSurveysSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
         
         if (!isset($data[$currentType])) {
             $data[$exportName] = $exportClass->getDefaultFormValues();
+            $this->searchData = $data;
         }
 
         return $elements;
