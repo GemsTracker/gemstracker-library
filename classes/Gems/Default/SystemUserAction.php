@@ -68,26 +68,23 @@ class Gems_Default_SystemUserAction extends \Gems_Default_StaffAction
     protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Staff\SystemUserSearchSnippet');
 
     /**
-     * Creates a model for getModel(). Called only for each new $action.
+     * Snippets for mail
      *
-     * The parameters allow you to easily adapt the model to the current action. The $detailed
-     * parameter was added, because the most common use of action is a split between detailed
-     * and summarized actions.
-     *
-     * @param boolean $detailed True when the current action is not in $summarizedActions.
-     * @param string $action The current action.
-     * @return \MUtil_Model_ModelAbstract
+     * @var mixed String or array of snippets name
      */
-    public function createModel($detailed, $action)
-    {
-        // \MUtil_Model::$verbose = true;
-        $model = $this->loader->getModels()->getStaffModel(! (('deactivate' === $action) || ('reactivate' === $action)));
+    protected $switchSnippets = array('Staff\\StaffCreateEditSnippet');
 
-        $model->applySystemUserSettings($detailed, $action);
+    /**
+     * True for staff model, otherwise system user model
+     *
+     * @var boolean
+     */
+    protected $useStaffModel = false;
 
-        return $model;
-    }
-
+    /**
+     *
+     * @return array
+     */
     public function getBrowseColumns()
     {
         $br = \MUtil_Html::create('br');

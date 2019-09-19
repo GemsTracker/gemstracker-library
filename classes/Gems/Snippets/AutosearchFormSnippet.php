@@ -365,6 +365,9 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
         $elements = $this->getAutoSearchElements($data);
 
         if ($elements) {
+            // Data could be changed in getAutoSearchElements, so read it again
+            $data = $this->getSearchData();
+            
             // Assign a name so autosubmit will only work on this form (when there are others)
             $form->setHtml('div');
             $div = $form->getHtml();
@@ -648,8 +651,7 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
             $filter = $filter + $this->defaultSearchData;
         }
 
-        // \MUtil_Echo::track($this->searchData, $filter);
-        // return $this->searchData;
-        return $data;
+        $this->searchData = $filter;
+        return $this->searchData;
     }
 }

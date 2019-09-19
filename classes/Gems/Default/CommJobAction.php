@@ -170,11 +170,12 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
                         'gcj_filter_max_reminders'    => array('elementClass' => 'Text', 'label' => $this->_('Maximum reminders'))
                     ),
                 'B' => array(
-                        'gcj_filter_days_between'     => array('elementClass' => 'Text', 'label' => $this->_('Days before expiration'),'description', ''),
+                        'gcj_filter_days_between'     => array('elementClass' => 'Text', 'label' => $this->_('Days before expiration'), 'description', ''),
                     ),
                 'E' => array(
-                        'gcj_filter_days_between'     => array('elementClass' => 'Text', 'label' => $this->_('Days before expiration'),'description', ''),
+                        'gcj_filter_days_between'     => array('elementClass' => 'Text', 'label' => $this->_('Days before expiration'), 'description', ''),
                     ),
+                'N' => [],
                 );
             $model->addDependency(array('ValueSwitchDependency', $switches), 'gcj_filter_mode');
 
@@ -212,7 +213,12 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
                 );
         if ($detailed) {
             // Show other field only when last $fromMethod is select
-            $switches = ['F' => ['gcj_from_fixed' => ['elementClass' => 'Text', 'label' => $this->_('From other')]]];
+            $switches = [
+                'F' => ['gcj_from_fixed' => ['elementClass' => 'Text', 'label' => $this->_('From other')]],
+                'O' => [],
+                'S' => [],
+                'U' => [],
+                ];
             $model->addDependency(array('ValueSwitchDependency', $switches), 'gcj_from_method');
 
             $model->set('gcj_from_fixed',  'label', '',

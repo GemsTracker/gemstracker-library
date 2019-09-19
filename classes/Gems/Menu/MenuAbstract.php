@@ -732,6 +732,9 @@ abstract class Gems_Menu_MenuAbstract
                 ->addParameterFilter('can_mail', 1, 'gsf_active', 1, 'gsf_id_organization', $filter);
 
         $pages = $pages + $showPage->addDeReactivateAction('gsf_active', 1, 0);
+        $pages[] = $showPage->addAction($this->_('Make system user'), 'pr.staff.switch-user', 'switch-user')
+                ->setModelParameters(1)
+                ->addParameterFilter('gsf_active', 1, 'gsf_id_organization', $filter);
 
         // LOG CONTROLLER
         $logPage = $showPage->addPage($this->_('Activity overview'), 'pr.staff-log', 'staff-log', 'index')
@@ -761,6 +764,12 @@ abstract class Gems_Menu_MenuAbstract
      */
     public function addSystemUserPage($label, array $other = array())
     {
+        if ($this->user->hasPrivilege('pr.staff.edit.all')) {
+            $filter = array_keys($this->escort->getUtil()->getDbLookup()->getOrganizations());
+        } else {
+            $filter = array_keys($this->user->getAllowedOrganizations());
+        }
+
         $page = $this->addPage($label, 'pr.systemuser', 'system-user', 'index', $other);
         $page->addAutofilterAction();
         $createPage = $page->addCreateAction();
@@ -769,6 +778,9 @@ abstract class Gems_Menu_MenuAbstract
         $pages[] = $showPage->addEditAction();
 
         $pages = $pages + $showPage->addDeReactivateAction('gsf_active', 1, 0);
+        $pages[] = $showPage->addAction($this->_('Make staff'), 'pr.staff.switch-user', 'switch-user')
+                ->setModelParameters(1)
+                ->addParameterFilter('gsf_active', 1, 'gsf_id_organization', $filter);
 
         // LOG CONTROLLER
 //        $logPage = $showPage->addPage($this->_('Activity overview'), 'pr.staff-log', 'staff-log', 'index')

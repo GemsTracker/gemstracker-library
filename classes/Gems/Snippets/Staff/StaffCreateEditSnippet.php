@@ -17,6 +17,12 @@ use Gems_Snippets_ModelFormSnippetGeneric as ModelFormSnippetGeneric;
  */
 class StaffCreateEditSnippet extends ModelFormSnippetGeneric
 {
+    /**
+     * When true this is the staff form
+     *
+     * @var boolean
+     */
+    protected $isStaff = true;
 
     /**
      *
@@ -24,6 +30,35 @@ class StaffCreateEditSnippet extends ModelFormSnippetGeneric
      */
     protected $loader;
 
+    /**
+     * When true we're switching from staff user to system user
+     *
+     * @var boolean
+     */
+    protected $switch = false;
+
+     /**
+     * Retrieve the header title to display
+     *
+     * @return string
+     */
+    protected function getTitle()
+    {
+        if ($this->switch) {
+            if ($this->isStaff) {
+                return $this->_('Save as staff');
+            } else {
+                return $this->_('Save as system user');
+            }
+        }
+        return parent::getTitle();
+    }
+
+    /**
+     * Hook that allows actions when the input is invalid
+     *
+     * When not rerouted, the form will be populated afterwards
+     */
     protected function onInValid()
     {
         $form    = $this->_form;
@@ -62,17 +97,64 @@ class StaffCreateEditSnippet extends ModelFormSnippetGeneric
         parent::onInValid();
     }
 
+    /**
+     * Hook containing the actual save code.
+     *
+     * Call's afterSave() for user interaction.
+     *
+     * @see afterSave()
+     */
+    protected function saveData()
+    {
+        if ($this->switch && $this->isStaff) {
+            $this->formData['gsf_logout_on_survey'] = 0;
+            $this->formData['gsf_is_embedded'] = 0;
+        }
+
+        parent::saveData();
+
+        if (! $this->isStaff) {
+            if (isset($this->formData['gul_two_factor_key'], $this->formData['gsf_id_user']) &&
+                    $this->formData['gul_two_factor_key']) {
+
+                $user = $this->loader->getUserLoader()->getUserByStaffId($this->formData['gsf_id_user']);
+
+                if ($user->canSetPassword()) {
+                    $this->addMessage(sprintf($this->_('Password saved for: %s'), $user->getLoginName()));
+                    $user->setPassword($this->formData['gul_two_factor_key']);
+                }
+            }
+        }
+    }
+
+    /**
+     * Set what to do when the form is 'finished'.
+     *
+     * @return \MUtil_Snippets_ModelFormSnippetAbstract (continuation pattern)
+     */
     public function setAfterSaveRoute()
     {
-        $user = $this->loader->getUser($this->formData['gsf_login'], $this->formData['gsf_id_organization']);
-
-        if (!$user->canSetPassword()) {
+        if ($this->switch) {
+            $controller = $this->isStaff ? 'staff' : 'system-user';
+            $this->afterSaveRouteUrl['controller'] = $controller;
             $this->routeAction = 'show';
             $this->resetRoute = true;
             $this->afterSaveRouteKeys = true;
+        } else {
+            $user = $this->loader->getUser($this->formData['gsf_login'], $this->formData['gsf_id_organization']);
+
+            if (! $user->canSetPassword()) {
+                $this->routeAction = 'show';
+                $this->resetRoute = true;
+                $this->afterSaveRouteKeys = true;
+            }
         }
 
-        return parent::setAfterSaveRoute();
+        parent::setAfterSaveRoute();
+        if ($this->switch) {
+            // Controller is reset in \MUtil_Snippets_ModelFormSnippetAbstract::setAfterSaveRoute()
+            $this->afterSaveRouteUrl['controller'] = $controller;
+        }
+        return $this;
     }
-
 }

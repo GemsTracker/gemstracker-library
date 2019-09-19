@@ -1302,6 +1302,26 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * Return the secret key for embedded login
+     *
+     * @return array
+     */
+    public function getSecretKey()
+    {
+        if ($this->isEmbedded()) {
+            if (! $this->_hasVar('secretKey')) {
+                $key = $this->db->fetchOne(
+                        "SELECT gsus_secret_key FROM gems__systemuser_setup WHERE gsus_id_user = ?",
+                        $this->getUserId()
+                        );
+
+                $this->_setVar('secretKey', $key ? $this->project->decrypt($key) : null);
+            }
+            return $this->_getVar('secretKey', null);
+        }
+    }
+
+    /**
      * get the parameters where the survey should return to
      *
      * @return array
@@ -1554,7 +1574,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     public function isAllowedOrganization($organizationId)
     {
         $orgs = $this->getAllowedOrganizations();
-        
+
         return isset($orgs[$organizationId]) || (\Gems_User_UserLoader::SYSTEM_NO_ORG == $organizationId);
     }
 

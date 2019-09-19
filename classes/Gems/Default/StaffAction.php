@@ -149,6 +149,29 @@ class Gems_Default_StaffAction extends \Gems_Controller_ModelSnippetActionAbstra
     protected $resetSnippets = array('User\\AdminPasswordResetSnippet');
 
     /**
+     * The parameters used for the mail action.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $switchParameters = array(
+        'switch' => true,
+        );
+
+    /**
+     * Snippets for mail
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $switchSnippets = array('Staff\\SystemUserCreateEditSnippet');
+
+    /**
+     * True for staff model, otherwise system user model
+     *
+     * @var boolean
+     */
+    protected $useStaffModel = true;
+
+    /**
      * Creates a model for getModel(). Called only for each new $action.
      *
      * The parameters allow you to easily adapt the model to the current action. The $detailed
@@ -197,7 +220,11 @@ class Gems_Default_StaffAction extends \Gems_Controller_ModelSnippetActionAbstra
         // \MUtil_Model::$verbose = true;
         $model = $this->loader->getModels()->getStaffModel(! (('deactivate' === $action) || ('reactivate' === $action)));
 
-        $model->applySettings($detailed, $action);
+        if ($this->useStaffModel) {
+            $model->applySettings($detailed, $action);
+        } else {
+            $model->applySystemUserSettings($detailed, $action);
+        }
 
         return $model;
     }
@@ -363,5 +390,15 @@ class Gems_Default_StaffAction extends \Gems_Controller_ModelSnippetActionAbstra
                 'success');
         $router = \Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
         $router->gotoRoute(['controller'=>'staff', 'action'=>'show'], null, false);
+    }
+
+    public function switchUserAction()
+    {
+        $this->useStaffModel = ! $this->useStaffModel;
+        if ($this->switchSnippets) {
+            $params = $this->_processParameters($this->switchParameters);
+
+            $this->addSnippets($this->switchSnippets, $params);
+        }
     }
 }
