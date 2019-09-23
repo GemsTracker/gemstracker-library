@@ -74,6 +74,8 @@ class BirthdayMasker extends MaskerAbstract
         return function ($value) use ($dateMask) {
             if ($value instanceof \Zend_Date) {
                 return $value->toString($dateMask);
+            } else {
+                return $value;
             }
         };
     }
@@ -100,40 +102,7 @@ class BirthdayMasker extends MaskerAbstract
             'Y' => $this->_('Mask year only'),
             '*' => $this->_('Mask completely'),
         ];
-    }
-
-    /**
-     *
-     * @param string $type Current field data type
-     * @param mixed $value
-     * @return mixed
-     */
-    public function mask($type, $value)
-    {
-        if ($value instanceof \Zend_Date) {
-            $dateValue = $value;
-        } else {
-            $dateValue = \MUtil_Date::ifDate($value, array_keys(\MUtil_Date::$zendToPhpFormats));
-        }
-        if ($dateValue) {
-            switch ($this->_choice) {
-                case 'D':
-                    return $dateValue->toString('MMM YYYY');
-
-                case 'M':
-                    return $dateValue->toString('YYYY');
-
-                case 'Y':
-                    return $dateValue->toString('DD MMM');
-
-                case '*':
-                    return null;
-            }
-
-        }
-
-        return $value;
-    }
+    }    
 
     /**
      *
