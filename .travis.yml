@@ -7,8 +7,6 @@ matrix:
     - php: 7.0  
       env: WITH_COVERAGE=true
     - php: 7.1
-    - php: 7.2
-    - php: 7.3
 
 # Commands to be run before your environment runs.
 install: composer install
