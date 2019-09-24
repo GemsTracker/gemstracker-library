@@ -90,7 +90,7 @@ class ConditionModel extends \Gems_Model_JoinModel
                     'description', $this->_('The number of rounds using this condition.'),
                     'elementClass', 'Exhibitor'
                     );
-            
+
             $this->addColumn(new \Zend_Db_Expr(
                 "(SELECT COUNT(*)
                     FROM gems__conditions AS other
@@ -163,14 +163,15 @@ class ConditionModel extends \Gems_Model_JoinModel
 
         return $this;
     }
-    
+
     /**
      * Delete items from the model
-     * 
+     *
      * @param mixed $filter True to use the stored filter, array to specify a different filter
+     * @param array $saveTables Array of table names => save mode
      * @return int The number of items deleted
      */
-    public function delete($filter = true)
+    public function delete($filter = true, array $saveTables = null)
     {
         $this->setChanged(0);
         $conditions = $this->load($filter);
@@ -190,10 +191,10 @@ class ConditionModel extends \Gems_Model_JoinModel
                 }
             }
         }
-        
+
         return $this->getChanged();
     }
-    
+
     /**
      * Get the number of times someone started answering a round in this track.
      *
@@ -216,10 +217,10 @@ class ConditionModel extends \Gems_Model_JoinModel
                     gcon_condition_text3 = ? OR
                     gcon_condition_text4 = ?
                 )";
-        
+
         return (int) $this->db->fetchOne($sqlRounds, $conditionId) + (int) $this->db->fetchOne($sqlConditions, [$conditionId,$conditionId,$conditionId,$conditionId]);
     }
-    
+
     /**
      * Can this condition be deleted as is?
      *
@@ -231,7 +232,7 @@ class ConditionModel extends \Gems_Model_JoinModel
         if (! $conditionId) {
             return true;
         }
-        
+
         return $this->getUsedCount($conditionId) === 0;
     }
 

@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: RoundModel.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Tracker\Model;
@@ -41,9 +40,10 @@ class RoundModel extends \Gems_Model_JoinModel
      * Delete items from the model
      *
      * @param mixed $filter True to use the stored filter, array to specify a different filter
+     * @param array $saveTables Array of table names => save mode
      * @return int The number of items deleted
      */
-    public function delete($filter = true)
+    public function delete($filter = true, array $saveTables = null)
     {
         $this->trackUsage();
         $rows = $this->load($filter);
