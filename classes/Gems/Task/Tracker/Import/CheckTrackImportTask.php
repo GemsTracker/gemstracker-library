@@ -40,6 +40,7 @@ class CheckTrackImportTask extends \MUtil_Task_TaskAbstract
     public function execute($tracksData = null)
     {
         $batch = $this->getBatch();
+        $import    = $batch->getVariable('import');
 
         switch (count((array) $tracksData)) {
             case 0:
@@ -53,7 +54,6 @@ class CheckTrackImportTask extends \MUtil_Task_TaskAbstract
 
                 $defaults  = array('gtr_track_name', 'gtr_track_info', 'gtr_code', 'gtr_date_start', 'gtr_date_until');
                 $events    = $this->loader->getEvents();
-                $import    = $batch->getVariable('import');
                 $tracker   = $this->loader->getTracker();
 
                 $import['trackData'] = $trackData;

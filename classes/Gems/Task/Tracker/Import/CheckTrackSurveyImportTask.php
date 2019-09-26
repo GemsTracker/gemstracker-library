@@ -108,7 +108,7 @@ class CheckTrackSurveyImportTask extends \MUtil_Task_TaskAbstract
         $import    = $batch->getVariable('import');
         $trackData = $this->util->getTrackData();
 
-        if (isset($surveyData['gsu_export_code']) && $surveyData['gsu_export_code']) {
+        if (isset($surveyData['gsu_export_code']) && $surveyData['gsu_export_code'] && isset($import['rounds'])) {
             $name     = 'survey__' . $surveyData['gsu_export_code'];
             $required = $this->checkRequired($surveyData['gsu_export_code'], $import['rounds']);
 
