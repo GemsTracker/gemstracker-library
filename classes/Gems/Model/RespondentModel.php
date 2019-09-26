@@ -1,5 +1,7 @@
 <?php
 
+use Gems\Exception\RespondentAlreadyExists;
+
 /**
  *
  * @package    Gems
@@ -220,7 +222,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         }
         $model->set('name',
                 'label', $label,
-                'column_expression', new \Zend_Db_Expr("CONCAT(" . implode(', ', $nameExpr) . ")"),
+                'column_expression', new Zend_Db_Expr("CONCAT(" . implode(', ', $nameExpr) . ")"),
                 'fieldlist', $fieldList);
    }
 
@@ -588,7 +590,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
      * @param string $toPid             Respondent number of the sending organization
      * @param bool $keepConsent         Should new organization inherit the consent of the old organization or not?
      * @return array The new respondent
-     * @throws \Gems_Exception
+     * @throws \Gems_Exception|RespondentAlreadyExists
      */
     public function copyToOrg($fromOrgId, $fromPid, $toOrgId, $toPid, $keepConsent = false)
     {
@@ -605,15 +607,15 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         $toPatientByRespondent = $this->loadFirst(['gr2o_id_organization' => $toOrgId, 'gr2o_id_user' => $fromPatient['gr2o_id_user']]);
         if (!empty($toPatientByPid) && $toPatientByPid['gr2o_id_user'] = $fromPatient['gr2o_id_user']) {
             // We already have the same respondent, nothing to do
-            throw new \Gems_Exception($this->_('Respondent already exists in destination organization.'));
+            throw new RespondentAlreadyExists($this->_('Respondent already exists in destination organization.'), 200, null, RespondentAlreadyExists::SAME);
         }
         if (!empty($toPatientByPid) && empty($toPatientByRespondent)) {
             // Could be the same, or someone else... just return an error for now maybe offer to mark as duplicate and merge records later on
-            throw new \Gems_Exception($this->_('Respondent with requested respondent number already exists in receiving organization.'));
+            throw new RespondentAlreadyExists($this->_('Respondent with requested respondent number already exists in receiving organization.'), 200, null, RespondentAlreadyExists::OTHERUID);
         }
         if (!empty($toPatientByRespondent)) {
             // No action needed, maybe also report the number we found?
-            throw new \Gems_Exception($this->_('Respondent already exists in destination organization, but with different respondent number.'));
+            throw new RespondentAlreadyExists($this->_('Respondent already exists in destination organization, but with different respondent number.'), 200, null, RespondentAlreadyExists::OTHERPID);
         }
 
         // Ready to go, unset consent if needed
@@ -934,6 +936,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
      * @param int $toOrgId              Id of the receiving organization
      * @param string $toPid             Respondent number of the sending organization
      * @return array The new respondent
+     * @throws RespondentAlreadyExists
      */
     public function move($fromOrgId, $fromPid, $toOrgId, $toPid)
     {
@@ -967,7 +970,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
             // we can not delete the other records, maybe mark as inactive or throw an error
             $result = $patientTo;
             $this->currentUser->enableMask();
-            throw new \Gems_Exception($this->_('Respondent already exists in destination, please delete current record manually if needed.'));
+            throw new RespondentAlreadyExists($this->_('Respondent already exists in destination, please delete current record manually if needed.'), 200, null, RespondentAlreadyExists::OTHERUID);
         }
 
         // Now re-enable the mask feature
