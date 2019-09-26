@@ -605,7 +605,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
 
         $toPatientByPid        = $this->loadFirst(['gr2o_id_organization' => $toOrgId, 'gr2o_patient_nr' => $toPid]);
         $toPatientByRespondent = $this->loadFirst(['gr2o_id_organization' => $toOrgId, 'gr2o_id_user' => $fromPatient['gr2o_id_user']]);
-        if (!empty($toPatientByPid) && $toPatientByPid['gr2o_id_user'] = $fromPatient['gr2o_id_user']) {
+        if (!empty($toPatientByPid) && $toPatientByPid['gr2o_id_user'] == $fromPatient['gr2o_id_user']) {
             // We already have the same respondent, nothing to do
             throw new RespondentAlreadyExists($this->_('Respondent already exists in destination organization.'), 200, null, RespondentAlreadyExists::SAME);
         }

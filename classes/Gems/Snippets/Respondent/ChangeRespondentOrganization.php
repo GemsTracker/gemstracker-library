@@ -174,7 +174,7 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
     protected function afterSave($changed)
     {
         // Communicate to user
-        if ($changed) {
+        if ($changed >= 0) {
             switch ($this->formData['change_method']) {
                 case 'share':
                     $message = $this->_('Shared %s with %s as %s');
