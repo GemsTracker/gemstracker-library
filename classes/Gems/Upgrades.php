@@ -372,7 +372,7 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
      */
     public function Upgrade186to187()
     {
-        // $this->_batch->addTask('Db_CreateNewTables');
+        $this->_batch->addTask('Db_CreateNewTables');
         $this->_batch->addTask('Db_AddPatches', 65);
 
         // Use AddTask task to execute after patches

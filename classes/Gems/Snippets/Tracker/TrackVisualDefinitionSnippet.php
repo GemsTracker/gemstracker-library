@@ -95,7 +95,7 @@ class TrackVisualDefinitionSnippet extends \Gems_Snippets_ModelTableSnippetAbstr
                 'round_order' => new \Zend_Db_Expr('min(gro_id_order)')
             ];
             foreach ($rounds as $round) {
-                $fields[$round] = new \Zend_Db_Expr('max(case when (gro_round_description = ' . $db->quote($round) . ' AND gro_condition IS NULL) then "X" when gro_round_description = ' . $db->quote($round) . ' then "C" else NULL end)');
+                $fields[$round] = new \Zend_Db_Expr('max(case when (gro_round_description = ' . $db->quote($round) . ' AND gro_condition > 0) then "C" when gro_round_description = ' . $db->quote($round) . ' then "X" else NULL end)');
             }
             $fields['filler'] = new \Zend_Db_Expr('COALESCE(gems__track_fields.gtf_field_name, gems__groups.ggp_name)');
 

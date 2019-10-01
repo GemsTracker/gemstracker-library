@@ -108,7 +108,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
      * @return array Form elements
      */
     public function getFormElements(&$form, &$data) {}
-    
+
     /**
      * @return string|null Optional snippet containing help text
      */
@@ -241,10 +241,10 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
             fclose($file);
         }
     }
-    
+
     public function afterRegistry() {
         parent::afterRegistry();
-        
+
         if (!$this->batch) {
             $this->_session = new \Zend_Session_Namespace(__CLASS__);
         }
@@ -278,12 +278,12 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
 
         return \MUtil_File::cleanupName($filename);
     }
-    
+
     /**
      * Single point for mitigating csv injection vulnerabilities
-     * 
-     * https://www.owasp.org/index.php/CSV_Injection 
-     * 
+     *
+     * https://www.owasp.org/index.php/CSV_Injection
+     *
      * @param string $input
      * @return string
      */
@@ -291,10 +291,10 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
     {
         // Try to prevent csv injection
         $dangers = ['=', '+', '-', '@'];
-        
+
         // Trim leading spaces for our test
         $trimmed = trim($input);
-        
+
         if (strlen($trimmed)>1 && in_array($trimmed[0], $dangers)) {
             return "'" . $input;
         }  else {
@@ -408,7 +408,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
                         case 'dateFormat':
                             // if there is a formatFunction skip the date formatting
                             if (array_key_exists('formatFunction', $options)) {
-                                continue;
+                                continue 2;
                             }
 
                             $result = $this->filterDateFormat($result, $optionValue, $columnName);
@@ -500,10 +500,10 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
             return $file;
         }
     }
-    
+
     /**
      * Return the answermodel for the given filter
-     * 
+     *
      * @param array $filter
      * @param array $data
      * @param array|string $sort
@@ -612,10 +612,10 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
     {
         $this->batch = $batch;
     }
-    
+
     /**
      * Set the model when not in batch mode
-     * 
+     *
      * @param \MUtil_Model_ModelAbstract $model
      */
     public function setModel(\MUtil_Model_ModelAbstract $model)
@@ -624,5 +624,5 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
             $this->_session->model = $model;
         }
     }
-    
+
 }

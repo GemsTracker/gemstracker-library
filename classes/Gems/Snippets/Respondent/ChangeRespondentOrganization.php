@@ -174,7 +174,7 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
     protected function afterSave($changed)
     {
         // Communicate to user
-        if ($changed) {
+        if ($changed >= 0) {
             switch ($this->formData['change_method']) {
                 case 'share':
                     $message = $this->_('Shared %s with %s as %s');
@@ -288,12 +288,20 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
 
             case 'copy':
                 $this->_changed = $this->saveShare($fromOrgId, $fromPid, $toOrgId, $toPatientId);
-                $this->_changed += $this->saveMoveTracks($fromOrgId, $fromRespId, $toOrgId, $toPatientId, false);
+                if ($this->_changed >= 0) {
+                    $this->_changed += $this->saveMoveTracks($fromOrgId, $fromRespId, $toOrgId, $toPatientId, false);
+                } else {
+                    $this->addMessage($this->_('ERROR: Tracks not moved!'));
+                }
                 break;
 
             case 'move':
                 $this->_changed = $this->saveTo($fromOrgId, $fromPid, $toOrgId, $toPatientId);
-                $this->_changed += $this->saveMoveTracks($fromOrgId, $fromRespId, $toOrgId, $toPatientId, true);
+                if ($this->_changed >= 0) {
+                    $this->_changed += $this->saveMoveTracks($fromOrgId, $fromRespId, $toOrgId, $toPatientId, true);
+                } else {
+                    $this->addMessage($this->_('ERROR: Tracks not moved!'));
+                }
                 break;
 
             default:
@@ -353,20 +361,37 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
      * Copy the respondent
      * 
      * @param int $fromOrgId
-     * @param int $fromRespId
+     * @param int $fromPatientId
      * @param int $toOrgId
      * @param string $toPatientId
      * @return int 1 If saved
      */
-    protected function saveShare($fromOrgId, $fromRespId, $toOrgId, $toPatientId)
+    protected function saveShare($fromOrgId, $fromPatientId, $toOrgId, $toPatientId)
     {
+        /** @var \Gems_Model_RespondentModel $model */
         $model = $this->getModel();
         try {
-            $result = $model->copyToOrg($fromOrgId, $fromRespId, $toOrgId, $toPatientId, $this->keepConsent);
-        } catch (\Exception $exc) {
-            // Maybe we could do something with the error...
+            $result = $model->copyToOrg($fromOrgId, $fromPatientId, $toOrgId, $toPatientId, $this->keepConsent);
+        } catch (\Gems\Exception\RespondentAlreadyExists $exc) {
+            $info = $exc->getInfo();
+            switch ($info) {
+                case \Gems\Exception\RespondentAlreadyExists::OTHERPID:
+                    $result = -1;
+                    break;
+                
+                case \Gems\Exception\RespondentAlreadyExists::OTHERUID:
+                    $result = -2;
+                    break;
+                
+                case \Gems\Exception\RespondentAlreadyExists::SAME:
+                default:
+                    // Do nothing, already exists
+                    $result = 0;
+                    break;
+            }
+                
             $this->addMessage($exc->getMessage());
-            return 0;
+            return $result;
         }
 
         return $model->getChanged();
@@ -376,19 +401,37 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
      * Move the respondent
      * 
      * @param int $fromOrgId
-     * @param int $fromRespId
+     * @param int $fromPatientId
      * @param int $toOrgId
      * @param string $toPatientId
      * @return int 1 If saved
      */
-    protected function saveTo($fromOrgId, $fromRespId, $toOrgId, $toPatientId)
+    protected function saveTo($fromOrgId, $fromPatientId, $toOrgId, $toPatientId)
     {
+        /** @var \Gems_Model_RespondentModel $model */
         $model = $this->getModel();
         try {
-            $model->move($fromOrgId, $fromRespId, $toOrgId, $toPatientId);    
-        } catch (\Exception $exc) {
+            $model->move($fromOrgId, $fromPatientId, $toOrgId, $toPatientId);    
+        } catch (\Gems\Exception\RespondentAlreadyExists $exc) {
+            $info = $exc->getInfo();
+            switch ($info) {
+                case \Gems\Exception\RespondentAlreadyExists::OTHERPID:
+                    $result = -1;
+                    break;
+                
+                case \Gems\Exception\RespondentAlreadyExists::OTHERUID:
+                    $result = -2;
+                    break;
+                
+                case \Gems\Exception\RespondentAlreadyExists::SAME:
+                default:
+                    // Do nothing, already exists
+                    $result = 0;
+                    break;
+            }
+                
             $this->addMessage($exc->getMessage());
-            return 0;
+            return $result;
         }        
         
         return $model->getChanged();
