@@ -162,16 +162,18 @@ class MailJobsUtil extends UtilAbstract
      */
     protected function _getRoundIds($roundDescription, $trackId = null)
     {
+        $cacheId = __FUNCTION__;
         if ($trackId) {
-            $cacheId = __FUNCTION__ . '_' . $trackId;
+             $cacheId .= '_' . $trackId;
             $sql     = "SELECT gro_id_round FROM gems__rounds
                 WHERE gro_active = 1 AND gro_id_track = ? AND gro_round_description = ?";
             $binds[] = $trackId;
         } else {
-            $cacheId = __FUNCTION__;
             $sql     = "SELECT gro_id_round FROM gems__rounds WHERE gro_active = 1 AND gro_round_description = ?";
         }
         $binds[] = $roundDescription;
+        
+        $cacheId .= '_' . \MUtil_String::toCacheId($roundDescription);
 
         return $this->_getSelectColCached($cacheId, $sql, $binds, ['round', 'rounds', 'track', 'tracks'], false);
     }
