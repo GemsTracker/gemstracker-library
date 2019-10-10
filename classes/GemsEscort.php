@@ -64,6 +64,18 @@ class GemsEscort extends \MUtil_Application_Escort
     private $_startFirebird;
 
     /**
+     * Set jQuery version number
+     * @var string
+     */
+    public $jqueryVersionNr = '3.4.1';
+    
+    /**
+     * Set jQuery UI version number
+     * @var string
+     */
+    public $jqueryUiVersionNr = '1.12.1';
+
+    /**
      * A nested array containing the pages accessible to everyone in maintenance mode
      *
      * @var array Nested controllername => [actions]
@@ -86,7 +98,7 @@ class GemsEscort extends \MUtil_Application_Escort
      * @var boolean
      */
     public $useHtml5 = false;
-
+    
     /**
      * Constructor
      *
@@ -2150,16 +2162,14 @@ class GemsEscort extends \MUtil_Application_Escort
         // by classes using jQuery
         $jquery = \MUtil_JQuery::jQuery();
 
-        $jqueryVersion   = '1.11.1';
-        $jqueryUiVersion = '1.11.1';
-        $jquery->setVersion($jqueryVersion);
-        $jquery->setUiVersion($jqueryUiVersion);
+        $jquery->setVersion($this->jqueryVersionNr`);
+        $jquery->setUiVersion($this->jqueryUiVersionNr);
 
         if ($this->project->isJQueryLocal()) {
             $jqueryDir = $request->getBasePath() . $this->project->getJQueryLocal();
 
-            $jquery->setLocalPath($jqueryDir . 'jquery-' . $jqueryVersion . '.js');
-            $jquery->setUiLocalPath($jqueryDir . 'jquery-ui-' . $jqueryUiVersion . '.js');
+            $jquery->setLocalPath($jqueryDir . 'jquery-' . $this->jqueryVersionNr . '.js');
+            $jquery->setUiLocalPath($jqueryDir . 'jquery-ui-' . $this->jqueryUiVersionNr . '.js');
 
         } else {
             if (\MUtil_Https::on()) {
