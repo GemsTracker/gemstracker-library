@@ -2162,7 +2162,7 @@ class GemsEscort extends \MUtil_Application_Escort
         // by classes using jQuery
         $jquery = \MUtil_JQuery::jQuery();
 
-        $jquery->setVersion($this->jqueryVersionNr`);
+        $jquery->setVersion($this->jqueryVersionNr);
         $jquery->setUiVersion($this->jqueryUiVersionNr);
 
         if ($this->project->isJQueryLocal()) {
