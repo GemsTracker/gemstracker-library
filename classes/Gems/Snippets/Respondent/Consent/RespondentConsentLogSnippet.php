@@ -53,7 +53,7 @@ class RespondentConsentLogSnippet extends \MUtil_Snippets_ModelTableSnippetAbstr
 
         if ($this->respondent instanceof \Gems_Tracker_Respondent) {
             $this->caption = sprintf(
-                    $this->_('Consent change log for patient %s, %s at %s'),
+                    $this->_('Consent change log for respondent %s, %s at %s'),
                     $this->respondent->getPatientNumber(),
                     $this->respondent->getFullName(),
                     $this->respondent->getOrganization()->getName()
