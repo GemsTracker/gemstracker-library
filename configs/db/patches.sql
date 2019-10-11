@@ -1560,3 +1560,5 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.staff.switch
     WHERE grl_name IN ('super')
         AND grl_privileges NOT LIKE '%,pr.staff.switch-user%';
 
+-- GEMS VERSION: 66
+-- PATCH: none yet

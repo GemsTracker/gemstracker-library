@@ -34,7 +34,7 @@ class Gems_Versions
          * This means that future patches for will be loaded,
          * but that previous patches are ignored.
          */
-        return 65;
+        return 66;
     }
 
     /**
@@ -44,7 +44,7 @@ class Gems_Versions
      */
     public final function getGemsVersion()
     {
-        return '1.8.7';
+        return '1.8.8';
     }
 
     /**
