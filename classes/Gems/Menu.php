@@ -400,6 +400,9 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $rPage->addEditAction('pr.respondent.edit')
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
+        $rPage->addAction($this->_('Consent'), 'pr.respondent.change-consent', 'change-consent')
+                ->setNamedParameters($params)
+                ->setHiddenOrgId($orgId);
         $rPage->addAction($this->_('Change organization'), 'pr.respondent.change-org', 'change-organization')
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);

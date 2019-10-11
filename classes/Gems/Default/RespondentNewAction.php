@@ -9,6 +9,7 @@
  * @license    New BSD License
  */
 
+use Gems\Screens\ConsentInterface;
 use Gems\Screens\ProcessModelInterface;
 
 /**
@@ -45,6 +46,34 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      * @var mixed String or array of snippets name
      */
     protected $autofilterSnippets = 'Respondent\\RespondentTableSnippet';
+
+    /**
+     * The parameters used for the change consent action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $changeConsentParameters = array(
+        'editMailable'     => true,
+        'menuShowSiblings' => true,
+        'menuShowChildren' => true,
+        'resetRoute'       => true,
+        'useTabbedForm'    => false,
+        );
+
+    /**
+     * The snippets used for the change consent action.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $changeConsentSnippets = [
+        'Respondent\\Consent\\RespondentConsentFormSnippet',
+        'Respondent\\Consent\\RespondentConsentLogSnippet',
+        ];
 
     /**
      * The parameters used for the change organization action.
@@ -89,7 +118,10 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      *
      * @var mixed String or array of snippet names
      */
-    protected $createEditSnippets = 'Respondent\\RespondentFormSnippet';
+    protected $createEditSnippets = [
+        'Respondent\\RespondentFormSnippet',
+        'Respondent\\Consent\\RespondentConsentLogSnippet',
+        ];
 
     /**
      * The parameters used for the edit actions, overrules any values in
@@ -280,6 +312,53 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
     /**
      * Action to change a users
      */
+    public function changeConsentAction()
+    {
+        if ($this->enableScreens) {
+            $edit = false;
+            $org  = $this->getRespondent()->getOrganization();
+
+            if ($org) {
+                $edit = $org->getRespondentEditScreen();
+            }
+
+            if (! $edit) {
+                $group = $this->currentUser->getGroup();
+                if ($group) {
+                    $edit = $group->getRespondentEditScreen();
+                }
+            }
+
+            if ($edit) {
+                if ($edit instanceof ProcessModelInterface) {
+                    $edit->processModel($this->getModel());
+                }
+
+                // All are arrays, so easy to set
+                $this->editParameters = $edit->getEditParameters() + $this->editParameters;
+                if ($edit instanceof ConsentInterface) {
+                    $this->changeConsentParameters = $edit->getConsentParameters() + $this->changeConsentParameters;
+                    $changeSnippets = $edit->getConsentSnippets();
+                    if (false !== $changeSnippets) {
+                        $this->changeConsentSnippets =  $changeSnippets;
+                    }
+                }
+            }
+        }
+        if ($this->changeConsentSnippets) {
+            $params = $this->_processParameters(
+                    $this->changeConsentParameters +
+                    $this->editParameters +
+                    $this->createEditParameters +
+                    ['createData' => false]);
+
+            $this->addSnippets($this->changeConsentSnippets, $params);
+        }
+    }
+
+    /**
+     * Action to change a users
+     */
     public function changeOrganizationAction()
     {
         if ($this->changeOrganizationSnippets) {
@@ -353,6 +432,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
         } else {
             switch ($action) {
                 case 'create':
+                case 'change-consent':
                 case 'edit':
                 case 'import':
                 case 'simple-api':

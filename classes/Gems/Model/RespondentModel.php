@@ -43,6 +43,12 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
 
     /**
      *
+     * @var array Of field names containing consents
+     */
+    public $consentFields = ['gr2o_consent'];
+
+    /**
+     *
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
@@ -110,6 +116,10 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
 
         $this->addColumn(new \Zend_Db_Expr("CASE WHEN grc_success = 1 THEN '' ELSE 'deleted' END"), 'row_class');
         $this->addColumn(new \Zend_Db_Expr("CASE WHEN grc_success = 1 THEN 0 ELSE 1 END"), 'resp_deleted');
+
+        foreach ($this->consentFields as $consent) {
+            $this->addColumn(new \Zend_Db_Expr($consent), 'old_' . $consent);
+        }
 
         if (! $this->has('grs_ssn')) {
             $this->hashSsn = self::SSN_HIDE;
@@ -810,6 +820,37 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
     }
 
     /**
+     *
+     * @param array $newValues The values to store for a single model item.
+     * @param int $userId A user id or otherwise the current user is used
+     * @return int Number of consent changes logged
+     */
+    public function logConsentChanges(array $newValues, $userId = null)
+    {
+        $changes = 0;
+        foreach ($this->consentFields as $consent) {
+            $oldConsent = 'old_' . $consent;
+            if (isset($newValues['gr2o_id_user'], $newValues['gr2o_id_organization'], $newValues[$consent]) &&
+                    array_key_exists($oldConsent, $newValues) &&  // Old consent can be empty
+                    ($newValues[$consent] != $newValues[$oldConsent]) ) {
+
+                $values['glrc_id_user']         = $newValues['gr2o_id_user'];
+                $values['glrc_id_organization'] = $newValues['gr2o_id_organization'];
+                $values['glrc_consent_field']   = $consent;
+                $values['glrc_old_consent']     = $newValues[$oldConsent];
+                $values['glrc_new_consent']     = $newValues[$consent];
+                $values['glrc_created']         = new \MUtil_Db_Expr_CurrentTimestamp();
+                $values['glrc_created_by']      = $userId ?: $this->currentUser->getUserId();
+
+                $this->db->insert('gems__log_respondent_consents', $values);
+                $changes++;
+            }
+        }
+
+        return $changes;
+    }
+
+    /**
      * Merge two patients (in the same organization)
      *
      * A respondent can only exist twice in the same organization when the respondent
@@ -1040,6 +1081,8 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         }
 
         $result = parent::save($newValues, $filter, $saveTables);
+
+        $this->logConsentChanges($newValues);
 
         if (isset($result['gr2o_id_organization']) && isset($result['grs_id_user'])) {
             // Tell the organization it has at least one user

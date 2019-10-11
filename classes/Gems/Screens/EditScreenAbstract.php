@@ -19,8 +19,26 @@ namespace Gems\Screens;
  * @license    New BSD License
  * @since      Class available since version 1.8.2 Jan 17, 2017 5:07:33 PM
  */
-abstract class EditScreenAbstract extends \MUtil_Translate_TranslateableAbstract implements EditScreenInterface
+abstract class EditScreenAbstract extends \MUtil_Translate_TranslateableAbstract implements ConsentInterface
 {
+    /**
+     *
+     * @return array Of snippets or false to use original for consent editing
+     */
+    public function getConsentSnippets()
+    {
+        return false;
+    }
+
+    /**
+     *
+     * @return array Added before all other parameters
+     */
+    public function getConsentParameters()
+    {
+        return $this->getParameters();
+    }
+
     /**
      *
      * @return array Added before all other parameters

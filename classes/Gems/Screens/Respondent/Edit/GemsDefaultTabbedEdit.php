@@ -63,6 +63,7 @@ class GemsDefaultTabbedEdit extends EditScreenAbstract
     {
         return [
             'Gems\\Snippets\\Respondent\\RespondentFormSnippet',
+            'Gems\\Snippets\\Respondent\\Consent\\RespondentConsentLogSnippet',
         ];
     }
 }

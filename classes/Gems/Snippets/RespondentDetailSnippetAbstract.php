@@ -200,17 +200,26 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
         // Value is translated by now if in bridge
         if (($consent == $unknown) || ($consent == $this->_($unknown))) {
 
-            $warned = true;
-            $msg    = $this->_('Please settle the informed consent form for this respondent.');
+            $warned    = true;
+            $msg       = $this->_('Please settle the informed consent form for this respondent.');
+            $urlString = '';
 
             if ($this->view instanceof \Zend_View) {
                 $url[$this->request->getControllerKey()] = 'respondent';
-                $url[$this->request->getActionKey()]     = 'edit';
-                $url[\MUtil_Model::REQUEST_ID1]           = $this->request->getParam(\MUtil_Model::REQUEST_ID1);
-                $url[\MUtil_Model::REQUEST_ID2]           = $this->request->getParam(\MUtil_Model::REQUEST_ID2);
+                $url[\MUtil_Model::REQUEST_ID1]          = $this->request->getParam(\MUtil_Model::REQUEST_ID1);
+                $url[\MUtil_Model::REQUEST_ID2]          = $this->request->getParam(\MUtil_Model::REQUEST_ID2);
 
-                $urlString = $this->view->url($url) . '#tabContainer-frag-4';
+                \MUtil_Echo::track($this->menu->findAllowedController('respondent', 'change-consent'), $this->menu->findAllowedController('respondent', 'edit'));
+                if ($this->menu->findAllowedController('respondent', 'change-consent')) {
+                    $url[$this->request->getActionKey()] = 'change-consent';
+                    $urlString = $this->view->url($url);
 
+                } elseif ($this->menu->findAllowedController('respondent', 'edit')) {
+                    $url[$this->request->getActionKey()] = 'edit';
+                    $urlString = $this->view->url($url) . '#tabContainer-frag-4';
+                }
+            }
+            if ($urlString) {
                 $this->addMessage(\MUtil_Html::create()->a($urlString, $msg));
             } else {
                 $this->addMessage($msg);

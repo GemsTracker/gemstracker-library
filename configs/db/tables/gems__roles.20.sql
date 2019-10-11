@@ -69,7 +69,7 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     'pr.option.edit,pr.option.password,
     ,pr.plan.compliance,pr.plan.consent,pr.plan.overview,pr.plan.fields,pr.plan.respondent,pr.plan.summary,pr.plan.token,
     ,pr.project,pr.project.questions,
-    ,pr.respondent.create,pr.respondent.edit,pr.respondent.select-on-track,pr.respondent.who,
+    ,pr.respondent.create,pr.respondent.change-consent,pr.respondent.edit,pr.respondent.select-on-track,pr.respondent.who,
     ,pr.respondent-commlog,pr.respondent-log,
     ,pr.survey,
     ,pr.token,pr.token.answers,pr.token.correct,pr.token.delete,pr.token.edit,pr.token.mail,pr.token.print,
