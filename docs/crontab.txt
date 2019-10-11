@@ -1,0 +1,5 @@
+# replace /data/www/webapps/project-dir with the correct directory
+# morning mail
+0 7 * * * php -f /data/www/webapps/project-dir/scripts/index.php -- cron >> /data/www/webapps/project-dir/var/logs/cron.log 2>&1
+# evening mail
+0 19 * * * php -f /data/www/webapps/project-dir/scripts/index.php -- cron >> /data/www/webapps/project-dir/var/logs/cron.log 2>&1 

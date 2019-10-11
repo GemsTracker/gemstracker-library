@@ -115,7 +115,7 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends \Gems_Snippets_Model
             if ($episode) {
                 $bridge->addMultiSort('gap_id_episode');
             }
-            $bridge->addMultiSort('gap_subject', $br, 'glo_name');
+            $bridge->addMultiSort('gap_subject', $br, 'gas_name');
             $bridge->addMultiSort('gaa_name', $br, 'gapr_name');
             $bridge->addMultiSort('gor_name', $br, 'glo_name');
         } else {
