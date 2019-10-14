@@ -69,6 +69,7 @@ class Gems_AccessLog
         'gr2o_id_organization',
         'gr2t_id_organization',
         'gap_id_organization',
+        'gec_id_organization',
         'gto_id_organization',
         'gor_id_organization',
         'gla_organization',
@@ -92,6 +93,7 @@ class Gems_AccessLog
         'gr2o_id_user',
         'gr2t_id_user',
         'gap_id_user',
+        'gec_id_user',
         'gto_id_respondent',
         'grr_id_respondent',
         'gla_respondent_id',
@@ -413,7 +415,7 @@ class Gems_AccessLog
      * @param string  $action
      * @param \Zend_Controller_Request_Abstract $request
      * @param string  $message   An optional message to log with the action
-     * @param <type>  $respondentId
+     * @param int     $respondentId
      * @param boolean $force     Should we force the logentry to be inserted or should we try to skip duplicates? Default = false
      * @return \Gems_AccessLog
      * @deprecated Since version 1.7.1: use logChange or logRequest

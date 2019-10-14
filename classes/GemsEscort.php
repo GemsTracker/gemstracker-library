@@ -68,7 +68,7 @@ class GemsEscort extends \MUtil_Application_Escort
      * @var string
      */
     public $jqueryVersionNr = '3.4.1';
-    
+
     /**
      * Set jQuery UI version number
      * @var string
@@ -98,7 +98,7 @@ class GemsEscort extends \MUtil_Application_Escort
      * @var boolean
      */
     public $useHtml5 = false;
-    
+
     /**
      * Constructor
      *

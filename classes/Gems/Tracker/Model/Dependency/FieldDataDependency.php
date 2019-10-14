@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: FieldDataDependency.php $
  */
 
 namespace Gems\Tracker\Model\Dependency;
@@ -30,7 +29,7 @@ class FieldDataDependency extends DependencyAbstract
      *
      * @var array of \Gems\Tracker\Field\FieldInterface
      */
-    protected $_fields;
+    protected $_fields = [];
 
     /**
      * Add a field to this dependency
