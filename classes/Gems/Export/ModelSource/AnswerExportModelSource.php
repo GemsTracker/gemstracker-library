@@ -293,7 +293,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
                 $manualFields = explode(',', $manualFields);
             }
 
-            $labels = $model->getColNames('label');
+            $labels = $model->getCol('label');
             // Reset labels and order
             foreach($model->getItemNames() as $itemName) {
                 $model->remove($itemName, 'label');
