@@ -512,11 +512,11 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
      * @param array $filter
      * @param array $data
      * @param array|string $sort
-     * @return type
+     * @return \MUtil_Model_ModelAbstract model
      */
-    protected function getAnswerModel(array $filter, array $data, $sort)
+    protected function getAnswerModel($exportModelSource, array $filter, array $data, $sort)
     {
-        $exportModelSource = $this->loader->getExportModelSource('AnswerExportModelSource');
+        $exportModelSource = $this->loader->getExportModelSource($exportModelSource);
         $model = $exportModelSource->getModel($filter, $data);
         $noExportColumns = $model->getColNames('noExport');
         foreach($noExportColumns as $colName) {
@@ -563,14 +563,57 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
         }
         if (is_array($model)) {
             if ($this->modelId) {
-                $currentFilter = $model['filter'];
-                $currentFilter['gto_id_survey'] = $this->modelId;
-                $data = $model['data'];
-                $sort = $model['sort'];
-                $model = $this->getAnswerModel($currentFilter, $data, $sort);
+                if (isset($model[$this->modelId]) && $model[$this->modelId] instanceof \MUtil_Model_ModelAbstract) {
+                    $model = $model[$this->modelId];
+                } else {
+                    $modelType = null;
+                    $filter = null;
+                    $data = null;
+                    $sort = null;
+                    $extra = null;
+
+                    if (isset($model[$this->modelId], $model[$this->modelId]['model'])) {
+                        $modelType = $model[$this->modelId]['model'];
+                    } elseif (isset($model['model'])) {
+                        $modelType = $model['model'];
+                    }
+                    if (isset($model[$this->modelId], $model[$this->modelId]['filter'])) {
+                        $filter = $model[$this->modelId]['filter'];
+                    } elseif (isset($model['filter'])) {
+                        $filter = $model['filter'];
+                    }
+                    if (isset($model[$this->modelId], $model[$this->modelId]['data'])) {
+                        $data = $model[$this->modelId]['data'];
+                    } elseif (isset($model['data'])) {
+                        $data = $model['data'];
+                    }
+                    if (isset($model[$this->modelId], $model[$this->modelId]['sort'])) {
+                        $sort = $model[$this->modelId]['sort'];
+                    } elseif (isset($model['sort'])) {
+                        $sort = $model['sort'];
+                    }
+                    if (isset($model[$this->modelId], $model[$this->modelId]['extra'])) {
+                        $extra = $model[$this->modelId]['extra'];
+                    } elseif (isset($model['extra'])) {
+                        $extra = $model['extra'];
+                    }
+
+                    if ($modelType && is_callable($modelType)) {
+                        $model = $modelType($this->loader, $filter, $data, $sort, $extra);
+                    } else {
+                        $exportModelSource = 'AnswerExportModelSource';
+                        if (isset($model[$this->modelId]['exportModelSource'])) {
+                            $exportModelSource = $model[$this->modelId]['exportModelSource'];
+                        } elseif (isset($model['exportModelSource'])) {
+                            $exportModelSource = $model['exportModelSource'];
+                        }
+                        $filter['gto_id_survey'] = $this->modelId;
+
+                        $model = $this->getAnswerModel($exportModelSource, $filter, $data, $sort);
+                    }
+                }
             } else {
                 return false;
-                //$model = false;
             }
         }
 
