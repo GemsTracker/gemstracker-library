@@ -153,8 +153,9 @@ class StreamingExcelExport extends ExportAbstract
                     isset($this->data[$exportName]['format']) &&
                     in_array('formatAnswer', (array) $this->data[$exportName]['format'])) {
                 // We want answer labels instead of codes
+                $this->modelFilterAttributes = $this->defaultModelFilterAttributes;
             } else {
-                // Skip formatting
+                // Skip formatting multiOptions
                $this->modelFilterAttributes = array('formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay');
             }
 

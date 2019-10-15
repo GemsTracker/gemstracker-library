@@ -120,6 +120,8 @@ class CsvExport extends ExportAbstract
         if (isset($data[$name]) && isset($data[$name]['delimiter'])) {
             $this->delimiter = $data[$name]['delimiter'];
         }
+
+        $this->modelFilterAttributes = $this->defaultModelFilterAttributes;
         if (!(isset($data[$name], $data[$name]['format'], $data[$name]['format'][0]) && in_array('formatAnswer', $data[$name]['format']))) {
             $this->modelFilterAttributes = array('formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay');
         }

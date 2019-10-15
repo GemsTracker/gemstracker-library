@@ -36,6 +36,11 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
     protected $data;
 
     /**
+     * @var array   Array with the filter options that should be used for this exporter
+     */
+    protected $defaultModelFilterAttributes = ['multiOptions', 'formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay'];
+
+    /**
      * @var string  The temporary filename while the file is being written
      */
     protected $tempFilename;
@@ -68,7 +73,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
     /**
      * @var array   Array with the filter options that should be used for this exporter
      */
-    protected $modelFilterAttributes = array('multiOptions', 'formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay');
+    protected $modelFilterAttributes;
 
     /**
      *
