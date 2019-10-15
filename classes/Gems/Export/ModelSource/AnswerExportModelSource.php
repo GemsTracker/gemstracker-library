@@ -279,6 +279,56 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
     }
 
     /**
+     * Add manual order of fields
+     *
+     * @param MUtil_Model_ModelAbstract $model
+     * @param array $data
+     * @param array $prefixes
+     */
+    protected function _addManualFields(\MUtil_Model_ModelAbstract $model, array $data, array &$prefixes)
+    {
+        if (isset($data['manualFields'])) {
+            $manualFields = $data['manualFields'];
+            if (!is_array($data['manualFields'])) {
+                $manualFields = explode(',', $manualFields);
+            }
+
+            $labels = $model->getColNames('label');
+            // Reset labels and order
+            foreach($model->getItemNames() as $itemName) {
+                $model->remove($itemName, 'label');
+            }
+            $model->resetOrder();
+
+            $addedAnswers = false;
+            foreach($manualFields as $field) {
+                $field = trim($field);
+                if ($field == '{answers}') {
+                    foreach($prefixes['A'] as $field) {
+                        if ($label = $labels[$field]) {
+                            $model->set($field, 'label', $label);
+                        }
+                    }
+                    $addedAnswers = true;
+                    continue;
+                }
+                $label = $field;
+                if (isset($labels[$field])) {
+                    $label = $labels[$field];
+                }
+                $model->set($field, 'label', $label);
+            }
+            if (!$addedAnswers) {
+                foreach ($prefixes['A'] as $field) {
+                    if ($label = $labels[$field]) {
+                        $model->set($field, 'label', $label);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Add nested model fields to the export model
      *
      * @param MUtil_Model_ModelAbstract $model
@@ -507,6 +557,10 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
                     }
                 }
             }
+
+            $this->_addManualFields($model, $data, $prefixes);
+
+
             $this->model = $model;
 
             // Exclude external fields from sorting
