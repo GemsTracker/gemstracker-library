@@ -76,7 +76,8 @@ class RespondentModelTest extends AbstractModelTest {
         'grc_created'           => '2017-08-30 12:00:00',
         'grc_created_by'        => '1',
         'row_class'             => '',
-        'resp_deleted'          => '0'
+        'resp_deleted'          => '0',
+         'old_gr2o_consent'     => 'Unknown',
     ];
 
     public function setUp()
@@ -165,7 +166,7 @@ class RespondentModelTest extends AbstractModelTest {
     public function testCopy2Org() {
         $fromOrg = 1;
         $fromPid = 'o1p1';
-        $toOrg   = 2;
+        $toOrg   = '2';
         $toPid   = 'o2p1';
         $this->model->copyToOrg($fromOrg, $fromPid, $toOrg, $toPid, true);
         $record  = $this->model->loadFirst(['gr2o_id_organization' => 2]);

@@ -604,6 +604,25 @@ CREATE TABLE gems__log_respondent_communications (
     ;
 
 
+-- Created by Matijs de Jong <mjong@magnafacta.nl>
+CREATE TABLE gems__log_respondent_consents (
+        glrc_id                 INTEGER not null ,
+
+        glrc_id_user            INTEGER not null,
+        glrc_id_organization    INTEGER not null,
+
+        glrc_consent_field      varchar(30) not null default 'gr2o_consent',
+        glrc_old_consent        varchar(20),
+        glrc_new_consent        varchar(20) not null,
+
+        glrc_created            TEXT not null,
+        glrc_created_by         INTEGER not null,
+
+        PRIMARY KEY (glrc_id)
+    )
+    ;
+
+
 CREATE TABLE gems__log_setup (
         gls_id_action       INTEGER not null ,
         gls_name            varchar(64) not null unique,
@@ -798,7 +817,7 @@ CREATE TABLE gems__patch_levels (
 
 INSERT INTO gems__patch_levels (gpl_level, gpl_created)
    VALUES
-   (66, CURRENT_TIMESTAMP);
+   (67, CURRENT_TIMESTAMP);
 
 CREATE TABLE gems__radius_config (
         grcfg_id                bigint(11) NOT NULL ,
@@ -1078,7 +1097,7 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     'pr.option.edit,pr.option.password,
     ,pr.plan.compliance,pr.plan.consent,pr.plan.overview,pr.plan.fields,pr.plan.respondent,pr.plan.summary,pr.plan.token,
     ,pr.project,pr.project.questions,
-    ,pr.respondent.create,pr.respondent.edit,pr.respondent.select-on-track,pr.respondent.who,
+    ,pr.respondent.create,pr.respondent.change-consent,pr.respondent.edit,pr.respondent.select-on-track,pr.respondent.who,
     ,pr.respondent-commlog,pr.respondent-log,
     ,pr.survey,
     ,pr.token,pr.token.answers,pr.token.correct,pr.token.delete,pr.token.edit,pr.token.mail,pr.token.print,
@@ -1192,7 +1211,8 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     ,pr.role.create,pr.role.edit,
     ,pr.source.check-attributes,pr.source.check-attributes-all,pr.source.create,pr.source.edit,pr.source.synchronize,
     ,pr.source.synchronize-all,
-    ,pr.staff.edit.all,
+    ,pr.staff.edit.all,pr.staff.switch-user,
+    ,pr.systemuser,pr.systemuser.create,pr.systemuser.deactivate,pr.systemuser.edit,pr.staff.systemuser,pr.systemuser.see.all,
     ,pr.survey-maintenance.edit,
     ,pr.templates,
     ,pr.track-maintenance.trackperorg,pr.track-maintenance.delete,
@@ -1425,6 +1445,22 @@ CREATE TABLE gems__survey_question_options (
         PRIMARY KEY (gsqo_id_survey, gsqo_name, gsqo_order)
     )
     ;
+
+-- Created by Matijs de Jong <mjong@magnafacta.nl>
+CREATE TABLE gems__systemuser_setup (
+        gsus_id_user				INTEGER not null,
+
+        gsus_secret_key             varchar(400),
+
+        gsus_changed                TEXT not null default current_timestamp,
+        gsus_changed_by             INTEGER not null,
+        gsus_created                TEXT not null,
+        gsus_created_by             INTEGER not null,
+
+        PRIMARY KEY (gsus_id_user)
+    )
+    ;
+
 
 CREATE TABLE gems__tokens (
         gto_id_token            varchar(9) not null,
