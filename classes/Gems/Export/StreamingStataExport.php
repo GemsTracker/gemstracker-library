@@ -78,10 +78,10 @@ class StreamingStataExport extends ExportAbstract
             } while ($currentRow < $totalRows);
 
             if ($this->batch) {
-                $this->batch->addTask('Export_ExportCommand', $data['type'], 'addFooter', $this->tempFilename . $this->fileExtension, $modelId);
+                $this->batch->addTask('Export_ExportCommand', $data['type'], 'addFooter', $this->tempFilename . $this->fileExtension, $modelId, $data);
                 $this->batch->setSessionVariable('files', $this->files);
             } else {
-                $this->addFooter($this->tempFilename . $this->fileExtension, $modelId);
+                $this->addFooter($this->tempFilename . $this->fileExtension, $modelId, $data);
                 $this->_session->files = $this->files;
             }
         }
@@ -309,7 +309,7 @@ class StreamingStataExport extends ExportAbstract
      * Add a footer to a specific file
      * @param string $filename The temporary filename while the file is being written
      */
-    public function addFooter($filename, $modelId = null)
+    public function addFooter($filename, $modelId = null, $data = null)
     {   
         $tempFilename = str_replace($this->fileExtension, '', $filename);
         $this->model = $this->getModel();

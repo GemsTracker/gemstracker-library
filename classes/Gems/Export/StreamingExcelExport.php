@@ -57,7 +57,8 @@ class StreamingExcelExport extends ExportAbstract
                 ->setMultiOptions(array(
                     'formatVariable'=> $this->_('Export labels instead of field names'),
                     'formatAnswer'  => $this->_('Format answers'),
-                    'formatDate'    => $this->_('Format dates as Excel numbers easily convertable to date')
+                    'formatDate'    => $this->_('Format dates as Excel numbers easily convertable to date'),
+                    'combineFiles'    => $this->_('Combine multiple files to separate sheets in one excel file'),
                 ))
                 ->setBelongsTo($this->getName())
                 ->setSeparator('');
@@ -153,9 +154,8 @@ class StreamingExcelExport extends ExportAbstract
                     isset($this->data[$exportName]['format']) &&
                     in_array('formatAnswer', (array) $this->data[$exportName]['format'])) {
                 // We want answer labels instead of codes
-                $this->modelFilterAttributes = $this->defaultModelFilterAttributes;
             } else {
-                // Skip formatting multiOptions
+                // Skip formatting
                $this->modelFilterAttributes = array('formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay');
             }
 
@@ -204,13 +204,13 @@ class StreamingExcelExport extends ExportAbstract
      * Add a footer to a specific file
      * @param string $filename The temporary filename while the file is being written
      */
-    public function addFooter($filename, $modelId = null)
+    public function addFooter($filename, $modelId = null, $data = null)
     {
-        parent::addFooter($filename, $modelId);
+        parent::addFooter($filename, $modelId, $data);
         
         $this->model = $this->getModel();
-        $writer = WriterFactory::create(Type::XLSX);
-        $writer->openToFile($filename);
+
+        $writer = $this->getWriter($filename, $data);
 
         $tempFilename = str_replace($this->fileExtension, '', $filename);
 
@@ -268,6 +268,28 @@ class StreamingExcelExport extends ExportAbstract
         }
     }
 
+    /**
+     * Check if files should be combined in one excel file with a new sheet per file
+     *
+     * @param $data
+     * @return bool
+     */
+    protected function combineFilesEnabled($data)
+    {
+        $exportName = $this->getName();
+        if (isset($data[$exportName], $data[$exportName]['format']) && in_array('combineFiles', $data[$exportName]['format'])) {
+            return true;
+        }
+        return false;
+    }
+
+    protected function getWriter($filename, $data)
+    {
+        $writer = WriterFactory::create(Type::XLSX);
+        $writer->openToFile($filename);
+        return $writer;
+    }
+
     protected function filterDateFormat($value, $dateFormat, $columnName)
     {
         $exportName = $this->getName();
@@ -285,6 +307,72 @@ class StreamingExcelExport extends ExportAbstract
         }
 
         return parent::filterDateFormat($value, $dateFormat, $columnName);
+    }
+
+    /**
+     * Finalizes the files stored in $this->files.
+     * If it has 1 file, it will return that file, if it has more, it will return a zip containing all the files, named as the first file in the array.
+     * @param array $data Current export settings
+     * @return array File with download headers
+     */
+    public function finalizeFiles($data=null)
+    {
+        if ($this->combineFilesEnabled($data)) {
+            $files = $this->getFiles();
+
+            $combinedTempFilename = $this->getExportTempDir() . 'combined-export-' . md5(time() . rand()) . $this->fileExtension;
+
+            $writer = $this->getWriter($combinedTempFilename, []);
+
+            $headerRowStyle = (new StyleBuilder())
+                ->setFontBold()
+                ->build();
+
+            $new = true;
+
+            foreach($files as $newFilename=>$tempFilename) {
+
+                $baseNewName = str_replace([$this->fileExtension, '_', '  '], ['', ' ', ' '], $newFilename);
+                if (strlen($baseNewName) > 32) {
+                    $baseNewName = substr($baseNewName, 0,31);
+                }
+                if ($new) {
+                    $sheet = $writer->getCurrentSheet();
+                } else {
+                    $sheet = $writer->addNewSheetAndMakeItCurrent();
+                }
+                $sheet->setName($baseNewName);
+
+                $reader = ReaderFactory::create(Type::XLSX);
+                $reader->open($tempFilename);
+                $reader->setShouldFormatDates(true);
+                foreach ($reader->getSheetIterator() as $sheetIndex => $sheet) {
+                    if ($sheetIndex !== 1) {
+                        $writer->addNewSheetAndMakeItCurrent();
+                    }
+
+                    foreach ($sheet->getRowIterator() as $rowIndex => $row) {
+                        if ($rowIndex === 1) {
+                            $writer->addRowWithStyle($row, $headerRowStyle);
+                            continue;
+                        }
+                        $writer->addRow($row);
+                    }
+                }
+                $reader->close();
+                $new = false;
+            }
+
+            $writer->close();
+
+            $date = new \DateTime();
+            $newFileName = 'combined-export.' . $date->format('Ymd.His') . $this->fileExtension;
+            $this->files = [
+                $newFileName => $combinedTempFilename,
+            ];
+        }
+
+        return parent::finalizeFiles($data);
     }
 
     /**
@@ -354,6 +442,11 @@ class StreamingExcelExport extends ExportAbstract
         }
 
         return $columnHeaders;
+    }
+
+    protected function getNameFromTempname()
+    {
+
     }
 
     /**

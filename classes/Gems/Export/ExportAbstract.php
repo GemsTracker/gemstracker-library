@@ -73,7 +73,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
     /**
      * @var array   Array with the filter options that should be used for this exporter
      */
-    protected $modelFilterAttributes;
+    protected $modelFilterAttributes = array('multiOptions', 'formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay');
 
     /**
      *
@@ -179,10 +179,10 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
             } while ($currentRow < $totalRows);
 
             if ($this->batch) {
-                $this->batch->addTask('Export_ExportCommand', $data['type'], 'addFooter', $this->tempFilename . $this->fileExtension, $modelId);
+                $this->batch->addTask('Export_ExportCommand', $data['type'], 'addFooter', $this->tempFilename . $this->fileExtension, $modelId, $data);
                 $this->batch->setSessionVariable('files', $this->files);
             } else {
-                $this->addFooter($this->tempFilename . $this->fileExtension, $modelId);
+                $this->addFooter($this->tempFilename . $this->fileExtension, $modelId, $data);
                 $this->_session->files = $this->files;
             }
         }
@@ -193,7 +193,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
      */
     protected function addFile()
     {
-        $exportTempDir = GEMS_ROOT_DIR . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR;
+        $exportTempDir = $this->getExportTempDir();
 
         if (! is_dir($exportTempDir)) {
             \MUtil_File::ensureDir($exportTempDir);
@@ -266,7 +266,13 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
      * Add a footer to a specific file
      * @param string $filename The temporary filename while the file is being written
      */
-    public function addFooter($filename, $modelId = null) {
+    /**
+     * Add a footer to a specific file
+     * @param string $filename The temporary filename while the file is being written
+     * @param string $modelId ID of the current model
+     * @param array $data Current export settings
+     */
+    public function addFooter($filename, $modelId = null, $data = null) {
         $this->modelId = $modelId;
     }
 
@@ -451,9 +457,10 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
     /**
      * Finalizes the files stored in $this->files.
      * If it has 1 file, it will return that file, if it has more, it will return a zip containing all the files, named as the first file in the array.
-     * @return File with download headers
+     * @param array $data Current export settings
+     * @return array File with download headers
      */
-    public function finalizeFiles()
+    public function finalizeFiles($data=null)
     {
         $this->getFiles();
         if (count($this->files) === 0) {
@@ -512,11 +519,11 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
      * @param array $filter
      * @param array $data
      * @param array|string $sort
-     * @return \MUtil_Model_ModelAbstract model
+     * @return type
      */
-    protected function getAnswerModel($exportModelSource, array $filter, array $data, $sort)
+    protected function getAnswerModel(array $filter, array $data, $sort)
     {
-        $exportModelSource = $this->loader->getExportModelSource($exportModelSource);
+        $exportModelSource = $this->loader->getExportModelSource('AnswerExportModelSource');
         $model = $exportModelSource->getModel($filter, $data);
         $noExportColumns = $model->getColNames('noExport');
         foreach($noExportColumns as $colName) {
@@ -527,6 +534,11 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
         $model->addSort($sort);
 
         return $model;
+    }
+
+    protected function getExportTempDir()
+    {
+        return GEMS_ROOT_DIR . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR;
     }
 
     /**

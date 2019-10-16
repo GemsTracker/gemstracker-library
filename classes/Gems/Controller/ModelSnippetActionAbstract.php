@@ -338,7 +338,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
                     $post['type'] = 'CsvExport';
                 }
                 $batch->addTask('Export_ExportCommand', $post['type'], 'addExport', $post);
-                $batch->addTask('addTask', 'Export_ExportCommand', $post['type'], 'finalizeFiles');
+                $batch->addTask('addTask', 'Export_ExportCommand', $post['type'], 'finalizeFiles', $post);
                 
                 $export = $this->loader->getExport()->getExport($post['type']);
                 if ($snippet = $export->getHelpSnippet()) {

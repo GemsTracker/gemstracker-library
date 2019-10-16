@@ -74,7 +74,7 @@ class Gems_Default_ExportMultiSurveysAction extends \Gems_Default_ExportSurveyAc
                     $batch->addTask('Export_ExportCommand', $data['type'], 'addExport', $data, $surveyId);
                 }
 
-                $batch->addTask('addTask', 'Export_ExportCommand', $data['type'], 'finalizeFiles');
+                $batch->addTask('addTask', 'Export_ExportCommand', $data['type'], 'finalizeFiles', $data);
                 
                 $export = $this->loader->getExport()->getExport($data['type']);
                 if ($snippet = $export->getHelpSnippet()) {

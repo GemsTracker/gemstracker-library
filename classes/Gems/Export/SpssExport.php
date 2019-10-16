@@ -69,9 +69,9 @@ class SpssExport extends ExportAbstract
         return 'SPSS Export';
     }
 
-    public function addFooter($filename, $modelId = null)
+    public function addFooter($filename, $modelId = null, $data = null)
     {
-        parent::addFooter($filename, $modelId);
+        parent::addFooter($filename, $modelId, $data);
         
         if ($model = $this->getModel()) {
             $this->addSpssFile($filename);
