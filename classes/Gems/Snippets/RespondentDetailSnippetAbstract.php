@@ -209,7 +209,7 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
                 $url[\MUtil_Model::REQUEST_ID1]          = $this->request->getParam(\MUtil_Model::REQUEST_ID1);
                 $url[\MUtil_Model::REQUEST_ID2]          = $this->request->getParam(\MUtil_Model::REQUEST_ID2);
 
-                \MUtil_Echo::track($this->menu->findAllowedController('respondent', 'change-consent'), $this->menu->findAllowedController('respondent', 'edit'));
+                // \MUtil_Echo::track($this->menu->findAllowedController('respondent', 'change-consent'), $this->menu->findAllowedController('respondent', 'edit'));
                 if ($this->menu->findAllowedController('respondent', 'change-consent')) {
                     $url[$this->request->getActionKey()] = 'change-consent';
                     $urlString = $this->view->url($url);

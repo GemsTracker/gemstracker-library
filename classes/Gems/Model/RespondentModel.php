@@ -1082,7 +1082,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
 
         $result = parent::save($newValues, $filter, $saveTables);
 
-        $this->logConsentChanges($newValues);
+        $this->logConsentChanges($result);
 
         if (isset($result['gr2o_id_organization']) && isset($result['grs_id_user'])) {
             // Tell the organization it has at least one user
