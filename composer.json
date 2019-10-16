@@ -94,6 +94,8 @@
             "type": "git",
             "url": "https://github.com/GemsTracker/MUtil.git"
         }
-    ]
-
+    ],
+    "replace": {
+        "zendframework/zendframework1": "1.*"
+    }
 }
