@@ -64,7 +64,7 @@ class BooleanMaintenanceDependency extends ValuesMaintenanceDependency
         }
 
         $empty = [];
-        if ($context['gtf_required'] !== 1) {
+        if ($context['gtf_required'] != 1) {
             $empty = $this->util->getTranslated()->getEmptyDropdownArray();
         }
 
