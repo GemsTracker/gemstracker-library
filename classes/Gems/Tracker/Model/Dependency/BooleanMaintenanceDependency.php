@@ -28,6 +28,15 @@ use MUtil\Model\Dependency\DependencyAbstract;
 class BooleanMaintenanceDependency extends ValuesMaintenanceDependency
 {
     /**
+     * Array of name => name of items dependency depends on.
+     *
+     * Can be overriden in sub class
+     *
+     * @var array Of name => name
+     */
+    protected $_dependentOn = array('gtf_field_type', 'gtf_field_values', 'gtf_required');
+    
+    /**
      * Returns the changes that must be made in an array consisting of
      *
      * <code>

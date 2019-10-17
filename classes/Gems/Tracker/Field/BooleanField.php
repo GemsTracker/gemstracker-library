@@ -13,7 +13,7 @@ class BooleanField extends FieldAbstract
      */
     protected $util;
 
-    protected $keyValues = [
+    public static $keyValues = [
         1,
         0
     ];

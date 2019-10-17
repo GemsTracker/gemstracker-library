@@ -143,7 +143,7 @@ class TrackField extends FieldAbstract
         if (! $value || in_array($value, $empty)) {
             return null;
         }
-        if (!$value instanceof \Gems_Tracker_RespondentTrack) {
+        if (!$value instanceof \Gems_Tracker_RespondentTrack && is_numeric($value)) {
             $value = $this->loader->getTracker()->getRespondentTrack($value);
         }
 

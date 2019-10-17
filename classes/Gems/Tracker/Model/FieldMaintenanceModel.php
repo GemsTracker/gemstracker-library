@@ -62,6 +62,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
     protected $dependencies = array(
         'activity'    => 'FromAppointmentsMaintenanceDependency',
         'appointment' => 'AppointmentMaintenanceDependency',
+        'boolean'     => 'BooleanMaintenanceDependency',
         'caretaker'   => 'FromAppointmentsMaintenanceDependency',
         'date'        => 'FromAppointmentsMaintenanceDependency',
         'datetime'    => 'FromAppointmentsMaintenanceDependency',
@@ -156,11 +157,12 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
      */
     public function _processRowAfterLoad(array $row, $new = false, $isPost = false, &$transformColumns = array())
     {
-        if ($this->_addLoadDependency) {
+        if ($this->_addLoadDependency && !empty($row['gtf_field_type'])) {
             // Display of data field
-            if (! (isset($row['gtf_field_type']) && $row['gtf_field_type'])) {
+            // Next line puts default field dependency on other types too when creating a new field
+            /*if (! (isset($row['gtf_field_type']) && $row['gtf_field_type'])) {
                 $row['gtf_field_type'] = $this->getFieldType($row);
-            }
+            }*/
             // assert: $row['gtf_field_type'] is now always filled.
 
             if (! isset($row[$this->_modelField])) {
@@ -224,7 +226,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
         $this->resetOrder();
 
         $yesNo = $this->util->getTranslated()->getYesNo();
-        $types = $this->getFieldTypes();
+        $types = $this->util->getTranslated()->getEmptyDropdownArray()+$this->getFieldTypes();
 
         $this->set('gtf_id_track'); // Set order
         $this->set('gtf_field_name',    'label', $this->_('Name'));
@@ -232,8 +234,8 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
                 'description', $this->_('The display and processing order of the fields.')
                 );
         $this->set('gtf_field_type',    'label', $this->_('Type'),
-                'multiOptions', $types,
-                'default', 'text'
+                'multiOptions', $types/*,
+                'default', 'text'*/
                 );
         if ($detailed) {
             $this->set('gtf_field_values'); // Set order
@@ -371,13 +373,13 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
         $this->set('gtf_field_values',      'elementClass', 'Hidden');
         $this->set('gtf_field_default',     'elementClass', 'Hidden');
 
-        $this->set('gtf_to_track_info',     'elementClass', 'CheckBox',
+        $this->set('gtf_to_track_info',     'elementClass', 'Checkbox',
                 'onclick', 'this.form.submit();'
                 );
-        $this->set('gtf_track_info_label',  'elementClass', 'CheckBox',
+        $this->set('gtf_track_info_label',  'elementClass', 'Checkbox',
                 'required', false);
-        $this->set('gtf_required',          'elementClass', 'CheckBox');
-        $this->set('gtf_readonly',          'elementClass', 'CheckBox');
+        $this->set('gtf_required',          'elementClass', 'Checkbox');
+        $this->set('gtf_readonly',          'elementClass', 'Checkbox');
 
         $this->set('gtf_filter_id',         'elementClass', 'Hidden');
         $this->set('gtf_min_diff_length',   'elementClass', 'Hidden');
