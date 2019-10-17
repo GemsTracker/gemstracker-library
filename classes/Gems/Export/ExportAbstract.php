@@ -519,11 +519,11 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
      * @param array $filter
      * @param array $data
      * @param array|string $sort
-     * @return type
+     * @return \MUtil_Model_ModelAbstract model
      */
-    protected function getAnswerModel(array $filter, array $data, $sort)
+    protected function getAnswerModel($exportModelSource, array $filter, array $data, $sort)
     {
-        $exportModelSource = $this->loader->getExportModelSource('AnswerExportModelSource');
+        $exportModelSource = $this->loader->getExportModelSource($exportModelSource);
         $model = $exportModelSource->getModel($filter, $data);
         $noExportColumns = $model->getColNames('noExport');
         foreach($noExportColumns as $colName) {
