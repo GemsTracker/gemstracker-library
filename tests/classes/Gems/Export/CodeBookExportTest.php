@@ -119,8 +119,8 @@ class CodeBookExportTest extends \Gems_Test_DbTestAbstract
         $questionInformation = $this->fieldmap->getQuestionInformation();
         $model = $this->getModel($questionInformation, 'en');
         
-        $export = $this->loader->getExport()->getExport('CodeBookExport');
-        $options = [ 'type' => 'CodeBookExport' ];
+        $export = $this->loader->getExport()->getExport('StreamingExcelExport');
+        $options = [ 'type' => 'StreamingExcelExport' ];
         $export->setModel($model);
         $export->addExport($options);
         $file = $export->finalizeFiles();
@@ -147,8 +147,8 @@ class CodeBookExportTest extends \Gems_Test_DbTestAbstract
         $questionInformation = [];
         $model = $this->getModel($questionInformation, 'en');
         
-        $export = $this->loader->getExport()->getExport('CodeBookExport');
-        $options = [ 'type' => 'CodeBookExport' ];
+        $export = $this->loader->getExport()->getExport('StreamingExcelExport');
+        $options = [ 'type' => 'StreamingExcelExport' ];
         $export->setModel($model);
         $export->addExport($options);
         $file = $export->finalizeFiles();
