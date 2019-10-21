@@ -145,7 +145,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
                     // $icons[$fileinfo->getFilename()] = $fileinfo->getFilename();
                     $filename = $fileinfo->getFilename();
                     $url = $this->view->baseUrl() . \MUtil_Html_ImgElement::getImageDir($filename);
-                    $icons[$fileinfo->getFilename()] = \MUtil_Html::create('span', $filename, array('style' => 'background: transparent url(' . $url . $filename . ') center right no-repeat; padding-right: 20px;'));
+                    $icons[$fileinfo->getFilename()] = \MUtil_Html::create('span', $filename, array('data-class' => 'avatar', 'data-style' => 'background-image: url(' . $url . $filename . ');'));
                 }
             }
         }
