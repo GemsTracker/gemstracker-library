@@ -150,14 +150,14 @@ class CommLogModel extends \Gems_Model_JoinModel
             $this->set('gct_name', 'label', $this->_('Template'));
 
             if ($this->currentUser->hasPrivilege('pr.comm.job')) {
-                $this->set('grco_id_job', 'label', $this->_('Job'), 'itemDisplay', [$this, 'displayJob']);
+                $this->set('grco_id_job', 'label', $this->_('Job'), 'formatFunction', [$this, 'formatJob']);
             }
         }
 
         $this->refreshGroupSettings();
     }
 
-    public function displayJob($jobId)
+    public function formatJob($jobId)
     {
         if ($jobId) {
             $url = new \MUtil_Html_HrefArrayAttribute(array(
