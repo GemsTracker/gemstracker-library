@@ -15,6 +15,7 @@ CREATE TABLE if not exists gems__log_respondent_communications (
         grco_comments     varchar(120) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
         grco_id_message   bigint unsigned null references gems__comm_templates (gct_id_template),
+        grco_id_job       bigint unsigned null references gems__comm_jobs (gcj_id_job),
 
         grco_changed      timestamp not null default current_timestamp,
         grco_changed_by   bigint unsigned not null,
