@@ -124,6 +124,7 @@ class CommLogModel extends \Gems_Model_JoinModel
     {
         if ($detailed) {
             $this->addLeftTable('gems__comm_templates', array('grco_id_message' => 'gct_id_template'));
+            $this->addLeftTable('gems__comm_jobs', array('grco_id_job' => 'gcj_id_job'));
         }
 
         $this->resetOrder();
@@ -147,9 +148,27 @@ class CommLogModel extends \Gems_Model_JoinModel
 
         if ($detailed) {
             $this->set('gct_name', 'label', $this->_('Template'));
+
+            if ($this->currentUser->hasPrivilege('pr.comm.job')) {
+                $this->set('grco_id_job', 'label', $this->_('Job'), 'itemDisplay', [$this, 'displayJob']);
+            }
         }
 
         $this->refreshGroupSettings();
+    }
+
+    public function displayJob($jobId)
+    {
+        if ($jobId) {
+            $url = new \MUtil_Html_HrefArrayAttribute(array(
+                $this->request->getControllerKey() => 'comm-job',
+                $this->request->getActionKey()     => 'show',
+                \MUtil_Model::REQUEST_ID           => $jobId,
+            ));
+
+
+            return \MUtil_Html::create('a', $url, $jobId);
+        }
     }
 
     public function displayToken($token)

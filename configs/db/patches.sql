@@ -1560,8 +1560,13 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.staff.switch
     WHERE grl_name IN ('super')
         AND grl_privileges NOT LIKE '%,pr.staff.switch-user%';
 
+
 -- GEMS VERSION: 66
 -- PATCH: add change consent right to super
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.respondent.change-consent')
     WHERE grl_name IN ('super')
         AND grl_privileges NOT LIKE '%,pr.respondent.change-consent%';
+
+-- PATCH: Add cron job to respondent mail log
+ALTER TABLE `gems__log_respondent_communications`
+    ADD `grco_id_job` bigint(20) unsigned NULL AFTER `grco_id_message`;

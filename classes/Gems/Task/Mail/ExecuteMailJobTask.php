@@ -146,6 +146,7 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
                 if ($mail == true) {
                     if (!$preview) {
                         $mailer->setTemplate($job['gcj_id_message']);
+                        $mailer->setMailjob($job['gcj_id_job']);
                         $mailer->send();
                     } else {
                         $this->getBatch()->addMessage(sprintf(

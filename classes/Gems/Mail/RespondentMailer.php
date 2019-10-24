@@ -38,6 +38,11 @@ class Gems_Mail_RespondentMailer extends \Gems_Mail_MailerAbstract
     protected $loader;
 
     /**
+     * @var integer Mail Job ID
+     */
+    protected $mailjob;
+
+    /**
      * @var integer     Organization ID
      */
     protected $organizationId;
@@ -51,8 +56,6 @@ class Gems_Mail_RespondentMailer extends \Gems_Mail_MailerAbstract
      * @var \Gems_Tracker_Respondent
      */
     protected $respondent;
-
-
 
     public function __construct($patientId=false, $organizationId=false)
     {
@@ -164,6 +167,7 @@ class Gems_Mail_RespondentMailer extends \Gems_Mail_MailerAbstract
         $logData['grco_sender']       = substr($this->from, 0, 120);
 
         $logData['grco_id_message']   = $this->templateId ? $this->templateId : null;
+        $logData['grco_id_job']       = $this->mailjob ? $htis->mailjob : null;
 
         $logData['grco_changed']      = $changeDate;
         $logData['grco_changed_by']   = $this->by;
@@ -171,5 +175,15 @@ class Gems_Mail_RespondentMailer extends \Gems_Mail_MailerAbstract
         $logData['grco_created_by']   = $this->by;
 
         $this->db->insert('gems__log_respondent_communications', $logData);
+    }
+
+    /**
+     * Set the mail job for logging purposes
+     *
+     * @param integer $jobId
+     */
+    public function setMailjob($jobId)
+    {
+        $this->mailjob = $jobId;
     }
 }
