@@ -317,6 +317,7 @@ class Gems_Util_TrackData extends UtilAbstract
      */
     public function getSurveyLanguages()
     {
+        $return = [];
         $sql = "SELECT DISTINCT gsu_survey_languages
                     FROM gems__surveys
                     ORDER BY gsu_survey_languages";
