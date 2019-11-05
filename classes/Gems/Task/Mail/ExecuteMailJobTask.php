@@ -100,6 +100,11 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
                 // Skip to the next token now
                 continue;
             }
+            
+            // If the email is sent to a fall back address, we need to change it!
+            if ($token->getEmail() !== $email) {
+                $mailer->setTo($email, $token->getRespondentName());
+            }
 
             $mail         = false;
             $respondentId = $token->getRespondent()->getId();
