@@ -1037,6 +1037,30 @@ class GemsEscort extends \MUtil_Application_Escort
      * @return mixed If null nothing is set, otherwise the name of
      * the function is used as \Zend_View variable name.
      */
+    protected function _layoutEnvironment(array $args = null)
+    {
+        $env = $this->getEnvironmentTitle();
+        if (! $env) {
+            return null;
+        }
+
+        if (isset($args['tagName'])) {
+            $tagName = $args['tagName'];
+            unset($args['tagName']);
+        } else {
+            $tagName = 'h1';
+        }
+
+        return \MUtil_Html::create($tagName, $env, $args);
+    }
+
+    /**
+     * Function called if specified in the Project.ini layoutPrepare section before
+     * the layout is drawn, but after the rest of the program has run it's course.
+     *
+     * @return mixed If null nothing is set, otherwise the name of
+     * the function is used as \Zend_View variable name.
+     */
     protected function _layoutFavicon()
     {
         // FAVICON
@@ -1272,6 +1296,41 @@ class GemsEscort extends \MUtil_Application_Escort
      * @return mixed If null nothing is set, otherwise the name of
      * the function is used as \Zend_View variable name.
      */
+    protected function _layoutOrganizationName(array $args = null)
+    {
+        if (isset($args['tagName'])) {
+            $tagName = $args['tagName'];
+            unset($args['tagName']);
+        } else {
+            $tagName = 'h1';
+        }
+        $org = $this->currentUser->getCurrentOrganization();
+
+        if (! $org->getId()) {
+            $org = $this->loader->getOrganization();
+        }
+        if ($org->getId()) {
+            $name = $org->getName();
+        } else {
+            $name = $this->project->getDescription();
+        }
+        if (isset($args['addEnv']) && $args['addEnv']) {
+            $env = $this->getEnvironmentTitle();
+            if ($env) {
+                $name .= sprintf(' [%s]', $env);
+            }
+        }
+        unset($args['addEnv']);
+        return \MUtil_Html::create($tagName, $name, $args);
+    }
+
+    /**
+     * Function called if specified in the Project.ini layoutPrepare section before
+     * the layout is drawn, but after the rest of the program has run it's course.
+     *
+     * @return mixed If null nothing is set, otherwise the name of
+     * the function is used as \Zend_View variable name.
+     */
     protected function _layoutOrganizationSwitcher(array $args = null)
     {
         if ($this->currentUser->isActive() && ($orgs = $this->currentUser->getAllowedOrganizations())) {
@@ -1297,7 +1356,15 @@ class GemsEscort extends \MUtil_Application_Escort
         } else {
             $tagName = 'h1';
         }
-        return \MUtil_Html::create($tagName, $this->project->name, $args);
+        $name = $this->project->name;
+        if (isset($args['addEnv']) && $args['addEnv']) {
+            $env = $this->getEnvironmentTitle();
+            if ($env) {
+                $name .= sprintf(' [%s]', $env);
+            }
+        }
+        unset($args['addEnv']);
+        return \MUtil_Html::create($tagName, $name, $args);
     }
 
     /**
@@ -1670,6 +1737,35 @@ class GemsEscort extends \MUtil_Application_Escort
         }
 
         return $paths;
+    }
+
+    /**
+     * Get the title for the environment
+     *
+     * @return string
+     */
+    public function getEnvironmentTitle()
+    {
+        switch (APPLICATION_ENV) {
+            case 'production':
+                return null;
+
+            case 'acceptance':
+                return 'ACC';
+
+            case 'testing':
+                return 'TEST';
+
+            case 'demo':
+                return 'DEMO';
+
+            case 'development':
+                return 'DEV';
+
+            default:
+                return strtoupper(substr(APPLICATION_ENV, 0 , 4));
+
+        }
     }
 
     /**
