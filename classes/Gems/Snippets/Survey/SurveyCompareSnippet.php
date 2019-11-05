@@ -649,9 +649,11 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
                 $parentCode                                           = $questionInfo['title'];
                 $parent                                               = $surveyInfo[$parentCode];
                 $filteredSurveyInfo[$questionCode]['question'] = $parent['question'] . ' | ' . $questionInfo['question'];
-                if (isset($filteredSurveyInfo[$parentCode])) {
-                    unset($filteredSurveyInfo[$parentCode]);
-                }
+                // Below lines break copying data from the main question. For example list with comments (type O) has an answer to the main and to the subquestion
+                // due to the lines below the main answer is lost.
+                //if (isset($filteredSurveyInfo[$parentCode])) {
+                //    unset($filteredSurveyInfo[$parentCode]);
+                //}
             }
         }
 
