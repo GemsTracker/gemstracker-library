@@ -39,7 +39,7 @@ class BooleanField extends FieldAbstract
 
         $settings['elementClass'] = 'Radio';
         $settings['separator'] = ' ';
-        $settings['multiOptions'] = $empty + array_combine($this->keyValues, array_slice($multi, 0, 2));
+        $settings['multiOptions'] = $empty + array_combine(self::$keyValues, array_slice($multi, 0, 2));
         if ($this->_fieldDefinition['gtf_field_default'] !== null) {
             $settings['default'] = (int)$this->_fieldDefinition['gtf_field_default'];
         }
