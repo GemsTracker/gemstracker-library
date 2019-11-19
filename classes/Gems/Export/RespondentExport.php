@@ -10,6 +10,8 @@
 
 /**
  * Handles export of all tracks/surveys for a respondent
+ * 
+ * To enable Word export option add "phpoffice/phpword": "v0.16.*", to require section of composer.json
  *
  * @package    Gems
  * @subpackage Export
@@ -30,6 +32,11 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
      * @var \Gems_Pdf
      */
     protected $_pdf;
+
+    /**
+     * @var \PhpOffice\PhpWord
+     */
+    protected $_word;
 
     /**
      *
@@ -245,10 +252,10 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
         $surveys      = array();
 
         $table = $this->html->table(array('class' => 'browser table'));
-        $table->th($this->_('Survey'))
-              ->th($this->_('Round'))
-              ->th($this->_('Token'))
-              ->th($this->_('Status'));
+        $table->th($this->_('Survey'));
+        $table->th($this->_('Round'));
+        $table->th($this->_('Token'));
+        $table->th($this->_('Status'));
         $this->html->br();
 
         while ($token) {
@@ -258,10 +265,11 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
                 continue;
             }
 
-            $table->tr()->td($token->getSurveyName())
-                        ->td(($engine->getTrackType() == 'T' ? $token->getRoundDescription() : $this->_('Single Survey')))
-                        ->td(strtoupper($token->getTokenId()))
-                        ->td($token->getStatus());
+            $tr = $table->tr();
+            $tr->td($token->getSurveyName());
+            $tr->td(($engine->getTrackType() == 'T' ? $token->getRoundDescription() : $this->_('Single Survey')));
+            $tr->td(strtoupper($token->getTokenId()));
+            $tr->td($token->getStatus());;
 
             //Should we display the answers?
             if (!$this->_displayToken($token)) {
@@ -390,7 +398,8 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
             'model', $respondentModel,
             'data', $respondentData,
             'respondentId', $respondentId);
-
+        $this->html->br();
+        
         $tracker = $this->loader->getTracker();
         $tracks = $tracker->getRespondentTracks($respondentData['gr2o_id_user'], $respondentData['gr2o_id_organization']);
 
@@ -432,6 +441,9 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
         parent::afterRegistry();
 
         $this->_pdf    = $this->loader->getPdf();
+        if (class_exists('\PhpOffice\PhpWord\PhpWord')) {
+            $this->_word   = new \PhpOffice\PhpWord\PhpWord();
+        }
         $this->escort  = \GemsEscort::getInstance();
         $this->html    = new \MUtil_Html_Sequence();
         $this->request = \Zend_Controller_Front::getInstance()->getRequest();
@@ -467,6 +479,10 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
             $outputFormats['pdf'] = 'PDF';
             $element->setValue('pdf');
         }
+        if ($this->_word) {
+            $outputFormats['word'] = 'Word';
+            $element->setValue('word');
+        }
         $element->setMultiOptions($outputFormats);
         $form->addElement($element);
 
@@ -486,6 +502,40 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
         }
 
         return $form;
+    }
+    
+    /**
+     * Removes tags and attributes from HTML string
+     *
+     * @param string $string
+     * @param boolean $remove_attributes Removes attributes of all tags
+     * @param boolean $remove_breaks Replaces breaks with a space
+     */
+    public function cleanTags( $string, $remove_attributes = false, $remove_breaks = false ) {
+        $string = preg_replace( '@<(script|style|head|header|footer)[^>]*?>.*?</\\1>@si', '', $string );
+        $string = strip_tags( $string, '<p><h1><h2><h3><h4><h5><h6><#text><strong><b><em><i><u><sup><sub><span><font><table><tr><td><th><ul><ol><li><img><br><a>' );
+        
+        // correct breaks for processing
+        $string = str_ireplace('<br>', '<br />', $string);
+        
+        // make table th cells bold for processing with PHPWord
+        $string = str_ireplace('<th>', '<th style="font-weight: bold">', $string);
+
+        // make h1-h6 tags bold and bigger for processing with PHPWord
+        for ($i = 1; $i <= 6; $i++) {
+            $fontsize = 26 - ($i * 2);
+            $string = preg_replace('/<h' . $i . '>(.*?)<\/h' . $i . '>/', '<p style="font-weight: bolder; font-size: ' . $fontsize . 'px">$1</p>', $string);
+        }
+
+        if ( $remove_attributes ) {
+            $string = preg_replace("/<([a-z][a-z0-9]*)[^>]*?(\/?)>/i",'<$1$2>', $string);
+        }
+        
+        if ( $remove_breaks ) {
+            $string = preg_replace( '/[\r\n\t ]+/', ' ', $string );
+        }
+
+        return trim( $string );
     }
 
     /**
@@ -521,8 +571,7 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
         }
         $this->escort->postDispatch($this->request);
 
-        // \Zend_Controller_Action_HelperBroker::getExistingHelper('layout')->disableLayout();
-        \Zend_Controller_Action_HelperBroker::getExistingHelper('layout')->setLayout('gems-content-only');
+        \Zend_Controller_Action_HelperBroker::getExistingHelper('layout')->disableLayout();
         \Zend_Controller_Action_HelperBroker::getExistingHelper('viewRenderer')->setNoRender(true);
 
         $this->view->layout()->content = $this->html->render($this->view);
@@ -536,11 +585,27 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
             $filename = 'respondent-export-' . strtolower($respondentId) . '.pdf';
             $content = $this->_pdf->convertFromHtml($content);
             $this->_pdf->echoPdfContent($content, $filename, true);
+        } elseif ($format == 'word') {
+            if (is_array($respondentId) && isset($respondentId['gr2o_id_organization'])) {
+                $respondentId = $respondentId['gr2o_patient_nr'];
+            }
+            $filename = 'respondent-export-' . strtolower($respondentId) . '.docx';
+            
+            $content = $this->cleanTags($content);
+            
+            $section = $this->_word->addSection();
+            \PhpOffice\PhpWord\Shared\Html::addHtml($section, $content, false, false);
+
+            header('Content-Type: application/octet-stream');
+            header('Content-Disposition: attachment;filename="' . $filename . '"');
+            $xmlWriter = \PhpOffice\PhpWord\IOFactory::createWriter($this->_word, 'Word2007');
+            $xmlWriter->save("php://output");
+            die();
         } else {
             echo $content;
         }
-
+		
         $this->menu->setVisible(true);
     }
-
+    
 }
