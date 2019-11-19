@@ -594,6 +594,7 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
             $content = $this->cleanTags($content);
             
             $section = $this->_word->addSection();
+            \PhpOffice\PhpWord\Settings::setOutputEscapingEnabled(true);
             \PhpOffice\PhpWord\Shared\Html::addHtml($section, $content, false, false);
 
             header('Content-Type: application/octet-stream');
