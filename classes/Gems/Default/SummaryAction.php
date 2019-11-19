@@ -87,18 +87,20 @@ class Gems_Default_SummaryAction extends \Gems_Controller_ModelSnippetActionAbst
         $model->resetOrder();
         $model->set('gro_round_description', 'label', $this->_('Round'));
         $model->set('gsu_survey_name',       'label', $this->_('Survey'));
-        $model->set('answered', 'label', $this->_('Answered'), 'tdClass', 'centerAlign', 'thClass', 'centerAlign');
-        $model->set('missed',   'label', $this->_('Missed'),   'tdClass', 'centerAlign', 'thClass', 'centerAlign');
-        $model->set('open',     'label', $this->_('Open'),     'tdClass', 'centerAlign', 'thClass', 'centerAlign');
-        $model->set('total',    'label', $this->_('Total'),    'tdClass', 'centerAlign', 'thClass', 'centerAlign');
-        // $model->set('future',   'label', $this->_('Future'),   'tdClass', 'centerAlign', 'thClass', 'centerAlign');
-        // $model->set('unknown',  'label', $this->_('Unknown'),  'tdClass', 'centerAlign', 'thClass', 'centerAlign');
-        // $model->set('is',       'label', ' ',                  'tdClass', 'centerAlign', 'thClass', 'centerAlign');
-        // $model->set('success',  'label', $this->_('Success'),    'tdClass', 'centerAlign', 'thClass', 'centerAlign');
-        // $model->set('removed',  'label', $this->_('Removed'),  'tdClass', 'deleted centerAlign',
-        //         'thClass', 'centerAlign');
+        $model->set('answered', 'label', $this->_('Answered'));
+        $model->set('missed',   'label', $this->_('Missed'));
+        $model->set('open',     'label', $this->_('Open'));
+        $model->set('total',    'label', $this->_('Total'));
+        // $model->set('future',   'label', $this->_('Future'));
+        // $model->set('unknown',  'label', $this->_('Unknown'));
+        // $model->set('is',       'label', ' ');
+        // $model->set('success',  'label', $this->_('Success'));
+        // $model->set('removed',  'label', $this->_('Removed'));
 
-        $model->set('filler',  'label', $this->_('Filler'));
+        $model->setMulti(['answered', 'missed', 'open', 'total'],
+                'tdClass', 'centerAlign', 'thClass', 'centerAlign', 'no_text_search', true);
+
+        $model->set('filler',  'label', $this->_('Filler'), 'no_text_search', true);
 
         $filter = $this->getSearchFilter($action !== 'export');
         if (! (isset($filter['gto_id_organization']) && $filter['gto_id_organization'])) {
@@ -142,7 +144,7 @@ class Gems_Default_SummaryAction extends \Gems_Controller_ModelSnippetActionAbst
             $orgs = $this->currentUser->getRespondentOrganizations();
             $this->defaultSearchData['gto_id_organization'] = array_keys($orgs);
         }
-        
+
         if (!isset($this->defaultSearchData['gto_id_track'])) {
             $orgs = $this->currentUser->getRespondentOrganizations();
             $tracks = $this->util->getTrackData()->getTracksForOrgs($orgs);

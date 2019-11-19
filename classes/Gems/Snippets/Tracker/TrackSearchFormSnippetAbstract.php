@@ -22,18 +22,27 @@ namespace Gems\Snippets\Tracker;
  */
 class TrackSearchFormSnippetAbstract extends \Gems_Snippets_AutosearchFormSnippet
 {
-
     /**
      *
      * @var \Gems_User_User
      */
     protected $currentUser;
+
+    /**
+     *
+     * @var boolean
+     */
     protected $singleTrackId = false;
+
+    /**
+     *
+     * @var boolean
+     */
     protected $trackFieldId  = false;
 
     /**
      * Add filler select to the elements array
-     * 
+     *
      * @param array $elements
      * @param array $data
      * @param string $elementId
@@ -71,7 +80,7 @@ class TrackSearchFormSnippetAbstract extends \Gems_Snippets_AutosearchFormSnippe
 
     /**
      * Add organization select to the elements array
-     * 
+     *
      * @param array $elements
      * @param array $data
      * @param string $elementId
@@ -91,7 +100,7 @@ class TrackSearchFormSnippetAbstract extends \Gems_Snippets_AutosearchFormSnippe
 
     /**
      * Add period select to the elements array
-     * 
+     *
      * @param array $elements
      * @param array $data
      */
@@ -109,7 +118,7 @@ class TrackSearchFormSnippetAbstract extends \Gems_Snippets_AutosearchFormSnippe
 
     /**
      * Add track select to the elements array
-     * 
+     *
      * @param array $elements
      * @param array $data
      * @param string $elementId
@@ -118,7 +127,7 @@ class TrackSearchFormSnippetAbstract extends \Gems_Snippets_AutosearchFormSnippe
     {
         // Store for use in addFillerSelect
         $this->trackFieldId = $elementId;
-        
+
         $orgs   = $this->currentUser->getRespondentOrganizations();
         $tracks = $this->util->getTrackData()->getTracksForOrgs($orgs);
 

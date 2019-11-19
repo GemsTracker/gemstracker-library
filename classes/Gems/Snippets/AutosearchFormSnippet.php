@@ -97,6 +97,12 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
 
     /**
      *
+     * @var string
+     */
+    protected $searchLabel;
+
+    /**
+     *
      * @var \Gems_Util
      */
     protected $util;
@@ -319,6 +325,10 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
             // Do not store searchButtonId
             $this->requestCache->removeParams($this->searchButtonId);
         }
+
+        if (! $this->searchLabel) {
+            $this->searchLabel = $this->_('Free search text');
+        }
     }
 
     /**
@@ -346,7 +356,8 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
     protected function getAutoSearchElements(array $data)
     {
         // Search text
-        $element = $this->form->createElement('text', $this->model->getTextFilter(), array('label' => $this->_('Free search text'), 'size' => 20, 'maxlength' => 30));
+        $element = $this->form->createElement('text', $this->model->getTextFilter(),
+                array('label' => $this->searchLabel, 'size' => 20, 'maxlength' => 30));
         return array($element);
     }
 
@@ -367,7 +378,7 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
         if ($elements) {
             // Data could be changed in getAutoSearchElements, so read it again
             $data = $this->getSearchData();
-            
+
             // Assign a name so autosubmit will only work on this form (when there are others)
             $form->setHtml('div');
             $div = $form->getHtml();

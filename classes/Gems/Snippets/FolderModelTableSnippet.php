@@ -175,7 +175,7 @@ class Gems_Snippets_FolderModelTableSnippet extends \MUtil_Snippets_ModelTableSn
             // \MUtil_Echo::r('[' . $searchText . ']');
             $marker = new \MUtil_Html_Marker($model->getTextSearches($searchText), 'strong', 'UTF-8');
             foreach ($model->getItemNames() as $name) {
-                if ($model->get($name, 'label')) {
+                if ($model->get($name, 'label') && (! $model->get($name, 'no_text_search'))) {
                     $model->set($name, 'markCallback', array($marker, 'mark'));
                 }
             }

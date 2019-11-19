@@ -40,7 +40,8 @@ class Gems_Snippets_Tracker_Summary_SummarySearchFormSnippet extends TrackSearch
 
         $elements[] = null;
 
-        $this->addPeriodSelect($elements, $data);
+        $this->searchLabel = $this->_('Search text rounds / surveys');
+        $elements = array_merge($elements, parent::getAutoSearchElements($data));
 
         $elements[] = null;
 

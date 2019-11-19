@@ -58,6 +58,8 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends \Gems_Snip
      */
     protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
+        $this->applyTextMarker();
+
         // Add link to patient to overview
         $menuItems = $this->findMenuItems('respondent', 'show');
         if ($menuItems) {
@@ -98,7 +100,8 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends \Gems_Snip
         $alternateClass = new \MUtil_Lazy_Alternate(array('odd', 'even'));
 
         foreach($model->getItemsOrdered() as $name) {
-            if ($label = $model->get($name, 'label')) {
+            $label = $model->get($name, 'label');
+            if ($label) {
                 $round = $model->get($name, 'round');
                 if ($round == $cRound) {
                     $span++;
@@ -106,7 +109,7 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends \Gems_Snip
                 } else {
                     // If the round has an icon, show the icon else just 'R' since
                     // complete round description messes up the display
-                    $th->append($cDesc);
+                    $th->append($cDesc ?: substr($cRound, 0, ($span * 4) - 1));
                     $th->title = $cRound;
                     $th->colspan = $span;
 
@@ -118,14 +121,10 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends \Gems_Snip
                             'title' => $cRound
                         ));
                     } else {
-                        if (substr($name, 0, 5) == 'stat_') {
-                            $cDesc = 'R';
-                        } else {
-                            $cDesc = null;
-                        }
+                        $cDesc   = null;
                     }
                     $class   = 'newRound';
-                    $thClass = $class .' ' . $alternateClass; // Add alternate class only for th
+                    $thClass = $class . ' ' . $alternateClass; // Add alternate class only for th
                     $th      = $th_row->td(array('class' => $thClass));
                 }
 

@@ -521,7 +521,8 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
         }
         $this->escort->postDispatch($this->request);
 
-        \Zend_Controller_Action_HelperBroker::getExistingHelper('layout')->disableLayout();
+        // \Zend_Controller_Action_HelperBroker::getExistingHelper('layout')->disableLayout();
+        \Zend_Controller_Action_HelperBroker::getExistingHelper('layout')->setLayout('gems-content-only');
         \Zend_Controller_Action_HelperBroker::getExistingHelper('viewRenderer')->setNoRender(true);
 
         $this->view->layout()->content = $this->html->render($this->view);

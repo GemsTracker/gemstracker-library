@@ -47,6 +47,11 @@ class Gems_Snippets_Tracker_Compliance_ComplianceSearchFormSnippet extends Track
 
         $elements[] = null;
 
+        $this->searchLabel = $this->_('Search respondent data');
+        $elements = array_merge($elements, parent::getAutoSearchElements($data));
+
+        $elements[] = null;
+
         $this->addPeriodSelect($elements, $data);
 
         $elements[] = null;

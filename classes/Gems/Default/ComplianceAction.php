@@ -53,7 +53,11 @@ class Gems_Default_ComplianceAction extends \Gems_Controller_ModelSnippetActionA
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStopSnippets = array('Tracker_TokenStatusLegenda', 'Generic\\CurrentSiblingsButtonRowSnippet');
+    protected $indexStopSnippets = [
+        'Tracker_TokenStatusLegenda',
+        'Tracker\\Compliance\\ComplianceLegenda',
+        'Generic\\CurrentSiblingsButtonRowSnippet',
+        ];
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -153,7 +157,8 @@ class Gems_Default_ComplianceAction extends \Gems_Controller_ModelSnippetActionA
                     'description', sprintf("%s\n[%s]", $row['gsu_survey_name'], $row['gro_round_description']),
                     'noSort', true,
                     'round', $row['gro_round_description'],
-                    'roundIcon', $row['gro_icon_file']
+                    'roundIcon', $row['gro_icon_file'],
+                    'survey', $row['gsu_survey_name']
                     );
             $transformer->set('tok_' . $row['gro_id_round']);
             $transformer->set('res_' . $row['gro_id_round']);
@@ -179,7 +184,7 @@ class Gems_Default_ComplianceAction extends \Gems_Controller_ModelSnippetActionA
 
         return $model;
     }
-    
+
     /**
      * Get the model for export and have the option to change it before using for export
      * @return

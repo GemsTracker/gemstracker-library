@@ -34,7 +34,8 @@ class Gems_Snippets_Tracker_Summary_SummaryTableSnippet extends \Gems_Snippets_M
     protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
         // $bridge->getTable()->setAlternateRowClass('odd', 'odd', 'even', 'even');
-
+        $this->applyTextMarker();
+        
         // \MUtil_Model::$verbose = true;
 
         $bridge->add(
@@ -97,8 +98,8 @@ class Gems_Snippets_Tracker_Summary_SummaryTableSnippet extends \Gems_Snippets_M
      */
     public function showPercentage($part, $total)
     {
-        if ($total) {
-            return sprintf($this->_('%d%%'), round($part / $total * 100, 0));
+        if ((string) $total) {
+            return sprintf($this->_('%d%%'), round(intval((string) $part) / intval((string) $total) * 100, 0));
         } else {
             return $this->_('-');
         }

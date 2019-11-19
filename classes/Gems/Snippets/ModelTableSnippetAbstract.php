@@ -196,10 +196,9 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_M
 
         if (isset($filter[$textKey])) {
             $searchText = $filter[$textKey];
-            // \MUtil_Echo::r('[' . $searchText . ']');
             $marker = new \MUtil_Html_Marker($model->getTextSearches($searchText), 'strong', 'UTF-8');
             foreach ($model->getItemNames() as $name) {
-                if ($model->get($name, 'label')) {
+                if ($model->get($name, 'label') && (! $model->is($name, 'no_text_search', true))) {
                     $model->set($name, 'markCallback', array($marker, 'mark'));
                 }
             }
