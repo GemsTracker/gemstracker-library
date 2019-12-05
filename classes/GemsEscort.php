@@ -824,6 +824,9 @@ class GemsEscort extends \MUtil_Application_Escort
             $view->doctype(\Zend_View_Helper_Doctype::XHTML1_STRICT);
         }
 
+        // Generate a nonce for script tags
+        //\MUtil\Javascript::generateNonce();
+
         // Add it to the ViewRenderer
         $viewRenderer = \Zend_Controller_Action_HelperBroker::getStaticHelper('ViewRenderer');
         $viewRenderer->setView($view);
@@ -2045,6 +2048,14 @@ class GemsEscort extends \MUtil_Application_Escort
         if ($request->isDispatched()) {
             $headers = $this->project->getResponseHeaders();
             foreach ($headers as $name => $value) {
+                /* check if nonce should be added to the CSP header
+                 * if ($name == 'Content-Security-Policy' && strpos($value, '$scriptNonce') !== false) {
+                    if (\MUtil\Javascript::$scriptNonce) {
+                        $value = str_replace('$scriptNonce', \MUtil\Javascript::$scriptNonce, $value);
+                    } else {
+                        throw new Gems_Exception_Security('script nouce set in headers but no nonce generated');
+                    }
+                }*/
                 $this->response->setHeader($name, $value, true);
             }
 
