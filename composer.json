@@ -68,7 +68,7 @@
         "bacon/bacon-qr-code": "^1.0.3",
         "erusev/parsedown": "~1.7",
         "ifsnop/mysqldump-php": "^2.6",
-        "symfony/cache": "^3.4"
+        "symfony/cache": "^3.4.36"
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.*",
