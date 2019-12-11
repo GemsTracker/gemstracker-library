@@ -44,6 +44,7 @@ class Gems_Default_AgendaFilterAction extends \Gems_Controller_ModelSnippetActio
      */
     protected $showParameters = [
         'calSearchFilter' => 'getShowFilter',
+        'browse' => true,
         ];
 
     /**
