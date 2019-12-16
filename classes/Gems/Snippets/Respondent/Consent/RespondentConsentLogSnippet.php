@@ -22,6 +22,15 @@ namespace Gems\Snippets\Respondent\Consent;
 class RespondentConsentLogSnippet extends \MUtil_Snippets_ModelTableSnippetAbstract
 {
     /**
+     * Set a fixed model sort.
+     *
+     * Leading _ means not overwritten by sources.
+     *
+     * @var array
+     */
+    protected $_fixedSort = ['glrc_created' => SORT_DESC];
+
+    /**
      * Shortfix to add class attribute
      *
      * @var string
@@ -40,6 +49,12 @@ class RespondentConsentLogSnippet extends \MUtil_Snippets_ModelTableSnippetAbstr
      * @var \Gems_Tracker_Respondent
      */
     protected $respondent;
+
+    /**
+     *
+     * @var \Gems_Util
+     */
+    protected $util;
 
     /**
      * Called after the check that all required registry values
@@ -80,10 +95,17 @@ class RespondentConsentLogSnippet extends \MUtil_Snippets_ModelTableSnippetAbstr
             $options      = (array) $respModel->get($field, 'multiOptions');
             $valueOptions = array_merge($valueOptions, $options);
         }
+        $orgs = $this->util->getDbLookup()->getOrganizations();
+        foreach ($orgs as $id => $name) {
+            $fieldOptions[$id] = sprintf('has access to %s', $name);
+        }
+
         // \MUtil_Echo::track($fieldOptions, $valueOptions);
 
         $model = new \MUtil_Model_TableModel('gems__log_respondent_consents');
 
+        $model->set('glrc_id_organization', 'label', $this->_('Organization'),
+                'multiOptions', $orgs);
         $model->set('glrc_consent_field', 'label', $this->_('Type'),
                 'multiOptions', $fieldOptions);
         $model->set('glrc_old_consent', 'label', $this->_('Previous consent'),
@@ -99,7 +121,10 @@ class RespondentConsentLogSnippet extends \MUtil_Snippets_ModelTableSnippetAbstr
         if ($this->respondent && $this->respondent->exists) {
             $model->addFilter([
                 'glrc_id_user' => $this->respondent->getId(),
-                'glrc_id_organization' => $this->respondent->getOrganizationId(),
+                [
+                    'glrc_id_organization' => $this->respondent->getOrganizationId(),
+                    'glrc_consent_field'   => $this->respondent->getOrganizationId(),
+                    ],
             ]);
         }
 

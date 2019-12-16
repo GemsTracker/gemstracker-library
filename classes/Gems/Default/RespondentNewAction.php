@@ -600,7 +600,15 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      */
     public function getOtherOrgs()
     {
-        return $this->util->getOtherOrgsFor($this->getRespondent()->getOrganizationId());
+        $respondent = $this->getRespondent();
+        $otherOrgs  = $respondent->getConsentingOrgs();
+
+        // \MUtil_Echo::track($otherOrgs);
+        if ($otherOrgs) {
+            return $otherOrgs;
+        }
+
+        return $this->util->getOtherOrgsFor($respondent->getOrganizationId(), $respondent->getId());
     }
 
     /**

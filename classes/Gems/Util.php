@@ -142,11 +142,6 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
             return $this->project->consentRejected;
         }
 
-        // Remove in 1.7.3
-        if ($this->project->offsetExists('concentRejected')) {
-            throw new \Gems_Exception_Coding('project.ini setting was changed from "concentRejected" to "consentRejected", please update your project.ini');
-        }
-
         return 'do not use';
     }
 
@@ -293,7 +288,7 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
      *
      * When true: show tokens for all organizations, false: only current organization, array => those organizations
      *
-     * @param int $organizationId Optional, uses current user when empty
+     * @param int $forOrgId Optional, uses current user when empty
      * @return boolean|array
      */
     public function getOtherOrgsFor($forOrgId = null)

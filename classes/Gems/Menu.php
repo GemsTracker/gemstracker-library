@@ -247,6 +247,15 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $this->addHiddenPrivilege('pr.respondent.multiorg', $this->_(
                 'Display multiple organizations in respondent overview.'
                 ));
+        $this->addHiddenPrivilege('pr.respondent.org2orgcon.grab', $this->_(
+                'Grant right to grab access for own organization on consent.'
+                ));
+        $this->addHiddenPrivilege('pr.respondent.org2orgcon.grant', $this->_(
+                'Grant right to grant access to other organizations on consent.'
+                ));
+        $this->addHiddenPrivilege('pr.respondent.org2orgcon.see', $this->_(
+                'Grant right to see organization to organization consents.'
+                ));
         $this->addHiddenPrivilege('pr.episodes.rawdata', $this->_(
                 'Display raw data in Episodes of Care.'
                 ));

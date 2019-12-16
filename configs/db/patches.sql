@@ -1570,3 +1570,10 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.respondent.c
 -- PATCH: Add cron job to respondent mail log
 ALTER TABLE `gems__log_respondent_communications`
     ADD `grco_id_job` bigint(20) unsigned NULL AFTER `grco_id_message`;
+
+-- PATCH: Share at petient level between organisations
+ALTER TABLE gems__organizations ADD
+    gor_shareable_with text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null
+    AFTER gor_accessible_by;
+
+UPDATE gems__organizations SET gor_shareable_with = '::' WHERE gor_shareable_with IS NULL;

@@ -22,6 +22,12 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
 {
     /**
      *
+     * @var array orgid => orgid of orgs this respondent has organization contents for
+     */
+    protected $_consentingOrgs = null;
+
+    /**
+     *
      * @var array The gems respondent and respondent to org data
      */
     protected $_gemsData;
@@ -214,6 +220,31 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
     public function getConsent()
     {
         return $this->util->getConsent($this->_gemsData['gr2o_consent']);
+    }
+
+    /**
+     * Get the birthdate
+     *
+     * @return \Gems\Util\ConsentCode
+     */
+    public function getConsentingOrgs()
+    {
+        if (null === $this->_consentingOrgs) {
+            $sql = "SELECT gco2o_organization_from, gco2o_organization_from
+                FROM gems__consent_org2org INNER JOIN gems__consents ON gco2o_consent = gco_description
+                WHERE gco2o_id_user = ? AND gco2o_organization_to = ? AND gco_code != ?";
+
+            $this->_consentingOrgs = $this->db->fetchPairs($sql, [
+                $this->respondentId, $this->organizationId, $this->util->getConsentRejected()
+            ]);
+
+            // If array, add current org
+            if (is_array($this->_consentingOrgs)) {
+                $this->_consentingOrgs[$this->organizationId] = $this->organizationId;
+            }
+        }
+
+        return $this->_consentingOrgs;
     }
 
     /**
@@ -461,12 +492,12 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
 
         return (boolean) $this->db->fetchOne($select);
     }
-    
+
     /**
      * Can mails be sent for this respondent?
-     * 
+     *
      * This only check the mailable attribute, not the presence of a mailaddress
-     * 
+     *
      * @return boolean
      */
     public function isMailable()
@@ -474,7 +505,7 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
         if (!array_key_exists('gr2o_mailable', $this->_gemsData)) {
             $this->refresh();
         }
-        
+
         return $this->_gemsData['gr2o_mailable'] == 1;
     }
 

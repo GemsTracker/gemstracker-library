@@ -434,6 +434,27 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
     {
         return $this->_get('gor_reset_pass_template');
     }
+
+    /**
+     * Get the organization ids this organizations share data to
+     *
+     * @return array Of type [orgId ]
+     */
+    public function getShareableWithIds()
+    {
+        return $this->_get('gor_shareable_with');
+    }
+
+    /**
+     * Get that will share data with this organization
+     *
+     * @return array Of type orgId => orgName
+     */
+    public function getSharingOrganizations()
+    {
+        return $this->_get('sharing_orgs');
+    }
+
     /**
      * Get the signature of the organization.
      *
@@ -580,8 +601,27 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
             } catch (\Exception $e) {
                 $data['can_access'] = array();
             }
-
             // \MUtil_Echo::track($sql, $data['can_access']);
+
+            try {
+                $data['gor_shareable_with'] = explode(':', trim($data['gor_shareable_with'], ':'));
+                $dbOrgId = $this->db->quote($id, \Zend_Db::INT_TYPE);
+                $sql = "SELECT gor_id_organization, gor_name
+                    FROM gems__organizations
+                    WHERE gor_active = 1 AND gor_shareable_with LIKE '%:$dbOrgId:%'
+                    ORDER BY gor_name";
+                $data['sharing_orgs'] = $this->db->fetchPairs($sql);
+                if (is_array($data['sharing_orgs'])) {
+                    natsort($data['sharing_orgs']);
+                } else {
+                    $data['sharing_orgs'] = array();
+                }
+            } catch (\Exception $e) {
+                $data['gor_shareable_with'] = [];
+                $data['sharing_orgs']       = [];
+            }
+
+            // \MUtil_Echo::track($data['gor_shareable_with'], $data['sharing_orgs']);
 
             if (array_key_exists('gor_url_base', $data) && $baseUrls = explode(' ', $data['gor_url_base'])) {
                 $data['base_url'] = reset($baseUrls);

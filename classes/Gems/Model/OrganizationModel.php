@@ -132,8 +132,13 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
                 'description', $this->_('Checked organizations see this organizations respondents.'),
                 'multiOptions', $dbLookup->getOrganizations()
                 );
+        $this->set('gor_shareable_with',            'label', $this->_('Shareable with'),
+                'description', $this->_('Checked organizations can request access to this organisations tracks.'),
+                'multiOptions', $dbLookup->getOrganizations()
+                );
         $tp = new \MUtil_Model_Type_ConcatenatedRow(':', ', ');
         $tp->apply($this, 'gor_accessible_by');
+        $tp->apply($this, 'gor_shareable_with');
 
         $this->setIfExists('gor_allowed_ip_ranges');
 
@@ -300,6 +305,13 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
                 );
         $this->set('allowed',
                 'label', $this->_('Can access'),
+                'elementClass', 'Html'
+                );
+        $this->set('gor_shareable_with',
+                'elementClass', 'MultiCheckbox'
+                );
+        $this->set('sharing',
+                'label', $this->_('Can share from'),
                 'elementClass', 'Html'
                 );
 

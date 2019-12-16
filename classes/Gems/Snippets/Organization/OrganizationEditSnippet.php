@@ -60,6 +60,7 @@ class OrganizationEditSnippet extends \Gems_Snippets_ModelTabFormSnippetGeneric
 
         if (isset($this->formData['gor_id_organization']) && $this->formData['gor_id_organization']) {
             $model = $this->getModel();
+            $org   = $this->loader->getOrganization($this->formData['gor_id_organization']);
 
             // Strip self from list of organizations
             $multiOptions = $model->get('gor_accessible_by', 'multiOptions');
@@ -67,7 +68,6 @@ class OrganizationEditSnippet extends \Gems_Snippets_ModelTabFormSnippetGeneric
             $model->set('gor_accessible_by', 'multiOptions', $multiOptions);
 
             // Show allowed organizations
-            $org         = $this->loader->getOrganization($this->formData['gor_id_organization']);
             $allowedOrgs = $org->getAllowedOrganizations();
             //Strip self
             unset($allowedOrgs[$this->formData['gor_id_organization']]);
@@ -77,7 +77,25 @@ class OrganizationEditSnippet extends \Gems_Snippets_ModelTabFormSnippetGeneric
             }
             $this->formData['allowed'] = $display;
             $model->set('allowed', 'value', $display);
+
+            // SHAREABLE
+            // Strip self from list of organizations
+            $multiOptions = $model->get('gor_shareable_with', 'multiOptions');
+            unset($multiOptions[$this->formData['gor_id_organization']]);
+            $model->set('gor_shareable_with', 'multiOptions', $multiOptions);
+
+            // Show sahring organizations
+            $sharingOrgs = $org->getSharingOrganizations();
+            //Strip self
+            unset($sharingOrgs[$this->formData['gor_id_organization']]);
+            $sharing = join(', ', $sharingOrgs);
+            if (! $sharing) {
+                $sharing = \MUtil_Html::create('em', $this->_('No access to other organizations.'));
+            }
+            $this->formData['sharing'] = $sharing;
+            $model->set('sharing', 'value', $sharing);
         }
+
         // MultiOption null is ''.
         if (! isset($this->formData['gor_respondent_edit'])) {
             $this->formData['gor_respondent_edit'] = '';

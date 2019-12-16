@@ -14,6 +14,7 @@ CREATE TABLE if not exists gems__organizations (
 
         -- A : separated list of organization numbers that can look at respondents in this organization
         gor_accessible_by           text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gor_shareable_with          text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
         gor_contact_name            varchar(50)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
         gor_contact_email           varchar(127) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
