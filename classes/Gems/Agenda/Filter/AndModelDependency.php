@@ -36,7 +36,13 @@ class AndModelDependency extends FilterModelDependencyAbstract
      * @var \Gems_Agenda
      */
     protected $agenda;
-    
+
+    /**
+     *
+     * @var \Gems_Menu
+     */
+    protected $menu;
+
     /**
      *
      * @var \Gems_Util
@@ -52,7 +58,7 @@ class AndModelDependency extends FilterModelDependencyAbstract
     public function afterRegistry()
     {
         $this->_filters = $this->util->getTranslated()->getEmptyDropdownArray() + $this->agenda->getFilterList();
-        
+
         parent::afterRegistry();
     }
 
@@ -88,6 +94,77 @@ class AndModelDependency extends FilterModelDependencyAbstract
     }
 
     /**
+     *
+     * @staticvar \Gems_Menu_SubMenuItem $showMenuItem
+     * @param int $value
+     * @return \MUtil_Html_HtmlElement
+     */
+    public function displayFilterLink($value)
+    {
+        static $showMenuItem = false;
+
+        if (false === $showMenuItem) {
+            $showMenuItem = $this->menu->findAllowedController('agenda-filter', 'show');
+        }
+
+        if (isset($this->_filters[$value])) {
+            $class = '';
+            $text  = $this->_filters[$value];
+        } else {
+            $class = 'deleted';
+            $text  = $this->_('deleted filter');
+        }
+
+        if ($showMenuItem instanceof \Gems_Menu_SubMenuItem) {
+            return \MUtil_Html_AElement::a(
+                    $showMenuItem->toHRefAttribute([\MUtil_Model::REQUEST_ID => $value]),
+                    $text,
+                    ['class' => $class]
+                    );
+        }
+
+        return \MUtil_Html::create('span', $text, ['class' => $class]);
+    }
+
+    /**
+     * Returns the changes that must be made in an array consisting of
+     *
+     * <code>
+     * array(
+     *  field1 => array(setting1 => $value1, setting2 => $value2, ...),
+     *  field2 => array(setting3 => $value3, setting4 => $value4, ...),
+     * </code>
+     *
+     * By using [] array notation in the setting name you can append to existing
+     * values.
+     *
+     * Use the setting 'value' to change a value in the original data.
+     *
+     * When a 'model' setting is set, the workings cascade.
+     *
+     * @param array $context The current data this object is dependent on
+     * @param boolean $new True when the item is a new record not yet saved
+     * @return array name => array(setting => value)
+     */
+    public function getChanges(array $context, $new)
+    {
+        $output = parent::getChanges($context, $new);
+
+        // Do this here as the settings are loaded in afterRegistry in a ValueSwitchDependecy
+        if ($this->_displayMode) {
+            foreach ($output as $name => &$item) {
+                if (\MUtil_String::startsWith($name, 'gaf_filter_text')) {
+                    $item['formatFunction'] = [$this, 'displayFilterLink'];
+                    unset($item['multiOptions']);
+                }
+            }
+        }
+
+        return $output;
+    }
+
+
+    /**
      * Get the class name for the filters, the part after *_Agenda_Filter_
      *
      * @return string
@@ -106,7 +183,7 @@ class AndModelDependency extends FilterModelDependencyAbstract
     {
         return $this->_('AND filter combination');
     }
-    
+
     /**
      * Get the translated glue for the calculated name
      *
@@ -131,39 +208,43 @@ class AndModelDependency extends FilterModelDependencyAbstract
             $this->_('Filters may be chosen only once.')
                 );
 
-        return array(
-            'gaf_filter_text1' => array(
-                'label'        => $this->_('Filter 1'),
-                'elementClass' => 'Select',
-                'multiOptions' => $this->_filters,
-                'required'     => true,
-                'validator'    => new \MUtil_Validate_NotEqualTo('gaf_id', $messages),
-                ),
-            'gaf_filter_text2' => array(
-                'label'        => $this->_('Filter 2'),
-                'elementClass' => 'Select',
-                'multiOptions' => $this->_filters,
-                'required'     => true,
-                'validator'    => new \MUtil_Validate_NotEqualTo(array('gaf_id', 'gaf_filter_text1'), $messages),
-                ),
-            'gaf_filter_text3' => array(
-                'label'        => $this->_('Filter 3'),
-                'elementClass' => 'Select',
-                'multiOptions' => $this->_filters,
-                'validator'    => new \MUtil_Validate_NotEqualTo(
-                        array('gaf_id', 'gaf_filter_text1', 'gaf_filter_text2'),
+        return [
+            'gaf_filter_text1' => [
+                'label'          => $this->_('Filter 1'),
+                'elementClass'   => 'Select',
+                'formatFunction' => null,
+                'multiOptions'   => $this->_filters,
+                'required'       => true,
+                'validator'      => new \MUtil_Validate_NotEqualTo('gaf_id', $messages),
+                ],
+            'gaf_filter_text2' => [
+                'label'          => $this->_('Filter 2'),
+                'elementClass'   => 'Select',
+                'formatFunction' => null,
+                'multiOptions'   => $this->_filters,
+                'required'       => true,
+                'validator'      => new \MUtil_Validate_NotEqualTo(array('gaf_id', 'gaf_filter_text1'), $messages),
+                ],
+            'gaf_filter_text3' => [
+                'label'          => $this->_('Filter 3'),
+                'elementClass'   => 'Select',
+                'formatFunction' => null,
+                'multiOptions'   => $this->_filters,
+                'validator'      => new \MUtil_Validate_NotEqualTo(
+                        ['gaf_id', 'gaf_filter_text1', 'gaf_filter_text2'],
                         $messages
                         ),
-                ),
-            'gaf_filter_text4' => array(
-                'label'        => $this->_('Filter 4'),
-                'elementClass' => 'Select',
-                'multiOptions' => $this->_filters,
-                'validator'    => new \MUtil_Validate_NotEqualTo(
-                        array('gaf_id', 'gaf_filter_text1', 'gaf_filter_text2', 'gaf_filter_text3'),
+                ],
+            'gaf_filter_text4' => [
+                'label'          => $this->_('Filter 4'),
+                'elementClass'   => 'Select',
+                'formatFunction' => null,
+                'multiOptions'   => $this->_filters,
+                'validator'      => new \MUtil_Validate_NotEqualTo(
+                        ['gaf_id', 'gaf_filter_text1', 'gaf_filter_text2', 'gaf_filter_text3'],
                         $messages
                         ),
-                ),
-            );
+                ],
+            ];
     }
 }

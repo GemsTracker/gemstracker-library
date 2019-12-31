@@ -64,7 +64,8 @@ class EpisodeTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
     {
         parent::afterRegistry();
 
-        if ($this->calSearchFilter instanceof AppointmentFilterInterface) {
+        if (null !== $this->calSearchFilter) {
+            $this->caption = $this->_('Example episodes');
             if ($this->calSearchFilter instanceof AppointmentFilterInterface) {
                 $this->searchFilter = [
                     \MUtil_Model::SORT_DESC_PARAM => 'gec_startdate',
@@ -74,10 +75,9 @@ class EpisodeTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
                 // \MUtil_Echo::track($this->calSearchFilter->getSqlEpisodeWhere());
 
                 $this->bridgeMode = \MUtil_Model_Bridge_BridgeAbstract::MODE_ROWS;
-                $this->caption = $this->_('Example episodes');
-                $this->onEmpty = $this->_('No example episodes found');
-            } else {
-                $this->searchFilter = $this->calSearchFilter;
+            } elseif (false === $this->calSearchFilter) {
+                $this->onEmpty = $this->_('Filter is inactive');
+                $this->searchFilter = ['1=0'];
             }
         }
     }

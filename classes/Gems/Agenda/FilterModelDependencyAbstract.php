@@ -35,6 +35,12 @@ abstract class FilterModelDependencyAbstract extends ValueSwitchDependency
     protected $_dependentOn = array('gaf_class');
 
     /**
+     *
+     * @var boolean Mode of usage, display is true, editing is dalse
+     */
+    protected $_displayMode;
+
+    /**
      * The number of gaf_filter_textN fields/
      *
      * @var int
@@ -134,6 +140,19 @@ abstract class FilterModelDependencyAbstract extends ValueSwitchDependency
      * @return array gaf_filter_textN => array(modelFieldName => fieldValue)
      */
     abstract public function getTextSettings();
+
+    /**
+     * Set the maximum length of the calculated name field
+     *
+     * @param boolean $display True for display, false for editing
+     * @return \Gems\Agenda\FilterModelDependencyAbstract
+     */
+    public function setDisplayMode($display = true)
+    {
+        $this->_displayMode = (boolean) $display;
+        
+        return $this;
+    }
 
     /**
      * Set the maximum length of the calculated name field

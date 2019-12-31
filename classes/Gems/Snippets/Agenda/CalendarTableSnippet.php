@@ -106,7 +106,8 @@ class Gems_Snippets_Agenda_CalendarTableSnippet extends \Gems_Snippets_ModelTabl
     {
         parent::afterRegistry();
 
-        if ($this->calSearchFilter) {
+        if (null !== $this->calSearchFilter) {
+            $this->caption = $this->_('Example appointments');
             if ($this->calSearchFilter instanceof AppointmentFilterInterface) {
                 $this->searchFilter = [
                     \MUtil_Model::SORT_DESC_PARAM => 'gap_admission_time',
@@ -116,10 +117,10 @@ class Gems_Snippets_Agenda_CalendarTableSnippet extends \Gems_Snippets_ModelTabl
                 // \MUtil_Echo::track($this->calSearchFilter->getSqlAppointmentsWhere());
 
                 $this->bridgeMode = \MUtil_Model_Bridge_BridgeAbstract::MODE_ROWS;
-                $this->caption = $this->_('Example appointments');
                 $this->onEmpty = $this->_('No example appointments found');
-            } else {
-                $this->searchFilter = $this->calSearchFilter;
+            } elseif (false === $this->calSearchFilter) {
+                $this->onEmpty = $this->_('Filter is inactive');
+                $this->searchFilter = ['1=0'];
             }
         }
     }

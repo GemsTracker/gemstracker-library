@@ -84,7 +84,7 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
      */
     public function applyBrowseSettings()
     {
-        $this->loadFilterDependencies(false);
+        $this->loadFilterDependencies(false, true);
 
         $yesNo = $this->util->getTranslated()->getYesNo();
 
@@ -111,7 +111,7 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
         $this->addColumn(new \Zend_Db_Expr(
                 "(SELECT COUNT(*)
                     FROM gems__appointment_filters AS other
-                    WHERE gaf_class IN ('AndAppointmentFilter', 'OrAppointmentFilter') AND
+                    WHERE gaf_class IN ('AndAppointmentFilter', 'OrAppointmentFilter', 'NotAnyModelDependency') AND
                         (
                             gems__appointment_filters.gaf_id = other.gaf_filter_text1 OR
                             gems__appointment_filters.gaf_id = other.gaf_filter_text2 OR
@@ -132,11 +132,12 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
     /**
      * Set those settings needed for the detailed display
      *
+     * @param boolean $display True when in display mode, otherwise editing
      * @return \Gems_Agenda_AppointmentFilterModelAbstract
      */
-    public function applyDetailSettings()
+    public function applyDetailSettings($display = true)
     {
-        $this->loadFilterDependencies(true);
+        $this->loadFilterDependencies(true, $display);
 
         $yesNo = $this->util->getTranslated()->getYesNo();
 
@@ -205,7 +206,7 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
      */
     public function applyEditSettings($create = false)
     {
-        $this->applyDetailSettings();
+        $this->applyDetailSettings(false);
 
         reset($this->filterOptions);
         $default = key($this->filterOptions);
@@ -229,9 +230,11 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
     /**
      * Load filter dependencies into model and populate the filterOptions
      *
+     * @param boolean $activateDependencies When true, adds dependecies to model
+     * @param boolean $displayOnly True when displaying, false when editing
      * @return array filterClassName => Label
      */
-    protected function loadFilterDependencies($activateDependencies = true)
+    protected function loadFilterDependencies($activateDependencies = true, $displayOnly = true)
     {
         if (! $this->filterOptions) {
             $maxLength = $this->get('gaf_calc_name', 'maxlength');
@@ -244,6 +247,7 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
                     $this->filterOptions[$dependency->getFilterClass()] = $dependency->getFilterName();
 
                     if ($activateDependencies) {
+                        $dependency->setDisplayMode($displayOnly);
                         $dependency->setMaximumCalcLength($maxLength);
                         $this->addDependency($dependency);
                     }
