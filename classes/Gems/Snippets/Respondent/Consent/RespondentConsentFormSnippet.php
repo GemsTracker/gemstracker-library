@@ -32,8 +32,8 @@ class RespondentConsentFormSnippet extends \Gems_Snippets_ModelFormSnippetAbstra
      * @var array The fields to exhibit
      */
     protected $exhibit = [
-        'gr2o_patient_nr',
         'gr2o_id_organization',
+        'gr2o_patient_nr',
         'name',
         'gr2o_email',
         'grs_gender',
@@ -62,6 +62,7 @@ class RespondentConsentFormSnippet extends \Gems_Snippets_ModelFormSnippetAbstra
     {
         if (in_array('name', $this->exhibit)) {
             \Gems_Model_RespondentModel::addNameToModel($this->model, $this->_('Name'));
+            $this->model->set('name', 'order', $this->model->getOrder('gr2o_patient_nr') + 1);
         }
 
         $all = $this->model->getCol('label');
@@ -81,5 +82,26 @@ class RespondentConsentFormSnippet extends \Gems_Snippets_ModelFormSnippetAbstra
         }
 
         return $this->model;
+    }
+
+    /**
+     * Retrieve the header title to display
+     *
+     * @return string
+     */
+    protected function getTitle()
+    {
+        return $this->_('Consents');
+    }
+
+    /**
+     * Helper function to allow generalized statements about the items in the model to used specific item names.
+     *
+     * @param int $count
+     * @return $string
+     */
+    public function getTopic($count = 1)
+    {
+        return $this->plural('consent', 'consents', $count);
     }
 }

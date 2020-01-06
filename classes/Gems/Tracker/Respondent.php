@@ -207,6 +207,16 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
     }
 
     /**
+     * Get city
+     *
+     * @return string
+     */
+    public function getCity()
+    {
+        return $this->_gemsData['grs_city'];
+    }
+
+    /**
      * Get the birthdate
      *
      * @return \Gems\Util\ConsentCode
@@ -429,6 +439,26 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
     }
 
     /**
+     * Get street address
+     *
+     * @return string
+     */
+    public function getStreetAddress()
+    {
+        return $this->_gemsData['grs_address_1'];
+    }
+
+    /**
+     * Get zip code
+     *
+     * @return string
+     */
+    public function getZip()
+    {
+        return $this->_gemsData['grs_zipcode'];
+    }
+
+    /**
      * Has the respondent active tracks
      *
      * @return boolean
@@ -461,12 +491,12 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
 
         return (boolean) $this->db->fetchOne($select);
     }
-    
+
     /**
      * Can mails be sent for this respondent?
-     * 
+     *
      * This only check the mailable attribute, not the presence of a mailaddress
-     * 
+     *
      * @return boolean
      */
     public function isMailable()
@@ -474,7 +504,7 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
         if (!array_key_exists('gr2o_mailable', $this->_gemsData)) {
             $this->refresh();
         }
-        
+
         return $this->_gemsData['gr2o_mailable'] == 1;
     }
 
