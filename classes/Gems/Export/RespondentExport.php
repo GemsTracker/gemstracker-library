@@ -11,7 +11,7 @@
 /**
  * Handles export of all tracks/surveys for a respondent
  * 
- * To enable Word export option add "phpoffice/phpword": "v0.16.*", to require section of composer.json
+ * To enable Word export option add "phpoffice/phpword": "v0.16.*" to require section of composer.json
  *
  * @package    Gems
  * @subpackage Export
@@ -298,6 +298,7 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
                     'showButtons'    => false,
                     'showSelected'   => false,
                     'showTakeButton' => false,
+                    'htmlExport'     => true,
                     'grouped'        => $groupSurveys);
 
                 $snippets = $token->getAnswerSnippetNames();
@@ -505,37 +506,68 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
     }
     
     /**
-     * Removes tags and attributes from HTML string
+     * Prepares string for Word export
      *
-     * @param string $string
-     * @param boolean $remove_attributes Removes attributes of all tags
-     * @param boolean $remove_breaks Replaces breaks with a space
+     * @param string $string 
      */
-    public function cleanTags( $string, $remove_attributes = false, $remove_breaks = false ) {
+    public function prepareWordExport($string)
+    {
+        // convert encoding
+        $string = mb_convert_encoding($string, 'html-entities', 'utf-8');
+        
+        // clear scripting
         $string = preg_replace( '@<(script|style|head|header|footer)[^>]*?>.*?</\\1>@si', '', $string );
-        $string = strip_tags( $string, '<p><h1><h2><h3><h4><h5><h6><#text><strong><b><em><i><u><sup><sub><span><font><table><tr><td><th><ul><ol><li><img><br><a>' );
+        
+        // clean string using DOM object
+        $dom = new \DOMDocument();
+        $dom->loadHTML($string);
+        
+        $dom = $this->cleanDom($dom);
+        
+        $string = $dom->saveHTML();
         
         // correct breaks for processing
         $string = str_ireplace('<br>', '<br />', $string);
         
-        // make table th cells bold for processing with PHPWord
-        $string = str_ireplace('<th>', '<th style="font-weight: bold">', $string);
-
-        // make h1-h6 tags bold and bigger for processing with PHPWord
-        for ($i = 1; $i <= 6; $i++) {
-            $fontsize = 26 - ($i * 2);
-            $string = preg_replace('/<h' . $i . '>(.*?)<\/h' . $i . '>/', '<p style="font-weight: bolder; font-size: ' . $fontsize . 'px">$1</p>', $string);
-        }
-
-        if ( $remove_attributes ) {
-            $string = preg_replace("/<([a-z][a-z0-9]*)[^>]*?(\/?)>/i",'<$1$2>', $string);
-        }
-        
-        if ( $remove_breaks ) {
-            $string = preg_replace( '/[\r\n\t ]+/', ' ', $string );
-        }
+        // clear scripting and unnecessary tags
+        $string = preg_replace( '@<(script|style|head|header|footer)[^>]*?>.*?</\\1>@si', '', $string );
+        $string = strip_tags( $string, '<p><h1><h2><h3><h4><h5><h6><#text><strong><b><em><i><u><sup><sub><span><font><table><tr><td><th><ul><ol><li><img><br><a>' );
 
         return trim( $string );
+    }
+    
+    
+    /**
+     * Clean DOM object for Word export
+     *
+     * @param object $dom
+     */
+    public function cleanDom($dom)
+    {
+        // add border attributes to tables
+        foreach ($dom->getElementsByTagName('table') as $tablenode) {
+            $tablenode->setAttribute('style','border: 2px #000000 solid');
+        }
+        
+        // add font weight attributes to th elements
+        foreach ($dom->getElementsByTagName('th') as $thnode) {
+            $thnode->setAttribute('style','font-weight: bold');
+        }
+        
+        // replace h1-h6 elements for PHP Word processing
+        for ($i = 1; $i <= 6; $i++) {
+            $headers = $dom->getElementsByTagName('h' . $i);
+            if ($headers->length > 0) {
+                $fontsize = 26 - ($i * 2);
+                foreach ($headers as $headernode) {
+                    $newheadernode = $dom->createElement("p", $headernode->nodeValue);
+                    $newheadernode->setAttribute('style', 'font-weight: bolder; font-size: ' . $fontsize . 'px');
+                    $headernode->parentNode->replaceChild($newheadernode, $headernode);
+                }
+            }
+        }
+        
+        return $dom;
     }
 
     /**
@@ -591,7 +623,7 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
             }
             $filename = 'respondent-export-' . strtolower($respondentId) . '.docx';
             
-            $content = $this->cleanTags($content);
+            $content = $this->prepareWordExport($content);
             
             $section = $this->_word->addSection();
             \PhpOffice\PhpWord\Settings::setOutputEscapingEnabled(true);
